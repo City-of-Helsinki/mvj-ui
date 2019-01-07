@@ -4,6 +4,9 @@ import {SubmissionError} from 'redux-form';
 
 import {receiveError} from '$src/api/actions';
 import {
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
   hideEditMode,
   notFound,
   receiveAreaNoteList,
@@ -16,7 +19,30 @@ import {
   deleteAreaNote,
   editAreaNote,
   fetchAreaNotes,
+  fetchAttributes,
 } from './requests';
+
+function* fetchAttributesSaga(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
+    const attributes = bodyAsJson.fields;
+    const methods = bodyAsJson.methods;
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
+        break;
+      default:
+        yield put(attributesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch area note attributes with error "%s"', error);
+    yield put(attributesNotFound());
+    yield put(receiveError(error));
+  }
+}
 
 function* fetchAreaNoteListSaga({payload: search}): Generator<any, any, any> {
   try {
@@ -42,7 +68,6 @@ function* fetchAreaNoteListSaga({payload: search}): Generator<any, any, any> {
     yield put(notFound());
     yield put(receiveError(error));
   }
-
 }
 
 function* createAreaNoteSaga({payload}): Generator<any, any, any> {
@@ -126,6 +151,7 @@ function* editAreaNoteSaga({payload}): Generator<any, any, any> {
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
+      yield takeLatest('mvj/areaNote/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/areaNote/FETCH_ALL', fetchAreaNoteListSaga);
       yield takeLatest('mvj/areaNote/CREATE', createAreaNoteSaga);
       yield takeLatest('mvj/areaNote/DELETE', deleteAreaNoteSaga);

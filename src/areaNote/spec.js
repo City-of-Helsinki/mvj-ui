@@ -2,6 +2,10 @@
 import {expect} from 'chai';
 
 import {
+  fetchAttributes,
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
   receiveAreaNoteList,
   receiveDeletedAreaNote,
   receiveEditedAreaNote,
@@ -19,6 +23,7 @@ import areaNotesReducer from './reducer';
 import type {AreaNoteState} from './types';
 
 const defaultState: AreaNoteState = {
+  attributes: {},
   initialValues: {
     id: -1,
     geoJSON: {},
@@ -27,7 +32,9 @@ const defaultState: AreaNoteState = {
   },
   isEditMode: false,
   isFetching: false,
+  isFetchingAttributes: false,
   list: [],
+  methods: {},
 };
 
 // $FlowFixMe
@@ -40,6 +47,39 @@ describe('AreaNoteList', () => {
     describe('areaNotesReducer', () => {
 
       // $FlowFixMe
+      it('should update attributes', () => {
+        const dummyAttributes = {foo: 'bar'};
+
+        const newState = {...defaultState, attributes: dummyAttributes};
+
+        const state = areaNotesReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {foo: 'bar'};
+
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = areaNotesReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = areaNotesReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = areaNotesReducer({}, fetchAttributes());
+        state = areaNotesReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update area notes list', () => {
         const dummyAreaNotes = [
           {
@@ -48,8 +88,7 @@ describe('AreaNoteList', () => {
           },
         ];
 
-        const newState = {...defaultState};
-        newState.list = dummyAreaNotes;
+        const newState = {...defaultState, list: dummyAreaNotes};
 
         const state = areaNotesReducer({}, receiveAreaNoteList(dummyAreaNotes));
         expect(state).to.deep.equal(newState);

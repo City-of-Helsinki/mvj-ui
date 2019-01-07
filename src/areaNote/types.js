@@ -1,16 +1,24 @@
 // @flow
-import type {Action} from '../types';
+import type {Action, Attributes, Methods} from '$src/types';
 
 export type AreaNoteState = {
+  attributes: Attributes,
   initialValues: Object,
   isEditMode: boolean,
   isFetching: boolean,
+  isFetchingAttributes: boolean,
   list: AreaNoteList,
+  methods: Methods,
 };
 
 export type AreaNoteId = number;
 export type AreaNote= Object;
 export type AreaNoteList = Array<AreaNote>;
+
+export type FetchAttributesAction = Action<'mvj/areaNote/FETCH_ATTRIBUTES', void>;
+export type ReceiveAttributesAction = Action<'mvj/areaNote/RECEIVE_ATTRIBUTES', Attributes>;
+export type ReceiveMethodsAction = Action<'mvj/areaNote/RECEIVE_METHODS', Methods>;
+export type AttributesNotFoundAction = Action<'mvj/areaNote/ATTRIBUTES_NOT_FOUND', void>;
 
 export type FetchAreaNoteListAction = Action<'mvj/areaNote/FETCH_ALL', string>;
 export type ReceiveAreaNoteListAction = Action<'mvj/areaNote/RECEIVE_ALL', AreaNoteList>;

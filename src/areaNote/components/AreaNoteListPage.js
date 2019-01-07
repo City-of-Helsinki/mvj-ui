@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
@@ -8,20 +8,26 @@ import flowRight from 'lodash/flowRight';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import {fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/areaNote/enums';
 import {getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
+import type {Methods} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
+  areaNoteMethods: Methods,
   areaNotes: AreaNoteList,
   fetchAreaNoteList: Function,
   hideEditMode: Function,
@@ -29,6 +35,7 @@ type Props = {
   initializeAreaNote: Function,
   isEditMode: boolean,
   isFetching: boolean,
+  isFetchingCommonAttributes: boolean,
   location: Object,
   plansUnderground: ?Array<Object>,
   receiveTopNavigationSettings: Function,
@@ -39,7 +46,7 @@ type State = {
   isSearchInitialized: boolean,
 }
 
-class AreaNotesList extends Component<Props, State> {
+class AreaNoteListPage extends PureComponent<Props, State> {
   state = {
     isSearchInitialized: false,
   }
@@ -132,19 +139,25 @@ class AreaNotesList extends Component<Props, State> {
   }
 
   render() {
-    const {isEditMode, isFetching} = this.props;
+    const {isEditMode, isFetching, isFetchingCommonAttributes, areaNoteMethods} = this.props;
     const {isSearchInitialized} = this.state;
+
+    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!areaNoteMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.AREA_NOTE} /></PageContainer>;
 
     return (
       <PageContainer>
         <Row>
           <Column small={12} large={6}>
-            <AddButtonSecondary
-              className='no-top-margin'
-              disabled={isEditMode}
-              label='Luo muistettava ehto'
-              onClick={this.handleCreateButtonClick}
-            />
+            <Authorization allow={areaNoteMethods.POST}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                disabled={isEditMode}
+                label='Luo muistettava ehto'
+                onClick={this.handleCreateButtonClick}
+              />
+            </Authorization>
           </Column>
           <Column small={12} large={6}>
             <Search
@@ -153,10 +166,9 @@ class AreaNotesList extends Component<Props, State> {
             />
           </Column>
         </Row>
+
         <div style={{position: 'relative'}}>
-          {isFetching &&
-            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
-          }
+          {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>}
 
           <AreaNotesEditMap allowEditing/>
         </div>
@@ -167,6 +179,7 @@ class AreaNotesList extends Component<Props, State> {
 }
 
 export default flowRight(
+  withCommonAttributes,
   connect(
     (state) => {
       return {
@@ -184,4 +197,4 @@ export default flowRight(
       showEditMode,
     },
   ),
-)(AreaNotesList);
+)(AreaNoteListPage);

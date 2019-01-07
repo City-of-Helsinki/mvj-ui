@@ -4,10 +4,16 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import {fetchAttributes as fetchAreaNoteAttributes} from '$src/areaNote/actions';
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchAttributes as fetchInfillDevelopmentAttributes} from '$src/infillDevelopment/actions';
 import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
 import {fetchAttributes as fetchRentBasisAttributes} from '$src/rentbasis/actions';
+import {
+  getAttributes as getAreaNoteAttributes,
+  getIsFetchingAttributes as getIsFetchingAreaNoteAttributes,
+  getMethods as getAreaNoteMethods,
+} from '$src/contacts/selectors';
 import {
   getAttributes as getContactAttributes,
   getIsFetchingAttributes as getIsFetchingContactAttributes,
@@ -33,14 +39,18 @@ import type {Attributes, Methods} from '$src/types';
 
 function CommonAttributes(WrappedComponent: any) {
   type Props = {
+    areaNoteAttributes: Attributes,
+    areaNoteMethods: Methods,
     contactAttributes: Attributes,
     contactMethods: Methods,
+    fetchAreaNoteAttributes: Function,
     fetchContactAttributes: Function,
     fetchInfillDevelopmentAttributes: Function,
     fetchLeaseAttributes: Function,
     fetchRentBasisAttributes: Function,
     infillDevelopmentAttributes: Attributes,
     infillDevelopmentMethods: Methods,
+    isFetchingAreaNoteAttributes: boolean,
     isFetchingContactAttributes: boolean,
     isFetchingInfillDevelopmentAttributes: boolean,
     isFetchingLeaseAttributes: boolean,
@@ -62,35 +72,47 @@ function CommonAttributes(WrappedComponent: any) {
 
     componentDidMount() {
       const {
+        areaNoteMethods,
         contactMethods,
+        fetchAreaNoteAttributes,
         fetchContactAttributes,
         fetchInfillDevelopmentAttributes,
         fetchLeaseAttributes,
         fetchRentBasisAttributes,
         infillDevelopmentMethods,
+        isFetchingAreaNoteAttributes,
+        isFetchingContactAttributes,
+        isFetchingInfillDevelopmentAttributes,
+        isFetchingLeaseAttributes,
+        isFetchingRentBasisAttributes,
         leaseMethods,
         rentBasisMethods,
       } = this.props;
 
-      if(isEmpty(contactMethods)) {
+      if(!isFetchingAreaNoteAttributes && isEmpty(areaNoteMethods)) {
+        fetchAreaNoteAttributes();
+      }
+
+      if(!isFetchingContactAttributes && isEmpty(contactMethods)) {
         fetchContactAttributes();
       }
 
-      if(isEmpty(infillDevelopmentMethods)) {
+      if(!isFetchingInfillDevelopmentAttributes && isEmpty(infillDevelopmentMethods)) {
         fetchInfillDevelopmentAttributes();
       }
 
-      if(isEmpty(leaseMethods)) {
+      if(!isFetchingLeaseAttributes && isEmpty(leaseMethods)) {
         fetchLeaseAttributes();
       }
 
-      if(isEmpty(rentBasisMethods)) {
+      if(!isFetchingRentBasisAttributes && isEmpty(rentBasisMethods)) {
         fetchRentBasisAttributes();
       }
     }
 
     componentDidUpdate(prevProps: Props) {
-      if(this.props.isFetchingContactAttributes !== prevProps.isFetchingContactAttributes ||
+      if(this.props.isFetchingAreaNoteAttributes !== prevProps.isFetchingAreaNoteAttributes ||
+        this.props.isFetchingContactAttributes !== prevProps.isFetchingContactAttributes ||
         this.props.isFetchingInfillDevelopmentAttributes !== prevProps.isFetchingInfillDevelopmentAttributes ||
         this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes ||
         this.props.isFetchingRentBasisAttributes !== prevProps.isFetchingRentBasisAttributes) {
@@ -100,12 +122,14 @@ function CommonAttributes(WrappedComponent: any) {
 
     setIsFetchingCommonAttributes = () => {
       const {
+        isFetchingAreaNoteAttributes,
         isFetchingContactAttributes,
         isFetchingInfillDevelopmentAttributes,
         isFetchingLeaseAttributes,
         isFetchingRentBasisAttributes,
       } = this.props;
-      const isFetching = isFetchingContactAttributes ||
+      const isFetching = isFetchingAreaNoteAttributes ||
+        isFetchingContactAttributes ||
         isFetchingInfillDevelopmentAttributes ||
         isFetchingLeaseAttributes ||
         isFetchingRentBasisAttributes;
@@ -123,10 +147,13 @@ const withCommonAttributes = flowRight(
   connect(
     (state) => {
       return{
+        areaNoteAttributes: getAreaNoteAttributes(state),
+        areaNoteMethods: getAreaNoteMethods(state),
         contactAttributes: getContactAttributes(state),
         contactMethods: getContactMethods(state),
         infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
         infillDevelopmentMethods: getInfillDevelopmentMethods(state),
+        isFetchingAreaNoteAttributes: getIsFetchingAreaNoteAttributes(state),
         isFetchingContactAttributes: getIsFetchingContactAttributes(state),
         isFetchingInfillDevelopmentAttributes: getIsFetchingInfillDevelopmentAttributes(state),
         isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
@@ -138,6 +165,7 @@ const withCommonAttributes = flowRight(
       };
     },
     {
+      fetchAreaNoteAttributes,
       fetchContactAttributes,
       fetchInfillDevelopmentAttributes,
       fetchLeaseAttributes,

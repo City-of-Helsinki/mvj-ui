@@ -22,7 +22,9 @@ import GeoSearch from '$components/map/GeoSearch';
 import ZoomBox from '$components/map/ZoomBox';
 import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {minZoom, maxZoom} from '$src/constants';
-import {getAreaNoteList, getIsEditMode} from '$src/areaNote/selectors';
+import {getAreaNoteList, getIsEditMode, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
+
+import type {Methods} from '$src/types';
 
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 const CRS = new L.Proj.CRS(
@@ -35,6 +37,7 @@ const CRS = new L.Proj.CRS(
 type Props = {
   allowEditing?: boolean,
   areaNotes?: Array<Object>,
+  areaNoteMethods: Methods,
   bounds?: Object,
   center: Object,
   children: Object,
@@ -76,7 +79,7 @@ class MapContainer extends Component<Props> {
   }
 
   render() {
-    const {allowEditing, areaNotes, bounds, center, children, overlayLayers, zoom} = this.props;
+    const {allowEditing, areaNotes, areaNoteMethods, bounds, center, children, overlayLayers, zoom} = this.props;
 
     return (
       <Map
@@ -121,11 +124,13 @@ class MapContainer extends Component<Props> {
               </LayerGroup>
             </Overlay>
           )}
-          <Overlay checked name="Muistettavat ehdot">
-            <LayerGroup>
-              {!isEmpty(areaNotes) && <AreaNotesLayer allowEditing={allowEditing}/>}
-            </LayerGroup>
-          </Overlay>
+          {areaNoteMethods.GET &&
+            <Overlay checked name="Muistettavat ehdot">
+              <LayerGroup>
+                {!isEmpty(areaNotes) && <AreaNotesLayer allowEditing={allowEditing}/>}
+              </LayerGroup>
+            </Overlay>
+          }
         </LayersControl>
 
         <GeoSearch />
@@ -153,6 +158,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNoteMethods: getAreaNoteMethods(state),
         areaNotes: getAreaNoteList(state),
         isEditMode: getIsEditMode(state),
       };

@@ -18,6 +18,7 @@ import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import type {Methods} from '$src/types';
 
 type Props = {
+  areaNoteMethods: Methods,
   contactMethods: Methods,
   infillDevelopmentMethods: Methods,
   isFetchingCommonAttributes: boolean,
@@ -98,6 +99,7 @@ class SideMenu extends Component<Props, State> {
 
   render() {
     const {
+      areaNoteMethods,
       contactMethods,
       infillDevelopmentMethods,
       isFetchingCommonAttributes,
@@ -149,7 +151,9 @@ class SideMenu extends Component<Props, State> {
                     <li><Link onClick={handleClick} to={getRouteById('contacts')}>Asiakkaat</Link></li>
                   </Authorization>
                   <li><Link onClick={handleClick} to={getRouteById('landUseContract')}>Maankäyttösopimukset</Link></li>
-                  <li><Link onClick={handleClick} to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
+                  <Authorization allow={areaNoteMethods.GET}>
+                    <li><Link onClick={handleClick} to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
+                  </Authorization>
                   <Authorization allow={infillDevelopmentMethods.GET}>
                     <li><Link onClick={handleClick} to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
                   </Authorization>

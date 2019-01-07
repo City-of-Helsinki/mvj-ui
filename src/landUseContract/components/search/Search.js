@@ -65,6 +65,7 @@ class Search extends Component<Props> {
               fieldAttributes={{
                 label: 'Hae hakusanalla',
                 type: 'search',
+                read_only: false,
               }}
               invisibleLabel
               name='search'
@@ -72,8 +73,7 @@ class Search extends Component<Props> {
           </Column>
         </Row>
         <Row>
-          <Column small={6}></Column>
-          <Column small={6}>
+          <Column small={12}>
             <a
               tabIndex={0}
               onKeyDown={this.handleClearKeyDown}

@@ -1,10 +1,15 @@
 // @flow
 import {createAction} from 'redux-actions';
+import type {Attributes, Methods} from '$src/types';
 
 import type {
   AreaNote,
   AreaNoteId,
   AreaNoteList,
+  FetchAttributesAction,
+  ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  AttributesNotFoundAction,
   FetchAreaNoteListAction,
   ReceiveAreaNoteListAction,
   CreateAreaNoteAction,
@@ -17,6 +22,18 @@ import type {
   HideEditModeAction,
   InitializeAction,
 } from './types';
+
+export const fetchAttributes = (): FetchAttributesAction =>
+  createAction('mvj/areaNote/FETCH_ATTRIBUTES')();
+
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/areaNote/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/areaNote/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): AttributesNotFoundAction =>
+  createAction('mvj/areaNote/ATTRIBUTES_NOT_FOUND')();
 
 export const fetchAreaNoteList = (search: string): FetchAreaNoteListAction =>
   createAction('mvj/areaNote/FETCH_ALL')(search);

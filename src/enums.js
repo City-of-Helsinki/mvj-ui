@@ -54,6 +54,7 @@ export const CancelChangesModalTexts = {
  * @type {{}}
  */
 export const PermissionMissingTexts = {
+  AREA_NOTE: 'Ei oikeuksia muistettaviin ehtoihiin',
   CONTACT: 'Ei oikeuksia asiakkaisiin',
   GENERAL: 'Ei oikeuksia sisältöön.',
   INFILL_DEVELOPMENT: 'Ei oikeksia täydennysrakennuskorvauksiin',

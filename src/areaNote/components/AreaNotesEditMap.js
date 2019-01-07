@@ -84,7 +84,7 @@ class AreaNotesEditMap extends Component<Props, State> {
       }
 
       // Initialize note field value when opening edit mode
-      this.saveConditionPanel.setNoteField(initialValues.note);
+      this.saveConditionPanel.wrappedInstance.setNoteField(initialValues.note);
 
       this.setState({
         id: initialValues.id,
@@ -118,22 +118,30 @@ class AreaNotesEditMap extends Component<Props, State> {
     hideEditMode();
   }
 
-  saveChanges = (note: string) => {
-    const {createAreaNote, editAreaNote} = this.props;
-    const {id, isNew} = this.state;
-
+  handleCreate = (note: string) => {
+    const {createAreaNote} = this.props;
     const features = [];
+
     this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
 
     const payload = convertFeatureCollectionToFeature(features);
     payload.note = note;
 
-    if(isNew) {
-      createAreaNote(payload);
-    } else {
-      payload.id = id;
-      editAreaNote(payload);
-    }
+    createAreaNote(payload);
+  }
+
+  handleEdit = (note: string) => {
+    const {editAreaNote} = this.props;
+    const {id} = this.state;
+    const features = [];
+
+    this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
+
+    const payload = convertFeatureCollectionToFeature(features);
+    payload.note = note;
+
+    payload.id = id;
+    editAreaNote(payload);
   }
 
   deleteAreaNote = () => {
@@ -196,12 +204,13 @@ class AreaNotesEditMap extends Component<Props, State> {
             ref={this.setSaveConditionPanelRef}
             disableDelete={isNew}
             disableSave={!isValid}
+            isNew={isNew}
             onCancel={this.cancelChanges}
+            onCreate={this.handleCreate}
             onDelete={this.deleteAreaNote}
-            onSave={this.saveChanges}
+            onEdit={this.hendleEdit}
             overlayLayers={overlayLayers}
             show={isEditMode}
-            title={isEditMode ? 'Muokkaa muistettavaa ehtoa' : 'Luo muistettava ehto'}
           />
         </MapContainer>
       </div>

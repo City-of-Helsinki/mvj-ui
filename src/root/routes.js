@@ -4,7 +4,7 @@ import {Route, IndexRedirect} from 'react-router';
 
 import ErrorPage from '$src/errorPage/ErrorPage';
 import App from '$src/app/App';
-import AreaNotesList from '$src/areaNote/components/AreaNotesList';
+import AreaNoteListPage from '$src/areaNote/components/AreaNoteListPage';
 import CallbackPage from '$src/auth/components/CallbackPage';
 import ContactListPage from '$src/contacts/components/ContactsListPage';
 import ContactPage from '$src/contacts/components/ContactPage';
@@ -42,7 +42,7 @@ export const getRouteById = (id: string): string => {
 export default
 <Route path="/" component={App}>
   <IndexRedirect to={getRouteById('leases')} />
-  <Route path={getRouteById('areaNotes')} components={AreaNotesList} />
+  <Route path={getRouteById('areaNotes')} components={AreaNoteListPage} />
   <Route path={getRouteById('contacts')} components={ContactListPage} />
   <Route path={`${getRouteById('contacts')}/:contactId`} components={ContactPage}/>
   <Route path={getRouteById('newContact')} components={NewContactPage} />
