@@ -392,7 +392,7 @@ const ContractItemEdit = ({
     });
   };
 
-  const typeOptions = getFieldOptions(getFieldAttributes(attributes, LeaseContractsFieldPaths.TYPE)),
+  const typeOptions = getFieldOptions(attributes, LeaseContractsFieldPaths.TYPE),
     contractErrors = get(errors, field),
     savedContract = getContractById(contractId);
 

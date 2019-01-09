@@ -34,7 +34,6 @@ import {
 import {isRentActive, isRentArchived} from '$src/leases/helpers';
 import {
   formatDateRange,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   isFieldAllowedToEdit,
@@ -117,7 +116,7 @@ class RentItemEdit extends PureComponent<Props, State> {
 
     if(props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.typeOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseRentsFieldPaths.TYPE));
+      newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseRentsFieldPaths.TYPE);
     }
 
     if(props.errors !== state.errors) {

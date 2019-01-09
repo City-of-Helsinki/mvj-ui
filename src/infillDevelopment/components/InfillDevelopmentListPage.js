@@ -30,7 +30,7 @@ import {
   InfillDevelopmentCompensationLeasesFieldPaths,
 } from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentList} from '$src/infillDevelopment/helpers';
-import {getFieldAttributes, getFieldOptions, getLabelOfOption, getSearchQuery, isFieldAllowedToRead} from '$util/helpers';
+import {getFieldOptions, getLabelOfOption, getSearchQuery, isFieldAllowedToRead} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -145,7 +145,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     if(props.infillDevelopmentAttributes !== state.infillDevelopmentAttributes) {
       newState.infillDevelopmentAttributes = props.infillDevelopmentAttributes;
-      newState.stateOptions = getFieldOptions(getFieldAttributes(props.infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE), false);
+      newState.stateOptions = getFieldOptions(props.infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE, false);
     }
 
     if(props.infillDevelopmentList !== state.infillDevelopmentList) {

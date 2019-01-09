@@ -16,7 +16,6 @@ import {LeasePlotsFieldPaths, LeasePlotsFieldTitles, PlotType} from '$src/leases
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -49,7 +48,7 @@ const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
 
   const mapLinkUrl = getMapLinkUrl();
 
-  const typeOptions = getFieldOptions(getFieldAttributes(attributes, LeasePlotsFieldPaths.TYPE));
+  const typeOptions = getFieldOptions(attributes, LeasePlotsFieldPaths.TYPE);
 
   return (
     <BoxItem className='no-border-on-first-child no-border-on-last-child'>

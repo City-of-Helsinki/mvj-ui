@@ -39,7 +39,6 @@ import {getUserFullName} from '$src/users/helpers';
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
@@ -112,8 +111,8 @@ class LeaseItem extends PureComponent<Props, State> {
 
     if(props.infillDevelopmentAttributes !== state.infillDevelopmentAttributes) {
       newState.infillDevelopmentAttributes = props.infillDevelopmentAttributes;
-      newState.decisionMakerOptions = getFieldOptions(getFieldAttributes(props.infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER));
-      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE));
+      newState.decisionMakerOptions = getFieldOptions(props.infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER);
+      newState.intendedUseOptions = getFieldOptions(props.infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE);
     }
 
     if(props.lease !== state.lease) {

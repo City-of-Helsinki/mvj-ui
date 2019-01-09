@@ -172,7 +172,6 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 
           <AreaNotesEditMap allowEditing/>
         </div>
-
       </PageContainer>
     );
   }

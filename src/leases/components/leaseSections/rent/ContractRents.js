@@ -18,7 +18,6 @@ import {
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   isEmptyValue,
@@ -56,9 +55,9 @@ class ContractRents extends PureComponent<Props, State> {
 
     if(props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.amountPeriodOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD));
-      newState.baseAmountPeriodOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD));
-      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE));
+      newState.amountPeriodOptions = getFieldOptions(props.leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD);
+      newState.baseAmountPeriodOptions = getFieldOptions(props.leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
+      newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE);
     }
 
     return newState;

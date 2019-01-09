@@ -27,7 +27,6 @@ import {
   formatDate,
   formatDateRange,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   isEmptyValue,
@@ -59,10 +58,10 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
     }
   };
 
-  const receivableTypeOptions = getFieldOptions(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE));
-  const stateOptions = getFieldOptions(getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.STATE));
-  const deliveryMethodOptions = getFieldOptions(getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD));
-  const typeOptions = getFieldOptions(getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.TYPE));
+  const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
+  const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
+  const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
+  const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
   const payments = invoice ? invoice.payments : [];
   const creditInvoices = invoice ? invoice.credit_invoices : [];
   const rows = invoice ? invoice.rows : [];

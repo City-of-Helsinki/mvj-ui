@@ -7,7 +7,7 @@ import FormText from '$components/form/FormText';
 import {LeaseContractsFieldPaths} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getContentContracts} from '$src/leases/helpers';
-import {getFieldAttributes, getFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -44,7 +44,7 @@ class Contracts extends PureComponent<Props, State> {
 
     if(props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
-      newState.typeOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseContractsFieldPaths.TYPE));
+      newState.typeOptions = getFieldOptions(props.attributes, LeaseContractsFieldPaths.TYPE);
     }
 
     if(props.currentLease !== state.currentLease) {

@@ -25,7 +25,7 @@ import {ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getDecisionById} from '$src/decision/helpers';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
@@ -306,7 +306,7 @@ const DecisionItemEdit = ({
     });
   };
 
-  const decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker'),
+  const decisionMakerOptions = getFieldOptions(attributes, 'decisions.child.children.decision_maker'),
     decisionErrors = get(errors, field),
     savedDecision = getDecisionById(decisionsData, decisionId);
 

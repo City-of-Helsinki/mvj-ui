@@ -182,10 +182,10 @@ const EditInvoiceForm = ({
     }
   };
 
-  const stateOptions = getFieldOptions(getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.STATE));
+  const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
   const tenantOptions = getInvoiceTenantOptions(lease);
-  const deliveryMethodOptions = getFieldOptions(getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD));
-  const typeOptions = getFieldOptions(getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.TYPE));
+  const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
+  const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
   const creditInvoices = invoice ? invoice.credit_invoices : [];
 
   return (

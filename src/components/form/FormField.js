@@ -28,7 +28,7 @@ import {getContactFullName} from '$src/contacts/helpers';
 import {
   formatDate,
   formatNumber,
-  getFieldOptions,
+  getFieldAttributeOptions,
   getLabelOfOption,
   isEmptyValue,
 } from '$util/helpers';
@@ -184,7 +184,7 @@ const FormFieldInput = ({
         {!invisibleLabel && <FormTextTitle>{label}</FormTextTitle>}
         {readOnlyValueRenderer
           ? readOnlyValueRenderer(input.value, options)
-          : <FormText>{text || '--'}</FormText>
+          : <FormText>{text || '-'}</FormText>
         }
       </Fragment>
     );
@@ -256,7 +256,7 @@ class FormField extends PureComponent<Props, State> {
         fieldAttributes: props.fieldAttributes,
         fieldType: get(props.fieldAttributes, 'type'),
         label: get(props.overrideValues, 'label') || get(props.fieldAttributes, 'label'),
-        options: getFieldOptions(props.fieldAttributes),
+        options: getFieldAttributeOptions(props.fieldAttributes),
         required: !!get(props.fieldAttributes, 'required'),
       };
     }

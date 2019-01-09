@@ -9,17 +9,16 @@ import flowRight from 'lodash/flowRight';
 
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
-import {FormNames} from '$src/leases/enums';
+import {FormNames, LeaseFieldPaths, LeaseTenantContactSetFieldPaths} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/district/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
-import {getAttributes, getIsFetchingAttributes} from '$src/leases/selectors';
+import {getAttributes as getLeaseAttributes, getIsFetchingAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
 
 type Props = {
   anyTouched: boolean,
-  attributes: Attributes,
   basicSearchByDefault: boolean,
   change: Function,
   clearFields: Function,
@@ -29,6 +28,7 @@ type Props = {
   initialize: Function,
   isFetchingAttributes: boolean,
   isSearchInitialized: boolean,
+  leaseAttributes: Attributes,
   location: Object,
   municipality: string,
   onSearch: Function,
@@ -38,6 +38,10 @@ type Props = {
 
 type State = {
   isBasicSearch: boolean,
+  leaseAttributes: Attributes,
+  municipalityOptions: Array<Object>,
+  tenantTypeOptions: Array<Object>,
+  typeOptions: Array<Object>,
 }
 
 class Search extends Component<Props, State> {
@@ -45,6 +49,10 @@ class Search extends Component<Props, State> {
 
   state = {
     isBasicSearch: true,
+    leaseAttributes: {},
+    municipalityOptions: [],
+    tenantTypeOptions: [],
+    typeOptions: [],
   }
 
   componentDidMount() {
@@ -56,6 +64,19 @@ class Search extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.leaseAttributes !== state.leaseAttributes) {
+      newState.leaseAttributes = props.leaseAttributes;
+      newState.municipalityOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.MUNICIPALITY);
+      newState.tenantTypeOptions = getFieldOptions(props.leaseAttributes, LeaseTenantContactSetFieldPaths.TYPE, false);
+      newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.TYPE);
+    }
+
+    return newState;
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -123,18 +144,17 @@ class Search extends Component<Props, State> {
 
   render () {
     const {
-      attributes,
       districts,
       isFetchingAttributes,
     } = this.props;
     const {
       isBasicSearch,
+      municipalityOptions,
+      tenantTypeOptions,
+      typeOptions,
     } = this.state;
-
-    const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type', false);
     const districtOptions = getDistrictOptions(districts);
-    const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality');
-    const typeOptions = getAttributeFieldOptions(attributes, 'type');
+
 
     return (
       <div className='lease-search'>
@@ -465,10 +485,10 @@ export default flowRight(
       const municipality = selector(state, 'municipality');
 
       return {
-        attributes: getAttributes(state),
         districts: getDistrictsByMunicipality(state, municipality),
         formValues: getFormValues(formName)(state),
         isFetchingAttributes: getIsFetchingAttributes(state),
+        leaseAttributes: getLeaseAttributes(state),
         municipality: municipality,
       };
     },

@@ -30,7 +30,6 @@ import {
 } from '$src/leases/enums';
 import {
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -133,8 +132,8 @@ const LeaseArea = ({
     return `${pathname}${getSearchQuery(tempQuery)}`;
   };
 
-  const locationOptions = getFieldOptions(getFieldAttributes(attributes, LeaseAreasFieldPaths.LOCATION));
-  const typeOptions = getFieldOptions(getFieldAttributes(attributes, LeaseAreasFieldPaths.TYPE));
+  const locationOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.LOCATION);
+  const typeOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE);
   const addresses = get(area, 'addresses', []);
   const mapLinkUrl = getMapLinkUrl();
 

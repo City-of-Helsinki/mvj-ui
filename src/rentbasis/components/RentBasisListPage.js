@@ -32,7 +32,6 @@ import {
 } from '$src/rentbasis/enums';
 import {
   formatDate,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -229,7 +228,7 @@ class RentBasisListPage extends Component<Props, State> {
   getColumns = () => {
     const {rentBasisAttributes} = this.props;
     const columns = [];
-    const buildPermissionTypeOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE));
+    const buildPermissionTypeOptions = getFieldOptions(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE);
 
     if(isFieldAllowedToRead(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)) {
       columns.push({

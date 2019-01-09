@@ -16,7 +16,7 @@ import {mapColors} from '$src/constants';
 import {LeaseAreasFieldPaths, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths} from '$src/leases/enums';
 import {getContentLeaseIdentifier, getLeaseCoordinates} from '$src/leases/helpers';
 import {getContentInfillDevelopmentLeaseGeoJson} from '$src/infillDevelopment/helpers';
-import {getFieldAttributes, getFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getCurrentInfillDevelopment} from '$src/infillDevelopment/selectors';
 import {
@@ -84,12 +84,12 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
 
     if(props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.areaLocationOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseAreasFieldPaths.TYPE));
-      newState.plotTypeOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeasePlotsFieldPaths.TYPE));
-      newState.plotDivisionStateOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE));
-      newState.planUnitTypeOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE));
-      newState.planUnitStateOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE));
-      newState.planUnitIntendedUseOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE));
+      newState.areaLocationOptions = getFieldOptions(props.leaseAttributes, LeaseAreasFieldPaths.TYPE);
+      newState.plotTypeOptions = getFieldOptions(props.leaseAttributes, LeasePlotsFieldPaths.TYPE);
+      newState.plotDivisionStateOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE);
+      newState.planUnitTypeOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE);
+      newState.planUnitStateOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE);
+      newState.planUnitIntendedUseOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE);
     }
 
     return newState;

@@ -10,7 +10,7 @@ import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {ContactFieldPaths, ContactFieldTitles} from '$src/contacts/enums';
-import {getAttributeFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
+import {getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes} from '$src/contacts/selectors';
 import {ContactType} from '$src/contacts/enums';
 
@@ -22,8 +22,8 @@ type Props = {
 }
 
 const ContactTemplate = ({attributes, contact}: Props) => {
-  const typeOptions = getAttributeFieldOptions(attributes, 'type');
-  const languageOptions = getAttributeFieldOptions(attributes, 'language');
+  const typeOptions = getFieldOptions(attributes, ContactFieldPaths.TYPE);
+  const languageOptions = getFieldOptions(attributes, ContactFieldPaths.LANGUAGE);
 
   if(!contact) return null;
 

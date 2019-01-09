@@ -27,7 +27,6 @@ import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {PermissionMissingTexts} from '$src/enums';
 import {ContactFieldPaths, FormNames} from '$src/contacts/enums';
 import {
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -99,7 +98,7 @@ class ContactListPage extends Component<Props, State> {
 
     if(props.contactAttributes !== state.contactAttributes) {
       newState.contactAttributes = props.contactAttributes;
-      newState.typeOptions = getFieldOptions(getFieldAttributes(props.contactAttributes, ContactFieldPaths.TYPE));
+      newState.typeOptions = getFieldOptions(props.contactAttributes, ContactFieldPaths.TYPE);
     }
 
     if(props.contactList !== state.contactList) {

@@ -23,7 +23,6 @@ import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
 import {
   formatDate,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
@@ -83,16 +82,16 @@ class Summary extends PureComponent<Props, State> {
 
     if(props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
-      newState.classificationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.CLASSIFICATION));
-      newState.financingOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.FINANCING));
-      newState.hitasOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.HITAS));
-      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.INTENDED_USE));
-      newState.managementOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.MANAGEMENT));
-      newState.noticePeriodOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.NOTICE_PERIOD));
-      newState.regulationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.REGULATION));
-      newState.stateOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.STATE));
-      newState.statisticalUseOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.STATISTICAL_USE));
-      newState.supportiveHousingOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING));
+      newState.classificationOptions = getFieldOptions(props.attributes, LeaseFieldPaths.CLASSIFICATION);
+      newState.financingOptions = getFieldOptions(props.attributes, LeaseFieldPaths.FINANCING);
+      newState.hitasOptions = getFieldOptions(props.attributes, LeaseFieldPaths.HITAS);
+      newState.intendedUseOptions = getFieldOptions(props.attributes, LeaseFieldPaths.INTENDED_USE);
+      newState.managementOptions = getFieldOptions(props.attributes, LeaseFieldPaths.MANAGEMENT);
+      newState.noticePeriodOptions = getFieldOptions(props.attributes, LeaseFieldPaths.NOTICE_PERIOD);
+      newState.regulationOptions = getFieldOptions(props.attributes, LeaseFieldPaths.REGULATION);
+      newState.stateOptions = getFieldOptions(props.attributes, LeaseFieldPaths.STATE);
+      newState.statisticalUseOptions = getFieldOptions(props.attributes, LeaseFieldPaths.STATISTICAL_USE);
+      newState.supportiveHousingOptions = getFieldOptions(props.attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING);
     }
 
     if(props.currentLease !== state.currentLease) {

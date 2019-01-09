@@ -9,7 +9,7 @@ import GrayBox from '$components/content/GrayBox';
 import GreenBox from '$components/content/GreenBox';
 import {LeaseBasisOfRentsFieldPaths} from '$src/leases/enums';
 import {getContentBasisOfRents} from '$src/leases/helpers';
-import {getFieldAttributes, getFieldOptions, isEmptyValue} from '$util/helpers';
+import {getFieldOptions, isEmptyValue} from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -44,10 +44,10 @@ class BasisOfRents extends PureComponent<Props, State> {
 
     if(props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.areaUnitOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT))
+      newState.areaUnitOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)
         .map((item) => ({...item, label: (!isEmptyValue(item.label) ? item.label.replace('^2', '²') : item.label)}));
-      newState.indexOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX));
-      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE));
+      newState.indexOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX);
+      newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE);
     }
 
     if(props.currentLease !== state.currentLease) {

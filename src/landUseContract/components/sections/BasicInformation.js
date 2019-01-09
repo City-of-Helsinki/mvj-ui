@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
@@ -18,7 +18,12 @@ import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
 import {getContentBasicInformation} from '$src/landUseContract/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {
+  formatDate,
+  getFieldOptions,
+  getLabelOfOption,
+  getReferenceNumberLink,
+} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/types';
@@ -48,12 +53,12 @@ const BasicInformation = ({
   };
 
   const basicInformation = getContentBasicInformation(currentLandUseContract),
-    stateOptions = getAttributeFieldOptions(attributes, 'state'),
-    planAcceptorOptions = getAttributeFieldOptions(attributes, 'plan_acceptor'),
-    landUseContractTypeOptions = getAttributeFieldOptions(attributes, 'land_use_contract_type');
+    stateOptions = getFieldOptions(attributes, 'state'),
+    planAcceptorOptions = getFieldOptions(attributes, 'plan_acceptor'),
+    landUseContractTypeOptions = getFieldOptions(attributes, 'land_use_contract_type');
 
   return (
-    <div>
+    <Fragment>
       <h2>Perustiedot</h2>
       <Divider />
       <Collapse
@@ -151,7 +156,7 @@ const BasicInformation = ({
           </Column>
         </Row>
       </Collapse>
-    </div>
+    </Fragment>
   );
 };
 

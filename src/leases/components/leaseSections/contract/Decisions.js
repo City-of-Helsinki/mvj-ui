@@ -6,7 +6,7 @@ import DecisionItem from './DecisionItem';
 import FormText from '$components/form/FormText';
 import {LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths} from '$src/leases/enums';
 import {getContentDecisions} from '$src/leases/helpers';
-import {getFieldAttributes, getFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -42,9 +42,9 @@ class Decisions extends PureComponent<Props, State> {
 
     if(props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
-      newState.conditionTypeOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseDecisionConditionsFieldPaths.TYPE));
-      newState.decisionMakerOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseDecisionsFieldPaths.DECISION_MAKER));
-      newState.typeOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseDecisionsFieldPaths.TYPE));
+      newState.conditionTypeOptions = getFieldOptions(props.attributes, LeaseDecisionConditionsFieldPaths.TYPE);
+      newState.decisionMakerOptions = getFieldOptions(props.attributes, LeaseDecisionsFieldPaths.DECISION_MAKER);
+      newState.typeOptions = getFieldOptions(props.attributes, LeaseDecisionsFieldPaths.TYPE);
     }
 
     if(props.currentLease !== state.currentLease) {

@@ -24,7 +24,6 @@ import {getFullAddress} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   isFieldAllowedToRead,
@@ -66,8 +65,8 @@ const LeaseAreaWithArchiveInfo = ({
     });
   };
 
-  const locationOptions = getFieldOptions(getFieldAttributes(attributes, LeaseAreasFieldPaths.LOCATION));
-  const typeOptions = getFieldOptions(getFieldAttributes(attributes, LeaseAreasFieldPaths.TYPE));
+  const locationOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.LOCATION);
+  const typeOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE);
 
   return (
     <Collapse

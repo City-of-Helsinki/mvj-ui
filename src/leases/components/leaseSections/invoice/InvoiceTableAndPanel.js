@@ -30,7 +30,7 @@ import {
   formatDate,
   formatDateRange,
   formatNumber,
-  getAttributeFieldOptions,
+  getFieldOptions,
   getLabelOfOption,
   isFieldAllowedToRead,
   sortNumberByKeyAsc,
@@ -136,9 +136,9 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     }
     if(props.invoiceAttributes !== state.invoiceAttributes) {
       newState.invoiceAttributes = props.invoiceAttributes;
-      newState.receivableTypeOptions = getAttributeFieldOptions(props.invoiceAttributes, 'rows.child.children.receivable_type');
-      newState.typeOptions = getAttributeFieldOptions(props.invoiceAttributes, 'type');
-      newState.stateOptions = getAttributeFieldOptions(props.invoiceAttributes, 'state');
+      newState.receivableTypeOptions = getFieldOptions(props.invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
+      newState.typeOptions = getFieldOptions(props.invoiceAttributes, InvoiceFieldPaths.TYPE);
+      newState.stateOptions = getFieldOptions(props.invoiceAttributes, InvoiceFieldPaths.STATE);
     }
 
     return newState;
@@ -373,9 +373,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 
   getColumns = () => {
     const {invoiceAttributes, invoiceSetOptions, receivableTypeOptions, stateOptions, typeOptions} = this.state;
-
     const columns = [];
-    console.log(invoiceAttributes);
+
     if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INVOICESET)) {
       columns.push({
         key: 'invoiceset',

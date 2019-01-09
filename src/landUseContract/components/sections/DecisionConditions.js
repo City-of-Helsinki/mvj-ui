@@ -14,7 +14,7 @@ import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
@@ -48,7 +48,7 @@ const DecisionConditions = ({
       },
     });
   };
-  const typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.conditions.child.children.type');
+  const typeOptions = getFieldOptions(attributes, 'decisions.child.children.conditions.child.children.type');
 
   return (
     <Collapse

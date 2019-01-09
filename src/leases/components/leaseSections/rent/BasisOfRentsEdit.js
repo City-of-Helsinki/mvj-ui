@@ -20,7 +20,6 @@ import {
   UnarchiveBasisOfRentsText,
 } from '$src/leases/enums';
 import {
-  getFieldAttributes,
   getFieldOptions,
   isEmptyValue,
   isFieldAllowedToEdit,
@@ -60,10 +59,11 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
 
     if(props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.areaUnitOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT), false)
-        .map((item) => ({...item, label: (!isEmptyValue(item.label) ? item.label.replace('^2', '²') : item.label)}));
-      newState.indexOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), false).sort(sortByLabelDesc);
-      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE));
+      newState.areaUnitOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT, true, (option) =>
+        !isEmptyValue(option.display_name) ? option.display_name.replace('^2', '²') : option.display_name
+      );
+      newState.indexOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX, true, null, sortByLabelDesc);
+      newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE);
     }
 
     return newState;

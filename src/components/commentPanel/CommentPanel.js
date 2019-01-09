@@ -17,7 +17,6 @@ import {clearEditFlags, createComment, receiveIsSaveClicked} from '$src/comments
 import {ButtonColors, CloseCommentPanelTexts, FormNames} from '$components/enums';
 import {CommentFieldPaths} from '$src/comments/enums';
 import {
-  getFieldAttributes,
   getFieldOptions,
   isFieldAllowedToEdit,
   sortStringByKeyDesc,
@@ -94,7 +93,7 @@ class CommentPanel extends PureComponent<Props, State> {
 
     if(props.commentAttributes !== state.commentAttributes) {
       newState.commentAttributes = props.commentAttributes;
-      newState.topicOptions = getFieldOptions(getFieldAttributes(props.commentAttributes, CommentFieldPaths.TOPIC), false);
+      newState.topicOptions = getFieldOptions(props.commentAttributes, CommentFieldPaths.TOPIC, false);
     }
 
     if(props.commentMethods !== state.commentMethods || props.commentAttributes !== state.commentAttributes) {

@@ -10,7 +10,7 @@ import RentBasisLayer from './RentBasisLayer';
 import {mapColors} from '$src/constants';
 import {RentBasisFieldPaths} from '$src/rentbasis/enums';
 import {getContentRentBasisGeoJson} from '$src/rentbasis/helpers';
-import {getAttributeFieldOptions, isFieldAllowedToRead} from '$util/helpers';
+import {getFieldOptions, isFieldAllowedToRead, sortByLabelDesc} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} from '$util/map';
 import {
   getAttributes as getRentBasisAttributes,
@@ -68,10 +68,10 @@ class SingleRentBasisMap extends Component<Props, State> {
 
     if(props.rentBasisAttributes !== state.rentBasisAttributes) {
       newState.rentBasisAttributes = props.rentBasisAttributes;
-      newState.financingOptions = getAttributeFieldOptions(props.rentBasisAttributes, 'financing');
-      newState.indexOptions = getAttributeFieldOptions(props.rentBasisAttributes, 'index');
-      newState.managementOptions = getAttributeFieldOptions(props.rentBasisAttributes, 'management');
-      newState.plotTypeOptions = getAttributeFieldOptions(props.rentBasisAttributes, 'plot_type');
+      newState.financingOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.FINANCING);
+      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true, null, sortByLabelDesc);
+      newState.managementOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT);
+      newState.plotTypeOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE);
     }
 
     return newState;

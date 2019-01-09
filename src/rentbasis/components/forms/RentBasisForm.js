@@ -31,9 +31,12 @@ import {
 } from '$src/rentbasis/enums';
 import {
   getFieldAttributes,
+  getFieldOptions,
+  isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
+  sortByLabelDesc,
 } from '$util/helpers';
 import {validateRentBasisForm} from '$src/rentbasis/formValidators';
 import {
@@ -63,7 +66,7 @@ const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes}:
       {({dispatch}) => {
         return(
           <Fragment>
-            <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)}>
+            <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER)}>
               {RentBasisPropertyIdentifiersFieldTitles.PROPERTY_IDENTIFIERS}
             </FormTextTitle>
 
@@ -275,12 +278,13 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes}: Decisions
 };
 
 type RentRatesProps = {
+  areaUnitOptions: Array<Object>,
   fields: any,
   isSaveClicked: boolean,
   rentBasisAttributes: Attributes,
 }
 
-const renderRentRates = ({fields, isSaveClicked, rentBasisAttributes}: RentRatesProps): Element<*> => {
+const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttributes}: RentRatesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -351,7 +355,7 @@ const renderRentRates = ({fields, isSaveClicked, rentBasisAttributes}: RentRates
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}
                             invisibleLabel
-                            name={`${field}.amoun`}
+                            name={`${field}.amount`}
                             overrideValues={{label: RentBasisRentRatesFieldTitles.AMOUNT}}
                           />
                         </Authorization>
@@ -365,7 +369,10 @@ const renderRentRates = ({fields, isSaveClicked, rentBasisAttributes}: RentRates
                                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT)}
                                 invisibleLabel
                                 name={`${field}.area_unit`}
-                                overrideValues={{label: RentBasisRentRatesFieldTitles.AREA_UNIT}}
+                                overrideValues={{
+                                  label: RentBasisRentRatesFieldTitles.AREA_UNIT,
+                                  options: areaUnitOptions,
+                                }}
                               />
                             </Authorization>
                           }
@@ -413,8 +420,21 @@ type Props = {
   rentBasisAttributes: Attributes,
   valid: boolean,
 }
-class RentBasisForm extends PureComponent<Props> {
+
+type State = {
+  areaUnitOptions: Array<Object>,
+  indexOptions: Array<Object>,
+  rentBasisAttributes: Attributes,
+}
+
+class RentBasisForm extends PureComponent<Props, State> {
   firstField: any
+
+  state = {
+    areaUnitOptions: [],
+    indexOptions: [],
+    rentBasisAttributes: {},
+  }
 
   componentDidMount() {
     const {isFocusedOnMount} = this.props;
@@ -422,6 +442,20 @@ class RentBasisForm extends PureComponent<Props> {
     if(isFocusedOnMount) {
       this.setFocusOnFirstField();
     }
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.rentBasisAttributes !== state.rentBasisAttributes) {
+      newState.rentBasisAttributes = props.rentBasisAttributes;
+      newState.areaUnitOptions = getFieldOptions(props.rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT, true, (option) =>
+        !isEmptyValue(option.display_name) ? option.display_name.replace(/\^2/g, '²') : option.display_name
+      );
+      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true, null, sortByLabelDesc);
+    }
+
+    return newState;
   }
 
   componentDidUpdate() {
@@ -441,6 +475,7 @@ class RentBasisForm extends PureComponent<Props> {
 
   render() {
     const {handleSubmit, isSaveClicked, rentBasisAttributes} = this.props;
+    const {areaUnitOptions, indexOptions} = this.state;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -546,7 +581,10 @@ class RentBasisForm extends PureComponent<Props> {
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.INDEX)}
                 name='index'
                 setRefForField={this.setRefForFirstField}
-                overrideValues={{label: RentBasisFieldTitles.INDEX}}
+                overrideValues={{
+                  label: RentBasisFieldTitles.INDEX,
+                  options: indexOptions,
+                }}
               />
             </Authorization>
           </Column>
@@ -571,6 +609,7 @@ class RentBasisForm extends PureComponent<Props> {
               <FieldArray
                 component={renderRentRates}
                 name="rent_rates"
+                areaUnitOptions={areaUnitOptions}
                 isSaveClicked={isSaveClicked}
                 rentBasisAttributes={rentBasisAttributes}
               />

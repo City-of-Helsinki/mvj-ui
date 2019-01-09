@@ -15,7 +15,6 @@ import {getAttributes} from '$src/leases/selectors';
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -52,10 +51,10 @@ const PlanUnitItem = ({
 
   const mapLinkUrl = getMapLinkUrl();
 
-  const plotDivisionStateOptions = getFieldOptions(getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE));
-  const planUnitTypeOptions = getFieldOptions(getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE));
-  const planUnitStateOptions = getFieldOptions(getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE));
-  const planUnitIntendedUseOptions = getFieldOptions(getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE));
+  const plotDivisionStateOptions = getFieldOptions(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE);
+  const planUnitTypeOptions = getFieldOptions(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE);
+  const planUnitStateOptions = getFieldOptions(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE);
+  const planUnitIntendedUseOptions = getFieldOptions(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE);
 
   return (
     <BoxItem className='no-border-on-first-child no-border-on-last-child'>

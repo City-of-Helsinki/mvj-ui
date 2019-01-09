@@ -20,7 +20,6 @@ import {
 } from '$src/infillDevelopment/enums';
 import {
   formatDate,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
@@ -45,7 +44,7 @@ const InfillDevelopmentTemplate = ({
   infillDevelopmentAttributes,
 }: Props) => {
   const leases = get(infillDevelopment, 'infill_development_compensation_leases', []);
-  const stateOptions = getFieldOptions(getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE));
+  const stateOptions = getFieldOptions(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE);
 
   return (
     <Fragment>

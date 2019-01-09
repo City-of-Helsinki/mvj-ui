@@ -14,7 +14,6 @@ import {LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRents
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   isEmptyValue,
@@ -46,7 +45,7 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
     if(props.leaseAttributes !== state.leaseAttributes) {
       return {
         leaseAttributes: props.leaseAttributes,
-        intendedUseOptions: getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)),
+        intendedUseOptions: getFieldOptions(props.leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE),
       };
     }
 

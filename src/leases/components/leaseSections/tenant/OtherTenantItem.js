@@ -28,7 +28,7 @@ import {isTenantActive} from '$src/leases/helpers';
 import {
   formatDate,
   formatDateRange,
-  getAttributeFieldOptions,
+  getFieldOptions,
   getLabelOfOption,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -62,7 +62,7 @@ const OtherTenantItem = ({
     });
   };
 
-  const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type');
+  const tenantTypeOptions = getFieldOptions(attributes, LeaseTenantContactSetFieldPaths.TYPE);
   const contact = get(tenant, 'contact');
   const isActive = isTenantActive(tenant);
   const collapseDefault = collapseState !== undefined ? collapseState : isActive;

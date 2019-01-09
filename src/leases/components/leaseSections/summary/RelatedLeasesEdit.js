@@ -10,7 +10,7 @@ import RelatedLeaseItem from './RelatedLeaseItem';
 import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
 import {LeaseFieldPaths} from '$src/leases/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
-import {getFieldAttributes, getFieldOptions} from '$src/util/helpers';
+import {getFieldOptions} from '$src/util/helpers';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
@@ -57,7 +57,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
 
     if(props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.stateOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseFieldPaths.STATE));
+      newState.stateOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.STATE);
     }
 
     if(props.currentLease !== state.currentLease) {

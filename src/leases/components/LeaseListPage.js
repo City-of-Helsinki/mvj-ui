@@ -43,7 +43,6 @@ import {
 import {getContentLeases, mapLeaseSearchFilters} from '$src/leases/helpers';
 import {
   formatDate,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -239,7 +238,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
   getColumns = () => {
     const {leaseAttributes} = this.props;
-    const stateOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseFieldPaths.STATE), false);
+    const stateOptions = getFieldOptions(leaseAttributes, LeaseFieldPaths.STATE, false);
     const columns = [];
 
     if(isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.IDENTIFIER)) {

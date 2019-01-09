@@ -29,7 +29,7 @@ const LeaseAreas = ({attributes, currentLease, decisions}: Props) => {
   const archivedAreas = areas.filter((area) => area.archived_at);
   const areasSum = getAreasSum(activeAreas);
   const decisionOptions = getDecisionOptions(decisions);
-  console.log(attributes);
+
   return (
     <div>
       <h2>Vuokra-alue</h2>

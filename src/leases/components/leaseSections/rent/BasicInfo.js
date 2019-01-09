@@ -19,7 +19,6 @@ import {formatDueDates, formatSeasonalEndDate, formatSeasonalStartDate} from '$s
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   isEmptyValue,
@@ -74,10 +73,10 @@ const BasicInfoIndex = ({leaseAttributes, rent}: Props) => {
       !isEmptyValue(rent.equalization_end_date);
   };
 
-  const typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
-  const cycleOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.CYCLE));
-  const indexTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE));
-  const dueDatesTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE));
+  const typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
+  const cycleOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.CYCLE);
+  const indexTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE);
+  const dueDatesTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE);
   const oldValuesVisible = areOldInfoVisible();
 
   return (
@@ -239,8 +238,8 @@ const BasicInfoIndex = ({leaseAttributes, rent}: Props) => {
 };
 
 const BasicInfoOneTime = ({leaseAttributes, rent}: Props) => {
-  const dueDatesTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE));
-  const typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
+  const dueDatesTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE);
+  const typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
 
   return (
     <Fragment>
@@ -318,8 +317,8 @@ const BasicInfoOneTime = ({leaseAttributes, rent}: Props) => {
 };
 
 const BasicInfoFixed = ({leaseAttributes, rent}: Props) => {
-  const dueDatesTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE));
-  const typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
+  const dueDatesTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE);
+  const typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
 
   return (
     <Fragment>
@@ -398,7 +397,7 @@ const BasicInfoFixed = ({leaseAttributes, rent}: Props) => {
 };
 
 const BasicInfoFree = ({leaseAttributes, rent}: Props) => {
-  const typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
+  const typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
 
   return (
     <Fragment>

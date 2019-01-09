@@ -27,10 +27,10 @@ import {
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
+  isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getAttributes as getRentBasisAttributes} from '$src/rentbasis/selectors';
@@ -44,13 +44,15 @@ type Props = {
 }
 
 const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
-  const plotTypeOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE));
-  const managementOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT));
-  const financingOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.FINANCING));
-  const indexOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.INDEX));
-  const buildPermissionTypeOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE));
-  const areaUnitOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT));
-  const decisionsMakerOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER));
+  const plotTypeOptions = getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE);
+  const managementOptions = getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT);
+  const financingOptions = getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.FINANCING);
+  const indexOptions = getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.INDEX);
+  const buildPermissionTypeOptions = getFieldOptions(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE);
+  const areaUnitOptions = getFieldOptions(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT, true, (option) =>
+    !isEmptyValue(option.display_name) ? option.display_name.replace(/\^2/g, '²') : option.display_name
+  );
+  const decisionsMakerOptions = getFieldOptions(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER);
   const decisions = get(rentBasis, 'decisions', []);
 
   return (
@@ -236,7 +238,7 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
                           </Column>
                           <Column small={3} medium={4} large={1}>
                             <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}>
-                              <ListItem>{formatNumber(price.amount) || '-'}</ListItem>
+                              <ListItem>{!isEmptyValue(price.amount) ? `${formatNumber(price.amount)} €` : '-'}</ListItem>
                             </Authorization>
                           </Column>
                           <Column small={3} medium={4} large={1}>

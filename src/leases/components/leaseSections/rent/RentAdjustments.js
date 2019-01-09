@@ -13,7 +13,6 @@ import {getDecisionById, getDecisionOptions} from '$src/decision/helpers';
 import {
   formatDate,
   formatNumber,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
@@ -32,9 +31,9 @@ type Props = {
 
 const RentAdjustments = ({decisions, leaseAttributes, rentAdjustments}: Props) => {
   const decisionOptions = getDecisionOptions(decisions),
-    typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE)),
-    intendedUseOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE)),
-    amountTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE));
+    typeOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE),
+    intendedUseOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE),
+    amountTypeOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE);
 
   const getFullAmountText = (adjustment: Object) => {
     if(!adjustment.full_amount) return null;

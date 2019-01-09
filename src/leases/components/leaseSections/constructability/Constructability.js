@@ -8,7 +8,7 @@ import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import {LeaseAreasFieldPaths} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
-import {getFieldAttributes, getFieldOptions} from '$src/util/helpers';
+import {getFieldOptions} from '$src/util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -47,11 +47,11 @@ class Constructability extends PureComponent<Props, State> {
 
     if(props.attributes !== state.attributes) {
       newState.currentLease = props.currentLease;
-      newState.constructabilityReporInvestigationtStateOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE));
-      newState.constructabilityStateOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE));
-      newState.locationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseAreasFieldPaths.LOCATION));
-      newState.pollutedLandRentConditionStateOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE));
-      newState.typeOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseAreasFieldPaths.TYPE));
+      newState.constructabilityReporInvestigationtStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE);
+      newState.constructabilityStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE);
+      newState.locationOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.LOCATION);
+      newState.pollutedLandRentConditionStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE);
+      newState.typeOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.TYPE);
     }
 
     if(props.currentLease !== state.currentLease) {

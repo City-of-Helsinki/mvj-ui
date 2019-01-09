@@ -133,6 +133,7 @@ class NewRentBasisPage extends Component<Props> {
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowEdit={rentBasisMethods.POST}
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isFormValid}

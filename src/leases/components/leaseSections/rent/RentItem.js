@@ -30,7 +30,6 @@ import {
 import {isRentActive, isRentArchived} from '$src/leases/helpers';
 import {
   formatDateRange,
-  getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
   isFieldAllowedToRead,
@@ -142,7 +141,7 @@ const RentItem = ({
     indexAdjustedRents = get(rent, 'index_adjusted_rents', []),
     rentAdjustments = get(rent, 'rent_adjustments', []),
     payableRents = get(rent, 'payable_rents', []),
-    typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
+    typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
 
   return (
     <Collapse

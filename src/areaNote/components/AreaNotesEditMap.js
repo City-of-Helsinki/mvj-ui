@@ -208,7 +208,7 @@ class AreaNotesEditMap extends Component<Props, State> {
             onCancel={this.cancelChanges}
             onCreate={this.handleCreate}
             onDelete={this.deleteAreaNote}
-            onEdit={this.hendleEdit}
+            onEdit={this.handleEdit}
             overlayLayers={overlayLayers}
             show={isEditMode}
           />

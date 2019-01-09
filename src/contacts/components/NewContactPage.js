@@ -125,6 +125,7 @@ class NewContactPage extends Component<Props> {
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowEdit={contactMethods.POST}
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isContactFormValid}

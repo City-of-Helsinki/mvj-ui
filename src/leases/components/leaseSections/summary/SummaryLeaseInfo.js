@@ -19,7 +19,7 @@ import {
 } from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary, getFullAddress} from '$src/leases/helpers';
-import {getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
+import {getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -48,7 +48,7 @@ type Props = {
 }
 
 const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
-  const constructabilityStateOptions = getFieldOptions(getFieldAttributes(attributes, 'lease_areas.child.children.preconstruction_state')),
+  const constructabilityStateOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE),
     summary = getContentSummary(currentLease),
     tenants = summary.tenants,
     leaseAreas = summary.lease_areas,

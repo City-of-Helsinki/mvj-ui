@@ -138,6 +138,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowEdit={infillDevelopmentMethods.POST}
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isFormValid}

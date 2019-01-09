@@ -7,7 +7,7 @@ import Authorization from '$components/authorization/Authorization';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
 import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
-import {formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
+import {formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -20,7 +20,7 @@ type Props = {
 
 const LeaseInfo = ({attributes, currentLease}: Props) => {
   const leaseInfo = getContentLeaseInfo(currentLease);
-  const stateOptions = getFieldOptions(getFieldAttributes(attributes, LeaseFieldPaths.STATE));
+  const stateOptions = getFieldOptions(attributes, LeaseFieldPaths.STATE);
 
   if(!LeaseInfo) return null;
 

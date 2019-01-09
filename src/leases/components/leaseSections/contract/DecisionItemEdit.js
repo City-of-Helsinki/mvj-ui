@@ -80,8 +80,8 @@ const DecisionItemEdit = ({
     });
   };
 
-  const decisionMakerOptions = getFieldOptions(getFieldAttributes(attributes, LeaseDecisionsFieldPaths.DECISION_MAKER));
-  const typeOptions = getFieldOptions(getFieldAttributes(attributes, LeaseDecisionsFieldPaths.TYPE));
+  const decisionMakerOptions = getFieldOptions(attributes, LeaseDecisionsFieldPaths.DECISION_MAKER);
+  const typeOptions = getFieldOptions(attributes, LeaseDecisionsFieldPaths.TYPE);
   const decisionErrors = get(errors, field),
     savedDecision = getDecisionById(savedDecisions, decisionId);
 
