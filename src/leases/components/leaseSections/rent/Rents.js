@@ -22,17 +22,19 @@ import {
 import {getContentRentsFormData} from '$src/leases/helpers';
 import {isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getMethods as getRentForPeriodMethods} from '$src/rentForPeriod/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {RootState} from '$src/root/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
   currentLease: Lease,
   leaseAttributes: Attributes,
+  rentForPeriodMethods: Methods,
 }
 
-const Rents = ({currentLease, leaseAttributes}: Props) => {
+const Rents = ({currentLease, leaseAttributes, rentForPeriodMethods}: Props) => {
   const rentsData = getContentRentsFormData(currentLease);
   const rents = get(rentsData, 'rents', []);
   const rentsArchived = get(rentsData, 'rentsArchived', []);
@@ -72,11 +74,13 @@ const Rents = ({currentLease, leaseAttributes}: Props) => {
         )}
       </Authorization>
 
-      <h2>Vuokralaskelma</h2>
-      <Divider />
-      <GreenBox>
-        <RentCalculator />
-      </GreenBox>
+      <Authorization allow={rentForPeriodMethods.GET}>
+        <h2>Vuokralaskelma</h2>
+        <Divider />
+        <GreenBox>
+          <RentCalculator />
+        </GreenBox>
+      </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
         <h2>{LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}</h2>
@@ -91,6 +95,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     currentLease: getCurrentLease(state),
     leaseAttributes: getLeaseAttributes(state),
+    rentForPeriodMethods: getRentForPeriodMethods(state),
   };
 };
 

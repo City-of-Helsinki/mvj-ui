@@ -1,10 +1,11 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import Button from '$components/button/Button';
 import Collapse from '$components/collapse/Collapse';
 import DebtCollection from './DebtCollection';
@@ -16,7 +17,7 @@ import RightSubtitle from '$components/content/RightSubtitle';
 import InvoiceTableAndPanel from './InvoiceTableAndPanel';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {PermissionMissingTexts, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {LeaseInvoicingFieldPaths, LeaseInvoicingFieldTitles} from '$src/leases/enums';
 import {isFieldAllowedToRead} from '$util/helpers';
@@ -29,25 +30,28 @@ import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
-  collectionCourtDecisionMethods: Methods, // Get vie withLeasePageAttributes HOC
-  collectionLetterMethods: Methods, // Get vie withLeasePageAttributes HOC
-  collectionNoteMethods: Methods, // Get vie withLeasePageAttributes HOC
+  collectionCourtDecisionMethods: Methods, // Get via withLeasePageAttributes HOC
+  collectionLetterMethods: Methods, // Get via withLeasePageAttributes HOC
+  collectionNoteMethods: Methods, // Get via withLeasePageAttributes HOC
   currentLease: Lease,
+  createCollectionLetterMethods: Methods, // Get via withLeasePageAttributes HOC
   invoiceMethods: Methods, // Get vie withLeasePageAttributes HOC
   invoicesCollapseState: boolean,
   invoiceToCredit: ?string,
   isInvoicingEnabled: boolean,
   leaseAttributes: Attributes, // Get via withCommonAttributes HOC
   previewInvoicesCollapseState: boolean,
+  previewInvoicesMethods: Methods, // get via withLeasePageAttributes HOC
   receiveCollapseStates: Function,
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditInvoicePanelOpen: Function,
   receiveInvoiceToCredit: Function,
+  setInvoicingStateMethods: Methods, // get via withLeasePageAttributes HOC
   startInvoicing: Function,
   stopInvoicing: Function,
 }
 
-class Invoices extends Component<Props> {
+class Invoices extends PureComponent<Props> {
   creditPanel: any
 
   componentDidMount = () => {
@@ -103,13 +107,18 @@ class Invoices extends Component<Props> {
       collectionCourtDecisionMethods,
       collectionLetterMethods,
       collectionNoteMethods,
+      createCollectionLetterMethods,
       invoiceMethods,
       invoicesCollapseState,
       invoiceToCredit,
       isInvoicingEnabled,
       leaseAttributes,
       previewInvoicesCollapseState,
+      previewInvoicesMethods,
+      setInvoicingStateMethods,
     } = this.props;
+
+    if(!invoiceMethods.GET) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
 
     return (
       <AppConsumer>
@@ -141,36 +150,28 @@ class Invoices extends Component<Props> {
               confirmationModalTitle: 'Keskeytä laskutus',
             });
           };
-
+          console.log(setInvoicingStateMethods);
           return(
-            <div>
+            <Fragment>
               <h2>Laskutus</h2>
-              {invoiceMethods.PATCH
-                ? <RightSubtitle
-                  buttonComponent={isInvoicingEnabled
-                    ? <Button className={ButtonColors.NEUTRAL} onClick={handleStopInvoicing} text='Keskeytä laskutus' />
-                    : <Button className={ButtonColors.NEUTRAL} onClick={handleStartInvoicing} text='Käynnistä laskutus' />
-                  }
-                  text={
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED)}>
-                      {isInvoicingEnabled
-                        ? <span className="success">{LeaseInvoicingFieldTitles.INVOICING_ENABLED}<i/></span>
-                        : <span className="alert">{LeaseInvoicingFieldTitles.INVOICING_DISABLED}<i/></span>
-                      }
-                    </Authorization>
-                  }
-                />
-                : <RightSubtitle
-                  text={
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED)}>
-                      {isInvoicingEnabled
-                        ? <span className="success">{LeaseInvoicingFieldTitles.INVOICING_ENABLED}<i/></span>
-                        : <span className="alert">{LeaseInvoicingFieldTitles.INVOICING_DISABLED}<i/></span>
-                      }
-                    </Authorization>
-                  }
-                />
-              }
+              <RightSubtitle
+                buttonComponent={
+                  <Authorization allow={setInvoicingStateMethods.POST}>
+                    {isInvoicingEnabled
+                      ? <Button className={ButtonColors.NEUTRAL} onClick={handleStopInvoicing} text='Keskeytä laskutus' />
+                      : <Button className={ButtonColors.NEUTRAL} onClick={handleStartInvoicing} text='Käynnistä laskutus' />
+                    }
+                  </Authorization>
+                }
+                text={
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED)}>
+                    {isInvoicingEnabled
+                      ? <span className="success">{LeaseInvoicingFieldTitles.INVOICING_ENABLED}<i/></span>
+                      : <span className="alert">{LeaseInvoicingFieldTitles.INVOICING_DISABLED}<i/></span>
+                    }
+                  </Authorization>
+                }
+              />
               <Divider />
 
               <Collapse
@@ -182,11 +183,10 @@ class Invoices extends Component<Props> {
                   invoiceToCredit={invoiceToCredit}
                   onInvoiceToCreditChange={this.handleInvoiceToCreditChange}
                 />
-
                 <CreateAndCreditInvoice invoiceToCredit={invoiceToCredit} />
               </Collapse>
 
-              <Authorization allow={invoiceMethods.GET}>
+              <Authorization allow={previewInvoicesMethods.GET}>
                 <Collapse
                   defaultOpen={previewInvoicesCollapseState !== undefined ? previewInvoicesCollapseState : true}
                   headerTitle='Laskujen esikatselu'
@@ -199,19 +199,19 @@ class Invoices extends Component<Props> {
               <Authorization
                 allow={collectionLetterMethods.GET ||
                   collectionCourtDecisionMethods.GET ||
-                  collectionNoteMethods.GET
-                }
+                  collectionNoteMethods.GET ||
+                  createCollectionLetterMethods.POST}
               >
                 <h2>Perintä</h2>
                 <Divider />
                 <Authorization allow={collectionLetterMethods.GET || collectionCourtDecisionMethods.GET || collectionNoteMethods.GET}>
                   <DebtCollection />
                 </Authorization>
-                <Authorization allow={collectionLetterMethods.POST}>
+                <Authorization allow={createCollectionLetterMethods.POST}>
                   <CreateCollectionLetter />
                 </Authorization>
               </Authorization>
-            </div>
+            </Fragment>
           );
         }}
       </AppConsumer>

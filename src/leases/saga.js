@@ -323,7 +323,7 @@ function* createChargeSaga({payload}): Generator<any, any, any> {
 
 function* copyAreasToContractSaga({payload: leaseId}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(copyAreasToContract, leaseId);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(copyAreasToContract, leaseId);
 
     switch (statusCode) {
       case 200:
@@ -335,11 +335,11 @@ function* copyAreasToContractSaga({payload: leaseId}): Generator<any, any, any> 
         }));
         break;
       default:
-        yield put(receiveError(new SubmissionError({...bodyDelete})));
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
     }
   } catch (error) {
-    console.error('Failed to delete related lease with error "%s"', error);
+    console.error('Failed to copy lease areas to contract with error "%s"', error);
     yield put(receiveError(error));
   }
 }

@@ -13,7 +13,7 @@ import {
   getAttributes as getAreaNoteAttributes,
   getIsFetchingAttributes as getIsFetchingAreaNoteAttributes,
   getMethods as getAreaNoteMethods,
-} from '$src/contacts/selectors';
+} from '$src/areaNote/selectors';
 import {
   getAttributes as getContactAttributes,
   getIsFetchingAttributes as getIsFetchingContactAttributes,

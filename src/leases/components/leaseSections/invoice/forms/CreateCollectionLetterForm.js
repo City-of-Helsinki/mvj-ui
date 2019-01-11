@@ -1,6 +1,4 @@
 // @flow
-/* global API_URL */
-
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
@@ -8,7 +6,9 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import createUrl from '$src/api/createUrl';
 import AddButtonThird from '$components/form/AddButtonThird';
+import Authorization from '$components/authorization/Authorization';
 import CollectionLetterInvoiceRow from './CollectionLetterInvoiceRow';
 import CollectionLetterTotalRow from './CollectionLetterTotalRow';
 import Divider from '$components/content/Divider';
@@ -16,16 +16,29 @@ import FileDownloadButton from '$components/file/FileDownloadButton';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import SubTitle from '$components/content/SubTitle';
+import {
+  CreateCollectionLetterFieldPaths,
+  CreateCollectionLetterFieldTitles,
+} from '$src/createCollectionLetter/enums';
 import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
-import {getCollectionLetterTemplateOptions} from '$src/collectionLetterTemplate/helpers';
-import {convertStrToDecimalNumber, formatDate, formatDateRange, sortStringByKeyDesc} from '$util/helpers';
+import {
+  convertStrToDecimalNumber,
+  formatDate,
+  formatDateRange,
+  getFieldAttributes,
+  isFieldAllowedToEdit,
+  sortStringByKeyDesc,
+} from '$util/helpers';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
-import {getCollectionLetterTemplates} from '$src/collectionLetterTemplate/selectors';
+import {
+  getAttributes as getCreateCollectionLetterAttributes,
+  getMethods as getCreateCollectionLetterMethods,
+} from '$src/createCollectionLetter/selectors';
 import {getInvoicesByLease} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {CollectionLetterTemplates} from '$src/collectionLetterTemplate/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type InvoicesProps = {
@@ -99,7 +112,8 @@ const renderInvoices = ({
 
 type Props = {
   collectionCharge: number,
-  collectionLetterTemplates: CollectionLetterTemplates,
+  createCollectionLetterAttributes: Attributes,
+  createCollectionLetterMethods: Methods,
   invoices: Array<Object>,
   invoiceIds: Array<number>,
   lease: Lease,
@@ -109,8 +123,6 @@ type Props = {
 }
 
 type State = {
-  collectionLetterTemplates: CollectionLetterTemplates,
-  collectionLetterTemplateOptions: Array<Object>,
   invoices: Array<Object>,
   invoiceOptions: Array<Object>,
   lease: Lease,
@@ -124,15 +136,13 @@ const getInvoiceOptions = (invoices: Array<Object>) => !isEmpty(invoices)
     .map((invoice) => {
       return {
         value: invoice.id,
-        label: `${formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}\t${formatDate(invoice.due_date)} (${invoice.id})`.trim(),
+        label: `${formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}\t${formatDate(invoice.due_date)} (${invoice.number || '-'})`.trim(),
       };
     })
   : [];
 
 class CreateCollectionLetterForm extends PureComponent<Props, State> {
   state = {
-    collectionLetterTemplates: [],
-    collectionLetterTemplateOptions: [],
     invoices: [],
     invoiceOptions: [],
     lease: {},
@@ -150,16 +160,14 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
       newState.lease = props.lease;
       newState.tenantOptions = getInvoiceTenantOptions(props.lease);
     }
-    if(props.collectionLetterTemplates && props.collectionLetterTemplates !== state.collectionLetterTemplates) {
-      newState.collectionLetterTemplate = props.collectionLetterTemplates;
-      newState.collectionLetterTemplateOptions = getCollectionLetterTemplateOptions(props.collectionLetterTemplates);
-    }
+
     return newState;
   }
 
   render() {
     const {
       collectionCharge,
+      createCollectionLetterAttributes,
       invoiceIds,
       lease,
       template,
@@ -167,7 +175,6 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
       valid,
     } = this.props;
     const {
-      collectionLetterTemplateOptions,
       invoiceOptions,
       tenantOptions,
     } = this.state;
@@ -177,70 +184,70 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
           <Column small={12} large={6}>
             <Row>
               <Column small={12} medium={4}>
-                <FormField
-                  disableDirty
-                  fieldAttributes={{
-                    type: 'multiselect',
-                    required: true,
-                    label: 'Vuokralaiset',
-                    read_only: false,
-                  }}
-                  name='tenants'
-                  overrideValues={{options: tenantOptions}}
-                />
+                <Authorization allow={isFieldAllowedToEdit(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.TENANTS)}>
+                  <FormField
+                    disableDirty
+                    fieldAttributes={getFieldAttributes(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.TENANTS)}
+                    name='tenants'
+                    overrideValues={{
+                      fieldType: 'multiselect',
+                      label: CreateCollectionLetterFieldTitles.TENANTS,
+                      options: tenantOptions}}
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={4}>
-                <FormField
-                  disableDirty
-                  fieldAttributes={{
-                    type: 'choice',
-                    required: true,
-                    label: 'Maksuvaatimustyyppi',
-                    read_only: false,
-                  }}
-                  name='template'
-                  overrideValues={{options: collectionLetterTemplateOptions}}
-                />
+                <Authorization allow={isFieldAllowedToEdit(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.TEMPLATE)}>
+                  <FormField
+                    disableDirty
+                    fieldAttributes={getFieldAttributes(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.TEMPLATE)}
+                    name='template'
+                    overrideValues={{
+                      label: CreateCollectionLetterFieldTitles.TEMPLATE,
+                    }}
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={4}>
-                <FormField
-                  disableDirty
-                  fieldAttributes={{
-                    type: 'decimal',
-                    required: true,
-                    label: 'Perimispalkkio',
-                    read_only: false,
-                  }}
-                  name='collection_charge'
-                  unit='€'
-                />
+                <Authorization allow={isFieldAllowedToEdit(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.COLLECTION_CHARGE)}>
+                  <FormField
+                    disableDirty
+                    fieldAttributes={getFieldAttributes(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.COLLECTION_CHARGE)}
+                    name='collection_charge'
+                    unit='€'
+                    overrideValues={{label: CreateCollectionLetterFieldTitles.COLLECTION_CHARGE}}
+                  />
+                </Authorization>
               </Column>
             </Row>
           </Column>
         </Row>
+
         <Row>
           <Column small={12}>
-            <SubTitle>Perintälaskelma</SubTitle>
-            <FieldArray
-              disableDirty
-              collectionCharge={collectionCharge}
-              component={renderInvoices}
-              invoiceOptions={invoiceOptions}
-              name='invoice_ids'
-            />
+            <Authorization allow={isFieldAllowedToEdit(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.INVOICES)}>
+              <SubTitle>{CreateCollectionLetterFieldTitles.INVOICES}</SubTitle>
+              <FieldArray
+                disableDirty
+                collectionCharge={collectionCharge}
+                component={renderInvoices}
+                invoiceOptions={invoiceOptions}
+                name='invoice_ids'
+              />
+            </Authorization>
           </Column>
           <Column small={12} style={{margin: '10px 0'}}>
             <FileDownloadButton
               disabled={!valid}
               label='Luo perintäkirje'
               payload={{
+                lease: lease.id,
                 template: template,
                 collection_charge: convertStrToDecimalNumber(collectionCharge),
                 tenants: tenants,
                 invoices: invoiceIds,
               }}
-              // $FlowFixMe
-              url={`${API_URL}/lease/${lease.id}/create_collection_letter/`}
+              url={createUrl(`lease_create_collection_letter/`)}
             />
           </Column>
         </Row>
@@ -256,9 +263,11 @@ export default flowRight(
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
+
       return {
         collectionCharge: selector(state, 'collection_charge'),
-        collectionLetterTemplates: getCollectionLetterTemplates(state),
+        createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
+        createCollectionLetterMethods: getCreateCollectionLetterMethods(state),
         invoices: getInvoicesByLease(state, currentLease.id),
         invoiceIds: selector(state, 'invoice_ids'),
         lease: getCurrentLease(state),

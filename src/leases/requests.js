@@ -36,7 +36,7 @@ export const patchLease = (lease: Lease): Generator<any, any, any> => {
 };
 
 export const copyAreasToContract = (leaseId: LeaseId): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`lease/${leaseId}/copy_areas_to_contract/`), {
+  return callApi(new Request(createUrl(`lease_copy_areas_to_contract/?lease=${leaseId}`), {
     method: 'POST',
   }));
 };
@@ -72,7 +72,7 @@ export const stopInvoicing = (leaseId: LeaseId): Generator<any, any, any> => {
 export const setRentInfoComplete = (leaseId: LeaseId): Generator<any, any, any> => {
   const body = JSON.stringify({rent_info_complete: true});
 
-  return callApi(new Request(createUrl(`lease/${leaseId}/set_rent_info_completion_state/`), {
+  return callApi(new Request(createUrl(`lease_set_rent_info_completion_state/?lease=${leaseId}`), {
     method: 'POST',
     body,
   }));
@@ -81,7 +81,7 @@ export const setRentInfoComplete = (leaseId: LeaseId): Generator<any, any, any> 
 export const setRentInfoUncomplete = (leaseId: LeaseId): Generator<any, any, any> => {
   const body = JSON.stringify({rent_info_complete: false});
 
-  return callApi(new Request(createUrl(`lease/${leaseId}/set_rent_info_completion_state/`), {
+  return callApi(new Request(createUrl(`lease_set_rent_info_completion_state/?lease=${leaseId}`), {
     method: 'POST',
     body,
   }));

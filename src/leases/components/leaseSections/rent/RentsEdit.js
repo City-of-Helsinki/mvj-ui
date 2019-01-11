@@ -38,8 +38,10 @@ import {
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
+import {getMethods as getRentForPeriodMethods} from '$src/rentForPeriod/selectors';
+import {getMethods as getSetRentInfoCompletionStateMethods} from '$src/setRentInfoCompletionState/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type RentsProps = {
@@ -119,7 +121,9 @@ type Props = {
   leaseAttributes: Attributes,
   params: Object,
   receiveFormValidFlags: Function,
+  rentForPeriodMethods: Methods,
   setRentInfoComplete: Function,
+  setRentInfoCompletionStateMethods: Methods,
   setRentInfoUncomplete: Function,
   valid: boolean,
 }
@@ -203,7 +207,13 @@ class RentsEdit extends PureComponent<Props, State> {
   }
 
   render() {
-    const {isRentInfoComplete, isSaveClicked, leaseAttributes} = this.props;
+    const {
+      isRentInfoComplete,
+      isSaveClicked,
+      leaseAttributes,
+      rentForPeriodMethods,
+      setRentInfoCompletionStateMethods,
+    } = this.props;
     const {rentsData} = this.state;
     const rents = get(rentsData, 'rents', []),
       rentsArchived = get(rentsData, 'rentsArchived', []);
@@ -243,17 +253,21 @@ class RentsEdit extends PureComponent<Props, State> {
                 <h2>{LeaseRentsFieldTitles.RENTS}</h2>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
                   <RightSubtitle
-                    buttonComponent={isRentInfoComplete
-                      ? <Button
-                        className={ButtonColors.NEUTRAL}
-                        onClick={handleSetRentInfoUncomplete}
-                        text='Merkitse keskeneräisiksi'
-                      />
-                      : <Button
-                        className={ButtonColors.NEUTRAL}
-                        onClick={handleSetRentInfoComplete}
-                        text='Merkitse valmiiksi'
-                      />
+                    buttonComponent={
+                      <Authorization allow={setRentInfoCompletionStateMethods.POST}>
+                        {isRentInfoComplete
+                          ? <Button
+                            className={ButtonColors.NEUTRAL}
+                            onClick={handleSetRentInfoUncomplete}
+                            text='Merkitse keskeneräisiksi'
+                          />
+                          : <Button
+                            className={ButtonColors.NEUTRAL}
+                            onClick={handleSetRentInfoComplete}
+                            text='Merkitse valmiiksi'
+                          />
+                        }
+                      </Authorization>
                     }
                     text={isRentInfoComplete
                       ? <span className="success">Tiedot kunnossa<i /></span>
@@ -281,11 +295,13 @@ class RentsEdit extends PureComponent<Props, State> {
                 />
               </Authorization>
 
-              <h2>Vuokralaskelma</h2>
-              <Divider />
-              <GreenBox>
-                <RentCalculator />
-              </GreenBox>
+              <Authorization allow={rentForPeriodMethods.GET}>
+                <h2>Vuokralaskelma</h2>
+                <Divider />
+                <GreenBox>
+                  <RentCalculator />
+                </GreenBox>
+              </Authorization>
 
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
                 <h2>{LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}</h2>
@@ -335,6 +351,8 @@ export default flowRight(
         isRentInfoComplete: currentLease ? currentLease.is_rent_info_complete : null,
         isSaveClicked: getIsSaveClicked(state),
         leaseAttributes: getLeaseAttributes(state),
+        rentForPeriodMethods: getRentForPeriodMethods(state),
+        setRentInfoCompletionStateMethods: getSetRentInfoCompletionStateMethods(state),
       };
     },
     {

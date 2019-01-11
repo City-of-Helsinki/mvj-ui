@@ -2,6 +2,7 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {initialize, isDirty} from 'redux-form';
+import {withRouter} from 'react-router';
 import classNames from 'classnames';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -12,8 +13,13 @@ import CheckboxInput from '$components/inputs/CheckboxInput';
 import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import FormText from '$components/form/FormText';
-import NewCommentForm from './forms/NewCommentForm';
-import {clearEditFlags, createComment, receiveIsSaveClicked} from '$src/comments/actions';
+import NewCommentForm from './NewCommentForm';
+import {
+  clearEditFlags,
+  createComment,
+  fetchCommentsByLease,
+  receiveIsSaveClicked,
+} from '$src/comments/actions';
 import {ButtonColors, CloseCommentPanelTexts, FormNames} from '$components/enums';
 import {CommentFieldPaths} from '$src/comments/enums';
 import {
@@ -42,6 +48,7 @@ type Props = {
   createComment: Function,
   currentLease: Lease,
   editModeFlags: Object,
+  fetchCommentsByLease: Function,
   initialize: Function,
   isNewCommentFormDirty: boolean,
   isOpen: boolean,
@@ -106,7 +113,17 @@ class CommentPanel extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const {receiveIsSaveClicked} = this.props;
+    const {
+      commentList,
+      commentMethods,
+      fetchCommentsByLease,
+      params: {leaseId},
+      receiveIsSaveClicked,
+    } = this.props;
+
+    if(isEmpty(commentList) && commentMethods.GET) {
+      fetchCommentsByLease(leaseId);
+    }
 
     receiveIsSaveClicked(false);
 
@@ -296,9 +313,11 @@ class CommentPanel extends PureComponent<Props, State> {
 }
 
 export default flowRight(
+  withRouter,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
+
       return {
         commentAttributes: getCommentAttributes(state),
         commentList: getCommentsByLease(state, currentLease.id),
@@ -311,6 +330,7 @@ export default flowRight(
     {
       clearEditFlags,
       createComment,
+      fetchCommentsByLease,
       initialize,
       receiveIsSaveClicked,
     },

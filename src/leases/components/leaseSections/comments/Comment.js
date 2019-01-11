@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import Button from '$components/button/Button';
 import EditButton from '$components/button/EditButton';
-import ShowMore from '../showMore/ShowMore';
+import ShowMore from '$components/showMore/ShowMore';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {editComment, hideEditModeById, showEditModeById} from '$src/comments/actions';
 import {ButtonColors} from '$components/enums';

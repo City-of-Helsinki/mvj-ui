@@ -1,5 +1,5 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, formValueSelector, getFormValues, initialize, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -25,18 +25,22 @@ import {
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getAreasSum, getContentLeaseAreas, getLeaseAreaById} from '$src/leases/helpers';
 import {formatNumber, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
+import {getMethods as getCopyAreasToContractMethods} from '$src/copyAreasToContract/selectors';
 import {getDecisionsByLease} from '$src/decision/selectors';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {
+  getAttributes as getLeaseAttributes,
+  getCurrentLease,
+} from '$src/leases/selectors';
 import {store} from '$src/root/startApp';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type AreaItemProps = {
-  attributes: Attributes,
   decisionOptions: Array<Object>,
   fields: any,
   isActive: boolean,
+  leaseAttributes: Attributes,
   onArchive: Function,
   onUnarchive: Function,
 }
@@ -57,10 +61,10 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
 
   render() {
     const {
-      attributes,
       decisionOptions,
       fields,
       isActive,
+      leaseAttributes,
       onArchive,
       onUnarchive,
     } = this.props;
@@ -69,7 +73,9 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
       <AppConsumer>
         {({dispatch}) => {
           return(
-            <div>{!isActive && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+            <Fragment>
+              {!isActive && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+
               {fields && !!fields.length && fields.map((area, index) => {
                 const handleRemove = () => {
                   dispatch({
@@ -98,7 +104,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
               {isActive &&
                 <Row>
                   <Column>
-                    <Authorization allow={isFieldAllowedToEdit(attributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
+                    <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
                       <AddButton
                         label='Lisää kohde'
                         onClick={this.handleAdd}
@@ -107,7 +113,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
                   </Column>
                 </Row>
               }
-            </div>
+            </Fragment>
           );
         }}
       </AppConsumer>
@@ -116,14 +122,15 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
 }
 
 type Props = {
-  attributes: Attributes,
   change: Function,
   copyAreasToContract: Function,
+  copyAreasToContractMethods: Methods,
   currentLease: Lease,
   decisions: Array<Object>,
   editedActiveAreas: Array<Object>,
   editedArchivedAreas: Array<Object>,
   initialize: Function,
+  leaseAttributes: Attributes,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -275,7 +282,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       decisionOptions,
       showArchiveAreaModal,
     } = this.state;
-    const {attributes} = this.props;
+    const {copyAreasToContractMethods, leaseAttributes} = this.props;
 
     return (
       <AppConsumer>
@@ -310,7 +317,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
           return(
             <form>
-              <Authorization allow={isFieldAllowedToEdit(attributes, LeaseAreasFieldPaths.ARCHIVED_AT)}>
+              <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseAreasFieldPaths.ARCHIVED_AT)}>
                 <ArchiveAreaModal
                   decisionOptions={decisionOptions}
                   onArchive={this.handleArchive}
@@ -323,14 +330,16 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               <h2>Vuokra-alue</h2>
               <RightSubtitle
                 buttonComponent={
-                  <Button
-                    className={ButtonColors.NEUTRAL}
-                    onClick={handleCopyAreasToContract}
-                    text='Kopioi sopimukseen'
-                  />
+                  <Authorization allow={copyAreasToContractMethods.POST}>
+                    <Button
+                      className={ButtonColors.NEUTRAL}
+                      onClick={handleCopyAreasToContract}
+                      text='Kopioi sopimukseen'
+                    />
+                  </Authorization>
                 }
                 text={
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.AREA)}>
                     <span>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></span>
                   </Authorization>
                 }
@@ -339,7 +348,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
               <FieldArray
                 ref={this.setActiveAreasRef}
-                attributes={attributes}
+                leaseAttributes={leaseAttributes}
                 component={renderLeaseAreas}
                 decisionOptions={decisionOptions}
                 isActive={true}
@@ -351,7 +360,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               {/* Archived lease areas */}
               <FieldArray
                 ref={this.setArchivedAreasRef}
-                attributes={attributes}
+                leaseAttributes={leaseAttributes}
                 component={renderLeaseAreas}
                 decisionOptions={decisionOptions}
                 isActive={false}
@@ -379,11 +388,12 @@ export default flowRight(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
-        attributes: getAttributes(state),
+        copyAreasToContractMethods: getCopyAreasToContractMethods(state),
         currentLease: currentLease,
         decisions: getDecisionsByLease(state, currentLease.id),
         editedActiveAreas: selector(state, 'lease_areas_active'),
         editedArchivedAreas: selector(state, 'lease_areas_archived'),
+        leaseAttributes: getLeaseAttributes(state),
       };
     },
     {

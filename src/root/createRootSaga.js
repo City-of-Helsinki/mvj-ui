@@ -6,10 +6,11 @@ import authSaga from '../auth/saga';
 import billingPeriodsSaga from '../billingPeriods/saga';
 import collectionCourtDecisionSaga from '../collectionCourtDecision/saga';
 import collectionLetterSaga from '../collectionLetter/saga';
-import collectionLetterTemplateSaga from '../collectionLetterTemplate/saga';
 import collectionNoteSaga from '../collectionNote/saga';
 import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
+import copyAreasToContractSaga from '$src/copyAreasToContract/saga';
+import createCollectionLetterSaga from '$src/createCollectionLetter/saga';
 import decisionSaga from '../decision/saga';
 import districtSaga from '../district/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
@@ -25,6 +26,8 @@ import previewInvoicesSaga from '../previewInvoices/saga';
 import relatedLeaseSaga from '../relatedLease/saga';
 import rentBasisSaga from '../rentbasis/saga';
 import rentForPeriodSaga from '../rentForPeriod/saga';
+import setInvoicingStateSaga from '$src/setInvoicingState/saga';
+import setRentInfoCompletionStateSaga from '$src/setRentInfoCompletionState/saga';
 import userSaga from '../users/saga';
 import vatSaga from '../vat/saga';
 
@@ -37,10 +40,11 @@ export default () =>
       fork(billingPeriodsSaga),
       fork(collectionCourtDecisionSaga),
       fork(collectionLetterSaga),
-      fork(collectionLetterTemplateSaga),
       fork(collectionNoteSaga),
       fork(commentSaga),
       fork(contactSaga),
+      fork(copyAreasToContractSaga),
+      fork(createCollectionLetterSaga),
       fork(decisionSaga),
       fork(districtSaga),
       fork(infillDevelopmentSaga),
@@ -56,6 +60,8 @@ export default () =>
       fork(relatedLeaseSaga),
       fork(rentBasisSaga),
       fork(rentForPeriodSaga),
+      fork(setInvoicingStateSaga),
+      fork(setRentInfoCompletionStateSaga),
       fork(userSaga),
       fork(vatSaga),
     ]);

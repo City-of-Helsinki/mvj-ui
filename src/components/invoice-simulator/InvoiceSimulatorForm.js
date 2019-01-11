@@ -44,9 +44,7 @@ class InvoiceSimulatorForm extends Component<Props> {
               }}
               name='invoice_simulator_year'
               disableDirty
-              overrideValues={{
-                label: 'Vuosi',
-              }}
+              overrideValues={{label: 'Vuosi'}}
             />
           </Column>
         </Row>

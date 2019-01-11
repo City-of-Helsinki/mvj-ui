@@ -11,10 +11,11 @@ import authReducer from '../auth/reducer';
 import billingPeriodReducer from '../billingPeriods/reducer';
 import collectionCourtDecisionReducer from '../collectionCourtDecision/reducer';
 import collectionLetterReducer from '../collectionLetter/reducer';
-import collectionLetterTemplateReducer from '../collectionLetterTemplate/reducer';
 import collectionNoteReducer from '../collectionNote/reducer';
 import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
+import copyAreasToContractReducer from '$src/copyAreasToContract/reducer';
+import createCollectionLetterReducer from '$src/createCollectionLetter/reducer';
 import decisionsReducer from '../decision/reducer';
 import districtsReducer from '../district/reducer';
 import infillDevelopmentReducer from '$src/infillDevelopment/reducer';
@@ -30,6 +31,8 @@ import previewInvoicesReducer from '../previewInvoices/reducer';
 import relatedLeaseReducer from '../relatedLease/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
 import rentForPeriodReducer from '../rentForPeriod/reducer';
+import setInvoicingStateReducer from '$src/setInvoicingState/reducer';
+import setRentInfoCompletionStateReducer from '$src/setRentInfoCompletionState/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
 import usersReducer from '../users/reducer';
 import vatReducer from '../vat/reducer';
@@ -45,10 +48,11 @@ export default (): Reducer<RootState> =>
     billingPeriod: billingPeriodReducer,
     collectionCourtDecision: collectionCourtDecisionReducer,
     collectionLetter: collectionLetterReducer,
-    collectionLetterTemplate: collectionLetterTemplateReducer,
     collectionNote: collectionNoteReducer,
     comment: commentsReducer,
     contact: contactsReducer,
+    copyAreasToContract: copyAreasToContractReducer,
+    createCollectionLetter: createCollectionLetterReducer,
     decision: decisionsReducer,
     district: districtsReducer,
     form: formReducer,
@@ -67,6 +71,8 @@ export default (): Reducer<RootState> =>
     rentBasis: rentBasisReducer,
     rentForPeriod: rentForPeriodReducer,
     routing: routerReducer,
+    setInvoicingState: setInvoicingStateReducer,
+    setRentInfoCompletionState: setRentInfoCompletionStateReducer,
     toastr: toastrReducer,
     topNavigation: topNavigationReducer,
     user: usersReducer,

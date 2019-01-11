@@ -9,7 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
-import CommentPanel from '$components/commentPanel/CommentPanel';
+import CommentPanel from './leaseSections/comments/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Constructability from './leaseSections/constructability/Constructability';
 import ConstructabilityEdit from './leaseSections/constructability/ConstructabilityEdit';
@@ -39,9 +39,7 @@ import Tenants from './leaseSections/tenant/Tenants';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {fetchCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/actions';
 import {fetchCollectionLettersByLease} from '$src/collectionLetter/actions';
-import {fetchCollectionLetterTemplates} from '$src/collectionLetterTemplate/actions';
 import {fetchCollectionNotesByLease} from '$src/collectionNote/actions';
-import {fetchCommentsByLease} from '$src/comments/actions';
 import {fetchDecisionsByLease} from '$src/decision/actions';
 import {fetchInvoicesByLease} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
@@ -101,8 +99,8 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   clearPreviewInvoices: Function,
-  commentMethods: Methods,                  // get via withLeasePageAttributes HOC
   comments: CommentList,
+  commentMethods: Methods,                  // get via withLeasePageAttributes HOC
   contractsFormValues: Object,
   constructabilityFormValues: Object,
   currentLease: Object,
@@ -111,9 +109,7 @@ type Props = {
   fetchAreaNoteList: Function,
   fetchCollectionCourtDecisionsByLease: Function,
   fetchCollectionLettersByLease: Function,
-  fetchCollectionLetterTemplates: Function,
   fetchCollectionNotesByLease: Function,
-  fetchCommentsByLease: Function,
   fetchDecisionsByLease: Function,
   fetchInvoicesByLease: Function,
   fetchInvoiceSetsByLease: Function,
@@ -183,13 +179,12 @@ class LeasePage extends Component<Props, State> {
     router: PropTypes.object,
   };
 
-  componentDidMount() {
+  UNSAFE_componentWillMount() {
     const {
       fetchAreaNoteList,
+      fetchCollectionLettersByLease,
       fetchCollectionCourtDecisionsByLease,
-      fetchCollectionLetterTemplates,
       fetchCollectionNotesByLease,
-      fetchCommentsByLease,
       fetchDecisionsByLease,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
@@ -198,21 +193,9 @@ class LeasePage extends Component<Props, State> {
       fetchVats,
       hideEditMode,
       leaseTypeList,
-      location,
       params: {leaseId},
-      receiveTopNavigationSettings,
       vats,
     } = this.props;
-
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById('leases'),
-      pageTitle: 'Vuokraukset',
-      showSearch: true,
-    });
-
-    if (location.query.tab) {
-      this.setState({activeTab: location.query.tab});
-    }
 
     fetchSingleLease(leaseId);
 
@@ -226,11 +209,7 @@ class LeasePage extends Component<Props, State> {
 
     fetchCollectionLettersByLease(leaseId);
 
-    fetchCollectionLetterTemplates();
-
     fetchCollectionNotesByLease(leaseId);
-
-    fetchCommentsByLease(leaseId);
 
     if(isEmpty(leaseTypeList)) {
       fetchLeaseTypes();
@@ -243,6 +222,24 @@ class LeasePage extends Component<Props, State> {
     fetchAreaNoteList();
 
     hideEditMode();
+  }
+
+  componentDidMount() {
+    const {
+      location,
+      receiveTopNavigationSettings,
+    } = this.props;
+
+    receiveTopNavigationSettings({
+      linkUrl: getRouteById('leases'),
+      pageTitle: 'Vuokraukset',
+      showSearch: true,
+    });
+
+    if (location.query.tab) {
+      this.setState({activeTab: location.query.tab});
+    }
+
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
@@ -1014,9 +1011,7 @@ export default flowRight(
       fetchAreaNoteList,
       fetchCollectionCourtDecisionsByLease,
       fetchCollectionLettersByLease,
-      fetchCollectionLetterTemplates,
       fetchCollectionNotesByLease,
-      fetchCommentsByLease,
       fetchDecisionsByLease,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
