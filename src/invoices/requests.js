@@ -26,7 +26,7 @@ export const creditInvoice = (payload: Object): Generator<any, any, any> => {
   const {creditData, invoiceId} = payload;
   const body = JSON.stringify(creditData);
 
-  return callApi(new Request(createUrl(`invoice/${invoiceId}/credit/`), {
+  return callApi(new Request(createUrl(`invoice_credit/?invoice=${invoiceId}`), {
     method: 'POST',
     body,
   }));

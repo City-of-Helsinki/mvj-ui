@@ -12,7 +12,11 @@ import {fetchAttributes as fetchCommentAttributes} from '$src/comments/actions';
 import {fetchAttributes as fetchCopyAreasToContractAttributes} from '$src/copyAreasToContract/actions';
 import {fetchAttributes as fetchCreateCollectionLetterAttributes} from '$src/createCollectionLetter/actions';
 import {fetchAttributes as fetchInvoiceAttributes} from '$src/invoices/actions';
-import {fetchAttributes as fetchPreviewInvoicesAttributes} from '$src/previewInvoices/actions';
+import {fetchAttributes as fetchInvoiceCreditAttributes} from '$src/invoiceCredit/actions';
+import {fetchAttributes as fetchInvoiceSetCreditAttributes} from '$src/invoiceSetCredit/actions';
+import {fetchAttributes as fetchLeaseCreateChargeAttributes} from '$src/leaseCreateCharge/actions';
+import {fetchAttributes as fetchPreviewInvoicesAttributes} from '$src/penaltyInterest/actions';
+import {fetchAttributes as fetchPenaltyInterestAttributes} from '$src/previewInvoices/actions';
 import {fetchAttributes as fetchRelatedLeaseAttributes} from '$src/relatedLease/actions';
 import {fetchAttributes as fetchRentForPeriodAttributes} from '$src/rentForPeriod/actions';
 import {fetchAttributes as fetchSetInvoicingStateAttributes} from '$src/setInvoicingState/actions';
@@ -57,6 +61,26 @@ import {
   getIsFetchingAttributes as getIsFetchingInvoiceAttributes,
   getMethods as getInvoiceMethods,
 } from '$src/invoices/selectors';
+import {
+  getAttributes as getInvoiceCreditAttributes,
+  getIsFetchingAttributes as getIsFetchingInvoiceCreditAttributes,
+  getMethods as getInvoiceCreditMethods,
+} from '$src/invoiceCredit/selectors';
+import {
+  getAttributes as getInvoiceSetCreditAttributes,
+  getIsFetchingAttributes as getIsFetchingInvoiceSetCreditAttributes,
+  getMethods as getInvoiceSetCreditMethods,
+} from '$src/invoiceSetCredit/selectors';
+import {
+  getAttributes as getLeaseCreateChargeAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes,
+  getMethods as getLeaseCreateChargeMethods,
+} from '$src/leaseCreateCharge/selectors';
+import {
+  getAttributes as getPenaltyInterestAttributes,
+  getIsFetchingAttributes as getIsFetchingPenaltyInterestAttributes,
+  getMethods as getPenaltyInterestMethods,
+} from '$src/penaltyInterest/selectors';
 import {
   getAttributes as getPreviewInvoicesAttributes,
   getIsFetchingAttributes as getIsFetchingPreviewInvoicesAttributes,
@@ -109,6 +133,10 @@ function LeasePageAttributes(WrappedComponent: any) {
     fetchCopyAreasToContractAttributes: Function,
     fetchCreateCollectionLetterAttributes: Function,
     fetchInvoiceAttributes: Function,
+    fetchInvoiceCreditAttributes: Function,
+    fetchInvoiceSetCreditAttributes: Function,
+    fetchLeaseCreateChargeAttributes: Function,
+    fetchPenaltyInterestAttributes: Function,
     fetchPreviewInvoicesAttributes: Function,
     fetchRelatedLeaseAttributes: Function,
     fetchRentForPeriodAttributes: Function,
@@ -116,6 +144,10 @@ function LeasePageAttributes(WrappedComponent: any) {
     fetchSetRentInfoCompletionStateAttributes: Function,
     invoiceAttributes: Attributes,
     invoiceMethods: Methods,
+    invoiceCreditAttributes: Attributes,
+    invoiceCreditMethods: Methods,
+    invoiceSetCreditAttributes: Attributes,
+    invoiceSetCreditMethods: Methods,
     isFetchingBillingPeriodAttributes: boolean,
     isFetchingCollectionCourtDecisionAttributes: boolean,
     isFetchingCollectionLetterAttributes: boolean,
@@ -124,11 +156,19 @@ function LeasePageAttributes(WrappedComponent: any) {
     isFetchingCopyAreasToContractAttributes: boolean,
     isFetchingCreateCollectionLetterAttributes: boolean,
     isFetchingInvoiceAttributes: boolean,
+    isFetchingInvoiceCreditAttributes: boolean,
+    isFetchingInvoiceSetCreditAttributes: boolean,
+    isFetchingLeaseCreateChargeAttributes: boolean,
+    isFetchingPenaltyInterestAttributes: boolean,
     isFetchingPreviewInvoicesAttributes: boolean,
     isFetchingRelatedLeaseAttributes: boolean,
     isFetchingRentForPeriodAttributes: boolean,
     isFetchingSetInvoicingStateAttributes: boolean,
     isFetchingSetRentInfoCompletionStateAttributes: boolean,
+    leaseCreateChargeAttributes: Attributes,
+    leaseCreateChargeMethods: Methods,
+    penaltyInterestAttributes: Attributes,
+    penaltyInterestMethods: Methods,
     previewInvoicesAttributes: Attributes,
     previewInvoicesMethods: Methods,
     relatedLeaseAttributes: Attributes,
@@ -167,12 +207,18 @@ function LeasePageAttributes(WrappedComponent: any) {
         fetchCopyAreasToContractAttributes,
         fetchCreateCollectionLetterAttributes,
         fetchInvoiceAttributes,
+        fetchInvoiceCreditAttributes,
+        fetchInvoiceSetCreditAttributes,
+        fetchLeaseCreateChargeAttributes,
+        fetchPenaltyInterestAttributes,
         fetchPreviewInvoicesAttributes,
         fetchRelatedLeaseAttributes,
         fetchRentForPeriodAttributes,
         fetchSetInvoicingStateAttributes,
         fetchSetRentInfoCompletionStateAttributes,
         invoiceMethods,
+        invoiceCreditMethods,
+        invoiceSetCreditMethods,
         isFetchingBillingPeriodAttributes,
         isFetchingCollectionCourtDecisionAttributes,
         isFetchingCollectionLetterAttributes,
@@ -181,11 +227,17 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingCopyAreasToContractAttributes,
         isFetchingCreateCollectionLetterAttributes,
         isFetchingInvoiceAttributes,
+        isFetchingInvoiceCreditAttributes,
+        isFetchingInvoiceSetCreditAttributes,
+        isFetchingLeaseCreateChargeAttributes,
+        isFetchingPenaltyInterestAttributes,
         isFetchingPreviewInvoicesAttributes,
         isFetchingRelatedLeaseAttributes,
         isFetchingRentForPeriodAttributes,
         isFetchingSetInvoicingStateAttributes,
         isFetchingSetRentInfoCompletionStateAttributes,
+        leaseCreateChargeMethods,
+        penaltyInterestMethods,
         previewInvoicesMethods,
         relatedLeaseMethods,
         rentForPeriodMethods,
@@ -225,6 +277,22 @@ function LeasePageAttributes(WrappedComponent: any) {
         fetchInvoiceAttributes();
       }
 
+      if(isEmpty(invoiceCreditMethods) && !isFetchingInvoiceCreditAttributes) {
+        fetchInvoiceCreditAttributes();
+      }
+
+      if(isEmpty(invoiceSetCreditMethods) && !isFetchingInvoiceSetCreditAttributes) {
+        fetchInvoiceSetCreditAttributes();
+      }
+
+      if(isEmpty(leaseCreateChargeMethods) && !isFetchingLeaseCreateChargeAttributes) {
+        fetchLeaseCreateChargeAttributes();
+      }
+
+      if(isEmpty(penaltyInterestMethods) && !isFetchingPenaltyInterestAttributes) {
+        fetchPenaltyInterestAttributes();
+      }
+
       if(isEmpty(previewInvoicesMethods) && !isFetchingPreviewInvoicesAttributes) {
         fetchPreviewInvoicesAttributes();
       }
@@ -255,6 +323,10 @@ function LeasePageAttributes(WrappedComponent: any) {
         this.props.isFetchingCopyAreasToContractAttributes !== prevProps.isFetchingCopyAreasToContractAttributes ||
         this.props.isFetchingCreateCollectionLetterAttributes !== prevProps.isFetchingCreateCollectionLetterAttributes ||
         this.props.isFetchingInvoiceAttributes !== prevProps.isFetchingInvoiceAttributes ||
+        this.props.isFetchingInvoiceCreditAttributes !== prevProps.isFetchingInvoiceCreditAttributes ||
+        this.props.isFetchingInvoiceSetCreditAttributes !== prevProps.isFetchingInvoiceSetCreditAttributes ||
+        this.props.isFetchingLeaseCreateChargeAttributes !== prevProps.isFetchingLeaseCreateChargeAttributes ||
+        this.props.isFetchingPenaltyInterestAttributes !== prevProps.isFetchingPenaltyInterestAttributes ||
         this.props.isFetchingPreviewInvoicesAttributes !== prevProps.isFetchingPreviewInvoicesAttributes ||
         this.props.isFetchingRelatedLeaseAttributes !== prevProps.isFetchingRelatedLeaseAttributes ||
         this.props.isFetchingRentForPeriodAttributes !== prevProps.isFetchingRentForPeriodAttributes ||
@@ -274,6 +346,10 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingCopyAreasToContractAttributes,
         isFetchingCreateCollectionLetterAttributes,
         isFetchingInvoiceAttributes,
+        isFetchingInvoiceCreditAttributes,
+        isFetchingInvoiceSetCreditAttributes,
+        isFetchingLeaseCreateChargeAttributes,
+        isFetchingPenaltyInterestAttributes,
         isFetchingPreviewInvoicesAttributes,
         isFetchingRelatedLeaseAttributes,
         isFetchingRentForPeriodAttributes,
@@ -288,6 +364,10 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingCopyAreasToContractAttributes ||
         isFetchingCreateCollectionLetterAttributes ||
         isFetchingInvoiceAttributes ||
+        isFetchingInvoiceCreditAttributes ||
+        isFetchingInvoiceSetCreditAttributes ||
+        isFetchingLeaseCreateChargeAttributes ||
+        isFetchingPenaltyInterestAttributes ||
         isFetchingPreviewInvoicesAttributes ||
         isFetchingRelatedLeaseAttributes ||
         isFetchingRentForPeriodAttributes ||
@@ -323,6 +403,10 @@ const withLeasePageAttributes = flowRight(
         createCollectionLetterMethods: getCreateCollectionLetterMethods(state),
         invoiceAttributes: getInvoiceAttributes(state),
         invoiceMethods: getInvoiceMethods(state),
+        invoiceCreditAttributes: getInvoiceCreditAttributes(state),
+        invoiceCreditMethods: getInvoiceCreditMethods(state),
+        invoiceSetCreditAttributes: getInvoiceSetCreditAttributes(state),
+        invoiceSetCreditMethods: getInvoiceSetCreditMethods(state),
         isFetchingBillingPeriodAttributes: getIsFetchingBillingPeriodAttributes(state),
         isFetchingCollectionCourtDecisionAttributes: getIsFetchingCollectionCourtDecisionAttributes(state),
         isFetchingCollectionLetterAttributes: getIsFetchignCollectionLetterAttributes(state),
@@ -331,11 +415,19 @@ const withLeasePageAttributes = flowRight(
         isFetchingCopyAreasToContractAttributes: getIsFetchingCopyAreasToContractAttributes(state),
         isFetchingCreateCollectionLetterAttributes: getIsFetchignCreateCollectionLetterAttributes(state),
         isFetchingInvoiceAttributes: getIsFetchingInvoiceAttributes(state),
+        isFetchingInvoiceCreditAttributes: getIsFetchingInvoiceCreditAttributes(state),
+        isFetchingInvoiceSetCreditAttributes: getIsFetchingInvoiceSetCreditAttributes(state),
+        isFetchingLeaseCreateChargeAttributes: getIsFetchingLeaseCreateChargeAttributes(state),
+        isFetchingPenaltyInterestAttributes: getIsFetchingPenaltyInterestAttributes(state),
         isFetchingPreviewInvoicesAttributes: getIsFetchingPreviewInvoicesAttributes(state),
         isFetchingRelatedLeaseAttributes: getIsFetchingRelatedLeaseAttributes(state),
         isFetchingRentForPeriodAttributes: getIsFetchingRentForPeriodAttributes(state),
         isFetchingSetInvoicingStateAttributes: getIsFetchingSetInvoicingStateAttributes(state),
         isFetchingSetRentInfoCompletionStateAttributes: getIsFetchingSetRentInfoCompletionStateAttributes(state),
+        leaseCreateChargeAttributes: getLeaseCreateChargeAttributes(state),
+        leaseCreateChargeMethods: getLeaseCreateChargeMethods(state),
+        penaltyInterestAttributes: getPenaltyInterestAttributes(state),
+        penaltyInterestMethods: getPenaltyInterestMethods(state),
         previewInvoicesAttributes: getPreviewInvoicesAttributes(state),
         previewInvoicesMethods: getPreviewInvoicesMethods(state),
         relatedLeaseAttributes: getRelatedLeaseAttributes(state),
@@ -357,6 +449,10 @@ const withLeasePageAttributes = flowRight(
       fetchCopyAreasToContractAttributes,
       fetchCreateCollectionLetterAttributes,
       fetchInvoiceAttributes,
+      fetchInvoiceCreditAttributes,
+      fetchInvoiceSetCreditAttributes,
+      fetchLeaseCreateChargeAttributes,
+      fetchPenaltyInterestAttributes,
       fetchPreviewInvoicesAttributes,
       fetchRelatedLeaseAttributes,
       fetchRentForPeriodAttributes,

@@ -45,6 +45,7 @@ type Props = {
   onSelectPrevious?: Function,
   onSelectRow?: Function,
   selectedRow?: Object | null,
+  showGroupRadioButton?: boolean,
   showRadioButton?: boolean,
   radioButtonDisabledFunction?: Function,
   sortable?: boolean,
@@ -375,6 +376,7 @@ class SortableTable extends Component<Props, State> {
       onRowClick,
       radioButtonDisabledFunction,
       selectedRow,
+      showGroupRadioButton,
       showRadioButton,
       sortable,
     } = this.props;
@@ -477,6 +479,7 @@ class SortableTable extends Component<Props, State> {
                     radioButtonDisabledFunction={radioButtonDisabledFunction}
                     row={row}
                     selectedRow={selectedRow}
+                    showGroupRadioButton={showGroupRadioButton}
                     showRadioButton={showRadioButton}
                   />
                   : <SortableTableRow
@@ -489,7 +492,7 @@ class SortableTable extends Component<Props, State> {
                     onRowClick={onRowClick}
                     onSelectRow={this.handleSelectRow}
                     row={row}
-                    showRadioButton={showRadioButton || false}
+                    showRadioButton={showGroupRadioButton || showRadioButton}
                   />;
               })}
             </tbody>

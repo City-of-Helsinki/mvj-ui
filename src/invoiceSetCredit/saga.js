@@ -26,7 +26,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch set invoicing state attributes with error "%s"', error);
+    console.error('Failed to fetch invoice set credit attributes with error "%s"', error);
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
@@ -35,7 +35,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
-      yield takeLatest('mvj/setInvoicingState/FETCH_ATTRIBUTES', fetchAttributesSaga);
+      yield takeLatest('mvj/invoiceSetCredit/FETCH_ATTRIBUTES', fetchAttributesSaga);
     }),
   ]);
 }

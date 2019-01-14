@@ -40,6 +40,7 @@ type Props = {
   invoiceToCredit: ?string,
   isInvoicingEnabled: boolean,
   leaseAttributes: Attributes, // Get via withCommonAttributes HOC
+  leaseCreateChargeMethods: Methods, // Get via withLeasePageAttributes HOC
   previewInvoicesCollapseState: boolean,
   previewInvoicesMethods: Methods, // get via withLeasePageAttributes HOC
   receiveCollapseStates: Function,
@@ -113,6 +114,7 @@ class Invoices extends PureComponent<Props> {
       invoiceToCredit,
       isInvoicingEnabled,
       leaseAttributes,
+      leaseCreateChargeMethods,
       previewInvoicesCollapseState,
       previewInvoicesMethods,
       setInvoicingStateMethods,
@@ -150,7 +152,7 @@ class Invoices extends PureComponent<Props> {
               confirmationModalTitle: 'Keskeytä laskutus',
             });
           };
-          console.log(setInvoicingStateMethods);
+
           return(
             <Fragment>
               <h2>Laskutus</h2>
@@ -183,7 +185,9 @@ class Invoices extends PureComponent<Props> {
                   invoiceToCredit={invoiceToCredit}
                   onInvoiceToCreditChange={this.handleInvoiceToCreditChange}
                 />
-                <CreateAndCreditInvoice invoiceToCredit={invoiceToCredit} />
+                <Authorization allow={leaseCreateChargeMethods.POST || invoiceMethods.POST}>
+                  <CreateAndCreditInvoice invoiceToCredit={invoiceToCredit} />
+                </Authorization>
               </Collapse>
 
               <Authorization allow={previewInvoicesMethods.GET}>

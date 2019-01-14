@@ -74,6 +74,7 @@ const CreditInvoiceForm = ({
                   type: 'choice',
                   required: true,
                   label: 'Hyvityksen tyyppi',
+                  read_only: false,
                 }}
                 name='type'
                 setRefForField={setRefForFirstField}
@@ -87,6 +88,7 @@ const CreditInvoiceForm = ({
                     disableTouched={isCreditClicked}
                     fieldAttributes={{
                       ...getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE),
+                      read_only: false,
                       required: true,
                     }}
                     name='receivable_type'

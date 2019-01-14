@@ -42,10 +42,10 @@ export const copyAreasToContract = (leaseId: LeaseId): Generator<any, any, any> 
 };
 
 export const createCharge = (payload: CreateChargePayload): Generator<any, any, any> => {
-  const {leaseId, data} = payload;
+  const {data} = payload;
   const body = JSON.stringify(data);
 
-  return callApi(new Request(createUrl(`lease/${leaseId}/create_charge/`), {
+  return callApi(new Request(createUrl(`lease_create_charge/`), {
     method: 'POST',
     body,
   }));
@@ -54,7 +54,7 @@ export const createCharge = (payload: CreateChargePayload): Generator<any, any, 
 export const startInvoicing = (leaseId: LeaseId): Generator<any, any, any> => {
   const body = JSON.stringify({invoicing_enabled: true});
 
-  return callApi(new Request(createUrl(`lease/${leaseId}/set_invoicing_state/`), {
+  return callApi(new Request(createUrl(`lease_set_invoicing_state/?lease=${leaseId}`), {
     method: 'POST',
     body,
   }));
@@ -63,7 +63,7 @@ export const startInvoicing = (leaseId: LeaseId): Generator<any, any, any> => {
 export const stopInvoicing = (leaseId: LeaseId): Generator<any, any, any> => {
   const body = JSON.stringify({invoicing_enabled: false});
 
-  return callApi(new Request(createUrl(`lease/${leaseId}/set_invoicing_state/`), {
+  return callApi(new Request(createUrl(`lease_set_invoicing_state/?lease=${leaseId}`), {
     method: 'POST',
     body,
   }));

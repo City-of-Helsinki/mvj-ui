@@ -21,7 +21,9 @@ import {
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
 import {ButtonColors} from '$components/enums';
 import {RecipientOptions} from '$src/leases/enums';
-import {formatNewChargeForDb, formatCreditInvoiceForDb, formatNewInvoiceForDb} from '$src/invoices/helpers';
+import {getPayloadCreateInvoice, getPayloadCreditInvoice} from '$src/invoices/helpers';
+import {getCreditInvoiceSetPayload} from '$src/invoiceSets/helpers';
+import {getPayloadLeaseCreateCharge} from '$src/leaseCreateCharge/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen} from '$src/invoices/selectors';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
@@ -35,10 +37,13 @@ type Props = {
   creditInvoice: Function,
   creditInvoiceSet: Function,
   currentLease: Lease,
-  invoiceMethods: Methods, // Get vie withLeasePageAttributes HOC
+  invoiceMethods: Methods, // Get via withLeasePageAttributes HOC
+  invoiceCreditMethods: Methods, // Get via withLeasePageAttributes HOC
+  invoiceSetCreditMethods: Methods, // Get via withLeasePageAttributes HOC
   invoiceToCredit: ?Object,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
+  leaseCreateChargeMethods: Methods, // Get via withLeasePageAttributes HOC
   receiveIsCreateClicked: Function,
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditClicked: Function,
@@ -97,14 +102,15 @@ class CreateAndCreditInvoice extends Component <Props> {
       currentLease,
     } = this.props;
 
+    invoice.lease = currentLease.id;
+
     if(invoice.recipient === RecipientOptions.ALL) {
       createCharge({
         leaseId: currentLease.id,
-        data: formatNewChargeForDb(invoice),
+        data: getPayloadLeaseCreateCharge(invoice),
       });
     } else {
-      invoice.lease = currentLease.id;
-      createInvoice(formatNewInvoiceForDb(invoice));
+      createInvoice(getPayloadCreateInvoice(invoice));
     }
   }
 
@@ -146,7 +152,7 @@ class CreateAndCreditInvoice extends Component <Props> {
       const {creditInvoiceSet} = this.props;
 
       creditInvoiceSet({
-        creditData: formatCreditInvoiceForDb(creditInvoiceData),
+        creditData: getCreditInvoiceSetPayload(creditInvoiceData),
         invoiceSetId: invoiceToCredit && invoiceToCredit.id,
         lease: currentLease.id,
       });
@@ -154,7 +160,7 @@ class CreateAndCreditInvoice extends Component <Props> {
       const {creditInvoice} = this.props;
 
       creditInvoice({
-        creditData: formatCreditInvoiceForDb(creditInvoiceData),
+        creditData: getPayloadCreditInvoice(creditInvoiceData),
         invoiceId: invoiceToCredit && invoiceToCredit.id,
         lease: currentLease.id,
       });
@@ -170,15 +176,18 @@ class CreateAndCreditInvoice extends Component <Props> {
   render() {
     const {
       invoiceMethods,
+      invoiceCreditMethods,
+      invoiceSetCreditMethods,
       invoiceToCredit,
       isCreateInvoicePanelOpen,
       isCreditInvoicePanelOpen,
+      leaseCreateChargeMethods,
     } = this.props;
     const isInvoiceSet = this.isInvoiceSet();
 
     return (
       <div className='invoice__new-invoice'>
-        <Authorization allow={invoiceMethods.POST}>
+        <Authorization allow={invoiceCreditMethods.POST || invoiceSetCreditMethods.POST}>
           <Button
             className={`${ButtonColors.NEUTRAL} no-margin`}
             disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
@@ -187,15 +196,7 @@ class CreateAndCreditInvoice extends Component <Props> {
           />
         </Authorization>
 
-        <Authorization allow={invoiceMethods.POST}>
-          <AddButtonSecondary
-            disabled={isCreateInvoicePanelOpen}
-            label='Luo lasku'
-            onClick={this.handleOpenCreateInvoicePanelButtonClick}
-          />
-        </Authorization>
-
-        <Authorization allow={invoiceMethods.POST}>
+        <Authorization allow={invoiceCreditMethods.POST || invoiceSetCreditMethods.POST}>
           <div ref={this.setCreditPanelRef}>
             {isCreditInvoicePanelOpen &&
               <CreditInvoiceForm
@@ -208,10 +209,22 @@ class CreateAndCreditInvoice extends Component <Props> {
           </div>
         </Authorization>
 
-        <Authorization allow={invoiceMethods.POST}>
+        <Authorization allow={invoiceMethods.POST || leaseCreateChargeMethods.POST}>
+          <AddButtonSecondary
+            disabled={isCreateInvoicePanelOpen}
+            label='Luo lasku'
+            onClick={this.handleOpenCreateInvoicePanelButtonClick}
+          />
+        </Authorization>
+
+        <Authorization allow={invoiceMethods.POST || leaseCreateChargeMethods.POST}>
           <div ref={this.setCreatePanelRef}>
             {isCreateInvoicePanelOpen &&
               <NewInvoiceForm
+                initialValues={{
+                  recipient: leaseCreateChargeMethods.POST ? RecipientOptions.ALL : undefined,
+                  rows: [{}],
+                }}
                 onClose={this.handleCloseCreateInvoicePanel}
                 onSave={this.handleCreateInvoice}
                 setRefForFirstField={this.handleSetRefForCreatePanelFirstField}

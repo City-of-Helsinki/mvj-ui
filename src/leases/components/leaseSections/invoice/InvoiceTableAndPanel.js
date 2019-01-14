@@ -21,10 +21,10 @@ import {FormNames} from '$src/leases/enums';
 import {TableSortOrder} from '$components/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
-  formatEditedInvoiceForDb,
   formatReceivableTypesString,
   getContentInvoices,
-  getContentIncoiveItem,
+  getContentIncoive,
+  getPayloadEditInvoice,
 } from '$src/invoices/helpers';
 import {
   formatDate,
@@ -42,16 +42,16 @@ import {getCurrentLease} from '$src/leases/selectors';
 import {
   getAttributes as getInvoiceAttributes,
   getInvoicesByLease,
-  getMethods as getInvoiceMethods,
   getPatchedInvoice,
 } from '$src/invoices/selectors';
+import {getMethods as getInvoiceCreditMethods} from '$src/invoiceCredit/selectors';
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
+import {getMethods as getInvoiceSetCreditMethods} from '$src/invoiceSetCredit/selectors';
 
 import type {Attributes, Methods} from '$src/types';
 import type {Invoice, InvoiceList} from '$src/invoices/types';
 
 const TABLE_MIN_HEIGHT = 521;
-const TABLE_MIN_HEIGHT_EDIT = 521;
 const PANEL_WIDTH = 607.5;
 
 type Props = {
@@ -60,9 +60,10 @@ type Props = {
   initialize: Function,
   invoices: InvoiceList,
   invoiceAttributes: Attributes,
-  invoiceMethods: Methods,
+  invoiceCreditMethods: Methods,
   invoiceToCredit: ?Object,
   invoiceSets: Array<Object>,
+  invoiceSetCreditMethods: Methods,
   onInvoiceToCreditChange: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
@@ -172,7 +173,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 
     if(this.props.patchedInvoice) {
       const {clearPatchedInvoice, patchedInvoice} = this.props;
-      this.initilizeEditInvoiceForm(getContentIncoiveItem(patchedInvoice));
+      this.initilizeEditInvoiceForm(getContentIncoive(patchedInvoice));
       clearPatchedInvoice();
     }
   }
@@ -220,10 +221,9 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   calculateTableHeight = () => {
     if(!this.table || !this.panel) return;
 
-    const {invoiceMethods} = this.props,
-      {openedInvoice} = this.state,
+    const {openedInvoice} = this.state,
       {scrollHeight: panelHeight} = this.panel.wrappedInstance.container,
-      tableMinHeight = invoiceMethods.PATCH ? TABLE_MIN_HEIGHT_EDIT : TABLE_MIN_HEIGHT,
+      tableMinHeight = TABLE_MIN_HEIGHT,
       borderHeight = 2;
     let {scrollHeight: tableHeight} = this.table.scrollBodyTable;
 
@@ -561,17 +561,20 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 
   editInvoice = (invoice: Object) => {
     const {patchInvoice} = this.props;
-    patchInvoice(formatEditedInvoiceForDb(invoice));
+
+    patchInvoice(getPayloadEditInvoice(invoice));
   }
 
   render() {
-    const {invoiceMethods, invoiceToCredit} = this.props;
+    const {
+      invoiceCreditMethods,
+      invoiceSetCreditMethods,
+      invoiceToCredit,
+    } = this.props;
     const {columns, formatedInvoices, openedInvoice, tableHeight, tableWidth} = this.state;
 
     return(
-      <div className='invoice__invoice-table'
-        ref={this.setContainerRef}
-      >
+      <div className='invoice__invoice-table' ref={this.setContainerRef}>
         <ReactResizeDetector
           handleWidth
           onResize={this.handleResize}
@@ -599,7 +602,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
             onSelectRow={this.handleSelectRow}
             radioButtonDisabledFunction={this.isTableRadioButtonDisabled}
             selectedRow={invoiceToCredit}
-            showRadioButton={invoiceMethods.PATCH}
+            showGroupRadioButton={invoiceSetCreditMethods.POST}
+            showRadioButton={invoiceCreditMethods.POST}
             sortable={true}
           />
         </div>
@@ -628,8 +632,9 @@ export default connect(
     return {
       invoices: getInvoicesByLease(state, currentLease.id),
       invoiceAttributes: getInvoiceAttributes(state),
-      invoiceMethods: getInvoiceMethods(state),
+      invoiceCreditMethods: getInvoiceCreditMethods(state),
       invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
+      invoiceSetCreditMethods: getInvoiceSetCreditMethods(state),
       patchedInvoice: getPatchedInvoice(state),
     };
   },

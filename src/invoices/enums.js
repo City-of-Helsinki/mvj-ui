@@ -36,7 +36,7 @@ export const InvoiceFieldPaths = {
   DELIVERY_METHOD: 'delivery_method',
   DUE_DATE: 'due_date',
   INVOICING_DATE: 'invoicing_date',
-  INVOICESET: 'invoice_set',
+  INVOICESET: 'invoiceset',
   NOTES: 'notes',
   NUMBER: 'number',
   OUTSTANDING_AMOUNT: 'outstanding_amount',

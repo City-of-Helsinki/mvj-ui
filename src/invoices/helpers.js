@@ -4,43 +4,63 @@ import get from 'lodash/get';
 import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
 import {convertStrToDecimalNumber, getLabelOfOption, sortStringAsc} from '$util/helpers';
 
-const getContentIncoicePayments = (invoice: Object) => {
+/**
+ * Get payments of single invoice to show on UI
+ * @param invoice
+ * @returns {object}
+ */
+const getContentInvoicePayments = (invoice: Object) => {
   const payments = get(invoice, 'payments', []);
-  return payments.map((payment) => {
-    return {
-      id: payment.id,
-      paid_amount: get(payment, 'paid_amount'),
-      paid_date: get(payment, 'paid_date'),
-    };
-  });
+
+  return payments.map((payment) => ({
+    id: payment.id,
+    paid_amount: payment.paid_amount,
+    paid_date: payment.paid_date,
+  }));
 };
 
+/**
+ * Get rows of single invoice to show on UI
+ * @param invoice
+ * @returns {object}
+ */
 const getContentIncoiceRows = (invoice: Object) => {
   const rows = get(invoice, 'rows', []);
-  return rows.map((row) => {
-    return {
-      id: row.id,
-      tenant: get(row, 'tenant.id'),
-      tenantFull: get(row, 'tenant'),
-      description: get(row, 'description'),
-      amount: get(row, 'amount'),
-      receivable_type: get(row, 'receivable_type.id') || get(row, 'receivable_type'),
-    };
-  });
+
+  return rows.map((row) => ({
+    id: row.id,
+    tenant: get(row, 'tenant.id'),
+    tenantFull: row.tenant,
+    description: row.description,
+    amount: row.amount,
+    receivable_type: get(row, 'receivable_type.id') || get(row, 'receivable_type'),
+  }));
 };
 
-const getInvoiceReceivableTypes = (rows: Array<Object>) => {
+/**
+ * Get receivable types of single invoice to show on UI
+ * @param rows
+ * @returns {object}
+ */
+const getContentInvoiceReceivableTypes = (rows: Array<Object>) => {
   const receivableTypes = [];
+
   rows.forEach((row) => {
-    const receivableType = get(row, 'receivable_type');
+    const receivableType = row.receivable_type;
     if(receivableType && receivableTypes.indexOf(receivableType) < 0) {
       receivableTypes.push(receivableType);
     }
   });
+
   return receivableTypes;
 };
 
-const getInvoiceTotalSharePercentage = (invoice: Object) => {
+/**
+ * Get total share percentage of single invoice to show on UI
+ * @param invoice
+ * @returns {object}
+ */
+const getContentInvoiceTotalSharePercentage = (invoice: Object) => {
   if(invoice.total_amount === null ||
     Number(invoice.total_amount) === 0 ||
     invoice.billed_amount === null ||
@@ -49,6 +69,11 @@ const getInvoiceTotalSharePercentage = (invoice: Object) => {
   return Number(invoice.billed_amount) / Number(invoice.total_amount);
 };
 
+/**
+ * Get credit invoices of single invoice to show on UI
+ * @param invoice
+ * @returns {object}
+ */
 const getContentCreditInvoices = (invoice: Object) =>
   get(invoice, 'credit_invoices', []).map((item) => ({
     id: item.id,
@@ -57,7 +82,12 @@ const getContentCreditInvoices = (invoice: Object) =>
     total_amount: item.total_amount,
   }));
 
-export const getContentIncoiveItem = (invoice: Object) => {
+/**
+ * Get single invoice content to show on UI
+ * @param invoice
+ * @returns {object}
+ */
+export const getContentIncoive = (invoice: Object) => {
   const rows = getContentIncoiceRows(invoice);
   return {
     id: invoice.id,
@@ -76,7 +106,7 @@ export const getContentIncoiveItem = (invoice: Object) => {
     postpone_date: invoice.postpone_date,
     total_amount: invoice.total_amount,
     billed_amount: invoice.billed_amount,
-    payments: getContentIncoicePayments(invoice),
+    payments: getContentInvoicePayments(invoice),
     outstanding_amount: invoice.outstanding_amount,
     payment_notification_date: invoice.payment_notification_date,
     collection_charge: invoice.collection_charge,
@@ -86,111 +116,118 @@ export const getContentIncoiveItem = (invoice: Object) => {
     notes: invoice.notes,
     generated: invoice.generated,
     description: invoice.description,
-    totalShare: getInvoiceTotalSharePercentage(invoice),
-    receivableTypes: getInvoiceReceivableTypes(rows),
+    totalShare: getContentInvoiceTotalSharePercentage(invoice),
+    receivableTypes: getContentInvoiceReceivableTypes(rows),
     credit_invoices: getContentCreditInvoices(invoice),
     credited_invoice: invoice.credited_invoice,
     invoiceset: invoice.invoiceset,
   };
 };
 
+/**
+ * Get invoices content to show on UI
+ * @param invoices
+ * @returns {object}
+ */
 export const getContentInvoices = (invoices: Array<Object>): Array<Object> => {
-  return invoices && invoices.length ? invoices.map((invoice) => getContentIncoiveItem(invoice)) : [];
+  return invoices && invoices.length ? invoices.map((invoice) => getContentIncoive(invoice)) : [];
 };
 
-export const getInvoiceSharePercentage = (invoice: Object, precision: number = 0) => {
-  const numerator = get(invoice, 'share_numerator');
-  const denominator = get(invoice, 'share_denominator');
-
-  if((numerator !== 0 && !numerator || !denominator)) {
-    return '';
-  }
-  return (Number(numerator)/Number(denominator)*100).toFixed(precision);
-};
-
-const formatInvoicePaymentsForDb = (invoice: Object) => {
+/**
+ * Get payments for invoice payload for API
+ * @param invoice
+ * @returns {object}
+ */
+const getPayloadInvoicePayments = (invoice: Object) => {
   const payments = get(invoice, 'payments', []);
-  return payments.map((payment) => {
+
+  return payments.map((payment) => ({
+    id: invoice.id,
+    paid_amount: convertStrToDecimalNumber(payment.paid_amount),
+    paid_date: payment.paid_date,
+  }));
+};
+
+/**
+ * Get rows for invoice payload for API
+ * @param invoice
+ * @returns {object}
+ */
+const getPayloadInvoiceRows = (invoice: Object) => {
+  return get(invoice, 'rows', []).map((row) => {
     return {
-      id: invoice.id,
-      paid_amount: convertStrToDecimalNumber(get(payment, 'paid_amount')),
-      paid_date: get(payment, 'paid_date'),
+      tenant: row.tenant,
+      receivable_type: row.receivable_type,
+      amount: convertStrToDecimalNumber(row.amount),
     };
   });
 };
 
-export const formatEditedInvoiceForDb = (invoice: Object) => {
+/**
+ * Get edit invoice payload for API
+ * @param invoice
+ * @returns {object}
+ */
+export const getPayloadEditInvoice = (invoice: Object) => {
   return {
     id: invoice.id,
-    due_date: get(invoice, 'due_date'),
-    billing_period_start_date: get(invoice, 'billing_period_start_date'),
-    billing_period_end_date: get(invoice, 'billing_period_end_date'),
-    payments: formatInvoicePaymentsForDb(invoice),
-    notes: get(invoice, 'notes', ''),
-    rows: formatInvoiceRowsForDb(invoice),
+    due_date: invoice.due_date,
+    billing_period_start_date: invoice.billing_period_start_date,
+    billing_period_end_date: invoice.billing_period_end_date,
+    payments: getPayloadInvoicePayments(invoice),
+    notes: invoice.notes,
+    rows: getPayloadInvoiceRows(invoice),
   };
 };
 
-export const formatInvoiceRowsForDb = (invoice: Object) => {
-  return get(invoice, 'rows', []).map((row) => {
-    return {
-      tenant: get(row, 'tenant'),
-      receivable_type: get(row, 'receivable_type'),
-      amount: convertStrToDecimalNumber(get(row, 'amount')),
-    };
-  });
-};
-
-export const formatNewInvoiceForDb = (invoice: Object) => {
+/**
+ * Get create invoice payload for API
+ * @param invoice
+ * @returns {object}
+ */
+export const getPayloadCreateInvoice = (invoice: Object) => {
   return {
     lease: invoice.lease,
-    recipient: get(invoice, 'recipient'),
-    type: get(invoice, 'type'),
-    due_date: get(invoice, 'due_date'),
-    billing_period_end_date: get(invoice, 'billing_period_end_date'),
-    billing_period_start_date: get(invoice, 'billing_period_start_date'),
-    notes: get(invoice, 'notes', ''),
-    rows: formatInvoiceRowsForDb(invoice),
+    recipient: invoice.recipient,
+    type: invoice.type,
+    due_date: invoice.due_date,
+    billing_period_end_date: invoice.billing_period_end_date,
+    billing_period_start_date: invoice.billing_period_start_date,
+    notes: invoice.notes,
+    rows: getPayloadInvoiceRows(invoice),
   };
 };
 
-export const formatChargeRowsForDb = (invoice: Object) => {
-  return get(invoice, 'rows', []).map((row) => {
-    return {
-      receivable_type: get(row, 'receivable_type'),
-      amount: convertStrToDecimalNumber(get(row, 'amount')),
-    };
-  });
-};
-
-export const formatNewChargeForDb = (invoice: Object) => {
-  return {
-    type: get(invoice, 'type'),
-    due_date: get(invoice, 'due_date'),
-    billing_period_end_date: get(invoice, 'billing_period_end_date'),
-    billing_period_start_date: get(invoice, 'billing_period_start_date'),
-    notes: get(invoice, 'notes', ''),
-    rows: formatChargeRowsForDb(invoice),
-  };
-};
-
-export const formatCreditInvoiceForDb = (invoice: Object) => {
+/**
+ * Get credit invoice payload for API
+ * @param invoice
+ * @returns {object}
+ */
+export const getPayloadCreditInvoice = (invoice: Object) => {
   if(!invoice) return undefined;
 
   const payload = {};
   if(invoice.type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {
     payload.amount = convertStrToDecimalNumber(invoice.amount);
   }
+
   if(invoice.type !== CreditInvoiceOptionsEnum.FULL && invoice.receivable_type) {
     payload.receivable_type = invoice.receivable_type;
   }
+
   payload.notes = invoice.notes || '';
 
   return payload;
 };
 
+/**
+ * Get receivable type string from receivable type values
+ * @param receivableTypeOptions
+ * @param receivableTypes
+ * @returns {string}
+ */
 export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>) => {
-  return receivableTypes.map((receivableType) => {
-    return getLabelOfOption(receivableTypeOptions, receivableType);
-  }).sort(sortStringAsc).join(', ');
+  return receivableTypes.map((receivableType) => getLabelOfOption(receivableTypeOptions, receivableType))
+    .sort(sortStringAsc)
+    .join(', ');
 };

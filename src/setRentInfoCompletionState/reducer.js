@@ -6,7 +6,7 @@ import type {Attributes, Methods, Reducer} from '../types';
 import type {
   ReceiveAttributesAction,
   ReceiveMethodsAction,
-} from '$src/previewInvoices/types';
+} from '$src/setRentInfoCompletionState/types';
 
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({

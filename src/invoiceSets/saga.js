@@ -43,10 +43,7 @@ function* creditInvoiceSetSaga({payload: {creditData, invoiceSetId, lease}}): Ge
         yield put(receiveInvoiceToCredit(null));
         displayUIMessage({title: '', body: 'Hyvityslaskut luotu'});
         break;
-      case 400:
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
+      default:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
     }

@@ -15,9 +15,12 @@ import type {DistrictState} from '$src/district/types';
 import type {InfillDevelopmentState} from '$src/infillDevelopment/types';
 import type {InfillDevelopmentAttachmentState} from '$src/infillDevelopmentAttachment/types';
 import type {InvoiceState} from '$src/invoices/types';
+import type {InvoiceCreditState} from '$src/invoiceCredit/types';
 import type {InvoiceSetState} from '$src/invoiceSets/types';
+import type {InvoiceSetCreditState} from '$src/invoiceSetCredit/types';
 import type {LandUseContractState} from '$src/landUseContract/types';
 import type {LeaseState} from '$src/leases/types';
+import type {LeaseCreateChargeState} from '$src/leaseCreateCharge/types';
 import type {LeaseTypeState} from '$src/leaseType/types';
 import type {MapDataState} from '$src/mapData/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
@@ -48,9 +51,12 @@ export type RootState = {
   infillDevelopment: InfillDevelopmentState,
   infillDevelopmentAttachment: InfillDevelopmentAttachmentState,
   invoice: InvoiceState,
+  invoiceCredit: InvoiceCreditState,
   invoiceSet: InvoiceSetState,
+  invoiceSetCredit: InvoiceSetCreditState,
   landUseContract: LandUseContractState,
   lease: LeaseState,
+  leaseCreateCharge: LeaseCreateChargeState,
   leaseType: LeaseTypeState,
   mapData: MapDataState,
   penaltyInterest: PenaltyInterestState,

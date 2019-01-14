@@ -111,10 +111,7 @@ function* creditInvoiceSaga({payload: {creditData, invoiceId, lease}}): Generato
         yield put(receiveInvoiceToCredit(null));
         displayUIMessage({title: '', body: 'Hyvityslasku luotu'});
         break;
-      case 400:
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
+      default:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
     }

@@ -2,12 +2,33 @@
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
-import type {Reducer} from '$src/types';
+import type {Attributes, Methods, Reducer} from '$src/types';
 import type {
+  ReceiveAttributesAction,
+  ReceiveMethodsAction,
   FetchPenaltyInterestByInvoiceAction,
   ReceivePenaltyInterestByInvoiceAction,
   PenaltyInterestNotFoundByInvoiceAction,
 } from '$src/penaltyInterest/types';
+
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/setInvoicingState/FETCH_ATTRIBUTES': () => true,
+  'mvj/setInvoicingState/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/setInvoicingState/RECEIVE_METHODS': () => false,
+  'mvj/setInvoicingState/ATTRIBUTES_NOT_FOUND': () => false,
+}, false);
+
+const attributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/setInvoicingState/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
+    return attributes || {};
+  },
+}, {});
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/setInvoicingState/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods || {};
+  },
+}, {});
 
 const isFetchingByInvoiceReducer: Reducer<Object> = handleActions({
   ['mvj/penaltyInterest/FETCH_BY_INVOICE']: (state: Object, {payload: invoice}: FetchPenaltyInterestByInvoiceAction) => {
@@ -40,6 +61,9 @@ const byInvoiceReducer: Reducer<Object> = handleActions({
 }, {});
 
 export default combineReducers({
+  attributes: attributesReducer,
   byInvoice: byInvoiceReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
   isFetchingByInvoice: isFetchingByInvoiceReducer,
+  methods: methodsReducer,
 });

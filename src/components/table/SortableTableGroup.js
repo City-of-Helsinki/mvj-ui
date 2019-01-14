@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import get from 'lodash/get';
 
 import SortableTableRow from './SortableTableRow';
@@ -18,6 +18,7 @@ type Props = {
   radioButtonDisabledFunction?: Function,
   row: Object,
   selectedRow?: Object | null,
+  showGroupRadioButton?: boolean,
   showRadioButton?: boolean,
 }
 
@@ -30,6 +31,7 @@ const SortableTableGroup = ({
   radioButtonDisabledFunction,
   row,
   selectedRow,
+  showGroupRadioButton,
   showRadioButton,
 }: Props) => {
   const isGroupSelected = Boolean(selectedRow && selectedRow.tableGroupName && (selectedRow.id === row.id));
@@ -64,18 +66,22 @@ const SortableTableGroup = ({
   return(
     <TableGroup>
       <tr className='group-row'>
-        {showRadioButton &&
+        {(showGroupRadioButton || showRadioButton) &&
           <td>
-            <label className='form-field__label invisible' htmlFor={`group_${row.id}`}>Ryhmä {row.id}</label>
-            <input type='radio'
-              checked={isGroupSelected}
-              disabled={disabled}
-              id={`group_${row.id}`}
-              name={`group_${row.id}`}
-              onChange={handleSelectGroup}
-              onClick={handleClickRadioButton}
-              onKeyDown={handleKeyDownRadioButton}
-            />
+            {showGroupRadioButton &&
+              <Fragment>
+                <label className='form-field__label invisible' htmlFor={`group_${row.id}`}>Ryhmä {row.id}</label>
+                <input type='radio'
+                  checked={isGroupSelected}
+                  disabled={disabled}
+                  id={`group_${row.id}`}
+                  name={`group_${row.id}`}
+                  onChange={handleSelectGroup}
+                  onClick={handleClickRadioButton}
+                  onKeyDown={handleKeyDownRadioButton}
+                />
+              </Fragment>
+            }
           </td>
         }
         {columns.map(({dataClassName, grouping, key, renderer}, columnIndex) => {
