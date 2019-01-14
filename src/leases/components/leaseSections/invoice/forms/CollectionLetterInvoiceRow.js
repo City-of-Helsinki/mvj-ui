@@ -15,7 +15,13 @@ import RemoveButton from '$components/form/RemoveButton';
 import {fetchPenaltyInterestByInvoice} from '$src/penaltyInterest/actions';
 import {FormNames} from '$src/leases/enums';
 import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
-import {getIsFetchingByInvoice, getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
+import {
+  getIsFetchingByInvoice,
+  getMethods as getPenaltyInterestMethods,
+  getPenaltyInterestByInvoice,
+} from '$src/penaltyInterest/selectors';
+
+import type {Methods} from '$src/types';
 
 type Props = {
   field: any,
@@ -27,6 +33,7 @@ type Props = {
   isFetching: boolean,
   onRemove: Function,
   penaltyInterest: ?Object,
+  penaltyInterestMethods: Methods,
   selectedInvoices: Array<Object>,
   showDeleteButton: boolean,
 }
@@ -34,8 +41,11 @@ type Props = {
 class CollectionLetterInvoiceRow extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     if(prevProps.invoice !== this.props.invoice && isEmpty(this.props.penaltyInterest)) {
-      const {fetchPenaltyInterestByInvoice, invoice} = this.props;
-      fetchPenaltyInterestByInvoice(invoice);
+      const {fetchPenaltyInterestByInvoice, invoice, penaltyInterestMethods} = this.props;
+
+      if(penaltyInterestMethods.POST) {
+        fetchPenaltyInterestByInvoice(invoice);
+      }
     }
   }
 
@@ -72,12 +82,11 @@ class CollectionLetterInvoiceRow extends Component<Props> {
               type: 'choice',
               required: true,
               label: 'Perittävä lasku',
+              read_only: false,
             }}
             invisibleLabel={true}
             name={field}
-            overrideValues={{
-              options: filteredInvoiceOptions,
-            }}
+            overrideValues={{options: filteredInvoiceOptions}}
           />
         </Column>
         <Column small={2}>
@@ -118,6 +127,7 @@ export default connect(
   (state, props) => {
     const invoice = selector(state, props.field);
     const selectedInvoices = [];
+
     props.fields.forEach((field) => {
       const item = selector(state, field);
       if(item && (item !== invoice)) {
@@ -129,6 +139,7 @@ export default connect(
       isFetching: getIsFetchingByInvoice(state, invoice),
       invoice: invoice,
       penaltyInterest: getPenaltyInterestByInvoice(state, invoice),
+      penaltyInterestMethods: getPenaltyInterestMethods(state),
       selectedInvoices: selectedInvoices,
     };
   },

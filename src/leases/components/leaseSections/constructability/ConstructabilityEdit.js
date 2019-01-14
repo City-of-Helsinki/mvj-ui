@@ -1,9 +1,8 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import ConstructabilityItemEdit from './ConstructabilityItemEdit';
@@ -11,54 +10,52 @@ import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import {receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames} from '$src/leases/enums';
+import {FormNames, LeaseAreasFieldPaths} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
-import {getUserOptions} from '$src/users/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type AreaProps = {
-  areas: Array<Object>,
   attributes: Attributes,
   errors: ?Object,
   fields: any,
   isSaveClicked: boolean,
   locationOptions: Array<Object>,
+  savedAreas: Array<Object>,
   typeOptions: Array<Object>,
 }
 
 const renderAreas = ({
-  areas,
   attributes,
   errors,
   fields,
   isSaveClicked,
   locationOptions,
+  savedAreas,
   typeOptions,
 }: AreaProps): Element<*> => {
   return (
-    <div>
-      {!fields || !fields.length &&
-        <FormText className='no-margin'>Ei vuokra-alueita</FormText>
-      }
-      {areas && !!areas.length && fields && !!fields.length && fields.map((area, index) => {
+    <Fragment>
+      {!fields || !fields.length && <FormText>Ei vuokra-alueita</FormText>}
+      {savedAreas && !!savedAreas.length && fields && !!fields.length && fields.map((area, index) => {
 
         return (
           <ConstructabilityItemEdit
             key={index}
-            areaData={areas[index]}
             attributes={attributes}
             errors={errors}
             field={area}
             isSaveClicked={isSaveClicked}
             locationOptions={locationOptions}
+            savedArea={savedAreas[index]}
             typeOptions={typeOptions}
           />
         );
       })}
-    </div>
+    </Fragment>
   );
 };
 
@@ -73,16 +70,20 @@ type Props = {
 }
 
 type State = {
-  areas: Array<Object>,
+  attributes: Attributes,
+  currentLease: Lease,
   locationOptions: Array<Object>,
   typeOptions: Array<Object>,
+  savedAreas: Array<Object>,
 }
 
-class ConstructabilityEdit extends Component<Props, State> {
+class ConstructabilityEdit extends PureComponent<Props, State> {
   state = {
-    areas: [],
+    attributes: {},
+    currentLease: {},
     locationOptions: [],
     typeOptions: [],
+    savedAreas: [],
   }
 
   componentDidUpdate(prevProps) {
@@ -95,27 +96,21 @@ class ConstructabilityEdit extends Component<Props, State> {
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const retObj = {};
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
 
     if(props.attributes !== state.attributes) {
-      retObj.locationOptions = getAttributeFieldOptions(props.attributes, 'lease_areas.child.children.location');
-      retObj.typeOptions = getAttributeFieldOptions(props.attributes, 'lease_areas.child.children.type');
-      retObj.attributes = props.attributes;
-    }
-    if(props.currentLease !== state.currentLease) {
-      retObj.areas = getContentConstructability(props.currentLease);
-      retObj.currentLease = props.currentLease;
-    }
-    if(props.users !== state.users) {
-      retObj.userOptions = getUserOptions(props.users);
-      retObj.users = props.users;
+      newState.attributes = props.attributes;
+      newState.locationOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.LOCATION);
+      newState.typeOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.TYPE);
     }
 
-    if(!isEmpty(retObj)) {
-      return retObj;
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.savedAreas = getContentConstructability(props.currentLease);
     }
-    return null;
+
+    return newState;
   }
 
   render () {
@@ -126,8 +121,8 @@ class ConstructabilityEdit extends Component<Props, State> {
       isSaveClicked,
     } = this.props;
     const {
-      areas,
       locationOptions,
+      savedAreas,
       typeOptions,
     } = this.state;
 
@@ -138,13 +133,13 @@ class ConstructabilityEdit extends Component<Props, State> {
         <SendEmail />
 
         <FieldArray
-          areas={areas}
           attributes={attributes}
           component={renderAreas}
           errors={errors}
           isSaveClicked={isSaveClicked}
           locationOptions={locationOptions}
-          name="lease_areas"
+          name='lease_areas'
+          savedAreas={savedAreas}
           typeOptions={typeOptions}
         />
       </form>

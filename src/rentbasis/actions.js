@@ -2,10 +2,12 @@
 
 import {createAction} from 'redux-actions';
 
+import type {Attributes, Methods} from '$src/types';
 import type {
-  Attributes,
   FetchAttributesAction,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  RentBasisAttributesNotFoundAction,
   RentBasisList,
   FetchRentBasisListAction,
   ReceiveRentBasisListAction,
@@ -26,8 +28,14 @@ import type {
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/rentbasis/FETCH_ATTRIBUTES')();
 
-export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
-  createAction('mvj/rentbasis/RECEIVE_ATTRIBUTES')(identifiers);
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/rentbasis/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/rentbasis/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): RentBasisAttributesNotFoundAction =>
+  createAction('mvj/rentbasis/ATTRIBUTES_NOT_FOUND')();
 
 export const fetchRentBasisList = (search: string): FetchRentBasisListAction =>
   createAction('mvj/rentbasis/FETCH_ALL')(search);

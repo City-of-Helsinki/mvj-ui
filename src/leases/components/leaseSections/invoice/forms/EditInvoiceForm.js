@@ -1,23 +1,32 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import AmountWithVat from '$components/vat/AmountWithVat';
+import Authorization from '$components/authorization/Authorization';
+import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {ButtonColors} from '$components/enums';
+import {
+  InvoiceCreditInvoicesFieldPaths,
+  InvoiceCreditInvoicesFieldTitles,
+  InvoiceFieldPaths,
+  InvoiceFieldTitles,
+  InvoicePaymentsFieldPaths,
+  InvoicePaymentsFieldTitles,
+  InvoiceRowsFieldPaths,
+} from '$src/invoices/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -25,17 +34,22 @@ import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
-  getAttributeFieldOptions,
+  getFieldAttributes,
+  getFieldOptions,
   getLabelOfOption,
+  isEmptyValue,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+  isFieldRequired,
 } from '$util/helpers';
 import {getAttributes as getInvoiceAttributes, getIsEditClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type PaymentsProps = {
-  attributes: InvoiceAttributes,
+  attributes: Attributes,
   fields: any,
   isEditClicked: boolean,
 }
@@ -47,22 +61,20 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
+          <Fragment>
             {!fields || !fields.length && <FormText>Ei maksuja</FormText>}
 
             {fields && !!fields.length &&
               <Row>
                 <Column small={6}>
-                  <FormTextTitle
-                    required={get(attributes, 'payments.child.children.paid_amount.required')}
-                    title='Maksettu määrä (alviton)'
-                  />
+                  <FormTextTitle required={isFieldRequired(attributes, InvoicePaymentsFieldPaths.PAID_AMOUNT)}>
+                    {InvoicePaymentsFieldTitles.PAID_AMOUNT}
+                  </FormTextTitle>
                 </Column>
                 <Column small={6}>
-                  <FormTextTitle
-                    required={get(attributes, 'payments.child.children.paid_date.required')}
-                    title='Maksettu pvm'
-                  />
+                  <FormTextTitle required={isFieldRequired(attributes, InvoicePaymentsFieldPaths.PAID_DATE)}>
+                    {InvoicePaymentsFieldTitles.PAID_DATE}
+                  </FormTextTitle>
                 </Column>
               </Row>
             }
@@ -83,41 +95,56 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
               return (
                 <Row key={index}>
                   <Column small={6}>
-                    <FormField
-                      disableTouched={isEditClicked}
-                      fieldAttributes={get(attributes, 'payments.child.children.paid_amount')}
-                      invisibleLabel
-                      name={`${payment}.paid_amount`}
-                      unit='€'
-                    />
+                    <Authorization allow={isFieldAllowedToRead(attributes, InvoicePaymentsFieldPaths.PAID_AMOUNT)}>
+                      <FormField
+                        disableTouched={isEditClicked}
+                        fieldAttributes={getFieldAttributes(attributes, InvoicePaymentsFieldPaths.PAID_AMOUNT)}
+                        invisibleLabel
+                        name={`${payment}.paid_amount`}
+                        unit='€'
+                        overrideValues={{label: InvoicePaymentsFieldTitles.PAID_AMOUNT}}
+                      />
+                    </Authorization>
                   </Column>
-                  <Column small={4}>
-                    <FormField
-                      disableTouched={isEditClicked}
-                      fieldAttributes={get(attributes, 'payments.child.children.paid_date')}
-                      invisibleLabel
-                      name={`${payment}.paid_date`}
-                    />
-                  </Column>
-                  <Column small={2}>
-                    <RemoveButton
-                      className='third-level'
-                      onClick={handleRemove}
-                      title="Poista maksu"
+                  <Column small={6}>
+                    <FieldAndRemoveButtonWrapper
+                      field={
+                        <Authorization allow={isFieldAllowedToRead(attributes, InvoicePaymentsFieldPaths.PAID_DATE)}>
+                          <FormField
+                            disableTouched={isEditClicked}
+                            fieldAttributes={getFieldAttributes(attributes, InvoicePaymentsFieldPaths.PAID_DATE)}
+                            invisibleLabel
+                            name={`${payment}.paid_date`}
+                            overrideValues={{label: InvoicePaymentsFieldTitles.PAID_DATE}}
+                          />
+                        </Authorization>
+                      }
+                      removeButton={
+                        <Authorization allow={isFieldAllowedToEdit(attributes, InvoicePaymentsFieldPaths.PAYMENTS)}>
+                          <RemoveButton
+                            className='third-level'
+                            onClick={handleRemove}
+                            title="Poista maksu"
+                          />
+                        </Authorization>
+                      }
                     />
                   </Column>
                 </Row>
               );
             })}
-            <Row>
-              <Column>
-                <AddButtonThird
-                  label='Lisää maksu'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
+
+            <Authorization allow={isFieldAllowedToEdit(attributes, InvoicePaymentsFieldPaths.PAYMENTS)}>
+              <Row>
+                <Column>
+                  <AddButtonThird
+                    label='Lisää maksu'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -128,11 +155,10 @@ type Props = {
   creditedInvoice: ?Object,
   handleSubmit: Function,
   invoice: ?Object,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   isEditClicked: boolean,
   lease: Lease,
   onCreditedInvoiceClick: Function,
-  setRefForFirstField?: Function,
 }
 
 const EditInvoiceForm = ({
@@ -143,7 +169,6 @@ const EditInvoiceForm = ({
   isEditClicked,
   lease,
   onCreditedInvoiceClick,
-  setRefForFirstField,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
     if(invoice) {
@@ -157,221 +182,242 @@ const EditInvoiceForm = ({
     }
   };
 
-  const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
+  const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
   const tenantOptions = getInvoiceTenantOptions(lease);
-  const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
-  const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
-  const creditInvoices = get(invoice, 'credit_invoices', []);
+  const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
+  const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
+  const creditInvoices = invoice ? invoice.credit_invoices : [];
 
   return (
     <form onSubmit={handleSubmit}>
       <Row>
-        <Column small={4}>
-          <FormTitleAndText
-            title='Laskunsaaja'
-            text={(invoice && getContactFullName(invoice.recipientFull)) || '-'}
-          />
+        <Column small={12}>
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
+            <FormTextTitle>{InvoiceFieldTitles.RECIPIENT}</FormTextTitle>
+            <FormText>{invoice ? getContactFullName(invoice.recipientFull) : '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
-          <FormTitleAndText
-            title='Laskunumero'
-            text={(invoice && invoice.number) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)}>
+            <FormTextTitle>{InvoiceFieldTitles.NUMBER}</FormTextTitle>
+            <FormText>{(invoice && invoice.number) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={4}>
-          <FormTitleAndText
-            title='Lähetetty SAP:iin'
-            text={(invoice && formatDate(invoice.sent_to_sap_at)) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.SENT_TO_SAP_AT)}>
+            <FormTextTitle>{InvoiceFieldTitles.SENT_TO_SAP_AT}</FormTextTitle>
+            <FormText>{(invoice && formatDate(invoice.sent_to_sap_at)) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={4}>
-          <FormTitleAndText
-            title='SAP numero'
-            text={(invoice && invoice.sap_id) || '-'}
-          />
-        </Column>
-      </Row>
-      <Row>
-        <Column small={4}>
-          <FormField
-            disableTouched={isEditClicked}
-            fieldAttributes={get(invoiceAttributes, 'due_date')}
-            name='due_date'
-            setRefForField={setRefForFirstField}
-            overrideValues={{
-              label: 'Eräpäivä',
-            }}
-          />
-        </Column>
-        <Column small={4}>
-          <FormTitleAndText
-            title='Muutettu eräpäivä'
-            text={(invoice && formatDate(invoice.adjusted_date_date)) || '-'}
-          />
-        </Column>
-        <Column small={4}>
-          <FormTitleAndText
-            title='Laskutuspvm'
-            text={(invoice && formatDate(invoice.invoicing_date)) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.SAP_ID)}>
+            <FormTextTitle>{InvoiceFieldTitles.SAP_ID}</FormTextTitle>
+            <FormText>{(invoice && invoice.sap_id) || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
-          <FormTitleAndText
-            title='Laskun tila'
-            text={(invoice && getLabelOfOption(stateOptions, invoice.state)) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+            <FormField
+              disableTouched={isEditClicked}
+              fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}
+              name='due_date'
+              overrideValues={{label: InvoiceFieldTitles.DUE_DATE}}
+            />
+          </Authorization>
+        </Column>
+        <Column small={4}>
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.ADJUSTED_DUE_DATE)}>
+            <FormTextTitle>{InvoiceFieldTitles.ADJUSTED_DUE_DATE}</FormTextTitle>
+            <FormText>{(invoice && formatDate(invoice.adjusted_due_date)) || '-'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={4}>
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INVOICING_DATE)}>
+            <FormTextTitle>{InvoiceFieldTitles.INVOICING_DATE}</FormTextTitle>
+            <FormText>{(invoice && formatDate(invoice.invoicing_date)) || '-'}</FormText>
+          </Authorization>
+        </Column>
+      </Row>
+      <Row>
+        <Column small={4}>
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.STATE)}>
+            <FormTextTitle>{InvoiceFieldTitles.STATE}</FormTextTitle>
+            <FormText>{(invoice && getLabelOfOption(stateOptions, invoice.state)) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={4}>
           <Row>
             <Column>
-              <FormTextTitle required title='Laskutuskausi' />
+              <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE) || isFieldRequired(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                {InvoiceFieldTitles.BILLING_PERIOD}
+              </FormTextTitle>
             </Column>
           </Row>
           <Row>
             <Column small={6}>
-              <FormField
-                disableTouched={isEditClicked}
-                fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
-                invisibleLabel
-                name='billing_period_start_date'
-              />
+              <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}>
+                <FormField
+                  disableTouched={isEditClicked}
+                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}
+                  invisibleLabel
+                  name='billing_period_start_date'
+                  overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE}}
+                />
+              </Authorization>
             </Column>
             <Column small={6}>
-              <FormField
-                disableTouched={isEditClicked}
-                fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
-                invisibleLabel
-                name='billing_period_end_date'
-              />
+              <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                <FormField
+                  disableTouched={isEditClicked}
+                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}
+                  invisibleLabel
+                  name='billing_period_end_date'
+                  overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE}}
+                />
+              </Authorization>
             </Column>
           </Row>
         </Column>
         <Column small={4}>
-          <FormTitleAndText
-            title='Lykkäyspvm'
-            text={(invoice && formatDate(invoice.postpone_date)) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.POSTPONE_DATE)}>
+            <FormTextTitle>{InvoiceFieldTitles.POSTPONE_DATE}</FormTextTitle>
+            <FormText>{(invoice && formatDate(invoice.postpone_date)) || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
-          <FormTitleAndText
-            title='Laskun pääoma'
-            text={invoice && invoice.total_amount
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TOTAL_AMOUNT)}>
+            <FormTextTitle>{InvoiceFieldTitles.TOTAL_AMOUNT}</FormTextTitle>
+            <FormText>{invoice && !isEmptyValue(invoice.total_amount)
               ? <AmountWithVat amount={invoice.total_amount} date={invoice.due_date} />
-              : '-'}
-          />
+              : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={4}>
-          <FormTitleAndText
-            title='Laskun osuus'
-            text={invoice && invoice.totalShare !== null
-              ? `${formatNumber((invoice ? invoice.totalShare : 0) * 100)} %`
-              : '-'
-            }
-          />
+          <FormTextTitle>{InvoiceFieldTitles.SHARE}</FormTextTitle>
+          <FormText>{invoice && !isEmptyValue(invoice.totalShare) ? `${formatNumber(invoice.totalShare * 100)} %` : '-'}</FormText>
         </Column>
         <Column small={4}>
-          <FormTitleAndText
-            title='Laskutettu määrä'
-            text={(invoice && invoice.billed_amount)
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLED_AMOUNT)}>
+            <FormTextTitle>{InvoiceFieldTitles.BILLED_AMOUNT}</FormTextTitle>
+            <FormText>{invoice && !isEmptyValue(invoice.billed_amount)
               ? <AmountWithVat amount={invoice.billed_amount} date={invoice.due_date} />
               : '-'}
-          />
+            </FormText>
+          </Authorization>
         </Column>
       </Row>
 
-      <SubTitle>Maksut</SubTitle>
+      <SubTitle>{InvoicePaymentsFieldTitles.PAYMENTS}</SubTitle>
       <Row>
         <Column small={12} medium={8}>
-          <FieldArray
-            attributes={invoiceAttributes}
-            component={renderPayments}
-            isEditClicked={isEditClicked}
-            name='payments'
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAYMENTS)}>
+            <FieldArray
+              attributes={invoiceAttributes}
+              component={renderPayments}
+              isEditClicked={isEditClicked}
+              name='payments'
+            />
+          </Authorization>
         </Column>
         <Column small={6} medium={4}>
-          <FormTitleAndText
-            title='Maksamaton määrä'
-            text={(invoice && invoice.outstanding_amount)
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
+            <FormTextTitle>{InvoiceFieldTitles.OUTSTANDING_AMOUNT}</FormTextTitle>
+            <FormText>{invoice && !isEmptyValue(invoice.outstanding_amount)
               ? <AmountWithVat amount={invoice.outstanding_amount} date={invoice.due_date} />
               : '-'}
-          />
+            </FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
-          <FormTitleAndText
-            title='Maksukehotuspvm'
-            text={(invoice && formatDate(invoice.payment_notification_date)) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
+            <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_DATE}</FormTextTitle>
+            <FormText>{(invoice && formatDate(invoice.payment_notification_date)) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={4}>
-          <FormTitleAndText
-            title='Perintäkulu'
-            text={(invoice && invoice.collection_charge)
-              ? `${formatNumber(invoice.collection_charge)} €`
-              : '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.COLLECTION_CHARGE)}>
+            <FormTextTitle>{InvoiceFieldTitles.COLLECTION_CHARGE}</FormTextTitle>
+            <FormText>{invoice && !isEmptyValue(invoice.collection_charge) ? `${formatNumber(invoice.collection_charge)} €` : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={4}>
-          <FormTitleAndText
-            title='Maksukehotus luettelo'
-            text={(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
+            <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_CATALOG_DATE}</FormTextTitle>
+            <FormText>{(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
-          <FormTitleAndText
-            title='E vai paperilasku'
-            text={(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD)}>
+            <FormTextTitle>{InvoiceFieldTitles.DELIVERY_METHOD}</FormTextTitle>
+            <FormText>{(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={4}>
-          <FormTitleAndText
-            title='Laskun tyyppi'
-            text={(invoice && getLabelOfOption(typeOptions, invoice.type)) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TYPE)}>
+            <FormTextTitle>{InvoiceFieldTitles.TYPE}</FormTextTitle>
+            <FormText>{(invoice && getLabelOfOption(typeOptions, invoice.type)) || '-'}</FormText>
+          </Authorization>
         </Column>
         {(creditedInvoice && !!creditedInvoice.number) &&
           <Column small={4}>
-            <FormTitleAndText
-              title='Hyvitetty lasku'
-              text={<a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{creditedInvoice.number}</a>}
-            />
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.CREDITED_INVOICE)}>
+              <FormTextTitle>{InvoiceFieldTitles.CREDITED_INVOICE}</FormTextTitle>
+              <FormText>{<a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{creditedInvoice.number}</a>}</FormText>
+            </Authorization>
           </Column>
         }
       </Row>
       <Row>
         <Column small={12}>
-          <FormField
-            disableTouched={isEditClicked}
-            fieldAttributes={get(invoiceAttributes, 'notes')}
-            name='notes'
-            overrideValues={{
-              label: 'Tiedote',
-              fieldType: 'textarea',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NOTES)}>
+            <FormField
+              disableTouched={isEditClicked}
+              fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.NOTES)}
+              name='notes'
+              overrideValues={{
+                label: InvoiceFieldTitles.NOTES,
+                fieldType: 'textarea',
+              }}
+            />
+          </Authorization>
         </Column>
       </Row>
-      {!!creditInvoices.length &&
-        <Row>
-          <Column small={12}>
-            <SubTitle>Hyvityslaskut</SubTitle>
+
+      <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.CREDIT_INVOICES)}>
+        {!!creditInvoices.length &&
+          <Fragment>
+            <SubTitle>{InvoiceCreditInvoicesFieldTitles.CREDIT_INVOICES}</SubTitle>
+
             {!!creditInvoices.length &&
-              <div>
+              <Fragment>
                 <Row>
-                  <Column small={4}><FormTextTitle title='Laskunumero' /></Column>
-                  <Column small={4}><FormTextTitle title='Summa' /></Column>
-                  <Column small={4}><FormTextTitle title='Eräpäivä' /></Column>
+                  <Column small={4}>
+                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.NUMBER)}>
+                      <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.NUMBER}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column small={4}>
+                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.TOTAL_AMOUNT)}>
+                      <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.TOTAL_AMOUNT}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column small={4}>
+                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.DUE_DATE)}>
+                      <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.DUE_DATE}</FormTextTitle>
+                    </Authorization>
+                  </Column>
                 </Row>
+
                 {creditInvoices.map((item) => {
                   const handleCreditInvoiceClick = () => {
                     onCreditedInvoiceClick(item.id);
@@ -382,35 +428,46 @@ const EditInvoiceForm = ({
                       handleCreditInvoiceClick();
                     }
                   };
+
                   return (
                     <Row key={item.id}>
                       <Column small={4}>
-                        <FormText>
-                          {item.number
-                            ? <a className='no-margin' onKeyDown={handleCreditInvoiceKeyDown} onClick={handleCreditInvoiceClick} tabIndex={0}>{item.number}</a>
-                            : '-'
-                          }
-                        </FormText>
+                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.NUMBER)}>
+                          <FormText>
+                            {item.number
+                              ? <a className='no-margin' onKeyDown={handleCreditInvoiceKeyDown} onClick={handleCreditInvoiceClick} tabIndex={0}>{item.number}</a>
+                              : '-'
+                            }
+                          </FormText>
+                        </Authorization>
                       </Column>
-                      <Column small={4}><FormText>
-                        <AmountWithVat amount={item.total_amount} date={item.due_date} />
-                      </FormText></Column>
-                      <Column small={4}><FormText>{formatDate(item.due_date)}</FormText></Column>
+                      <Column small={4}>
+                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.TOTAL_AMOUNT)}>
+                          <FormText><AmountWithVat amount={item.total_amount} date={item.due_date} /></FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={4}>
+                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.DUE_DATE)}>
+                          <FormText>{formatDate(item.due_date)}</FormText>
+                        </Authorization>
+                      </Column>
                     </Row>
                   );
                 })}
-              </div>
+              </Fragment>
             }
-          </Column>
-        </Row>
-      }
-      <FieldArray
-        attributes={invoiceAttributes}
-        component={InvoiceRowsEdit}
-        name='rows'
-        isEditClicked={isEditClicked}
-        tenantOptions={tenantOptions}
-      />
+          </Fragment>
+        }
+      </Authorization>
+
+      <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
+        <FieldArray
+          component={InvoiceRowsEdit}
+          name='rows'
+          isEditClicked={isEditClicked}
+          tenantOptions={tenantOptions}
+        />
+      </Authorization>
     </form>
   );
 };

@@ -1,17 +1,18 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash/isEmpty';
 
 import ConstructabilityItem from './ConstructabilityItem';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
+import {LeaseAreasFieldPaths} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$src/util/helpers';
+import {getFieldOptions} from '$src/util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
@@ -20,75 +21,59 @@ type Props = {
 
 type State = {
   areas: Array<Object>,
-  constructabilityReportStateOptions: Array<Object>,
+  attributes: Attributes,
+  constructabilityReportInvestigationStateOptions: Array<Object>,
+  constructabilityStateOptions: Array<Object>,
+  currentLease: Lease,
   locationOptions: Array<Object>,
-  pollutedLandConditionStateOptions: Array<Object>,
-  stateOptions: Array<Object>,
+  pollutedLandRentConditionStateOptions: Array<Object>,
   typeOptions: Array<Object>,
 }
 
-class Constructability extends Component<Props, State> {
+class Constructability extends PureComponent<Props, State> {
   state = {
     areas: [],
-    constructabilityReportStateOptions: [],
+    attributes: {},
+    constructabilityReportInvestigationStateOptions: [],
+    constructabilityStateOptions: [],
+    currentLease: {},
     locationOptions: [],
-    pollutedLandConditionStateOptions: [],
-    stateOptions: [],
+    pollutedLandRentConditionStateOptions: [],
     typeOptions: [],
   }
 
-  componentWillMount() {
-    const {attributes, currentLease} = this.props;
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
 
-    if(!isEmpty(attributes)) {
-      this.updateOptions();
+    if(props.attributes !== state.attributes) {
+      newState.currentLease = props.currentLease;
+      newState.constructabilityReporInvestigationtStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE);
+      newState.constructabilityStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE);
+      newState.locationOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.LOCATION);
+      newState.pollutedLandRentConditionStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE);
+      newState.typeOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.TYPE);
     }
-    if(!isEmpty(currentLease)) {
-      this.updateContent();
+
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.areas = getContentConstructability(props.currentLease);
     }
-  }
 
-  componentDidUpdate(prevProps) {
-    if(prevProps.attributes !== this.props.attributes) {
-      this.updateOptions();
-    }
-    if(prevProps.currentLease !== this.props.currentLease) {
-      this.updateContent();
-    }
-  }
-
-  updateContent = () => {
-    const {currentLease} = this.props;
-
-    this.setState({
-      areas: getContentConstructability(currentLease),
-    });
-  }
-
-  updateOptions = () => {
-    const {attributes} = this.props;
-
-    this.setState({
-      constructabilityReportStateOptions: getAttributeFieldOptions(attributes, 'lease_areas.child.children.constructability_report_investigation_state'),
-      locationOptions: getAttributeFieldOptions(attributes, 'lease_areas.child.children.location'),
-      pollutedLandConditionStateOptions: getAttributeFieldOptions(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state'),
-      stateOptions: getAttributeFieldOptions(attributes, 'lease_areas.child.children.preconstruction_state'),
-      typeOptions: getAttributeFieldOptions(attributes, 'lease_areas.child.children.type'),
-    });
+    return newState;
   }
 
   render() {
     const {
       areas,
-      constructabilityReportStateOptions,
+      constructabilityReportInvestigationStateOptions,
+      constructabilityStateOptions,
       locationOptions,
-      pollutedLandConditionStateOptions,
-      stateOptions,
+      pollutedLandRentConditionStateOptions,
       typeOptions,
     } = this.state;
 
     return (
-      <div>
+      <Fragment>
         <h2>Rakentamiskelpoisuus</h2>
         <Divider />
         <SendEmail />
@@ -100,14 +85,14 @@ class Constructability extends Component<Props, State> {
           <ConstructabilityItem
             key={area.id}
             area={area}
-            constructabilityReportStateOptions={constructabilityReportStateOptions}
+            constructabilityReportInvestigationStateOptions={constructabilityReportInvestigationStateOptions}
+            constructabilityStateOptions={constructabilityStateOptions}
             locationOptions={locationOptions}
-            pollutedLandConditionStateOptions={pollutedLandConditionStateOptions}
-            stateOptions={stateOptions}
+            pollutedLandRentConditionStateOptions={pollutedLandRentConditionStateOptions}
             typeOptions={typeOptions}
           />
         )}
-      </div>
+      </Fragment>
     );
   }
 }

@@ -5,33 +5,52 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
-import FormTitleAndText from '$components/form/FormTitleAndText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {ConstructabilityStatus, FormNames} from '$src/leases/enums';
+import {
+  ConstructabilityStatus,
+  FormNames,
+  LeaseAreaAddressesFieldPaths,
+  LeaseAreasFieldPaths,
+  LeaseAreasFieldTitles,
+  LeaseConstructabilityDescriptionsFieldPaths,
+  LeaseConstructabilityDescriptionsFieldTitles,
+} from '$src/leases/enums';
 import {getFullAddress} from '$src/leases/helpers';
-import {formatDate, formatNumber, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {
+  formatDate,
+  formatNumber,
+  getLabelOfOption,
+  getReferenceNumberLink,
+  isEmptyValue,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {getCollapseStateByKey} from '$src/leases/selectors';
+import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
+
+import type {Attributes} from '$src/types';
 
 type CommentsProps = {
+  attributes: Attributes,
   comments: ?Array<Object>,
 }
 
 const Comments = ({
+  attributes,
   comments,
 }: CommentsProps) =>
-  <div>
-    <SubTitle>Huomautukset</SubTitle>
+  <Fragment>
+    <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
     {comments && !!comments.length
       ? (
         <BoxItemContainer>
@@ -41,19 +60,23 @@ const Comments = ({
               key={comment.id}>
               <Row>
                 <Column small={12}>
-                  <ListItem>{comment.text || ''}</ListItem>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
+                    <ListItem>{comment.text || ''}</ListItem>
+                  </Authorization>
                   <FormText>
                     <strong>{getUserFullName(comment.user)}</strong>
                     {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
-                    {comment.ahjo_reference_number &&
-                      <span>,&nbsp;
-                        <ExternalLink
-                          className='no-margin'
-                          href={getReferenceNumberLink(comment.ahjo_reference_number)}
-                          text={comment.ahjo_reference_number}
-                        />
-                      </span>
-                    }
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
+                      {comment.ahjo_reference_number &&
+                        <span>,&nbsp;
+                          <ExternalLink
+                            className='no-margin'
+                            href={getReferenceNumberLink(comment.ahjo_reference_number)}
+                            text={comment.ahjo_reference_number}
+                          />
+                        </span>
+                      }
+                    </Authorization>
                   </FormText>
                 </Column>
               </Row>
@@ -64,7 +87,7 @@ const Comments = ({
         <FormText><em>Ei huomautuksia.</em></FormText>
       )
     }
-  </div>;
+  </Fragment>;
 
 type StatusIndicatorProps = {
   researchState: string,
@@ -91,32 +114,34 @@ const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
 type Props = {
   area: Object,
   areaCollapseState: boolean,
+  attributes: Attributes,
   constructabilityReportCollapseState: boolean,
-  constructabilityReportStateOptions: Array<Object>,
+  constructabilityReportInvestigationStateOptions: Array<Object>,
+  constructabilityStateOptions: Array<Object>,
   demolitionCollapseState: boolean,
   locationOptions: Array<Object>,
   otherCollapseState: boolean,
   pollutedLandCollapseState: boolean,
-  pollutedLandConditionStateOptions: Array<Object>,
+  pollutedLandRentConditionStateOptions: Array<Object>,
   preconstructionCollapseState: boolean,
   receiveCollapseStates: Function,
-  stateOptions: Array<Object>,
   typeOptions: Array<Object>,
 }
 
 const ConstructabilityItem = ({
   area,
   areaCollapseState,
+  attributes,
   constructabilityReportCollapseState,
-  constructabilityReportStateOptions,
+  constructabilityReportInvestigationStateOptions,
+  constructabilityStateOptions,
   demolitionCollapseState,
   locationOptions,
   otherCollapseState,
   pollutedLandCollapseState,
-  pollutedLandConditionStateOptions,
+  pollutedLandRentConditionStateOptions,
   preconstructionCollapseState,
   receiveCollapseStates,
-  stateOptions,
   typeOptions,
 }: Props) => {
   const handleAreaCollapseToggle = (val: boolean) => {
@@ -197,17 +222,27 @@ const ConstructabilityItem = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, area.type) || '-'}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.TYPE)}>
+              <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, area.type) || '-'}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle>{getFullAddress(area)}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+              <CollapseHeaderSubtitle>{getFullAddress(area)}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle>{formatNumber(area.area)} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+              <CollapseHeaderSubtitle>{!isEmptyValue(area.area) ? `${formatNumber(area.area)} m²` : '-'}{area.location ? ` / ${getLabelOfOption(locationOptions, area.location)}` : ''}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
         </Fragment>
       }
-      headerTitle={<CollapseHeaderTitle>{area.identifier || '-'}</CollapseHeaderTitle>}
+      headerTitle={
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
+          {area.identifier || '-'}
+        </Authorization>
+      }
       onToggle={handleAreaCollapseToggle}
       showTitleOnOpen
     >
@@ -215,86 +250,99 @@ const ConstructabilityItem = ({
         className='collapse__secondary'
         defaultOpen={preconstructionCollapseState !== undefined ? preconstructionCollapseState : false}
         headerSubtitles={
-          <Column>
-            <StatusIndicator
-              researchState={area.preconstruction_state}
-              stateOptions={stateOptions}
-            />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={area.preconstruction_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
         }
-        headerTitle={<CollapseHeaderTitle>Esirakentaminen, johtosiirrot ja kunnallistekniikka</CollapseHeaderTitle>}
+        headerTitle='Esirakentaminen, johtosiirrot ja kunnallistekniikka'
         onToggle={handlePreconstructionCollapseToggle}
         showTitleOnOpen={true}
       >
-        <Comments comments={area.descriptionsPreconstruction} />
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <Comments attributes={attributes} comments={area.descriptionsPreconstruction} />
+        </Authorization>
       </Collapse>
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={demolitionCollapseState !== undefined ? demolitionCollapseState : false}
         headerSubtitles={
-          <Column>
-            <StatusIndicator
-              researchState={area.demolition_state}
-              stateOptions={stateOptions}
-            />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={area.demolition_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
         }
-        headerTitle={<CollapseHeaderTitle>Purku</CollapseHeaderTitle>}
+        headerTitle='Purku'
         onToggle={handleDemolitionCollapseToggle}
         showTitleOnOpen={true}
       >
-        <Comments comments={area.descriptionsDemolition} />
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <Comments attributes={attributes} comments={area.descriptionsDemolition} />
+        </Authorization>
       </Collapse>
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={pollutedLandCollapseState !== undefined ? pollutedLandCollapseState : false}
         headerSubtitles={
-          <Column>
-            <StatusIndicator
-              researchState={area.polluted_land_state}
-              stateOptions={stateOptions}
-            />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={area.polluted_land_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
         }
-        headerTitle={<CollapseHeaderTitle>Pima ja jäte</CollapseHeaderTitle>}
+        headerTitle='Pima ja jäte'
         onToggle={handlePollutedLandCollapseToggle}
         showTitleOnOpen={true}
       >
         <Row>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='Vuokraehdot'
-              text={getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_STATE}</FormTextTitle>
+              <FormText>{getLabelOfOption(pollutedLandRentConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='Vuokraehdot pvm'
-              text={formatDate(area.polluted_land_rent_condition_date) || '–'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_DATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_DATE}</FormTextTitle>
+              <FormText>{formatDate(area.polluted_land_rent_condition_date) || '–'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='PIMA valmistelija'
-              text={getUserFullName(area.polluted_land_planner) || '–'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.POLLUTED_LAND_PLANNER}</FormTextTitle>
+              <FormText>{getUserFullName(area.polluted_land_planner) || '–'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='ProjectWise numero'
-              text={area.polluted_land_projectwise_number || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.POLLUTED_LAND_PROJECTWISE_NUMBER}</FormTextTitle>
+              <FormText>{area.polluted_land_projectwise_number || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='Matti raportti'
-              text={area.polluted_land_matti_report_number || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.POLLUTED_LAND_MATTI_REPORT_NUMBER}</FormTextTitle>
+              <FormText>{area.polluted_land_matti_report_number || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
-        <Comments comments={area.descriptionsPollutedLand} />
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <Comments attributes={attributes} comments={area.descriptionsPollutedLand} />
+        </Authorization>
       </Collapse>
 
       <Collapse
@@ -304,41 +352,44 @@ const ConstructabilityItem = ({
           <Column>
             <StatusIndicator
               researchState={area.constructability_report_state}
-              stateOptions={stateOptions}
+              stateOptions={constructabilityStateOptions}
             />
           </Column>
         }
-        headerTitle={<CollapseHeaderTitle>Rakennettavuusselvitys</CollapseHeaderTitle>}
+        headerTitle='Rakennettavuusselvitys'
         onToggle={handleConstructabilityReportCollapseToggle}
         showTitleOnOpen={true}
       >
         <Row>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='Selvitys'
-              text={getLabelOfOption(constructabilityReportStateOptions, area.constructability_report_investigation_state) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE}</FormTextTitle>
+              <FormText>{getLabelOfOption(constructabilityReportInvestigationStateOptions, area.constructability_report_investigation_state) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='Allekirjoituspvm'
-              text={formatDate(area.constructability_report_signing_date) || '–'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_SIGNING_DATE}</FormTextTitle>
+              <FormText>{formatDate(area.constructability_report_signing_date) || '–'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='Allekirjoittaja'
-              text={area.constructability_report_signer || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_SIGNER}</FormTextTitle>
+              <FormText>{area.constructability_report_signer || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
-            <FormTitleAndText
-              title='Geoteknisen palvelun tiedosto'
-              text={area.constructability_report_geotechnical_number || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER}</FormTextTitle>
+              <FormText>{area.constructability_report_geotechnical_number || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
-        <Comments comments={area.descriptionsReport} />
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <Comments attributes={attributes} comments={area.descriptionsReport} />
+        </Authorization>
       </Collapse>
 
       <Collapse
@@ -348,15 +399,17 @@ const ConstructabilityItem = ({
           <Column>
             <StatusIndicator
               researchState={area.other_state}
-              stateOptions={stateOptions}
+              stateOptions={constructabilityStateOptions}
             />
           </Column>
         }
-        headerTitle={<CollapseHeaderTitle>Muut</CollapseHeaderTitle>}
+        headerTitle='Muut'
         onToggle={handleOtherCollapseToggle}
         showTitleOnOpen={true}
       >
-        <Comments comments={area.descriptionsOther} />
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <Comments attributes={attributes} comments={area.descriptionsOther} />
+        </Authorization>
       </Collapse>
     </Collapse>
   );
@@ -368,6 +421,7 @@ export default connect(
 
     return {
       areaCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONSTRUCTABILITY}.${id}.area`),
+      attributes: getAttributes(state),
       constructabilityReportCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONSTRUCTABILITY}.${id}.constructability_report`),
       demolitionCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONSTRUCTABILITY}.${id}.demolition`),
       otherCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONSTRUCTABILITY}.${id}.other`),

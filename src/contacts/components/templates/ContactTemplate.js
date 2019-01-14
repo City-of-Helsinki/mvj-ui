@@ -3,102 +3,108 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import FormTitleAndText from '$components/form/FormTitleAndText';
+import Authorization from '$components/authorization/Authorization';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {ContactFieldPaths, ContactFieldTitles} from '$src/contacts/enums';
+import {getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes} from '$src/contacts/selectors';
 import {ContactType} from '$src/contacts/enums';
 
-import type {Attributes} from '$src/contacts/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
-  contact: ?Object,
   attributes: Attributes,
+  contact: ?Object,
 }
 
-const ContactTemplate = ({contact, attributes}: Props) => {
-  const typeOptions = getAttributeFieldOptions(attributes, 'type');
-  const languageOptions = getAttributeFieldOptions(attributes, 'language');
-  if(!contact) {
-    return null;
-  }
+const ContactTemplate = ({attributes, contact}: Props) => {
+  const typeOptions = getFieldOptions(attributes, ContactFieldPaths.TYPE);
+  const languageOptions = getFieldOptions(attributes, ContactFieldPaths.LANGUAGE);
+
+  if(!contact) return null;
+
   return (
     <FormWrapper>
       <FormWrapperLeft>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='Asiakastyyppi'
-              text={getLabelOfOption(typeOptions, contact.type) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.TYPE)}>
+              <FormTextTitle>{ContactFieldTitles.TYPE}</FormTextTitle>
+              <FormText>{getLabelOfOption(typeOptions, contact.type) || '-'}</FormText>
+            </Authorization>
           </Column>
           {contact.type === ContactType.PERSON &&
             <Column small={12} medium={6} large={4}>
-              <FormTitleAndText
-                title='Sukunimi'
-                text={contact.last_name || '-'}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.LAST_NAME)}>
+                <FormTextTitle>{ContactFieldTitles.LAST_NAME}</FormTextTitle>
+                <FormText>{contact.last_name || '-'}</FormText>
+              </Authorization>
             </Column>
           }
           {contact.type === ContactType.PERSON &&
             <Column small={12} medium={6} large={4}>
-              <FormTitleAndText
-                title='Etunimi'
-                text={contact.first_name || '-'}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.FIRST_NAME)}>
+                <FormTextTitle>{ContactFieldTitles.FIRST_NAME}</FormTextTitle>
+                <FormText>{contact.first_name || '-'}</FormText>
+              </Authorization>
             </Column>
           }
           {contact.type && contact.type !== ContactType.PERSON &&
             <Column small={12} medium={6} large={8}>
-              <FormTitleAndText
-                title='Yrityksen nimi'
-                text={contact.name || '-'}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NAME)}>
+                <FormTextTitle>{ContactFieldTitles.NAME}</FormTextTitle>
+                <FormText>{contact.name || '-'}</FormText>
+              </Authorization>
             </Column>
           }
         </Row>
         <Row>
           <Column>
-            <FormTitleAndText
-              title='Katuosoite'
-              text={contact.address || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS)}>
+              <FormTextTitle>{ContactFieldTitles.ADDRESS}</FormTextTitle>
+              <FormText>{contact.address || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={4} large={4}>
-            <FormTitleAndText
-              title='Postinumero'
-              text={contact.postal_code || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.POSTAL_CODE)}>
+              <FormTextTitle>{ContactFieldTitles.POSTAL_CODE}</FormTextTitle>
+              <FormText>{contact.postal_code || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={12} medium={4} large={4}>
-            <FormTitleAndText
-              title='Postitoimipaikka'
-              text={contact.city || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CITY)}>
+              <FormTextTitle>{ContactFieldTitles.CITY}</FormTextTitle>
+              <FormText>{contact.city || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={12} medium={4} large={4}>
-            <FormTitleAndText
-              title='Maa'
-              text={contact.country || '-'}
-            />
+            {/* <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.COUNTRY)}>
+              <FormTextTitle>{ContactFieldTitles.COUNTRY}</FormTextTitle>
+              <FormText>{contact.country || '-'}</FormText>
+            </Authorization> */}
+            {/* TODO: Wrap field with Authorization component when implemented to BE */}
+            <FormTextTitle>{ContactFieldTitles.COUNTRY}</FormTextTitle>
+            <FormText>{contact.country || '-'}</FormText>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='Puhelinnumero'
-              text={contact.phone || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.PHONE)}>
+              <FormTextTitle>{ContactFieldTitles.PHONE}</FormTextTitle>
+              <FormText>{contact.phone || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={8}>
-            <FormTitleAndText
-              title='Sähköposti'
-              text={contact.email || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.EMAIL)}>
+              <FormTextTitle>{ContactFieldTitles.EMAIL}</FormTextTitle>
+              <FormText>{contact.email || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
       </FormWrapperLeft>
@@ -106,77 +112,79 @@ const ContactTemplate = ({contact, attributes}: Props) => {
         <Row>
           {contact.type === ContactType.PERSON &&
             <Column small={12} medium={6} large={4}>
-              <FormTitleAndText
-                title='Henkilötunnus'
-                text={contact.national_identification_number || '-'}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}>
+                <FormTextTitle>{ContactFieldTitles.NATIONAL_IDENTIFICATION_NUMBER}</FormTextTitle>
+                <FormText>{contact.national_identification_number || '-'}</FormText>
+              </Authorization>
             </Column>
           }
           {contact.type && contact.type !== ContactType.PERSON &&
             <Column small={12} medium={6} large={4}>
-              <FormTitleAndText
-                title='Y-tunnus'
-                text={contact.business_id || '-'}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.BUSINESS_ID)}>
+                <FormTextTitle>{ContactFieldTitles.BUSINESS_ID}</FormTextTitle>
+                <FormText>{contact.business_id || '-'}</FormText>
+              </Authorization>
             </Column>
           }
           <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='Kieli'
-              text={getLabelOfOption(languageOptions, contact.language) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.LANGUAGE)}>
+              <FormTextTitle>{ContactFieldTitles.LANGUAGE}</FormTextTitle>
+              <FormText>{getLabelOfOption(languageOptions, contact.language) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='SAP asiakasnumero'
-              text={contact.sap_customer_number || '-'}
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='Kumppanikoodi'
-              text={contact.partner_code || '-'}
-            />
-          </Column>
-          <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='Ovt-tunnus'
-              text={contact.electronic_billing_address || '-'}
-            />
-          </Column>
-          <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='Asiakasnumero'
-              text={contact.customer_number || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.SAP_CUSTOMER_NUMBER)}>
+              <FormTextTitle>{ContactFieldTitles.SAP_CUSTOMER_NUMBER}</FormTextTitle>
+              <FormText>{contact.sap_customer_number || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='Turvakielto'
-              text={contact.address_protection
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.PARTNER_CODE)}>
+              <FormTextTitle>{ContactFieldTitles.PARTNER_CODE}</FormTextTitle>
+              <FormText>{contact.partner_code || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={12} medium={6} large={4}>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS)}>
+              <FormTextTitle>{ContactFieldTitles.ELECTRONIC_BILLING_ADDRESS}</FormTextTitle>
+              <FormText>{contact.electronic_billing_address || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={12} medium={6} large={4}>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CUSTOMER_NUMBER)}>
+              <FormTextTitle>{ContactFieldTitles.CUSTOMER_NUMBER}</FormTextTitle>
+              <FormText>{contact.customer_number || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          <Column small={12} medium={6} large={4}>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS_PROTECTION)}>
+              <FormTextTitle>{ContactFieldTitles.ADDRESS_PROTECTION}</FormTextTitle>
+              <FormText>{contact.address_protection
                 ? <span><i/><span>Turvakielto</span></span>
                 : 'Ei turvakieltoa'
-              }
-              textClassName={contact.address_protection ? 'alert' : ''}
-            />
+              }</FormText>
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={4}>
-            <FormTitleAndText
-              title='Vuokranantaja'
-              text={contact.is_lessor ? 'Kyllä' : 'Ei'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.IS_LESSOR)}>
+              <FormTextTitle>{ContactFieldTitles.IS_LESSOR}</FormTextTitle>
+              <FormText>{contact.is_lessor ? 'Kyllä' : 'Ei'}</FormText>
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column>
-            <FormTitleAndText
-              title='Huomautus'
-              text={contact.note || '-'}
-            />
+            {/* <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NOTE)}>
+              <FormTextTitle>{ContactFieldTitles.NOTE}</FormTextTitle>
+              <FormText>{contact.note || '-'}</FormText>
+            </Authorization> */}
+            {/* TODO: Wrap these fields with Authorization component when implemented to BE */}
+            <FormTextTitle>{ContactFieldTitles.NOTE}</FormTextTitle>
+            <FormText>{contact.note || '-'}</FormText>
           </Column>
         </Row>
       </FormWrapperRight>

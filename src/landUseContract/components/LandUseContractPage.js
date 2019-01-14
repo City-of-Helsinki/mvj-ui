@@ -66,8 +66,8 @@ import {
 } from '$src/landUseContract/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
-import type {Attributes as ContactAttributes} from '$src/contacts/types';
-import type {Attributes, LandUseContract} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,
@@ -75,7 +75,7 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   compensationsFormValues: Object,
-  contactAttributes: ContactAttributes,
+  contactAttributes: Attributes,
   contractsFormValues: Object,
   currentLandUseContract: LandUseContract,
   decisionsFormValues: Object,
@@ -564,6 +564,7 @@ class LandUseContractPage extends Component<Props, State> {
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowEdit={true}
               isCancelDisabled={false}
               isCopyDisabled={true}
               isEditDisabled={false}
@@ -595,11 +596,11 @@ class LandUseContractPage extends Component<Props, State> {
             active={activeTab}
             isEditMode={isEditMode}
             tabs={[
-              {label: 'Perustiedot', isDirty: isBasicInformationFormDirty, hasError: isSaveClicked && !isBasicInformationFormValid},
-              {label: 'Osapuolet', isDirty: isLitigantsFormDirty, hasError: isSaveClicked && !isLitigantsFormValid},
-              {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty), hasError: isSaveClicked && (!isDecisionsFormValid || !isContractsFormValid)},
-              {label: 'Korvaukset ja laskutus', isDirty: isCompensationsFormDirty || isInvoicesFormDirty, hasError: isSaveClicked && (!isCompensationsFormValid || !isInvoicesFormValid)},
-              {label: 'Kartta'},
+              {label: 'Perustiedot', allow: true, isDirty: isBasicInformationFormDirty, hasError: isSaveClicked && !isBasicInformationFormValid},
+              {label: 'Osapuolet', allow: true, isDirty: isLitigantsFormDirty, hasError: isSaveClicked && !isLitigantsFormValid},
+              {label: 'Päätökset ja sopimukset', allow: true, isDirty: (isContractsFormDirty || isDecisionsFormDirty), hasError: isSaveClicked && (!isDecisionsFormValid || !isContractsFormValid)},
+              {label: 'Korvaukset ja laskutus', allow: true, isDirty: isCompensationsFormDirty || isInvoicesFormDirty, hasError: isSaveClicked && (!isCompensationsFormValid || !isInvoicesFormValid)},
+              {label: 'Kartta', allow: true},
             ]}
             onTabClick={(id) => this.handleTabClick(id)}
           />

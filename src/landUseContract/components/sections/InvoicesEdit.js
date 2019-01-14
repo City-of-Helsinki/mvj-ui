@@ -20,7 +20,7 @@ import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
 
-import type {Attributes} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
 
 type InvoicesProps = {
   attributes: Attributes,

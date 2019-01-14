@@ -5,10 +5,8 @@ import merge from 'lodash/merge';
 
 import {FormNames} from './enums';
 
-import type {Reducer} from '../types';
+import type {Attributes, Reducer} from '$src/types';
 import type {
-  Attributes,
-  LandUseContractState,
   LandUseContract,
   LandUseContractList,
   ReceiveAttributesAction,
@@ -41,11 +39,11 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const landUseContractListReducer: Reducer<LandUseContractList> = handleActions({
-  ['mvj/landUseContract/RECEIVE_ALL']: (state: LandUseContractState, {payload: list}: ReceiveLandUseContractListAction) => list,
+  ['mvj/landUseContract/RECEIVE_ALL']: (state: LandUseContractList, {payload: list}: ReceiveLandUseContractListAction) => list,
 }, {});
 
 const currentLandUseContractReducer: Reducer<LandUseContract> = handleActions({
-  ['mvj/landUseContract/RECEIVE_SINGLE']: (state: LandUseContractState, {payload: contract}: ReceiveSingleLandUseContractAction) => contract,
+  ['mvj/landUseContract/RECEIVE_SINGLE']: (state: LandUseContract, {payload: contract}: ReceiveSingleLandUseContractAction) => contract,
 }, {});
 
 const isFormValidByIdReducer: Reducer<Object> = handleActions({

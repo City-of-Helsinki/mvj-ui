@@ -1,52 +1,53 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
-import get from 'lodash/get';
 
 import BasisOfRent from './BasisOfRent';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormText from '$components/form/FormText';
 import GrayBox from '$components/content/GrayBox';
 import GreenBox from '$components/content/GreenBox';
+import {LeaseBasisOfRentsFieldPaths} from '$src/leases/enums';
 import {getContentBasisOfRents} from '$src/leases/helpers';
 import {getFieldOptions, isEmptyValue} from '$util/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
-  attributes: Attributes,
   currentLease: Lease,
+  leaseAttributes: Attributes,
 }
 
 type State = {
   areaUnitOptions: Array<Object>,
-  attributes: Attributes,
   basisOfRents: Array<Object>,
   basisOfRentsArchived: Array<Object>,
   currentLease: Lease,
   indexOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
+  leaseAttributes: Attributes,
 }
 class BasisOfRents extends PureComponent<Props, State> {
   state = {
     areaUnitOptions: [],
-    attributes: {},
     basisOfRents: [],
     basisOfRentsArchived: [],
     currentLease: {},
     indexOptions: [],
     intendedUseOptions: [],
+    leaseAttributes: {},
   }
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
-    if(props.attributes !== state.attributes) {
-      newState.attributes = props.attributes;
-      newState.areaUnitOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.area_unit'))
+    if(props.leaseAttributes !== state.leaseAttributes) {
+      newState.leaseAttributes = props.leaseAttributes;
+      newState.areaUnitOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)
         .map((item) => ({...item, label: (!isEmptyValue(item.label) ? item.label.replace('^2', '²') : item.label)}));
-      newState.indexOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.index'));
-      newState.intendedUseOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.intended_use'));
+      newState.indexOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX);
+      newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE);
     }
 
     if(props.currentLease !== state.currentLease) {
@@ -68,7 +69,7 @@ class BasisOfRents extends PureComponent<Props, State> {
     } = this.state;
 
     return (
-      <div>
+      <Fragment>
         <GreenBox>
           <BoxItemContainer>
             {(!basisOfRents || !basisOfRents.length) && <FormText>Ei vuokralaskureita</FormText>}
@@ -103,7 +104,7 @@ class BasisOfRents extends PureComponent<Props, State> {
             </BoxItemContainer>
           </GrayBox>
         }
-      </div>
+      </Fragment>
     );
   }
 }
@@ -111,8 +112,8 @@ class BasisOfRents extends PureComponent<Props, State> {
 export default connect(
   (state) => {
     return {
-      attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
+      leaseAttributes: getLeaseAttributes(state),
     };
   },
 )(BasisOfRents);

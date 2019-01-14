@@ -4,19 +4,24 @@ import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
+import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
 import InspectionItem from './InspectionItem';
+import {LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles} from '$src/leases/enums';
+import {isFieldAllowedToRead} from '$util/helpers';
 import {getContentInspections} from '$src/leases/helpers';
-import {getCurrentLease} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
   currentLease: Lease,
   largeScreen: boolean,
 }
@@ -44,7 +49,7 @@ class Inspections extends PureComponent<Props, State> {
   }
 
   render() {
-    const {largeScreen} = this.props;
+    const {attributes, largeScreen} = this.props;
     const {inspections} = this.state;
 
     if(!inspections || !inspections.length) {
@@ -58,30 +63,38 @@ class Inspections extends PureComponent<Props, State> {
             {largeScreen &&
               <Row>
                 <Column large={2}>
-                  <FormTextTitle title='Tarkastaja' />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTOR)}>
+                    <FormTextTitle>{LeaseInspectionsFieldTitles.INSPECTOR}</FormTextTitle>
+                  </Authorization>
                 </Column>
                 <Column large={2}>
-                  <FormTextTitle title='Valvontapvm' />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISION_DATE)}>
+                    <FormTextTitle>{LeaseInspectionsFieldTitles.SUPERVISION_DATE}</FormTextTitle>
+                  </Authorization>
                 </Column>
                 <Column large={2}>
-                  <FormTextTitle title='Valvottu pvm' />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISED_DATE)}>
+                    <FormTextTitle>{LeaseInspectionsFieldTitles.SUPERVISED_DATE}</FormTextTitle>
+                  </Authorization>
                 </Column>
                 <Column large={6}>
-                  <FormTextTitle title='Huomautus' />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}>
+                    <FormTextTitle>{LeaseInspectionsFieldTitles.DESCRIPTION}</FormTextTitle>
+                  </Authorization>
                 </Column>
               </Row>
             }
             {inspections.map((inspection) => {
               if(largeScreen) {
                 return(
-                  <InspectionItem key={inspection.id} inspection={inspection} largeScreen/>
+                  <InspectionItem key={inspection.id} attributes={attributes} inspection={inspection} largeScreen />
                 );
               } else {
                 return(
                   <BoxItem
                     key={inspection.id}
                     className='no-border-on-first-child no-border-on-last-child'>
-                    <InspectionItem inspection={inspection}/>
+                    <InspectionItem attributes={attributes} inspection={inspection} />
                   </BoxItem>
                 );
               }
@@ -98,6 +111,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
       };
     },

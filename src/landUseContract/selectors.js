@@ -2,39 +2,38 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import type {Selector} from '../types';
+import type {Attributes, Selector} from '../types';
+import type {RootState} from '$src/root/types';
 import type {
-  Attributes,
-  LandUseContractState,
   LandUseContract,
   LandUseContractList,
 } from './types';
 
-export const getAttributes: Selector<Attributes, void> = (state: LandUseContractState): Attributes =>
+export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.landUseContract.attributes;
 
-export const getIsEditMode: Selector<boolean, void> = (state: LandUseContractState): boolean =>
+export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolean =>
   state.landUseContract.isEditMode;
 
-export const getIsFetching: Selector<boolean, void> = (state: LandUseContractState): boolean =>
+export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.landUseContract.isFetching;
 
-export const getIsSaveClicked: Selector<boolean, void> = (state: LandUseContractState): boolean =>
+export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boolean =>
   state.landUseContract.isSaveClicked;
 
-export const getLandUseContractList: Selector<LandUseContractList, void> = (state: LandUseContractState): LandUseContractList =>
+export const getLandUseContractList: Selector<LandUseContractList, void> = (state: RootState): LandUseContractList =>
   state.landUseContract.list;
 
-export const getCurrentLandUseContract: Selector<LandUseContract, void> = (state: LandUseContractState): LandUseContract =>
+export const getCurrentLandUseContract: Selector<LandUseContract, void> = (state: RootState): LandUseContract =>
   state.landUseContract.current;
 
-export const getIsFormValidById: Selector<boolean, string> = (state: LandUseContractState, id: string): boolean =>
+export const getIsFormValidById: Selector<boolean, string> = (state: RootState, id: string): boolean =>
   state.landUseContract.isFormValidById[id];
 
-export const getIsFormValidFlags: Selector<Object, void> = (state: LandUseContractState): Object =>
+export const getIsFormValidFlags: Selector<Object, void> = (state: RootState): Object =>
   state.landUseContract.isFormValidById;
 
-export const getErrorsByFormName: Selector<?Object, string> = (state: Object, formName: string): ?Object => {
+export const getErrorsByFormName: Selector<?Object, string> = (state: RootState, formName: string): ?Object => {
   const form = state.form[formName];
   if(!isEmpty(form)) {
     return form.syncErrors;

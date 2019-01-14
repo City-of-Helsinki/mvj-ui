@@ -2,14 +2,14 @@
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
-import type {Reducer} from '../types';
+import type {Attributes, Methods, Reducer} from '../types';
 import type {
-  Attributes,
   Contact,
   ContactList,
   ContactModalSettings,
   InitializeContactFormValuesAction,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
   ReceiveContactsAction,
   ReceiveSingleContactAction,
   ReceiveContactFormValidAction,
@@ -34,9 +34,22 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/contacts/RECEIVE_SINGLE': () => false,
 }, false);
 
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/contacts/FETCH_ATTRIBUTES': () => true,
+  'mvj/contacts/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/contacts/RECEIVE_METHODS': () => false,
+  'mvj/contacts/ATTRIBUTES_NOT_FOUND': () => false,
+}, false);
+
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/contacts/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
+  },
+}, {});
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/contacts/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
   },
 }, {});
 
@@ -94,6 +107,8 @@ export default combineReducers({
   isContactModalOpen: isContactModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
   list: contactsListReducer,
+  methods: methodsReducer,
 });

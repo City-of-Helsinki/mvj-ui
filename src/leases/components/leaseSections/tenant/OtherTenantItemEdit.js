@@ -9,9 +9,9 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import AddButtonThird from '$components/form/AddButtonThird';
+import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
@@ -22,17 +22,25 @@ import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames, TenantContactType} from '$src/leases/enums';
+import {
+  FormNames,
+  LeaseTenantContactSetFieldPaths,
+  LeaseTenantContactSetFieldTitles,
+  TenantContactType,
+} from '$src/leases/enums';
+import {isFieldAllowedToRead, isFieldAllowedToEdit} from '$util/helpers';
 import {isTenantActive} from '$src/leases/helpers';
+import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes, Methods} from '$src/types';
 
 const ContactType = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
 
 type Props = {
   attributes: Attributes,
   collapseState: boolean,
+  contactMethods: Methods,
   contactType: ContactType,
   contact: ?Object,
   errors: ?Object,
@@ -53,6 +61,7 @@ const OtherTenantItemEdit = ({
   attributes,
   collapseState,
   contact,
+  contactMethods,
   contactType,
   errors,
   field,
@@ -71,11 +80,7 @@ const OtherTenantItemEdit = ({
       ? get(tenant, 'billing_persons', [])
       : get(tenant, 'contact_persons', []);
 
-    if(!id) {
-      return null;
-    }
-
-    return tenantContactSet.find((tenant) => tenant.id === id);
+    return id ? tenantContactSet.find((tenant) => tenant.id === id) : null;
   };
 
   const handleAddClick = () => {
@@ -101,7 +106,7 @@ const OtherTenantItemEdit = ({
   };
 
   const handleCollapseToggle = (val: boolean) => {
-    if(!tenantId) {return;}
+    if(!tenantId) return;
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
@@ -123,8 +128,12 @@ const OtherTenantItemEdit = ({
       className={classNames('collapse__secondary', {'not-active': !isActive})}
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
-      headerTitle={<CollapseHeaderTitle>{contactType === TenantContactType.BILLING ? 'Laskunsaaja' : 'Yhteyshenkilö'}</CollapseHeaderTitle>}
-      onRemove={onRemove}
+      headerTitle={
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TYPE)}>
+          {contactType === TenantContactType.BILLING ? 'Laskunsaaja' : 'Yhteyshenkilö'}
+        </Authorization>
+      }
+      onRemove={isFieldAllowedToEdit(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET) ? onRemove : null}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
@@ -134,64 +143,73 @@ const OtherTenantItemEdit = ({
               <Column small={12} medium={12} large={8}>
                 <Row>
                   <Column small={9} medium={8} large={8}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.contact')}
-                      name={`${field}.contact`}
-                      overrideValues={{
-                        fieldType: 'contact',
-                        label: 'Asiakas',
-                      }}
-                    />
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}
+                        name={`${field}.contact`}
+                        overrideValues={{
+                          fieldType: 'contact',
+                          label: LeaseTenantContactSetFieldTitles.CONTACT,
+                        }}
+                      />
+                    </Authorization>
                   </Column>
                   <Column small={3} medium={4} large={4}>
-                    <div className='contact-buttons-wrapper'>
-                      <AddButtonThird
-                        label='Luo asiakas'
-                        onClick={handleAddClick}
-                      />
-                    </div>
+                    <Authorization allow={contactMethods.POST}>
+                      <div className='contact-buttons-wrapper'>
+                        <AddButtonThird
+                          label='Luo asiakas'
+                          onClick={handleAddClick}
+                        />
+                      </div>
+                    </Authorization>
                   </Column>
                 </Row>
               </Column>
             </Row>
           </FormWrapperLeft>
+
           <FormWrapperRight>
             <Row>
               <Column small={6} medium={3} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
-                  name={`${field}.start_date`}
-                  overrideValues={{
-                    label: 'Alkupvm',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}
+                    name={`${field}.start_date`}
+                    overrideValues={{label: LeaseTenantContactSetFieldTitles.START_DATE}}
+                  />
+                </Authorization>
               </Column>
               <Column small={6} medium={3} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
-                  name={`${field}.end_date`}
-                  overrideValues={{
-                    label: 'Loppupvm',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}
+                    name={`${field}.end_date`}
+                    overrideValues={{label: LeaseTenantContactSetFieldTitles.END_DATE}}
+                  />
+                </Authorization>
               </Column>
             </Row>
           </FormWrapperRight>
         </FormWrapper>
 
-        {!!contact &&
-          <SubTitle>Asiakkaan tiedot
-            <EditButton
-              className='inline-button'
-              onClick={handleEditClick}
-              title='Muokkaa asiakasta'
-            />
-          </SubTitle>
-        }
-        <ContactTemplate contact={contact} />
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+          {!!contact &&
+            <SubTitle>Asiakkaan tiedot
+              <Authorization allow={contactMethods.PATCH}>
+                <EditButton
+                  className='inline-button'
+                  onClick={handleEditClick}
+                  title='Muokkaa asiakasta'
+                />
+              </Authorization>
+            </SubTitle>
+          }
+          <ContactTemplate contact={contact} />
+        </Authorization>
       </BoxContentWrapper>
     </Collapse>
   );
@@ -207,6 +225,7 @@ export default connect(
       attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.TENANTS}.others.${id}`),
       contact: selector(state, `${props.field}.contact`),
+      contactMethods: getContactMethods(state),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
       tenantId: id,

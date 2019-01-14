@@ -13,15 +13,14 @@
 @import '../node_modules/leaflet-draw/dist/leaflet.draw.css';
 @import '~react-dual-listbox/lib/react-dual-listbox.css';
 @import '~font-awesome/css/font-awesome.css';
-@import "components/map/leaflet";
 
 // Components
+@import "components/authorization/authorization";
 @import "components/address-search/address-search-input";
 @import "components/button/button";
 @import "components/button/close-button";
 @import "components/button/icon-radio-buttons";
 @import "components/collapse/collapse";
-@import "components/commentPanel/comment-panel";
 @import "components/content/content";
 @import "components/controlButtons/control-buttons";
 @import "components/dropdown/action-dropdown";
@@ -57,6 +56,7 @@
 @import "areaNote/components/save-condition-panel";
 @import "auth/components/login-page";
 @import "leases/components/createLease/create-lease";
+@import "leases/components/leaseSections/comments/comment-panel";
 @import "leases/components/leaseSections/constructability/constructability";
 @import "leases/components/leaseSections/invoice/invoice";
 @import "leases/components/leaseSections/invoice/invoice-panel";

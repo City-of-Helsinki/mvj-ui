@@ -1,11 +1,12 @@
 // @flow
-
 import {createAction} from 'redux-actions';
 
+import type {Attributes, Methods} from '$src/types';
 import type {
-  Attributes,
   FetchAttributesAction,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  ContactAttributesNotFoundAction,
   Contact,
   ContactId,
   ContactList,
@@ -37,6 +38,12 @@ export const fetchAttributes = (): FetchAttributesAction =>
 
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
   createAction('mvj/contacts/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/contacts/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): ContactAttributesNotFoundAction =>
+  createAction('mvj/contacts/ATTRIBUTES_NOT_FOUND')();
 
 export const createContact = (contact: Contact): CreateContactAction =>
   createAction('mvj/contacts/CREATE')(contact);

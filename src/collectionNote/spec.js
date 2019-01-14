@@ -1,21 +1,68 @@
+// @flow
 import {expect} from 'chai';
+
 import {
+  fetchAttributes,
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
   fetchCollectionNotesByLease,
   receiveCollectionNotesByLease,
   notFoundByLease,
 } from './actions';
 import collectionNoteReducer from './reducer';
 
-const defaultState = {
+import type {CollectionNoteState} from './types';
+
+const defaultState: CollectionNoteState = {
+  attributes: {},
   byLease: {},
+  isFetchingAttributes: false,
   isFetchingByLease: {},
+  methods: {},
 };
 
+// $FlowFixMe
 describe('collectionNote', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('collectionNoteReducer', () => {
+
+      // $FlowFixMe
+      it('should update isFetchingAttributes flag to true when fetching attributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = collectionNoteReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = collectionNoteReducer({}, fetchAttributes());
+        state = collectionNoteReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update attributes', () => {
+        const dummyAttributes = {foo: 'bar'};
+        const newState = {...defaultState, attributes: dummyAttributes};
+
+        const state = collectionNoteReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {foo: 'bar'};
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = collectionNoteReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFetching flag to true when fetching collection notes', () => {
         const lease = 1;
         const newState = {...defaultState};

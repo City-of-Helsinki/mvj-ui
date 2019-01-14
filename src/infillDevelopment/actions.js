@@ -1,22 +1,21 @@
 // @flow
 import {createAction} from 'redux-actions';
+
+import type {Attributes, Methods} from '$src/types';
 import type {
-  Attributes,
   FetchAttributesAction,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  InfillDevelopmentAttributesNotFoundAction,
   FetchInfillDevelopmentListAction,
   FetchSingleInfillDevelopmentAction,
   InfillDevelopment,
-  InfillDevelopmentFileData,
-  InfillDevelopmentFileDeleteObj,
   InfillDevelopmentId,
   InfillDevelopmentList,
   ReceiveInfillDevelopmentListAction,
   ReceiveSingleInfillDevelopmentAction,
   CreateInfillDevelopmentAction,
   EditInfillDevelopmentAction,
-  UploadInfillDevelopmentFileAction,
-  DeleteInfillDevelopmentFileAction,
   InfillDevelopmentNotFoundAction,
   HideEditModeAction,
   ShowEditModeAction,
@@ -27,11 +26,17 @@ import type {
   ReceiveCollapseStatesAction,
 } from './types';
 
-export const fetchInfillDevelopmentAttributes = (): FetchAttributesAction =>
+export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/infillDevelopment/FETCH_ATTRIBUTES')();
 
-export const receiveInfillDevelopmentAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
   createAction('mvj/infillDevelopment/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/infillDevelopment/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): InfillDevelopmentAttributesNotFoundAction =>
+  createAction('mvj/infillDevelopment/ATTRIBUTES_NOT_FOUND')();
 
 export const fetchInfillDevelopments = (search: string): FetchInfillDevelopmentListAction =>
   createAction('mvj/infillDevelopment/FETCH_ALL')(search);
@@ -50,12 +55,6 @@ export const createInfillDevelopment = (infillDevelopment: InfillDevelopment): C
 
 export const editInfillDevelopment = (infillDevelopment: InfillDevelopment): EditInfillDevelopmentAction =>
   createAction('mvj/infillDevelopment/EDIT')(infillDevelopment);
-
-export const uploadInfillDevelopmentFile = (data: InfillDevelopmentFileData): UploadInfillDevelopmentFileAction =>
-  createAction('mvj/infillDevelopment/UPLOAD_FILE')(data);
-
-export const deleteInfillDevelopmentFile = (data: InfillDevelopmentFileDeleteObj): DeleteInfillDevelopmentFileAction =>
-  createAction('mvj/infillDevelopment/DELETE_FILE')(data);
 
 export const notFound = (): InfillDevelopmentNotFoundAction =>
   createAction('mvj/infillDevelopment/NOT_FOUND')();

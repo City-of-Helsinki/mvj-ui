@@ -27,7 +27,7 @@ export const editComment = (comment: Comment): Generator<any, any, any> => {
   const body = JSON.stringify(comment);
 
   return callApi(new Request(createUrl(`comment/${id}/`), {
-    method: 'PUT',
+    method: 'PATCH',
     body,
   }));
 };

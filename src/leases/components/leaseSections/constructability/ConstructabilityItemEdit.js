@@ -9,9 +9,9 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
+import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
@@ -19,13 +19,30 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {
+  DeleteModalLabels,
+  DeleteModalTitles,
+  FormNames,
+  LeaseAreaAddressesFieldPaths,
+  LeaseAreasFieldPaths,
+  LeaseAreasFieldTitles,
+  LeaseConstructabilityDescriptionsFieldPaths,
+  LeaseConstructabilityDescriptionsFieldTitles,
+} from '$src/leases/enums';
 import {getFullAddress} from '$src/leases/helpers';
-import {formatNumber, getLabelOfOption} from '$util/helpers';
+import {
+  formatNumber,
+  getFieldAttributes,
+  getLabelOfOption,
+  isEmptyValue,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+  isFieldRequired,
+} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 const getPreconstructionErrors = (errors: ?Object, area: string) => {
   return {
@@ -84,22 +101,24 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
-            <SubTitle>Huomautukset</SubTitle>
+          <Fragment>
+            <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
             {fields && !!fields.length &&
-              <div>
+              <Fragment>
                 <Row>
                   <Column small={6} medium={6} large={8}>
-                    <FormTextTitle
-                      required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text.required')}
-                      title='Huomautus'
-                    />
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.TEXT)}>
+                      <FormTextTitle required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.TEXT)}>
+                        {LeaseConstructabilityDescriptionsFieldTitles.TEXT}
+                      </FormTextTitle>
+                    </Authorization>
                   </Column>
                   <Column small={4} medium={3} large={2}>
-                    <FormTextTitle
-                      required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number.required')}
-                      title='AHJO diaarinumero'
-                    />
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
+                      <FormTextTitle required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
+                        {LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER}
+                      </FormTextTitle>
+                    </Authorization>
                   </Column>
                 </Row>
                 {fields.map((comment, index) => {
@@ -119,53 +138,62 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
                   return (
                     <Row key={index}>
                       <Column small={6} medium={6} large={8}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
-                          invisibleLabel
-                          name={`${comment}.text`}
-                        />
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.TEXT)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(attributes, LeaseConstructabilityDescriptionsFieldPaths.TEXT)}
+                            invisibleLabel
+                            name={`${comment}.text`}
+                            overrideValues={{label: LeaseConstructabilityDescriptionsFieldTitles.TEXT}}
+                          />
+                        </Authorization>
                       </Column>
                       <Column small={4} medium={3} large={2}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
-                          invisibleLabel
-                          name={`${comment}.ahjo_reference_number`}
-                          validate={referenceNumber}
-                        />
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}
+                            invisibleLabel
+                            name={`${comment}.ahjo_reference_number`}
+                            validate={referenceNumber}
+                            overrideValues={{label: LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER}}
+                          />
+                        </Authorization>
                       </Column>
                       <Column small={2} medium={3} large={2}>
-                        <RemoveButton
-                          className='third-level'
-                          onClick={handleRemove}
-                          title="Poista huomautus"
-                        />
+                        <Authorization allow={isFieldAllowedToEdit(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+                          <RemoveButton
+                            className='third-level'
+                            onClick={handleRemove}
+                            title="Poista huomautus"
+                          />
+                        </Authorization>
                       </Column>
                     </Row>
                   );
                 })}
-              </div>
+              </Fragment>
             }
-            <Row>
-              <Column>
-                <AddButtonThird
-                  label='Lisää huomautus'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
+
+            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+              <Row>
+                <Column>
+                  <AddButtonThird
+                    label='Lisää huomautus'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          </Fragment>
         );
       }}
     </AppConsumer>
-
   );
 };
 
 
 type Props = {
-  areaData: Object,
   areaCollapseState: boolean,
   areaId: number,
   attributes: Attributes,
@@ -181,12 +209,12 @@ type Props = {
   pollutedLandConditionStateOptions: Array<Object>,
   preconstructionCollapseState: boolean,
   receiveCollapseStates: Function,
+  savedArea: Object,
   stateOptions: Array<Object>,
   typeOptions: Array<Object>,
 }
 
 const ConstructabilityItemEdit = ({
-  areaData,
   areaCollapseState,
   areaId,
   attributes,
@@ -200,6 +228,7 @@ const ConstructabilityItemEdit = ({
   pollutedLandCollapseState,
   preconstructionCollapseState,
   receiveCollapseStates,
+  savedArea,
   typeOptions,
 }: Props) => {
   const handleAreaCollapseToggle = (val: boolean) => {
@@ -288,17 +317,27 @@ const ConstructabilityItemEdit = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, areaData.type) || '-'}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.TYPE)}>
+              <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, savedArea.type) || '-'}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle>{getFullAddress(areaData)}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+              <CollapseHeaderSubtitle>{getFullAddress(savedArea)}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle>{formatNumber(areaData.area) || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areaData.location) || '-'}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+              <CollapseHeaderSubtitle>{!isEmptyValue(savedArea.area) ? `${formatNumber(savedArea.area)} m²` : '-'}{savedArea.location ? ` / ${getLabelOfOption(locationOptions, savedArea.location)}` : ''}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
         </Fragment>
       }
-      headerTitle={<CollapseHeaderTitle>{areaData.identifier}</CollapseHeaderTitle>}
+      headerTitle={
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
+          {savedArea.identifier}
+        </Authorization>
+      }
       onToggle={handleAreaCollapseToggle}
       showTitleOnOpen
     >
@@ -306,226 +345,243 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={preconstructionCollapseState !== undefined ? preconstructionCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(preconstructionErrors)}
-        headerTitle={<CollapseHeaderTitle>Esirakentaminen, johtosiirrot ja kunnallistekniikka</CollapseHeaderTitle>}
+        headerTitle='Esirakentaminen, johtosiirrot ja kunnallistekniikka'
         onToggle={handlePreconstructionCollapseToggle}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.preconstruction_state')}
-              name={`${field}.preconstruction_state`}
-              overrideValues={{
-                label: 'Selvitysaste',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}
+                name={`${field}.preconstruction_state`}
+                overrideValues={{label: LeaseAreasFieldTitles.PRECONSTRUCTION_STATE}}
+              />
+            </Authorization>
           </Column>
         </Row>
-        <FieldArray
-          attributes={attributes}
-          name={`${field}.descriptionsPreconstruction`}
-          component={renderComments}
-          isSaveClicked={isSaveClicked}
-        />
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <FieldArray
+            attributes={attributes}
+            name={`${field}.descriptionsPreconstruction`}
+            component={renderComments}
+            isSaveClicked={isSaveClicked}
+          />
+        </Authorization>
       </Collapse>
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={demolitionCollapseState !== undefined ? demolitionCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(demolitionErrors)}
-        headerTitle={<CollapseHeaderTitle>Purku</CollapseHeaderTitle>}
+        headerTitle='Purku'
         onToggle={handleDemolitionCollapseToggle}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.demolition_state')}
-              name={`${field}.demolition_state`}
-              overrideValues={{
-                label: 'Selvitysaste',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}
+                name={`${field}.demolition_state`}
+                overrideValues={{label: LeaseAreasFieldTitles.DEMOLITION_STATE}}
+              />
+            </Authorization>
           </Column>
         </Row>
-        <FieldArray
-          attributes={attributes}
-          component={renderComments}
-          isSaveClicked={isSaveClicked}
-          name={`${field}.descriptionsDemolition`}
-        />
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <FieldArray
+            attributes={attributes}
+            component={renderComments}
+            isSaveClicked={isSaveClicked}
+            name={`${field}.descriptionsDemolition`}
+          />
+        </Authorization>
       </Collapse>
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={pollutedLandCollapseState !== undefined ? pollutedLandCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(pollutedLandErrors)}
-        headerTitle={<CollapseHeaderTitle>Pima ja jäte</CollapseHeaderTitle>}
+        headerTitle='Pima ja jäte'
         onToggle={handlePollutedLandCollapseToggle}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_state')}
-              name={`${field}.polluted_land_state`}
-              overrideValues={{
-                label: 'Selvitysaste',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}
+                name={`${field}.polluted_land_state`}
+                overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_STATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state')}
-              name={`${field}.polluted_land_rent_condition_state`}
-              overrideValues={{
-                label: 'Vuokraehdot',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}
+                name={`${field}.polluted_land_rent_condition_state`}
+                overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_STATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_date')}
-              name={`${field}.polluted_land_rent_condition_date`}
-              overrideValues={{
-                label: 'Vuokraehdot pvm',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_DATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_DATE)}
+                name={`${field}.polluted_land_rent_condition_date`}
+                overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_DATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_planner')}
-              name={`${field}.polluted_land_planner`}
-              overrideValues={{
-                fieldType: 'user',
-                label: 'PIMA valmistelija',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER)}
+                name={`${field}.polluted_land_planner`}
+                overrideValues={{
+                  fieldType: 'user',
+                  label: LeaseAreasFieldTitles.POLLUTED_LAND_PLANNER,
+                }}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_projectwise_number')}
-              name={`${field}.polluted_land_projectwise_number`}
-              overrideValues={{
-                label: 'ProjectWise kohdenumero',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER)}
+                name={`${field}.polluted_land_projectwise_number`}
+                overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_PROJECTWISE_NUMBER}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_matti_report_number')}
-              name={`${field}.polluted_land_matti_report_number`}
-              overrideValues={{
-                label: 'Matti raportti',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}
+                name={`${field}.polluted_land_matti_report_number`}
+                overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_MATTI_REPORT_NUMBER}}
+              />
+            </Authorization>
           </Column>
         </Row>
-        <FieldArray
-          attributes={attributes}
-          component={renderComments}
-          isSaveClicked={isSaveClicked}
-          name={`${field}.descriptionsPollutedLand`}
-        />
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <FieldArray
+            attributes={attributes}
+            component={renderComments}
+            isSaveClicked={isSaveClicked}
+            name={`${field}.descriptionsPollutedLand`}
+          />
+        </Authorization>
       </Collapse>
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={constructabilityReportCollapseState !== undefined ? constructabilityReportCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(constructabilityReportErrors)}
-        headerTitle={<CollapseHeaderTitle>Rakennettavuusselvitys</CollapseHeaderTitle>}
+        headerTitle='Rakennettavuusselvitys'
         onToggle={handleConstructabilityReportCollapseToggle}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_state')}
-              name={`${field}.constructability_report_state`}
-              overrideValues={{
-                label: 'Selvitysaste',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}
+                name={`${field}.constructability_report_state`}
+                overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_STATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_investigation_state')}
-              name={`${field}.constructability_report_investigation_state`}
-              overrideValues={{
-                label: 'Selvitys',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE)}
+                name={`${field}.constructability_report_investigation_state`}
+                overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_signing_date')}
-              name={`${field}.constructability_report_signing_date`}
-              overrideValues={{
-                label: 'Allekirjoituspvm',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE)}
+                name={`${field}.constructability_report_signing_date`}
+                overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_SIGNING_DATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_signer')}
-              name={`${field}.constructability_report_signer`}
-              overrideValues={{
-                label: 'Allekirjoittaja',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER)}
+                name={`${field}.constructability_report_signer`}
+                overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_SIGNER}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_geotechnical_number')}
-              name={`${field}.constructability_report_geotechnical_number`}
-              overrideValues={{
-                label: 'Geoteknisen palvelun tiedosto',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}
+                name={`${field}.constructability_report_geotechnical_number`}
+                overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER}}
+              />
+            </Authorization>
           </Column>
         </Row>
-        <FieldArray
-          attributes={attributes}
-          component={renderComments}
-          isSaveClicked={isSaveClicked}
-          name={`${field}.descriptionsReport`}
-        />
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <FieldArray
+            attributes={attributes}
+            component={renderComments}
+            isSaveClicked={isSaveClicked}
+            name={`${field}.descriptionsReport`}
+          />
+        </Authorization>
       </Collapse>
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={otherCollapseState !== undefined ? otherCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(otherErrors)}
-        headerTitle={<CollapseHeaderTitle>Muut</CollapseHeaderTitle>}
+        headerTitle='Muut'
         onToggle={handleOtherCollapseToggle}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.other_state')}
-              name={`${field}.other_state`}
-              overrideValues={{
-                label: 'Selvitysaste',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.OTHER_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.OTHER_STATE)}
+                name={`${field}.other_state`}
+                overrideValues={{label: LeaseAreasFieldTitles.OTHER_STATE}}
+              />
+            </Authorization>
           </Column>
         </Row>
-        <FieldArray
-          attributes={attributes}
-          component={renderComments}
-          isSaveClicked={isSaveClicked}
-          name={`${field}.descriptionsOther`}
-        />
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+          <FieldArray
+            attributes={attributes}
+            component={renderComments}
+            isSaveClicked={isSaveClicked}
+            name={`${field}.descriptionsOther`}
+          />
+        </Authorization>
       </Collapse>
     </Collapse>
   );

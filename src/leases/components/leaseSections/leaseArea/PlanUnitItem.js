@@ -6,11 +6,23 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
-import FormTitleAndText from '$components/form/FormTitleAndText';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import {LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
-import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
-import type {Attributes} from '$src/leases/types';
+import {
+  formatDate,
+  formatNumber,
+  getFieldOptions,
+  getLabelOfOption,
+  getSearchQuery,
+  isEmptyValue,
+  isFieldAllowedToEdit,
+} from '$util/helpers';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,
@@ -39,103 +51,103 @@ const PlanUnitItem = ({
 
   const mapLinkUrl = getMapLinkUrl();
 
-  const plotDivisionStateOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plan_units.child.children.plot_division_state');
-  const planUnitTypeOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plan_units.child.children.plan_unit_type');
-  const planUnitStateOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plan_units.child.children.plan_unit_state');
-  const planUnitIntendedUseOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use');
+  const plotDivisionStateOptions = getFieldOptions(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE);
+  const planUnitTypeOptions = getFieldOptions(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE);
+  const planUnitStateOptions = getFieldOptions(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE);
+  const planUnitIntendedUseOptions = getFieldOptions(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE);
 
   return (
     <BoxItem className='no-border-on-first-child no-border-on-last-child'>
       <Row>
         <Column small={12} medium={9} large={9}>
-          <FormTitleAndText
-            title='Kohteen tunnus'
-            text={planUnit.identifier || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.IDENTIFIER)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.IDENTIFIER}</FormTextTitle>
+            <FormText>{planUnit.identifier || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={12} medium={3} large={3}>
-          {(isAreaActive && !isEmpty(planUnit.geometry)) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.GEOMETRY)}>
+            {(isAreaActive && !isEmpty(planUnit.geometry)) &&
+              <Link to={mapLinkUrl}>{LeasePlanUnitsFieldTitles.GEOMETRY}</Link>
+            }
+          </Authorization>
         </Column>
       </Row>
 
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Kokonaisala'
-            text={planUnit.area ? `${formatNumber(planUnit.area)} m²` : '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.AREA)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.AREA}</FormTextTitle>
+            <FormText>{!isEmptyValue(planUnit.area) ? `${formatNumber(planUnit.area)} m²` : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Leikkausala'
-            text={planUnit.section_area ? `${formatNumber(planUnit.section_area)} m²` : '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.SECTION_AREA)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.SECTION_AREA}</FormTextTitle>
+            <FormText>{!isEmptyValue(planUnit.section_area) ? `${formatNumber(planUnit.section_area)} m²` : '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Asemakaava'
-            text={planUnit.detailed_plan_identifier}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.DETAILED_PLAN_IDENTIFIER}</FormTextTitle>
+            <FormText>{planUnit.detailed_plan_identifier || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Asemakaavan viimeisin käsittelypvm'
-            text={formatDate(planUnit.detailed_plan_latest_processing_date) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}</FormTextTitle>
+            <FormText>{formatDate(planUnit.detailed_plan_latest_processing_date) || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column>
-          <FormTitleAndText
-            title='Asemakaavan viimeisin käsittelypvm huomautus'
-            text={planUnit.detailed_plan_latest_processing_date_note || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}</FormTextTitle>
+            <FormText>{planUnit.detailed_plan_latest_processing_date_note || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Tonttijaon tunnus'
-            text={planUnit.plot_division_identifier || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.PLOT_DIVISION_IDENTIFIER}</FormTextTitle>
+            <FormText>{planUnit.plot_division_identifier || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Tonttijaon olotila'
-            text={getLabelOfOption(plotDivisionStateOptions, planUnit.plot_division_state) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.PLOT_DIVISION_STATE}</FormTextTitle>
+            <FormText>{getLabelOfOption(plotDivisionStateOptions, planUnit.plot_division_state) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={12} medium={12} large={6}>
-          <FormTitleAndText
-            title='Tonttijaon hyväksymispvm'
-            text={formatDate(planUnit.plot_division_date_of_approval) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_DATE_OF_APPROVAL)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.PLOT_DIVISION_DATE_OF_APPROVAL}</FormTextTitle>
+            <FormText>{formatDate(planUnit.plot_division_date_of_approval) || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Kaavayksikön laji'
-            text={getLabelOfOption(planUnitTypeOptions, planUnit.plan_unit_type) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.PLAN_UNIT_TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(planUnitTypeOptions, planUnit.plan_unit_type) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Kaavayksikön olotila'
-            text={getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.PLAN_UNIT_STATE}</FormTextTitle>
+            <FormText>{getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={12} medium={12} large={6}>
-          <FormTitleAndText
-            title='Kaavayksikön käyttötarkoitus'
-            text={getLabelOfOption(planUnitIntendedUseOptions, planUnit.plan_unit_intended_use) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.PLAN_UNIT_INTENDED_USE}</FormTextTitle>
+            <FormText>{getLabelOfOption(planUnitIntendedUseOptions, planUnit.plan_unit_intended_use) || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
     </BoxItem>

@@ -4,34 +4,55 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import GreenBox from '$components/content/GreenBox';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
-import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
-import {getAttributes} from '$src/rentbasis/selectors';
+import {
+  RentBasisFieldPaths,
+  RentBasisFieldTitles,
+  RentBasisDecisionsFieldPaths,
+  RentBasisDecisionsFieldTitles,
+  RentBasisPropertyIdentifiersFieldPaths,
+  RentBasisPropertyIdentifiersFieldTitles,
+  RentBasisRentRatesFieldPaths,
+  RentBasisRentRatesFieldTitles,
+} from '$src/rentbasis/enums';
+import {
+  formatDate,
+  formatNumber,
+  getFieldOptions,
+  getLabelOfOption,
+  getReferenceNumberLink,
+  isEmptyValue,
+  isFieldAllowedToRead,
+} from '$util/helpers';
+import {getAttributes as getRentBasisAttributes} from '$src/rentbasis/selectors';
 
-import type {Attributes, RentBasis} from '$src/rentbasis/types';
+import type {Attributes} from '$src/types';
+import type {RentBasis} from '$src/rentbasis/types';
 
 type Props = {
-  attributes: Attributes,
   rentBasis: RentBasis,
+  rentBasisAttributes: Attributes,
 }
 
-const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
-  const plotTypeOptions = getAttributeFieldOptions(attributes, 'plot_type');
-  const managementOptions = getAttributeFieldOptions(attributes, 'management');
-  const financingOptions = getAttributeFieldOptions(attributes, 'financing');
-  const indexOptions = getAttributeFieldOptions(attributes, 'index');
-  const buildPermissionTypeOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.build_permission_type');
-  const areaUnitOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.area_unit');
-  const decisionsMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker');
+const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
+  const plotTypeOptions = getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE);
+  const managementOptions = getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT);
+  const financingOptions = getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.FINANCING);
+  const indexOptions = getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.INDEX);
+  const buildPermissionTypeOptions = getFieldOptions(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE);
+  const areaUnitOptions = getFieldOptions(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT, true, (option) =>
+    !isEmptyValue(option.display_name) ? option.display_name.replace(/\^2/g, '²') : option.display_name
+  );
+  const decisionsMakerOptions = getFieldOptions(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER);
   const decisions = get(rentBasis, 'decisions', []);
 
   return (
@@ -41,168 +62,208 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
       <GreenBox>
         <Row>
           <Column small={6} medium={4} large={3}>
-            <FormTitleAndText
-              title='Tonttityyppi'
-              text={getLabelOfOption(plotTypeOptions, rentBasis.plot_type) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE)}>
+              <FormTextTitle>{RentBasisFieldTitles.PLOT_TYPE}</FormTextTitle>
+              <FormText>{getLabelOfOption(plotTypeOptions, rentBasis.plot_type) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={8} large={4}>
             <Row>
               <Column small={6}>
-                <FormTitleAndText
-                  title='Alkupvm'
-                  text={formatDate(rentBasis.start_date) || '-'}
-                />
+                <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.START_DATE)}>
+                  <FormTextTitle>{RentBasisFieldTitles.START_DATE}</FormTextTitle>
+                  <FormText>{formatDate(rentBasis.start_date) || '-'}</FormText>
+                </Authorization>
               </Column>
               <Column small={6}>
-                <FormTitleAndText
-                  title='Loppupvm'
-                  text={formatDate(rentBasis.end_date) || '-'}
-                />
+                <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.END_DATE)}>
+                  <FormTextTitle>{RentBasisFieldTitles.END_DATE}</FormTextTitle>
+                  <FormText>{formatDate(rentBasis.end_date) || '-'}</FormText>
+                </Authorization>
               </Column>
             </Row>
           </Column>
         </Row>
+
         <Row>
           <Column small={6} medium={4} large={3}>
-            <FormTextTitle title='Kiinteistötunnukset' />
-            {rentBasis.property_identifiers && !!rentBasis.property_identifiers.length
-              ? (
-                <ListItems>
-                  {rentBasis.property_identifiers.map((item, index) => {
-                    return(<ListItem key={index}>{item.identifier}</ListItem>);
-                  })}
-                </ListItems>
-              ) : <FormText>-</FormText>
-            }
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Asemakaava'
-              text={rentBasis.detailed_plan_identifier || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Hallintamuoto'
-              text={getLabelOfOption(managementOptions, rentBasis.management) || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Rahoitusmuoto'
-              text={getLabelOfOption(financingOptions, rentBasis.financing) || '-'}
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column small={6} medium={4} large={3}>
-            <FormTitleAndText
-              title='Vuokraoikeus päättyy'
-              text={formatDate(rentBasis.lease_rights_end_date) || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Indeksi'
-              text={getLabelOfOption(indexOptions, rentBasis.index) || '-'}
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <SubTitle>Päätökset</SubTitle>
-            {decisions.length
-              ? (
-                <ListItems>
-                  <Row>
-                    <Column small={3} large={2}>
-                      <FormTextTitle title='Päättäjä' />
-                    </Column>
-                    <Column small={3} large={1}>
-                      <FormTextTitle title='Pvm' />
-                    </Column>
-                    <Column small={3} large={2}>
-                      <FormTextTitle title='Pykälä' />
-                    </Column>
-                    <Column small={3} large={2}>
-                      <FormTextTitle title='Hel diaarinumero' />
-                    </Column>
-                  </Row>
-                  {decisions.map((decision) =>
-                    <Row key={decision.id}>
-                      <Column small={3} large={2}>
-                        <ListItem>{getLabelOfOption(decisionsMakerOptions, decision.decision_maker) || '-'}</ListItem>
-                      </Column>
-                      <Column small={3} large={1}>
-                        <ListItem>{formatDate(decision.decision_date) || '-'}</ListItem>
-                      </Column>
-                      <Column small={3} large={2}>
-                        <ListItem>{decision.section ? `${decision.section} §` : '-'}</ListItem>
-                      </Column>
-                      <Column small={3} large={2}>
-                        {decision.reference_number
-                          ? <ListItem>
-                            <ExternalLink
-                              href={getReferenceNumberLink(decision.reference_number)}
-                              text={decision.reference_number}
-                            />
-                          </ListItem>
-                          : <ListItem>-</ListItem>
-                        }
-                      </Column>
-                    </Row>
+            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)}>
+              <FormTextTitle>{RentBasisPropertyIdentifiersFieldTitles.PROPERTY_IDENTIFIERS}</FormTextTitle>
+              {rentBasis.property_identifiers && !!rentBasis.property_identifiers.length
+                ? <ListItems>
+                  {rentBasis.property_identifiers.map((item, index) =>
+                    <Authorization key={index} allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER)}>
+                      <ListItem>{item.identifier}</ListItem>
+                    </Authorization>
                   )}
                 </ListItems>
-              ) : <FormText>Ei päätöksiä</FormText>
-            }
+                : <FormText>-</FormText>
+              }
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
+              <FormTextTitle>{RentBasisFieldTitles.DETAILED_PLAN_IDENTIFIER}</FormTextTitle>
+              <FormText>{rentBasis.detailed_plan_identifier || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT)}>
+              <FormTextTitle>{RentBasisFieldTitles.MANAGEMENT}</FormTextTitle>
+              <FormText>{getLabelOfOption(managementOptions, rentBasis.management) || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.FINANCING)}>
+              <FormTextTitle>{RentBasisFieldTitles.FINANCING}</FormTextTitle>
+              <FormText>{getLabelOfOption(financingOptions, rentBasis.financing) || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
+
         <Row>
-          <Column>
-            <SubTitle>Hinnat</SubTitle>
-            {rentBasis.rent_rates && !!rentBasis.rent_rates.length
-              ? (
-                <ListItems>
-                  <Row>
-                    <Column small={6} medium={4} large={2}>
-                      <FormTextTitle title='Rakennusoikeustyyppi' />
-                    </Column>
-                    <Column small={3} medium={4} large={1}>
-                      <FormTextTitle title='Euroa' />
-                    </Column>
-                    <Column small={3} medium={4} large={1}>
-                      <FormTextTitle title='Yksikkö' />
-                    </Column>
-                  </Row>
-                  {rentBasis.rent_rates.map((price, index) => {
-                    return(
-                      <Row key={index}>
-                        <Column small={6} medium={4} large={2}>
-                          <ListItem>{getLabelOfOption(buildPermissionTypeOptions, price.build_permission_type) || '-'}</ListItem>
+          <Column small={6} medium={4} large={3}>
+            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.LEASE_RIGHTS_END_DATE)}>
+              <FormTextTitle>{RentBasisFieldTitles.LEASE_RIGHTS_END_DATE}</FormTextTitle>
+              <FormText>{formatDate(rentBasis.lease_rights_end_date) || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.INDEX)}>
+              <FormTextTitle>{RentBasisFieldTitles.INDEX}</FormTextTitle>
+              <FormText>{getLabelOfOption(indexOptions, rentBasis.index) || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
+
+        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISIONS)}>
+          <Row>
+            <Column>
+              <SubTitle>{RentBasisDecisionsFieldTitles.DECISIONS}</SubTitle>
+              {decisions.length
+                ? (
+                  <ListItems>
+                    <Row>
+                      <Column small={3} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER)}>
+                          <FormTextTitle>{RentBasisDecisionsFieldTitles.DECISION_MAKER}</FormTextTitle>
+                        </Authorization>
+                      </Column>
+                      <Column small={3} large={1}>
+                        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_DATE)}>
+                          <FormTextTitle>{RentBasisDecisionsFieldTitles.DECISION_DATE}</FormTextTitle>
+                        </Authorization>
+                      </Column>
+                      <Column small={3} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.SECTION)}>
+                          <FormTextTitle>{RentBasisDecisionsFieldTitles.SECTION}</FormTextTitle>
+                        </Authorization>
+                      </Column>
+                      <Column small={3} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}>
+                          <FormTextTitle>{RentBasisDecisionsFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
+                        </Authorization>
+                      </Column>
+                    </Row>
+                    {decisions.map((decision) =>
+                      <Row key={decision.id}>
+                        <Column small={3} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER)}>
+                            <ListItem>{getLabelOfOption(decisionsMakerOptions, decision.decision_maker) || '-'}</ListItem>
+                          </Authorization>
                         </Column>
-                        <Column small={3} medium={4} large={1}>
-                          <ListItem>{formatNumber(price.amount) || '-'}</ListItem>
+                        <Column small={3} large={1}>
+                          <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_DATE)}>
+                            <ListItem>{formatDate(decision.decision_date) || '-'}</ListItem>
+                          </Authorization>
                         </Column>
-                        <Column small={3} medium={4} large={1}>
-                          <ListItem>{getLabelOfOption(areaUnitOptions, price.area_unit) || '-'}</ListItem>
+                        <Column small={3} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.SECTION)}>
+                            <ListItem>{decision.section ? `${decision.section} §` : '-'}</ListItem>
+                          </Authorization>
+                        </Column>
+                        <Column small={3} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}>
+                            {decision.reference_number
+                              ? <ListItem>
+                                <ExternalLink
+                                  href={getReferenceNumberLink(decision.reference_number)}
+                                  text={decision.reference_number}
+                                />
+                              </ListItem>
+                              : <ListItem>-</ListItem>
+                            }
+                          </Authorization>
                         </Column>
                       </Row>
-                    );
-                  })}
-                </ListItems>
-              ) : <FormText>-</FormText>
-            }
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <FormTitleAndText
-              title='Huomautus'
-              text={rentBasis.note || '-'}
-            />
-          </Column>
-        </Row>
+                    )}
+                  </ListItems>
+                ) : <FormText>Ei päätöksiä</FormText>
+              }
+            </Column>
+          </Row>
+        </Authorization>
+
+        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.RENT_RATES)}>
+          <Row>
+            <Column>
+              <SubTitle>{RentBasisRentRatesFieldTitles.RENT_RATES}</SubTitle>
+              {rentBasis.rent_rates && !!rentBasis.rent_rates.length
+                ? (
+                  <ListItems>
+                    <Row>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)}>
+                          <FormTextTitle>{RentBasisRentRatesFieldTitles.BUILD_PERMISSION_TYPE}</FormTextTitle>
+                        </Authorization>
+                      </Column>
+                      <Column small={3} medium={4} large={1}>
+                        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}>
+                          <FormTextTitle>{RentBasisRentRatesFieldTitles.AMOUNT}</FormTextTitle>
+                        </Authorization>
+                      </Column>
+                      <Column small={3} medium={4} large={1}>
+                        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT)}>
+                          <FormTextTitle>{RentBasisRentRatesFieldTitles.AREA_UNIT}</FormTextTitle>
+                        </Authorization>
+                      </Column>
+                    </Row>
+                    {rentBasis.rent_rates.map((price, index) => {
+                      return(
+                        <Row key={index}>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)}>
+                              <ListItem>{getLabelOfOption(buildPermissionTypeOptions, price.build_permission_type) || '-'}</ListItem>
+                            </Authorization>
+                          </Column>
+                          <Column small={3} medium={4} large={1}>
+                            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}>
+                              <ListItem>{!isEmptyValue(price.amount) ? `${formatNumber(price.amount)} €` : '-'}</ListItem>
+                            </Authorization>
+                          </Column>
+                          <Column small={3} medium={4} large={1}>
+                            <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT)}>
+                              <ListItem>{getLabelOfOption(areaUnitOptions, price.area_unit) || '-'}</ListItem>
+                            </Authorization>
+                          </Column>
+                        </Row>
+                      );
+                    })}
+                  </ListItems>
+                ) : <FormText>-</FormText>
+              }
+            </Column>
+          </Row>
+        </Authorization>
+
+        <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.NOTE)}>
+          <Row>
+            <Column>
+              <FormTextTitle>{RentBasisFieldTitles.NOTE}</FormTextTitle>
+              <FormText>{rentBasis.note || '-'}</FormText>
+            </Column>
+          </Row>
+        </Authorization>
       </GreenBox>
     </ContentContainer>
   );
@@ -211,7 +272,7 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
 export default connect(
   (state) => {
     return {
-      attributes: getAttributes(state),
+      rentBasisAttributes: getRentBasisAttributes(state),
     };
   }
 )(RentBasisReadonly);

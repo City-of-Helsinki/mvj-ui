@@ -7,7 +7,7 @@ import SortableTable from '$components/table/SortableTable';
 import {
   formatDate,
   formatNumber,
-  getAttributeFieldOptions,
+  getFieldOptions,
   getLabelOfOption,
   sortByOptionsAsc,
   sortByOptionsDesc,
@@ -16,7 +16,7 @@ import {
 } from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,
@@ -24,7 +24,7 @@ type Props = {
 }
 
 const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
-  const intendedUseOptions = getAttributeFieldOptions(attributes,
+  const intendedUseOptions = getFieldOptions(attributes,
     'rents.child.children.index_adjusted_rents.child.children.intended_use');
 
   return (

@@ -46,7 +46,14 @@ const FileDownloadButton = ({
           saveAs(blob, filename);
           break;
         default:
-          displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
+          const errors = await response.json();
+
+          if(errors && errors.detail) {
+            displayUIMessage({title: '', body: errors.detail}, {type: 'error'});
+          } else {
+            displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
+          }
+
           break;
       }
     } catch(e) {

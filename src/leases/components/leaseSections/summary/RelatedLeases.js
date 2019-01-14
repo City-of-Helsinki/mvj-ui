@@ -1,64 +1,56 @@
 // @flow
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash/isEmpty';
 
-import RelatedLeasesItem from './RelatedLeasesItem';
+import RelatedLeaseItem from './RelatedLeaseItem';
+import {LeaseFieldPaths} from '$src/leases/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$src/util/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getFieldOptions} from '$src/util/helpers';
+import {
+  getAttributes as getLeaseAttributes,
+  getCurrentLease,
+} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
-  attributes: Attributes,
   currentLease: Lease,
+  leaseAttributes: Attributes,
 }
 
 type State = {
+  currentLease: Lease,
+  leaseAttributes: Attributes,
   relatedLeasesFrom: Array<Object>,
   relatedLeasesTo: Array<Object>,
   stateOptions: Array<Object>,
 }
 
-class RelatedLeases extends Component<Props, State> {
+class RelatedLeases extends PureComponent<Props, State> {
   state = {
+    currentLease: {},
+    leaseAttributes: {},
     relatedLeasesFrom: [],
     relatedLeasesTo: [],
     stateOptions: [],
   }
 
-  componentDidUpdate(prevProps) {
-    if(this.props.currentLease !== prevProps.currentLease) {
-      this.updateRelatedLeases();
-    }
-  }
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
 
-  componentWillMount() {
-    const {attributes, currentLease} = this.props;
-
-    if(!isEmpty(attributes)) {
-      this.updateOptions();
+    if(props.leaseAttributes !== state.leaseAttributes) {
+      newState.leaseAttributes = props.leaseAttributes;
+      newState.stateOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.STATE);
     }
 
-    if(!isEmpty(currentLease)) {
-      this.updateRelatedLeases();
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.relatedLeasesFrom = getContentRelatedLeasesFrom(props.currentLease);
+      newState.relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
     }
-  }
 
-  updateOptions = () => {
-    const {attributes} = this.props;
-    this.setState({
-      stateOptions: getAttributeFieldOptions(attributes, 'state'),
-    });
-  }
-
-  updateRelatedLeases = () => {
-    const {currentLease} = this.props;
-    this.setState({
-      relatedLeasesFrom: getContentRelatedLeasesFrom(currentLease),
-      relatedLeasesTo: getContentRelatedLeasesTo(currentLease),
-    });
+    return newState;
   }
 
   render() {
@@ -75,7 +67,7 @@ class RelatedLeases extends Component<Props, State> {
           <div className="summary__related-leases_items_border-left" />
           {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {
             return (
-              <RelatedLeasesItem
+              <RelatedLeaseItem
                 key={index}
                 active={false}
                 id={lease.id}
@@ -86,7 +78,7 @@ class RelatedLeases extends Component<Props, State> {
             );
           })}
           {!!currentLease &&
-            <RelatedLeasesItem
+            <RelatedLeaseItem
               active={true}
               lease={currentLease}
               stateOptions={stateOptions}
@@ -94,7 +86,7 @@ class RelatedLeases extends Component<Props, State> {
           }
           {!!relatedLeasesFrom && !!relatedLeasesFrom.length && relatedLeasesFrom.map((lease, index) => {
             return (
-              <RelatedLeasesItem
+              <RelatedLeaseItem
                 key={index}
                 active={false}
                 id={lease.id}
@@ -112,9 +104,8 @@ class RelatedLeases extends Component<Props, State> {
 export default connect(
   (state) => {
     return {
-      attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
+      leaseAttributes: getLeaseAttributes(state),
     };
-
   }
 )(RelatedLeases);

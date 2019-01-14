@@ -5,26 +5,30 @@ import get from 'lodash/get';
 import {Column} from 'react-foundation';
 import classNames from 'classnames';
 
+import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames} from '$src/leases/enums';
+import {FormNames, LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths} from '$src/leases/enums';
 import {ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {formatDateRange} from '$util/helpers';
-import {getCollapseStateByKey} from '$src/leases/selectors';
+import {formatDateRange, isFieldAllowedToRead} from '$util/helpers';
+import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
+  attributes: Attributes,
   collapseState: boolean,
   receiveCollapseStates: Function,
   tenant: Object,
 }
 
 const Tenant = ({
+  attributes,
   collapseState,
   receiveCollapseStates,
   tenant,
@@ -42,9 +46,9 @@ const Tenant = ({
   };
 
   const contact = get(tenant, 'tenant.contact');
-  const isActive = isTenantActive(get(tenant, 'tenant'));
-  const billingPersons = get(tenant, 'billing_persons', []);
-  const contactPersons = get(tenant, 'contact_persons', []);
+  const isActive = isTenantActive(tenant.tenant);
+  const billingPersons = tenant.billing_persons;
+  const contactPersons = tenant.contact_persons;
 
   return (
     <Collapse
@@ -53,43 +57,41 @@ const Tenant = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <CollapseHeaderSubtitle><span>Osuus murtolukuna:</span> {get(tenant, 'share_numerator', '')} / {get(tenant, 'share_denominator', '')}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+              <CollapseHeaderSubtitle>
+                <span>{LeaseTenantsFieldTitles.SHARE_FRACTION}:</span>
+                {tenant.share_numerator || ''} / {tenant.share_denominator || ''}
+              </CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(tenant, 'tenant.start_date'), get(tenant, 'tenant.end_date')) || '-'}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE) && isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+              <CollapseHeaderSubtitle>
+                <span>Välillä:</span>
+                {formatDateRange(get(tenant, 'tenant.start_date'), get(tenant, 'tenant.end_date')) || '-'}
+              </CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
         </Fragment>
       }
-      headerTitle={<CollapseHeaderTitle>{getContactFullName(contact)}</CollapseHeaderTitle>}
+      headerTitle={
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+          {getContactFullName(contact)}
+        </Authorization>
+      }
       onToggle={handleCollapseToggle}
     >
-      <div>
-        <TenantItem
-          contact={contact}
-          tenant={tenant}
-        />
-        {!!billingPersons.length &&
-          billingPersons.map((person) => {
-            return (
-              <OtherTenantItem
-                key={person.id}
-                tenant={person}
-              />
-            );
-          })
-        }
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET)}>
+        <TenantItem contact={contact} tenant={tenant} />
 
-        {!!contactPersons.length &&
-          contactPersons.map((person) => {
-            return (
-              <OtherTenantItem
-                key={person.id}
-                tenant={person}
-              />
-            );
-          })
-        }
-      </div>
+        {!!billingPersons.length && billingPersons.map((person) =>
+          <OtherTenantItem key={person.id} tenant={person} />
+        )}
+
+        {!!contactPersons.length && contactPersons.map((person) =>
+          <OtherTenantItem key={person.id} tenant={person} />
+        )}
+      </Authorization>
     </Collapse>
   );
 };
@@ -98,6 +100,7 @@ export default connect(
   (state, props) => {
     const id = props.tenant.id;
     return {
+      attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.TENANTS}.tenants.${id}`),
     };
   },

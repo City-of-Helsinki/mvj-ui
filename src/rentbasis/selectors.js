@@ -1,27 +1,37 @@
 // @flow
-import type {Selector} from '../types';
-import type {Attributes, RentBasis, RentBasisList, RentBasisState} from './types';
+import type {Attributes, Methods, Selector} from '$src/types';
+import type {RootState} from '$src/root/types';
+import type {RentBasis, RentBasisList} from './types';
 
-export const getIsEditMode: Selector<boolean, void> = (state: RentBasisState): boolean =>
+export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolean =>
   state.rentBasis.isEditMode;
 
-export const getIsFetching: Selector<boolean, void> = (state: RentBasisState): boolean =>
+export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.rentBasis.isFetching;
 
-export const getIsSaveClicked: Selector<boolean, void> = (state: RentBasisState): boolean =>
+export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.rentBasis.isFetchingAttributes;
+
+export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boolean =>
   state.rentBasis.isSaveClicked;
 
-export const getAttributes: Selector<Attributes, void> = (state: RentBasisState): Attributes =>
+export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean =>
+  state.rentBasis.isSaving;
+
+export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.rentBasis.attributes;
 
-export const getRentBasisList: Selector<RentBasisList, void> = (state: RentBasisState): RentBasisList =>
+export const getMethods: Selector<Methods, void> = (state: RootState): Methods =>
+  state.rentBasis.methods;
+
+export const getRentBasisList: Selector<RentBasisList, void> = (state: RootState): RentBasisList =>
   state.rentBasis.list;
 
-export const getRentBasis: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
+export const getRentBasis: Selector<RentBasis, void> = (state: RootState): RentBasis =>
   state.rentBasis.rentbasis;
 
-export const getRentBasisInitialValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
+export const getRentBasisInitialValues: Selector<RentBasis, void> = (state: RootState): RentBasis =>
   state.rentBasis.initialValues;
 
-export const getIsFormValid: Selector<boolean, void> = (state: RentBasisState): boolean =>
+export const getIsFormValid: Selector<boolean, void> = (state: RootState): boolean =>
   state.rentBasis.isFormValid;

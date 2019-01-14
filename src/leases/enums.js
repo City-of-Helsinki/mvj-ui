@@ -320,3 +320,738 @@ export const FormNames = {
   SUMMARY: 'summary-form',
   TENANTS: 'tenants-form',
 };
+
+
+/**
+ * Lease field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseFieldPaths = {
+  CLASSIFICATION: 'classification',
+  DISTRICT: 'district',
+  END_DATE: 'end_date',
+  FINANCING: 'financing',
+  HITAS: 'hitas',
+  IDENTIFIER: 'identifier',
+  INFILL_DEVELOPMENT_COMPENSATIONS: 'infill_development_compensations',
+  INTENDED_USE: 'intended_use',
+  INTENDED_USE_NOTE: 'intended_use_note',
+  IS_SUBJECT_TO_VAT: 'is_subject_to_vat',
+  LESSOR: 'lessor',
+  MANAGEMENT: 'management',
+  MUNICIPALITY: 'municipality',
+  NOTE: 'note',
+  NOTICE_NOTE: 'notice_note',
+  NOTICE_PERIOD: 'notice_period',
+  PREPARER: 'preparer',
+  REFERENCE_NUMBER: 'reference_number',
+  REGULATED: 'regulated',
+  REGULATION: 'regulation',
+  RELATED_LEASES: 'related_leases',
+  START_DATE: 'start_date',
+  STATE: 'state',
+  STATISTICAL_USE: 'statistical_use',
+  STATUS: 'status',
+  SUPPORTIVE_HOUSING: 'supportive_housing',
+  TRANSFERABLE: 'transferable',
+  TYPE: 'type',
+};
+
+/**
+ * Lease field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseFieldTitles = {
+  CLASSIFICATION: 'Julkisuusluokka',
+  DISTRICT: 'Kaupunginosa',
+  END_DATE: 'Loppupvm',
+  FINANCING: 'Rahoitusmuoto',
+  HITAS: 'Hitas',
+  IDENTIFIER: 'Vuokratunnus',
+  INFILL_DEVELOPMENT_COMPENSATIONS: 'Täydennysrakentamiskorvaus',
+  INTENDED_USE: 'Vuokrauksen käyttötarkoitus',
+  INTENDED_USE_NOTE: 'Käyttötarkoituksen huomautus',
+  IS_SUBJECT_TO_VAT: 'Arvonlisävelvollinen',
+  LESSOR: 'Vuokranantaja',
+  MANAGEMENT: 'Hallintamuoto',
+  MUNICIPALITY: 'Kunta',
+  NOTE: 'Huomautus',
+  NOTICE_NOTE: 'Irtisanomisajan huomautus',
+  NOTICE_PERIOD: 'Irtisanomisaika',
+  PREPARER: 'Valmistelija',
+  REFERENCE_NUMBER: 'Diaarinumero',
+  REGULATED: 'Sääntely',
+  REGULATION: 'Sääntelymuoto',
+  RELATED_LEASES: 'Liittyvät vuokraukset',
+  START_DATE: 'Alkupvm',
+  STATE: 'Tyyppi',
+  STATISTICAL_USE: 'Tilastollinen pääkäyttötarkoitus',
+  STATUS: 'Olotila',
+  SUPPORTIVE_HOUSING: 'Erityisasunnot',
+  TRANSFERABLE: 'Siirto-oikeus',
+  TYPE: 'Vuokrauksen laji',
+};
+
+/**
+ * Lease areas field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreasFieldPaths = {
+  LEASE_AREAS: 'lease_areas',
+  ARCHIVED_AT: 'lease_areas.child.children.archived_at',
+  ARCHIVED_DECISION: 'lease_areas.child.children.archived_decision',
+  ARCHIVED_NOTE: 'lease_areas.child.children.archived_note',
+  AREA: 'lease_areas.child.children.area',
+  CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER: 'lease_areas.child.children.constructability_report_geotechnical_number',
+  CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'lease_areas.child.children.constructability_report_investigation_state',
+  CONSTRUCTABILITY_REPORT_SIGNING_DATE: 'lease_areas.child.children.constructability_report_signing_date',
+  CONSTRUCTABILITY_REPORT_SIGNER: 'lease_areas.child.children.constructability_report_signer',
+  CONSTRUCTABILITY_REPORT_STATE: 'lease_areas.child.children.constructability_report_state',
+  DEMOLITION_STATE: 'lease_areas.child.children.demolition_state',
+  GEOMETRY: 'lease_areas.child.children.geometry',
+  IDENTIFIER: 'lease_areas.child.children.identifier',
+  LOCATION: 'lease_areas.child.children.location',
+  OTHER_STATE: 'lease_areas.child.children.other_state',
+  POLLUTED_LAND_MATTI_REPORT_NUMBER: 'lease_areas.child.children.polluted_land_matti_report_number',
+  POLLUTED_LAND_PLANNER: 'lease_areas.child.children.polluted_land_planner',
+  POLLUTED_LAND_PROJECTWISE_NUMBER: 'lease_areas.child.children.polluted_land_projectwise_number',
+  POLLUTED_LAND_RENT_CONDITION_DATE: 'lease_areas.child.children.polluted_land_rent_condition_date',
+  POLLUTED_LAND_RENT_CONDITION_STATE: 'lease_areas.child.children.polluted_land_rent_condition_state',
+  POLLUTED_LAND_STATE: 'lease_areas.child.children.polluted_land_state',
+  PRECONSTRUCTION_STATE: 'lease_areas.child.children.preconstruction_state',
+  TYPE: 'lease_areas.child.children.type',
+};
+
+/**
+ * Lease area field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreasFieldTitles = {
+  LEASE_AREAS: 'Vuokrakohde',
+  ARCHIVED_AT: 'Arkistoitu',
+  ARCHIVED_DECISION: 'Päätös',
+  ARCHIVED_NOTE: 'Huomautus',
+  AREA: 'Pinta-ala',
+  CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER: 'Geoteknisen palvelun tiedosto',
+  CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'Selvity',
+  CONSTRUCTABILITY_REPORT_SIGNING_DATE: 'Allekirjoituspvm',
+  CONSTRUCTABILITY_REPORT_SIGNER: 'Allekirjoittaja',
+  CONSTRUCTABILITY_REPORT_STATE: 'Selvitysaste',
+  DEMOLITION_STATE: 'Selvitysaste',
+  GEOMETRY: 'Karttalinkki',
+  IDENTIFIER: 'Kohteen tunnus',
+  LOCATION: 'Sijainti',
+  OTHER_STATE: 'Selvitysaste',
+  POLLUTED_LAND_MATTI_REPORT_NUMBER: 'Mattiraportti',
+  POLLUTED_LAND_PLANNER: 'PIMA valmistelija',
+  POLLUTED_LAND_PROJECTWISE_NUMBER: 'ProjectWise numero',
+  POLLUTED_LAND_RENT_CONDITION_DATE: 'Vuokraehdot pvm',
+  POLLUTED_LAND_RENT_CONDITION_STATE: 'Vuokraehdot',
+  POLLUTED_LAND_STATE: 'Selvitysaste',
+  PRECONSTRUCTION_STATE: 'Selvitysaste',
+  TYPE: 'Määritelmä',
+};
+
+/**
+ * Lease area addresses field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreaAddressesFieldPaths = {
+  ADDRESSES: 'lease_areas.child.children.addresses',
+  ADDRESS: 'lease_areas.child.children.addresses.child.children.address',
+  CITY: 'lease_areas.child.children.addresses.child.children.city',
+  POSTAL_CODE: 'lease_areas.child.children.addresses.child.children.postal_code',
+};
+
+/**
+ * Lease area addresses field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreaAddressesFieldTitles = {
+  ADDRESSES: 'Osoitteet',
+  ADDRESS: 'Osoite',
+  CITY: 'Kaupunki',
+  POSTAL_CODE: 'Postinumero',
+};
+
+/**
+ * Lease area plan units field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeasePlanUnitsFieldPaths = {
+  PLAN_UNITS: 'lease_areas.child.children.plan_units',
+  AREA: 'lease_areas.child.children.plan_units.child.children.area',
+  DETAILED_PLAN_IDENTIFIER: 'lease_areas.child.children.plan_units.child.children.detailed_plan_identifier',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE: 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE: 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date_note',
+  GEOMETRY: 'lease_areas.child.children.plan_units.child.children.geometry',
+  IDENTIFIER: 'lease_areas.child.children.plan_units.child.children.identifier',
+  PLAN_UNIT_INTENDED_USE: 'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use',
+  PLAN_UNIT_STATE: 'lease_areas.child.children.plan_units.child.children.plan_unit_state',
+  PLAN_UNIT_TYPE: 'lease_areas.child.children.plan_units.child.children.plan_unit_type',
+  PLOT_DIVISION_DATE_OF_APPROVAL: 'lease_areas.child.children.plan_units.child.children.plot_division_date_of_approval',
+  PLOT_DIVISION_IDENTIFIER: 'lease_areas.child.children.plan_units.child.children.plot_division_identifier',
+  PLOT_DIVISION_STATE: 'lease_areas.child.children.plan_units.child.children.plot_division_state',
+  SECTION_AREA: 'lease_areas.child.children.plan_units.child.children.section_area',
+};
+
+/**
+ * Lease area plan units field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeasePlanUnitsFieldTitles = {
+  PLAN_UNITS: 'Kaavayksiköt',
+  AREA: 'Kokonaisala',
+  DETAILED_PLAN_IDENTIFIER: 'Asemakaava',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE: 'Asemakaavan viimeisin käsittelypvm',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE: 'Asemakaavan viimeisin käsittelypvm huomautus',
+  GEOMETRY: 'Karttalinkki',
+  IDENTIFIER: 'Kohteen tunnus',
+  PLAN_UNIT_INTENDED_USE: 'Kaavayksikön käyttötarkoitus',
+  PLAN_UNIT_STATE: 'Kaavayksikön olotila',
+  PLAN_UNIT_TYPE: 'Kaavayksikön laji',
+  PLOT_DIVISION_DATE_OF_APPROVAL: 'Tonttijaon hyväksymispvm',
+  PLOT_DIVISION_IDENTIFIER: 'Tonttijaon tunnus',
+  PLOT_DIVISION_STATE: 'Tonttijaon olotila',
+  SECTION_AREA: 'Leikkausala',
+};
+
+/**
+ * Lease area plots field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeasePlotsFieldPaths = {
+  PLOTS: 'lease_areas.child.children.plots',
+  AREA: 'lease_areas.child.children.plots.child.children.area',
+  GEOMETRY: 'lease_areas.child.children.plots.child.children.geometry',
+  IDENTIFIER: 'lease_areas.child.children.plots.child.children.identifier',
+  REGISTRATION_DATE: 'lease_areas.child.children.plots.child.children.registration_date',
+  REPEAL_DATE: 'lease_areas.child.children.plots.child.children.repeal_date',
+  SECTION_AREA: 'lease_areas.child.children.plots.child.children.section_area',
+  TYPE: 'lease_areas.child.children.plots.child.children.type',
+};
+
+/**
+ * Lease area plots field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeasePlotsFieldTitles = {
+  PLOTS: 'Kiinteistöt / määräalat',
+  AREA: 'Kokonaisala',
+  GEOMETRY: 'Karttalinkki',
+  IDENTIFIER: 'Kohteen tunnus',
+  REGISTRATION_DATE: 'Rekisteröintipvm',
+  REPEAL_DATE: 'Kumoamispvm',
+  SECTION_AREA: 'Leikkausala',
+  TYPE: 'Määritelmä',
+};
+
+/**
+ * Lease area constructability descriptions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseConstructabilityDescriptionsFieldPaths = {
+  CONSTRUCTABILITY_DESCRIPTIONS: 'lease_areas.child.children.constructability_descriptions',
+  AHJO_REFERENCE_NUMBER: 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number',
+  TEXT: 'lease_areas.child.children.constructability_descriptions.child.children.text',
+  TYPE: 'lease_areas.child.children.constructability_descriptions.child.children.type',
+};
+
+/**
+ * Lease area constructability descriptions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseConstructabilityDescriptionsFieldTitles = {
+  CONSTRUCTABILITY_DESCRIPTIONS: 'Huomautukset',
+  AHJO_REFERENCE_NUMBER: 'AHJO diaarinumero',
+  TEXT: 'Huomautus',
+  TYPE: 'Tyyppi',
+};
+
+/**
+ * Lease tenants field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseTenantsFieldPaths = {
+  TENANTS: 'tenants',
+  REFERENCE: 'tenants.child.children.reference',
+  SHARE_DENIMONATOR: 'tenants.child.children.share_denominator',
+  SHARE_NUMERATOR: 'tenants.child.children.share_numerator',
+};
+
+/**
+ * Lease tenants field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseTenantsFieldTitles = {
+  TENANTS: 'Vuokralaiset',
+  REFERENCE: 'Viite',
+  SHARE_DENIMONATOR: 'Jakaja',
+  SHARE_FRACTION: 'Osuus murtolukuna',
+  SHARE_NUMERATOR: 'Jaettava',
+  SHARE_PERCENTAGE: 'Laskun hallintaosuus',
+};
+
+/**
+ * Lease tenants field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseTenantContactSetFieldPaths = {
+  TENANTCONTACT_SET: 'tenants.child.children.tenantcontact_set',
+  CONTACT: 'tenants.child.children.tenantcontact_set.child.children.contact',
+  END_DATE: 'tenants.child.children.tenantcontact_set.child.children.end_date',
+  START_DATE: 'tenants.child.children.tenantcontact_set.child.children.start_date',
+  TYPE: 'tenants.child.children.tenantcontact_set.child.children.type',
+};
+
+/**
+ * Lease tenants field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseTenantContactSetFieldTitles = {
+  CONTACT: 'Asiakas',
+  END_DATE: 'Loppupvm',
+  START_DATE: 'Alkupvm',
+  TYPE: 'Tyyppi',
+};
+
+/**
+ * Lease rents field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentsFieldPaths = {
+  RENTS: 'rents',
+  AMOUNT: 'rents.child.children.amount',
+  CYCLE: 'rents.child.children.cycle',
+  DUE_DATES_PER_YEAR: 'rents.child.children.due_dates_per_year',
+  DUE_DATES_TYPE: 'rents.child.children.due_dates_type',
+  ELEMENTARY_INDEX: 'rents.child.children.elementary_index',
+  END_DATE: 'rents.child.children.end_date',
+  EQUALIZATION_END_DATE: 'rents.child.children.equalization_end_date',
+  EQUALIZATION_START_DATE: 'rents.child.children.equalization_start_date',
+  INDEX_ROUNDING: 'rents.child.children.index_rounding',
+  INDEX_TYPE: 'rents.child.children.index_type',
+  IS_RENT_INFO_COMPLETE: 'is_rent_info_complete',
+  MANUAL_RATIO: 'rents.child.children.manual_ratio',
+  MANUAL_RATIO_PREVIOUS: 'rents.child.children.manual_ratio_previous',
+  NOTE: 'rents.child.children.note',
+  SEASONAL_END_DAY: 'rents.child.children.seasonal_end_day',
+  SEASONAL_END_MONTH: 'rents.child.children.seasonal_end_month',
+  SEASONAL_START_DAY: 'rents.child.children.seasonal_start_day',
+  SEASONAL_START_MONTH: 'rents.child.children.seasonal_start_month',
+  START_DATE: 'rents.child.children.start_date',
+  TYPE: 'rents.child.children.type',
+  X_VALUE: 'rents.child.children.x_value',
+  Y_VALUE: 'rents.child.children.y_value',
+  Y_VALUE_START: 'rents.child.children.y_value_start',
+  YEARLY_DUE_DATES: 'rents.child.children.yearly_due_dates',
+};
+
+/**
+ * Lease rents field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentsFieldTitles = {
+  RENTS: 'Vuokrat',
+  AMOUNT: 'Kertakaikkinen vuokra',
+  CYCLE: 'Vuokrakausi',
+  DUE_DATES_PER_YEAR: 'Laskut kpl/v',
+  DUE_DATES_TYPE: 'Laskutusjako',
+  ELEMENTARY_INDEX: 'Perusindeksi',
+  END_DATE: 'Loppupvm',
+  EQUALIZATION_END_DATE: 'Tasaus loppupvm',
+  EQUALIZATION_START_DATE: 'Tasaus alkupvm',
+  INDEX_ROUNDING: 'Pyöristys',
+  INDEX_TYPE: 'Indeksin tunnusnumero',
+  IS_RENT_INFO_COMPLETE: 'Vuokratiedot kunnossa?',
+  MANUAL_RATIO: 'Käsinlaskentakerroin',
+  MANUAL_RATIO_PREVIOUS: 'Käsinlaskentakerroin (edellinen)',
+  NOTE: 'Huomautus',
+  SEASONAL_DATES: 'Kausivuokra ajalla (pv.kk)',
+  SEASONAL_END_DAY: 'Kauden loppupäivä',
+  SEASONAL_END_MONTH: 'Kauden loppukuukausi',
+  SEASONAL_START_DAY: 'Kauden alkupäivä',
+  SEASONAL_START_MONTH: 'Kauden alkukuukausi',
+  START_DATE: 'Alkupvm',
+  TYPE: 'Vuokralaji',
+  X_VALUE: 'X-luku',
+  Y_VALUE: 'Y-luku',
+  Y_VALUE_START: 'Y-luku alkaen',
+  YEARLY_DUE_DATES: 'Eräpäivät (pv.kk)',
+};
+
+/**
+ * Lease rent due dates field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentDueDatesFieldPaths = {
+  DUE_DATES: 'rents.child.children.due_dates',
+  DAY: 'rents.child.children.due_dates.child.children.day',
+  MONTH: 'rents.child.children.due_dates.child.children.month',
+};
+
+/**
+ * Lease rent due dates field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentDueDatesFieldTitles = {
+  DUE_DATES: 'Eräpäivät',
+  DAY: 'Päivä',
+  MONTH: 'Kuukausi',
+};
+
+/**
+ * Lease rent fixed initial year rents field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentFixedInitialYearRentsFieldPaths = {
+  FIXED_INITIAL_YEAR_RENTS: 'rents.child.children.fixed_initial_year_rents',
+  AMOUNT: 'rents.child.children.fixed_initial_year_rents.child.children.amount',
+  END_DATE: 'rents.child.children.fixed_initial_year_rents.child.children.end_date',
+  INTENDED_USE: 'rents.child.children.fixed_initial_year_rents.child.children.intended_use',
+  START_DATE: 'rents.child.children.fixed_initial_year_rents.child.children.start_date',
+};
+
+/**
+ * Lease rent fixed initial year rents field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentFixedInitialYearRentsFieldTitles = {
+  FIXED_INITIAL_YEAR_RENTS: 'Kiinteä alkuvuosivuokra',
+  AMOUNT: 'Kiinteä alkuvuosivuokra',
+  END_DATE: 'Loppupvm',
+  INTENDED_USE: 'Käyttötarkoitus',
+  START_DATE: 'Alkupvm',
+};
+
+/**
+ * Lease rent contract rents field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentContractRentsFieldPaths = {
+  CONTRACT_RENTS: 'rents.child.children.contract_rents',
+  AMOUNT: 'rents.child.children.contract_rents.child.children.amount',
+  PERIOD: 'rents.child.children.contract_rents.child.children.period',
+  BASE_AMOUNT: 'rents.child.children.contract_rents.child.children.base_amount',
+  BASE_AMOUNT_PERIOD: 'rents.child.children.contract_rents.child.children.base_amount_period',
+  BASE_YEAR_RENT: 'rents.child.children.contract_rents.child.children.base_year_rent',
+  END_DATE: 'rents.child.children.contract_rents.child.children.end_date',
+  INTENDED_USE: 'rents.child.children.contract_rents.child.children.intended_use',
+  START_DATE: 'rents.child.children.contract_rents.child.children.start_date',
+};
+
+/**
+ * Lease rent contract rents field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentContractRentsFieldTitles = {
+  CONTRACT_RENTS: 'Sopimusvuokra',
+  AMOUNT: 'Perusvuosivuokra',
+  PERIOD: 'Yksikkö',
+  BASE_AMOUNT: 'Vuokranlaskennan perusteena oleva vuokra',
+  BASE_AMOUNT_PERIOD: 'Yksikkö',
+  BASE_YEAR_RENT: 'Uusi perusvuosivuokra',
+  END_DATE: 'Loppupvm',
+  INTENDED_USE: 'Käyttötarkoitus',
+  START_DATE: 'Alkupvm',
+};
+
+/**
+ * Lease rent adjustments field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentAdjustmentsFieldPaths = {
+  RENT_ADJUSTMENTS: 'rents.child.children.rent_adjustments',
+  AMOUNT_LEFT: 'rents.child.children.rent_adjustments.child.children.amount_left',
+  AMOUNT_TYPE: 'rents.child.children.rent_adjustments.child.children.amount_type',
+  DECISION: 'rents.child.children.rent_adjustments.child.children.decision',
+  END_DATE: 'rents.child.children.rent_adjustments.child.children.end_date',
+  FULL_AMOUNT: 'rents.child.children.rent_adjustments.child.children.full_amount',
+  INTENDED_USE: 'rents.child.children.rent_adjustments.child.children.intended_use',
+  NOTE: 'rents.child.children.rent_adjustments.child.children.note',
+  START_DATE: 'rents.child.children.rent_adjustments.child.children.start_date',
+  TYPE: 'rents.child.children.rent_adjustments.child.children.type',
+};
+
+/**
+ * Lease rent adjustments field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentAdjustmentsFieldTitles = {
+  RENT_ADJUSTMENTS: 'Alennukset ja korotukset',
+  AMOUNT_LEFT: 'Jäljellä',
+  AMOUNT_TYPE: 'Määrän tyyppi',
+  DECISION: 'Päätös',
+  END_DATE: 'Loppupvm',
+  FULL_AMOUNT: 'Kokonaismäärä',
+  INTENDED_USE: 'Käyttötarkoitus',
+  NOTE: 'Huomautus',
+  START_DATE: 'Alkupvm',
+  TYPE: 'Tyyppi',
+};
+
+/**
+ * Lease basis of rents field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseBasisOfRentsFieldPaths = {
+  BASIS_OF_RENTS: 'basis_of_rents',
+  AMOUNT_PER_AREA: 'basis_of_rents.child.children.amount_per_area',
+  ARCHIVED_AT: 'basis_of_rents.child.children.archived_at',
+  ARCHIVED_NOTE: 'basis_of_rents.child.children.archived_note',
+  AREA: 'basis_of_rents.child.children.area',
+  AREA_UNIT: 'basis_of_rents.child.children.area_unit',
+  DISCOUNT_PERCENTAGE: 'basis_of_rents.child.children.discount_percentage',
+  INDEX: 'basis_of_rents.child.children.index',
+  INTENDED_USE: 'basis_of_rents.child.children.intended_use',
+  LOCKED_AT: 'basis_of_rents.child.children.locked_at',
+  PLANS_INSPECTED_AT: 'basis_of_rents.child.children.plans_inspected_at',
+  PROFIT_MARGIN_PERCENTAGE: 'basis_of_rents.child.children.profit_margin_percentage',
+};
+
+/**
+ * Lease basis of rents field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseBasisOfRentsFieldTitles = {
+  BASIS_OF_RENTS: 'Vuokralaskuri',
+  AMOUNT_PER_AREA: 'Yksikköhinta (ind 100)',
+  ARCHIVED_AT: 'Arkistoitu',
+  ARCHIVED_NOTE: 'Arkitoinnin huomautus',
+  AREA: 'Pinta-ala',
+  AREA_UNIT: 'Pinta-alan yksikkö',
+  DISCOUNT_PERCENTAGE: 'Alennusprosentti',
+  INDEX: 'Indeksi',
+  INTENDED_USE: 'Käyttötarkoitus',
+  LOCKED_AT: 'Laskelma lukittu',
+  PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
+  PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
+};
+
+/**
+ * Lease decisions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseDecisionsFieldPaths = {
+  DECISIONS: 'decisions',
+  DECISION_DATE: 'decisions.child.children.decision_date',
+  DECISION_MAKER: 'decisions.child.children.decision_maker',
+  DESCRIPTION: 'decisions.child.children.description',
+  REFERENCE_NUMBER: 'decisions.child.children.reference_number',
+  SECTION: 'decisions.child.children.section',
+  TYPE: 'decisions.child.children.type',
+};
+
+/**
+ * Lease decisions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseDecisionsFieldTitles = {
+  DECISIONS: 'Päätökset',
+  DECISION_DATE: 'Päätöspvm',
+  DECISION_MAKER: 'Päättäjä',
+  DESCRIPTION: 'Huomautus',
+  REFERENCE_NUMBER: 'Diaarinumero',
+  SECTION: 'Pykälä',
+  TYPE: 'Päätöksen tyyppi',
+};
+
+/**
+ * Lease decision conditions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseDecisionConditionsFieldPaths = {
+  CONDITIONS: 'decisions.child.children.conditions',
+  DESCRIPTION: 'decisions.child.children.conditions.child.children.description',
+  SUPERVISED_DATE: 'decisions.child.children.conditions.child.children.supervised_date',
+  SUPERVISION_DATE: 'decisions.child.children.conditions.child.children.supervision_date',
+  TYPE: 'decisions.child.children.conditions.child.children.type',
+};
+
+/**
+ * Lease decision conditions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseDecisionConditionsFieldTitles = {
+  CONDITIONS: 'Ehdot',
+  DESCRIPTION: 'Huomautus',
+  SUPERVISED_DATE: 'Valvottu pvm',
+  SUPERVISION_DATE: 'Valvontapvm',
+  TYPE: 'Ehtotyyppi',
+};
+
+/**
+ * Lease contracts field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseContractsFieldPaths = {
+  CONTRACTS: 'contracts',
+  COLLATERAL_END_DATE: 'contracts.child.children.collateral_end_date',
+  COLLATERAL_NOTE: 'contracts.child.children.collateral_note',
+  COLLATERAL_NUMBER: 'contracts.child.children.collateral_number',
+  COLLATERAL_START_DATE: 'contracts.child.children.collateral_start_date',
+  CONTRACT_NUMBER: 'contracts.child.children.contract_number',
+  DECISION: 'contracts.child.children.decision',
+  INSTITUTION_IDENTIFIER: 'contracts.child.children.institution_identifier',
+  IS_READJUSTMENT_DECISION: 'contracts.child.children.is_readjustment_decision',
+  KTJ_LINK: 'contracts.child.children.ktj_link',
+  SIGNING_DATE: 'contracts.child.children.signing_date',
+  SIGNING_NOTE: 'contracts.child.children.signing_note',
+  TYPE: 'contracts.child.children.type',
+};
+
+/**
+ * Lease contracts field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseContractsFieldTitles = {
+  CONTRACTS: 'Sopimukset',
+  COLLATERAL_END_DATE: 'Vuokravakuus loppupvm',
+  COLLATERAL_NOTE: 'Vuokravakuuden huomautus',
+  COLLATERAL_NUMBER: 'Vuokravakuusnumero',
+  COLLATERAL_START_DATE: 'Vuokravakuus alkupvm',
+  CONTRACT_NUMBER: 'Sopimusnumero',
+  DECISION: 'Päätös',
+  INSTITUTION_IDENTIFIER: 'Laitostunnus',
+  IS_READJUSTMENT_DECISION: 'Järjestelypäätös',
+  KTJ_LINK: 'Ktj dokumentti',
+  SIGNING_DATE: 'Allekirjoituspvm',
+  SIGNING_NOTE: 'Allekirjoituksen huomautus',
+  TYPE: 'Sopimuksen tyyppi',
+};
+
+/**
+ * Lease contract mortgage documents field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseContractMortgageDocumentsFieldPaths = {
+  MORTGAGE_DOCUMENTS: 'contracts.child.children.mortgage_documents',
+  DATE: 'contracts.child.children.mortgage_documents.child.children.date',
+  NOTE: 'contracts.child.children.mortgage_documents.child.children.note',
+  NUMBER: 'contracts.child.children.mortgage_documents.child.children.number',
+};
+
+/**
+ * Lease contract mortgage documents field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseContractMortgageDocumentsFieldTitles = {
+  MORTGAGE_DOCUMENTS: 'Panttikirjat',
+  DATE: 'Panttikirjan pvm',
+  NOTE: 'Huomautus',
+  NUMBER: 'Panttikirjan numero',
+};
+
+/**
+ * Lease contract changes field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseContractChangesFieldPaths = {
+  CONTRACT_CHANGES: 'contracts.child.children.contract_changes',
+  DESCRIPTION: 'contracts.child.children.contract_changes.child.children.description',
+  DECISION: 'contracts.child.children.contract_changes.child.children.decision',
+  FIRST_CALL_SENT: 'contracts.child.children.contract_changes.child.children.first_call_sent',
+  SECOND_CALL_SENT: 'contracts.child.children.contract_changes.child.children.second_call_sent',
+  SIGN_BY_DATE: 'contracts.child.children.contract_changes.child.children.sign_by_date',
+  SIGNING_DATE: 'contracts.child.children.contract_changes.child.children.signing_date',
+  THIRD_CALL_SENT: 'contracts.child.children.contract_changes.child.children.third_call_sent',
+};
+
+/**
+ * Lease contract changes field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseContractChangesFieldTitles = {
+  CONTRACT_CHANGES: 'Sopimuksen muutokset',
+  DESCRIPTION: 'Huomautus',
+  DECISION: 'Päätös',
+  FIRST_CALL_SENT: '1. kutsu lähetetty',
+  SECOND_CALL_SENT: '2. kutsu lähetetty',
+  SIGN_BY_DATE: 'Allekirjoitettava mennessä',
+  SIGNING_DATE: 'Allekirjoituspvm',
+  THIRD_CALL_SENT: '3. kutsu lähetetty',
+};
+
+/**
+ * Lease inspection field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInspectionsFieldPaths = {
+  INSPECTIONS: 'inspections',
+  DESCRIPTION: 'inspections.child.children.description',
+  INSPECTOR: 'inspections.child.children.inspector',
+  SUPERVISED_DATE: 'inspections.child.children.supervised_date',
+  SUPERVISION_DATE: 'inspections.child.children.supervision_date',
+};
+
+/**
+ * Lease inspections field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInspectionsFieldTitles = {
+  INSPECTIONS: 'Tarkastukset ja huomautukset',
+  DESCRIPTION: 'Huomautus',
+  INSPECTOR: 'Tarkastaja',
+  SUPERVISED_DATE: 'Valvottu pvm',
+  SUPERVISION_DATE: 'Valvontapvm',
+};
+
+/**
+ * Lease invoicing field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInvoicingFieldPaths = {
+  IS_INVOICING_ENABLED: 'is_invoicing_enabled',
+};
+
+/**
+ * Lease invoicing field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInvoicingFieldTitles = {
+  INVOICING: 'Laskutus',
+  INVOICING_DISABLED: 'Laskutus keskeytetty',
+  INVOICING_ENABLED: 'Laskutus käynnissä',
+};

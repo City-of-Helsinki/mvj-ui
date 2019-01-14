@@ -1,10 +1,21 @@
 // @flow
-
-import type {Action} from '../types';
+import type {Action, Attributes, Methods} from '$src/types';
 import type {LeaseId} from '$src/leases/types';
 
-export type InvoiceState = Object;
-export type Attributes = Object;
+export type InvoiceState = {
+  attributes: Attributes,
+  byLease: InvoiceListMap,
+  invoiceToCredit: ?string,
+  isCreateClicked: boolean,
+  isCreatePanelOpen: boolean,
+  isCreditClicked: boolean,
+  isCreditPanelOpen: boolean,
+  isEditClicked: boolean,
+  isFetching: boolean,
+  isFetchingAttributes: boolean,
+  methods: Methods,
+  patchedInvoice: ?Invoice,
+};
 export type Invoice = Object;
 export type InvoiceId = number;
 export type InvoiceList = Array<Object>;
@@ -12,6 +23,8 @@ export type InvoiceListMap = Object;
 
 export type FetchAttributesAction = Action<'mvj/invoices/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/invoices/RECEIVE_ATTRIBUTES', Attributes>;
+export type ReceiveMethodsAction = Action<'mvj/invoices/RECEIVE_METHODS', Methods>;
+export type InvoiceAttributesNotFoundAction = Action<'mvj/invoices/ATTRIBUTES_NOT_FOUND', void>;
 
 export type FetchInvoicesByLeaseAction = Action<'mvj/invoices/FETCH_BY_LEASE', LeaseId>;
 export type ReceiveInvoicesByLeaseAction = Action<'mvj/invoices/RECEIVE_BY_LEASE', InvoiceListMap>;

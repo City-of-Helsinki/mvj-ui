@@ -96,3 +96,8 @@ export const mapColors = [
   '#FFC107',
   '#CDDC39',
 ];
+
+/**
+ * Maximum number of results per page on list tables
+ */
+export const LIST_TABLE_PAGE_SIZE = 25;

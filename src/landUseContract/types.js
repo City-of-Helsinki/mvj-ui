@@ -1,8 +1,15 @@
 // @flow
-import type {Action} from '../types';
+import type {Action, Attributes} from '../types';
 
-export type Attributes = {};
-export type LandUseContractState = Object;
+export type LandUseContractState = {
+  attributes: Attributes,
+  current: LandUseContract,
+  isEditMode: boolean,
+  isFetching: boolean,
+  isFormValidById: Object,
+  isSaveClicked: boolean,
+  list: LandUseContractList,
+};
 export type LandUseContractId = number;
 export type LandUseContract = Object;
 export type LandUseContractList = Object;

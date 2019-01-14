@@ -1,5 +1,5 @@
 // @flow
-import React, {createElement, PureComponent} from 'react';
+import React, {createElement, Fragment, PureComponent} from 'react';
 import {Field} from 'redux-form';
 import classNames from 'classnames';
 import get from 'lodash/get';
@@ -22,8 +22,17 @@ import FieldTypeSelect from './FieldTypeSelect';
 import FieldTypeTextArea from './FieldTypeTextArea';
 import FieldTypeUserSelect from './FieldTypeUserSelect';
 import FormFieldLabel from './FormFieldLabel';
+import FormText from './FormText';
 import FormTextTitle from './FormTextTitle';
-import {getFieldOptions} from '$util/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
+import {
+  formatDate,
+  formatNumber,
+  getFieldAttributeOptions,
+  getLabelOfOption,
+  isEmptyValue,
+} from '$util/helpers';
+import {getUserFullName} from '$src/users/helpers';
 import {genericNormalizer} from './normalizers';
 import {genericValidator} from '../form/validations';
 
@@ -68,6 +77,8 @@ const resolveFieldType = (type: string): Object => FieldTypes.hasOwnProperty(typ
 const resolveType = (type: string): ?string => Types.hasOwnProperty(type) ? Types[type] : null;
 
 type InputProps = {
+  allowEdit: boolean,
+  allowRead: boolean,
   autoBlur: boolean,
   autoComplete?: string,
   className?: string,
@@ -86,6 +97,7 @@ type InputProps = {
   optionLabel?: string,
   options: ?Array<Object>,
   placeholder?: string,
+  readOnlyValueRenderer?: any,
   required: boolean,
   rows?: number,
   setRefForField?: Function,
@@ -94,6 +106,8 @@ type InputProps = {
 }
 
 const FormFieldInput = ({
+  allowEdit,
+  allowRead,
   autoBlur,
   autoComplete = 'nope',
   className,
@@ -112,28 +126,71 @@ const FormFieldInput = ({
   optionLabel,
   options,
   placeholder,
+  readOnlyValueRenderer,
   required,
   rows,
   setRefForField,
   valueSelectedCallback,
   unit,
 }: InputProps) => {
+  const getText = (type: string, value: any) => {
+    switch (type) {
+      case 'boolean':
+        return !isEmptyValue(value) ? value ? 'Kyllä' : 'Ei' : '-';
+      case 'choice':
+      case 'field':
+        return getLabelOfOption(options || [], value);
+      case 'date':
+        return formatDate(value);
+      case 'integer':
+      case 'string':
+        return isEmptyValue(value) ? value.toString() : value;
+      case 'decimal':
+        return !isEmptyValue(value)
+          ? unit ? `${formatNumber(value)} ${unit}` : formatNumber(value)
+          : '-';
+      case 'lessor':
+        return getContactFullName(value);
+      case 'user':
+        return getUserFullName(value);
+      default:
+        return 'NOT IMPLEMENTED';
+    }
+  };
+
   const displayError = meta.error && (disableTouched || meta.touched);
   const isDirty = meta.dirty && !disableDirty;
   const fieldComponent = resolveFieldType(fieldType);
   const type = resolveType(fieldType);
 
-  return (
-    <div className={classNames('form-field', className)}>
-      {label && fieldType === 'boolean' && <FormTextTitle required={required} title={label} />}
-      {label && fieldType !== 'boolean' && <FormFieldLabel className={invisibleLabel ? 'invisible' : ''} htmlFor={input.name} required={required}>{label}</FormFieldLabel>}
-      <div className={classNames('form-field__component', {'has-unit': unit})}>
-        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
-        {unit && <span className='form-field__unit'>{unit}</span>}
+  if(allowEdit) {
+    return (
+      <div className={classNames('form-field', className)}>
+        {label && fieldType === 'boolean' && <FormTextTitle required={required} title={label} />}
+        {label && fieldType !== 'boolean' && <FormFieldLabel className={invisibleLabel ? 'invisible' : ''} htmlFor={input.name} required={required}>{label}</FormFieldLabel>}
+        <div className={classNames('form-field__component', {'has-unit': unit})}>
+          {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
+          {unit && <span className='form-field__unit'>{unit}</span>}
+        </div>
+        {displayError && <ErrorComponent {...meta}/>}
       </div>
-      {displayError && <ErrorComponent {...meta}/>}
-    </div>
-  );
+    );
+  }
+
+  if(allowRead){
+    const text = getText(fieldType, input.value);
+    return (
+      <Fragment>
+        {!invisibleLabel && <FormTextTitle>{label}</FormTextTitle>}
+        {readOnlyValueRenderer
+          ? readOnlyValueRenderer(input.value, options)
+          : <FormText>{text || '-'}</FormText>
+        }
+      </Fragment>
+    );
+  }
+
+  return null;
 };
 
 type Props = {
@@ -153,6 +210,7 @@ type Props = {
   optionLabel?: string,
   overrideValues?: Object,
   placeholder?: string,
+  readOnlyValueRenderer?: Function,
   rows?: number,
   setRefForField?: Function,
   validate?: Function,
@@ -161,6 +219,8 @@ type Props = {
 }
 
 type State = {
+  allowEdit: boolean,
+  allowRead: boolean,
   fieldAttributes: ?Object,
   fieldType: ?string,
   label: ?string,
@@ -170,6 +230,8 @@ type State = {
 
 class FormField extends PureComponent<Props, State> {
   state = {
+    allowEdit: false,
+    allowRead: true,
     fieldAttributes: null,
     fieldType: null,
     label: null,
@@ -189,10 +251,12 @@ class FormField extends PureComponent<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     if (props.fieldAttributes !== state.fieldAttributes) {
       return {
+        allowEdit: get(props.fieldAttributes, 'read_only') === false,
+        allowRead: !!props.fieldAttributes,
         fieldAttributes: props.fieldAttributes,
         fieldType: get(props.fieldAttributes, 'type'),
-        label: get(props.fieldAttributes, 'label'),
-        options: getFieldOptions(props.fieldAttributes),
+        label: get(props.overrideValues, 'label') || get(props.fieldAttributes, 'label'),
+        options: getFieldAttributeOptions(props.fieldAttributes),
         required: !!get(props.fieldAttributes, 'required'),
       };
     }
@@ -232,12 +296,15 @@ class FormField extends PureComponent<Props, State> {
       optionLabel,
       overrideValues,
       placeholder,
+      readOnlyValueRenderer,
       rows,
       setRefForField,
       valueSelectedCallback,
       unit,
     } = this.props;
     const {
+      allowEdit,
+      allowRead,
       fieldType,
       label,
       options,
@@ -246,6 +313,8 @@ class FormField extends PureComponent<Props, State> {
 
     return(
       <Field
+        allowEdit={allowEdit}
+        allowRead={allowRead}
         autoBlur={autoBlur}
         autoComplete={autoComplete}
         className={className}
@@ -265,13 +334,14 @@ class FormField extends PureComponent<Props, State> {
         optionLabel={optionLabel}
         options={options}
         placeholder={placeholder}
+        readOnlyValueRenderer={readOnlyValueRenderer}
         required={required}
         rows={rows}
         setRefForField={setRefForField}
-        validate={[
-          this.handleGenericValidate,
-          this.handleValidate,
-        ]}
+        validate={allowEdit
+          ? [this.handleGenericValidate, this.handleValidate]
+          : null
+        }
         valueSelectedCallback={valueSelectedCallback}
         unit={unit}
         {...overrideValues}

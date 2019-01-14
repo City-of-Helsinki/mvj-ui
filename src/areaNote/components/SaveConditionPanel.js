@@ -1,23 +1,30 @@
 // @flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/areaNote/enums';
 import {ButtonColors} from '$components/enums';
+import {getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
+
+import type {Methods} from '$src/types';
 
 type Props = {
+  areaNoteMethods: Methods,
   disableDelete: boolean,
   disableSave: boolean,
+  isNew: boolean,
   onCancel: Function,
+  onCreate: Function,
   onDelete: Function,
-  onSave: Function,
+  onEdit: Function,
   show: boolean,
-  title?: string,
 }
 
 type State = {
@@ -51,14 +58,22 @@ class SaveConditionPanel extends Component<Props, State> {
     });
   }
 
-  handleSave = () => {
-    const {onSave} = this.props;
+  handleCreate = () => {
+    const {onCreate} = this.props;
     const {note} = this.state;
-    onSave(note);
+
+    onCreate(note);
+  }
+
+  handleEdit = () => {
+    const {onEdit} = this.props;
+    const {note} = this.state;
+
+    onEdit(note);
   }
 
   render() {
-    const {disableDelete, disableSave, onCancel, onDelete, show, title = 'Luo muistettava ehto'} = this.props;
+    const {areaNoteMethods, disableDelete, disableSave, isNew, onCancel, onDelete, show} = this.props;
     const {note} = this.state;
 
     return (
@@ -81,7 +96,8 @@ class SaveConditionPanel extends Component<Props, State> {
           return(
             <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
               <div className='save-condition-panel__container'>
-                <h2>{title}</h2>
+                <h2>{isNew ? 'Luo muistettava ehto' : areaNoteMethods.PATCH ? 'Muokkaa muistettavaa ehtoa' : 'Muokattava ehto'}</h2>
+
                 <Row>
                   <Column>
                     <FormFieldLabel className='invisible' htmlFor='area-note__comment'>Kirjoita huomautus</FormFieldLabel>
@@ -99,23 +115,39 @@ class SaveConditionPanel extends Component<Props, State> {
                 <div className='save-condition-panel__buttons-wrapper'>
                   <Row>
                     <Column>
-                      <Button
-                        className={ButtonColors.ALERT}
-                        disabled={disableDelete}
-                        onClick={handleDelete}
-                        text='Poista'
-                      />
+                      <Authorization allow={areaNoteMethods.DELETE}>
+                        {!isNew &&
+                          <Button
+                            className={ButtonColors.ALERT}
+                            disabled={disableDelete}
+                            onClick={handleDelete}
+                            text='Poista'
+                          />
+                        }
+                      </Authorization>
                       <Button
                         className={ButtonColors.SECONDARY}
                         onClick={onCancel}
                         text='Peruuta'
                       />
-                      <Button
-                        className={ButtonColors.SUCCESS}
-                        disabled={disableSave}
-                        onClick={this.handleSave}
-                        text='Tallenna'
-                      />
+                      {isNew
+                        ? <Authorization allow={areaNoteMethods.POST}>
+                          <Button
+                            className={ButtonColors.SUCCESS}
+                            disabled={disableSave}
+                            onClick={this.handleCreate}
+                            text='Luo muistettava ehto'
+                          />
+                        </Authorization>
+                        : <Authorization allow={areaNoteMethods.PATCH}>
+                          <Button
+                            className={ButtonColors.SUCCESS}
+                            disabled={disableSave}
+                            onClick={this.handleEdit}
+                            text='Tallenna'
+                          />
+                        </Authorization>
+                      }
                     </Column>
                   </Row>
                 </div>
@@ -128,4 +160,13 @@ class SaveConditionPanel extends Component<Props, State> {
   }
 }
 
-export default SaveConditionPanel;
+export default connect(
+  (state) => {
+    return {
+      areaNoteMethods: getAreaNoteMethods(state),
+    };
+  },
+  null,
+  null,
+  {withRef: true}
+)(SaveConditionPanel);

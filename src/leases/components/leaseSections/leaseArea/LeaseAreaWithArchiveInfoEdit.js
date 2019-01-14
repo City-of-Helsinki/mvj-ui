@@ -8,8 +8,8 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
+import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
@@ -18,18 +18,28 @@ import LeaseArea from './LeaseArea';
 import LeaseAreaEdit from './LeaseAreaEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
-import {formatDate} from '$util/helpers';
-import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {FormNames, LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
+import {formatDate, getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
+import {getLeaseAreaById} from '$src/leases/helpers';
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getCurrentLease,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
+  archivedAt: ?string,
   areaCollapseState: boolean,
-  areasData: Array<Object>,
   areaId: number,
   attributes: Attributes,
+  currentLease: Lease,
   decisionOptions: Array<Object>,
+  editedArea: Object,
   errors: ?Object,
   field: string,
   index: number,
@@ -42,11 +52,13 @@ type Props = {
 }
 
 const LeaseAreaWithArchiveInfoEdit = ({
+  archivedAt,
   areaCollapseState,
-  areasData,
   areaId,
   attributes,
+  currentLease,
   decisionOptions,
+  editedArea,
   errors,
   field,
   index,
@@ -57,16 +69,12 @@ const LeaseAreaWithArchiveInfoEdit = ({
   onUnarchive,
   receiveCollapseStates,
 }: Props): Element<*> => {
-  const getAreaById = (id: number) => id ? areasData.find((area) => area.id === id) : {};
-
-  const savedArea = getAreaById(areaId);
-
   const handleArchive = () => {
-    onArchive(index, savedArea);
+    onArchive(index, editedArea);
   };
 
   const handleUnarchive = () => {
-    onUnarchive(index, savedArea);
+    onUnarchive(index, editedArea);
   };
 
   const handleAreaCollapseToggle = (val: boolean) => {
@@ -83,6 +91,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
     });
   };
 
+  const savedArea = getLeaseAreaById(currentLease, areaId);
   const areaErrors = get(errors, field);
 
   return (
@@ -90,53 +99,62 @@ const LeaseAreaWithArchiveInfoEdit = ({
       className={classNames({'not-active': !isActive})}
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(areaErrors)}
-      headerTitle={<CollapseHeaderTitle>{savedArea ? (savedArea.identifier || '-') : '-'}</CollapseHeaderTitle>}
-      onArchive={(isActive && savedArea && savedArea.id) ? handleArchive : null}
-      onRemove={onRemove}
-      onUnarchive={(!isActive && savedArea && savedArea.id) ? handleUnarchive : null}
+      headerTitle={
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
+          {savedArea ? (savedArea.identifier || '-') : '-'}
+        </Authorization>
+      }
+      onArchive={(isFieldAllowedToEdit(attributes, LeaseAreasFieldPaths.ARCHIVED_AT) && isActive && areaId)
+        ? handleArchive
+        : null
+      }
+      onRemove={isFieldAllowedToEdit(attributes, LeaseAreasFieldPaths.LEASE_AREAS) ? onRemove : null}
+      onUnarchive={(isFieldAllowedToEdit(attributes, LeaseAreasFieldPaths.ARCHIVED_AT) && !isActive && areaId)
+        ? handleUnarchive
+        : null
+      }
       onToggle={handleAreaCollapseToggle}
     >
       {isActive &&
         <LeaseAreaEdit
-          areasData={areasData}
           field={field}
           index={index}
           savedArea={savedArea}
         />
       }
 
-      {!isActive &&
-        <LeaseArea
-          area={savedArea}
-        />
-      }
+      {!isActive && <LeaseArea area={savedArea} />}
       {!isActive && <Divider className='lease-area-divider'/>}
       {!isActive &&
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTextTitle title='Arkistoitu' />
-            <FormText>{formatDate(get(savedArea, 'archived_at')) || '-'}</FormText>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_AT)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.ARCHIVED_AT}</FormTextTitle>
+              <FormText>{formatDate(archivedAt) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.archived_decision')}
-              name={`${field}.archived_decision`}
-              overrideValues={{
-                label: 'Päätös',
-                options: decisionOptions,
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}
+                name={`${field}.archived_decision`}
+                overrideValues={{
+                  label: LeaseAreasFieldTitles.ARCHIVED_DECISION,
+                  options: decisionOptions,
+                }}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={4} large={8}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.archived_note')}
-              name={`${field}.archived_note`}
-              overrideValues={{
-                label: 'Huomautus',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}
+                name={`${field}.archived_note`}
+                overrideValues={{label: LeaseAreasFieldTitles.ARCHIVED_NOTE}}
+              />
+            </Authorization>
           </Column>
         </Row>
       }
@@ -153,9 +171,12 @@ export default connect(
     const id = selector(state, `${props.field}.id`);
 
     return {
+      archivedAt: selector(state, `${props.field}.archived_at`),
       areaCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.area`),
       areaId: id,
       attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
+      editedArea: selector(state, props.field),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
     };

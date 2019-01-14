@@ -11,7 +11,7 @@ import type {
 export const notFound = ():DistrictNotFoundAction =>
   createAction('mvj/district/NOT_FOUND')();
 
-export const fetchDistrictsByMunicipality = (municipalityId: string): FetchDistrictsByMunicipalityAction =>
+export const fetchDistrictsByMunicipality = (municipalityId: number): FetchDistrictsByMunicipalityAction =>
   createAction('mvj/district/FETCH_BY_MUNICIPALITY')(municipalityId);
 
 export const receiveDistrictsByMunicipality = (districts: Object): ReceiveDistrictsByMunicipalityAction  =>

@@ -7,9 +7,10 @@ import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
-import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MultiItemCollapse from '$components/table/MultiItemCollapse';
@@ -20,24 +21,44 @@ import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {fetchInfillDevelopmentAttributes, fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
-import {FormNames} from '$src/infillDevelopment/enums';
+import {fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
+import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {PermissionMissingTexts} from '$src/enums';
+import {
+  FormNames,
+  InfillDevelopmentCompensationFieldPaths,
+  InfillDevelopmentCompensationLeasesFieldPaths,
+} from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentList} from '$src/infillDevelopment/helpers';
-import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {getFieldOptions, getLabelOfOption, getSearchQuery, isFieldAllowedToRead} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
+import {getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Attributes, InfillDevelopmentList} from '$src/infillDevelopment/types';
+import type {Attributes, Methods} from '$src/types';
+import type {InfillDevelopmentList} from '$src/infillDevelopment/types';
 
-const PAGE_SIZE = 25;
+const getInfillDevelopmentCount = (infillDevelopmentList: InfillDevelopmentList) => {
+  return get(infillDevelopmentList, 'count', 0);
+};
+
+const getInfillDevelopmentMaxPage = (infillDevelopmentList: InfillDevelopmentList) => {
+  const count = getInfillDevelopmentCount(infillDevelopmentList);
+
+  if(!count) {
+    return 0;
+  }
+  return Math.ceil(count/LIST_TABLE_PAGE_SIZE);
+};
 
 type Props = {
-  attributes: Attributes,
-  fetchInfillDevelopmentAttributes: Function,
   fetchInfillDevelopments: Function,
+  infillDevelopmentAttributes: Attributes, // get via withCommonAttributes HOC
+  infillDevelopmentMethods: Methods, // get via withCommonAttributes HOC
   infillDevelopmentList: InfillDevelopmentList,
   initialize: Function,
   isFetching: boolean,
+  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   location: Object,
   receiveFormInitialValues: Function,
   receiveTopNavigationSettings: Function,
@@ -47,20 +68,26 @@ type Props = {
 type State = {
   activePage: number,
   count: number,
+  infillDevelopmentAttributes: Attributes,
   infillDevelopments: Array<Object>,
+  infillDevelopmentList: InfillDevelopmentList,
   isSearchInitialized: boolean,
   maxPage: number,
   selectedStates: Array<string>,
+  stateOptions: Array<Object>,
 }
 
 class InfillDevelopmentListPage extends Component<Props, State> {
   state = {
     activePage: 1,
     count: 0,
+    infillDevelopmentAttributes: {},
     infillDevelopments: [],
+    infillDevelopmentList: {},
     isSearchInitialized: false,
     maxPage: 1,
     selectedStates: [],
+    stateOptions: [],
   }
 
   static contextTypes = {
@@ -69,8 +96,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      attributes,
-      fetchInfillDevelopmentAttributes,
       initialize,
       receiveTopNavigationSettings,
       router: {location: {query}},
@@ -82,10 +107,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    if(isEmpty(attributes)) {
-      fetchInfillDevelopmentAttributes();
-    }
-
     this.search();
 
     const page = query.page ? Number(query.page) : 1;
@@ -94,6 +115,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const states = isArray(query.state)
       ? query.state
       : query.state ? [query.state] : null;
+
     if(states) {
       this.setState({selectedStates: states});
     }
@@ -118,6 +140,24 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     initializeSearchForm();
   }
 
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.infillDevelopmentAttributes !== state.infillDevelopmentAttributes) {
+      newState.infillDevelopmentAttributes = props.infillDevelopmentAttributes;
+      newState.stateOptions = getFieldOptions(props.infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE, false);
+    }
+
+    if(props.infillDevelopmentList !== state.infillDevelopmentList) {
+      newState.infillDevelopmentList = props.infillDevelopmentList;
+      newState.count = getInfillDevelopmentCount(props.infillDevelopmentList);
+      newState.infillDevelopments = getContentInfillDevelopmentList(props.infillDevelopmentList);
+      newState.maxPage = getInfillDevelopmentMaxPage(props.infillDevelopmentList);
+    }
+
+    return newState;
+  }
+
   componentDidUpdate = (prevProps) => {
     const {location: {query, search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
@@ -132,10 +172,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
         this.setState({selectedStates: []});
         initialize(FormNames.SEARCH, {});
       }
-    }
-
-    if(prevProps.infillDevelopmentList !== this.props.infillDevelopmentList) {
-      this.updateTableData();
     }
   }
 
@@ -171,10 +207,10 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     delete searchQuery.page;
 
     if(page > 1) {
-      searchQuery.offset = (page - 1) * PAGE_SIZE;
+      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
-    searchQuery.limit = PAGE_SIZE;
+    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     fetchInfillDevelopments(getSearchQuery(searchQuery));
   }
 
@@ -206,29 +242,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     });
   }
 
-  updateTableData = () => {
-    const {infillDevelopmentList} = this.props;
-
-    this.setState({
-      count: this.getInfillDevelopmentCount(infillDevelopmentList),
-      infillDevelopments: getContentInfillDevelopmentList(infillDevelopmentList),
-      maxPage: this.getInfillDevelopmentMaxPage(infillDevelopmentList),
-    });
-  }
-
-  getInfillDevelopmentCount = (infillDevelopmentList: InfillDevelopmentList) => {
-    return get(infillDevelopmentList, 'count', 0);
-  }
-
-  getInfillDevelopmentMaxPage = (infillDevelopmentList: InfillDevelopmentList) => {
-    const count = this.getInfillDevelopmentCount(infillDevelopmentList);
-
-    if(!count) {
-      return 0;
-    }
-    return Math.ceil(count/PAGE_SIZE);
-  }
-
   handleSelectedStatesChange = (states: Array<string>) => {
     const {location: {query}} = this.props;
     const searchQuery = {...query};
@@ -241,24 +254,57 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     this.handleSearchChange(searchQuery);
   }
 
+  getColumns = () => {
+    const {infillDevelopmentAttributes, stateOptions} = this.state;
+    const columns = [];
+
+    if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.NAME)) {
+      columns.push({key: 'name', text: 'Hankkeen nimi'});
+    }
+    if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.DETAILED_PLAN_IDENTIFIER)) {
+      columns.push({key: 'detailed_plan_identifier', text: 'Asemakaavan nro'});
+    }
+    if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)) {
+      columns.push({
+        key: 'leaseIdentifiers',
+        text: 'Vuokratunnus',
+        disabled: true,
+        renderer: (val) => <MultiItemCollapse
+          items={val}
+          itemRenderer={(item) => item}
+        />,
+      });
+    }
+    if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE)) {
+      columns.push({key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'});
+    }
+
+    return columns;
+  }
+
   render() {
-    const {attributes, isFetching} = this.props;
-    const {activePage, infillDevelopments, isSearchInitialized, maxPage, selectedStates} = this.state;
-    const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
+    const {infillDevelopmentMethods, isFetching, isFetchingCommonAttributes} = this.props;
+    const {activePage, count, infillDevelopments, isSearchInitialized, maxPage, selectedStates, stateOptions} = this.state;
     const filteredInfillDevelopments = selectedStates.length
       ? (infillDevelopments.filter((infillDevelopment) => selectedStates.indexOf(infillDevelopment.state) !== -1))
       : infillDevelopments;
-    const count = filteredInfillDevelopments.length;
+    const columns = this.getColumns();
+
+    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!infillDevelopmentMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
 
     return (
       <PageContainer>
         <Row>
           <Column small={12} large={6}>
-            <AddButtonSecondary
-              className='no-top-margin'
-              label='Luo täydennysrakentamiskorvaus'
-              onClick={this.handleCreateButtonClick}
-            />
+            <Authorization allow={infillDevelopmentMethods.POST}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo täydennysrakentamiskorvaus'
+                onClick={this.handleCreateButtonClick}
+              />
+            </Authorization>
           </Column>
           <Column small={12} large={6}>
             <Search
@@ -266,12 +312,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
               onSearch={this.handleSearchChange}
               states={selectedStates}
             />
-          </Column>
-        </Row>
 
-        <Row>
-          <Column small={12} medium={6}></Column>
-          <Column small={12} medium={6}>
             <TableFilters
               amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
               filterOptions={stateOptions}
@@ -286,20 +327,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
           }
           <SortableTable
-            columns={[
-              {key: 'name', text: 'Hankkeen nimi'},
-              {key: 'detailed_plan_identifier', text: 'Asemakaavan nro'},
-              {
-                key: 'leaseIdentifiers',
-                text: 'Vuokratunnus',
-                disabled: true,
-                renderer: (val) => <MultiItemCollapse
-                  items={val}
-                  itemRenderer={(item) => item}
-                />,
-              },
-              {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
-            ]}
+            columns={columns}
             data={filteredInfillDevelopments}
             listTable
             onRowClick={this.handleRowClick}
@@ -316,16 +344,15 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 }
 
 export default flowRight(
+  withCommonAttributes,
   connect(
     (state) => {
       return {
-        attributes: getAttributes(state),
         infillDevelopmentList: getInfillDevelopments(state),
         isFetching: getIsFetching(state),
       };
     },
     {
-      fetchInfillDevelopmentAttributes,
       fetchInfillDevelopments,
       initialize,
       receiveFormInitialValues,

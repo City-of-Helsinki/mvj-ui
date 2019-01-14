@@ -2,8 +2,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import scrollToComponent from 'react-scroll-to-component';
+import flowRight from 'lodash/flowRight';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import CreditInvoiceForm from './forms/CreditInvoiceForm';
 import NewInvoiceForm from './forms/NewInvoiceForm';
@@ -19,10 +21,14 @@ import {
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
 import {ButtonColors} from '$components/enums';
 import {RecipientOptions} from '$src/leases/enums';
-import {formatNewChargeForDb, formatCreditInvoiceForDb, formatNewInvoiceForDb} from '$src/invoices/helpers';
+import {getPayloadCreateInvoice, getPayloadCreditInvoice} from '$src/invoices/helpers';
+import {getCreditInvoiceSetPayload} from '$src/invoiceSets/helpers';
+import {getPayloadLeaseCreateCharge} from '$src/leaseCreateCharge/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen} from '$src/invoices/selectors';
+import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 
+import type {Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
@@ -31,11 +37,13 @@ type Props = {
   creditInvoice: Function,
   creditInvoiceSet: Function,
   currentLease: Lease,
-  enableCreateInvoice: boolean,
-  enableCreditInvoice: boolean,
+  invoiceMethods: Methods, // Get via withLeasePageAttributes HOC
+  invoiceCreditMethods: Methods, // Get via withLeasePageAttributes HOC
+  invoiceSetCreditMethods: Methods, // Get via withLeasePageAttributes HOC
   invoiceToCredit: ?Object,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
+  leaseCreateChargeMethods: Methods, // Get via withLeasePageAttributes HOC
   receiveIsCreateClicked: Function,
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditClicked: Function,
@@ -94,14 +102,15 @@ class CreateAndCreditInvoice extends Component <Props> {
       currentLease,
     } = this.props;
 
+    invoice.lease = currentLease.id;
+
     if(invoice.recipient === RecipientOptions.ALL) {
       createCharge({
         leaseId: currentLease.id,
-        data: formatNewChargeForDb(invoice),
+        data: getPayloadLeaseCreateCharge(invoice),
       });
     } else {
-      invoice.lease = currentLease.id;
-      createInvoice(formatNewInvoiceForDb(invoice));
+      createInvoice(getPayloadCreateInvoice(invoice));
     }
   }
 
@@ -143,7 +152,7 @@ class CreateAndCreditInvoice extends Component <Props> {
       const {creditInvoiceSet} = this.props;
 
       creditInvoiceSet({
-        creditData: formatCreditInvoiceForDb(creditInvoiceData),
+        creditData: getCreditInvoiceSetPayload(creditInvoiceData),
         invoiceSetId: invoiceToCredit && invoiceToCredit.id,
         lease: currentLease.id,
       });
@@ -151,7 +160,7 @@ class CreateAndCreditInvoice extends Component <Props> {
       const {creditInvoice} = this.props;
 
       creditInvoice({
-        creditData: formatCreditInvoiceForDb(creditInvoiceData),
+        creditData: getPayloadCreditInvoice(creditInvoiceData),
         invoiceId: invoiceToCredit && invoiceToCredit.id,
         lease: currentLease.id,
       });
@@ -166,73 +175,87 @@ class CreateAndCreditInvoice extends Component <Props> {
 
   render() {
     const {
-      enableCreateInvoice,
-      enableCreditInvoice,
+      invoiceMethods,
+      invoiceCreditMethods,
+      invoiceSetCreditMethods,
       invoiceToCredit,
       isCreateInvoicePanelOpen,
       isCreditInvoicePanelOpen,
+      leaseCreateChargeMethods,
     } = this.props;
     const isInvoiceSet = this.isInvoiceSet();
 
     return (
       <div className='invoice__new-invoice'>
-        <div>
-          {enableCreditInvoice &&
-            <Button
-              className={`${ButtonColors.NEUTRAL} no-margin`}
-              disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
-              onClick={this.handleOpenCreditInvoicePanelButtonClick}
-              text='Hyvitä lasku'
-            />
-          }
-          {enableCreateInvoice &&
-            <AddButtonSecondary
-              disabled={isCreateInvoicePanelOpen}
-              label='Luo lasku'
-              onClick={this.handleOpenCreateInvoicePanelButtonClick}
-            />
-          }
-        </div>
-        <div ref={this.setCreditPanelRef}>
-          {(isCreditInvoicePanelOpen && enableCreditInvoice) &&
-            <CreditInvoiceForm
-              isInvoiceSet={isInvoiceSet}
-              onClose={this.handleCloseCreditInvoicePanel}
-              onSave={this.handleCreditInvoice}
-              setRefForFirstField={this.handleSetRefForCreditPanelFirstField}
-            />
-          }
-        </div>
-        <div ref={this.setCreatePanelRef}>
-          {(isCreateInvoicePanelOpen && enableCreateInvoice) &&
-            <NewInvoiceForm
-              onClose={this.handleCloseCreateInvoicePanel}
-              onSave={this.handleCreateInvoice}
-              setRefForFirstField={this.handleSetRefForCreatePanelFirstField}
-            />
-          }
-        </div>
+        <Authorization allow={invoiceCreditMethods.POST || invoiceSetCreditMethods.POST}>
+          <Button
+            className={`${ButtonColors.NEUTRAL} no-margin`}
+            disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
+            onClick={this.handleOpenCreditInvoicePanelButtonClick}
+            text='Hyvitä lasku'
+          />
+        </Authorization>
+
+        <Authorization allow={invoiceCreditMethods.POST || invoiceSetCreditMethods.POST}>
+          <div ref={this.setCreditPanelRef}>
+            {isCreditInvoicePanelOpen &&
+              <CreditInvoiceForm
+                isInvoiceSet={isInvoiceSet}
+                onClose={this.handleCloseCreditInvoicePanel}
+                onSave={this.handleCreditInvoice}
+                setRefForFirstField={this.handleSetRefForCreditPanelFirstField}
+              />
+            }
+          </div>
+        </Authorization>
+
+        <Authorization allow={invoiceMethods.POST || leaseCreateChargeMethods.POST}>
+          <AddButtonSecondary
+            disabled={isCreateInvoicePanelOpen}
+            label='Luo lasku'
+            onClick={this.handleOpenCreateInvoicePanelButtonClick}
+          />
+        </Authorization>
+
+        <Authorization allow={invoiceMethods.POST || leaseCreateChargeMethods.POST}>
+          <div ref={this.setCreatePanelRef}>
+            {isCreateInvoicePanelOpen &&
+              <NewInvoiceForm
+                initialValues={{
+                  recipient: leaseCreateChargeMethods.POST ? RecipientOptions.ALL : undefined,
+                  rows: [{}],
+                }}
+                onClose={this.handleCloseCreateInvoicePanel}
+                onSave={this.handleCreateInvoice}
+                setRefForFirstField={this.handleSetRefForCreatePanelFirstField}
+              />
+            }
+          </div>
+        </Authorization>
       </div>
     );
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      currentLease: getCurrentLease(state),
-      isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
-      isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
-    };
-  },
-  {
-    createCharge,
-    createInvoice,
-    creditInvoice,
-    creditInvoiceSet,
-    receiveIsCreateInvoicePanelOpen,
-    receiveIsCreateClicked,
-    receiveIsCreditClicked,
-    receiveIsCreditInvoicePanelOpen,
-  },
+export default flowRight(
+  withLeasePageAttributes,
+  connect(
+    (state) => {
+      return {
+        currentLease: getCurrentLease(state),
+        isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
+        isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
+      };
+    },
+    {
+      createCharge,
+      createInvoice,
+      creditInvoice,
+      creditInvoiceSet,
+      receiveIsCreateInvoicePanelOpen,
+      receiveIsCreateClicked,
+      receiveIsCreditClicked,
+      receiveIsCreditInvoicePanelOpen,
+    },
+  ),
 )(CreateAndCreditInvoice);

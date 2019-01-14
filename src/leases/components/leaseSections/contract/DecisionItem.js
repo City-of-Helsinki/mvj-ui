@@ -1,25 +1,33 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
+import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
-import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
-import {getCollapseStateByKey} from '$src/leases/selectors';
+import {
+  FormNames,
+  LeaseDecisionConditionsFieldPaths,
+  LeaseDecisionConditionsFieldTitles,
+  LeaseDecisionsFieldPaths,
+  LeaseDecisionsFieldTitles,
+} from '$src/leases/enums';
+import {formatDate, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead} from '$util/helpers';
+import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
+import type {Attributes} from '$src/types';
+
 type Props = {
+  attributes: Attributes,
   conditionTypeOptions: Array<Object>,
   conditionsCollapseState: boolean,
   decisionCollapseState: boolean,
@@ -31,6 +39,7 @@ type Props = {
 }
 
 const DecisionItem = ({
+  attributes,
   conditionTypeOptions,
   conditionsCollapseState,
   decisionCollapseState,
@@ -68,158 +77,186 @@ const DecisionItem = ({
     <Collapse
       key={decision.id}
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : false}
-      headerTitle={<CollapseHeaderTitle>
-        {getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}
-        {decision.decision_date ? <span>&nbsp;&nbsp;{formatDate(decision.decision_date)}</span> : ''}
-        {decision.section ? <span>&nbsp;&nbsp;{decision.section}§</span> : ''}
-        {decision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}</span> : ''}
-      </CollapseHeaderTitle>}
+      headerTitle={<Fragment>
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISION_MAKER)}>
+          {getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}
+        </Authorization>
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISION_DATE)}>
+          {decision.decision_date ? <span>&nbsp;&nbsp;{formatDate(decision.decision_date)}</span> : ''}
+        </Authorization>
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.SECTION)}>
+          {decision.section ? <span>&nbsp;&nbsp;{decision.section}§</span> : ''}
+        </Authorization>
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.TYPE)}>
+          {decision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}</span> : ''}
+        </Authorization>
+      </Fragment>}
       onToggle={handleDecisionCollapseToggle}
     >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Päättäjä'
-            text={getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISION_MAKER)}>
+            <FormTextTitle>{LeaseDecisionsFieldTitles.DECISION_MAKER}</FormTextTitle>
+            <FormText>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Päätöspvm'
-            text={formatDate(decision.decision_date) || '–'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISION_DATE)}>
+            <FormTextTitle>{LeaseDecisionsFieldTitles.DECISION_DATE}</FormTextTitle>
+            <FormText>{formatDate(decision.decision_date) || '–'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={1}>
-          <FormTitleAndText
-            title='Pykälä'
-            text={decision.section ? `${decision.section} §` : '–'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.SECTION)}>
+            <FormTextTitle>{LeaseDecisionsFieldTitles.SECTION}</FormTextTitle>
+            <FormText>{decision.section ? `${decision.section} §` : '–'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={8} large={3}>
-          <FormTitleAndText
-            title='Päätöksen tyyppi'
-            text={getLabelOfOption(typeOptions, decision.type) || '–'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.TYPE)}>
+            <FormTextTitle>{LeaseDecisionsFieldTitles.TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(typeOptions, decision.type) || '–'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTextTitle title='Diaarinumero' />
-          {decision.reference_number
-            ? <ExternalLink
-              href={getReferenceNumberLink(decision.reference_number)}
-              text={decision.reference_number}
-            />
-            : <FormText>-</FormText>
-          }
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.REFERENCE_NUMBER)}>
+            <FormTextTitle>{LeaseDecisionsFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
+            {decision.reference_number
+              ? <ExternalLink
+                href={getReferenceNumberLink(decision.reference_number)}
+                text={decision.reference_number}
+              />
+              : <FormText>-</FormText>
+            }
+          </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={12}>
-          <FormTitleAndText
-            title='Huomautus'
-            text={decision.description || '–'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DESCRIPTION)}>
+            <FormTextTitle>{LeaseDecisionsFieldTitles.DESCRIPTION}</FormTextTitle>
+            <FormText>{decision.description || '–'}</FormText>
+          </Authorization>
         </Column>
       </Row>
 
-      <Collapse
-        className='collapse__secondary'
-        defaultOpen={conditionsCollapseState !== undefined ? conditionsCollapseState : true}
-        headerTitle={<CollapseHeaderTitle>Ehdot</CollapseHeaderTitle>}
-        onToggle={handleConditionsCollapseToggle}
-      >
-        {!decision.conditions || !decision.conditions.length &&
-          <FormText>Ei ehtoja</FormText>
-        }
-        {decision.conditions && !!decision.conditions.length &&
-          <BoxItemContainer>
-            {largeScreen &&
-              <Row>
-                <Column large={2}>
-                  <FormTextTitle title='Ehtotyyppi' />
-                </Column>
-                <Column large={2}>
-                  <FormTextTitle title='Valvontapvm' />
-                </Column>
-                <Column large={2}>
-                  <FormTextTitle title='Valvottu pvm' />
-                </Column>
-                <Column large={6}>
-                  <FormTextTitle title='Huomautus' />
-                </Column>
-              </Row>
-            }
-            {decision.conditions.map((condition, index) => {
-              if(largeScreen) {
-                return(
-                  <Row key={index}>
-                    <Column large={2}>
-                      <FormText>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</FormText>
-                    </Column>
-                    <Column large={2}>
-                      <FormText className={(condition.supervision_date && !condition.supervised_date) ? 'alert' : ''}>
-                        {condition.supervision_date
-                          ? <span><i/>{formatDate(condition.supervision_date)}</span>
-                          : '–'
-                        }
-                      </FormText>
-                    </Column>
-                    <Column large={2}>
-                      <FormText className={condition.supervised_date ? 'success' : ''}>
-                        {condition.supervised_date
-                          ? <span><i/>{formatDate(condition.supervised_date)}</span>
-                          : '–'
-                        }
-                      </FormText>
-                    </Column>
-                    <Column large={6}>
-                      <FormText>{condition.description || '–'}</FormText>
-                    </Column>
-                  </Row>
-                );
-              } else {
-                return(
-                  <BoxItem key={index} className='no-border-on-first-child no-border-on-last-child'>
-                    <Row>
-                      <Column small={6} medium={4}>
-                        <FormTitleAndText
-                          title='Ehtotyyppi'
-                          text={getLabelOfOption(conditionTypeOptions, condition.type) || '–'}
-                        />
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.CONDITIONS)}>
+        <Collapse
+          className='collapse__secondary'
+          defaultOpen={conditionsCollapseState !== undefined ? conditionsCollapseState : true}
+          headerTitle={LeaseDecisionConditionsFieldTitles.CONDITIONS}
+          onToggle={handleConditionsCollapseToggle}
+        >
+          {!decision.conditions || !decision.conditions.length && <FormText>Ei ehtoja</FormText> }
+          {decision.conditions && !!decision.conditions.length &&
+            <BoxItemContainer>
+              {largeScreen &&
+                <Row>
+                  <Column large={2}>
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
+                      <FormTextTitle>{LeaseDecisionConditionsFieldTitles.TYPE}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column large={2}>
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
+                      <FormTextTitle>{LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column large={2}>
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
+                      <FormTextTitle>{LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column large={6}>
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
+                      <FormTextTitle>{LeaseDecisionConditionsFieldTitles.DESCRIPTION}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                </Row>
+              }
+              {decision.conditions.map((condition, index) => {
+                if(largeScreen) {
+                  return(
+                    <Row key={index}>
+                      <Column large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
+                          <FormText>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</FormText>
+                        </Authorization>
                       </Column>
-                      <Column small={6} medium={4}>
-                        <FormTitleAndText
-                          title='Valvontapvm'
-                          text={condition.supervision_date
-                            ? <span><i/>{formatDate(condition.supervision_date)}</span>
-                            : '–'
-                          }
-                          textClassName={(condition.supervision_date && !condition.supervised_date) ? 'alert' : ''}
-                        />
+                      <Column large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
+                          <FormText className={(condition.supervision_date && !condition.supervised_date) ? 'alert' : ''}>
+                            {condition.supervision_date
+                              ? <span><i/>{formatDate(condition.supervision_date)}</span>
+                              : '–'
+                            }
+                          </FormText>
+                        </Authorization>
                       </Column>
-                      <Column small={6} medium={4}>
-                        <FormTitleAndText
-                          title='Valvottu pvm'
-                          text={condition.supervised_date
-                            ? <span><i/>{formatDate(condition.supervised_date)}</span>
-                            : '–'
-                          }
-                          textClassName={condition.supervised_date ? 'success' : ''}
-                        />
+                      <Column large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
+                          <FormText className={condition.supervised_date ? 'success' : ''}>
+                            {condition.supervised_date
+                              ? <span><i/>{formatDate(condition.supervised_date)}</span>
+                              : '–'
+                            }
+                          </FormText>
+                        </Authorization>
                       </Column>
-                      <Column small={12} medium={12}>
-                        <FormTitleAndText
-                          title='Huomautus'
-                          text={condition.description || '–'}
-                        />
+                      <Column large={6}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
+                          <FormText>{condition.description || '–'}</FormText>
+                        </Authorization>
                       </Column>
                     </Row>
-                  </BoxItem>
-                );
-              }
-            })}
-          </BoxItemContainer>
-        }
-      </Collapse>
+                  );
+                } else {
+                  return(
+                    <BoxItem key={index} className='no-border-on-first-child no-border-on-last-child'>
+                      <Row>
+                        <Column small={6} medium={4}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
+                            <FormTextTitle>{LeaseDecisionConditionsFieldTitles.TYPE}</FormTextTitle>
+                            <FormText>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={6} medium={4}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
+                            <FormTextTitle>{LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}</FormTextTitle>
+                            <FormText className={(condition.supervision_date && !condition.supervised_date) ? 'alert' : ''}>
+                              {condition.supervision_date
+                                ? <span><i/>{formatDate(condition.supervision_date)}</span>
+                                : '–'
+                              }
+                            </FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={6} medium={4}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
+                            <FormTextTitle>{LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}</FormTextTitle>
+                            <FormText className={condition.supervised_date ? 'success' : ''}>
+                              {condition.supervised_date
+                                ? <span><i/>{formatDate(condition.supervised_date)}</span>
+                                : '–'
+                              }
+                            </FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={12} medium={12}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
+                            <FormTextTitle>{LeaseDecisionConditionsFieldTitles.DESCRIPTION}</FormTextTitle>
+                            <FormText>{condition.description || '–'}</FormText>
+                          </Authorization>
+                        </Column>
+                      </Row>
+                    </BoxItem>
+                  );
+                }
+              })}
+            </BoxItemContainer>
+          }
+        </Collapse>
+      </Authorization>
     </Collapse>
   );
 };
@@ -230,6 +267,7 @@ export default flowRight(
     (state, props) => {
       const id = props.decision.id;
       return {
+        attributes: getAttributes(state),
         conditionsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.conditions`),
         decisionCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.decision`),
       };

@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   receiveMapDataByType,
   fetchMapDataByType,
@@ -6,12 +8,23 @@ import {
 } from './actions';
 import mapDataReducer from './reducer';
 
+import type {MapDataState} from './types';
+
+const defaultState: MapDataState = {
+  byType: {},
+  isFetching: false,
+};
+
+// $FlowFixMe
 describe('Map data', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('mapDataReducer', () => {
 
+      // $FlowFixMe
       it('should update map data', () => {
         const dummyMapData = {
           type: 'test',
@@ -21,32 +34,23 @@ describe('Map data', () => {
           },
         };
 
-        const newState = {
-          byType: {[dummyMapData.type]: dummyMapData.data},
-          isFetching: false,
-        };
+        const newState = {...defaultState,  byType: {[dummyMapData.type]: dummyMapData.data}};
 
         const state = mapDataReducer({}, receiveMapDataByType(dummyMapData));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true when fetching map data', () => {
-        const newState = {
-          byType: {},
-          isFetching: true,
-        };
+        const newState = {...defaultState, isFetching: true};
 
-        const state = mapDataReducer({}, fetchMapDataByType());
+        const state = mapDataReducer({}, fetchMapDataByType('type'));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound', () => {
-        const newState = {
-          byType: {},
-          isFetching: false,
-        };
+        const newState = {...defaultState, isFetching: false};
 
-        let state = mapDataReducer({}, fetchMapDataByType());
+        let state = mapDataReducer({}, fetchMapDataByType('type'));
         state = mapDataReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

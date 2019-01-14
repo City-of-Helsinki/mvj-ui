@@ -4,17 +4,44 @@ import {SubmissionError} from 'redux-form';
 
 import {receiveError} from '$src/api/actions';
 import {
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
   fetchCollectionNotesByLease as fetchCollectionNotesByLeaseAction,
   receiveCollectionNotesByLease,
   notFoundByLease,
 } from './actions';
 import {displayUIMessage} from '$util/helpers';
 import {
+  fetchAttributes,
   fetchCollectionNotesByLease,
   createCollectionNote,
   deleteCollectionNote,
 } from './requests';
 import {getCollectionNotesByLease} from './selectors';
+
+function* fetchAttributesSaga(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
+
+    switch (statusCode) {
+      case 200:
+        const attributes = bodyAsJson.fields;
+        const methods = bodyAsJson.methods;
+
+        yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
+        break;
+      default:
+        yield put(attributesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch attributes with error "%s"', error);
+    yield put(attributesNotFound());
+    yield put(receiveError(error));
+  }
+}
 
 function* fetchCollectionNotesByLeaseSaga({payload: lease}): Generator<any, any, any> {
   try {
@@ -80,6 +107,7 @@ function* deleteCollectionNoteSaga({payload}): Generator<any, any, any> {
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
+      yield takeLatest('mvj/collectionNote/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/collectionNote/FETCH_BY_LEASE', fetchCollectionNotesByLeaseSaga);
       yield takeLatest('mvj/collectionNote/CREATE', createCollectionNoteSaga);
       yield takeLatest('mvj/collectionNote/DELETE', deleteCollectionNoteSaga);

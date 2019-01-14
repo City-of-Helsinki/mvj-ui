@@ -1,6 +1,10 @@
+// @flow
 import {expect} from 'chai';
 import {
   receiveAttributes,
+  receiveMethods,
+  fetchAttributes,
+  attributesNotFound,
   fetchRentBasisList,
   receiveRentBasisList,
   fetchSingleRentBasis,
@@ -16,7 +20,9 @@ import {
 } from './actions';
 import rentBasisReducer from './reducer';
 
-const defaultState = {
+import type {RentBasisState} from './types';
+
+const defaultState: RentBasisState = {
   attributes: {},
   initialValues: {
     decisions: [{}],
@@ -26,17 +32,24 @@ const defaultState = {
   isEditMode: false,
   isFormValid: false,
   isFetching: false,
+  isFetchingAttributes: false,
   isSaveClicked: false,
+  isSaving: false,
   list: {},
+  methods: {},
   rentbasis: {},
 };
 
+// $FlowFixMe
 describe('Rent basis', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('rentBasisReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'foo',
@@ -49,10 +62,37 @@ describe('Rent basis', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update methods', () => {
+        const dummyMethods = {
+          val1: 'foo',
+          val2: 'bar',
+        };
+
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = rentBasisReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to true when fetching attributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = rentBasisReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = rentBasisReducer({}, fetchAttributes());
+        state = rentBasisReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFetching flag to true when fetching rent basis list', () => {
         const newState = {...defaultState, isFetching: true};
 
-        const state = rentBasisReducer({}, fetchRentBasisList());
+        const state = rentBasisReducer({}, fetchRentBasisList(''));
         expect(state).to.deep.equal(newState);
       });
 
@@ -91,15 +131,15 @@ describe('Rent basis', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when creating new rent basis', () => {
-        const newState = {...defaultState, isFetching: true};
+      it('should update isSaving flag to true when creating new rent basis', () => {
+        const newState = {...defaultState, isSaving: true};
 
         const state = rentBasisReducer({}, createRentBasis({}));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when editing existing rent basis', () => {
-        const newState = {...defaultState, isFetching: true};
+      it('should update isSaving flag to true when editing existing rent basis', () => {
+        const newState = {...defaultState, isSaving: true};
 
         const state = rentBasisReducer({}, editRentBasis({}));
         expect(state).to.deep.equal(newState);
@@ -108,7 +148,7 @@ describe('Rent basis', () => {
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...defaultState, isFetching: false};
 
-        let state = rentBasisReducer({}, fetchRentBasisList());
+        let state = rentBasisReducer({}, fetchRentBasisList(''));
         state = rentBasisReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

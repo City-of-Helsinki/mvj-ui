@@ -13,10 +13,11 @@ import {receiveFormValidFlags} from '$src/landUseContract/actions';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getContentContracts} from '$src/landUseContract/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
-import type {Attributes, LandUseContract} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type ContractsProps = {
   attributes: Attributes,
@@ -31,7 +32,7 @@ const renderContracts = ({attributes, contractsData, errors, fields, isSaveClick
     fields.push({});
   };
 
-  const stateOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.state');
+  const stateOptions = getFieldOptions(attributes, 'contracts.child.children.state');
 
   return (
     <AppConsumer>

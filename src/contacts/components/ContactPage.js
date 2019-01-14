@@ -6,16 +6,18 @@ import {change, getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactEdit from './ContactEdit';
 import ContactReadonly from './ContactReadonly';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
 import {
   editContact,
-  fetchAttributes,
   fetchSingleContact,
   hideEditMode,
   initializeContactForm,
@@ -23,11 +25,11 @@ import {
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/contacts/enums';
 import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
 import {getRouteById} from '$src/root/routes';
 import {
-  getAttributes,
   getCurrentContact,
   getIsContactFormValid,
   getIsEditMode,
@@ -35,18 +37,18 @@ import {
   getIsSaveClicked,
 } from '$src/contacts/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-
+import type {Methods} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {Attributes, Contact} from '../types';
+import type {Contact} from '../types';
 
 type Props = {
-  attributes: Attributes,
   change: Function,
   contact: Contact,
   contactFormValues: Contact,
+  contactMethods: Methods, // get via withCommonAttributes HOC
   editContact: Function,
-  fetchAttributes: Function,
   fetchSingleContact: Function,
   hideEditMode: Function,
   initializeContactForm: Function,
@@ -54,6 +56,7 @@ type Props = {
   isContactFormValid: boolean,
   isEditMode: boolean,
   isFetching: boolean,
+  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   isSaveClicked: boolean,
   location: Object,
   params: Object,
@@ -80,8 +83,6 @@ class ContactPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      attributes,
-      fetchAttributes,
       fetchSingleContact,
       hideEditMode,
       params: {contactId},
@@ -98,10 +99,6 @@ class ContactPage extends Component<Props, State> {
 
     fetchSingleContact(contactId);
 
-    if(isEmpty(attributes)) {
-      fetchAttributes();
-    }
-
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
@@ -110,6 +107,7 @@ class ContactPage extends Component<Props, State> {
     const {params: {contactId}} = this.props;
     if(isEmpty(prevProps.contact) && !isEmpty(this.props.contact)) {
       const storedContactId = getSessionStorageItem('contactId');
+
       if(Number(contactId) === storedContactId) {
         this.setState({isRestoreModalOpen: true});
       }
@@ -266,12 +264,20 @@ class ContactPage extends Component<Props, State> {
   }
 
   render() {
-    const {contact, isContactFormValid, isEditMode, isFetching, isSaveClicked} = this.props;
+    const {
+      contact,
+      contactMethods,
+      isContactFormValid,
+      isEditMode,
+      isFetching,
+      isFetchingCommonAttributes,
+      isSaveClicked,
+    } = this.props;
     const {isRestoreModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
 
-    if(isFetching) {
+    if(isFetching || isFetchingCommonAttributes) {
       return (
         <PageContainer>
           <Loader isLoading={true} />
@@ -279,11 +285,15 @@ class ContactPage extends Component<Props, State> {
       );
     }
 
+    if(!contactMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.CONTACT} /></PageContainer>;
+
     return (
-      <div style={{width: '100%'}}>
+      <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowCopy={contactMethods.POST}
+              allowEdit={contactMethods.PATCH}
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && !isContactFormValid}
@@ -299,29 +309,33 @@ class ContactPage extends Component<Props, State> {
           onBack={this.handleBack}
         />
         <PageContainer className='with-small-control-bar'>
-          <ConfirmationModal
-            confirmButtonLabel='Palauta muutokset'
-            isOpen={isRestoreModalOpen}
-            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-            onCancel={this.cancelRestoreUnsavedChanges}
-            onClose={this.cancelRestoreUnsavedChanges}
-            onSave={this.restoreUnsavedChanges}
-            title='Palauta tallentamattomat muutokset'
-          />
+          <Authorization allow={contactMethods.PATCH}>
+            <ConfirmationModal
+              confirmButtonLabel='Palauta muutokset'
+              isOpen={isRestoreModalOpen}
+              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              onCancel={this.cancelRestoreUnsavedChanges}
+              onClose={this.cancelRestoreUnsavedChanges}
+              onSave={this.restoreUnsavedChanges}
+              title='Palauta tallentamattomat muutokset'
+            />
+          </Authorization>
 
           {isEditMode
-            ? <ContactEdit />
+            ? <Authorization
+              allow={contactMethods.PATCH}
+              errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL}/>}
+            > <ContactEdit /></Authorization>
             : <ContactReadonly contact={contact} />
           }
         </PageContainer>
-      </div>
+      </FullWidthContainer>
     );
   }
 }
 
 const mapStateToProps = (state: RootState) => {
   return {
-    attributes: getAttributes(state),
     contact: getCurrentContact(state),
     contactFormValues: getFormValues(FormNames.CONTACT)(state),
     isContactFormDirty: isDirty(FormNames.CONTACT)(state),
@@ -333,12 +347,12 @@ const mapStateToProps = (state: RootState) => {
 };
 
 export default flowRight(
+  withCommonAttributes,
   connect(
     mapStateToProps,
     {
       change,
       editContact,
-      fetchAttributes,
       fetchSingleContact,
       hideEditMode,
       initializeContactForm,

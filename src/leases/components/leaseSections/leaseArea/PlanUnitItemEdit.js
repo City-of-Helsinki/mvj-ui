@@ -5,18 +5,19 @@ import {Row, Column} from 'react-foundation';
 import {Link, withRouter} from 'react-router';
 import {formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
+import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {FormNames} from '$src/leases/enums';
-import {getSearchQuery} from '$util/helpers';
+import {FormNames, LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles} from '$src/leases/enums';
+import {getFieldAttributes, getSearchQuery, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,
@@ -54,147 +55,153 @@ const PlanUnitItemEdit = ({
     <BoxItem>
       <BoxContentWrapper>
         <ActionButtonWrapper>
-          <RemoveButton
-            onClick={onRemove}
-            title="Poista kaavayksikkö"
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+            <RemoveButton
+              onClick={onRemove}
+              title="Poista kaavayksikkö"
+            />
+          </Authorization>
         </ActionButtonWrapper>
         <Row>
           <Column small={12} medium={6} large={6}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.identifier')}
-              name={`${field}.identifier`}
-              overrideValues={{
-                label: 'Kohteen tunnus',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.IDENTIFIER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes,  LeasePlanUnitsFieldPaths.IDENTIFIER)}
+                name={`${field}.identifier`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.IDENTIFIER}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={3} large={3}>
-            {!isEmpty(geometry) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.GEOMETRY)}>
+              {!isEmpty(geometry) &&
+                <Link to={mapLinkUrl}>{LeasePlanUnitsFieldTitles.GEOMETRY}</Link>
+              }
+            </Authorization>
           </Column>
         </Row>
 
         <Row>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.area')}
-              name={`${field}.area`}
-              unit='m²'
-              overrideValues={{
-                label: 'Kokonaisala',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.AREA)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.AREA)}
+                name={`${field}.area`}
+                unit='m²'
+                overrideValues={{label: LeasePlanUnitsFieldTitles.AREA}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.section_area')}
-              name={`${field}.section_area`}
-              unit='m²'
-              overrideValues={{
-                label: 'Leikkausala',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.SECTION_AREA)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.SECTION_AREA)}
+                name={`${field}.section_area`}
+                unit='m²'
+                overrideValues={{label: LeasePlanUnitsFieldTitles.SECTION_AREA}}
+              />
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_identifier')}
-              name={`${field}.detailed_plan_identifier`}
-              overrideValues={{
-                label: 'Asemakaava',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER)}
+                name={`${field}.detailed_plan_identifier`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.DETAILED_PLAN_IDENTIFIER}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date')}
-              name={`${field}.detailed_plan_latest_processing_date`}
-              overrideValues={{
-                label: 'Asemakaavan viimeisin käsittelypvm',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE)}
+                name={`${field}.detailed_plan_latest_processing_date`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}}
+              />
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date_note')}
-              name={`${field}.detailed_plan_latest_processing_date_note`}
-              overrideValues={{
-                label: 'Asemakaavan viimeisin käsittelypvm huomautus',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE)}
+                name={`${field}.detailed_plan_latest_processing_date_note`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}}
+              />
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_identifier')}
-              name={`${field}.plot_division_identifier`}
-              overrideValues={{
-                label: 'Tonttijaon tunnus',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER)}
+                name={`${field}.plot_division_identifier`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.PLOT_DIVISION_IDENTIFIER}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_state')}
-              name={`${field}.plot_division_state`}
-              overrideValues={{
-                label: 'Tonttijaon olotila',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE)}
+                name={`${field}.plot_division_state`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.PLOT_DIVISION_STATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_date_of_approval')}
-              name={`${field}.plot_division_date_of_approval`}
-              overrideValues={{
-                label: 'Tonttijaon hyväksymispvm',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_DATE_OF_APPROVAL)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_DATE_OF_APPROVAL)}
+                name={`${field}.plot_division_date_of_approval`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.PLOT_DIVISION_DATE_OF_APPROVAL}}
+              />
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_type')}
-              name={`${field}.plan_unit_type`}
-              overrideValues={{
-                label: 'Kaavayksikön laji',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE)}
+                name={`${field}.plan_unit_type`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.PLAN_UNIT_TYPE}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_state')}
-              name={`${field}.plan_unit_state`}
-              overrideValues={{
-                label: 'Kaavayksikön olotila',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE)}
+                name={`${field}.plan_unit_state`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.PLAN_UNIT_STATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use')}
-              name={`${field}.plan_unit_intended_use`}
-              overrideValues={{
-                label: 'Kaavayksikön käyttötarkoitus',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE)}
+                name={`${field}.plan_unit_intended_use`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.PLAN_UNIT_INTENDED_USE}}
+              />
+            </Authorization>
           </Column>
         </Row>
       </BoxContentWrapper>
@@ -210,6 +217,7 @@ export default flowRight(
   connect(
     (state, props) => {
       return {
+        attributes: getAttributes(state),
         geometry: selector(state, `${props.field}.geometry`),
         id: selector(state, `${props.field}.id`),
       };

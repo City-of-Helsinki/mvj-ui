@@ -3,10 +3,12 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import findIndex from 'lodash/findIndex';
 
-import type {Reducer} from '../types';
+import type {Attributes, Methods, Reducer} from '$src/types';
 
 import type {
   AreaNoteList,
+  ReceiveAttributesAction,
+  ReceiveMethodsAction,
   ReceiveAreaNoteListAction,
   ReceiveDeletedAreaNoteAction,
   ReceiveEditedAreaNoteAction,
@@ -40,6 +42,25 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/areaNote/NOT_FOUND': () => false,
 }, false);
 
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/areaNote/FETCH_ATTRIBUTES': () => true,
+  'mvj/areaNote/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/areaNote/RECEIVE_METHODS': () => false,
+  'mvj/areaNote/ATTRIBUTES_NOT_FOUND': () => false,
+}, false);
+
+const attributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/areaNote/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
+    return attributes;
+  },
+}, {});
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/areaNote/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
+  },
+}, {});
+
 const areaNoteListReducer: Reducer<AreaNoteList> = handleActions({
   ['mvj/areaNote/RECEIVE_ALL']: (state: AreaNoteList, {payload: list}: ReceiveAreaNoteListAction) => {
     return list;
@@ -63,8 +84,11 @@ const areaNoteListReducer: Reducer<AreaNoteList> = handleActions({
 }, []);
 
 export default combineReducers({
+  attributes: attributesReducer,
   initialValues: initialValuesReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
   list: areaNoteListReducer,
+  methods: methodsReducer,
 });

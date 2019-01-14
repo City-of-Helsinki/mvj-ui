@@ -7,6 +7,7 @@ import ReactResizeDetector from 'react-resize-detector';
 
 import AccordionIcon from '../icons/AccordionIcon';
 import ArchiveButton from '../form/ArchiveButton';
+import CollapseHeaderTitle from './CollapseHeaderTitle';
 import CopyToClipboardButton from '../form/CopyToClipboardButton';
 import RemoveButton from '../form/RemoveButton';
 import UnarchiveButton from '../form/UnarchiveButton';
@@ -170,7 +171,9 @@ class Collapse extends PureComponent<Props, State> {
                     onClick={this.handleToggle}
                   >
                     <AccordionIcon className="arrow-icon"/>
-                    {headerTitle}
+                    <CollapseHeaderTitle>
+                      {headerTitle}
+                    </CollapseHeaderTitle>
                   </a>
                 </Column>
               }

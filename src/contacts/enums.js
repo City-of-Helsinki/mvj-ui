@@ -1,3 +1,4 @@
+// @flow
 /**
  * Contact type enumerable.
  *
@@ -19,4 +20,60 @@ export const ContactType = {
 export const FormNames = {
   CONTACT: 'contact-form',
   SEARCH: 'contact-search-form',
+};
+
+/**
+ * Contact field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const ContactFieldPaths = {
+  ADDRESS: 'address',
+  ADDRESS_PROTECTION: 'address_protection',
+  BUSINESS_ID: 'business_id',
+  CITY: 'city',
+  COUNTRY: 'country',
+  CUSTOMER_NUMBER: 'customer_number',
+  ELECTRONIC_BILLING_ADDRESS: 'electronic_billing_address',
+  EMAIL: 'email',
+  FIRST_NAME: 'first_name',
+  IS_LESSOR: 'is_lessor',
+  LANGUAGE: 'language',
+  LAST_NAME: 'last_name',
+  NAME: 'name',
+  NATIONAL_IDENTIFICATION_NUMBER: 'national_identification_number',
+  NOTE: 'note',
+  PARTNER_CODE: 'partner_code',
+  PHONE: 'phone',
+  POSTAL_CODE: 'postal_code',
+  SAP_CUSTOMER_NUMBER: 'sap_customer_number',
+  TYPE: 'type',
+};
+
+/**
+ * Contact field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const ContactFieldTitles = {
+  ADDRESS: 'Katuosoite',
+  ADDRESS_PROTECTION: 'Turvakielto',
+  BUSINESS_ID: 'Y-tunnus',
+  CITY: 'Postitoimipaikka',
+  COUNTRY: 'Maa',
+  CUSTOMER_NUMBER: 'Asiakasnumero',
+  ELECTRONIC_BILLING_ADDRESS: 'Ovt-tunnus',
+  EMAIL: 'Sähköposti',
+  FIRST_NAME: 'Etunimi',
+  IS_LESSOR: 'Vuokranantaja',
+  LANGUAGE: 'Kieli',
+  LAST_NAME: 'Sukunimi',
+  NAME: 'Yrityksen nimi',
+  NATIONAL_IDENTIFICATION_NUMBER: 'Henkilötunnus',
+  NOTE: 'Huomautus',
+  PARTNER_CODE: 'Kumppanikoodi',
+  PHONE: 'Puhelinnumero',
+  POSTAL_CODE: 'Postinumero',
+  SAP_CUSTOMER_NUMBER: 'SAP asiakasnumero',
+  TYPE: 'Asiakastyyppi',
 };

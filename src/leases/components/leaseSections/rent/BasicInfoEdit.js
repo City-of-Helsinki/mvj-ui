@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {change, Field, FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -8,80 +8,110 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButtonThird from '$components/form/AddButtonThird';
+import Authorization from '$components/authorization/Authorization';
 import ErrorField from '$components/form/ErrorField';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/constants';
-import {FixedDueDates, FormNames, RentCycles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {
+  FixedDueDates,
+  FormNames,
+  LeaseRentDueDatesFieldPaths,
+  LeaseRentDueDatesFieldTitles,
+  LeaseRentsFieldPaths,
+  LeaseRentsFieldTitles,
+  RentCycles,
+  RentTypes,
+  RentDueDateTypes,
+} from '$src/leases/enums';
 import {formatDueDates} from '$src/leases/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {
+  getFieldAttributes,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+  isFieldRequired,
+} from '$util/helpers';
+import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getLeaseTypeList} from '$src/leaseType/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
 
 type SeasonalDatesProps = {
-  attributes: Attributes,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
 }
 
 const SeasonalDates = ({
-  attributes,
   isSaveClicked,
+  leaseAttributes,
 }: SeasonalDatesProps ) => {
   return(
-    <div>
+    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)||
+      isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH) ||
+      isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY) ||
+      isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}
+    >
       <Row>
-        <Column small={12}><FormTextTitle title='Kausivuokra ajalla (pv.kk)' /></Column>
-      </Row>
-      <Row>
-        <Column small={3}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.seasonal_start_day')}
-            name='seasonal_start_day'
-            overrideValues={{
-              label: '',
-            }}
-          />
-        </Column>
-        <Column small={3}>
-          <FormField
-            className='with-dot'
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.seasonal_start_month')}
-            name='seasonal_start_month'
-            overrideValues={{
-              label: '',
-            }}
-          />
-        </Column>
-        <Column small={3}>
-          <FormField
-            className='with-dash'
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.seasonal_end_day')}
-            name='seasonal_end_day'
-            overrideValues={{
-              label: '',
-            }}
-          />
-        </Column>
-        <Column small={3}>
-          <FormField
-            className='with-dot'
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.seasonal_end_month')}
-            name='seasonal_end_month'
-            overrideValues={{
-              label: '',
-            }}
-          />
+        <Column small={12}>
+          <FormTextTitle>{LeaseRentsFieldTitles.SEASONAL_DATES}</FormTextTitle>
         </Column>
       </Row>
+
+      <Row>
+        <Column small={3}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY)}
+              name='seasonal_start_day'
+              invisibleLabel
+              overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_START_DAY}}
+            />
+          </Authorization>
+        </Column>
+        <Column small={3}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}>
+            <FormField
+              className='with-dot'
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}
+              name='seasonal_start_month'
+              invisibleLabel
+              overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_START_MONTH}}
+            />
+          </Authorization>
+        </Column>
+        <Column small={3}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}>
+            <FormField
+              className='with-dash'
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}
+              name='seasonal_end_day'
+              invisibleLabel
+              overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_END_DAY}}
+            />
+          </Authorization>
+        </Column>
+        <Column small={3}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH)}>
+            <FormField
+              className='with-dot'
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH)}
+              name='seasonal_end_month'
+              invisibleLabel
+              overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_END_MONTH}}
+            />
+          </Authorization>
+        </Column>
+      </Row>
+
       <Row>
         <Column>
           <Field
@@ -91,28 +121,31 @@ const SeasonalDates = ({
           />
         </Column>
       </Row>
-    </div>
+    </Authorization>
   );
 };
 
 type DueDatesProps = {
-  attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
 }
 
-const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Element<*> => {
+const renderDueDates = ({fields, isSaveClicked, leaseAttributes}: DueDatesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
 
   return (
-    <div>
+    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
       <Row>
         <Column>
-          <FormTextTitle title='Eräpäivät (pv.kk)' />
+          <FormTextTitle
+            required={isFieldRequired(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}
+          >{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
         </Column>
       </Row>
+
       {fields && !!fields.length && fields.map((due_date, index) => {
         const handleRemove = () => {
           fields.remove(index);
@@ -123,31 +156,39 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
             <Column small={12}>
               <Row>
                 <Column small={6}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.day')}
-                    invisibleLabel
-                    name={`${due_date}.day`}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}
+                      invisibleLabel
+                      name={`${due_date}.day`}
+                      overrideValues={{label: LeaseRentDueDatesFieldTitles.DAY}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={6}>
                   <FieldAndRemoveButtonWrapper
                     className='absolute-remove-button-position'
                     field={
-                      <FormField
-                        className='with-dot'
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.month')}
-                        invisibleLabel
-                        name={`${due_date}.month`}
-                      />
+                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}>
+                        <FormField
+                          className='with-dot'
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
+                          invisibleLabel
+                          name={`${due_date}.month`}
+                          overrideValues={{label: LeaseRentDueDatesFieldTitles.MONTH}}
+                        />
+                      </Authorization>
                     }
                     removeButton={
-                      <RemoveButton
-                        className='third-level'
-                        onClick={handleRemove}
-                        title="Poista eräpäivä"
-                      />
+                      <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+                        <RemoveButton
+                          className='third-level'
+                          onClick={handleRemove}
+                          title="Poista eräpäivä"
+                        />
+                      </Authorization>
                     }
                   />
                 </Column>
@@ -156,60 +197,8 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
           </Row>
         );
       })}
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää eräpäivä'
-            onClick={handleAdd}
-          />
-        </Column>
-      </Row>
-    </div>
-  );
-};
 
-const renderDueDatesOneTime = ({attributes, fields, isSaveClicked}: DueDatesProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-
-  return (
-    <div>
-      <Row>
-        <Column>
-          <FormTextTitle title='Eräpäivät (pv.kk)' />
-        </Column>
-      </Row>
-      {fields && !!fields.length && fields.map((due_date, index) => {
-        if(index) return null;
-
-        return (
-          <Row key={index}>
-            <Column small={12}>
-              <Row>
-                <Column small={6}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.day')}
-                    invisibleLabel
-                    name={`${due_date}.day`}
-                  />
-                </Column>
-                <Column small={6}>
-                  <FormField
-                    className='with-dot'
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.month')}
-                    invisibleLabel
-                    name={`${due_date}.month`}
-                  />
-                </Column>
-              </Row>
-            </Column>
-          </Row>
-        );
-      })}
-      {(!fields || !fields.length) &&
+      <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
         <Row>
           <Column>
             <AddButtonThird
@@ -218,152 +207,218 @@ const renderDueDatesOneTime = ({attributes, fields, isSaveClicked}: DueDatesProp
             />
           </Column>
         </Row>
+      </Authorization>
+    </Authorization>
+  );
+};
+
+const renderDueDatesOneTime = ({fields, isSaveClicked, leaseAttributes}: DueDatesProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  return (
+    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+      <Row>
+        <Column>
+          <FormTextTitle
+            required={isFieldRequired(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}
+          >{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
+        </Column>
+      </Row>
+
+      {fields && !!fields.length && fields.map((due_date, index) => {
+        if(index) return null;
+
+        return (
+          <Row key={index}>
+            <Column small={12}>
+              <Row>
+                <Column small={6}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}
+                      invisibleLabel
+                      name={`${due_date}.day`}
+                      overrideValues={{label: LeaseRentDueDatesFieldTitles.DAY}}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={6}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}>
+                    <FormField
+                      className='with-dot'
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
+                      invisibleLabel
+                      name={`${due_date}.month`}
+                      overrideValues={{label: LeaseRentDueDatesFieldTitles.MONTH}}
+                    />
+                  </Authorization>
+                </Column>
+              </Row>
+            </Column>
+          </Row>
+        );
+      })}
+      {(!fields || !fields.length) &&
+        <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+          <Row>
+            <Column>
+              <AddButtonThird
+                label='Lisää eräpäivä'
+                onClick={handleAdd}
+              />
+            </Column>
+          </Row>
+        </Authorization>
       }
-    </div>
+    </Authorization>
   );
 };
 
 type BasicInfoEmptyProps = {
-  attributes: Attributes,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
 }
 
-const BasicInfoEmpty = ({attributes, isSaveClicked}: BasicInfoEmptyProps) => {
+const BasicInfoEmpty = ({isSaveClicked, leaseAttributes}: BasicInfoEmptyProps) => {
   return (
-    <div>
+    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.type')}
+            fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
             name='type'
-            overrideValues={{
-              label: 'Vuokralaji',
-            }}
+            overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
           />
         </Column>
       </Row>
-    </div>
+    </Authorization>
   );
 };
 
 type BasicInfoIndexProps = {
-  attributes: Attributes,
   cycle: ?string,
   dueDatesType: ?string,
   isIndex: boolean,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
   yearlyDueDates: Array<Object>,
 }
 
 const BasicInfoIndex = ({
-  attributes,
   cycle,
   dueDatesType,
   isIndex,
   isSaveClicked,
+  leaseAttributes,
   yearlyDueDates,
 }: BasicInfoIndexProps) => {
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.type')}
-            name='type'
-            overrideValues={{
-              label: 'Vuokralaji',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
+              name='type'
+              overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+            />
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.start_date')}
-            name='start_date'
-            overrideValues={{
-              label: 'Alkupvm',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}
+              name='start_date'
+              overrideValues={{label: LeaseRentsFieldTitles.START_DATE}}
+            />
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.end_date')}
-            name='end_date'
-            overrideValues={{
-              label: 'Loppupvm',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}
+              name='end_date'
+              overrideValues={{label: LeaseRentsFieldTitles.END_DATE}}
+            />
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.cycle')}
-            name='cycle'
-            overrideValues={{
-              label: 'Vuokrakausi',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.CYCLE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.CYCLE)}
+              name='cycle'
+              overrideValues={{label: LeaseRentsFieldTitles.CYCLE}}
+            />
+          </Authorization>
         </Column>
 
         {isIndex &&
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.index_type')}
-              name='index_type'
-              overrideValues={{
-                label: 'Indeksin tunnusnumero',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE)}
+                name='index_type'
+                overrideValues={{label: LeaseRentsFieldTitles.INDEX_TYPE}}
+              />
+            </Authorization>
           </Column>
         }
 
         <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.due_dates_type')}
-            name='due_dates_type'
-            overrideValues={{
-              label: 'Laskutusjako',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}
+              name='due_dates_type'
+              overrideValues={{label: LeaseRentsFieldTitles.DUE_DATES_TYPE}}
+            />
+          </Authorization>
         </Column>
         {dueDatesType === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={1}>
+            {/* Authorization is done on renderDueDates component */}
             <FieldArray
-              attributes={attributes}
               component={renderDueDates}
               isSaveClicked={isSaveClicked}
+              leaseAttributes={leaseAttributes}
               name="due_dates"
             />
           </Column>
         }
         {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={1}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.due_dates_per_year')}
-              name='due_dates_per_year'
-              overrideValues={{
-                fieldType: 'choice',
-                label: 'Laskut kpl/v',
-                options: rentCustomDateOptions,
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}
+                name='due_dates_per_year'
+                overrideValues={{
+                  fieldType: 'choice',
+                  label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
+                  options: rentCustomDateOptions,
+                }}
+              />
+            </Authorization>
           </Column>
         }
         {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Eräpäivät (pv.kk)'
-              text={yearlyDueDates && !!yearlyDueDates
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
+              <FormText>{yearlyDueDates && !!yearlyDueDates
                 ? formatDueDates(yearlyDueDates)
-                : '-'
-              }
-            />
+                : '-'}</FormText>
+            </Authorization>
           </Column>
         }
       </Row>
@@ -372,26 +427,26 @@ const BasicInfoIndex = ({
         <Row>
           {(cycle === RentCycles.JANUARY_TO_DECEMBER || cycle === RentCycles.APRIL_TO_MARCH) &&
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'rents.child.children.manual_ratio')}
-                name='manual_ratio'
-                overrideValues={{
-                  label: 'Käsinlaskentakerroin',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.MANUAL_RATIO)}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.MANUAL_RATIO)}
+                  name='manual_ratio'
+                  overrideValues={{label: LeaseRentsFieldTitles.MANUAL_RATIO}}
+                />
+              </Authorization>
             </Column>
           }
           {cycle === RentCycles.APRIL_TO_MARCH &&
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'rents.child.children.manual_ratio_previous')}
-                name='manual_ratio_previous'
-                overrideValues={{
-                  label: 'Käsinlaskentakerroin (edellinen)',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.MANUAL_RATIO_PREVIOUS)}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.MANUAL_RATIO_PREVIOUS)}
+                  name='manual_ratio_previous'
+                  overrideValues={{label: LeaseRentsFieldTitles.MANUAL_RATIO_PREVIOUS}}
+                />
+              </Authorization>
             </Column>
           }
         </Row>
@@ -399,287 +454,297 @@ const BasicInfoIndex = ({
 
       <Row>
         <Column small={12} medium={4} large={2}>
+          {/* Authorization is done on SeasonalDates component */}
           <SeasonalDates
-            attributes={attributes}
             isSaveClicked={isSaveClicked}
+            leaseAttributes={leaseAttributes}
           />
         </Column>
         <Column small={12} medium={8} large={10}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.note')}
-            name='note'
-            overrideValues={{
-              label: 'Huomautus',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)}
+              name='note'
+              overrideValues={{label: LeaseRentsFieldTitles.NOTE}}
+            />
+          </Authorization>
         </Column>
       </Row>
-    </div>
+    </Fragment>
   );
 };
 
 type BasicInfoOneTimeProps = {
-  attributes: Attributes,
   dueDatesType: ?string,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
 }
 
-const BasicInfoOneTime = ({attributes, dueDatesType, isSaveClicked}: BasicInfoOneTimeProps) => {
+const BasicInfoOneTime = ({dueDatesType, isSaveClicked, leaseAttributes}: BasicInfoOneTimeProps) => {
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.type')}
-            name='type'
-            overrideValues={{
-              label: 'Vuokralaji',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
+              name='type'
+              overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+            />
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.start_date')}
-            name='start_date'
-            overrideValues={{
-              label: 'Alkupvm',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}
+              name='start_date'
+              overrideValues={{label: LeaseRentsFieldTitles.START_DATE}}
+            />
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.end_date')}
-            name='end_date'
-            overrideValues={{
-              label: 'Loppupvm',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}
+              name='end_date'
+              overrideValues={{label: LeaseRentsFieldTitles.END_DATE}}
+            />
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.amount')}
-            name='amount'
-            unit='€'
-            overrideValues={{
-              label: 'Kertakaikkinen vuokra',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.AMOUNT)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.AMOUNT)}
+              name='amount'
+              unit='€'
+              overrideValues={{label: LeaseRentsFieldTitles.AMOUNT}}
+            />
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.due_dates_type')}
-            name='due_dates_type'
-            overrideValues={{
-              label: 'Laskutusjako',
-              options: oneTimeRentDueDateTypeOptions,
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}
+              name='due_dates_type'
+              overrideValues={{
+                label: LeaseRentsFieldTitles.DUE_DATES_TYPE,
+                options: oneTimeRentDueDateTypeOptions,
+              }}
+            />
+          </Authorization>
         </Column>
+
         {dueDatesType === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={1}>
+            {/* Authorization is done on renderDueDatesOneTime component */}
             <FieldArray
-              attributes={attributes}
               component={renderDueDatesOneTime}
               isSaveClicked={isSaveClicked}
+              leaseAttributes={leaseAttributes}
               name="due_dates"
             />
           </Column>
         }
       </Row>
 
-      <Row>
-        <Column>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.note')}
-            name='note'
-            overrideValues={{
-              label: 'Huomautus',
-            }}
-          />
-        </Column>
-      </Row>
-    </div>
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
+        <Row>
+          <Column>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)}
+              name='note'
+              overrideValues={{label: LeaseRentsFieldTitles.NOTE}}
+            />
+          </Column>
+        </Row>
+      </Authorization>
+    </Fragment>
   );
 };
 
 type BasicInfoFixedProps = {
-  attributes: Attributes,
   dueDatesType: ?string,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
   yearlyDueDates: Array<Object>,
 }
 
 const BasicInfoFixed = ({
-  attributes,
   dueDatesType,
   isSaveClicked,
+  leaseAttributes,
   yearlyDueDates,
 }: BasicInfoFixedProps) => {
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.type')}
-            name='type'
-            overrideValues={{
-              label: 'Vuokralaji',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
+              name='type'
+              overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+            />
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.start_date')}
-            name='start_date'
-            overrideValues={{
-              label: 'Alkupvm',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}
+              name='start_date'
+              overrideValues={{label: LeaseRentsFieldTitles.START_DATE}}
+            />
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.end_date')}
-            name='end_date'
-            overrideValues={{
-              label: 'Loppupvm',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}
+              name='end_date'
+              overrideValues={{label: LeaseRentsFieldTitles.END_DATE}}
+            />
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.due_dates_type')}
-            name='due_dates_type'
-            overrideValues={{
-              label: 'Laskutusjako',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}
+              name='due_dates_type'
+              overrideValues={{label: LeaseRentsFieldTitles.DUE_DATES_TYPE}}
+            />
+          </Authorization>
         </Column>
         {dueDatesType === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
+            {/* Authorization is done on renderDueDates component */}
             <FieldArray
-              attributes={attributes}
               component={renderDueDates}
               isSaveClicked={isSaveClicked}
+              leaseAttributes={leaseAttributes}
               name="due_dates"
             />
           </Column>
         }
         {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={1}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.due_dates_per_year')}
-              name='due_dates_per_year'
-              overrideValues={{
-                label: 'Laskut kpl/v',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}
+                name='due_dates_per_year'
+                overrideValues={{
+                  fieldType: 'choice',
+                  label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
+                  options: rentCustomDateOptions,
+                }}
+              />
+            </Authorization>
           </Column>
         }
         {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Eräpäivät (pv.kk)'
-              text={yearlyDueDates && !!yearlyDueDates
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
+              <FormText>{yearlyDueDates && !!yearlyDueDates
                 ? formatDueDates(yearlyDueDates)
-                : '-'
-              }
-            />
+                : '-'}</FormText>
+            </Authorization>
           </Column>
         }
       </Row>
 
       <Row>
         <Column small={12} medium={4} large={2}>
+          {/* Authorization is done on SeasonalDates component */}
           <SeasonalDates
-            attributes={attributes}
             isSaveClicked={isSaveClicked}
+            leaseAttributes={leaseAttributes}
           />
         </Column>
         <Column small={12} medium={8} large={10}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.note')}
-            name='note'
-            overrideValues={{
-              label: 'Huomautus',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)}
+              name='note'
+              overrideValues={{label: LeaseRentsFieldTitles.NOTE}}
+            />
+          </Authorization>
         </Column>
       </Row>
-    </div>
+    </Fragment>
   );
 };
 
 type BasicInfoFreeProps = {
-  attributes: Attributes,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
 }
 
-const BasicInfoFree = ({attributes, isSaveClicked}: BasicInfoFreeProps) => {
+const BasicInfoFree = ({isSaveClicked, leaseAttributes}: BasicInfoFreeProps) => {
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.type')}
-            name='type'
-            overrideValues={{
-              label: 'Vuokralaji',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
+              name='type'
+              overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+            />
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.start_date')}
-            name='start_date'
-            overrideValues={{
-              label: 'Alkupvm',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}
+              name='start_date'
+              overrideValues={{label: LeaseRentsFieldTitles.START_DATE}}
+            />
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.end_date')}
-            name='end_date'
-            overrideValues={{
-              label: 'Loppupvm',
-            }}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}
+              name='end_date'
+              overrideValues={{label: LeaseRentsFieldTitles.END_DATE}}
+            />
+          </Authorization>
         </Column>
       </Row>
-      <Row>
-        <Column>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.note')}
-            name='note'
-            overrideValues={{
-              label: 'Huomautus',
-            }}
-          />
-        </Column>
-      </Row>
-    </div>
+
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
+        <Row>
+          <Column>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)}
+              name='note'
+              overrideValues={{label: LeaseRentsFieldTitles.NOTE}}
+            />
+          </Column>
+        </Row>
+      </Authorization>
+    </Fragment>
   );
 };
 
 type Props = {
-  attributes: Attributes,
   change: Function,
   currentLease: Lease,
   cycle: string,
@@ -688,23 +753,25 @@ type Props = {
   dueDatesType: ?string,
   field: any,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
   leaseTypes: LeaseTypeList,
   rentType: ?string,
 }
 
 const BasicInfoEdit = ({
-  attributes,
   currentLease,
   cycle,
   dueDatesPerYear,
   dueDatesType,
   isSaveClicked,
+  leaseAttributes,
   leaseTypes,
   rentType,
 }: Props) => {
   const getYearlyDueDates = () => {
     const leaseTypeId = get(currentLease, 'type.id');
     const leaseType = leaseTypes.find((item) => item.id === leaseTypeId);
+
     if(!dueDatesPerYear ||isEmpty(leaseType) || dueDatesType !== RentDueDateTypes.FIXED) return [];
 
     return FixedDueDates[get(leaseType, 'due_dates_position')][dueDatesPerYear];
@@ -713,55 +780,55 @@ const BasicInfoEdit = ({
   const yearlyDueDates = getYearlyDueDates();
 
   return (
-    <div>
+    <Fragment>
       {!rentType &&
         <BasicInfoEmpty
-          attributes={attributes}
           isSaveClicked={isSaveClicked}
+          leaseAttributes={leaseAttributes}
         />
       }
       {rentType === RentTypes.INDEX &&
         <BasicInfoIndex
-          attributes={attributes}
           cycle={cycle}
           dueDatesType={dueDatesType}
           isIndex={true}
           isSaveClicked={isSaveClicked}
+          leaseAttributes={leaseAttributes}
           yearlyDueDates={yearlyDueDates}
         />
       }
       {rentType === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
-          attributes={attributes}
           dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
+          leaseAttributes={leaseAttributes}
         />
       }
       {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
-          attributes={attributes}
           dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
+          leaseAttributes={leaseAttributes}
           yearlyDueDates={yearlyDueDates}
         />
       }
       {rentType === RentTypes.FREE &&
         <BasicInfoFree
-          attributes={attributes}
           isSaveClicked={isSaveClicked}
+          leaseAttributes={leaseAttributes}
         />
       }
       {rentType === RentTypes.MANUAL &&
         <BasicInfoIndex
-          attributes={attributes}
           cycle={cycle}
           dueDatesType={dueDatesType}
           isIndex={false}
           isSaveClicked={isSaveClicked}
+          leaseAttributes={leaseAttributes}
           yearlyDueDates={yearlyDueDates}
         />
       }
-    </div>
+    </Fragment>
   );
 };
 
@@ -771,12 +838,12 @@ const selector = formValueSelector(formName);
 export default connect(
   (state, props) => {
     return {
-      attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
       cycle: selector(state, `${props.field}.cycle`),
       dueDatesPerYear: selector(state, `${props.field}.due_dates_per_year`),
       dueDatesType: selector(state, `${props.field}.due_dates_type`),
       dueDates: selector(state, `${props.field}.due_dates`),
+      leaseAttributes: getLeaseAttributes(state),
       leaseTypes: getLeaseTypeList(state),
     };
   },

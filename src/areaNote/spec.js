@@ -1,5 +1,11 @@
+// @flow
 import {expect} from 'chai';
+
 import {
+  fetchAttributes,
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
   receiveAreaNoteList,
   receiveDeletedAreaNote,
   receiveEditedAreaNote,
@@ -14,7 +20,10 @@ import {
 } from './actions';
 import areaNotesReducer from './reducer';
 
-const stateTemplate = {
+import type {AreaNoteState} from './types';
+
+const defaultState: AreaNoteState = {
+  attributes: {},
   initialValues: {
     id: -1,
     geoJSON: {},
@@ -23,14 +32,53 @@ const stateTemplate = {
   },
   isEditMode: false,
   isFetching: false,
+  isFetchingAttributes: false,
   list: [],
+  methods: {},
 };
 
+// $FlowFixMe
 describe('AreaNoteList', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('areaNotesReducer', () => {
+
+      // $FlowFixMe
+      it('should update attributes', () => {
+        const dummyAttributes = {foo: 'bar'};
+
+        const newState = {...defaultState, attributes: dummyAttributes};
+
+        const state = areaNotesReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {foo: 'bar'};
+
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = areaNotesReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = areaNotesReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = areaNotesReducer({}, fetchAttributes());
+        state = areaNotesReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
 
       it('should update area notes list', () => {
         const dummyAreaNotes = [
@@ -40,26 +88,25 @@ describe('AreaNoteList', () => {
           },
         ];
 
-        const newState = {...stateTemplate};
-        newState.list = dummyAreaNotes;
+        const newState = {...defaultState, list: dummyAreaNotes};
 
         const state = areaNotesReducer({}, receiveAreaNoteList(dummyAreaNotes));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true when fetching area notes', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = areaNotesReducer({}, fetchAreaNoteList());
+        const state = areaNotesReducer({}, fetchAreaNoteList(''));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true when creating area note', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = areaNotesReducer({}, createAreaNote());
+        const state = areaNotesReducer({}, createAreaNote({}));
         expect(state).to.deep.equal(newState);
       });
 
@@ -68,7 +115,7 @@ describe('AreaNoteList', () => {
           id: 1,
           foo: 'bar',
         };
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = false;
         newState.list = [dummyAreaNote];
 
@@ -82,7 +129,7 @@ describe('AreaNoteList', () => {
           id: 1,
           foo: 'bar',
         };
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = false;
 
         let state = areaNotesReducer({}, receiveEditedAreaNote(dummyAreaNote));
@@ -91,32 +138,32 @@ describe('AreaNoteList', () => {
       });
 
       it('should update isFetching flag to true when deleting area note', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = areaNotesReducer({}, deleteAreaNote());
+        const state = areaNotesReducer({}, deleteAreaNote(1));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true when editing area note', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = areaNotesReducer({}, editAreaNote());
+        const state = areaNotesReducer({}, editAreaNote({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound action', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = false;
 
-        let state = areaNotesReducer({}, editAreaNote());
+        let state = areaNotesReducer({}, editAreaNote({}));
         state = areaNotesReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isEditMode flag to true', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isEditMode = true;
 
         const state = areaNotesReducer({}, showEditMode());
@@ -124,7 +171,7 @@ describe('AreaNoteList', () => {
       });
 
       it('should update isEditMode flag to false', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = false;
 
         let state = areaNotesReducer({}, showEditMode());
@@ -133,7 +180,7 @@ describe('AreaNoteList', () => {
       });
 
       it('should update initial values', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.initialValues = {};
 
         const state = areaNotesReducer({}, initializeAreaNote({}));

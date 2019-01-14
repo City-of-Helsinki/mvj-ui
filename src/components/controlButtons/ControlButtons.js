@@ -2,12 +2,17 @@
 import React from 'react';
 import Button from '../button/Button';
 
+import Authorization from '$components/authorization/Authorization';
+import CommentButton from './CommentButton';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {CancelChangesModalTexts} from '$src/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 import {ButtonColors} from '$components/enums';
 
 type Props = {
+  allowComments?: boolean,
+  allowCopy?: boolean,
+  allowEdit?: boolean,
   commentAmount?: number,
   isCancelDisabled?: boolean,
   isCopyDisabled?: boolean,
@@ -24,7 +29,10 @@ type Props = {
 }
 
 const ControlButtons = ({
-  commentAmount,
+  allowComments = false,
+  allowCopy = false,
+  allowEdit = false,
+  commentAmount = 0,
   isCancelDisabled = false,
   isCopyDisabled = true,
   isEditDisabled = false,
@@ -40,14 +48,6 @@ const ControlButtons = ({
 }: Props) => {
   const handleComment = () => {
     onComment();
-  };
-
-  const handleCommentKeyDown = (e: any) => {
-    if(e.keyCode === 13) {
-      e.preventDefault();
-
-      handleComment();
-    }
   };
 
   return (
@@ -93,48 +93,52 @@ const ControlButtons = ({
 
         return(
           <div className='control-buttons'>
-            {isEditMode
-              ? (
-                <div className='left-buttons'>
-                  <Button
-                    className={ButtonColors.SECONDARY}
-                    disabled={isCancelDisabled}
-                    onClick={handleCancel}
-                    text='Hylkää muutokset'
-                  />
-                  {showCopyButton &&
+            {isEditMode &&
+              <div className='control-buttons__left-button-wrapper'>
+                <Button
+                  className={ButtonColors.SECONDARY}
+                  disabled={isCancelDisabled}
+                  onClick={handleCancel}
+                  text='Hylkää muutokset'
+                />
+                {showCopyButton &&
+                  <Authorization allow={allowCopy}>
                     <Button
                       className={ButtonColors.NEUTRAL}
                       disabled={isCopyDisabled}
                       onClick={handleCopy}
                       text='Kopioi'
                     />
-                  }
-                  <Button
-                    className={ButtonColors.SUCCESS}
-                    disabled={isSaveDisabled}
-                    onClick={onSave}
-                    text='Tallenna'
-                  />
-                </div>
-              ) : (
-                <div className='left-buttons'>
+                  </Authorization>
+                }
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={!allowEdit || isSaveDisabled}
+                  onClick={onSave}
+                  text='Tallenna'
+                />
+              </div>
+            }
+            {!isEditMode &&
+              <div className='control-buttons__left-button-wrapper'>
+                <Authorization allow={allowEdit}>
                   <Button
                     className={ButtonColors.SUCCESS}
                     disabled={isEditDisabled}
                     onClick={onEdit}
                     text='Muokkaa'
                   />
-                </div>
-              )
-            }
-            {!!showCommentButton &&
-              <div aria-label='Avaa kommentointi' onClick={handleComment} onKeyDown={handleCommentKeyDown} className="comment-button" tabIndex={0}>
-                <svg className="commentIcon" focusable='false' viewBox="0 0 30 30">
-                  <path d="M.38 1.85h29.24v22.5H18.87l-3 3.1-.84.7-.84-.7-3-3.1H.38V1.85zM2.62 4.1v18h9.43l.42.28L15 25l2.53-2.6.47-.3h9.43v-18zm4.5 3.38h15.76v2.25H7.12zm0 4.5h15.76v2.25H7.12zm0 4.5h11.26v2.25H7.12z"/>
-                </svg>
-                <div className="circle">{commentAmount || 0}</div>
+                </Authorization>
               </div>
+            }
+
+            {!!showCommentButton &&
+              <Authorization allow={allowComments}>
+                <CommentButton
+                  commentAmount={commentAmount}
+                  onClick={handleComment}
+                />
+              </Authorization>
             }
           </div>
         );

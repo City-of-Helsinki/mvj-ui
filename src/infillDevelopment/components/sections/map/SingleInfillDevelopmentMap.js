@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
@@ -13,9 +13,10 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {fetchLeaseById} from '$src/leases/actions';
 import {mapColors} from '$src/constants';
+import {LeaseAreasFieldPaths, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths} from '$src/leases/enums';
 import {getContentLeaseIdentifier, getLeaseCoordinates} from '$src/leases/helpers';
 import {getContentInfillDevelopmentLeaseGeoJson} from '$src/infillDevelopment/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getCurrentInfillDevelopment} from '$src/infillDevelopment/selectors';
 import {
@@ -24,15 +25,16 @@ import {
   getIsFetchingAllLeases,
 } from '$src/leases/selectors';
 
+import type {Attributes} from '$src/types';
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
-import type {Attributes as LeaseAttributes, Lease} from '$src/leases/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   allLeases: Array<Lease>,
   currentInfillDevelopment: InfillDevelopment,
   fetchLeaseById: Function,
   isFetchingAllLeases: Array<boolean>,
-  leaseAttributes: LeaseAttributes,
+  leaseAttributes: Attributes,
   location: Object,
   router: Object,
 }
@@ -46,7 +48,7 @@ type State = {
   infillDevelopmentLeases: Array<Object>,
   isLoading: boolean,
   layers: Array<Object>,
-  leaseAttributes: LeaseAttributes,
+  leaseAttributes: Attributes,
   planUnitIntendedUseOptions: Array<Object>,
   planUnitStateOptions: Array<Object>,
   planUnitTypeOptions: Array<Object>,
@@ -54,7 +56,7 @@ type State = {
   plotTypeOptions: Array<Object>,
 }
 
-class SingleInfillDevelopmentMap extends Component<Props, State> {
+class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
   state = {
     areaLocationOptions: [],
     areaTypeOptions: [],
@@ -79,22 +81,15 @@ class SingleInfillDevelopmentMap extends Component<Props, State> {
       newState.currentInfillDevelopment = props.currentInfillDevelopment;
       newState.infillDevelopmentLeases = get(props.currentInfillDevelopment, 'infill_development_compensation_leases', []);
     }
+
     if(props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.areaLocationOptions = getAttributeFieldOptions(props.leaseAttributes,
-        'lease_areas.child.children.location');
-      newState.areaTypeOptions = getAttributeFieldOptions(props.leaseAttributes,
-        'lease_areas.child.children.type');
-      newState.plotTypeOptions = getAttributeFieldOptions(props.leaseAttributes,
-        'lease_areas.child.children.plots.child.children.type');
-      newState.plotDivisionStateOptions = getAttributeFieldOptions(props.leaseAttributes,
-        'lease_areas.child.children.plan_units.child.children.plot_division_state');
-      newState.planUnitTypeOptions = getAttributeFieldOptions(props.leaseAttributes,
-        'lease_areas.child.children.plan_units.child.children.plan_unit_type');
-      newState.planUnitStateOptions = getAttributeFieldOptions(props.leaseAttributes,
-        'lease_areas.child.children.plan_units.child.children.plan_unit_state');
-      newState.planUnitIntendedUseOptions = getAttributeFieldOptions(props.leaseAttributes,
-        'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use');
+      newState.areaLocationOptions = getFieldOptions(props.leaseAttributes, LeaseAreasFieldPaths.TYPE);
+      newState.plotTypeOptions = getFieldOptions(props.leaseAttributes, LeasePlotsFieldPaths.TYPE);
+      newState.plotDivisionStateOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE);
+      newState.planUnitTypeOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE);
+      newState.planUnitStateOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE);
+      newState.planUnitIntendedUseOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE);
     }
 
     return newState;
@@ -213,23 +208,22 @@ class SingleInfillDevelopmentMap extends Component<Props, State> {
     } = this.state;
 
     return(
-      <div>
+      <Fragment>
         <h2>Kartta</h2>
         <Divider />
-        <div>
-          {isLoading &&
-            <LoaderWrapper className='relative-overlay-wrapper'>
-              <Loader isLoading={isLoading} />
-            </LoaderWrapper>
-          }
-          <AreaNotesEditMap
-            bounds={bounds}
-            center={center}
-            overlayLayers={layers}
-            showEditTools={false}
-          />
-        </div>
-      </div>
+
+        {isLoading &&
+          <LoaderWrapper className='relative-overlay-wrapper'>
+            <Loader isLoading={isLoading} />
+          </LoaderWrapper>
+        }
+        <AreaNotesEditMap
+          bounds={bounds}
+          center={center}
+          overlayLayers={layers}
+          showEditTools={false}
+        />
+      </Fragment>
     );
   }
 }

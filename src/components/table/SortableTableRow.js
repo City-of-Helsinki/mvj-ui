@@ -18,7 +18,7 @@ type Props = {
   onSelectRow?: Function,
   radioButtonDisabledFunction?: Function,
   row: Object,
-  showRadioButton: boolean,
+  showRadioButton?: boolean,
 }
 
 class SortableTableRow extends PureComponent<Props> {

@@ -11,9 +11,10 @@ import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
-import type {Attributes} from '$src/landUseContract/types';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,
@@ -40,8 +41,8 @@ const DecisionItem = ({
     });
   };
 
-  const decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker'),
-    typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.type');
+  const decisionMakerOptions = getFieldOptions(attributes, 'decisions.child.children.decision_maker'),
+    typeOptions = getFieldOptions(attributes, 'decisions.child.children.type');
 
   return (
     <Collapse

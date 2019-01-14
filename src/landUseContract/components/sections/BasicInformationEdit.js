@@ -25,7 +25,7 @@ import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContr
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
 
 type AreasProps = {
   attributes: Attributes,

@@ -5,10 +5,11 @@ import {connect} from 'react-redux';
 import ContractItem from './ContractItem';
 import FormText from '$components/form/FormText';
 import {getContentContracts} from '$src/landUseContract/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
-import type {Attributes, LandUseContract} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,
@@ -17,7 +18,7 @@ type Props = {
 
 const Contracts = ({attributes, currentLandUseContract}: Props) => {
   const contracts = getContentContracts(currentLandUseContract),
-    stateOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.state');
+    stateOptions = getFieldOptions(attributes, 'contracts.child.children.state');
 
   return (
     <div>

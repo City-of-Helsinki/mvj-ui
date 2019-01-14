@@ -3,13 +3,13 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {getFormValues, isDirty} from 'redux-form';
-import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import FullWidthContainer from '$components/content/FullWidthContainer';
 import InfillDevelopmentForm from './forms/InfillDevelopmentForm';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -17,31 +17,32 @@ import PageContainer from '$components/content/PageContainer';
 import {
   clearFormValidFlags,
   createInfillDevelopment,
-  fetchInfillDevelopmentAttributes,
   hideEditMode,
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getIsFormValidById, getIsSaveClicked} from '$src/infillDevelopment/selectors';
+import {getIsFormValidById, getIsSaveClicked, getIsSaving} from '$src/infillDevelopment/selectors';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
+import type {Methods} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {Attributes} from '../types';
 
 type Props = {
-  attributes: Attributes,
   clearFormValidFlags: Function,
   createInfillDevelopment: Function,
-  fetchAttributes: Function,
-  fetchInfillDevelopmentAttributes: Function,
   formValues: Object,
   hideEditMode: Function,
+  infillDevelopmentMethods: Methods, // get via withCommonAttributes HOC
+  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
+  isSaving: boolean,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -55,9 +56,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
 
   componentDidMount() {
     const {
-      attributes,
       clearFormValidFlags,
-      fetchInfillDevelopmentAttributes,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
       showEditMode,
@@ -68,10 +67,6 @@ class NewInfillDevelopmentPage extends Component<Props> {
       pageTitle: 'Täydennysrakantamiskorvaus',
       showSearch: false,
     });
-
-    if(isEmpty(attributes)) {
-      fetchInfillDevelopmentAttributes();
-    }
 
     receiveIsSaveClicked(false);
     clearFormValidFlags();
@@ -92,6 +87,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
 
     if(isFormDirty) {
       const confirmationMessage = '';
+
       e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
       return confirmationMessage;              // Gecko, WebKit, Chrome <34
     }
@@ -109,6 +105,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
 
   cancelChanges = () => {
     const {router} = this.context;
+
     return router.push({
       pathname: getRouteById('infillDevelopment'),
     });
@@ -124,13 +121,24 @@ class NewInfillDevelopmentPage extends Component<Props> {
   }
 
   render() {
-    const {attributes, isFormValid, isSaveClicked} = this.props;
+    const {
+      infillDevelopmentMethods,
+      isFetchingCommonAttributes,
+      isFormValid,
+      isSaveClicked,
+      isSaving,
+    } = this.props;
+
+    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!infillDevelopmentMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
 
     return (
-      <div style={{width: '100%'}}>
+      <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowEdit={infillDevelopmentMethods.POST}
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isFormValid}
@@ -145,43 +153,38 @@ class NewInfillDevelopmentPage extends Component<Props> {
         />
 
         <PageContainer className='with-small-control-bar'>
+          {isSaving &&
+            <LoaderWrapper className='overlay-wrapper'>
+              <Loader isLoading={isSaving} />
+            </LoaderWrapper>
+          }
+
           <ContentContainer>
-            {isEmpty(attributes) &&
-              <Row>
-                <Column>
-                  <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>
-                </Column>
-              </Row>
-            }
-            {!isEmpty(attributes) &&
-              <InfillDevelopmentForm
-                isFocusedOnMount
-              />
-            }
+            <InfillDevelopmentForm isFocusedOnMount/>
           </ContentContainer>
         </PageContainer>
-      </div>
+      </FullWidthContainer>
     );
   }
 }
 
 const mapStateToProps = (state: RootState) => {
   return {
-    attributes: getAttributes(state),
     formValues: getFormValues(FormNames.INFILL_DEVELOPMENT)(state),
     isFormValid: getIsFormValidById(state, FormNames.INFILL_DEVELOPMENT),
     isFormDirty: isDirty(FormNames.INFILL_DEVELOPMENT)(state),
     isSaveClicked: getIsSaveClicked(state),
+    isSaving: getIsSaving(state),
   };
 };
 
 export default flowRight(
+  withCommonAttributes,
   connect(
     mapStateToProps,
     {
       clearFormValidFlags,
       createInfillDevelopment,
-      fetchInfillDevelopmentAttributes,
       hideEditMode,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,

@@ -1,8 +1,14 @@
 // @flow
 import {createAction} from 'redux-actions';
+
+import type {Attributes, Methods} from '$src/types';
 import type {LeaseId} from '$src/leases/types';
 
 import type {
+  FetchAttributesAction,
+  ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  CollectionLetterAttributesNotFoundAction,
   UploadCollectionLetterPayload,
   DeleteCollectionLetterPayload,
   FetchCollectionLettersByLeaseAction,
@@ -11,6 +17,18 @@ import type {
   UploadCollectionLetterAction,
   DeleteCollectionLetterAction,
 } from './types';
+
+export const fetchAttributes = (): FetchAttributesAction =>
+  createAction('mvj/collectionLetter/FETCH_ATTRIBUTES')();
+
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/collectionLetter/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/collectionLetter/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): CollectionLetterAttributesNotFoundAction =>
+  createAction('mvj/collectionLetter/ATTRIBUTES_NOT_FOUND')();
 
 export const fetchCollectionLettersByLease = (lease: LeaseId): FetchCollectionLettersByLeaseAction =>
   createAction('mvj/collectionLetter/FETCH_BY_LEASE')(lease);

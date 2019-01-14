@@ -1,27 +1,55 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
+import {connect} from 'react-redux';
 
+import Authorization from '$components/authorization/Authorization';
 import Contracts from './Contracts';
 import Decisions from './Decisions';
 import Divider from '$components/content/Divider';
 import Inspections from './Inspections';
+import {
+  LeaseContractsFieldPaths,
+  LeaseContractsFieldTitles,
+  LeaseDecisionsFieldPaths,
+  LeaseDecisionsFieldTitles,
+  LeaseInspectionsFieldPaths,
+  LeaseInspectionsFieldTitles,
+} from '$src/leases/enums';
+import {isFieldAllowedToRead} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
 
-const DecisionsMain = () => {
+import type {Attributes} from '$src/types';
+type Props = {
+  attributes: Attributes,
+}
+const DecisionsMain = ({attributes}: Props) => {
   return (
-    <div>
-      <h2>Päätökset</h2>
-      <Divider />
-      <Decisions />
+    <Fragment>
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISIONS)}>
+        <h2>{LeaseDecisionsFieldTitles.DECISIONS}</h2>
+        <Divider />
+        <Decisions />
+      </Authorization>
 
-      <h2>Sopimukset</h2>
-      <Divider />
-      <Contracts/>
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+        <h2>{LeaseContractsFieldTitles.CONTRACTS}</h2>
+        <Divider />
+        <Contracts/>
+      </Authorization>
 
-      <h2>Tarkastukset ja huomautukset</h2>
-      <Divider />
-      <Inspections/>
-    </div>
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}>
+        <h2>{LeaseInspectionsFieldTitles.INSPECTIONS}</h2>
+        <Divider />
+        <Inspections/>
+      </Authorization>
+    </Fragment>
   );
 };
 
-export default DecisionsMain;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  }
+)(DecisionsMain);

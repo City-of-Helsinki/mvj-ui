@@ -6,10 +6,15 @@ import {
   RentSubItemSubjectType,
   RentSubItemType,
 } from './enums';
-import {TenantContactType} from '$src/leases/enums';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {
+  LeaseRentsFieldPaths,
+  LeaseRentAdjustmentsFieldPaths,
+  LeaseRentContractRentsFieldPaths,
+  TenantContactType,
+} from '$src/leases/enums';
+import {getFieldOptions, getLabelOfOption} from '$util/helpers';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 import type {BillingPeriod, BillingPeriodInvoice, PreviewInvoices} from '$src/previewInvoices/types';
 
 export const getRentsTotalAmount = (rents: Array<Object>) => {
@@ -36,11 +41,9 @@ export const getRentSubItemAmount = (subItem: Object) => {
 };
 
 export const getRentExplanationDescription = (explanation: Object, attributes: Attributes) => {
-  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
-  const periodOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.contract_rents.child.children.period');
-  const baseAmountPeriodOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.contract_rents.child.children.base_amount_period');
+  const typeOptions = getFieldOptions(attributes, LeaseRentsFieldPaths.TYPE);
+  const periodOptions = getFieldOptions(attributes, LeaseRentContractRentsFieldPaths.PERIOD);
+  const baseAmountPeriodOptions = getFieldOptions(attributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
   const subjectType = get(explanation, 'subject.subject_type');
   const type = get(explanation, 'subject.type');
 
@@ -60,10 +63,8 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
 };
 
 export const getRentSubItemDescription = (subItem: Object, attributes: Attributes) => {
-  const rentAdjustementTypeOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.rent_adjustments.child.children.type');
-  const amountTypeOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.rent_adjustments.child.children.amount_type');
+  const rentAdjustementTypeOptions = getFieldOptions(attributes, LeaseRentAdjustmentsFieldPaths.TYPE);
+  const amountTypeOptions = getFieldOptions(attributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE);
   const subjectType = get(subItem, 'subject.subject_type');
   const type = get(subItem, 'subject.type');
 
@@ -134,8 +135,7 @@ const getContentBillingPeriod = (billingPeriod: BillingPeriod) => {
 };
 
 export const getContentPreviewInvoiceBillingPeriods = (invoices: PreviewInvoices) => {
-  if(!invoices) {
-    return null;
-  }
+  if(!invoices) return null;
+
   return invoices.map((billingPeriod) => getContentBillingPeriod(billingPeriod));
 };

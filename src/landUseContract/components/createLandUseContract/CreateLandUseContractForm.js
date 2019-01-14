@@ -16,9 +16,8 @@ import {getDistrictOptions} from '$src/district/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes} from '$src/landUseContract/selectors';
 
+import type {Attributes} from '$src/types';
 import type {DistrictList} from '$src/district/types';
-
-import type {Attributes} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,

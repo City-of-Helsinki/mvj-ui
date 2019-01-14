@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
@@ -10,6 +10,7 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
+import Authorization from '$components/authorization/Authorization';
 import BasisOfRentsEdit from './BasisOfRentsEdit';
 import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
@@ -19,21 +20,40 @@ import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {
+  DeleteModalLabels,
+  DeleteModalTitles,
+  FormNames,
+  LeaseBasisOfRentsFieldPaths,
+  LeaseBasisOfRentsFieldTitles,
+  LeaseRentsFieldPaths,
+  LeaseRentsFieldTitles,
+} from '$src/leases/enums';
 import {validateRentForm} from '$src/leases/formValidators';
 import {getContentRentsFormData} from '$src/leases/helpers';
-import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
+import {
+  getAttributes as getLeaseAttributes,
+  getCurrentLease,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from '$src/leases/selectors';
+import {getMethods as getRentForPeriodMethods} from '$src/rentForPeriod/selectors';
+import {getMethods as getSetRentInfoCompletionStateMethods} from '$src/setRentInfoCompletionState/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes, Methods} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type RentsProps = {
   fields: any,
+  leaseAttributes: Attributes,
   rents: Array<Object>,
   showAddButton: boolean,
 };
 
 const renderRents = ({
   fields,
+  leaseAttributes,
   rents,
   showAddButton,
 }:RentsProps): Element<*> => {
@@ -47,10 +67,9 @@ const renderRents = ({
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
-            {!showAddButton && !!fields && !!fields.length &&
-              <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
-            }
+          <Fragment>
+            {!showAddButton && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+
             {fields && !!fields.length && fields.map((item, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -74,16 +93,18 @@ const renderRents = ({
               />;
             })}
             {showAddButton &&
-              <Row>
-                <Column>
-                  <AddButton
-                    label='Lisää vuokra'
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
+              <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>
+                <Row>
+                  <Column>
+                    <AddButton
+                      label='Lisää vuokra'
+                      onClick={handleAdd}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
             }
-          </div>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -91,16 +112,18 @@ const renderRents = ({
 };
 
 type Props = {
-  attributes: Attributes,
   change: Function,
   currentLease: Lease,
   editedActiveBasisOfRents: Array<Object>,
   editedArchivedBasisOfRents: Array<Object>,
   isRentInfoComplete: boolean,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
   params: Object,
   receiveFormValidFlags: Function,
+  rentForPeriodMethods: Methods,
   setRentInfoComplete: Function,
+  setRentInfoCompletionStateMethods: Methods,
   setRentInfoUncomplete: Function,
   valid: boolean,
 }
@@ -110,7 +133,7 @@ type State = {
   rentsData: Object,
 };
 
-class RentsEdit extends Component<Props, State> {
+class RentsEdit extends PureComponent<Props, State> {
   activeBasisOfRentsComponent: any
   archivedBasisOfRentsComponent: any
 
@@ -184,16 +207,20 @@ class RentsEdit extends Component<Props, State> {
   }
 
   render() {
-    const {isRentInfoComplete, isSaveClicked} = this.props;
+    const {
+      isRentInfoComplete,
+      isSaveClicked,
+      leaseAttributes,
+      rentForPeriodMethods,
+      setRentInfoCompletionStateMethods,
+    } = this.props;
     const {rentsData} = this.state;
     const rents = get(rentsData, 'rents', []),
       rentsArchived = get(rentsData, 'rentsArchived', []);
 
     return (
       <AppConsumer>
-        {({
-          dispatch,
-        }) => {
+        {({dispatch}) => {
           const handleSetRentInfoComplete = () => {
             dispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
@@ -222,68 +249,83 @@ class RentsEdit extends Component<Props, State> {
 
           return(
             <form>
-              <h2>Vuokra</h2>
-              <RightSubtitle
-                buttonComponent={isRentInfoComplete
-                  ? <Button
-                    className={ButtonColors.NEUTRAL}
-                    onClick={handleSetRentInfoUncomplete}
-                    text='Merkitse keskeneräisiksi'
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>
+                <h2>{LeaseRentsFieldTitles.RENTS}</h2>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
+                  <RightSubtitle
+                    buttonComponent={
+                      <Authorization allow={setRentInfoCompletionStateMethods.POST}>
+                        {isRentInfoComplete
+                          ? <Button
+                            className={ButtonColors.NEUTRAL}
+                            onClick={handleSetRentInfoUncomplete}
+                            text='Merkitse keskeneräisiksi'
+                          />
+                          : <Button
+                            className={ButtonColors.NEUTRAL}
+                            onClick={handleSetRentInfoComplete}
+                            text='Merkitse valmiiksi'
+                          />
+                        }
+                      </Authorization>
+                    }
+                    text={isRentInfoComplete
+                      ? <span className="success">Tiedot kunnossa<i /></span>
+                      : <span className="alert">Tiedot keskeneräiset<i /></span>
+                    }
                   />
-                  : <Button
-                    className={ButtonColors.NEUTRAL}
-                    onClick={handleSetRentInfoComplete}
-                    text='Merkitse valmiiksi'
-                  />
-                }
-                text={isRentInfoComplete
-                  ? <span className="success">Tiedot kunnossa<i /></span>
-                  : <span className="alert">Tiedot keskeneräiset<i /></span>
-                }
-              />
+                </Authorization>
+                <Divider />
 
-              <Divider />
-              <FieldArray
-                component={renderRents}
-                name='rents'
-                rents={rents}
-                showAddButton={true}
-              />
+                <FieldArray
+                  component={renderRents}
+                  name='rents'
+                  leaseAttributes={leaseAttributes}
+                  rents={rents}
+                  showAddButton={true}
+                />
 
-              {/* Archived rents */}
-              <FieldArray
-                component={renderRents}
-                name='rentsArchived'
-                rents={rentsArchived}
-                showAddButton={false}
-              />
+                {/* Archived rents */}
+                <FieldArray
+                  component={renderRents}
+                  name='rentsArchived'
+                  leaseAttributes={leaseAttributes}
+                  rents={rentsArchived}
+                  showAddButton={false}
+                />
+              </Authorization>
 
-              <h2>Vuokralaskelma</h2>
-              <Divider />
-              <GreenBox>
-                <RentCalculator />
-              </GreenBox>
+              <Authorization allow={rentForPeriodMethods.GET}>
+                <h2>Vuokralaskelma</h2>
+                <Divider />
+                <GreenBox>
+                  <RentCalculator />
+                </GreenBox>
+              </Authorization>
 
-              <h2>Vuokralaskuri</h2>
-              <Divider />
-              <FieldArray
-                ref={this.setActiveBasisOfRentsRef}
-                archived={false}
-                component={BasisOfRentsEdit}
-                isSaveClicked={isSaveClicked}
-                name="basis_of_rents"
-                onArchive={this.handleArchive}
-                withRef={true}
-              />
-              <FieldArray
-                ref={this.setArchivedBasisOfRentsRef}
-                archived={true}
-                component={BasisOfRentsEdit}
-                isSaveClicked={isSaveClicked}
-                name="basis_of_rents_archived"
-                onUnarchive={this.handleUnarchive}
-                withRef={true}
-              />
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+                <h2>{LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}</h2>
+                <Divider />
+                <FieldArray
+                  ref={this.setActiveBasisOfRentsRef}
+                  archived={false}
+                  component={BasisOfRentsEdit}
+                  isSaveClicked={isSaveClicked}
+                  name="basis_of_rents"
+                  onArchive={this.handleArchive}
+                  withRef={true}
+                />
+
+                <FieldArray
+                  ref={this.setArchivedBasisOfRentsRef}
+                  archived={true}
+                  component={BasisOfRentsEdit}
+                  isSaveClicked={isSaveClicked}
+                  name="basis_of_rents_archived"
+                  onUnarchive={this.handleUnarchive}
+                  withRef={true}
+                />
+              </Authorization>
             </form>
           );
         }}
@@ -302,13 +344,15 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
 
       return {
-        attributes: getAttributes(state),
         currentLease: currentLease,
         editedActiveBasisOfRents: selector(state, 'basis_of_rents'),
         editedArchivedBasisOfRents: selector(state, 'basis_of_rents_archived'),
         errors: getErrorsByFormName(state, formName),
         isRentInfoComplete: currentLease ? currentLease.is_rent_info_complete : null,
         isSaveClicked: getIsSaveClicked(state),
+        leaseAttributes: getLeaseAttributes(state),
+        rentForPeriodMethods: getRentForPeriodMethods(state),
+        setRentInfoCompletionStateMethods: getSetRentInfoCompletionStateMethods(state),
       };
     },
     {

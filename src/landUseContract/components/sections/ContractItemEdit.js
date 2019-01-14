@@ -15,8 +15,9 @@ import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
 import {getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
-import type {Attributes} from '$src/landUseContract/types';
 import {referenceNumber} from '$components/form/validations';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

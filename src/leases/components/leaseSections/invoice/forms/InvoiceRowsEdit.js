@@ -1,28 +1,32 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
+import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {ButtonColors} from '$components/enums';
+import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
+import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired} from '$util/helpers';
+import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
-  attributes: InvoiceAttributes,
   fields: any,
+  invoiceAttributes: Attributes,
   isEditClicked: boolean,
   tenantOptions: Array<Object>,
 }
 
-const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Props): Element<*> => {
+const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOptions}: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -31,28 +35,25 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
-            <SubTitle>Erittely</SubTitle>
+          <Fragment>
+            <SubTitle>{InvoiceRowsFieldTitles.ROWS}</SubTitle>
             {!!fields && !!fields.length &&
-              <div>
+              <Fragment>
                 <Row>
                   <Column small={3} large={3}>
-                    <FormTextTitle
-                      required={get(attributes, 'rows.child.children.tenant.required')}
-                      title='Vuokralainen'
-                    />
+                    <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
+                      {InvoiceRowsFieldTitles.TENANT}
+                    </FormTextTitle>
                   </Column>
                   <Column small={3} large={3}>
-                    <FormTextTitle
-                      required={get(attributes, 'rows.child.children.receivable_type.required')}
-                      title='Saamislaji'
-                    />
+                    <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                      {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
+                    </FormTextTitle>
                   </Column>
                   <Column small={3} large={3}>
-                    <FormTextTitle
-                      required={get(attributes, 'rows.child.children.amount.required')}
-                      title='Määrä (alviton)'
-                    />
+                    <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                      {InvoiceRowsFieldTitles.AMOUNT}
+                    </FormTextTitle>
                   </Column>
                 </Row>
                 {fields.map((row, index) => {
@@ -72,60 +73,80 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
                   return (
                     <Row key={index}>
                       <Column small={3} large={3}>
-                        <FormField
-                          disableTouched={isEditClicked}
-                          fieldAttributes={get(attributes, 'rows.child.children.tenant')}
-                          invisibleLabel
-                          name={`${row}.tenant`}
-                          overrideValues={{
-                            options: tenantOptions,
-                          }}
-                        />
+                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
+                          <FormField
+                            disableTouched={isEditClicked}
+                            fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}
+                            invisibleLabel
+                            name={`${row}.tenant`}
+                            overrideValues={{
+                              label: InvoiceRowsFieldTitles.TENANT,
+                              options: tenantOptions,
+                            }}
+                          />
+                        </Authorization>
                       </Column>
                       <Column small={3} large={3}>
-                        <FormField
-                          disableTouched={isEditClicked}
-                          fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
-                          invisibleLabel
-                          name={`${row}.receivable_type`}
-                        />
+                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                          <FormField
+                            disableTouched={isEditClicked}
+                            fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
+                            invisibleLabel
+                            name={`${row}.receivable_type`}
+                            overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
+                          />
+                        </Authorization>
                       </Column>
                       <Column small={2} large={3}>
-                        <FormField
-                          disableTouched={isEditClicked}
-                          fieldAttributes={get(attributes, 'rows.child.children.amount')}
-                          invisibleLabel
-                          name={`${row}.amount`}
-                          unit='€'
-                        />
+                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                          <FormField
+                            disableTouched={isEditClicked}
+                            fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
+                            invisibleLabel
+                            name={`${row}.amount`}
+                            unit='€'
+                            overrideValues={{label: InvoiceRowsFieldTitles.AMOUNT}}
+                          />
+                        </Authorization>
                       </Column>
                       <Column small={1} large={2}>
-                        {fields.length > 1 &&
-                          <RemoveButton
-                            className='third-level'
-                            onClick={handleRemove}
-                            title="Poista rivi"
-                          />
-                        }
+                        <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
+                          {fields.length > 1 &&
+                            <RemoveButton
+                              className='third-level'
+                              onClick={handleRemove}
+                              title="Poista rivi"
+                            />
+                          }
+                        </Authorization>
                       </Column>
                     </Row>
                   );
                 })}
-              </div>
+              </Fragment>
             }
-            <Row>
-              <Column>
-                <AddButtonThird
-                  label='Lisää rivi'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
+
+            <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
+              <Row>
+                <Column>
+                  <AddButtonThird
+                    label='Lisää rivi'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          </Fragment>
         );
       }}
     </AppConsumer>
   );
 };
 
-export default InvoiceRowsEdit;
+export default connect(
+  (state) => {
+    return {
+      invoiceAttributes: getInvoiceAttributes(state),
+    };
+  }
+)(InvoiceRowsEdit);

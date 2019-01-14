@@ -1,23 +1,27 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash/isEmpty';
 
 import DecisionItem from './DecisionItem';
 import FormText from '$components/form/FormText';
+import {LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths} from '$src/leases/enums';
 import {getContentDecisions} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
 }
 
+
 type State = {
+  attributes: Attributes,
   conditionTypeOptions: Array<Object>,
+  currentLease: Lease,
   decisionMakerOptions: Array<Object>,
   decisions: Array<Object>,
   typeOptions: Array<Object>,
@@ -25,47 +29,30 @@ type State = {
 
 class Decisions extends PureComponent<Props, State> {
   state = {
+    attributes: {},
     conditionTypeOptions: [],
+    currentLease: {},
     decisionMakerOptions: [],
     decisions: [],
     typeOptions: [],
   }
 
-  componentDidMount() {
-    const {attributes, currentLease} = this.props;
-    if(!isEmpty(attributes)) {
-      this.updateOptions();
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.attributes !== state.attributes) {
+      newState.attributes = props.attributes;
+      newState.conditionTypeOptions = getFieldOptions(props.attributes, LeaseDecisionConditionsFieldPaths.TYPE);
+      newState.decisionMakerOptions = getFieldOptions(props.attributes, LeaseDecisionsFieldPaths.DECISION_MAKER);
+      newState.typeOptions = getFieldOptions(props.attributes, LeaseDecisionsFieldPaths.TYPE);
     }
 
-    if(!isEmpty(currentLease)) {
-      this.updateContent();
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if(prevProps.attributes !== this.props.attributes) {
-      this.updateOptions();
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.decisions = getContentDecisions(props.currentLease);
     }
 
-    if(prevProps.currentLease !== this.props.currentLease) {
-      this.updateContent();
-    }
-  }
-
-  updateContent = () => {
-    const {currentLease} = this.props;
-    this.setState({
-      decisions: getContentDecisions(currentLease),
-    });
-  }
-
-  updateOptions = () => {
-    const {attributes} = this.props;
-    this.setState({
-      conditionTypeOptions: getAttributeFieldOptions(attributes, 'decisions.child.children.conditions.child.children.type'),
-      decisionMakerOptions: getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker'),
-      typeOptions: getAttributeFieldOptions(attributes, 'decisions.child.children.type'),
-    });
+    return newState;
   }
 
   render() {
@@ -77,7 +64,7 @@ class Decisions extends PureComponent<Props, State> {
     } = this.state;
 
     return (
-      <div>
+      <Fragment>
         {!decisions || !decisions.length && <FormText className='no-margin'>Ei päätöksiä</FormText>}
         {decisions && !!decisions.length && decisions.map((decision) =>
           <DecisionItem
@@ -88,7 +75,7 @@ class Decisions extends PureComponent<Props, State> {
             typeOptions={typeOptions}
           />
         )}
-      </div>
+      </Fragment>
     );
   }
 }

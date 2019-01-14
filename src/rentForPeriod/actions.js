@@ -1,7 +1,12 @@
 // @flow
 import {createAction} from 'redux-actions';
 
+import type {Attributes, Methods} from '$src/types';
 import type {
+  FetchAttributesAction,
+  ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  AttributesNotFoundAction,
   RentForPeriodOptions,
   RentForPeriodDeleteOptions,
   RentForPeriod,
@@ -11,6 +16,18 @@ import type {
   ReceiveIsSaveClickedAction,
   RentForPeriodNotFoundAction,
 } from './types';
+
+export const fetchAttributes = (): FetchAttributesAction =>
+  createAction('mvj/rentforperiod/FETCH_ATTRIBUTES')();
+
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/rentforperiod/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/rentforperiod/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): AttributesNotFoundAction =>
+  createAction('mvj/rentforperiod/ATTRIBUTES_NOT_FOUND')();
 
 export const fetchRentForPeriodByLease = (payload: RentForPeriodOptions): FetchRentForPeriodAction =>
   createAction('mvj/rentforperiod/FETCH_ALL')(payload);

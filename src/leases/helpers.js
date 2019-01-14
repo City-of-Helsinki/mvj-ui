@@ -334,6 +334,10 @@ export const getContentLeaseAreaItem = (area: Object) => {
 export const getContentLeaseAreas = (lease: Object) =>
   get(lease, 'lease_areas', []).map((area) => getContentLeaseAreaItem(area));
 
+
+export const getLeaseAreaById = (lease: Lease, id: ?number) =>
+  id ? getContentLeaseAreas(lease).find((area) => area.id === id) : null;
+
 export const getContentComments = (content: Array<Object>): Array<Object> => {
   if(!content || !content.length) {return [];}
 
@@ -697,11 +701,16 @@ export const getFullAddress = (item: Object) => {
     ${item.postal_code || ''} ${item.city || ''}`;
 };
 
-export const getInvoiceRecipientOptions = (lease: Object) =>{
+export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTenants: boolean) =>{
   const items = getContentTenants(lease);
+  const recipients = [];
 
-  return [{value: RecipientOptions.ALL, label: 'Kaikki'},
-    ...items
+  if(addAll) {
+    recipients.push({value: RecipientOptions.ALL, label: 'Kaikki'});
+  }
+
+  if(addTenants) {
+    recipients.push(...items
       .filter((item) => isTenantActive(item.tenant))
       .map((item) => {
         return {
@@ -709,8 +718,11 @@ export const getInvoiceRecipientOptions = (lease: Object) =>{
           label: getContactFullName(get(item, 'tenant.contact')),
         };
       })
-      .sort((a, b) => sortStringByKeyAsc(a, b, 'label')),
-  ];
+      .sort((a, b) => sortStringByKeyAsc(a, b, 'label')));
+  }
+
+  return recipients;
+
 };
 
 export const getInvoiceTenantOptions = (lease: Object) =>{

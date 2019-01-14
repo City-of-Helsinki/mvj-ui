@@ -4,30 +4,31 @@ import {connect} from 'react-redux';
 import {change, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {ButtonColors} from '$components/enums';
-import {Classification, FormNames} from '$src/leases/enums';
-import {filterSelectOptionByLabel} from '$components/form/filter';
+import {Classification, FormNames, LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
+import {filterOptionsByLabel} from '$components/form/filter';
 import {getDistrictOptions} from '$src/district/helpers';
+import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 
+import type {Attributes} from '$src/types';
 import type {DistrictList} from '$src/district/types';
 
-import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  attributes: Attributes,
   change: Function,
   district: string,
   districts: DistrictList,
   fetchDistrictsByMunicipality: Function,
   handleSubmit: Function,
+  leaseAttributes: Attributes,
   municipality: string,
   note: string,
   onClose: Function,
@@ -89,9 +90,9 @@ class CreateLeaseForm extends Component<Props> {
 
   render() {
     const {
-      attributes,
       districts,
       handleSubmit,
+      leaseAttributes,
       onClose,
       valid,
     } = this.props;
@@ -102,68 +103,75 @@ class CreateLeaseForm extends Component<Props> {
       <form onSubmit={handleSubmit}>
         <Row>
           <Column small={4} medium={3}>
-            <FormField
-              fieldAttributes={get(attributes, 'state')}
-              name='state'
-              setRefForField={this.setRefForFirstField}
-              overrideValues={{
-                label: 'Tyyppi',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.STATE)}>
+              <FormField
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.STATE)}
+                name='state'
+                setRefForField={this.setRefForFirstField}
+                overrideValues={{label: LeaseFieldTitles.STATE}}
+              />
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={4} medium={3}>
-            <FormField
-              fieldAttributes={get(attributes, 'type')}
-              name={'type'}
-              overrideValues={{
-                label: 'Vuokrauksen laji',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.TYPE)}>
+              <FormField
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.TYPE)}
+                name='type'
+                setRefForField={this.setRefForFirstField}
+                overrideValues={{label: LeaseFieldTitles.TYPE}}
+              />
+            </Authorization>
           </Column>
           <Column small={4} medium={3}>
-            <FormField
-              fieldAttributes={get(attributes, 'municipality')}
-              filterOption={filterSelectOptionByLabel}
-              name='municipality'
-              overrideValues={{
-                label: 'Kunta',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.MUNICIPALITY)}>
+              <FormField
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.MUNICIPALITY)}
+                name='municipality'
+                setRefForField={this.setRefForFirstField}
+                overrideValues={{label: LeaseFieldTitles.MUNICIPALITY}}
+              />
+            </Authorization>
           </Column>
           <Column small={4} medium={3}>
-            <FormField
-              fieldAttributes={get(attributes, 'district')}
-              filterOption={filterSelectOptionByLabel}
-              name='district'
-              overrideValues={{
-                label: 'Kaupunginosa',
-                options: districtOptions,
-              }}
-            />
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.DISTRICT)}>
+              <FormField
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.DISTRICT)}
+                filterOption={filterOptionsByLabel}
+                name='district'
+                setRefForField={this.setRefForFirstField}
+                overrideValues={{
+                  label: LeaseFieldTitles.DISTRICT,
+                  options: districtOptions,
+                }}
+              />
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={4} medium={3}>
-            <FormField
-              fieldAttributes={get(attributes, 'reference_number')}
-              name='reference_number'
-              overrideValues={{
-                label: 'Diaarinumero',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.REFERENCE_NUMBER)}>
+              <FormField
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.REFERENCE_NUMBER)}
+                name='reference_number'
+                setRefForField={this.setRefForFirstField}
+                overrideValues={{label: LeaseFieldTitles.REFERENCE_NUMBER}}
+              />
+            </Authorization>
           </Column>
           <Column small={8} medium={6}>
-            <FormField
-              fieldAttributes={get(attributes, 'note')}
-              name='note'
-              overrideValues={{
-                label: 'Huomautus',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.NOTE)}>
+              <FormField
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.NOTE)}
+                name='note'
+                setRefForField={this.setRefForFirstField}
+                overrideValues={{label: LeaseFieldTitles.NOTE}}
+              />
+            </Authorization>
           </Column>
         </Row>
+
         <ModalButtonWrapper>
           <Button
             className={ButtonColors.SECONDARY}
@@ -190,9 +198,9 @@ export default flowRight(
     (state) => {
       const municipality = selector(state, 'municipality');
       return {
-        attributes: getAttributes(state),
         district: selector(state, 'district'),
         districts: getDistrictsByMunicipality(state, municipality),
+        leaseAttributes: getLeaseAttributes(state),
         municipality: municipality,
         note: selector(state, 'note'),
         reference_number: selector(state, 'reference_number'),

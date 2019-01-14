@@ -5,7 +5,6 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   DistrictListMap,
-  DistrictState,
   ReceiveDistrictsByMunicipalityAction,
 } from './types';
 
@@ -17,7 +16,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 
 
 const byMunicipalityReducer: Reducer<DistrictListMap> = handleActions({
-  ['mvj/district/RECEIVE_BY_MUNICIPALITY']: (state: DistrictState, {payload: list}: ReceiveDistrictsByMunicipalityAction) => {
+  ['mvj/district/RECEIVE_BY_MUNICIPALITY']: (state: DistrictListMap, {payload: list}: ReceiveDistrictsByMunicipalityAction) => {
     return {
       ...state,
       [list.municipality]: list.districts,

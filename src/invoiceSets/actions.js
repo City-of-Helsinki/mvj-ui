@@ -6,15 +6,14 @@ import type {
   FetchInvoiceSetsByLeaseAction,
   ReceiveInvoiceSetsByLeaseAction,
   CreditInvoiceSetAction,
-  InvoiceSetListMap,
   InvoiceSetsNotFoundAction,
 } from './types';
 
 export const fetchInvoiceSetsByLease = (leaseId: LeaseId): FetchInvoiceSetsByLeaseAction =>
   createAction('mvj/invoiceSets/FETCH_BY_LEASE')(leaseId);
 
-export const receiveInvoiceSetsByLease = (invoiceSets: InvoiceSetListMap): ReceiveInvoiceSetsByLeaseAction =>
-  createAction('mvj/invoiceSets/RECEIVE_BY_LEASE')(invoiceSets);
+export const receiveInvoiceSetsByLease = (payload: Object): ReceiveInvoiceSetsByLeaseAction =>
+  createAction('mvj/invoiceSets/RECEIVE_BY_LEASE')(payload);
 
 export const creditInvoiceSet = (invoiceset: Object): CreditInvoiceSetAction =>
   createAction('mvj/invoiceSets/CREDIT_INVOICESET')(invoiceset);

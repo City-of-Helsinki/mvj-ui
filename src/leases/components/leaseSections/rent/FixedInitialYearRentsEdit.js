@@ -1,13 +1,13 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
@@ -16,20 +16,31 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
 import {Breakpoints} from '$src/foundation/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
-import {getAttributes} from '$src/leases/selectors';
+import {
+  DeleteModalLabels,
+  DeleteModalTitles,
+  LeaseRentFixedInitialYearRentsFieldPaths,
+  LeaseRentFixedInitialYearRentsFieldTitles,
+} from '$src/leases/enums';
+import {
+  getFieldAttributes,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+  isFieldRequired,
+} from '$util/helpers';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
-  attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
   largeScreen: boolean,
+  leaseAttributes: Attributes,
 }
 
-const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScreen}: Props) => {
+const FixedInitialYearRentsEdit = ({fields, isSaveClicked, largeScreen, leaseAttributes}: Props) => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -37,21 +48,37 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
+          <Fragment>
             <BoxItemContainer>
               {fields && !!fields.length && largeScreen &&
                 <Row>
                   <Column large={2}>
-                    <FormTextTitle title='Käyttötarkoitus' />
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
+                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
+                        {LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}
+                      </FormTextTitle>
+                    </Authorization>
                   </Column>
                   <Column large={2}>
-                    <FormTextTitle title='Kiinteä alkuvuosivuokra' />
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
+                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
+                        {LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}
+                      </FormTextTitle>
+                    </Authorization>
                   </Column>
                   <Column large={1}>
-                    <FormTextTitle title='Alkupvm' />
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
+                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
+                        {LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}
+                      </FormTextTitle>
+                    </Authorization>
                   </Column>
                   <Column large={1}>
-                    <FormTextTitle title='Loppupvm' />
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
+                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
+                        {LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}
+                      </FormTextTitle>
+                    </Authorization>
                   </Column>
                 </Row>
               }
@@ -73,48 +100,58 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                   return (
                     <Row key={index}>
                       <Column large={2}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
-                          invisibleLabel={largeScreen}
-                          name={`${rent}.intended_use`}
-                          overrideValues={{label: 'Käyttötarkoitus'}}
-                        />
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}
+                            invisibleLabel={true}
+                            name={`${rent}.intended_use`}
+                            overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}}
+                          />
+                        </Authorization>
                       </Column>
                       <Column large={2}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
-                          invisibleLabel={largeScreen}
-                          name={`${rent}.amount`}
-                          unit='€'
-                          overrideValues={{label: 'Kiinteä alkuvuosivuokra'}}
-                        />
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}
+                            invisibleLabel={true}
+                            name={`${rent}.amount`}
+                            unit='€'
+                            overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}}
+                          />
+                        </Authorization>
                       </Column>
                       <Column large={1}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
-                          invisibleLabel={largeScreen}
-                          name={`${rent}.start_date`}
-                          overrideValues={{label: 'Alkupvm'}}
-                        />
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}
+                            invisibleLabel={true}
+                            name={`${rent}.start_date`}
+                            overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}}
+                          />
+                        </Authorization>
                       </Column>
-                      <Column  large={1}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
-                          invisibleLabel={largeScreen}
-                          name={`${rent}.end_date`}
-                          overrideValues={{label: 'Loppupvm'}}
-                        />
+                      <Column large={1}>
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}
+                            invisibleLabel={true}
+                            name={`${rent}.end_date`}
+                            overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}}
+                          />
+                        </Authorization>
                       </Column>
                       <Column>
-                        <RemoveButton
-                          className='third-level'
-                          onClick={handleRemove}
-                          title="Poista alennus/korotus"
-                        />
+                        <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
+                          <RemoveButton
+                            className='third-level'
+                            onClick={handleRemove}
+                            title="Poista alennus/korotus"
+                          />
+                        </Authorization>
                       </Column>
                     </Row>
                   );
@@ -123,50 +160,55 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                     <BoxItem key={index}>
                       <BoxContentWrapper>
                         <ActionButtonWrapper>
-                          <RemoveButton
-                            hideFor={Breakpoints.LARGE}
-                            onClick={handleRemove}
-                            title="Poista kiinteä alkuvuosivuokra"
-                          />
+                          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
+                            <RemoveButton
+                              hideFor={Breakpoints.LARGE}
+                              onClick={handleRemove}
+                              title="Poista kiinteä alkuvuosivuokra"
+                            />
+                          </Authorization>
                         </ActionButtonWrapper>
                         <Row>
-                          <Column small={6} medium={3} large={2}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
-                              invisibleLabel={largeScreen}
-                              name={`${rent}.intended_use`}
-                              overrideValues={{label: 'Käyttötarkoitus'}}
-                            />
+                          <Column small={6} medium={3}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}
+                                name={`${rent}.intended_use`}
+                                overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}}
+                              />
+                            </Authorization>
                           </Column>
-                          <Column small={6} medium={3} large={2}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
-                              invisibleLabel={largeScreen}
-                              name={`${rent}.amount`}
-                              unit='€'
-                              overrideValues={{label: 'Kiinteä alkuvuosivuokra'}}
-                            />
+                          <Column small={6} medium={3}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}
+                                name={`${rent}.amount`}
+                                unit='€'
+                                overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}}
+                              />
+                            </Authorization>
                           </Column>
-                          <Column small={6} medium={3} large={1}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
-                              invisibleLabel={largeScreen}
-                              name={`${rent}.start_date`}
-                              overrideValues={{label: 'Alkupvm'}}
-                            />
+                          <Column small={6} medium={3}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}
+                                name={`${rent}.start_date`}
+                                overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}}
+                              />
+                            </Authorization>
                           </Column>
-
-                          <Column  small={6} medium={3} large={1}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
-                              invisibleLabel={largeScreen}
-                              name={`${rent}.end_date`}
-                              overrideValues={{label: 'Loppupvm'}}
-                            />
+                          <Column small={6} medium={3}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}
+                                name={`${rent}.end_date`}
+                                overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}}
+                              />
+                            </Authorization>
                           </Column>
                         </Row>
                       </BoxContentWrapper>
@@ -175,16 +217,19 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                 }
               })}
             </BoxItemContainer>
-            <Row>
-              <Column>
-                <AddButtonSecondary
-                  className={(!fields || !fields.length) ? 'no-top-margin' : ''}
-                  label='Lisää kiinteä alkuvuosivuokra'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
+
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
+              <Row>
+                <Column>
+                  <AddButtonSecondary
+                    className={(!fields || !fields.length) ? 'no-top-margin' : ''}
+                    label='Lisää kiinteä alkuvuosivuokra'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -196,7 +241,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        attributes: getAttributes(state),
+        leaseAttributes: getLeaseAttributes(state),
       };
     },
   ),

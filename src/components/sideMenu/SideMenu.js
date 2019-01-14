@@ -5,15 +5,27 @@ import ReactDOM from 'react-dom';
 import {Link} from 'react-router';
 import classnames from 'classnames';
 
+import Authorization from '$components/authorization/Authorization';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {CancelChangesModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 import {getRouteById} from '$src/root/routes';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+
+import type {Methods} from '$src/types';
 
 type Props = {
+  areaNoteMethods: Methods,
+  contactMethods: Methods,
+  infillDevelopmentMethods: Methods,
+  isFetchingCommonAttributes: boolean,
   isOpen: boolean,
+  leaseMethods: Methods,
   onLinkClick: Function,
+  rentBasisMethods: Methods,
 }
 
 type State = {
@@ -37,9 +49,11 @@ class SideMenu extends Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
       const linkNode: any = ReactDOM.findDOMNode(this.firstLink);
+
       this.setState({
         isOpening: true,
       });
+
       if(linkNode) {
         linkNode.focus();
       }
@@ -75,14 +89,24 @@ class SideMenu extends Component<Props, State> {
 
   getSideMenuWidth = () => {
     const menuButton = document.getElementsByClassName('top-navigation__title_button');
+
     if(menuButton.length) {
       return menuButton[0].clientWidth;
     }
+
     return null;
   }
 
   render() {
-    const {isOpen} = this.props;
+    const {
+      areaNoteMethods,
+      contactMethods,
+      infillDevelopmentMethods,
+      isFetchingCommonAttributes,
+      isOpen,
+      leaseMethods,
+      rentBasisMethods,
+    } = this.props;
     const {isClosing, isOpening} = this.state;
     const width =  this.getSideMenuWidth();
 
@@ -117,14 +141,27 @@ class SideMenu extends Component<Props, State> {
 
           return(
             <div ref={this.setComponentRef} className={classnames('side-menu', {'is-menu-open': isOpen})} style={{width: width}}>
-              <ul hidden={!isOpen && !isClosing && !isOpening}>
-                <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById('leases')}>Vuokraukset</Link></li>
-                <li><Link onClick={handleClick} to={getRouteById('contacts')}>Asiakkaat</Link></li>
-                <li><Link onClick={handleClick} to={getRouteById('landUseContract')}>Maankäyttösopimukset</Link></li>
-                <li><Link onClick={handleClick} to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
-                <li><Link onClick={handleClick} to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
-                <li><Link onClick={handleClick} to={getRouteById('rentBasis')}>Vuokrausperusteet</Link></li>
-              </ul>
+              {isFetchingCommonAttributes && <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>}
+              {!isFetchingCommonAttributes &&
+                <ul hidden={!isOpen && !isClosing && !isOpening}>
+                  <Authorization allow={leaseMethods.GET}>
+                    <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById('leases')}>Vuokraukset</Link></li>
+                  </Authorization>
+                  <Authorization allow={contactMethods.GET}>
+                    <li><Link onClick={handleClick} to={getRouteById('contacts')}>Asiakkaat</Link></li>
+                  </Authorization>
+                  <li><Link onClick={handleClick} to={getRouteById('landUseContract')}>Maankäyttösopimukset</Link></li>
+                  <Authorization allow={areaNoteMethods.GET}>
+                    <li><Link onClick={handleClick} to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
+                  </Authorization>
+                  <Authorization allow={infillDevelopmentMethods.GET}>
+                    <li><Link onClick={handleClick} to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
+                  </Authorization>
+                  <Authorization allow={rentBasisMethods.GET}>
+                    <li><Link onClick={handleClick} to={getRouteById('rentBasis')}>Vuokrausperusteet</Link></li>
+                  </Authorization>
+                </ul>
+              }
             </div>
           );
         }}
@@ -133,4 +170,4 @@ class SideMenu extends Component<Props, State> {
   }
 }
 
-export default SideMenu;
+export default withCommonAttributes(SideMenu);

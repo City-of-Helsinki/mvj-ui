@@ -1,8 +1,8 @@
 //@flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {change, FieldArray, formValueSelector, getFormValues} from 'redux-form';
+import {change, FieldArray, formValueSelector} from 'redux-form';
 import {Link, withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -12,32 +12,45 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
+import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import PlanUnitItemEdit from './PlanUnitItemEdit';
 import PlotItemEdit from './PlotItemEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {store} from '$src/root/startApp';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
-import {getContentPlanUnits, getContentPlots} from '$src/leases/helpers';
-import {getSearchQuery} from '$util/helpers';
+import {
+  DeleteModalLabels,
+  DeleteModalTitles,
+  FormNames,
+  LeaseAreaAddressesFieldPaths,
+  LeaseAreaAddressesFieldTitles,
+  LeaseAreasFieldPaths,
+  LeaseAreasFieldTitles,
+  LeasePlanUnitsFieldPaths,
+  LeasePlotsFieldPaths,
+} from '$src/leases/enums';
+import {
+  getFieldAttributes,
+  getSearchQuery,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+  isFieldRequired,
+} from '$util/helpers';
 import {
   getAttributes,
   getCollapseStateByKey,
-  getCurrentLease,
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type PlanUnitsProps = {
   attributes: Attributes,
@@ -81,7 +94,7 @@ const renderPlanUnits = ({
             className='collapse__secondary'
             defaultOpen={collapseState !== undefined ? collapseState : true}
             hasErrors={isSaveClicked && !isEmpty(planUnitErrors)}
-            headerTitle={<CollapseHeaderTitle>{title}</CollapseHeaderTitle>}
+            headerTitle={title}
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>
@@ -101,22 +114,24 @@ const renderPlanUnits = ({
 
                 return <PlanUnitItemEdit
                   key={index}
-                  attributes={attributes}
                   field={planunit}
                   isSaveClicked={isSaveClicked}
                   onRemove={handleRemove}
                 />;
               })}
             </BoxItemContainer>
-            <Row>
-              <Column>
-                <AddButtonSecondary
-                  className={!fields.length ? 'no-top-margin' : ''}
-                  label={buttonTitle}
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
+
+            <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+              <Row>
+                <Column>
+                  <AddButtonSecondary
+                    className={!fields.length ? 'no-top-margin' : ''}
+                    label={buttonTitle}
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
           </Collapse>
         );
       }}
@@ -125,6 +140,7 @@ const renderPlanUnits = ({
 };
 
 type PlotsProps = {
+  attributes: Attributes,
   buttonTitle: string,
   collapseState: boolean,
   errors: ?Object,
@@ -136,6 +152,7 @@ type PlotsProps = {
 }
 
 const renderPlots = ({
+  attributes,
   buttonTitle,
   collapseState,
   errors,
@@ -166,7 +183,7 @@ const renderPlots = ({
             className='collapse__secondary'
             defaultOpen={collapseState !== undefined ? collapseState : true}
             hasErrors={isSaveClicked && !isEmpty(plotErrors)}
-            headerTitle={<CollapseHeaderTitle>{title}</CollapseHeaderTitle>}
+            headerTitle={title}
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>
@@ -193,15 +210,18 @@ const renderPlots = ({
                 />;
               })}
             </BoxItemContainer>
-            <Row>
-              <Column>
-                <AddButtonSecondary
-                  className={!fields.length ? 'no-top-margin' : ''}
-                  label={buttonTitle}
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
+
+            <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS)}>
+              <Row>
+                <Column>
+                  <AddButtonSecondary
+                    className={!fields.length ? 'no-top-margin' : ''}
+                    label={buttonTitle}
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
           </Collapse>
         );
       }}
@@ -232,39 +252,47 @@ const Address = ({
   return(
     <Row>
       <Column small={6} large={4}>
-        <FormField
-          disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
-          invisibleLabel
-          name={`${field}.address`}
-          valueSelectedCallback={handleAddressChange}
-          overrideValues={{
-            fieldType: 'address',
-          }}
-        />
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
+          <FormField
+            disableTouched={isSaveClicked}
+            fieldAttributes={getFieldAttributes(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}
+            invisibleLabel
+            name={`${field}.address`}
+            valueSelectedCallback={handleAddressChange}
+            overrideValues={{fieldType: 'address', label: LeaseAreaAddressesFieldTitles.ADDRESS}}
+          />
+        </Authorization>
       </Column>
       <Column small={3} large={2}>
-        <FormField
-          disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
-          invisibleLabel
-          name={`${field}.postal_code`}
-        />
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+          <FormField
+            disableTouched={isSaveClicked}
+            fieldAttributes={getFieldAttributes(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}
+            invisibleLabel
+            name={`${field}.postal_code`}
+            overrideValues={{label: LeaseAreaAddressesFieldTitles.POSTAL_CODE}}
+          />
+        </Authorization>
       </Column>
       <Column small={2} large={2}>
-        <FormField
-          disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
-          invisibleLabel
-          name={`${field}.city`}
-        />
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
+          <FormField
+            disableTouched={isSaveClicked}
+            fieldAttributes={getFieldAttributes(attributes, LeaseAreaAddressesFieldPaths.CITY)}
+            invisibleLabel
+            name={`${field}.city`}
+            overrideValues={{label: LeaseAreaAddressesFieldTitles.CITY}}
+          />
+        </Authorization>
       </Column>
       <Column small={1}>
-        <RemoveButton
-          className='third-level'
-          onClick={onRemove}
-          title="Poista osoite"
-        />
+        <Authorization allow={isFieldAllowedToEdit(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+          <RemoveButton
+            className='third-level'
+            onClick={onRemove}
+            title="Poista osoite"
+          />
+        </Authorization>
       </Column>
     </Row>
   );
@@ -278,24 +306,38 @@ type AddressesProps = {
 }
 
 const AddressItems = ({attributes, change, fields, isSaveClicked}: AddressesProps): Element<*> => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => {
+    fields.push({});
+  };
 
   return (
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
-            <SubTitle>Osoite</SubTitle>
+          <Fragment>
+            <SubTitle>{LeaseAreaAddressesFieldTitles.ADDRESSES}</SubTitle>
             {fields && !!fields.length &&
               <Row>
                 <Column small={6} large={4}>
-                  <FormTextTitle required title='Osoite' />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
+                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
+                      {LeaseAreaAddressesFieldTitles.ADDRESS}
+                    </FormTextTitle>
+                  </Authorization>
                 </Column>
                 <Column small={3} large={2}>
-                  <FormTextTitle title='Postinumero' />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+                      {LeaseAreaAddressesFieldTitles.POSTAL_CODE}
+                    </FormTextTitle>
+                  </Authorization>
                 </Column>
                 <Column small={3} large={2}>
-                  <FormTextTitle title='Kaupunki' />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
+                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
+                      {LeaseAreaAddressesFieldTitles.CITY}
+                    </FormTextTitle>
+                  </Authorization>
                 </Column>
               </Row>
             }
@@ -324,15 +366,18 @@ const AddressItems = ({attributes, change, fields, isSaveClicked}: AddressesProp
                 />
               );
             })}
-            <Row>
-              <Column>
-                <AddButtonThird
-                  label='Lisää osoite'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
+
+            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+              <Row>
+                <Column>
+                  <AddButtonThird
+                    label='Lisää osoite'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -343,7 +388,6 @@ type Props = {
   areaId: number,
   attributes: Attributes,
   change: Function,
-  currentLease: Lease,
   errors: ?Object,
   field: string,
   geometry: ?Object,
@@ -358,31 +402,6 @@ type Props = {
 }
 
 class LeaseAreaEdit extends PureComponent<Props> {
-  componentDidUpdate(prevProps: Props) {
-    if(prevProps.currentLease !== this.props.currentLease) {
-      const {change, currentLease} = this.props;
-      const formValues = getFormValues(formName)(store.getState());
-      const leaseAreasActive = formValues.lease_areas_active;
-      const leaseAreasArchived = formValues.lease_areas_archived;
-
-      const getFormatedLeaseArea = (area: Object) => {
-        if(area.id) {
-          const savedArea = get(currentLease, 'lease_areas', []).find((savedArea) => savedArea.id === area.id);
-          const contractPlots = getContentPlots(savedArea.plots, true);
-          const contractPlanUnits = getContentPlanUnits(savedArea.plan_units, true);
-          return {...area, plan_units_contract: contractPlanUnits, plots_contract: contractPlots};
-        }
-        return {...area, plan_units_contract: [], plots_contract: []};
-      };
-
-      const editedLeaseAreasActive = leaseAreasActive.map((area) => getFormatedLeaseArea(area));
-      const editedLeaseAreasArchived = leaseAreasArchived.map((area) => getFormatedLeaseArea(area));
-
-      change(formName, 'lease_areas_active', editedLeaseAreasActive);
-      change(formName, 'lease_areas_archived', editedLeaseAreasArchived);
-    }
-  }
-
   handlePlanUnitContractCollapseToggle = (val: boolean) => {
     const {areaId, receiveCollapseStates} = this.props;
 
@@ -479,121 +498,133 @@ class LeaseAreaEdit extends PureComponent<Props> {
     const mapLinkUrl = this.getMapLinkUrl();
 
     return (
-      <div>
+      <Fragment>
         <BoxContentWrapper>
           <Row>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'lease_areas.child.children.identifier')}
-                name={`${field}.identifier`}
-                overrideValues={{
-                  label: 'Kohteen tunnus',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.IDENTIFIER)}
+                  name={`${field}.identifier`}
+                  overrideValues={{label: LeaseAreasFieldTitles.IDENTIFIER}}
+                />
+              </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'lease_areas.child.children.type')}
-                name={`${field}.type`}
-                overrideValues={{
-                  label: 'Määritelmä',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.TYPE)}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.TYPE)}
+                  name={`${field}.type`}
+                  overrideValues={{label: LeaseAreasFieldTitles.TYPE}}
+                />
+              </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'lease_areas.child.children.area')}
-                name={`${field}.area`}
-                unit='m²'
-                overrideValues={{
-                  label: 'Pinta-ala',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.AREA)}
+                  name={`${field}.area`}
+                  unit='m²'
+                  overrideValues={{label: LeaseAreasFieldTitles.AREA}}
+                />
+              </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'lease_areas.child.children.location')}
-                name={`${field}.location`}
-                overrideValues={{
-                  label: 'Sijainti',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LOCATION)}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.LOCATION)}
+                  name={`${field}.location`}
+                  overrideValues={{label: LeaseAreasFieldTitles.LOCATION}}
+                />
+              </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
-              {!isEmpty(geometry) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.GEOMETRY)}>
+                {!isEmpty(geometry) &&
+                  <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY}</Link>
+                }
+              </Authorization>
             </Column>
           </Row>
-
-          <FieldArray
-            attributes={attributes}
-            change={change}
-            component={AddressItems}
-            isSaveClicked={isSaveClicked}
-            name={`${field}.addresses`}
-          />
-
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+            <FieldArray
+              attributes={attributes}
+              change={change}
+              component={AddressItems}
+              isSaveClicked={isSaveClicked}
+              name={`${field}.addresses`}
+            />
+          </Authorization>
         </BoxContentWrapper>
-        <Row>
-          <Column small={12} large={6}>
-            <FieldArray
-              buttonTitle='Lisää kiinteistö/määräala'
-              collapseState={plotsContractCollapseState}
-              component={renderPlots}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plots_contract`}
-              onCollapseToggle={this.handlePlotsContractCollapseToggle}
-              plotsData={get(savedArea, 'plots_contract', [])}
-              title='Kiinteistöt / määräalat sopimuksessa'
-            />
-          </Column>
-          <Column small={12} large={6}>
-            <FieldArray
-              buttonTitle='Lisää kiinteistö/määräala'
-              collapseState={plotsCurrentCollapseState}
-              component={renderPlots}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plots_current`}
-              onCollapseToggle={this.handlePlotsCurrentCollapseToggle}
-              plotsData={get(savedArea, 'plots_current', [])}
-              title='Kiinteistöt / määräalat nykyhetkellä'
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column small={12} large={6}>
-            <FieldArray
-              attributes={attributes}
-              buttonTitle='Lisää kaavayksikkö'
-              collapseState={planUnitsContractCollapseState}
-              component={renderPlanUnits}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plan_units_contract`}
-              onCollapseToggle={this.handlePlanUnitContractCollapseToggle}
-              title='Kaavayksiköt sopimuksessa'
-            />
-          </Column>
-          <Column small={12} large={6}>
-            <FieldArray
-              attributes={attributes}
-              buttonTitle='Lisää kaavayksikkö'
-              collapseState={planUnitsCurrentCollapseState}
-              component={renderPlanUnits}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plan_units_current`}
-              onCollapseToggle={this.handlePlanUnitCurrentCollapseToggle}
-              title='Kaavayksiköt nykyhetkellä'
-            />
-          </Column>
-        </Row>
-      </div>
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.PLOTS)}>
+          <Row>
+            <Column small={12} large={6}>
+              <FieldArray
+                attributes={attributes}
+                buttonTitle='Lisää kiinteistö/määräala'
+                collapseState={plotsContractCollapseState}
+                component={renderPlots}
+                errors={errors}
+                isSaveClicked={isSaveClicked}
+                name={`${field}.plots_contract`}
+                onCollapseToggle={this.handlePlotsContractCollapseToggle}
+                plotsData={get(savedArea, 'plots_contract', [])}
+                title='Kiinteistöt / määräalat sopimuksessa'
+              />
+            </Column>
+            <Column small={12} large={6}>
+              <FieldArray
+                attributes={attributes}
+                buttonTitle='Lisää kiinteistö/määräala'
+                collapseState={plotsCurrentCollapseState}
+                component={renderPlots}
+                errors={errors}
+                isSaveClicked={isSaveClicked}
+                name={`${field}.plots_current`}
+                onCollapseToggle={this.handlePlotsCurrentCollapseToggle}
+                plotsData={get(savedArea, 'plots_current', [])}
+                title='Kiinteistöt / määräalat nykyhetkellä'
+              />
+            </Column>
+          </Row>
+        </Authorization>
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+          <Row>
+            <Column small={12} large={6}>
+              <FieldArray
+                attributes={attributes}
+                buttonTitle='Lisää kaavayksikkö'
+                collapseState={planUnitsContractCollapseState}
+                component={renderPlanUnits}
+                errors={errors}
+                isSaveClicked={isSaveClicked}
+                name={`${field}.plan_units_contract`}
+                onCollapseToggle={this.handlePlanUnitContractCollapseToggle}
+                title='Kaavayksiköt sopimuksessa'
+              />
+            </Column>
+            <Column small={12} large={6}>
+              <FieldArray
+                attributes={attributes}
+                buttonTitle='Lisää kaavayksikkö'
+                collapseState={planUnitsCurrentCollapseState}
+                component={renderPlanUnits}
+                errors={errors}
+                isSaveClicked={isSaveClicked}
+                name={`${field}.plan_units_current`}
+                onCollapseToggle={this.handlePlanUnitCurrentCollapseToggle}
+                title='Kaavayksiköt nykyhetkellä'
+              />
+            </Column>
+          </Row>
+        </Authorization>
+      </Fragment>
     );
   }
 }
@@ -610,7 +641,6 @@ export default flowRight(
       return {
         areaId: id,
         attributes: getAttributes(state),
-        currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
         geometry: selector(state, `${props.field}.geometry`),
         isSaveClicked: getIsSaveClicked(state),

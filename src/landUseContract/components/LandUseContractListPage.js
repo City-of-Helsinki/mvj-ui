@@ -24,11 +24,12 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
 import {FormNames} from '$src/landUseContract/enums';
 import {getContentLandUseContractList} from '$src/landUseContract/helpers';
-import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {getFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
 
-import type {Attributes, LandUseContract, LandUseContractList} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract, LandUseContractList} from '$src/landUseContract/types';
 
 const PAGE_SIZE = 25;
 
@@ -252,7 +253,7 @@ class LandUseContractListPage extends Component<Props, State> {
   render() {
     const {attributes, isFetching} = this.props;
     const {activePage, isModalOpen, isSearchInitialized, landUseContracts, maxPage, selectedStates} = this.state;
-    const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
+    const stateOptions = getFieldOptions(attributes, 'state', false);
     const filteredLandUseContracts = selectedStates.length
       ? (landUseContracts.filter((contract) => selectedStates.indexOf(contract.state)  !== -1))
       : landUseContracts;

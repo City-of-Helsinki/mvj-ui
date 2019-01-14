@@ -2,29 +2,38 @@
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
-import RelatedLeasesItem from './RelatedLeasesItem';
-import {createReleatedLease, deleteReleatedLease} from '$src/leases/actions';
+import RelatedLeaseItem from './RelatedLeaseItem';
+import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
+import {LeaseFieldPaths} from '$src/leases/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$src/util/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getFieldOptions} from '$src/util/helpers';
+import {
+  getAttributes as getLeaseAttributes,
+  getCurrentLease,
+} from '$src/leases/selectors';
+import {getMethods as getRelatedLeaseMethods} from '$src/relatedLease/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes, Methods} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
-  attributes: Attributes,
   createReleatedLease: Function,
   currentLease: Lease,
   deleteReleatedLease: Function,
   isDeleteRelatedLeaseModalOpen: boolean,
   hideDeleteRelatedLeaseModal: Function,
+  leaseAttributes: Attributes,
+  relatedLeaseMethods: Methods,
   showDeleteRelatedLeaseModal: Function,
 }
 
 type State = {
+  currentLease: Lease,
+  leaseAttributes: Attributes,
   newLease: ?Object,
   relatedLeasesAll: Array<Object>,
   relatedLeasesFrom: Array<Object>,
@@ -34,6 +43,8 @@ type State = {
 
 class RelatedLeasesEdit extends Component<Props, State> {
   state = {
+    currentLease: {},
+    leaseAttributes: {},
     newLease: null,
     relatedLeasesAll: [],
     relatedLeasesFrom: [],
@@ -41,22 +52,29 @@ class RelatedLeasesEdit extends Component<Props, State> {
     stateOptions: [],
   }
 
-  componentWillMount() {
-    const {attributes, currentLease} = this.props;
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
 
-    if(!isEmpty(attributes)) {
-      this.updateOptions();
+    if(props.leaseAttributes !== state.leaseAttributes) {
+      newState.leaseAttributes = props.leaseAttributes;
+      newState.stateOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.STATE);
     }
 
-    if(!isEmpty(currentLease)) {
-      this.updateRelatedLeases();
+    if(props.currentLease !== state.currentLease) {
+      const relatedLeasesFrom = getContentRelatedLeasesFrom(props.currentLease);
+      const relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
+      const relatedLeasesAll = [...relatedLeasesFrom, {lease: props.currentLease}, ...relatedLeasesTo];
+
+      newState.currentLease = props.currentLease;
+      newState.relatedLeasesAll = relatedLeasesAll;
+      newState.relatedLeasesFrom = relatedLeasesFrom;
+      newState.relatedLeasesTo = relatedLeasesTo;
     }
+
+    return newState;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.props.currentLease !== prevProps.currentLease) {
-      this.updateRelatedLeases();
-    }
     if(this.state.relatedLeasesTo !== prevState.relatedLeasesTo) {
       this.clearNewLease();
     }
@@ -68,30 +86,13 @@ class RelatedLeasesEdit extends Component<Props, State> {
     });
   }
 
-  updateOptions = () => {
-    const {attributes} = this.props;
-    this.setState({
-      stateOptions: getAttributeFieldOptions(attributes, 'state'),
-    });
-  }
-
-  updateRelatedLeases = () => {
-    const {currentLease} = this.props;
-    const relatedLeasesFrom = getContentRelatedLeasesFrom(currentLease);
-    const relatedLeasesTo = getContentRelatedLeasesTo(currentLease);
-    const relatedLeasesAll = [...relatedLeasesFrom, {lease: currentLease}, ...relatedLeasesTo];
-    this.setState({
-      relatedLeasesAll: relatedLeasesAll,
-      relatedLeasesFrom: relatedLeasesFrom,
-      relatedLeasesTo: relatedLeasesTo,
-    });
-  }
-
   handleCreate = (toLease: Object) => {
     const {createReleatedLease, currentLease} = this.props;
+
     this.setState({
       newLease: toLease,
     });
+
     createReleatedLease({
       from_lease: currentLease.id,
       to_lease: toLease.value,
@@ -105,7 +106,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
   }
 
   render() {
-    const {currentLease} = this.props;
+    const {currentLease, relatedLeaseMethods} = this.props;
     const {
       newLease,
       relatedLeasesAll,
@@ -117,28 +118,31 @@ class RelatedLeasesEdit extends Component<Props, State> {
     return (
       <div className="summary__related-leases">
         <h3>Historia</h3>
-        <div className="summary__related-leases_input-wrapper">
-          <FormFieldLabel htmlFor='related-lease'>Liitä vuokratunnukseen</FormFieldLabel>
-          <Row>
-            <Column>
-              <LeaseSelectInput
-                disabled={!!newLease}
-                name='related-lease'
-                onChange={this.handleCreate}
-                relatedLeases={relatedLeasesAll}
-                value={newLease}
-              />
-            </Column>
-          </Row>
-        </div>
+
+        <Authorization allow={relatedLeaseMethods.POST}>
+          <div className="summary__related-leases_input-wrapper">
+            <FormFieldLabel htmlFor='related-lease'>Liitä vuokratunnukseen</FormFieldLabel>
+            <Row>
+              <Column>
+                <LeaseSelectInput
+                  disabled={!!newLease}
+                  name='related-lease'
+                  onChange={this.handleCreate}
+                  relatedLeases={relatedLeasesAll}
+                  value={newLease}
+                />
+              </Column>
+            </Row>
+          </div>
+        </Authorization>
+
         <div className="summary__related-leases_items">
           <div className="summary__related-leases_items_border-left" />
           {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {
             return (
-              <RelatedLeasesItem
+              <RelatedLeaseItem
                 key={index}
                 active={false}
-                allowDelete
                 id={lease.id}
                 indented
                 onDelete={this.handleDelete}
@@ -148,7 +152,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
             );
           })}
           {!!currentLease &&
-            <RelatedLeasesItem
+            <RelatedLeaseItem
               active={true}
               lease={currentLease}
               stateOptions={stateOptions}
@@ -156,10 +160,9 @@ class RelatedLeasesEdit extends Component<Props, State> {
           }
           {!!relatedLeasesFrom && !!relatedLeasesFrom.length && relatedLeasesFrom.map((lease, index) => {
             return (
-              <RelatedLeasesItem
+              <RelatedLeaseItem
                 key={index}
                 active={false}
-                allowDelete
                 id={lease.id}
                 onDelete={this.handleDelete}
                 lease={lease.lease}
@@ -176,8 +179,9 @@ class RelatedLeasesEdit extends Component<Props, State> {
 export default connect(
   (state) => {
     return {
-      attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
+      leaseAttributes: getLeaseAttributes(state),
+      relatedLeaseMethods: getRelatedLeaseMethods(state),
     };
   },
   {

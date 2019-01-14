@@ -11,23 +11,29 @@ import PlanUnitsLayer from './PlanUnitsLayer';
 import PlotsLayer from './PlotsLayer';
 import {mapColors} from '$src/constants';
 import {
+  LeaseAreasFieldPaths,
+  LeasePlanUnitsFieldPaths,
+  LeasePlotsFieldPaths,
+} from '$src/leases/enums';
+import {
   getContentAreasGeoJson,
   getContentPlanUnitsGeoJson,
   getContentPlotsGeoJson,
   getLeaseCoordinates,
 } from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 import type {AreasGeoJson} from './AreasLayer';
 import type {PlanUnitsGeoJson} from './PlanUnitsLayer';
 import type {PlotsGeoJson} from './PlotsLayer';
 
 type Props = {
-  attributes: Attributes,
   currentLease: Lease,
+  leaseAttributes: Attributes,
   router: Object,
 }
 
@@ -35,10 +41,10 @@ type State = {
   areasGeoJson: AreasGeoJson,
   areaLocationOptions: Array<Object>,
   areaTypeOptions: Array<Object>,
-  attributes: Attributes,
   bounds?: ?Object,
   center: ?Array<Object>,
   currentLease: Lease,
+  leaseAttributes: Attributes,
   planUnitsGeoJson: PlanUnitsGeoJson,
   planUnitsContractGeoJson: PlanUnitsGeoJson,
   planUnitIntendedUseOptions: Array<Object>,
@@ -58,10 +64,10 @@ class SingleLeaseMap extends Component<Props, State> {
     },
     areaLocationOptions: [],
     areaTypeOptions: [],
-    attributes: {},
     bounds: null,
     center: null,
     currentLease: {},
+    leaseAttributes: {},
     planUnitsGeoJson: {
       features: [],
       type: 'FeatureCollection',
@@ -100,22 +106,15 @@ class SingleLeaseMap extends Component<Props, State> {
       newState.plotsGeoJson = getContentPlotsGeoJson(props.currentLease, false);
       newState.plotsContractGeoJson = getContentPlotsGeoJson(props.currentLease, true);
     }
-    if(props.attributes !== state.attributes) {
-      newState.attributes = props.attributes;
-      newState.areaLocationOptions = getAttributeFieldOptions(props.attributes,
-        'lease_areas.child.children.location');
-      newState.areaTypeOptions = getAttributeFieldOptions(props.attributes,
-        'lease_areas.child.children.type');
-      newState.plotTypeOptions = getAttributeFieldOptions(props.attributes,
-        'lease_areas.child.children.plots.child.children.type');
-      newState.plotDivisionStateOptions = getAttributeFieldOptions(props.attributes,
-        'lease_areas.child.children.plan_units.child.children.plot_division_state');
-      newState.planUnitTypeOptions = getAttributeFieldOptions(props.attributes,
-        'lease_areas.child.children.plan_units.child.children.plan_unit_type');
-      newState.planUnitStateOptions = getAttributeFieldOptions(props.attributes,
-        'lease_areas.child.children.plan_units.child.children.plan_unit_state');
-      newState.planUnitIntendedUseOptions = getAttributeFieldOptions(props.attributes,
-        'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use');
+    if(props.leaseAttributes !== state.leaseAttributes) {
+      newState.leaseAttributes = props.leaseAttributes;
+      newState.areaLocationOptions = getFieldOptions(props.leaseAttributes, LeaseAreasFieldPaths.LOCATION);
+      newState.areaTypeOptions = getFieldOptions(props.leaseAttributes, LeaseAreasFieldPaths.TYPE);
+      newState.plotTypeOptions = getFieldOptions(props.leaseAttributes, LeasePlotsFieldPaths.TYPE);
+      newState.plotDivisionStateOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE);
+      newState.planUnitTypeOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE);
+      newState.planUnitStateOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE);
+      newState.planUnitIntendedUseOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE);
     }
 
     return newState;
@@ -222,7 +221,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        attributes: getAttributes(state),
+        leaseAttributes: getLeaseAttributes(state),
         currentLease: getCurrentLease(state),
       };
     }

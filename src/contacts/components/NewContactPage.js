@@ -3,41 +3,42 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {getFormValues, isDirty} from 'redux-form';
-import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import ContactForm from './forms/ContactForm';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import FullWidthContainer from '$components/content/FullWidthContainer';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Loader from '$components/loader/Loader';
-import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import {
   createContact,
-  fetchAttributes,
   hideEditMode,
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {FormNames} from '../enums';
+import {PermissionMissingTexts} from '$src/enums';
+import {FormNames} from '$src/contacts/enums';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
+import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
+import type {Methods} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {Attributes, Contact} from '../types';
+import type {Contact} from '../types';
 
 type Props = {
-  attributes: Attributes,
   contactFormValues: Contact,
+  contactMethods: Methods, // get via withCommonAttributes HOC
   createContact: Function,
-  fetchAttributes: Function,
   hideEditMode: Function,
   isContactFormDirty: boolean,
   isContactFormValid: boolean,
+  isFetchingCommonAttributes: boolean, // get via withCommonAttributes
   isSaveClicked: boolean,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
@@ -51,7 +52,7 @@ class NewContactPage extends Component<Props> {
   };
 
   componentDidMount() {
-    const {attributes, fetchAttributes, receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode} = this.props;
+    const {receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode} = this.props;
 
     receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
@@ -59,10 +60,6 @@ class NewContactPage extends Component<Props> {
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
-
-    if(isEmpty(attributes)) {
-      fetchAttributes();
-    }
 
     showEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
@@ -112,13 +109,23 @@ class NewContactPage extends Component<Props> {
   }
 
   render() {
-    const {attributes, isContactFormValid, isSaveClicked} = this.props;
+    const {
+      contactMethods,
+      isContactFormValid,
+      isFetchingCommonAttributes,
+      isSaveClicked,
+    } = this.props;
+
+    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!contactMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
 
     return (
-      <div style={{width: '100%'}}>
+      <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowEdit={contactMethods.POST}
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isContactFormValid}
@@ -134,28 +141,18 @@ class NewContactPage extends Component<Props> {
 
         <PageContainer className='with-small-control-bar'>
           <ContentContainer>
-            {isEmpty(attributes) &&
-              <Row>
-                <Column>
-                  <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>
-                </Column>
-              </Row>
-            }
-            {!isEmpty(attributes) &&
-              <GreenBoxEdit className='no-margin'>
-                <ContactForm isFocusedOnMount/>
-              </GreenBoxEdit>
-            }
+            <GreenBoxEdit className='no-margin'>
+              <ContactForm isFocusedOnMount/>
+            </GreenBoxEdit>
           </ContentContainer>
         </PageContainer>
-      </div>
+      </FullWidthContainer>
     );
   }
 }
 
 const mapStateToProps = (state: RootState) => {
   return {
-    attributes: getAttributes(state),
     contactFormValues: getFormValues(FormNames.CONTACT)(state),
     isContactFormDirty: isDirty(FormNames.CONTACT)(state),
     isContactFormValid: getIsContactFormValid(state),
@@ -164,11 +161,11 @@ const mapStateToProps = (state: RootState) => {
 };
 
 export default flowRight(
+  withCommonAttributes,
   connect(
     mapStateToProps,
     {
       createContact,
-      fetchAttributes,
       hideEditMode,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,

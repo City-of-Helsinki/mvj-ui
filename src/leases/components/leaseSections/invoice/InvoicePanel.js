@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import {getFormValues, isValid} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import EditInvoiceForm from './forms/EditInvoiceForm';
@@ -14,17 +15,22 @@ import {receiveIsEditClicked} from '$src/invoices/actions';
 import {KeyCodes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {FormNames} from '$src/leases/enums';
-import {getInvoicesByLease, getIsEditClicked} from '$src/invoices/selectors';
+import {
+  getInvoicesByLease,
+  getIsEditClicked,
+  getMethods as getInvoiceMethods,
+} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
+import type {Methods} from '$src/types';
 import type {InvoiceList} from '$src/invoices/types';
 
 type Props = {
   editedInvoice: Object,
   invoice: ?Object,
+  invoiceMethods: Methods,
   invoices: InvoiceList,
   isEditClicked: boolean,
-  isEditMode: boolean,
   isOpen: boolean,
   minHeight: number,
   onClose: Function,
@@ -115,13 +121,7 @@ class InvoicePanel extends PureComponent<Props, State> {
   }
 
   setFocusOnPanel = () => {
-    const {isEditMode} = this.props;
-    if(isEditMode) {
-      // this.setFocusOnInvoiceForm();
-      this.setFocusOnCloseButton();
-    } else {
-      this.setFocusOnCloseButton();
-    }
+    this.setFocusOnCloseButton();
   }
 
   setCloseButtonReference = (element: any) => {
@@ -131,16 +131,6 @@ class InvoicePanel extends PureComponent<Props, State> {
   setFocusOnCloseButton = () => {
     if(this.closeButton) {
       this.closeButton.focus();
-    }
-  }
-
-  setInvoiceFormFirstFieldRef = (element: any) => {
-    this.invoiceFormFirstField = element;
-  }
-
-  setFocusOnInvoiceForm = () => {
-    if(this.invoiceFormFirstField) {
-      this.invoiceFormFirstField.setFocus();
     }
   }
 
@@ -178,8 +168,8 @@ class InvoicePanel extends PureComponent<Props, State> {
   render() {
     const {
       invoice,
+      invoiceMethods,
       isEditClicked,
-      isEditMode,
       isOpen,
       minHeight,
       onClose,
@@ -206,6 +196,7 @@ class InvoicePanel extends PureComponent<Props, State> {
             refreshMode='debounce'
             refreshRate={1}
           />
+
           <div className='invoice-panel__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
@@ -216,43 +207,39 @@ class InvoicePanel extends PureComponent<Props, State> {
             />
           </div>
 
-          <div className={classNames('invoice-panel__body', {'with-footer': (isEditMode  && invoice && !invoice.sap_id)})}>
-            {isEditMode && (!invoice || !invoice.sap_id)
+          <div className={classNames('invoice-panel__body', {'with-footer': (invoiceMethods.PATCH && invoice && !invoice.sap_id)})}>
+            {invoiceMethods.PATCH && (!invoice || !invoice.sap_id)
               ? <EditInvoiceForm
                 creditedInvoice={creditedInvoice}
                 invoice={invoice}
                 initialValues={{...invoice}}
                 onCreditedInvoiceClick={onCreditedInvoiceClick}
-                setRefForFirstField={this.setInvoiceFormFirstFieldRef}
               />
-              :
-              <InvoiceTemplate
+              : <InvoiceTemplate
                 creditedInvoice={creditedInvoice}
                 invoice={invoice}
                 onCreditedInvoiceClick={onCreditedInvoiceClick}
               />
             }
-            {isEditMode}
           </div>
-          {isEditMode  && (invoice && !invoice.sap_id) &&
-            <div className='invoice-panel__footer'>
-              {(!invoice || !invoice.sap_id) &&
+
+          <Authorization allow={invoiceMethods.PATCH}>
+            {invoice && !invoice.sap_id &&
+              <div className='invoice-panel__footer'>
                 <Button
                   className={ButtonColors.SECONDARY}
                   onClick={onClose}
                   text='Peruuta'
                 />
-              }
-              {(!invoice || !invoice.sap_id) &&
                 <Button
                   className={ButtonColors.SUCCESS}
                   disabled={isEditClicked && !valid}
                   onClick={this.handleSave}
                   text='Tallenna'
                 />
-              }
-            </div>
-          }
+              </div>
+            }
+          </Authorization>
         </div>
       </div>
     );
@@ -266,6 +253,7 @@ export default connect(
 
     return {
       editedInvoice: getFormValues(formName)(state),
+      invoiceMethods: getInvoiceMethods(state),
       invoices: getInvoicesByLease(state, currentLease.id),
       isEditClicked: getIsEditClicked(state),
       valid: isValid(formName)(state),

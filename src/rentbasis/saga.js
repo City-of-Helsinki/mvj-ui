@@ -5,8 +5,10 @@ import {SubmissionError} from 'redux-form';
 
 import {
   hideEditMode,
+  attributesNotFound,
   notFound,
   receiveAttributes,
+  receiveMethods,
   receiveRentBasisList,
   receiveSingleRentBasis,
 } from './actions';
@@ -25,17 +27,20 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields;
+    const methods = bodyAsJson.methods;
 
     switch (statusCode) {
       case 200:
         yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
         break;
-      case 404:
-      case 500:
+      default:
+        yield put(attributesNotFound());
         break;
     }
   } catch (error) {
     console.error('Failed to fetch rent basis attributes with error "%s"', error);
+    yield put(attributesNotFound());
     yield put(receiveError(error));
   }
 }

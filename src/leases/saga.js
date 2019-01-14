@@ -6,12 +6,12 @@ import {SubmissionError} from 'redux-form';
 import {getRouteById} from '$src/root/routes';
 import {
   fetchSingleLeaseAfterEdit,
-  hideArchiveAreaModal,
   hideEditMode,
-  hideUnarchiveAreaModal,
+  attributesNotFound,
   notFound,
   notFoundById,
   receiveAttributes,
+  receiveMethods,
   receiveIsSaveClicked,
   receiveLeases,
   receiveSingleLease,
@@ -29,8 +29,6 @@ import {
   fetchLeases,
   fetchSingleLease,
   patchLease,
-  createRelatedLease,
-  deleteReleatedLease,
   startInvoicing,
   stopInvoicing,
   setRentInfoComplete,
@@ -41,18 +39,22 @@ import {getCurrentLease} from './selectors';
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
-    const attributes = bodyAsJson.fields;
 
     switch (statusCode) {
       case 200:
+        const attributes = bodyAsJson.fields;
+        const methods = bodyAsJson.methods;
+
         yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
         break;
-      case 404:
-      case 500:
+      default:
+        yield put(attributesNotFound());
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch identifiers with error "%s"', error);
+    console.error('Failed to fetch attributes with error "%s"', error);
+    yield put(attributesNotFound());
     yield put(receiveError(error));
   }
 }
@@ -89,7 +91,7 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<any, any, any> {
         yield put(notFound());
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
-      case 500:
+      default:
         yield put(notFound());
         break;
     }
@@ -209,67 +211,6 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
   }
 }
 
-function* archiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
-  try {
-    const id = lease.id;
-    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
-    switch (statusCode) {
-      case 200:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: id,
-          callbackFunctions: [
-            hideArchiveAreaModal(),
-            displayUIMessage({title: '', body: 'Kohde arkistoitu'}),
-          ],
-        }));
-        break;
-      case 400:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* unarchiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
-  try {
-    const id = lease.id;
-    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
-
-    switch (statusCode) {
-      case 200:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: id,
-          callbackFunctions: [
-            hideUnarchiveAreaModal(),
-            displayUIMessage({title: '', body: 'Kohde poistettu arkistosta'}),
-          ],
-        }));
-        break;
-      case 400:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
 function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(startInvoicing, leaseId);
@@ -358,52 +299,6 @@ function* setRentInfoUncompleteSaga({payload: leaseId}): Generator<any, any, any
   }
 }
 
-function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(createRelatedLease, payload);
-
-    switch (statusCode) {
-      case 201:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: payload.from_lease,
-          callbackFunctions: [
-            () => displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos luotu'}),
-          ],
-        }));
-        break;
-      default:
-        yield put(receiveError(new SubmissionError({...bodyDelete})));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to create related lease with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
-function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(deleteReleatedLease, payload.id);
-
-    switch (statusCode) {
-      case 204:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: payload.leaseId,
-          callbackFunctions: [
-            () => displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos poistettu'}),
-          ],
-        }));
-        break;
-      default:
-        yield put(receiveError(new SubmissionError({...bodyDelete})));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to delete related lease with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
 function* createChargeSaga({payload}): Generator<any, any, any> {
   try {
     const {leaseId} = payload;
@@ -428,7 +323,7 @@ function* createChargeSaga({payload}): Generator<any, any, any> {
 
 function* copyAreasToContractSaga({payload: leaseId}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(copyAreasToContract, leaseId);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(copyAreasToContract, leaseId);
 
     switch (statusCode) {
       case 200:
@@ -440,11 +335,11 @@ function* copyAreasToContractSaga({payload: leaseId}): Generator<any, any, any> 
         }));
         break;
       default:
-        yield put(receiveError(new SubmissionError({...bodyDelete})));
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
     }
   } catch (error) {
-    console.error('Failed to delete related lease with error "%s"', error);
+    console.error('Failed to copy lease areas to contract with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -459,15 +354,11 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
-      yield takeLatest('mvj/leases/ARCHIVE_AREA', archiveLeaseAreaSaga);
-      yield takeLatest('mvj/leases/UNARCHIVE_AREA', unarchiveLeaseAreaSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/SET_RENT_INFO_COMPLETE', setRentInfoCompleteSaga),
       yield takeLatest('mvj/leases/SET_RENT_INFO_UNCOMPLETE', setRentInfoUncompleteSaga),
       yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
-      yield takeLatest('mvj/leases/CREATE_RELATED_LEASE', createReleatedLeaseSaga);
-      yield takeLatest('mvj/leases/DELETE_RELATED_LEASE', deleteReleatedLeaseSaga);
       yield takeLatest('mvj/leases/COPY_AREAS_TO_CONTRACT', copyAreasToContractSaga);
     }),
   ]);

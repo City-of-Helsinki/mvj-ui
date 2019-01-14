@@ -4,18 +4,29 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {change, formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {receiveContactFormValid} from '$src/contacts/actions';
-import {ContactType, FormNames} from '$src/contacts/enums';
-import {getAttributes, getInitialContactFormValues, getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
+import {
+  ContactFieldPaths,
+  ContactFieldTitles,
+  ContactType,
+  FormNames,
+} from '$src/contacts/enums';
+import {getFieldAttributes, isFieldAllowedToRead} from '$util/helpers';
+import {
+  getAttributes,
+  getInitialContactFormValues,
+  getIsContactFormValid,
+  getIsSaveClicked,
+} from '$src/contacts/selectors';
 
-import type {Attributes} from '$src/contacts/types';
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
@@ -64,9 +75,8 @@ class ContactForm extends Component<Props> {
 
   render() {
     const {attributes, isSaveClicked, type} = this.props;
-    if (isEmpty(attributes)) {
-      return null;
-    }
+
+    if (isEmpty(attributes)) return null;
 
     return(
       <form>
@@ -74,119 +84,121 @@ class ContactForm extends Component<Props> {
           <FormWrapperLeft>
             <Row>
               <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'type')}
-                  name='type'
-                  setRefForField={this.setRefForFirstField}
-                  overrideValues={{
-                    label: 'Asiakastyyppi',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.TYPE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.TYPE)}
+                    name='type'
+                    setRefForField={this.setRefForFirstField}
+                    overrideValues={{label: ContactFieldTitles.TYPE}}
+                  />
+                </Authorization>
               </Column>
               {type === ContactType.PERSON &&
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'last_name')}
-                    name='last_name'
-                    overrideValues={{
-                      label: 'Sukunimi',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.LAST_NAME)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.LAST_NAME)}
+                      name='last_name'
+                      overrideValues={{label: ContactFieldTitles.LAST_NAME}}
+                    />
+                  </Authorization>
                 </Column>
               }
               {type === ContactType.PERSON &&
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'first_name')}
-                    name='first_name'
-                    overrideValues={{
-                      label: 'Etunimi',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.FIRST_NAME)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.FIRST_NAME)}
+                      name='first_name'
+                      overrideValues={{label: ContactFieldTitles.FIRST_NAME}}
+                    />
+                  </Authorization>
                 </Column>
               }
               {type && type !== ContactType.PERSON &&
                 <Column small={12} medium={6} large={8}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'name')}
-                    name='name'
-                    overrideValues={{
-                      label: 'Yrityksen nimi',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NAME)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.NAME)}
+                      name='name'
+                      overrideValues={{label: ContactFieldTitles.NAME}}
+                    />
+                  </Authorization>
                 </Column>
               }
             </Row>
             <Row>
               <Column>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'address')}
-                  name='address'
-                  valueSelectedCallback={this.handleAddressChange}
-                  overrideValues={{
-                    fieldType: 'address',
-                    label: 'Katuosoite',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.ADDRESS)}
+                    name='address'
+                    valueSelectedCallback={this.handleAddressChange}
+                    overrideValues={{
+                      fieldType: 'address',
+                      label: ContactFieldTitles.ADDRESS,
+                    }}
+                  />
+                </Authorization>
               </Column>
             </Row>
             <Row>
               <Column small={12} medium={4} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'postal_code')}
-                  name='postal_code'
-                  overrideValues={{
-                    label: 'Postinumero',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.POSTAL_CODE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.POSTAL_CODE)}
+                    name='postal_code'
+                    overrideValues={{label: ContactFieldTitles.POSTAL_CODE}}
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={4} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'city')}
-                  name='city'
-                  overrideValues={{
-                    label: 'Postitoimipaikka',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CITY)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CITY)}
+                    name='city'
+                    overrideValues={{label: ContactFieldTitles.CITY}}
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={4} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'country')}
-                  name='country'
-                  overrideValues={{
-                    label: 'Maa',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.COUNTRY)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.COUNTRY)}
+                    name='country'
+                    overrideValues={{label: ContactFieldTitles.COUNTRY}}
+                  />
+                </Authorization>
               </Column>
             </Row>
             <Row>
               <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'phone')}
-                  name='phone'
-                  overrideValues={{
-                    label: 'Puhelinnumero',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.PHONE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.PHONE)}
+                    name='phone'
+                    overrideValues={{label: ContactFieldTitles.PHONE}}
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={6} large={8}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'email')}
-                  name='email'
-                  overrideValues={{
-                    label: 'Sähköposti',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.EMAIL)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.EMAIL)}
+                    name='email'
+                    overrideValues={{label: ContactFieldTitles.EMAIL}}
+                  />
+                </Authorization>
               </Column>
             </Row>
           </FormWrapperLeft>
@@ -194,115 +206,115 @@ class ContactForm extends Component<Props> {
             <Row>
               {type === ContactType.PERSON &&
                 <Column small={23} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'national_identification_number')}
-                    name='national_identification_number'
-                    overrideValues={{
-                      label: 'Henkilötunnus',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}
+                      name='national_identification_number'
+                      overrideValues={{label: ContactFieldTitles.NATIONAL_IDENTIFICATION_NUMBER}}
+                    />
+                  </Authorization>
                 </Column>
               }
               {type && type !== ContactType.PERSON &&
                 <Column small={23} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'business_id')}
-                    name='business_id'
-                    overrideValues={{
-                      label: 'Y-tunnus',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.BUSINESS_ID)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.BUSINESS_ID)}
+                      name='business_id'
+                      overrideValues={{label: ContactFieldTitles.BUSINESS_ID}}
+                    />
+                  </Authorization>
                 </Column>
               }
               <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'language')}
-                  name='language'
-                  overrideValues={{
-                    label: 'Kieli',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.LANGUAGE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.LANGUAGE)}
+                    name='language'
+                    overrideValues={{label: ContactFieldTitles.LANGUAGE}}
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'sap_customer_number')}
-                  name='sap_customer_number'
-                  overrideValues={{
-                    label: 'SAP asiakasnumero',
-                  }}
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'partner_code')}
-                  name='partner_code'
-                  overrideValues={{
-                    label: 'Kumppanikoodi',
-                  }}
-                />
-              </Column>
-              <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'electronic_billing_address')}
-                  name='electronic_billing_address'
-                  overrideValues={{
-                    label: 'Ovt tunnus',
-                  }}
-                />
-              </Column>
-              <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'customer_number')}
-                  name='customer_number'
-                  overrideValues={{
-                    label: 'Asiakasnumero',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.SAP_CUSTOMER_NUMBER)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.SAP_CUSTOMER_NUMBER)}
+                    name='sap_customer_number'
+                    overrideValues={{label: ContactFieldTitles.SAP_CUSTOMER_NUMBER}}
+                  />
+                </Authorization>
               </Column>
             </Row>
             <Row>
               <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'is_lessor')}
-                  name='is_lessor'
-                  overrideValues={{
-                    label: 'Vuokranantaja',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.PARTNER_CODE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.PARTNER_CODE)}
+                    name='partner_code'
+                    overrideValues={{label: ContactFieldTitles.PARTNER_CODE}}
+                  />
+                </Authorization>
+              </Column>
+              <Column small={12} medium={6} large={4}>
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS)}
+                    name='electronic_billing_address'
+                    overrideValues={{label: ContactFieldTitles.ELECTRONIC_BILLING_ADDRESS}}
+                  />
+                </Authorization>
+              </Column>
+              <Column small={12} medium={6} large={4}>
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CUSTOMER_NUMBER)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CUSTOMER_NUMBER)}
+                    name='customer_number'
+                    overrideValues={{label: ContactFieldTitles.CUSTOMER_NUMBER}}
+                  />
+                </Authorization>
+              </Column>
+            </Row>
+            <Row>
+              <Column small={12} medium={6} large={4}>
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.IS_LESSOR)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.IS_LESSOR)}
+                    name='is_lessor'
+                    overrideValues={{label: ContactFieldTitles.IS_LESSOR}}
+                  />
+                </Authorization>
               </Column>
               {type === ContactType.PERSON &&
                 <Column small={12} medium={6} large={6}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'address_protection')}
-                    name='address_protection'
-                    overrideValues={{
-                      label: 'Turvakielto',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS_PROTECTION)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.ADDRESS_PROTECTION)}
+                      name='address_protection'
+                      overrideValues={{label: ContactFieldTitles.ADDRESS_PROTECTION}}
+                    />
+                  </Authorization>
                 </Column>
               }
             </Row>
             <Row>
               <Column>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'note')}
-                  name='note'
-                  overrideValues={{
-                    label: 'Huomautus',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NOTE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.NOTE)}
+                    name='note'
+                    overrideValues={{label: ContactFieldTitles.NOTE}}
+                  />
+                </Authorization>
               </Column>
             </Row>
           </FormWrapperRight>

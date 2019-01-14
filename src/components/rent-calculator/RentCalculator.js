@@ -13,10 +13,19 @@ import RentForPeriod from './RentForPeriod';
 import {fetchBillingPeriodsByLease} from '$src/billingPeriods/actions';
 import {deleteRentForPeriodByLease, fetchRentForPeriodByLease, receiveIsSaveClicked} from '$src/rentForPeriod/actions';
 import {ButtonColors, FormNames, RentCalculatorTypes} from '$components/enums';
-import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
+import {
+  getBillingPeriodsByLease,
+  getMethods as getBillingPeriodMethods,
+} from '$src/billingPeriods/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
-import {getIsFetching, getIsSaveClicked, getRentForPeriodArrayByLease} from '$src/rentForPeriod/selectors';
+import {
+  getIsFetching,
+  getIsSaveClicked,
+  getMethods as getRentForPeriodMethods,
+  getRentForPeriodArrayByLease,
+} from '$src/rentForPeriod/selectors';
 
+import type {Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {RentForPeriodId} from '$src/rentForPeriod/types';
 
@@ -25,6 +34,7 @@ let rentForPeriodId = 1;
 type Props = {
   billingPeriod: number,
   billingPeriods: Array<Object>,
+  billingPeriodMethods: Methods,
   currentLease: Lease,
   deleteRentForPeriodByLease: Function,
   endDate: string,
@@ -33,6 +43,7 @@ type Props = {
   fetching: boolean,
   receiveIsSaveClicked: Function,
   rentForPeriodArray: Array<Object>,
+  rentForPeriodMethods: Methods,
   saveClicked: boolean,
   startDate: string,
   type: string,
@@ -42,11 +53,13 @@ type Props = {
 
 class RentCalculator extends Component<Props> {
   componentDidMount() {
-    const {rentForPeriodArray} = this.props;
+    const {billingPeriodMethods, rentForPeriodArray, rentForPeriodMethods} = this.props;
 
-    this.fetchBillingPeriods();
+    if(billingPeriodMethods.GET) {
+      this.fetchBillingPeriods();
+    }
 
-    if(!rentForPeriodArray || !rentForPeriodArray.length) {
+    if(rentForPeriodMethods.GET && (!rentForPeriodArray || !rentForPeriodArray.length)) {
       this.fetchDefaultRentForPeriod();
     }
   }
@@ -133,7 +146,9 @@ class RentCalculator extends Component<Props> {
   }
 
   render() {
-    const {fetching, rentForPeriodArray, saveClicked, valid} = this.props;
+    const {fetching, rentForPeriodArray, rentForPeriodMethods, saveClicked, valid} = this.props;
+
+    if(!rentForPeriodMethods.GET) return null;
 
     return (
       <div className='rent-calculator'>
@@ -188,10 +203,12 @@ export default flowRight(
       return {
         billingPeriod: selector(state, 'billing_period'),
         billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
+        billingPeriodMethods: getBillingPeriodMethods(state),
         currentLease: currentLease,
         endDate: selector(state, 'billing_end_date'),
         fetching: getIsFetching(state),
         rentForPeriodArray: getRentForPeriodArrayByLease(state, currentLease.id),
+        rentForPeriodMethods: getRentForPeriodMethods(state),
         saveClicked: getIsSaveClicked(state),
         startDate: selector(state, 'billing_start_date'),
         type: selector(state, 'type'),

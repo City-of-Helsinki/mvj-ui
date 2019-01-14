@@ -10,9 +10,11 @@ import isNumber from 'lodash/isNumber';
 import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
 import Fraction from 'fraction.js';
-import ToastrIcons from '../components/toastr/ToastrIcons';
 
+import ToastrIcons from '$components/toastr/ToastrIcons';
 import {Breakpoints} from '$src/foundation/enums';
+
+import type {Attributes} from '$src/types';
 
 /* global API_URL */
 
@@ -155,7 +157,7 @@ export const setPageTitle = (title: string) => {
 
 /**
  * Generate formData from fields
- * @param formDataf
+ * @param formData
  * @param data
  * @param previousKey
  * @returns {*}
@@ -218,7 +220,7 @@ export const fixedLengthNumber = (value: ?number, length: number = 2) => {
 
 export const getEpochTime = () => Math.round(new Date().getTime()/1000.0);
 
-export const formatDate = (date: string) => {
+export const formatDate = (date: ?string) => {
   if (!date) return '';
 
   const d = isNumber(date) ? moment.unix(date) : moment(date);
@@ -333,44 +335,6 @@ export const getFractionFromFloat = (float: number) => new Fraction(float).toFra
 // TODO: Only if the rent-type is fixed (monthly)
 export const getTenantsYearlyShare = ({share}: any, rents: Array<Object>) => (getFullRent(rents) * 12) * parseFloat(share);
 
-export const addEmptyOption = (options: Array<Object>) =>
-  [{value: '', label: ''}, ...options];
-
-/**
- * Get options for attribute field
- * @param attributes
- * @param path
- */
-export const getAttributeFieldOptions = (attributes: Object, path: string, addEmpty: boolean = true, showValue: boolean = false) => {
-  const results = get(attributes, `${path}.choices`, []).map((item) => {
-    return {
-      value: item.value,
-      label: showValue ? `${item.display_name} (${item.value})`: item.display_name,
-    };
-  });
-
-  if(addEmpty) {return addEmptyOption(results);}
-  return results;
-};
-
-/**
- * Get options for attribute field
- * @param attributes
- * @param addEmpty
- * @param showValue
- */
-export const getFieldOptions = (fieldAttributes: Object, addEmpty: boolean = true, showValue: boolean = false) => {
-  const results = get(fieldAttributes, `choices`, []).map((item) => {
-    return {
-      value: item.value,
-      label: showValue ? `${item.display_name} (${item.value})`: item.display_name,
-    };
-  });
-
-  if(addEmpty) {return addEmptyOption(results);}
-  return results;
-};
-
 export const sortNumberByKeyAsc = (a: Object, b: Object, key: string) => {
   const keyA = get(a, key),
     keyB = get(b, key);
@@ -431,12 +395,6 @@ export const sortByLabelAsc = (a: Object, b: Object) =>
 
 export const sortByLabelDesc = (a: Object, b: Object) =>
   sortStringByKeyDesc(a, b, 'label');
-
-export const sortByStartDateDesc = (a: Object, b: Object) =>
-  sortStringByKeyDesc(a, b, 'start_date');
-
-export const sortByDueDateDesc = (a: Object, b: Object) =>
-  sortStringByKeyDesc(a, b, 'due_date');
 
 const getFileNameByContentDisposition = (contentDisposition) => {
   const regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
@@ -503,3 +461,84 @@ export const copyElementContentsToClipboard = (el: any) => {
   }
   return true;
 };
+
+/**
+ * Add an empty option to an array
+ * @param options
+ * @returns {[]}
+ */
+export const addEmptyOption = (options: Array<Object>) => [{value: '', label: ''}, ...options];
+
+/**
+ * Check is field required
+ * @param attributes
+ * @param field
+ * @returns {boolean}
+ */
+
+export const isFieldRequired = (attributes: Attributes, field: string) =>
+  get(attributes, `${field}.required`) ? true : false;
+
+/**
+* Check has user write permissions to field
+* @param attributes
+* @param field
+* @returns {boolean}
+*/
+
+export const isFieldAllowedToEdit = (attributes: Attributes, field: string) =>
+  get(attributes, `${field}.read_only`) === false ? true : false;
+
+
+/**
+ * Check has user read permissions to field
+ * @param attributes
+ * @param field
+ * @returns {boolean}
+ */
+
+export const isFieldAllowedToRead = (attributes: Attributes, field: string) =>
+  get(attributes, field) ? true : false;
+
+/**
+ * Get options for attribute field
+ * @param fieldAttributes
+ * @param addEmpty
+ * @param optionRenderer
+ * @param sortFn
+ */
+export const getFieldAttributeOptions = (fieldAttributes: Object, addEmpty: boolean = true, optionRenderer?: ?Function, sortFn?: Function) => {
+  const options = get(fieldAttributes, `choices`, []).map((item) => ({
+    value: item.value,
+    label: optionRenderer ? optionRenderer(item) : item.display_name,
+  }));
+
+  if(sortFn) {
+    options.sort(sortFn);
+  }
+
+  if(addEmpty) return addEmptyOption(options);
+
+  return options;
+};
+
+/**
+ * Get options for attributes by path
+ * @param attributes
+ * @param path
+ * @param addEmpty
+ * @param optionRenderer
+ * @param sortFn
+ */
+export const getFieldOptions = (attributes: Attributes, path: string, addEmpty: boolean = true, optionRenderer?: ?Function, sortFn?: Function) => {
+  return getFieldAttributeOptions(getFieldAttributes(attributes, path), addEmpty, optionRenderer, sortFn);
+};
+
+/**
+* Get attributes of a field
+* @param attributes
+* @param path
+* @returns {boolean}
+*/
+
+export const getFieldAttributes = (attributes: Attributes, path: string) => get(attributes, path);

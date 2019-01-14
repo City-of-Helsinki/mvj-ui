@@ -2,9 +2,8 @@
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
 
-import callUploadRequest from '$src/api/callUploadRequest';
 
-import type {InfillDevelopment, InfillDevelopmentId, InfillDevelopmentFileData} from './types';
+import type {InfillDevelopment, InfillDevelopmentId} from './types';
 
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`infill_development_compensation/`), {method: 'OPTIONS'}));
@@ -35,20 +34,4 @@ export const editInfillDevelopment = (infillDevelopment: InfillDevelopment): Gen
     method: 'PATCH',
     body,
   }));
-};
-
-export const uploadInfillDevelopmentFile = (data: InfillDevelopmentFileData): Generator<any, any, any> => {
-  const formData = new FormData();
-  formData.append('file', data.file);
-  formData.append('data', JSON.stringify(data.data));
-
-  const body = formData;
-  return callUploadRequest(new Request(createUrl('infill_development_compensation_attachment/'), {
-    method: 'POST',
-    body,
-  }));
-};
-
-export const deleteInfillDevelopmentFile = (fileId: number): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`infill_development_compensation_attachment/${fileId}/`), {method: 'DELETE'}));
 };

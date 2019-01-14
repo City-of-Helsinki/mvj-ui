@@ -10,3 +10,7 @@ export type Action<Type: string, Payload> = {
 export type Reducer<State> = (state: State, action: any) => State
 
 export type Selector<Value, Props> = (state: RootState, props: Props) => Value;
+
+export type Attributes = Object;
+
+export type Methods = Object;

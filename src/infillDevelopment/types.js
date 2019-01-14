@@ -1,24 +1,28 @@
 // @flow
-import type {Action} from '../types';
+import type {Action, Attributes, Methods} from '../types';
 
-export type Attributes = Object;
-export type InfillDevelopmentState = Object;
+export type InfillDevelopmentState = {
+  attributes: Attributes,
+  collapseStates: Object,
+  current: InfillDevelopment,
+  initialValues: InfillDevelopment,
+  isFormValidById: Object,
+  isEditMode: boolean,
+  isFetching: boolean,
+  isFetchingAttributes: boolean,
+  isSaveClicked: boolean,
+  isSaving: boolean,
+  list: InfillDevelopmentList,
+  methods: Methods,
+};
 export type InfillDevelopmentId = number;
 export type InfillDevelopment = Object;
 export type InfillDevelopmentList = Object;
-export type InfillDevelopmentFileData = {
-  id: InfillDevelopmentId,
-  data: Object,
-  file: Object,
-}
-
-export type InfillDevelopmentFileDeleteObj = {
-  id: InfillDevelopmentId,
-  fileId: number,
-}
 
 export type FetchAttributesAction = Action<'mvj/infillDevelopment/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/infillDevelopment/RECEIVE_ATTRIBUTES', Attributes>;
+export type ReceiveMethodsAction = Action<'mvj/infillDevelopment/RECEIVE_METHODS', Methods>;
+export type InfillDevelopmentAttributesNotFoundAction = Action<'mvj/infillDevelopment/ATTRIBUTES_NOT_FOUND', void>;
 
 export type FetchInfillDevelopmentListAction = Action<'mvj/infillDevelopment/FETCH_ALL', string>;
 export type ReceiveInfillDevelopmentListAction = Action<'mvj/infillDevelopment/RECEIVE_ALL', InfillDevelopmentList>;
@@ -27,8 +31,6 @@ export type ReceiveSingleInfillDevelopmentAction = Action<'mvj/infillDevelopment
 
 export type CreateInfillDevelopmentAction = Action<'mvj/infillDevelopment/CREATE', InfillDevelopment>;
 export type EditInfillDevelopmentAction = Action<'mvj/infillDevelopment/EDIT', InfillDevelopment>;
-export type UploadInfillDevelopmentFileAction = Action<'mvj/infillDevelopment/UPLOAD_FILE', InfillDevelopmentFileData>;
-export type DeleteInfillDevelopmentFileAction = Action<'mvj/infillDevelopment/DELETE_FILE', InfillDevelopmentFileDeleteObj>;
 
 export type InfillDevelopmentNotFoundAction = Action<'mvj/infillDevelopment/NOT_FOUND', void>;
 

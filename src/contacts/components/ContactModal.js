@@ -4,14 +4,20 @@ import {connect} from 'react-redux';
 
 import Button from '$components/button/Button';
 import ContactForm from './forms/ContactForm';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBox from '$components/content/GreenBox';
 import Modal from '$components/modal/Modal';
 import {ButtonColors} from '$components/enums';
-import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
+import {
+  getIsContactFormValid,
+  getIsSaveClicked,
+  getMethods as getContactMethods,
+} from '$src/contacts/selectors';
 
+import type {Methods} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
+  contactMethods: Methods,
   isContactFormValid: boolean,
   isOpen: boolean,
   isSaveClicked: boolean,
@@ -25,6 +31,7 @@ type Props = {
 }
 
 const ContactModal = ({
+  contactMethods,
   isContactFormValid,
   isOpen,
   isSaveClicked,
@@ -45,13 +52,10 @@ const ContactModal = ({
         title={title || 'Uusi asiakas'}
       >
         <div>
-          <GreenBoxEdit
-            className='no-margin'
-          >
-            {isOpen &&
-              <ContactForm isFocusedOnMount/>
-            }
-          </GreenBoxEdit>
+          <GreenBox className='no-margin'>
+            {isOpen && <ContactForm isFocusedOnMount/>}
+          </GreenBox>
+
           <div className='button-wrapper'>
             <Button
               className={ButtonColors.SECONDARY}
@@ -61,7 +65,7 @@ const ContactModal = ({
             {showSave &&
               <Button
                 className={ButtonColors.SUCCESS}
-                disabled={isSaveClicked && !isContactFormValid}
+                disabled={!contactMethods.PATCH || isSaveClicked && !isContactFormValid}
                 onClick={onSave}
                 text='Tallenna'
               />
@@ -69,7 +73,7 @@ const ContactModal = ({
             {showSaveAndAdd &&
               <Button
                 className={ButtonColors.SUCCESS}
-                disabled={isSaveClicked && !isContactFormValid}
+                disabled={!contactMethods.POST || (isSaveClicked && !isContactFormValid)}
                 onClick={onSaveAndAdd}
                 text='Tallenna ja Lisää'
               />
@@ -83,6 +87,7 @@ const ContactModal = ({
 
 const mapStateToProps = (state: RootState) => {
   return {
+    contactMethods: getContactMethods(state),
     isContactFormValid: getIsContactFormValid(state),
     isSaveClicked: getIsSaveClicked(state),
   };

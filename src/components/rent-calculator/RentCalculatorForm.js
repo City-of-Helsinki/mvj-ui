@@ -11,13 +11,18 @@ import {FormNames, RentCalculatorTypes} from '$components/enums';
 import {validateRentCalculatorForm} from '$components/formValidations';
 import {formatDateRange} from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
-import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
+import {
+  getBillingPeriodsByLease,
+  getMethods as getBillingPeriodMethods,
+} from '$src/billingPeriods/selectors';
 
+import type {Methods} from '$src/types';
 import type {BillingPeriodList} from '$src/billingPeriods/types';
 
 type Props = {
-  billingPeriods: BillingPeriodList,
   billingPeriod: ?number,
+  billingPeriods: BillingPeriodList,
+  billingPeriodMethods: Methods,
   change: Function,
   onSubmit: Function,
   showErrors: boolean,
@@ -31,9 +36,7 @@ type State = {
 }
 
 const getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
-  if(!billingPeriods || !billingPeriods.length) {
-    return [];
-  }
+  if(!billingPeriods || !billingPeriods.length) return [];
 
   return billingPeriods.map((item, index) => {
     return {
@@ -53,6 +56,7 @@ class RentCalculatorForm extends Component<Props, State> {
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
+
     if(props.billingPeriods !== state.billingPeriods) {
       newState.billingPeriods = props.billingPeriods;
       newState.billingPeriodOptions = getBillingPeriodsOptions(props.billingPeriods);
@@ -103,9 +107,115 @@ class RentCalculatorForm extends Component<Props, State> {
     e.preventDefault();
   }
 
-  render() {
-    const {showErrors, type} = this.props;
+  getRequestOptions = () => {
+    const {billingPeriodMethods, showErrors, type} = this.props;
     const {billingPeriodOptions} = this.state;
+    const options = [];
+
+    options.push({
+      value: RentCalculatorTypes.YEAR,
+      label: 'Vuosi',
+      labelStyles: {minWidth: '115px'},
+      field: <FormField
+        fieldAttributes={{
+          label: 'Vuosi',
+          type: 'string',
+          read_only: false,
+        }}
+        name='year'
+        disabled={type !== RentCalculatorTypes.YEAR}
+        disableDirty
+        invisibleLabel
+      />,
+      fieldStyles: {width: '180px'},
+      errorField: <Field
+        name='yearErrors'
+        component={ErrorField}
+        showError={showErrors}
+        style={{marginTop: '-10px'}}
+      />,
+      errorFieldStyles: {width: '180px'},
+    });
+
+    options.push({
+      value: RentCalculatorTypes.RANGE,
+      label: 'Aikaväli',
+      labelStyles: {minWidth: '115px'},
+      field: <Row>
+        <Column small={6}>
+          <FormField
+            fieldAttributes={{
+              label: 'Alkupvm',
+              type: 'date',
+              read_only: false,
+            }}
+            name='billing_start_date'
+            disabled={type !== RentCalculatorTypes.RANGE}
+            disableDirty
+            invisibleLabel
+          />
+        </Column>
+        <Column small={6}>
+          <FormField
+            className='with-dash'
+            fieldAttributes={{
+              label: 'Loppupvm',
+              type: 'date',
+              read_only: false,
+            }}
+            name='billing_end_date'
+            disabled={type !== RentCalculatorTypes.RANGE}
+            disableDirty
+            invisibleLabel
+          />
+        </Column>
+      </Row>,
+      fieldStyles: {width: '180px'},
+      errorField: <Field
+        name='rangeErrors'
+        component={ErrorField}
+        showError={showErrors}
+        style={{marginTop: '-10px'}}
+      />,
+      errorFieldStyles: {width: '180px'},
+    });
+
+    if(billingPeriodMethods.GET) {
+      options.push({
+        value: RentCalculatorTypes.BILLING_PERIOD,
+        label: 'Laskutuskausi',
+        labelStyles: {minWidth: '115px'},
+        field: <FormField
+          fieldAttributes={{
+            label: 'Laskutuskausi',
+            type: 'choice',
+            read_only: false,
+          }}
+          name='billing_period'
+          disabled={type !== RentCalculatorTypes.BILLING_PERIOD}
+          disableDirty
+          disableTouched={showErrors}
+          invisibleLabel
+          overrideValues={{
+            options: billingPeriodOptions,
+          }}
+        />,
+        fieldStyles: {width: '180px'},
+        errorField: <Field
+          name='billingPeriodErrors'
+          component={ErrorField}
+          showError={true}
+          style={{marginTop: '-10px'}}
+        />,
+        errorFieldStyles: {width: '180px'},
+      });
+    }
+
+    return options;
+  }
+
+  render() {
+    const requestOptions = this.getRequestOptions();
 
     return (
       <div onSubmit={this.handleSubmit}>
@@ -116,103 +226,13 @@ class RentCalculatorForm extends Component<Props, State> {
                 label: 'Laskelman tyyppi',
                 type: 'radio-with-field',
                 required: true,
+                read_only: false,
               }}
               name='type'
               invisibleLabel
               disableDirty
               overrideValues={{
-                options: [
-                  {
-                    value: RentCalculatorTypes.YEAR,
-                    label: 'Vuosi',
-                    labelStyles: {minWidth: '115px'},
-                    field: <FormField
-                      fieldAttributes={{
-                        label: 'Vuosi',
-                        type: 'string',
-                      }}
-                      name='year'
-                      disabled={type !== RentCalculatorTypes.YEAR}
-                      disableDirty
-                      invisibleLabel
-                    />,
-                    fieldStyles: {width: '180px'},
-                    errorField: <Field
-                      name='yearErrors'
-                      component={ErrorField}
-                      showError={showErrors}
-                      style={{marginTop: '-10px'}}
-                    />,
-                    errorFieldStyles: {width: '180px'},
-                  },
-                  {
-                    value: RentCalculatorTypes.RANGE,
-                    label: 'Aikaväli',
-                    labelStyles: {minWidth: '115px'},
-                    field: <Row>
-                      <Column small={6}>
-                        <FormField
-                          fieldAttributes={{
-                            label: 'Alkupvm',
-                            type: 'date',
-                          }}
-                          name='billing_start_date'
-                          disabled={type !== RentCalculatorTypes.RANGE}
-                          disableDirty
-                          invisibleLabel
-                        />
-                      </Column>
-                      <Column small={6}>
-                        <FormField
-                          className='with-dash'
-                          fieldAttributes={{
-                            label: 'Loppupvm',
-                            type: 'date',
-                          }}
-                          name='billing_end_date'
-                          disabled={type !== RentCalculatorTypes.RANGE}
-                          disableDirty
-                          invisibleLabel
-                        />
-                      </Column>
-                    </Row>,
-                    fieldStyles: {width: '180px'},
-                    errorField: <Field
-                      name='rangeErrors'
-                      component={ErrorField}
-                      showError={showErrors}
-                      style={{marginTop: '-10px'}}
-                    />,
-                    errorFieldStyles: {width: '180px'},
-                  },
-                  {
-                    value: RentCalculatorTypes.BILLING_PERIOD,
-                    label: 'Laskutuskausi',
-                    labelStyles: {minWidth: '115px'},
-                    field: <FormField
-                      fieldAttributes={{
-                        label: 'Laskutuskausi',
-                        type: 'choice',
-                      }}
-                      name='billing_period'
-                      disabled={type !== RentCalculatorTypes.BILLING_PERIOD}
-                      disableDirty
-                      disableTouched={showErrors}
-                      invisibleLabel
-                      overrideValues={{
-                        options: billingPeriodOptions,
-                      }}
-                    />,
-                    fieldStyles: {width: '180px'},
-                    errorField: <Field
-                      name='billingPeriodErrors'
-                      component={ErrorField}
-                      showError={true}
-                      style={{marginTop: '-10px'}}
-                    />,
-                    errorFieldStyles: {width: '180px'},
-                  },
-                ],
+                options: requestOptions,
               }}
             />
           </Column>
@@ -233,6 +253,7 @@ export default flowRight(
       return {
         billingPeriod: selector(state, 'billing_period'),
         billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
+        billingPeriodMethods: getBillingPeriodMethods(state),
         type: selector(state, 'type'),
       };
     },
