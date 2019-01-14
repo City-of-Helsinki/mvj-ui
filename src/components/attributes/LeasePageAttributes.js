@@ -38,7 +38,7 @@ import {
 } from '$src/collectionLetter/selectors';
 import {
   getAttributes as getCollectionNoteAttributes,
-  getIsFetchingAttributes as getIsFetchignCollectionNoteAttributes,
+  getIsFetchingAttributes as getIsFetchingCollectionNoteAttributes,
   getMethods as getCollectionNoteMethods,
 } from '$src/collectionNote/selectors';
 import {
@@ -410,7 +410,7 @@ const withLeasePageAttributes = flowRight(
         isFetchingBillingPeriodAttributes: getIsFetchingBillingPeriodAttributes(state),
         isFetchingCollectionCourtDecisionAttributes: getIsFetchingCollectionCourtDecisionAttributes(state),
         isFetchingCollectionLetterAttributes: getIsFetchignCollectionLetterAttributes(state),
-        isFetchingCollectionNoteAttributes: getIsFetchignCollectionNoteAttributes(state),
+        isFetchingCollectionNoteAttributes: getIsFetchingCollectionNoteAttributes(state),
         isFetchingCommentAttributes: getIsFetchingCommentAttributes(state),
         isFetchingCopyAreasToContractAttributes: getIsFetchingCopyAreasToContractAttributes(state),
         isFetchingCreateCollectionLetterAttributes: getIsFetchignCreateCollectionLetterAttributes(state),

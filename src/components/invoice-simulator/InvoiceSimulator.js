@@ -14,6 +14,7 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {fetchPreviewInvoices} from '$src/previewInvoices/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {ButtonColors, FormNames} from '$components/enums';
+import {InvoiceFieldPaths, InvoiceRowsFieldPaths} from '../../invoices/enums';
 import {getContentPreviewInvoiceBillingPeriods} from '$components/helpers';
 import {getFieldOptions} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -60,8 +61,8 @@ class InvoiceSimulator extends Component<Props, State> {
 
     if(props.invoiceAttributes !== state.invoiceAttributes) {
       newState.invoiceAttributes = props.invoiceAttributes;
-      newState.invoiceReceivableTypeOptions = getFieldOptions(props.invoiceAttributes, 'rows.child.children.receivable_type', false);
-      newState.invoiceTypeOptions = getFieldOptions(props.invoiceAttributes, 'type', false);
+      newState.invoiceReceivableTypeOptions = getFieldOptions(props.invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE, false);
+      newState.invoiceTypeOptions = getFieldOptions(props.invoiceAttributes, InvoiceFieldPaths.TYPE, false);
     }
 
     if(props.previewInvoices !== state.previewInvoices) {
