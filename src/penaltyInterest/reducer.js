@@ -12,20 +12,20 @@ import type {
 } from '$src/penaltyInterest/types';
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
-  'mvj/setInvoicingState/FETCH_ATTRIBUTES': () => true,
-  'mvj/setInvoicingState/RECEIVE_ATTRIBUTES': () => false,
-  'mvj/setInvoicingState/RECEIVE_METHODS': () => false,
-  'mvj/setInvoicingState/ATTRIBUTES_NOT_FOUND': () => false,
+  'mvj/penaltyInterest/FETCH_ATTRIBUTES': () => true,
+  'mvj/penaltyInterest/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/penaltyInterest/RECEIVE_METHODS': () => false,
+  'mvj/penaltyInterest/ATTRIBUTES_NOT_FOUND': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/setInvoicingState/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
+  ['mvj/penaltyInterest/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes || {};
   },
 }, {});
 
 const methodsReducer: Reducer<Methods> = handleActions({
-  ['mvj/setInvoicingState/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+  ['mvj/penaltyInterest/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
     return methods || {};
   },
 }, {});
