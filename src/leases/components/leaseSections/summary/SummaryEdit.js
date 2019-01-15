@@ -21,6 +21,7 @@ import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {FieldTypes} from '$components/enums';
 import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
 import {getContentSummary} from '$src/leases/helpers';
@@ -191,7 +192,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.LESSOR)}
                       name='lessor'
                       overrideValues={{
-                        fieldType: 'lessor',
+                        fieldType: FieldTypes.LESSOR,
                         label: LeaseFieldTitles.LESSOR,
                       }}
                     />
@@ -204,7 +205,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.PREPARER)}
                       name='preparer'
                       overrideValues={{
-                        fieldType: 'user',
+                        fieldType: FieldTypes.USER,
                         label: LeaseFieldTitles.PREPARER,
                       }}
                     />

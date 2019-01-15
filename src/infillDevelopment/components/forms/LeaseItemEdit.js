@@ -27,7 +27,7 @@ import {receiveCollapseStates} from '$src/infillDevelopment/actions';
 import {createInfillDevelopmentAttachment, deleteInfillDevelopmentAttachment} from '$src/infillDevelopmentAttachment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
@@ -534,7 +534,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}
                   name={`${field}.lease`}
                   overrideValues={{
-                    fieldType: 'lease',
+                    fieldType: FieldTypes.USER,
                     label: InfillDevelopmentCompensationLeasesFieldTitles.LEASE,
                   }}
                 />

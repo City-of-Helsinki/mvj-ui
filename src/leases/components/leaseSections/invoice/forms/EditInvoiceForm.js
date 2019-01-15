@@ -17,7 +17,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   InvoiceCreditInvoicesFieldPaths,
   InvoiceCreditInvoicesFieldTitles,
@@ -386,7 +386,7 @@ const EditInvoiceForm = ({
               name='notes'
               overrideValues={{
                 label: InvoiceFieldTitles.NOTES,
-                fieldType: 'textarea',
+                fieldType: FieldTypes.TEXTAREA,
               }}
             />
           </Authorization>

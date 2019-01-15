@@ -16,6 +16,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/constants';
+import {FieldTypes} from '$components/enums';
 import {
   FixedDueDates,
   FormNames,
@@ -403,7 +404,7 @@ const BasicInfoIndex = ({
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}
                 name='due_dates_per_year'
                 overrideValues={{
-                  fieldType: 'choice',
+                  fieldType: FieldTypes.CHOICE,
                   label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
                   options: rentCustomDateOptions,
                 }}
@@ -644,7 +645,7 @@ const BasicInfoFixed = ({
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}
                 name='due_dates_per_year'
                 overrideValues={{
-                  fieldType: 'choice',
+                  fieldType: FieldTypes.CHOICE,
                   label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
                   options: rentCustomDateOptions,
                 }}

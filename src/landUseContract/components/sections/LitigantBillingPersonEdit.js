@@ -21,6 +21,7 @@ import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
+import {FieldTypes} from '$components/enums';
 import {FormNames} from '$src/landUseContract/enums';
 import {isLitigantActive} from '$src/landUseContract/helpers';
 import {findItemById} from '$util/helpers';
@@ -123,7 +124,7 @@ const LitigantBillingPersonEdit = ({
                       fieldAttributes={get(attributes, 'litigants.child.children.litigantcontact_set.child.children.contact')}
                       name={`${field}.contact`}
                       overrideValues={{
-                        fieldType: 'contact',
+                        fieldType: FieldTypes.CONTACT,
                         label: 'Asiakas',
                       }}
                     />

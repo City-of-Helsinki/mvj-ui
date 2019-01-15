@@ -7,6 +7,7 @@ import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 
 import FormField from '$components/form/FormField';
+import {FieldTypes} from '$components/enums';
 import {FormNames} from '$src/contacts/enums';
 
 type Props = {
@@ -63,7 +64,7 @@ class Search extends PureComponent<Props> {
               disableDirty
               fieldAttributes={{
                 label: 'Hae hakusanalla',
-                type: 'search',
+                type: FieldTypes.SEARCH,
                 read_only: false,
               }}
               invisibleLabel

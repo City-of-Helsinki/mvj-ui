@@ -25,7 +25,7 @@ import FieldTypeUserSelect from './FieldTypeUserSelect';
 import FormFieldLabel from './FormFieldLabel';
 import FormText from './FormText';
 import FormTextTitle from './FormTextTitle';
-import {FieldTypes as FieldTypeOptions} from '$src/enums';
+import {FieldTypes as FieldTypeOptions} from '$components/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
   formatDate,

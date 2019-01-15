@@ -17,8 +17,10 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
+import ExternalLink from '$components/links/ExternalLink';
 import OtherTenantItemEdit from './OtherTenantItemEdit';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
@@ -27,7 +29,7 @@ import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
@@ -41,6 +43,7 @@ import {
 import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired} from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -188,6 +191,19 @@ const TenantItemEdit = ({
     });
   };
 
+  const contactReadOnlyRenderer = (value: ?Object) => {
+    return <FormText>
+      {value
+        ? <ExternalLink
+          className='no-margin'
+          href={`${getRouteById(Routes.CONTACTS)}/${value.id}`}
+          text={getContactFullName(value)}
+        />
+        : '-'
+      }
+    </FormText>;
+  };
+
   const savedTenant = getTenantById(tenantId);
   const isActive = isTenantActive(get(savedTenant, 'tenant'));
   const tenantErrors = get(errors, field);
@@ -202,29 +218,30 @@ const TenantItemEdit = ({
           {getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}
         </Authorization>
       }
-      onRemove={isFieldAllowedToEdit(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET) ? onRemove : null}
+      onRemove={isFieldAllowedToEdit(attributes, LeaseTenantsFieldPaths.TENANTS) ? onRemove : null}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
         <FormWrapper>
           <FormWrapperLeft>
             <Row>
-              <Column small={12} large={8}>
+              <Column small={12}>
                 <Row>
-                  <Column small={9} medium={8} large={8}>
+                  <Column small={9} medium={8}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={getFieldAttributes(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}
                         name={`${field}.tenant.contact`}
+                        readOnlyValueRenderer={contactReadOnlyRenderer}
                         overrideValues={{
-                          fieldType: 'contact',
+                          fieldType: FieldTypes.CONTACT,
                           label: LeaseTenantContactSetFieldTitles.CONTACT,
                         }}
                       />
                     </Authorization>
                   </Column>
-                  <Column small={3} medium={4} large={4}>
+                  <Column small={3} medium={4}>
                     <Authorization allow={contactMethods.POST}>
                       <div className='contact-buttons-wrapper'>
                         <AddButtonThird

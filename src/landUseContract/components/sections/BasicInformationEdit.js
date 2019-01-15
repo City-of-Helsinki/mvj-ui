@@ -20,7 +20,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
@@ -176,7 +176,7 @@ class BasicInformationEdit extends Component<Props> {
                 invisibleLabel
                 name='preparer'
                 overrideValues={{
-                  fieldType: 'user',
+                  fieldType: FieldTypes.USER,
                   label: 'Valmistelija 1',
                 }}
               />
@@ -186,7 +186,7 @@ class BasicInformationEdit extends Component<Props> {
                 invisibleLabel
                 name='preparer2'
                 overrideValues={{
-                  fieldType: 'user',
+                  fieldType: FieldTypes.USER,
                   label: 'Valmistelija 2',
                 }}
               />

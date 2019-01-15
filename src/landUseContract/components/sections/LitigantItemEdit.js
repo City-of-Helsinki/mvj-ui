@@ -26,7 +26,7 @@ import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isLitigantActive} from '$src/landUseContract/helpers';
@@ -186,7 +186,7 @@ const LitigantItemEdit = ({
                       fieldAttributes={get(attributes, 'litigants.child.children.litigantcontact_set.child.children.contact')}
                       name={`${field}.litigant.contact`}
                       overrideValues={{
-                        fieldType: 'contact',
+                        fieldType: FieldTypes.CONTACT,
                         label: 'Asiakas',
                       }}
                     />

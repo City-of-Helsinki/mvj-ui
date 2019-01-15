@@ -18,7 +18,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
@@ -446,7 +446,7 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER)}
                 name={`${field}.polluted_land_planner`}
                 overrideValues={{
-                  fieldType: 'user',
+                  fieldType: FieldTypes.USER,
                   label: LeaseAreasFieldTitles.POLLUTED_LAND_PLANNER,
                 }}
               />
