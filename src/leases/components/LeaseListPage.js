@@ -48,7 +48,7 @@ import {
   getSearchQuery,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getIsFetching, getLeasesList} from '$src/leases/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -107,7 +107,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('leases'),
+      linkUrl: getRouteById(Routes.LEASES),
       pageTitle: 'Vuokraukset',
       showSearch: false,
     });
@@ -203,7 +203,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     this.setState({activePage: 1});
 
     return router.push({
-      pathname: getRouteById('leases'),
+      pathname: getRouteById(Routes.LEASES),
       query,
     });
   }
@@ -213,7 +213,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {location: {query}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('leases')}/${id}`,
+      pathname: `${getRouteById(Routes.LEASES)}/${id}`,
       query,
     });
   };
@@ -231,7 +231,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     this.setState({activePage: page});
 
     return router.push({
-      pathname: getRouteById('leases'),
+      pathname: getRouteById(Routes.LEASES),
       query,
     });
   }

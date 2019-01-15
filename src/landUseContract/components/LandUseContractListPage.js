@@ -25,7 +25,7 @@ import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContr
 import {FormNames} from '$src/landUseContract/enums';
 import {getContentLandUseContractList} from '$src/landUseContract/helpers';
 import {getFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/types';
@@ -81,7 +81,7 @@ class LandUseContractListPage extends Component<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('landUseContract'),
+      linkUrl: getRouteById(Routes.LAND_USE_CONTRACTS),
       pageTitle: 'Maankäyttösopimukset',
       showSearch: false,
     });
@@ -168,7 +168,7 @@ class LandUseContractListPage extends Component<Props, State> {
     delete query.page;
 
     return router.push({
-      pathname: getRouteById('landUseContract'),
+      pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
       query,
     });
   }
@@ -194,7 +194,7 @@ class LandUseContractListPage extends Component<Props, State> {
     const {location: {query}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('landUseContract')}/${id}`,
+      pathname: `${getRouteById(Routes.LAND_USE_CONTRACTS)}/${id}`,
       query,
     });
   };
@@ -210,7 +210,7 @@ class LandUseContractListPage extends Component<Props, State> {
     }
 
     return router.push({
-      pathname: getRouteById('landUseContract'),
+      pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
       query,
     });
   }

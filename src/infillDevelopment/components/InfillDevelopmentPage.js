@@ -43,7 +43,7 @@ import {
   getContentInfillDevelopmentForDb,
 } from '$src/infillDevelopment/helpers';
 import {isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
   getCurrentInfillDevelopment,
@@ -129,7 +129,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('infillDevelopment'),
+      linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
       pageTitle: 'Täydennysrakentamiskorvaukset',
       showSearch: false,
     });
@@ -199,7 +199,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
       router: {location: {pathname}},
     } = this.props;
 
-    if(pathname !== `${getRouteById('infillDevelopment')}/${infillDevelopmentId}`) {
+    if(pathname !== `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${infillDevelopmentId}`) {
       clearUnsavedChanges();
     }
 
@@ -294,7 +294,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     clearUnsavedChanges();
 
     return router.push({
-      pathname: getRouteById('newInfillDevelopment'),
+      pathname: getRouteById(Routes.INFILL_DEVELOPMENT_NEW),
       query,
     });
   }
@@ -307,7 +307,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     delete query.tab;
 
     return router.push({
-      pathname: `${getRouteById('infillDevelopment')}`,
+      pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}`,
       query,
     });
   }

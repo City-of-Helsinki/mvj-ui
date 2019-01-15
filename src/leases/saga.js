@@ -3,7 +3,7 @@ import {all, call, fork, put, select, takeEvery, takeLatest} from 'redux-saga/ef
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {
   fetchSingleLeaseAfterEdit,
   hideEditMode,
@@ -161,7 +161,7 @@ function* createLeaseSaga({payload: lease}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById('leases')}/${bodyAsJson.id}`));
+        yield put(push(`${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`));
         displayUIMessage({title: '', body: 'Vuokraus luotu'});
         break;
       case 400:

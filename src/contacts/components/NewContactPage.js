@@ -23,7 +23,7 @@ import {
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/contacts/enums';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -56,7 +56,7 @@ class NewContactPage extends Component<Props> {
 
     receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('contacts'),
+      linkUrl: getRouteById(Routes.CONTACTS),
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
@@ -87,7 +87,7 @@ class NewContactPage extends Component<Props> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('contacts')}`,
+      pathname: `${getRouteById(Routes.CONTACTS)}`,
       query,
     });
   }
@@ -95,7 +95,7 @@ class NewContactPage extends Component<Props> {
   cancelChanges = () => {
     const {router} = this.context;
     return router.push({
-      pathname: getRouteById('contacts'),
+      pathname: getRouteById(Routes.CONTACTS),
     });
   }
 

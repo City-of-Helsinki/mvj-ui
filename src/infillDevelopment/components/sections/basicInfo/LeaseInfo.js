@@ -12,7 +12,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {
   InfillDevelopmentCompensationLeasesFieldPaths,
   InfillDevelopmentCompensationLeasesFieldTitles,
@@ -70,7 +70,7 @@ const LeaseInfo = ({
           <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}>
             <FormTextTitle>{InfillDevelopmentCompensationLeasesFieldTitles.LEASE}</FormTextTitle>
             <ExternalLink
-              href={`${getRouteById('leases')}/${leaseId}`}
+              href={`${getRouteById(Routes.LEASES)}/${leaseId}`}
               text={identifier || '-'}
             />
           </Authorization>
@@ -86,7 +86,7 @@ const LeaseInfo = ({
                   <ListItem key={tenant.id}>
                     <ExternalLink
                       className='no-margin'
-                      href={`${getRouteById('contacts')}/${get(tenant, 'tenant.contact.id')}`}
+                      href={`${getRouteById(Routes.CONTACTS)}/${get(tenant, 'tenant.contact.id')}`}
                       text={getContactFullName(get(tenant, 'tenant.contact'))}
                     />
                   </ListItem>

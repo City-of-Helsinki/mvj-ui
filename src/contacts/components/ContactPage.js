@@ -28,7 +28,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/contacts/enums';
 import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {
   getCurrentContact,
   getIsContactFormValid,
@@ -91,8 +91,9 @@ class ContactPage extends Component<Props, State> {
     } = this.props;
 
     receiveIsSaveClicked(false);
+
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('contacts'),
+      linkUrl: getRouteById(Routes.CONTACTS),
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
@@ -126,7 +127,7 @@ class ContactPage extends Component<Props, State> {
       router: {location: {pathname}},
     } = this.props;
 
-    if(pathname !== `${getRouteById('contacts')}/${contactId}`) {
+    if(pathname !== `${getRouteById(Routes.CONTACTS)}/${contactId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
@@ -213,7 +214,7 @@ class ContactPage extends Component<Props, State> {
     clearUnsavedChanges();
 
     return router.push({
-      pathname: getRouteById('newContact'),
+      pathname: getRouteById(Routes.CONTACT_NEW),
       query,
     });
   }
@@ -228,7 +229,7 @@ class ContactPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('contacts')}`,
+      pathname: `${getRouteById(Routes.CONTACTS)}`,
       query,
     });
   }

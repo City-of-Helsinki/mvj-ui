@@ -21,7 +21,7 @@ import {
   fetchRentBasisList,
   fetchSingleRentBasis,
 } from './requests';
-import {getRouteById} from '../root/routes';
+import {getRouteById, Routes} from '../root/routes';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -92,7 +92,7 @@ function* createRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById('rentBasis')}/${bodyAsJson.id}`));
+        yield put(push(`${getRouteById(Routes.RENT_BASIS)}/${bodyAsJson.id}`));
         displayUIMessage({title: '', body: 'Vuokrausperuste luotu'});
         break;
       case 400:

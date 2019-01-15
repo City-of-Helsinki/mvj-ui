@@ -32,7 +32,7 @@ import {
   getLabelOfOption,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -101,7 +101,7 @@ const OtherTenantItem = ({
                   {contact
                     ? <ExternalLink
                       className='no-margin'
-                      href={`${getRouteById('contacts')}/${contact.id}`}
+                      href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`}
                       text={getContactFullName(contact)}
                     />
                     : '-'

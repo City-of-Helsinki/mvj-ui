@@ -18,7 +18,7 @@ import LoginPage from '../auth/components/LoginPage';
 import SideMenu from '$components/sideMenu/SideMenu';
 import TopNavigation from '$components/topNavigation/TopNavigation';
 import userManager from '../auth/util/user-manager';
-import {getRouteById} from '../root/routes';
+import {Routes, getRouteById} from '../root/routes';
 import {clearError} from '../api/actions';
 import {clearApiToken, fetchApiToken} from '../auth/actions';
 import {getEpochTime} from '$util/helpers';
@@ -162,7 +162,7 @@ class App extends Component<Props, State> {
           <LoginPage buttonDisabled={Boolean(isApiTokenFetching)}/>
           <Loader isLoading={Boolean(isApiTokenFetching)} />
 
-          {location.pathname === getRouteById('callback') && children}
+          {location.pathname === getRouteById(Routes.CALLBACK) && children}
         </div>
       );
     }

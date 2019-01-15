@@ -10,7 +10,7 @@ import SearchInput from '../inputs/SearchInput';
 import {CancelChangesModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 
 type Props = {
   isMenuOpen: boolean,
@@ -45,8 +45,9 @@ class TopNavigation extends Component<Props, State> {
 
     if(search) {
       const query = {search: search};
+
       return router.push({
-        pathname: getRouteById('leases'),
+        pathname: getRouteById(Routes.LEASES),
         query,
       });
     }

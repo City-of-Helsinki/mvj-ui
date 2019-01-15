@@ -25,7 +25,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/rentbasis/enums';
 import {formatRentBasisForDb} from '$src/rentbasis/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValid, getIsSaveClicked, getIsSaving} from '$src/rentbasis/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -61,8 +61,9 @@ class NewRentBasisPage extends Component<Props> {
     } = this.props;
 
     receiveIsSaveClicked(false);
+
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentBasis'),
+      linkUrl: getRouteById(Routes.RENT_BASIS),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -93,7 +94,7 @@ class NewRentBasisPage extends Component<Props> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('rentBasis')}`,
+      pathname: `${getRouteById(Routes.RENT_BASIS)}`,
       query,
     });
   }
@@ -102,7 +103,7 @@ class NewRentBasisPage extends Component<Props> {
     const {router} = this.context;
 
     return router.push({
-      pathname: getRouteById('rentBasis'),
+      pathname: getRouteById(Routes.RENT_BASIS),
     });
   }
 
@@ -126,7 +127,7 @@ class NewRentBasisPage extends Component<Props> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!rentBasisMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
+    if(!rentBasisMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
 
     return (
       <FullWidthContainer>

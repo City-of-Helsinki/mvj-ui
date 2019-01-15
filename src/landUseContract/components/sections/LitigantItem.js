@@ -12,7 +12,7 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatDate, formatNumber} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 
 type Props = {
   contact: ?Object,
@@ -46,7 +46,7 @@ const LitigantItem = ({
                 text={contact
                   ? <ExternalLink
                     className='no-margin'
-                    href={`${getRouteById('contacts')}/${contact.id}`}
+                    href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`}
                     text={getContactFullName(contact)}
                   />
                   : '-'

@@ -29,7 +29,7 @@ import {
   getReferenceNumberLink,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {
   getAttributes,
   getCollapseStateByKey,
@@ -114,6 +114,17 @@ class SummaryEdit extends PureComponent<Props, State> {
     this.setState({
       summary: getContentSummary(currentLease),
     });
+  }
+
+  referenceNumberReadOnlyRenderer = (value: ?string) => {
+    if(value) {
+      return <FormText><ExternalLink
+        className='no-margin'
+        href={getReferenceNumberLink(value)}
+        text={value} /></FormText>;
+    } else {
+      return <FormText>-</FormText>;
+    }
   }
 
   render () {
@@ -290,7 +301,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                           <ListItem key={item.id}>
                             <ExternalLink
                               className='no-margin'
-                              href={`${getRouteById('infillDevelopment')}/${item.id}`}
+                              href={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${item.id}`}
                               text={item.name || item.id}
                             />
                           </ListItem>
@@ -330,16 +341,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={get(attributes, LeaseFieldPaths.REFERENCE_NUMBER)}
                       name='reference_number'
                       validate={referenceNumber}
-                      readOnlyValueRenderer={(value) => {
-                        if(value) {
-                          return <FormText><ExternalLink
-                            className='no-margin'
-                            href={getReferenceNumberLink(value)}
-                            text={value} /></FormText>;
-                        } else {
-                          return <FormText>-</FormText>;
-                        }
-                      }}
+                      readOnlyValueRenderer={this.referenceNumberReadOnlyRenderer}
                       overrideValues={{label: LeaseFieldTitles.REFERENCE_NUMBER}}
                     />
                   </Authorization>

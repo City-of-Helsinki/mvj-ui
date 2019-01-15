@@ -29,7 +29,7 @@ import {
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -259,7 +259,7 @@ class Summary extends PureComponent<Props, State> {
                           <ListItem key={item.id}>
                             <ExternalLink
                               className='no-margin'
-                              href={`${getRouteById('infillDevelopment')}/${item.id}`}
+                              href={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${item.id}`}
                               text={item.name || item.id}
                             />
                           </ListItem>

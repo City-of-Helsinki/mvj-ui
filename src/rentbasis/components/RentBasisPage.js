@@ -42,7 +42,7 @@ import {
   getContentCopiedRentBasis,
   getContentRentBasis,
 } from '$src/rentbasis/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
   getIsEditMode,
@@ -121,7 +121,7 @@ class RentBasisPage extends Component<Props, State> {
     receiveIsSaveClicked(false);
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentBasis'),
+      linkUrl: getRouteById(Routes.RENT_BASIS),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -179,7 +179,7 @@ class RentBasisPage extends Component<Props, State> {
     } = this.props;
 
     hideEditMode();
-    if(pathname !== `${getRouteById('rentBasis')}/${rentBasisId}`) {
+    if(pathname !== `${getRouteById(Routes.RENT_BASIS)}/${rentBasisId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
@@ -261,7 +261,7 @@ class RentBasisPage extends Component<Props, State> {
     initializeRentBasis(rentBasis);
 
     return router.push({
-      pathname: getRouteById('newRentBasis'),
+      pathname: getRouteById(Routes.RENT_BASIS_NEW),
       query,
     });
   }
@@ -280,7 +280,7 @@ class RentBasisPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('rentBasis')}`,
+      pathname: `${getRouteById(Routes.RENT_BASIS)}`,
       query,
     });
   }

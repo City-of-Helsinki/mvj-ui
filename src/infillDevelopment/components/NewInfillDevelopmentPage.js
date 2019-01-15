@@ -25,7 +25,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValidById, getIsSaveClicked, getIsSaving} from '$src/infillDevelopment/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -63,7 +63,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('infillDevelopment'),
+      linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
       pageTitle: 'Täydennysrakantamiskorvaus',
       showSearch: false,
     });
@@ -98,7 +98,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('infillDevelopment')}`,
+      pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}`,
       query,
     });
   }
@@ -107,7 +107,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
     const {router} = this.context;
 
     return router.push({
-      pathname: getRouteById('infillDevelopment'),
+      pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
     });
   }
 
@@ -131,7 +131,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!infillDevelopmentMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
+    if(!infillDevelopmentMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
 
     return (
       <FullWidthContainer>

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 
 import ErrorBlock from './ErrorBlock';
+import ExternalLink from '$components/links/ExternalLink';
 import FieldTypeAddress from './FieldTypeAddress';
 import FieldTypeBasic from './FieldTypeBasic';
 import FieldTypeBoolean from './FieldTypeBoolean';
@@ -24,6 +25,7 @@ import FieldTypeUserSelect from './FieldTypeUserSelect';
 import FormFieldLabel from './FormFieldLabel';
 import FormText from './FormText';
 import FormTextTitle from './FormTextTitle';
+import {FieldTypes as FieldTypeOptions} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
   formatDate,
@@ -34,43 +36,35 @@ import {
 } from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {genericNormalizer} from './normalizers';
+import {getRouteById, Routes} from '$src/root/routes';
 import {genericValidator} from '../form/validations';
 
 const FieldTypes = {
-  'address': FieldTypeAddress,
-  'boolean': FieldTypeBoolean,
-  'choice': FieldTypeSelect,
-  'checkbox': FieldTypeCheckbox,
-  'checkbox-date-time': FieldTypeCheckboxDateTime,
-  'contact': FieldTypeContactSelect,
-  'date': FieldTypeDatePicker,
-  'decimal': FieldTypeDecimal,
-  'field': FieldTypeSelect,
-  'integer': FieldTypeBasic,
-  'lease': FieldTypeLeaseSelect,
-  'lessor': FieldTypeLessorSelect,
-  'multiselect': FieldTypeMultiSelect,
-  'radio-with-field': FieldTypeRadioWithField,
-  'search': FieldTypeSearch,
-  'string': FieldTypeBasic,
-  'textarea': FieldTypeTextArea,
-  'user': FieldTypeUserSelect,
+  [FieldTypeOptions.ADDRESS]: FieldTypeAddress,
+  [FieldTypeOptions.BOOLEAN]: FieldTypeBoolean,
+  [FieldTypeOptions.CHOICE]: FieldTypeSelect,
+  [FieldTypeOptions.CHECKBOX]: FieldTypeCheckbox,
+  [FieldTypeOptions.CHECKBOX_DATE_TIME]: FieldTypeCheckboxDateTime,
+  [FieldTypeOptions.CONTACT]: FieldTypeContactSelect,
+  [FieldTypeOptions.DATE]: FieldTypeDatePicker,
+  [FieldTypeOptions.DECIMAL]: FieldTypeDecimal,
+  [FieldTypeOptions.FIELD]: FieldTypeSelect,
+  [FieldTypeOptions.INTEGER]: FieldTypeBasic,
+  [FieldTypeOptions.LEASE]: FieldTypeLeaseSelect,
+  [FieldTypeOptions.LESSOR]: FieldTypeLessorSelect,
+  [FieldTypeOptions.MULTISELECT]: FieldTypeMultiSelect,
+  [FieldTypeOptions.RADIO_WITH_FIELD]: FieldTypeRadioWithField,
+  [FieldTypeOptions.SEARCH]: FieldTypeSearch,
+  [FieldTypeOptions.STRING]: FieldTypeBasic,
+  [FieldTypeOptions.TEXTAREA]: FieldTypeTextArea,
+  [FieldTypeOptions.USER]: FieldTypeUserSelect,
 };
 
 const Types = {
-  'boolean': null,
-  'choice': null,
-  'checkbox': null,
-  'date': null,
-  'decimal': 'text',
-  'field': null,
-  'integer': 'text',
-  'lessor': null,
-  'multiselect': null,
-  'string': 'text',
-  'switch': null,
-  'textarea': 'text',
-  'user': null,
+  [FieldTypeOptions.DECIMAL]: 'text',
+  [FieldTypeOptions.INTEGER]: 'text',
+  [FieldTypeOptions.STRING]: 'text',
+  [FieldTypeOptions.TEXTAREA]: 'text',
 };
 
 const resolveFieldType = (type: string): Object => FieldTypes.hasOwnProperty(type) ? FieldTypes[type] : FieldTypeBasic;
@@ -135,23 +129,31 @@ const FormFieldInput = ({
 }: InputProps) => {
   const getText = (type: string, value: any) => {
     switch (type) {
-      case 'boolean':
+      case FieldTypeOptions.BOOLEAN:
         return !isEmptyValue(value) ? value ? 'Kyllä' : 'Ei' : '-';
-      case 'choice':
-      case 'field':
+      case FieldTypeOptions.CHOICE:
+      case FieldTypeOptions.FIELD:
         return getLabelOfOption(options || [], value);
-      case 'date':
+      case FieldTypeOptions.DATE:
         return formatDate(value);
-      case 'integer':
-      case 'string':
+      case FieldTypeOptions.INTEGER:
+      case FieldTypeOptions.STRING:
         return isEmptyValue(value) ? value.toString() : value;
-      case 'decimal':
+      case FieldTypeOptions.DECIMAL:
         return !isEmptyValue(value)
           ? unit ? `${formatNumber(value)} ${unit}` : formatNumber(value)
           : '-';
-      case 'lessor':
+      case FieldTypeOptions.CONTACT:
+        return value
+          ? <ExternalLink
+            className='no-margin'
+            href={`${getRouteById(Routes.CONTACTS)}/${value.id}`}
+            text={getContactFullName(value)}
+          />
+          : '-';
+      case FieldTypeOptions.LESSOR:
         return getContactFullName(value);
-      case 'user':
+      case FieldTypeOptions.USER:
         return getUserFullName(value);
       default:
         return 'NOT IMPLEMENTED';

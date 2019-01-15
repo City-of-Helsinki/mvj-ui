@@ -58,8 +58,6 @@ const InvoiceRows = ({
     fields.push({});
   };
 
-  console.log(leaseCreateChargeAttributes);
-
   return (
     <AppConsumer>
       {({dispatch}) => {

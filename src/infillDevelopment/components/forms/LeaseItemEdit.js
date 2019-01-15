@@ -65,7 +65,7 @@ import {
   isTenantActive,
 } from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {
   getAttributes as getInfillDevelopmentAttributes,
   getCollapseStateByKey,
@@ -552,7 +552,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                       <ListItem key={tenant.id}>
                         <ExternalLink
                           className='no-margin'
-                          href={`${getRouteById('contacts')}/${get(tenant, 'tenant.contact.id')}`}
+                          href={`${getRouteById(Routes.CONTACTS)}/${get(tenant, 'tenant.contact.id')}`}
                           text={getContactFullName(get(tenant, 'tenant.contact'))}
                         />
                       </ListItem>
@@ -593,7 +593,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                 {!isFetching && !leaseId && <FormText>-</FormText>}
                 {!isFetching && leaseId &&
                   <ExternalLink
-                    href={`${getRouteById('leases')}/${leaseId}?tab=7`}
+                    href={`${getRouteById(Routes.LEASES)}/${leaseId}?tab=7`}
                     text='Karttalinkki'
                   />
                 }

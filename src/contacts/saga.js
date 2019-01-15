@@ -23,7 +23,7 @@ import {
   fetchContacts,
   fetchSingleContact,
 } from './requests';
-import {getRouteById} from '../root/routes';
+import {getRouteById, Routes} from '../root/routes';
 import {getContactModalSettings} from './selectors';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -98,7 +98,7 @@ function* createContactSaga({payload: contact}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById('contacts')}/${bodyAsJson.id}`));
+        yield put(push(`${getRouteById(Routes.CONTACTS)}/${bodyAsJson.id}`));
         displayUIMessage({title: '', body: 'Asiakas luotu'});
         break;
       case 400:

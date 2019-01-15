@@ -11,7 +11,7 @@ import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {formatDate, getLabelOfOption} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getMethods as getRelatedLeaseMethods} from '$src/relatedLease/selectors';
 
 import type {Methods} from '$src/types';
@@ -71,7 +71,7 @@ const RelatedLeaseItem = ({
                 <div className={classNames('related-leases-item_info')}>
                   <p className="identifier">
                     <ExternalLink
-                      href={`${getRouteById('leases')}/${lease.id}`}
+                      href={`${getRouteById(Routes.LEASES)}/${lease.id}`}
                       text={identifier || ''}
                     />
                   </p>

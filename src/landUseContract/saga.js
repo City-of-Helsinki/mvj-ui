@@ -9,7 +9,7 @@ import {
   receiveSingleLandUseContract,
 } from './actions';
 import {displayUIMessage} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import attributesMockData from './attributes-mock-data.json';
 import mockData from './mock-data.json';
 
@@ -35,7 +35,7 @@ function* fetchSingleLandUseContractSaga({payload: contractId}): Generator<any, 
 
 function* createLandUseContractSaga({payload: landUseContract}): Generator<any, any, any> {
   console.log(landUseContract);
-  yield put(push(`${getRouteById('landUseContract')}/1`));
+  yield put(push(`${getRouteById(Routes.LAND_USE_CONTRACTS)}/1`));
   displayUIMessage({title: '', body: 'Maankäyttösopimus luotu'});
 }
 
