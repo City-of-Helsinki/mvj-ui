@@ -16,7 +16,6 @@ import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
 import copyAreasToContractReducer from '$src/copyAreasToContract/reducer';
 import createCollectionLetterReducer from '$src/createCollectionLetter/reducer';
-import decisionsReducer from '../decision/reducer';
 import districtsReducer from '../district/reducer';
 import infillDevelopmentReducer from '$src/infillDevelopment/reducer';
 import infillDevelopmentAttachmentReducer from '$src/infillDevelopmentAttachment/reducer';
@@ -56,7 +55,6 @@ export default (): Reducer<RootState> =>
     contact: contactsReducer,
     copyAreasToContract: copyAreasToContractReducer,
     createCollectionLetter: createCollectionLetterReducer,
-    decision: decisionsReducer,
     district: districtsReducer,
     form: formReducer,
     infillDevelopment: infillDevelopmentReducer,

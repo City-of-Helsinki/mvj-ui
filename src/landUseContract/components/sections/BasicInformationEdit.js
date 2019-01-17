@@ -238,6 +238,7 @@ class BasicInformationEdit extends Component<Props> {
                 validate={referenceNumber}
                 overrideValues={{
                   label: 'Asemakaavan diaarinumero',
+                  fieldType: FieldTypes.REFERENCE_NUMBER,
                 }}
               />
             </Column>

@@ -107,7 +107,10 @@ class InfillDevelopmentForm extends Component<Props> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.REFERENCE_NUMBER)}
                   name='reference_number'
                   validate={referenceNumber}
-                  overrideValues={{label: InfillDevelopmentCompensationFieldTitles.REFERENCE_NUMBER}}
+                  overrideValues={{
+                    label: InfillDevelopmentCompensationFieldTitles.REFERENCE_NUMBER,
+                    fieldType: FieldTypes.REFERENCE_NUMBER,
+                  }}
                 />
               </Authorization>
             </Column>

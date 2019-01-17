@@ -196,7 +196,10 @@ const renderDecisions = ({
                             invisibleLabel
                             name={`${field}.reference_number`}
                             validate={referenceNumber}
-                            overrideValues={{label: InfillDevelopmentCompensationLeaseDecisionsFieldTitles.REFERENCE_NUMBER}}
+                            overrideValues={{
+                              label: InfillDevelopmentCompensationLeaseDecisionsFieldTitles.REFERENCE_NUMBER,
+                              fieldType: FieldTypes.REFERENCE_NUMBER,
+                            }}
                           />
                         </Authorization>
                       </Column>

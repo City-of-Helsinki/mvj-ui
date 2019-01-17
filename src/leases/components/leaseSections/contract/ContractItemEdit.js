@@ -16,7 +16,9 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import DecisionLink from '$components/links/DecisionLink';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
@@ -35,6 +37,7 @@ import {
   LeaseContractMortgageDocumentsFieldPaths,
   LeaseContractMortgageDocumentsFieldTitles,
 } from '$src/leases/enums';
+import {getDecisionById} from '$src/leases/helpers';
 import {
   getFieldAttributes,
   getFieldOptions,
@@ -42,13 +45,20 @@ import {
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {
+  getCollapseStateByKey,
+  getCurrentLease,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type ContractChangesProps = {
   attributes: Attributes,
   collapseState: boolean,
+  currentLease: Lease,
   decisionOptions: Array<Object>,
   errors: ?Object,
   fields: any,
@@ -60,6 +70,7 @@ type ContractChangesProps = {
 const renderContractChanges = ({
   attributes,
   collapseState,
+  currentLease,
   decisionOptions,
   errors,
   fields,
@@ -76,6 +87,13 @@ const renderContractChanges = ({
     fields.push({});
   };
 
+  const decisionReadOnlyRenderer = (value) => {
+    return <DecisionLink
+      decision={getDecisionById(currentLease, value)}
+      decisionOptions={decisionOptions}
+    />;
+  };
+
   const contractChangeErrors = get(errors, name);
 
   return(
@@ -90,6 +108,10 @@ const renderContractChanges = ({
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>
+              {!isFieldAllowedToEdit(attributes, LeaseContractChangesFieldPaths.CONTRACT_CHANGES) && (!fields || !fields.length) &&
+                <FormText>Ei sopimuksen muutoksia</FormText>
+              }
+
               {fields && !!fields.length && fields.map((change, index) => {
                 const handleRemove = () => {
                   dispatch({
@@ -175,6 +197,7 @@ const renderContractChanges = ({
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(attributes, LeaseContractChangesFieldPaths.DECISION)}
                               name={`${change}.decision`}
+                              readOnlyValueRenderer={decisionReadOnlyRenderer}
                               overrideValues={{
                                 label: LeaseContractChangesFieldTitles.DECISION,
                                 options: decisionOptions,
@@ -337,6 +360,7 @@ type Props = {
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
   contractId: number,
+  currentLease: Lease,
   decisionOptions: Array<Object>,
   errors: Object,
   field: string,
@@ -351,6 +375,7 @@ const ContractItemEdit = ({
   contractCollapseState,
   contractChangesCollapseState,
   contractId,
+  currentLease,
   decisionOptions,
   errors,
   field,
@@ -392,6 +417,13 @@ const ContractItemEdit = ({
     });
   };
 
+  const decisionReadOnlyRenderer = (value) => {
+    return <DecisionLink
+      decision={getDecisionById(currentLease, value)}
+      decisionOptions={decisionOptions}
+    />;
+  };
+
   const typeOptions = getFieldOptions(attributes, LeaseContractsFieldPaths.TYPE),
     contractErrors = get(errors, field),
     savedContract = getContractById(contractId);
@@ -405,7 +437,7 @@ const ContractItemEdit = ({
           {getContractTitle(savedContract) || '-'}
         </Authorization>
       }
-      onRemove={onRemove}
+      onRemove={isFieldAllowedToEdit(attributes, LeaseContractsFieldPaths.CONTRACTS) ? onRemove : null}
       onToggle={handleContractCollapseToggle}
     >
       <BoxContentWrapper>
@@ -478,6 +510,7 @@ const ContractItemEdit = ({
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.DECISION)}
                 name={`${field}.decision`}
+                readOnlyValueRenderer={decisionReadOnlyRenderer}
                 overrideValues={{
                   label: LeaseContractsFieldTitles.DECISION,
                   options: decisionOptions,
@@ -563,6 +596,7 @@ const ContractItemEdit = ({
           attributes={attributes}
           collapseState={contractChangesCollapseState}
           component={renderContractChanges}
+          currentLease={currentLease}
           decisionOptions={decisionOptions}
           errors={errors}
           name={`${field}.contract_changes`}
@@ -586,6 +620,7 @@ export default connect(
         contractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract`),
         contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract_changes`),
         contractId: id,
+        currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
         isSaveClicked: getIsSaveClicked(state),
       };

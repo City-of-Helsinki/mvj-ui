@@ -11,7 +11,6 @@ import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
 import copyAreasToContractSaga from '$src/copyAreasToContract/saga';
 import createCollectionLetterSaga from '$src/createCollectionLetter/saga';
-import decisionSaga from '../decision/saga';
 import districtSaga from '../district/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
 import infillDevelopmentAttachmentSaga from '../infillDevelopmentAttachment/saga';
@@ -48,7 +47,6 @@ export default () =>
       fork(contactSaga),
       fork(copyAreasToContractSaga),
       fork(createCollectionLetterSaga),
-      fork(decisionSaga),
       fork(districtSaga),
       fork(infillDevelopmentSaga),
       fork(infillDevelopmentAttachmentSaga),

@@ -1,14 +1,12 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 
 import ContractItem from './ContractItem';
 import FormText from '$components/form/FormText';
 import {LeaseContractsFieldPaths} from '$src/leases/enums';
-import {getDecisionOptions} from '$src/decision/helpers';
 import {getContentContracts} from '$src/leases/helpers';
 import {getFieldOptions} from '$util/helpers';
-import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -17,15 +15,12 @@ import type {Lease} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
-  decisions: Array<Object>,
 }
 
 type State = {
   attributes: Attributes,
   contracts: Array<Object>,
   currentLease: Lease,
-  decisions: Array<Object>,
-  decisionOptions: Array<Object>,
   typeOptions: Array<Object>,
 }
 
@@ -34,8 +29,6 @@ class Contracts extends PureComponent<Props, State> {
     attributes: {},
     contracts: [],
     currentLease: {},
-    decisions: [],
-    decisionOptions: [],
     typeOptions: [],
   }
 
@@ -52,40 +45,33 @@ class Contracts extends PureComponent<Props, State> {
       newState.contracts = getContentContracts(props.currentLease);
     }
 
-    if(props.decisions !== state.decisions) {
-      newState.decisions = props.decisions;
-      newState.decisionOptions = getDecisionOptions(props.decisions);
-    }
-
     return newState;
   }
 
   render() {
-    const {contracts, decisionOptions, typeOptions} = this.state;
+    const {contracts, typeOptions} = this.state;
 
     return (
-      <div>
+      <Fragment>
         {(!contracts || !contracts.length) && <FormText className='no-margin'>Ei sopimuksia</FormText>}
         {contracts && !!contracts.length && contracts.map((contract, index) =>
           <ContractItem
             key={index}
             contract={contract}
-            decisionOptions={decisionOptions}
             typeOptions={typeOptions}
           />
         )}
-      </div>
+      </Fragment>
     );
   }
 }
 
 export default connect(
   (state) => {
-    const currentLease = getCurrentLease(state);
+
     return {
       attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
-      decisions: getDecisionsByLease(state, currentLease.id),
     };
   },
 )(Contracts);

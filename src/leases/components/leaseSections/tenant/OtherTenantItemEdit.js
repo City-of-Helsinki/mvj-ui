@@ -22,6 +22,7 @@ import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {FieldTypes} from '$components/enums';
 import {
   FormNames,
   LeaseTenantContactSetFieldPaths,
@@ -140,22 +141,22 @@ const OtherTenantItemEdit = ({
         <FormWrapper>
           <FormWrapperLeft>
             <Row>
-              <Column small={12} medium={12} large={8}>
+              <Column small={12}>
                 <Row>
-                  <Column small={9} medium={8} large={8}>
+                  <Column small={9} medium={8}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}
                         name={`${field}.contact`}
                         overrideValues={{
-                          fieldType: 'contact',
+                          fieldType: FieldTypes.CONTACT,
                           label: LeaseTenantContactSetFieldTitles.CONTACT,
                         }}
                       />
                     </Authorization>
                   </Column>
-                  <Column small={3} medium={4} large={4}>
+                  <Column small={3} medium={4}>
                     <Authorization allow={contactMethods.POST}>
                       <div className='contact-buttons-wrapper'>
                         <AddButtonThird
@@ -183,10 +184,10 @@ const OtherTenantItemEdit = ({
                 </Authorization>
               </Column>
               <Column small={6} medium={3} large={2}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}
+                    fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}
                     name={`${field}.end_date`}
                     overrideValues={{label: LeaseTenantContactSetFieldTitles.END_DATE}}
                   />

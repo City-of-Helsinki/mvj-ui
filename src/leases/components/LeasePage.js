@@ -40,7 +40,6 @@ import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {fetchCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/actions';
 import {fetchCollectionLettersByLease} from '$src/collectionLetter/actions';
 import {fetchCollectionNotesByLease} from '$src/collectionNote/actions';
-import {fetchDecisionsByLease} from '$src/decision/actions';
 import {fetchInvoicesByLease} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {
@@ -71,7 +70,7 @@ import {PermissionMissingTexts} from '$src/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getCommentsByLease} from '$src/comments/selectors';
 import {
   getCurrentLease,
@@ -99,8 +98,11 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   clearPreviewInvoices: Function,
+  collectionCourtDecisionMethods: Methods, // Get via withLeasePageAttributes
+  collectionLetterMethods: Methods, // Get via withLeasePageAttributes
+  collectionNoteMethods: Methods, // Get via withLeasePageAttributes
   comments: CommentList,
-  commentMethods: Methods,                  // get via withLeasePageAttributes HOC
+  commentMethods: Methods, // get via withLeasePageAttributes HOC
   contractsFormValues: Object,
   constructabilityFormValues: Object,
   currentLease: Object,
@@ -110,7 +112,6 @@ type Props = {
   fetchCollectionCourtDecisionsByLease: Function,
   fetchCollectionLettersByLease: Function,
   fetchCollectionNotesByLease: Function,
-  fetchDecisionsByLease: Function,
   fetchInvoicesByLease: Function,
   fetchInvoiceSetsByLease: Function,
   fetchLeaseTypes: Function,
@@ -119,11 +120,12 @@ type Props = {
   hideEditMode: Function,
   initialize: Function,
   inspectionsFormValues: Object,
-  invoiceMethods: Methods,                  // get via withLeasePageAttributes HOC
+  invoiceMethods: Methods, // get via withLeasePageAttributes HOC
+  invoiceSetMethods: Methods, // get via withLeasePageAttributes HOC
   isEditMode: boolean,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean,      // get via withCommonAttributes HOC
-  isFetchingLeasePageAttributes: boolean,   // get via withLeasePageAttributes HOC
+  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
+  isFetchingLeasePageAttributes: boolean, // get via withLeasePageAttributes HOC
   isFormValidFlags: Object,
   isConstructabilityFormDirty: boolean,
   isConstructabilityFormValid: boolean,
@@ -143,8 +145,8 @@ type Props = {
   isTenantsFormDirty: boolean,
   isTenantsFormValid: boolean,
   isSaveClicked: boolean,
-  leaseAttributes: Attributes,              // get via withCommonAttributes HOC
-  leaseMethods: Methods,                    // get via withCommonAttributes HOC
+  leaseAttributes: Attributes, // get via withCommonAttributes HOC
+  leaseMethods: Methods, // get via withCommonAttributes HOC
   leaseTypeList: LeaseTypeList,
   location: Object,
   params: Object,
@@ -181,17 +183,21 @@ class LeasePage extends Component<Props, State> {
 
   UNSAFE_componentWillMount() {
     const {
+      collectionCourtDecisionMethods,
+      collectionLetterMethods,
+      collectionNoteMethods,
       fetchAreaNoteList,
       fetchCollectionLettersByLease,
       fetchCollectionCourtDecisionsByLease,
       fetchCollectionNotesByLease,
-      fetchDecisionsByLease,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchLeaseTypes,
       fetchSingleLease,
       fetchVats,
       hideEditMode,
+      invoiceMethods,
+      invoiceSetMethods,
       leaseTypeList,
       params: {leaseId},
       vats,
@@ -199,17 +205,26 @@ class LeasePage extends Component<Props, State> {
 
     fetchSingleLease(leaseId);
 
-    fetchDecisionsByLease(leaseId);
-
-    fetchInvoicesByLease(leaseId);
-
-    fetchInvoiceSetsByLease(leaseId);
-
-    fetchCollectionCourtDecisionsByLease(leaseId);
-
-    fetchCollectionLettersByLease(leaseId);
-
-    fetchCollectionNotesByLease(leaseId);
+    // Fetch invoices if GET is allowed
+    if(invoiceMethods.GET) {
+      fetchInvoicesByLease(leaseId);
+    }
+    // Fetch invoice sets if GET is allowed
+    if(invoiceSetMethods.GET) {
+      fetchInvoiceSetsByLease(leaseId);
+    }
+    // Fetch collection court decisions if GET is allowed
+    if(collectionCourtDecisionMethods.GET) {
+      fetchCollectionCourtDecisionsByLease(leaseId);
+    }
+    // Fetch collection letters if GET is allowed
+    if(collectionLetterMethods.GET) {
+      fetchCollectionLettersByLease(leaseId);
+    }
+    // Fetch collection notes if GET is allowed
+    if(collectionNoteMethods.GET) {
+      fetchCollectionNotesByLease(leaseId);
+    }
 
     if(isEmpty(leaseTypeList)) {
       fetchLeaseTypes();
@@ -231,7 +246,7 @@ class LeasePage extends Component<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('leases'),
+      linkUrl: getRouteById(Routes.LEASES),
       pageTitle: 'Vuokraukset',
       showSearch: true,
     });
@@ -246,17 +261,43 @@ class LeasePage extends Component<Props, State> {
   componentDidUpdate(prevProps:Props, prevState: State) {
     const {params: {leaseId}} = this.props;
 
+    // Fetch invoices when getting new invoice methods and GET is allowed
+    if(prevProps.invoiceMethods !== this.props.invoiceMethods && this.props.invoiceMethods.GET) {
+      const {fetchInvoicesByLease} = this.props;
+
+      fetchInvoicesByLease(leaseId);
+    }
+    // Fetch invoice sets when getting new invoice set methods and GET is allowed
+    if(prevProps.invoiceSetMethods !== this.props.invoiceSetMethods && this.props.invoiceSetMethods.GET) {
+      const {fetchInvoiceSetsByLease} = this.props;
+
+      fetchInvoiceSetsByLease(leaseId);
+    }
+    // Fetch collection court decisions when getting new collection court decision methods and GET is allowed
+    if(prevProps.collectionCourtDecisionMethods !== this.props.collectionCourtDecisionMethods && this.props.collectionCourtDecisionMethods.GET) {
+      const {fetchCollectionCourtDecisionsByLease} = this.props;
+
+      fetchCollectionCourtDecisionsByLease(leaseId);
+    }
+    // Fetch collection letters when getting new collection letter methods and GET is allowed
+    if(prevProps.collectionLetterMethods !== this.props.collectionLetterMethods && this.props.collectionLetterMethods.GET) {
+      const {fetchCollectionLettersByLease} = this.props;
+
+      fetchCollectionLettersByLease(leaseId);
+    }
+    // Fetch collection notes when getting new collection note methods and GET is allowed
+    if(prevProps.collectionNoteMethods !== this.props.collectionNoteMethods && this.props.collectionNoteMethods.GET) {
+      const {fetchCollectionNotesByLease} = this.props;
+
+      fetchCollectionNotesByLease(leaseId);
+    }
+
     if (prevProps.location !== this.props.location) {
       this.setState({activeTab: this.props.location.query.tab});
     }
 
     if(prevState.activeTab !== this.state.activeTab) {
       scrollToTopPage();
-    }
-
-    if(!isEmpty(prevProps.currentLease) && (prevProps.currentLease !== this.props.currentLease)) {
-      const {fetchDecisionsByLease} = this.props;
-      fetchDecisionsByLease(leaseId);
     }
 
     if(isEmpty(prevProps.currentLease) && !isEmpty(this.props.currentLease)) {
@@ -283,7 +324,7 @@ class LeasePage extends Component<Props, State> {
     } = this.props;
 
 
-    if(pathname !== `${getRouteById('leases')}/${leaseId}`) {
+    if(pathname !== `${getRouteById(Routes.LEASES)}/${leaseId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
@@ -639,7 +680,7 @@ class LeasePage extends Component<Props, State> {
     query.plot = undefined;
 
     return router.push({
-      pathname: `${getRouteById('leases')}`,
+      pathname: `${getRouteById(Routes.LEASES)}`,
       query,
     });
   }
@@ -1012,7 +1053,6 @@ export default flowRight(
       fetchCollectionCourtDecisionsByLease,
       fetchCollectionLettersByLease,
       fetchCollectionNotesByLease,
-      fetchDecisionsByLease,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchLeaseTypes,

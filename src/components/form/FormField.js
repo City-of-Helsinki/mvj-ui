@@ -33,6 +33,7 @@ import {
   getFieldAttributeOptions,
   getLabelOfOption,
   isEmptyValue,
+  getReferenceNumberLink,
 } from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {genericNormalizer} from './normalizers';
@@ -54,6 +55,7 @@ const FieldTypes = {
   [FieldTypeOptions.LESSOR]: FieldTypeLessorSelect,
   [FieldTypeOptions.MULTISELECT]: FieldTypeMultiSelect,
   [FieldTypeOptions.RADIO_WITH_FIELD]: FieldTypeRadioWithField,
+  [FieldTypeOptions.REFERENCE_NUMBER]: FieldTypeBasic,
   [FieldTypeOptions.SEARCH]: FieldTypeSearch,
   [FieldTypeOptions.STRING]: FieldTypeBasic,
   [FieldTypeOptions.TEXTAREA]: FieldTypeTextArea,
@@ -63,6 +65,7 @@ const FieldTypes = {
 const Types = {
   [FieldTypeOptions.DECIMAL]: 'text',
   [FieldTypeOptions.INTEGER]: 'text',
+  [FieldTypeOptions.REFERENCE_NUMBER]: 'text',
   [FieldTypeOptions.STRING]: 'text',
   [FieldTypeOptions.TEXTAREA]: 'text',
 };
@@ -139,6 +142,13 @@ const FormFieldInput = ({
       case FieldTypeOptions.INTEGER:
       case FieldTypeOptions.STRING:
         return isEmptyValue(value) ? value.toString() : value;
+      case FieldTypeOptions.REFERENCE_NUMBER:
+        return value
+          ? <ExternalLink
+            href={getReferenceNumberLink(value)}
+            text={value}
+          />
+          : null;
       case FieldTypeOptions.DECIMAL:
         return !isEmptyValue(value)
           ? unit ? `${formatNumber(value)} ${unit}` : formatNumber(value)

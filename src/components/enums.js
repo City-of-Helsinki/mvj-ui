@@ -33,6 +33,7 @@ export const FieldTypes = {
   LESSOR: 'lessor',
   MULTISELECT: 'multiselect',
   RADIO_WITH_FIELD: 'radio-with-field',
+  REFERENCE_NUMBER: 'reference_number',
   SEARCH: 'search',
   STRING: 'string',
   TEXTAREA: 'textarea',

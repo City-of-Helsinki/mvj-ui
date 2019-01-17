@@ -8,7 +8,7 @@ import type {Element} from 'react';
 import ConstructabilityItemEdit from './ConstructabilityItemEdit';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
-import SendEmail from './SendEmail';
+// import SendEmail from './SendEmail';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames, LeaseAreasFieldPaths} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
@@ -39,7 +39,7 @@ const renderAreas = ({
 }: AreaProps): Element<*> => {
   return (
     <Fragment>
-      {!fields || !fields.length && <FormText>Ei vuokra-alueita</FormText>}
+      {!fields || !fields.length && <FormText className='no-margin'>Ei vuokra-alueita</FormText>}
       {savedAreas && !!savedAreas.length && fields && !!fields.length && fields.map((area, index) => {
 
         return (
@@ -130,7 +130,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
       <form onSubmit={handleSubmit}>
         <h2>Rakentamiskelpoisuus</h2>
         <Divider />
-        <SendEmail />
+        {/* <SendEmail /> */}
 
         <FieldArray
           attributes={attributes}

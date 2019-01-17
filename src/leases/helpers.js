@@ -22,8 +22,10 @@ import {getContactFullName, getContentContact} from '$src/contacts/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {isEmptyValue} from '$util/helpers';
 import {
+  addEmptyOption,
   convertStrToDecimalNumber,
   fixedLengthNumber,
+  formatDate,
   sortByStartAndEndDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
@@ -366,7 +368,7 @@ export const getContentDecisionConditions = (decision: Object) =>
     };
   });
 
-export const getContentDecisionItem = (decision: Object) => {
+export const getContentDecision = (decision: Object) => {
   return {
     id: decision.id,
     reference_number: decision.reference_number,
@@ -379,8 +381,41 @@ export const getContentDecisionItem = (decision: Object) => {
   };
 };
 
+/**
+ * Get all decision from lease data
+ * @param lease
+ * @returns {}
+ */
 export const getContentDecisions = (lease: Object) =>
-  get(lease, 'decisions', []).map((decision) => getContentDecisionItem(decision));
+  get(lease, 'decisions', []).map((decision) => getContentDecision(decision));
+
+/**
+ * Get decision options from lease data
+ * @param lease
+ * @return {[]};
+ */
+export const getDecisionOptions = (lease: Lease) => {
+  const decisions = getContentDecisions(lease);
+  const decisionOptions = decisions.map((item) => {
+    return {
+      value: item.id,
+      label: (!item.reference_number && !item.decision_date && !item.section)
+        ? item.id
+        : `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date) || ''}`,
+    };
+  });
+
+  return addEmptyOption(decisionOptions);
+};
+
+/**
+ * Get decision by id from lease data
+ * @param decisions
+ * @param decisionId
+ * @returns {{}}
+ */
+export const getDecisionById = (lease: Lease, id: ?number) =>
+  getContentDecisions(lease).find((decision) => decision.id === id);
 
 export const getContentContractChanges = (contract: Object) =>
   get(contract, 'contract_changes', []).map((change) => {
@@ -1466,19 +1501,10 @@ export const mapLeaseSearchFilters = (query: Object) => {
 
   return searchQuery;
 };
+export const formatSeasonalDate = (day: ?string, month: ?string) => {
+  if(!day || !month) return null;
 
-export const formatSeasonalStartDate = (rent: Object) => {
-  if(!rent.seasonal_start_day || !rent.seasonal_start_month) {
-    return null;
-  }
-  return `${rent.seasonal_start_day}.${rent.seasonal_start_month}`;
-};
-
-export const formatSeasonalEndDate = (rent: Object) => {
-  if(!rent.seasonal_end_day || !rent.seasonal_end_month) {
-    return null;
-  }
-  return `${rent.seasonal_end_day}.${rent.seasonal_end_month}`;
+  return `${day}.${month}`;
 };
 
 const formatDueDate = (date: Object) => {

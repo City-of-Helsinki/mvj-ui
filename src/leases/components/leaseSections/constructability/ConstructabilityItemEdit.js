@@ -13,6 +13,7 @@ import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -103,6 +104,10 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
         return(
           <Fragment>
             <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
+            {!isFieldAllowedToEdit(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS) && (!fields || !fields.length) &&
+              <FormText><em>Ei huomautuksia</em></FormText>
+            }
+
             {fields && !!fields.length &&
               <Fragment>
                 <Row>
@@ -156,7 +161,10 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
                             invisibleLabel
                             name={`${comment}.ahjo_reference_number`}
                             validate={referenceNumber}
-                            overrideValues={{label: LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER}}
+                            overrideValues={{
+                              label: LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER,
+                              fieldType: FieldTypes.REFERENCE_NUMBER,
+                            }}
                           />
                         </Authorization>
                       </Column>
