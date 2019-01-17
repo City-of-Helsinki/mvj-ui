@@ -9,6 +9,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
 import BasisOfRentEdit from './BasisOfRentEdit';
 import BoxItemContainer from '$components/content/BoxItemContainer';
+import FormText from '$components/form/FormText';
 import GrayBox from '$components/content/GrayBox';
 import GreenBox from '$components/content/GreenBox';
 import {ButtonColors} from '$components/enums';
@@ -71,17 +72,38 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
 
   handleAdd = () => {
     const {fields} = this.props;
+
     fields.push({});
   }
 
   removeBasisOfRent = (index: number) => {
     const {fields} = this.props;
+
     fields.remove(index);
   }
 
   render() {
     const {archived, fields, isSaveClicked, leaseAttributes, onArchive, onUnarchive} = this.props;
     const {areaUnitOptions, indexOptions, intendedUseOptions} = this.state;
+
+    if(!archived && (!fields || !fields.length)) {
+      return(
+        <Authorization
+          allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}
+          errorComponent={<FormText className='no-margin'>Ei vuokralaskureita</FormText>}
+        >
+          <Row>
+            <Column>
+              <AddButtonSecondary
+                className={(!fields || !fields.length) ? 'no-top-margin' : ''}
+                label='Lisää vuokralaskuri'
+                onClick={this.handleAdd}
+              />
+            </Column>
+          </Row>
+        </Authorization>
+      );
+    }
 
     return (
       <AppConsumer>

@@ -22,11 +22,9 @@ import {
   FormNames,
   LeaseAreasFieldPaths,
 } from '$src/leases/enums';
-import {getDecisionOptions} from '$src/decision/helpers';
-import {getAreasSum, getContentLeaseAreas, getLeaseAreaById} from '$src/leases/helpers';
+import {getAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById} from '$src/leases/helpers';
 import {formatNumber, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
 import {getMethods as getCopyAreasToContractMethods} from '$src/copyAreasToContract/selectors';
-import {getDecisionsByLease} from '$src/decision/selectors';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
@@ -126,7 +124,6 @@ type Props = {
   copyAreasToContract: Function,
   copyAreasToContractMethods: Methods,
   currentLease: Lease,
-  decisions: Array<Object>,
   editedActiveAreas: Array<Object>,
   editedArchivedAreas: Array<Object>,
   initialize: Function,
@@ -139,8 +136,7 @@ type State = {
   areasSum: ?number,
   areaToArchive: ?Object,
   areaIndexToArchive: ?number,
-  currentLease: ?Lease,
-  decisions: Array<Object>,
+  currentLease: Lease,
   decisionOptions: Array<Object>,
   showArchiveAreaModal: boolean,
 }
@@ -153,8 +149,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
     areasSum: null,
     areaToArchive: null,
     areaIndexToArchive: null,
-    currentLease: null,
-    decisions: [],
+    currentLease: {},
     decisionOptions: [],
     showArchiveAreaModal: false,
   }
@@ -177,11 +172,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       newState.areas = areas;
       newState.areasSum = getAreasSum(activeAreas);
       newState.currentLease = props.currentLease;
-    }
-
-    if(props.decisions !== state.decisions) {
-      newState.decisions = props.decisions;
-      newState.decisionOptions = getDecisionOptions(props.decisions);
+      newState.decisionOptions = getDecisionOptions(props.currentLease);
     }
 
     return newState;
@@ -386,11 +377,9 @@ export default flowRight(
   }),
   connect(
     (state) => {
-      const currentLease = getCurrentLease(state);
       return {
         copyAreasToContractMethods: getCopyAreasToContractMethods(state),
-        currentLease: currentLease,
-        decisions: getDecisionsByLease(state, currentLease.id),
+        currentLease: getCurrentLease(state),
         editedActiveAreas: selector(state, 'lease_areas_active'),
         editedArchivedAreas: selector(state, 'lease_areas_archived'),
         leaseAttributes: getLeaseAttributes(state),

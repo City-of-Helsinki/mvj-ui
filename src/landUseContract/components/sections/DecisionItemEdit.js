@@ -22,9 +22,8 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
-import {getDecisionById} from '$src/decision/helpers';
 import {getFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
@@ -306,6 +305,10 @@ const DecisionItemEdit = ({
     });
   };
 
+  const getDecisionById = (decisions: Array<Object>, decisionId: number) => decisions && decisions.length && decisionId
+    ? decisions.find((decision) => decision.id === decisionId)
+    : {};
+
   const decisionMakerOptions = getFieldOptions(attributes, 'decisions.child.children.decision_maker'),
     decisionErrors = get(errors, field),
     savedDecision = getDecisionById(decisionsData, decisionId);
@@ -369,6 +372,7 @@ const DecisionItemEdit = ({
               validate={referenceNumber}
               overrideValues={{
                 label: 'Diaarinumero',
+                fieldType: FieldTypes.REFERENCE_NUMBER,
               }}
             />
           </Column>

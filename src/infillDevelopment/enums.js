@@ -56,7 +56,7 @@ export const InfillDevelopmentCompensationFieldPaths = {
  */
 export const InfillDevelopmentCompensationFieldTitles = {
   DETAILED_PLAN_IDENTIFIER: 'Asemakaavan nro.',
-  LEASE_CONTRACT_CHANGE_DATE: 'Vuokrasopimuksen muutos pvm',
+  LEASE_CONTRACT_CHANGE_DATE: 'Vuokrasopimuksen muutospvm',
   NAME: 'Hankkeen nimi',
   NOTE: 'Huomautus',
   REFERENCE_NUMBER: 'Diaarinumero',

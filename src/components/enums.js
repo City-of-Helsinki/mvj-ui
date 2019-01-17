@@ -14,6 +14,33 @@ export const ButtonColors = {
 };
 
 /**
+ * Redux form field type enumerable.
+ *
+ * @type {{}}
+ */
+export const FieldTypes = {
+  ADDRESS: 'address',
+  BOOLEAN: 'boolean',
+  CHOICE: 'choice',
+  CHECKBOX: 'checkbox',
+  CHECKBOX_DATE_TIME: 'checkbox-date-time',
+  CONTACT: 'contact',
+  DATE: 'date',
+  DECIMAL: 'decimal',
+  FIELD: 'field',
+  INTEGER: 'integer',
+  LEASE: 'lease',
+  LESSOR: 'lessor',
+  MULTISELECT: 'multiselect',
+  RADIO_WITH_FIELD: 'radio-with-field',
+  REFERENCE_NUMBER: 'reference_number',
+  SEARCH: 'search',
+  STRING: 'string',
+  TEXTAREA: 'textarea',
+  USER: 'user',
+};
+
+/**
  * Component form names enumerable.
  *
  * @type {{INVOICE_SIMULATOR: string, NEW_COMMENT: string, RENT_CALCULATOR: string,}}

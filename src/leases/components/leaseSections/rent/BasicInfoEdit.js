@@ -16,6 +16,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/constants';
+import {FieldTypes} from '$components/enums';
 import {
   FixedDueDates,
   FormNames,
@@ -27,7 +28,7 @@ import {
   RentTypes,
   RentDueDateTypes,
 } from '$src/leases/enums';
-import {formatDueDates} from '$src/leases/helpers';
+import {formatDueDates, formatSeasonalDate} from '$src/leases/helpers';
 import {
   getFieldAttributes,
   isFieldAllowedToEdit,
@@ -41,15 +42,39 @@ import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
 
+const formName = FormNames.RENTS;
+const selector = formValueSelector(formName);
+
 type SeasonalDatesProps = {
+  field: string,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
+  seasonalEndDay: ?string,
+  seasonalEndMonth: ?string,
+  seasonalStartDay: ?string,
+  seasonalStartMonth: ?string,
 }
 
-const SeasonalDates = ({
+const SeasonalDates = connect(
+  (state, props) => {
+    return {
+      seasonalEndDay: selector(state, `${props.field}.seasonal_end_day`),
+      seasonalEndMonth: selector(state, `${props.field}.seasonal_end_month`),
+      seasonalStartDay: selector(state, `${props.field}.seasonal_start_day`),
+      seasonalStartMonth: selector(state, `${props.field}.seasonal_start_month`),
+    };
+  }
+)(({
   isSaveClicked,
   leaseAttributes,
+  seasonalEndDay,
+  seasonalEndMonth,
+  seasonalStartDay,
+  seasonalStartMonth,
 }: SeasonalDatesProps ) => {
+  const startText = formatSeasonalDate(seasonalStartDay, seasonalStartMonth);
+  const endText = formatSeasonalDate(seasonalEndDay, seasonalEndMonth);
+
   return(
     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)||
       isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH) ||
@@ -61,56 +86,64 @@ const SeasonalDates = ({
           <FormTextTitle>{LeaseRentsFieldTitles.SEASONAL_DATES}</FormTextTitle>
         </Column>
       </Row>
-
-      <Row>
-        <Column small={3}>
-          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY)}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY)}
-              name='seasonal_start_day'
-              invisibleLabel
-              overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_START_DAY}}
-            />
-          </Authorization>
-        </Column>
-        <Column small={3}>
-          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}>
-            <FormField
-              className='with-dot'
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}
-              name='seasonal_start_month'
-              invisibleLabel
-              overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_START_MONTH}}
-            />
-          </Authorization>
-        </Column>
-        <Column small={3}>
-          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}>
-            <FormField
-              className='with-dash'
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}
-              name='seasonal_end_day'
-              invisibleLabel
-              overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_END_DAY}}
-            />
-          </Authorization>
-        </Column>
-        <Column small={3}>
-          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH)}>
-            <FormField
-              className='with-dot'
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH)}
-              name='seasonal_end_month'
-              invisibleLabel
-              overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_END_MONTH}}
-            />
-          </Authorization>
-        </Column>
-      </Row>
+      <Authorization
+        allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)||
+          isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH) ||
+          isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY) ||
+          isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)
+        }
+        errorComponent={<FormText>{`${startText || ''} - ${endText || ''}`}</FormText>}
+      >
+        <Row>
+          <Column small={3}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY)}
+                name='seasonal_start_day'
+                invisibleLabel
+                overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_START_DAY}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={3}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}>
+              <FormField
+                className='with-dot'
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}
+                name='seasonal_start_month'
+                invisibleLabel
+                overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_START_MONTH}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={3}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}>
+              <FormField
+                className='with-dash'
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}
+                name='seasonal_end_day'
+                invisibleLabel
+                overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_END_DAY}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={3}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH)}>
+              <FormField
+                className='with-dot'
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH)}
+                name='seasonal_end_month'
+                invisibleLabel
+                overrideValues={{label: LeaseRentsFieldTitles.SEASONAL_END_MONTH}}
+              />
+            </Authorization>
+          </Column>
+        </Row>
+      </Authorization>
 
       <Row>
         <Column>
@@ -123,7 +156,7 @@ const SeasonalDates = ({
       </Row>
     </Authorization>
   );
-};
+});
 
 type DueDatesProps = {
   fields: any,
@@ -303,6 +336,7 @@ const BasicInfoEmpty = ({isSaveClicked, leaseAttributes}: BasicInfoEmptyProps) =
 type BasicInfoIndexProps = {
   cycle: ?string,
   dueDatesType: ?string,
+  field: string,
   isIndex: boolean,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
@@ -312,6 +346,7 @@ type BasicInfoIndexProps = {
 const BasicInfoIndex = ({
   cycle,
   dueDatesType,
+  field,
   isIndex,
   isSaveClicked,
   leaseAttributes,
@@ -403,7 +438,7 @@ const BasicInfoIndex = ({
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}
                 name='due_dates_per_year'
                 overrideValues={{
-                  fieldType: 'choice',
+                  fieldType: FieldTypes.CHOICE,
                   label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
                   options: rentCustomDateOptions,
                 }}
@@ -456,6 +491,7 @@ const BasicInfoIndex = ({
         <Column small={12} medium={4} large={2}>
           {/* Authorization is done on SeasonalDates component */}
           <SeasonalDates
+            field={field}
             isSaveClicked={isSaveClicked}
             leaseAttributes={leaseAttributes}
           />
@@ -571,6 +607,7 @@ const BasicInfoOneTime = ({dueDatesType, isSaveClicked, leaseAttributes}: BasicI
 
 type BasicInfoFixedProps = {
   dueDatesType: ?string,
+  field: string,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
   yearlyDueDates: Array<Object>,
@@ -578,6 +615,7 @@ type BasicInfoFixedProps = {
 
 const BasicInfoFixed = ({
   dueDatesType,
+  field,
   isSaveClicked,
   leaseAttributes,
   yearlyDueDates,
@@ -644,7 +682,7 @@ const BasicInfoFixed = ({
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}
                 name='due_dates_per_year'
                 overrideValues={{
-                  fieldType: 'choice',
+                  fieldType: FieldTypes.CHOICE,
                   label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
                   options: rentCustomDateOptions,
                 }}
@@ -668,6 +706,7 @@ const BasicInfoFixed = ({
         <Column small={12} medium={4} large={2}>
           {/* Authorization is done on SeasonalDates component */}
           <SeasonalDates
+            field={field}
             isSaveClicked={isSaveClicked}
             leaseAttributes={leaseAttributes}
           />
@@ -751,7 +790,7 @@ type Props = {
   dueDates: Array<Object>,
   dueDatesPerYear: ?number,
   dueDatesType: ?string,
-  field: any,
+  field: string,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
   leaseTypes: LeaseTypeList,
@@ -763,6 +802,7 @@ const BasicInfoEdit = ({
   cycle,
   dueDatesPerYear,
   dueDatesType,
+  field,
   isSaveClicked,
   leaseAttributes,
   leaseTypes,
@@ -791,6 +831,7 @@ const BasicInfoEdit = ({
         <BasicInfoIndex
           cycle={cycle}
           dueDatesType={dueDatesType}
+          field={field}
           isIndex={true}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
@@ -807,6 +848,7 @@ const BasicInfoEdit = ({
       {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
           dueDatesType={dueDatesType}
+          field={field}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
           yearlyDueDates={yearlyDueDates}
@@ -822,6 +864,7 @@ const BasicInfoEdit = ({
         <BasicInfoIndex
           cycle={cycle}
           dueDatesType={dueDatesType}
+          field={field}
           isIndex={false}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
@@ -831,9 +874,6 @@ const BasicInfoEdit = ({
     </Fragment>
   );
 };
-
-const formName = FormNames.RENTS;
-const selector = formValueSelector(formName);
 
 export default connect(
   (state, props) => {

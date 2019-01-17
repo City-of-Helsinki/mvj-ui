@@ -43,7 +43,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
     if(prevProps.invoice !== this.props.invoice && isEmpty(this.props.penaltyInterest)) {
       const {fetchPenaltyInterestByInvoice, invoice, penaltyInterestMethods} = this.props;
 
-      if(penaltyInterestMethods.POST) {
+      if(penaltyInterestMethods.GET) {
         fetchPenaltyInterestByInvoice(invoice);
       }
     }

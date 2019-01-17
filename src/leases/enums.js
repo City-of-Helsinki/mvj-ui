@@ -159,6 +159,15 @@ export const ConstructabilityType = {
 };
 
 /**
+ * Decision type enumerable.
+ *
+ * @type {{}}
+ */
+export const DecisionTypes = {
+  LAND_LEASE_DEMOLITION: 63,
+};
+
+/**
  * Lease status enumerable.
  *
  * @type {{PREPARATION: string, IN_EFFECT: string, FINISHED: string}}
@@ -437,7 +446,7 @@ export const LeaseAreasFieldTitles = {
   ARCHIVED_NOTE: 'Huomautus',
   AREA: 'Pinta-ala',
   CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER: 'Geoteknisen palvelun tiedosto',
-  CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'Selvity',
+  CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'Selvitys',
   CONSTRUCTABILITY_REPORT_SIGNING_DATE: 'Allekirjoituspvm',
   CONSTRUCTABILITY_REPORT_SIGNER: 'Allekirjoittaja',
   CONSTRUCTABILITY_REPORT_STATE: 'Selvitysaste',
@@ -446,7 +455,7 @@ export const LeaseAreasFieldTitles = {
   IDENTIFIER: 'Kohteen tunnus',
   LOCATION: 'Sijainti',
   OTHER_STATE: 'Selvitysaste',
-  POLLUTED_LAND_MATTI_REPORT_NUMBER: 'Mattiraportti',
+  POLLUTED_LAND_MATTI_REPORT_NUMBER: 'Matti-raportti',
   POLLUTED_LAND_PLANNER: 'PIMA valmistelija',
   POLLUTED_LAND_PROJECTWISE_NUMBER: 'ProjectWise numero',
   POLLUTED_LAND_RENT_CONDITION_DATE: 'Vuokraehdot pvm',
@@ -534,6 +543,7 @@ export const LeasePlotsFieldPaths = {
   AREA: 'lease_areas.child.children.plots.child.children.area',
   GEOMETRY: 'lease_areas.child.children.plots.child.children.geometry',
   IDENTIFIER: 'lease_areas.child.children.plots.child.children.identifier',
+  KTJ_LINK: 'lease_areas.child.children.plots.child.children.ktj_link',
   REGISTRATION_DATE: 'lease_areas.child.children.plots.child.children.registration_date',
   REPEAL_DATE: 'lease_areas.child.children.plots.child.children.repeal_date',
   SECTION_AREA: 'lease_areas.child.children.plots.child.children.section_area',
@@ -550,6 +560,7 @@ export const LeasePlotsFieldTitles = {
   AREA: 'Kokonaisala',
   GEOMETRY: 'Karttalinkki',
   IDENTIFIER: 'Kohteen tunnus',
+  KTJ_LINK: 'Ktj-dokumentit',
   REGISTRATION_DATE: 'Rekisteröintipvm',
   REPEAL_DATE: 'Kumoamispvm',
   SECTION_AREA: 'Leikkausala',

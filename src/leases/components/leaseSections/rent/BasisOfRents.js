@@ -68,11 +68,14 @@ class BasisOfRents extends PureComponent<Props, State> {
       intendedUseOptions,
     } = this.state;
 
+    if(!basisOfRents || !basisOfRents.length) {
+      return <FormText className='no-margin'>Ei vuokralaskureita</FormText>;
+    }
+
     return (
       <Fragment>
         <GreenBox>
           <BoxItemContainer>
-            {(!basisOfRents || !basisOfRents.length) && <FormText>Ei vuokralaskureita</FormText>}
             {(basisOfRents && !!basisOfRents.length) && basisOfRents.map((basisOfRent, index) => {
               return(
                 <BasisOfRent

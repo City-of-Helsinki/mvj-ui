@@ -21,6 +21,7 @@ import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {FieldTypes} from '$components/enums';
 import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
 import {getContentSummary} from '$src/leases/helpers';
@@ -29,7 +30,7 @@ import {
   getReferenceNumberLink,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {
   getAttributes,
   getCollapseStateByKey,
@@ -116,6 +117,17 @@ class SummaryEdit extends PureComponent<Props, State> {
     });
   }
 
+  referenceNumberReadOnlyRenderer = (value: ?string) => {
+    if(value) {
+      return <FormText><ExternalLink
+        className='no-margin'
+        href={getReferenceNumberLink(value)}
+        text={value} /></FormText>;
+    } else {
+      return <FormText>-</FormText>;
+    }
+  }
+
   render () {
     const {
       attributes,
@@ -180,7 +192,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.LESSOR)}
                       name='lessor'
                       overrideValues={{
-                        fieldType: 'lessor',
+                        fieldType: FieldTypes.LESSOR,
                         label: LeaseFieldTitles.LESSOR,
                       }}
                     />
@@ -193,7 +205,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.PREPARER)}
                       name='preparer'
                       overrideValues={{
-                        fieldType: 'user',
+                        fieldType: FieldTypes.USER,
                         label: LeaseFieldTitles.PREPARER,
                       }}
                     />
@@ -290,7 +302,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                           <ListItem key={item.id}>
                             <ExternalLink
                               className='no-margin'
-                              href={`${getRouteById('infillDevelopment')}/${item.id}`}
+                              href={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${item.id}`}
                               text={item.name || item.id}
                             />
                           </ListItem>
@@ -330,17 +342,11 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={get(attributes, LeaseFieldPaths.REFERENCE_NUMBER)}
                       name='reference_number'
                       validate={referenceNumber}
-                      readOnlyValueRenderer={(value) => {
-                        if(value) {
-                          return <FormText><ExternalLink
-                            className='no-margin'
-                            href={getReferenceNumberLink(value)}
-                            text={value} /></FormText>;
-                        } else {
-                          return <FormText>-</FormText>;
-                        }
+                      readOnlyValueRenderer={this.referenceNumberReadOnlyRenderer}
+                      overrideValues={{
+                        label: LeaseFieldTitles.REFERENCE_NUMBER,
+                        fieldType: FieldTypes.REFERENCE_NUMBER,
                       }}
-                      overrideValues={{label: LeaseFieldTitles.REFERENCE_NUMBER}}
                     />
                   </Authorization>
                 </Column>

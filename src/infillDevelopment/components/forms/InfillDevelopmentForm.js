@@ -12,6 +12,7 @@ import GreenBox from '$components/content/GreenBox';
 import LeaseItemsEdit from './LeaseItemsEdit';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValidFlags} from '$src/infillDevelopment/actions';
+import {FieldTypes} from '$components/enums';
 import {
   FormNames,
   InfillDevelopmentCompensationFieldPaths,
@@ -106,7 +107,10 @@ class InfillDevelopmentForm extends Component<Props> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.REFERENCE_NUMBER)}
                   name='reference_number'
                   validate={referenceNumber}
-                  overrideValues={{label: InfillDevelopmentCompensationFieldTitles.REFERENCE_NUMBER}}
+                  overrideValues={{
+                    label: InfillDevelopmentCompensationFieldTitles.REFERENCE_NUMBER,
+                    fieldType: FieldTypes.REFERENCE_NUMBER,
+                  }}
                 />
               </Authorization>
             </Column>
@@ -129,7 +133,7 @@ class InfillDevelopmentForm extends Component<Props> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.USER)}
                   name='user'
                   overrideValues={{
-                    fieldType: 'user',
+                    fieldType: FieldTypes.USER,
                     label: InfillDevelopmentCompensationFieldTitles.USER,
                   }}
                 />

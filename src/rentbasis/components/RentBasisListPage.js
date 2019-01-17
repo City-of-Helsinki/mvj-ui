@@ -37,7 +37,7 @@ import {
   getSearchQuery,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -81,7 +81,7 @@ class RentBasisListPage extends Component<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentBasis'),
+      linkUrl: getRouteById(Routes.RENT_BASIS),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -133,7 +133,7 @@ class RentBasisListPage extends Component<Props, State> {
     this.setState({activePage: 1});
 
     return router.push({
-      pathname: getRouteById('rentBasis'),
+      pathname: getRouteById(Routes.RENT_BASIS),
       query,
     });
   }
@@ -165,7 +165,7 @@ class RentBasisListPage extends Component<Props, State> {
     });
 
     return router.push({
-      pathname: getRouteById('newRentBasis'),
+      pathname: getRouteById(Routes.RENT_BASIS_NEW),
       query,
     });
   }
@@ -175,7 +175,7 @@ class RentBasisListPage extends Component<Props, State> {
     const {location: {query}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('rentBasis')}/${id}`,
+      pathname: `${getRouteById(Routes.RENT_BASIS)}/${id}`,
       query,
     });
   };
@@ -193,7 +193,7 @@ class RentBasisListPage extends Component<Props, State> {
     this.setState({activePage: page});
 
     return router.push({
-      pathname: getRouteById('rentBasis'),
+      pathname: getRouteById(Routes.RENT_BASIS),
       query,
     });
   }

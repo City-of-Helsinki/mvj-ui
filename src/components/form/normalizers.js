@@ -1,7 +1,7 @@
 // @flow
 import moment from 'moment';
 
-import {FieldTypes} from '$src/enums';
+import {FieldTypes} from '$components/enums';
 
 export const normalizeDate = (date: any) => (date && moment(date).format('YYYY-MM-DD')) || null;
 

@@ -17,6 +17,7 @@ import {getDistrictOptions} from '$src/district/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
+import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/types';
 import type {DistrictList} from '$src/district/types';
@@ -156,6 +157,7 @@ class CreateLeaseForm extends Component<Props> {
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.REFERENCE_NUMBER)}
                 name='reference_number'
                 setRefForField={this.setRefForFirstField}
+                validate={referenceNumber}
                 overrideValues={{label: LeaseFieldTitles.REFERENCE_NUMBER}}
               />
             </Authorization>

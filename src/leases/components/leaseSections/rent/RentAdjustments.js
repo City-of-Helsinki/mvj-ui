@@ -6,31 +6,31 @@ import {Row, Column} from 'react-foundation';
 import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
+import DecisionLink from '$components/links/DecisionLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles} from '$src/leases/enums';
-import {getDecisionById, getDecisionOptions} from '$src/decision/helpers';
 import {
   formatDate,
   formatNumber,
   getFieldOptions,
   getLabelOfOption,
-  getReferenceNumberLink,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getDecisionsByLease} from '$src/decision/selectors';
+import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
-  decisions: Array<Object>,
+  currentLease: Lease,
   leaseAttributes: Attributes,
   rentAdjustments: Array<Object>,
 }
 
-const RentAdjustments = ({decisions, leaseAttributes, rentAdjustments}: Props) => {
-  const decisionOptions = getDecisionOptions(decisions),
+const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props) => {
+  const decisionOptions = getDecisionOptions(currentLease),
     typeOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE),
     intendedUseOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE),
     amountTypeOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE);
@@ -47,7 +47,7 @@ const RentAdjustments = ({decisions, leaseAttributes, rentAdjustments}: Props) =
 
       {rentAdjustments && !!rentAdjustments.length &&
         rentAdjustments.map((adjustment, index) => {
-          const decision = getDecisionById(decisions, adjustment.decision);
+          const decision = getDecisionById(currentLease, adjustment.decision);
 
           return (
             <BoxItem className='no-border-on-first-child no-border-on-last-child' key={index}>
@@ -95,13 +95,10 @@ const RentAdjustments = ({decisions, leaseAttributes, rentAdjustments}: Props) =
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}>
                     <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.DECISION}</FormTextTitle>
-                    {decision
-                      ? <FormText>{decision.reference_number
-                        ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, adjustment.decision)}</a>
-                        : getLabelOfOption(decisionOptions, adjustment.decision)
-                      }</FormText>
-                      : <FormText>-</FormText>
-                    }
+                    <DecisionLink
+                      decision={decision}
+                      decisionOptions={decisionOptions}
+                    />
                   </Authorization>
                 </Column>
               </Row>
@@ -127,7 +124,7 @@ export default connect(
     const currentLease = getCurrentLease(state);
 
     return {
-      decisions: getDecisionsByLease(state, currentLease.id),
+      currentLease: currentLease,
       leaseAttributes: getLeaseAttributes(state),
     };
   }

@@ -54,7 +54,7 @@ import {
   getContentLitigants,
   isLitigantArchived,
 } from '$src/landUseContract/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {
   getAttributes,
@@ -145,7 +145,7 @@ class LandUseContractPage extends Component<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('landUseContract'),
+      linkUrl: getRouteById(Routes.LAND_USE_CONTRACTS),
       pageTitle: 'Maankäyttösopimukset',
       showSearch: false,
     });
@@ -196,7 +196,7 @@ class LandUseContractPage extends Component<Props, State> {
       router: {location: {pathname}},
     } = this.props;
 
-    if(pathname !== `${getRouteById('landUseContract')}/${landUseContractId}`) {
+    if(pathname !== `${getRouteById(Routes.LAND_USE_CONTRACTS)}/${landUseContractId}`) {
       clearUnsavedChanges();
     }
     hideEditMode();
@@ -377,7 +377,7 @@ class LandUseContractPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: getRouteById('landUseContract'),
+      pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
       query,
     });
   }

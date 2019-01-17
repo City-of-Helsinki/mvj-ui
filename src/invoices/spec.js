@@ -49,7 +49,7 @@ describe('Invoices', () => {
     describe('invoiceReducer', () => {
 
       // $FlowFixMe
-      it('should update contact attributes', () => {
+      it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'Foo',
           val2: 'Bar',
@@ -60,7 +60,7 @@ describe('Invoices', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update contact methods', () => {
+      it('should update methods', () => {
         const dummyMethods = {
           val1: 'Foo',
           val2: 'Bar',

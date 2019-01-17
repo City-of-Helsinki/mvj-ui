@@ -23,7 +23,7 @@ const Tenants = ({currentLease}: Props) => {
     <Fragment>
       <h2>Vuokralaiset</h2>
       <Divider />
-      {(!tenants.length) && <FormText>Ei vuokralaisia</FormText>}
+      {(!tenants.length) && <FormText className='no-margin'>Ei vuokralaisia</FormText>}
       {!!tenants.length && tenants.map((tenant) => <Tenant key={tenant.id} tenant={tenant} />)}
 
       {!!tenantsArchived.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}

@@ -21,7 +21,7 @@ import {FormNames} from '$src/landUseContract/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isLitigantActive} from '$src/landUseContract/helpers';
 import {formatDate, formatDateRange} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 
 type Props = {
@@ -76,7 +76,7 @@ const LitigantBillingPerson = ({
                 text={contact
                   ? <ExternalLink
                     className='no-margin'
-                    href={`${getRouteById('contacts')}/${contact.id}`}
+                    href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`}
                     text={getContactFullName(contact)}
                   />
                   : '-'

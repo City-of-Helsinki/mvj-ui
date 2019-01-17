@@ -9,6 +9,7 @@ import flowRight from 'lodash/flowRight';
 
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
+import {FieldTypes} from '$components/enums';
 import {FormNames, LeaseFieldPaths, LeaseTenantContactSetFieldPaths} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/district/helpers';
 import {getFieldOptions} from '$util/helpers';
@@ -165,7 +166,7 @@ class Search extends Component<Props, State> {
               disableDirty
               fieldAttributes={{
                 label: 'Hae hakusanalla',
-                type: 'search',
+                type: FieldTypes.SEARCH,
                 read_only: false,
               }}
               invisibleLabel
@@ -185,7 +186,7 @@ class Search extends Component<Props, State> {
                   disableDirty
                   fieldAttributes={{
                     label: 'Vuokralainen',
-                    type: 'string',
+                    type: FieldTypes.STRING,
                     read_only: false,
                   }}
                   invisibleLabel
@@ -206,7 +207,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: '',
-                        type: 'multiselect',
+                        type: FieldTypes.MULTISELECT,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -223,7 +224,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Vain entiset asiakkaat',
-                        type: 'checkbox',
+                        type: FieldTypes.CHECKBOX,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -249,7 +250,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Tyyppi',
-                        type: 'choice',
+                        type: FieldTypes.CHOICE,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -263,7 +264,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Kunta',
-                        type: 'choice',
+                        type: FieldTypes.CHOICE,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -277,7 +278,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Kaupunginosa',
-                        type: 'choice',
+                        type: FieldTypes.CHOICE,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -291,7 +292,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Juokseva numero',
-                        type: 'string',
+                        type: FieldTypes.STRING,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -313,7 +314,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Vuokrauksen alkupvm alkaen',
-                        type: 'date',
+                        type: FieldTypes.DATE,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -326,7 +327,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Vuokrauksen alkupvm loppuen',
-                        type: 'date',
+                        type: FieldTypes.DATE,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -348,7 +349,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Vuokrauksen loppupvm alkaen',
-                        type: 'date',
+                        type: FieldTypes.DATE,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -361,7 +362,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Vuokrauksen loppupvm loppuen',
-                        type: 'date',
+                        type: FieldTypes.DATE,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -384,7 +385,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Voimassa',
-                        type: 'checkbox',
+                        type: FieldTypes.CHECKBOX,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -400,7 +401,7 @@ class Search extends Component<Props, State> {
                       disableDirty
                       fieldAttributes={{
                         label: 'Päättyneet',
-                        type: 'checkbox',
+                        type: FieldTypes.CHECKBOX,
                         read_only: false,
                       }}
                       invisibleLabel
@@ -424,7 +425,7 @@ class Search extends Component<Props, State> {
                   disableDirty
                   fieldAttributes={{
                     label: 'Kohteen tunnus',
-                    type: 'string',
+                    type: FieldTypes.STRING,
                     read_only: false,
                   }}
                   invisibleLabel
@@ -443,7 +444,7 @@ class Search extends Component<Props, State> {
                   disableDirty
                   fieldAttributes={{
                     label: 'Vuokrakohteen osoite',
-                    type: 'string',
+                    type: FieldTypes.STRING,
                     read_only: false,
                   }}
                   invisibleLabel

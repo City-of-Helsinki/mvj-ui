@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
@@ -21,7 +21,7 @@ import {
   getContentPlotsGeoJson,
   getLeaseCoordinates,
 } from '$src/leases/helpers';
-import {getFieldOptions} from '$util/helpers';
+import {getFieldOptions, isFieldAllowedToRead} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -56,7 +56,7 @@ type State = {
   plotTypeOptions: Array<Object>,
 }
 
-class SingleLeaseMap extends Component<Props, State> {
+class SingleLeaseMap extends PureComponent<Props, State> {
   state = {
     areasGeoJson: {
       features: [],
@@ -120,14 +120,13 @@ class SingleLeaseMap extends Component<Props, State> {
     return newState;
   }
 
-  render() {
-    const {router: {location: {query}}} = this.props;
+  getOverlayLayers = () => {
+    const layers = [];
+    const {leaseAttributes, router: {location: {query}}} = this.props;
     const {
       areasGeoJson,
       areaLocationOptions,
       areaTypeOptions,
-      bounds,
-      center,
       planUnitsGeoJson,
       planUnitsContractGeoJson,
       planUnitIntendedUseOptions,
@@ -139,79 +138,96 @@ class SingleLeaseMap extends Component<Props, State> {
       plotTypeOptions,
     } = this.state;
 
+    if(isFieldAllowedToRead(leaseAttributes, LeasePlanUnitsFieldPaths.GEOMETRY)) {
+      layers.push({
+        checked: true,
+        component: <PlanUnitsLayer
+          key='plan_units'
+          color={mapColors[0 % mapColors.length]}
+          defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
+          planUnitsGeoJson={planUnitsGeoJson}
+          planUnitIntendedUseOptions={planUnitIntendedUseOptions}
+          planUnitStateOptions={planUnitStateOptions}
+          planUnitTypeOptions={planUnitTypeOptions}
+          plotDivisionStateOptions={plotDivisionStateOptions}
+        />,
+        name: 'Kaavayksiköt',
+      });
+
+      layers.push({
+        checked: false,
+        component: <PlanUnitsLayer
+          key='plan_units'
+          color={mapColors[1 % mapColors.length]}
+          defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
+          planUnitsGeoJson={planUnitsContractGeoJson}
+          planUnitIntendedUseOptions={planUnitIntendedUseOptions}
+          planUnitStateOptions={planUnitStateOptions}
+          planUnitTypeOptions={planUnitTypeOptions}
+          plotDivisionStateOptions={plotDivisionStateOptions}
+        />,
+        name: 'Kaavayksiköt sopimuksessa',
+      });
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeasePlotsFieldPaths.GEOMETRY)) {
+      layers.push({
+        checked: true,
+        component: <PlotsLayer
+          key='plots'
+          color={mapColors[2 % mapColors.length]}
+          defaultPlot={query.plot ? Number(query.plot) : undefined}
+          plotsGeoJson={plotsGeoJson}
+          typeOptions={plotTypeOptions}/>,
+        name: 'Kiinteistöt/määräalat',
+      });
+
+      layers.push({
+        checked: false,
+        component: <PlotsLayer
+          key='plots'
+          color={mapColors[3 % mapColors.length]}
+          defaultPlot={query.plot ? Number(query.plot) : undefined}
+          plotsGeoJson={plotsContractGeoJson}
+          typeOptions={plotTypeOptions}/>,
+        name: 'Kiinteistöt/määräalat sopimuksessa',
+      });
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.GEOMETRY)) {
+      layers.push({
+        checked: true,
+        component: <AreasLayer
+          key='areas'
+          areasGeoJson={areasGeoJson}
+          color={mapColors[4 % mapColors.length]}
+          defaultArea={query.lease_area ? Number(query.lease_area) : undefined}
+          locationOptions={areaLocationOptions}
+          typeOptions={areaTypeOptions}
+        />,
+        name: 'Vuokrakohteet',
+      });
+    }
+
+    return layers;
+  }
+
+  render() {
+    const {bounds, center} = this.state;
+    const overlayLayers = this.getOverlayLayers();
+
     return(
-      <div>
+      <Fragment>
         <h2>Kartta</h2>
         <Divider />
 
         <AreaNotesEditMap
           bounds={bounds}
           center={center}
-          overlayLayers={[
-            {
-              checked: true,
-              component: <PlanUnitsLayer
-                key='plan_units'
-                color={mapColors[0 % mapColors.length]}
-                defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
-                planUnitsGeoJson={planUnitsGeoJson}
-                planUnitIntendedUseOptions={planUnitIntendedUseOptions}
-                planUnitStateOptions={planUnitStateOptions}
-                planUnitTypeOptions={planUnitTypeOptions}
-                plotDivisionStateOptions={plotDivisionStateOptions}
-              />,
-              name: 'Kaavayksiköt',
-            },
-            {
-              checked: false,
-              component: <PlanUnitsLayer
-                key='plan_units'
-                color={mapColors[1 % mapColors.length]}
-                defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
-                planUnitsGeoJson={planUnitsContractGeoJson}
-                planUnitIntendedUseOptions={planUnitIntendedUseOptions}
-                planUnitStateOptions={planUnitStateOptions}
-                planUnitTypeOptions={planUnitTypeOptions}
-                plotDivisionStateOptions={plotDivisionStateOptions}
-              />,
-              name: 'Kaavayksiköt sopimuksessa',
-            },
-            {
-              checked: true,
-              component: <PlotsLayer
-                key='plots'
-                color={mapColors[2 % mapColors.length]}
-                defaultPlot={query.plot ? Number(query.plot) : undefined}
-                plotsGeoJson={plotsGeoJson}
-                typeOptions={plotTypeOptions}/>,
-              name: 'Kiinteistöt/määräalat',
-            },
-            {
-              checked: false,
-              component: <PlotsLayer
-                key='plots'
-                color={mapColors[3 % mapColors.length]}
-                defaultPlot={query.plot ? Number(query.plot) : undefined}
-                plotsGeoJson={plotsContractGeoJson}
-                typeOptions={plotTypeOptions}/>,
-              name: 'Kiinteistöt/määräalat sopimuksessa',
-            },
-            {
-              checked: true,
-              component: <AreasLayer
-                key='areas'
-                areasGeoJson={areasGeoJson}
-                color={mapColors[4 % mapColors.length]}
-                defaultArea={query.lease_area ? Number(query.lease_area) : undefined}
-                locationOptions={areaLocationOptions}
-                typeOptions={areaTypeOptions}
-              />,
-              name: 'Vuokrakohteet',
-            },
-          ]}
+          overlayLayers={overlayLayers}
           showEditTools={false}
         />
-      </div>
+      </Fragment>
     );
   }
 }

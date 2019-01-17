@@ -9,6 +9,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import DecisionLink from '$components/links/DecisionLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
@@ -24,21 +25,19 @@ import {
   LeaseContractMortgageDocumentsFieldPaths,
   LeaseContractMortgageDocumentsFieldTitles,
 } from '$src/leases/enums';
-import {getDecisionById} from '$src/decision/helpers';
-import {isContractActive} from '$src/leases/helpers';
-import {formatDate, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead} from '$util/helpers';
-import {getDecisionsByLease} from '$src/decision/selectors';
+import {getDecisionById, getDecisionOptions, isContractActive} from '$src/leases/helpers';
+import {formatDate, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   contract: Object,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
-  decisionOptions: Array<Object>,
-  decisions: Array<Object>,
+  currentLease: Lease,
   receiveCollapseStates: Function,
   typeOptions: Array<Object>,
 }
@@ -48,8 +47,7 @@ const ContractItem = ({
   contract,
   contractCollapseState,
   contractChangesCollapseState,
-  decisionOptions,
-  decisions,
+  currentLease,
   receiveCollapseStates,
   typeOptions,
 }: Props) => {
@@ -77,7 +75,8 @@ const ContractItem = ({
     });
   };
 
-  const decision = getDecisionById(decisions, contract.decision);
+  const decisionOptions = getDecisionOptions(currentLease);
+  const decision = getDecisionById(currentLease, contract.decision);
 
   return (
     <Collapse
@@ -145,17 +144,14 @@ const ContractItem = ({
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.DECISION)}>
             <FormTextTitle>{LeaseContractsFieldTitles.DECISION}</FormTextTitle>
-            {decision
-              ? <FormText>{decision.reference_number
-                ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, contract.decision)}</a>
-                : getLabelOfOption(decisionOptions, contract.decision)
-              }</FormText>
-              : <FormText>-</FormText>
-            }
+            <DecisionLink
+              decision={decision}
+              decisionOptions={decisionOptions}
+            />
           </Authorization>
         </Column>
         <Column small={6} medium={12} large={6}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER)}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
             <FormTextTitle>{LeaseContractsFieldTitles.KTJ_LINK}</FormTextTitle>
             {contract.institution_identifier
               ? <KtjLink
@@ -241,7 +237,7 @@ const ContractItem = ({
           {contract.contract_changes && !!contract.contract_changes.length &&
             <BoxItemContainer>
               {contract.contract_changes.map((change) => {
-                const decision = getDecisionById(decisions, change.decision);
+                const decision = getDecisionById(currentLease, change.decision);
 
                 return (
                   <BoxItem
@@ -283,13 +279,10 @@ const ContractItem = ({
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.DECISION)}>
                           <FormTextTitle>{LeaseContractChangesFieldTitles.DECISION}</FormTextTitle>
-                          {decision
-                            ? <FormText>{decision.reference_number
-                              ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, change.decision)}</a>
-                              : getLabelOfOption(decisionOptions, change.decision)
-                            }</FormText>
-                            : <FormText>-</FormText>
-                          }
+                          <DecisionLink
+                            decision={decision}
+                            decisionOptions={decisionOptions}
+                          />
                         </Authorization>
                       </Column>
                       <Column small={6} medium={8} large={10}>
@@ -313,13 +306,12 @@ const ContractItem = ({
 export default connect(
   (state, props) => {
     const id = props.contract.id;
-    const currentLease = getCurrentLease(state);
 
     return {
       attributes: getAttributes(state),
       contractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract`),
       contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract_changes`),
-      decisions: getDecisionsByLease(state, currentLease.id),
+      currentLease: getCurrentLease(state),
     };
   },
   {

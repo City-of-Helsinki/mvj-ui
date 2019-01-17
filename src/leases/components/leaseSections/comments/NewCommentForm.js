@@ -8,7 +8,7 @@ import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import {receiveIsSaveClicked} from '$src/comments/actions';
-import {ButtonColors, FormNames} from '$components/enums';
+import {ButtonColors, FieldTypes, FormNames} from '$components/enums';
 import {CommentFieldPaths, CommentFieldTitles} from '$src/comments/enums';
 import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
 import {
@@ -66,7 +66,7 @@ const NewCommentForm = ({
           name='text'
           overrideValues={{
             label: CommentFieldTitles.TEXT,
-            fieldType: 'textarea',
+            fieldType: FieldTypes.TEXTAREA,
           }}
         />
       </Authorization>

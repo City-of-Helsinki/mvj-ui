@@ -10,14 +10,12 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import AddFileButton from '$components/form/AddFileButton';
 import Authorization from '$components/authorization/Authorization';
+import DecisionLink from '$components/links/DecisionLink';
 import NewCollectionNote from './NewCollectionNote';
-import ExternalLink from '$components/links/ExternalLink';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import ListItem from '$components/content/ListItem';
-import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import ShowMore from '$components/showMore/ShowMore';
 import SubTitle from '$components/content/SubTitle';
@@ -28,14 +26,17 @@ import {CollectionCourtDecisionFieldPaths, CollectionCourtDecisionFieldTitles} f
 import {CollectionLetterFieldPaths, CollectionLetterFieldTitles} from '$src/collectionLetter/enums';
 import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
 import {ButtonColors} from '$components/enums';
-import {DecisionTypes} from '$src/decision/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseDecisionsFieldPaths} from '$src/leases/enums';
-import {getDecisionOptions} from '$src/decision/helpers';
+import {
+  DecisionTypes,
+  DeleteModalLabels,
+  DeleteModalTitles,
+  FormNames,
+  LeaseDecisionsFieldPaths,
+} from '$src/leases/enums';
 import {getUserFullName} from '$src/users/helpers';
+import {getContentDecisions, getDecisionOptions} from '$src/leases/helpers';
 import {
   formatDate,
-  getLabelOfOption,
-  getReferenceNumberLink,
   isFieldAllowedToRead,
   isFieldRequired,
   sortStringByKeyAsc,
@@ -43,7 +44,6 @@ import {
 import {getCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/selectors';
 import {getCollectionLettersByLease} from '$src/collectionLetter/selectors';
 import {getCollectionNotesByLease} from '$src/collectionNote/selectors';
-import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 
@@ -119,7 +119,6 @@ type Props = {
   collectionNotes: Array<Object>,
   createCollectionNote: Function,
   currentLease: Lease,
-  decisions: Array<Object>,
   deleteCollectionCourtDecision: Function,
   deleteCollectionLetter: Function,
   deleteCollectionNote: Function,
@@ -135,8 +134,8 @@ type State = {
   collectionLetters: Array<Object>,
   collectionNotes: Array<Object>,
   createCollectionNoteCallback: ?Function,
+  currentLease: Lease,
   debtCollectionDecisions: Array<Object>,
-  decisions: Array<Object>,
   decisionOptions: Array<Object>,
   sortedCollectionCourtDecisions: Array<Object>,
   sortedCollectionLetters: Array<Object>,
@@ -149,8 +148,8 @@ class DebtCollectionForm extends PureComponent<Props, State> {
     collectionLetters: [],
     collectionNotes: [],
     createCollectionNoteCallback: null,
+    currentLease: {},
     debtCollectionDecisions: [],
-    decisions: [],
     decisionOptions: [],
     sortedCollectionCourtDecisions: [],
     sortedCollectionLetters: [],
@@ -159,12 +158,6 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const newStates = {};
-
-    if(props.decisions && props.decisions !== state.decisions) {
-      newStates.decisions = props.decisions;
-      newStates.decisionOptions = getDecisionOptions(props.decisions);
-      newStates.debtCollectionDecisions = props.decisions.filter((decision) => decision.type === DecisionTypes.LAND_LEASE_DEMOLITION);
-    }
 
     if(props.collectionCourtDecisions && props.collectionCourtDecisions !== state.collectionCourtDecisions) {
       newStates.collectionCourtDecisions = props.collectionCourtDecisions;
@@ -179,6 +172,13 @@ class DebtCollectionForm extends PureComponent<Props, State> {
     if(props.collectionNotes && props.collectionNotes !== state.collectionNotes) {
       newStates.collectionNotes = props.collectionNotes;
       newStates.sortedCollectionNotes = props.collectionNotes.sort((a, b) => sortStringByKeyAsc(a, b, 'modified_at'));
+    }
+
+    if(props.currentLease !== state.currentLease) {
+      newStates.currentLease = props.currentLease;
+      newStates.decisionOptions = getDecisionOptions(props.currentLease);
+      newStates.debtCollectionDecisions = getContentDecisions(props.currentLease)
+        .filter((decision) => decision.type === DecisionTypes.LAND_LEASE_DEMOLITION);
     }
 
     if(!isEmpty(newStates)) {
@@ -467,20 +467,13 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                     <SubTitle>Vuokrauksen purkamispäätös</SubTitle>
 
                     {!debtCollectionDecisions.length && <FormText>Ei purkamispäätöksiä</FormText>}
-                    {!!debtCollectionDecisions.length &&
-                      <ListItems>
-                        {debtCollectionDecisions.map((decision, index) =>
-                          decision.reference_number
-                            ? <ListItem key={index}>
-                              <ExternalLink
-                                className='no-margin'
-                                href={getReferenceNumberLink(decision.reference_number)}
-                                text={decision.reference_number}
-                              /></ListItem>
-                            : <ListItem key={index}>{getLabelOfOption(decisionOptions, decision.id)}</ListItem>
-                        )}
-                      </ListItems>
-                    }
+                    {!!debtCollectionDecisions.length && debtCollectionDecisions.map((decision, index) =>
+                      <DecisionLink
+                        key={index}
+                        decision={decision}
+                        decisionOptions={decisionOptions}
+                      />
+                    )}
                   </Column>
                 </Row>
               </Authorization>
@@ -591,7 +584,6 @@ export default flowRight(
         collectionLetters: getCollectionLettersByLease(state, currentLease.id),
         collectionNotes: getCollectionNotesByLease(state, currentLease.id),
         currentLease: currentLease,
-        decisions: getDecisionsByLease(state, currentLease.id),
         leaseAttributes: getLeaseAttributes(state),
       };
     },

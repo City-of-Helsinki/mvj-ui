@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -10,26 +10,22 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import Authorization from '$components/authorization/Authorization';
 import DecisionItemEdit from './DecisionItemEdit';
+import FormText from '$components/form/FormText';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseDecisionsFieldPaths} from '$src/leases/enums';
-import {getContentDecisions} from '$src/leases/helpers';
 import {isFieldAllowedToEdit} from '$util/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
-import type {Lease} from '$src/leases/types';
 
 type DecisionsProps = {
   attributes: Attributes,
   fields: any,
-  savedDecisions: Array<Object>,
 }
 
 const renderDecisions = ({
   attributes,
   fields,
-  savedDecisions,
 }: DecisionsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -39,7 +35,10 @@ const renderDecisions = ({
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
+          <Fragment>
+            {!isFieldAllowedToEdit(attributes, LeaseDecisionsFieldPaths.DECISIONS) && (!fields || !fields.length) &&
+              <FormText className='no-margin'>Ei päätöksiä</FormText>
+            }
             {fields && !!fields.length && fields.map((decision, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -59,7 +58,6 @@ const renderDecisions = ({
                 index={index}
                 field={decision}
                 onRemove={handleRemove}
-                savedDecisions={savedDecisions}
               />;
             })}
             <Authorization allow={isFieldAllowedToEdit(attributes, LeaseDecisionsFieldPaths.DECISIONS)}>
@@ -72,7 +70,7 @@ const renderDecisions = ({
                 </Column>
               </Row>
             </Authorization>
-          </div>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -81,32 +79,12 @@ const renderDecisions = ({
 
 type Props = {
   attributes: Attributes,
-  currentLease: Lease,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
 
-type State = {
-  currentLease: ?Lease,
-  savedDecisions: Array<Object>,
-}
 
-class DecisionsEdit extends Component<Props, State> {
-  state = {
-    currentLease: null,
-    savedDecisions: [],
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if(props.currentLease !== state.currentLease) {
-      return {
-        currentLease: props.currentLease,
-        savedDecisions: getContentDecisions(props.currentLease),
-      };
-    }
-    return null;
-  }
-
+class DecisionsEdit extends PureComponent<Props> {
   componentDidUpdate(prevProps) {
     const {receiveFormValidFlags} = this.props;
 
@@ -119,7 +97,6 @@ class DecisionsEdit extends Component<Props, State> {
 
   render() {
     const {attributes} = this.props;
-    const {savedDecisions} = this.state;
 
     return (
       <form>
@@ -127,7 +104,6 @@ class DecisionsEdit extends Component<Props, State> {
           component={renderDecisions}
           attributes={attributes}
           name="decisions"
-          savedDecisions={savedDecisions}
         />
       </form>
     );
@@ -138,12 +114,7 @@ const formName = FormNames.DECISIONS;
 
 export default flowRight(
   connect(
-    (state) => {
-      return {
-        attributes: getAttributes(state),
-        currentLease: getCurrentLease(state),
-      };
-    },
+    null,
     {
       receiveFormValidFlags,
     },

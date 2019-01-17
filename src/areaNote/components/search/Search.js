@@ -8,6 +8,7 @@ import flowRight from 'lodash/flowRight';
 
 import FormField from '$components/form/FormField';
 import {FormNames} from '$src/areaNote/enums';
+import {FieldTypes} from '$components/enums';
 
 type Props = {
   formValues: Object,
@@ -63,7 +64,7 @@ class Search extends PureComponent<Props> {
               disableDirty
               fieldAttributes={{
                 label: 'Hae hakusanalla',
-                type: 'search',
+                type: FieldTypes.SEARCH,
                 read_only: false,
               }}
               invisibleLabel

@@ -12,6 +12,7 @@ import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormField from '$components/form/FormField';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
+import {FieldTypes} from '$components/enums';
 import {FormNames} from '$src/landUseContract/enums';
 import {getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
@@ -128,6 +129,7 @@ const ContractItemEdit = ({
               validate={referenceNumber}
               overrideValues={{
                 label: 'Diaarinumero',
+                fieldType: FieldTypes.REFERENCE_NUMBER,
               }}
             />
           </Column>

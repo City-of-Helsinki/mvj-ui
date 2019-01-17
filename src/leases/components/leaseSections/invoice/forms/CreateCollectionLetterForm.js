@@ -16,6 +16,7 @@ import FileDownloadButton from '$components/file/FileDownloadButton';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import SubTitle from '$components/content/SubTitle';
+import {FieldTypes} from '$components/enums';
 import {
   CreateCollectionLetterFieldPaths,
   CreateCollectionLetterFieldTitles,
@@ -54,7 +55,9 @@ const renderInvoices = ({
   fields,
   invoiceOptions,
 }: InvoicesProps) => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => {
+    fields.push({});
+  };
 
   return(
     <Fragment>
@@ -190,7 +193,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                     fieldAttributes={getFieldAttributes(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.TENANTS)}
                     name='tenants'
                     overrideValues={{
-                      fieldType: 'multiselect',
+                      fieldType: FieldTypes.MULTISELECT,
                       label: CreateCollectionLetterFieldTitles.TENANTS,
                       options: tenantOptions}}
                   />

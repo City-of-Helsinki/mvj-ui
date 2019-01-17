@@ -15,7 +15,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValid} from '$src/rentbasis/actions';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
@@ -241,7 +241,10 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes}: Decisions
                             invisibleLabel
                             name={`${field}.reference_number`}
                             validate={referenceNumber}
-                            overrideValues={{label: RentBasisDecisionsFieldTitles.REFERENCE_NUMBER}}
+                            overrideValues={{
+                              label: RentBasisDecisionsFieldTitles.REFERENCE_NUMBER,
+                              fieldType: FieldTypes.REFERENCE_NUMBER,
+                            }}
                           />
                         </Authorization>
                       }

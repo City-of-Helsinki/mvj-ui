@@ -19,7 +19,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/areaNote/enums';
 import {getSearchQuery} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -63,7 +63,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('areaNotes'),
+      linkUrl: getRouteById(Routes.AREA_NOTES),
       pageTitle: 'Muistettavat ehdot',
       showSearch: false,
     });
@@ -123,7 +123,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     const {router} = this.context;
 
     return router.push({
-      pathname: getRouteById('areaNotes'),
+      pathname: getRouteById(Routes.AREA_NOTES),
       query,
     });
   }

@@ -12,6 +12,7 @@ import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {receiveContactFormValid} from '$src/contacts/actions';
+import {FieldTypes} from '$components/enums';
 import {
   ContactFieldPaths,
   ContactFieldTitles,
@@ -140,7 +141,7 @@ class ContactForm extends Component<Props> {
                     name='address'
                     valueSelectedCallback={this.handleAddressChange}
                     overrideValues={{
-                      fieldType: 'address',
+                      fieldType: FieldTypes.ADDRESS,
                       label: ContactFieldTitles.ADDRESS,
                     }}
                   />

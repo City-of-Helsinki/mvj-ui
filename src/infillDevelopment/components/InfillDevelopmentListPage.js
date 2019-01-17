@@ -31,7 +31,7 @@ import {
 } from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentList} from '$src/infillDevelopment/helpers';
 import {getFieldOptions, getLabelOfOption, getSearchQuery, isFieldAllowedToRead} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -102,7 +102,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('infillDevelopment'),
+      linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
       pageTitle: 'Täydennysrakentamiskorvaukset',
       showSearch: false,
     });
@@ -182,7 +182,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     receiveFormInitialValues({});
 
     return router.push({
-      pathname: getRouteById('newInfillDevelopment'),
+      pathname: getRouteById(Routes.INFILL_DEVELOPMENT_NEW),
       query,
     });
   }
@@ -194,7 +194,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     delete query.page;
 
     return router.push({
-      pathname: getRouteById('infillDevelopment'),
+      pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
       query,
     });
   }
@@ -219,7 +219,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const {location: {query}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('infillDevelopment')}/${id}`,
+      pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${id}`,
       query,
     });
   };
@@ -237,7 +237,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     this.setState({activePage: page});
 
     return router.push({
-      pathname: getRouteById('infillDevelopment'),
+      pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
       query,
     });
   }

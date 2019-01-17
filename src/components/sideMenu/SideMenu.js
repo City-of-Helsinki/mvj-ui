@@ -12,7 +12,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {CancelChangesModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
 import type {Methods} from '$src/types';
@@ -145,20 +145,20 @@ class SideMenu extends Component<Props, State> {
               {!isFetchingCommonAttributes &&
                 <ul hidden={!isOpen && !isClosing && !isOpening}>
                   <Authorization allow={leaseMethods.GET}>
-                    <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById('leases')}>Vuokraukset</Link></li>
+                    <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.LEASES)}>Vuokraukset</Link></li>
                   </Authorization>
                   <Authorization allow={contactMethods.GET}>
-                    <li><Link onClick={handleClick} to={getRouteById('contacts')}>Asiakkaat</Link></li>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.CONTACTS)}>Asiakkaat</Link></li>
                   </Authorization>
-                  <li><Link onClick={handleClick} to={getRouteById('landUseContract')}>Maankäyttösopimukset</Link></li>
+                  <li><Link onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
                   <Authorization allow={areaNoteMethods.GET}>
-                    <li><Link onClick={handleClick} to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_NOTES)}>Muistettavat ehdot</Link></li>
                   </Authorization>
                   <Authorization allow={infillDevelopmentMethods.GET}>
-                    <li><Link onClick={handleClick} to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.INFILL_DEVELOPMENTS)}>Täydennysrakentamiskorvaukset</Link></li>
                   </Authorization>
                   <Authorization allow={rentBasisMethods.GET}>
-                    <li><Link onClick={handleClick} to={getRouteById('rentBasis')}>Vuokrausperusteet</Link></li>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperusteet</Link></li>
                   </Authorization>
                 </ul>
               }

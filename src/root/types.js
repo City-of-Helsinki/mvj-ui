@@ -10,7 +10,6 @@ import type {CommentState} from '$src/comments/types';
 import type {ContactState} from '$src/contacts/types';
 import type {CopyAreasToContractState} from '$src/copyAreasToContract/types';
 import type {CreateCollectionLetterState} from '$src/createCollectionLetter/types';
-import type {DecisionState} from '$src/decision/types';
 import type {DistrictState} from '$src/district/types';
 import type {InfillDevelopmentState} from '$src/infillDevelopment/types';
 import type {InfillDevelopmentAttachmentState} from '$src/infillDevelopmentAttachment/types';
@@ -45,7 +44,6 @@ export type RootState = {
   contact: ContactState,
   copyAreasToContract: CopyAreasToContractState,
   createCollectionLetter: CreateCollectionLetterState,
-  decision: DecisionState,
   district: DistrictState,
   form: Object,
   infillDevelopment: InfillDevelopmentState,

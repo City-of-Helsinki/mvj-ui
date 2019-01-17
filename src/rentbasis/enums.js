@@ -137,5 +137,5 @@ export const RentBasisRentRatesFieldTitles = {
   RENT_RATES: 'Hinnat',
   AMOUNT: 'Euroa',
   AREA_UNIT: 'Yksikkö',
-  BUILD_PERMISSION_TYPE: 'Rakennusoikeustyyppi',
+  BUILD_PERMISSION_TYPE: 'Pääkäyttötarkoitus',
 };

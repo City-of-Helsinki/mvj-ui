@@ -11,6 +11,7 @@ import Authorization from '$components/authorization/Authorization';
 import AddButton from '$components/form/AddButton';
 import ContactModal from '$src/contacts/components/ContactModal';
 import Divider from '$components/content/Divider';
+import FormText from '$components/form/FormText';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import TenantItemEdit from './TenantItemEdit';
@@ -47,6 +48,7 @@ import {
   getCurrentLease,
 } from '$src/leases/selectors';
 
+
 import type {Attributes, Methods} from '$src/types';
 import type {ContactModalSettings} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
@@ -76,7 +78,11 @@ const renderTenants = ({
             {!showAddButton && fields && !!fields.length &&
               <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
             }
-
+            {(!isFieldAllowedToEdit(leaseAttributes, LeaseTenantsFieldPaths.TENANTS) &&
+              (!fields || !fields.length) &&
+              showAddButton) &&
+              <FormText className='no-margin'>Ei vuokralaisia</FormText>
+            }
             {fields && !!fields.length && fields.map((tenant, index) => {
               const handleRemove = () => {
                 dispatch({

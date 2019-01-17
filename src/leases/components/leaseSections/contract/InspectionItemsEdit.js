@@ -13,6 +13,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
 import RemoveButton from '$components/form/RemoveButton';
@@ -38,7 +39,10 @@ const InspectionItemsEdit = ({attributes, fields, isSaveClicked, largeScreen}: P
 
   if(!fields || !fields.length) {
     return (
-      <Authorization allow={isFieldAllowedToEdit(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}>
+      <Authorization
+        allow={isFieldAllowedToEdit(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}
+        errorComponent={<FormText className='no-margin'>Ei tarkastuksia tai huomautuksia</FormText>}
+      >
         <Row>
           <Column>
             <AddButton

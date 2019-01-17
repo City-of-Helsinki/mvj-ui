@@ -1,6 +1,7 @@
 // @flow
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
+import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -10,59 +11,84 @@ import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
+import DecisionLink from '$components/links/DecisionLink';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
+  FormNames,
   LeaseRentAdjustmentsFieldPaths,
   LeaseRentAdjustmentsFieldTitles,
 } from '$src/leases/enums';
-import {getDecisionOptions} from '$src/decision/helpers';
+import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
 import {
+  formatNumber,
   getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
 } from '$util/helpers';
-import {getDecisionsByLease} from '$src/decision/selectors';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
 } from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
+  adjustments: Array<Object>,
+  currentLease:Lease,
   fields: any,
-  decisions: Array<Object>,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
 }
 
 type State = {
-  decisions: Array<Object>,
+  amountTypeOptions: Array<Object>,
+  currentLease: Lease,
   decisionOptions: Array<Object>,
+  leaseAttributes: Attributes,
 }
 
 class RentAdjustmentsEdit extends PureComponent<Props, State> {
   state = {
-    decisions: [],
+    amountTypeOptions: [],
+    currentLease: {},
     decisionOptions: [],
+    leaseAttributes: {},
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    if(props.decisions !== state.decisions) {
-      return {
-        decisions: props.decisions,
-        decisionOptions: getDecisionOptions(props.decisions),
-      };
+    const newState = {};
+
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.decisionOptions = getDecisionOptions(props.currentLease);
     }
 
-    return null;
+    if(props.leaseAttributes !== state.leaseAttributes) {
+      newState.leaseAttributes = props.leaseAttributes;
+      newState.amountTypeOptions = getFieldOptions(props.leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE);
+    }
+
+    return newState;
   }
+
+  decisionReadOnlyRenderer = (value: ?number) => {
+    const {currentLease, decisionOptions} = this.state;
+
+    return <DecisionLink
+      decision={getDecisionById(currentLease, value)}
+      decisionOptions={decisionOptions}
+    />;
+  };
 
   handleAdd = () => {
     const {fields} = this.props;
@@ -73,6 +99,10 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
   render() {
     const {fields, isSaveClicked, leaseAttributes} = this.props;
     const {decisionOptions} = this.state;
+
+    if(!isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS) && (!fields || !fields.length)) {
+      return <FormText>Ei alennuksia tai korotuksia</FormText>;
+    }
 
     return (
       <AppConsumer>
@@ -93,6 +123,18 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                       confirmationModalTitle: DeleteModalTitles.RENT_ADJUSTMENT,
                     });
                   };
+
+                  const getFullAmountText = () => {
+                    const {adjustments} = this.props;
+                    const {amountTypeOptions} = this.state;
+                    const adjustment = adjustments[index];
+
+                    if(!adjustment.full_amount) return null;
+
+                    return `${formatNumber(adjustment.full_amount)} ${getLabelOfOption(amountTypeOptions, adjustment.amount_type)}`;
+                  };
+
+                  const fullAmountText = getFullAmountText();
 
                   return (
                     <BoxItem key={index}>
@@ -155,29 +197,38 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                               <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
                                 {LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}
                               </FormTextTitle>
+
                               <Row>
-                                <Column small={6}>
-                                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
-                                    <FormField
-                                      disableTouched={isSaveClicked}
-                                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
-                                      invisibleLabel
-                                      name={`${discount}.full_amount`}
-                                      overrideValues={{label: LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}}
-                                    />
-                                  </Authorization>
-                                </Column>
-                                <Column small={6}>
-                                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}>
-                                    <FormField
-                                      disableTouched={isSaveClicked}
-                                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}
-                                      invisibleLabel
-                                      name={`${discount}.amount_type`}
-                                      overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_TYPE}}
-                                    />
-                                  </Authorization>
-                                </Column>
+                                <Authorization
+                                  allow={
+                                    isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT) ||
+                                    isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)
+                                  }
+                                  errorComponent={<Column><FormText>{fullAmountText}</FormText></Column>}
+                                >
+                                  <Column small={6}>
+                                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
+                                      <FormField
+                                        disableTouched={isSaveClicked}
+                                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
+                                        invisibleLabel
+                                        name={`${discount}.full_amount`}
+                                        overrideValues={{label: LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}}
+                                      />
+                                    </Authorization>
+                                  </Column>
+                                  <Column small={6}>
+                                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}>
+                                      <FormField
+                                        disableTouched={isSaveClicked}
+                                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}
+                                        invisibleLabel
+                                        name={`${discount}.amount_type`}
+                                        overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_TYPE}}
+                                      />
+                                    </Authorization>
+                                  </Column>
+                                </Authorization>
                               </Row>
                             </Authorization>
                           </Column>
@@ -198,6 +249,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}
                                 name={`${discount}.decision`}
+                                readOnlyValueRenderer={this.decisionReadOnlyRenderer}
                                 overrideValues={{
                                   label: LeaseRentAdjustmentsFieldTitles.DECISION,
                                   options: decisionOptions,
@@ -244,11 +296,14 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
   }
 }
 
+const formName = FormNames.RENTS;
+const selector = formValueSelector(formName);
+
 export default connect(
-  (state) => {
-    const currentLease = getCurrentLease(state);
+  (state, props) => {
     return {
-      decisions: getDecisionsByLease(state, currentLease.id),
+      adjustments: selector(state, props.fields.name),
+      currentLease: getCurrentLease(state),
       leaseAttributes: getLeaseAttributes(state),
     };
   },

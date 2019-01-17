@@ -32,7 +32,7 @@ import {
   getSearchQuery,
   isFieldAllowedToRead,
 } from '$src/util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getContactList, getIsFetching} from '../selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -116,7 +116,7 @@ class ContactListPage extends Component<Props, State> {
     const {location: {query}} = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('contacts'),
+      linkUrl: getRouteById(Routes.CONTACTS),
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
@@ -169,7 +169,7 @@ class ContactListPage extends Component<Props, State> {
     initializeContactForm({});
 
     return router.push({
-      pathname: getRouteById('newContact'),
+      pathname: getRouteById(Routes.CONTACT_NEW),
       query,
     });
   }
@@ -179,7 +179,7 @@ class ContactListPage extends Component<Props, State> {
     this.setState({activePage: 1});
 
     return router.push({
-      pathname: getRouteById('contacts'),
+      pathname: getRouteById(Routes.CONTACTS),
       query,
     });
   }
@@ -203,7 +203,7 @@ class ContactListPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('contacts')}/${id}`,
+      pathname: `${getRouteById(Routes.CONTACTS)}/${id}`,
       query,
     });
   };
@@ -221,7 +221,7 @@ class ContactListPage extends Component<Props, State> {
     this.setState({activePage: page});
 
     return router.push({
-      pathname: getRouteById('contacts'),
+      pathname: getRouteById(Routes.CONTACTS),
       query,
     });
   }

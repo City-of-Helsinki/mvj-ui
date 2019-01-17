@@ -24,7 +24,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
@@ -259,7 +259,7 @@ const Address = ({
             invisibleLabel
             name={`${field}.address`}
             valueSelectedCallback={handleAddressChange}
-            overrideValues={{fieldType: 'address', label: LeaseAreaAddressesFieldTitles.ADDRESS}}
+            overrideValues={{fieldType: FieldTypes.ADDRESS, label: LeaseAreaAddressesFieldTitles.ADDRESS}}
           />
         </Authorization>
       </Column>

@@ -13,23 +13,33 @@ import DecisionConditionsEdit from './DecisionConditionsEdit';
 import FormField from '$components/form/FormField';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {FieldTypes} from '$components/enums';
 import {FormNames, LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles} from '$src/leases/enums';
-import {getDecisionById} from '$src/decision/helpers';
+import {getDecisionById} from '$src/leases/helpers';
 import {
   formatDate,
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
+  isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getCurrentLease,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   conditionsCollapseState: boolean,
+  currentLease: Lease,
   decisionCollapseState: boolean,
   decisionId: number,
   errors: ?Object,
@@ -37,12 +47,12 @@ type Props = {
   isSaveClicked: boolean,
   onRemove: Function,
   receiveCollapseStates: Function,
-  savedDecisions: Array<Object>,
 }
 
 const DecisionItemEdit = ({
   attributes,
   conditionsCollapseState,
+  currentLease,
   decisionCollapseState,
   decisionId,
   errors,
@@ -50,7 +60,6 @@ const DecisionItemEdit = ({
   isSaveClicked,
   onRemove,
   receiveCollapseStates,
-  savedDecisions,
 }: Props) => {
   const handleDecisionCollapseToggle = (val: boolean) => {
     if(!decisionId) {return;}
@@ -80,10 +89,13 @@ const DecisionItemEdit = ({
     });
   };
 
+  const sectionReadOnlyRenderer = (value: ?string) => value ? `${value} §` : '-';
+
   const decisionMakerOptions = getFieldOptions(attributes, LeaseDecisionsFieldPaths.DECISION_MAKER);
   const typeOptions = getFieldOptions(attributes, LeaseDecisionsFieldPaths.TYPE);
   const decisionErrors = get(errors, field),
-    savedDecision = getDecisionById(savedDecisions, decisionId);
+    savedDecision = getDecisionById(currentLease, decisionId);
+
 
   return (
     <Collapse
@@ -106,7 +118,7 @@ const DecisionItemEdit = ({
         </Fragment>
         : '-'
       }
-      onRemove={onRemove}
+      onRemove={isFieldAllowedToEdit(attributes, LeaseDecisionsFieldPaths.DECISIONS) ? onRemove : null}
       onToggle={handleDecisionCollapseToggle}
     >
       <BoxContentWrapper>
@@ -138,6 +150,7 @@ const DecisionItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseDecisionsFieldPaths.SECTION)}
                 name={`${field}.section`}
                 unit='§'
+                readOnlyValueRenderer={sectionReadOnlyRenderer}
                 overrideValues={{label: LeaseDecisionsFieldTitles.SECTION}}
               />
             </Authorization>
@@ -159,7 +172,10 @@ const DecisionItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseDecisionsFieldPaths.REFERENCE_NUMBER)}
                 name={`${field}.reference_number`}
                 validate={referenceNumber}
-                overrideValues={{label: LeaseDecisionsFieldTitles.REFERENCE_NUMBER}}
+                overrideValues={{
+                  label: LeaseDecisionsFieldTitles.REFERENCE_NUMBER,
+                  fieldType: FieldTypes.REFERENCE_NUMBER,
+                }}
               />
             </Authorization>
           </Column>
@@ -200,6 +216,7 @@ export default connect(
     const id = selector(state, `${props.field}.id`);
     const newProps: any = {
       attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
       decisionId: id,
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),

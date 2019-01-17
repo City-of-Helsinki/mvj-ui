@@ -20,7 +20,7 @@ import {
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary, getFullAddress} from '$src/leases/helpers';
 import {getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -76,7 +76,7 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
                     <ListItem>
                       <ExternalLink
                         className='no-margin'
-                        href={`${getRouteById('contacts')}/${get(contact, 'tenant.contact.id')}`}
+                        href={`${getRouteById(Routes.CONTACTS)}/${get(contact, 'tenant.contact.id')}`}
                         text={getContactFullName(get(contact, 'tenant.contact')) || '-'}
                       />
                     </ListItem>

@@ -8,11 +8,9 @@ import FormText from '$components/form/FormText';
 import LeaseAreaWithArchiceInfo from './LeaseAreaWithArchiceInfo';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {LeaseAreasFieldPaths} from '$src/leases/enums';
-import {getDecisionOptions} from '$src/decision/helpers';
-import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
+import {getAreasSum, getContentLeaseAreas, getDecisionOptions} from '$src/leases/helpers';
 import {formatNumber, isFieldAllowedToRead}  from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
-import {getDecisionsByLease} from '$src/decision/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
@@ -20,15 +18,14 @@ import type {Lease} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
-  decisions: Array<Object>,
 }
 
-const LeaseAreas = ({attributes, currentLease, decisions}: Props) => {
+const LeaseAreas = ({attributes, currentLease}: Props) => {
   const areas = getContentLeaseAreas(currentLease);
   const activeAreas = areas.filter((area) => !area.archived_at);
   const archivedAreas = areas.filter((area) => area.archived_at);
   const areasSum = getAreasSum(activeAreas);
-  const decisionOptions = getDecisionOptions(decisions);
+  const decisionOptions = getDecisionOptions(currentLease);
 
   return (
     <div>
@@ -38,7 +35,7 @@ const LeaseAreas = ({attributes, currentLease, decisions}: Props) => {
       </Authorization>
       <Divider />
 
-      {!activeAreas || !activeAreas.length && <FormText>Ei vuokra-alueita</FormText>}
+      {!activeAreas || !activeAreas.length && <FormText className='no-margin'>Ei vuokra-alueita</FormText>}
       {activeAreas && !!activeAreas.length && activeAreas.map((area, index) =>
         <LeaseAreaWithArchiceInfo
           key={index}
@@ -65,12 +62,9 @@ const LeaseAreas = ({attributes, currentLease, decisions}: Props) => {
 
 export default connect(
   (state) => {
-    const currentLease = getCurrentLease(state);
-
     return {
       attributes: getAttributes(state),
-      currentLease: currentLease,
-      decisions: getDecisionsByLease(state, currentLease.id),
+      currentLease: getCurrentLease(state),
     };
   }
 )(LeaseAreas);

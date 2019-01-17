@@ -14,6 +14,7 @@ import Authorization from '$components/authorization/Authorization';
 import BasisOfRentsEdit from './BasisOfRentsEdit';
 import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
+import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItemEdit from './RentItemEdit';
@@ -45,17 +46,17 @@ import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type RentsProps = {
+  archived: boolean,
   fields: any,
   leaseAttributes: Attributes,
   rents: Array<Object>,
-  showAddButton: boolean,
 };
 
 const renderRents = ({
+  archived,
   fields,
   leaseAttributes,
   rents,
-  showAddButton,
 }:RentsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({
@@ -68,7 +69,13 @@ const renderRents = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            {!showAddButton && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+            {!isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.RENTS) &&
+              !archived &&
+              (!fields || !fields.length) &&
+              <FormText className='no-margin'>Ei vuokria</FormText>
+            }
+
+            {archived && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
 
             {fields && !!fields.length && fields.map((item, index) => {
               const handleRemove = () => {
@@ -92,7 +99,7 @@ const renderRents = ({
                 rents={rents}
               />;
             })}
-            {showAddButton &&
+            {!archived &&
               <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>
                 <Row>
                   <Column>
@@ -279,19 +286,19 @@ class RentsEdit extends PureComponent<Props, State> {
 
                 <FieldArray
                   component={renderRents}
+                  archive={false}
                   name='rents'
                   leaseAttributes={leaseAttributes}
                   rents={rents}
-                  showAddButton={true}
                 />
 
                 {/* Archived rents */}
                 <FieldArray
                   component={renderRents}
+                  archived={true}
                   name='rentsArchived'
                   leaseAttributes={leaseAttributes}
                   rents={rentsArchived}
-                  showAddButton={false}
                 />
               </Authorization>
 

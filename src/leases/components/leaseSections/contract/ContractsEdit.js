@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -10,14 +10,13 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import Authorization from '$components/authorization/Authorization';
 import AddButton from '$components/form/AddButton';
 import ContractItemEdit from './ContractItemEdit';
+import FormText from '$components/form/FormText';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseContractsFieldPaths} from '$src/leases/enums';
 import {validateContractForm} from '$src/leases/formValidators';
-import {getContentContracts} from '$src/leases/helpers';
-import {getDecisionOptions} from '$src/decision/helpers';
+import {getContentContracts, getDecisionOptions} from '$src/leases/helpers';
 import {isFieldAllowedToEdit} from '$util/helpers';
-import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -44,7 +43,10 @@ const renderContracts = ({
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
+          <Fragment>
+            {!isFieldAllowedToEdit(attributes, LeaseContractsFieldPaths.CONTRACTS) && (!fields || !fields.length) &&
+              <FormText className='no-margin'>Ei sopimuksia</FormText>
+            }
             {fields && !!fields.length && fields.map((contract, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -80,7 +82,7 @@ const renderContracts = ({
                 </Column>
               </Row>
             </Authorization>
-          </div>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -90,20 +92,19 @@ const renderContracts = ({
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
-  decisions: Array<Object>,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
 
 type State = {
-  currentLease: ?Lease,
+  currentLease: Lease,
   decisionOptions: Array<Object>,
   savedContracts: Array<Object>,
 }
 
-class ContractsEdit extends Component<Props, State> {
+class ContractsEdit extends PureComponent<Props, State> {
   state = {
-    currentLease: null,
+    currentLease: {},
     decisionOptions: [],
     savedContracts: [],
   }
@@ -113,12 +114,8 @@ class ContractsEdit extends Component<Props, State> {
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease,
+      newState.decisionOptions = getDecisionOptions(props.currentLease);
       newState.savedContracts = getContentContracts(props.currentLease);
-    }
-
-    if(props.decisions !== state.decisions) {
-      newState.decisionOptions = getDecisionOptions(props.decisions);
-      newState.decisions = props.decisions;
     }
 
     return newState;
@@ -157,11 +154,9 @@ const formName = FormNames.CONTRACTS;
 export default flowRight(
   connect(
     (state) => {
-      const currentLease = getCurrentLease(state);
       return {
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
-        decisions: getDecisionsByLease(state, currentLease.id),
       };
     },
     {

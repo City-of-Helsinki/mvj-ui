@@ -23,7 +23,7 @@ import {
   fetchInfillDevelopments,
   fetchSingleInfillDevelopment,
 } from './requests';
-import {getRouteById} from '$src/root/routes';
+import {getRouteById, Routes} from '$src/root/routes';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -96,7 +96,7 @@ function* createInfillDevelopmentSaga({payload: infillDevelopment}): Generator<a
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById('infillDevelopment')}/${bodyAsJson.id}`));
+        yield put(push(`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${bodyAsJson.id}`));
         displayUIMessage({title: '', body: 'Täydennysrakentamiskorvaus luotu'});
         break;
       case 400:

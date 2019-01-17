@@ -2,17 +2,6 @@
 import React from 'react';
 
 /**
- * Redux form field type enumerable.
- *
- * @type {{DATE: string, DECIMAL: string, INTEGER: string,}}
- */
-export const FieldTypes = {
-  DATE: 'date',
-  DECIMAL: 'decimal',
-  INTEGER: 'integer',
-};
-
-/**
  * View modes enumerable.
  *
  * @type {{EDIT: string, READONLY: string,}}
@@ -59,5 +48,6 @@ export const PermissionMissingTexts = {
   GENERAL: 'Ei oikeuksia sisältöön.',
   INFILL_DEVELOPMENT: 'Ei oikeksia täydennysrakennuskorvauksiin',
   LEASE: 'Ei oikeuksia vuokrauksiin.',
+  LEASE_TENANTS_EDIT: 'Ei oikeuksia muokata vuokralaisia',
   RENT_BASIS: 'Ei oikeuksia vuokrausperusteisiin.',
 };

@@ -343,7 +343,7 @@ class LeaseItem extends PureComponent<Props, State> {
                 isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT)
               }
             >
-              <FormTextTitle>Korvaysyhteensä</FormTextTitle>
+              <FormTextTitle>Korvaus yhteensä</FormTextTitle>
               <FormText>{`${formatNumber(totalCompensation)} €`}</FormText>
             </Authorization>
           </Column>
