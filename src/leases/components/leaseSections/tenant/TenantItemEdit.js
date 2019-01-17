@@ -17,7 +17,6 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
-import ExternalLink from '$components/links/ExternalLink';
 import OtherTenantItemEdit from './OtherTenantItemEdit';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
@@ -40,10 +39,16 @@ import {
   LeaseTenantsFieldTitles,
   TenantContactType,
 } from '$src/leases/enums';
-import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired} from '$util/helpers';
+import {
+  formatNumber,
+  getFieldAttributes,
+  isEmptyValue,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+  isFieldRequired,
+} from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {getRouteById, Routes} from '$src/root/routes';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -129,6 +134,8 @@ type Props = {
   receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
   receiveIsSaveClicked: Function,
+  shareDenominator: ?string,
+  shareNumerator: ?string,
   showContactModal: Function,
   tenantId: number,
   tenants: Array<Object>,
@@ -147,6 +154,8 @@ const TenantItemEdit = ({
   receiveCollapseStates,
   receiveContactModalSettings,
   receiveIsSaveClicked,
+  shareDenominator,
+  shareNumerator,
   showContactModal,
   tenantId,
   tenants,
@@ -191,19 +200,13 @@ const TenantItemEdit = ({
     });
   };
 
-  const contactReadOnlyRenderer = (value: ?Object) => {
-    return <FormText>
-      {value
-        ? <ExternalLink
-          className='no-margin'
-          href={`${getRouteById(Routes.CONTACTS)}/${value.id}`}
-          text={getContactFullName(value)}
-        />
-        : '-'
-      }
-    </FormText>;
+  const getInvoiceManagementShare = () => {
+    if(!Number(shareNumerator) || !Number(shareDenominator)) return null;
+
+    return (Number(shareNumerator)*100/Number(shareDenominator));
   };
 
+  const share = getInvoiceManagementShare();
   const savedTenant = getTenantById(tenantId);
   const isActive = isTenantActive(get(savedTenant, 'tenant'));
   const tenantErrors = get(errors, field);
@@ -233,7 +236,6 @@ const TenantItemEdit = ({
                         disableTouched={isSaveClicked}
                         fieldAttributes={getFieldAttributes(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}
                         name={`${field}.tenant.contact`}
-                        readOnlyValueRenderer={contactReadOnlyRenderer}
                         overrideValues={{
                           fieldType: FieldTypes.CONTACT,
                           label: LeaseTenantContactSetFieldTitles.CONTACT,
@@ -258,34 +260,50 @@ const TenantItemEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={12} medium={6} large={4}>
-                <FormTextTitle required={isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) || isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)}>
-                  {LeaseTenantsFieldTitles.SHARE_FRACTION}
-                </FormTextTitle>
-                <Row>
-                  <Column small={6}>
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}
-                        invisibleLabel
-                        name={`${field}.share_numerator`}
-                        overrideValues={{label: LeaseTenantsFieldTitles.SHARE_NUMERATOR}}
-                      />
-                    </Authorization>
-                  </Column>
-                  <Column small={6}>
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        className='with-slash'
-                        fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)}
-                        invisibleLabel
-                        name={`${field}.share_denominator`}
-                        overrideValues={{label: LeaseTenantsFieldTitles.SHARE_DENIMONATOR}}
-                      />
-                    </Authorization>
-                  </Column>
-                </Row>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                  <FormTextTitle required={isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) || isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)}>
+                    {LeaseTenantsFieldTitles.SHARE_FRACTION}
+                  </FormTextTitle>
+                  <Authorization
+                    allow={
+                      isFieldAllowedToEdit(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) ||
+                      isFieldAllowedToEdit(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)
+                    }
+                    errorComponent={<FormText>{shareNumerator || ''} / {shareDenominator || ''}</FormText>}
+                  >
+                    <Row>
+                      <Column small={6}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}
+                            invisibleLabel
+                            name={`${field}.share_numerator`}
+                            overrideValues={{label: LeaseTenantsFieldTitles.SHARE_NUMERATOR}}
+                          />
+                        </Authorization>
+                      </Column>
+                      <Column small={6}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            className='with-slash'
+                            fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)}
+                            invisibleLabel
+                            name={`${field}.share_denominator`}
+                            overrideValues={{label: LeaseTenantsFieldTitles.SHARE_DENIMONATOR}}
+                          />
+                        </Authorization>
+                      </Column>
+                    </Row>
+                  </Authorization>
+                </Authorization>
+              </Column>
+              <Column small={12} medium={6} large={4}>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                  <FormTextTitle>{LeaseTenantsFieldTitles.SHARE_PERCENTAGE}</FormTextTitle>
+                  <FormText>{!isEmptyValue(share) ? `${formatNumber(share)} %` : '-'}</FormText>
+                </Authorization>
               </Column>
               <Column small={6} medium={3} large={2}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
@@ -374,6 +392,8 @@ export default connect(
       contactMethods: getContactMethods(state),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
+      shareDenominator: selector(state, `${props.field}.share_denominator`),
+      shareNumerator: selector(state, `${props.field}.share_numerator`),
       tenantId: id,
     };
   },

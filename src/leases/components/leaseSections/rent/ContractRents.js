@@ -117,7 +117,7 @@ class ContractRents extends PureComponent<Props, State> {
           }
 
           {contractRents && !!contractRents.length && contractRents.map((contractRent, index) => {
-            const getAmount = () => {
+            const getAmountText = () => {
               if(isEmptyValue(contractRent.amount)) return null;
 
               return `${formatNumber(contractRent.amount)} € ${getLabelOfOption(amountPeriodOptions, contractRent.period)}`;
@@ -129,7 +129,7 @@ class ContractRents extends PureComponent<Props, State> {
               return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period)}`;
             };
 
-            const amountText = getAmount();
+            const amountText = getAmountText();
             const baseAmountText = getBaseAmount();
 
             if(largeScreen) {

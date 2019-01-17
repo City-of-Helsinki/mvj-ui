@@ -8,6 +8,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import ContractRentEdit from './ContractRentEdit';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {ButtonColors} from '$components/enums';
 import {
@@ -38,6 +39,10 @@ const ContractRentsEdit = ({fields, leaseAttributes, rentField, rentType}: Props
   const handleAdd = () => {
     fields.push({});
   };
+
+  if(!isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS) && (!fields || !fields.length)) {
+    return <FormText>Ei sopimusvuokria</FormText>;
+  }
 
   return (
     <AppConsumer>

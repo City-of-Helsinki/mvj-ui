@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -15,7 +15,12 @@ import FormField from '$components/form/FormField';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {FormNames, LeasePlotsFieldPaths, LeasePlotsFieldTitles, PlotType} from '$src/leases/enums';
+import {
+  FormNames,
+  LeasePlotsFieldPaths,
+  LeasePlotsFieldTitles,
+  PlotType,
+} from '$src/leases/enums';
 import {getFieldAttributes, getSearchQuery, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -146,52 +151,54 @@ const PlotItemsEdit = ({
           </Column>
         </Row>
         <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.IDENTIFIER)}>
-          {savedPlot && savedPlot.identifier && <SubTitle>Ktj-dokumentit</SubTitle>}
           {savedPlot && savedPlot.identifier &&
-            <Row>
-              {savedPlot.type === PlotType.REAL_PROPERTY &&
+            <Fragment>
+              <SubTitle>{LeasePlotsFieldTitles.KTJ_LINK}</SubTitle>
+              <Row>
+                {savedPlot.type === PlotType.REAL_PROPERTY &&
+                  <Column small={12} medium={6}>
+                    <KtjLink
+                      fileKey='kiinteistorekisteriote/rekisteriyksikko'
+                      fileName='kiinteistorekisteriote'
+                      identifier={savedPlot.identifier}
+                      idKey='kiinteistotunnus'
+                      label='Kiinteistörekisteriote'
+                      prefix='ktjkii'
+                    />
+                  </Column>
+                }
+                {savedPlot.type === PlotType.UNSEPARATED_PARCEL &&
+                  <Column small={12} medium={6}>
+                    <KtjLink
+                      fileKey='kiinteistorekisteriote/maaraala'
+                      fileName='kiinteistorekisteriote'
+                      identifier={savedPlot.identifier}
+                      idKey='maaraalatunnus'
+                      label='Kiinteistörekisteriote'
+                      prefix='ktjkii'
+                    />
+                  </Column>
+                }
                 <Column small={12} medium={6}>
                   <KtjLink
-                    fileKey='kiinteistorekisteriote/rekisteriyksikko'
-                    fileName='kiinteistorekisteriote'
+                    fileKey='lainhuutotodistus'
+                    fileName='lainhuutotodistus'
                     identifier={savedPlot.identifier}
-                    idKey='kiinteistotunnus'
-                    label='Kiinteistörekisteriote'
-                    prefix='ktjkii'
+                    idKey='kohdetunnus'
+                    label='Lainhuutotodistus'
                   />
                 </Column>
-              }
-              {savedPlot.type === PlotType.UNSEPARATED_PARCEL &&
                 <Column small={12} medium={6}>
                   <KtjLink
-                    fileKey='kiinteistorekisteriote/maaraala'
-                    fileName='kiinteistorekisteriote'
+                    fileKey='rasitustodistus'
+                    fileName='rasitustodistus'
                     identifier={savedPlot.identifier}
-                    idKey='maaraalatunnus'
-                    label='Kiinteistörekisteriote'
-                    prefix='ktjkii'
+                    idKey='kohdetunnus'
+                    label='Rasitustodistus'
                   />
                 </Column>
-              }
-              <Column small={12} medium={6}>
-                <KtjLink
-                  fileKey='lainhuutotodistus'
-                  fileName='lainhuutotodistus'
-                  identifier={savedPlot.identifier}
-                  idKey='kohdetunnus'
-                  label='Lainhuutotodistus'
-                />
-              </Column>
-              <Column small={12} medium={6}>
-                <KtjLink
-                  fileKey='rasitustodistus'
-                  fileName='rasitustodistus'
-                  identifier={savedPlot.identifier}
-                  idKey='kohdetunnus'
-                  label='Rasitustodistus'
-                />
-              </Column>
-            </Row>
+              </Row>
+            </Fragment>
           }
         </Authorization>
       </BoxContentWrapper>

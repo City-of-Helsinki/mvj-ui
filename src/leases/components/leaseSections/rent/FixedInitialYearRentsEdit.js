@@ -12,6 +12,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
@@ -44,6 +45,11 @@ const FixedInitialYearRentsEdit = ({fields, isSaveClicked, largeScreen, leaseAtt
   const handleAdd = () => {
     fields.push({});
   };
+
+  if(!isFieldAllowedToEdit(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS) && (!fields || !fields.length)) {
+    return <FormText>Ei sopimusvuokria</FormText>;
+  }
+
   return(
     <AppConsumer>
       {({dispatch}) => {

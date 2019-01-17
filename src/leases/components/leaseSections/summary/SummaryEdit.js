@@ -343,7 +343,10 @@ class SummaryEdit extends PureComponent<Props, State> {
                       name='reference_number'
                       validate={referenceNumber}
                       readOnlyValueRenderer={this.referenceNumberReadOnlyRenderer}
-                      overrideValues={{label: LeaseFieldTitles.REFERENCE_NUMBER}}
+                      overrideValues={{
+                        label: LeaseFieldTitles.REFERENCE_NUMBER,
+                        fieldType: FieldTypes.REFERENCE_NUMBER,
+                      }}
                     />
                   </Authorization>
                 </Column>

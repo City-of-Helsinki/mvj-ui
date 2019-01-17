@@ -15,7 +15,7 @@ import {
   RentTypes,
   RentDueDateTypes,
 } from '$src/leases/enums';
-import {formatDueDates, formatSeasonalEndDate, formatSeasonalStartDate} from '$src/leases/helpers';
+import {formatDueDates, formatSeasonalDate} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
@@ -37,8 +37,8 @@ const SeasonalDates = ({
   leaseAttributes,
   rent,
 }: SeasonalDatesProps ) => {
-  const startText = formatSeasonalStartDate(rent);
-  const endText = formatSeasonalEndDate(rent);
+  const startText = formatSeasonalDate(rent.seasonal_start_day, rent.seasonal_start_month);
+  const endText = formatSeasonalDate(rent.seasonal_end_day, rent.seasonal_end_month);
 
   return(
     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) ||

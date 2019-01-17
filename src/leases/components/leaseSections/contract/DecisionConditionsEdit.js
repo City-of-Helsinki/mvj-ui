@@ -16,6 +16,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
@@ -72,6 +73,11 @@ const DecisionConditionsEdit = ({
             headerTitle={LeaseDecisionConditionsFieldTitles.CONDITIONS}
             onToggle={handleCollapseToggle}
           >
+
+            {!isFieldAllowedToEdit(attributes, LeaseDecisionConditionsFieldPaths.CONDITIONS) && (!fields || !fields.length) &&
+              <FormText>Ei ehtoja</FormText>
+            }
+
             {fields && !!fields.length &&
               <BoxItemContainer>
                 {largeScreen &&
@@ -162,10 +168,10 @@ const DecisionConditionsEdit = ({
                               <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
                                 <FormField
                                   disableTouched={isSaveClicked}
-                                  fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}
+                                  fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
                                   invisibleLabel
                                   name={`${condition}.description`}
-                                  overrideValues={{label: LeaseDecisionConditionsFieldTitles.TYPE}}
+                                  overrideValues={{label: LeaseDecisionConditionsFieldTitles.DESCRIPTION}}
                                 />
                               </Authorization>
                             }

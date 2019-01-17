@@ -55,7 +55,9 @@ const renderInvoices = ({
   fields,
   invoiceOptions,
 }: InvoicesProps) => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => {
+    fields.push({});
+  };
 
   return(
     <Fragment>

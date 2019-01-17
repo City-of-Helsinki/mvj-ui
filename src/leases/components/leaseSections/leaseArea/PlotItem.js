@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Link, withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
@@ -12,7 +12,11 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import SubTitle from '$components/content/SubTitle';
-import {LeasePlotsFieldPaths, LeasePlotsFieldTitles, PlotType} from '$src/leases/enums';
+import {
+  LeasePlotsFieldPaths,
+  LeasePlotsFieldTitles,
+  PlotType,
+} from '$src/leases/enums';
 import {
   formatDate,
   formatNumber,
@@ -102,52 +106,55 @@ const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
       </Row>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.IDENTIFIER)}>
-        <SubTitle>Ktj-dokumentit</SubTitle>
         {plot.identifier &&
-          <Row>
-            {plot.type === PlotType.REAL_PROPERTY &&
+          <Fragment>
+            <SubTitle>{LeasePlotsFieldTitles.KTJ_LINK}</SubTitle>
+
+            <Row>
+              {plot.type === PlotType.REAL_PROPERTY &&
+                <Column small={12} medium={6}>
+                  <KtjLink
+                    fileKey='kiinteistorekisteriote/rekisteriyksikko'
+                    fileName='kiinteistorekisteriote'
+                    identifier={plot.identifier}
+                    idKey='kiinteistotunnus'
+                    label='Kiinteistörekisteriote'
+                    prefix='ktjkii'
+                  />
+                </Column>
+              }
+              {plot.type === PlotType.UNSEPARATED_PARCEL &&
+                <Column small={12} medium={6}>
+                  <KtjLink
+                    fileKey='kiinteistorekisteriote/maaraala'
+                    fileName='kiinteistorekisteriote'
+                    identifier={plot.identifier}
+                    idKey='maaraalatunnus'
+                    label='Kiinteistörekisteriote'
+                    prefix='ktjkii'
+                  />
+                </Column>
+              }
               <Column small={12} medium={6}>
                 <KtjLink
-                  fileKey='kiinteistorekisteriote/rekisteriyksikko'
-                  fileName='kiinteistorekisteriote'
+                  fileKey='lainhuutotodistus'
+                  fileName='lainhuutotodistus'
                   identifier={plot.identifier}
-                  idKey='kiinteistotunnus'
-                  label='Kiinteistörekisteriote'
-                  prefix='ktjkii'
+                  idKey='kohdetunnus'
+                  label='Lainhuutotodistus'
                 />
               </Column>
-            }
-            {plot.type === PlotType.UNSEPARATED_PARCEL &&
               <Column small={12} medium={6}>
                 <KtjLink
-                  fileKey='kiinteistorekisteriote/maaraala'
-                  fileName='kiinteistorekisteriote'
+                  fileKey='rasitustodistus'
+                  fileName='rasitustodistus'
                   identifier={plot.identifier}
-                  idKey='maaraalatunnus'
-                  label='Kiinteistörekisteriote'
-                  prefix='ktjkii'
+                  idKey='kohdetunnus'
+                  label='Rasitustodistus'
                 />
               </Column>
-            }
-            <Column small={12} medium={6}>
-              <KtjLink
-                fileKey='lainhuutotodistus'
-                fileName='lainhuutotodistus'
-                identifier={plot.identifier}
-                idKey='kohdetunnus'
-                label='Lainhuutotodistus'
-              />
-            </Column>
-            <Column small={12} medium={6}>
-              <KtjLink
-                fileKey='rasitustodistus'
-                fileName='rasitustodistus'
-                identifier={plot.identifier}
-                idKey='kohdetunnus'
-                label='Rasitustodistus'
-              />
-            </Column>
-          </Row>
+            </Row>
+          </Fragment>
         }
       </Authorization>
     </BoxItem>

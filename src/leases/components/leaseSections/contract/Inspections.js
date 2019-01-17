@@ -53,7 +53,7 @@ class Inspections extends PureComponent<Props, State> {
     const {inspections} = this.state;
 
     if(!inspections || !inspections.length) {
-      return <FormText>Ei tarkastuksia tai huomautuksia</FormText>;
+      return <FormText className='no-margin'>Ei tarkastuksia tai huomautuksia</FormText>;
     }
 
     return (
