@@ -32,7 +32,7 @@
         color: $black;
 
         &:hover {
-          color: $tram;
+          color: $dark-green;
         }
       }
     }
@@ -44,7 +44,7 @@
       margin-left: rem-calc(-20px);
       padding: 0 rem-calc(20px);
       line-height: rem-calc(60px);
-      background-color: $engel;
+      background-color: $yellow;
       font-family: $font-family-helsinki-grotesk;
       font-weight: 600;
       outline-offset: -2px !important;
@@ -93,7 +93,7 @@
         font-weight: 600;
         text-align: center;
         border-radius: 50%;
-        background-color: $brick;
+        background-color: $red;
         top: rem-calc(-3px);
         right: rem-calc(-10px);
       }
@@ -113,7 +113,7 @@
 
       .logout-link {
         line-height: 1;
-        color: $tram;
+        color: $dark-green;
         font-weight: $semibold;
         font-size: rem-calc(16px);
         font-family: $font-family-helsinki-grotesk;
@@ -121,7 +121,7 @@
 
         &:hover {
           text-decoration: underline;
-          color: $tram_hover;
+          color: $dark-green-hover;
         }
       }
     }
@@ -135,7 +135,7 @@
   }
 
   .menuIcon:hover, .userIcon:hover {
-    fill: $tram;
+    fill: $dark-green;
   }
 
   .menuIcon {

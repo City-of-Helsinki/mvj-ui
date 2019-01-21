@@ -9,7 +9,7 @@
   z-index: 2;
   border: none;
   overflow: hidden;
-  border-left: rem-calc(15px) solid $tram-lighter-solid;
+  border-left: rem-calc(15px) solid $green;
 
   @include transition(0.5s, right, ease-in-out);
 

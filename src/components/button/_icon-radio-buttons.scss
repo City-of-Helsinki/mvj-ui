@@ -39,7 +39,7 @@
   }
 
   .option-label {
-    color: $tram;
+    color: $dark-green;
     text-transform: uppercase;
     background-color: transparent;
     cursor: pointer;
@@ -51,7 +51,7 @@
   }
 
   .icons {
-    fill: $tram !important;
+    fill: $dark-green !important;
   }
 
   .radio:checked + .option-label {

@@ -53,7 +53,7 @@
     }
 
     .required {
-      color: $brick;
+      color: $red;
       font-size: 18px;
       font-weight: $semibold;
       position: absolute;
@@ -61,7 +61,7 @@
   }
 
   &__error-block {
-    color: $brick;
+    color: $red;
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
@@ -69,7 +69,7 @@
   }
 
   &__error-field {
-    color: $brick;
+    color: $red;
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
@@ -133,10 +133,10 @@
 
     &.has-error {
       input {
-        border: 1px solid $brick !important;
+        border: 1px solid $red !important;
 
         &:focus {
-          box-shadow: 0 0 0 1px $brick;
+          box-shadow: 0 0 0 1px $red;
         }
       }
     }
@@ -161,10 +161,10 @@
     }
 
     &.has-error {
-      border: 1px solid $brick !important;
+      border: 1px solid $red !important;
 
       &:focus {
-        box-shadow: 0 0 0 1px $brick;
+        box-shadow: 0 0 0 1px $red;
       }
     }
   }
@@ -217,7 +217,7 @@
     position: relative;
 
     input {
-      border: 1px solid #9b9b9b;
+      border: 1px solid $medium-dark-gray;
       width: 100%;
       margin: 0;
       height: rem-calc(30px);
@@ -259,10 +259,10 @@
     }
 
     &.has-error {
-      border-color: $brick !important;
+      border-color: $red !important;
 
       &:focus {
-        box-shadow: 0 0 0 1px $brick;
+        box-shadow: 0 0 0 1px $red;
       }
     }
   }
@@ -308,10 +308,10 @@
 
     &.has-error {
       input {
-        border: 1px solid $brick;
+        border: 1px solid $red;
 
         &:focus {
-          box-shadow: 0 0 0 1px $brick;
+          box-shadow: 0 0 0 1px $red;
         }
       }
     }
@@ -320,23 +320,23 @@
   &__multiselect {
     &.has-error {
       .multi-select__dropdown-content {
-        border: 1px solid $brick;
-        box-shadow: 0 1px 0 1px $brick;
+        border: 1px solid $red;
+        box-shadow: 0 1px 0 1px $red;
       }
 
       .multi-select__dropdown-heading {
-        border: 1px solid $brick;
+        border: 1px solid $red;
 
         &.is-expanded {
           outline: none !important;
-          border: 1px solid $brick;
-          box-shadow: 0 0 0 1px $brick;
+          border: 1px solid $red;
+          box-shadow: 0 0 0 1px $red;
         }
 
         &.is-focused {
           outline: none !important;
-          border: 1px solid $brick;
-          box-shadow: 0 0 0 1px $brick;
+          border: 1px solid $red;
+          box-shadow: 0 0 0 1px $red;
         }
       }
     }
@@ -380,9 +380,11 @@
         top: 0 !important;
         padding-left: 5px !important;
         padding-right: 5px !important;
+        color: $medium-dark-gray !important;
 
         .Select-value-label {
           white-space: nowrap;
+          color: $black !important;
         }
       }
 
@@ -433,8 +435,8 @@
       z-index: 500;
       width: auto;
       min-width: 100%;
-      box-shadow: 0 1px 0 1px $tram;
-      border-color: $tram;
+      box-shadow: 0 1px 0 1px $dark-green;
+      border-color: $dark-green;
       border-bottom: none;
       border-radius: 0;
     }
@@ -453,11 +455,11 @@
       white-space: nowrap;
 
       &.is-focused, &.Select-option.is-selected {
-        background-color: $engel-lightest-opaque !important;
+        background-color: $light-yellow !important;
       }
 
       &:hover, &:focus, &:active {
-        background: $engel-lighter;
+        background: $light-yellow;
       }
     }
 
@@ -473,7 +475,7 @@
 
     &.is-focused:not(.is-open) {
       > .Select-control {
-        outline: 2px dotted $tram !important;
+        outline: 2px dotted $dark-green !important;
         outline-offset: 0px;
         border-color: $medium-gray !important;
       }
@@ -482,8 +484,8 @@
     &.is-focused.is-open {
       .Select-control {
         outline: none !important;
-        border-color: $tram !important;
-        box-shadow: 0 0 0 1px $tram !important;
+        border-color: $dark-green !important;
+        box-shadow: 0 0 0 1px $dark-green !important;
       }
     }
 
@@ -496,18 +498,18 @@
     &.has-error {
       .Select-control {
         transition: none !important;
-        border: 1px solid $brick !important;
+        border: 1px solid $red !important;
       }
 
       &.is-focused {
         .Select-control {
-          box-shadow: 0 0 0 1px $brick !important;
+          box-shadow: 0 0 0 1px $red !important;
         }
       }
 
       .Select-menu-outer {
-        box-shadow: 0 1px 0 1px $brick;
-        border-color: $brick;
+        box-shadow: 0 1px 0 1px $red;
+        border-color: $red;
       }
     }
   }
@@ -638,7 +640,7 @@
     margin-bottom: 0;
 
     .required {
-      color: $brick;
+      color: $red;
       font-size: 18px;
       font-weight: $semibold;
       position: absolute;
@@ -650,7 +652,7 @@
     font-size: rem-calc(16px) !important;
     line-height: rem-calc(20px) !important;
     font-weight: $semibold !important;
-    color: $tram;
+    color: $dark-green;
     margin: 0;
     cursor: pointer;
     display: block;
@@ -659,17 +661,17 @@
 
     .icons {
       margin-right: rem-calc(5px);
-      fill: $tram;
+      fill: $dark-green;
       height: rem-calc(20px) !important;
       width: rem-calc(20px) !important;
     }
 
     &:hover {
       text-decoration: underline;
-      color: $tram_hover;
+      color: $dark-green-hover;
 
       .icons {
-        fill: $tram_hover;
+        fill: $dark-green-hover;
       }
     }
 
@@ -711,7 +713,7 @@
       font-size: rem-calc(14px) !important;
       line-height: rem-calc(20px) !important;
       font-weight: $semibold !important;
-      color: $tram !important;
+      color: $dark-green !important;
       margin: rem-calc(5px) 0 rem-calc(10px);
       cursor: pointer;
 
@@ -727,10 +729,10 @@
 
       &:hover {
         text-decoration: underline;
-        color: $tram_hover !important;
+        color: $dark-green-hover !important;
 
         .icons {
-          fill: $tram_hover;
+          fill: $dark-green-hover;
         }
       }
     }
@@ -752,7 +754,7 @@
 
     &:hover {
       .icons {
-        fill: $tram !important;
+        fill: $dark-green !important;
       }
     }
   }
@@ -772,7 +774,7 @@
     &:hover {
       .icons {
         #Artboard {
-          fill: $tram !important;
+          fill: $dark-green !important;
         }
       }
     }
@@ -790,7 +792,7 @@
 
     &:hover {
       .icons {
-        fill: $tram !important;
+        fill: $dark-green !important;
       }
     }
 
@@ -820,7 +822,7 @@
     &:hover {
       .icons {
         #Artboard {
-          fill: $tram !important;
+          fill: $dark-green !important;
         }
       }
     }
@@ -859,7 +861,7 @@
 
     &:hover {
       .icons {
-        fill: $tram !important;
+        fill: $dark-green !important;
       }
     }
   }

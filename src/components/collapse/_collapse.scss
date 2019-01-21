@@ -1,7 +1,7 @@
 .collapse {
   align-items: baseline;
   padding: 0;
-  background-color: $tram-lighter-solid;
+  background-color: $green;
   margin-bottom: rem-calc(15px);
   display: block;
 
@@ -123,7 +123,7 @@
       line-height: rem-calc(20px);
       display: flex;
       align-items: center;
-      color: $brick;
+      color: $red;
       font-size: $font-small;
 
       i {
@@ -140,7 +140,7 @@
       line-height: rem-calc(20px);
       display: flex;
       align-items: center;
-      color: $tram;
+      color: $dark-green;
       font-size: $font-small;
 
       i {
@@ -185,11 +185,11 @@
   }
 
   &.not-active {
-    background-color: $medium-gray;
+    background-color: $light-gray-secondary;
   }
 
   &.archived {
-    background-color: $medium-gray;
+    background-color: $light-gray-secondary;
   }
 
   &.is-collapsing,
@@ -209,12 +209,12 @@
   }
 
   &.collapse__secondary {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: $light-green;
     margin: rem-calc(5px) 0 rem-calc(15px);
     padding: 0;
 
     &.not-active {
-      background-color: rgba(240, 240, 240, 0.8);
+      background-color: $lightest-gray;
     }
 
     .collapse__header {
@@ -291,7 +291,7 @@
 }
 
 .alert {
-  color: $brick;
+  color: $red;
   i {
     height: rem-calc(20px);
     width: rem-calc(20px);
