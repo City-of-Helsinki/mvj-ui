@@ -139,6 +139,7 @@ const FormFieldInput = ({
         return getLabelOfOption(options || [], value);
       case FieldTypeOptions.DATE:
         return formatDate(value);
+      case FieldTypeOptions.ADDRESS:
       case FieldTypeOptions.INTEGER:
       case FieldTypeOptions.STRING:
         return isEmptyValue(value) ? value.toString() : value;
