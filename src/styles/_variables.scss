@@ -26,42 +26,28 @@ $foundation-palette: (
 /// @type Color
 $neutral-color: #666666 !default;
 $focus-color: #d5d5d5 !default;
-$is-dirty-color: #ffee96 !default;
-$brick: #bd2719 !default;
-$summer: #ffc61e !default;
-$tram: #007A3A !default;
-$tram_hover: #01A14D !default;
-$tram-lighter-solid: #e3f3eb !default;
-$engel: #ffe977 !default;
-$black: #222222 !default;
-$lightest-gray: #FAFAFA !default;
-$light-gray: #f4f4f4 !default;
-$medium-gray: #d7d5d5 !default;
-$medium-dark-gray: #888888 !default;
+$is-dirty-color: #ffe977 !default;
+$red: #bd2719 !default;
+$red-hover: #ca5247 !default;
+$dark-green: #007a3a !default;
+$dark-green-hover: #338e55 !default;
+$green: #e3f3eb !default;
+$light-green: #f9fcfb !default;
+$dark-yellow: #ffd600;
+$dark-yellow-hover: #ffde33 !default;
+$yellow: #ffe977 !default;
+$light-yellow: #fff6c9 !default;
+
+$black: #000000 !default;
 $dark-gray: #666666 !default;
+$medium-dark-gray: #b7b7b7 !default;
+$medium-gray: #d5d5d5 !default;
+$light-gray: #f4f4f4 !default;
+$light-gray-secondary: #e6e6e6 !default;
+$lightest-gray: #fafafa !default;
 $white: #ffffff !default;
-
-$engel-light: rgba(255, 233, 119, 0.8);
-
-$summer-lighter: rgba(255,198,30,0.8);
-$engel-lighter: rgba(255, 233, 119, 0.3);
-$engel-lighter-opaque: #FFF6C9;
-$tram-lighter: rgba(0,146,70, 0.8);
-$brick-lighter: rgba(189,39,25, 0.8);
-$tram-lightest: rgba(0,146,70, 0.2);
-$engel-lightest-opaque: #FFFBE7;
 
 $mvj-text-color: $black;
 $mvj-focus-color: #9BDCFB;
 $body-background: $light-gray !default;
 $body-font-color: $mvj-text-color !default;
-
-/// Tables
-$table-head-background: transparent !default;
-$table-stripe: inherit !default;
-$table-head-font-color: $dark-gray !default;
-$table-head-row-hover: inherit !important !default;
-
-/// Off-canvas
-$offcanvas-size: 400px !default;
-$offcanvas-background: $mvj-text-color !default;

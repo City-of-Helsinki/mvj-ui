@@ -1,19 +1,19 @@
 .icons {
-  fill: $tram;
-  stroke: $tram;
+  fill: $black;
+  stroke: $black;
   vertical-align: sub;
   height: rem-calc(25px);
   width: rem-calc(25px);
 
   &.icons__trash {
     #Artboard {
-      fill: $tram;
+      fill: $dark-green;
     }
   }
 
   &.icons__copy-to-clipboard {
     #Artboard {
-      fill: $tram;
+      fill: $dark-green;
     }
   }
 

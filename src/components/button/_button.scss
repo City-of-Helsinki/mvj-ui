@@ -3,7 +3,7 @@
   font-family: $font-family-source;
   font-weight: 600;
   color: $black;
-  background: $summer;
+  background: $dark-yellow;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
   height: rem-calc(30px);
   padding: 0 1rem;
@@ -13,47 +13,47 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: $summer-lighter;
+    background-color: $dark-yellow-hover;
   }
 
   &:disabled {
-    background-color: #b7b7b7 !important;
+    background-color: $medium-dark-gray !important;
     color: $white !important;
     opacity: 1;
     cursor: not-allowed;
   }
 
   &.success {
-    background-color: $tram;
+    background-color: $dark-green;
     color: $white;
 
     &:hover {
-      background-color: $tram-lighter;
+      background-color: $dark-green-hover;
     }
   }
 
   &.alert {
-    background-color: $brick;
+    background-color: $red;
     color: $white;
 
     &:hover {
-      background-color: $brick-lighter;
+      background-color: $red-hover;
     }
   }
 
   &.neutral {
-    background-color: $summer;
+    background-color: $dark-yellow;
     color: $black;
 
     &:hover {
-      background-color: $summer-lighter;
+      background-color: $dark-yellow-hover;
     }
   }
 
   &.secondary {
     background-color: $white;
     color: $black;
-    border: 1px solid #b7b7b7;
+    border: 1px solid $medium-dark-gray;
 
     &:hover {
       background-color: $lightest-gray;
@@ -79,13 +79,6 @@
   &.pull-right {
     float: right;
   }
-
-  &.button-map {
-    position: absolute;
-    top: rem-calc(10px);
-    right: rem-calc(10px);
-    z-index: 1001;
-  }
 }
 
 .icon-button-component {
@@ -95,7 +88,8 @@
 
   &:hover {
     .icons {
-      fill: $tram_hover !important;
+      fill: $dark-green !important;
+      stroke: $dark-green !important;
     }
   }
 

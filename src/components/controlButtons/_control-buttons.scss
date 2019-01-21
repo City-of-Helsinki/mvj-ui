@@ -8,7 +8,7 @@
     margin-right: 0;
     cursor: pointer;
     position: relative;
-    line-height: 1;
+    line-height: rem-calc(30px);
 
     @include focus();
 
@@ -16,26 +16,28 @@
       outline: none;
     }
 
-    .comment-icon {
-      width: rem-calc(30px) !important;
-      height: rem-calc(30px);
-      fill: $black;
-      stroke: $black;
+    .icons__comment {
+      vertical-align: middle;
+
+      &:hover {
+        fill: $dark-green;
+        stroke: $dark-green;
+      }
     }
 
     .comment-amount {
       position: absolute;
       font-size: rem-calc(13px);
       line-height: 1;
-      padding: rem-calc(4px);
+      padding: rem-calc(3px);
       color: $white;
       font-weight: 600;
       text-align: center;
       border-radius: 50%;
-      background-color: $brick;
-      top: rem-calc(-6px);
+      background-color: $red;
+      top: rem-calc(-4px);
       right: rem-calc(-10px);
-      min-width: rem-calc(21px);
+      min-width: rem-calc(19px);
     }
   }
 
@@ -72,10 +74,6 @@
 
     button {
       cursor: pointer;
-    }
-
-    .icons {
-      fill: $tram;
     }
   }
 

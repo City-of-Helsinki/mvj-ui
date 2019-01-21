@@ -13,7 +13,7 @@
 
 @mixin focus() {
   &:focus {
-    outline-color: $tram;
+    outline-color: $dark-green;
     outline-style: dotted;
     outline-offset: 2px;
     outline-width: 2px;
@@ -23,7 +23,7 @@
 @mixin focusInput() {
   &:focus {
     transition: none !important;
-    outline: 2px dotted $tram;
+    outline: 2px dotted $dark-green;
     outline-offset: 0px;
     border: 1px solid $medium-gray;
   }

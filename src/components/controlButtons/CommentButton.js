@@ -23,7 +23,7 @@ const CommentButton = ({commentAmount, onClick}: Props) => {
 
   return(
     <div className='control-buttons__comment-button' onClick={handleClick} onKeyDown={handleKeyDown} tabIndex={0}>
-      <CommentIcon className='comment-icon' />
+      <CommentIcon />
       <div className='comment-amount'>{commentAmount}</div>
     </div>
   );

@@ -23,7 +23,6 @@
 @import "components/collapse/collapse";
 @import "components/content/content";
 @import "components/controlButtons/control-buttons";
-@import "components/dropdown/action-dropdown";
 @import "components/file/file";
 @import "components/form/form";
 @import "components/icons/icons";
@@ -31,7 +30,6 @@
 @import "components/inputs/dual-list-box-input";
 @import "components/inputs/search-input";
 @import "components/inputs/select-input";
-@import "components/inputs/single-checkbox-input";
 @import "components/inputs/text-area-input";
 @import "components/inputs/text-input";
 @import "components/invoice-simulator/invoice-simulator";
@@ -64,7 +62,6 @@
 @import "leases/components/leaseSections/rent/rent";
 @import "leases/components/leaseSections/summary/summary";
 @import "leases/components/leaseSections/tenant/tenant-edit";
-@import "leases/components/lease-page";
 @import "leases/components/search/search";
 @import "rentbasis/components/rent-basis-page";
 
@@ -79,13 +76,13 @@ html {
 body {
   overflow-y: auto;
   height: calc(100% - 60px);
-  background-color: #efefef;
+  background-color: $body-background;
 }
 
 #root {
   display: block;
   height: 100%;
   font-family: $font-family-source;
-  background-color: #efefef;
+  background-color: $body-background;
   color: $black;
 }

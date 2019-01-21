@@ -1,6 +1,5 @@
 // @flow
 import React, {Component} from 'react';
-import classNames from 'classnames';
 
 import SelectItem from './SelectItem';
 import SelectList from './SelectList';
@@ -15,20 +14,17 @@ type Props = {
   selectAllLabel?: string,
   onSelectedChanged: (selected: Array<any>) => void,
   disabled?: boolean,
-  disableSearch?: boolean,
   hasSelectAll: boolean,
   filterOptions?: (options: Array<Option>, filter: string) => Array<Option>
 };
 
 type State = {
-    searchHasFocus: boolean,
     searchText: string,
     focusIndex: number
 };
 
 class SelectPanel extends Component<Props, State> {
   state = {
-    searchHasFocus: false,
     searchText: '',
     focusIndex: 0,
   }
@@ -93,13 +89,6 @@ class SelectPanel extends Component<Props, State> {
     e.preventDefault();
   }
 
-  handleSearchFocus = (searchHasFocus: boolean) => {
-    this.setState({
-      searchHasFocus,
-      focusIndex: -1,
-    });
-  }
-
   allAreSelected() {
     const {options, selected} = this.props;
     return options.length === selected.length;
@@ -126,12 +115,11 @@ class SelectPanel extends Component<Props, State> {
   }
 
   render() {
-    const {focusIndex, searchHasFocus} = this.state;
+    const {focusIndex} = this.state;
     const {
       ItemRenderer,
       selectAllLabel,
       disabled,
-      disableSearch,
       hasSelectAll,
     } = this.props;
 
@@ -145,20 +133,6 @@ class SelectPanel extends Component<Props, State> {
       role='listbox'
       onKeyDown={this.handleKeyDown}
     >
-      {!disableSearch && <div className='multi-select__panel-search-container'>
-        <input
-          className={classNames(
-            'multi-select__panel-search',
-            {'is-focused': searchHasFocus},
-          )}
-          placeholder="Etsi..."
-          type="text"
-          onChange={this.handleSearchChange}
-          onFocus={() => this.handleSearchFocus(true)}
-          onBlur={() => this.handleSearchFocus(false)}
-        />
-      </div>}
-
       {hasSelectAll &&
         <SelectItem
           focused={focusIndex === 0}

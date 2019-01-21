@@ -12,8 +12,8 @@
   &__dropdown {
     position: absolute;
     background-color: $white;
-    box-shadow: 0 1px 0 1px $tram;
-    border: 1px solid $tram;
+    box-shadow: 0 1px 0 1px $dark-green;
+    border: 1px solid $dark-green;
     border-top: none;
     border-bottom: none;
     z-index: 500;
@@ -45,11 +45,11 @@
       cursor: pointer;
 
       &.is-focused {
-        background-color: $engel-lightest-opaque !important;
+        background-color: $light-yellow !important;
       }
 
       &:hover {
-        background-color: $engel-lightest-opaque !important;
+        background-color: $light-yellow !important;
       }
     }
   }
@@ -57,8 +57,8 @@
   &.open {
     input {
       outline: none !important;
-      border: 1px solid $tram;
-      box-shadow: 0px 0px 0px 1px $tram;
+      border: 1px solid $dark-green;
+      box-shadow: 0px 0px 0px 1px $dark-green;
     }
   }
 }

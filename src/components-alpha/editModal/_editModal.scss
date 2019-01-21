@@ -51,7 +51,7 @@
   }
 
   &__delete {
-    @include button(false, $brick, darken($brick, 10%));
+    @include button(false, $red, darken($red, 10%));
     border-radius: rem-calc(4px);
     text-transform: uppercase;
     font-weight: 600;

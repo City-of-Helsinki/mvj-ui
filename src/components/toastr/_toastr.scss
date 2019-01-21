@@ -18,11 +18,11 @@
     font-weight: $semibold;
 
     &.rrt-error {
-      background-color: $brick;
+      background-color: $red;
     }
 
     &.rrt-success {
-      background-color: $tram;
+      background-color: $dark-green;
     }
 
     .rrt-left-container {

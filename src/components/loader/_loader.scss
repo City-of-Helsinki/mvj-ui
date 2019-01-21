@@ -6,10 +6,10 @@
   left: 50%;
   margin: -20px 0 0 -20px;
   text-indent: -9999em;
-  border-top: 5px solid lighten($tram, 50%);
-  border-right: 5px solid lighten($tram, 50%);
-  border-bottom: 5px solid lighten($tram, 50%);
-  border-left: 5px solid $tram;
+  border-top: 5px solid lighten($dark-green, 50%);
+  border-right: 5px solid lighten($dark-green, 50%);
+  border-bottom: 5px solid lighten($dark-green, 50%);
+  border-left: 5px solid $dark-green;
 
   @include transform(translateZ(0));
   animation: loaderSpinner .7s infinite linear;
@@ -27,8 +27,8 @@
     height: 14px;
     box-sizing: border-box;
     border-radius: 50%;
-    border: 2px solid #ccc;
-    border-right-color: #333;
+    border: 2px solid $medium-dark-gray;
+    border-right-color: $black;
     display: inline-block;
     position: relative;
     vertical-align: middle;

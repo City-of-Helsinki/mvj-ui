@@ -4,7 +4,7 @@
   }
 
   &__divider {
-    border-top: 1px dashed $tram;
+    border-top: 1px dashed $dark-green;
     margin: rem-calc(15px) 0;
     height: 1px;
     width: 100%;
@@ -130,7 +130,7 @@
       font-size: rem-calc(14px);
       line-height: rem-calc(16px);
       font-weight: normal;
-      color: $tram;
+      color: $dark-green;
       margin-bottom: rem-calc(10px);
       vertical-align: top;
 
@@ -143,7 +143,7 @@
 
       &:hover {
         text-decoration: underline;
-        color: $tram_hover;
+        color: $dark-green-hover;
       }
     }
   }
@@ -191,7 +191,7 @@
 
     .alert {
       display: inline-block;
-      color: $brick !important;
+      color: $red !important;
       text-align: right;
       font-weight: $semibold;
       line-height: rem-calc(33px);
@@ -208,7 +208,7 @@
 
     .success {
       display: inline-block;
-      color: $tram !important;
+      color: $dark-green !important;
       text-align: right;
       font-weight: $semibold;
       line-height: rem-calc(33px);
@@ -232,7 +232,7 @@
   .content-item {
     border: none;
     display: block;
-    border-top: 1px dashed $tram;
+    border-top: 1px dashed $dark-green;
     padding: rem-calc(20px) 0 0;
     margin: rem-calc(20px) 0 0;
     position: relative;
@@ -248,7 +248,7 @@
     display: block;
     width: 100%;
     padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
-    background-color: $tram-lighter-solid;
+    background-color: $green;
     position: relative;
 
     &.full-height {
@@ -275,7 +275,7 @@
         vertical-align: text-top;
 
         &:hover {
-          fill: $tram;
+          fill: $dark-green;
         }
       }
     }
@@ -291,13 +291,13 @@
 
   .green-box-edit {
     padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
-    background-color: $tram-lighter-solid;
+    background-color: $green;
     margin-bottom: rem-calc(10px);
 
     h2 {
       font-size: $font-large;
       font-weight: $semibold;
-      color: $tram;
+      color: $dark-green;
       text-transform: uppercase;
       margin: 0;
     }

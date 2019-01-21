@@ -90,7 +90,7 @@
 
     &.has-error {
       transition: none;
-      border: 2px solid $brick;
+      border: 2px solid $red;
     }
     &:focus {
       border: 2px solid $medium-gray;
@@ -112,7 +112,7 @@
 
     &.has-error {
       transition: none;
-      border: 2px solid $brick;
+      border: 2px solid $red;
     }
     &:focus {
       border: 2px solid $medium-gray;
@@ -169,7 +169,7 @@
 
     &.has-error .Select-control {
       transition: none;
-      border: 2px solid $brick;
+      border: 2px solid $red;
     }
 
     &:focus {
@@ -191,7 +191,7 @@
   }
 
   &__error-block {
-    color: $brick;
+    color: $red;
     font-size: 1rem;
     line-height: 1.5rem;
   }

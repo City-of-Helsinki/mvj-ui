@@ -5,6 +5,7 @@
     }
 
     .icons__external-link {
+      fill: $dark-green;
       height: rem-calc(10px);
       width: rem-calc(13px);
       vertical-align: middle;
@@ -14,10 +15,10 @@
 
     &:hover {
       text-decoration: underline;
-      color: $tram_hover;
+      color: $dark-green-hover;
 
       .icons__external-link {
-        fill: $tram_hover;
+        fill: $dark-green-hover;
       }
     }
   }

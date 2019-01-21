@@ -5,37 +5,6 @@
 
   &__panel {
     box-sizing: border-box;
-
-    &-search {
-      display: block;
-      max-width: 100%;
-      border-radius: 0;
-      box-sizing: border-box;
-      height: rem-calc(20px);
-      line-height: rem-calc(18px);
-      border: 1px solid $medium-gray;
-      padding: rem-calc(0 5px);
-      width: 100%;
-      outline: none;
-      margin: 0;
-      font-size: rem-calc(14px);
-
-
-      &::placeholder {
-        color: $medium-dark-gray;
-      }
-
-      &.is-focused {
-        outline: 2px dotted $tram;
-        outline-offset: 0px;
-      }
-
-      &-container {
-        width: 100%;
-        box-sizing: border-box;
-        padding: rem-calc(5px);
-      }
-    }
   }
 
   &__dropdown {
@@ -54,8 +23,8 @@
       min-width: 100%;
       z-index: 1;
       overflow-y: auto;
-      box-shadow: 0 1px 0 1px $tram;
-      border: 1px solid $tram;
+      box-shadow: 0 1px 0 1px $dark-green;
+      border: 1px solid $dark-green;
       border-bottom: none;
       border-radius: 0;
       width: auto;
@@ -81,12 +50,12 @@
 
       &.is-expanded {
         outline: none;
-        border: 1px solid $tram;
-        box-shadow: 0 0 0 1px $tram;
+        border: 1px solid $dark-green;
+        box-shadow: 0 0 0 1px $dark-green;
       }
 
       &.is-focused {
-        outline: 2px dotted $tram;
+        outline: 2px dotted $dark-green;
         outline-offset: 0px;
       }
 
@@ -110,6 +79,7 @@
         }
       }
     }
+
     &-loading {
       &-container {
         cursor: pointer;
@@ -122,8 +92,8 @@
         height: 14px;
         box-sizing: border-box;
         border-radius: 50%;
-        border: 2px solid #ccc;
-        border-right-color: #333;
+        border: 2px solid $medium-dark-gray;
+        border-right-color: $black;
         display: inline-block;
         position: relative;
         vertical-align: middle;
@@ -182,7 +152,7 @@
     padding: rem-calc(3px 5px);
 
     &.is-focused {
-      background-color: $engel-lighter;
+      background-color: $light-yellow;
       outline: 0;
     }
 

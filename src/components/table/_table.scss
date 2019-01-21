@@ -48,7 +48,7 @@
         z-index: 1;
         color: $black;
         pointer-events: none;
-        background-color: $tram;
+        background-color: $dark-green;
         color: $white;
       }
     }
@@ -207,7 +207,7 @@
 
               > td {
                 cursor: pointer;
-                background-color: #D9EFE4;
+                background-color: $green;
 
                 &.disabled {
                   cursor: default;
@@ -216,7 +216,7 @@
             }
 
             &.selected > td {
-              background-color: #D9EFE4 !important;
+              background-color: $green !important;
             }
           }
         }
@@ -224,7 +224,7 @@
 
       &.list-table {
         thead td, thead th {
-          background-color: $tram;
+          background-color: $dark-green;
           font-size: rem-calc(14px);
           color: $white;
 
@@ -241,7 +241,7 @@
 
     &.fixed-table-container {
       position: relative;
-      border: 1px solid #d7d5d5;
+      border: 1px solid $green;
       margin-bottom: rem-calc(10px);
 
       .scroll-head-wrapper {
