@@ -9,6 +9,7 @@ import {fetchAttributes as fetchCollectionCourtDecisionAttributes} from '$src/co
 import {fetchAttributes as fetchCollectionLetterAttributes} from '$src/collectionLetter/actions';
 import {fetchAttributes as fetchCollectionNoteAttributes} from '$src/collectionNote/actions';
 import {fetchAttributes as fetchCommentAttributes} from '$src/comments/actions';
+import {fetchAttributes as fetchContractFileAttributes} from '$src/contractFile/actions';
 import {fetchAttributes as fetchCopyAreasToContractAttributes} from '$src/copyAreasToContract/actions';
 import {fetchAttributes as fetchCreateCollectionLetterAttributes} from '$src/createCollectionLetter/actions';
 import {fetchAttributes as fetchInvoiceAttributes} from '$src/invoices/actions';
@@ -47,6 +48,10 @@ import {
   getIsFetchingAttributes as getIsFetchingCommentAttributes,
   getMethods as getCommentMethods,
 } from '$src/comments/selectors';
+import {
+  getIsFetchingAttributes as getIsFetchingContractFileAttributes,
+  getMethods as getContractFileMethods,
+} from '$src/contractFile/selectors';
 import {
   getAttributes as getCopyAreasToContractAttributes,
   getIsFetchingAttributes as getIsFetchingCopyAreasToContractAttributes,
@@ -127,6 +132,7 @@ function LeasePageAttributes(WrappedComponent: any) {
     collectionNoteMethods: Methods,
     commentAttributes: Attributes,
     commentMethods: Methods,
+    contractFileMethods: Methods,
     copyAreasToContractAttributes: Attributes,
     copyAreasToContractMethods: Methods,
     createCollectionLetterAttributes: Attributes,
@@ -136,6 +142,7 @@ function LeasePageAttributes(WrappedComponent: any) {
     fetchCollectionLetterAttributes: Function,
     fetchCollectionNoteAttributes: Function,
     fetchCommentAttributes: Function,
+    fetchContractFileAttributes: Function,
     fetchCopyAreasToContractAttributes: Function,
     fetchCreateCollectionLetterAttributes: Function,
     fetchInvoiceAttributes: Function,
@@ -162,6 +169,7 @@ function LeasePageAttributes(WrappedComponent: any) {
     isFetchingCollectionLetterAttributes: boolean,
     isFetchingCollectionNoteAttributes: boolean,
     isFetchingCommentAttributes: boolean,
+    isFetchingContractFileAttributes: boolean,
     isFetchingCopyAreasToContractAttributes: boolean,
     isFetchingCreateCollectionLetterAttributes: boolean,
     isFetchingInvoiceAttributes: boolean,
@@ -207,6 +215,7 @@ function LeasePageAttributes(WrappedComponent: any) {
         collectionLetterMethods,
         collectionNoteMethods,
         commentMethods,
+        contractFileMethods,
         copyAreasToContractMethods,
         createCollectionLetterMethods,
         fetchBillingPeriodAttributes,
@@ -214,6 +223,7 @@ function LeasePageAttributes(WrappedComponent: any) {
         fetchCollectionLetterAttributes,
         fetchCollectionNoteAttributes,
         fetchCommentAttributes,
+        fetchContractFileAttributes,
         fetchCopyAreasToContractAttributes,
         fetchCreateCollectionLetterAttributes,
         fetchInvoiceAttributes,
@@ -236,6 +246,7 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingCollectionLetterAttributes,
         isFetchingCollectionNoteAttributes,
         isFetchingCommentAttributes,
+        isFetchingContractFileAttributes,
         isFetchingCopyAreasToContractAttributes,
         isFetchingCreateCollectionLetterAttributes,
         isFetchingInvoiceAttributes,
@@ -276,6 +287,10 @@ function LeasePageAttributes(WrappedComponent: any) {
 
       if(isEmpty(commentMethods) && !isFetchingCommentAttributes) {
         fetchCommentAttributes();
+      }
+
+      if(isEmpty(contractFileMethods) && !isFetchingContractFileAttributes) {
+        fetchContractFileAttributes();
       }
 
       if(isEmpty(copyAreasToContractMethods) && !isFetchingCopyAreasToContractAttributes) {
@@ -337,6 +352,7 @@ function LeasePageAttributes(WrappedComponent: any) {
         this.props.isFetchingCollectionLetterAttributes !== prevProps.isFetchingCollectionLetterAttributes ||
         this.props.isFetchingCollectionNoteAttributes !== prevProps.isFetchingCollectionNoteAttributes ||
         this.props.isFetchingCommentAttributes !== prevProps.isFetchingCommentAttributes ||
+        this.props.isFetchingContractFileAttributes !== prevProps.isFetchingContractFileAttributes ||
         this.props.isFetchingCopyAreasToContractAttributes !== prevProps.isFetchingCopyAreasToContractAttributes ||
         this.props.isFetchingCreateCollectionLetterAttributes !== prevProps.isFetchingCreateCollectionLetterAttributes ||
         this.props.isFetchingInvoiceAttributes !== prevProps.isFetchingInvoiceAttributes ||
@@ -361,6 +377,7 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingCollectionLetterAttributes,
         isFetchingCollectionNoteAttributes,
         isFetchingCommentAttributes,
+        isFetchingContractFileAttributes,
         isFetchingCopyAreasToContractAttributes,
         isFetchingCreateCollectionLetterAttributes,
         isFetchingInvoiceAttributes,
@@ -380,6 +397,7 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingCollectionLetterAttributes ||
         isFetchingCollectionNoteAttributes ||
         isFetchingCommentAttributes ||
+        isFetchingContractFileAttributes ||
         isFetchingCopyAreasToContractAttributes ||
         isFetchingCreateCollectionLetterAttributes ||
         isFetchingInvoiceAttributes ||
@@ -417,6 +435,7 @@ const withLeasePageAttributes = flowRight(
         collectionNoteMethods: getCollectionNoteMethods(state),
         commentAttributes: getCommentAttributes(state),
         commentMethods: getCommentMethods(state),
+        contractFileMethods: getContractFileMethods(state),
         copyAreasToContractAttributes: getCopyAreasToContractAttributes(state),
         copyAreasToContractMethods: getCopyAreasToContractMethods(state),
         createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
@@ -434,6 +453,7 @@ const withLeasePageAttributes = flowRight(
         isFetchingCollectionLetterAttributes: getIsFetchignCollectionLetterAttributes(state),
         isFetchingCollectionNoteAttributes: getIsFetchingCollectionNoteAttributes(state),
         isFetchingCommentAttributes: getIsFetchingCommentAttributes(state),
+        isFetchingContractFileAttributes: getIsFetchingContractFileAttributes(state),
         isFetchingCopyAreasToContractAttributes: getIsFetchingCopyAreasToContractAttributes(state),
         isFetchingCreateCollectionLetterAttributes: getIsFetchignCreateCollectionLetterAttributes(state),
         isFetchingInvoiceAttributes: getIsFetchingInvoiceAttributes(state),
@@ -469,6 +489,7 @@ const withLeasePageAttributes = flowRight(
       fetchCollectionLetterAttributes,
       fetchCollectionNoteAttributes,
       fetchCommentAttributes,
+      fetchContractFileAttributes,
       fetchCopyAreasToContractAttributes,
       fetchCreateCollectionLetterAttributes,
       fetchInvoiceAttributes,

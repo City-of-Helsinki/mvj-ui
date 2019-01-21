@@ -542,3 +542,13 @@ export const getFieldOptions = (attributes: Attributes, path: string, addEmpty: 
 */
 
 export const getFieldAttributes = (attributes: Attributes, path: string) => get(attributes, path);
+
+
+export const humanReadableByteCount = (bytes: number) => {
+  const unit = 1024;
+  if (bytes < unit) return `${bytes} B`;
+
+  const exp = Math.floor(Math.log(bytes) / Math.log(unit));
+  const pre = `${'KMGTPE'.charAt(exp-1)}B`;
+  return `${(bytes / Math.pow(unit, exp)).toFixed(1)} ${pre}`;
+};

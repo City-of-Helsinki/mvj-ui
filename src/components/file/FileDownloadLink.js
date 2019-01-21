@@ -1,10 +1,11 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import debounce from 'lodash/debounce';
 import {saveAs} from 'file-saver/FileSaver';
 import classNames from 'classnames';
 
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {displayUIMessage, getFileNameFromResponse} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
@@ -15,49 +16,85 @@ type Props = {
   label: string,
 }
 
-const FileDownloadLink = ({
-  apiToken,
-  className,
-  fileUrl,
-  label,
-}: Props) => {
+type State = {
+  isLoading: boolean,
+}
 
-  const fetchFile = async() => {
-    const request = new Request(fileUrl);
-    if (apiToken) {
-      request.headers.set('Authorization', `Bearer ${apiToken}`);
-    }
+class FileDownloadLink extends PureComponent<Props, State> {
+  state = {
+    isLoading: false,
+  }
 
-    try {
-      const response = await fetch(request);
-      switch(response.status) {
-        case 200:
-          const blob = await response.blob();
-          const filename = getFileNameFromResponse(response);
+  handleClick = () => {
+    const {apiToken, fileUrl, label} = this.props;
+    const {isLoading} = this.state;
 
-          saveAs(blob, filename);
-          break;
-        default:
-          displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
-          break;
+    if(isLoading) return;
+
+    this.setState({isLoading: true});
+
+    const stopLoader = () => {
+      this.setState({isLoading: false});
+    };
+
+    const fetchFile = async() => {
+      const request = new Request(fileUrl);
+
+      if (apiToken) {
+        request.headers.set('Authorization', `Bearer ${apiToken}`);
       }
-    } catch(e) {
-      console.error(`Failed to download file with error ${e}`);
-      displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
-    }
-  };
 
-  const handleClick = debounce(fetchFile, 1000, {leading: true});
+      try {
+        const response = await fetch(request);
+        switch(response.status) {
+          case 200:
+            const blob = await response.blob();
+            const filename = getFileNameFromResponse(response);
 
-  const handleKeyDown = (e: any) => {
+            saveAs(blob, filename || label);
+            break;
+          default:
+            displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
+            break;
+        }
+
+        stopLoader();
+      } catch(e) {
+        console.error(`Failed to download file with error ${e}`);
+        stopLoader();
+        displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
+      }
+    };
+
+    fetchFile();
+  }
+
+  handleKeyDown = (e: any) => {
     if(e.keyCode === 13) {
       e.preventDefault();
-      handleClick();
+      this.handleClick();
     }
   };
 
-  return <a className={classNames('file__file-download-link', className)} onClick={handleClick} onKeyDown={handleKeyDown} tabIndex={0}>{label}</a>;
-};
+  render() {
+    const {className, label} = this.props;
+    const {isLoading} = this.state;
+
+    console.log(isLoading);
+
+    return <a
+      className={classNames('file__file-download-link', className)}
+      onClick={this.handleClick}
+      onKeyDown={this.handleKeyDown}
+      tabIndex={0}
+    >
+      {label}
+      <LoaderWrapper className='small-inline-wrapper'>
+        <Loader isLoading={isLoading} className='small' />
+      </LoaderWrapper>
+    </a>;
+  }
+}
 
 export default connect(
   (state) => {

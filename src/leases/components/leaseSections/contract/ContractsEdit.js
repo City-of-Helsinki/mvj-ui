@@ -9,6 +9,7 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import Authorization from '$components/authorization/Authorization';
 import AddButton from '$components/form/AddButton';
+import ContractFileModal from './ContractFileModal';
 import ContractItemEdit from './ContractItemEdit';
 import FormText from '$components/form/FormText';
 import {receiveFormValidFlags} from '$src/leases/actions';
@@ -17,15 +18,17 @@ import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseContractsFieldPath
 import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts, getDecisionOptions} from '$src/leases/helpers';
 import {isFieldAllowedToEdit} from '$util/helpers';
+import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type ContractsProps = {
   attributes: Attributes,
   decisionOptions: Array<Object>,
   fields: any,
+  onShowContractFileModal: Function,
   savedContracts: Array<Object>,
 }
 
@@ -33,6 +36,7 @@ const renderContracts = ({
   attributes,
   decisionOptions,
   fields,
+  onShowContractFileModal,
   savedContracts,
 }: ContractsProps): Element<*> => {
   const handleAdd = () => {
@@ -68,6 +72,7 @@ const renderContracts = ({
                 field={contract}
                 index={index}
                 onRemove={handleRemove}
+                onShowContractFileModal={onShowContractFileModal}
                 savedContracts={savedContracts}
               />;
             })}
@@ -91,22 +96,27 @@ const renderContracts = ({
 
 type Props = {
   attributes: Attributes,
+  contractFileMethods: Methods,
   currentLease: Lease,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
 
 type State = {
+  contractId: number,
   currentLease: Lease,
   decisionOptions: Array<Object>,
   savedContracts: Array<Object>,
+  showContractModal: boolean,
 }
 
 class ContractsEdit extends PureComponent<Props, State> {
   state = {
+    contractId: -1,
     currentLease: {},
     decisionOptions: [],
     savedContracts: [],
+    showContractModal: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -131,17 +141,40 @@ class ContractsEdit extends PureComponent<Props, State> {
     }
   }
 
+  handleShowContractFileModal = (contractId: number) => {
+    this.setState({
+      contractId,
+      showContractModal: true,
+    });
+  }
+
+  handleCloseContractFileModal = () => {
+    this.setState({
+      contractId: -1,
+      showContractModal: false,
+    });
+  }
+
   render() {
-    const {attributes} = this.props;
-    const {decisionOptions, savedContracts} = this.state;
+    const {attributes, contractFileMethods} = this.props;
+    const {contractId, decisionOptions, savedContracts, showContractModal} = this.state;
 
     return (
       <form>
+        <Authorization allow={contractFileMethods.GET}>
+          <ContractFileModal
+            contractId={contractId}
+            onClose={this.handleCloseContractFileModal}
+            open={showContractModal}
+          />
+        </Authorization>
+
         <FieldArray
           attributes={attributes}
           component={renderContracts}
           decisionOptions={decisionOptions}
           name="contracts"
+          onShowContractFileModal={this.handleShowContractFileModal}
           savedContracts={savedContracts}
         />
       </form>
@@ -156,6 +189,7 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
+        contractFileMethods: getContractFileMethods(state),
         currentLease: getCurrentLease(state),
       };
     },
