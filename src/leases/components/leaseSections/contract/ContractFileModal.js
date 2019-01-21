@@ -45,8 +45,6 @@ class ContractFileModal extends PureComponent<Props> {
       onClose,
       open,
     } = this.props;
-    console.log(files);
-    console.log(isFetching);
 
     return (
       <Modal

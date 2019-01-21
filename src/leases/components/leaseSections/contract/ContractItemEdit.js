@@ -431,7 +431,6 @@ const ContractItemEdit = ({
 
   const contractNumberReadOnlyRenderer = (value) => {
     const handleShowContractFileModal = () => {
-      console.log(value);
       onShowContractFileModal(value);
     };
 

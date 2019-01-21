@@ -80,8 +80,6 @@ class FileDownloadLink extends PureComponent<Props, State> {
     const {className, label} = this.props;
     const {isLoading} = this.state;
 
-    console.log(isLoading);
-
     return <a
       className={classNames('file__file-download-link', className)}
       onClick={this.handleClick}
