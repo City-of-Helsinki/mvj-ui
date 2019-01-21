@@ -27,9 +27,10 @@ import {
 } from '$src/leases/enums';
 import {getDecisionById, getDecisionOptions, isContractActive} from '$src/leases/helpers';
 import {formatDate, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
+import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
@@ -37,7 +38,9 @@ type Props = {
   contract: Object,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
+  contractFileMethods: Methods,
   currentLease: Lease,
+  onShowContractFileModal: Function,
   receiveCollapseStates: Function,
   typeOptions: Array<Object>,
 }
@@ -47,7 +50,9 @@ const ContractItem = ({
   contract,
   contractCollapseState,
   contractChangesCollapseState,
+  contractFileMethods,
   currentLease,
+  onShowContractFileModal,
   receiveCollapseStates,
   typeOptions,
 }: Props) => {
@@ -73,6 +78,10 @@ const ContractItem = ({
         },
       },
     });
+  };
+
+  const handleShowContractFileModal = () => {
+    onShowContractFileModal(contract.contract_number);
   };
 
   const decisionOptions = getDecisionOptions(currentLease);
@@ -112,7 +121,14 @@ const ContractItem = ({
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
             <FormTextTitle>{LeaseContractsFieldTitles.CONTRACT_NUMBER}</FormTextTitle>
-            <FormText>{contract.contract_number || '-'}</FormText>
+            <FormText>{contract.contract_number
+              ? <Authorization
+                allow={contractFileMethods.GET}
+                errorComponent={contract.contract_number}
+              >
+                <a onClick={handleShowContractFileModal}>{contract.contract_number}</a>
+              </Authorization>
+              : '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -311,6 +327,7 @@ export default connect(
       attributes: getAttributes(state),
       contractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract`),
       contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract_changes`),
+      contractFileMethods: getContractFileMethods(state),
       currentLease: getCurrentLease(state),
     };
   },

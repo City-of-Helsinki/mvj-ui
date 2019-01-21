@@ -45,6 +45,7 @@ import {
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from '$util/helpers';
+import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {
   getCollapseStateByKey,
   getCurrentLease,
@@ -52,7 +53,7 @@ import {
   getIsSaveClicked,
 } from '$src/leases/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type ContractChangesProps = {
@@ -359,6 +360,7 @@ type Props = {
   attributes: Attributes,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
+  contractFileMethods: Methods,
   contractId: number,
   currentLease: Lease,
   decisionOptions: Array<Object>,
@@ -366,6 +368,7 @@ type Props = {
   field: string,
   isSaveClicked: boolean,
   onRemove: Function,
+  onShowContractFileModal: Function,
   receiveCollapseStates: Function,
   savedContracts: Array<Object>,
 }
@@ -374,6 +377,7 @@ const ContractItemEdit = ({
   attributes,
   contractCollapseState,
   contractChangesCollapseState,
+  contractFileMethods,
   contractId,
   currentLease,
   decisionOptions,
@@ -381,6 +385,7 @@ const ContractItemEdit = ({
   field,
   isSaveClicked,
   onRemove,
+  onShowContractFileModal,
   receiveCollapseStates,
   savedContracts,
 }: Props) => {
@@ -424,6 +429,21 @@ const ContractItemEdit = ({
     />;
   };
 
+  const contractNumberReadOnlyRenderer = (value) => {
+    const handleShowContractFileModal = () => {
+      onShowContractFileModal(value);
+    };
+
+    return <FormText>{value
+      ? <Authorization
+        allow={contractFileMethods.GET}
+        errorComponent={value}
+      >
+        <a onClick={handleShowContractFileModal}>{value}</a>
+      </Authorization>
+      : '-'}</FormText>;
+  };
+
   const typeOptions = getFieldOptions(attributes, LeaseContractsFieldPaths.TYPE),
     contractErrors = get(errors, field),
     savedContract = getContractById(contractId);
@@ -458,6 +478,7 @@ const ContractItemEdit = ({
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}
                 name={`${field}.contract_number`}
+                readOnlyValueRenderer={contractNumberReadOnlyRenderer}
                 overrideValues={{label: LeaseContractsFieldTitles.CONTRACT_NUMBER}}
               />
             </Authorization>
@@ -619,6 +640,7 @@ export default connect(
       return {
         contractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract`),
         contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract_changes`),
+        contractFileMethods: getContractFileMethods(state),
         contractId: id,
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
