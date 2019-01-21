@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import ConstructabilityItem from './ConstructabilityItem';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
-// import SendEmail from './SendEmail';
+import SendEmail from './SendEmail';
 import {LeaseAreasFieldPaths} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
 import {getFieldOptions} from '$src/util/helpers';
@@ -76,7 +76,7 @@ class Constructability extends PureComponent<Props, State> {
       <Fragment>
         <h2>Rakentamiskelpoisuus</h2>
         <Divider />
-        {/* <SendEmail /> */}
+        <SendEmail />
 
         {!areas || !areas.length &&
           <FormText className='no-margin'>Ei vuokra-alueita</FormText>
