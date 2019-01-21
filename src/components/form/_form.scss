@@ -659,8 +659,9 @@
 
     .icons {
       margin-right: rem-calc(5px);
-      height: rem-calc(19px) !important;
-      width: rem-calc(19px) !important;
+      fill: $tram;
+      height: rem-calc(20px) !important;
+      width: rem-calc(20px) !important;
     }
 
     &:hover {

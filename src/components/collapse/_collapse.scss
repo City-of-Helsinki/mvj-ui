@@ -21,12 +21,6 @@
         @include transform(translateY(-50%));
       }
 
-      &:hover {
-        .arrow-icon {
-          fill: $tram_hover !important;
-        }
-      }
-
       @include focus();
     }
 

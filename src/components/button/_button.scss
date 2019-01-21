@@ -79,13 +79,6 @@
   &.pull-right {
     float: right;
   }
-
-  &.button-map {
-    position: absolute;
-    top: rem-calc(10px);
-    right: rem-calc(10px);
-    z-index: 1001;
-  }
 }
 
 .icon-button-component {
@@ -95,7 +88,8 @@
 
   &:hover {
     .icons {
-      fill: $tram_hover !important;
+      fill: $tram !important;
+      stroke: $tram !important;
     }
   }
 
