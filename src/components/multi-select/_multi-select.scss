@@ -5,37 +5,6 @@
 
   &__panel {
     box-sizing: border-box;
-
-    &-search {
-      display: block;
-      max-width: 100%;
-      border-radius: 0;
-      box-sizing: border-box;
-      height: rem-calc(20px);
-      line-height: rem-calc(18px);
-      border: 1px solid $medium-gray;
-      padding: rem-calc(0 5px);
-      width: 100%;
-      outline: none;
-      margin: 0;
-      font-size: rem-calc(14px);
-
-
-      &::placeholder {
-        color: $medium-dark-gray;
-      }
-
-      &.is-focused {
-        outline: 2px dotted $tram;
-        outline-offset: 0px;
-      }
-
-      &-container {
-        width: 100%;
-        box-sizing: border-box;
-        padding: rem-calc(5px);
-      }
-    }
   }
 
   &__dropdown {
