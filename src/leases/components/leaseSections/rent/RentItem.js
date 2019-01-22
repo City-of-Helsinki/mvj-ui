@@ -3,7 +3,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
 import get from 'lodash/get';
-import classNames from 'classnames';
 
 import Authorization from '$components/authorization/Authorization';
 import BasicInfo from './BasicInfo';
@@ -145,7 +144,7 @@ const RentItem = ({
 
   return (
     <Collapse
-      className={classNames({'archived': archived})}
+      archived={archived}
       defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
       headerSubtitles={
         <Column small={6} medium={8} large={10}>

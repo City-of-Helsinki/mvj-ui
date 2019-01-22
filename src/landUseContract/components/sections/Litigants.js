@@ -1,7 +1,8 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 
+import FormText from '$components/form/FormText';
 import Litigant from './Litigant';
 import {getContentLitigants, isLitigantArchived} from '$src/landUseContract/helpers';
 import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
@@ -19,7 +20,7 @@ type State = {
   litigants: Array<Object>,
 }
 
-class Litigants extends Component<Props, State> {
+class Litigants extends PureComponent<Props, State> {
   state = {
     activeLitigants: [],
     archivedLitigants: [],
@@ -46,9 +47,9 @@ class Litigants extends Component<Props, State> {
     const {activeLitigants, archivedLitigants} = this.state;
 
     return (
-      <div>
+      <Fragment>
         {(!activeLitigants.length) &&
-          <p className='no-margin'>Ei osapuolia</p>
+          <FormText className='no-margin'>Ei osapuolia</FormText>
         }
         {!!activeLitigants.length && activeLitigants.map((litigant, index) =>
           <Litigant key={index} litigant={litigant} />
@@ -61,7 +62,7 @@ class Litigants extends Component<Props, State> {
         {!!archivedLitigants.length && archivedLitigants.map((litigant, index) =>
           <Litigant key={index} litigant={litigant} />
         )}
-      </div>
+      </Fragment>
     );
   }
 }

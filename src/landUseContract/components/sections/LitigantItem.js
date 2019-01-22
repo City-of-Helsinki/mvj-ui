@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -24,7 +24,7 @@ const LitigantItem = ({
   litigant,
 }: Props) => {
   const getInvoiceManagementShare = () => {
-    if(!Number(get(litigant, 'share_numerator')) || !Number(get(litigant, 'share_denominator'))) {
+    if(!Number(litigant.share_numerator) || !Number(litigant.share_denominator)) {
       return 0;
     }
     return (Number(litigant.share_numerator)*100/Number(litigant.share_denominator));
@@ -36,7 +36,7 @@ const LitigantItem = ({
 
   const share = getInvoiceManagementShare();
   return (
-    <div>
+    <Fragment>
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
@@ -102,7 +102,7 @@ const LitigantItem = ({
 
       <SubTitle>Asiakkaan tiedot</SubTitle>
       <ContactTemplate contact={contact} />
-    </div>
+    </Fragment>
   );
 };
 

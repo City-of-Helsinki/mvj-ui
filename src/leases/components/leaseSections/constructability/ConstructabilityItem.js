@@ -2,7 +2,6 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import classNames from 'classnames';
 import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
@@ -14,11 +13,11 @@ import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
+import StatusIndicator from './StatusIndicator';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {
-  ConstructabilityStatus,
   FormNames,
   LeaseAreaAddressesFieldPaths,
   LeaseAreasFieldPaths,
@@ -88,28 +87,6 @@ const Comments = ({
       )
     }
   </Fragment>;
-
-type StatusIndicatorProps = {
-  researchState: string,
-  stateOptions: Array<Object>,
-}
-
-const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
-  <div>
-    <div className={
-      classNames(
-        {'collapse__header-neutral': !researchState || researchState === ConstructabilityStatus.UNVERIFIED},
-        {'collapse__header-alert': researchState === ConstructabilityStatus.REQUIRES_MEASURES},
-        {'collapse__header-success': researchState === ConstructabilityStatus.COMPLETE}
-      )
-    }>
-      <i/>
-      <span>
-        {getLabelOfOption(stateOptions, researchState || ConstructabilityStatus.UNVERIFIED)}
-      </span>
-    </div>
-  </div>;
-
 
 type Props = {
   area: Object,

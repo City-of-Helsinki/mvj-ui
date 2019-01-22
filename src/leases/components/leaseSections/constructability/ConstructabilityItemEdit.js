@@ -16,6 +16,7 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
+import StatusIndicator from './StatusIndicator';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -96,7 +97,9 @@ type CommentProps = {
 }
 
 const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Element<*> => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => {
+    fields.push({});
+  };
 
   return (
     <AppConsumer>
@@ -206,7 +209,7 @@ type Props = {
   areaId: number,
   attributes: Attributes,
   constructabilityReportCollapseState: boolean,
-  constructabilityReportStateOptions: Array<Object>,
+  constructabilityStateOptions: Array<Object>,
   demolitionCollapseState: boolean,
   errors: ?Object,
   field: string,
@@ -227,6 +230,7 @@ const ConstructabilityItemEdit = ({
   areaId,
   attributes,
   constructabilityReportCollapseState,
+  constructabilityStateOptions,
   demolitionCollapseState,
   errors,
   field,
@@ -353,6 +357,16 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={preconstructionCollapseState !== undefined ? preconstructionCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(preconstructionErrors)}
+        headerSubtitles={
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={savedArea.preconstruction_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
+        }
         headerTitle='Esirakentaminen, johtosiirrot ja kunnallistekniikka'
         onToggle={handlePreconstructionCollapseToggle}
       >
@@ -383,6 +397,16 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={demolitionCollapseState !== undefined ? demolitionCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(demolitionErrors)}
+        headerSubtitles={
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={savedArea.demolition_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
+        }
         headerTitle='Purku'
         onToggle={handleDemolitionCollapseToggle}
       >
@@ -413,6 +437,16 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={pollutedLandCollapseState !== undefined ? pollutedLandCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(pollutedLandErrors)}
+        headerSubtitles={
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={savedArea.polluted_land_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
+        }
         headerTitle='Pima ja jäte'
         onToggle={handlePollutedLandCollapseToggle}
       >
@@ -496,6 +530,14 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={constructabilityReportCollapseState !== undefined ? constructabilityReportCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(constructabilityReportErrors)}
+        headerSubtitles={
+          <Column>
+            <StatusIndicator
+              researchState={savedArea.constructability_report_state}
+              stateOptions={constructabilityStateOptions}
+            />
+          </Column>
+        }
         headerTitle='Rakennettavuusselvitys'
         onToggle={handleConstructabilityReportCollapseToggle}
       >
@@ -566,6 +608,14 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={otherCollapseState !== undefined ? otherCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(otherErrors)}
+        headerSubtitles={
+          <Column>
+            <StatusIndicator
+              researchState={savedArea.other_state}
+              stateOptions={constructabilityStateOptions}
+            />
+          </Column>
+        }
         headerTitle='Muut'
         onToggle={handleOtherCollapseToggle}
       >

@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
@@ -40,7 +39,7 @@ const ContractItem = ({
   return (
     <Collapse
       defaultOpen={collapseState !== undefined ? collapseState : true}
-      headerTitle={<CollapseHeaderTitle>{getLabelOfOption(stateOptions, contract.state) || '-'}</CollapseHeaderTitle>}
+      headerTitle={getLabelOfOption(stateOptions, contract.state) || '-'}
       onToggle={handleCollapseToggle}
     >
       <Row>

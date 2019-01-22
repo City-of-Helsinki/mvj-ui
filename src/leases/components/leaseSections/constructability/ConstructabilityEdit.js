@@ -20,6 +20,7 @@ import type {Lease} from '$src/leases/types';
 
 type AreaProps = {
   attributes: Attributes,
+  constructabilityStateOptions: Array<Object>,
   errors: ?Object,
   fields: any,
   isSaveClicked: boolean,
@@ -30,6 +31,7 @@ type AreaProps = {
 
 const renderAreas = ({
   attributes,
+  constructabilityStateOptions,
   errors,
   fields,
   isSaveClicked,
@@ -46,6 +48,7 @@ const renderAreas = ({
           <ConstructabilityItemEdit
             key={index}
             attributes={attributes}
+            constructabilityStateOptions={constructabilityStateOptions}
             errors={errors}
             field={area}
             isSaveClicked={isSaveClicked}
@@ -71,6 +74,7 @@ type Props = {
 
 type State = {
   attributes: Attributes,
+  constructabilityStateOptions: Array<Object>,
   currentLease: Lease,
   locationOptions: Array<Object>,
   typeOptions: Array<Object>,
@@ -80,6 +84,7 @@ type State = {
 class ConstructabilityEdit extends PureComponent<Props, State> {
   state = {
     attributes: {},
+    constructabilityStateOptions: [],
     currentLease: {},
     locationOptions: [],
     typeOptions: [],
@@ -101,6 +106,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
 
     if(props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
+      newState.constructabilityStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE);
       newState.locationOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.LOCATION);
       newState.typeOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.TYPE);
     }
@@ -121,6 +127,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
       isSaveClicked,
     } = this.props;
     const {
+      constructabilityStateOptions,
       locationOptions,
       savedAreas,
       typeOptions,
@@ -135,6 +142,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
         <FieldArray
           attributes={attributes}
           component={renderAreas}
+          constructabilityStateOptions={constructabilityStateOptions}
           errors={errors}
           isSaveClicked={isSaveClicked}
           locationOptions={locationOptions}

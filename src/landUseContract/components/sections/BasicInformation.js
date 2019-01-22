@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
@@ -63,7 +62,7 @@ const BasicInformation = ({
       <Divider />
       <Collapse
         defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}
-        headerTitle={<CollapseHeaderTitle>Perustiedot</CollapseHeaderTitle>}
+        headerTitle='Perustiedot'
         onToggle={handleBasicInformationCollapseToggle}
       >
         <Row>
@@ -123,6 +122,7 @@ const BasicInformation = ({
               title='Asemakaavan diaarinumero'
               text={basicInformation.plan_reference_number
                 ? <ExternalLink
+                  className='no-margin'
                   href={getReferenceNumberLink(basicInformation.plan_reference_number)}
                   text={basicInformation.plan_reference_number}
                 />

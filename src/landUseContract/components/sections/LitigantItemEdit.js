@@ -1,8 +1,7 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, formValueSelector} from 'redux-form';
-import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -13,7 +12,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
@@ -29,20 +28,23 @@ import {ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isLitigantActive} from '$src/landUseContract/helpers';
-import {findItemById} from '$util/helpers';
+import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
+import {
+  formatDateRange,
+  findItemById,
+} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/types';
 
 type BillingPersonsProps = {
   fields: any,
-  litigant: Object,
+  savedLitigant: ?Object,
 }
 
 const renderBillingPersons = ({
   fields,
-  litigant,
+  savedLitigant,
 }: BillingPersonsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -52,7 +54,7 @@ const renderBillingPersons = ({
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
+          <Fragment>
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -70,7 +72,7 @@ const renderBillingPersons = ({
                 <LitigantBillingPersonEdit
                   key={index}
                   field={field}
-                  litigant={litigant}
+                  savedLitigant={savedLitigant}
                   onRemove={handleRemove}
                 />
               );
@@ -84,7 +86,7 @@ const renderBillingPersons = ({
                 />
               </Column>
             </Row>
-          </div>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -162,15 +164,26 @@ const LitigantItemEdit = ({
   };
 
   const savedLitigant = litigantId ? findItemById(litigants, litigantId) : {};
-  const isActive = isLitigantActive(get(savedLitigant, 'litigant'));
+  const active = isLitigantActive(savedLitigant && savedLitigant.litigant);
+  const archived = isLitigantArchived(savedLitigant && savedLitigant.litigant);
   const litigantErrors = get(errors, field);
 
   return (
     <Collapse
-      className={classNames({'not-active': !isActive})}
-      defaultOpen={collapseState !== undefined ? collapseState : isActive}
+      archived={archived}
+      defaultOpen={collapseState !== undefined ? collapseState : active}
       hasErrors={isSaveClicked && !isEmpty(litigantErrors)}
-      headerTitle={<CollapseHeaderTitle>{getContactFullName(get(savedLitigant, 'litigant.contact')) || '-'}</CollapseHeaderTitle>}
+      headerSubtitles={savedLitigant &&
+        <Fragment>
+          <Column>
+            <CollapseHeaderSubtitle><span>Osuus murtolukuna:</span> {savedLitigant.share_numerator || ''} / {savedLitigant.share_denominator || ''}</CollapseHeaderSubtitle>
+          </Column>
+          <Column>
+            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(savedLitigant, 'litigant.start_date'), get(savedLitigant, 'litigant.end_date')) || '-'}</CollapseHeaderSubtitle>
+          </Column>
+        </Fragment>
+      }
+      headerTitle={getContactFullName(get(savedLitigant, 'litigant.contact')) || '-'}
       onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >
@@ -280,7 +293,7 @@ const LitigantItemEdit = ({
 
       <FieldArray
         component={renderBillingPersons}
-        litigant={savedLitigant}
+        savedLitigant={savedLitigant}
         name={`${field}.litigantcontact_set`}
       />
     </Collapse>

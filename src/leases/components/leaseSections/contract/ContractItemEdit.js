@@ -16,6 +16,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import DecisionLink from '$components/links/DecisionLink';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
@@ -37,8 +38,9 @@ import {
   LeaseContractMortgageDocumentsFieldPaths,
   LeaseContractMortgageDocumentsFieldTitles,
 } from '$src/leases/enums';
-import {getDecisionById} from '$src/leases/helpers';
+import {getDecisionById, isContractActive} from '$src/leases/helpers';
 import {
+  formatDate,
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
@@ -257,6 +259,10 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
         return(
           <Fragment>
             <SubTitle>{LeaseContractMortgageDocumentsFieldTitles.MORTGAGE_DOCUMENTS}</SubTitle>
+            {!isFieldAllowedToEdit(attributes, LeaseContractMortgageDocumentsFieldPaths.MORTGAGE_DOCUMENTS) && (!fields || !fields.length) &&
+              <FormText>Ei panttikirjoja</FormText>
+            }
+
             {fields && !!fields.length &&
               <Fragment>
                 <Row>
@@ -452,6 +458,20 @@ const ContractItemEdit = ({
     <Collapse
       defaultOpen={contractCollapseState !== undefined ? contractCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(contractErrors)}
+      headerSubtitles={savedContract &&
+        <Fragment>
+          <Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGNING_DATE)}>
+              <CollapseHeaderSubtitle>{formatDate(savedContract.signing_date) || '-'}</CollapseHeaderSubtitle>
+            </Authorization>
+          </Column>
+          <Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_START_DATE) && isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_END_DATE)}>
+              <CollapseHeaderSubtitle>{isContractActive(savedContract) ? 'Voimassa' : 'Ei voimassa'}</CollapseHeaderSubtitle>
+            </Authorization>
+          </Column>
+        </Fragment>
+      }
       headerTitle={
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.TYPE)}>
           {getContractTitle(savedContract) || '-'}
