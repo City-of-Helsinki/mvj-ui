@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -12,6 +12,7 @@ import AddButtonThird from '$components/form/AddButtonThird';
 import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
@@ -29,8 +30,12 @@ import {
   LeaseTenantContactSetFieldTitles,
   TenantContactType,
 } from '$src/leases/enums';
-import {isFieldAllowedToRead, isFieldAllowedToEdit} from '$util/helpers';
-import {isTenantActive} from '$src/leases/helpers';
+import {
+  formatDateRange,
+  isFieldAllowedToRead,
+  isFieldAllowedToEdit,
+} from '$util/helpers';
+import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -120,15 +125,32 @@ const OtherTenantItemEdit = ({
     });
   };
 
-  const savedOtherTenant = getOtherTenantById(tenantId),
-    isActive = isTenantActive(savedOtherTenant),
+  const savedTenant = getOtherTenantById(tenantId),
+    active = isTenantActive(savedTenant),
+    archived = isTenantArchived(savedTenant),
     tenantErrors = get(errors, field);
 
   return (
     <Collapse
-      className={classNames('collapse__secondary', {'not-active': !isActive})}
-      defaultOpen={collapseState !== undefined ? collapseState : isActive}
+      archived={archived}
+      className={classNames('collapse__secondary')}
+      defaultOpen={collapseState !== undefined ? collapseState : active}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
+      headerSubtitles={
+        <Fragment>
+          <Column></Column>
+          <Column>
+            {savedTenant &&
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE) && isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+                <CollapseHeaderSubtitle>
+                  <span>Välillä:</span>
+                  {formatDateRange(savedTenant.start_date, savedTenant.end_date) || '-'}
+                </CollapseHeaderSubtitle>
+              </Authorization>
+            }
+          </Column>
+        </Fragment>
+      }
       headerTitle={
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TYPE)}>
           {contactType === TenantContactType.BILLING ? 'Laskunsaaja' : 'Yhteyshenkilö'}

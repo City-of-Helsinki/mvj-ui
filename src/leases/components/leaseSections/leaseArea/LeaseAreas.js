@@ -41,7 +41,6 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
           key={index}
           area={area}
           decisionOptions={decisionOptions}
-          isActive={true}
         />
       )}
 
@@ -53,7 +52,6 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
           key={index}
           area={area}
           decisionOptions={decisionOptions}
-          isActive={false}
         />
       )}
     </div>

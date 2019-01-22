@@ -140,7 +140,7 @@ const BasicInfoIndex = ({leaseAttributes, rent}: Props) => {
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
               <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
               <FormText>{rent.yearly_due_dates && !!rent.yearly_due_dates.length
                 ? formatDueDates(rent.yearly_due_dates)
@@ -294,7 +294,7 @@ const BasicInfoOneTime = ({leaseAttributes, rent}: Props) => {
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
               <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
               <FormText>{rent.yearly_due_dates && !!rent.yearly_due_dates.length
                 ? formatDueDates(rent.yearly_due_dates)
@@ -367,7 +367,7 @@ const BasicInfoFixed = ({leaseAttributes, rent}: Props) => {
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
               <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
               <FormText>{rent.yearly_due_dates && !!rent.yearly_due_dates.length
                 ? formatDueDates(rent.yearly_due_dates)

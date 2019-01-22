@@ -672,7 +672,6 @@ export const LeaseRentsFieldPaths = {
   X_VALUE: 'rents.child.children.x_value',
   Y_VALUE: 'rents.child.children.y_value',
   Y_VALUE_START: 'rents.child.children.y_value_start',
-  YEARLY_DUE_DATES: 'rents.child.children.yearly_due_dates',
 };
 
 /**

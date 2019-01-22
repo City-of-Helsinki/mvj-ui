@@ -167,6 +167,7 @@ const FormFieldInput = ({
       case FieldTypeOptions.USER:
         return getUserFullName(value);
       default:
+        console.error(`Field type ${type} is not implemented`);
         return 'NOT IMPLEMENTED';
     }
   };

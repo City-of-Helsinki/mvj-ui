@@ -448,7 +448,7 @@ const BasicInfoIndex = ({
         }
         {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
               <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
               <FormText>{yearlyDueDates && !!yearlyDueDates
                 ? formatDueDates(yearlyDueDates)
@@ -692,7 +692,7 @@ const BasicInfoFixed = ({
         }
         {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
               <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
               <FormText>{yearlyDueDates && !!yearlyDueDates
                 ? formatDueDates(yearlyDueDates)

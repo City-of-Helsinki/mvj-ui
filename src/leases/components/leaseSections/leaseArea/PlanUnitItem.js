@@ -25,15 +25,15 @@ import {
 import type {Attributes} from '$src/types';
 
 type Props = {
+  areaArchived: boolean,
   attributes: Attributes,
-  isAreaActive: boolean,
   planUnit: Object,
   router: Object,
 }
 
 const PlanUnitItem = ({
+  areaArchived,
   attributes,
-  isAreaActive,
   planUnit,
   router,
 }: Props) => {
@@ -67,7 +67,7 @@ const PlanUnitItem = ({
         </Column>
         <Column small={12} medium={3} large={3}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.GEOMETRY)}>
-            {(isAreaActive && !isEmpty(planUnit.geometry)) &&
+            {!areaArchived && !isEmpty(planUnit.geometry) &&
               <Link to={mapLinkUrl}>{LeasePlanUnitsFieldTitles.GEOMETRY}</Link>
             }
           </Authorization>

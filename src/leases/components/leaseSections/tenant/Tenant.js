@@ -3,7 +3,6 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Column} from 'react-foundation';
-import classNames from 'classnames';
 
 import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
@@ -14,7 +13,7 @@ import {receiveCollapseStates} from '$src/leases/actions';
 import {FormNames, LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths} from '$src/leases/enums';
 import {ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isTenantActive} from '$src/leases/helpers';
+import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {formatDateRange, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
@@ -46,14 +45,15 @@ const Tenant = ({
   };
 
   const contact = get(tenant, 'tenant.contact');
-  const isActive = isTenantActive(tenant.tenant);
+  const active = isTenantActive(tenant.tenant);
+  const archived = isTenantArchived(tenant.tenant);
   const billingPersons = tenant.billing_persons;
   const contactPersons = tenant.contact_persons;
 
   return (
     <Collapse
-      className={classNames({'not-active': !isActive})}
-      defaultOpen={collapseState !== undefined ? collapseState : isActive}
+      archived={archived}
+      defaultOpen={collapseState !== undefined ? collapseState : active}
       headerSubtitles={
         <Fragment>
           <Column>
