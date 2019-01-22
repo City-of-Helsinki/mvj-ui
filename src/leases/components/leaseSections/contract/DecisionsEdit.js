@@ -14,18 +14,19 @@ import FormText from '$components/form/FormText';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseDecisionsFieldPaths} from '$src/leases/enums';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {isFieldAllowedToEdit} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
 
 type DecisionsProps = {
-  attributes: Attributes,
   fields: any,
+  leaseAttributes: Attributes,
 }
 
 const renderDecisions = ({
-  attributes,
   fields,
+  leaseAttributes,
 }: DecisionsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -36,7 +37,7 @@ const renderDecisions = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            {!isFieldAllowedToEdit(attributes, LeaseDecisionsFieldPaths.DECISIONS) && (!fields || !fields.length) &&
+            {!isFieldAllowedToEdit(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS) && (!fields || !fields.length) &&
               <FormText className='no-margin'>Ei päätöksiä</FormText>
             }
             {fields && !!fields.length && fields.map((decision, index) => {
@@ -60,7 +61,7 @@ const renderDecisions = ({
                 onRemove={handleRemove}
               />;
             })}
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseDecisionsFieldPaths.DECISIONS)}>
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS)}>
               <Row>
                 <Column>
                   <AddButton
@@ -78,7 +79,7 @@ const renderDecisions = ({
 };
 
 type Props = {
-  attributes: Attributes,
+  leaseAttributes: Attributes,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -96,13 +97,13 @@ class DecisionsEdit extends PureComponent<Props> {
   }
 
   render() {
-    const {attributes} = this.props;
+    const {leaseAttributes} = this.props;
 
     return (
       <form>
         <FieldArray
           component={renderDecisions}
-          attributes={attributes}
+          leaseAttributes={leaseAttributes}
           name="decisions"
         />
       </form>
@@ -114,7 +115,11 @@ const formName = FormNames.DECISIONS;
 
 export default flowRight(
   connect(
-    null,
+    (state) => {
+      return {
+        leaseAttributes: getLeaseAttributes(state),
+      };
+    },
     {
       receiveFormValidFlags,
     },
