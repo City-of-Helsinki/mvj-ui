@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {Link, withRouter} from 'react-router';
@@ -41,9 +41,8 @@ import {getAttributes, getCollapseStateByKey, getIsEditMode} from '$src/leases/s
 import type {Attributes} from '$src/types';
 
 type Props = {
-  area: ?Object,
+  area: Object,
   attributes: Attributes,
-  isActive: boolean,
   isEditMode: boolean,
   planUnitsContractCollapseState: boolean,
   planUnitsCurrentCollapseState: boolean,
@@ -56,7 +55,6 @@ type Props = {
 const LeaseArea = ({
   area,
   attributes,
-  isActive,
   isEditMode,
   planUnitsContractCollapseState,
   planUnitsCurrentCollapseState,
@@ -66,7 +64,7 @@ const LeaseArea = ({
   router,
 }: Props) => {
   const handlePlanUnitContractCollapseToggle = (val: boolean) => {
-    if(!area || !area.id) return;
+    if(!area.id) return;
 
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
@@ -80,7 +78,7 @@ const LeaseArea = ({
   };
 
   const handlePlanUnitCurrentCollapseToggle = (val: boolean) => {
-    if(!area || !area.id) return;
+    if(!area.id) return;
 
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
@@ -94,7 +92,7 @@ const LeaseArea = ({
   };
 
   const handlePlotsContractCollapseToggle = (val: boolean) => {
-    if(!area || !area.id) return;
+    if(!area.id) return;
 
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
@@ -108,7 +106,7 @@ const LeaseArea = ({
   };
 
   const handlePlotsCurrentCollapseToggle = (val: boolean) => {
-    if(!area || !area.id) return;
+    if(!area.id) return;
 
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
@@ -136,11 +134,10 @@ const LeaseArea = ({
   const typeOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE);
   const addresses = get(area, 'addresses', []);
   const mapLinkUrl = getMapLinkUrl();
-
-  if(!area) return null;
+  const archived = Boolean(area.archived_at);
 
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
@@ -168,7 +165,7 @@ const LeaseArea = ({
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.GEOMETRY)}>
-            {(isActive && !isEmpty(area.geometry)) &&
+            {!archived && !isEmpty(area.geometry) &&
               <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY}</Link>
             }
           </Authorization>
@@ -178,7 +175,7 @@ const LeaseArea = ({
         <SubTitle>{LeaseAreaAddressesFieldTitles.ADDRESSES}</SubTitle>
         {!addresses || !addresses.length && <FormText>Ei osoitteita</FormText>}
         {!!addresses.length &&
-          <div>
+          <Fragment>
             <Row>
               <Column small={6} large={4}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
@@ -219,7 +216,7 @@ const LeaseArea = ({
                 );
               })}
             </ListItems>
-          </div>
+          </Fragment>
         }
       </Authorization>
 
@@ -228,7 +225,7 @@ const LeaseArea = ({
           <Column small={12} large={6}>
             <Collapse
               className='collapse__secondary'
-              defaultOpen={plotsContractCollapseState !== undefined ? plotsContractCollapseState : true}
+              defaultOpen={plotsContractCollapseState !== undefined ? plotsContractCollapseState : !archived}
               headerTitle='Kiinteistöt / määräalat sopimuksessa'
               onToggle={handlePlotsContractCollapseToggle}
             >
@@ -239,7 +236,7 @@ const LeaseArea = ({
                 {area.plots_contract && !!area.plots_contract.length && area.plots_contract.map((item, index) =>
                   <PlotItem
                     key={index}
-                    isAreaActive={isActive}
+                    areaArchived={archived}
                     plot={item}
                   />
                 )}
@@ -249,7 +246,7 @@ const LeaseArea = ({
           <Column small={12} large={6}>
             <Collapse
               className='collapse__secondary'
-              defaultOpen={plotsCurrentCollapseState !== undefined ? plotsCurrentCollapseState : true}
+              defaultOpen={plotsCurrentCollapseState !== undefined ? plotsCurrentCollapseState : !archived}
               headerTitle='Kiinteistöt / määräalat nykyhetkellä'
               onToggle={handlePlotsCurrentCollapseToggle}
             >
@@ -260,7 +257,7 @@ const LeaseArea = ({
                 {area.plots_current && !!area.plots_current.length && area.plots_current.map((item, index) =>
                   <PlotItem
                     key={index}
-                    isAreaActive={isActive}
+                    areaArchived={archived}
                     plot={item}
                   />
                 )}
@@ -275,7 +272,7 @@ const LeaseArea = ({
           <Column small={12} large={6}>
             <Collapse
               className='collapse__secondary'
-              defaultOpen={planUnitsContractCollapseState !== undefined ? planUnitsContractCollapseState : true}
+              defaultOpen={planUnitsContractCollapseState !== undefined ? planUnitsContractCollapseState : !archived}
               headerTitle='Kaavayksiköt sopimuksessa'
               onToggle={handlePlanUnitContractCollapseToggle}
             >
@@ -286,7 +283,7 @@ const LeaseArea = ({
                 {area.plan_units_contract && !!area.plan_units_contract.length && area.plan_units_contract.map((item, index) =>
                   <PlanUnitItem
                     key={index}
-                    isAreaActive={isActive}
+                    areaArchived={archived}
                     planUnit={item}
                   />
                 )}
@@ -296,7 +293,7 @@ const LeaseArea = ({
           <Column small={12} large={6}>
             <Collapse
               className='collapse__secondary'
-              defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : true}
+              defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : !archived}
               headerTitle='Kaavayksiköt nykyhetkellä'
               onToggle={handlePlanUnitCurrentCollapseToggle}
             >
@@ -307,7 +304,7 @@ const LeaseArea = ({
                 {area.plan_units_current && !!area.plan_units_current.length && area.plan_units_current.map((item, index) =>
                   <PlanUnitItem
                     key={index}
-                    isAreaActive={isActive}
+                    areaArchived={archived}
                     planUnit={item}
                   />
                 )}
@@ -316,7 +313,7 @@ const LeaseArea = ({
           </Column>
         </Row>
       </Authorization>
-    </div>
+    </Fragment>
   );
 };
 

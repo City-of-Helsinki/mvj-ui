@@ -54,16 +54,16 @@ import type {ContactModalSettings} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
 
 type TenantsProps = {
+  archived: boolean,
   fields: any,
   leaseAttributes: Attributes,
-  showAddButton: boolean,
   tenants: Array<Object>,
 }
 
 const renderTenants = ({
+  archived,
   fields,
   leaseAttributes,
-  showAddButton,
   tenants,
 }: TenantsProps): Element<*> => {
   const handleAdd = () => {
@@ -75,12 +75,12 @@ const renderTenants = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            {!showAddButton && fields && !!fields.length &&
+            {archived && fields && !!fields.length &&
               <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
             }
-            {(!isFieldAllowedToEdit(leaseAttributes, LeaseTenantsFieldPaths.TENANTS) &&
+            {!isFieldAllowedToEdit(leaseAttributes, LeaseTenantsFieldPaths.TENANTS) &&
+              !archived &&
               (!fields || !fields.length) &&
-              showAddButton) &&
               <FormText className='no-margin'>Ei vuokralaisia</FormText>
             }
             {fields && !!fields.length && fields.map((tenant, index) => {
@@ -107,7 +107,7 @@ const renderTenants = ({
                 />
               );
             })}
-            {showAddButton &&
+            {!archived &&
               <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}>
                 <Row>
                   <Column>
@@ -278,7 +278,6 @@ class TenantsEdit extends PureComponent<Props, State> {
             component={renderTenants}
             leaseAttributes={leaseAttributes}
             name='tenants'
-            showAddButton={true}
             tenants={tenants}
           />
 
@@ -286,7 +285,7 @@ class TenantsEdit extends PureComponent<Props, State> {
             component={renderTenants}
             leaseAttributes={leaseAttributes}
             name='tenantsArchived'
-            showAddButton={false}
+            archived
             tenants={tenantsArchived}
           />
         </form>

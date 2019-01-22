@@ -5,7 +5,6 @@ import {Row, Column} from 'react-foundation';
 import AmountWithVat from '$components/vat/AmountWithVat';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormText from '$components/form/FormText';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceSimulatorInvoiceRows from './InvoiceSimulatorInvoiceRows';
@@ -50,7 +49,7 @@ const InvoiceSimulatorInvoice = ({
           </Column>
         </Fragment>
       }
-      headerTitle={<CollapseHeaderTitle>{getContactFullName(recipient)}</CollapseHeaderTitle>}
+      headerTitle={getContactFullName(recipient)}
     >
       <Row>
         <Column small={6} medium={4} large={2}>

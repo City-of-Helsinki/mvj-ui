@@ -184,11 +184,7 @@
     }
   }
 
-  &.not-active {
-    background-color: $light-gray-secondary;
-  }
-
-  &.archived {
+  &.is-archived {
     background-color: $light-gray-secondary;
   }
 
@@ -212,10 +208,6 @@
     background-color: $light-green;
     margin: rem-calc(5px) 0 rem-calc(15px);
     padding: 0;
-
-    &.not-active {
-      background-color: $lightest-gray;
-    }
 
     .collapse__header {
       &_title {
@@ -246,6 +238,10 @@
           @include transform(translateY(-50%) rotate(90deg));
         }
       }
+    }
+
+    &.is-archived {
+      background-color: $lightest-gray;
     }
 
     &.is-collapsing,

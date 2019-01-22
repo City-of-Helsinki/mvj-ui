@@ -3,7 +3,6 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {change, FieldArray, formValueSelector, FormSection} from 'redux-form';
 import {Column} from 'react-foundation';
-import classNames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
@@ -297,7 +296,7 @@ class RentItemEdit extends PureComponent<Props, State> {
 
     return (
       <Collapse
-        className={classNames({'archived': archived})}
+        archived={archived}
         defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
         hasErrors={isSaveClicked && !isEmpty(rentErrors)}
         headerTitle={

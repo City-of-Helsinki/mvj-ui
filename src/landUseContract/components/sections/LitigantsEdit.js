@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import {FieldArray, getFormValues, reduxForm} from 'redux-form';
@@ -38,15 +38,16 @@ import type {ContactModalSettings} from '$src/contacts/types';
 import type {LandUseContract} from '$src/landUseContract/types';
 
 type LitigantsProps = {
+  archived: boolean,
   fields: any,
   litigants: Array<Object>,
   showAddButton: boolean,
 }
 
 const renderLitigants = ({
+  archived,
   fields,
   litigants,
-  showAddButton,
 }: LitigantsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -56,8 +57,8 @@ const renderLitigants = ({
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
-            {!showAddButton && fields && !!fields.length &&
+          <Fragment>
+            {!!archived && fields && !!fields.length &&
               <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
             }
             {fields && !!fields.length && fields.map((litigant, index) => {
@@ -84,7 +85,7 @@ const renderLitigants = ({
                 />
               );
             })}
-            {showAddButton &&
+            {!archived &&
               <Row>
                 <Column>
                   <AddButton
@@ -95,7 +96,7 @@ const renderLitigants = ({
                 </Column>
               </Row>
             }
-          </div>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -125,7 +126,7 @@ type State = {
   litigants: Array<Object>,
 }
 
-class TenantsEdit extends Component<Props, State> {
+class TenantsEdit extends PureComponent<Props, State> {
   state = {
     currentLandUseContract: {},
     litigants: [],
@@ -217,7 +218,7 @@ class TenantsEdit extends Component<Props, State> {
     const {litigants} = this.state;
 
     return (
-      <div>
+      <Fragment>
         {isFetchingContact &&
           <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>
         }
@@ -235,22 +236,22 @@ class TenantsEdit extends Component<Props, State> {
             : 'Muokkaa asiakasta'
           }
         />
+
         <form>
           <FieldArray
             component={renderLitigants}
             litigants={litigants}
-            name="activeLitigants"
-            showAddButton={true}
+            name='activeLitigants'
           />
           {/* Archived tenants */}
           <FieldArray
             component={renderLitigants}
+            archived
             litigants={litigants}
-            name="archivedLitigants"
-            showAddButton={false}
+            name='archivedLitigants'
           />
         </form>
-      </div>
+      </Fragment>
     );
   }
 }

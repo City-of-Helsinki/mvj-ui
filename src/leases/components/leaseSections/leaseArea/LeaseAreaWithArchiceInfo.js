@@ -2,7 +2,6 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import classNames from 'classnames';
 import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
@@ -37,7 +36,6 @@ type Props = {
   areaCollapseState: boolean,
   attributes: Attributes,
   decisionOptions: Array<Object>,
-  isActive: boolean,
   planUnitsContractCollapseState: boolean,
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
@@ -50,7 +48,6 @@ const LeaseAreaWithArchiveInfo = ({
   areaCollapseState,
   attributes,
   decisionOptions,
-  isActive,
   receiveCollapseStates,
 }: Props) => {
   const handleAreaCollapseToggle = (val: boolean) => {
@@ -67,11 +64,12 @@ const LeaseAreaWithArchiveInfo = ({
 
   const locationOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.LOCATION);
   const typeOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE);
+  const archived = Boolean(area.archived_at);
 
   return (
     <Collapse
-      className={classNames({'not-active': !isActive})}
-      defaultOpen={areaCollapseState !== undefined ? areaCollapseState : isActive}
+      archived={archived}
+      defaultOpen={areaCollapseState !== undefined ? areaCollapseState : !archived}
       headerSubtitles={
         <Fragment>
           <Column>
@@ -90,7 +88,7 @@ const LeaseAreaWithArchiveInfo = ({
             </Authorization>
           </Column>
           <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LOCATION)}>
               <CollapseHeaderSubtitle>{getLabelOfOption(locationOptions, area.location) || '-'}</CollapseHeaderSubtitle>
             </Authorization>
           </Column>
@@ -103,10 +101,10 @@ const LeaseAreaWithArchiveInfo = ({
       }
       onToggle={handleAreaCollapseToggle}
     >
-      <LeaseArea area={area} isActive={isActive}/>
+      <LeaseArea area={area}/>
 
-      {!isActive && <Divider className='lease-area-divider'/>}
-      {!isActive &&
+      {!!archived && <Divider className='lease-area-divider'/>}
+      {!!archived &&
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_AT)}>

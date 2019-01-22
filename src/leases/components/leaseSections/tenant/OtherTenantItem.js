@@ -3,7 +3,6 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
-import classNames from 'classnames';
 
 import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
@@ -24,7 +23,7 @@ import {
   LeaseTenantContactSetFieldTitles,
 } from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isTenantActive} from '$src/leases/helpers';
+import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -64,12 +63,14 @@ const OtherTenantItem = ({
 
   const tenantTypeOptions = getFieldOptions(attributes, LeaseTenantContactSetFieldPaths.TYPE);
   const contact = get(tenant, 'contact');
-  const isActive = isTenantActive(tenant);
-  const collapseDefault = collapseState !== undefined ? collapseState : isActive;
+  const active = isTenantActive(tenant);
+  const archived = isTenantArchived(tenant);
+  const collapseDefault = collapseState !== undefined ? collapseState : active;
 
   return (
     <Collapse
-      className={classNames('collapse__secondary', {'not-active': !isActive})}
+      archived={archived}
+      className={'collapse__secondary'}
       defaultOpen={collapseDefault}
       headerSubtitles={
         <Fragment>

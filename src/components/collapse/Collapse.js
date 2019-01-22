@@ -13,6 +13,7 @@ import RemoveButton from '../form/RemoveButton';
 import UnarchiveButton from '../form/UnarchiveButton';
 
 type Props = {
+  archived?: boolean,
   children: Object,
   className?: string,
   defaultOpen: boolean,
@@ -136,6 +137,7 @@ class Collapse extends PureComponent<Props, State> {
   render() {
     const {contentHeight, isOpen, isCollapsing, isExpanding} = this.state;
     const {
+      archived,
       children,
       className,
       hasErrors,
@@ -155,6 +157,7 @@ class Collapse extends PureComponent<Props, State> {
           'collapse',
           className,
           {'open': isOpen},
+          {'is-archived': archived},
           {'is-collapsing': isCollapsing},
           {'is-expanding': isExpanding},
         )}

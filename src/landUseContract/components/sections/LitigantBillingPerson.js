@@ -1,13 +1,10 @@
 // @flow
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
-import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
-import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import ExternalLink from '$components/links/ExternalLink';
 import FormTitleAndText from '$components/form/FormTitleAndText';
@@ -19,7 +16,7 @@ import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isLitigantActive} from '$src/landUseContract/helpers';
+import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
 import {formatDate, formatDateRange} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
@@ -47,24 +44,25 @@ const LitigantBillingPerson = ({
     });
   };
 
-  const contact = get(billingPerson, 'contact');
-  const isActive = isLitigantActive(billingPerson);
-  const collapseDefault = collapseState !== undefined ? collapseState : isActive;
+  const contact = billingPerson.contact;
+  const active = isLitigantActive(billingPerson);
+  const archived = isLitigantArchived(billingPerson);
+  const collapseDefault = collapseState !== undefined ? collapseState : active;
 
   return (
     <Collapse
-      className={classNames('collapse__secondary', {'not-active': !isActive})}
+      archived={archived}
+      className={'collapse__secondary'}
       defaultOpen={collapseDefault}
-      headerSubtitle={
+      headerSubtitles={
         <Fragment>
           <Column></Column>
           <Column>
-            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(billingPerson, 'start_date'), get(billingPerson, 'end_date')) || '-'}</CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(billingPerson.start_date, billingPerson.end_date) || '-'}</CollapseHeaderSubtitle>
           </Column>
         </Fragment>
       }
-
-      headerTitle={<CollapseHeaderTitle>Laskunsaaja</CollapseHeaderTitle>}
+      headerTitle='Laskunsaaja'
       onToggle={handleCollapseToggle}
     >
       <FormWrapper>
@@ -92,13 +90,13 @@ const LitigantBillingPerson = ({
                 <Column>
                   <FormTitleAndText
                     title='Alkupvm'
-                    text={formatDate(get(billingPerson, 'start_date')) || '-'}
+                    text={formatDate(billingPerson.start_date) || '-'}
                   />
                 </Column>
                 <Column>
                   <FormTitleAndText
                     title='Loppupvm'
-                    text={formatDate(get(billingPerson, 'end_date')) || '-'}
+                    text={formatDate(billingPerson.end_date) || '-'}
                   />
                 </Column>
               </Row>

@@ -17,6 +17,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import PlanUnitItemEdit from './PlanUnitItemEdit';
 import PlotItemEdit from './PlotItemEdit';
@@ -59,6 +60,7 @@ type PlanUnitsProps = {
   errors: Object,
   fields: any,
   isSaveClicked: boolean,
+  noDataText: string,
   onCollapseToggle: Function,
   title: string,
 }
@@ -71,6 +73,7 @@ const renderPlanUnits = ({
   fields,
   fields: {name},
   isSaveClicked,
+  noDataText,
   onCollapseToggle,
   title,
 }: PlanUnitsProps): Element<*> => {
@@ -98,6 +101,9 @@ const renderPlanUnits = ({
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>
+              {!isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS) && (!fields || !fields.length) &&
+                <FormText>{noDataText}</FormText>
+              }
               {fields.map((planunit, index) => {
                 const handleRemove = () => {
                   dispatch({
@@ -146,6 +152,7 @@ type PlotsProps = {
   errors: ?Object,
   fields: any,
   isSaveClicked: boolean,
+  noDataText: string,
   onCollapseToggle: Function,
   plotsData: Array<Object>,
   title: string,
@@ -159,6 +166,7 @@ const renderPlots = ({
   fields,
   fields: {name},
   isSaveClicked,
+  noDataText,
   onCollapseToggle,
   plotsData,
   title,
@@ -187,6 +195,9 @@ const renderPlots = ({
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>
+              {!isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS) && (!fields || !fields.length) &&
+                <FormText>{noDataText}</FormText>
+              }
               {fields.map((plot, index) => {
                 const handleDelete = () => {
                   dispatch({
@@ -572,6 +583,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 errors={errors}
                 isSaveClicked={isSaveClicked}
                 name={`${field}.plots_contract`}
+                noDataText='Ei kiinteistöjä/määräaloja sopimuksessa'
                 onCollapseToggle={this.handlePlotsContractCollapseToggle}
                 plotsData={get(savedArea, 'plots_contract', [])}
                 title='Kiinteistöt / määräalat sopimuksessa'
@@ -586,6 +598,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 errors={errors}
                 isSaveClicked={isSaveClicked}
                 name={`${field}.plots_current`}
+                noDataText='Ei kiinteistöjä/määräaloja nykyhetkellä'
                 onCollapseToggle={this.handlePlotsCurrentCollapseToggle}
                 plotsData={get(savedArea, 'plots_current', [])}
                 title='Kiinteistöt / määräalat nykyhetkellä'
@@ -605,6 +618,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 errors={errors}
                 isSaveClicked={isSaveClicked}
                 name={`${field}.plan_units_contract`}
+                noDataText='Ei kaavayksiköitä sopimuksessa'
                 onCollapseToggle={this.handlePlanUnitContractCollapseToggle}
                 title='Kaavayksiköt sopimuksessa'
               />
@@ -618,6 +632,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 errors={errors}
                 isSaveClicked={isSaveClicked}
                 name={`${field}.plan_units_current`}
+                noDataText='Ei kaavayksiköitä nykyhetkellä'
                 onCollapseToggle={this.handlePlanUnitCurrentCollapseToggle}
                 title='Kaavayksiköt nykyhetkellä'
               />

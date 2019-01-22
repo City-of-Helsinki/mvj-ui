@@ -59,7 +59,6 @@ const Rents = ({currentLease, leaseAttributes, rentForPeriodMethods}: Props) => 
             <RentItem
               key={rent.id}
               rent={rent}
-              rents={rents}
             />
           );
         })}
@@ -69,7 +68,6 @@ const Rents = ({currentLease, leaseAttributes, rentForPeriodMethods}: Props) => 
           <RentItem
             key={rent.id}
             rent={rent}
-            rents={rentsArchived}
           />
         )}
       </Authorization>

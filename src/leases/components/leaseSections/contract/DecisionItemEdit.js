@@ -96,7 +96,6 @@ const DecisionItemEdit = ({
   const decisionErrors = get(errors, field),
     savedDecision = getDecisionById(currentLease, decisionId);
 
-
   return (
     <Collapse
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}

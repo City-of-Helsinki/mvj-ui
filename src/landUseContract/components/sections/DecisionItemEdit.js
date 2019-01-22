@@ -15,7 +15,6 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -24,7 +23,7 @@ import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
-import {getFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getFieldAttributes, getFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
@@ -65,7 +64,7 @@ const renderDecisionConditions = ({
             className='collapse__secondary'
             defaultOpen={collapseState !== undefined ? collapseState : true}
             hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
-            headerTitle={<CollapseHeaderTitle>Ehdot</CollapseHeaderTitle>}
+            headerTitle='Ehdot'
             onToggle={onCollapseToggle}
           >
             <BoxItemContainer>
@@ -74,25 +73,25 @@ const renderDecisionConditions = ({
                   <Column large={2}>
                     <FormTextTitle
                       title='Ehtotyyppi'
-                      required={get(attributes, 'decisions.child.children.conditions.child.children.type.required')}
+                      required={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.type.required')}
                     />
                   </Column>
                   <Column large={2}>
                     <FormTextTitle
                       title='Valvontapvm'
-                      required={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date.required')}
+                      required={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervision_date.required')}
                     />
                   </Column>
                   <Column large={2}>
                     <FormTextTitle
                       title='Valvottu pvm'
-                      required={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date.required')}
+                      required={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervised_date.required')}
                     />
                   </Column>
                   <Column large={6}>
                     <FormTextTitle
                       title='Huomautus'
-                      required={get(attributes, 'decisions.child.children.conditions.child.children.description.required')}
+                      required={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.description.required')}
                     />
                   </Column>
                 </Row>
@@ -116,7 +115,7 @@ const renderDecisionConditions = ({
                       <Column large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
+                          fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.type')}
                           invisibleLabel
                           name={`${condition}.type`}
                           overrideValues={{
@@ -127,7 +126,7 @@ const renderDecisionConditions = ({
                       <Column large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
+                          fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
                           invisibleLabel
                           name={`${condition}.supervision_date`}
                           overrideValues={{
@@ -138,7 +137,7 @@ const renderDecisionConditions = ({
                       <Column large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
+                          fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
                           invisibleLabel
                           name={`${condition}.supervised_date`}
                           overrideValues={{
@@ -151,7 +150,7 @@ const renderDecisionConditions = ({
                           field={
                             <FormField
                               disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
+                              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.description')}
                               invisibleLabel
                               name={`${condition}.description`}
                               overrideValues={{
@@ -184,7 +183,7 @@ const renderDecisionConditions = ({
                           <Column small={6} medium={4}>
                             <FormField
                               disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
+                              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.type')}
                               name={`${condition}.type`}
                               overrideValues={{
                                 label: 'Ehtotyyppi',
@@ -194,7 +193,7 @@ const renderDecisionConditions = ({
                           <Column small={6} medium={4}>
                             <FormField
                               disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
+                              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
                               name={`${condition}.supervision_date`}
                               overrideValues={{
                                 label: 'Valvontapvm',
@@ -204,7 +203,7 @@ const renderDecisionConditions = ({
                           <Column small={12} medium={4}>
                             <FormField
                               disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
+                              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
                               name={`${condition}.supervised_date`}
                               overrideValues={{
                                 label: 'Valvottu pvm',
@@ -214,7 +213,7 @@ const renderDecisionConditions = ({
                           <Column small={12} medium={12}>
                             <FormField
                               disableTouched={isSaveClicked}
-                              fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
+                              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.description')}
                               name={`${condition}.description`}
                               overrideValues={{
                                 label: 'Huomautus',
@@ -317,7 +316,7 @@ const DecisionItemEdit = ({
     <Collapse
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
-      headerTitle={<CollapseHeaderTitle>{savedDecision ? (getLabelOfOption(decisionMakerOptions, get(savedDecision, 'decision_maker')) || '-') : '-'}</CollapseHeaderTitle>}
+      headerTitle={savedDecision ? (getLabelOfOption(decisionMakerOptions, savedDecision.decision_maker) || '-') : '-'}
       onRemove={handleRemove}
       onToggle={handleDecisionCollapseToggle}
     >
@@ -326,7 +325,7 @@ const DecisionItemEdit = ({
           <Column small={6} medium={4} large={2}>
             <FormField
               disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
+              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.decision_maker')}
               name={`${field}.decision_maker`}
               overrideValues={{
                 label: 'Päättäjä',
@@ -336,7 +335,7 @@ const DecisionItemEdit = ({
           <Column small={6} medium={4} large={2}>
             <FormField
               disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
+              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.decision_date')}
               name={`${field}.decision_date`}
               overrideValues={{
                 label: 'Päätöspvm',
@@ -346,7 +345,7 @@ const DecisionItemEdit = ({
           <Column small={6} medium={4} large={1}>
             <FormField
               disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'decisions.child.children.section')}
+              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.section')}
               name={`${field}.section`}
               unit='§'
               overrideValues={{
@@ -357,7 +356,7 @@ const DecisionItemEdit = ({
           <Column small={6} medium={8} large={3}>
             <FormField
               disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'decisions.child.children.type')}
+              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.type')}
               name={`${field}.type`}
               overrideValues={{
                 label: 'Päätöksen tyyppi',
@@ -367,7 +366,7 @@ const DecisionItemEdit = ({
           <Column small={6} medium={4} large={2}>
             <FormField
               disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
+              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.reference_number')}
               name={`${field}.reference_number`}
               validate={referenceNumber}
               overrideValues={{

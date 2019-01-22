@@ -8,7 +8,6 @@ import isEmpty from 'lodash/isEmpty';
 
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormField from '$components/form/FormField';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
@@ -75,7 +74,7 @@ const ContractItemEdit = ({
     <Collapse
       defaultOpen={collapseState !== undefined ? collapseState : true}
       hasErrors={isSaveClicked && !isEmpty(contractErrors)}
-      headerTitle={<CollapseHeaderTitle>{getCollapseTitle(savedContract)}</CollapseHeaderTitle>}
+      headerTitle={getCollapseTitle(savedContract)}
       onRemove={onRemove}
       onToggle={handleCollapseChange}
     >

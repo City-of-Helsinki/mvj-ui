@@ -1,16 +1,15 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import classNames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
@@ -23,8 +22,12 @@ import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {FormNames} from '$src/landUseContract/enums';
-import {isLitigantActive} from '$src/landUseContract/helpers';
-import {findItemById} from '$util/helpers';
+import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
+import {
+  findItemById,
+  formatDateRange,
+  getFieldAttributes,
+} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/types';
@@ -38,11 +41,11 @@ type Props = {
   field: string,
   initializeContactForm: Function,
   isSaveClicked: boolean,
-  litigant: Object,
   onRemove: Function,
   receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
   receiveIsSaveClicked: Function,
+  savedLitigant: ?Object,
   showContactModal: Function,
 }
 
@@ -55,11 +58,11 @@ const LitigantBillingPersonEdit = ({
   field,
   initializeContactForm,
   isSaveClicked,
-  litigant,
   onRemove,
   receiveCollapseStates,
   receiveContactModalSettings,
   receiveIsSaveClicked,
+  savedLitigant,
   showContactModal,
 }: Props) => {
   const handleAddClick = () => {
@@ -98,17 +101,27 @@ const LitigantBillingPersonEdit = ({
     });
   };
 
-  const litigantContactSet = get(litigant, 'litigantcontact_set', []),
+  const litigantContactSet = get(savedLitigant, 'litigantcontact_set', []),
     savedBillingPerson = findItemById(litigantContactSet, billingPersonId),
-    isActive = isLitigantActive(savedBillingPerson),
+    active = isLitigantActive(savedBillingPerson),
+    archived = isLitigantArchived(savedBillingPerson),
     litigantErrors = get(errors, field);
 
   return (
     <Collapse
-      className={classNames('collapse__secondary', {'not-active': !isActive})}
-      defaultOpen={collapseState !== undefined ? collapseState : isActive}
+      archived={archived}
+      className='collapse__secondary'
+      defaultOpen={collapseState !== undefined ? collapseState : active}
       hasErrors={isSaveClicked && !isEmpty(litigantErrors)}
-      headerTitle={<CollapseHeaderTitle>Laskunsaaja</CollapseHeaderTitle>}
+      headerSubtitles={savedBillingPerson &&
+        <Fragment>
+          <Column></Column>
+          <Column>
+            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(savedBillingPerson.start_date, savedBillingPerson.end_date) || '-'}</CollapseHeaderSubtitle>
+          </Column>
+        </Fragment>
+      }
+      headerTitle='Laskunsaaja'
       onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >
@@ -121,7 +134,7 @@ const LitigantBillingPersonEdit = ({
                   <Column small={9} medium={8} large={8}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'litigants.child.children.litigantcontact_set.child.children.contact')}
+                      fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.litigantcontact_set.child.children.contact')}
                       name={`${field}.contact`}
                       overrideValues={{
                         fieldType: FieldTypes.CONTACT,
@@ -146,7 +159,7 @@ const LitigantBillingPersonEdit = ({
               <Column small={6} medium={3} large={2}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'litigants.child.children.litigantcontact_set.child.children.start_date')}
+                  fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.litigantcontact_set.child.children.start_date')}
                   name={`${field}.start_date`}
                   overrideValues={{
                     label: 'Alkupvm',
@@ -156,7 +169,7 @@ const LitigantBillingPersonEdit = ({
               <Column small={6} medium={3} large={2}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'litigants.child.children.litigantcontact_set.child.children.end_date')}
+                  fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.litigantcontact_set.child.children.end_date')}
                   name={`${field}.end_date`}
                   overrideValues={{
                     label: 'Loppupvm',

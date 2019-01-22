@@ -3,7 +3,6 @@ import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {FieldArray, formValueSelector} from 'redux-form';
-import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -15,6 +14,7 @@ import AddButtonThird from '$components/form/AddButtonThird';
 import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import OtherTenantItemEdit from './OtherTenantItemEdit';
@@ -40,6 +40,7 @@ import {
   TenantContactType,
 } from '$src/leases/enums';
 import {
+  formatDateRange,
   formatNumber,
   getFieldAttributes,
   isEmptyValue,
@@ -48,7 +49,7 @@ import {
   isFieldRequired,
 } from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isTenantActive} from '$src/leases/helpers';
+import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -60,6 +61,7 @@ type OtherTenantsProps = {
   attributes: Attributes,
   contactType: ContactType,
   fields: any,
+  showAddButton: boolean,
   tenant: Object,
 }
 
@@ -67,6 +69,7 @@ const renderOtherTenants = ({
   attributes,
   contactType,
   fields,
+  showAddButton,
   tenant,
 }: OtherTenantsProps): Element<*> => {
   const handleAdd = () => {
@@ -102,18 +105,19 @@ const renderOtherTenants = ({
                 />
               );
             })}
-
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET)}>
-              <Row>
-                <Column>
-                  <AddButtonSecondary
-                    className='no-top-margin'
-                    label={(contactType === TenantContactType.BILLING) ? 'Lisää laskunsaaja' : 'Lisää yhteyshenkilö'}
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            </Authorization>
+            {showAddButton &&
+              <Authorization allow={isFieldAllowedToEdit(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET)}>
+                <Row>
+                  <Column>
+                    <AddButtonSecondary
+                      className='no-top-margin'
+                      label={(contactType === TenantContactType.BILLING) ? 'Lisää laskunsaaja' : 'Lisää yhteyshenkilö'}
+                      onClick={handleAdd}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
+            }
           </Fragment>
         );
       }}
@@ -208,14 +212,35 @@ const TenantItemEdit = ({
 
   const share = getInvoiceManagementShare();
   const savedTenant = getTenantById(tenantId);
-  const isActive = isTenantActive(get(savedTenant, 'tenant'));
+  const active = isTenantActive(savedTenant && savedTenant.tenant);
+  const archived = isTenantArchived(savedTenant && savedTenant.tenant);
   const tenantErrors = get(errors, field);
 
   return (
     <Collapse
-      className={classNames({'not-active': !isActive})}
-      defaultOpen={collapseState !== undefined ? collapseState : isActive}
+      archived={archived}
+      defaultOpen={collapseState !== undefined ? collapseState : active}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
+      headerSubtitles={savedTenant &&
+        <Fragment>
+          <Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+              <CollapseHeaderSubtitle>
+                <span>{LeaseTenantsFieldTitles.SHARE_FRACTION}:</span>
+                {savedTenant.share_numerator || ''} / {savedTenant.share_denominator || ''}
+              </CollapseHeaderSubtitle>
+            </Authorization>
+          </Column>
+          <Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE) && isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+              <CollapseHeaderSubtitle>
+                <span>Välillä:</span>
+                {formatDateRange(get(savedTenant, 'tenant.start_date'), get(savedTenant, 'tenant.end_date')) || '-'}
+              </CollapseHeaderSubtitle>
+            </Authorization>
+          </Column>
+        </Fragment>
+      }
       headerTitle={
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
           {getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}
@@ -364,6 +389,7 @@ const TenantItemEdit = ({
           attributes={attributes}
           contactType={TenantContactType.BILLING}
           name={`${field}.billing_persons`}
+          showAddButton={!archived}
           tenant={savedTenant}
         />
 
@@ -372,6 +398,7 @@ const TenantItemEdit = ({
           attributes={attributes}
           contactType={TenantContactType.CONTACT}
           name={`${field}.contact_persons`}
+          showAddButton={!archived}
           tenant={savedTenant}
         />
       </Authorization>
