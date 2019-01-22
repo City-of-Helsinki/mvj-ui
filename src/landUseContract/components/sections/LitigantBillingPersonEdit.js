@@ -107,8 +107,6 @@ const LitigantBillingPersonEdit = ({
     archived = isLitigantArchived(savedBillingPerson),
     litigantErrors = get(errors, field);
 
-  console.log(litigantContactSet, savedBillingPerson, savedLitigant);
-
   return (
     <Collapse
       archived={archived}

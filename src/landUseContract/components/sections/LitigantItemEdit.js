@@ -40,11 +40,13 @@ import type {Attributes} from '$src/types';
 type BillingPersonsProps = {
   fields: any,
   savedLitigant: ?Object,
+  showAddButton: boolean,
 }
 
 const renderBillingPersons = ({
   fields,
   savedLitigant,
+  showAddButton,
 }: BillingPersonsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -77,15 +79,17 @@ const renderBillingPersons = ({
                 />
               );
             })}
-            <Row>
-              <Column>
-                <AddButtonSecondary
-                  className='no-top-margin'
-                  label='Lisää laskunsaaja'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
+            {showAddButton &&
+              <Row>
+                <Column>
+                  <AddButtonSecondary
+                    className='no-top-margin'
+                    label='Lisää laskunsaaja'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            }
           </Fragment>
         );
       }}
@@ -295,6 +299,7 @@ const LitigantItemEdit = ({
         component={renderBillingPersons}
         savedLitigant={savedLitigant}
         name={`${field}.litigantcontact_set`}
+        showAddButton={!archived}
       />
     </Collapse>
   );
