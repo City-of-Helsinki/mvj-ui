@@ -19,7 +19,6 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
-  InvoiceCreditInvoicesFieldPaths,
   InvoiceCreditInvoicesFieldTitles,
   InvoiceFieldPaths,
   InvoiceFieldTitles,
@@ -368,11 +367,16 @@ const EditInvoiceForm = ({
             <FormText>{(invoice && getLabelOfOption(typeOptions, invoice.type)) || '-'}</FormText>
           </Authorization>
         </Column>
-        {(creditedInvoice && !!creditedInvoice.number) &&
+        {creditedInvoice &&
           <Column small={4}>
             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.CREDITED_INVOICE)}>
               <FormTextTitle>{InvoiceFieldTitles.CREDITED_INVOICE}</FormTextTitle>
-              <FormText>{<a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{creditedInvoice.number}</a>}</FormText>
+              <FormText>{<a
+                className='no-margin'
+                onKeyDown={handleCreditedInvoiceKeyDown}
+                onClick={handleCreditedInvoiceClick}
+                tabIndex={0}>{creditedInvoice.number ? creditedInvoice.number : 'Numeroimaton'}</a>}
+              </FormText>
             </Authorization>
           </Column>
         }
@@ -393,7 +397,7 @@ const EditInvoiceForm = ({
         </Column>
       </Row>
 
-      <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.CREDIT_INVOICES)}>
+      <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.CREDITED_INVOICE)}>
         {!!creditInvoices.length &&
           <Fragment>
             <SubTitle>{InvoiceCreditInvoicesFieldTitles.CREDIT_INVOICES}</SubTitle>
@@ -402,19 +406,13 @@ const EditInvoiceForm = ({
               <Fragment>
                 <Row>
                   <Column small={4}>
-                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.NUMBER)}>
-                      <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.NUMBER}</FormTextTitle>
-                    </Authorization>
+                    <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.NUMBER}</FormTextTitle>
                   </Column>
                   <Column small={4}>
-                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.TOTAL_AMOUNT)}>
-                      <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.TOTAL_AMOUNT}</FormTextTitle>
-                    </Authorization>
+                    <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.TOTAL_AMOUNT}</FormTextTitle>
                   </Column>
                   <Column small={4}>
-                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.DUE_DATE)}>
-                      <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.DUE_DATE}</FormTextTitle>
-                    </Authorization>
+                    <FormTextTitle>{InvoiceCreditInvoicesFieldTitles.DUE_DATE}</FormTextTitle>
                   </Column>
                 </Row>
 
@@ -432,24 +430,19 @@ const EditInvoiceForm = ({
                   return (
                     <Row key={item.id}>
                       <Column small={4}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.NUMBER)}>
-                          <FormText>
-                            {item.number
-                              ? <a className='no-margin' onKeyDown={handleCreditInvoiceKeyDown} onClick={handleCreditInvoiceClick} tabIndex={0}>{item.number}</a>
-                              : '-'
-                            }
-                          </FormText>
-                        </Authorization>
+                        <FormText>
+                          <a
+                            className='no-margin'
+                            onKeyDown={handleCreditInvoiceKeyDown}
+                            onClick={handleCreditInvoiceClick}
+                            tabIndex={0}>{item.number ? item.number : 'Numeroimaton'}</a>
+                        </FormText>
                       </Column>
                       <Column small={4}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.TOTAL_AMOUNT)}>
-                          <FormText><AmountWithVat amount={item.total_amount} date={item.due_date} /></FormText>
-                        </Authorization>
+                        <FormText><AmountWithVat amount={item.total_amount} date={item.due_date} /></FormText>
                       </Column>
                       <Column small={4}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceCreditInvoicesFieldPaths.DUE_DATE)}>
-                          <FormText>{formatDate(item.due_date)}</FormText>
-                        </Authorization>
+                        <FormText>{formatDate(item.due_date)}</FormText>
                       </Column>
                     </Row>
                   );

@@ -67,7 +67,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
   const sum = getRowsSum(rows);
 
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={12}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
@@ -245,11 +245,15 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
             <FormText>{(invoice && getLabelOfOption(typeOptions, invoice.type)) || '-'}</FormText>
           </Authorization>
         </Column>
-        {(creditedInvoice && !!creditedInvoice.number) &&
+        {creditedInvoice &&
           <Column small={4}>
             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.CREDITED_INVOICE)}>
               <FormTextTitle>{InvoiceFieldTitles.CREDITED_INVOICE}</FormTextTitle>
-              <FormText>{<a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{creditedInvoice.number}</a>}</FormText>
+              <FormText>{<a
+                className='no-margin'
+                onKeyDown={handleCreditedInvoiceKeyDown}
+                onClick={handleCreditedInvoiceClick}
+                tabIndex={0}>{creditedInvoice.number ? creditedInvoice.number : 'Numeroimaton'}</a>}</FormText>
             </Authorization>
           </Column>
         }
@@ -297,10 +301,11 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
                     <Row key={item.id}>
                       <Column small={4}>
                         <FormText>
-                          {item.number
-                            ? <a className='no-margin' onKeyDown={handleCreditInvoiceKeyDown} onClick={handleCreditInvoiceClick} tabIndex={0}>{item.number}</a>
-                            : '-'
-                          }
+                          <a
+                            className='no-margin'
+                            onKeyDown={handleCreditInvoiceKeyDown}
+                            onClick={handleCreditInvoiceClick}
+                            tabIndex={0}>{item.number ? item.number : 'Numeroimaton'}</a>
                         </FormText>
                       </Column>
                       <Column small={4}>
@@ -366,7 +371,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
           </Column>
         </Row>
       </Authorization>
-    </div>
+    </Fragment>
   );
 };
 
