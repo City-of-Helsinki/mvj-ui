@@ -12,7 +12,7 @@ import {
   LeaseRentContractRentsFieldPaths,
   TenantContactType,
 } from '$src/leases/enums';
-import {getFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatNumber, getFieldOptions, getLabelOfOption} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
 import type {BillingPeriod, BillingPeriodInvoice, PreviewInvoices} from '$src/previewInvoices/types';
@@ -46,15 +46,20 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
   const baseAmountPeriodOptions = getFieldOptions(attributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
   const subjectType = get(explanation, 'subject.subject_type');
   const type = get(explanation, 'subject.type');
+  const amount = get(explanation, 'subject.amount');
+  const period = get(explanation, 'subject.period');
+  const baseAmount = get(explanation, 'subject.base_amount');
+  const baseAmountPeriod = get(explanation, 'subject.base_amount_period');
+  const intendedUseName = get(explanation, 'subject.intended_use.name');
 
   switch(subjectType) {
     case RentExplanationSubjectType.CONTRACT_RENT:
-      if(get(explanation, 'subject.base_amount') !== null) {
-        return `Sopimusvuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.base_amount')} € ${getLabelOfOption(baseAmountPeriodOptions, get(explanation, 'subject.base_amount_period'))})`;
+      if(baseAmount !== null) {
+        return `Sopimusvuokra - ${intendedUseName} (${formatNumber(baseAmount)} € ${getLabelOfOption(baseAmountPeriodOptions, baseAmountPeriod)})`;
       }
-      return `Sopimusvuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.amount')} € ${getLabelOfOption(periodOptions, get(explanation, 'subject.period'))})`;
+      return `Sopimusvuokra - ${intendedUseName} (${formatNumber(amount)} € ${getLabelOfOption(periodOptions, period)})`;
     case RentExplanationSubjectType.FIXED_INITIAL_YEAR_RENT:
-      return `Kiinteä alkuvuosivuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.amount')} € / vuosi)`;
+      return `Kiinteä alkuvuosivuokra - ${intendedUseName} (${formatNumber(amount)} € / vuosi)`;
     case RentExplanationSubjectType.RENT:
       return `Perittävä vuokra (${getLabelOfOption(typeOptions, type)})`;
     default:
@@ -65,22 +70,25 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
 export const getRentSubItemDescription = (subItem: Object, attributes: Attributes) => {
   const rentAdjustementTypeOptions = getFieldOptions(attributes, LeaseRentAdjustmentsFieldPaths.TYPE);
   const amountTypeOptions = getFieldOptions(attributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE);
+  const description = get(subItem, 'subject.description');
+  const subjectNumber = get(subItem, 'subject.number');
   const subjectType = get(subItem, 'subject.subject_type');
   const type = get(subItem, 'subject.type');
+  const fullAmount = get(subItem, 'subject.full_amount');
+  const amountType = get(subItem, 'subject.amount_type');
 
   switch(subjectType) {
     case RentSubItemSubjectType.INDEX:
-      return `Indeksitarkistus (vertailuluku ${get(subItem, 'subject.number')})`;
+      return `Indeksitarkistus (vertailuluku ${subjectNumber})`;
     case RentSubItemSubjectType.RATIO:
-      return get(subItem, 'subject.description') || '-' ;
+      return description || '-' ;
     case RentSubItemSubjectType.NEW_BASE_RENT:
-      return get(subItem, 'subject.description') || '-' ;
+      return description || '-' ;
     case RentSubItemSubjectType.RENT_ADJUSTMENT:
       switch (type) {
         case RentSubItemType.DISCOUNT:
-          return `${getLabelOfOption(rentAdjustementTypeOptions, get(subItem, 'subject.type'))} (${get(subItem, 'subject.full_amount')} ${getLabelOfOption(amountTypeOptions, get(subItem, 'subject.amount_type'))})`;
         case RentSubItemType.INCREASE:
-          return `${getLabelOfOption(rentAdjustementTypeOptions, get(subItem, 'subject.type'))} (${get(subItem, 'subject.full_amount')} ${getLabelOfOption(amountTypeOptions, get(subItem, 'subject.amount_type'))})`;
+          return `${getLabelOfOption(rentAdjustementTypeOptions, type)} (${formatNumber(fullAmount)} ${getLabelOfOption(amountTypeOptions, amountType)})`;
         default:
           return '-';
       }
