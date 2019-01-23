@@ -4,6 +4,7 @@ import AddressSearchInput from '$components/address-search/AddressSearchInput';
 import classNames from 'classnames';
 
 type Props = {
+  autoComplete: string,
   disabled: Boolean,
   displayError: boolean,
   input: Object,
@@ -12,6 +13,7 @@ type Props = {
 }
 
 const FieldTypeAddress = ({
+  autoComplete,
   disabled,
   displayError,
   input,
@@ -24,6 +26,7 @@ const FieldTypeAddress = ({
       <AddressSearchInput
         {...input}
         addressDetailsCallBack={valueSelectedCallback}
+        autoComplete={autoComplete}
         id={name}
         name={name}
         onBlur={onBlur}

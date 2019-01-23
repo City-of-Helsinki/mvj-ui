@@ -51,6 +51,14 @@
         margin-left: -20px;
       }
     }
+
+    &.address-input-wrapper {
+      position: absolute;
+      padding: 0;
+      right: rem-calc(10px);
+      top: rem-calc(3px);
+    }
+
     &.overlay-wrapper {
       position: fixed;
       top: 0;

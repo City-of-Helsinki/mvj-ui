@@ -6,8 +6,12 @@ import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {KeyCodes} from '$src/enums';
+import {hasNumber} from '$util/helpers';
 
+const SERVICE_MAP_URL = 'https://api.hel.fi/servicemap/v2';
 type Language = 'fi' | 'sv';
 
 type Street = {
@@ -32,6 +36,7 @@ type Address = {
 
 type Props = {
   addressDetailsCallBack?: Function,
+  autoComplete: string,
   id?: string,
   name?: string,
   onBlur?: Function,
@@ -45,6 +50,7 @@ type State = {
   focusedType: 'street' | 'address' | null,
   focusedValue: ?Object,
   hasFocus: boolean,
+  isLoading: boolean,
   menuOpen: boolean,
   selectedStreet: ?Street,
   streets: Array<Street>,
@@ -61,6 +67,7 @@ class AddressSearchInput extends Component<Props, State> {
     focusedType: null,
     focusedValue: null,
     hasFocus: false,
+    isLoading: false,
     menuOpen: false,
     selectedStreet: null,
     streets: [],
@@ -91,6 +98,7 @@ class AddressSearchInput extends Component<Props, State> {
         filteredAddresses: this.filterAddresses(),
       });
     }
+
     if(prevState.focusedValue !== this.state.focusedValue) {
       this.scrollToFocusedItem();
     }
@@ -125,6 +133,7 @@ class AddressSearchInput extends Component<Props, State> {
 
   filterAddresses = (): Array<Address> => {
     const {addresses, value} = this.state;
+
     return addresses.filter((address) => this.getAddressText(address).toLowerCase().startsWith(value ? value.toLowerCase() : ''));
   }
 
@@ -134,26 +143,39 @@ class AddressSearchInput extends Component<Props, State> {
       el = ReactDOM.findDOMNode(this);
 
     if (menuOpen && el && target !== el && !el.contains(target)) {
-      this.setState({
-        focusedType: null,
-        focusedValue: null,
-        menuOpen: false,
-        selectedStreet: null,
-        streets: [],
-      });
+      this.closeMenu();
     }
   };
 
+  openMenuIfNeeded = () => {
+    const {menuOpen} = this.state;
+
+    if(!menuOpen) {
+      this.setState({menuOpen: true});
+    }
+  }
+
+  closeMenu = () => {
+    this.setState({
+      focusedType: null,
+      focusedValue: null,
+      menuOpen: false,
+    });
+  }
+
   onKeyDown = (e: any) => {
     const {focusedType, focusedValue, hasFocus} = this.state;
+
     if(hasFocus) {
       switch(e.keyCode) {
         case KeyCodes.ARROW_DOWN:
           e.preventDefault();
+          this.openMenuIfNeeded();
           this.focusValue('next');
           break;
         case KeyCodes.ARROW_UP:
           e.preventDefault();
+          this.openMenuIfNeeded();
           this.focusValue('previous');
           break;
         case KeyCodes.ENTER:
@@ -177,25 +199,20 @@ class AddressSearchInput extends Component<Props, State> {
           }
           break;
         case KeyCodes.ESC:
-          this.setState({
-            focusedType: null,
-            focusedValue: null,
-            menuOpen: false,
-          });
+          this.closeMenu();
           break;
         case KeyCodes.TAB:
           const {filteredAddresses, selectedStreet, value} = this.state;
+
           if(selectedStreet) {
             const address = filteredAddresses.find((address) => this.getAddressText(address).toLowerCase() === (value ? value.toLowerCase() : ''));
+
             if(address) {
               this.handleAddressItemClick(address);
             }
           }
-          this.setState({
-            focusedType: null,
-            focusedValue: null,
-            menuOpen: false,
-          });
+
+          this.closeMenu();
           break;
       }
     }
@@ -208,6 +225,7 @@ class AddressSearchInput extends Component<Props, State> {
     this.setState({
       hasFocus: false,
     });
+
     if(onBlur) {
       onBlur(value);
     }
@@ -221,9 +239,11 @@ class AddressSearchInput extends Component<Props, State> {
 
   focusValue = (direction: 'next' | 'previous') => {
     const {focusedValue, selectedStreet} = this.state;
+
     if(!selectedStreet) {
       const {streets} = this.state;
       const index = streets.findIndex((street) => focusedValue === street);
+
       switch(direction) {
         case 'next':
           if(index < (streets.length - 1)) {
@@ -247,6 +267,7 @@ class AddressSearchInput extends Component<Props, State> {
     } else {
       const {filteredAddresses} = this.state;
       const index = filteredAddresses.findIndex((address) => focusedValue === address);
+
       switch(direction) {
         case 'next':
           if(index < (filteredAddresses.length - 1)) {
@@ -258,7 +279,7 @@ class AddressSearchInput extends Component<Props, State> {
           }
           break;
         case 'previous':
-          if(index > (0)) {
+          if(index) {
             this.setState({
               focusedType: 'address',
               focusedValue: filteredAddresses[index - 1],
@@ -268,6 +289,48 @@ class AddressSearchInput extends Component<Props, State> {
           break;
       }
     }
+  }
+
+  searchByKeyword = (input: string) => {
+    const fetchByKeyword = (language: 'fi' | 'sv') => {
+      const url = `${SERVICE_MAP_URL}/search/?page_size=4&type=address&input=${input}&language=${language}`;
+      const request = new Request(url);
+
+      return fetch(request);
+    };
+
+    const fetchResults = async() => {
+      const fiResponse = await fetchByKeyword('fi');
+      const svResponse = await fetchByKeyword('sv');
+
+      const fiResults = await fiResponse.json();
+      const svResults = await svResponse.json();
+
+      return [
+        ...fiResults.results.map((street) => ({...street, language: 'fi'})),
+        ...svResults.results.map((street) => ({...street, language: 'sv'})),
+      ];
+    };
+
+    this.setState({isLoading: true});
+
+    fetchResults()
+      .then((results) => {
+        if(results.length) {
+          const street = {
+            ...results[0].street,
+            language: results[0].language,
+          };
+
+          this.searchAddresses(street);
+        } else {
+          this.setState({isLoading: false});
+        }
+      })
+      .catch((error) => {
+        this.setState({isLoading: false});
+        console.error(`Failed to fetch by keyword with error ${error}`);
+      });
   }
 
   sortStreets = (a: Street, b: Street) => {
@@ -280,23 +343,16 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   searchStreets = debounce((input: string) => {
-    const fetchFiStreets = () => {
-      const url = `https://api.hel.fi/servicemap/v2/street/?page_size=4&input=${input}&language=fi`;
+    const fetchStreets = (language: 'fi' | 'sv') => {
+      const url = `${SERVICE_MAP_URL}/street/?page_size=4&input=${input}&language=${language}`;
       const request = new Request(url);
 
       return fetch(request);
     };
 
-    const fetchSvStreets = () => {
-      const url = `https://api.hel.fi/servicemap/v2/street/?page_size=4&input=${input}&language=sv`;
-      const request = new Request(url);
-
-      return fetch(request);
-    };
-
-    const fetchStreets = async() => {
-      const fiResponse = await fetchFiStreets();
-      const svResponse = await fetchSvStreets();
+    const fetchAllStreets = async() => {
+      const fiResponse = await fetchStreets('fi');
+      const svResponse = await fetchStreets('sv');
 
       const fiResults = await fiResponse.json();
       const svResults = await svResponse.json();
@@ -307,7 +363,9 @@ class AddressSearchInput extends Component<Props, State> {
       ];
     };
 
-    fetchStreets()
+    this.setState({isLoading: true});
+
+    fetchAllStreets()
       .then((results) => {
         const streets = results.sort(this.sortStreets),
           newState: any = {streets: streets};
@@ -323,19 +381,24 @@ class AddressSearchInput extends Component<Props, State> {
           newState.selectedStreet = null;
           newState.addresses = [];
         }
+
+        newState.isLoading = false;
         this.setState(newState);
       })
       .catch((error) => {
+        this.setState({isLoading: false});
         console.error(`Failed to fetch streets with error ${error}`);
       });
-  }, 500);
+  }, 300);
 
   handleOnChange = (e: any) => {
     const {onChange} = this.props;
     const {selectedStreet} = this.state;
     const newValue = e.target.value.toString();
 
-    if(!selectedStreet || (selectedStreet && !newValue.startsWith(selectedStreet.name[selectedStreet.language]))) {
+    if(!selectedStreet && hasNumber(newValue)) {
+      this.searchByKeyword(newValue);
+    } else if(!selectedStreet || (selectedStreet && !newValue.startsWith(selectedStreet.name[selectedStreet.language]))) {
       this.searchStreets(newValue);
     }
 
@@ -367,8 +430,10 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   searchAddresses = (street: Street) => {
-    const url = `https://api.hel.fi/servicemap/v2/address/?street=${street.id}&language=${street.language}&page=1&page_size=200`;
+    const url = `${SERVICE_MAP_URL}/address/?street=${street.id}&language=${street.language}&page=1&page_size=200`;
     const request = new Request(url);
+
+    this.setState({isLoading: true});
 
     fetch(request)
       .then((response) => response.json())
@@ -377,8 +442,11 @@ class AddressSearchInput extends Component<Props, State> {
           addresses: results.results.sort(this.sortAddresses),
           selectedStreet: street,
         });
+
+        this.setState({isLoading: false});
       })
       .catch((error) => {
+        this.setState({isLoading: false});
         console.error(`Failed to fetch addresses with error ${error}`);
       });
   };
@@ -424,12 +492,9 @@ class AddressSearchInput extends Component<Props, State> {
     const {onChange} = this.props,
       newValue = `${this.getAddressText(address)}`;
 
-    this.setState({
-      focusedType: null,
-      focusedValue: null,
-      menuOpen: false,
-      value: newValue,
-    });
+    this.setState({value: newValue});
+    this.closeMenu();
+
     this.fetchAddressDetails(address);
 
     if(onChange) {
@@ -445,7 +510,7 @@ class AddressSearchInput extends Component<Props, State> {
     const coordinates = address.location.coordinates;
 
     if(coordinates.length >= 2) {
-      const url = `https://api.hel.fi/servicemap/v2/administrative_division/?lon=${coordinates[0]}&lat=${coordinates[1]}&type=postcode_area`;
+      const url = `${SERVICE_MAP_URL}/administrative_division/?lon=${coordinates[0]}&lat=${coordinates[1]}&type=postcode_area`;
       const request = new Request(url);
 
       fetch(request)
@@ -474,13 +539,17 @@ class AddressSearchInput extends Component<Props, State> {
   };
 
   render() {
-    const {id, name, selected} = this.props;
-    const {addresses, filteredAddresses, focusedValue, menuOpen, selectedStreet, streets, value} = this.state;
+    const {autoComplete, id, name, selected} = this.props;
+    const {addresses, filteredAddresses, focusedValue, isLoading, menuOpen, selectedStreet, streets, value} = this.state;
 
     return(
       <div className={classNames('address-search-input', {'open': menuOpen})}>
+        {menuOpen &&
+          <LoaderWrapper className='address-input-wrapper'><Loader isLoading={isLoading} className='small' /></LoaderWrapper>
+        }
         <input
           ref={this.setInputRef}
+          autoComplete={autoComplete}
           id={id}
           name={name}
           onBlur={this.handleBlur}
@@ -515,9 +584,9 @@ class AddressSearchInput extends Component<Props, State> {
 
               const text = this.getFullAddressText(address);
 
-              return(
-                <li key={index} onClick={handleClick} className={classNames('list-item', {'is-focused': focusedValue === address})}>{text}</li>
-              );
+              return <li key={index} onClick={handleClick} className={classNames('list-item', {'is-focused': focusedValue === address})}>
+                {text}
+              </li>;
             })}
           </ul>
         </div>

@@ -543,7 +543,11 @@ export const getFieldOptions = (attributes: Attributes, path: string, addEmpty: 
 
 export const getFieldAttributes = (attributes: Attributes, path: string) => get(attributes, path);
 
-
+/**
+* Get file size in human readable format
+* @param bytes
+* @returns {string}
+*/
 export const humanReadableByteCount = (bytes: number) => {
   const unit = 1024;
   if (bytes < unit) return `${bytes} B`;
@@ -552,3 +556,10 @@ export const humanReadableByteCount = (bytes: number) => {
   const pre = `${'KMGTPE'.charAt(exp-1)}B`;
   return `${(bytes / Math.pow(unit, exp)).toFixed(1)} ${pre}`;
 };
+
+/**
+* Test has string any number
+* @param text
+* @returns {boolean}
+*/
+export const hasNumber = (text: string) => /\d/.test(text);
