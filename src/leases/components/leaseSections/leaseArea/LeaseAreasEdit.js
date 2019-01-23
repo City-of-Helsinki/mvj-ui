@@ -100,16 +100,16 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
                 />;
               })}
               {isActive &&
-                <Row>
-                  <Column>
-                    <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
+                <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
+                  <Row>
+                    <Column>
                       <AddButton
                         label='Lisää kohde'
                         onClick={this.handleAdd}
                       />
-                    </Authorization>
-                  </Column>
-                </Row>
+                    </Column>
+                  </Row>
+                </Authorization>
               }
             </Fragment>
           );

@@ -537,7 +537,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}
                   name={`${field}.lease`}
                   overrideValues={{
-                    fieldType: FieldTypes.USER,
+                    fieldType: FieldTypes.LEASE,
                     label: InfillDevelopmentCompensationLeasesFieldTitles.LEASE,
                   }}
                 />

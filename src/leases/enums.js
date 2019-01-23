@@ -343,7 +343,6 @@ export const LeaseFieldPaths = {
   FINANCING: 'financing',
   HITAS: 'hitas',
   IDENTIFIER: 'identifier',
-  INFILL_DEVELOPMENT_COMPENSATIONS: 'infill_development_compensations',
   INTENDED_USE: 'intended_use',
   INTENDED_USE_NOTE: 'intended_use_note',
   IS_SUBJECT_TO_VAT: 'is_subject_to_vat',

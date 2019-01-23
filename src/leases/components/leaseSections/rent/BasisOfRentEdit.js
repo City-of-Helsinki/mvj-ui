@@ -332,9 +332,11 @@ const BasisOfRentEdit = ({
           <CopyToClipboardButton
             onClick={handleCopyToClipboard}
           />
-          {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at &&
-            <ArchiveButton onClick={handleArchive}/>
-          }
+          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.ARCHIVED_AT)}>
+            {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at &&
+              <ArchiveButton onClick={handleArchive}/>
+            }
+          </Authorization>
           <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
             <RemoveButton
               onClick={onRemove}

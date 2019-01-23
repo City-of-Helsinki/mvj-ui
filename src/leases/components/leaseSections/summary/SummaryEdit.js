@@ -31,6 +31,7 @@ import {
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
+import {getMethods as getInfillDevelopmentMethods} from '$src/infillDevelopment/selectors';
 import {
   getAttributes,
   getCollapseStateByKey,
@@ -40,15 +41,17 @@ import {
 } from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
-  attributes: Object,
+  attributes: Attributes,
   collapseStateBasic: boolean,
   collapseStateStatistical: boolean,
   currentLease: Lease,
   errors: ?Object,
   handleSubmit: Function,
+  infillDevelopmentMethods: Methods,
   isSaveClicked: boolean,
   receiveCollapseStates: Function,
   receiveFormValidFlags: Function,
@@ -135,6 +138,7 @@ class SummaryEdit extends PureComponent<Props, State> {
       collapseStateStatistical,
       errors,
       handleSubmit,
+      infillDevelopmentMethods,
       isSaveClicked,
     } = this.props;
     const {summary} = this.state;
@@ -293,7 +297,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
+                  <Authorization allow={infillDevelopmentMethods.GET}>
                     <FormTextTitle>{LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
                     {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
                       ? <FormText>-</FormText>
@@ -451,6 +455,7 @@ export default flowRight(
         collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.SUMMARY}.statistical`),
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
+        infillDevelopmentMethods: getInfillDevelopmentMethods(state),
         isSaveClicked: getIsSaveClicked(state),
         startDate: selector(state, 'start_date'),
       };

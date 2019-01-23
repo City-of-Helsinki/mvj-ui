@@ -30,9 +30,10 @@ import {
 } from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
+import {getMethods as getInfillDevelopmentMethods} from '$src/infillDevelopment/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
@@ -40,6 +41,7 @@ type Props = {
   collapseStateBasic: boolean,
   collapseStateStatistical: boolean,
   currentLease: Lease,
+  infillDevelopmentMethods: Methods,
   receiveCollapseStates: Function,
 }
 
@@ -140,7 +142,7 @@ class Summary extends PureComponent<Props, State> {
       summary,
       supportiveHousingOptions,
     } = this.state;
-    const {attributes, collapseStateBasic, collapseStateStatistical} = this.props;
+    const {attributes, collapseStateBasic, collapseStateStatistical, infillDevelopmentMethods} = this.props;
     const infillDevelopmentCompensations = summary.infill_development_compensations;
 
     return (
@@ -250,7 +252,7 @@ class Summary extends PureComponent<Props, State> {
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
+                  <Authorization allow={infillDevelopmentMethods.GET}>
                     <FormTextTitle>{LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
                     {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
                       ? <FormText>-</FormText>
@@ -367,6 +369,7 @@ export default connect(
       collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.basic`),
       collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.statistical`),
       currentLease: getCurrentLease(state),
+      infillDevelopmentMethods: getInfillDevelopmentMethods(state),
     };
   },
   {

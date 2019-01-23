@@ -159,12 +159,13 @@ const SeasonalDates = connect(
 });
 
 type DueDatesProps = {
+  dueDates: Array<Object>,
   fields: any,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
 }
 
-const renderDueDates = ({fields, isSaveClicked, leaseAttributes}: DueDatesProps): Element<*> => {
+const renderDueDates = ({dueDates, fields, isSaveClicked, leaseAttributes}: DueDatesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -178,58 +179,63 @@ const renderDueDates = ({fields, isSaveClicked, leaseAttributes}: DueDatesProps)
           >{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
         </Column>
       </Row>
+      <Authorization
+        allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY) ||
+          isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
+        errorComponent={<FormText>{formatDueDates(dueDates) || '-'}</FormText>}
+      >
+        {fields && !!fields.length && fields.map((due_date, index) => {
+          const handleRemove = () => {
+            fields.remove(index);
+          };
 
-      {fields && !!fields.length && fields.map((due_date, index) => {
-        const handleRemove = () => {
-          fields.remove(index);
-        };
-
-        return (
-          <Row key={index}>
-            <Column small={12}>
-              <Row>
-                <Column small={6}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}
-                      invisibleLabel
-                      name={`${due_date}.day`}
-                      overrideValues={{label: LeaseRentDueDatesFieldTitles.DAY}}
+          return (
+            <Row key={index}>
+              <Column small={12}>
+                <Row>
+                  <Column small={6}>
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}
+                        invisibleLabel
+                        name={`${due_date}.day`}
+                        overrideValues={{label: LeaseRentDueDatesFieldTitles.DAY}}
+                      />
+                    </Authorization>
+                  </Column>
+                  <Column small={6}>
+                    <FieldAndRemoveButtonWrapper
+                      className='absolute-remove-button-position'
+                      field={
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}>
+                          <FormField
+                            className='with-dot'
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
+                            invisibleLabel
+                            name={`${due_date}.month`}
+                            overrideValues={{label: LeaseRentDueDatesFieldTitles.MONTH}}
+                          />
+                        </Authorization>
+                      }
+                      removeButton={
+                        <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+                          <RemoveButton
+                            className='third-level'
+                            onClick={handleRemove}
+                            title="Poista eräpäivä"
+                          />
+                        </Authorization>
+                      }
                     />
-                  </Authorization>
-                </Column>
-                <Column small={6}>
-                  <FieldAndRemoveButtonWrapper
-                    className='absolute-remove-button-position'
-                    field={
-                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}>
-                        <FormField
-                          className='with-dot'
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
-                          invisibleLabel
-                          name={`${due_date}.month`}
-                          overrideValues={{label: LeaseRentDueDatesFieldTitles.MONTH}}
-                        />
-                      </Authorization>
-                    }
-                    removeButton={
-                      <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
-                        <RemoveButton
-                          className='third-level'
-                          onClick={handleRemove}
-                          title="Poista eräpäivä"
-                        />
-                      </Authorization>
-                    }
-                  />
-                </Column>
-              </Row>
-            </Column>
-          </Row>
-        );
-      })}
+                  </Column>
+                </Row>
+              </Column>
+            </Row>
+          );
+        })}
+      </Authorization>
 
       <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
         <Row>
@@ -245,7 +251,7 @@ const renderDueDates = ({fields, isSaveClicked, leaseAttributes}: DueDatesProps)
   );
 };
 
-const renderDueDatesOneTime = ({fields, isSaveClicked, leaseAttributes}: DueDatesProps): Element<*> => {
+const renderDueDatesOneTime = ({dueDates, fields, isSaveClicked, leaseAttributes}: DueDatesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -259,42 +265,47 @@ const renderDueDatesOneTime = ({fields, isSaveClicked, leaseAttributes}: DueDate
           >{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
         </Column>
       </Row>
+      <Authorization
+        allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY) ||
+          isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
+        errorComponent={<FormText>{formatDueDates(dueDates) || '-'}</FormText>}
+      >
+        {fields && !!fields.length && fields.map((due_date, index) => {
+          if(index) return null;
 
-      {fields && !!fields.length && fields.map((due_date, index) => {
-        if(index) return null;
-
-        return (
-          <Row key={index}>
-            <Column small={12}>
-              <Row>
-                <Column small={6}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}
-                      invisibleLabel
-                      name={`${due_date}.day`}
-                      overrideValues={{label: LeaseRentDueDatesFieldTitles.DAY}}
-                    />
-                  </Authorization>
-                </Column>
-                <Column small={6}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}>
-                    <FormField
-                      className='with-dot'
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
-                      invisibleLabel
-                      name={`${due_date}.month`}
-                      overrideValues={{label: LeaseRentDueDatesFieldTitles.MONTH}}
-                    />
-                  </Authorization>
-                </Column>
-              </Row>
-            </Column>
-          </Row>
-        );
-      })}
+          return (
+            <Row key={index}>
+              <Column small={12}>
+                <Row>
+                  <Column small={6}>
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}
+                        invisibleLabel
+                        name={`${due_date}.day`}
+                        overrideValues={{label: LeaseRentDueDatesFieldTitles.DAY}}
+                      />
+                    </Authorization>
+                  </Column>
+                  <Column small={6}>
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}>
+                      <FormField
+                        className='with-dot'
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
+                        invisibleLabel
+                        name={`${due_date}.month`}
+                        overrideValues={{label: LeaseRentDueDatesFieldTitles.MONTH}}
+                      />
+                    </Authorization>
+                  </Column>
+                </Row>
+              </Column>
+            </Row>
+          );
+        })}
+      </Authorization>
       {(!fields || !fields.length) &&
         <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
           <Row>
@@ -335,6 +346,7 @@ const BasicInfoEmpty = ({isSaveClicked, leaseAttributes}: BasicInfoEmptyProps) =
 
 type BasicInfoIndexProps = {
   cycle: ?string,
+  dueDates: Array<Object>,
   dueDatesType: ?string,
   field: string,
   isIndex: boolean,
@@ -345,6 +357,7 @@ type BasicInfoIndexProps = {
 
 const BasicInfoIndex = ({
   cycle,
+  dueDates,
   dueDatesType,
   field,
   isIndex,
@@ -424,6 +437,7 @@ const BasicInfoIndex = ({
             {/* Authorization is done on renderDueDates component */}
             <FieldArray
               component={renderDueDates}
+              dueDates={dueDates}
               isSaveClicked={isSaveClicked}
               leaseAttributes={leaseAttributes}
               name="due_dates"
@@ -512,12 +526,13 @@ const BasicInfoIndex = ({
 };
 
 type BasicInfoOneTimeProps = {
+  dueDates: Array<Object>,
   dueDatesType: ?string,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
 }
 
-const BasicInfoOneTime = ({dueDatesType, isSaveClicked, leaseAttributes}: BasicInfoOneTimeProps) => {
+const BasicInfoOneTime = ({dueDates, dueDatesType, isSaveClicked, leaseAttributes}: BasicInfoOneTimeProps) => {
   return (
     <Fragment>
       <Row>
@@ -581,6 +596,7 @@ const BasicInfoOneTime = ({dueDatesType, isSaveClicked, leaseAttributes}: BasicI
             {/* Authorization is done on renderDueDatesOneTime component */}
             <FieldArray
               component={renderDueDatesOneTime}
+              dueDates={dueDates}
               isSaveClicked={isSaveClicked}
               leaseAttributes={leaseAttributes}
               name="due_dates"
@@ -606,6 +622,7 @@ const BasicInfoOneTime = ({dueDatesType, isSaveClicked, leaseAttributes}: BasicI
 };
 
 type BasicInfoFixedProps = {
+  dueDates: Array<Object>,
   dueDatesType: ?string,
   field: string,
   isSaveClicked: boolean,
@@ -614,6 +631,7 @@ type BasicInfoFixedProps = {
 }
 
 const BasicInfoFixed = ({
+  dueDates,
   dueDatesType,
   field,
   isSaveClicked,
@@ -668,6 +686,7 @@ const BasicInfoFixed = ({
             {/* Authorization is done on renderDueDates component */}
             <FieldArray
               component={renderDueDates}
+              dueDates={dueDates}
               isSaveClicked={isSaveClicked}
               leaseAttributes={leaseAttributes}
               name="due_dates"
@@ -800,6 +819,7 @@ type Props = {
 const BasicInfoEdit = ({
   currentLease,
   cycle,
+  dueDates,
   dueDatesPerYear,
   dueDatesType,
   field,
@@ -830,6 +850,7 @@ const BasicInfoEdit = ({
       {rentType === RentTypes.INDEX &&
         <BasicInfoIndex
           cycle={cycle}
+          dueDates={dueDates}
           dueDatesType={dueDatesType}
           field={field}
           isIndex={true}
@@ -840,6 +861,7 @@ const BasicInfoEdit = ({
       }
       {rentType === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
+          dueDates={dueDates}
           dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
@@ -847,6 +869,7 @@ const BasicInfoEdit = ({
       }
       {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
+          dueDates={dueDates}
           dueDatesType={dueDatesType}
           field={field}
           isSaveClicked={isSaveClicked}
@@ -863,6 +886,7 @@ const BasicInfoEdit = ({
       {rentType === RentTypes.MANUAL &&
         <BasicInfoIndex
           cycle={cycle}
+          dueDates={dueDates}
           dueDatesType={dueDatesType}
           field={field}
           isIndex={false}

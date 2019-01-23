@@ -1,9 +1,9 @@
 .invoice {
   &__new-invoice {
-    margin-top: rem-calc(5px);
+    margin-top: 0;
     margin-bottom: rem-calc(10px);
 
-    button:nth-child(2) {
+    button:nth-child(3) {
       margin-top: rem-calc(15px);
     }
 
@@ -72,6 +72,7 @@
 
     &_wrapper {
       width: 100%;
+      margin-bottom: rem-calc(10px);
       z-index: 1;
       background-color: $white;
 
