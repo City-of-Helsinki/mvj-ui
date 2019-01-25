@@ -78,7 +78,9 @@ export const convertAreaNoteListToGeoJson = (areaNotes: Array<Object>) => {
     geometry: areaNote.geometry,
     properties: {
       id: areaNote.id,
+      modified_at: areaNote.modified_at,
       note: areaNote.note,
+      user: areaNote.user,
     },
   }));
 
