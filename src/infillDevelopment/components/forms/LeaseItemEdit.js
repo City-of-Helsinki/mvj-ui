@@ -42,18 +42,19 @@ import {
 import {
   InfillDevelopmentCompensationAttachmentFieldPaths,
   InfillDevelopmentCompensationAttachmentFieldTitles,
-} from '../../../infillDevelopmentAttachment/enums';
+} from '$src/infillDevelopmentAttachment/enums';
 import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   convertStrToDecimalNumber,
   formatDate,
   formatNumber,
   getFieldAttributes,
-  isFieldAllowedToEdit,
+  hasPermissions,
   isFieldAllowedToRead,
   isFieldRequired,
 } from '$util/helpers';
@@ -79,21 +80,25 @@ import {
   getIsFetchingById,
   getLeaseById,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Methods} from '$src/types';
 import type {Lease, LeaseId} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type DecisionsProps = {
   fields: any,
   infillDevelopmentAttributes: Attributes,
   isSaveClicked: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderDecisions = ({
   fields,
   infillDevelopmentAttributes,
   isSaveClicked,
+  usersPermissions,
 }: DecisionsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -106,6 +111,10 @@ const renderDecisions = ({
           <Fragment>
             <SubTitle>{InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISIONS}</SubTitle>
 
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONDECISION) &&
+              (!fields || !fields.length) &&
+              <FormText>Ei päätöksiä</FormText>
+            }
             {!!fields && !!fields.length &&
               <Fragment>
                 <Row>
@@ -204,7 +213,7 @@ const renderDecisions = ({
                         </Authorization>
                       </Column>
                       <Column small={3} large={2}>
-                        <Authorization allow={isFieldAllowedToEdit(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_INFILLDEVELOPMENTCOMPENSATIONDECISION)}>
                           <RemoveButton
                             className='third-level'
                             onClick={handleRemove}
@@ -218,7 +227,7 @@ const renderDecisions = ({
               </Fragment>
             }
 
-            <Authorization allow={isFieldAllowedToEdit(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONDECISION)}>
               <Row>
                 <Column>
                   <AddButtonThird
@@ -239,9 +248,10 @@ type IntendedUsesProps = {
   fields: any,
   infillDevelopmentAttributes: Attributes,
   isSaveClicked: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
-const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked}: IntendedUsesProps): Element<*> => {
+const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked, usersPermissions}: IntendedUsesProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
@@ -251,6 +261,10 @@ const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked}
           <Fragment>
             <SubTitle>{InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.INTENDED_USES}</SubTitle>
 
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONINTENDEDUSE) &&
+              (!fields || !fields.length) &&
+              <FormText>Ei käyttötarkoituksia</FormText>
+            }
             {!!fields && !!fields.length &&
               <Fragment>
                 <Row>
@@ -328,7 +342,7 @@ const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked}
                         </Authorization>
                       </Column>
                       <Column small={3} large={2}>
-                        <Authorization allow={isFieldAllowedToEdit(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_INFILLDEVELOPMENTCOMPENSATIONINTENDEDUSE)}>
                           <RemoveButton
                             className='third-level'
                             onClick={handleRemove}
@@ -342,7 +356,7 @@ const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked}
               </Fragment>
             }
 
-            <Authorization allow={isFieldAllowedToEdit(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONINTENDEDUSE)}>
               <Row>
                 <Column>
                   <AddButtonThird
@@ -380,6 +394,7 @@ type Props = {
   monetaryCompensation: ?number,
   onRemove: Function,
   receiveCollapseStates: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -508,6 +523,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
       leaseAttributes,
       leaseId,
       onRemove,
+      usersPermissions,
     } = this.props;
 
     const {
@@ -525,7 +541,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
         className='collapse__secondary'
         defaultOpen={collapseState !== undefined ? collapseState : true}
         headerTitle={isFetching ? 'Ladataan...' : (identifier || '-')}
-        onRemove={onRemove}
+        onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_INFILLDEVELOPMENTCOMPENSATIONLEASE) ? onRemove : null}
         onToggle={this.handleCollapseToggle}
       >
         <BoxContentWrapper>
@@ -610,6 +626,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
               infillDevelopmentAttributes={infillDevelopmentAttributes}
               isSaveClicked={isSaveClicked}
               name={`${field}.decisions`}
+              usersPermissions={usersPermissions}
             />
           </Authorization>
 
@@ -619,6 +636,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
               infillDevelopmentAttributes={infillDevelopmentAttributes}
               isSaveClicked={isSaveClicked}
               name={`${field}.intended_uses`}
+              usersPermissions={usersPermissions}
             />
           </Authorization>
 
@@ -847,6 +865,7 @@ export default flowRight(
         leaseId: lease,
         leaseFieldValue: leaseFieldValue,
         monetaryCompensation: selector(state, `${field}.monetary_compensation_amount`),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

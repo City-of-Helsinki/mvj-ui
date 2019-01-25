@@ -264,6 +264,7 @@ class LeaseItem extends PureComponent<Props, State> {
                       {decision.reference_number
                         ? <ListItem>
                           <ExternalLink
+                            className='no-margin'
                             href={getReferenceNumberLink(decision.reference_number)}
                             text={decision.reference_number}
                           />
