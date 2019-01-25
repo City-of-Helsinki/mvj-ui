@@ -9,16 +9,18 @@ import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
 import RelatedLeaseItem from './RelatedLeaseItem';
 import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
 import {LeaseFieldPaths} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
-import {getFieldOptions} from '$src/util/helpers';
+import {getFieldOptions, hasPermissions} from '$src/util/helpers';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
 } from '$src/leases/selectors';
-import {getMethods as getRelatedLeaseMethods} from '$src/relatedLease/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   createReleatedLease: Function,
@@ -27,8 +29,8 @@ type Props = {
   isDeleteRelatedLeaseModalOpen: boolean,
   hideDeleteRelatedLeaseModal: Function,
   leaseAttributes: Attributes,
-  relatedLeaseMethods: Methods,
   showDeleteRelatedLeaseModal: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -106,7 +108,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
   }
 
   render() {
-    const {currentLease, relatedLeaseMethods} = this.props;
+    const {currentLease, usersPermissions} = this.props;
     const {
       newLease,
       relatedLeasesAll,
@@ -119,7 +121,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
       <div className="summary__related-leases">
         <h3>Historia</h3>
 
-        <Authorization allow={relatedLeaseMethods.POST}>
+        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RELATEDLEASE)}>
           <div className="summary__related-leases_input-wrapper">
             <FormFieldLabel htmlFor='related-lease'>Liitä vuokratunnukseen</FormFieldLabel>
             <Row>
@@ -181,7 +183,7 @@ export default connect(
     return {
       currentLease: getCurrentLease(state),
       leaseAttributes: getLeaseAttributes(state),
-      relatedLeaseMethods: getRelatedLeaseMethods(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

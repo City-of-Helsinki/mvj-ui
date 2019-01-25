@@ -19,22 +19,28 @@ import {
   LeaseRentsFieldPaths,
   LeaseRentsFieldTitles,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRentsFormData} from '$src/leases/helpers';
-import {isFieldAllowedToRead} from '$util/helpers';
+import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
-import {getMethods as getRentForPeriodMethods} from '$src/rentForPeriod/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   currentLease: Lease,
   leaseAttributes: Attributes,
-  rentForPeriodMethods: Methods,
+  usersPermissions: UsersPermissionsType,
 }
 
-const Rents = ({currentLease, leaseAttributes, rentForPeriodMethods}: Props) => {
+const Rents = ({
+  currentLease,
+  leaseAttributes,
+  usersPermissions,
+}: Props) => {
   const rentsData = getContentRentsFormData(currentLease);
   const rents = get(rentsData, 'rents', []);
   const rentsArchived = get(rentsData, 'rentsArchived', []);
@@ -72,7 +78,7 @@ const Rents = ({currentLease, leaseAttributes, rentForPeriodMethods}: Props) => 
         )}
       </Authorization>
 
-      <Authorization allow={rentForPeriodMethods.GET}>
+      <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
         <h2>Vuokralaskelma</h2>
         <Divider />
         <GreenBox>
@@ -93,7 +99,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     currentLease: getCurrentLease(state),
     leaseAttributes: getLeaseAttributes(state),
-    rentForPeriodMethods: getRentForPeriodMethods(state),
+    usersPermissions: getUsersPermissions(state),
   };
 };
 

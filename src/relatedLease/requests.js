@@ -4,12 +4,6 @@ import createUrl from '../api/createUrl';
 
 import type {CreateRelatedLeasePayload} from './types';
 
-export const fetchAttributes = (): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`related_lease/`), {
-    method: 'OPTIONS',
-  }));
-};
-
 export const createRelatedLease = (payload: CreateRelatedLeasePayload): Generator<any, any, any> => {
   const body = JSON.stringify(payload);
 

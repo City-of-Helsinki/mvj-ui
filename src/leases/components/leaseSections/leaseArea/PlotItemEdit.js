@@ -21,10 +21,18 @@ import {
   LeasePlotsFieldTitles,
   PlotType,
 } from '$src/leases/enums';
-import {getFieldAttributes, getSearchQuery, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {
+  getFieldAttributes,
+  getSearchQuery,
+  hasPermissions,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
@@ -35,6 +43,7 @@ type Props = {
   plotsData: Array<Object>,
   plotId: number,
   router: Object,
+  usersPermissions: UsersPermissionsType,
 }
 
 const PlotItemsEdit = ({
@@ -46,6 +55,7 @@ const PlotItemsEdit = ({
   plotsData,
   plotId,
   router,
+  usersPermissions,
 }: Props) => {
   const getMapLinkUrl = () => {
     const {location: {pathname, query}} = router;
@@ -69,7 +79,7 @@ const PlotItemsEdit = ({
     <BoxItem>
       <BoxContentWrapper>
         <ActionButtonWrapper>
-          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS)}>
+          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_PLOT)}>
             <RemoveButton
               onClick={onRemove}
               title="Poista kiinteistö / määräala"
@@ -220,6 +230,7 @@ export default flowRight(
         geometry: selector(state, `${props.field}.geometry`),
         isSaveClicked: getIsSaveClicked(state),
         plotId: id,
+        usersPermissions: getUsersPermissions(state),
       };
     }
   ),

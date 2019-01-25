@@ -5,7 +5,6 @@ import {
   fetchAttributes,
   attributesNotFound,
   receiveAttributes,
-  receiveMethods,
 } from './actions';
 import leaseCreateChargeReducer from './reducer';
 
@@ -14,7 +13,6 @@ import type {LeaseCreateChargeState} from './types';
 const defaultState: LeaseCreateChargeState = {
   attributes: {},
   isFetchingAttributes: false,
-  methods: {},
 };
 
 // $FlowFixMe
@@ -48,15 +46,6 @@ describe('Lease create charge', () => {
         const newState = {...defaultState, attributes: dummyAttributes};
 
         const state = leaseCreateChargeReducer({}, receiveAttributes(dummyAttributes));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update methods', () => {
-        const dummyMethods = {foo: 'bar'};
-
-        const newState = {...defaultState, methods: dummyMethods};
-
-        const state = leaseCreateChargeReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
     });

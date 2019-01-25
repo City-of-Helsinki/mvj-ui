@@ -34,12 +34,11 @@ import {
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {
   getAttributes as getCreateCollectionLetterAttributes,
-  getMethods as getCreateCollectionLetterMethods,
 } from '$src/createCollectionLetter/selectors';
 import {getInvoicesByLease} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type InvoicesProps = {
@@ -116,7 +115,6 @@ const renderInvoices = ({
 type Props = {
   collectionCharge: number,
   createCollectionLetterAttributes: Attributes,
-  createCollectionLetterMethods: Methods,
   invoices: Array<Object>,
   invoiceIds: Array<number>,
   lease: Lease,
@@ -270,7 +268,6 @@ export default flowRight(
       return {
         collectionCharge: selector(state, 'collection_charge'),
         createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
-        createCollectionLetterMethods: getCreateCollectionLetterMethods(state),
         invoices: getInvoicesByLease(state, currentLease.id),
         invoiceIds: selector(state, 'invoice_ids'),
         lease: getCurrentLease(state),

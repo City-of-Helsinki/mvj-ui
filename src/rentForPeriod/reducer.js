@@ -3,10 +3,8 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import isArray from 'lodash/isArray';
 
-import type {Attributes, Methods, Reducer} from '../types';
+import type {Reducer} from '../types';
 import type {
-  ReceiveAttributesAction,
-  ReceiveMethodsAction,
   RentForPeriod,
   ReceiveRentForPeriodByLeaseAction,
   DeleteRentForPeriodByLeaseAction,
@@ -18,25 +16,6 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/rentforperiod/RECEIVE_BY_LEASE': () => false,
   'mvj/rentforperiod/NOT_FOUND': () => false,
 }, false);
-
-const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
-  'mvj/rentforperiod/FETCH_ATTRIBUTES': () => true,
-  'mvj/rentforperiod/RECEIVE_ATTRIBUTES': () => false,
-  'mvj/rentforperiod/RECEIVE_METHODS': () => false,
-  'mvj/rentforperiod/ATTRIBUTES_NOT_FOUND': () => false,
-}, false);
-
-const attributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/rentforperiod/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
-    return attributes || {};
-  },
-}, {});
-
-const methodsReducer: Reducer<Methods> = handleActions({
-  ['mvj/rentforperiod/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
-    return methods || {};
-  },
-}, {});
 
 const isSaveClickedReducer: Reducer<boolean> = handleActions({
   ['mvj/rentforperiod/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
@@ -66,10 +45,7 @@ const byLeaseReducer: Reducer<RentForPeriod> = handleActions({
 }, {});
 
 export default combineReducers({
-  attributes: attributesReducer,
   byLease: byLeaseReducer,
   isFetching: isFetchingReducer,
-  isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
-  methods: methodsReducer,
 });

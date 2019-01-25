@@ -19,28 +19,39 @@ import {
   RentTypes,
 } from '$src/leases/enums';
 import {Breakpoints} from '$src/foundation/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
-  isFieldAllowedToEdit,
+  hasPermissions,
   isFieldAllowedToRead,
   isFieldRequired,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   fields: any,
   leaseAttributes: Attributes,
   rentField: string,
   rentType: string,
+  usersPermissions: UsersPermissionsType
 }
 
-const ContractRentsEdit = ({fields, leaseAttributes, rentField, rentType}: Props) => {
+const ContractRentsEdit = ({
+  fields,
+  leaseAttributes,
+  rentField,
+  rentType,
+  usersPermissions,
+}: Props) => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  if(!isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS) && (!fields || !fields.length)) {
+  if(!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTRENT) &&
+    (!fields || !fields.length)) {
     return <FormText>Ei sopimusvuokria</FormText>;
   }
 
@@ -129,7 +140,7 @@ const ContractRentsEdit = ({fields, leaseAttributes, rentField, rentType}: Props
               })}
             </BoxItemContainer>
 
-            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTRENT)}>
               <Row>
                 <Column>
                   <AddButtonSecondary
@@ -151,6 +162,7 @@ export default connect(
   (state) => {
     return {
       leaseAttributes: getLeaseAttributes(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
 )(ContractRentsEdit);

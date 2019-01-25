@@ -24,12 +24,14 @@ import {
   LeaseRentAdjustmentsFieldPaths,
   LeaseRentAdjustmentsFieldTitles,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
 import {
   formatNumber,
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
+  hasPermissions,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
@@ -38,9 +40,11 @@ import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   adjustments: Array<Object>,
@@ -48,6 +52,7 @@ type Props = {
   fields: any,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -97,10 +102,11 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
   };
 
   render() {
-    const {fields, isSaveClicked, leaseAttributes} = this.props;
+    const {fields, isSaveClicked, leaseAttributes, usersPermissions} = this.props;
     const {decisionOptions} = this.state;
 
-    if(!isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS) && (!fields || !fields.length)) {
+    if(!hasPermissions(usersPermissions, UsersPermissions.ADD_RENTADJUSTMENT) &&
+      (!fields || !fields.length)) {
       return <FormText>Ei alennuksia tai korotuksia</FormText>;
     }
 
@@ -140,7 +146,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                     <BoxItem key={index}>
                       <BoxContentWrapper>
                         <ActionButtonWrapper>
-                          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS)}>
+                          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RENTADJUSTMENT)}>
                             <RemoveButton
                               onClick={handleRemove}
                               title="Poista alennus/korotus"
@@ -277,7 +283,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                 })}
               </BoxItemContainer>
 
-              <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RENTADJUSTMENT)}>
                 <Row>
                   <Column>
                     <AddButtonSecondary
@@ -305,6 +311,7 @@ export default connect(
       adjustments: selector(state, props.fields.name),
       currentLease: getCurrentLease(state),
       leaseAttributes: getLeaseAttributes(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
 )(RentAdjustmentsEdit);

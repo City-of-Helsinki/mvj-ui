@@ -32,8 +32,9 @@ import {
   LeaseTenantsFieldPaths,
   LeaseTenantsFieldTitles,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateTenantForm} from '$src/leases/formValidators';
-import {isFieldAllowedToEdit} from '$util/helpers';
+import {hasPermissions, isFieldAllowedToEdit} from '$util/helpers';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentTenantsFormData} from '$src/leases/helpers';
 import {
@@ -47,17 +48,20 @@ import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 
 import type {Attributes, Methods} from '$src/types';
 import type {ContactModalSettings} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type TenantsProps = {
   archived: boolean,
   fields: any,
   leaseAttributes: Attributes,
   tenants: Array<Object>,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderTenants = ({
@@ -65,6 +69,7 @@ const renderTenants = ({
   fields,
   leaseAttributes,
   tenants,
+  usersPermissions,
 }: TenantsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -108,7 +113,7 @@ const renderTenants = ({
               );
             })}
             {!archived &&
-              <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_TENANT)}>
                 <Row>
                   <Column>
                     <AddButton
@@ -144,6 +149,7 @@ type Props = {
   receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -244,6 +250,7 @@ class TenantsEdit extends PureComponent<Props, State> {
       isContactModalOpen,
       isFetchingContact,
       leaseAttributes,
+      usersPermissions,
     } = this.props;
 
     const {savedTenants} = this.state;
@@ -279,6 +286,7 @@ class TenantsEdit extends PureComponent<Props, State> {
             leaseAttributes={leaseAttributes}
             name='tenants'
             tenants={tenants}
+            usersPermissions={usersPermissions}
           />
 
           <FieldArray
@@ -287,6 +295,7 @@ class TenantsEdit extends PureComponent<Props, State> {
             name='tenantsArchived'
             archived
             tenants={tenantsArchived}
+            usersPermissions={usersPermissions}
           />
         </form>
       </Fragment>
@@ -308,6 +317,7 @@ export default flowRight(
         isContactModalOpen: getIsContactModalOpen(state),
         isFetchingContact: getIsFetchingContact(state),
         leaseAttributes: getLeaseAttributes(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

@@ -12,6 +12,7 @@ import AddButtonThird from '$components/form/AddButtonThird';
 import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import Comments from './Comments';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -31,20 +32,24 @@ import {
   LeaseConstructabilityDescriptionsFieldPaths,
   LeaseConstructabilityDescriptionsFieldTitles,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getFullAddress} from '$src/leases/helpers';
 import {
   formatNumber,
   getFieldAttributes,
   getLabelOfOption,
+  hasPermissions,
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
 } from '$util/helpers';
 import {getCollapseStateByKey} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const getPreconstructionErrors = (errors: ?Object, area: string) => {
   return {
@@ -92,14 +97,29 @@ const getOtherErrors = (errors: ?Object, area: string) => {
 
 type CommentProps = {
   attributes: Attributes,
+  comments: Array<Object>,
   fields: any,
   isSaveClicked: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
-const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Element<*> => {
+const renderComments = connect(
+  (state, props) => {
+    return {
+      comments: selector(state, props.fields.name),
+    };
+  }
+)(({attributes, comments, fields, isSaveClicked, usersPermissions}: CommentProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
+
+  if(!hasPermissions(usersPermissions, UsersPermissions.ADD_CONSTRUCTABILITYDESCRIPTION) &&
+    !hasPermissions(usersPermissions, UsersPermissions.DELETE_CONSTRUCTABILITYDESCRIPTION) &&
+    !isFieldAllowedToEdit(attributes, LeaseConstructabilityDescriptionsFieldPaths.TEXT) &&
+    !isFieldAllowedToEdit(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)) {
+    return <Comments comments={comments} />;
+  }
 
   return (
     <AppConsumer>
@@ -107,7 +127,8 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
         return(
           <Fragment>
             <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
-            {!isFieldAllowedToEdit(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS) && (!fields || !fields.length) &&
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONSTRUCTABILITYDESCRIPTION) &&
+              (!fields || !fields.length) &&
               <FormText><em>Ei huomautuksia</em></FormText>
             }
 
@@ -172,7 +193,7 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
                         </Authorization>
                       </Column>
                       <Column small={2} medium={3} large={2}>
-                        <Authorization allow={isFieldAllowedToEdit(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONSTRUCTABILITYDESCRIPTION)}>
                           <RemoveButton
                             className='third-level'
                             onClick={handleRemove}
@@ -186,7 +207,7 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
               </Fragment>
             }
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CONSTRUCTABILITYDESCRIPTION)}>
               <Row>
                 <Column>
                   <AddButtonThird
@@ -201,7 +222,7 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
       }}
     </AppConsumer>
   );
-};
+});
 
 
 type Props = {
@@ -223,6 +244,7 @@ type Props = {
   savedArea: Object,
   stateOptions: Array<Object>,
   typeOptions: Array<Object>,
+  usersPermissions: UsersPermissionsType,
 }
 
 const ConstructabilityItemEdit = ({
@@ -242,6 +264,7 @@ const ConstructabilityItemEdit = ({
   receiveCollapseStates,
   savedArea,
   typeOptions,
+  usersPermissions,
 }: Props) => {
   const handleAreaCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
@@ -389,6 +412,7 @@ const ConstructabilityItemEdit = ({
             name={`${field}.descriptionsPreconstruction`}
             component={renderComments}
             isSaveClicked={isSaveClicked}
+            usersPermissions={usersPermissions}
           />
         </Authorization>
       </Collapse>
@@ -429,6 +453,7 @@ const ConstructabilityItemEdit = ({
             component={renderComments}
             isSaveClicked={isSaveClicked}
             name={`${field}.descriptionsDemolition`}
+            usersPermissions={usersPermissions}
           />
         </Authorization>
       </Collapse>
@@ -522,6 +547,7 @@ const ConstructabilityItemEdit = ({
             component={renderComments}
             isSaveClicked={isSaveClicked}
             name={`${field}.descriptionsPollutedLand`}
+            usersPermissions={usersPermissions}
           />
         </Authorization>
       </Collapse>
@@ -600,6 +626,7 @@ const ConstructabilityItemEdit = ({
             component={renderComments}
             isSaveClicked={isSaveClicked}
             name={`${field}.descriptionsReport`}
+            usersPermissions={usersPermissions}
           />
         </Authorization>
       </Collapse>
@@ -638,6 +665,7 @@ const ConstructabilityItemEdit = ({
             component={renderComments}
             isSaveClicked={isSaveClicked}
             name={`${field}.descriptionsOther`}
+            usersPermissions={usersPermissions}
           />
         </Authorization>
       </Collapse>
@@ -660,6 +688,7 @@ export default connect(
       otherCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.other`),
       pollutedLandCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.polluted_land`),
       preconstructionCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.preconstruction`),
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

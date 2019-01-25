@@ -14,14 +14,15 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RemoveButton from '$components/form/RemoveButton';
 import {fetchPenaltyInterestByInvoice} from '$src/penaltyInterest/actions';
 import {FormNames} from '$src/leases/enums';
-import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {convertStrToDecimalNumber, formatNumber, hasPermissions} from '$util/helpers';
 import {
   getIsFetchingByInvoice,
-  getMethods as getPenaltyInterestMethods,
   getPenaltyInterestByInvoice,
 } from '$src/penaltyInterest/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Methods} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   field: any,
@@ -33,17 +34,17 @@ type Props = {
   isFetching: boolean,
   onRemove: Function,
   penaltyInterest: ?Object,
-  penaltyInterestMethods: Methods,
   selectedInvoices: Array<Object>,
   showDeleteButton: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
 class CollectionLetterInvoiceRow extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     if(prevProps.invoice !== this.props.invoice && isEmpty(this.props.penaltyInterest)) {
-      const {fetchPenaltyInterestByInvoice, invoice, penaltyInterestMethods} = this.props;
+      const {fetchPenaltyInterestByInvoice, invoice, usersPermissions} = this.props;
 
-      if(penaltyInterestMethods.GET) {
+      if(hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)) {
         fetchPenaltyInterestByInvoice(invoice);
       }
     }
@@ -139,8 +140,8 @@ export default connect(
       isFetching: getIsFetchingByInvoice(state, invoice),
       invoice: invoice,
       penaltyInterest: getPenaltyInterestByInvoice(state, invoice),
-      penaltyInterestMethods: getPenaltyInterestMethods(state),
       selectedInvoices: selectedInvoices,
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

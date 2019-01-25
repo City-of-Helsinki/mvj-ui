@@ -38,25 +38,29 @@ import {
   LeaseContractMortgageDocumentsFieldPaths,
   LeaseContractMortgageDocumentsFieldTitles,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getDecisionById, isContractActive} from '$src/leases/helpers';
 import {
   formatDate,
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
-  isFieldAllowedToEdit,
+  hasPermissions,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {
+  getAttributes,
   getCollapseStateByKey,
   getCurrentLease,
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type ContractChangesProps = {
   attributes: Attributes,
@@ -68,6 +72,7 @@ type ContractChangesProps = {
   isSaveClicked: boolean,
   onCollapseToggle: Function,
   title: string,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderContractChanges = ({
@@ -81,6 +86,7 @@ const renderContractChanges = ({
   isSaveClicked,
   onCollapseToggle,
   title,
+  usersPermissions,
 }: ContractChangesProps): Element<*> => {
   const handleCollapseToggle = (val) => {
     onCollapseToggle(val);
@@ -111,7 +117,8 @@ const renderContractChanges = ({
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>
-              {!isFieldAllowedToEdit(attributes, LeaseContractChangesFieldPaths.CONTRACT_CHANGES) && (!fields || !fields.length) &&
+              {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTCHANGE) &&
+                (!fields || !fields.length) &&
                 <FormText>Ei sopimuksen muutoksia</FormText>
               }
 
@@ -133,7 +140,7 @@ const renderContractChanges = ({
                   <BoxItem key={index}>
                     <BoxContentWrapper>
                       <ActionButtonWrapper>
-                        <Authorization allow={isFieldAllowedToEdit(attributes, LeaseContractChangesFieldPaths.CONTRACT_CHANGES)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONTRACTCHANGE)}>
                           <RemoveButton
                             onClick={handleRemove}
                             title="Poista sopimuksen muutos"
@@ -225,7 +232,7 @@ const renderContractChanges = ({
               })}
             </BoxItemContainer>
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseContractChangesFieldPaths.CONTRACT_CHANGES)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTCHANGE)}>
               <Row>
                 <Column>
                   <AddButtonSecondary
@@ -246,9 +253,10 @@ type MortgageDocumentsProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
-const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDocumentsProps): Element<*> => {
+const renderMortgageDocuments = ({attributes, fields, isSaveClicked, usersPermissions}: MortgageDocumentsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -259,7 +267,8 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
         return(
           <Fragment>
             <SubTitle>{LeaseContractMortgageDocumentsFieldTitles.MORTGAGE_DOCUMENTS}</SubTitle>
-            {!isFieldAllowedToEdit(attributes, LeaseContractMortgageDocumentsFieldPaths.MORTGAGE_DOCUMENTS) && (!fields || !fields.length) &&
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_MORTGAGEDOCUMENT) &&
+              (!fields || !fields.length) &&
               <FormText>Ei panttikirjoja</FormText>
             }
 
@@ -282,6 +291,7 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
                     </Authorization>
                   </Column>
                 </Row>
+
                 {fields.map((doc, index) => {
                   const handleRemove = () => {
                     dispatch({
@@ -331,7 +341,7 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
                         </Authorization>
                       </Column>
                       <Column>
-                        <Authorization allow={isFieldAllowedToEdit(attributes, LeaseContractMortgageDocumentsFieldPaths.MORTGAGE_DOCUMENTS)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_MORTGAGEDOCUMENT)}>
                           <RemoveButton
                             className='third-level'
                             onClick={handleRemove}
@@ -345,7 +355,7 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
               </Fragment>
             }
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseContractMortgageDocumentsFieldPaths.MORTGAGE_DOCUMENTS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_MORTGAGEDOCUMENT)}>
               <Row>
                 <Column>
                   <AddButtonThird
@@ -377,6 +387,7 @@ type Props = {
   onShowContractFileModal: Function,
   receiveCollapseStates: Function,
   savedContracts: Array<Object>,
+  usersPermissions: UsersPermissionsType,
 }
 
 const ContractItemEdit = ({
@@ -394,6 +405,7 @@ const ContractItemEdit = ({
   onShowContractFileModal,
   receiveCollapseStates,
   savedContracts,
+  usersPermissions,
 }: Props) => {
   const getContractById = (id: number) => id ? savedContracts.find((decision) => decision.id === id) : {};
 
@@ -477,7 +489,7 @@ const ContractItemEdit = ({
           {getContractTitle(savedContract) || '-'}
         </Authorization>
       }
-      onRemove={isFieldAllowedToEdit(attributes, LeaseContractsFieldPaths.CONTRACTS) ? onRemove : null}
+      onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONTRACT) ? onRemove : null}
       onToggle={handleContractCollapseToggle}
     >
       <BoxContentWrapper>
@@ -626,6 +638,7 @@ const ContractItemEdit = ({
                 component={renderMortgageDocuments}
                 isSaveClicked={isSaveClicked}
                 name={`${field}.mortgage_documents`}
+                usersPermissions={usersPermissions}
               />
             </Column>
           </Row>
@@ -644,6 +657,7 @@ const ContractItemEdit = ({
           isSaveClicked={isSaveClicked}
           onCollapseToggle={handleContractChangesCollapseToggle}
           title={LeaseContractChangesFieldTitles.CONTRACT_CHANGES}
+          usersPermissions={usersPermissions}
         />
       </Authorization>
     </Collapse>
@@ -656,22 +670,22 @@ const selector = formValueSelector(formName);
 export default connect(
   (state, props) => {
     const id = selector(state, `${props.field}.id`);
-    if(id) {
-      return {
-        contractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract`),
-        contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract_changes`),
-        contractFileMethods: getContractFileMethods(state),
-        contractId: id,
-        currentLease: getCurrentLease(state),
-        errors: getErrorsByFormName(state, formName),
-        isSaveClicked: getIsSaveClicked(state),
-      };
-    }
-    return {
+    const newState: any = {
+      attributes: getAttributes(state),
+      contractFileMethods: getContractFileMethods(state),
       contractId: id,
+      currentLease: getCurrentLease(state),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
+      usersPermissions: getUsersPermissions(state),
     };
+
+    if(id) {
+      newState.contractCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract`);
+      newState.contractChangesCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract_changes`);
+    }
+
+    return newState;
   },
   {
     receiveCollapseStates,

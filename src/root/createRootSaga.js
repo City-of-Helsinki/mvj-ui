@@ -16,9 +16,7 @@ import districtSaga from '../district/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
 import infillDevelopmentAttachmentSaga from '../infillDevelopmentAttachment/saga';
 import invoiceSaga from '../invoices/saga';
-import invoiceCreditSaga from '../invoiceCredit/saga';
 import invoiceSetSaga from '../invoiceSets/saga';
-import invoiceSetCreditSaga from '../invoiceSetCredit/saga';
 import landUseContractSaga from '../landUseContract/saga';
 import leaseSaga from '../leases/saga';
 import leaseCreateChargeSaga from '../leaseCreateCharge/saga';
@@ -29,9 +27,8 @@ import previewInvoicesSaga from '../previewInvoices/saga';
 import relatedLeaseSaga from '../relatedLease/saga';
 import rentBasisSaga from '../rentbasis/saga';
 import rentForPeriodSaga from '../rentForPeriod/saga';
-import setInvoicingStateSaga from '$src/setInvoicingState/saga';
-import setRentInfoCompletionStateSaga from '$src/setRentInfoCompletionState/saga';
 import userSaga from '../users/saga';
+import usersPermissionsSaga from '../usersPermissions/saga';
 import vatSaga from '../vat/saga';
 
 export default () =>
@@ -53,9 +50,7 @@ export default () =>
       fork(infillDevelopmentSaga),
       fork(infillDevelopmentAttachmentSaga),
       fork(invoiceSaga),
-      fork(invoiceCreditSaga),
       fork(invoiceSetSaga),
-      fork(invoiceSetCreditSaga),
       fork(landUseContractSaga),
       fork(leaseSaga),
       fork(leaseCreateChargeSaga),
@@ -66,9 +61,8 @@ export default () =>
       fork(relatedLeaseSaga),
       fork(rentBasisSaga),
       fork(rentForPeriodSaga),
-      fork(setInvoicingStateSaga),
-      fork(setRentInfoCompletionStateSaga),
       fork(userSaga),
+      fork(usersPermissionsSaga),
       fork(vatSaga),
     ]);
   };

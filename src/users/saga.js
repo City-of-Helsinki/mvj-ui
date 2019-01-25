@@ -37,7 +37,7 @@ function* fetchUsersSaga({payload: search}): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leases with error "%s"', error);
+    console.error('Failed to fetch users with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }

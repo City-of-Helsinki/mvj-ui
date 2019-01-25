@@ -10,19 +10,15 @@ import FormField from '$components/form/FormField';
 import {FormNames, RentCalculatorTypes} from '$components/enums';
 import {validateRentCalculatorForm} from '$components/formValidations';
 import {formatDateRange} from '$util/helpers';
+import {getCurrentYear} from '$util/date';
 import {getCurrentLease} from '$src/leases/selectors';
-import {
-  getBillingPeriodsByLease,
-  getMethods as getBillingPeriodMethods,
-} from '$src/billingPeriods/selectors';
+import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
 
-import type {Methods} from '$src/types';
 import type {BillingPeriodList} from '$src/billingPeriods/types';
 
 type Props = {
   billingPeriod: ?number,
   billingPeriods: BillingPeriodList,
-  billingPeriodMethods: Methods,
   change: Function,
   onSubmit: Function,
   showErrors: boolean,
@@ -85,7 +81,7 @@ class RentCalculatorForm extends Component<Props, State> {
     const {change} = this.props;
 
     change('type', RentCalculatorTypes.YEAR);
-    change('year', new Date().getFullYear().toString());
+    change('year', getCurrentYear());
   }
 
   autoselectBillingPeriod = (billingPeriodOptions: Array<Object>) => {
@@ -108,11 +104,10 @@ class RentCalculatorForm extends Component<Props, State> {
   }
 
   getRequestOptions = () => {
-    const {billingPeriodMethods, showErrors, type} = this.props;
+    const {showErrors, type} = this.props;
     const {billingPeriodOptions} = this.state;
-    const options = [];
 
-    options.push({
+    return [{
       value: RentCalculatorTypes.YEAR,
       label: 'Vuosi',
       labelStyles: {minWidth: '115px'},
@@ -135,9 +130,8 @@ class RentCalculatorForm extends Component<Props, State> {
         style={{marginTop: '-10px'}}
       />,
       errorFieldStyles: {width: '180px'},
-    });
-
-    options.push({
+    },
+    {
       value: RentCalculatorTypes.RANGE,
       label: 'Aikaväli',
       labelStyles: {minWidth: '115px'},
@@ -178,40 +172,35 @@ class RentCalculatorForm extends Component<Props, State> {
         style={{marginTop: '-10px'}}
       />,
       errorFieldStyles: {width: '180px'},
-    });
-
-    if(billingPeriodMethods.GET) {
-      options.push({
-        value: RentCalculatorTypes.BILLING_PERIOD,
-        label: 'Laskutuskausi',
-        labelStyles: {minWidth: '115px'},
-        field: <FormField
-          fieldAttributes={{
-            label: 'Laskutuskausi',
-            type: 'choice',
-            read_only: false,
-          }}
-          name='billing_period'
-          disabled={type !== RentCalculatorTypes.BILLING_PERIOD}
-          disableDirty
-          disableTouched={showErrors}
-          invisibleLabel
-          overrideValues={{
-            options: billingPeriodOptions,
-          }}
-        />,
-        fieldStyles: {width: '180px'},
-        errorField: <Field
-          name='billingPeriodErrors'
-          component={ErrorField}
-          showError={true}
-          style={{marginTop: '-10px'}}
-        />,
-        errorFieldStyles: {width: '180px'},
-      });
-    }
-
-    return options;
+    },
+    {
+      value: RentCalculatorTypes.BILLING_PERIOD,
+      label: 'Laskutuskausi',
+      labelStyles: {minWidth: '115px'},
+      field: <FormField
+        fieldAttributes={{
+          label: 'Laskutuskausi',
+          type: 'choice',
+          read_only: false,
+        }}
+        name='billing_period'
+        disabled={type !== RentCalculatorTypes.BILLING_PERIOD}
+        disableDirty
+        disableTouched={showErrors}
+        invisibleLabel
+        overrideValues={{
+          options: billingPeriodOptions,
+        }}
+      />,
+      fieldStyles: {width: '180px'},
+      errorField: <Field
+        name='billingPeriodErrors'
+        component={ErrorField}
+        showError={true}
+        style={{marginTop: '-10px'}}
+      />,
+      errorFieldStyles: {width: '180px'},
+    }];
   }
 
   render() {
@@ -253,7 +242,6 @@ export default flowRight(
       return {
         billingPeriod: selector(state, 'billing_period'),
         billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
-        billingPeriodMethods: getBillingPeriodMethods(state),
         type: selector(state, 'type'),
       };
     },

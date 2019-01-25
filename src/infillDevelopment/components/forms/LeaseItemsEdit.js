@@ -7,31 +7,32 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
+import FormText from '$src/components/form/FormText';
 import LeaseItemEdit from './LeaseItemEdit';
 import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  InfillDevelopmentCompensationLeasesFieldPaths,
 } from '$src/infillDevelopment/enums';
-import {isFieldAllowedToRead} from '$util/helpers';
-import {getAttributes as getInfillDevelopmentAttributes} from '$src/infillDevelopment/selectors';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {hasPermissions} from '$util/helpers';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
-import type {Attributes} from '$src/types';
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
 
 type Props = {
   fields: any,
   infillDevelopment: InfillDevelopment,
-  infillDevelopmentAttributes: Attributes,
   isSaveClicked: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
 const LeaseItemsEdit = ({
   fields,
   infillDevelopment,
-  infillDevelopmentAttributes,
   isSaveClicked,
+  usersPermissions,
 }: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -42,6 +43,10 @@ const LeaseItemsEdit = ({
       {({dispatch}) => {
         return(
           <Fragment>
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONLEASE) &&
+              (!fields || !fields.length) &&
+              <FormText>Ei vuokrauksia</FormText>
+            }
             {!!fields && !!fields.length && fields.map((lease, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -67,7 +72,7 @@ const LeaseItemsEdit = ({
               />;
             })}
 
-            <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONLEASE)}>
               <Row>
                 <Column>
                   <AddButtonSecondary
@@ -87,7 +92,7 @@ const LeaseItemsEdit = ({
 export default connect(
   (state) => {
     return {
-      infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
+      usersPermissions: getUsersPermissions(state),
     };
   }
 )(LeaseItemsEdit);

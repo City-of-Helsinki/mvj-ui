@@ -11,6 +11,7 @@ import AddButtonThird from '$components/form/AddButtonThird';
 import Authorization from '$components/authorization/Authorization';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
+import FormText from '$src/components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -29,11 +30,12 @@ import {
   RentBasisRentRatesFieldPaths,
   RentBasisRentRatesFieldTitles,
 } from '$src/rentbasis/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getFieldAttributes,
   getFieldOptions,
+  hasPermissions,
   isEmptyValue,
-  isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
   sortByLabelDesc,
@@ -45,18 +47,21 @@ import {
   getIsSaveClicked,
   getRentBasisInitialValues,
 } from '$src/rentbasis/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type PropertyIdentifiersProps = {
   fields: any,
   isSaveClicked: boolean,
   rentBasisAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
-const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes}: PropertyIdentifiersProps): Element<*> => {
+const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes, usersPermissions}: PropertyIdentifiersProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -69,6 +74,10 @@ const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes}:
             <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER)}>
               {RentBasisPropertyIdentifiersFieldTitles.PROPERTY_IDENTIFIERS}
             </FormTextTitle>
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTPROPERTYIDENTIFIER) &&
+              (!fields || !fields.length) &&
+              <FormText>Ei kiinteistötunnuksia</FormText>
+            }
 
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
@@ -100,7 +109,7 @@ const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes}:
                         </Authorization>
                       }
                       removeButton={
-                        <Authorization allow={isFieldAllowedToEdit(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_BASISOFRENTPROPERTYIDENTIFIER)}>
                           <RemoveButton
                             className='third-level'
                             onClick={handleRemove}
@@ -114,7 +123,7 @@ const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes}:
               );
             })}
 
-            <Authorization allow={isFieldAllowedToEdit(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTPROPERTYIDENTIFIER)}>
               <Row>
                 <Column>
                   <AddButtonThird
@@ -135,9 +144,10 @@ type DecisionsProps = {
   fields: any,
   isSaveClicked: boolean,
   rentBasisAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
-const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes}: DecisionsProps): Element<*> => {
+const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes, usersPermissions}: DecisionsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -148,6 +158,10 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes}: Decisions
         return(
           <Fragment>
             <SubTitle>{RentBasisDecisionsFieldTitles.DECISIONS}</SubTitle>
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTDECISION) &&
+              (!fields || !fields.length) &&
+              <FormText>Ei sopimuksia</FormText>
+            }
             {fields && !!fields.length &&
               <Row>
                 <Column small={3} large={2}>
@@ -249,7 +263,7 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes}: Decisions
                         </Authorization>
                       }
                       removeButton={
-                        <Authorization allow={isFieldAllowedToEdit(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISIONS)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_BASISOFRENTDECISION)}>
                           <RemoveButton
                             className='third-level'
                             onClick={handleRemove}
@@ -263,7 +277,7 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes}: Decisions
               );
             })}
 
-            <Authorization allow={isFieldAllowedToEdit(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISIONS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTDECISION)}>
               <Row>
                 <Column>
                   <AddButtonThird
@@ -285,9 +299,10 @@ type RentRatesProps = {
   fields: any,
   isSaveClicked: boolean,
   rentBasisAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
-const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttributes}: RentRatesProps): Element<*> => {
+const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttributes, usersPermissions}: RentRatesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -299,6 +314,10 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
           <Fragment>
             <SubTitle>{RentBasisRentRatesFieldTitles.RENT_RATES}</SubTitle>
 
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTRATE) &&
+              (!fields || !fields.length) &&
+              <FormText>Ei hintoja</FormText>
+            }
             {fields && !!fields.length &&
               <Fragment>
                 <Row>
@@ -380,7 +399,7 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
                             </Authorization>
                           }
                           removeButton={
-                            <Authorization allow={isFieldAllowedToEdit(rentBasisAttributes, RentBasisRentRatesFieldPaths.RENT_RATES)}>
+                            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_BASISOFRENTRATE)}>
                               <RemoveButton
                                 className='third-level'
                                 onClick={handleRemove}
@@ -396,7 +415,7 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
               </Fragment>
             }
 
-            <Authorization allow={isFieldAllowedToEdit(rentBasisAttributes, RentBasisRentRatesFieldPaths.RENT_RATES)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTRATE)}>
               <Row>
                 <Column>
                   <AddButtonThird
@@ -421,6 +440,7 @@ type Props = {
   isSaveClicked: boolean,
   receiveFormValid: Function,
   rentBasisAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -477,7 +497,7 @@ class RentBasisForm extends PureComponent<Props, State> {
   }
 
   render() {
-    const {handleSubmit, isSaveClicked, rentBasisAttributes} = this.props;
+    const {handleSubmit, isSaveClicked, rentBasisAttributes, usersPermissions} = this.props;
     const {areaUnitOptions, indexOptions} = this.state;
 
     return (
@@ -525,6 +545,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 name='property_identifiers'
                 isSaveClicked={isSaveClicked}
                 rentBasisAttributes={rentBasisAttributes}
+                usersPermissions={usersPermissions}
               />
             </Authorization>
           </Column>
@@ -601,6 +622,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 name="decisions"
                 isSaveClicked={isSaveClicked}
                 rentBasisAttributes={rentBasisAttributes}
+                usersPermissions={usersPermissions}
               />
             </Column>
           </Row>
@@ -615,6 +637,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 areaUnitOptions={areaUnitOptions}
                 isSaveClicked={isSaveClicked}
                 rentBasisAttributes={rentBasisAttributes}
+                usersPermissions={usersPermissions}
               />
             </Column>
           </Row>
@@ -644,6 +667,7 @@ const mapStateToProps = (state: RootState) => {
     isFormValid: getIsFormValid(state),
     isSaveClicked: getIsSaveClicked(state),
     rentBasisAttributes: getRentBasisAttributes(state),
+    usersPermissions: getUsersPermissions(state),
   };
 };
 

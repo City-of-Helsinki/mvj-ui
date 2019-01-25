@@ -1,5 +1,5 @@
 // @flow
-import type {Attributes, Methods, Selector} from '$src/types';
+import type {Attributes, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
@@ -7,6 +7,3 @@ export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootStat
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.createCollectionLetter.attributes;
-
-export const getMethods: Selector<Attributes, void> = (state: RootState): Methods =>
-  state.createCollectionLetter.methods;

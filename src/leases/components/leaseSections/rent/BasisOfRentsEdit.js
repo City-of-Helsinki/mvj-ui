@@ -20,15 +20,18 @@ import {
   LeaseBasisOfRentsFieldPaths,
   UnarchiveBasisOfRentsText,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getFieldOptions,
+  hasPermissions,
   isEmptyValue,
-  isFieldAllowedToEdit,
   sortByLabelDesc,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   archived: boolean,
@@ -38,6 +41,7 @@ type Props = {
   leaseAttributes: Attributes,
   onArchive?: Function,
   onUnarchive?: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -83,13 +87,20 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
   }
 
   render() {
-    const {archived, fields, isSaveClicked, leaseAttributes, onArchive, onUnarchive} = this.props;
+    const {
+      archived,
+      fields,
+      isSaveClicked,
+      onArchive,
+      onUnarchive,
+      usersPermissions,
+    } = this.props;
     const {areaUnitOptions, indexOptions, intendedUseOptions} = this.state;
 
     if(!archived && (!fields || !fields.length)) {
       return(
         <Authorization
-          allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}
+          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT)}
           errorComponent={<FormText className='no-margin'>Ei vuokralaskureita</FormText>}
         >
           <Row>
@@ -151,7 +162,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                         areaUnitOptions={areaUnitOptions}
                         field={field}
                         indexOptions={indexOptions}
-                        intendedUseOption={intendedUseOptions}
+                        intendedUseOptions={intendedUseOptions}
                         isSaveClicked={isSaveClicked}
                         onRemove={handleRemove}
                         onUnarchive={handleUnarchive}
@@ -208,7 +219,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                   })}
                 </BoxItemContainer>
 
-                <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT)}>
                   <Row>
                     <Column>
                       <AddButtonSecondary
@@ -232,6 +243,7 @@ export default connect(
   (state) => {
     return {
       leaseAttributes: getLeaseAttributes(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

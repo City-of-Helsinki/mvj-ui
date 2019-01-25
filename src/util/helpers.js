@@ -15,6 +15,7 @@ import ToastrIcons from '$components/toastr/ToastrIcons';
 import {Breakpoints} from '$src/foundation/enums';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions} from '$src/usersPermissions/types';
 
 /* global API_URL */
 
@@ -489,7 +490,6 @@ export const isFieldRequired = (attributes: Attributes, field: string) =>
 export const isFieldAllowedToEdit = (attributes: Attributes, field: string) =>
   get(attributes, `${field}.read_only`) === false ? true : false;
 
-
 /**
  * Check has user read permissions to field
  * @param attributes
@@ -499,6 +499,16 @@ export const isFieldAllowedToEdit = (attributes: Attributes, field: string) =>
 
 export const isFieldAllowedToRead = (attributes: Attributes, field: string) =>
   get(attributes, field) ? true : false;
+
+/**
+ * Check has user permission to do action
+ * @param permissions
+ * @param key
+ * @returns {boolean}
+ */
+
+export const hasPermissions = (permissions: UsersPermissions, key: string) =>
+  permissions && permissions.find((permission) => permission.codename === key) ? true : false;
 
 /**
  * Get options for attribute field

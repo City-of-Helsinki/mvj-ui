@@ -19,11 +19,13 @@ import {
   LeaseRentContractRentsFieldTitles,
   RentTypes,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   formatNumber,
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
+  hasPermissions,
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
@@ -33,9 +35,11 @@ import {
   getAttributes as getLeaseAttributes,
   getIsSaveClicked,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   contractRent: Object,
@@ -47,9 +51,20 @@ type Props = {
   rentField: string,
   rentType: string,
   showRemove: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
-const ContractRent = ({contractRent, field, isSaveClicked, largeScreen, leaseAttributes, onRemove, rentType, showRemove}: Props) => {
+const ContractRent = ({
+  contractRent,
+  field,
+  isSaveClicked,
+  largeScreen,
+  leaseAttributes,
+  onRemove,
+  rentType,
+  showRemove,
+  usersPermissions,
+}: Props) => {
   const getAmountText = () => {
     if(isEmptyValue(contractRent.amount)) return null;
 
@@ -199,7 +214,7 @@ const ContractRent = ({contractRent, field, isSaveClicked, largeScreen, leaseAtt
         </Column>
         <Column>
           {showRemove &&
-            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONTRACTRENT)}>
               <RemoveButton
                 className='third-level'
                 onClick={onRemove}
@@ -217,7 +232,7 @@ const ContractRent = ({contractRent, field, isSaveClicked, largeScreen, leaseAtt
         <BoxContentWrapper>
           {showRemove &&
             <ActionButtonWrapper>
-              <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONTRACTRENT)}>
                 <RemoveButton
                   onClick={onRemove}
                   title="Poista sopimusvuokra"
@@ -378,6 +393,7 @@ export default flowRight(
         contractRent: selector(state, props.field),
         isSaveClicked: getIsSaveClicked(state),
         leaseAttributes: getLeaseAttributes(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
   ),

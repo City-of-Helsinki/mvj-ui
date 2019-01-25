@@ -37,9 +37,11 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getFieldAttributes,
   getSearchQuery,
+  hasPermissions,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
@@ -50,8 +52,10 @@ import {
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type PlanUnitsProps = {
   attributes: Attributes,
@@ -63,6 +67,7 @@ type PlanUnitsProps = {
   noDataText: string,
   onCollapseToggle: Function,
   title: string,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderPlanUnits = ({
@@ -76,6 +81,7 @@ const renderPlanUnits = ({
   noDataText,
   onCollapseToggle,
   title,
+  usersPermissions,
 }: PlanUnitsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({
@@ -127,7 +133,7 @@ const renderPlanUnits = ({
               })}
             </BoxItemContainer>
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_PLANUNIT)}>
               <Row>
                 <Column>
                   <AddButtonSecondary
@@ -156,6 +162,7 @@ type PlotsProps = {
   onCollapseToggle: Function,
   plotsData: Array<Object>,
   title: string,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderPlots = ({
@@ -170,6 +177,7 @@ const renderPlots = ({
   onCollapseToggle,
   plotsData,
   title,
+  usersPermissions,
 }: PlotsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({
@@ -222,7 +230,7 @@ const renderPlots = ({
               })}
             </BoxItemContainer>
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_PLOT)}>
               <Row>
                 <Column>
                   <AddButtonSecondary
@@ -246,6 +254,7 @@ type AddressProps = {
   field: string,
   isSaveClicked: boolean,
   onRemove: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 const Address = ({
@@ -254,6 +263,7 @@ const Address = ({
   field,
   isSaveClicked,
   onRemove,
+  usersPermissions,
 }: AddressProps) => {
   const handleAddressChange = (details: Object) => {
     change(formName, `${field}.postal_code`, details.postalCode);
@@ -297,7 +307,7 @@ const Address = ({
         </Authorization>
       </Column>
       <Column small={1}>
-        <Authorization allow={isFieldAllowedToEdit(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEAREAADDRESS)}>
           <RemoveButton
             className='third-level'
             onClick={onRemove}
@@ -314,9 +324,10 @@ type AddressesProps = {
   change: Function,
   fields: any,
   isSaveClicked: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
-const AddressItems = ({attributes, change, fields, isSaveClicked}: AddressesProps): Element<*> => {
+const AddressItems = ({attributes, change, fields, isSaveClicked, usersPermissions}: AddressesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -374,11 +385,12 @@ const AddressItems = ({attributes, change, fields, isSaveClicked}: AddressesProp
                   field={field}
                   isSaveClicked={isSaveClicked}
                   onRemove={handleRemove}
+                  usersPermissions={usersPermissions}
                 />
               );
             })}
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREAADDRESS)}>
               <Row>
                 <Column>
                   <AddButtonThird
@@ -410,6 +422,7 @@ type Props = {
   receiveCollapseStates: Function,
   router: Object,
   savedArea: Object,
+  usersPermissions: UsersPermissionsType,
 }
 
 class LeaseAreaEdit extends PureComponent<Props> {
@@ -505,6 +518,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
       plotsContractCollapseState,
       plotsCurrentCollapseState,
       savedArea,
+      usersPermissions,
     } = this.props;
     const mapLinkUrl = this.getMapLinkUrl();
 
@@ -568,6 +582,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
               component={AddressItems}
               isSaveClicked={isSaveClicked}
               name={`${field}.addresses`}
+              usersPermissions={usersPermissions}
             />
           </Authorization>
         </BoxContentWrapper>
@@ -587,6 +602,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 onCollapseToggle={this.handlePlotsContractCollapseToggle}
                 plotsData={get(savedArea, 'plots_contract', [])}
                 title='Kiinteistöt / määräalat sopimuksessa'
+                usersPermissions={usersPermissions}
               />
             </Column>
             <Column small={12} large={6}>
@@ -602,6 +618,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 onCollapseToggle={this.handlePlotsCurrentCollapseToggle}
                 plotsData={get(savedArea, 'plots_current', [])}
                 title='Kiinteistöt / määräalat nykyhetkellä'
+                usersPermissions={usersPermissions}
               />
             </Column>
           </Row>
@@ -621,6 +638,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 noDataText='Ei kaavayksiköitä sopimuksessa'
                 onCollapseToggle={this.handlePlanUnitContractCollapseToggle}
                 title='Kaavayksiköt sopimuksessa'
+                usersPermissions={usersPermissions}
               />
             </Column>
             <Column small={12} large={6}>
@@ -635,6 +653,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 noDataText='Ei kaavayksiköitä nykyhetkellä'
                 onCollapseToggle={this.handlePlanUnitCurrentCollapseToggle}
                 title='Kaavayksiköt nykyhetkellä'
+                usersPermissions={usersPermissions}
               />
             </Column>
           </Row>
@@ -663,6 +682,7 @@ export default flowRight(
         planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plan_units_current`),
         plotsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plots_contract`),
         plotsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plots_current`),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

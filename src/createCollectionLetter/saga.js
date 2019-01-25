@@ -3,7 +3,6 @@ import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {
   receiveAttributes,
-  receiveMethods,
   attributesNotFound,
 } from './actions';
 import {fetchAttributes} from './requests';
@@ -16,10 +15,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         const attributes = bodyAsJson.fields;
-        const methods = bodyAsJson.methods;
 
         yield put(receiveAttributes(attributes));
-        yield put(receiveMethods(methods));
         break;
       default:
         yield put(attributesNotFound());

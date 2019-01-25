@@ -6,6 +6,8 @@ import {GeoJSON} from 'react-leaflet';
 import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 
 import {convertAreaNoteListToGeoJson, convertFeatureToFeatureCollection} from '$src/areaNote/helpers';
+import {getUserFullName} from '$src/users/helpers';
+import {formatDate} from '$src/util/helpers';
 import {
   getAreaNoteList,
   getIsEditMode,
@@ -100,10 +102,10 @@ class AreaNotesLayer extends Component<Props, State> {
         // Add this coodination convert function if want to to use EPSG:3879 projection
         // coordsToLatLng={getCoordsToLatLng(areaNotesGeoJson)}
         onEachFeature={(feature, layer) => {
-          if (feature.properties && feature.properties.note) {
+          if (feature.properties) {
             const popupContent = `<p>
-              <strong>Muistettava ehto</strong><br/>
-              ${feature.properties.note}
+              <strong>${formatDate(feature.properties.modified_at)} ${getUserFullName(feature.properties.user)}</strong><br/>
+              ${feature.properties.note || '-'}
             </p>`;
             layer.bindPopup(popupContent);
           }

@@ -2,10 +2,6 @@
 import {expect} from 'chai';
 
 import {
-  fetchAttributes,
-  attributesNotFound,
-  receiveAttributes,
-  receiveMethods,
   fetchPreviewInvoices,
   receivePreviewInvoices,
   clearPreviewInvoices,
@@ -16,11 +12,8 @@ import previewInvoicesReducer from './reducer';
 import type {PreviewInvoicesState} from './types';
 
 const defaultState: PreviewInvoicesState = {
-  attributes: {},
   isFetching: false,
-  isFetchingAttributes: false,
   list: null,
-  methods: {},
 };
 
 // $FlowFixMe
@@ -33,39 +26,6 @@ describe('Preview invoices', () => {
     describe('previewInvoicesReducer', () => {
 
       // $FlowFixMe
-      it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
-        const newState = {...defaultState, isFetchingAttributes: true};
-
-        const state = previewInvoicesReducer({}, fetchAttributes());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isFetchingAttributes flag to true by attributesNotFound', () => {
-        const newState = {...defaultState, isFetchingAttributes: false};
-
-        let state = previewInvoicesReducer({}, fetchAttributes());
-        state = previewInvoicesReducer(state, attributesNotFound());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update attributes', () => {
-        const dummyAttributes = {foo: 'bar'};
-
-        const newState = {...defaultState, attributes: dummyAttributes};
-
-        const state = previewInvoicesReducer({}, receiveAttributes(dummyAttributes));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update methods', () => {
-        const dummyMethods = {foo: 'bar'};
-
-        const newState = {...defaultState, methods: dummyMethods};
-
-        const state = previewInvoicesReducer({}, receiveMethods(dummyMethods));
-        expect(state).to.deep.equal(newState);
-      });
-
       it('should clear preview invoices', () => {
         const dummyPreviewInvoices = [
           {

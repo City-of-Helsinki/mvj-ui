@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import classNames from 'classnames';
 import {formValueSelector, isValid} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
@@ -14,20 +15,22 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {fetchPreviewInvoices} from '$src/previewInvoices/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {ButtonColors, FormNames} from '$components/enums';
-import {InvoiceFieldPaths, InvoiceRowsFieldPaths} from '../../invoices/enums';
+import {InvoiceFieldPaths, InvoiceRowsFieldPaths} from '$src/invoices/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentPreviewInvoiceBillingPeriods} from '$components/helpers';
-import {getFieldOptions} from '$util/helpers';
+import {getFieldOptions, hasPermissions} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 import {
   getIsFetching,
-  getMethods as getPreviewInvoicesMethods,
   getPreviewInvoices,
 } from '$src/previewInvoices/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {PreviewInvoices} from '$src/previewInvoices/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   currentLease: Lease,
@@ -36,7 +39,7 @@ type Props = {
   isFetching: boolean,
   isValid: boolean,
   previewInvoices: PreviewInvoices,
-  previewInvoicesMethods: Methods,
+  usersPermissions: UsersPermissionsType,
   year: number,
 }
 
@@ -47,6 +50,7 @@ type State = {
   invoiceTypeOptions: Array<Object>,
   previewInvoices: PreviewInvoices,
 }
+
 class InvoiceSimulator extends Component<Props, State> {
   state = {
     billingPeriods: null,
@@ -80,10 +84,12 @@ class InvoiceSimulator extends Component<Props, State> {
   };
 
   render() {
-    const {isFetching, isValid, previewInvoicesMethods} = this.props;
+    const {isFetching, isValid, usersPermissions} = this.props;
     const {billingPeriods, invoiceReceivableTypeOptions, invoiceTypeOptions} = this.state;
 
-    if(!previewInvoicesMethods.GET) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+    if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
+      return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+    }
 
     return(
       <div className='invoice-simulator'>
@@ -105,7 +111,7 @@ class InvoiceSimulator extends Component<Props, State> {
         }
         {((billingPeriods && !!billingPeriods.length) || isFetching) &&
 
-          <div className='invoice-simulator__container'>
+          <div className={classNames('invoice-simulator__container', {'is-loading': isFetching && (!billingPeriods || !billingPeriods.length)})}>
             {isFetching &&
               <LoaderWrapper className='relative-overlay-wrapper'>
                 <Loader isLoading={isFetching} />
@@ -141,7 +147,7 @@ export default connect(
       isFetching: getIsFetching(state),
       isValid: isValid(formName)(state),
       previewInvoices: getPreviewInvoices(state),
-      previewInvoicesMethods: getPreviewInvoicesMethods(state),
+      usersPermissions: getUsersPermissions(state),
       year: selector(state, 'invoice_simulator_year'),
     };
   },

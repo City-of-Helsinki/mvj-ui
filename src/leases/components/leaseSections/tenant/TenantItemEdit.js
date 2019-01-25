@@ -39,10 +39,12 @@ import {
   LeaseTenantsFieldTitles,
   TenantContactType,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   formatDateRange,
   formatNumber,
   getFieldAttributes,
+  hasPermissions,
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
@@ -52,25 +54,27 @@ import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const ContactType = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
 
 type OtherTenantsProps = {
-  attributes: Attributes,
   contactType: ContactType,
   fields: any,
   showAddButton: boolean,
   tenant: Object,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderOtherTenants = ({
-  attributes,
   contactType,
   fields,
   showAddButton,
   tenant,
+  usersPermissions,
 }: OtherTenantsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -106,7 +110,7 @@ const renderOtherTenants = ({
               );
             })}
             {showAddButton &&
-              <Authorization allow={isFieldAllowedToEdit(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_TENANTCONTACT)}>
                 <Row>
                   <Column>
                     <AddButtonSecondary
@@ -143,6 +147,7 @@ type Props = {
   showContactModal: Function,
   tenantId: number,
   tenants: Array<Object>,
+  usersPermissions: UsersPermissionsType,
 }
 
 const TenantItemEdit = ({
@@ -163,6 +168,7 @@ const TenantItemEdit = ({
   showContactModal,
   tenantId,
   tenants,
+  usersPermissions,
 }: Props) => {
   const getTenantById = (id: number) => {
     return id ? tenants.find((tenant) => tenant.id === id) : {};
@@ -246,7 +252,7 @@ const TenantItemEdit = ({
           {getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}
         </Authorization>
       }
-      onRemove={isFieldAllowedToEdit(attributes, LeaseTenantsFieldPaths.TENANTS) ? onRemove : null}
+      onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_TENANT) ? onRemove : null}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
@@ -386,20 +392,20 @@ const TenantItemEdit = ({
 
         <FieldArray
           component={renderOtherTenants}
-          attributes={attributes}
           contactType={TenantContactType.BILLING}
           name={`${field}.billing_persons`}
           showAddButton={!archived}
           tenant={savedTenant}
+          usersPermissions={usersPermissions}
         />
 
         <FieldArray
           component={renderOtherTenants}
-          attributes={attributes}
           contactType={TenantContactType.CONTACT}
           name={`${field}.contact_persons`}
           showAddButton={!archived}
           tenant={savedTenant}
+          usersPermissions={usersPermissions}
         />
       </Authorization>
     </Collapse>
@@ -422,6 +428,7 @@ export default connect(
       shareDenominator: selector(state, `${props.field}.share_denominator`),
       shareNumerator: selector(state, `${props.field}.share_numerator`),
       tenantId: id,
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

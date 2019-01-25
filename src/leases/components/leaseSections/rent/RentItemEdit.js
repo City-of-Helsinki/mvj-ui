@@ -30,12 +30,13 @@ import {
   RentDueDateTypes,
   RentTypes,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {isRentActive, isRentArchived} from '$src/leases/helpers';
 import {
   formatDateRange,
   getFieldOptions,
   getLabelOfOption,
-  isFieldAllowedToEdit,
+  hasPermissions,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {
@@ -44,8 +45,10 @@ import {
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   change: Function,
@@ -69,6 +72,7 @@ type Props = {
   rentId: number,
   rents: Array<Object>,
   rentType: ?string,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -88,7 +92,7 @@ type State = {
 }
 
 const getRentById = (rents: Array<Object>, id: number) => {
-  if(!id) return {};
+  if(!id) return null;
 
   return rents.find((rent) => rent.id === id);
 };
@@ -280,6 +284,7 @@ class RentItemEdit extends PureComponent<Props, State> {
       rentAdjustmentsCollapseState,
       rentCollapseState,
       rentType,
+      usersPermissions,
     } = this.props;
     const {
       active,
@@ -313,7 +318,7 @@ class RentItemEdit extends PureComponent<Props, State> {
             </Authorization>
           </Column>
         }
-        onRemove={isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.RENTS) ? this.handleRemove : null}
+        onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_RENT) ? this.handleRemove : null}
         onToggle={this.handleRentCollapseToggle}
       >
         <FormSection name={field}>
@@ -432,6 +437,7 @@ export default connect(
       rentAdjustments: selector(state, `${props.field}.rent_adjustments`),
       rentId: id,
       rentType: selector(state, `${props.field}.type`),
+      usersPermissions: getUsersPermissions(state),
     };
 
     if(id) {

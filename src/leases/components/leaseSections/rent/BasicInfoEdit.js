@@ -28,19 +28,23 @@ import {
   RentTypes,
   RentDueDateTypes,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {formatDueDates, formatSeasonalDate} from '$src/leases/helpers';
 import {
   getFieldAttributes,
+  hasPermissions,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getLeaseTypeList} from '$src/leaseType/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const formName = FormNames.RENTS;
 const selector = formValueSelector(formName);
@@ -163,9 +167,16 @@ type DueDatesProps = {
   fields: any,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
-const renderDueDates = ({dueDates, fields, isSaveClicked, leaseAttributes}: DueDatesProps): Element<*> => {
+const renderDueDates = ({
+  dueDates,
+  fields,
+  isSaveClicked,
+  leaseAttributes,
+  usersPermissions,
+}: DueDatesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -220,7 +231,7 @@ const renderDueDates = ({dueDates, fields, isSaveClicked, leaseAttributes}: DueD
                         </Authorization>
                       }
                       removeButton={
-                        <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_RENT_DUE_DATES)}>
                           <RemoveButton
                             className='third-level'
                             onClick={handleRemove}
@@ -237,7 +248,7 @@ const renderDueDates = ({dueDates, fields, isSaveClicked, leaseAttributes}: DueD
         })}
       </Authorization>
 
-      <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+      <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_RENT_DUE_DATES)}>
         <Row>
           <Column>
             <AddButtonThird
@@ -251,7 +262,7 @@ const renderDueDates = ({dueDates, fields, isSaveClicked, leaseAttributes}: DueD
   );
 };
 
-const renderDueDatesOneTime = ({dueDates, fields, isSaveClicked, leaseAttributes}: DueDatesProps): Element<*> => {
+const renderDueDatesOneTime = ({dueDates, fields, isSaveClicked, leaseAttributes, usersPermissions}: DueDatesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -307,7 +318,7 @@ const renderDueDatesOneTime = ({dueDates, fields, isSaveClicked, leaseAttributes
         })}
       </Authorization>
       {(!fields || !fields.length) &&
-        <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_RENT_DUE_DATES)}>
           <Row>
             <Column>
               <AddButtonThird
@@ -352,6 +363,7 @@ type BasicInfoIndexProps = {
   isIndex: boolean,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
   yearlyDueDates: Array<Object>,
 }
 
@@ -363,6 +375,7 @@ const BasicInfoIndex = ({
   isIndex,
   isSaveClicked,
   leaseAttributes,
+  usersPermissions,
   yearlyDueDates,
 }: BasicInfoIndexProps) => {
   return (
@@ -441,6 +454,7 @@ const BasicInfoIndex = ({
               isSaveClicked={isSaveClicked}
               leaseAttributes={leaseAttributes}
               name="due_dates"
+              usersPermissions={usersPermissions}
             />
           </Column>
         }
@@ -530,9 +544,16 @@ type BasicInfoOneTimeProps = {
   dueDatesType: ?string,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
-const BasicInfoOneTime = ({dueDates, dueDatesType, isSaveClicked, leaseAttributes}: BasicInfoOneTimeProps) => {
+const BasicInfoOneTime = ({
+  dueDates,
+  dueDatesType,
+  isSaveClicked,
+  leaseAttributes,
+  usersPermissions,
+}: BasicInfoOneTimeProps) => {
   return (
     <Fragment>
       <Row>
@@ -600,6 +621,7 @@ const BasicInfoOneTime = ({dueDates, dueDatesType, isSaveClicked, leaseAttribute
               isSaveClicked={isSaveClicked}
               leaseAttributes={leaseAttributes}
               name="due_dates"
+              usersPermissions={usersPermissions}
             />
           </Column>
         }
@@ -627,6 +649,7 @@ type BasicInfoFixedProps = {
   field: string,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
   yearlyDueDates: Array<Object>,
 }
 
@@ -636,6 +659,7 @@ const BasicInfoFixed = ({
   field,
   isSaveClicked,
   leaseAttributes,
+  usersPermissions,
   yearlyDueDates,
 }: BasicInfoFixedProps) => {
   return (
@@ -690,6 +714,7 @@ const BasicInfoFixed = ({
               isSaveClicked={isSaveClicked}
               leaseAttributes={leaseAttributes}
               name="due_dates"
+              usersPermissions={usersPermissions}
             />
           </Column>
         }
@@ -814,6 +839,7 @@ type Props = {
   leaseAttributes: Attributes,
   leaseTypes: LeaseTypeList,
   rentType: ?string,
+  usersPermissions: UsersPermissionsType,
 }
 
 const BasicInfoEdit = ({
@@ -827,6 +853,7 @@ const BasicInfoEdit = ({
   leaseAttributes,
   leaseTypes,
   rentType,
+  usersPermissions,
 }: Props) => {
   const getYearlyDueDates = () => {
     const leaseTypeId = get(currentLease, 'type.id');
@@ -856,6 +883,7 @@ const BasicInfoEdit = ({
           isIndex={true}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
+          usersPermissions={usersPermissions}
           yearlyDueDates={yearlyDueDates}
         />
       }
@@ -865,6 +893,7 @@ const BasicInfoEdit = ({
           dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
+          usersPermissions={usersPermissions}
         />
       }
       {rentType === RentTypes.FIXED &&
@@ -874,6 +903,7 @@ const BasicInfoEdit = ({
           field={field}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
+          usersPermissions={usersPermissions}
           yearlyDueDates={yearlyDueDates}
         />
       }
@@ -892,6 +922,7 @@ const BasicInfoEdit = ({
           isIndex={false}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
+          usersPermissions={usersPermissions}
           yearlyDueDates={yearlyDueDates}
         />
       }
@@ -909,6 +940,7 @@ export default connect(
       dueDates: selector(state, `${props.field}.due_dates`),
       leaseAttributes: getLeaseAttributes(state),
       leaseTypes: getLeaseTypeList(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {
