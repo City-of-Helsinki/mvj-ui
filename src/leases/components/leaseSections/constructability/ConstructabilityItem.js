@@ -5,16 +5,12 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
-import BoxItem from '$components/content/BoxItem';
-import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
-import ExternalLink from '$components/links/ExternalLink';
+import Comments from './Comments';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import ListItem from '$components/content/ListItem';
 import StatusIndicator from './StatusIndicator';
-import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {
@@ -23,14 +19,12 @@ import {
   LeaseAreasFieldPaths,
   LeaseAreasFieldTitles,
   LeaseConstructabilityDescriptionsFieldPaths,
-  LeaseConstructabilityDescriptionsFieldTitles,
 } from '$src/leases/enums';
 import {getFullAddress} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
   getLabelOfOption,
-  getReferenceNumberLink,
   isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -38,55 +32,6 @@ import {getUserFullName} from '$src/users/helpers';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
-
-type CommentsProps = {
-  attributes: Attributes,
-  comments: ?Array<Object>,
-}
-
-const Comments = ({
-  attributes,
-  comments,
-}: CommentsProps) =>
-  <Fragment>
-    <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
-    {comments && !!comments.length
-      ? (
-        <BoxItemContainer>
-          {comments.map((comment) =>
-            <BoxItem
-              className='no-border-on-last-child'
-              key={comment.id}>
-              <Row>
-                <Column small={12}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
-                    <ListItem>{comment.text || ''}</ListItem>
-                  </Authorization>
-                  <FormText>
-                    <strong>{getUserFullName(comment.user)}</strong>
-                    {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
-                      {comment.ahjo_reference_number &&
-                        <span>,&nbsp;
-                          <ExternalLink
-                            className='no-margin'
-                            href={getReferenceNumberLink(comment.ahjo_reference_number)}
-                            text={comment.ahjo_reference_number}
-                          />
-                        </span>
-                      }
-                    </Authorization>
-                  </FormText>
-                </Column>
-              </Row>
-            </BoxItem>
-          )}
-        </BoxItemContainer>
-      ) : (
-        <FormText><em>Ei huomautuksia.</em></FormText>
-      )
-    }
-  </Fragment>;
 
 type Props = {
   area: Object,
@@ -241,7 +186,7 @@ const ConstructabilityItem = ({
         showTitleOnOpen={true}
       >
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
-          <Comments attributes={attributes} comments={area.descriptionsPreconstruction} />
+          <Comments comments={area.descriptionsPreconstruction} />
         </Authorization>
       </Collapse>
 
@@ -263,7 +208,7 @@ const ConstructabilityItem = ({
         showTitleOnOpen={true}
       >
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
-          <Comments attributes={attributes} comments={area.descriptionsDemolition} />
+          <Comments comments={area.descriptionsDemolition} />
         </Authorization>
       </Collapse>
 
@@ -318,7 +263,7 @@ const ConstructabilityItem = ({
         </Row>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
-          <Comments attributes={attributes} comments={area.descriptionsPollutedLand} />
+          <Comments comments={area.descriptionsPollutedLand} />
         </Authorization>
       </Collapse>
 
@@ -365,7 +310,7 @@ const ConstructabilityItem = ({
         </Row>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
-          <Comments attributes={attributes} comments={area.descriptionsReport} />
+          <Comments comments={area.descriptionsReport} />
         </Authorization>
       </Collapse>
 
@@ -385,7 +330,7 @@ const ConstructabilityItem = ({
         showTitleOnOpen={true}
       >
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
-          <Comments attributes={attributes} comments={area.descriptionsOther} />
+          <Comments comments={area.descriptionsOther} />
         </Authorization>
       </Collapse>
     </Collapse>

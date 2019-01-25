@@ -2,10 +2,6 @@
 import {expect} from 'chai';
 
 import {
-  fetchAttributes,
-  attributesNotFound,
-  receiveAttributes,
-  receiveMethods,
   receiveRentForPeriodByLease,
   deleteRentForPeriodByLease,
   fetchRentForPeriodByLease,
@@ -17,12 +13,9 @@ import rentForPeriodReducer from './reducer';
 import type {RentForPeriodState} from './types';
 
 const defaultState: RentForPeriodState = {
-  attributes: {},
   byLease: {},
   isFetching: false,
-  isFetchingAttributes: false,
   isSaveClicked: false,
-  methods: {},
 };
 
 // $FlowFixMe
@@ -35,39 +28,6 @@ describe('Rent for period', () => {
     describe('rentForPeriodReducer', () => {
 
       // $FlowFixMe
-      it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
-        const newState = {...defaultState, isFetchingAttributes: true};
-
-        const state = rentForPeriodReducer({}, fetchAttributes());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isFetchingAttributes flag to true by attributesNotFound', () => {
-        const newState = {...defaultState, isFetchingAttributes: false};
-
-        let state = rentForPeriodReducer({}, fetchAttributes());
-        state = rentForPeriodReducer(state, attributesNotFound());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update attributes', () => {
-        const dummyAttributes = {foo: 'bar'};
-
-        const newState = {...defaultState, attributes: dummyAttributes};
-
-        const state = rentForPeriodReducer({}, receiveAttributes(dummyAttributes));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update methods', () => {
-        const dummyMethods = {foo: 'bar'};
-
-        const newState = {...defaultState, methods: dummyMethods};
-
-        const state = rentForPeriodReducer({}, receiveMethods(dummyMethods));
-        expect(state).to.deep.equal(newState);
-      });
-
       it('should update rent for period list', () => {
         const leaseId = 1;
         const dummyRentForPeriod = {

@@ -13,20 +13,21 @@ import DecisionItemEdit from './DecisionItemEdit';
 import FormText from '$components/form/FormText';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseDecisionsFieldPaths} from '$src/leases/enums';
-import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
-import {isFieldAllowedToEdit} from '$util/helpers';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {hasPermissions} from '$util/helpers';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type DecisionsProps = {
   fields: any,
-  leaseAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderDecisions = ({
   fields,
-  leaseAttributes,
+  usersPermissions,
 }: DecisionsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -37,7 +38,8 @@ const renderDecisions = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            {!isFieldAllowedToEdit(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS) && (!fields || !fields.length) &&
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_DECISIONS) &&
+              (!fields || !fields.length) &&
               <FormText className='no-margin'>Ei päätöksiä</FormText>
             }
             {fields && !!fields.length && fields.map((decision, index) => {
@@ -61,7 +63,7 @@ const renderDecisions = ({
                 onRemove={handleRemove}
               />;
             })}
-            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_DECISIONS)}>
               <Row>
                 <Column>
                   <AddButton
@@ -79,8 +81,8 @@ const renderDecisions = ({
 };
 
 type Props = {
-  leaseAttributes: Attributes,
   receiveFormValidFlags: Function,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -97,14 +99,14 @@ class DecisionsEdit extends PureComponent<Props> {
   }
 
   render() {
-    const {leaseAttributes} = this.props;
+    const {usersPermissions} = this.props;
 
     return (
       <form>
         <FieldArray
           component={renderDecisions}
-          leaseAttributes={leaseAttributes}
           name="decisions"
+          usersPermissions={usersPermissions}
         />
       </form>
     );
@@ -117,7 +119,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        leaseAttributes: getLeaseAttributes(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

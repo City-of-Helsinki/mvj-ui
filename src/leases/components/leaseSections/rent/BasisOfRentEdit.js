@@ -21,6 +21,7 @@ import {
   LeaseBasisOfRentsFieldPaths,
   LeaseBasisOfRentsFieldTitles,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getSavedBasisOfRent} from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
@@ -31,6 +32,7 @@ import {
   formatNumber,
   getFieldAttributes,
   getLabelOfOption,
+  hasPermissions,
   isDecimalNumberStr,
   isEmptyValue,
   isFieldAllowedToEdit,
@@ -38,9 +40,11 @@ import {
   isFieldRequired,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   amountPerArea: ?number,
@@ -64,6 +68,7 @@ type Props = {
   onUnarchive?: Function,
   plansInspectedAt: ?string,
   profitMarginPercentage: ?string,
+  usersPermissions: UsersPermissionsType,
 }
 
 const BasisOfRentEdit = ({
@@ -88,6 +93,7 @@ const BasisOfRentEdit = ({
   onUnarchive,
   plansInspectedAt,
   profitMarginPercentage,
+  usersPermissions,
 }: Props) => {
   const getIndexValue = () => {
     if(!index || !indexOptions.length) return null;
@@ -319,7 +325,7 @@ const BasisOfRentEdit = ({
       areaUnitOptions={areaUnitOptions}
       basisOfRent={savedBasisOfRent}
       indexOptions={indexOptions}
-      intendedUseOptions={[]}
+      intendedUseOptions={intendedUseOptions}
       onRemove={onRemove}
       onUnarchive={handleUnarchive}
     />;
@@ -329,15 +335,13 @@ const BasisOfRentEdit = ({
     <BoxItem className='no-border-on-first-child'>
       <BoxContentWrapper>
         <ActionButtonWrapper>
-          <CopyToClipboardButton
-            onClick={handleCopyToClipboard}
-          />
+          <CopyToClipboardButton onClick={handleCopyToClipboard} />
           <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.ARCHIVED_AT)}>
             {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at &&
               <ArchiveButton onClick={handleArchive}/>
             }
           </Authorization>
-          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEBASISOFRENT)}>
             <RemoveButton
               onClick={onRemove}
               title="Poista vuokranperuste"
@@ -621,6 +625,7 @@ export default connect(
       lockedAt: selector(state, `${props.field}.locked_at`),
       plansInspectedAt: selector(state, `${props.field}.plans_inspected_at`),
       profitMarginPercentage: selector(state, `${props.field}.profit_margin_percentage`),
+      usersPermissions: getUsersPermissions(state),
     };
   },
 )(BasisOfRentEdit);

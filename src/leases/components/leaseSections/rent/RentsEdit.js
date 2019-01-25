@@ -30,33 +30,34 @@ import {
   LeaseRentsFieldPaths,
   LeaseRentsFieldTitles,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateRentForm} from '$src/leases/formValidators';
 import {getContentRentsFormData} from '$src/leases/helpers';
-import {isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
+import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
-import {getMethods as getRentForPeriodMethods} from '$src/rentForPeriod/selectors';
-import {getMethods as getSetRentInfoCompletionStateMethods} from '$src/setRentInfoCompletionState/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type RentsProps = {
   archived: boolean,
   fields: any,
-  leaseAttributes: Attributes,
   rents: Array<Object>,
+  usersPermissions: UsersPermissionsType,
 };
 
 const renderRents = ({
   archived,
   fields,
-  leaseAttributes,
   rents,
+  usersPermissions,
 }:RentsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({
@@ -69,7 +70,7 @@ const renderRents = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            {!isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.RENTS) &&
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_RENT) &&
               !archived &&
               (!fields || !fields.length) &&
               <FormText className='no-margin'>Ei vuokria</FormText>
@@ -100,7 +101,7 @@ const renderRents = ({
               />;
             })}
             {!archived &&
-              <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RENT)}>
                 <Row>
                   <Column>
                     <AddButton
@@ -128,10 +129,9 @@ type Props = {
   leaseAttributes: Attributes,
   params: Object,
   receiveFormValidFlags: Function,
-  rentForPeriodMethods: Methods,
   setRentInfoComplete: Function,
-  setRentInfoCompletionStateMethods: Methods,
   setRentInfoUncomplete: Function,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -218,8 +218,7 @@ class RentsEdit extends PureComponent<Props, State> {
       isRentInfoComplete,
       isSaveClicked,
       leaseAttributes,
-      rentForPeriodMethods,
-      setRentInfoCompletionStateMethods,
+      usersPermissions,
     } = this.props;
     const {rentsData} = this.state;
     const rents = get(rentsData, 'rents', []),
@@ -258,38 +257,39 @@ class RentsEdit extends PureComponent<Props, State> {
             <form>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>
                 <h2>{LeaseRentsFieldTitles.RENTS}</h2>
-                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
-                  <RightSubtitle
-                    buttonComponent={
-                      <Authorization allow={setRentInfoCompletionStateMethods.POST}>
-                        {isRentInfoComplete
-                          ? <Button
-                            className={ButtonColors.NEUTRAL}
-                            onClick={handleSetRentInfoUncomplete}
-                            text='Merkitse keskeneräisiksi'
-                          />
-                          : <Button
-                            className={ButtonColors.NEUTRAL}
-                            onClick={handleSetRentInfoComplete}
-                            text='Merkitse valmiiksi'
-                          />
-                        }
-                      </Authorization>
-                    }
-                    text={isRentInfoComplete
+
+                <RightSubtitle
+                  buttonComponent={
+                    <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_IS_RENT_INFO_COMPLETE)}>
+                      {isRentInfoComplete
+                        ? <Button
+                          className={ButtonColors.NEUTRAL}
+                          onClick={handleSetRentInfoUncomplete}
+                          text='Merkitse keskeneräisiksi'
+                        />
+                        : <Button
+                          className={ButtonColors.NEUTRAL}
+                          onClick={handleSetRentInfoComplete}
+                          text='Merkitse valmiiksi'
+                        />
+                      }
+                    </Authorization>
+                  }
+                  text={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
+                    {isRentInfoComplete
                       ? <span className="success">Tiedot kunnossa<i /></span>
                       : <span className="alert">Tiedot keskeneräiset<i /></span>
                     }
-                  />
-                </Authorization>
+                  </Authorization>}
+                />
                 <Divider />
 
                 <FieldArray
                   component={renderRents}
                   archive={false}
                   name='rents'
-                  leaseAttributes={leaseAttributes}
                   rents={rents}
+                  usersPermissions={usersPermissions}
                 />
 
                 {/* Archived rents */}
@@ -297,12 +297,12 @@ class RentsEdit extends PureComponent<Props, State> {
                   component={renderRents}
                   archived={true}
                   name='rentsArchived'
-                  leaseAttributes={leaseAttributes}
                   rents={rentsArchived}
+                  usersPermissions={usersPermissions}
                 />
               </Authorization>
 
-              <Authorization allow={rentForPeriodMethods.GET}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
                 <h2>Vuokralaskelma</h2>
                 <Divider />
                 <GreenBox>
@@ -358,8 +358,7 @@ export default flowRight(
         isRentInfoComplete: currentLease ? currentLease.is_rent_info_complete : null,
         isSaveClicked: getIsSaveClicked(state),
         leaseAttributes: getLeaseAttributes(state),
-        rentForPeriodMethods: getRentForPeriodMethods(state),
-        setRentInfoCompletionStateMethods: getSetRentInfoCompletionStateMethods(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

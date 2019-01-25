@@ -4,39 +4,13 @@ import {SubmissionError} from 'redux-form';
 
 import {fetchInvoicesByLease, receiveInvoiceToCredit, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {
-  receiveAttributes,
-  receiveMethods,
-  attributesNotFound,
   fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction,
   notFound,
   receiveInvoiceSetsByLease,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {displayUIMessage} from '$util/helpers';
-import {creditInvoiceSet, fetchAttributes, fetchInvoiceSetsByLease} from './requests';
-
-function* fetchAttributesSaga(): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
-
-    switch (statusCode) {
-      case 200:
-        const attributes = bodyAsJson.fields;
-        const methods = bodyAsJson.methods;
-
-        yield put(receiveAttributes(attributes));
-        yield put(receiveMethods(methods));
-        break;
-      default:
-        yield put(attributesNotFound());
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch invoice set attributes with error "%s"', error);
-    yield put(attributesNotFound());
-    yield put(receiveError(error));
-  }
-}
+import {creditInvoiceSet, fetchInvoiceSetsByLease} from './requests';
 
 function* fetchInvoiceSetsByLeaseSaga({payload: leaseId}): Generator<any, any, any> {
   try {
@@ -85,7 +59,6 @@ function* creditInvoiceSetSaga({payload: {creditData, invoiceSetId, lease}}): Ge
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
-      yield takeLatest('mvj/invoiceSets/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/invoiceSets/FETCH_BY_LEASE', fetchInvoiceSetsByLeaseSaga);
       yield takeLatest('mvj/invoiceSets/CREDIT_INVOICESET', creditInvoiceSetSaga);
     }),

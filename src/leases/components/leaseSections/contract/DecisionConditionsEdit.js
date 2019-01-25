@@ -26,11 +26,19 @@ import {
   LeaseDecisionConditionsFieldPaths,
   LeaseDecisionConditionsFieldTitles,
 } from '$src/leases/enums';
-import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired} from '$util/helpers';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {
+  getFieldAttributes,
+  hasPermissions,
+  isFieldAllowedToRead,
+  isFieldRequired,
+} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
@@ -40,6 +48,7 @@ type Props = {
   isSaveClicked: boolean,
   largeScreen: boolean,
   onCollapseToggle: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 const DecisionConditionsEdit = ({
@@ -51,6 +60,7 @@ const DecisionConditionsEdit = ({
   isSaveClicked,
   largeScreen,
   onCollapseToggle,
+  usersPermissions,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => {
     onCollapseToggle(val);
@@ -74,7 +84,7 @@ const DecisionConditionsEdit = ({
             onToggle={handleCollapseToggle}
           >
 
-            {!isFieldAllowedToEdit(attributes, LeaseDecisionConditionsFieldPaths.CONDITIONS) && (!fields || !fields.length) &&
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONDITION) && (!fields || !fields.length) &&
               <FormText>Ei ehtoja</FormText>
             }
 
@@ -176,7 +186,7 @@ const DecisionConditionsEdit = ({
                               </Authorization>
                             }
                             removeButton={
-                              <Authorization allow={isFieldAllowedToEdit(attributes, LeaseDecisionConditionsFieldPaths.CONDITIONS)}>
+                              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONDITION)}>
                                 <RemoveButton
                                   className='third-level'
                                   onClick={handleRemove}
@@ -193,7 +203,7 @@ const DecisionConditionsEdit = ({
                       <BoxItem key={index}>
                         <BoxContentWrapper>
                           <ActionButtonWrapper>
-                            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseDecisionConditionsFieldPaths.CONDITIONS)}>
+                            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONDITION)}>
                               <RemoveButton
                                 onClick={handleRemove}
                                 title="Poista ehto"
@@ -250,7 +260,7 @@ const DecisionConditionsEdit = ({
               </BoxItemContainer>
             }
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseDecisionConditionsFieldPaths.CONDITIONS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CONDITION)}>
               <Row>
                 <Column>
                   <AddButtonSecondary
@@ -273,6 +283,7 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
+        usersPermissions: getUsersPermissions(state),
       };
     }
   )

@@ -15,9 +15,7 @@ import type {DistrictState} from '$src/district/types';
 import type {InfillDevelopmentState} from '$src/infillDevelopment/types';
 import type {InfillDevelopmentAttachmentState} from '$src/infillDevelopmentAttachment/types';
 import type {InvoiceState} from '$src/invoices/types';
-import type {InvoiceCreditState} from '$src/invoiceCredit/types';
 import type {InvoiceSetState} from '$src/invoiceSets/types';
-import type {InvoiceSetCreditState} from '$src/invoiceSetCredit/types';
 import type {LandUseContractState} from '$src/landUseContract/types';
 import type {LeaseState} from '$src/leases/types';
 import type {LeaseCreateChargeState} from '$src/leaseCreateCharge/types';
@@ -25,12 +23,10 @@ import type {LeaseTypeState} from '$src/leaseType/types';
 import type {MapDataState} from '$src/mapData/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
-import type {RelatedLeaseState} from '$src/relatedLease/types';
 import type {RentBasisState} from '$src/rentbasis/types';
 import type {RentForPeriodState} from '$src/rentForPeriod/types';
-import type {SetInvoicingStateState} from '$src/setInvoicingState/types';
-import type {SetRentInfoCompletionStateState} from '$src/setRentInfoCompletionState/types';
 import type {UserState} from '../users/types';
+import type {UsersPermissionsState} from '$src/usersPermissions/types';
 import type {VatState} from '$src/vat/types';
 
 export type RootState = {
@@ -51,9 +47,7 @@ export type RootState = {
   infillDevelopment: InfillDevelopmentState,
   infillDevelopmentAttachment: InfillDevelopmentAttachmentState,
   invoice: InvoiceState,
-  invoiceCredit: InvoiceCreditState,
   invoiceSet: InvoiceSetState,
-  invoiceSetCredit: InvoiceSetCreditState,
   landUseContract: LandUseContractState,
   lease: LeaseState,
   leaseCreateCharge: LeaseCreateChargeState,
@@ -61,11 +55,9 @@ export type RootState = {
   mapData: MapDataState,
   penaltyInterest: PenaltyInterestState,
   previewInvoices: PreviewInvoicesState,
-  relatedLease: RelatedLeaseState,
   rentBasis: RentBasisState,
   rentForPeriod: RentForPeriodState,
-  setInvoicingState: SetInvoicingStateState,
-  setRentInfoCompletionState: SetRentInfoCompletionStateState,
   user: UserState,
+  usersPermissions: UsersPermissionsState,
   vat: VatState,
 };

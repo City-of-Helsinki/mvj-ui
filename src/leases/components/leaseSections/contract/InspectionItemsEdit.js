@@ -19,20 +19,36 @@ import GreenBox from '$components/content/GreenBox';
 import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles} from '$src/leases/enums';
-import {getFieldAttributes, isFieldAllowedToRead, isFieldAllowedToEdit, isFieldRequired} from '$util/helpers';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {
+  getFieldAttributes,
+  hasPermissions,
+  isFieldAllowedToRead,
+  isFieldAllowedToEdit,
+  isFieldRequired,
+} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
   largeScreen: boolean,
+  usersPermissions: UsersPermissionsType,
 }
 
-const InspectionItemsEdit = ({attributes, fields, isSaveClicked, largeScreen}: Props) => {
+const InspectionItemsEdit = ({
+  attributes,
+  fields,
+  isSaveClicked,
+  largeScreen,
+  usersPermissions,
+}: Props) => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -151,7 +167,7 @@ const InspectionItemsEdit = ({attributes, fields, isSaveClicked, largeScreen}: P
                               </Authorization>
                             }
                             removeButton={
-                              <Authorization allow={isFieldAllowedToEdit(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}>
+                              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_INSPECTION)}>
                                 <RemoveButton
                                   className='third-level'
                                   onClick={handleRemove}
@@ -167,7 +183,7 @@ const InspectionItemsEdit = ({attributes, fields, isSaveClicked, largeScreen}: P
                     return (
                       <BoxItem key={index} className='no-border-on-first-child'>
                         <ActionButtonWrapper>
-                          <Authorization allow={isFieldAllowedToEdit(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}>
+                          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_INSPECTION)}>
                             <RemoveButton
                               onClick={handleRemove}
                               title="Poista tarkastus"
@@ -223,7 +239,7 @@ const InspectionItemsEdit = ({attributes, fields, isSaveClicked, largeScreen}: P
               </BoxItemContainer>
             }
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INSPECTION)}>
               <Row>
                 <Column>
                   <AddButtonSecondary
@@ -247,6 +263,7 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         isSaveClicked: getIsSaveClicked(state),
+        usersPermissions: getUsersPermissions(state),
       };
     }
   )

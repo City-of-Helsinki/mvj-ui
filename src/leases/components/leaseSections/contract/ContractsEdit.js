@@ -14,30 +14,37 @@ import ContractItemEdit from './ContractItemEdit';
 import FormText from '$components/form/FormText';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseContractsFieldPaths} from '$src/leases/enums';
+import {
+  DeleteModalLabels,
+  DeleteModalTitles,
+  FormNames,
+} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts, getDecisionOptions} from '$src/leases/helpers';
-import {isFieldAllowedToEdit} from '$util/helpers';
+import {hasPermissions} from '$util/helpers';
 import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type ContractsProps = {
-  attributes: Attributes,
   decisionOptions: Array<Object>,
   fields: any,
   onShowContractFileModal: Function,
   savedContracts: Array<Object>,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderContracts = ({
-  attributes,
   decisionOptions,
   fields,
   onShowContractFileModal,
   savedContracts,
+  usersPermissions,
 }: ContractsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -48,9 +55,11 @@ const renderContracts = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            {!isFieldAllowedToEdit(attributes, LeaseContractsFieldPaths.CONTRACTS) && (!fields || !fields.length) &&
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACT) &&
+              (!fields || !fields.length) &&
               <FormText className='no-margin'>Ei sopimuksia</FormText>
             }
+
             {fields && !!fields.length && fields.map((contract, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -67,7 +76,6 @@ const renderContracts = ({
 
               return <ContractItemEdit
                 key={index}
-                attributes={attributes}
                 decisionOptions={decisionOptions}
                 field={contract}
                 index={index}
@@ -77,7 +85,7 @@ const renderContracts = ({
               />;
             })}
 
-            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACT)}>
               <Row>
                 <Column>
                   <AddButton
@@ -99,6 +107,7 @@ type Props = {
   contractFileMethods: Methods,
   currentLease: Lease,
   receiveFormValidFlags: Function,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -156,7 +165,7 @@ class ContractsEdit extends PureComponent<Props, State> {
   }
 
   render() {
-    const {attributes, contractFileMethods} = this.props;
+    const {contractFileMethods, usersPermissions} = this.props;
     const {contractId, decisionOptions, savedContracts, showContractModal} = this.state;
 
     return (
@@ -170,12 +179,12 @@ class ContractsEdit extends PureComponent<Props, State> {
         </Authorization>
 
         <FieldArray
-          attributes={attributes}
           component={renderContracts}
           decisionOptions={decisionOptions}
           name="contracts"
           onShowContractFileModal={this.handleShowContractFileModal}
           savedContracts={savedContracts}
+          usersPermissions={usersPermissions}
         />
       </form>
     );
@@ -188,9 +197,9 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        attributes: getAttributes(state),
         contractFileMethods: getContractFileMethods(state),
         currentLease: getCurrentLease(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

@@ -19,6 +19,7 @@ import {
 } from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 import {TableSortOrder} from '$components/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
   formatReceivableTypesString,
@@ -32,6 +33,7 @@ import {
   formatNumber,
   getFieldOptions,
   getLabelOfOption,
+  hasPermissions,
   isFieldAllowedToRead,
   sortNumberByKeyAsc,
   sortNumberByKeyDesc,
@@ -44,12 +46,12 @@ import {
   getInvoicesByLease,
   getPatchedInvoice,
 } from '$src/invoices/selectors';
-import {getMethods as getInvoiceCreditMethods} from '$src/invoiceCredit/selectors';
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
-import {getMethods as getInvoiceSetCreditMethods} from '$src/invoiceSetCredit/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Invoice, InvoiceList} from '$src/invoices/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const TABLE_MIN_HEIGHT = 521;
 const PANEL_WIDTH = 607.5;
@@ -60,13 +62,12 @@ type Props = {
   initialize: Function,
   invoices: InvoiceList,
   invoiceAttributes: Attributes,
-  invoiceCreditMethods: Methods,
   invoiceToCredit: ?Object,
   invoiceSets: Array<Object>,
-  invoiceSetCreditMethods: Methods,
   onInvoiceToCreditChange: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -567,9 +568,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 
   render() {
     const {
-      invoiceCreditMethods,
-      invoiceSetCreditMethods,
       invoiceToCredit,
+      usersPermissions,
     } = this.props;
     const {columns, formatedInvoices, openedInvoice, tableHeight, tableWidth} = this.state;
 
@@ -602,8 +602,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
             onSelectRow={this.handleSelectRow}
             radioButtonDisabledFunction={this.isTableRadioButtonDisabled}
             selectedRow={invoiceToCredit}
-            showGroupRadioButton={invoiceSetCreditMethods.POST}
-            showRadioButton={invoiceCreditMethods.POST}
+            showGroupRadioButton={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+            showRadioButton={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
             sortable={true}
           />
         </div>
@@ -632,10 +632,9 @@ export default connect(
     return {
       invoices: getInvoicesByLease(state, currentLease.id),
       invoiceAttributes: getInvoiceAttributes(state),
-      invoiceCreditMethods: getInvoiceCreditMethods(state),
       invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
-      invoiceSetCreditMethods: getInvoiceSetCreditMethods(state),
       patchedInvoice: getPatchedInvoice(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

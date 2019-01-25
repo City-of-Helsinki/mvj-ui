@@ -20,16 +20,18 @@ import {
 } from '$src/invoices/actions';
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
 import {ButtonColors} from '$components/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {RecipientOptions} from '$src/leases/enums';
 import {getPayloadCreateInvoice, getPayloadCreditInvoice} from '$src/invoices/helpers';
 import {getCreditInvoiceSetPayload} from '$src/invoiceSets/helpers';
 import {getPayloadLeaseCreateCharge} from '$src/leaseCreateCharge/helpers';
+import {hasPermissions} from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen} from '$src/invoices/selectors';
-import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   createCharge: Function,
@@ -37,18 +39,15 @@ type Props = {
   creditInvoice: Function,
   creditInvoiceSet: Function,
   currentLease: Lease,
-  invoiceMethods: Methods, // Get via withLeasePageAttributes HOC
-  invoiceCreditMethods: Methods, // Get via withLeasePageAttributes HOC
-  invoiceSetCreditMethods: Methods, // Get via withLeasePageAttributes HOC
   invoiceToCredit: ?Object,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
-  leaseCreateChargeMethods: Methods, // Get via withLeasePageAttributes HOC
   receiveIsCreateClicked: Function,
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditClicked: Function,
   receiveIsCreditInvoicePanelOpen: Function,
   ref?: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 class CreateAndCreditInvoice extends Component <Props> {
@@ -175,19 +174,16 @@ class CreateAndCreditInvoice extends Component <Props> {
 
   render() {
     const {
-      invoiceMethods,
-      invoiceCreditMethods,
-      invoiceSetCreditMethods,
       invoiceToCredit,
       isCreateInvoicePanelOpen,
       isCreditInvoicePanelOpen,
-      leaseCreateChargeMethods,
+      usersPermissions,
     } = this.props;
     const isInvoiceSet = this.isInvoiceSet();
 
     return (
       <div className='invoice__new-invoice'>
-        <Authorization allow={invoiceCreditMethods.POST || invoiceSetCreditMethods.POST}>
+        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
           <Button
             className={`${ButtonColors.NEUTRAL} no-margin`}
             disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
@@ -196,7 +192,7 @@ class CreateAndCreditInvoice extends Component <Props> {
           />
         </Authorization>
 
-        <Authorization allow={invoiceCreditMethods.POST || invoiceSetCreditMethods.POST}>
+        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
           <div ref={this.setCreditPanelRef}>
             {isCreditInvoicePanelOpen &&
               <CreditInvoiceForm
@@ -209,7 +205,7 @@ class CreateAndCreditInvoice extends Component <Props> {
           </div>
         </Authorization>
 
-        <Authorization allow={invoiceMethods.POST || leaseCreateChargeMethods.POST}>
+        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
           <AddButtonSecondary
             disabled={isCreateInvoicePanelOpen}
             label='Luo lasku'
@@ -217,12 +213,14 @@ class CreateAndCreditInvoice extends Component <Props> {
           />
         </Authorization>
 
-        <Authorization allow={invoiceMethods.POST || leaseCreateChargeMethods.POST}>
+        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
           <div ref={this.setCreatePanelRef}>
             {isCreateInvoicePanelOpen &&
               <NewInvoiceForm
                 initialValues={{
-                  recipient: leaseCreateChargeMethods.POST ? RecipientOptions.ALL : undefined,
+                  recipient: hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)
+                    ? RecipientOptions.ALL
+                    : undefined,
                   rows: [{}],
                 }}
                 onClose={this.handleCloseCreateInvoicePanel}
@@ -238,13 +236,13 @@ class CreateAndCreditInvoice extends Component <Props> {
 }
 
 export default flowRight(
-  withLeasePageAttributes,
   connect(
     (state) => {
       return {
         currentLease: getCurrentLease(state),
         isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
         isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

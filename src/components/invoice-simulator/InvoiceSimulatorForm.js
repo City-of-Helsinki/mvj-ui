@@ -7,20 +7,12 @@ import flowRight from 'lodash/flowRight';
 
 import FormField from '$components/form/FormField';
 import {FormNames} from '$components/enums';
+import {getCurrentYear} from '$util/date';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
-import {integer} from '$components/form/validations';
 
 type Props = {
   onSubmit: Function,
-};
-
-const validate = values => {
-  const errors = {};
-  if (!values.invoice_simulator_year) {
-    return integer(values.invoice_simulator_year);
-  }
-  return errors;
 };
 
 class InvoiceSimulatorForm extends Component<Props> {
@@ -72,6 +64,8 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
-    validate,
+    initialValues: {
+      invoice_simulator_year: getCurrentYear(),
+    },
   }),
 )(InvoiceSimulatorForm);

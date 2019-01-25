@@ -22,22 +22,26 @@ import {ButtonColors} from '$components/enums';
 import {InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {LeaseCreateChargeFieldPaths, LeaseCreateChargeRowsFieldPaths} from '$src/leaseCreateCharge/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames, RecipientOptions} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
-import {getFieldAttributes, isFieldAllowedToEdit, isFieldRequired} from '$util/helpers';
+import {
+  getFieldAttributes,
+  hasPermissions,
+  isFieldAllowedToEdit,
+  isFieldRequired,
+} from '$util/helpers';
 import {
   getAttributes as getInvoiceAttributes,
   getIsCreateClicked,
-  getMethods as getInvoiceMethods,
 } from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
-import {
-  getAttributes as getLeaseCreateCrargeAttributes,
-  getMethods as getLeaseCreateCrargeMethods,
-} from '$src/leaseCreateCharge/selectors';
+import {getAttributes as getLeaseCreateCrargeAttributes} from '$src/leaseCreateCharge/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type InvoiceRowsProps = {
   fields: any,
@@ -185,16 +189,15 @@ type Props = {
   formValues: Object,
   handleSubmit: Function,
   invoiceAttributes: Attributes,
-  invoiceMethods: Methods,
   isCreateClicked: boolean,
   lease: Lease,
   leaseCreateChargeAttributes: Attributes,
-  leaseCreateChargeMethods: Methods,
   onClose: Function,
   onSave: Function,
   receiveIsCreateClicked: Function,
   recipient: string,
   setRefForFirstField?: Function,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -202,16 +205,15 @@ const NewInvoiceForm = ({
   formValues,
   handleSubmit,
   invoiceAttributes,
-  invoiceMethods,
   isCreateClicked,
   lease,
   leaseCreateChargeAttributes,
-  leaseCreateChargeMethods,
   onClose,
   onSave,
   receiveIsCreateClicked,
   recipient,
   setRefForFirstField,
+  usersPermissions,
   valid,
 }: Props) => {
   const handleSave = () => {
@@ -222,7 +224,11 @@ const NewInvoiceForm = ({
     }
   };
 
-  const recipientOptions = getInvoiceRecipientOptions(lease, leaseCreateChargeMethods.POST, invoiceMethods.POST);
+  const recipientOptions = getInvoiceRecipientOptions(
+    lease,
+    hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
+    hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
+  );
   const useLeaseCreateChargeEndpoint = recipient === RecipientOptions.ALL;
 
   return (
@@ -361,12 +367,11 @@ export default flowRight(
       return {
         formValues: getFormValues(formName)(state),
         invoiceAttributes: getInvoiceAttributes(state),
-        invoiceMethods: getInvoiceMethods(state),
         isCreateClicked: getIsCreateClicked(state),
         lease: getCurrentLease(state),
         leaseCreateChargeAttributes: getLeaseCreateCrargeAttributes(state),
-        leaseCreateChargeMethods: getLeaseCreateCrargeMethods(state),
         recipient: selector(state, 'recipient'),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

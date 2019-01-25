@@ -14,10 +14,18 @@ import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
 import {FormNames, LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles} from '$src/leases/enums';
-import {getFieldAttributes, getSearchQuery, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {
+  getFieldAttributes,
+  getSearchQuery,
+  hasPermissions,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
@@ -27,6 +35,7 @@ type Props = {
   isSaveClicked: boolean,
   onRemove: Function,
   router: Object,
+  usersPermissions: UsersPermissionsType,
 }
 
 const PlanUnitItemEdit = ({
@@ -37,6 +46,7 @@ const PlanUnitItemEdit = ({
   isSaveClicked,
   onRemove,
   router,
+  usersPermissions,
 }: Props) => {
   const getMapLinkUrl = () => {
     const {location: {pathname, query}} = router;
@@ -55,7 +65,7 @@ const PlanUnitItemEdit = ({
     <BoxItem>
       <BoxContentWrapper>
         <ActionButtonWrapper>
-          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_PLANUNIT)}>
             <RemoveButton
               onClick={onRemove}
               title="Poista kaavayksikkö"
@@ -220,6 +230,7 @@ export default flowRight(
         attributes: getAttributes(state),
         geometry: selector(state, `${props.field}.geometry`),
         id: selector(state, `${props.field}.id`),
+        usersPermissions: getUsersPermissions(state),
       };
     }
   ),

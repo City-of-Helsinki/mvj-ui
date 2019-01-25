@@ -67,9 +67,10 @@ import {
 } from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
 import {PermissionMissingTexts} from '$src/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
-import {isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
+import {hasPermissions, isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getCommentsByLease} from '$src/comments/selectors';
 import {
@@ -91,6 +92,7 @@ import type {Attributes, Methods} from '$src/types';
 import type {CommentList} from '$src/comments/types';
 import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import type {VatList} from '$src/vat/types';
 
 type Props = {
@@ -120,8 +122,6 @@ type Props = {
   hideEditMode: Function,
   initialize: Function,
   inspectionsFormValues: Object,
-  invoiceMethods: Methods, // get via withLeasePageAttributes HOC
-  invoiceSetMethods: Methods, // get via withLeasePageAttributes HOC
   isEditMode: boolean,
   isFetching: boolean,
   isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
@@ -159,6 +159,7 @@ type Props = {
   showEditMode: Function,
   summaryFormValues: Object,
   tenantsFormValues: Object,
+  usersPermissions: UsersPermissionsType, // Get via withCommonAttributes HOC
   vats: VatList,
 }
 
@@ -196,21 +197,21 @@ class LeasePage extends Component<Props, State> {
       fetchSingleLease,
       fetchVats,
       hideEditMode,
-      invoiceMethods,
-      invoiceSetMethods,
       leaseTypeList,
       params: {leaseId},
+      usersPermissions,
       vats,
     } = this.props;
 
     fetchSingleLease(leaseId);
 
-    // Fetch invoices if GET is allowed
-    if(invoiceMethods.GET) {
+    // Fetch invoices if user has permissions
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
       fetchInvoicesByLease(leaseId);
     }
-    // Fetch invoice sets if GET is allowed
-    if(invoiceSetMethods.GET) {
+
+    // Fetch invoice sets if user has permissions
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICESET)) {
       fetchInvoiceSetsByLease(leaseId);
     }
     // Fetch collection court decisions if GET is allowed
@@ -261,17 +262,18 @@ class LeasePage extends Component<Props, State> {
   componentDidUpdate(prevProps:Props, prevState: State) {
     const {params: {leaseId}} = this.props;
 
-    // Fetch invoices when getting new invoice methods and GET is allowed
-    if(prevProps.invoiceMethods !== this.props.invoiceMethods && this.props.invoiceMethods.GET) {
-      const {fetchInvoicesByLease} = this.props;
+    if(prevProps.usersPermissions !== this.props.usersPermissions) {
+      if(hasPermissions(this.props.usersPermissions, UsersPermissions.VIEW_INVOICE)) {
+        const {fetchInvoicesByLease} = this.props;
 
-      fetchInvoicesByLease(leaseId);
-    }
-    // Fetch invoice sets when getting new invoice set methods and GET is allowed
-    if(prevProps.invoiceSetMethods !== this.props.invoiceSetMethods && this.props.invoiceSetMethods.GET) {
-      const {fetchInvoiceSetsByLease} = this.props;
+        fetchInvoicesByLease(leaseId);
+      }
 
-      fetchInvoiceSetsByLease(leaseId);
+      if(hasPermissions(this.props.usersPermissions, UsersPermissions.VIEW_INVOICESET)) {
+        const {fetchInvoiceSetsByLease} = this.props;
+
+        fetchInvoiceSetsByLease(leaseId);
+      }
     }
     // Fetch collection court decisions when getting new collection court decision methods and GET is allowed
     if(prevProps.collectionCourtDecisionMethods !== this.props.collectionCourtDecisionMethods && this.props.collectionCourtDecisionMethods.GET) {
@@ -746,7 +748,6 @@ class LeasePage extends Component<Props, State> {
       commentMethods,
       comments,
       currentLease,
-      invoiceMethods,
       isEditMode,
       isFetching,
       isConstructabilityFormDirty,
@@ -769,6 +770,7 @@ class LeasePage extends Component<Props, State> {
       isSaving,
       leaseAttributes,
       leaseMethods,
+      usersPermissions,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -871,7 +873,7 @@ class LeasePage extends Component<Props, State> {
               },
               {
                 label: 'Laskutus',
-                allow: invoiceMethods.GET,
+                allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE),
               },
               {
                 label: 'Kartta',
@@ -981,7 +983,10 @@ class LeasePage extends Component<Props, State> {
 
             <TabPane className="lease-page__tab-content">
               <ContentContainer>
-                <Authorization allow={invoiceMethods.GET} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                <Authorization
+                  allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}
+                  errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                >
                   <Invoices />
                 </Authorization>
               </ContentContainer>

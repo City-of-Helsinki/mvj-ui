@@ -9,13 +9,14 @@ import ExternalLink from '$components/links/ExternalLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
-import {formatDate, getLabelOfOption} from '$util/helpers';
+import {formatDate, getLabelOfOption, hasPermissions} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getMethods as getRelatedLeaseMethods} from '$src/relatedLease/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   active?: boolean,
@@ -23,8 +24,8 @@ type Props = {
   indented?: boolean,
   lease: Lease,
   onDelete?: Function,
-  relatedLeaseMethods: Methods,
   stateOptions: Array<Object>,
+  usersPermissions: UsersPermissionsType,
 }
 
 const RelatedLeaseItem = ({
@@ -33,8 +34,8 @@ const RelatedLeaseItem = ({
   indented = false,
   lease,
   onDelete,
-  relatedLeaseMethods,
   stateOptions,
+  usersPermissions,
 }: Props) => {
   const identifier = getContentLeaseIdentifier(lease);
 
@@ -78,7 +79,7 @@ const RelatedLeaseItem = ({
                   <p>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</p>
                   <p className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</p>
 
-                  <Authorization allow={relatedLeaseMethods.DELETE}>
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
                     {onDelete &&
                       <RemoveButton
                         className='related-leases-item_remove-button'
@@ -100,7 +101,7 @@ const RelatedLeaseItem = ({
 export default connect(
   (state) => {
     return {
-      relatedLeaseMethods: getRelatedLeaseMethods(state),
+      usersPermissions: getUsersPermissions(state),
     };
   }
 )(RelatedLeaseItem);

@@ -23,30 +23,41 @@ import {
   LeaseRentFixedInitialYearRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldTitles,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getFieldAttributes,
-  isFieldAllowedToEdit,
+  hasPermissions,
   isFieldAllowedToRead,
   isFieldRequired,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   fields: any,
   isSaveClicked: boolean,
   largeScreen: boolean,
   leaseAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
-const FixedInitialYearRentsEdit = ({fields, isSaveClicked, largeScreen, leaseAttributes}: Props) => {
+const FixedInitialYearRentsEdit = ({
+  fields,
+  isSaveClicked,
+  largeScreen,
+  leaseAttributes,
+  usersPermissions,
+}: Props) => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  if(!isFieldAllowedToEdit(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS) && (!fields || !fields.length)) {
+  if(!hasPermissions(usersPermissions, UsersPermissions.ADD_FIXEDINITIALYEARRENT) &&
+  (!fields || !fields.length)) {
     return <FormText>Ei sopimusvuokria</FormText>;
   }
 
@@ -151,7 +162,7 @@ const FixedInitialYearRentsEdit = ({fields, isSaveClicked, largeScreen, leaseAtt
                         </Authorization>
                       </Column>
                       <Column>
-                        <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_FIXEDINITIALYEARRENT)}>
                           <RemoveButton
                             className='third-level'
                             onClick={handleRemove}
@@ -166,7 +177,7 @@ const FixedInitialYearRentsEdit = ({fields, isSaveClicked, largeScreen, leaseAtt
                     <BoxItem key={index}>
                       <BoxContentWrapper>
                         <ActionButtonWrapper>
-                          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
+                          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_FIXEDINITIALYEARRENT)}>
                             <RemoveButton
                               hideFor={Breakpoints.LARGE}
                               onClick={handleRemove}
@@ -224,7 +235,7 @@ const FixedInitialYearRentsEdit = ({fields, isSaveClicked, largeScreen, leaseAtt
               })}
             </BoxItemContainer>
 
-            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_FIXEDINITIALYEARRENT)}>
               <Row>
                 <Column>
                   <AddButtonSecondary
@@ -248,6 +259,7 @@ export default flowRight(
     (state) => {
       return {
         leaseAttributes: getLeaseAttributes(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
   ),

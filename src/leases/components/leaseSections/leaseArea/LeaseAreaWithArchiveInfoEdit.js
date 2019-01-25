@@ -24,12 +24,14 @@ import {
   LeaseAreasFieldTitles,
   LeaseAreaAddressesFieldPaths,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   formatDate,
   formatNumber,
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
+  hasPermissions,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -41,9 +43,11 @@ import {
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   archivedAt: ?string,
@@ -62,6 +66,7 @@ type Props = {
   onRemove: Function,
   onUnarchive: Function,
   receiveCollapseStates: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 const LeaseAreaWithArchiveInfoEdit = ({
@@ -81,6 +86,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
   onRemove,
   onUnarchive,
   receiveCollapseStates,
+  usersPermissions,
 }: Props): Element<*> => {
   const handleArchive = () => {
     onArchive(index, editedArea);
@@ -148,7 +154,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
         ? handleArchive
         : null
       }
-      onRemove={isFieldAllowedToEdit(attributes, LeaseAreasFieldPaths.LEASE_AREAS) ? onRemove : null}
+      onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEAREA) ? onRemove : null}
       onUnarchive={(isFieldAllowedToEdit(attributes, LeaseAreasFieldPaths.ARCHIVED_AT) && !isActive && areaId)
         ? handleUnarchive
         : null
@@ -219,6 +225,7 @@ export default connect(
       editedArea: selector(state, props.field),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

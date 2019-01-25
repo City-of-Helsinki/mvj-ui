@@ -30,16 +30,19 @@ import {
   LeaseTenantContactSetFieldTitles,
   TenantContactType,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   formatDateRange,
+  hasPermissions,
   isFieldAllowedToRead,
-  isFieldAllowedToEdit,
 } from '$util/helpers';
 import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const ContactType = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
 
@@ -61,6 +64,7 @@ type Props = {
   showContactModal: Function,
   tenant: Object,
   tenantId: number,
+  usersPermissions: UsersPermissionsType,
 }
 
 const OtherTenantItemEdit = ({
@@ -80,6 +84,7 @@ const OtherTenantItemEdit = ({
   showContactModal,
   tenant,
   tenantId,
+  usersPermissions,
 }: Props) => {
   const getOtherTenantById = (id: number) => {
     const tenantContactSet = contactType === TenantContactType.BILLING
@@ -156,7 +161,7 @@ const OtherTenantItemEdit = ({
           {contactType === TenantContactType.BILLING ? 'Laskunsaaja' : 'Yhteyshenkilö'}
         </Authorization>
       }
-      onRemove={isFieldAllowedToEdit(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET) ? onRemove : null}
+      onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_TENANTCONTACT) ? onRemove : null}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
@@ -252,6 +257,7 @@ export default connect(
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
       tenantId: id,
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

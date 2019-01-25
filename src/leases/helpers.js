@@ -1451,7 +1451,7 @@ export const isRentActive = (rent: ?Object) => {
   return true;
 };
 
-export const isRentArchived = (rent?: Object) => {
+export const isRentArchived = (rent: ?Object) => {
   const now = moment();
   const endDate = get(rent, 'end_date');
 

@@ -2,10 +2,6 @@
 import {expect} from 'chai';
 
 import {
-  fetchAttributes,
-  attributesNotFound,
-  receiveAttributes,
-  receiveMethods,
   fetchPenaltyInterestByInvoice,
   receivePenaltyInterestByInvoice,
   penaltyInterestNotFoundByInvoice,
@@ -15,11 +11,8 @@ import penaltyInterestReducer from './reducer';
 import type {PenaltyInterestState} from './types';
 
 const defaultState: PenaltyInterestState = {
-  attributes: {},
   byInvoice: {},
-  isFetchingAttributes: false,
   isFetchingByInvoice: {},
-  methods: {},
 };
 
 // $FlowFixMe
@@ -32,39 +25,6 @@ describe('PenaltyInterest', () => {
     describe('penaltyInterestReducer', () => {
 
       // $FlowFixMe
-      it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
-        const newState = {...defaultState, isFetchingAttributes: true};
-
-        const state = penaltyInterestReducer({}, fetchAttributes());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isFetchingAttributes flag to true by attributesNotFound', () => {
-        const newState = {...defaultState, isFetchingAttributes: false};
-
-        let state = penaltyInterestReducer({}, fetchAttributes());
-        state = penaltyInterestReducer(state, attributesNotFound());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update attributes', () => {
-        const dummyAttributes = {foo: 'bar'};
-
-        const newState = {...defaultState, attributes: dummyAttributes};
-
-        const state = penaltyInterestReducer({}, receiveAttributes(dummyAttributes));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update methods', () => {
-        const dummyMethods = {foo: 'bar'};
-
-        const newState = {...defaultState, methods: dummyMethods};
-
-        const state = penaltyInterestReducer({}, receiveMethods(dummyMethods));
-        expect(state).to.deep.equal(newState);
-      });
-
       it('should update isFetchingPenaltyInterestByInvoice flag to true when fetching', () => {
         const invoice = 1;
         const newState = {...defaultState, isFetchingByInvoice: {[invoice]: true}};

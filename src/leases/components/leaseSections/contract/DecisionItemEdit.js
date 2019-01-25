@@ -14,14 +14,20 @@ import FormField from '$components/form/FormField';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {FormNames, LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles} from '$src/leases/enums';
+import {
+  FormNames,
+  LeaseDecisionConditionsFieldPaths,
+  LeaseDecisionsFieldPaths,
+  LeaseDecisionsFieldTitles,
+} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getDecisionById} from '$src/leases/helpers';
 import {
   formatDate,
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
-  isFieldAllowedToEdit,
+  hasPermissions,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {
@@ -31,10 +37,12 @@ import {
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
@@ -47,6 +55,7 @@ type Props = {
   isSaveClicked: boolean,
   onRemove: Function,
   receiveCollapseStates: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 const DecisionItemEdit = ({
@@ -60,6 +69,7 @@ const DecisionItemEdit = ({
   isSaveClicked,
   onRemove,
   receiveCollapseStates,
+  usersPermissions,
 }: Props) => {
   const handleDecisionCollapseToggle = (val: boolean) => {
     if(!decisionId) {return;}
@@ -117,7 +127,7 @@ const DecisionItemEdit = ({
         </Fragment>
         : '-'
       }
-      onRemove={isFieldAllowedToEdit(attributes, LeaseDecisionsFieldPaths.DECISIONS) ? onRemove : null}
+      onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_DECISION) ? onRemove : null}
       onToggle={handleDecisionCollapseToggle}
     >
       <BoxContentWrapper>
@@ -219,6 +229,7 @@ export default connect(
       decisionId: id,
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
+      usersPermissions: getUsersPermissions(state),
     };
 
     if(id) {

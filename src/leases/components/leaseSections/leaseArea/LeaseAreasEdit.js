@@ -22,25 +22,33 @@ import {
   FormNames,
   LeaseAreasFieldPaths,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById} from '$src/leases/helpers';
-import {formatNumber, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
+import {
+  formatNumber,
+  hasPermissions,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getMethods as getCopyAreasToContractMethods} from '$src/copyAreasToContract/selectors';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
 } from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {store} from '$src/root/startApp';
 
 import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type AreaItemProps = {
   decisionOptions: Array<Object>,
   fields: any,
   isActive: boolean,
-  leaseAttributes: Attributes,
   onArchive: Function,
   onUnarchive: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 class renderLeaseAreas extends PureComponent<AreaItemProps> {
@@ -62,9 +70,9 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
       decisionOptions,
       fields,
       isActive,
-      leaseAttributes,
       onArchive,
       onUnarchive,
+      usersPermissions,
     } = this.props;
 
     return (
@@ -100,7 +108,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
                 />;
               })}
               {isActive &&
-                <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
+                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREA)}>
                   <Row>
                     <Column>
                       <AddButton
@@ -129,6 +137,7 @@ type Props = {
   initialize: Function,
   leaseAttributes: Attributes,
   receiveFormValidFlags: Function,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -273,7 +282,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       decisionOptions,
       showArchiveAreaModal,
     } = this.state;
-    const {copyAreasToContractMethods, leaseAttributes} = this.props;
+    const {copyAreasToContractMethods, leaseAttributes, usersPermissions} = this.props;
 
     return (
       <AppConsumer>
@@ -339,24 +348,24 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
               <FieldArray
                 ref={this.setActiveAreasRef}
-                leaseAttributes={leaseAttributes}
                 component={renderLeaseAreas}
                 decisionOptions={decisionOptions}
                 isActive={true}
                 name="lease_areas_active"
                 onArchive={this.showArchiveAreaModal}
+                usersPermissions={usersPermissions}
                 withRef={true}
               />
 
               {/* Archived lease areas */}
               <FieldArray
                 ref={this.setArchivedAreasRef}
-                leaseAttributes={leaseAttributes}
                 component={renderLeaseAreas}
                 decisionOptions={decisionOptions}
                 isActive={false}
                 name='lease_areas_archived'
                 onUnarchive={handleUnarchive}
+                usersPermissions={usersPermissions}
                 withRef={true}
               />
             </form>
@@ -383,6 +392,7 @@ export default flowRight(
         editedActiveAreas: selector(state, 'lease_areas_active'),
         editedArchivedAreas: selector(state, 'lease_areas_archived'),
         leaseAttributes: getLeaseAttributes(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {
