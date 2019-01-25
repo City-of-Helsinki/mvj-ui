@@ -138,3 +138,12 @@ export const DeleteRentForPeriodTexts = {
   LABEL: 'Haluatko varmasti poistaa vuokralaskelman',
   TITLE: 'Poista vuokralaskelma',
 };
+
+/**
+ * Municipalities enum for address search input
+ *
+ * @type {{}}
+ */
+export const AddressFieldMunicipalities = {
+  HELSINKI: 'helsinki',
+};

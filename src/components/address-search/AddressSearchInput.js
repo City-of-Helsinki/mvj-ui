@@ -4,11 +4,11 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
-import get from 'lodash/get';
 
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {KeyCodes} from '$src/enums';
+import {AddressFieldMunicipalities} from '$components/enums';
 import {hasNumber} from '$util/helpers';
 
 const SERVICE_MAP_URL = 'https://api.hel.fi/servicemap/v2';
@@ -489,13 +489,22 @@ class AddressSearchInput extends Component<Props, State> {
   };
 
   handleAddressItemClick = (address: Address) => {
-    const {onChange} = this.props,
+    const {addressDetailsCallBack, onChange} = this.props,
       newValue = `${this.getAddressText(address)}`;
 
     this.setState({value: newValue});
     this.closeMenu();
 
-    this.fetchAddressDetails(address);
+    if(address.street.municipality === AddressFieldMunicipalities.HELSINKI) {
+      this.fetchAddressDetails(address);
+    } else {
+      if(addressDetailsCallBack) {
+        addressDetailsCallBack({
+          postalCode: '',
+          city: address.street.municipality ? capitalize(address.street.municipality) : '',
+        });
+      }
+    }
 
     if(onChange) {
       onChange(newValue);
@@ -520,12 +529,11 @@ class AddressSearchInput extends Component<Props, State> {
 
           if(details.length) {
             const {addressDetailsCallBack} = this.props;
-            const {selectedStreet} = this.state;
 
             if(addressDetailsCallBack) {
               addressDetailsCallBack({
                 postalCode: details[0].origin_id,
-                city: details[0].name[get(selectedStreet, 'language')],
+                city: address.street.municipality ? capitalize(address.street.municipality) : '',
               });
             }
           }
