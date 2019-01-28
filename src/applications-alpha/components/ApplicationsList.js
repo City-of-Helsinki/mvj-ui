@@ -53,7 +53,7 @@ class ApplicationsList extends Component<Props, State> {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {fetchAttributes, fetchApplications} = this.props;
 
     fetchAttributes();

@@ -35,7 +35,7 @@ type Props = {
 };
 
 class CreateApplicationForm extends Component<Props> {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {fetchAttributes} = this.props;
     fetchAttributes();
   }

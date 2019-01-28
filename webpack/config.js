@@ -16,10 +16,6 @@ export default {
         include: /src/,
       },
       {
-        test: /\.json$/,
-        loader: 'json-loader',
-      },
-      {
         test: /\.(mp3|ogg|wav)$/,
         loader: 'url-loader?prefix=audio/&limit=5000',
       },

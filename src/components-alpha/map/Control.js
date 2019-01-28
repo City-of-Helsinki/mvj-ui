@@ -3,7 +3,7 @@ import L from 'leaflet';
 import {MapControl} from 'react-leaflet';
 
 export default class Control extends MapControl {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {className, children, title} = this.props;
 
     const control = L.control({

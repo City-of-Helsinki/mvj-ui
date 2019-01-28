@@ -99,7 +99,7 @@ class PreparerForm extends Component<Props, State> {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {fetchSingleLease, fetchApplicationAttributes, location, fetchLeaseAttributes, params: {leaseId}} = this.props;
 
     if (location.query.tab) {
@@ -111,7 +111,7 @@ class PreparerForm extends Component<Props, State> {
     fetchSingleLease(leaseId);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {fetchSingleLease} = this.props;
     const {params: {leaseId}, location} = nextProps;
 

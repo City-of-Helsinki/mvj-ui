@@ -58,11 +58,11 @@ export const reveal = ({name}) => (WrappedComponent) => {
       this.registerWithContext = this.registerWithContext.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
       this.registerWithContext();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       const {revealContext: {openReveal}} = this.context;
 
       if (nextProps.isOpen && !this.props.isOpen) {

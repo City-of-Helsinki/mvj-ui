@@ -59,7 +59,7 @@ class App extends Component<Props> {
     this.doInitialLoad();
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  UNSAFE_componentWillReceiveProps(nextProps: Object) {
     const {userList} = nextProps;
     const {changeUser, currentUser} = this.props;
     const token = getStorageItem('TOKEN');

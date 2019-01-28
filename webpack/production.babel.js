@@ -3,14 +3,14 @@ import mapValues from 'lodash/mapValues';
 import createConfig from './createConfig';
 import readDotenv from './readDotenv';
 import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CleanPlugin from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 // import OfflinePlugin from 'offline-plugin';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 
 const context = path.resolve(__dirname, '..');
-const extractStylesPlugin = new ExtractTextPlugin('[name].[hash].css');
 
 // TODO: Make this better
 const getEnvValues = {
@@ -54,10 +54,11 @@ export default createConfig({
           /\.scss$/,
           /\.css$/,
         ],
-        loader: extractStylesPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader!sass-loader?sourceMaps',
-        }),
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader',
+        ],
       },
     ],
   },
@@ -78,10 +79,12 @@ export default createConfig({
     new webpack.LoaderOptionsPlugin({
       minimize: true,
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
+    // new webpack.optimize.UglifyJsPlugin({
+    //   sourceMap: true,
+    // }),
+    new MiniCssExtractPlugin({
+      filename: '[name][hash].css',
     }),
-    extractStylesPlugin,
     // new OfflinePlugin({
     //   AppCache: false,
     //   publicPath: '/',
@@ -92,4 +95,9 @@ export default createConfig({
     // }),
     new FaviconsWebpackPlugin(path.resolve(context, 'assets/images/favicon.png')),
   ],
+  optimization: {
+    minimizer: [new UglifyJsPlugin({
+      sourceMap: true,
+    })],
+  },
 });

@@ -43,7 +43,7 @@ const validate = ({organization, organization_id, name, email, phone, contact_na
 };
 
 class ApplicationEdit extends Component<Props> {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {application: {id}, fetchSingleApplication, applicationId} = this.props;
 
     if (id !== applicationId) {

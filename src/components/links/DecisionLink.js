@@ -11,7 +11,7 @@ type Props = {
 
 const DecisionLink = ({decision, decisionOptions}: Props) => decision
   ? <FormText>{decision.reference_number
-    ? <a className='no-margin' href={getReferenceNumberLink(decision.reference_number)} target='_blank'>
+    ? <a className='no-margin' href={getReferenceNumberLink(decision.reference_number)} target='_blank' rel="noopener noreferrer">
       {getLabelOfOption(decisionOptions, decision.id)}
     </a>
     : getLabelOfOption(decisionOptions, decision.id)

@@ -37,12 +37,12 @@ class RealProperyUnits extends Component<Props, State> {
     real_property_units: null,
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {real_property_units} = this.props;
     this.setState({real_property_units});
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {real_property_units} = nextProps;
     this.setState({real_property_units});
   }
@@ -166,8 +166,8 @@ class RealProperyUnits extends Component<Props, State> {
                   {ktjDataSets.map(({key, label}, i) => (
                     <li key={i}>{label}
                       <div className="links">
-                        <a href={getKtjLink(get(property, 'identification_number'), key)} target="_blank">fi</a>
-                        <a href={getKtjLink(get(property, 'identification_number'), key, 'sv')} target="_blank">se</a>
+                        <a href={getKtjLink(get(property, 'identification_number'), key)} target="_blank" rel="noopener noreferrer">fi</a>
+                        <a href={getKtjLink(get(property, 'identification_number'), key, 'sv')} target="_blank" rel="noopener noreferrer">se</a>
                       </div>
                     </li>
                   ))}

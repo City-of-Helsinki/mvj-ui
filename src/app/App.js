@@ -78,7 +78,7 @@ class App extends Component<Props, State> {
     clearInterval(this.timerID);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {apiError, clearApiToken, fetchApiToken} = this.props;
     if(apiError) {
       return;

@@ -44,7 +44,7 @@ type Props = {
 class CreateLeaseForm extends Component<Props> {
   firstField: any
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if(this.props.municipality !== nextProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
 
