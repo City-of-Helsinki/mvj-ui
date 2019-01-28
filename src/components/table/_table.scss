@@ -154,12 +154,17 @@
           vertical-align: top;
 
           &.collapse-arrow-column {
-            width: 1%;
+            width: 1px;
+
+            &.no-icon {
+              padding: 0;
+            }
           }
 
           &.no-wrap {
             white-space: nowrap;
           }
+
           a.sortable-table-row-collapse-link {
             line-height: rem-calc(20px);
             margin: 0;

@@ -152,7 +152,7 @@ class SortableTableRow extends PureComponent<Props, State> {
         className={classNames(className, {'selected': isClicked}, {'collapsed': collapse})}
       >
         {showCollapseArrowColumn &&
-          <td className='collapse-arrow-column'>
+          <td className={classNames('collapse-arrow-column', {'no-icon': !showCollapseArrowIcon})}>
             {showCollapseArrowIcon &&
               <a
                 className='sortable-table-row-collapse-link'
