@@ -459,7 +459,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         key: 'receivableTypes',
         ascSortFunction: this.sortByReceivableTypesAsc,
         descSortFunction: this.sortByReceivableTypesDesc,
-        renderer: (val) => formatReceivableTypesString(receivableTypeOptions, val) || '-',
+        arrayRenderer: (val) => formatReceivableTypesString(receivableTypeOptions, val) || '-',
         text: InvoiceRowsFieldTitles.RECEIVABLE_TYPE,
       });
     }

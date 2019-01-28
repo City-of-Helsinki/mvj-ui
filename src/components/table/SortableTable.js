@@ -13,6 +13,7 @@ import {sortStringByKeyAsc, sortStringByKeyDesc} from '$util/helpers';
 import {TableSortOrder} from '$components/enums';
 
 export type Column = {
+  arrayRenderer?: Function,
   dataClassName?: string,
   defaultSortOrder?: string,
   disabled?: boolean,
@@ -368,6 +369,16 @@ class SortableTable extends Component<Props, State> {
     return maxHeight - headerHeight;
   }
 
+  getNoDataColSpan = () => {
+    const {columns, showCollapseArrowColumn, showRadioButton} = this.props;
+    let colSpan = columns.length;
+
+    if(showRadioButton) colSpan++;
+    if(showCollapseArrowColumn) colSpan++;
+
+    return colSpan;
+  }
+
   render() {
     const {
       clickedRow,
@@ -390,7 +401,7 @@ class SortableTable extends Component<Props, State> {
       sortKey,
       sortOrder,
     } = this.state;
-
+    const noDataColSpan = this.getNoDataColSpan();
     const fixedMaxHeight = this.calculateMaxHeight();
 
     return (
@@ -458,14 +469,7 @@ class SortableTable extends Component<Props, State> {
             />
             <tbody>
               {!sortedData.length &&
-                <tr className='no-data-row'><td colSpan={() => {
-                  let colSpan = 0;
-
-                  if(showRadioButton) colSpan++;
-                  if(showCollapseArrowColumn) colSpan++;
-
-                  return colSpan;
-                }}>{noDataText}</td></tr>
+                <tr className='no-data-row'><td colSpan={noDataColSpan}>{noDataText}</td></tr>
               }
 
               {!!sortedData.length && sortedData.map((row, index) => {

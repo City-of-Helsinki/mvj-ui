@@ -179,7 +179,7 @@ class SortableTableRow extends PureComponent<Props, State> {
             />
           </td>
         }
-        {columns.map(({dataClassName, disabled, grouping, key, renderer}) => {
+        {columns.map(({arrayRenderer, dataClassName, disabled, grouping, key, renderer}) => {
           const hide = groupRow && get(grouping, 'columnsToHide', []).indexOf(key) !== -1;
           const isDisabled = disabled && isArray(get(row, key)) && get(row, key).length > 1;
 
@@ -227,9 +227,11 @@ class SortableTableRow extends PureComponent<Props, State> {
               {renderer
                 ? isArray(get(row, key))
                   ? <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => renderer(value, row) || '-'} open={collapse}/>
-                  : renderer(get(row, key)) || '-'
+                  : renderer(get(row, key), row) || '-'
                 : isArray(get(row, key))
-                  ? <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => value || '-'} open={collapse}/>
+                  ? arrayRenderer
+                    ? arrayRenderer(get(row, key))
+                    : <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => value || '-'} open={collapse}/>
                   : get(row, key) || '-'
               }
             </td>;
