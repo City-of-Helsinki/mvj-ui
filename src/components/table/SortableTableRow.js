@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 
+import AccordionIcon from '$components/icons/AccordionIcon';
+import MultiItemCollapse from './MultiItemCollapse';
 import type {Column} from './SortableTable';
 
 type Props = {
@@ -18,14 +20,23 @@ type Props = {
   onSelectRow?: Function,
   radioButtonDisabledFunction?: Function,
   row: Object,
+  showCollapseArrowColumn?: boolean,
   showRadioButton?: boolean,
 }
 
-class SortableTableRow extends PureComponent<Props> {
+type State = {
+  collapse: boolean,
+}
+
+class SortableTableRow extends PureComponent<Props, State> {
   component: any
   buttonPressTimer: any;
   isClicked = false;
   isLongPress = false;
+
+  state = {
+    collapse: false,
+  }
 
   setRef = (el: any) => {
     this.component = el;
@@ -89,6 +100,33 @@ class SortableTableRow extends PureComponent<Props> {
     }
   };
 
+  handleCollapseArrowIconClick = () => {
+    this.setState({
+      collapse: !this.state.collapse,
+    });
+  }
+
+  handleCollapseArrowIconKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      this.handleCollapseArrowIconClick();
+    }
+  };
+
+  shouldShowCollapseArrowIcon = () => {
+    const {columns, row} = this.props;
+    let showIcon = false;
+
+    columns.forEach((column) => {
+      if(isArray(row[column.key]) && row[column.key].length > 1) {
+        showIcon = true;
+        return true;
+      }
+    });
+
+    return showIcon;
+  }
+
   render() {
     const {
       className,
@@ -99,16 +137,34 @@ class SortableTableRow extends PureComponent<Props> {
       isSelected,
       onRowClick,
       row,
+      showCollapseArrowColumn,
       showRadioButton,
     } = this.props;
+    const {collapse} = this.state;
+
+    const showCollapseArrowIcon = this.shouldShowCollapseArrowIcon();
 
     return (
       <tr
         ref={this.setRef}
         tabIndex={onRowClick ? 0 : undefined}
         onKeyDown={this.handleKeyDown}
-        className={classNames(className, {'selected': isClicked})}
+        className={classNames(className, {'selected': isClicked}, {'collapsed': collapse})}
       >
+        {showCollapseArrowColumn &&
+          <td className='collapse-arrow-column'>
+            {showCollapseArrowIcon &&
+              <a
+                className='sortable-table-row-collapse-link'
+                onClick={this.handleCollapseArrowIconClick}
+                onKeyDown={this.handleCollapseArrowIconKeyDown}
+                tabIndex={0}
+              >
+                <AccordionIcon className='sortable-table-row-collapse-icon'/>
+              </a>
+            }
+          </td>
+        }
         {showRadioButton &&
           <td>
             <label className='form-field__label invisible' htmlFor={`row_${row.id}`}>Rivi {row.id}</label>
@@ -169,8 +225,12 @@ class SortableTableRow extends PureComponent<Props> {
               onMouseUp={handleMouseRelease}
             >
               {renderer
-                ? renderer(get(row, key), row)
-                : get(row, key) || '-'
+                ? isArray(get(row, key))
+                  ? <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => renderer(value, row) || '-'} open={collapse}/>
+                  : renderer(get(row, key)) || '-'
+                : isArray(get(row, key))
+                  ? <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => value || '-'} open={collapse}/>
+                  : get(row, key) || '-'
               }
             </td>;
         })}

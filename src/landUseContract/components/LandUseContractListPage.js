@@ -13,7 +13,6 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import CreateLandUseContractModal from './createLandUseContract/CreateLandUseContractModal';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
-import MultiItemCollapse from '$components/table/MultiItemCollapse';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -307,20 +306,12 @@ class LandUseContractListPage extends Component<Props, State> {
                 key: 'litigants',
                 text: 'Osapuoli',
                 disabled: true,
-                renderer: (val) => <MultiItemCollapse
-                  items={val}
-                  itemRenderer={(item) => item}
-                />,
               },
               {key: 'plan_number', text: 'Asemakaavan numero'},
               {
                 key: 'areas',
                 text: 'Kohde',
                 disabled: true,
-                renderer: (val) => <MultiItemCollapse
-                  items={val}
-                  itemRenderer={(item) => item}
-                />,
               },
               {key: 'project_area', text: 'Hankealue'},
               {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
@@ -328,6 +319,7 @@ class LandUseContractListPage extends Component<Props, State> {
             data={filteredLandUseContracts}
             listTable
             onRowClick={this.handleRowClick}
+            showCollapseArrowColumn
           />
           <Pagination
             activePage={activePage}

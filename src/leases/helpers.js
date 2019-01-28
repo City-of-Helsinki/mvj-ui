@@ -68,12 +68,18 @@ export const getContentLeaseAreaIdentifiers = (lease: Object) => {
 };
 
 export const getContentLeaseAddresses = (lease: Object) => {
-  return get(lease, 'lease_areas')
+  const addresses = [];
+
+  get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)
-    .map((area) => [
-      ...get(area, 'addresses', [])
-        .map((address) => getFullAddress(address)),
-    ]);
+    .forEach((area) => {
+      get(area, 'addresses', [])
+        .forEach((address) => {
+          addresses.push(getFullAddress(address));
+        });
+    });
+
+  return addresses;
 };
 
 export const getContentLeaseItem = (lease: Object, query: Object = {}) => {
@@ -732,8 +738,7 @@ export const getContentBasisOfRents = (lease: Object, archived: boolean = true) 
 export const getFullAddress = (item: Object) => {
   if(isEmpty(item)) return null;
 
-  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}
-    ${item.postal_code || ''} ${item.city || ''}`;
+  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''} ${item.postal_code || ''} ${item.city || ''}`;
 };
 
 export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTenants: boolean) =>{

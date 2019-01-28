@@ -18,6 +18,7 @@ type Props = {
   radioButtonDisabledFunction?: Function,
   row: Object,
   selectedRow?: Object | null,
+  showCollapseArrowColumn?: boolean,
   showGroupRadioButton?: boolean,
   showRadioButton?: boolean,
 }
@@ -31,6 +32,7 @@ const SortableTableGroup = ({
   radioButtonDisabledFunction,
   row,
   selectedRow,
+  showCollapseArrowColumn,
   showGroupRadioButton,
   showRadioButton,
 }: Props) => {
@@ -66,6 +68,7 @@ const SortableTableGroup = ({
   return(
     <TableGroup>
       <tr className='group-row'>
+        {showCollapseArrowColumn && <td></td>}
         {(showGroupRadioButton || showRadioButton) &&
           <td>
             {showGroupRadioButton &&
@@ -112,6 +115,7 @@ const SortableTableGroup = ({
           onRowClick={onRowClick}
           onSelectRow={onSelectRow}
           row={row}
+          showCollapseArrowColumn={showCollapseArrowColumn}
           showRadioButton={showRadioButton || false}
         />;
       })}

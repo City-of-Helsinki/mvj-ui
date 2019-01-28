@@ -17,7 +17,6 @@ import IconRadioButtons from '$components/button/IconRadioButtons';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MapIcon from '$components/icons/MapIcon';
-import MultiItemCollapse from '$components/table/MultiItemCollapse';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -250,10 +249,6 @@ class LeaseListPage extends PureComponent<Props, State> {
         key: 'lease_area_identifiers',
         text: 'Vuokrakohde',
         disabled: true,
-        renderer: (val) => <MultiItemCollapse
-          items={val}
-          itemRenderer={(item) => item}
-        />,
       });
     }
 
@@ -262,10 +257,6 @@ class LeaseListPage extends PureComponent<Props, State> {
         key: 'addresses',
         text: 'Osoite',
         disabled: true,
-        renderer: (val) => <MultiItemCollapse
-          items={val}
-          itemRenderer={(item) => item}
-        />,
       });
     }
 
@@ -274,10 +265,6 @@ class LeaseListPage extends PureComponent<Props, State> {
         key: 'tenants',
         text: 'Vuokralainen',
         disabled: true,
-        renderer: (val) => <MultiItemCollapse
-          items={val}
-          itemRenderer={(item) => item}
-        />,
       });
     }
 
@@ -439,6 +426,7 @@ class LeaseListPage extends PureComponent<Props, State> {
                 data={leases}
                 listTable
                 onRowClick={this.handleRowClick}
+                showCollapseArrowColumn
               />
               <Pagination
                 activePage={activePage}
