@@ -45,6 +45,7 @@ type Props = {
   onSelectPrevious?: Function,
   onSelectRow?: Function,
   selectedRow?: Object | null,
+  showCollapseArrowColumn?: boolean,
   showGroupRadioButton?: boolean,
   showRadioButton?: boolean,
   radioButtonDisabledFunction?: Function,
@@ -154,6 +155,7 @@ class SortableTable extends Component<Props, State> {
   thead: any
 
   state = {
+    collapse: true,
     columns: [],
     data: [],
     scrollHeaderColumnStyles: [],
@@ -376,6 +378,7 @@ class SortableTable extends Component<Props, State> {
       onRowClick,
       radioButtonDisabledFunction,
       selectedRow,
+      showCollapseArrowColumn,
       showGroupRadioButton,
       showRadioButton,
       sortable,
@@ -387,6 +390,7 @@ class SortableTable extends Component<Props, State> {
       sortKey,
       sortOrder,
     } = this.state;
+
     const fixedMaxHeight = this.calculateMaxHeight();
 
     return (
@@ -416,6 +420,7 @@ class SortableTable extends Component<Props, State> {
                   columns={columns}
                   columnStyles={scrollHeaderColumnStyles}
                   onColumnClick={this.onSortingChange}
+                  showCollapseArrowColumn={showCollapseArrowColumn}
                   showRadioButton={showRadioButton}
                   sortable={sortable}
                   sortKey={sortKey}
@@ -445,6 +450,7 @@ class SortableTable extends Component<Props, State> {
               columns={columns}
               fixedHeader={fixedHeader}
               onColumnClick={this.onSortingChange}
+              showCollapseArrowColumn={showCollapseArrowColumn}
               showRadioButton={showRadioButton}
               sortable={sortable}
               sortKey={sortKey}
@@ -452,7 +458,14 @@ class SortableTable extends Component<Props, State> {
             />
             <tbody>
               {!sortedData.length &&
-                <tr className='no-data-row'><td colSpan={showRadioButton ? columns.length + 1 : columns.length}>{noDataText}</td></tr>
+                <tr className='no-data-row'><td colSpan={() => {
+                  let colSpan = 0;
+
+                  if(showRadioButton) colSpan++;
+                  if(showCollapseArrowColumn) colSpan++;
+
+                  return colSpan;
+                }}>{noDataText}</td></tr>
               }
 
               {!!sortedData.length && sortedData.map((row, index) => {
@@ -479,6 +492,7 @@ class SortableTable extends Component<Props, State> {
                     radioButtonDisabledFunction={radioButtonDisabledFunction}
                     row={row}
                     selectedRow={selectedRow}
+                    showCollapseArrowColumn={showCollapseArrowColumn}
                     showGroupRadioButton={showGroupRadioButton}
                     showRadioButton={showRadioButton}
                   />
@@ -492,6 +506,7 @@ class SortableTable extends Component<Props, State> {
                     onRowClick={onRowClick}
                     onSelectRow={this.handleSelectRow}
                     row={row}
+                    showCollapseArrowColumn={showCollapseArrowColumn}
                     showRadioButton={showGroupRadioButton || showRadioButton}
                   />;
               })}

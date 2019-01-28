@@ -13,7 +13,6 @@ import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
-import MultiItemCollapse from '$components/table/MultiItemCollapse';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -269,10 +268,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
         key: 'leaseIdentifiers',
         text: 'Vuokratunnus',
         disabled: true,
-        renderer: (val) => <MultiItemCollapse
-          items={val}
-          itemRenderer={(item) => item}
-        />,
       });
     }
     if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE)) {
@@ -331,6 +326,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
             data={filteredInfillDevelopments}
             listTable
             onRowClick={this.handleRowClick}
+            showCollapseArrowColumn
           />
           <Pagination
             activePage={activePage}

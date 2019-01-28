@@ -12,7 +12,6 @@ import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
-import MultiItemCollapse from '$components/table/MultiItemCollapse';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -235,10 +234,6 @@ class RentBasisListPage extends Component<Props, State> {
         key: 'property_identifiers',
         text: 'Kohteen tunnus',
         disabled: true,
-        renderer: (val) => <MultiItemCollapse
-          items={val}
-          itemRenderer={(item) => item}
-        />,
       });
     }
 
@@ -247,10 +242,7 @@ class RentBasisListPage extends Component<Props, State> {
         key: 'build_permission_types',
         text: 'Pääkäyttötarkoitus',
         disabled: true,
-        renderer: (val) => <MultiItemCollapse
-          items={val}
-          itemRenderer={(item) => item ? getLabelOfOption(buildPermissionTypeOptions, item) : '-'}
-        />,
+        renderer: (val) => val ? getLabelOfOption(buildPermissionTypeOptions, val) : '-',
       });
     }
 
@@ -322,6 +314,7 @@ class RentBasisListPage extends Component<Props, State> {
             data={rentBasisList}
             listTable
             onRowClick={this.handleRowClick}
+            showCollapseArrowColumn
           />
           <Pagination
             activePage={activePage}

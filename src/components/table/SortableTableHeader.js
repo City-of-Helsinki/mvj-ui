@@ -14,6 +14,7 @@ type Props = {
   fixedHeader?: boolean,
   getRef?: Function,
   onColumnClick?: Function,
+  showCollapseArrowColumn?: boolean,
   showRadioButton?: boolean,
   sortable?: boolean,
   sortKey: ?string,
@@ -26,6 +27,7 @@ const SortableTableHeader = ({
   fixedHeader,
   getRef,
   onColumnClick,
+  showCollapseArrowColumn,
   showRadioButton,
   sortable,
   sortKey,
@@ -56,6 +58,7 @@ const SortableTableHeader = ({
   return(
     <thead ref={setTheadRef}>
       <tr>
+        {showCollapseArrowColumn && <th></th>}
         {showRadioButton && <th></th>}
         {columns.map((column, index) => {
           const handleColumnClick = () => {

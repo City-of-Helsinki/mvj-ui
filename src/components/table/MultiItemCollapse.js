@@ -2,39 +2,17 @@
 import React, {PureComponent} from 'react';
 import classNames from 'classnames';
 
-import AccordionIcon from '$components/icons/AccordionIcon';
 import ListItem from '$components/content/ListItem';
 
 type Props = {
   items: Array<any>,
   itemRenderer: Function,
-}
-
-type State = {
   open: boolean,
 }
 
-class MultiItemCollapse extends PureComponent<Props, State> {
-  state = {
-    open: false,
-  }
-
-  handleHeaderClick = () => {
-    this.setState({
-      open: !this.state.open,
-    });
-  }
-
-  handleHeaderKeyDown = (e: any) => {
-    if(e.keyCode === 13) {
-      e.preventDefault();
-      this.handleHeaderClick();
-    }
-  };
-
+class MultiItemCollapse extends PureComponent<Props> {
   render() {
-    const {items, itemRenderer} = this.props;
-    const {open} = this.state;
+    const {items, itemRenderer, open} = this.props;
 
     if(!items || !items.length) {
       return '-';
@@ -46,16 +24,10 @@ class MultiItemCollapse extends PureComponent<Props, State> {
 
     return(
       <div className={classNames('sortable-table__multi-item-collapse', {'is-open': open})}>
-        <div
-          className='sortable-table__multi-item-collapse_header'
-          onClick={this.handleHeaderClick}
-          onKeyDown={this.handleHeaderKeyDown}
-          tabIndex={0}
-        >
+        <div className='sortable-table__multi-item-collapse_header'>
           <span className='sortable-table__multi-item-collapse_header_title'>{itemRenderer(items[0])}</span>
           <div className='sortable-table__multi-item-collapse_header_arrow-wrapper'>
             <span>({items.length})</span>
-            <AccordionIcon className="arrow-icon"/>
           </div>
         </div>
         <div className='sortable-table__multi-item-collapse_items'>
