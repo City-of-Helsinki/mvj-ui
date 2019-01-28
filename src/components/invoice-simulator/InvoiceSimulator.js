@@ -102,7 +102,7 @@ class InvoiceSimulator extends Component<Props, State> {
               className={`${ButtonColors.SUCCESS} no-margin`}
               disabled={isFetching || !isValid}
               onClick={this.handleCreatePreviewInvoices}
-              text='Luo laskut'
+              text='Näytä laskut'
             />
           </Column>
         </Row>
