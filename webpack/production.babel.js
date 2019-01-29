@@ -32,7 +32,7 @@ export default createConfig({
     'app': [
       'whatwg-fetch',
       'react-hot-loader/patch',
-      'babel-polyfill',
+      '@babel/polyfill',
       './src/index.js',
       './src/main.scss',
     ],
