@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
@@ -37,23 +37,20 @@ type Props = {
   createInfillDevelopment: Function,
   formValues: Object,
   hideEditMode: Function,
+  history: Object,
   infillDevelopmentMethods: Methods, // get via withCommonAttributes HOC
   isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
   isSaving: boolean,
+  location: Object,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
-  router: Object,
   showEditMode: Function,
 }
 
 class NewInfillDevelopmentPage extends Component<Props> {
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   componentDidMount() {
     const {
       clearFormValidFlags,
@@ -94,19 +91,18 @@ class NewInfillDevelopmentPage extends Component<Props> {
   }
 
   handleBack = () => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}`,
-      query,
+      search: search,
     });
   }
 
   cancelChanges = () => {
-    const {router} = this.context;
+    const {history} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
     });
   }
@@ -180,6 +176,7 @@ const mapStateToProps = (state: RootState) => {
 
 export default flowRight(
   withCommonAttributes,
+  withRouter,
   connect(
     mapStateToProps,
     {

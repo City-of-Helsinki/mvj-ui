@@ -139,7 +139,7 @@ export default flowRight(
       fetchDistrictsByMunicipality,
     },
     null,
-    {withRef: true}
+    {forwardRef: true}
   ),
   reduxForm({
     form: formName,

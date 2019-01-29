@@ -1,9 +1,10 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
+import {withRouter} from 'react-router';
 import classnames from 'classnames';
+import flowRight from 'lodash/flowRight';
 
 import Authorization from '$components/authorization/Authorization';
 import Loader from '$components/loader/Loader';
@@ -20,6 +21,7 @@ import type {Methods} from '$src/types';
 type Props = {
   areaNoteMethods: Methods,
   contactMethods: Methods,
+  history: Object,
   infillDevelopmentMethods: Methods,
   isFetchingCommonAttributes: boolean,
   isOpen: boolean,
@@ -41,10 +43,6 @@ class SideMenu extends Component<Props, State> {
     isClosing: false,
     isOpening: false,
   }
-
-  static contextTypes = {
-    router: PropTypes.object,
-  };
 
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
@@ -125,8 +123,9 @@ class SideMenu extends Component<Props, State> {
               dispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
-                  const {router} = this.context;
-                  router.push(target.href);
+                  const {history} = this.props;
+
+                  history.push(target.href);
                   onLinkClick();
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
@@ -170,4 +169,7 @@ class SideMenu extends Component<Props, State> {
   }
 }
 
-export default withCommonAttributes(SideMenu);
+export default flowRight(
+  withCommonAttributes,
+  withRouter,
+)(SideMenu);

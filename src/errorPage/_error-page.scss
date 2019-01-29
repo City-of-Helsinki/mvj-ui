@@ -3,4 +3,10 @@
   text-align: center;
   margin: auto;
   z-index: 1;
+
+  h1 {
+    font-size: rem-calc(48px);
+    margin: 0;
+    line-height: normal;
+  }
 }

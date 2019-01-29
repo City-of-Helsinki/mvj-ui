@@ -1,8 +1,8 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {getFormValues, isDirty} from 'redux-form';
+import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -36,21 +36,18 @@ type Props = {
   contactMethods: Methods, // get via withCommonAttributes HOC
   createContact: Function,
   hideEditMode: Function,
+  history: Object,
   isContactFormDirty: boolean,
   isContactFormValid: boolean,
   isFetchingCommonAttributes: boolean, // get via withCommonAttributes
   isSaveClicked: boolean,
+  location: Object,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
-  router: Object,
   showEditMode: Function,
 }
 
 class NewContactPage extends Component<Props> {
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   componentDidMount() {
     const {receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode} = this.props;
 
@@ -83,24 +80,25 @@ class NewContactPage extends Component<Props> {
   }
 
   handleBack = () => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.CONTACTS)}`,
-      query,
+      search: search,
     });
   }
 
   cancelChanges = () => {
-    const {router} = this.context;
-    return router.push({
+    const {history} = this.props;
+
+    return history.push({
       pathname: getRouteById(Routes.CONTACTS),
     });
   }
 
   saveChanges = () => {
     const {contactFormValues, createContact, isSaveClicked, receiveIsSaveClicked} = this.props;
+
     receiveIsSaveClicked(true);
 
     if(isSaveClicked) {
@@ -162,6 +160,7 @@ const mapStateToProps = (state: RootState) => {
 
 export default flowRight(
   withCommonAttributes,
+  withRouter,
   connect(
     mapStateToProps,
     {

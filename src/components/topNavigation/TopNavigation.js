@@ -1,8 +1,8 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {Link} from 'react-router';
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import MainMenuIcon from '../icons/MainMenuIcon';
@@ -10,11 +10,14 @@ import SearchInput from '../inputs/SearchInput';
 import {CancelChangesModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
+import {getSearchQuery, getUrlParams} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 
 type Props = {
+  history: Object,
   isMenuOpen: boolean,
   linkUrl: string,
+  location: Object,
   onLogout: Function,
   pageTitle: string,
   showSearch: boolean,
@@ -23,32 +26,46 @@ type Props = {
 }
 
 type State = {
-  search: string,
+  identifier: string,
 }
 
 class TopNavigation extends Component<Props, State> {
   state = {
-    search: '',
+    identifier: '',
   }
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
+  componentDidMount() {
+    this.setInitialSearchValue();
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const {location: {pathname}} = this.props;
+
+    if(pathname !== prevProps.location.pathname) {
+      this.setInitialSearchValue();
+    }
+  }
+
+  setInitialSearchValue = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+    this.setState({identifier: query.identifier || ''});
+  }
 
   handleSearchChange = (e: any) => {
-    this.setState({search: e.target.value});
+    this.setState({identifier: e.target.value});
   }
 
   moveSearchPage = () => {
-    const {search} = this.state,
-      {router} = this.context;
+    const {history} = this.props;
+    const {identifier} = this.state;
 
-    if(search) {
-      const query = {search: search};
+    if(identifier) {
+      const query = {identifier: identifier};
 
-      return router.push({
+      return history.push({
         pathname: getRouteById(Routes.LEASES),
-        query,
+        search: getSearchQuery(query),
       });
     }
   }
@@ -62,7 +79,7 @@ class TopNavigation extends Component<Props, State> {
       toggleSideMenu,
       username,
     } = this.props;
-    const {search} = this.state;
+    const {identifier} = this.state;
 
     return (
       <AppConsumer>
@@ -78,8 +95,8 @@ class TopNavigation extends Component<Props, State> {
               dispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
-                  const {router} = this.context;
-                  router.push(target.href);
+                  const {history} = this.props;
+                  history.push(target.href);
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
                 confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
@@ -158,7 +175,7 @@ class TopNavigation extends Component<Props, State> {
                       onChange={this.handleSearchChange}
                       onKeyUp={handleSearchKeyUp}
                       onSubmit={handleSearch}
-                      value={search}
+                      value={identifier}
                     />
                   </div>
                 }
@@ -176,4 +193,4 @@ class TopNavigation extends Component<Props, State> {
   }
 }
 
-export default TopNavigation;
+export default withRouter(TopNavigation);

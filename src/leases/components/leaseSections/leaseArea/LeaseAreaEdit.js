@@ -3,7 +3,8 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {change, FieldArray, formValueSelector} from 'redux-form';
-import {Link, withRouter} from 'react-router';
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -41,6 +42,7 @@ import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getFieldAttributes,
   getSearchQuery,
+  getUrlParams,
   hasPermissions,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
@@ -415,12 +417,12 @@ type Props = {
   field: string,
   geometry: ?Object,
   isSaveClicked: boolean,
+  location: Object,
   planUnitsContractCollapseState: boolean,
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
   plotsCurrentCollapseState: boolean,
   receiveCollapseStates: Function,
-  router: Object,
   savedArea: Object,
   usersPermissions: UsersPermissionsType,
 }
@@ -493,16 +495,16 @@ class LeaseAreaEdit extends PureComponent<Props> {
   getMapLinkUrl = () => {
     const {
       areaId,
-      router: {location: {pathname, query}},
+      location: {pathname, search},
     } = this.props;
+    const searchQuery = getUrlParams(search);
 
-    const tempQuery = {...query};
-    delete tempQuery.plan_unit;
-    delete tempQuery.plot;
-    tempQuery.lease_area = areaId,
-    tempQuery.tab = 7;
+    delete searchQuery.plan_unit;
+    delete searchQuery.plot;
+    searchQuery.lease_area = areaId,
+    searchQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(tempQuery)}`;
+    return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
   render() {

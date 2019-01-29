@@ -223,7 +223,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     if(!this.table || !this.panel) return;
 
     const {openedInvoice} = this.state,
-      {scrollHeight: panelHeight} = this.panel.wrappedInstance.container,
+      {scrollHeight: panelHeight} = this.panel.container,
       tableMinHeight = TABLE_MIN_HEIGHT,
       borderHeight = 2;
     let {scrollHeight: tableHeight} = this.table.scrollBodyTable;

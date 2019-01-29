@@ -14,6 +14,7 @@ export default {
         test: /\.js$/,
         loader: 'babel-loader',
         include: /src/,
+        exclude: /node_modules/,
       },
       {
         test: /\.(mp3|ogg|wav)$/,

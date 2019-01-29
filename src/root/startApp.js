@@ -1,15 +1,10 @@
 // @flow
-
-import {browserHistory} from 'react-router';
-import {syncHistoryWithStore} from 'react-router-redux';
-import configureStore from './configureStore';
+import configureStore, {history} from './configureStore';
 import renderApp from './renderApp';
 import Root from './Root';
 
 export const store = configureStore();
 export default () => {
-
-  const history = syncHistoryWithStore(browserHistory, store);
 
   const rootProps = {
     history,

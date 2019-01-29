@@ -148,6 +148,26 @@ export const getSearchQuery = (filters: any) => {
   return query.length ? `?${query.join('&')}` : '';
 };
 
+export const getUrlParams = (search: string = ''): Object => {
+  const params = new URLSearchParams(search);
+  const entries = Array.from(params.entries());
+  const query = {};
+
+  entries.forEach((entry) => {
+    if(query[entry[0]]) {
+      if(isArray(query[entry[0]])) {
+        query[entry[0]].push(entry[1]);
+      } else {
+        query[entry[0]] = [query[entry[0]], entry[1]];
+      }
+    } else {
+      query[entry[0]] = entry[1];
+    }
+  });
+
+  return query;
+};
+
 /**
  *
  * @param title

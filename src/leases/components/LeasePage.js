@@ -70,7 +70,13 @@ import {PermissionMissingTexts} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
-import {hasPermissions, isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
+import {
+  getSearchQuery,
+  getUrlParams,
+  hasPermissions,
+  isFieldAllowedToRead,
+  scrollToTopPage,
+} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getCommentsByLease} from '$src/comments/selectors';
 import {
@@ -120,6 +126,7 @@ type Props = {
   fetchSingleLease: Function,
   fetchVats: Function,
   hideEditMode: Function,
+  history: Object,
   initialize: Function,
   inspectionsFormValues: Object,
   isEditMode: boolean,
@@ -149,13 +156,14 @@ type Props = {
   leaseMethods: Methods, // get via withCommonAttributes HOC
   leaseTypeList: LeaseTypeList,
   location: Object,
-  params: Object,
+  match: {
+    params: Object,
+  },
   patchLease: Function,
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   rentsFormValues: Object,
-  router: Object,
   showEditMode: Function,
   summaryFormValues: Object,
   tenantsFormValues: Object,
@@ -198,7 +206,7 @@ class LeasePage extends Component<Props, State> {
       fetchVats,
       hideEditMode,
       leaseTypeList,
-      params: {leaseId},
+      match: {params: {leaseId}},
       usersPermissions,
       vats,
     } = this.props;
@@ -242,9 +250,10 @@ class LeasePage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      location,
+      location: {search},
       receiveTopNavigationSettings,
     } = this.props;
+    const query = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASES),
@@ -252,65 +261,73 @@ class LeasePage extends Component<Props, State> {
       showSearch: true,
     });
 
-    if (location.query.tab) {
-      this.setState({activeTab: location.query.tab});
+    if (query.tab) {
+      this.setState({activeTab: query.tab});
     }
 
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
   componentDidUpdate(prevProps:Props, prevState: State) {
-    const {params: {leaseId}} = this.props;
+    const {
+      collectionCourtDecisionMethods,
+      collectionLetterMethods,
+      collectionNoteMethods,
+      currentLease,
+      fetchCollectionCourtDecisionsByLease,
+      fetchCollectionLettersByLease,
+      fetchCollectionNotesByLease,
+      fetchInvoicesByLease,
+      fetchInvoiceSetsByLease,
+      isEditMode,
+      location,
+      location: {search},
+      match: {params: {leaseId}},
+      usersPermissions,
+    } = this.props;
+    const {activeTab} = this.state;
+    const query = getUrlParams(search);
 
-    if(prevProps.usersPermissions !== this.props.usersPermissions) {
-      if(hasPermissions(this.props.usersPermissions, UsersPermissions.VIEW_INVOICE)) {
-        const {fetchInvoicesByLease} = this.props;
-
+    if(prevProps.usersPermissions !== usersPermissions) {
+      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
         fetchInvoicesByLease(leaseId);
       }
 
-      if(hasPermissions(this.props.usersPermissions, UsersPermissions.VIEW_INVOICESET)) {
-        const {fetchInvoiceSetsByLease} = this.props;
-
+      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICESET)) {
         fetchInvoiceSetsByLease(leaseId);
       }
     }
     // Fetch collection court decisions when getting new collection court decision methods and GET is allowed
-    if(prevProps.collectionCourtDecisionMethods !== this.props.collectionCourtDecisionMethods && this.props.collectionCourtDecisionMethods.GET) {
-      const {fetchCollectionCourtDecisionsByLease} = this.props;
-
+    if(prevProps.collectionCourtDecisionMethods !== collectionCourtDecisionMethods && collectionCourtDecisionMethods.GET) {
       fetchCollectionCourtDecisionsByLease(leaseId);
     }
     // Fetch collection letters when getting new collection letter methods and GET is allowed
-    if(prevProps.collectionLetterMethods !== this.props.collectionLetterMethods && this.props.collectionLetterMethods.GET) {
-      const {fetchCollectionLettersByLease} = this.props;
-
+    if(prevProps.collectionLetterMethods !== collectionLetterMethods && collectionLetterMethods.GET) {
       fetchCollectionLettersByLease(leaseId);
     }
     // Fetch collection notes when getting new collection note methods and GET is allowed
-    if(prevProps.collectionNoteMethods !== this.props.collectionNoteMethods && this.props.collectionNoteMethods.GET) {
-      const {fetchCollectionNotesByLease} = this.props;
-
+    if(prevProps.collectionNoteMethods !== collectionNoteMethods && collectionNoteMethods.GET) {
       fetchCollectionNotesByLease(leaseId);
     }
 
-    if (prevProps.location !== this.props.location) {
-      this.setState({activeTab: this.props.location.query.tab});
+    if (prevProps.location !== location) {
+      this.setState({activeTab: query.tab});
     }
 
-    if(prevState.activeTab !== this.state.activeTab) {
+    if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
 
-    if(isEmpty(prevProps.currentLease) && !isEmpty(this.props.currentLease)) {
+    if(isEmpty(prevProps.currentLease) && !isEmpty(currentLease)) {
       const storedLeaseId = getSessionStorageItem('leaseId');
+
       if(Number(leaseId) === storedLeaseId) {
         this.setState({isRestoreModalOpen: true});
       }
     }
 
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes
-    if(prevProps.isEditMode && !this.props.isEditMode) {
+    if(prevProps.isEditMode && !isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
     }
@@ -321,8 +338,8 @@ class LeasePage extends Component<Props, State> {
       clearPreviewInvoices,
       destroy,
       hideEditMode,
-      params: {leaseId},
-      router: {location: {pathname}},
+      location: {pathname},
+      match: {params: {leaseId}},
     } = this.props;
 
 
@@ -351,8 +368,10 @@ class LeasePage extends Component<Props, State> {
 
   handleLeavePage = (e) => {
     const {isEditMode} = this.props;
+
     if(this.isAnyFormDirty() && isEditMode) {
       const confirmationMessage = '';
+
       e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
       return confirmationMessage;              // Gecko, WebKit, Chrome <34
     }
@@ -360,6 +379,7 @@ class LeasePage extends Component<Props, State> {
 
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+
     this.setState({
       [modalVisibilityKey]: true,
     });
@@ -367,6 +387,7 @@ class LeasePage extends Component<Props, State> {
 
   hideModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+
     this.setState({
       [modalVisibilityKey]: false,
     });
@@ -386,6 +407,7 @@ class LeasePage extends Component<Props, State> {
 
   hideEditMode = () => {
     const {hideEditMode} = this.props;
+
     hideEditMode();
     this.stopAutoSaveTimer();
   }
@@ -432,6 +454,7 @@ class LeasePage extends Component<Props, State> {
 
   restoreUnsavedChanges = () => {
     const {clearFormValidFlags, currentLease, showEditMode} = this.props;
+
     this.destroyAllForms();
     clearFormValidFlags();
     showEditMode();
@@ -490,6 +513,7 @@ class LeasePage extends Component<Props, State> {
   bulkChange = (formName: string, obj: Object) => {
     const {change} = this.props;
     const fields = Object.keys(obj);
+
     fields.forEach(field => {
       change(formName, field, obj[field]);
     });
@@ -511,7 +535,7 @@ class LeasePage extends Component<Props, State> {
       isSummaryFormDirty,
       isTenantsFormDirty,
       isFormValidFlags,
-      params: {leaseId},
+      match: {params: {leaseId}},
       rentsFormValues,
       summaryFormValues,
       tenantsFormValues,
@@ -586,14 +610,15 @@ class LeasePage extends Component<Props, State> {
 
   cancelChanges = () => {
     const {hideEditMode} = this.props;
+
     hideEditMode();
   }
 
   saveChanges = () => {
     const {receiveIsSaveClicked} = this.props;
+    const areFormsValid = this.validateForms();
     receiveIsSaveClicked(true);
 
-    const areFormsValid = this.validateForms();
     if(areFormsValid) {
       const {
         areasFormValues,
@@ -672,8 +697,8 @@ class LeasePage extends Component<Props, State> {
   }
 
   handleBack = () => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     // Remove page specific url parameters when moving to lease list page
     query.tab = undefined;
@@ -681,29 +706,29 @@ class LeasePage extends Component<Props, State> {
     query.plan_unit = undefined;
     query.plot = undefined;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.LEASES)}`,
-      query,
+      search: getSearchQuery(query),
     });
   }
 
   handleTabClick = (tabId) => {
-    const {router} = this.context;
-    const {location} = this.props;
-    const {router: {location: {query}}} = this.props;
-
+    const {history, location, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     this.setState({activeTab: tabId}, () => {
       query.tab = tabId;
-      return router.push({
+
+      return history.push({
         ...location,
-        query,
+        search: getSearchQuery(query),
       });
     });
   };
 
   toggleCommentPanel = () => {
     const {isCommentPanelOpen} = this.state;
+
     this.setState({isCommentPanelOpen: !isCommentPanelOpen});
   }
 

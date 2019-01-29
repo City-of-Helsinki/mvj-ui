@@ -1,6 +1,6 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
@@ -36,11 +36,13 @@ type Props = {
   createRentBasis: Function,
   editedRentBasis: Object,
   hideEditMode: Function,
+  history: Object,
   isFetchingCommonAttributes: boolean,
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
   isSaving: boolean,
+  location: Object,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   rentBasisMethods: Methods,
@@ -49,10 +51,6 @@ type Props = {
 }
 
 class NewRentBasisPage extends Component<Props> {
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   componentDidMount() {
     const {
       receiveIsSaveClicked,
@@ -90,19 +88,18 @@ class NewRentBasisPage extends Component<Props> {
   }
 
   handleBack = () => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.RENT_BASIS)}`,
-      query,
+      search: search,
     });
   }
 
   cancelChanges = () => {
-    const {router} = this.context;
+    const {history} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.RENT_BASIS),
     });
   }
@@ -178,6 +175,7 @@ const mapStateToProps = (state: RootState) => {
 
 export default flowRight(
   withCommonAttributes,
+  withRouter,
   connect(
     mapStateToProps,
     {

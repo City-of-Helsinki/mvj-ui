@@ -74,7 +74,7 @@ function CommonAttributes(WrappedComponent: any) {
     isFetchingCommonAttributes: boolean,
   }
 
-  return class WindowResizeHandler extends PureComponent<Props, State> {
+  return class CommonAttributes extends PureComponent<Props, State> {
     state = {
       isFetchingCommonAttributes: false,
     }

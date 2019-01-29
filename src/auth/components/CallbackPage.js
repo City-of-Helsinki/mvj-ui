@@ -1,18 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, {PureComponent} from 'react';
+import {withRouter} from 'react-router';
 import {CallbackComponent} from 'redux-oidc';
 
 import {getRedirectUrlFromSessionStorage} from '../helpers';
 import userManager from '../util/user-manager';
 
-class CallbackPage extends React.Component {
-  static contextTypes = {
-    router: PropTypes.object,
-  };
+type Props = {
+  history: Object,
+}
 
+class CallbackPage extends PureComponent<Props> {
   successCallback = () => {
-    const {router} = this.context;
-    router.push(getRedirectUrlFromSessionStorage() || '/');
+    const {history} = this.props;
+
+    history.push(getRedirectUrlFromSessionStorage() || '/');
   }
 
   render() {
@@ -20,11 +21,12 @@ class CallbackPage extends React.Component {
       <CallbackComponent
         errorCallback={this.successCallback}
         successCallback={this.successCallback}
-        userManager={userManager} >
+        userManager={userManager}
+      >
         <div></div>
       </CallbackComponent>
     );
   }
 }
 
-export default CallbackPage;
+export default withRouter(CallbackPage);

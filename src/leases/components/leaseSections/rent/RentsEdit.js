@@ -190,7 +190,7 @@ class RentsEdit extends PureComponent<Props, State> {
   }
 
   handleArchive = (index: number, item: Object) => {
-    this.activeBasisOfRentsComponent.getRenderedComponent().wrappedInstance.removeBasisOfRent(index);
+    this.activeBasisOfRentsComponent.getRenderedComponent().removeBasisOfRent(index);
     this.addArchivedItemToUnarchivedItems(item);
   }
 
@@ -202,7 +202,7 @@ class RentsEdit extends PureComponent<Props, State> {
   }
 
   handleUnarchive = (index: number, item: Object) => {
-    this.archivedBasisOfRentsComponent.getRenderedComponent().wrappedInstance.removeBasisOfRent(index);
+    this.archivedBasisOfRentsComponent.getRenderedComponent().removeBasisOfRent(index);
     this.addUnarchivedItemToArchivedItems(item);
   }
 
@@ -320,7 +320,7 @@ class RentsEdit extends PureComponent<Props, State> {
                   isSaveClicked={isSaveClicked}
                   name="basis_of_rents"
                   onArchive={this.handleArchive}
-                  withRef={true}
+                  forwardRef
                 />
 
                 <FieldArray
@@ -330,7 +330,7 @@ class RentsEdit extends PureComponent<Props, State> {
                   isSaveClicked={isSaveClicked}
                   name="basis_of_rents_archived"
                   onUnarchive={this.handleUnarchive}
-                  withRef={true}
+                  forwardRef
                 />
               </Authorization>
             </form>

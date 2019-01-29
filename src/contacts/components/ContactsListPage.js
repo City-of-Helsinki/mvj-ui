@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -30,6 +30,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
+  getUrlParams,
   isFieldAllowedToRead,
 } from '$src/util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -55,6 +56,7 @@ type Props = {
   contactList: ContactList,
   contactMethods: Methods, // get via withCommonAttributes HOC
   fetchContacts: Function,
+  history: Object,
   initializeContactForm: Function,
   initialize: Function,
   isFetching: boolean,
@@ -89,10 +91,6 @@ class ContactListPage extends Component<Props, State> {
 
   search: any
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
@@ -113,7 +111,8 @@ class ContactListPage extends Component<Props, State> {
 
   componentDidMount() {
     const {initialize, receiveTopNavigationSettings} = this.props;
-    const {location: {query}} = this.props;
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.CONTACTS),
@@ -146,13 +145,13 @@ class ContactListPage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
       this.search();
 
-      const searchQuery = {...query};
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
@@ -163,31 +162,30 @@ class ContactListPage extends Component<Props, State> {
 
   handleCreateButtonClick = () => {
     const {initializeContactForm} = this.props;
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
 
     initializeContactForm({});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.CONTACT_NEW),
-      query,
+      search: search,
     });
   }
 
   handleSearchChange = (query: any) => {
-    const {router} = this.context;
+    const {history} = this.props;
+
     this.setState({activePage: 1});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.CONTACTS),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
   search = () => {
-    const {fetchContacts, router: {location: {query}}} = this.props;
-
-    const searchQuery = {...query};
+    const {fetchContacts, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     if(page > 1) {
@@ -199,18 +197,17 @@ class ContactListPage extends Component<Props, State> {
   }
 
   handleRowClick = (id) => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.CONTACTS)}/${id}`,
-      query,
+      search: search,
     });
   };
 
   handlePageClick = (page: number) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     if(page > 1) {
       query.page = page;
@@ -220,9 +217,9 @@ class ContactListPage extends Component<Props, State> {
 
     this.setState({activePage: page});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.CONTACTS),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
@@ -317,6 +314,7 @@ class ContactListPage extends Component<Props, State> {
 
 export default flowRight(
   withCommonAttributes,
+  withRouter,
   connect(
     (state: RootState) => {
       return {

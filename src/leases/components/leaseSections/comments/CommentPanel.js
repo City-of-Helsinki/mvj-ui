@@ -53,7 +53,9 @@ type Props = {
   isNewCommentFormDirty: boolean,
   isOpen: boolean,
   onClose: Function,
-  params: Object,
+  match: {
+    params: Object,
+  },
   receiveIsSaveClicked: Function,
 }
 
@@ -117,7 +119,7 @@ class CommentPanel extends PureComponent<Props, State> {
       commentList,
       commentMethods,
       fetchCommentsByLease,
-      params: {leaseId},
+      match: {params: {leaseId}},
       receiveIsSaveClicked,
     } = this.props;
 

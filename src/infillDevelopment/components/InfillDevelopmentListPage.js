@@ -1,9 +1,9 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
+import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -29,7 +29,13 @@ import {
   InfillDevelopmentCompensationLeasesFieldPaths,
 } from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentList} from '$src/infillDevelopment/helpers';
-import {getFieldOptions, getLabelOfOption, getSearchQuery, isFieldAllowedToRead} from '$util/helpers';
+import {
+  getFieldOptions,
+  getLabelOfOption,
+  getSearchQuery,
+  getUrlParams,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -52,6 +58,7 @@ const getInfillDevelopmentMaxPage = (infillDevelopmentList: InfillDevelopmentLis
 
 type Props = {
   fetchInfillDevelopments: Function,
+  history: Object,
   infillDevelopmentAttributes: Attributes, // get via withCommonAttributes HOC
   infillDevelopmentMethods: Methods, // get via withCommonAttributes HOC
   infillDevelopmentList: InfillDevelopmentList,
@@ -61,7 +68,6 @@ type Props = {
   location: Object,
   receiveFormInitialValues: Function,
   receiveTopNavigationSettings: Function,
-  router: Object,
 }
 
 type State = {
@@ -89,16 +95,13 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     stateOptions: [],
   }
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   componentDidMount() {
     const {
       initialize,
       receiveTopNavigationSettings,
-      router: {location: {query}},
+      location: {search},
     } = this.props;
+    const query = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
@@ -158,13 +161,13 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   }
 
   componentDidUpdate = (prevProps) => {
-    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
       this.search();
 
-      const searchQuery = {...query};
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
@@ -175,33 +178,32 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   }
 
   handleCreateButtonClick = () => {
-    const {receiveFormInitialValues, location: {query}} = this.props;
-    const {router} = this.context;
+    const {history, location: {search}, receiveFormInitialValues} = this.props;
 
     receiveFormInitialValues({});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENT_NEW),
-      query,
+      search: search,
     });
   }
 
   handleSearchChange = (query: Object) => {
-    const {router} = this.context;
+    const {history} = this.props;
 
     this.setState({activePage: 1});
     delete query.page;
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
   search = () => {
-    const {fetchInfillDevelopments, location: {query}} = this.props;
-    const page = query.page ? Number(query.page) : 1;
-    const searchQuery = {...query};
+    const {fetchInfillDevelopments, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     delete searchQuery.page;
 
@@ -214,18 +216,17 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   }
 
   handleRowClick = (id) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${id}`,
-      query,
+      search: search,
     });
   };
 
   handlePageClick = (page: number) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     if(page > 1) {
       query.page = page;
@@ -235,15 +236,15 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     this.setState({activePage: page});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
   handleSelectedStatesChange = (states: Array<string>) => {
-    const {location: {query}} = this.props;
-    const searchQuery = {...query};
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
 
     delete searchQuery.page;
     searchQuery.state = states;
@@ -260,16 +261,18 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.NAME)) {
       columns.push({key: 'name', text: 'Hankkeen nimi'});
     }
+
     if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.DETAILED_PLAN_IDENTIFIER)) {
       columns.push({key: 'detailed_plan_identifier', text: 'Asemakaavan nro'});
     }
+
     if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)) {
       columns.push({
         key: 'leaseIdentifiers',
         text: 'Vuokratunnus',
-        disabled: true,
       });
     }
+
     if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE)) {
       columns.push({key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'});
     }
@@ -341,6 +344,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
 export default flowRight(
   withCommonAttributes,
+  withRouter,
   connect(
     (state) => {
       return {

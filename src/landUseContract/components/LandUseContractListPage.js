@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {Row, Column} from 'react-foundation';
+import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
@@ -23,7 +23,12 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
 import {FormNames} from '$src/landUseContract/enums';
 import {getContentLandUseContractList} from '$src/landUseContract/helpers';
-import {getFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {
+  getFieldOptions,
+  getLabelOfOption,
+  getSearchQuery,
+  getUrlParams,
+} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
 
@@ -37,12 +42,12 @@ type Props = {
   createLandUseContract: Function,
   fetchLandUseContractAttributes: Function,
   fetchLandUseContractList: Function,
+  history: Object,
   initialize: Function,
   isFetching: boolean,
   landUseContractListData: LandUseContractList,
   location: Object,
   receiveTopNavigationSettings: Function,
-  router: Object,
 };
 
 type State = {
@@ -66,18 +71,15 @@ class LandUseContractListPage extends Component<Props, State> {
     selectedStates: [],
   }
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   componentDidMount() {
     const {
       attributes,
       fetchLandUseContractAttributes,
       initialize,
-      location: {query},
+      location: {search},
       receiveTopNavigationSettings,
     } = this.props;
+    const searchQuery = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LAND_USE_CONTRACTS),
@@ -91,12 +93,12 @@ class LandUseContractListPage extends Component<Props, State> {
 
     this.search();
 
-    const page = query.page ? Number(query.page) : 1;
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
     this.setState({activePage: page});
 
-    const states = isArray(query.state)
-      ? query.state
-      : query.state ? [query.state] : null;
+    const states = isArray(searchQuery.state)
+      ? searchQuery.state
+      : searchQuery.state ? [searchQuery.state] : null;
     if(states) {
       this.setState({selectedStates: states});
     }
@@ -107,7 +109,6 @@ class LandUseContractListPage extends Component<Props, State> {
 
     const initializeSearchForm = async() => {
       try {
-        const searchQuery = {...query};
         delete searchQuery.page;
         delete searchQuery.state;
 
@@ -123,13 +124,14 @@ class LandUseContractListPage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
 
     if(currentSearch !== prevSearch) {
+      const searchQuery = getUrlParams(currentSearch);
+
       this.search();
 
-      const searchQuery = {...query};
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
@@ -161,21 +163,21 @@ class LandUseContractListPage extends Component<Props, State> {
   }
 
   handleSearchChange = (query: Object) => {
-    const {router} = this.context;
+    const {history} = this.props;
 
     this.setState({activePage: 1});
     delete query.page;
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
   search = () => {
-    const {fetchLandUseContractList, location: {query}} = this.props;
-    const page = query.page ? Number(query.page) : 1;
-    const searchQuery = {...query};
+    const {fetchLandUseContractList, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     delete searchQuery.page;
 
@@ -189,18 +191,17 @@ class LandUseContractListPage extends Component<Props, State> {
   }
 
   handleRowClick = (id) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.LAND_USE_CONTRACTS)}/${id}`,
-      query,
+      search: search,
     });
   };
 
   handlePageClick = (page: number) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     if(page > 1) {
       query.page = page;
@@ -208,9 +209,9 @@ class LandUseContractListPage extends Component<Props, State> {
       delete query.page;
     }
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
@@ -234,12 +235,13 @@ class LandUseContractListPage extends Component<Props, State> {
     if(!count) {
       return 0;
     }
+
     return Math.ceil(count/PAGE_SIZE);
   }
 
   handleSelectedStatesChange = (states: Array<string>) => {
-    const {location: {query}} = this.props;
-    const searchQuery = {...query};
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
 
     delete searchQuery.page;
     searchQuery.state = states;
@@ -305,13 +307,11 @@ class LandUseContractListPage extends Component<Props, State> {
               {
                 key: 'litigants',
                 text: 'Osapuoli',
-                disabled: true,
               },
               {key: 'plan_number', text: 'Asemakaavan numero'},
               {
                 key: 'areas',
                 text: 'Kohde',
-                disabled: true,
               },
               {key: 'project_area', text: 'Hankealue'},
               {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
@@ -333,6 +333,7 @@ class LandUseContractListPage extends Component<Props, State> {
 }
 
 export default flowRight(
+  withRouter,
   connect(
     (state) => {
       return {

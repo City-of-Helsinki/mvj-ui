@@ -13,6 +13,7 @@ const context = path.resolve(__dirname, '..');
 
 export default createConfig({
   context,
+  mode: 'development',
   devtool: 'inline-source-map',
   entry: {
     'app': [

@@ -34,7 +34,12 @@ import {
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
-import {isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
+import {
+  getSearchQuery,
+  getUrlParams,
+  isFieldAllowedToRead,
+  scrollToTopPage,
+} from '$util/helpers';
 import {FormNames, RentBasisFieldPaths} from '$src/rentbasis/enums';
 import {
   clearUnsavedChanges,
@@ -68,6 +73,7 @@ type Props = {
   fetchAreaNoteList: Function,
   fetchSingleRentBasis: Function,
   hideEditMode: Function,
+  history: Object,
   initializeRentBasis: Function,
   isEditMode: boolean,
   isFetching: boolean,
@@ -77,7 +83,9 @@ type Props = {
   isSaveClicked: boolean,
   isSaving: boolean,
   location: Object,
-  params: Object,
+  match: {
+    params: Object,
+  },
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   rentBasisAttributes: Attributes, // Get via withCommonAttributes HOC
@@ -112,11 +120,12 @@ class RentBasisPage extends Component<Props, State> {
       fetchAreaNoteList,
       fetchSingleRentBasis,
       hideEditMode,
-      location,
-      params: {rentBasisId},
+      location: {search},
+      match: {params: {rentBasisId}},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
+    const query = getUrlParams(search);
 
     receiveIsSaveClicked(false);
 
@@ -126,9 +135,9 @@ class RentBasisPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    if (location.query.tab) {
+    if(query.tab) {
       this.setState({
-        activeTab: location.query.tab,
+        activeTab: query.tab,
       });
     }
 
@@ -145,7 +154,9 @@ class RentBasisPage extends Component<Props, State> {
   componentDidUpdate(prevProps: Props, prevState: State) {
     const {
       fetchSingleRentBasis,
-      params: {rentBasisId},
+      location,
+      location: {search},
+      match: {params: {rentBasisId}},
     } = this.props;
 
     if(isEmpty(prevProps.rentBasisData) && !isEmpty(this.props.rentBasisData)) {
@@ -155,9 +166,11 @@ class RentBasisPage extends Component<Props, State> {
       }
     }
 
-    if (prevProps.location !== this.props.location) {
+    if (prevProps.location !== location) {
+      const query = getUrlParams(search);
+
       this.setState({
-        activeTab: this.props.location.query.tab,
+        activeTab: query.tab,
       });
     }
 
@@ -174,8 +187,8 @@ class RentBasisPage extends Component<Props, State> {
   componentWillUnmount() {
     const {
       hideEditMode,
-      params: {rentBasisId},
-      router: {location: {pathname}},
+      location: {pathname},
+      match: {params: {rentBasisId}},
     } = this.props;
 
     hideEditMode();
@@ -189,8 +202,10 @@ class RentBasisPage extends Component<Props, State> {
 
   handleLeavePage = (e) => {
     const {isEditMode, isFormDirty} = this.props;
+
     if(isFormDirty && isEditMode) {
       const confirmationMessage = '';
+
       e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
       return confirmationMessage;              // Gecko, WebKit, Chrome <34
     }
@@ -211,7 +226,7 @@ class RentBasisPage extends Component<Props, State> {
     const {
       editedRentBasis,
       isFormDirty,
-      params: {rentBasisId},
+      match: {params: {rentBasisId}},
     } = this.props;
 
     if(isFormDirty) {
@@ -255,14 +270,19 @@ class RentBasisPage extends Component<Props, State> {
   }
 
   copyRentBasis = () => {
-    const {initializeRentBasis, rentBasisData, router, router: {location: {query}}} = this.props,
-      rentBasis = getContentCopiedRentBasis(rentBasisData);
+    const {
+      history,
+      initializeRentBasis,
+      location: {search},
+      rentBasisData,
+    } = this.props;
+    const rentBasis = getContentCopiedRentBasis(rentBasisData);
 
     initializeRentBasis(rentBasis);
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.RENT_BASIS_NEW),
-      query,
+      search: search,
     });
   }
 
@@ -276,12 +296,11 @@ class RentBasisPage extends Component<Props, State> {
   }
 
   handleBack = () => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.RENT_BASIS)}`,
-      query,
+      search: search,
     });
   }
 
@@ -303,15 +322,15 @@ class RentBasisPage extends Component<Props, State> {
   }
 
   handleTabClick = (tabId) => {
-    const {router} = this.context;
-    const {location} = this.props;
-    const {router: {location: {query}}} = this.props;
+    const {history, location, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     this.setState({activeTab: tabId}, () => {
       query.tab = tabId;
-      return router.push({
+
+      return history.push({
         ...location,
-        query,
+        search: getSearchQuery(query),
       });
     });
   };

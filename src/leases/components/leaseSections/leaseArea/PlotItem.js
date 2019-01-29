@@ -1,7 +1,8 @@
 // @flow
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
-import {Link, withRouter} from 'react-router';
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -23,6 +24,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
+  getUrlParams,
   isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -31,23 +33,23 @@ import {getAttributes} from '$src/leases/selectors';
 import type {Attributes} from '$src/types';
 
 type Props = {
+  areaArchived: boolean,
   attributes: Attributes,
-  isAreaActive: boolean,
+  location: Object,
   plot: Object,
-  router: Object,
 }
 
-const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
+const PlotItem = ({areaArchived, attributes, location, plot}: Props) => {
   const getMapLinkUrl = () => {
-    const {location: {pathname, query}} = router;
+    const {pathname, search} = location;
+    const searchQuery = getUrlParams(search);
 
-    const tempQuery = {...query};
-    delete tempQuery.lease_area;
-    delete tempQuery.plan_unit;
-    tempQuery.plot = plot.id,
-    tempQuery.tab = 7;
+    delete searchQuery.lease_area;
+    delete searchQuery.plan_unit;
+    searchQuery.plot = plot.id,
+    searchQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(tempQuery)}`;
+    return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
   const mapLinkUrl = getMapLinkUrl();
@@ -71,7 +73,7 @@ const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
         </Column>
         <Column small={12} medium={3} large={3}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.GEOMETRY)}>
-            {(isAreaActive && !isEmpty(plot.geometry)) &&
+            {(!areaArchived && !isEmpty(plot.geometry)) &&
               <Link to={mapLinkUrl}>{LeasePlotsFieldTitles.GEOMETRY}</Link>
             }
           </Authorization>
