@@ -142,8 +142,8 @@ const getContentBillingPeriod = (billingPeriod: BillingPeriod) => {
   };
 };
 
-export const getContentPreviewInvoiceBillingPeriods = (invoices: PreviewInvoices) => {
-  if(!invoices) return null;
+export const getContentPreviewInvoiceBillingPeriods = (invoices: PreviewInvoices): Array<Object> => {
+  if(!invoices) return [];
 
   return invoices.map((billingPeriod) => getContentBillingPeriod(billingPeriod));
 };

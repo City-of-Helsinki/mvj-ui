@@ -5,6 +5,7 @@ import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
+import type {Element} from 'react';
 
 import createUrl from '$src/api/createUrl';
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -53,7 +54,7 @@ const renderInvoices = ({
   disableDirty = false,
   fields,
   invoiceOptions,
-}: InvoicesProps) => {
+}: InvoicesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };

@@ -12,17 +12,9 @@ import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 
 const context = path.resolve(__dirname, '..');
 
-// TODO: Make this better
 const getEnvValues = {
-  ['API_URL']: process.env.API_URL,
-  ['OPENID_CONNECT_API_TOKEN_KEY']: process.env.OPENID_CONNECT_API_TOKEN_KEY || '',
-  ['OPENID_CONNECT_API_TOKEN_URL']: process.env.OPENID_CONNECT_API_TOKEN_URL || '',
-  ['OPENID_CONNECT_AUTHORITY_URL']: process.env.OPENID_CONNECT_AUTHORITY_URL || '',
-  ['OPENID_CONNECT_CLIENT_ID']: process.env.OPENID_CONNECT_CLIENT_ID,
-  ['OPENID_CONNECT_SCOPE']: process.env.OPENID_CONNECT_SCOPE || '',
-  ['STORAGE_PREFIX']: process.env.STORAGE_PREFIX,
+  ...readDotenv(context),
   ['process.env.NODE_ENV']: 'production',
-  ...readDotenv({...context, silent: true}),
 };
 
 export default createConfig({
@@ -31,7 +23,6 @@ export default createConfig({
   entry: {
     'app': [
       'whatwg-fetch',
-      'react-hot-loader/patch',
       '@babel/polyfill',
       './src/index.js',
       './src/main.scss',
@@ -79,9 +70,6 @@ export default createConfig({
     new webpack.LoaderOptionsPlugin({
       minimize: true,
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   sourceMap: true,
-    // }),
     new MiniCssExtractPlugin({
       filename: '[name][hash].css',
     }),
@@ -93,6 +81,10 @@ export default createConfig({
     //     events: true,
     //   },
     // }),
+    // This is a practical solution that requires the user to opt into importing specific locales.
+    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+
     new FaviconsWebpackPlugin(path.resolve(context, 'assets/images/favicon.png')),
   ],
   optimization: {

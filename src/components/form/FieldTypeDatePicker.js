@@ -2,6 +2,7 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import 'moment/locale/fi';
 import classNames from 'classnames';
 
 type Props = {
