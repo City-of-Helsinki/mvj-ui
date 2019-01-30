@@ -1,10 +1,11 @@
 // @ flow
 import {Control} from 'leaflet';
 import 'leaflet-zoombox';
-import {MapControl} from 'react-leaflet';
+import {MapControl, withLeaflet} from 'react-leaflet';
 import type {ControlPosition} from './types';
 
 type LeafletElement = Control.Zoom
+
 type Props = {
   position?: ControlPosition,
   addToZoomControl?: boolean,
@@ -20,4 +21,4 @@ class ZoomBox extends MapControl<LeafletElement, Props> {
   }
 }
 
-export default ZoomBox;
+export default withLeaflet(ZoomBox);
