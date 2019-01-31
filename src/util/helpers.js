@@ -17,8 +17,6 @@ import {Breakpoints} from '$src/foundation/enums';
 import type {Attributes} from '$src/types';
 import type {UsersPermissions} from '$src/usersPermissions/types';
 
-/* global API_URL */
-
 // import i18n from '../root/i18n';
 
 /**
@@ -293,8 +291,7 @@ export const formatDateObj = (unix: any, format?: string = 'DD.MM.YYYY HH:mm') =
  * @returns {string}
  */
 export const getApiUrlWithOutVersionSuffix = () => {
-  // $FlowFixMe
-  return API_URL.split('/v1')[0];
+  return process.env.API_URL ? process.env.API_URL.split('/v1')[0] : '';
 };
 
 /**

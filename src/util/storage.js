@@ -2,8 +2,6 @@
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 
-/* global STORAGE_PREFIX */
-
 /**
  *
  * @param {string} key
@@ -95,8 +93,7 @@ export const removeSessionStorageItem = (key: string, callback: ?Function = null
  * @returns {string}
  */
 const buildStorageKey = (key: string) => {
-  // $FlowFixMe
-  return [STORAGE_PREFIX, key].join('.');
+  return [process.env.STORAGE_PREFIX, key].join('.');
 };
 
 /**
