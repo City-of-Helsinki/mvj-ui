@@ -2,6 +2,7 @@
 import get from 'lodash/get';
 
 import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
+import {InvoiceType} from './enums';
 import {convertStrToDecimalNumber, getLabelOfOption, sortStringAsc} from '$util/helpers';
 
 /**
@@ -169,15 +170,20 @@ const getPayloadInvoiceRows = (invoice: Object) => {
  * @returns {object}
  */
 export const getPayloadEditInvoice = (invoice: Object) => {
-  return {
+  const payload = {
     id: invoice.id,
     due_date: invoice.due_date,
     billing_period_start_date: invoice.billing_period_start_date,
     billing_period_end_date: invoice.billing_period_end_date,
-    payments: getPayloadInvoicePayments(invoice),
     notes: invoice.notes,
     rows: getPayloadInvoiceRows(invoice),
   };
+
+  if(invoice.type !== InvoiceType.CREDIT_NOTE) {
+    payload.payments = getPayloadInvoicePayments(invoice);
+  }
+
+  return payload;
 };
 
 /**

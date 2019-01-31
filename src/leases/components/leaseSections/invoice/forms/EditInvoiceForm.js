@@ -25,6 +25,7 @@ import {
   InvoicePaymentsFieldPaths,
   InvoicePaymentsFieldTitles,
   InvoiceRowsFieldPaths,
+  InvoiceType,
 } from '$src/invoices/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
@@ -312,28 +313,33 @@ const EditInvoiceForm = ({
         </Column>
       </Row>
 
-      <SubTitle>{InvoicePaymentsFieldTitles.PAYMENTS}</SubTitle>
-      <Row>
-        <Column small={12} medium={8}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAYMENTS)}>
-            <FieldArray
-              attributes={invoiceAttributes}
-              component={renderPayments}
-              isEditClicked={isEditClicked}
-              name='payments'
-            />
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
-            <FormTextTitle>{InvoiceFieldTitles.OUTSTANDING_AMOUNT}</FormTextTitle>
-            <FormText>{invoice && !isEmptyValue(invoice.outstanding_amount)
-              ? <AmountWithVat amount={invoice.outstanding_amount} date={invoice.due_date} />
-              : '-'}
-            </FormText>
-          </Authorization>
-        </Column>
-      </Row>
+      {invoice && invoice.type !== InvoiceType.CREDIT_NOTE &&
+        <Fragment>
+          <SubTitle>{InvoicePaymentsFieldTitles.PAYMENTS}</SubTitle>
+          <Row>
+            <Column small={12} medium={8}>
+              <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAYMENTS)}>
+                <FieldArray
+                  attributes={invoiceAttributes}
+                  component={renderPayments}
+                  isEditClicked={isEditClicked}
+                  name='payments'
+                />
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4}>
+              <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
+                <FormTextTitle>{InvoiceFieldTitles.OUTSTANDING_AMOUNT}</FormTextTitle>
+                <FormText>{invoice && !isEmptyValue(invoice.outstanding_amount)
+                  ? <AmountWithVat amount={invoice.outstanding_amount} date={invoice.due_date} />
+                  : '-'}
+                </FormText>
+              </Authorization>
+            </Column>
+          </Row>
+        </Fragment>
+      }
+
       <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>

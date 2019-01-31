@@ -21,6 +21,7 @@ import {
   InvoicePaymentsFieldTitles,
   InvoiceRowsFieldPaths,
   InvoiceRowsFieldTitles,
+  InvoiceType,
 } from '$src/invoices/enums';
 import {
   formatDate,
@@ -160,58 +161,63 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
         </Column>
       </Row>
 
-      <SubTitle>{InvoicePaymentsFieldTitles.PAYMENTS}</SubTitle>
-      <Row>
-        <Column small={12} medium={8}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAYMENTS)}>
-            {!payments.length && <FormText>Ei maksuja</FormText>}
-            {!!payments.length &&
-              <ListItems>
-                <Row>
-                  <Column small={6}>
-                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAID_AMOUNT)}>
-                      <FormTextTitle>{InvoicePaymentsFieldTitles.PAID_AMOUNT}</FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column small={6}>
-                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAID_DATE)}>
-                      <FormTextTitle>{InvoicePaymentsFieldTitles.PAID_DATE}</FormTextTitle>
-                    </Authorization>
-                  </Column>
-                </Row>
-                {payments.map((payment) => {
-                  return (
-                    <Row key={payment.id}>
+      {invoice && invoice.type !== InvoiceType.CREDIT_NOTE &&
+        <Fragment>
+          <SubTitle>{InvoicePaymentsFieldTitles.PAYMENTS}</SubTitle>
+          <Row>
+            <Column small={12} medium={8}>
+              <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAYMENTS)}>
+
+                {!payments.length && <FormText>Ei maksuja</FormText>}
+                {!!payments.length &&
+                  <ListItems>
+                    <Row>
                       <Column small={6}>
                         <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAID_AMOUNT)}>
-                          <ListItem>{payment.paid_amount
-                            ? <AmountWithVat amount={payment.paid_amount} date={invoice ? invoice.due_date : null} />
-                            : '-'}
-                          </ListItem>
+                          <FormTextTitle>{InvoicePaymentsFieldTitles.PAID_AMOUNT}</FormTextTitle>
                         </Authorization>
                       </Column>
                       <Column small={6}>
                         <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAID_DATE)}>
-                          <ListItem>{formatDate(payment.paid_date) || '-'}</ListItem>
+                          <FormTextTitle>{InvoicePaymentsFieldTitles.PAID_DATE}</FormTextTitle>
                         </Authorization>
                       </Column>
                     </Row>
-                  );
-                })}
-              </ListItems>
-            }
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
-            <FormTextTitle>{InvoiceFieldTitles.OUTSTANDING_AMOUNT}</FormTextTitle>
-            <FormText>{invoice && !isEmptyValue(invoice.outstanding_amount)
-              ? <AmountWithVat amount={invoice.outstanding_amount} date={invoice.due_date} />
-              : '-'}
-            </FormText>
-          </Authorization>
-        </Column>
-      </Row>
+                    {payments.map((payment) => {
+                      return (
+                        <Row key={payment.id}>
+                          <Column small={6}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAID_AMOUNT)}>
+                              <ListItem>{payment.paid_amount
+                                ? <AmountWithVat amount={payment.paid_amount} date={invoice ? invoice.due_date : null} />
+                                : '-'}
+                              </ListItem>
+                            </Authorization>
+                          </Column>
+                          <Column small={6}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAID_DATE)}>
+                              <ListItem>{formatDate(payment.paid_date) || '-'}</ListItem>
+                            </Authorization>
+                          </Column>
+                        </Row>
+                      );
+                    })}
+                  </ListItems>
+                }
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4}>
+              <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
+                <FormTextTitle>{InvoiceFieldTitles.OUTSTANDING_AMOUNT}</FormTextTitle>
+                <FormText>{invoice && !isEmptyValue(invoice.outstanding_amount)
+                  ? <AmountWithVat amount={invoice.outstanding_amount} date={invoice.due_date} />
+                  : '-'}
+                </FormText>
+              </Authorization>
+            </Column>
+          </Row>
+        </Fragment>
+      }
       <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
