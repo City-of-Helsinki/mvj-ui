@@ -164,7 +164,7 @@ module.exports = {
       minimize: true,
     }),
     new MiniCssExtractPlugin({
-      filename: '[name][hash].css',
+      filename: '[name][contenthash:8].css',
     }),
     // Generate a manifest file which contains a mapping of all asset filenames
     // to their corresponding output file so that tools can pick it up without

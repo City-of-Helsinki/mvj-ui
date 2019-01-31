@@ -5,6 +5,7 @@
 .env.demo
 .env.staging
 .DS_Store
+yarn-error.log
 npm-debug.log
 /dist/
 /log
