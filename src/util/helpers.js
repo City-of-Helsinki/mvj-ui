@@ -125,7 +125,7 @@ export const getSearchQuery = (filters: any) => {
   let query = [];
 
   forEach(filters, (filter: any, key) => {
-    if (!isEmpty(filter) || isNumber(filter)) {
+    if (!isEmpty(filter) || isNumber(filter) || typeof 'boolean') {
       if (isArray(filter)) {
         const items = [];
         forEach(filter, (item) => {
@@ -147,19 +147,24 @@ export const getSearchQuery = (filters: any) => {
 };
 
 export const getUrlParams = (search: string = ''): Object => {
-  const params = new URLSearchParams(search);
-  const entries = Array.from(params.entries());
   const query = {};
+  const entries = search.replace('?', '').split('&');
 
   entries.forEach((entry) => {
-    if(query[entry[0]]) {
-      if(isArray(query[entry[0]])) {
-        query[entry[0]].push(entry[1]);
+    const split = entry.split('=');
+    const key = decodeURIComponent(split[0]);
+    const value = decodeURIComponent(split[1]);
+
+    if(!key) return;
+
+    if(query[key]) {
+      if(isArray(query[key])) {
+        query[key].push(value);
       } else {
-        query[entry[0]] = [query[entry[0]], entry[1]];
+        query[key] = [query[key], value];
       }
     } else {
-      query[entry[0]] = entry[1];
+      query[key] = value;
     }
   });
 

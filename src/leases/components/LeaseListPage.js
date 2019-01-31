@@ -122,7 +122,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     const states = isArray(query.lease_state)
       ? query.lease_state
-      : query.lease_state ? [query.lease_state] : null;
+      : query.lease_state ? [query.lease_state] : undefined;
 
     if(states) {
       this.setState({leaseStates: states});
@@ -135,12 +135,16 @@ class LeaseListPage extends PureComponent<Props, State> {
     const initializeSearchForm = async() => {
       try {
         const searchQuery = {...query};
+
         delete searchQuery.page;
         delete searchQuery.lease_state;
 
-        searchQuery.tenant_role = isArray(searchQuery.tenant_role)
-          ? searchQuery.tenant_role
-          : searchQuery.tenant_role ? [searchQuery.tenant_role] : undefined;
+        if(searchQuery.tenant_role) {
+          searchQuery.tenant_role = isArray(searchQuery.tenant_role)
+            ? searchQuery.tenant_role
+            : [searchQuery.tenant_role];
+        }
+
 
         await initialize(FormNames.SEARCH, searchQuery);
         setSearchFormReadyFlag();

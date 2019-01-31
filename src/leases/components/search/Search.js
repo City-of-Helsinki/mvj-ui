@@ -92,7 +92,7 @@ class Search extends Component<Props, State> {
       }
     }
 
-    if(isSearchInitialized && JSON.stringify(prevProps.formValues) !== JSON.stringify(this.props.formValues)) {
+    if(isSearchInitialized && prevProps.formValues !== this.props.formValues) {
       this.onSearchChange();
     }
   }
@@ -101,7 +101,11 @@ class Search extends Component<Props, State> {
     if(!this._isMounted) return;
 
     const {formValues, onSearch, states} = this.props;
-    const newValues = {...formValues, lease_state: states.length ? states : undefined};
+    const newValues = {...formValues};
+
+    if(states.length) {
+      newValues.lease_state = states;
+    }
 
     onSearch(newValues);
   }, 500);
@@ -113,10 +117,15 @@ class Search extends Component<Props, State> {
     this.setState({isBasicSearch: !isBasicSearch});
 
     if(!isBasicSearch) {
-      const newFormValues = {
-        identifier: formValues.identifier ? formValues.identifier : undefined,
-        lease_state: states.length ? states : undefined,
-      };
+      const newFormValues = {};
+
+      if(formValues.identifier) {
+        newFormValues.identifier = formValues.identifier;
+      }
+
+      if(states.length) {
+        newFormValues.lease_state = states;
+      }
 
       onSearch(newFormValues);
       initialize(newFormValues);
