@@ -42,7 +42,7 @@ import {
   getContentInfillDevelopmentCopy,
   getContentInfillDevelopmentForDb,
 } from '$src/infillDevelopment/helpers';
-import {isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
+import {getSearchQuery, getUrlParams, isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
@@ -75,6 +75,7 @@ type Props = {
   fetchAreaNoteList: Function,
   fetchSingleInfillDevelopment: Function,
   hideEditMode: Function,
+  history: Object,
   infillDevelopmentAttributes: Attributes, // get via withCommonAttributes HOC
   infillDevelopmentFormValues: Object,
   infillDevelopmentMethods: Methods, // get via withCommonAttributes HOC
@@ -87,11 +88,12 @@ type Props = {
   isSaveClicked: boolean,
   isSaving: boolean,
   location: Object,
-  params: Object,
+  match: {
+    params: Object,
+  },
   receiveFormInitialValues: Function,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
-  router: Object,
   showEditMode: Function,
 }
 
@@ -122,11 +124,12 @@ class InfillDevelopmentPage extends Component<Props, State> {
       fetchAreaNoteList,
       fetchSingleInfillDevelopment,
       hideEditMode,
-      location,
-      params: {infillDevelopmentId},
+      location: {search},
+      match: {params: {infillDevelopmentId}},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
+    const query = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
@@ -135,9 +138,9 @@ class InfillDevelopmentPage extends Component<Props, State> {
     });
 
 
-    if (location.query.tab) {
+    if(query.tab) {
       this.setState({
-        activeTab: location.query.tab,
+        activeTab: query.tab,
       });
     }
 
@@ -164,8 +167,16 @@ class InfillDevelopmentPage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const {params: {infillDevelopmentId}} = this.props;
-    if(isEmpty(prevProps.currentInfillDevelopment) && !isEmpty(this.props.currentInfillDevelopment)) {
+    const {
+      currentInfillDevelopment,
+      isEditMode,
+      location,
+      location: {search},
+      match: {params: {infillDevelopmentId}},
+    } = this.props;
+    const {activeTab} = this.state;
+
+    if(isEmpty(prevProps.currentInfillDevelopment) && !isEmpty(currentInfillDevelopment)) {
       const storedInfillDevelopmentId = getSessionStorageItem('infillDevelopmentId');
 
       if(Number(infillDevelopmentId) === storedInfillDevelopmentId) {
@@ -176,18 +187,20 @@ class InfillDevelopmentPage extends Component<Props, State> {
     }
 
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes
-    if(prevProps.isEditMode && !this.props.isEditMode) {
+    if(prevProps.isEditMode && !isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
     }
 
-    if (prevProps.location !== this.props.location) {
+    if (prevProps.location !== location) {
+      const query = getUrlParams(search);
+
       this.setState({
-        activeTab: this.props.location.query.tab,
+        activeTab: query.tab,
       });
     }
 
-    if(prevState.activeTab !== this.state.activeTab) {
+    if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
   }
@@ -195,8 +208,8 @@ class InfillDevelopmentPage extends Component<Props, State> {
   componentWillUnmount() {
     const {
       hideEditMode,
-      params: {infillDevelopmentId},
-      router: {location: {pathname}},
+      match: {params: {infillDevelopmentId}},
+      location: {pathname},
     } = this.props;
 
     if(pathname !== `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${infillDevelopmentId}`) {
@@ -234,7 +247,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {
       infillDevelopmentFormValues,
       isInfillDevelopmentFormDirty,
-      params: {infillDevelopmentId},
+      match: {params: {infillDevelopmentId}},
     } = this.props;
 
     if(isInfillDevelopmentFormDirty) {
@@ -282,10 +295,11 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {
       currentInfillDevelopment,
       hideEditMode,
+      history,
+      location: {search},
       receiveFormInitialValues,
-      router,
     } = this.props;
-    const {router: {location: {query}}} = this.props;
+
     const infillDevelopment = {...currentInfillDevelopment};
 
     infillDevelopment.id = undefined;
@@ -293,22 +307,22 @@ class InfillDevelopmentPage extends Component<Props, State> {
     hideEditMode();
     clearUnsavedChanges();
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENT_NEW),
-      query,
+      search: search,
     });
   }
 
   handleBack = () => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     delete query.lease;
     delete query.tab;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}`,
-      query,
+      search: getSearchQuery(query),
     });
   }
 
@@ -356,16 +370,15 @@ class InfillDevelopmentPage extends Component<Props, State> {
   }
 
   handleTabClick = (tabId) => {
-    const {router} = this.context;
-    const {location} = this.props;
-    const {router: {location: {query}}} = this.props;
+    const {history, location, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     this.setState({activeTab: tabId}, () => {
       query.tab = tabId;
 
-      return router.push({
+      return history.push({
         ...location,
-        query,
+        search: getSearchQuery(query),
       });
     });
   };

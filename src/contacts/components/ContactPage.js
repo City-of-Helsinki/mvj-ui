@@ -1,8 +1,8 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {change, getFormValues, isDirty} from 'redux-form';
+import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
@@ -51,6 +51,7 @@ type Props = {
   editContact: Function,
   fetchSingleContact: Function,
   hideEditMode: Function,
+  history: Object,
   initializeContactForm: Function,
   isContactFormDirty: boolean,
   isContactFormValid: boolean,
@@ -59,10 +60,11 @@ type Props = {
   isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   isSaveClicked: boolean,
   location: Object,
-  params: Object,
+  match: {
+    params: Object,
+  },
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
-  router: Object,
   showEditMode: Function,
 }
 
@@ -75,17 +77,13 @@ class ContactPage extends Component<Props, State> {
     isRestoreModalOpen: false,
   }
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   timerAutoSave: any
 
   componentDidMount() {
     const {
       fetchSingleContact,
       hideEditMode,
-      params: {contactId},
+      match: {params: {contactId}},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
@@ -105,7 +103,8 @@ class ContactPage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {params: {contactId}} = this.props;
+    const {match: {params: {contactId}}} = this.props;
+
     if(isEmpty(prevProps.contact) && !isEmpty(this.props.contact)) {
       const storedContactId = getSessionStorageItem('contactId');
 
@@ -123,8 +122,8 @@ class ContactPage extends Component<Props, State> {
   componentWillUnmount() {
     const {
       hideEditMode,
-      params: {contactId},
-      router: {location: {pathname}},
+      match: {params: {contactId}},
+      location: {pathname},
     } = this.props;
 
     if(pathname !== `${getRouteById(Routes.CONTACTS)}/${contactId}`) {
@@ -161,7 +160,7 @@ class ContactPage extends Component<Props, State> {
     const {
       contactFormValues,
       isContactFormDirty,
-      params: {contactId},
+      match: {params: {contactId}},
     } = this.props;
 
     if(isContactFormDirty) {
@@ -205,17 +204,17 @@ class ContactPage extends Component<Props, State> {
   }
 
   copyContact = () => {
-    const {contact, hideEditMode, initializeContactForm, router} = this.props;
-    const {router: {location: {query}}} = this.props;
+    const {contact, hideEditMode, initializeContactForm} = this.props;
+    const {history, location: {search}} = this.props;
 
     contact.id = undefined;
     initializeContactForm(contact);
     hideEditMode();
     clearUnsavedChanges();
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.CONTACT_NEW),
-      query,
+      search: search,
     });
   }
 
@@ -225,12 +224,11 @@ class ContactPage extends Component<Props, State> {
   }
 
   handleBack = () => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.CONTACTS)}`,
-      query,
+      search: search,
     });
   }
 
@@ -349,6 +347,7 @@ const mapStateToProps = (state: RootState) => {
 
 export default flowRight(
   withCommonAttributes,
+  withRouter,
   connect(
     mapStateToProps,
     {

@@ -29,12 +29,12 @@ class Tenants extends Component<Props, State> {
     tenants: null,
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {tenants} = this.props;
     this.setState({tenants});
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {tenants} = nextProps;
     this.setState({tenants});
   }

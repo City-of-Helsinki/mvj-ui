@@ -2,7 +2,8 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Link, withRouter} from 'react-router';
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -33,6 +34,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
+  getUrlParams,
   isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -44,24 +46,24 @@ type Props = {
   area: Object,
   attributes: Attributes,
   isEditMode: boolean,
+  location: Object,
   planUnitsContractCollapseState: boolean,
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
   plotsCurrentCollapseState: boolean,
   receiveCollapseStates: Function,
-  router: Object,
 }
 
 const LeaseArea = ({
   area,
   attributes,
   isEditMode,
+  location,
   planUnitsContractCollapseState,
   planUnitsCurrentCollapseState,
   plotsContractCollapseState,
   plotsCurrentCollapseState,
   receiveCollapseStates,
-  router,
 }: Props) => {
   const handlePlanUnitContractCollapseToggle = (val: boolean) => {
     if(!area.id) return;
@@ -120,14 +122,15 @@ const LeaseArea = ({
   };
 
   const getMapLinkUrl = () => {
-    const {location: {pathname, query}} = router;
-    const tempQuery = {...query};
-    delete tempQuery.plan_unit;
-    delete tempQuery.plot;
-    tempQuery.lease_area = area ? area.id : undefined,
-    tempQuery.tab = 7;
+    const {pathname, search} = location;
+    const searchQuery = getUrlParams(search);
 
-    return `${pathname}${getSearchQuery(tempQuery)}`;
+    delete searchQuery.plan_unit;
+    delete searchQuery.plot;
+    searchQuery.lease_area = area ? area.id : undefined,
+    searchQuery.tab = 7;
+
+    return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
   const locationOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.LOCATION);

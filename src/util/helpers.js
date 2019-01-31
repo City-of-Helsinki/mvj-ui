@@ -17,8 +17,6 @@ import {Breakpoints} from '$src/foundation/enums';
 import type {Attributes} from '$src/types';
 import type {UsersPermissions} from '$src/usersPermissions/types';
 
-/* global API_URL */
-
 // import i18n from '../root/i18n';
 
 /**
@@ -127,7 +125,7 @@ export const getSearchQuery = (filters: any) => {
   let query = [];
 
   forEach(filters, (filter: any, key) => {
-    if (!isEmpty(filter) || isNumber(filter)) {
+    if (!isEmpty(filter) || isNumber(filter) || typeof 'boolean') {
       if (isArray(filter)) {
         const items = [];
         forEach(filter, (item) => {
@@ -146,6 +144,31 @@ export const getSearchQuery = (filters: any) => {
   });
 
   return query.length ? `?${query.join('&')}` : '';
+};
+
+export const getUrlParams = (search: string = ''): Object => {
+  const query = {};
+  const entries = search.replace('?', '').split('&');
+
+  entries.forEach((entry) => {
+    const split = entry.split('=');
+    const key = decodeURIComponent(split[0]);
+    const value = decodeURIComponent(split[1]);
+
+    if(!key) return;
+
+    if(query[key]) {
+      if(isArray(query[key])) {
+        query[key].push(value);
+      } else {
+        query[key] = [query[key], value];
+      }
+    } else {
+      query[key] = value;
+    }
+  });
+
+  return query;
 };
 
 /**
@@ -273,8 +296,7 @@ export const formatDateObj = (unix: any, format?: string = 'DD.MM.YYYY HH:mm') =
  * @returns {string}
  */
 export const getApiUrlWithOutVersionSuffix = () => {
-  // $FlowFixMe
-  return API_URL.split('/v1')[0];
+  return process.env.API_URL ? process.env.API_URL.split('/v1')[0] : '';
 };
 
 /**

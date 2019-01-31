@@ -520,7 +520,6 @@ class RentBasisForm extends PureComponent<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.START_DATE)}
                 name='start_date'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: RentBasisFieldTitles.START_DATE}}
               />
             </Authorization>
@@ -531,7 +530,6 @@ class RentBasisForm extends PureComponent<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.END_DATE)}
                 name='end_date'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: RentBasisFieldTitles.END_DATE}}
               />
             </Authorization>
@@ -556,7 +554,6 @@ class RentBasisForm extends PureComponent<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER)}
                 name='detailed_plan_identifier'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: RentBasisFieldTitles.DETAILED_PLAN_IDENTIFIER}}
               />
             </Authorization>
@@ -568,7 +565,6 @@ class RentBasisForm extends PureComponent<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT)}
                 name='management'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: RentBasisFieldTitles.MANAGEMENT}}
               />
             </Authorization>
@@ -580,7 +576,6 @@ class RentBasisForm extends PureComponent<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.FINANCING)}
                 name='financing'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: RentBasisFieldTitles.FINANCING}}
               />
             </Authorization>
@@ -593,7 +588,6 @@ class RentBasisForm extends PureComponent<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.LEASE_RIGHTS_END_DATE)}
                 name='lease_rights_end_date'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: RentBasisFieldTitles.LEASE_RIGHTS_END_DATE}}
               />
             </Authorization>
@@ -604,7 +598,6 @@ class RentBasisForm extends PureComponent<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.INDEX)}
                 name='index'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{
                   label: RentBasisFieldTitles.INDEX,
                   options: indexOptions,
@@ -650,7 +643,6 @@ class RentBasisForm extends PureComponent<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.NOTE)}
                 name='note'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: RentBasisFieldTitles.NOTE}}
               />
             </Column>

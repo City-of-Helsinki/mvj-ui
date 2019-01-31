@@ -44,7 +44,7 @@ type Props = {
 class CreateLeaseForm extends Component<Props> {
   firstField: any
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if(this.props.municipality !== nextProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
 
@@ -120,7 +120,6 @@ class CreateLeaseForm extends Component<Props> {
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.TYPE)}
                 name='type'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: LeaseFieldTitles.TYPE}}
               />
             </Authorization>
@@ -130,7 +129,6 @@ class CreateLeaseForm extends Component<Props> {
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.MUNICIPALITY)}
                 name='municipality'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: LeaseFieldTitles.MUNICIPALITY}}
               />
             </Authorization>
@@ -141,7 +139,6 @@ class CreateLeaseForm extends Component<Props> {
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.DISTRICT)}
                 filterOption={filterOptionsByLabel}
                 name='district'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{
                   label: LeaseFieldTitles.DISTRICT,
                   options: districtOptions,
@@ -156,7 +153,6 @@ class CreateLeaseForm extends Component<Props> {
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.REFERENCE_NUMBER)}
                 name='reference_number'
-                setRefForField={this.setRefForFirstField}
                 validate={referenceNumber}
                 overrideValues={{label: LeaseFieldTitles.REFERENCE_NUMBER}}
               />
@@ -167,7 +163,6 @@ class CreateLeaseForm extends Component<Props> {
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.NOTE)}
                 name='note'
-                setRefForField={this.setRefForFirstField}
                 overrideValues={{label: LeaseFieldTitles.NOTE}}
               />
             </Authorization>
@@ -215,7 +210,7 @@ export default flowRight(
       fetchDistrictsByMunicipality,
     },
     null,
-    {withRef: true}
+    {forwardRef: true}
   ),
   reduxForm({
     form: formName,

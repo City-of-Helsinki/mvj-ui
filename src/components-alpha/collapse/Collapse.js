@@ -26,7 +26,7 @@ class Collapse extends Component<Props, State> {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {defaultOpen} = this.props;
     this.setState({
       isOpen: defaultOpen,

@@ -31,12 +31,12 @@ class Leases extends Component<Props, State> {
     rents: null,
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {rents} = this.props;
     this.setState({rents});
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {rents} = nextProps;
     this.setState({rents});
   }

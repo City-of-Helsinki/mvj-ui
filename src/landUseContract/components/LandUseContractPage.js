@@ -1,12 +1,12 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {change, destroy, getFormValues, initialize, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import BasicInformation from './sections/BasicInformation';
 import BasicInformationEdit from './sections/BasicInformationEdit';
 import Compensations from './sections/Compensations';
@@ -20,7 +20,7 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import Decisions from './sections/Decisions';
 import DecisionsEdit from './sections/DecisionsEdit';
 import Divider from '$components/content/Divider';
-import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import FullWidthContainer from '$components/content/FullWidthContainer';
 import Invoices from './sections/Invoices';
 import InvoicesEdit from './sections/InvoicesEdit';
 import Litigants from './sections/Litigants';
@@ -54,6 +54,7 @@ import {
   getContentLitigants,
   isLitigantArchived,
 } from '$src/landUseContract/helpers';
+import {getSearchQuery, getUrlParams} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {
@@ -85,6 +86,7 @@ type Props = {
   fetchLandUseContractAttributes: Function,
   fetchSingleLandUseContract: Function,
   hideEditMode: Function,
+  history: Object,
   initialize: Function,
   invoicesFormValues: Object,
   isBasicInformationFormDirty: boolean,
@@ -104,7 +106,9 @@ type Props = {
   isSaveClicked: boolean,
   litigantsFormValues: Object,
   location: Object,
-  params: Object,
+  match: {
+    params: Object,
+  },
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
@@ -123,10 +127,6 @@ class LandUseContractPage extends Component<Props, State> {
     isRestoreModalOpen: false,
   }
 
-  static contextTypes = {
-    router: PropTypes.object,
-  }
-
   timerAutoSave: any
 
   componentDidMount() {
@@ -138,11 +138,12 @@ class LandUseContractPage extends Component<Props, State> {
       fetchLandUseContractAttributes,
       fetchSingleLandUseContract,
       hideEditMode,
-      location,
-      params: {landUseContractId},
+      location: {search},
+      match: {params: {landUseContractId}},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
+    const query = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LAND_USE_CONTRACTS),
@@ -152,8 +153,8 @@ class LandUseContractPage extends Component<Props, State> {
 
     fetchSingleLandUseContract(landUseContractId);
 
-    if (location.query.tab) {
-      this.setState({activeTab: location.query.tab});
+    if (query.tab) {
+      this.setState({activeTab: query.tab});
     }
 
     if(isEmpty(attributes)) {
@@ -172,18 +173,21 @@ class LandUseContractPage extends Component<Props, State> {
 
   componentDidUpdate(prevProps) {
     const {
-      params: {landUseContractId},
+      currentLandUseContract,
+      isEditMode,
+      match: {params: {landUseContractId}},
     } = this.props;
 
-    if(isEmpty(prevProps.currentLandUseContract) && !isEmpty(this.props.currentLandUseContract)) {
+    if(isEmpty(prevProps.currentLandUseContract) && !isEmpty(currentLandUseContract)) {
       const storedLandUseContractId = getSessionStorageItem('landUseContractId');
+
       if(Number(landUseContractId) === storedLandUseContractId) {
         this.setState({isRestoreModalOpen: true});
       }
     }
 
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes
-    if(prevProps.isEditMode && !this.props.isEditMode) {
+    if(prevProps.isEditMode && !isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
     }
@@ -192,13 +196,14 @@ class LandUseContractPage extends Component<Props, State> {
   componentWillUnmount() {
     const {
       hideEditMode,
-      params: {landUseContractId},
-      router: {location: {pathname}},
+      location: {pathname},
+      match: {params: {landUseContractId}},
     } = this.props;
 
     if(pathname !== `${getRouteById(Routes.LAND_USE_CONTRACTS)}/${landUseContractId}`) {
       clearUnsavedChanges();
     }
+
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
   }
@@ -219,6 +224,7 @@ class LandUseContractPage extends Component<Props, State> {
 
     if(this.isAnyFormDirty() && isEditMode) {
       const confirmationMessage = '';
+
       e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
       return confirmationMessage;              // Gecko, WebKit, Chrome <34
     }
@@ -239,7 +245,7 @@ class LandUseContractPage extends Component<Props, State> {
       isFormValidFlags,
       isLitigantsFormDirty,
       litigantsFormValues,
-      params: {landUseContractId},
+      match: {params: {landUseContractId}},
     } = this.props;
 
     let isDirty = false;
@@ -301,7 +307,12 @@ class LandUseContractPage extends Component<Props, State> {
   }
 
   restoreUnsavedChanges = () => {
-    const {clearFormValidFlags, currentLandUseContract, showEditMode} = this.props;
+    const {
+      clearFormValidFlags,
+      currentLandUseContract,
+      receiveFormValidFlags,
+      showEditMode,
+    } = this.props;
 
     showEditMode();
     clearFormValidFlags();
@@ -341,7 +352,6 @@ class LandUseContractPage extends Component<Props, State> {
 
     const storedFormValidity = getSessionStorageItem('leaseValidity');
     if(storedFormValidity) {
-      const {receiveFormValidFlags} = this.props;
       receiveFormValidFlags(storedFormValidity);
     }
 
@@ -352,33 +362,32 @@ class LandUseContractPage extends Component<Props, State> {
   bulkChange = (formName: string, obj: Object) => {
     const {change} = this.props;
     const fields = Object.keys(obj);
+
     fields.forEach(field => {
       change(formName, field, obj[field]);
     });
   }
 
   handleTabClick = (tabId: number) => {
-    const {router} = this.context;
-    const {location} = this.props;
-    const {router: {location: {query}}} = this.props;
-
+    const {history, location, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     this.setState({activeTab: tabId}, () => {
       query.tab = tabId;
-      return router.push({
+
+      return history.push({
         ...location,
-        query,
+        search: getSearchQuery(query),
       });
     });
   }
 
   handleBack = () => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
-      query,
+      search: search,
     });
   }
 
@@ -418,9 +427,10 @@ class LandUseContractPage extends Component<Props, State> {
 
   saveChanges = () => {
     const {receiveIsSaveClicked} = this.props;
+    const areFormsValid = this.getAreFormsValid();
+
     receiveIsSaveClicked(true);
 
-    const areFormsValid = this.getAreFormsValid();
     if(areFormsValid) {
       const {
         basicInformationFormValues,
@@ -513,6 +523,7 @@ class LandUseContractPage extends Component<Props, State> {
 
   hideModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+
     this.setState({
       [modalVisibilityKey]: false,
     });
@@ -520,6 +531,7 @@ class LandUseContractPage extends Component<Props, State> {
 
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+
     this.setState({
       [modalVisibilityKey]: true,
     });
@@ -560,7 +572,7 @@ class LandUseContractPage extends Component<Props, State> {
     const areFormsValid = this.getAreFormsValid();
 
     return (
-      <div style={{width: '100%'}}>
+      <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -670,7 +682,7 @@ class LandUseContractPage extends Component<Props, State> {
             </TabPane>
           </TabContent>
         </PageContainer>
-      </div>
+      </FullWidthContainer>
     );
   }
 }

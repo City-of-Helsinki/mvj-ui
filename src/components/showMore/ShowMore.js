@@ -1,12 +1,13 @@
+// @flow
 import React, {PureComponent} from 'react';
 import classNames from 'classnames';
 
 const MAX_CHARS = 130;
 
 type Props = {
-  className: String,
+  className?: string,
   maxChars?: number,
-  open: Boolean,
+  open?: boolean,
   text: string,
 };
 
@@ -15,9 +16,7 @@ type State = {
   overflows: boolean,
 }
 
-class ShowMore extends PureComponent {
-  props: Props;
-
+class ShowMore extends PureComponent<Props, State> {
   state: State = {
     open: this.props.open || false,
     overflows: false,
@@ -31,7 +30,7 @@ class ShowMore extends PureComponent {
     this.checkOverflow();
   }
 
-  checkOverflow = (textOverFlow) => {
+  checkOverflow = (textOverFlow: ?string) => {
     const {maxChars, text} = this.props;
     const t = textOverFlow || text;
     if(t && t.length > (maxChars || MAX_CHARS)) {

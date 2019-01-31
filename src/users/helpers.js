@@ -8,10 +8,8 @@ export const getUserFullName = (user: ?Object) => {
   return `${user.last_name ? `${user.last_name} ` : ''}${user.first_name || ''}`;
 };
 
-export const getUserOptions = (users: UserList) => {
-  if(!users || !users.length) {
-    return [];
-  }
+export const getUserOptions = (users: UserList): Array<Object> => {
+  if(!users || !users.length)  return [];
 
   return users.map((user) => {
     return {
@@ -23,6 +21,7 @@ export const getUserOptions = (users: UserList) => {
   }).sort((a, b) => {
     const keyA = a.label,
       keyB = b.label;
+
     if(keyA < keyB) return -1;
     if(keyA > keyB) return 1;
     return 0;

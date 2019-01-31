@@ -30,12 +30,12 @@ class Conditions extends Component<Props, State> {
     conditions: null,
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {conditions} = this.props;
     this.setState({conditions});
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {conditions} = nextProps;
     this.setState({conditions});
   }

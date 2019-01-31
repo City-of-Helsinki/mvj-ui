@@ -63,13 +63,13 @@ class Billing extends Component<Props, State> {
     tenants: null,
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {tenants, fetchInvoices, params: {leaseId}} = this.props;
     this.setState({tenants});
     fetchInvoices(leaseId);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const {tenants} = nextProps;
     this.setState({tenants});
   }

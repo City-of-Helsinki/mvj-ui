@@ -37,7 +37,7 @@ class Map extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {fetchAreas} = this.props;
     fetchAreas();
   }

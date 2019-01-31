@@ -6,11 +6,7 @@ const ErrorPage = () =>
     <Row>
       <Column>
         <h1>404</h1>
-        <Row>
-          <Column medium={6} offsetOnMedium={3}>
-            <p>Etsimääsi sivua ei ole olemassa</p>
-          </Column>
-        </Row>
+        <p>Etsimääsi sivua ei ole olemassa</p>
       </Column>
     </Row>
   </div>;

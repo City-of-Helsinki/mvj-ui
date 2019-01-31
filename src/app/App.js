@@ -1,6 +1,5 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ReduxToastr from 'react-redux-toastr';
 import {withRouter} from 'react-router';
@@ -39,10 +38,10 @@ type Props = {
   clearError: typeof clearError,
   closeReveal: Function,
   fetchApiToken: Function,
+  history: Object,
   isApiTokenFetching: boolean,
   linkUrl: string,
   location: Object,
-  params: Object,
   pageTitle: string,
   showSearch: boolean,
   user: Object,
@@ -56,10 +55,6 @@ class App extends Component<Props, State> {
   state = {
     displaySideMenu: false,
   }
-
-  static contextTypes = {
-    router: PropTypes.object,
-  };
 
   timerID: any
 
@@ -78,32 +73,42 @@ class App extends Component<Props, State> {
     clearInterval(this.timerID);
   }
 
-  componentWillReceiveProps(nextProps) {
-    const {apiError, clearApiToken, fetchApiToken} = this.props;
+  componentDidUpdate(prevProps: Props) {
+    const {
+      apiError,
+      apiToken,
+      clearApiToken,
+      fetchApiToken,
+      isApiTokenFetching,
+      user,
+    } = this.props;
+
     if(apiError) {
       return;
     }
+
     // Fetch api token if user info is received but Api token is empty
-    if(!nextProps.isApiTokenFetching &&
-      nextProps.user &&
-      nextProps.user.access_token &&
-      (isEmpty(nextProps.apiToken) || (get(this.props, 'user.access_token') !== get(nextProps, 'user.access_token')))
+    if(!isApiTokenFetching &&
+      user &&
+      user.access_token &&
+      (isEmpty(apiToken) || user.access_token !== get(prevProps, 'user.access_token'))
     ) {
-      fetchApiToken(nextProps.user.access_token);
+      fetchApiToken(user.access_token);
       this.startApiTokenTimer();
       return;
     }
+
     // Clear API token when user has logged out
-    if(!nextProps.user && !isEmpty(nextProps.apiToken)) {
+    if(!user && !isEmpty(apiToken)) {
       clearApiToken();
       this.stopApiTokenTimer();
     }
   }
 
   logOut = () => {
-    const {router} = this.context;
-    router.push('/');
+    const {history} = this.props;
 
+    history.push('/');
     userManager.removeUser();
     sessionStorage.clear();
   }
@@ -136,7 +141,8 @@ class App extends Component<Props, State> {
       location,
       pageTitle,
       showSearch,
-      user} = this.props;
+      user,
+    } = this.props;
     const {displaySideMenu} = this.state;
 
     if (isEmpty(user) || isEmpty(apiToken)) {
@@ -167,6 +173,7 @@ class App extends Component<Props, State> {
       );
     }
 
+
     return (
       <AppProvider>
         <AppConsumer>
@@ -190,6 +197,12 @@ class App extends Component<Props, State> {
 
             return(
               <div className={'app'}>
+                <ApiErrorModal size={Sizes.LARGE}
+                  data={apiError}
+                  isOpen={Boolean(apiError)}
+                  handleDismiss={this.handleDismissErrorModal}
+                />
+
                 <ConfirmationModal
                   confirmButtonClassName={confirmationModalButtonClassName}
                   confirmButtonLabel={confirmationModalButtonText}
@@ -211,13 +224,6 @@ class App extends Component<Props, State> {
                   transitionOut="fadeOut"
                   closeOnToastrClick={true}
                 />
-
-                <ApiErrorModal size={Sizes.LARGE}
-                  data={apiError}
-                  isOpen={Boolean(apiError)}
-                  handleDismiss={this.handleDismissErrorModal}
-                />
-
                 <TopNavigation
                   isMenuOpen={displaySideMenu}
                   linkUrl={linkUrl}

@@ -21,7 +21,11 @@ import {
   getContentPlotsGeoJson,
   getLeaseCoordinates,
 } from '$src/leases/helpers';
-import {getFieldOptions, isFieldAllowedToRead} from '$util/helpers';
+import {
+  getFieldOptions,
+  getUrlParams,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -34,7 +38,7 @@ import type {PlotsGeoJson} from './PlotsLayer';
 type Props = {
   currentLease: Lease,
   leaseAttributes: Attributes,
-  router: Object,
+  location: Object,
 }
 
 type State = {
@@ -122,7 +126,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
 
   getOverlayLayers = () => {
     const layers = [];
-    const {leaseAttributes, router: {location: {query}}} = this.props;
+    const {leaseAttributes, location: {search}} = this.props;
     const {
       areasGeoJson,
       areaLocationOptions,
@@ -137,6 +141,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
       plotsContractGeoJson,
       plotTypeOptions,
     } = this.state;
+    const query = getUrlParams(search);
 
     if(isFieldAllowedToRead(leaseAttributes, LeasePlanUnitsFieldPaths.GEOMETRY)) {
       layers.push({

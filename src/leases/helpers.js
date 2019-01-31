@@ -258,9 +258,7 @@ export const getContentRelatedLeasesTo = (lease: Object) =>
     })
     .sort(compareRelatedLeases);
 
-export const getContentAddresses = (addresses: Array<Object>) => {
-  if(isEmpty(addresses)) {return [];}
-
+export const getContentAddresses = (addresses: Array<Object>): Array<Object> => {
   return addresses.map((address) => {
     return {
       id: address.id,

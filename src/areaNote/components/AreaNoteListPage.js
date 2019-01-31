@@ -1,8 +1,8 @@
 // @flow
 import React, {PureComponent} from 'react';
-import PropTypes from 'prop-types';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
@@ -18,7 +18,7 @@ import {fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode} from 
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/areaNote/enums';
-import {getSearchQuery} from '$util/helpers';
+import {getSearchQuery, getUrlParams} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -31,6 +31,7 @@ type Props = {
   areaNotes: AreaNoteList,
   fetchAreaNoteList: Function,
   hideEditMode: Function,
+  history: Object,
   initialize: Function,
   initializeAreaNote: Function,
   isEditMode: boolean,
@@ -51,16 +52,13 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     isSearchInitialized: false,
   }
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   componentDidMount() {
     const {
       initialize,
-      location: {query},
+      location: {search},
       receiveTopNavigationSettings,
     } = this.props;
+    const query = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.AREA_NOTES),
@@ -88,13 +86,12 @@ class AreaNoteListPage extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
       this.search();
-
-      const searchQuery = {...query};
 
       if(!Object.keys(searchQuery).length) {
         initialize(FormNames.SEARCH, {});
@@ -120,11 +117,11 @@ class AreaNoteListPage extends PureComponent<Props, State> {
   }
 
   handleSearchChange = (query) => {
-    const {router} = this.context;
+    const {history} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.AREA_NOTES),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
@@ -179,6 +176,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 
 export default flowRight(
   withCommonAttributes,
+  withRouter,
   connect(
     (state) => {
       return {

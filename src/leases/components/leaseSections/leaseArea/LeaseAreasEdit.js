@@ -354,7 +354,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                 name="lease_areas_active"
                 onArchive={this.showArchiveAreaModal}
                 usersPermissions={usersPermissions}
-                withRef={true}
+                forwardRef
               />
 
               {/* Archived lease areas */}
@@ -366,7 +366,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                 name='lease_areas_archived'
                 onUnarchive={handleUnarchive}
                 usersPermissions={usersPermissions}
-                withRef={true}
+                forwardRef
               />
             </form>
           );

@@ -2,7 +2,8 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Link, withRouter} from 'react-router';
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
@@ -23,7 +24,7 @@ import {
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getSearchQuery, isFieldAllowedToRead} from '$util/helpers';
+import {getSearchQuery, getUrlParams, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes as getInfillDevelopmentAttributes} from '$src/infillDevelopment/selectors';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 
@@ -52,13 +53,13 @@ const LeaseInfo = ({
   tenants,
 }: Props) => {
   const getMapLinkUrl = () => {
-    const {pathname, query} = location;
+    const {pathname, search} = location;
+    const searchQuery = getUrlParams(search);
 
-    const tempQuery = {...query};
-    tempQuery.lease = leaseId,
-    tempQuery.tab = 1;
+    searchQuery.lease = leaseId,
+    searchQuery.tab = 1;
 
-    return `${pathname}${getSearchQuery(tempQuery)}`;
+    return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
   const mapLinkUrl = getMapLinkUrl();

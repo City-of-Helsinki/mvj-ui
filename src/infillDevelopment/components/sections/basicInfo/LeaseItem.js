@@ -451,6 +451,7 @@ export default flowRight(
   connect(
     (state, props) => {
       const id = props.id;
+
       return {
         collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.INFILL_DEVELOPMENT}.${id}`),
         infillDevelopmentAttachmentAttributes: getInfillDevelopmentAttachmentAttributes(state),

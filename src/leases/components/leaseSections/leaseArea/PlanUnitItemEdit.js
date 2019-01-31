@@ -2,7 +2,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Link, withRouter} from 'react-router';
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import {formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -18,6 +19,7 @@ import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getFieldAttributes,
   getSearchQuery,
+  getUrlParams,
   hasPermissions,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -33,8 +35,8 @@ type Props = {
   geometry: ?Object,
   id: number,
   isSaveClicked: boolean,
+  location: Object,
   onRemove: Function,
-  router: Object,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -44,21 +46,22 @@ const PlanUnitItemEdit = ({
   geometry,
   id,
   isSaveClicked,
+  location,
   onRemove,
-  router,
   usersPermissions,
 }: Props) => {
   const getMapLinkUrl = () => {
-    const {location: {pathname, query}} = router;
+    const {pathname, search} = location;
+    const searchQuery = getUrlParams(search);
 
-    const tempQuery = {...query};
-    delete tempQuery.lease_area;
-    delete tempQuery.plot;
-    tempQuery.plan_unit = id,
-    tempQuery.tab = 7;
+    delete searchQuery.lease_area;
+    delete searchQuery.plot;
+    searchQuery.plan_unit = id,
+    searchQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(tempQuery)}`;
+    return `${pathname}${getSearchQuery(searchQuery)}`;
   };
+
   const mapLinkUrl = getMapLinkUrl();
 
   return (

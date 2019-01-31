@@ -1,7 +1,5 @@
 // @flow
 
-/* global API_URL */
-
 export const stringifyQuery = (query: {[key: string]: any}) =>
   Object
     .keys(query)
@@ -9,5 +7,4 @@ export const stringifyQuery = (query: {[key: string]: any}) =>
     .join('&');
 
 export default (url: string, params?: Object) =>
-  // $FlowFixMe
-  `${API_URL}/${url}${params ? `?${stringifyQuery(params)}` : ''}`;
+  `${process.env.API_URL || ''}/${url}${params ? `?${stringifyQuery(params)}` : ''}`;

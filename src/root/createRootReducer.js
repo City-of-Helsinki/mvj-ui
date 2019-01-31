@@ -4,7 +4,7 @@ import {combineReducers} from 'redux';
 import {reducer as formReducer} from 'redux-form';
 import {reducer as oidc} from 'redux-oidc';
 import {reducer as toastrReducer} from 'react-redux-toastr';
-import {routerReducer} from 'react-router-redux';
+import {connectRouter} from 'connected-react-router';
 import apiReducer from '../api/reducer';
 import areaNoteReducer from '../areaNote/reducer';
 import authReducer from '../auth/reducer';
@@ -39,7 +39,7 @@ import vatReducer from '../vat/reducer';
 import type {Reducer} from '../types';
 import type {RootState} from './types';
 
-export default (): Reducer<RootState> =>
+export default (history: Object): Reducer<RootState> =>
   combineReducers({
     api: apiReducer,
     areaNote: areaNoteReducer,
@@ -69,7 +69,7 @@ export default (): Reducer<RootState> =>
     previewInvoices: previewInvoicesReducer,
     rentBasis: rentBasisReducer,
     rentForPeriod: rentForPeriodReducer,
-    routing: routerReducer,
+    router: connectRouter(history),
     toastr: toastrReducer,
     topNavigation: topNavigationReducer,
     user: usersReducer,

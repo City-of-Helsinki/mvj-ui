@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import {Route, IndexRedirect} from 'react-router';
+import {Redirect, Route, Switch} from 'react-router';
 
 import ErrorPage from '$src/errorPage/ErrorPage';
 import App from '$src/app/App';
@@ -14,7 +14,6 @@ import LandUseContractListPage from '$src/landUseContract/components/LandUseCont
 import LandUseContractPage from '$src/landUseContract/components/LandUseContractPage';
 import LeaseListPage from '$src/leases/components/LeaseListPage';
 import LeasePage from '$src/leases/components/LeasePage';
-import LoginPage from '$src/auth/components/LoginPage';
 import NewContactPage from '$src/contacts/components/NewContactPage';
 import NewInfillDevelopmentPage from '$src/infillDevelopment/components/NewInfillDevelopmentPage';
 import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
@@ -54,23 +53,24 @@ export const getRouteById = (id: string): string => {
 };
 
 export default
-<Route path="/" component={App}>
-  <IndexRedirect to={getRouteById(Routes.LEASES)} />
-  <Route path={getRouteById(Routes.AREA_NOTES)} components={AreaNoteListPage} />
-  <Route path={getRouteById(Routes.CONTACTS)} components={ContactListPage} />
-  <Route path={`${getRouteById(Routes.CONTACTS)}/:contactId`} components={ContactPage}/>
-  <Route path={getRouteById(Routes.CONTACT_NEW)} components={NewContactPage} />
-  <Route path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}`} components={InfillDevelopmentListPage} />
-  <Route path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/:infillDevelopmentId`} components={InfillDevelopmentPage} />
-  <Route path={getRouteById(Routes.INFILL_DEVELOPMENT_NEW)} components={NewInfillDevelopmentPage} />
-  <Route path={getRouteById(Routes.LAND_USE_CONTRACTS)} components={LandUseContractListPage} />
-  <Route path={`${getRouteById(Routes.LAND_USE_CONTRACTS)}/:landUseContractId`} components={LandUseContractPage} />
-  <Route path={getRouteById(Routes.LEASES)} components={LeaseListPage} />
-  <Route path={`${getRouteById(Routes.LEASES)}/:leaseId`} components={LeasePage}/>
-  <Route path={getRouteById(Routes.RENT_BASIS)} components={RentBasisListPage} />
-  <Route path={`${getRouteById(Routes.RENT_BASIS)}/:rentBasisId`} components={RentBasisPage} />
-  <Route path={getRouteById(Routes.RENT_BASIS_NEW)} components={NewRentBasisPage} />
-  <Route path={getRouteById(Routes.CALLBACK)} components={CallbackPage} />
-  <Route path={getRouteById(Routes.LOGOUT)} components={LoginPage} />
-  <Route path="*" components={ErrorPage}/>
-</Route>;
+<App>
+  <Switch>
+    <Redirect exact from="/" to={getRouteById(Routes.LEASES)} />
+    <Route exact path={getRouteById(Routes.LEASES)} component={LeaseListPage} />
+    <Route exact path={`${getRouteById(Routes.LEASES)}/:leaseId`} component={LeasePage}/>
+    <Route exact path={getRouteById(Routes.CONTACTS)} component={ContactListPage} />
+    <Route exact path={`${getRouteById(Routes.CONTACTS)}/:contactId`} component={ContactPage}/>
+    <Route exact path={getRouteById(Routes.CONTACT_NEW)} component={NewContactPage} />
+    <Route exact path={getRouteById(Routes.LAND_USE_CONTRACTS)} component={LandUseContractListPage} />
+    <Route exact path={`${getRouteById(Routes.LAND_USE_CONTRACTS)}/:landUseContractId`} component={LandUseContractPage} />
+    <Route exact path={getRouteById(Routes.AREA_NOTES)} component={AreaNoteListPage} />
+    <Route exact path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}`} component={InfillDevelopmentListPage} />
+    <Route exact path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/:infillDevelopmentId`} component={InfillDevelopmentPage} />
+    <Route exact path={getRouteById(Routes.INFILL_DEVELOPMENT_NEW)} component={NewInfillDevelopmentPage} />
+    <Route exact path={getRouteById(Routes.RENT_BASIS)} component={RentBasisListPage} />
+    <Route exact path={`${getRouteById(Routes.RENT_BASIS)}/:rentBasisId`} component={RentBasisPage} />
+    <Route exact path={getRouteById(Routes.RENT_BASIS_NEW)} component={NewRentBasisPage} />
+    <Route exact path={getRouteById(Routes.CALLBACK)} component={CallbackPage} />
+    <Route component={ErrorPage} />
+  </Switch>
+</App>;

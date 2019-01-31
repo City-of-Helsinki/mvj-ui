@@ -24,7 +24,7 @@ class Search extends Component<Props> {
   }
 
   componentWillUnmount() {
-    this._isMounted = true;
+    this._isMounted = false;
   }
 
   componentDidUpdate(prevProps: Object) {

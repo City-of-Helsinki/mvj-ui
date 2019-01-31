@@ -1,22 +1,21 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import {withRouter} from 'react-router';
 
 import {setRedirectUrlToSessionStorage} from '../helpers';
 import userManager from '../util/user-manager';
 
 type Props = {
   buttonDisabled: boolean,
+  history: Object,
+  location: Object,
 }
 
 class LoginPage extends Component {
   props: Props
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   onLoginButtonClick = (event) => {
-    const {router: {location: {pathname, search}}} = this.context;
+    const {location: {pathname, search}} = this.props;
+
     event.preventDefault();
     userManager.signinRedirect();
 
@@ -41,4 +40,4 @@ class LoginPage extends Component {
 }
 
 
-export default LoginPage;
+export default withRouter(LoginPage);

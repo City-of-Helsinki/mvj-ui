@@ -45,6 +45,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
+  getUrlParams,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -66,6 +67,7 @@ type Props = {
   createLease: Function,
   fetchAreaNoteList: Function,
   fetchLeases: Function,
+  history: Object,
   initialize: Function,
   isFetching: boolean,
   isFetchingCommonAttributes: boolean,
@@ -74,7 +76,6 @@ type Props = {
   leases: LeaseList,
   lessors: Array<Object>,
   location: Object,
-  router: Object,
   receiveTopNavigationSettings: Function,
 }
 
@@ -103,7 +104,8 @@ class LeaseListPage extends PureComponent<Props, State> {
 
   componentDidMount() {
     const {fetchAreaNoteList, initialize, receiveTopNavigationSettings} = this.props;
-    const {router: {location: {query}}} = this.props;
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASES),
@@ -120,7 +122,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     const states = isArray(query.lease_state)
       ? query.lease_state
-      : query.lease_state ? [query.lease_state] : null;
+      : query.lease_state ? [query.lease_state] : undefined;
 
     if(states) {
       this.setState({leaseStates: states});
@@ -133,12 +135,16 @@ class LeaseListPage extends PureComponent<Props, State> {
     const initializeSearchForm = async() => {
       try {
         const searchQuery = {...query};
+
         delete searchQuery.page;
         delete searchQuery.lease_state;
 
-        searchQuery.tenant_role = isArray(searchQuery.tenant_role)
-          ? searchQuery.tenant_role
-          : searchQuery.tenant_role ? [searchQuery.tenant_role] : undefined;
+        if(searchQuery.tenant_role) {
+          searchQuery.tenant_role = isArray(searchQuery.tenant_role)
+            ? searchQuery.tenant_role
+            : [searchQuery.tenant_role];
+        }
+
 
         await initialize(FormNames.SEARCH, searchQuery);
         setSearchFormReadyFlag();
@@ -151,14 +157,14 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}, initialize} = this.props;
+    const searchQuery = getUrlParams(currentSearch);
     const {location: {search: prevSearch}} = prevProps;
     const {activePage} = this.state;
 
     if(currentSearch !== prevSearch) {
       this.search();
 
-      const searchQuery = {...query};
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
@@ -167,7 +173,8 @@ class LeaseListPage extends PureComponent<Props, State> {
       }
     }
 
-    const page = query.page ? Number(query.page) : 1;
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
     if(page !== activePage) {
       this.setState({activePage: page});
     }
@@ -182,8 +189,8 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   search = () => {
-    const {fetchLeases, location: {query}} = this.props;
-    const searchQuery = {...query};
+    const {fetchLeases, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     if(page > 1) {
@@ -197,29 +204,28 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   handleSearchChange = (query) => {
-    const {router} = this.context;
+    const {history} = this.props;
 
     this.setState({activePage: 1});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.LEASES),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
   handleRowClick = (id) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.LEASES)}/${id}`,
-      query,
+      search: search,
     });
   };
 
   handlePageClick = (page: number) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     if(page > 1) {
       query.page = page;
@@ -229,9 +235,9 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     this.setState({activePage: page});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.LEASES),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
@@ -248,7 +254,6 @@ class LeaseListPage extends PureComponent<Props, State> {
       columns.push({
         key: 'lease_area_identifiers',
         text: 'Vuokrakohde',
-        disabled: true,
       });
     }
 
@@ -256,7 +261,6 @@ class LeaseListPage extends PureComponent<Props, State> {
       columns.push({
         key: 'addresses',
         text: 'Osoite',
-        disabled: true,
       });
     }
 
@@ -264,7 +268,6 @@ class LeaseListPage extends PureComponent<Props, State> {
       columns.push({
         key: 'tenants',
         text: 'Vuokralainen',
-        disabled: true,
       });
     }
 
@@ -302,9 +305,9 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   handleLeaseStatesChange = (values: Array<string>) => {
-    const {location: {query}} = this.props;
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
 
-    const searchQuery = {...query};
     delete searchQuery.page;
     searchQuery.lease_state = values;
 
@@ -318,9 +321,9 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   isBasicSearchByDefault = () => {
-    const {location: {query}} = this.props;
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
 
-    const searchQuery = {...query};
     delete searchQuery.page;
 
     if(Object.keys(searchQuery).length === 0) {

@@ -1,9 +1,11 @@
 // @ flow
-import {MapControl} from 'react-leaflet';
+import {MapControl, withLeaflet} from 'react-leaflet';
 import {GeoSearchControl} from 'leaflet-geosearch';
 import HelsinkiProvider from './HelsinkiProvider';
 
-class GeoSearch extends MapControl {
+type LeafletElement = GeoSearchControl;
+
+class GeoSearch extends MapControl<LeafletElement> {
 
   createLeafletElement() {
     return GeoSearchControl({
@@ -22,4 +24,4 @@ class GeoSearch extends MapControl {
   }
 }
 
-export default GeoSearch;
+export default withLeaflet(GeoSearch);

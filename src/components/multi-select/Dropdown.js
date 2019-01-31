@@ -31,7 +31,7 @@ class Dropdown extends Component<Props, State> {
     this.wrapper = el;
   }
 
-  componentWillUpdate() {
+  componentDidMount() {
     document.addEventListener('touchstart', this.handleDocumentClick);
     document.addEventListener('mousedown', this.handleDocumentClick);
   }

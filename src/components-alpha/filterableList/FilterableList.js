@@ -57,7 +57,7 @@ class FilterableList extends Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(newProps: Object) {
+  UNSAFE_componentWillReceiveProps(newProps: Object) {
     const {data} = newProps;
 
     this.setState({

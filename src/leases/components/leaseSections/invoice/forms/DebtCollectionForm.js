@@ -5,6 +5,7 @@ import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
+import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -66,7 +67,7 @@ const renderNotes = ({
   fields,
   onCreate,
   saveCallback,
-}: NotesProps) => {
+}: NotesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };

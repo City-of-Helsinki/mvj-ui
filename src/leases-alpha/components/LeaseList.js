@@ -35,7 +35,7 @@ class LeaseList extends Component<Props> {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {fetchAttributes, fetchLeases} = this.props;
 
     fetchAttributes();

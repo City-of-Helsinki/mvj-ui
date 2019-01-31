@@ -16,7 +16,7 @@ import {mapColors} from '$src/constants';
 import {LeaseAreasFieldPaths, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths} from '$src/leases/enums';
 import {getContentLeaseIdentifier, getLeaseCoordinates} from '$src/leases/helpers';
 import {getContentInfillDevelopmentLeaseGeoJson} from '$src/infillDevelopment/helpers';
-import {getFieldOptions} from '$util/helpers';
+import {getFieldOptions, getUrlParams} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getCurrentInfillDevelopment} from '$src/infillDevelopment/selectors';
 import {
@@ -36,7 +36,6 @@ type Props = {
   isFetchingAllLeases: Array<boolean>,
   leaseAttributes: Attributes,
   location: Object,
-  router: Object,
 }
 
 type State = {
@@ -156,7 +155,8 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
   }
 
   setInfillDevelopmentLayers = () => {
-    const {allLeases, location: {query}} = this.props;
+    const {allLeases, location: {search}} = this.props;
+    const query = getUrlParams(search);
     const {
       areaLocationOptions,
       areaTypeOptions,

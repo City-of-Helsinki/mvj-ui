@@ -1,9 +1,9 @@
 // @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
@@ -34,6 +34,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
+  getUrlParams,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -45,6 +46,7 @@ import type {RentBasisList} from '$src/rentbasis/types';
 
 type Props = {
   fetchRentBasisList: Function,
+  history: Object,
   initialize: Function,
   initializeRentBasis: Function,
   isFetching: boolean,
@@ -54,7 +56,6 @@ type Props = {
   rentBasisAttributes: Attributes, // get vie withCommonAttributes HOC
   rentBasisMethods: Methods, // get vie withCommonAttributes HOC
   rentBasisListData: RentBasisList,
-  router: Object,
 }
 
 type State = {
@@ -68,16 +69,13 @@ class RentBasisListPage extends Component<Props, State> {
     isSearchInitialized: false,
   }
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   componentDidMount() {
     const {
       initialize,
-      location: {query},
+      location: {search},
       receiveTopNavigationSettings,
     } = this.props;
+    const searchQuery = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.RENT_BASIS),
@@ -87,7 +85,7 @@ class RentBasisListPage extends Component<Props, State> {
 
     this.search();
 
-    const page = query.page ? Number(query.page) : 1;
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
     this.setState({activePage: page});
 
     const setSearchFormReadyFlag = () => {
@@ -96,7 +94,6 @@ class RentBasisListPage extends Component<Props, State> {
 
     const initializeSearchForm = async() => {
       try {
-        const searchQuery = {...query};
         delete searchQuery.page;
 
         await initialize(FormNames.SEARCH, searchQuery);
@@ -111,13 +108,13 @@ class RentBasisListPage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
       this.search();
 
-      const searchQuery = {...query};
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
@@ -127,20 +124,20 @@ class RentBasisListPage extends Component<Props, State> {
   }
 
   handleSearchChange = (query) => {
-    const {router} = this.context;
+    const {history} = this.props;
 
     this.setState({activePage: 1});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.RENT_BASIS),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
   search = () => {
-    const {fetchRentBasisList, location: {query}} = this.props;
-    const page = query.page ? Number(query.page) : 1;
-    const searchQuery = {...query};
+    const {fetchRentBasisList, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     delete searchQuery.page;
 
@@ -154,8 +151,7 @@ class RentBasisListPage extends Component<Props, State> {
   }
 
   handleCreateButtonClick = () => {
-    const {initializeRentBasis, location: {query}} = this.props;
-    const {router} = this.context;
+    const {history, initializeRentBasis, location: {search}} = this.props;
 
     initializeRentBasis({
       decisions: [{}],
@@ -163,25 +159,24 @@ class RentBasisListPage extends Component<Props, State> {
       rent_rates: [{}],
     });
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.RENT_BASIS_NEW),
-      query,
+      search: search,
     });
   }
 
   handleRowClick = (id) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
 
-    return router.push({
+    return history.push({
       pathname: `${getRouteById(Routes.RENT_BASIS)}/${id}`,
-      query,
+      search: search,
     });
   };
 
   handlePageClick = (page: number) => {
-    const {router} = this.context;
-    const {location: {query}} = this.props;
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
 
     if(page > 1) {
       query.page = page;
@@ -191,9 +186,9 @@ class RentBasisListPage extends Component<Props, State> {
 
     this.setState({activePage: page});
 
-    return router.push({
+    return history.push({
       pathname: getRouteById(Routes.RENT_BASIS),
-      query,
+      search: getSearchQuery(query),
     });
   }
 
@@ -233,7 +228,6 @@ class RentBasisListPage extends Component<Props, State> {
       columns.push({
         key: 'property_identifiers',
         text: 'Kohteen tunnus',
-        disabled: true,
       });
     }
 
@@ -241,7 +235,6 @@ class RentBasisListPage extends Component<Props, State> {
       columns.push({
         key: 'build_permission_types',
         text: 'Pääkäyttötarkoitus',
-        disabled: true,
         renderer: (val) => val ? getLabelOfOption(buildPermissionTypeOptions, val) : '-',
       });
     }
@@ -329,6 +322,7 @@ class RentBasisListPage extends Component<Props, State> {
 
 export default flowRight(
   withCommonAttributes,
+  withRouter,
   connect(
     (state) => {
       return {

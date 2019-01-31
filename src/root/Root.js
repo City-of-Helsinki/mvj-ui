@@ -1,8 +1,7 @@
 // @flow
-
 import React from 'react';
 import {Provider} from 'react-redux';
-import {Router} from 'react-router';
+import {ConnectedRouter} from 'connected-react-router';
 import {OidcProvider} from 'redux-oidc';
 
 import userManager from '../auth/util/user-manager';
@@ -16,7 +15,9 @@ export type RootProps = {
 const Root = ({history, store}: RootProps) =>
   <Provider store={store}>
     <OidcProvider store={store} userManager={userManager}>
-      <Router history={history} routes={routes} key={Math.random()}/>
+      <ConnectedRouter history={history}>
+        {routes}
+      </ConnectedRouter>
     </OidcProvider>
   </Provider>;
 

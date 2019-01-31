@@ -16,7 +16,7 @@ class CreateLandUseContractModal extends Component<Props> {
 
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
-      this.form.getWrappedInstance().wrappedInstance.setFocus();
+      this.form.wrappedInstance.setFocus();
     }
   }
 

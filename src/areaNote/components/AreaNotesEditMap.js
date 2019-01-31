@@ -84,7 +84,7 @@ class AreaNotesEditMap extends Component<Props, State> {
       }
 
       // Initialize note field value when opening edit mode
-      this.saveConditionPanel.wrappedInstance.setNoteField(initialValues.note);
+      this.saveConditionPanel.setNoteField(initialValues.note);
 
       this.setState({
         id: initialValues.id,

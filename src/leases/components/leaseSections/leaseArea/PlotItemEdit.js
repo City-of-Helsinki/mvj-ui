@@ -3,7 +3,8 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import {Link, withRouter} from 'react-router';
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
@@ -25,6 +26,7 @@ import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getFieldAttributes,
   getSearchQuery,
+  getUrlParams,
   hasPermissions,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -39,10 +41,10 @@ type Props = {
   field: string,
   geometry: ?Object,
   isSaveClicked: boolean,
+  location: Object,
   onRemove: Function,
   plotsData: Array<Object>,
   plotId: number,
-  router: Object,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -51,22 +53,22 @@ const PlotItemsEdit = ({
   field,
   geometry,
   isSaveClicked,
+  location,
   onRemove,
   plotsData,
   plotId,
-  router,
   usersPermissions,
 }: Props) => {
   const getMapLinkUrl = () => {
-    const {location: {pathname, query}} = router;
+    const {pathname, search} = location;
+    const searchQuery = getUrlParams(search);
 
-    const tempQuery = {...query};
-    delete tempQuery.lease_area;
-    delete tempQuery.plan_unit;
-    tempQuery.plot = plotId,
-    tempQuery.tab = 7;
+    delete searchQuery.lease_area;
+    delete searchQuery.plan_unit;
+    searchQuery.plot = plotId,
+    searchQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(tempQuery)}`;
+    return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
   const mapLinkUrl = getMapLinkUrl();

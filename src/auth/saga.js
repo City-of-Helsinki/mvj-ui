@@ -1,6 +1,5 @@
 // @flow
 
-/* global OPENID_CONNECT_API_TOKEN_URL */
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {tokenNotFound, receiveApiToken} from './actions';
@@ -9,8 +8,7 @@ import userManager from '../auth/util/user-manager';
 
 function* fetchApiTokenSaga({payload: token}): Generator<any, any, any> {
   try {
-    // $FlowFixMe
-    const request = new Request(OPENID_CONNECT_API_TOKEN_URL || 'https://api.hel.fi/sso/api-tokens/', {
+    const request = new Request(process.env.OPENID_CONNECT_API_TOKEN_URL || 'https://api.hel.fi/sso/api-tokens/', {
       headers: {'Authorization': `Bearer ${token}`},
     });
     const response = yield call(fetch, request);

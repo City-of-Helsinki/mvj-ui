@@ -168,5 +168,5 @@ export default connect(
   },
   null,
   null,
-  {withRef: true}
+  {forwardRef: true}
 )(SaveConditionPanel);

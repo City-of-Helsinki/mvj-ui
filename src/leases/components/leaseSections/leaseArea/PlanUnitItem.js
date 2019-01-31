@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Link, withRouter} from 'react-router';
+import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -18,6 +19,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
+  getUrlParams,
   isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -27,26 +29,26 @@ import type {Attributes} from '$src/types';
 type Props = {
   areaArchived: boolean,
   attributes: Attributes,
+  location: Object,
   planUnit: Object,
-  router: Object,
 }
 
 const PlanUnitItem = ({
   areaArchived,
   attributes,
+  location,
   planUnit,
-  router,
 }: Props) => {
   const getMapLinkUrl = () => {
-    const {location: {pathname, query}} = router;
+    const {pathname, search} = location;
+    const searchQuery = getUrlParams(search);
 
-    const tempQuery = {...query};
-    delete tempQuery.lease_area;
-    delete tempQuery.plot;
-    tempQuery.plan_unit = planUnit.id,
-    tempQuery.tab = 7;
+    delete searchQuery.lease_area;
+    delete searchQuery.plot;
+    searchQuery.plan_unit = planUnit.id,
+    searchQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(tempQuery)}`;
+    return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
   const mapLinkUrl = getMapLinkUrl();
