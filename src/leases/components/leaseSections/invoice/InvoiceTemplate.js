@@ -58,6 +58,15 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
     }
   };
 
+  const shouldShowOldInvoiceInfo = () => {
+    return Boolean(invoice &&
+      (invoice.payment_notification_date ||
+        invoice.collection_charge ||
+        invoice.payment_notification_catalog_date ||
+        invoice.delivery_method
+      ));
+  };
+
   const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
   const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
   const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
@@ -66,6 +75,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
   const creditInvoices = invoice ? invoice.credit_invoices : [];
   const rows = invoice ? invoice.rows : [];
   const sum = getRowsSum(rows);
+  const showOldInvoiceInfo = shouldShowOldInvoiceInfo();
 
   return (
     <Fragment>
@@ -218,32 +228,37 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
           </Row>
         </Fragment>
       }
+      {showOldInvoiceInfo &&
+        <Row>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
+              <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_DATE}</FormTextTitle>
+              <FormText>{(invoice && formatDate(invoice.payment_notification_date)) || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.COLLECTION_CHARGE)}>
+              <FormTextTitle>{InvoiceFieldTitles.COLLECTION_CHARGE}</FormTextTitle>
+              <FormText>{invoice && !isEmptyValue(invoice.collection_charge) ? `${formatNumber(invoice.collection_charge)} €` : '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
+              <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_CATALOG_DATE}</FormTextTitle>
+              <FormText>{(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
+      }
+
       <Row>
         <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
-            <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_DATE}</FormTextTitle>
-            <FormText>{(invoice && formatDate(invoice.payment_notification_date)) || '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.COLLECTION_CHARGE)}>
-            <FormTextTitle>{InvoiceFieldTitles.COLLECTION_CHARGE}</FormTextTitle>
-            <FormText>{invoice && !isEmptyValue(invoice.collection_charge) ? `${formatNumber(invoice.collection_charge)} €` : '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
-            <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_CATALOG_DATE}</FormTextTitle>
-            <FormText>{(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}</FormText>
-          </Authorization>
-        </Column>
-      </Row>
-      <Row>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD)}>
-            <FormTextTitle>{InvoiceFieldTitles.DELIVERY_METHOD}</FormTextTitle>
-            <FormText>{(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}</FormText>
-          </Authorization>
+          {showOldInvoiceInfo &&
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD)}>
+              <FormTextTitle>{InvoiceFieldTitles.DELIVERY_METHOD}</FormTextTitle>
+              <FormText>{(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}</FormText>
+            </Authorization>
+          }
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TYPE)}>
