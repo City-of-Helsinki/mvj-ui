@@ -14,6 +14,7 @@ import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWr
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
+import InvoiceRows from './InvoiceRows';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -191,11 +192,13 @@ const EditInvoiceForm = ({
       ));
   };
 
+  const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
   const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
   const tenantOptions = getInvoiceTenantOptions(lease);
   const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
   const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
   const creditInvoices = invoice ? invoice.credit_invoices : [];
+  const rows = invoice ? invoice.rows : [];
   const showOldInvoiceInfo = shouldShowOldInvoiceInfo();
 
   return (
@@ -473,14 +476,27 @@ const EditInvoiceForm = ({
         }
       </Authorization>
 
-      <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
-        <FieldArray
-          component={InvoiceRowsEdit}
-          name='rows'
-          isEditClicked={isEditClicked}
-          tenantOptions={tenantOptions}
-        />
-      </Authorization>
+      {invoice && invoice.type !== InvoiceType.CREDIT_NOTE &&
+        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
+          <FieldArray
+            component={InvoiceRowsEdit}
+            name='rows'
+            isEditClicked={isEditClicked}
+            tenantOptions={tenantOptions}
+          />
+        </Authorization>
+      }
+      {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
+        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
+          <InvoiceRows
+            invoiceAttributes={invoiceAttributes}
+            invoiceDate={invoice ? invoice.date : null}
+            invoiceDueDate={invoice ? invoice.due_date : null}
+            receivableTypeOptions={receivableTypeOptions}
+            rows={rows}
+          />
+        </Authorization>
+      }
     </form>
   );
 };
