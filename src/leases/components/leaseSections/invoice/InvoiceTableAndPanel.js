@@ -44,6 +44,7 @@ import {getCurrentLease} from '$src/leases/selectors';
 import {
   getAttributes as getInvoiceAttributes,
   getInvoicesByLease,
+  getIsCreditInvoicePanelOpen,
   getPatchedInvoice,
 } from '$src/invoices/selectors';
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
@@ -633,6 +634,7 @@ export default connect(
       invoices: getInvoicesByLease(state, currentLease.id),
       invoiceAttributes: getInvoiceAttributes(state),
       invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
+      isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
       patchedInvoice: getPatchedInvoice(state),
       usersPermissions: getUsersPermissions(state),
     };

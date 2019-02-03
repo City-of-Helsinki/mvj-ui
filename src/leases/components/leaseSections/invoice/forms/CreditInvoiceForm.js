@@ -21,7 +21,14 @@ import {
   InvoiceRowsFieldTitles,
 } from '$src/invoices/enums';
 import {CreditInvoiceOptionsEnum, FormNames} from '$src/leases/enums';
-import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
+import {
+  addEmptyOption,
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  isFieldAllowedToEdit,
+  sortByLabelAsc,
+} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes, getIsCreditClicked} from '$src/invoices/selectors';
 
 import type {Attributes} from '$src/types';
@@ -29,6 +36,7 @@ import type {Attributes} from '$src/types';
 type Props = {
   formValues: Object,
   invoiceAttributes: Attributes,
+  invoiceToCredit: Object,
   isCreditClicked: boolean,
   isInvoiceSet: boolean,
   onClose: Function,
@@ -42,6 +50,7 @@ type Props = {
 const CreditInvoiceForm = ({
   formValues,
   invoiceAttributes,
+  invoiceToCredit,
   isCreditClicked,
   isInvoiceSet,
   onClose,
@@ -58,6 +67,37 @@ const CreditInvoiceForm = ({
       onSave(formValues);
     }
   };
+
+  const getReceivableTypeOptions = () => {
+    const receivableTypes = [];
+
+    if(!invoiceToCredit) return receivableTypes;
+
+    const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
+
+    const addInvoiceReceivableTypes = (invoice: Object) => {
+      invoice.rows.forEach((row) => {
+        if(receivableTypes.findIndex((item) => item.value === row.receivable_type) === -1) {
+          receivableTypes.push({
+            value: row.receivable_type,
+            label: getLabelOfOption(receivableTypeOptions, row.receivable_type),
+          });
+        }
+      });
+    };
+
+    if(isInvoiceSet) {
+      invoiceToCredit.tableRows.forEach((invoice) => {
+        addInvoiceReceivableTypes(invoice);
+      });
+    } else {
+      addInvoiceReceivableTypes(invoiceToCredit);
+    }
+
+    return addEmptyOption(receivableTypes.sort(sortByLabelAsc));
+  };
+
+  const receivableTypeOptions = getReceivableTypeOptions();
 
   return (
     <form className='invoice__credit-invoice_form'>
@@ -92,7 +132,10 @@ const CreditInvoiceForm = ({
                       required: true,
                     }}
                     name='receivable_type'
-                    overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
+                    overrideValues={{
+                      label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE,
+                      options: receivableTypeOptions,
+                    }}
                   />
                 </Authorization>
               </Column>

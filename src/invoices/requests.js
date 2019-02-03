@@ -34,6 +34,7 @@ export const creditInvoice = (payload: Object): Generator<any, any, any> => {
 
 export const patchInvoice = (invoice: Invoice): Generator<any, any, any> => {
   const {id} = invoice;
+  delete invoice.id;
   const body = JSON.stringify(invoice);
 
   return callApi(new Request(createUrl(`invoice/${id}/`), {
