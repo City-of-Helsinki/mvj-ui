@@ -170,23 +170,19 @@ const getPayloadInvoiceRows = (invoice: Object) => {
  * @returns {object}
  */
 export const getPayloadEditInvoice = (invoice: Object) => {
-  return Object.assign(
-    {
-      id: invoice.id,
-      due_date: invoice.due_date,
-      billing_period_start_date: invoice.billing_period_start_date,
-      billing_period_end_date: invoice.billing_period_end_date,
-      notes: invoice.notes,
-    },
-    {payments: invoice.type !== InvoiceType.CREDIT_NOTE
+  return {
+    id: invoice.id,
+    due_date: invoice.due_date,
+    billing_period_start_date: invoice.billing_period_start_date,
+    billing_period_end_date: invoice.billing_period_end_date,
+    notes: invoice.notes,
+    payments: invoice.type !== InvoiceType.CREDIT_NOTE
       ? getPayloadInvoicePayments(invoice)
       : undefined,
-    },
-    {rows: invoice.type !== InvoiceType.CREDIT_NOTE
+    rows: invoice.type !== InvoiceType.CREDIT_NOTE
       ? getPayloadInvoiceRows(invoice)
       : undefined,
-    },
-  );
+  };
 };
 
 /**
