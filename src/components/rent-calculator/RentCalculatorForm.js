@@ -80,8 +80,12 @@ class RentCalculatorForm extends Component<Props, State> {
   setDefaultValues = () => {
     const {change} = this.props;
 
+    const currentYear = getCurrentYear();
+
     change('type', RentCalculatorTypes.YEAR);
-    change('year', getCurrentYear());
+    change('year', currentYear);
+    change('billing_start_date', `${currentYear}-01-01`);
+    change('billing_end_date', `${currentYear}-12-31`);
   }
 
   autoselectBillingPeriod = (billingPeriodOptions: Array<Object>) => {
@@ -91,8 +95,6 @@ class RentCalculatorForm extends Component<Props, State> {
 
     if(selected) {
       change('billing_period', selected.value);
-      change('billing_start_date', selected.startDate);
-      change('billing_end_date', selected.endDate);
     }
   }
 

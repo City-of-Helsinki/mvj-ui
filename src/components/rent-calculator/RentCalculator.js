@@ -13,7 +13,9 @@ import RentForPeriod from './RentForPeriod';
 import {fetchBillingPeriodsByLease} from '$src/billingPeriods/actions';
 import {deleteRentForPeriodByLease, fetchRentForPeriodByLease, receiveIsSaveClicked} from '$src/rentForPeriod/actions';
 import {ButtonColors, FormNames, RentCalculatorTypes} from '$components/enums';
+import {RentCycles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getContentRents} from '$src/leases/helpers';
 import {hasPermissions} from '$util/helpers';
 import {getCurrentYear} from '$util/date';
 import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
@@ -75,10 +77,9 @@ class RentCalculator extends Component<Props> {
   }
 
   fetchDefaultRentForPeriod = () => {
-    const {currentLease, fetchRentForPeriodByLease} = this.props,
-      year = getCurrentYear(),
-      startDate = `${year}-01-01`,
-      endDate = `${year}-12-31`;
+    const {currentLease, fetchRentForPeriodByLease} = this.props;
+    const currentYear = getCurrentYear();
+    const {startDate, endDate} = this.getYearStartAndEndDates(currentYear);
 
     fetchRentForPeriodByLease({
       id: rentForPeriodId++,
@@ -88,6 +89,25 @@ class RentCalculator extends Component<Props> {
       leaseId: currentLease.id,
       startDate: startDate,
     });
+  }
+
+  getYearStartAndEndDates = (year: string) => {
+    const {currentLease} = this.props;
+    const rents = getContentRents(currentLease);
+    let isAnyCycleAprilToMarch = false;
+
+    rents.forEach((rent) => {
+      if(rent.cycle === RentCycles.APRIL_TO_MARCH) {
+        isAnyCycleAprilToMarch = true;
+        return false;
+      }
+    });
+
+    if(isAnyCycleAprilToMarch) {
+      return {startDate: `${year}-04-01`, endDate: `${Number(year) + 1}-03-31`};
+    }
+
+    return {startDate: `${year}-01-01`, endDate: `${year}-12-31`};
   }
 
   handleCreateRentsForPeriod = () => {
@@ -110,8 +130,9 @@ class RentCalculator extends Component<Props> {
 
     switch (type) {
       case RentCalculatorTypes.YEAR:
-        requestStartDate = `${year}-01-01`;
-        requestEndDate = `${year}-12-31`;
+        const {startDate: tempStartDate, endDate: tempEndDate} = this.getYearStartAndEndDates(year);
+        requestStartDate = tempStartDate;
+        requestEndDate = tempEndDate;
         break;
       case RentCalculatorTypes.RANGE:
         requestStartDate = startDate;
