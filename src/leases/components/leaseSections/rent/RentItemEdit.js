@@ -19,6 +19,7 @@ import RentAdjustmentsEdit from './RentAdjustmentsEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {
+  ContractRentPeriods,
   FormNames,
   LeaseRentAdjustmentsFieldPaths,
   LeaseRentAdjustmentsFieldTitles,
@@ -37,6 +38,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   hasPermissions,
+  isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {
@@ -147,9 +149,27 @@ class RentItemEdit extends PureComponent<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if(prevProps.rentType !== this.props.rentType) {
       this.addEmptyContractRentIfNeeded();
+      this.clearContractRentPeriodIfNeeded();
     }
+
     if(prevProps.dueDatesType !== this.props.dueDatesType) {
       this.addEmptyDueDateIfNeeded();
+    }
+  }
+
+  clearContractRentPeriodIfNeeded = () => {
+    const {change, contractRents, field, rentType} = this.props;
+
+    if(rentType === RentTypes.INDEX && contractRents && contractRents.length) {
+      contractRents.forEach((item, index) => {
+        if(!isEmptyValue(item.period) && item.period !== ContractRentPeriods.PER_YEAR) {
+          change(formName, `${field}.contract_rents[${index}].period`, '');
+        }
+
+        if(!isEmptyValue(item.period) && item.base_amount_period !== ContractRentPeriods.PER_YEAR) {
+          change(formName, `${field}.contract_rents[${index}].base_amount_period`, '');
+        }
+      });
     }
   }
 

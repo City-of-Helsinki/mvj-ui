@@ -114,7 +114,6 @@
     "eslint": "^5.12.1",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-react": "^7.12.4",
-
     "flow-bin": "^0.91",
     "flow-typed": "^2.5.1",
     "husky": "^0.12.0",

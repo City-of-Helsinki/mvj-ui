@@ -3,13 +3,12 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
 import Authorization from '$components/authorization/Authorization';
-import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
+import InvoiceRows from './forms/InvoiceRows';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
@@ -20,7 +19,6 @@ import {
   InvoicePaymentsFieldPaths,
   InvoicePaymentsFieldTitles,
   InvoiceRowsFieldPaths,
-  InvoiceRowsFieldTitles,
   InvoiceType,
 } from '$src/invoices/enums';
 import {
@@ -33,12 +31,9 @@ import {
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getContentTenantItem} from '$src/leases/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
 import type {Attributes} from '$src/types';
-
-const getRowsSum = (rows: Array<Object>) => rows.reduce((sum, row) => sum + Number(row.amount), 0);
 
 type Props = {
   creditedInvoice: ?Object,
@@ -58,6 +53,15 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
     }
   };
 
+  const shouldShowOldInvoiceInfo = () => {
+    return Boolean(invoice &&
+      (invoice.payment_notification_date ||
+        invoice.collection_charge ||
+        invoice.payment_notification_catalog_date ||
+        invoice.delivery_method
+      ));
+  };
+
   const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
   const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
   const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
@@ -65,7 +69,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
   const payments = invoice ? invoice.payments : [];
   const creditInvoices = invoice ? invoice.credit_invoices : [];
   const rows = invoice ? invoice.rows : [];
-  const sum = getRowsSum(rows);
+  const showOldInvoiceInfo = shouldShowOldInvoiceInfo();
 
   return (
     <Fragment>
@@ -218,32 +222,37 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
           </Row>
         </Fragment>
       }
+      {showOldInvoiceInfo &&
+        <Row>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
+              <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_DATE}</FormTextTitle>
+              <FormText>{(invoice && formatDate(invoice.payment_notification_date)) || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.COLLECTION_CHARGE)}>
+              <FormTextTitle>{InvoiceFieldTitles.COLLECTION_CHARGE}</FormTextTitle>
+              <FormText>{invoice && !isEmptyValue(invoice.collection_charge) ? `${formatNumber(invoice.collection_charge)} €` : '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
+              <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_CATALOG_DATE}</FormTextTitle>
+              <FormText>{(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
+      }
+
       <Row>
         <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
-            <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_DATE}</FormTextTitle>
-            <FormText>{(invoice && formatDate(invoice.payment_notification_date)) || '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.COLLECTION_CHARGE)}>
-            <FormTextTitle>{InvoiceFieldTitles.COLLECTION_CHARGE}</FormTextTitle>
-            <FormText>{invoice && !isEmptyValue(invoice.collection_charge) ? `${formatNumber(invoice.collection_charge)} €` : '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
-            <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_CATALOG_DATE}</FormTextTitle>
-            <FormText>{(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}</FormText>
-          </Authorization>
-        </Column>
-      </Row>
-      <Row>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD)}>
-            <FormTextTitle>{InvoiceFieldTitles.DELIVERY_METHOD}</FormTextTitle>
-            <FormText>{(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}</FormText>
-          </Authorization>
+          {showOldInvoiceInfo &&
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD)}>
+              <FormTextTitle>{InvoiceFieldTitles.DELIVERY_METHOD}</FormTextTitle>
+              <FormText>{(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}</FormText>
+            </Authorization>
+          }
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TYPE)}>
@@ -330,52 +339,13 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
-        <Row>
-          <Column small={12}>
-            <SubTitle>{InvoiceRowsFieldTitles.ROWS}</SubTitle>
-            {!rows.length && <FormText>-</FormText>}
-            {!!rows.length &&
-              <Fragment>
-                {rows.map((row) => {
-                  const contact = get(getContentTenantItem(row.tenantFull), 'contact');
-                  return (
-                    <Row key={row.id}>
-                      <Column small={4}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
-                          <FormText>{getContactFullName(contact) || '-'}</FormText>
-                        </Authorization>
-                      </Column>
-                      <Column small={2}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
-                          <FormText>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</FormText>
-                        </Authorization>
-                      </Column>
-                      <Column small={6}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
-                          <FormText className='align-right'>{row.amount
-                            ? <AmountWithVat amount={row.amount} date={invoice ? invoice.due_date : null} />
-                            : '-'}
-                          </FormText>
-                        </Authorization>
-                      </Column>
-                    </Row>
-                  );
-                })}
-                <Divider className='invoice-divider' />
-                <Row>
-                  <Column small={4}><FormText><strong>Yhteensä</strong></FormText></Column>
-                  <Column small={8}>
-                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
-                      <FormText className='align-right'>
-                        <strong><AmountWithVat amount={sum} date={invoice ? invoice.due_date : null} /></strong>
-                      </FormText>
-                    </Authorization>
-                  </Column>
-                </Row>
-              </Fragment>
-            }
-          </Column>
-        </Row>
+        <InvoiceRows
+          invoiceAttributes={invoiceAttributes}
+          invoiceDate={invoice ? invoice.date : null}
+          invoiceDueDate={invoice ? invoice.due_date : null}
+          receivableTypeOptions={receivableTypeOptions}
+          rows={rows}
+        />
       </Authorization>
     </Fragment>
   );

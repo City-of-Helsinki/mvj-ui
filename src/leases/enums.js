@@ -11,6 +11,16 @@ export const AreaLocation = {
 };
 
 /**
+ * Contract rent period enumerable.
+ *
+ * @type {{}}
+ */
+export const ContractRentPeriods = {
+  PER_MONTH: 'per_month',
+  PER_YEAR: 'per_year',
+};
+
+/**
  * Delete modal labels enumerable.
  *
  * @type {{ADDRESS: string, BASIS_OF_RENT: string, COLLECTION_COURT_DECISION: string, COLLECTION_LETTER: string, COLLECTION_NOTE: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RELATED_LEASE: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}

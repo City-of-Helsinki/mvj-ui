@@ -7,6 +7,7 @@ import debounce from 'lodash/debounce';
 
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
+import {stringifyQuery} from '$src/api/createUrl';
 import {KeyCodes} from '$src/enums';
 import {AddressFieldMunicipalities} from '$components/enums';
 import {hasNumber} from '$util/helpers';
@@ -293,7 +294,12 @@ class AddressSearchInput extends Component<Props, State> {
 
   searchByKeyword = (input: string) => {
     const fetchByKeyword = (language: 'fi' | 'sv') => {
-      const url = `${SERVICE_MAP_URL}/search/?page_size=4&type=address&input=${input}&language=${language}`;
+      const url = `${SERVICE_MAP_URL}/search/?${stringifyQuery({
+        page_size: 4,
+        type: 'address',
+        input: input,
+        language: language,
+      })}`;
       const request = new Request(url);
 
       return fetch(request);
@@ -344,7 +350,11 @@ class AddressSearchInput extends Component<Props, State> {
 
   searchStreets = debounce((input: string) => {
     const fetchStreets = (language: 'fi' | 'sv') => {
-      const url = `${SERVICE_MAP_URL}/street/?page_size=4&input=${input}&language=${language}`;
+      const url = `${SERVICE_MAP_URL}/street/?${stringifyQuery({
+        page_size: 4,
+        input: input,
+        language: language,
+      })}`;
       const request = new Request(url);
 
       return fetch(request);
@@ -430,7 +440,12 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   searchAddresses = (street: Street) => {
-    const url = `${SERVICE_MAP_URL}/address/?street=${street.id}&language=${street.language}&page=1&page_size=200`;
+    const url = `${SERVICE_MAP_URL}/address/?${stringifyQuery({
+      page: 1,
+      page_size: 200,
+      street: street.id,
+      language: street.language,
+    })}`;
     const request = new Request(url);
 
     this.setState({isLoading: true});
@@ -519,7 +534,11 @@ class AddressSearchInput extends Component<Props, State> {
     const coordinates = address.location.coordinates;
 
     if(coordinates.length >= 2) {
-      const url = `${SERVICE_MAP_URL}/administrative_division/?lon=${coordinates[0]}&lat=${coordinates[1]}&type=postcode_area`;
+      const url = `${SERVICE_MAP_URL}/administrative_division/?${stringifyQuery({
+        lon: coordinates[0],
+        lat: coordinates[1],
+        type: 'postcode_area',
+      })}`;
       const request = new Request(url);
 
       fetch(request)

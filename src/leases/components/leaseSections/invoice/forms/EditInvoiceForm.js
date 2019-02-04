@@ -182,11 +182,21 @@ const EditInvoiceForm = ({
     }
   };
 
+  const shouldShowOldInvoiceInfo = () => {
+    return Boolean(invoice &&
+      (invoice.payment_notification_date ||
+        invoice.collection_charge ||
+        invoice.payment_notification_catalog_date ||
+        invoice.delivery_method
+      ));
+  };
+
   const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
   const tenantOptions = getInvoiceTenantOptions(lease);
   const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
   const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
   const creditInvoices = invoice ? invoice.credit_invoices : [];
+  const showOldInvoiceInfo = shouldShowOldInvoiceInfo();
 
   return (
     <form onSubmit={handleSubmit}>
@@ -220,14 +230,22 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
-            <FormField
-              disableTouched={isEditClicked}
-              fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}
-              name='due_date'
-              overrideValues={{label: InvoiceFieldTitles.DUE_DATE}}
-            />
-          </Authorization>
+          {invoice && invoice.type !== InvoiceType.CREDIT_NOTE &&
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+              <FormField
+                disableTouched={isEditClicked}
+                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}
+                name='due_date'
+                overrideValues={{label: InvoiceFieldTitles.DUE_DATE}}
+              />
+            </Authorization>
+          }
+          {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+              <FormTextTitle>{InvoiceFieldTitles.DUE_DATE}</FormTextTitle>
+              <FormText>{(invoice && formatDate(invoice.due_date)) || '-'}</FormText>
+            </Authorization>
+          }
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.ADJUSTED_DUE_DATE)}>
@@ -259,26 +277,42 @@ const EditInvoiceForm = ({
           </Row>
           <Row>
             <Column small={6}>
-              <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}>
-                <FormField
-                  disableTouched={isEditClicked}
-                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}
-                  invisibleLabel
-                  name='billing_period_start_date'
-                  overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE}}
-                />
-              </Authorization>
+              {invoice && invoice.type !== InvoiceType.CREDIT_NOTE &&
+                <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}>
+                  <FormField
+                    disableTouched={isEditClicked}
+                    fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}
+                    invisibleLabel
+                    name='billing_period_start_date'
+                    overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE}}
+                  />
+                </Authorization>
+              }
+              {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
+                <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}>
+                  <FormTextTitle>{InvoiceFieldTitles.BILLING_PERIOD_START_DATE}</FormTextTitle>
+                  <FormText>{(invoice && formatDate(invoice.billing_period_start_date)) || '-'}</FormText>
+                </Authorization>
+              }
             </Column>
             <Column small={6}>
-              <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
-                <FormField
-                  disableTouched={isEditClicked}
-                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}
-                  invisibleLabel
-                  name='billing_period_end_date'
-                  overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE}}
-                />
-              </Authorization>
+              {invoice && invoice.type !== InvoiceType.CREDIT_NOTE &&
+                <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                  <FormField
+                    disableTouched={isEditClicked}
+                    fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}
+                    invisibleLabel
+                    name='billing_period_end_date'
+                    overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE}}
+                  />
+                </Authorization>
+              }
+              {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
+                <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                  <FormTextTitle>{InvoiceFieldTitles.BILLING_PERIOD_END_DATE}</FormTextTitle>
+                  <FormText>{(invoice && formatDate(invoice.billing_period_end_date)) || '-'}</FormText>
+                </Authorization>
+              }
             </Column>
           </Row>
         </Column>
@@ -340,32 +374,36 @@ const EditInvoiceForm = ({
         </Fragment>
       }
 
+      {showOldInvoiceInfo &&
+        <Row>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
+              <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_DATE}</FormTextTitle>
+              <FormText>{(invoice && formatDate(invoice.payment_notification_date)) || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.COLLECTION_CHARGE)}>
+              <FormTextTitle>{InvoiceFieldTitles.COLLECTION_CHARGE}</FormTextTitle>
+              <FormText>{invoice && !isEmptyValue(invoice.collection_charge) ? `${formatNumber(invoice.collection_charge)} €` : '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
+              <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_CATALOG_DATE}</FormTextTitle>
+              <FormText>{(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
+      }
       <Row>
         <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
-            <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_DATE}</FormTextTitle>
-            <FormText>{(invoice && formatDate(invoice.payment_notification_date)) || '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.COLLECTION_CHARGE)}>
-            <FormTextTitle>{InvoiceFieldTitles.COLLECTION_CHARGE}</FormTextTitle>
-            <FormText>{invoice && !isEmptyValue(invoice.collection_charge) ? `${formatNumber(invoice.collection_charge)} €` : '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
-            <FormTextTitle>{InvoiceFieldTitles.PAYMENT_NOTIFICATION_CATALOG_DATE}</FormTextTitle>
-            <FormText>{(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}</FormText>
-          </Authorization>
-        </Column>
-      </Row>
-      <Row>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD)}>
-            <FormTextTitle>{InvoiceFieldTitles.DELIVERY_METHOD}</FormTextTitle>
-            <FormText>{(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}</FormText>
-          </Authorization>
+          {showOldInvoiceInfo &&
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD)}>
+              <FormTextTitle>{InvoiceFieldTitles.DELIVERY_METHOD}</FormTextTitle>
+              <FormText>{(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}</FormText>
+            </Authorization>
+          }
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TYPE)}>

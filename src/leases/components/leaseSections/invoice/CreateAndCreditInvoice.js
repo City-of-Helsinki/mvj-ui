@@ -196,6 +196,7 @@ class CreateAndCreditInvoice extends Component <Props> {
           <div ref={this.setCreditPanelRef}>
             {isCreditInvoicePanelOpen &&
               <CreditInvoiceForm
+                invoiceToCredit={invoiceToCredit}
                 isInvoiceSet={isInvoiceSet}
                 onClose={this.handleCloseCreditInvoicePanel}
                 onSave={this.handleCreditInvoice}
