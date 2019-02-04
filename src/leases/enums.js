@@ -86,6 +86,18 @@ export const DeleteModalTitles = {
   TENANT: 'Poista vuokralainen',
 };
 
+
+/**
+ * Delete lease texts enumerable.
+ *
+ * @type {{}}
+ */
+export const DeleteLeaseTexts = {
+  BUTTON: 'Poista',
+  LABEL: 'Haluatko varmasti poistaa vuokrauksen?',
+  TITLE: 'Poista vuokraus',
+};
+
 /**
  * Archive basis of rent texts enumerable.
  *

@@ -5,6 +5,7 @@ import {getApiToken} from '$src/auth/selectors';
 
 function* callApi(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);
+
   if (apiToken) {
     request.headers.set('Authorization', `Bearer ${apiToken}`);
   }

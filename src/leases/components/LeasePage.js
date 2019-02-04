@@ -44,6 +44,7 @@ import {fetchInvoicesByLease} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {
   clearFormValidFlags,
+  deleteLease,
   fetchSingleLease,
   hideEditMode,
   patchLease,
@@ -56,6 +57,7 @@ import {clearPreviewInvoices} from '$src/previewInvoices/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchVats} from '$src/vat/actions';
 import {
+  DeleteLeaseTexts,
   FormNames,
   LeaseAreasFieldPaths,
   LeaseBasisOfRentsFieldPaths,
@@ -65,7 +67,7 @@ import {
   LeaseRentsFieldPaths,
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
-import {FormNames as ComponentFormNames} from '$components/enums';
+import {ButtonColors, FormNames as ComponentFormNames} from '$components/enums';
 import {PermissionMissingTexts} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
@@ -79,6 +81,7 @@ import {
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getCommentsByLease} from '$src/comments/selectors';
+import {getInvoicesByLease} from '$src/invoices/selectors';
 import {
   getCurrentLease,
   getIsEditMode,
@@ -96,6 +99,7 @@ import {withLeasePageAttributes} from '$components/attributes/LeasePageAttribute
 
 import type {Attributes, Methods} from '$src/types';
 import type {CommentList} from '$src/comments/types';
+import type {InvoiceList} from '$src/invoices/types';
 import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
@@ -115,6 +119,7 @@ type Props = {
   constructabilityFormValues: Object,
   currentLease: Object,
   decisionsFormValues: Object,
+  deleteLease: Function,
   destroy: Function,
   fetchAreaNoteList: Function,
   fetchCollectionCourtDecisionsByLease: Function,
@@ -129,6 +134,7 @@ type Props = {
   history: Object,
   initialize: Function,
   inspectionsFormValues: Object,
+  invoices: InvoiceList,
   isEditMode: boolean,
   isFetching: boolean,
   isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
@@ -701,10 +707,10 @@ class LeasePage extends Component<Props, State> {
     const query = getUrlParams(search);
 
     // Remove page specific url parameters when moving to lease list page
-    query.tab = undefined;
-    query.lease_area = undefined;
-    query.plan_unit = undefined;
-    query.plot = undefined;
+    delete query.tab;
+    delete query.lease_area;
+    delete query.plan_unit;
+    delete query.plot;
 
     return history.push({
       pathname: `${getRouteById(Routes.LEASES)}`,
@@ -762,13 +768,61 @@ class LeasePage extends Component<Props, State> {
     return isFetchingLeasePageAttributes || isFetchingCommonAttributes;
   }
 
+  shouldShowDelete = () => {
+    const {comments, currentLease, invoices} = this.props;
+
+    if(!comments || isEmpty(currentLease) || !invoices) return false;
+
+    const {
+      basis_of_rents,
+      collection_court_decisions,
+      collection_letters,
+      collection_notes,
+      contracts,
+      decisions,
+      infill_development_compensations,
+      inspections,
+      lease_areas,
+      related_leases: {related_to, related_from},
+      rents,
+      tenants,
+    } = currentLease;
+    if(basis_of_rents.length ||
+      collection_court_decisions.length ||
+      collection_letters.length ||
+      collection_notes.length ||
+      comments.length ||
+      contracts.length ||
+      decisions.length ||
+      infill_development_compensations.length ||
+      inspections.length ||
+      invoices.length ||
+      lease_areas.length ||
+      related_to.length ||
+      related_from.length ||
+      rents.length ||
+      tenants.length) {
+      return false;
+    }
+
+    return true;
+  }
+
+  handleDelete = () => {
+    const {
+      deleteLease,
+      match: {params},
+    } = this.props;
+
+    deleteLease(params.leaseId);
+  }
+
   render() {
     const {
       activeTab,
       isCommentPanelOpen,
       isRestoreModalOpen,
     } = this.state;
-
     const {
       commentMethods,
       comments,
@@ -797,7 +851,7 @@ class LeasePage extends Component<Props, State> {
       leaseMethods,
       usersPermissions,
     } = this.props;
-
+    const showDelete = this.shouldShowDelete();
     const areFormsValid = this.validateForms();
     const isFetchingAttributes = this.getIsFetchingAttributes();
 
@@ -813,14 +867,22 @@ class LeasePage extends Component<Props, State> {
           buttonComponent={
             <ControlButtons
               allowComments={commentMethods.GET}
+              allowDelete={leaseMethods.DELETE}
               allowEdit={leaseMethods.PATCH}
               commentAmount={comments ? comments.length : 0}
+              deleteModalTexts={{
+                buttonClassName: ButtonColors.ALERT,
+                buttonText: DeleteLeaseTexts.BUTTON,
+                label: DeleteLeaseTexts.LABEL,
+                title: DeleteLeaseTexts.TITLE,
+              }}
               isCancelDisabled={activeTab == 6}
               isEditDisabled={activeTab == 6}
               isEditMode={isEditMode}
               isSaveDisabled={activeTab == 6 || (isSaveClicked && !areFormsValid)}
               onCancel={this.cancelChanges}
               onComment={this.toggleCommentPanel}
+              onDelete={showDelete ? this.handleDelete : null}
               onEdit={this.openEditMode}
               onSave={this.saveChanges}
             />
@@ -1036,7 +1098,7 @@ export default flowRight(
   withLeasePageAttributes,
   withRouter,
   connect(
-    (state) => {
+    (state, props: Props) => {
       const currentLease = getCurrentLease(state);
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
@@ -1046,6 +1108,7 @@ export default flowRight(
         currentLease: currentLease,
         decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
         inspectionsFormValues: getFormValues(FormNames.INSPECTIONS)(state),
+        invoices: getInvoicesByLease(state, props.match.params.leaseId),
         isEditMode: getIsEditMode(state),
         isFormValidFlags: getIsFormValidFlags(state),
         isConstructabilityFormDirty: isDirty(FormNames.CONSTRUCTABILITY)(state),
@@ -1078,6 +1141,7 @@ export default flowRight(
       change,
       clearFormValidFlags,
       clearPreviewInvoices,
+      deleteLease,
       destroy,
       fetchAreaNoteList,
       fetchCollectionCourtDecisionsByLease,

@@ -25,6 +25,10 @@ export const createLease = (lease: Lease): Generator<any, any, any> => {
   }));
 };
 
+export const deleteLease = (leaseId: LeaseId): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`lease/${leaseId}/`), {method: 'DELETE'}));
+};
+
 export const patchLease = (lease: Lease): Generator<any, any, any> => {
   const {id} = lease;
   const body = JSON.stringify(lease);

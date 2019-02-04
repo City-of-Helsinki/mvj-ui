@@ -12,8 +12,15 @@ import {ButtonColors} from '$components/enums';
 type Props = {
   allowComments?: boolean,
   allowCopy?: boolean,
+  allowDelete?: boolean,
   allowEdit?: boolean,
   commentAmount?: number,
+  deleteModalTexts?: {
+    buttonClassName: ButtonColors.ALERT,
+    buttonText: CancelChangesModalTexts.BUTTON,
+    label: CancelChangesModalTexts.LABEL,
+    title: CancelChangesModalTexts.TITLE,
+  },
   isCancelDisabled?: boolean,
   isCopyDisabled?: boolean,
   isEditDisabled?: boolean,
@@ -22,6 +29,7 @@ type Props = {
   onCancel: Function,
   onComment?: Function,
   onCopy?: Function,
+  onDelete?: Function,
   onEdit?: Function,
   onSave: Function,
   showCommentButton?: boolean,
@@ -31,17 +39,20 @@ type Props = {
 const ControlButtons = ({
   allowComments = false,
   allowCopy = false,
+  allowDelete = false,
   allowEdit = false,
   commentAmount = 0,
+  deleteModalTexts,
   isCancelDisabled = false,
   isCopyDisabled = true,
   isEditDisabled = false,
   isEditMode,
   isSaveDisabled = true,
   onCancel,
-  onComment = () => console.error('Comment action missing'),
-  onCopy = () => console.error('Copy action missing'),
-  onEdit = () => console.error('Edit action missing'),
+  onComment,
+  onCopy,
+  onDelete,
+  onEdit,
   onSave,
   showCommentButton = true,
   showCopyButton = false,
@@ -91,6 +102,19 @@ const ControlButtons = ({
           }
         };
 
+        const handleDelete = () => {
+          dispatch({
+            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+            confirmationFunction: () => {
+              onDelete();
+            },
+            confirmationModalButtonClassName: deleteModalTexts ? deleteModalTexts.buttonClassName : '',
+            confirmationModalButtonText: deleteModalTexts ? deleteModalTexts.buttonText : '',
+            confirmationModalLabel: deleteModalTexts ? deleteModalTexts.label : '',
+            confirmationModalTitle: deleteModalTexts ? deleteModalTexts.title : '',
+          });
+        };
+
         return(
           <div className='control-buttons'>
             {isEditMode &&
@@ -108,6 +132,15 @@ const ControlButtons = ({
                       disabled={isCopyDisabled}
                       onClick={handleCopy}
                       text='Kopioi'
+                    />
+                  </Authorization>
+                }
+                {onDelete &&
+                  <Authorization allow={allowDelete}>
+                    <Button
+                      className={ButtonColors.ALERT}
+                      onClick={handleDelete}
+                      text='Poista'
                     />
                   </Authorization>
                 }
