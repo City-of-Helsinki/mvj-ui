@@ -308,7 +308,7 @@ const EditInvoiceForm = ({
                 </Authorization>
               }
               {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
-                <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_END_START_DATE)}>
+                <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
                   <FormTextTitle>{InvoiceFieldTitles.BILLING_PERIOD_END_DATE}</FormTextTitle>
                   <FormText>{(invoice && formatDate(invoice.billing_period_end_date)) || '-'}</FormText>
                 </Authorization>
