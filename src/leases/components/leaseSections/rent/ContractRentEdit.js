@@ -14,6 +14,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {
+  ContractRentPeriods,
   FormNames,
   LeaseRentContractRentsFieldPaths,
   LeaseRentContractRentsFieldTitles,
@@ -81,8 +82,24 @@ const ContractRent = ({
     return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period)}`;
   };
 
+  const getContractRentPeriodOptions = () => {
+    return rentType === RentTypes.INDEX
+      ? getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)
+        .filter((option) => option.value === ContractRentPeriods.PER_YEAR || option.value === '')
+      : getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD);
+  };
+
+  const getContractRentBaseAmountPeriodOptions = () => {
+    return rentType === RentTypes.INDEX
+      ? getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)
+        .filter((option) => option.value === ContractRentPeriods.PER_YEAR || option.value === '')
+      : getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
+  };
+
   const amountText = getAmountText();
   const baseAmountText = getBaseAmountText();
+  const periodOptions = getContractRentPeriodOptions();
+  const baseAmountPeriodOptions = getContractRentBaseAmountPeriodOptions();
 
   if(largeScreen) {
     return(
@@ -115,7 +132,10 @@ const ContractRent = ({
                     fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}
                     invisibleLabel
                     name={`${field}.period`}
-                    overrideValues={{label: LeaseRentContractRentsFieldTitles.PERIOD}}
+                    overrideValues={{
+                      label: LeaseRentContractRentsFieldTitles.PERIOD,
+                      options: periodOptions,
+                    }}
                   />
                 </Authorization>
               </Column>
@@ -163,7 +183,10 @@ const ContractRent = ({
                       fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}
                       invisibleLabel
                       name={`${field}.base_amount_period`}
-                      overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT_PERIOD}}
+                      overrideValues={{
+                        label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT_PERIOD,
+                        options: baseAmountPeriodOptions,
+                      }}
                     />
                   </Authorization>
                 </Column>
