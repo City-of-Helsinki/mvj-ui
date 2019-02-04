@@ -13,6 +13,7 @@ import {
   receiveLeaseById,
   notFoundById,
   createLease,
+  deleteLease,
   patchLease,
   setRentInfoComplete,
   setRentInfoUncomplete,
@@ -166,6 +167,14 @@ describe('Leases', () => {
         const newState = {...defaultState, isSaving: true};
 
         const state = leasesReducer({}, patchLease(dummyLease));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true deleting lease', () => {
+        const dummyLease = 1;
+        const newState = {...defaultState, isSaving: true};
+
+        const state = leasesReducer({}, deleteLease(dummyLease));
         expect(state).to.deep.equal(newState);
       });
 

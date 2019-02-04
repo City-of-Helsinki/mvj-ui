@@ -14,6 +14,7 @@ import type {
   LeaseNotFoundByIdAction,
   LeaseList,
   CreateLeaseAction,
+  DeleteLeaseAction,
   PatchLeaseAction,
   FetchLeasesAction,
   FetchSingleLeaseAction,
@@ -70,6 +71,9 @@ export const receiveLeaseById = (lease: Lease): ReceiveLeaseByIdAction =>
 
 export const createLease = (lease: Lease): CreateLeaseAction =>
   createAction('mvj/leases/CREATE')(lease);
+
+export const deleteLease = (leaseId: LeaseId): DeleteLeaseAction =>
+  createAction('mvj/leases/DELETE')(leaseId);
 
 export const patchLease = (lease: Lease): PatchLeaseAction =>
   createAction('mvj/leases/PATCH')(lease);

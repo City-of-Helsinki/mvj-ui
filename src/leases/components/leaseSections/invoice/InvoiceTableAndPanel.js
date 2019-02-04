@@ -241,6 +241,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   }
 
   calculateTableWidth = () => {
+    if(!this.container) return;
+
     let {clientWidth} = this.container;
     const {openedInvoice} = this.state;
 

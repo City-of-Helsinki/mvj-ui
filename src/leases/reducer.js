@@ -36,6 +36,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const isSavingReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/DELETE': () => true,
   'mvj/leases/PATCH': () => true,
   'mvj/leases/START_INVOICING': () => true,
   'mvj/leases/STOP_INVOICING': () => true,

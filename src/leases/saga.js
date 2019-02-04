@@ -20,11 +20,12 @@ import {
 import {receiveError} from '$src/api/actions';
 import {fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
-import {displayUIMessage} from '$src/util/helpers';
+import {displayUIMessage, getSearchQuery, getUrlParams} from '$src/util/helpers';
 import {
   copyAreasToContract,
   createCharge,
   createLease,
+  deleteLease,
   fetchAttributes,
   fetchLeases,
   fetchSingleLease,
@@ -175,6 +176,40 @@ function* createLeaseSaga({payload: lease}): Generator<any, any, any> {
     }
   } catch (error) {
     console.error('Failed to create lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* deleteLeaseSaga({payload: leaseId}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(deleteLease, leaseId);
+
+    switch (statusCode) {
+      case 204:
+        const query = getUrlParams(location.search);
+
+        // Remove page specific url parameters when moving to lease list page
+        delete query.tab;
+        delete query.lease_area;
+        delete query.plan_unit;
+        delete query.plot;
+
+        yield put(push(`${getRouteById(Routes.LEASES)}/${getSearchQuery(query)}`));
+        displayUIMessage({title: '', body: 'Vuokraus poistettu'});
+        break;
+      case 400:
+      case 401:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to delete lease with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -353,6 +388,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_SINGLE_AFTER_EDIT', fetchSingleLeaseAfterEditSaga);
       yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
+      yield takeLatest('mvj/leases/DELETE', deleteLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
