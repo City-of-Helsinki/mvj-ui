@@ -96,7 +96,9 @@ class TopNavigation extends Component<Props, State> {
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   const {history} = this.props;
-                  history.push(target.href);
+                  const relativeUrl = target.href.replace(location.origin, '');
+
+                  history.push(relativeUrl);
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
                 confirmationModalButtonText: CancelChangesModalTexts.BUTTON,

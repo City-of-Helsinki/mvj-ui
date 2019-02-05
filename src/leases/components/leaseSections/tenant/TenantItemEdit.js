@@ -59,10 +59,10 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {Attributes, Methods} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
-const ContactType = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
+const ContactTypes = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
 
 type OtherTenantsProps = {
-  contactType: ContactType,
+  contactType: ContactTypes,
   fields: any,
   showAddButton: boolean,
   tenant: Object,

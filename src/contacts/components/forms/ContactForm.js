@@ -16,7 +16,7 @@ import {FieldTypes} from '$components/enums';
 import {
   ContactFieldPaths,
   ContactFieldTitles,
-  ContactType,
+  ContactTypes,
   FormNames,
 } from '$src/contacts/enums';
 import {getFieldAttributes, isFieldAllowedToRead} from '$util/helpers';
@@ -95,7 +95,7 @@ class ContactForm extends Component<Props> {
                   />
                 </Authorization>
               </Column>
-              {type === ContactType.PERSON &&
+              {type === ContactTypes.PERSON &&
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.LAST_NAME)}>
                     <FormField
@@ -107,7 +107,7 @@ class ContactForm extends Component<Props> {
                   </Authorization>
                 </Column>
               }
-              {type === ContactType.PERSON &&
+              {type === ContactTypes.PERSON &&
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.FIRST_NAME)}>
                     <FormField
@@ -119,7 +119,7 @@ class ContactForm extends Component<Props> {
                   </Authorization>
                 </Column>
               }
-              {type && type !== ContactType.PERSON &&
+              {type && type !== ContactTypes.PERSON &&
                 <Column small={12} medium={6} large={8}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NAME)}>
                     <FormField
@@ -205,7 +205,7 @@ class ContactForm extends Component<Props> {
           </FormWrapperLeft>
           <FormWrapperRight>
             <Row>
-              {type === ContactType.PERSON &&
+              {type === ContactTypes.PERSON &&
                 <Column small={23} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}>
                     <FormField
@@ -217,7 +217,7 @@ class ContactForm extends Component<Props> {
                   </Authorization>
                 </Column>
               }
-              {type && type !== ContactType.PERSON &&
+              {type && type !== ContactTypes.PERSON &&
                 <Column small={23} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.BUSINESS_ID)}>
                     <FormField
@@ -293,7 +293,7 @@ class ContactForm extends Component<Props> {
                   />
                 </Authorization>
               </Column>
-              {type === ContactType.PERSON &&
+              {type === ContactTypes.PERSON &&
                 <Column small={12} medium={6} large={6}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS_PROTECTION)}>
                     <FormField

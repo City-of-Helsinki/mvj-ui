@@ -2,15 +2,14 @@
 import get from 'lodash/get';
 import {isDirty} from 'redux-form';
 
-import {ContactType, FormNames} from './enums';
+import {ContactTypes, FormNames} from './enums';
 import {getIsEditMode} from '$src/contacts/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 export const getContactFullName = (contact: ?Object) => {
-  if(!contact || !contact.type) {
-    return '';
-  }
-  return contact.type === ContactType.PERSON
+  if(!contact || !contact.type) return '';
+
+  return contact.type === ContactTypes.PERSON
     ? `${contact.last_name ? `${contact.last_name} ` : ''} ${contact.first_name || ''}`
     : contact.name;
 };

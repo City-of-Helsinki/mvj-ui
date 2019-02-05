@@ -1197,9 +1197,9 @@ export const addConstructabilityFormValues = (payload: Object, values: Object) =
   return payload;
 };
 
-const ContactType = PropTypes.oneOf([TenantContactType.TENANT, TenantContactType.BILLING, TenantContactType.CONTACT]);
+const ContactTypes = PropTypes.oneOf([TenantContactType.TENANT, TenantContactType.BILLING, TenantContactType.CONTACT]);
 
-export const getTenantContactDetailsForDb = (tenant: Object, contactType: ContactType) => (
+export const getTenantContactDetailsForDb = (tenant: Object, contactType: ContactTypes) => (
   {
     id: tenant.id || undefined,
     type: contactType,

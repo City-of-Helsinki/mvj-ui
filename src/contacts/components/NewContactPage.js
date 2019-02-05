@@ -5,6 +5,7 @@ import {getFormValues, isDirty} from 'redux-form';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import ContactForm from './forms/ContactForm';
 import ContentContainer from '$components/content/ContentContainer';
@@ -22,7 +23,10 @@ import {
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
-import {FormNames} from '$src/contacts/enums';
+import {ButtonColors} from '$components/enums';
+import {ContactTypes, FormNames} from '$src/contacts/enums';
+import {isEmptyValue} from '$util/helpers';
+import {fetchContacts} from '$src/contacts/requestsOutsideSaga';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -96,14 +100,13 @@ class NewContactPage extends Component<Props> {
     });
   }
 
-  saveChanges = () => {
-    const {contactFormValues, createContact, isSaveClicked, receiveIsSaveClicked} = this.props;
+  createContact = () => {
+    const {
+      contactFormValues,
+      createContact,
+    } = this.props;
 
-    receiveIsSaveClicked(true);
-
-    if(isSaveClicked) {
-      createContact(contactFormValues);
-    }
+    createContact(contactFormValues);
   }
 
   render() {
@@ -119,32 +122,86 @@ class NewContactPage extends Component<Props> {
     if(!contactMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
 
     return (
-      <FullWidthContainer>
-        <ControlButtonBar
-          buttonComponent={
-            <ControlButtons
-              allowEdit={contactMethods.POST}
-              isCopyDisabled={true}
-              isEditMode={true}
-              isSaveDisabled={isSaveClicked && !isContactFormValid}
-              onCancel={this.cancelChanges}
-              onSave={this.saveChanges}
-              showCommentButton={false}
-              showCopyButton={true}
-            />
-          }
-          infoComponent={<h1>Uusi asiakas</h1>}
-          onBack={this.handleBack}
-        />
+      <AppConsumer>
+        {({dispatch}) => {
+          const handleCreate = async() => {
+            const {contactFormValues, isContactFormValid, receiveIsSaveClicked} = this.props;
+            const {business_id, national_identification_number, type} = contactFormValues;
 
-        <PageContainer className='with-small-control-bar'>
-          <ContentContainer>
-            <GreenBoxEdit className='no-margin'>
-              <ContactForm isFocusedOnMount/>
-            </GreenBoxEdit>
-          </ContentContainer>
-        </PageContainer>
-      </FullWidthContainer>
+            receiveIsSaveClicked(true);
+
+            if(!isContactFormValid) return;
+
+            if(type !== ContactTypes.PERSON && !isEmptyValue(business_id)) {
+              const contacts = await fetchContacts({business_id});
+
+              if(contacts.length) {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    this.createContact();
+                  },
+                  confirmationModalButtonClassName: ButtonColors.SUCCESS,
+                  confirmationModalButtonText: 'Luo asiakas',
+                  confirmationModalLabel: <span>{`Y-tunnuksella ${business_id} on jo olemassa asiakas`}<br />Haluatko luoda asiakkaan?</span>,
+                  confirmationModalTitle: 'Luo asiakas',
+                });
+              } else {
+                this.createContact();
+              }
+            } else if(type === ContactTypes.PERSON && !isEmptyValue(national_identification_number)) {
+              const contacts = await fetchContacts({national_identification_number});
+
+              if(contacts.length) {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    this.createContact();
+                  },
+                  confirmationModalButtonClassName: ButtonColors.SUCCESS,
+                  confirmationModalButtonText: 'Luo asiakas',
+                  confirmationModalLabel: <span>{`Henkilötunnuksella ${national_identification_number} on jo olemassa asiakas`}<br />Haluatko luoda asiakkaan?</span>,
+                  confirmationModalTitle: 'Luo asiakas',
+                });
+              } else {
+                this.createContact();
+              }
+            } else {
+              this.createContact();
+            }
+          };
+
+          return(
+            <FullWidthContainer>
+              <ControlButtonBar
+                buttonComponent={
+                  <ControlButtons
+                    allowEdit={contactMethods.POST}
+                    isCopyDisabled={true}
+                    isEditMode={true}
+                    isSaveDisabled={isSaveClicked && !isContactFormValid}
+                    onCancel={this.cancelChanges}
+                    onSave={handleCreate}
+                    showCommentButton={false}
+                    showCopyButton={true}
+                  />
+                }
+                infoComponent={<h1>Uusi asiakas</h1>}
+                onBack={this.handleBack}
+              />
+
+              <PageContainer className='with-small-control-bar'>
+                <ContentContainer>
+                  <GreenBoxEdit className='no-margin'>
+                    <ContactForm isFocusedOnMount/>
+                  </GreenBoxEdit>
+                </ContentContainer>
+              </PageContainer>
+            </FullWidthContainer>
+          );
+        }}
+      </AppConsumer>
+
     );
   }
 }
