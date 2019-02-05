@@ -16,10 +16,10 @@ type Props = {
   allowEdit?: boolean,
   commentAmount?: number,
   deleteModalTexts?: {
-    buttonClassName: ButtonColors.ALERT,
-    buttonText: CancelChangesModalTexts.BUTTON,
-    label: CancelChangesModalTexts.LABEL,
-    title: CancelChangesModalTexts.TITLE,
+    buttonClassName: string,
+    buttonText: string,
+    label: string,
+    title: string,
   },
   isCancelDisabled?: boolean,
   isCopyDisabled?: boolean,
@@ -58,7 +58,7 @@ const ControlButtons = ({
   showCopyButton = false,
 }: Props) => {
   const handleComment = () => {
-    onComment();
+    if(onComment) onComment();
   };
 
   return (
@@ -71,7 +71,7 @@ const ControlButtons = ({
             dispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
-                onCancel();
+                if(onCancel) onCancel();
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
               confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
@@ -79,7 +79,7 @@ const ControlButtons = ({
               confirmationModalTitle: CancelChangesModalTexts.TITLE,
             });
           } else {
-            onCancel();
+            if(onCancel) onCancel();
           }
         };
 
@@ -90,7 +90,7 @@ const ControlButtons = ({
             dispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
-                onCopy();
+                if(onCopy) onCopy();
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
               confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
@@ -98,7 +98,7 @@ const ControlButtons = ({
               confirmationModalTitle: CancelChangesModalTexts.TITLE,
             });
           } else {
-            onCopy();
+            if(onCopy) onCopy();
           }
         };
 
@@ -106,7 +106,7 @@ const ControlButtons = ({
           dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
-              onDelete();
+              if(onDelete) onDelete();
             },
             confirmationModalButtonClassName: deleteModalTexts ? deleteModalTexts.buttonClassName : '',
             confirmationModalButtonText: deleteModalTexts ? deleteModalTexts.buttonText : '',

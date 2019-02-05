@@ -165,7 +165,7 @@ class TopNavigation extends Component<Props, State> {
                   </button>
                 </div>
                 <div className="page-title">
-                  <Link onClick={handleLinkClick} to={linkUrl}>{pageTitle}</Link>
+                  <Link onClick={handleLinkClick} to={linkUrl || ''}>{pageTitle}</Link>
                 </div>
               </div>
               <div className="top-navigation__right-wrapper">

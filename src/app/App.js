@@ -173,7 +173,6 @@ class App extends Component<Props, State> {
       );
     }
 
-
     return (
       <AppProvider>
         <AppConsumer>

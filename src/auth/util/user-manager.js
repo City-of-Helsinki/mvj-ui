@@ -8,10 +8,10 @@ const userManagerConfig = {
   client_id: process.env.OPENID_CONNECT_CLIENT_ID,
   filterProtocolClaims: true,
   loadUserInfo: true,
-  redirect_uri: `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}/callback`,
+  redirect_uri: `${location.origin}/callback`,
   response_type: 'id_token token',
   scope: process.env.OPENID_CONNECT_SCOPE || 'openid profile https://api.hel.fi/auth/mvj',
-  silent_redirect_uri: `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}/silent_renew.html`,
+  silent_redirect_uri: `${location.origin}/silent_renew.html`,
   userStore: new WebStorageStateStore({store: Global.localStorage}),
 };
 

@@ -35,6 +35,7 @@ module.exports = {
       paths.appScss,
     ],
     'assets/silent_renew': [
+      require.resolve('./polyfills'),
       paths.silentRenewJs,
     ],
 
