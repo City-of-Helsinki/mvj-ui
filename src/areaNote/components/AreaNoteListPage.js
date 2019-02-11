@@ -1,3 +1,4 @@
+
 // @flow
 import React, {PureComponent} from 'react';
 import {Row, Column} from 'react-foundation';
@@ -126,9 +127,9 @@ class AreaNoteListPage extends PureComponent<Props, State> {
   }
 
   search = () => {
-    const {fetchAreaNoteList, location: {query}} = this.props;
+    const {fetchAreaNoteList, location: {search}} = this.props;
 
-    fetchAreaNoteList(getSearchQuery(query));
+    fetchAreaNoteList(getUrlParams(search));
   }
 
   handleHideEdit = () => {

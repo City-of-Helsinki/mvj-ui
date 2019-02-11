@@ -37,16 +37,12 @@ const defaultState: AreaNoteState = {
   methods: {},
 };
 
-// $FlowFixMe
 describe('AreaNoteList', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('areaNotesReducer', () => {
 
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {foo: 'bar'};
 
@@ -98,7 +94,7 @@ describe('AreaNoteList', () => {
         const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = areaNotesReducer({}, fetchAreaNoteList(''));
+        const state = areaNotesReducer({}, fetchAreaNoteList({}));
         expect(state).to.deep.equal(newState);
       });
 

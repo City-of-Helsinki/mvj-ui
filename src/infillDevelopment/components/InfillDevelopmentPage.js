@@ -149,7 +149,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     fetchSingleInfillDevelopment(infillDevelopmentId);
 
     if(isEmpty(areaNotes)) {
-      fetchAreaNoteList();
+      fetchAreaNoteList({});
     }
 
     hideEditMode();

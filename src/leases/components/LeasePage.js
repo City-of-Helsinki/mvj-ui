@@ -249,7 +249,7 @@ class LeasePage extends Component<Props, State> {
       fetchVats();
     }
 
-    fetchAreaNoteList();
+    fetchAreaNoteList({});
 
     hideEditMode();
   }

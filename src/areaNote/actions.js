@@ -35,8 +35,8 @@ export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
 export const attributesNotFound = (): AttributesNotFoundAction =>
   createAction('mvj/areaNote/ATTRIBUTES_NOT_FOUND')();
 
-export const fetchAreaNoteList = (search: string): FetchAreaNoteListAction =>
-  createAction('mvj/areaNote/FETCH_ALL')(search);
+export const fetchAreaNoteList = (params: ?Object): FetchAreaNoteListAction =>
+  createAction('mvj/areaNote/FETCH_ALL')(params);
 
 export const receiveAreaNoteList = (areaNote: AreaNoteList): ReceiveAreaNoteListAction =>
   createAction('mvj/areaNote/RECEIVE_ALL')(areaNote);

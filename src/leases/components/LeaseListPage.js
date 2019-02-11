@@ -113,7 +113,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       showSearch: false,
     });
 
-    fetchAreaNoteList();
+    fetchAreaNoteList({});
 
     this.search();
 
