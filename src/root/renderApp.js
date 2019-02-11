@@ -8,6 +8,7 @@ import type {RootProps} from './Root';
 
 export default (component: any, props: RootProps) =>
   render(
+
     <AppContainer>
       {createElement(component, props)}
     </AppContainer>,

@@ -39,7 +39,7 @@ const byInvoiceReducer: Reducer<Object> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   byInvoice: byInvoiceReducer,
   isFetchingByInvoice: isFetchingByInvoiceReducer,
 });

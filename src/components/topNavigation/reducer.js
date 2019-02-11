@@ -15,6 +15,6 @@ const setSettingsReducer: Reducer<TopNavigationSettings> = handleActions({
   },
 }, {linkUrl: '', pageTitle: '', showSearch: false});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   settings: setSettingsReducer,
 });

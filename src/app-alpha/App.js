@@ -1,4 +1,4 @@
-// @flow
+// @ flow
 import flowRight from 'lodash/flowRight';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';

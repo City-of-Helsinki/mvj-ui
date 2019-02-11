@@ -71,7 +71,7 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   attributes: attributesReducer,
   byLease: byLeaseReducer,
   isEditModeById: isEditModeByIdReducer,

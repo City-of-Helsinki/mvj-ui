@@ -1,4 +1,4 @@
-// @flow
+// @ flow
 import React from 'react';
 import classNames from 'classnames';
 import Select from 'react-select';

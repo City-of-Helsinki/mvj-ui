@@ -14,16 +14,12 @@ const defaultState: UserState = {
   list: [],
 };
 
-// $FlowFixMe
 describe('Users', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('userReducer', () => {
 
-      // $FlowFixMe
       it('should update user list', () => {
         const dummyUsers = [
           {
@@ -52,7 +48,7 @@ describe('Users', () => {
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...defaultState, isFetching: false};
 
-        let state = usersReducer({}, fetchUsers(''));
+        let state: Object = usersReducer({}, fetchUsers(''));
         state = usersReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

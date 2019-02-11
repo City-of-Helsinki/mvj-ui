@@ -15,16 +15,12 @@ const defaultState: CreateCollectionLetterState = {
   isFetchingAttributes: false,
 };
 
-// $FlowFixMe
 describe('Create collection letter', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('createCollectionLetterReducer', () => {
 
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 
@@ -35,7 +31,7 @@ describe('Create collection letter', () => {
       it('should update isFetchingAttributes flag to true by attributesNotFound', () => {
         const newState = {...defaultState, isFetchingAttributes: false};
 
-        let state = createCollectionLetterReducer({}, fetchAttributes());
+        let state: Object = createCollectionLetterReducer({}, fetchAttributes());
         state = createCollectionLetterReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });

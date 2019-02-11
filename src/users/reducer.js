@@ -20,7 +20,7 @@ const usersListReducer: Reducer<UserList> = handleActions({
   },
 }, []);
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   list: usersListReducer,
 });

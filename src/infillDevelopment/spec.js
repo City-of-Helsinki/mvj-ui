@@ -42,16 +42,12 @@ const defaultState: InfillDevelopmentState = {
   methods: {},
 };
 
-// $FlowFixMe
 describe('Infill development', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('infillDevelopmentReducer', () => {
 
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 
@@ -62,7 +58,7 @@ describe('Infill development', () => {
       it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
         const newState = {...defaultState, isFetchingAttributes: false};
 
-        let state = infillDevelopmentReducer({}, fetchAttributes());
+        let state: Object = infillDevelopmentReducer({}, fetchAttributes());
         state = infillDevelopmentReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
@@ -205,7 +201,7 @@ describe('Infill development', () => {
         const newState = {...defaultState};
 
 
-        let state = infillDevelopmentReducer({}, receiveFormValidFlags(dummyFlags));
+        let state: Object = infillDevelopmentReducer({}, receiveFormValidFlags(dummyFlags));
         state = infillDevelopmentReducer(state, clearFormValidFlags());
         expect(state).to.deep.equal(newState);
       });
@@ -221,7 +217,7 @@ describe('Infill development', () => {
       it('should update collapseStates', () => {
         const newState = {...defaultState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
 
-        let state = infillDevelopmentReducer({}, receiveCollapseStates({foo: 'bar'}));
+        let state: Object = infillDevelopmentReducer({}, receiveCollapseStates({foo: 'bar'}));
         state = infillDevelopmentReducer(state, receiveCollapseStates({foo2: 'bar2'}));
         expect(state).to.deep.equal(newState);
       });

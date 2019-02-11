@@ -133,6 +133,7 @@ const LeaseInfo = ({
 };
 
 export default flowRight(
+  // $FlowFixMe
   withRouter,
   connect(
     (state) => {

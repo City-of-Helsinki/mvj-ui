@@ -321,6 +321,7 @@ const LeaseArea = ({
 };
 
 export default flowRight(
+  // $FlowFixMe
   withRouter,
   connect(
     (state, props) => {

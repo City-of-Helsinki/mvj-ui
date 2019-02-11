@@ -44,7 +44,7 @@ const byLeaseReducer: Reducer<RentForPeriod> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   byLease: byLeaseReducer,
   isFetching: isFetchingReducer,
   isSaveClicked: isSaveClickedReducer,

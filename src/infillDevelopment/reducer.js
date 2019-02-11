@@ -104,7 +104,7 @@ const collapseStatesReducer: Reducer<Object> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
   current: currentInfillDevelopmentReducer,

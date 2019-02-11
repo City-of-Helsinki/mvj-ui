@@ -1,5 +1,4 @@
 // @flow
-import PropTypes from 'prop-types';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -1197,9 +1196,7 @@ export const addConstructabilityFormValues = (payload: Object, values: Object) =
   return payload;
 };
 
-const ContactTypes = PropTypes.oneOf([TenantContactType.TENANT, TenantContactType.BILLING, TenantContactType.CONTACT]);
-
-export const getTenantContactDetailsForDb = (tenant: Object, contactType: ContactTypes) => (
+export const getTenantContactDetailsForDb = (tenant: Object, contactType: 'tenant' | 'billing' | 'contact') => (
   {
     id: tenant.id || undefined,
     type: contactType,

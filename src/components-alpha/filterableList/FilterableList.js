@@ -1,4 +1,4 @@
-// @flow
+// @ flow
 import React, {Component} from 'react';
 import classnames from 'classnames';
 import Fuse from 'fuse.js';

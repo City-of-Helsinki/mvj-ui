@@ -1,15 +1,6 @@
 // @flow
-import PropTypes from 'prop-types';
-
 import type {Action} from '$src/types';
 import type {LeaseId} from '$src/leases/types';
-import {RentCalculatorTypes} from '$components/enums';
-
-const RentCalculatorType = PropTypes.oneOf([
-  RentCalculatorTypes.YEAR,
-  RentCalculatorTypes.RANGE,
-  RentCalculatorTypes.BILLING_PERIOD,
-]);
 
 export type RentForPeriodId = number;
 
@@ -23,7 +14,7 @@ export type FetchRentForPeriodPayload= {
   id: RentForPeriodId,
   allowDelete: boolean,
   leaseId: LeaseId,
-  type: RentCalculatorType,
+  type: 'year' | 'range' | 'billing_period',
   startDate: string,
   endDate: string,
 }

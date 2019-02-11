@@ -83,7 +83,7 @@ const areaNoteListReducer: Reducer<AreaNoteList> = handleActions({
   },
 }, []);
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   attributes: attributesReducer,
   initialValues: initialValuesReducer,
   isEditMode: isEditModeReducer,

@@ -247,7 +247,7 @@ export const getEpochTime = () => Math.round(new Date().getTime()/1000.0);
 export const formatDate = (date: ?string) => {
   if (!date) return '';
 
-  const d = isNumber(date) ? moment.unix(date) : moment(date);
+  const d = isNumber(date) ? moment.unix(Number(date)) : moment(date);
   return d.format('DD.MM.YYYY');
 };
 

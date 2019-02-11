@@ -49,6 +49,7 @@ class TopNavigation extends Component<Props, State> {
   setInitialSearchValue = () => {
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
+
     this.setState({identifier: query.identifier || ''});
   }
 
@@ -195,4 +196,5 @@ class TopNavigation extends Component<Props, State> {
   }
 }
 
+// $FlowFixMe
 export default withRouter(TopNavigation);

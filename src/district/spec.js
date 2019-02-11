@@ -15,16 +15,12 @@ const defaultState: DistrictState = {
   isFetching: false,
 };
 
-// $FlowFixMe
 describe('Districts', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('districtReducer', () => {
 
-      // $FlowFixMe
       it('should update districts received by municipality', () => {
         const dummyMunicipality = 1;
         const dummyDistricts = [
@@ -50,7 +46,7 @@ describe('Districts', () => {
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...defaultState, isFetching: false};
 
-        let state = districtReducer({}, fetchDistrictsByMunicipality(1));
+        let state: Object = districtReducer({}, fetchDistrictsByMunicipality(1));
         state = districtReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

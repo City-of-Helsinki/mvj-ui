@@ -24,7 +24,7 @@ const byMunicipalityReducer: Reducer<DistrictListMap> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   byMunicipality: byMunicipalityReducer,
   isFetching: isFetchingReducer,
 });

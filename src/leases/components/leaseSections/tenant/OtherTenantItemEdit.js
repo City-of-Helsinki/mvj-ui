@@ -1,6 +1,5 @@
 // @flow
 import React, {Fragment} from 'react';
-import PropTypes from 'prop-types';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
@@ -44,14 +43,12 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {Attributes, Methods} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
-const ContactType = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
-
 type Props = {
   attributes: Attributes,
   collapseState: boolean,
   contactMethods: Methods,
-  contactType: ContactType,
   contact: ?Object,
+  contactType: 'billing' | 'contact',
   errors: ?Object,
   field: string,
   index: number,

@@ -40,7 +40,7 @@ import type {Reducer} from '../types';
 import type {RootState} from './types';
 
 export default (history: Object): Reducer<RootState> =>
-  combineReducers({
+  combineReducers<Object, any>({
     api: apiReducer,
     areaNote: areaNoteReducer,
     auth: authReducer,

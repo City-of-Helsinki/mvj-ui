@@ -61,6 +61,7 @@ function InfillDevelopmentPageAttributes(WrappedComponent: any) {
   };
 }
 
+// $FlowFixMe
 const withInfillDevelopmentPageAttributes = flowRight(
   connect(
     (state) => {

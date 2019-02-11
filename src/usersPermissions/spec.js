@@ -48,7 +48,7 @@ describe('Users permissions', () => {
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...defaultState, isFetching: false};
 
-        let state = usersPermissionsReducer({}, fetchUsersPermissions());
+        let state: Object = usersPermissionsReducer({}, fetchUsersPermissions());
         state = usersPermissionsReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

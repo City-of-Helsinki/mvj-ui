@@ -58,7 +58,7 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   attributes: attributesReducer,
   areas: areasReducer,
   current: currentLeaseReducer,

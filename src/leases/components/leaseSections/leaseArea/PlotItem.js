@@ -164,6 +164,7 @@ const PlotItem = ({areaArchived, attributes, location, plot}: Props) => {
 };
 
 export default flowRight(
+  // $FlowFixMe
   withRouter,
   connect(
     (state) => {
