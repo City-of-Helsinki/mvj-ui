@@ -27,7 +27,7 @@ import {validateLitigantForm} from '$src/landUseContract/formValidators';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentLitigants} from '$src/landUseContract/helpers';
 import {isEmptyValue} from '$util/helpers';
-import {fetchContacts} from '$src/contacts/requestsOutsideSaga';
+import {contactExists} from '$src/contacts/requestsAsync';
 import {
   getContactModalSettings,
   getIsContactFormValid,
@@ -221,10 +221,14 @@ class TenantsEdit extends PureComponent<Props, State> {
               return;
             }
 
-            if(type !== ContactTypes.PERSON && !isEmptyValue(business_id)) {
-              const contacts = await fetchContacts({business_id});
+            const contactIdentifier = type
+              ? type === ContactTypes.PERSON ? national_identification_number : business_id
+              : null;
 
-              if(contacts.length) {
+            if(contactIdentifier && !isEmptyValue(contactIdentifier)) {
+              const exists = await contactExists(contactIdentifier);
+
+              if(exists) {
                 dispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
@@ -232,26 +236,10 @@ class TenantsEdit extends PureComponent<Props, State> {
                   },
                   confirmationModalButtonClassName: ButtonColors.SUCCESS,
                   confirmationModalButtonText: 'Luo asiakas',
-                  confirmationModalLabel: <span>{`Y-tunnuksella ${business_id} on jo olemassa asiakas`}<br />Haluatko luoda asiakkaan?</span>,
+                  confirmationModalLabel: <span>{`Tunnuksella ${contactIdentifier} on jo olemassa asiakas.`}<br />Haluatko luoda asiakkaan?</span>,
                   confirmationModalTitle: 'Luo asiakas',
                 });
-              } else {
-                this.createOrEditContact();
-              }
-            } else if(type === ContactTypes.PERSON && !isEmptyValue(national_identification_number)) {
-              const contacts = await fetchContacts({national_identification_number});
 
-              if(contacts.length) {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    this.createOrEditContact();
-                  },
-                  confirmationModalButtonClassName: ButtonColors.SUCCESS,
-                  confirmationModalButtonText: 'Luo asiakas',
-                  confirmationModalLabel: <span>{`Henkilötunnuksella ${national_identification_number} on jo olemassa asiakas`}<br />Haluatko luoda asiakkaan?</span>,
-                  confirmationModalTitle: 'Luo asiakas',
-                });
               } else {
                 this.createOrEditContact();
               }
