@@ -12,6 +12,7 @@ import {
   LeaseState,
   LeaseStatus,
   RecipientOptions,
+  RelationTypes,
   RentCycles,
   RentDueDateTypes,
   RentTypes,
@@ -894,18 +895,27 @@ export const getLeaseCoordinates = (lease: Lease) => {
   let coordinates = [];
   areas.forEach((area) => {
     coordinates = [...coordinates, ...getCoordinatesOfGeometry(area.geometry)];
-
-    // const plots = get(area, 'plots', []);
-    // plots.forEach((plot) => {
-    //   coordinates = [...coordinates, ...getCoordinatesOfGeometry(plot.geometry)];
-    // });
-    //
-    // const planUnits = get(area, 'plan_units', []);
-    // planUnits.forEach((planUnit) => {
-    //   coordinates = [...coordinates, ...getCoordinatesOfGeometry(planUnit.geometry)];
-    // });
   });
   return coordinates;
+};
+
+export const getPayloadCreateLease = (lease: Object) => {
+  const relatedTo = !isEmpty(lease.relate_to)
+    ? !isEmptyValue(lease.relate_to.value)
+      ? lease.relate_to.value
+      : undefined
+    : undefined;
+
+  return {
+    state: lease.state,
+    type: lease.type,
+    municipality: lease.municipality,
+    district: lease.district,
+    reference_number: lease.reference_number,
+    note: lease.note,
+    relate_to: relatedTo,
+    relation_type: relatedTo ? RelationTypes.TRANSFER : undefined,
+  };
 };
 
 export const addSummaryFormValues = (payload: Object, summary: Object) => {

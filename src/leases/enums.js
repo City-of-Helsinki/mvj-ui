@@ -21,6 +21,15 @@ export const ContractRentPeriods = {
 };
 
 /**
+ * Lease relation type enumerable.
+ *
+ * @type {{}}
+ */
+export const RelationTypes = {
+  TRANSFER: 'transfer',
+};
+
+/**
  * Delete modal labels enumerable.
  *
  * @type {{}}
@@ -380,6 +389,7 @@ export const LeaseFieldPaths = {
   REGULATED: 'regulated',
   REGULATION: 'regulation',
   RELATED_LEASES: 'related_leases',
+  RELATE_TO: 'relate_to',
   START_DATE: 'start_date',
   STATE: 'state',
   STATISTICAL_USE: 'statistical_use',
@@ -416,6 +426,7 @@ export const LeaseFieldTitles = {
   REGULATED: 'Sääntely',
   REGULATION: 'Sääntelymuoto',
   RELATED_LEASES: 'Liittyvät vuokraukset',
+  RELATE_TO: 'Liittyy vuokraukseen',
   START_DATE: 'Alkupvm',
   STATE: 'Tyyppi',
   STATISTICAL_USE: 'Tilastollinen pääkäyttötarkoitus',

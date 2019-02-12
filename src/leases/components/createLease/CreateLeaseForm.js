@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, formValueSelector, reduxForm} from 'redux-form';
+import {change, formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
@@ -10,10 +10,11 @@ import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
-import {ButtonColors} from '$components/enums';
-import {Classification, FormNames, LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
+import {FormNames, LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
 import {filterOptionsByLabel} from '$components/form/filter';
 import {getDistrictOptions} from '$src/district/helpers';
+import {getPayloadCreateLease} from '$src/leases/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
@@ -25,19 +26,15 @@ import type {DistrictList} from '$src/district/types';
 
 type Props = {
   change: Function,
-  district: string,
   districts: DistrictList,
   fetchDistrictsByMunicipality: Function,
+  formValues: Object,
   handleSubmit: Function,
   leaseAttributes: Attributes,
   municipality: string,
-  note: string,
   onClose: Function,
   onSubmit: Function,
-  reference_number: string,
   setRefForFirstField?: Function,
-  state: string,
-  type: string,
   valid: boolean,
 }
 
@@ -69,24 +66,11 @@ class CreateLeaseForm extends Component<Props> {
 
   handleCreate = () => {
     const {
-      state,
-      type,
-      municipality,
-      district,
-      reference_number,
-      note,
+      formValues,
       onSubmit,
     } = this.props;
 
-    onSubmit({
-      state: state,
-      type: type,
-      municipality: municipality,
-      district: district,
-      reference_number: reference_number,
-      note: note,
-      classification: Classification.PUBLIC,
-    });
+    onSubmit(getPayloadCreateLease(formValues));
   };
 
   render() {
@@ -168,6 +152,20 @@ class CreateLeaseForm extends Component<Props> {
             </Authorization>
           </Column>
         </Row>
+        <Row>
+          <Column small={4} medium={3}>
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.RELATE_TO)}>
+              <FormField
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.RELATE_TO)}
+                name='relate_to'
+                overrideValues={{
+                  fieldType: FieldTypes.LEASE,
+                  label: LeaseFieldTitles.RELATE_TO,
+                }}
+              />
+            </Authorization>
+          </Column>
+        </Row>
 
         <ModalButtonWrapper>
           <Button
@@ -194,7 +192,9 @@ export default flowRight(
   connect(
     (state) => {
       const municipality = selector(state, 'municipality');
+
       return {
+        formValues: getFormValues(formName)(state),
         district: selector(state, 'district'),
         districts: getDistrictsByMunicipality(state, municipality),
         leaseAttributes: getLeaseAttributes(state),
