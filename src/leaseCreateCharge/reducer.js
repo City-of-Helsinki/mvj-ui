@@ -20,7 +20,7 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   attributes: attributesReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
 });

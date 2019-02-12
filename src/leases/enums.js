@@ -21,13 +21,23 @@ export const ContractRentPeriods = {
 };
 
 /**
+ * Lease relation type enumerable.
+ *
+ * @type {{}}
+ */
+export const RelationTypes = {
+  TRANSFER: 'transfer',
+};
+
+/**
  * Delete modal labels enumerable.
  *
- * @type {{ADDRESS: string, BASIS_OF_RENT: string, COLLECTION_COURT_DECISION: string, COLLECTION_LETTER: string, COLLECTION_NOTE: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RELATED_LEASE: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
+ * @type {{}}
  */
 export const DeleteModalLabels = {
   ADDRESS: 'Haluatko varmasti poistaa osoitteen?',
   BASIS_OF_RENT: 'Haluatko varmasti poistaa vuokralaskurin?',
+  COLLATERAL: 'Haluatko varmasti poistaa vakuuden?',
   COLLECTION_COURT_DECISION: 'Haluatko varmasti poistaa käräjäoikeuden päätöksen?',
   COLLECTION_LETTER: 'Haluatko varmasti poistaa perintäkirjeen?',
   COLLECTION_NOTE: 'Haluatko varmasti poistaa huomautuksen?',
@@ -43,7 +53,6 @@ export const DeleteModalLabels = {
   INVOICE_PAYMENT: 'Haluatko varmasti poistaa maksun?',
   INVOICE_ROW: 'Haluatko varmasti poistaa laskurivin?',
   LEASE_AREA: 'Haluatko varmasti poistaa kohteen?',
-  MORTGAGE_DOCUMENT: 'Haluatko varmasti poistaa panttikirjan?',
   OTHER_TENANT: 'Haluatko varmasti poistaa laskunsaajan/yhteyshenkilön?',
   PLAN_UNIT: 'Haluatko varmasti poistaa kaavayksikön?',
   PLOT: 'Haluatko varmasti poistaa kiinteistön/määräalan?',
@@ -56,11 +65,12 @@ export const DeleteModalLabels = {
 /**
  * Delete modal titles enumerable.
  *
- * @type {{ADDRESS: string, BASIS_OF_RENT: string, COLLECTION_COURT_DECISION: string, COLLECTION_LETTER: string, COLLECTION_NOTE: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RELATED_LEASE: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
+ * @type {{}}
  */
 export const DeleteModalTitles = {
   ADDRESS: 'Poista osoite',
   BASIS_OF_RENT: 'Poista vuokralaskuri',
+  COLLATERAL: 'Poista vakuus',
   COLLECTION_COURT_DECISION: 'Poista kärkäoikeuden päätös',
   COLLECTION_LETTER: 'Poista perintäkirje',
   COLLECTION_NOTE: 'Poista huomautus',
@@ -76,7 +86,6 @@ export const DeleteModalTitles = {
   INVOICE_PAYMENT: 'Poista maksu',
   INVOICE_ROW: 'Poista laskurivi',
   LEASE_AREA: 'Poista kohde',
-  MORTGAGE_DOCUMENT: 'Poista panttikirja',
   OTHER_TENANT: 'Poista laskunsaaja/yhteyshenkilö',
   PLAN_UNIT: 'Poista kaavayksikkö',
   PLOT: 'Poista kiinteistö/määräala',
@@ -159,12 +168,13 @@ export const CreditInvoiceOptionsEnum = {
 /**
  * Constructability status enumerable.
  *
- * @type {{UNVERIFIED: string, REQUIRES_MEASURES: string, COMPLETE: string,}}
+ * @type {{UNVERIFIED: string, REQUIRES_MEASURES: string, COMPLETE: string, ENQUIRY_SENT: string}}
  */
 export const ConstructabilityStatus = {
   UNVERIFIED: 'unverified',
   REQUIRES_MEASURES: 'requires_measures',
   COMPLETE: 'complete',
+  ENQUIRY_SENT: 'enquiry_sent',
 };
 
 /**
@@ -359,7 +369,9 @@ export const FormNames = {
  * @type {{}}
  */
 export const LeaseFieldPaths = {
+  BUILDING_SELLING_PRICE: 'building_selling_price',
   CLASSIFICATION: 'classification',
+  CONVEYANCE_NUMBER: 'conveyance_number',
   DISTRICT: 'district',
   END_DATE: 'end_date',
   FINANCING: 'financing',
@@ -375,10 +387,13 @@ export const LeaseFieldPaths = {
   NOTICE_NOTE: 'notice_note',
   NOTICE_PERIOD: 'notice_period',
   PREPARER: 'preparer',
+  REAL_ESTATE_DEVELOPER: 'real_estate_developer',
   REFERENCE_NUMBER: 'reference_number',
   REGULATED: 'regulated',
   REGULATION: 'regulation',
   RELATED_LEASES: 'related_leases',
+  RELATE_TO: 'relate_to',
+  SPECIAL_PROJECT: 'special_project',
   START_DATE: 'start_date',
   STATE: 'state',
   STATISTICAL_USE: 'statistical_use',
@@ -394,7 +409,9 @@ export const LeaseFieldPaths = {
  * @type {{}}
  */
 export const LeaseFieldTitles = {
+  BUILDING_SELLING_PRICE: 'Rakennuksen kauppahinta',
   CLASSIFICATION: 'Julkisuusluokka',
+  CONVEYANCE_NUMBER: 'Luovutusnumero',
   DISTRICT: 'Kaupunginosa',
   END_DATE: 'Loppupvm',
   FINANCING: 'Rahoitusmuoto',
@@ -411,10 +428,13 @@ export const LeaseFieldTitles = {
   NOTICE_NOTE: 'Irtisanomisajan huomautus',
   NOTICE_PERIOD: 'Irtisanomisaika',
   PREPARER: 'Valmistelija',
+  REAL_ESTATE_DEVELOPER: 'Rakennuttaja',
   REFERENCE_NUMBER: 'Diaarinumero',
   REGULATED: 'Sääntely',
   REGULATION: 'Sääntelymuoto',
   RELATED_LEASES: 'Liittyvät vuokraukset',
+  RELATE_TO: 'Liittyy vuokraukseen',
+  SPECIAL_PROJECT: 'Erityishanke',
   START_DATE: 'Alkupvm',
   STATE: 'Tyyppi',
   STATISTICAL_USE: 'Tilastollinen pääkäyttötarkoitus',
@@ -451,6 +471,8 @@ export const LeaseAreasFieldPaths = {
   POLLUTED_LAND_RENT_CONDITION_DATE: 'lease_areas.child.children.polluted_land_rent_condition_date',
   POLLUTED_LAND_RENT_CONDITION_STATE: 'lease_areas.child.children.polluted_land_rent_condition_state',
   POLLUTED_LAND_STATE: 'lease_areas.child.children.polluted_land_state',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'lease_areas.child.children.preconstruction_estimated_construction_readiness_moment',
+  PRECONSTRUCTION_INSPECTION_MOMENT: 'lease_areas.child.children.preconstruction_inspection_moment',
   PRECONSTRUCTION_STATE: 'lease_areas.child.children.preconstruction_state',
   TYPE: 'lease_areas.child.children.type',
 };
@@ -482,6 +504,8 @@ export const LeaseAreasFieldTitles = {
   POLLUTED_LAND_RENT_CONDITION_DATE: 'Vuokraehdot pvm',
   POLLUTED_LAND_RENT_CONDITION_STATE: 'Vuokraehdot',
   POLLUTED_LAND_STATE: 'Selvitysaste',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'Arvioitu rakentamisvalmius (kk/v)',
+  PRECONSTRUCTION_INSPECTION_MOMENT: 'Tarkistuspäivä (kk/v)',
   PRECONSTRUCTION_STATE: 'Selvitysaste',
   TYPE: 'Määritelmä',
 };
@@ -596,6 +620,7 @@ export const LeasePlotsFieldTitles = {
 export const LeaseConstructabilityDescriptionsFieldPaths = {
   CONSTRUCTABILITY_DESCRIPTIONS: 'lease_areas.child.children.constructability_descriptions',
   AHJO_REFERENCE_NUMBER: 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number',
+  IS_STATIC: 'lease_areas.child.children.constructability_descriptions.child.children.is_static',
   TEXT: 'lease_areas.child.children.constructability_descriptions.child.children.text',
   TYPE: 'lease_areas.child.children.constructability_descriptions.child.children.type',
 };
@@ -608,6 +633,7 @@ export const LeaseConstructabilityDescriptionsFieldPaths = {
 export const LeaseConstructabilityDescriptionsFieldTitles = {
   CONSTRUCTABILITY_DESCRIPTIONS: 'Huomautukset',
   AHJO_REFERENCE_NUMBER: 'AHJO diaarinumero',
+  IS_STATIC: 'Pysyvä huomautus',
   TEXT: 'Huomautus',
   TYPE: 'Tyyppi',
 };
@@ -950,17 +976,17 @@ export const LeaseDecisionConditionsFieldTitles = {
  */
 export const LeaseContractsFieldPaths = {
   CONTRACTS: 'contracts',
-  COLLATERAL_END_DATE: 'contracts.child.children.collateral_end_date',
-  COLLATERAL_NOTE: 'contracts.child.children.collateral_note',
-  COLLATERAL_NUMBER: 'contracts.child.children.collateral_number',
-  COLLATERAL_START_DATE: 'contracts.child.children.collateral_start_date',
   CONTRACT_NUMBER: 'contracts.child.children.contract_number',
   DECISION: 'contracts.child.children.decision',
+  FIRST_CALL_SENT: 'contracts.child.children.first_call_sent',
   INSTITUTION_IDENTIFIER: 'contracts.child.children.institution_identifier',
   IS_READJUSTMENT_DECISION: 'contracts.child.children.is_readjustment_decision',
   KTJ_LINK: 'contracts.child.children.ktj_link',
+  SECOND_CALL_SENT: 'contracts.child.children.second_call_sent',
+  SIGN_BY_DATE: 'contracts.child.children.sign_by_date',
   SIGNING_DATE: 'contracts.child.children.signing_date',
   SIGNING_NOTE: 'contracts.child.children.signing_note',
+  THIRD_CALL_SENT: 'contracts.child.children.third_call_sent',
   TYPE: 'contracts.child.children.type',
 };
 
@@ -971,17 +997,17 @@ export const LeaseContractsFieldPaths = {
  */
 export const LeaseContractsFieldTitles = {
   CONTRACTS: 'Sopimukset',
-  COLLATERAL_END_DATE: 'Vuokravakuus loppupvm',
-  COLLATERAL_NOTE: 'Vuokravakuuden huomautus',
-  COLLATERAL_NUMBER: 'Vuokravakuusnumero',
-  COLLATERAL_START_DATE: 'Vuokravakuus alkupvm',
   CONTRACT_NUMBER: 'Sopimusnumero',
   DECISION: 'Päätös',
+  FIRST_CALL_SENT: '1. kutsu lähetetty',
   INSTITUTION_IDENTIFIER: 'Laitostunnus',
   IS_READJUSTMENT_DECISION: 'Järjestelypäätös',
   KTJ_LINK: 'Ktj dokumentti',
+  SECOND_CALL_SENT: '2. kutsu lähetetty',
+  SIGN_BY_DATE: 'Allekirjoitettava mennessä',
   SIGNING_DATE: 'Allekirjoituspvm',
   SIGNING_NOTE: 'Allekirjoituksen huomautus',
+  THIRD_CALL_SENT: '3. kutsu lähetetty',
   TYPE: 'Sopimuksen tyyppi',
 };
 
@@ -990,11 +1016,16 @@ export const LeaseContractsFieldTitles = {
  *
  * @type {{}}
  */
-export const LeaseContractMortgageDocumentsFieldPaths = {
-  MORTGAGE_DOCUMENTS: 'contracts.child.children.mortgage_documents',
-  DATE: 'contracts.child.children.mortgage_documents.child.children.date',
-  NOTE: 'contracts.child.children.mortgage_documents.child.children.note',
-  NUMBER: 'contracts.child.children.mortgage_documents.child.children.number',
+export const LeaseContractCollateralsFieldPaths = {
+  COLLATRALS: 'contracts.child.children.collaterals',
+  END_DATE: 'contracts.child.children.collaterals.child.children.end_date',
+  NOTE: 'contracts.child.children.collaterals.child.children.note',
+  NUMBER: 'contracts.child.children.collaterals.child.children.number',
+  PAID_DATE: 'contracts.child.children.collaterals.child.children.paid_date',
+  RETURNED_DATE: 'contracts.child.children.collaterals.child.children.returned_date',
+  START_DATE: 'contracts.child.children.collaterals.child.children.start_date',
+  TOTAL_AMOUNT: 'contracts.child.children.collaterals.child.children.total_amount',
+  TYPE: 'contracts.child.children.collaterals.child.children.type',
 };
 
 /**
@@ -1002,11 +1033,16 @@ export const LeaseContractMortgageDocumentsFieldPaths = {
  *
  * @type {{}}
  */
-export const LeaseContractMortgageDocumentsFieldTitles = {
-  MORTGAGE_DOCUMENTS: 'Panttikirjat',
-  DATE: 'Panttikirjan pvm',
+export const LeaseContractCollateralsFieldTitles = {
+  COLLATRALS: 'Vakuudet',
+  END_DATE: 'Vuokravakuuden loppupvm',
   NOTE: 'Huomautus',
-  NUMBER: 'Panttikirjan numero',
+  NUMBER: 'Vuokravakuusnumero',
+  PAID_DATE: 'Maksettu pvm',
+  RETURNED_DATE: 'Palautettu pvm',
+  START_DATE: 'Vuokravakuuden alkupvm',
+  TOTAL_AMOUNT: 'Vakuuden määrä',
+  TYPE: 'Vakuuden laji',
 };
 
 /**

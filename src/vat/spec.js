@@ -15,16 +15,12 @@ const defaultState: VatState = {
   list: [],
 };
 
-// $FlowFixMe
 describe('Vats', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('vatsReducer', () => {
 
-      // $FlowFixMe
       it('should update vats', () => {
         const dummyVats = [
           {

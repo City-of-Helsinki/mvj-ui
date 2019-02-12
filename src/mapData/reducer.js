@@ -24,7 +24,7 @@ const byTypeReducer: Reducer<MapDataMap> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   byType: byTypeReducer,
   isFetching: isFetchingReducer,
 });

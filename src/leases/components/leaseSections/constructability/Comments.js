@@ -8,24 +8,29 @@ import SubTitle from '$components/content/SubTitle';
 import {LeaseConstructabilityDescriptionsFieldTitles} from '$src/leases/enums';
 
 type Props = {
+  commentClassName?: string,
   comments: Array<Object>,
+  showNoDataText?: boolean,
+  showTitle?: boolean,
 }
 
 const Comments = ({
+  commentClassName,
   comments,
+  showNoDataText = true,
+  showTitle = true,
 }: Props) =>
   <Fragment>
-    <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
+    {showTitle &&
+      <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
+    }
     {comments && !!comments.length
-      ? (
-        <BoxItemContainer>
-          {comments.map((comment, index) =>
-            <Comment key={index} comment={comment} />
-          )}
-        </BoxItemContainer>
-      ) : (
-        <FormText><em>Ei huomautuksia.</em></FormText>
-      )
+      ? <BoxItemContainer>
+        {comments.map((comment, index) =>
+          <Comment key={index} comment={comment} className={commentClassName}/>
+        )}
+      </BoxItemContainer>
+      : showNoDataText && <FormText><em>Ei huomautuksia.</em></FormText>
     }
   </Fragment>;
 

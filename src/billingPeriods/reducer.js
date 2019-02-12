@@ -20,7 +20,7 @@ const byLeaseReducer: Reducer<Object> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   byLease: byLeaseReducer,
   isFetching: isFetchingReducer,
 });

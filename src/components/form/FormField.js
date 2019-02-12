@@ -180,8 +180,18 @@ const FormFieldInput = ({
   if(allowEdit) {
     return (
       <div className={classNames('form-field', className)}>
-        {label && fieldType === 'boolean' && <FormTextTitle required={required} title={label} />}
-        {label && fieldType !== 'boolean' && <FormFieldLabel className={invisibleLabel ? 'invisible' : ''} htmlFor={input.name} required={required}>{label}</FormFieldLabel>}
+        {label && fieldType === 'boolean' && !invisibleLabel &&
+          <FormTextTitle required={required}>{label}</FormTextTitle>
+        }
+        {label && fieldType !== 'boolean' &&
+          <FormFieldLabel
+            className={invisibleLabel ? 'invisible' : ''}
+            htmlFor={input.name}
+            required={required}
+          >
+            {label}
+          </FormFieldLabel>
+        }
         <div className={classNames('form-field__component', {'has-unit': unit})}>
           {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
           {unit && <span className='form-field__unit'>{unit}</span>}

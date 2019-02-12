@@ -27,7 +27,7 @@ const currentApplicationReducer: Reducer<Application> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   current: currentApplicationReducer,
   list: applicationsListReducer,
   isFetching: isFetchingReducer,

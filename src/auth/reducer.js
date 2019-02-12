@@ -17,7 +17,7 @@ const apiTokenReducer: Reducer<Object> = handleActions({
   ['mvj/auth/RECEIVE_API_TOKEN']: (state: Object, {payload}: ReceiveApiTokenAction) => payload,
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   apiToken: apiTokenReducer,
   isFetching: isFetchingReducer,
 });

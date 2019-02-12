@@ -343,173 +343,23 @@
   }
 
   &__select {
-    &.Select {
-      .select-input__arrow-renderer {
-        display: block;
-        background-image: url(../assets/icons/icon_arrow_down.svg);
-        height: 18px;
-        width: 18px;
-        background-size: 12px 12px;
-        background-repeat: no-repeat;
-        background-position: 50%;
-      }
-
-      &.is-open {
-        .select-input__arrow-renderer {
-          background-image: url(../assets/icons/icon_arrow_up.svg);
-        }
-      }
-    }
-
-    .Select-control {
-      color: $black;
-      border-radius: 0;
-      border: 1px solid $medium-gray;
-      padding-top: 0;
-      padding-bottom: 0;
-      height: 20px;
-      font-size: 14px;
-      display: block;
-      position: relative;
-
-      .Select-placeholder,
-      .Select-value {
-        display: block;
-        line-height: 18px !important;
-        height: 18px;
-        top: 0 !important;
-        padding-left: 5px !important;
-        padding-right: 5px !important;
-        color: $medium-dark-gray !important;
-
-        .Select-value-label {
-          white-space: nowrap;
-          color: $black !important;
-        }
-      }
-
-      .Select-placeholder {
-        color: $medium-dark-gray;
-      }
-
-
-      .Select-value {
-        padding-right: 20px !important;
-      }
-
-      .Select-input {
-        height: 18px;
-        vertical-align: top;
-        display: block !important;
-        padding: 0 5px;
-
-        > input {
-          padding: 0;
-          border: none !important;
-          box-shadow: none !important;
-        }
-      }
-
-      .Select-arrow-zone {
-        display: block;
-        position: absolute;
-        top: 1px;
-        right: 0px;
-        width: 20px;
-      }
-
-      .Select-clear-zone {
-        display: block;
-        position: absolute;
-        top: 0;
-        right: 17px;
-
-        .Select-clear {
-          display: block;
-          line-height: 19px;
-        }
-      }
-    }
-
-    .Select-menu-outer {
-      z-index: 500;
-      width: auto;
-      min-width: 100%;
-      box-shadow: 0 1px 0 1px $dark-green;
-      border-color: $dark-green;
-      border-bottom: none;
-      border-radius: 0;
-    }
-
-    .Select-menu {
-      z-index: 500;
-      height: auto;
-    }
-
-    .Select-option {
-      color: $black;
-      padding-top: rem-calc(4px);
-      padding-bottom: rem-calc(4px);
-      min-height: 20px;
-      font-size: rem-calc(14px) !important;
-      white-space: nowrap;
-
-      &.is-focused, &.Select-option.is-selected {
-        background-color: $light-yellow !important;
-      }
-
-      &:hover, &:focus, &:active {
-        background: $light-yellow;
-      }
-    }
-
-    .Select-noresults {
-      padding-top: rem-calc(4px);
-      padding-bottom: rem-calc(4px);
-      min-height: 20px;
-      font-size: rem-calc(14px) !important;
-      color: $medium-dark-gray;
-    }
-
-    box-shadow: none;
-
-    &.is-focused:not(.is-open) {
-      > .Select-control {
-        outline: 2px dotted $dark-green !important;
-        outline-offset: 0px;
-        border-color: $medium-gray !important;
-      }
-    }
-
-    &.is-focused.is-open {
-      .Select-control {
-        outline: none !important;
-        border-color: $dark-green !important;
-        box-shadow: 0 0 0 1px $dark-green !important;
-      }
-    }
-
     &.is-dirty {
-      .Select-control {
+      .select-input__control {
         background-color: $is-dirty-color !important;
       }
     }
 
     &.has-error {
-      .Select-control {
-        transition: none !important;
-        border: 1px solid $red !important;
-      }
-
-      &.is-focused {
-        .Select-control {
-          box-shadow: 0 0 0 1px $red !important;
+      .select-input {
+        .select-input__control {
+          border-color: $red !important;
+          box-shadow: 0px 0px 0px 1px $red !important;
+          outline: none !important;
         }
-      }
 
-      .Select-menu-outer {
-        box-shadow: 0 1px 0 1px $red;
-        border-color: $red;
+        .select-input__menu {
+          border-color: $red;
+        }
       }
     }
   }

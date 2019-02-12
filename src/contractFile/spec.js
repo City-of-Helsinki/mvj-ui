@@ -19,16 +19,12 @@ const defaultState: ContractFileState = {
   methods: {},
 };
 
-// $FlowFixMe
 describe('contractFile', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('contractFileReducer', () => {
 
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true when fetching attributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 
@@ -39,7 +35,7 @@ describe('contractFile', () => {
       it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
         const newState = {...defaultState, isFetchingAttributes: false};
 
-        let state = contractFileReducer({}, fetchAttributes());
+        let state: Object = contractFileReducer({}, fetchAttributes());
         state = contractFileReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });

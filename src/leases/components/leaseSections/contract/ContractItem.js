@@ -13,7 +13,6 @@ import DecisionLink from '$components/links/DecisionLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
-import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {
@@ -22,11 +21,17 @@ import {
   LeaseContractChangesFieldTitles,
   LeaseContractsFieldPaths,
   LeaseContractsFieldTitles,
-  LeaseContractMortgageDocumentsFieldPaths,
-  LeaseContractMortgageDocumentsFieldTitles,
+  LeaseContractCollateralsFieldPaths,
+  LeaseContractCollateralsFieldTitles,
 } from '$src/leases/enums';
-import {getDecisionById, getDecisionOptions, isContractActive} from '$src/leases/helpers';
-import {formatDate, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
+import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
+import {
+  formatDate,
+  getFieldOptions,
+  getLabelOfOption,
+  isEmptyValue,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
@@ -35,6 +40,7 @@ import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  collateralsCollapseState: boolean,
   contract: Object,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
@@ -47,6 +53,7 @@ type Props = {
 
 const ContractItem = ({
   attributes,
+  collateralsCollapseState,
   contract,
   contractCollapseState,
   contractChangesCollapseState,
@@ -56,28 +63,27 @@ const ContractItem = ({
   receiveCollapseStates,
   typeOptions,
 }: Props) => {
-  const handleContractCollapseToggle = (val: boolean) => {
+  const handleCollapseToggle = (val: boolean, field: string) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.CONTRACTS]: {
           [contract.id]: {
-            contract: val,
+            [field]: val,
           },
         },
       },
     });
   };
+  const handleContractCollapseToggle = (val: boolean) => {
+    handleCollapseToggle(val, 'contract');
+  };
 
   const handleContractChangesCollapseToggle = (val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.CONTRACTS]: {
-          [contract.id]: {
-            contract_changes: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle(val, 'contract_changes');
+  };
+
+  const handleCollateralsCollapseToggle = (val: boolean) => {
+    handleCollapseToggle(val, 'collaterals');
   };
 
   const handleShowContractFileModal = () => {
@@ -86,6 +92,7 @@ const ContractItem = ({
 
   const decisionOptions = getDecisionOptions(currentLease);
   const decision = getDecisionById(currentLease, contract.decision);
+  const collateralTypeOptions = getFieldOptions(attributes, LeaseContractCollateralsFieldPaths.TYPE);
 
   return (
     <Collapse
@@ -95,11 +102,6 @@ const ContractItem = ({
           <Column>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGNING_DATE)}>
               <CollapseHeaderSubtitle>{formatDate(contract.signing_date) || '-'}</CollapseHeaderSubtitle>
-            </Authorization>
-          </Column>
-          <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_START_DATE) && isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_END_DATE)}>
-              <CollapseHeaderSubtitle>{isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}</CollapseHeaderSubtitle>
             </Authorization>
           </Column>
         </Fragment>
@@ -146,6 +148,32 @@ const ContractItem = ({
       </Row>
       <Row>
         <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGN_BY_DATE)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.SIGN_BY_DATE}</FormTextTitle>
+            <FormText>{formatDate(contract.sign_by_date) || '–'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.FIRST_CALL_SENT)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.FIRST_CALL_SENT}</FormTextTitle>
+            <FormText>{formatDate(contract.first_call_sent) || '–'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SECOND_CALL_SENT)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.SECOND_CALL_SENT}</FormTextTitle>
+            <FormText>{formatDate(contract.second_call_sent) || '–'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.THIRD_CALL_SENT)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.THIRD_CALL_SENT}</FormTextTitle>
+            <FormText>{formatDate(contract.third_call_sent) || '–'}</FormText>
+          </Authorization>
+        </Column>
+      </Row>
+      <Row>
+        <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
             <FormTextTitle>{LeaseContractsFieldTitles.IS_READJUSTMENT_DECISION}</FormTextTitle>
             <FormText>{contract.is_readjustment_decision ? 'Kyllä' : 'Ei'}</FormText>
@@ -182,65 +210,6 @@ const ContractItem = ({
           </Authorization>
         </Column>
       </Row>
-      <Row>
-        <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_NUMBER)}>
-            <FormTextTitle>{LeaseContractsFieldTitles.COLLATERAL_NUMBER}</FormTextTitle>
-            <FormText>{contract.collateral_number  || '–'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_START_DATE)}>
-            <FormTextTitle>{LeaseContractsFieldTitles.COLLATERAL_START_DATE}</FormTextTitle>
-            <FormText>{formatDate(contract.collateral_start_date) || '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_END_DATE)}>
-            <FormTextTitle>{LeaseContractsFieldTitles.COLLATERAL_END_DATE}</FormTextTitle>
-            <FormText>{formatDate(contract.collateral_end_date) || '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={6} medium={12} large={6}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_NOTE)}>
-            <FormTextTitle>{LeaseContractsFieldTitles.COLLATERAL_NOTE}</FormTextTitle>
-            <FormText>{contract.collateral_note  || '–'}</FormText>
-          </Authorization>
-        </Column>
-      </Row>
-
-      <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractMortgageDocumentsFieldPaths.MORTGAGE_DOCUMENTS)}>
-        <SubTitle>{LeaseContractMortgageDocumentsFieldTitles.MORTGAGE_DOCUMENTS}</SubTitle>
-        {!contract.mortgage_documents || !contract.mortgage_documents.length && <FormText>Ei panttikirjoja</FormText>}
-        {contract.mortgage_documents && !!contract.mortgage_documents.length &&
-          <Fragment>
-            <Row>
-              <Column small={4} medium={4} large={2}>
-                <FormTextTitle >{LeaseContractMortgageDocumentsFieldTitles.NUMBER}</FormTextTitle>
-              </Column>
-              <Column small={4} medium={4} large={2}>
-                <FormTextTitle >{LeaseContractMortgageDocumentsFieldTitles.DATE}</FormTextTitle>
-              </Column>
-              <Column small={4} medium={4} large={2}>
-                <FormTextTitle >{LeaseContractMortgageDocumentsFieldTitles.NOTE}</FormTextTitle>
-              </Column>
-            </Row>
-            {contract.mortgage_documents.map((doc) =>
-              <Row key={doc.id}>
-                <Column small={4} medium={4} large={2}>
-                  <FormText>{doc.number || '–'}</FormText>
-                </Column>
-                <Column small={4} medium={4} large={2}>
-                  <FormText>{formatDate(doc.date) || '–'}</FormText>
-                </Column>
-                <Column small={4} medium={4} large={2}>
-                  <FormText>{doc.note || '–'}</FormText>
-                </Column>
-              </Row>
-            )}
-          </Fragment>
-        }
-      </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.CONTRACT_CHANGES)}>
         <Collapse
@@ -315,6 +284,81 @@ const ContractItem = ({
           }
         </Collapse>
       </Authorization>
+
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.COLLATRALS)}>
+        <Collapse
+          className='collapse__secondary'
+          defaultOpen={collateralsCollapseState !== undefined ? collateralsCollapseState : true}
+          headerTitle={LeaseContractCollateralsFieldTitles.COLLATRALS}
+          onToggle={handleCollateralsCollapseToggle}
+        >
+          {!contract.collaterals || !contract.collaterals.length && <FormText>Ei vakuuksia</FormText>}
+          {contract.collaterals && !!contract.collaterals.length &&
+            <BoxItemContainer>
+              {contract.collaterals.map((collateral) => {
+                return (
+                  <BoxItem
+                    key={collateral.id}
+                    className='no-border-on-first-child no-border-on-last-child'>
+                    <Row>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TYPE)}>
+                          <FormTextTitle>{LeaseContractCollateralsFieldTitles.TYPE}</FormTextTitle>
+                          <FormText>{getLabelOfOption(collateralTypeOptions, collateral.type) || '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}>
+                          <FormTextTitle>{LeaseContractCollateralsFieldTitles.NUMBER}</FormTextTitle>
+                          <FormText>{collateral.number || '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}>
+                          <FormTextTitle>{LeaseContractCollateralsFieldTitles.START_DATE}</FormTextTitle>
+                          <FormText>{formatDate(collateral.start_date) || '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}>
+                          <FormTextTitle>{LeaseContractCollateralsFieldTitles.END_DATE}</FormTextTitle>
+                          <FormText>{formatDate(collateral.end_date) || '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
+                          <FormTextTitle>{LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}</FormTextTitle>
+                          <FormText>{!isEmptyValue(collateral.total_amount) ? `${collateral.total_amount} $` : '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}>
+                          <FormTextTitle>{LeaseContractCollateralsFieldTitles.PAID_DATE}</FormTextTitle>
+                          <FormText>{formatDate(collateral.paid_date) || '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                    </Row>
+                    <Row>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
+                          <FormTextTitle>{LeaseContractCollateralsFieldTitles.RETURNED_DATE}</FormTextTitle>
+                          <FormText>{formatDate(collateral.returned_date) || '–'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={8} large={10}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NOTE)}>
+                          <FormTextTitle>{LeaseContractCollateralsFieldTitles.NOTE}</FormTextTitle>
+                          <FormText>{collateral.note  || '–'}</FormText>
+                        </Authorization>
+                      </Column>
+                    </Row>
+                  </BoxItem>
+                );
+              })}
+            </BoxItemContainer>
+          }
+        </Collapse>
+      </Authorization>
     </Collapse>
   );
 };
@@ -325,6 +369,7 @@ export default connect(
 
     return {
       attributes: getAttributes(state),
+      collateralsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.collaterals`),
       contractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract`),
       contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract_changes`),
       contractFileMethods: getContractFileMethods(state),

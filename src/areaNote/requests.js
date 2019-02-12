@@ -10,8 +10,8 @@ export const fetchAttributes = (): Generator<any, any, any> => {
   }));
 };
 
-export const fetchAreaNotes = (search: string): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`area_note/${search ? `${search}&limit=10000` : '?limit=10000'}`)));
+export const fetchAreaNotes = (params: ?Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('area_note/', params)));
 };
 
 export const createAreaNote = (areaNote: AreaNote): Generator<any, any, any> => {

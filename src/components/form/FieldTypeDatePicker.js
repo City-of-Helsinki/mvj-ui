@@ -67,11 +67,12 @@ const FieldTypeDatePicker = ({
         disabled={disabled}
         id={name}
         locale='fi'
-        placeholder={placeholder}
+        placeholderText={placeholder}
         onBlur={handleBlur}
         onChange={handleChange}
         onSelect={handleSelect}
-        selected={value ? moment(value) : null}
+        // $FlowFixMe
+        selected={value ? moment(value) : undefined}
         dateFormat='DD.MM.YYYY'
         showYearDropdown
         dropdownMode="select"

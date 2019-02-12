@@ -30,16 +30,12 @@ const defaultState: CommentState = {
   methods: {},
 };
 
-// $FlowFixMe
 describe('Comments', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('commentReducer', () => {
 
-      // $FlowFixMe
       it('should update comment attributes', () => {
         const dummyAttributes = {
           val1: 1,
@@ -80,7 +76,7 @@ describe('Comments', () => {
       it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
         const newState = {...defaultState, isFetchingAttributes: false};
 
-        let state = commentReducer({}, fetchAttributes());
+        let state: Object = commentReducer({}, fetchAttributes());
         state = commentReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
@@ -130,7 +126,7 @@ describe('Comments', () => {
         const leaseId = 0;
         const newState = {...defaultState};
 
-        let state = commentReducer({}, showEditModeById(leaseId));
+        let state: Object = commentReducer({}, showEditModeById(leaseId));
         state = commentReducer(state, clearEditFlags());
         expect(state).to.deep.equal(newState);
       });

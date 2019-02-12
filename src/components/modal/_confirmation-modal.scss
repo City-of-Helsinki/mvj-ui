@@ -1,4 +1,12 @@
 .confirmation-modal {
+  .modal__overlay {
+    z-index: 1010;
+  }
+
+  .modal__wrapper {
+    z-index: 1020;
+  }
+
   &__footer {
     text-align: center;
     margin-top: 2.5rem;

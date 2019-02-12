@@ -1,116 +1,124 @@
 // @flow
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import Select from 'react-select';
-import fetch from 'isomorphic-fetch';
+// $FlowFixMe
+import {Async} from 'react-select';
 import classNames from 'classnames';
 import debounce from 'lodash/debounce';
 
-import createUrl from '$src/api/createUrl';
-import {getContentContact} from '$src/contacts/helpers';
-import {sortByLabelAsc} from '$util/helpers';
-import {getApiToken} from '$src/auth/selectors';
-
-const arrowRenderer = () => <i className='select-input__arrow-renderer'/>;
+import DropdownIndicator from '$components/inputs/DropdownIndicator';
+import LoadingIndicator from '$components/inputs/SelectLoadingIndicator';
+import {getContentContact} from '../../contacts/helpers';
+import {addEmptyOption, sortByLabelAsc} from '$util/helpers';
+import {fetchContacts} from '$src/contacts/requestsAsync';
 
 type Props = {
-  apiToken: string,
-  creatable?: boolean,
   disabled?: boolean,
   displayError: boolean,
   input: Object,
   isDirty: boolean,
   onChange: Function,
   placeholder?: string,
-  relatedLeases: Array<Object>,
 }
 
-class FieldTypeContactSelect extends Component<Props> {
+type State = {
+  inputValue: string,
+}
+
+class FieldTypeContactSelect extends Component<Props, State> {
+  select: any
+
   static defaultProps = {
-    creatable: false,
     disabled: false,
     value: '',
   };
 
+  state = {
+    inputValue: '',
+  }
+
   handleBlur = () => {
     const {input: {onBlur, value}} = this.props;
+
     onBlur(value);
   };
 
   handleChange = (value: Object) => {
     const {input: {onChange}} = this.props;
+
     onChange(value);
   }
 
-  getOptions = (json: Object) => json.map((contact) => getContentContact(contact)).sort(sortByLabelAsc);
+  handleInputChange = (value: string, meta: Object) => {
+    const {action} = meta;
+    switch (action) {
+      case 'input-change':
+        this.setState({inputValue: value});
+        break;
+    }
+  }
 
-  getContacts = debounce((input, callback) => {
-    const {apiToken} = this.props;
-    if (!apiToken) {return Promise.resolve({options: []});}
+  handleMenuOpen = () => {
+    const {inputValue} = this.state;
 
-    const request = new Request(createUrl(`contact/?search=${input}`));
-    request.headers.set('Authorization', `Bearer ${apiToken}`);
+    if(this.select.state.inputValue !== inputValue) {
+      this.select.select.onInputChange(inputValue, {action: 'input-change'});
+    }
+  }
 
-    fetch(request)
-      .then((response) => response.json())
-      .then((json) => {
-        callback(null, {
-          options: this.getOptions(json.results),
-          complete: true,
-        });
-      });
+  getContacts = debounce(async(inputValue: string, callback: Function) => {
+    const contacts = await fetchContacts({
+      search: inputValue,
+    });
+
+    callback(addEmptyOption(contacts.map((lessor) => getContentContact(lessor)).sort(sortByLabelAsc)));
   }, 500);
 
-  handleFilterOptions = (options: Array<Object>) => options;
+  loadOptions = (inputValue: string, callback: Function) => {
+    this.getContacts(inputValue, callback);
+  };
 
   render() {
     const {
-      creatable,
       disabled,
       displayError,
-      input,
       input: {name, value},
       isDirty,
       placeholder,
     } = this.props;
 
-    const AsyncComponent = creatable ? Select.AsyncCreatable : Select.Async;
-
     return(
-      <AsyncComponent
-        {...input}
-        arrowRenderer={arrowRenderer}
-        autoload={false}
-        autosize={false}
-        backspaceRemoves={false}
-        cache={false}
-        className={classNames(
-          'form-field__select',
-          {'has-error': displayError},
-          {'is-dirty': isDirty})
-        }
-        clearable={false}
-        disabled={disabled}
-        filterOptions={this.handleFilterOptions}
-        id={name}
-        loadingPlaceholder='Ladataan...'
-        loadOptions={this.getContacts}
-        multi={false}
-        noResultsText={'Ei tuloksia'}
-        onBlur={this.handleBlur}
-        onChange={this.handleChange}
-        placeholder={placeholder || 'Valitse...'}
-        searchPromptText='Hae nimellä...'
-        value={value}
-      />
+      <div className={classNames(
+        'form-field__select',
+        {'has-error': displayError},
+        {'is-dirty': isDirty})}
+      >
+        <Async
+          ref={(ref) => this.select = ref}
+          cacheOptions
+          className='select-input'
+          classNamePrefix='select-input'
+          components={{
+            DropdownIndicator,
+            IndicatorSeparator: null,
+            LoadingIndicator,
+          }}
+          defaultOptions
+          disabled={disabled}
+          id={name}
+          loadingMessage={() => 'Ladataan...'}
+          loadOptions={this.loadOptions}
+          noOptionsMessage={() => 'Ei tuloksia'}
+          onBlur={this.handleBlur}
+          onChange={this.handleChange}
+          onInputChange={this.handleInputChange}
+          onMenuOpen={this.handleMenuOpen}
+          options={[]}
+          placeholder={placeholder || 'Valitse...'}
+          value={value}
+        />
+      </div>
     );
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      apiToken: getApiToken(state),
-    };
-  }
-)(FieldTypeContactSelect);
+export default FieldTypeContactSelect;

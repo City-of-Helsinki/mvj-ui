@@ -345,6 +345,7 @@ const formName = FormNames.RENTS;
 const selector = formValueSelector(formName);
 
 export default flowRight(
+  // $FlowFixMe
   withRouter,
   connect(
     (state) => {

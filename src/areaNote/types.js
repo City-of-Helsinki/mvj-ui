@@ -20,7 +20,7 @@ export type ReceiveAttributesAction = Action<'mvj/areaNote/RECEIVE_ATTRIBUTES', 
 export type ReceiveMethodsAction = Action<'mvj/areaNote/RECEIVE_METHODS', Methods>;
 export type AttributesNotFoundAction = Action<'mvj/areaNote/ATTRIBUTES_NOT_FOUND', void>;
 
-export type FetchAreaNoteListAction = Action<'mvj/areaNote/FETCH_ALL', string>;
+export type FetchAreaNoteListAction = Action<'mvj/areaNote/FETCH_ALL', ?Object>;
 export type ReceiveAreaNoteListAction = Action<'mvj/areaNote/RECEIVE_ALL', AreaNoteList>;
 export type CreateAreaNoteAction = Action<'mvj/areaNote/CREATE', AreaNote>;
 export type DeleteAreaNoteAction = Action<'mvj/areaNote/DELETE', number>;

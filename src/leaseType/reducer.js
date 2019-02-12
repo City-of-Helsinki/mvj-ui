@@ -18,7 +18,7 @@ const leaseTypeListReducer: Reducer<LeaseTypeList> = handleActions({
   },
 }, []);
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   list: leaseTypeListReducer,
 });

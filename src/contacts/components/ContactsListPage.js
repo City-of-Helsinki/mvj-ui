@@ -26,6 +26,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {PermissionMissingTexts} from '$src/enums';
 import {ContactFieldPaths, FormNames} from '$src/contacts/enums';
+import {getContactFullName} from '$src/contacts/helpers';
 import {
   getFieldOptions,
   getLabelOfOption,
@@ -231,17 +232,10 @@ class ContactListPage extends Component<Props, State> {
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.TYPE)) {
       columns.push({key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)});
     }
-    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.FIRST_NAME)) {
-      columns.push({key: 'first_name', text: 'Etunimi'});
-    }
-    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.LAST_NAME)) {
-      columns.push({key: 'last_name', text: 'Sukunimi'});
-    }
-    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)) {
-      columns.push({key: 'national_identification_number', text: 'Henkilötunnus'});
-    }
-    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.NAME)) {
-      columns.push({key: 'name', text: 'Yrityksen nimi'});
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.FIRST_NAME) ||
+      isFieldAllowedToRead(contactAttributes, ContactFieldPaths.LAST_NAME) ||
+      isFieldAllowedToRead(contactAttributes, ContactFieldPaths.NAME)) {
+      columns.push({key: 'first_name', text: 'Nimi', renderer: (val, row) => getContactFullName(row)});
     }
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.BUSINESS_ID)) {
       columns.push({key: 'business_id', text: 'Y-tunnus'});

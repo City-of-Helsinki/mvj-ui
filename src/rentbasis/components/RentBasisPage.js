@@ -144,7 +144,7 @@ class RentBasisPage extends Component<Props, State> {
     fetchSingleRentBasis(rentBasisId);
 
     if(isEmpty(areaNotes)) {
-      fetchAreaNoteList();
+      fetchAreaNoteList({});
     }
 
     hideEditMode();

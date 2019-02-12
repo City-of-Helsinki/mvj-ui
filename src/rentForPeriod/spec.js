@@ -18,16 +18,12 @@ const defaultState: RentForPeriodState = {
   isSaveClicked: false,
 };
 
-// $FlowFixMe
 describe('Rent for period', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('rentForPeriodReducer', () => {
 
-      // $FlowFixMe
       it('should update rent for period list', () => {
         const leaseId = 1;
         const dummyRentForPeriod = {
@@ -56,14 +52,14 @@ describe('Rent for period', () => {
       it('should update isFetching flag to true when fetching rent for period', () => {
         const newState = {...defaultState, isFetching: true};
 
-        const state = rentForPeriodReducer({}, fetchRentForPeriodByLease({leaseId: 1, id: 5, allowDelete: false, type: 'test', startDate: '2018-12-12', endDate: '2018-12-12'}));
+        const state = rentForPeriodReducer({}, fetchRentForPeriodByLease({leaseId: 1, id: 5, allowDelete: false, type: 'year', startDate: '2018-12-12', endDate: '2018-12-12'}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...defaultState, isFetching: false};
 
-        let state = rentForPeriodReducer({}, fetchRentForPeriodByLease({leaseId: 1, id: 5, allowDelete: false, type: 'test', startDate: '2018-12-12', endDate: '2018-12-12'}));
+        let state = rentForPeriodReducer({}, fetchRentForPeriodByLease({leaseId: 1, id: 5, allowDelete: false, type: 'year', startDate: '2018-12-12', endDate: '2018-12-12'}));
         state = rentForPeriodReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

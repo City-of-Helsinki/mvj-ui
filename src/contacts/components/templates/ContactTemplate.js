@@ -12,7 +12,7 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import {ContactFieldPaths, ContactFieldTitles} from '$src/contacts/enums';
 import {getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes} from '$src/contacts/selectors';
-import {ContactType} from '$src/contacts/enums';
+import {ContactTypes} from '$src/contacts/enums';
 
 import type {Attributes} from '$src/types';
 
@@ -23,6 +23,7 @@ type Props = {
 
 const ContactTemplate = ({attributes, contact}: Props) => {
   const typeOptions = getFieldOptions(attributes, ContactFieldPaths.TYPE);
+  const countryOptions = getFieldOptions(attributes, ContactFieldPaths.COUNTRY);
   const languageOptions = getFieldOptions(attributes, ContactFieldPaths.LANGUAGE);
 
   if(!contact) return null;
@@ -37,7 +38,7 @@ const ContactTemplate = ({attributes, contact}: Props) => {
               <FormText>{getLabelOfOption(typeOptions, contact.type) || '-'}</FormText>
             </Authorization>
           </Column>
-          {contact.type === ContactType.PERSON &&
+          {contact.type === ContactTypes.PERSON &&
             <Column small={12} medium={6} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.LAST_NAME)}>
                 <FormTextTitle>{ContactFieldTitles.LAST_NAME}</FormTextTitle>
@@ -45,7 +46,7 @@ const ContactTemplate = ({attributes, contact}: Props) => {
               </Authorization>
             </Column>
           }
-          {contact.type === ContactType.PERSON &&
+          {contact.type === ContactTypes.PERSON &&
             <Column small={12} medium={6} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.FIRST_NAME)}>
                 <FormTextTitle>{ContactFieldTitles.FIRST_NAME}</FormTextTitle>
@@ -53,7 +54,7 @@ const ContactTemplate = ({attributes, contact}: Props) => {
               </Authorization>
             </Column>
           }
-          {contact.type && contact.type !== ContactType.PERSON &&
+          {contact.type && contact.type !== ContactTypes.PERSON &&
             <Column small={12} medium={6} large={8}>
               <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NAME)}>
                 <FormTextTitle>{ContactFieldTitles.NAME}</FormTextTitle>
@@ -84,13 +85,18 @@ const ContactTemplate = ({attributes, contact}: Props) => {
             </Authorization>
           </Column>
           <Column small={12} medium={4} large={4}>
-            {/* <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.COUNTRY)}>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.COUNTRY)}>
               <FormTextTitle>{ContactFieldTitles.COUNTRY}</FormTextTitle>
-              <FormText>{contact.country || '-'}</FormText>
-            </Authorization> */}
-            {/* TODO: Wrap field with Authorization component when implemented to BE */}
-            <FormTextTitle>{ContactFieldTitles.COUNTRY}</FormTextTitle>
-            <FormText>{contact.country || '-'}</FormText>
+              <FormText>{getLabelOfOption(countryOptions, contact.country) || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CARE_OF)}>
+              <FormTextTitle>{ContactFieldTitles.CARE_OF}</FormTextTitle>
+              <FormText>{contact.care_of || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
         <Row>
@@ -110,7 +116,7 @@ const ContactTemplate = ({attributes, contact}: Props) => {
       </FormWrapperLeft>
       <FormWrapperRight>
         <Row>
-          {contact.type === ContactType.PERSON &&
+          {contact.type === ContactTypes.PERSON &&
             <Column small={12} medium={6} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}>
                 <FormTextTitle>{ContactFieldTitles.NATIONAL_IDENTIFICATION_NUMBER}</FormTextTitle>
@@ -118,7 +124,7 @@ const ContactTemplate = ({attributes, contact}: Props) => {
               </Authorization>
             </Column>
           }
-          {contact.type && contact.type !== ContactType.PERSON &&
+          {contact.type && contact.type !== ContactTypes.PERSON &&
             <Column small={12} medium={6} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.BUSINESS_ID)}>
                 <FormTextTitle>{ContactFieldTitles.BUSINESS_ID}</FormTextTitle>

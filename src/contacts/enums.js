@@ -4,7 +4,7 @@
  *
  * @type {{PERSON: string, BUSINESS: string, UNIT: string, ASSOCIATION: string, OTHER: string,}}
  */
-export const ContactType = {
+export const ContactTypes = {
   PERSON: 'person',
   BUSINESS: 'business',
   UNIT: 'unit',
@@ -31,6 +31,7 @@ export const ContactFieldPaths = {
   ADDRESS: 'address',
   ADDRESS_PROTECTION: 'address_protection',
   BUSINESS_ID: 'business_id',
+  CARE_OF: 'care_of',
   CITY: 'city',
   COUNTRY: 'country',
   CUSTOMER_NUMBER: 'customer_number',
@@ -59,6 +60,7 @@ export const ContactFieldTitles = {
   ADDRESS: 'Katuosoite',
   ADDRESS_PROTECTION: 'Turvakielto',
   BUSINESS_ID: 'Y-tunnus',
+  CARE_OF: 'C/O',
   CITY: 'Postitoimipaikka',
   COUNTRY: 'Maa',
   CUSTOMER_NUMBER: 'Asiakasnumero',

@@ -49,6 +49,7 @@ class TopNavigation extends Component<Props, State> {
   setInitialSearchValue = () => {
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
+
     this.setState({identifier: query.identifier || ''});
   }
 
@@ -96,7 +97,9 @@ class TopNavigation extends Component<Props, State> {
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   const {history} = this.props;
-                  history.push(target.href);
+                  const relativeUrl = target.href.replace(location.origin, '');
+
+                  history.push(relativeUrl);
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
                 confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
@@ -193,4 +196,5 @@ class TopNavigation extends Component<Props, State> {
   }
 }
 
+// $FlowFixMe
 export default withRouter(TopNavigation);

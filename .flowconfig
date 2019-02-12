@@ -5,6 +5,7 @@
 .*/node_modules/fbjs
 .*/node_modules/editions/source
 .*/node_modules/react-leaflet
+.*/node_modules/react-select
 
 [libs]
 ./defs

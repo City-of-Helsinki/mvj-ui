@@ -185,6 +185,26 @@ const ConstructabilityItem = ({
         onToggle={handlePreconstructionCollapseToggle}
         showTitleOnOpen={true}
       >
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.PRECONSTRUCTION_STATE}</FormTextTitle>
+              <FormText>{getLabelOfOption(constructabilityStateOptions, area.preconstruction_state) || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT}</FormTextTitle>
+              <FormText>{area.preconstruction_estimated_construction_readiness_moment || '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} offsetOnLarge={1} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.PRECONSTRUCTION_INSPECTION_MOMENT}</FormTextTitle>
+              <FormText>{area.preconstruction_inspection_moment || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
           <Comments comments={area.descriptionsPreconstruction} />
         </Authorization>
@@ -207,6 +227,14 @@ const ConstructabilityItem = ({
         onToggle={handleDemolitionCollapseToggle}
         showTitleOnOpen={true}
       >
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.DEMOLITION_STATE}</FormTextTitle>
+              <FormText>{getLabelOfOption(constructabilityStateOptions, area.demolition_state) || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
           <Comments comments={area.descriptionsDemolition} />
         </Authorization>
@@ -230,6 +258,12 @@ const ConstructabilityItem = ({
         showTitleOnOpen={true}
       >
         <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.POLLUTED_LAND_STATE}</FormTextTitle>
+              <FormText>{getLabelOfOption(constructabilityStateOptions, area.polluted_land_state) || '-'}</FormText>
+            </Authorization>
+          </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}>
               <FormTextTitle>{LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_STATE}</FormTextTitle>
@@ -271,18 +305,26 @@ const ConstructabilityItem = ({
         className='collapse__secondary'
         defaultOpen={constructabilityReportCollapseState !== undefined ? constructabilityReportCollapseState : false}
         headerSubtitles={
-          <Column>
-            <StatusIndicator
-              researchState={area.constructability_report_state}
-              stateOptions={constructabilityStateOptions}
-            />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={area.constructability_report_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
         }
         headerTitle='Rakennettavuusselvitys'
         onToggle={handleConstructabilityReportCollapseToggle}
         showTitleOnOpen={true}
       >
         <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_STATE}</FormTextTitle>
+              <FormText>{getLabelOfOption(constructabilityStateOptions, area.constructability_report_state) || '-'}</FormText>
+            </Authorization>
+          </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE)}>
               <FormTextTitle>{LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE}</FormTextTitle>
@@ -318,17 +360,27 @@ const ConstructabilityItem = ({
         className='collapse__secondary'
         defaultOpen={otherCollapseState !== undefined ? otherCollapseState : false}
         headerSubtitles={
-          <Column>
-            <StatusIndicator
-              researchState={area.other_state}
-              stateOptions={constructabilityStateOptions}
-            />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.OTHER_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={area.other_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
         }
         headerTitle='Muut'
         onToggle={handleOtherCollapseToggle}
         showTitleOnOpen={true}
       >
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.OTHER_STATE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.OTHER_STATE}</FormTextTitle>
+              <FormText>{getLabelOfOption(constructabilityStateOptions, area.other_state) || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
           <Comments comments={area.descriptionsOther} />
         </Authorization>

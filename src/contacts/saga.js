@@ -146,17 +146,13 @@ function* editContactSaga({payload: contact}): Generator<any, any, any> {
 function* createContactOnModalSaga({payload: contact}): Generator<any, any, any> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);
-    const isSelected = contact.isSelected ? true : false;
-    delete contact.isSelected;
 
     const {response: {status: statusCode}, bodyAsJson} = yield call(createContact, contact);
 
     switch (statusCode) {
       case 201:
-        if (isSelected) {
-          contactModalSettings.contact = bodyAsJson;
-          yield put(receiveContactModalSettings(contactModalSettings));
-        }
+        contactModalSettings.contact = bodyAsJson;
+        yield put(receiveContactModalSettings(contactModalSettings));
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideContactModal());
         displayUIMessage({title: '', body: 'Asiakas luotu'});

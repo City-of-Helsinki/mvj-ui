@@ -97,7 +97,7 @@ const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
   'mvj/invoices/CLEAR_PATCHED': () => null,
 }, null);
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   attributes: attributesReducer,
   byLease: byLeaseReducer,
   invoiceToCredit: invoiceToCreditReducer,

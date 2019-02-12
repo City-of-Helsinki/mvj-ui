@@ -9,14 +9,16 @@ type Props = {
   disabled?: boolean,
   label: string,
   onClick: Function,
+  style?: Object,
   title?: string,
 }
 
-const AddButtonSecondary = ({className, disabled = false, label, onClick, title}: Props) =>
+const AddButtonSecondary = ({className, disabled = false, label, onClick, style, title}: Props) =>
   <button
     className={classNames('form__add-button secondary', className)}
     disabled={disabled}
     onClick={onClick}
+    style={style}
     title={title}
     type='button'
   >

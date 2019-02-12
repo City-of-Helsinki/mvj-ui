@@ -44,10 +44,11 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchAreaNoteListSaga({payload: search}): Generator<any, any, any> {
+function* fetchAreaNoteListSaga({payload: query}): Generator<any, any, any> {
   try {
-    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchAreaNotes, search);
+    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchAreaNotes, {...query, limit: 10000});
     let areaNotes = body.results;
+
     while(statusCode === 200 && body.next) {
       const {response: {status}, bodyAsJson} = yield call(fetchAreaNotes, `?${body.next.split('?').pop()}`);
       statusCode = status;

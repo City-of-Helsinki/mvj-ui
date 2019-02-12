@@ -239,11 +239,11 @@ class ContactPage extends Component<Props, State> {
   }
 
   saveChanges = () => {
-    const {contactFormValues, editContact, isSaveClicked, receiveIsSaveClicked} = this.props;
+    const {contactFormValues, editContact, isContactFormValid, receiveIsSaveClicked} = this.props;
 
     receiveIsSaveClicked(true);
 
-    if(isSaveClicked) {
+    if(isContactFormValid) {
       editContact(contactFormValues);
     }
   }

@@ -124,8 +124,9 @@ class SideMenu extends Component<Props, State> {
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   const {history} = this.props;
+                  const relativeUrl = target.href.replace(location.origin, '');
 
-                  history.push(target.href);
+                  history.push(relativeUrl);
                   onLinkClick();
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,

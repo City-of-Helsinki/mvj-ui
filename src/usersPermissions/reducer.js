@@ -20,7 +20,7 @@ const usersPermissionsReducer: Reducer<UsersPermissions> = handleActions({
   },
 }, []);
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   permissions: usersPermissionsReducer,
 });

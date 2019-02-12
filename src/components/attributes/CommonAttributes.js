@@ -162,6 +162,7 @@ function CommonAttributes(WrappedComponent: any) {
   };
 }
 
+// $FlowFixMe
 const withCommonAttributes = flowRight(
   connect(
     (state) => {

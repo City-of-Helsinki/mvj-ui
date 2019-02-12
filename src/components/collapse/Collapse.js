@@ -22,8 +22,8 @@ type Props = {
   headerTitle: any,
   onArchive?: Function,
   onCopyToClipboard?: Function,
-  onRemove: Function,
-  onToggle: ?Function,
+  onRemove?: Function,
+  onToggle?: Function,
   onUnarchive?: Function,
   showTitleOnOpen?: boolean,
 }
@@ -184,26 +184,11 @@ class Collapse extends PureComponent<Props, State> {
             </Row>
             <div className='collapse__header_button-wrapper'>
               {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
-              {onCopyToClipboard &&
-                <CopyToClipboardButton
-                  onClick={onCopyToClipboard}
-                />
-              }
-              {onArchive &&
-                <ArchiveButton
-                  onClick={onArchive}
-                />
-              }
-              {onUnarchive &&
-                <UnarchiveButton
-                  onClick={onUnarchive}
-                />
-              }
-              {onRemove &&
-                <RemoveButton
-                  onClick={onRemove}
-                />
-              }
+
+              {onCopyToClipboard && <CopyToClipboardButton onClick={onCopyToClipboard} />}
+              {onArchive && <ArchiveButton onClick={onArchive}/>}
+              {onUnarchive && <UnarchiveButton onClick={onUnarchive}/>}
+              {onRemove && <RemoveButton onClick={onRemove}/>}
             </div>
           </div>
         </div>

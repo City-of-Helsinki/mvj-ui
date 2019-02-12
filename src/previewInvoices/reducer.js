@@ -21,7 +21,7 @@ const previewInvoicesListReducer: Reducer<PreviewInvoices> = handleActions({
   ['mvj/previewInvoices/CLEAR']: () => null,
 }, null);
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   list: previewInvoicesListReducer,
 });

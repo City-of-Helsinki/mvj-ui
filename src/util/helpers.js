@@ -138,7 +138,6 @@ export const getSearchQuery = (filters: any) => {
         return;
       }
 
-      // $FlowFixMe
       query.push(`${key}=${isArray(filter) ? filter.join(',') : encodeURIComponent(filter)}`);
     }
   });
@@ -247,7 +246,7 @@ export const getEpochTime = () => Math.round(new Date().getTime()/1000.0);
 export const formatDate = (date: ?string) => {
   if (!date) return '';
 
-  const d = isNumber(date) ? moment.unix(date) : moment(date);
+  const d = isNumber(date) ? moment.unix(Number(date)) : moment(date);
   return d.format('DD.MM.YYYY');
 };
 
@@ -595,3 +594,19 @@ export const humanReadableByteCount = (bytes: number) => {
 * @returns {boolean}
 */
 export const hasNumber = (text: string) => /\d/.test(text);
+
+/**
+* Try to find value from ocd string and return null if not found
+* @param ocd
+* @param key
+* @returns {string | null}
+*/
+export const findFromOcdString = (ocd: string, key: string) => {
+  const property = ocd.split('/')
+    .map((item) => item.split(':'))
+    .find((item) => item[0] === key);
+
+  return property && property.length > 1
+    ? property[1]
+    : null;
+};

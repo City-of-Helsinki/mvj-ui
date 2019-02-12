@@ -229,6 +229,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
 }
 
 export default flowRight(
+  // $FlowFixMe
   withRouter,
   connect(
     (state) => {

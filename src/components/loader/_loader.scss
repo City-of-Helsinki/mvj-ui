@@ -89,6 +89,17 @@
         top: 2px;
       }
     }
+
+    &.select-wrapper {
+      display: inline-block;
+      width: 14px;
+      padding: 0;
+      margin-right: 2px;
+
+      .loader.small {
+        top: 1px;
+      }
+    }
   }
 }
 

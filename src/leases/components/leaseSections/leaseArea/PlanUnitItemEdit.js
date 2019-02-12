@@ -226,6 +226,7 @@ const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 
 export default flowRight(
+  // $FlowFixMe
   withRouter,
   connect(
     (state, props) => {

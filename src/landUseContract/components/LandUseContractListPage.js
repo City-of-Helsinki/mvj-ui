@@ -333,6 +333,7 @@ class LandUseContractListPage extends Component<Props, State> {
 }
 
 export default flowRight(
+  // $FlowFixMe
   withRouter,
   connect(
     (state) => {

@@ -1,7 +1,11 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
+// $FlowFixMe
 import Select from 'react-select';
 import classNames from 'classnames';
+
+import DropdownIndicator from '$components/inputs/DropdownIndicator';
+import LoadingIndicator from '$components/inputs/SelectLoadingIndicator';
 
 type Props = {
   autoBlur: boolean,
@@ -14,31 +18,26 @@ type Props = {
   placeholder: String,
   setRefForField: Function,
 }
+type State = {
+  inputValue: string,
+}
 
-const arrowRenderer = () => {
-  return (
-    <i className='select-input__arrow-renderer'/>
-  );
-};
+class FieldTypeSelect extends PureComponent<Props, State> {
+  select: any
 
-const FieldTypeSelect = ({
-  autoBlur,
-  disabled,
-  displayError,
-  filterOption,
-  input,
-  input: {name, onBlur, onChange, value},
-  isDirty,
-  options,
-  placeholder,
-  setRefForField,
-}: Props) => {
+  state = {
+    inputValue: '',
+  }
 
-  const handleBlur = () => {
+  handleBlur = () => {
+    const {input: {onBlur, value}} = this.props;
+
     onBlur(value);
   };
 
-  const handleChange = (val: any) => {
+  handleChange = (val: any) => {
+    const {autoBlur, input: {onBlur, onChange}} = this.props;
+
     if(val) {
       const {value} = val;
       if(autoBlur) {
@@ -46,35 +45,77 @@ const FieldTypeSelect = ({
       } else {
         onChange(value);
       }
-
     }
   };
 
-  const handleSetRefForField = (element: any) => {
-    if(setRefForField) {
-      setRefForField(element);
+  handleInputChange = (value: string, meta: Object) => {
+    const {action} = meta;
+    switch (action) {
+      case 'input-change':
+        this.setState({inputValue: value});
+        break;
+    }
+  }
+
+  handleMenuOpen = () => {
+    const {inputValue} = this.state;
+
+    if(this.select.state.inputValue !== inputValue) {
+      this.select.select.onInputChange(inputValue, {action: 'input-change'});
+    }
+  }
+
+  setRef = (element: any) => {
+    const {setRefForField} = this.props;
+
+    this.select = element;
+
+    if(setRefForField && element) {
+      setRefForField(element.select);
     }
   };
 
-  return (
-    <Select
-      {...input}
-      ref={handleSetRefForField}
-      className={classNames('form-field__select', {'has-error': displayError}, {'is-dirty': isDirty})}
-      arrowRenderer={arrowRenderer}
-      autosize={false}
-      clearable={false}
-      clearValue={false}
-      disabled={disabled}
-      filterOption={filterOption}
-      id={name}
-      noResultsText={'Ei tuloksia'}
-      options={options}
-      placeholder={placeholder || 'Valitse...'}
-      onBlur={handleBlur}
-      onChange={handleChange}
-    />
-  );
-};
+  render() {
+    const {
+      disabled,
+      displayError,
+      filterOption,
+      input: {name, value},
+      isDirty,
+      options,
+      placeholder,
+    } = this.props;
+
+    return (
+      <div className={classNames(
+        'form-field__select',
+        {'has-error': displayError},
+        {'is-dirty': isDirty})}
+      >
+        <Select
+          ref={this.setRef}
+          className='select-input'
+          classNamePrefix='select-input'
+          components={{
+            DropdownIndicator,
+            IndicatorSeparator: null,
+            LoadingIndicator,
+          }}
+          disabled={disabled}
+          filterOption={filterOption}
+          id={name}
+          onBlue={this.handleBlur}
+          onChange={this.handleChange}
+          noOptionsMessage={() => 'Ei tuloksia'}
+          onInputChange={this.handleInputChange}
+          onMenuOpen={this.handleMenuOpen}
+          options={options}
+          placeholder={placeholder || 'Valitse...'}
+          value={options && options.find((option) => option.value === value)}
+        />
+      </div>
+    );
+  }
+}
 
 export default FieldTypeSelect;

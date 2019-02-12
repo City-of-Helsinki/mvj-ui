@@ -20,12 +20,14 @@ import {
   receiveIsSaveClicked,
 } from '$src/contacts/actions';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
-import {FormNames as ContactFormNames} from '$src/contacts/enums';
+import {ContactTypes, FormNames as ContactFormNames} from '$src/contacts/enums';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {validateLitigantForm} from '$src/landUseContract/formValidators';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentLitigants} from '$src/landUseContract/helpers';
+import {isEmptyValue} from '$util/helpers';
+import {contactExists} from '$src/contacts/requestsAsync';
 import {
   getContactModalSettings,
   getIsContactFormValid,
@@ -179,33 +181,19 @@ class TenantsEdit extends PureComponent<Props, State> {
     receiveContactModalSettings(null);
   }
 
-  handleSaveContact = () => {
+  createOrEditContact = () => {
     const {
       contactFormValues,
       contactModalSettings,
       createContact,
       editContact,
-      isContactFormValid,
-      receiveIsSaveClicked,
     } = this.props;
 
-    receiveIsSaveClicked(true);
-    if(!isContactFormValid) {return;}
     if(contactModalSettings && contactModalSettings.isNew) {
       createContact(contactFormValues);
     } else if(contactModalSettings && !contactModalSettings.isNew){
       editContact(contactFormValues);
     }
-  }
-
-  handleSaveAndAdd = () => {
-    const {contactFormValues, createContact, isContactFormValid, receiveIsSaveClicked} = this.props,
-      contact = {...contactFormValues};
-
-    receiveIsSaveClicked(true);
-    if(!isContactFormValid) {return;}
-    contact.isSelected = true;
-    createContact(contact);
   }
 
   render () {
@@ -218,40 +206,86 @@ class TenantsEdit extends PureComponent<Props, State> {
     const {litigants} = this.state;
 
     return (
-      <Fragment>
-        {isFetchingContact &&
-          <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>
-        }
+      <AppConsumer>
+        {({dispatch}) => {
+          const handleCreateOrEdit = async() => {
+            const {contactFormValues, contactModalSettings, isContactFormValid, receiveIsSaveClicked} = this.props;
+            const {business_id, national_identification_number, type} = contactFormValues;
 
-        <ContactModal
-          isOpen={isContactModalOpen}
-          onCancel={this.handleCancel}
-          onClose={this.handleClose}
-          onSave={this.handleSaveContact}
-          onSaveAndAdd={this.handleSaveAndAdd}
-          showSave={contactModalSettings && !contactModalSettings.isNew}
-          showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
-          title={(contactModalSettings && contactModalSettings.isNew)
-            ? 'Uusi asiakas'
-            : 'Muokkaa asiakasta'
-          }
-        />
+            receiveIsSaveClicked(true);
 
-        <form>
-          <FieldArray
-            component={renderLitigants}
-            litigants={litigants}
-            name='activeLitigants'
-          />
-          {/* Archived tenants */}
-          <FieldArray
-            component={renderLitigants}
-            archived
-            litigants={litigants}
-            name='archivedLitigants'
-          />
-        </form>
-      </Fragment>
+            if(!isContactFormValid) return;
+
+            if(!contactModalSettings || !contactModalSettings.isNew) {
+              this.createOrEditContact();
+              return;
+            }
+
+            const contactIdentifier = type
+              ? type === ContactTypes.PERSON ? national_identification_number : business_id
+              : null;
+
+            if(contactIdentifier && !isEmptyValue(contactIdentifier)) {
+              const exists = await contactExists(contactIdentifier);
+
+              if(exists) {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    this.createOrEditContact();
+                  },
+                  confirmationModalButtonClassName: ButtonColors.SUCCESS,
+                  confirmationModalButtonText: 'Luo asiakas',
+                  confirmationModalLabel: <span>{`Tunnuksella ${contactIdentifier} on jo olemassa asiakas.`}<br />Haluatko luoda asiakkaan?</span>,
+                  confirmationModalTitle: 'Luo asiakas',
+                });
+
+              } else {
+                this.createOrEditContact();
+              }
+            } else {
+              this.createOrEditContact();
+            }
+          };
+
+          return(
+            <Fragment>
+              {isFetchingContact &&
+                <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>
+              }
+
+              <ContactModal
+                isOpen={isContactModalOpen}
+                onCancel={this.handleCancel}
+                onClose={this.handleClose}
+                onSave={handleCreateOrEdit}
+                onSaveAndAdd={handleCreateOrEdit}
+                showSave={contactModalSettings && !contactModalSettings.isNew}
+                showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
+                title={(contactModalSettings && contactModalSettings.isNew)
+                  ? 'Uusi asiakas'
+                  : 'Muokkaa asiakasta'
+                }
+              />
+
+              <form>
+                <FieldArray
+                  component={renderLitigants}
+                  litigants={litigants}
+                  name='activeLitigants'
+                />
+                {/* Archived tenants */}
+                <FieldArray
+                  component={renderLitigants}
+                  archived
+                  litigants={litigants}
+                  name='archivedLitigants'
+                />
+              </form>
+            </Fragment>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }

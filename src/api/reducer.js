@@ -11,6 +11,6 @@ export const errorReducer: Reducer<ApiError> = handleActions({
   ['mvj/api/CLEAR_ERROR']: () => null,
 }, null);
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   error: errorReducer,
 });

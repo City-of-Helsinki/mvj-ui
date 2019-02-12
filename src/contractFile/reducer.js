@@ -52,7 +52,7 @@ const byIdReducer: Reducer<Object> = handleActions({
   },
 }, {});
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   byId: byIdReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isFetchingById: isFetchingByIdReducer,

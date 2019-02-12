@@ -17,16 +17,12 @@ const defaultState: CopyAreasToContractState = {
   methods: {},
 };
 
-// $FlowFixMe
 describe('Copy areas to contract', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('copyAreasToContractReducer', () => {
 
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 
@@ -37,7 +33,7 @@ describe('Copy areas to contract', () => {
       it('should update isFetchingAttributes flag to true by attributesNotFound', () => {
         const newState = {...defaultState, isFetchingAttributes: false};
 
-        let state = copyAreasToContractReducer({}, fetchAttributes());
+        let state: Object = copyAreasToContractReducer({}, fetchAttributes());
         state = copyAreasToContractReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });

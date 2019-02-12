@@ -5,11 +5,13 @@ import throttle from 'lodash/throttle';
 import {isLargeScreen} from '$util/helpers';
 
 export function withWindowResize(WrappedComponent: any) {
+  type Props = Object
+
   type State = {
     largeScreen: boolean,
   }
 
-  return class WindowResizeHandler extends PureComponent<null, State> {
+  return class WindowResizeHandler extends PureComponent<Props, State> {
     _isMounted: boolean;
 
     state = {

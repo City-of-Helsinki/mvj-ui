@@ -2,6 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import classNames from 'classnames';
 
 import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
@@ -20,15 +21,17 @@ import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import type {Attributes} from '$src/types';
 
 type Props = {
+  className?: string,
   comment: Object,
   leaseAttributes: Attributes,
 }
 
 const Comment = ({
+  className,
   comment,
   leaseAttributes,
 }: Props) =>
-  <BoxItem className='no-border-on-last-child'>
+  <BoxItem className={classNames('no-border-on-last-child', className)}>
     <Row>
       <Column small={12}>
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>

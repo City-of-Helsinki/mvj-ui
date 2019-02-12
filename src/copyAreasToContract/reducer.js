@@ -28,7 +28,7 @@ const methodsReducer: Reducer<Methods> = handleActions({
 }, {});
 
 
-export default combineReducers({
+export default combineReducers<Object, any>({
   attributes: attributesReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   methods: methodsReducer,

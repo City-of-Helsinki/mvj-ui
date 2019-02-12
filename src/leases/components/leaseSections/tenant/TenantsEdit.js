@@ -23,7 +23,7 @@ import {
   receiveIsSaveClicked,
 } from '$src/contacts/actions';
 import {receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames as ContactFormNames} from '$src/contacts/enums';
+import {ContactTypes, FormNames as ContactFormNames} from '$src/contacts/enums';
 import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
@@ -34,9 +34,10 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateTenantForm} from '$src/leases/formValidators';
-import {hasPermissions, isFieldAllowedToEdit} from '$util/helpers';
+import {hasPermissions, isEmptyValue, isFieldAllowedToEdit} from '$util/helpers';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentTenantsFormData} from '$src/leases/helpers';
+import {contactExists} from '$src/contacts/requestsAsync';
 import {
   getMethods as getContactMethods,
   getContactModalSettings,
@@ -183,6 +184,7 @@ class TenantsEdit extends PureComponent<Props, State> {
   componentDidUpdate(prevProps) {
     const {change, contactModalSettings, receiveContactModalSettings, receiveFormValidFlags} = this.props;
     if(prevProps.valid !== this.props.valid) {
+
       receiveFormValidFlags({
         [FormNames.TENANTS]: this.props.valid,
       });
@@ -209,37 +211,19 @@ class TenantsEdit extends PureComponent<Props, State> {
     receiveContactModalSettings(null);
   }
 
-  handleSave = () => {
+  createOrEditContact = () => {
     const {
       contactFormValues,
       contactModalSettings,
       createContact,
       editContact,
-      isContactFormValid,
-      receiveIsSaveClicked,
     } = this.props;
-
-    receiveIsSaveClicked(true);
-
-    if(!isContactFormValid) return;
 
     if(contactModalSettings && contactModalSettings.isNew) {
       createContact(contactFormValues);
     } else if(contactModalSettings && !contactModalSettings.isNew){
       editContact(contactFormValues);
     }
-  }
-
-  handleSaveAndAdd = () => {
-    const {contactFormValues, createContact, isContactFormValid, receiveIsSaveClicked} = this.props,
-      contact = {...contactFormValues};
-
-    receiveIsSaveClicked(true);
-
-    if(!isContactFormValid) return;
-
-    contact.isSelected = true;
-    createContact(contact);
   }
 
   render () {
@@ -258,47 +242,93 @@ class TenantsEdit extends PureComponent<Props, State> {
       tenantsArchived = savedTenants.tenantsArchived;
 
     return (
-      <Fragment>
-        {isFetchingContact && <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>}
+      <AppConsumer>
+        {({dispatch}) => {
+          const handleCreateOrEdit = async() => {
+            const {contactFormValues, contactModalSettings, isContactFormValid, receiveIsSaveClicked} = this.props;
+            const {business_id, national_identification_number, type} = contactFormValues;
 
-        <Authorization allow={contactMethods.POST || contactMethods.PATCH}>
-          <ContactModal
-            isOpen={isContactModalOpen}
-            onCancel={this.handleCancel}
-            onClose={this.handleClose}
-            onSave={this.handleSave}
-            onSaveAndAdd={this.handleSaveAndAdd}
-            showSave={contactModalSettings && !contactModalSettings.isNew}
-            showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
-            title={(contactModalSettings && contactModalSettings.isNew)
-              ? 'Uusi asiakas'
-              : 'Muokkaa asiakasta'
+            receiveIsSaveClicked(true);
+
+            if(!isContactFormValid) return;
+
+            if(!contactModalSettings ||contactModalSettings.isNew) {
+              this.createOrEditContact();
+              return;
             }
-          />
-        </Authorization>
 
-        <form onSubmit={handleSubmit}>
-          <h2>{LeaseTenantsFieldTitles.TENANTS}</h2>
-          <Divider />
+            const contactIdentifier = type
+              ? type === ContactTypes.PERSON ? national_identification_number : business_id
+              : null;
 
-          <FieldArray
-            component={renderTenants}
-            leaseAttributes={leaseAttributes}
-            name='tenants'
-            tenants={tenants}
-            usersPermissions={usersPermissions}
-          />
+            if(contactIdentifier && !isEmptyValue(contactIdentifier)) {
+              const exists = await contactExists(contactIdentifier);
 
-          <FieldArray
-            component={renderTenants}
-            leaseAttributes={leaseAttributes}
-            name='tenantsArchived'
-            archived
-            tenants={tenantsArchived}
-            usersPermissions={usersPermissions}
-          />
-        </form>
-      </Fragment>
+              if(exists) {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    this.createOrEditContact();
+                  },
+                  confirmationModalButtonClassName: ButtonColors.SUCCESS,
+                  confirmationModalButtonText: 'Luo asiakas',
+                  confirmationModalLabel: <span>{`Tunnuksella ${contactIdentifier} on jo olemassa asiakas.`}<br />Haluatko luoda asiakkaan?</span>,
+                  confirmationModalTitle: 'Luo asiakas',
+                });
+
+              } else {
+                this.createOrEditContact();
+              }
+            } else {
+              this.createOrEditContact();
+            }
+          };
+
+          return(
+            <Fragment>
+              {isFetchingContact && <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>}
+
+              <Authorization allow={contactMethods.POST || contactMethods.PATCH}>
+                <ContactModal
+                  isOpen={isContactModalOpen}
+                  onCancel={this.handleCancel}
+                  onClose={this.handleClose}
+                  onSave={handleCreateOrEdit}
+                  onSaveAndAdd={handleCreateOrEdit}
+                  showSave={contactModalSettings && !contactModalSettings.isNew}
+                  showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
+                  title={(contactModalSettings && contactModalSettings.isNew)
+                    ? 'Uusi asiakas'
+                    : 'Muokkaa asiakasta'
+                  }
+                />
+              </Authorization>
+
+              <form onSubmit={handleSubmit}>
+                <h2>{LeaseTenantsFieldTitles.TENANTS}</h2>
+                <Divider />
+
+                <FieldArray
+                  component={renderTenants}
+                  leaseAttributes={leaseAttributes}
+                  name='tenants'
+                  tenants={tenants}
+                  usersPermissions={usersPermissions}
+                />
+
+                <FieldArray
+                  component={renderTenants}
+                  leaseAttributes={leaseAttributes}
+                  name='tenantsArchived'
+                  archived
+                  tenants={tenantsArchived}
+                  usersPermissions={usersPermissions}
+                />
+              </form>
+            </Fragment>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }

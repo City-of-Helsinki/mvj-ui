@@ -1,19 +1,15 @@
+// @flow
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import Select from 'react-select';
-import fetch from 'isomorphic-fetch';
+// $FlowFixMe
+import {Async} from 'react-select';
 import debounce from 'lodash/debounce';
-import forEach from 'lodash/forEach';
 
-import createUrl from '$src/api/createUrl';
+import DropdownIndicator from '$components/inputs/DropdownIndicator';
+import LoadingIndicator from '$components/inputs/SelectLoadingIndicator';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
-import {getApiToken} from '$src/auth/selectors';
-
-const arrowRenderer = () => <i className='select-input__arrow-renderer'/>;
+import {fetchLeases} from '$src/leases/requestsAsync';
 
 type Props = {
-  apiToken: string,
-  creatable?: boolean,
   disabled?: boolean,
   name: string,
   onChange: Function,
@@ -22,89 +18,105 @@ type Props = {
   value?: Object,
 }
 
-class LeaseSelectInput extends Component<Props> {
+type State = {
+  inputValue: string,
+}
+
+class LeaseSelectInput extends Component<Props, State> {
+  select: any
+
   static defaultProps = {
-    creatable: false,
     disabled: false,
     value: '',
   };
 
+  state = {
+    inputValue: '',
+  }
+
   handleChange = (value: Object) => {
     const {onChange} = this.props;
+
     onChange(value);
   }
 
-  getOptions = (json: Object) => {
-    const {relatedLeases} = this.props;
-    return json.filter((lease) => {
-      let isNew = true;
-      forEach(relatedLeases, (relatedLease) => {
-        if(lease.id === relatedLease.lease.id) {
-          isNew = false;
-          return false;
-        }
-      });
-      return isNew;
-    }).map((lease) => {
-      return {
-        value: lease.id,
-        label: getContentLeaseIdentifier(lease),
-      };
-    });
+  handleInputChange = (value: string, meta: Object) => {
+    const {action} = meta;
+
+    switch (action) {
+      case 'set-value':
+      case 'input-change':
+        this.setState({inputValue: value});
+        break;
+    }
   }
 
-  getLeases = debounce((input, callback) => {
-    const {apiToken} = this.props;
-    if (!apiToken || !input) {return Promise.resolve({options: []});}
+  handleMenuOpen = () => {
+    const {inputValue} = this.state;
 
-    const request = new Request(createUrl(`lease/?succinct=true&identifier=${input ? input.toUpperCase() : ''}`));
-    request.headers.set('Authorization', `Bearer ${apiToken}`);
+    if(this.select.state.inputValue !== inputValue) {
+      this.select.select.onInputChange(inputValue, {action: 'input-change'});
+    }
+  }
 
-    fetch(request)
-      .then((response) => response.json())
-      .then((json) => {
-        callback(null, {
-          options: this.getOptions(json.results),
-          complete: true,
-        });
+  getOptions = (leases: Array<Object>): Array<Object> => {
+    const {relatedLeases} = this.props;
+
+    return leases
+      .filter((lease) => relatedLeases.find((relatedLease) => lease.id === relatedLease.lease.id) ? false : true)
+      .map((lease) => {
+        return {
+          value: lease.id,
+          label: getContentLeaseIdentifier(lease),
+        };
       });
+  }
+
+  getLeases = debounce(async(inputValue: string, callback: Function) => {
+    const leases = await fetchLeases({
+      succinct: true,
+      identifier: inputValue,
+    });
+
+    callback(this.getOptions(leases));
   }, 500);
 
-  handleFilterOptions = (options: Array<Object>) => options;
+  loadOptions = (inputValue: string, callback: Function) => {
+    this.getLeases(inputValue, callback);
+  };
 
   render() {
-    const {creatable, disabled, name, placeholder, value} = this.props;
-    const AsyncComponent = creatable
-      ? Select.AsyncCreatable
-      : Select.Async;
+    const {
+      disabled,
+      name,
+      placeholder,
+      value,
+    } = this.props;
 
     return(
-      <AsyncComponent
-        arrowRenderer={arrowRenderer}
-        autoload={false}
-        backspaceRemoves={false}
-        className='form-field__select'
-        clearable={false}
+      <Async
+        ref={(ref) => this.select = ref}
+        className='select-input'
+        classNamePrefix='select-input'
+        components={{
+          DropdownIndicator,
+          IndicatorSeparator: null,
+          LoadingIndicator,
+        }}
         disabled={disabled}
-        filterOptions={this.handleFilterOptions}
         id={name}
-        loadingPlaceholder='Ladataan...'
-        loadOptions={this.getLeases}
-        multi={false}
-        noResultsText={'Ei tuloksia'}
+        loadingMessage={() => 'Ladataan...'}
+        loadOptions={this.loadOptions}
+        noOptionsMessage={() => 'Ei tuloksia'}
         onChange={this.handleChange}
+        onInputChange={this.handleInputChange}
+        onMenuOpen={this.handleMenuOpen}
+        options={[]}
         placeholder={placeholder || 'Valitse...'}
-        searchPromptText='Hae vuokratunnuksella...'
         value={value}
       />
     );
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      apiToken: getApiToken(state),
-    };
-  }
-)(LeaseSelectInput);
+export default LeaseSelectInput;

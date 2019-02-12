@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 type Props = {
   children: Object,
-  defaultOpen: boolean,
+  defaultOpen?: boolean,
   header: string,
 }
 
@@ -18,13 +18,9 @@ class Collapse extends Component<Props, State> {
     defaulOpen: false,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isOpen: false,
-    };
-  }
+  state = {
+    isOpen: false,
+  };
 
   UNSAFE_componentWillMount() {
     const {defaultOpen} = this.props;

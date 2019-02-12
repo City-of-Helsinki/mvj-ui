@@ -13,6 +13,7 @@ import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import Comments from './Comments';
+import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -111,7 +112,7 @@ const renderComments = connect(
   }
 )(({attributes, comments, fields, isSaveClicked, usersPermissions}: CommentProps): Element<*> => {
   const handleAdd = () => {
-    fields.push({});
+    fields.push({is_static: false});
   };
 
   if(!hasPermissions(usersPermissions, UsersPermissions.ADD_CONSTRUCTABILITYDESCRIPTION) &&
@@ -142,7 +143,14 @@ const renderComments = connect(
                       </FormTextTitle>
                     </Authorization>
                   </Column>
-                  <Column small={4} medium={3} large={2}>
+                  <Column small={3} medium={3} large={2}>
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC)}>
+                      <FormTextTitle required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC)}>
+                        {LeaseConstructabilityDescriptionsFieldTitles.IS_STATIC}
+                      </FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column small={3} medium={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
                       <FormTextTitle required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
                         {LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER}
@@ -177,29 +185,40 @@ const renderComments = connect(
                           />
                         </Authorization>
                       </Column>
-                      <Column small={4} medium={3} large={2}>
-                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
+                      <Column small={3} medium={3} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC)}>
                           <FormField
                             disableTouched={isSaveClicked}
-                            fieldAttributes={getFieldAttributes(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}
+                            fieldAttributes={getFieldAttributes(attributes, LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC)}
                             invisibleLabel
-                            name={`${comment}.ahjo_reference_number`}
-                            validate={referenceNumber}
-                            overrideValues={{
-                              label: LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER,
-                              fieldType: FieldTypes.REFERENCE_NUMBER,
-                            }}
+                            name={`${comment}.is_static`}
+                            overrideValues={{label: LeaseConstructabilityDescriptionsFieldTitles.IS_STATIC}}
                           />
                         </Authorization>
                       </Column>
-                      <Column small={2} medium={3} large={2}>
-                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONSTRUCTABILITYDESCRIPTION)}>
-                          <RemoveButton
-                            className='third-level'
-                            onClick={handleRemove}
-                            title="Poista huomautus"
-                          />
-                        </Authorization>
+                      <Column small={3} medium={3} large={2}>
+                        <FieldAndRemoveButtonWrapper
+                          field={<Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}
+                              invisibleLabel
+                              name={`${comment}.ahjo_reference_number`}
+                              validate={referenceNumber}
+                              overrideValues={{
+                                label: LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER,
+                                fieldType: FieldTypes.REFERENCE_NUMBER,
+                              }}
+                            />
+                          </Authorization>}
+                          removeButton={<Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONSTRUCTABILITYDESCRIPTION)}>
+                            <RemoveButton
+                              className='third-level'
+                              onClick={handleRemove}
+                              title="Poista huomautus"
+                            />
+                          </Authorization>}
+                        />
                       </Column>
                     </Row>
                   );
@@ -404,6 +423,26 @@ const ConstructabilityItemEdit = ({
               />
             </Authorization>
           </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}
+                name={`${field}.preconstruction_estimated_construction_readiness_moment`}
+                overrideValues={{label: LeaseAreasFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} offsetOnLarge={1} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT)}
+                name={`${field}.preconstruction_inspection_moment`}
+                overrideValues={{label: LeaseAreasFieldTitles.PRECONSTRUCTION_INSPECTION_MOMENT}}
+              />
+            </Authorization>
+          </Column>
         </Row>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
@@ -557,12 +596,14 @@ const ConstructabilityItemEdit = ({
         defaultOpen={constructabilityReportCollapseState !== undefined ? constructabilityReportCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(constructabilityReportErrors)}
         headerSubtitles={
-          <Column>
-            <StatusIndicator
-              researchState={savedArea.constructability_report_state}
-              stateOptions={constructabilityStateOptions}
-            />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={savedArea.constructability_report_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
         }
         headerTitle='Rakennettavuusselvitys'
         onToggle={handleConstructabilityReportCollapseToggle}
@@ -636,12 +677,14 @@ const ConstructabilityItemEdit = ({
         defaultOpen={otherCollapseState !== undefined ? otherCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(otherErrors)}
         headerSubtitles={
-          <Column>
-            <StatusIndicator
-              researchState={savedArea.other_state}
-              stateOptions={constructabilityStateOptions}
-            />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.OTHER_STATE)}>
+            <Column>
+              <StatusIndicator
+                researchState={savedArea.other_state}
+                stateOptions={constructabilityStateOptions}
+              />
+            </Column>
+          </Authorization>
         }
         headerTitle='Muut'
         onToggle={handleOtherCollapseToggle}

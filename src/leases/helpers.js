@@ -1,5 +1,4 @@
 // @flow
-import PropTypes from 'prop-types';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -13,6 +12,7 @@ import {
   LeaseState,
   LeaseStatus,
   RecipientOptions,
+  RelationTypes,
   RentCycles,
   RentDueDateTypes,
   RentTypes,
@@ -170,31 +170,35 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
 
 export const getContentSummary = (lease: Object) => {
   return {
-    state: lease.state,
-    start_date: lease.start_date,
-    end_date: lease.end_date,
-    lessor: getContentLessor(lease.lessor),
-    preparer: getContentUser(lease.preparer),
+    building_selling_price: lease.building_selling_price,
     classification: lease.classification,
-    intended_use: lease.intended_use,
-    supportive_housing: lease.supportive_housing,
-    statistical_use: lease.statistical_use,
-    intended_use_note: lease.intended_use_note,
+    constructability_areas: getContentConstructability(lease),
+    conveyance_number: lease.conveyance_number,
+    end_date: lease.end_date,
     financing: lease.financing,
+    hitas: lease.hitas,
+    infill_development_compensations: getContentInfillDevelopmentCompensations(lease),
+    intended_use: lease.intended_use,
+    intended_use_note: lease.intended_use_note,
+    is_subject_to_vat: lease.is_subject_to_vat,
+    lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
+    lessor: getContentLessor(lease.lessor),
     management: lease.management,
-    transferable: lease.transferable,
+    note: lease.note,
+    notice_note: lease.notice_note,
+    notice_period: lease.notice_period,
+    preparer: getContentUser(lease.preparer),
+    real_estate_developer: lease.real_estate_developer,
+    reference_number: lease.reference_number,
     regulated: lease.regulated,
     regulation: lease.regulation,
-    hitas: lease.hitas,
-    notice_period: lease.notice_period,
-    notice_note: lease.notice_note,
-    reference_number: lease.reference_number,
-    note: lease.note,
+    special_project: lease.special_project,
+    state: lease.state,
+    start_date: lease.start_date,
+    statistical_use: lease.statistical_use,
+    supportive_housing: lease.supportive_housing,
     tenants: getContentTenants(lease).filter((tenant) => isTenantActive(tenant.tenant)),
-    lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
-    constructability_areas: getContentConstructability(lease),
-    infill_development_compensations: getContentInfillDevelopmentCompensations(lease),
-    is_subject_to_vat: lease.is_subject_to_vat,
+    transferable: lease.transferable,
   };
 };
 
@@ -435,13 +439,18 @@ export const getContentContractChanges = (contract: Object) =>
     });
   });
 
-export const getContentContractMortageDocuments = (contract: Object) =>
-  get(contract, 'mortgage_documents', []).map((doc) => {
+export const getContentContractCollaterals = (contract: Object) =>
+  get(contract, 'collaterals', []).map((collateral) => {
     return ({
-      id: doc.id,
-      number: doc.number,
-      date: doc.date,
-      note: doc.note,
+      id: collateral.id,
+      type: get(collateral, 'type.id') || get(collateral, 'type'),
+      number: collateral.number,
+      start_date: collateral.start_date,
+      end_date: collateral.end_date,
+      total_amount: collateral.total_amount,
+      paid_date: collateral.paid_date,
+      returned_date: collateral.returned_date,
+      note: collateral.note,
     });
   });
 
@@ -452,16 +461,16 @@ export const getContentContractItem = (contract: Object) => {
     contract_number: contract.contract_number,
     signing_date: contract.signing_date,
     signing_note: contract.signing_note,
+    sign_by_date: contract.sign_by_date,
+    first_call_sent: contract.first_call_sent,
+    second_call_sent: contract.second_call_sent,
+    third_call_sent: contract.third_call_sent,
     is_readjustment_decision: contract.is_readjustment_decision,
     decision: get(contract, 'decision.id') || get(contract, 'decision'),
     ktj_link: contract.ktj_link,
-    collateral_number: contract.collateral_number,
-    collateral_start_date: contract.collateral_start_date,
-    collateral_end_date: contract.collateral_end_date,
-    collateral_note: contract.collateral_note,
     institution_identifier: contract.institution_identifier,
     contract_changes: getContentContractChanges(contract),
-    mortgage_documents: getContentContractMortageDocuments(contract),
+    collaterals: getContentContractCollaterals(contract),
   };
 };
 
@@ -490,6 +499,7 @@ export const getContentConstructabilityDescriptions = (area: Object, type: strin
         type: description.type,
         user: getContentUser(description.user),
         text: description.text,
+        is_static: description.is_static,
         ahjo_reference_number: description.ahjo_reference_number,
         modified_at: description.modified_at,
       };
@@ -509,6 +519,8 @@ export const getContentConstructability = (lease: Object) =>
       postal_code: area.postal_code,
       city: area.city,
       preconstruction_state: area.preconstruction_state,
+      preconstruction_estimated_construction_readiness_moment: area.preconstruction_estimated_construction_readiness_moment,
+      preconstruction_inspection_moment: area.preconstruction_inspection_moment,
       demolition_state: area.demolition_state,
       polluted_land_state: area.polluted_land_state,
       polluted_land_rent_condition_state: area.polluted_land_rent_condition_state,
@@ -890,42 +902,55 @@ export const getLeaseCoordinates = (lease: Lease) => {
   let coordinates = [];
   areas.forEach((area) => {
     coordinates = [...coordinates, ...getCoordinatesOfGeometry(area.geometry)];
-
-    // const plots = get(area, 'plots', []);
-    // plots.forEach((plot) => {
-    //   coordinates = [...coordinates, ...getCoordinatesOfGeometry(plot.geometry)];
-    // });
-    //
-    // const planUnits = get(area, 'plan_units', []);
-    // planUnits.forEach((planUnit) => {
-    //   coordinates = [...coordinates, ...getCoordinatesOfGeometry(planUnit.geometry)];
-    // });
   });
   return coordinates;
 };
 
+export const getPayloadCreateLease = (lease: Object) => {
+  const relatedTo = !isEmpty(lease.relate_to)
+    ? !isEmptyValue(lease.relate_to.value)
+      ? lease.relate_to.value
+      : undefined
+    : undefined;
+
+  return {
+    state: lease.state,
+    type: lease.type,
+    municipality: lease.municipality,
+    district: lease.district,
+    reference_number: lease.reference_number,
+    note: lease.note,
+    relate_to: relatedTo,
+    relation_type: relatedTo ? RelationTypes.TRANSFER : undefined,
+  };
+};
+
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
-  payload.state = summary.state;
-  payload.start_date = summary.start_date;
-  payload.end_date = summary.end_date;
-  payload.lessor = get(summary, 'lessor.value');
-  payload.preparer = get(summary, 'preparer.value');
+  payload.building_selling_price = convertStrToDecimalNumber(summary.building_selling_price);
   payload.classification = summary.classification;
-  payload.intended_use = summary.intended_use;
-  payload.supportive_housing = summary.supportive_housing;
-  payload.statistical_use = summary.statistical_use;
-  payload.intended_use_note = summary.intended_use_note;
+  payload.conveyance_number = summary.conveyance_number;
+  payload.end_date = summary.end_date;
   payload.financing = summary.financing;
+  payload.hitas = summary.hitas;
+  payload.intended_use = summary.intended_use;
+  payload.intended_use_note = summary.intended_use_note;
+  payload.is_subject_to_vat = summary.is_subject_to_vat;
+  payload.lessor = get(summary, 'lessor.value');
+  payload.notice_note = summary.notice_note;
+  payload.notice_period = summary.notice_period;
   payload.management = summary.management;
-  payload.transferable = summary.transferable;
+  payload.note = summary.note;
+  payload.preparer = get(summary, 'preparer.value');
+  payload.reference_number = summary.reference_number;
+  payload.real_estate_developer = summary.real_estate_developer;
   payload.regulated = summary.regulated;
   payload.regulation = summary.regulation;
-  payload.hitas = summary.hitas;
-  payload.notice_period = summary.notice_period;
-  payload.notice_note = summary.notice_note;
-  payload.reference_number = summary.reference_number;
-  payload.note = summary.note;
-  payload.is_subject_to_vat = summary.is_subject_to_vat;
+  payload.special_project = summary.special_project;
+  payload.start_date = summary.start_date;
+  payload.state = summary.state;
+  payload.statistical_use = summary.statistical_use;
+  payload.supportive_housing = summary.supportive_housing;
+  payload.transferable = summary.transferable;
 
   return payload;
 };
@@ -1049,17 +1074,6 @@ export const addDecisionsFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-const getContractMortgageDocumentsForDb = (contract: Object) => {
-  return get(contract, 'mortgage_documents', []).map((doc) => {
-    return {
-      id: doc.id || undefined,
-      number: doc.number,
-      date: doc.date,
-      note: doc.note,
-    };
-  });
-};
-
 const getContractChangesForDb = (contract: Object) => {
   return get(contract, 'contract_changes', []).map((change) => {
     return {
@@ -1075,6 +1089,22 @@ const getContractChangesForDb = (contract: Object) => {
   });
 };
 
+const getPayloadCollaterals = (contract: Object) => {
+  return get(contract, 'collaterals', []).map((collateral) => {
+    return {
+      id: collateral.id || undefined,
+      type: collateral.type,
+      number: collateral.number,
+      start_date: collateral.start_date,
+      end_date: collateral.end_date,
+      total_amount: convertStrToDecimalNumber(collateral.total_amount),
+      paid_date: collateral.paid_date,
+      returned_date: collateral.returned_date,
+      note: collateral.note,
+    };
+  });
+};
+
 export const addContractsFormValues = (payload: Object, values: Object) => {
   payload.contracts = get(values, 'contracts', []).map((contract) => {
     return {
@@ -1083,16 +1113,16 @@ export const addContractsFormValues = (payload: Object, values: Object) => {
       contract_number: contract.contract_number,
       signing_date: contract.signing_date,
       signing_note: contract.signing_note,
+      sign_by_date: contract.sign_by_date,
+      first_call_sent: contract.first_call_sent,
+      second_call_sent: contract.second_call_sent,
+      third_call_sent: contract.third_call_sent,
       is_readjustment_decision: contract.is_readjustment_decision,
       decision: contract.decision,
       ktj_link: contract.ktj_link,
-      collateral_number: contract.collateral_number,
-      collateral_start_date: contract.collateral_start_date,
-      collateral_end_date: contract.collateral_end_date,
-      collateral_note: contract.collateral_note,
       institution_identifier: contract.institution_identifier,
       contract_changes: getContractChangesForDb(contract),
-      mortgage_documents: getContractMortgageDocumentsForDb(contract),
+      collaterals: getPayloadCollaterals(contract),
     };
   });
 
@@ -1113,7 +1143,7 @@ export const addInspectionsFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-export const getConstructabilityDescriptionsForDb = (area: Object) => {
+export const getPayloadConstructabilityDescriptions = (area: Object) => {
   const descriptionsPreconstruction = get(area, 'descriptionsPreconstruction', []).map((description) => {
     return {...description, 'type': ConstructabilityType.PRECONSTRUCTION};
   });
@@ -1140,6 +1170,7 @@ export const getConstructabilityDescriptionsForDb = (area: Object) => {
   return descriptions.map((description) => {
     return {
       id: description.id || undefined,
+      is_static: description.is_static,
       type: description.type,
       text: description.text,
       ahjo_reference_number: description.ahjo_reference_number,
@@ -1147,59 +1178,58 @@ export const getConstructabilityDescriptionsForDb = (area: Object) => {
   });
 };
 
-export const getConstructabilityItemForDb = (area: Object, values: Object) => {
-  area.preconstruction_state = values.preconstruction_state;
-  area.demolition_state = values.demolition_state;
-  area.polluted_land_state = values.polluted_land_state;
-  area.polluted_land_rent_condition_state = values.polluted_land_rent_condition_state;
-  area.polluted_land_rent_condition_date = values.polluted_land_rent_condition_date;
-  area.polluted_land_planner = values.polluted_land_planner.value;
-  area.polluted_land_projectwise_number = values.polluted_land_projectwise_number;
-  area.polluted_land_matti_report_number = values.polluted_land_matti_report_number;
-  area.constructability_report_state = values.constructability_report_state;
-  area.constructability_report_investigation_state = values.constructability_report_investigation_state;
-  area.constructability_report_signing_date = values.constructability_report_signing_date;
-  area.constructability_report_signer = values.constructability_report_signer;
-  area.constructability_report_geotechnical_number = values.constructability_report_geotechnical_number;
-  area.other_state = values.other_state;
-  area.constructability_descriptions = getConstructabilityDescriptionsForDb(values);
-  return area;
+export const getPayloadConstructabilityArea = (area: Object, values: Object) => {
+  return {
+    ...area,
+    preconstruction_state: values.preconstruction_state,
+    preconstruction_estimated_construction_readiness_moment: values.preconstruction_estimated_construction_readiness_moment,
+    preconstruction_inspection_moment: values.preconstruction_inspection_moment,
+    demolition_state: values.demolition_state,
+    polluted_land_state: values.polluted_land_state,
+    polluted_land_rent_condition_state: values.polluted_land_rent_condition_state,
+    polluted_land_rent_condition_date: values.polluted_land_rent_condition_date,
+    polluted_land_planner: values.polluted_land_planner.value,
+    polluted_land_projectwise_number: values.polluted_land_projectwise_number,
+    polluted_land_matti_report_number: values.polluted_land_matti_report_number,
+    constructability_report_state: values.constructability_report_state,
+    constructability_report_investigation_state: values.constructability_report_investigation_state,
+    constructability_report_signing_date: values.constructability_report_signing_date,
+    constructability_report_signer: values.constructability_report_signer,
+    constructability_report_geotechnical_number: values.constructability_report_geotechnical_number,
+    other_state: values.other_state,
+    constructability_descriptions: getPayloadConstructabilityDescriptions(values),
+  };
 };
 
 export const addConstructabilityFormValues = (payload: Object, values: Object) => {
   const areas = payload.lease_areas;
   const constAreas = get(values, 'lease_areas', []);
+
   if(areas && !!areas.length) {
     payload.lease_areas = areas.map((area) => {
       const constArea = constAreas.find(x => x.id === area.id);
+
       if(constArea) {
-        return getConstructabilityItemForDb(area, constArea);
+        return getPayloadConstructabilityArea(area, constArea);
       }
       return area;
     });
   } else if(constAreas && !!constAreas.length) {
     payload.lease_areas = constAreas.map((area) => {
-      return getConstructabilityItemForDb({
+      return getPayloadConstructabilityArea({
         id: area.id,
-        city: area.city,
         location: area.location,
         area: area.area,
         identifier: area.identifier,
         type: area.type,
-        address: area.address,
-        postal_code: area.postal_code,
-        section_area: area.section_area,
       }, area);
     });
-  } else {
-    payload.lease_areas = [];
   }
+
   return payload;
 };
 
-const ContactType = PropTypes.oneOf([TenantContactType.TENANT, TenantContactType.BILLING, TenantContactType.CONTACT]);
-
-export const getTenantContactDetailsForDb = (tenant: Object, contactType: ContactType) => (
+export const getTenantContactDetailsForDb = (tenant: Object, contactType: 'tenant' | 'billing' | 'contact') => (
   {
     id: tenant.id || undefined,
     type: contactType,
@@ -1428,18 +1458,6 @@ export const getAreasSum = (areas: Array<Object>) => {
     });
   }
   return areasSum;
-};
-
-export const isContractActive = (contract: Object) => {
-  const now = moment();
-  const startDate = contract.collateral_start_date;
-  const endDate = contract.collateral_end_date;
-
-  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
-    return false;
-  }
-
-  return true;
 };
 
 export const isRentActive = (rent: ?Object) => {
