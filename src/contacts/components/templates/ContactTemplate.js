@@ -23,6 +23,7 @@ type Props = {
 
 const ContactTemplate = ({attributes, contact}: Props) => {
   const typeOptions = getFieldOptions(attributes, ContactFieldPaths.TYPE);
+  const countryOptions = getFieldOptions(attributes, ContactFieldPaths.COUNTRY);
   const languageOptions = getFieldOptions(attributes, ContactFieldPaths.LANGUAGE);
 
   if(!contact) return null;
@@ -84,13 +85,18 @@ const ContactTemplate = ({attributes, contact}: Props) => {
             </Authorization>
           </Column>
           <Column small={12} medium={4} large={4}>
-            {/* <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.COUNTRY)}>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.COUNTRY)}>
               <FormTextTitle>{ContactFieldTitles.COUNTRY}</FormTextTitle>
-              <FormText>{contact.country || '-'}</FormText>
-            </Authorization> */}
-            {/* TODO: Wrap field with Authorization component when implemented to BE */}
-            <FormTextTitle>{ContactFieldTitles.COUNTRY}</FormTextTitle>
-            <FormText>{contact.country || '-'}</FormText>
+              <FormText>{getLabelOfOption(countryOptions, contact.country) || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CARE_OF)}>
+              <FormTextTitle>{ContactFieldTitles.CARE_OF}</FormTextTitle>
+              <FormText>{contact.care_of || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
         <Row>

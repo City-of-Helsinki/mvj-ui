@@ -19,7 +19,11 @@ import {
   ContactTypes,
   FormNames,
 } from '$src/contacts/enums';
-import {getFieldAttributes, isFieldAllowedToRead} from '$util/helpers';
+import {
+  getFieldAttributes,
+  isEmptyValue,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {
   getAttributes,
   getInitialContactFormValues,
@@ -70,8 +74,15 @@ class ContactForm extends Component<Props> {
   handleAddressChange = (details: Object) => {
     const {change} = this.props;
 
-    change('postal_code', details.postalCode);
-    change('city', details.city);
+    if(!isEmptyValue(details.postalCode)) {
+      change('postal_code', details.postalCode);
+    }
+    if(!isEmptyValue(details.city)) {
+      change('city', details.city);
+    }
+    if(!isEmptyValue(details.country)) {
+      change('country', details.country.toUpperCase());
+    }
   };
 
   render() {
@@ -176,6 +187,18 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.COUNTRY)}
                     name='country'
                     overrideValues={{label: ContactFieldTitles.COUNTRY}}
+                  />
+                </Authorization>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CARE_OF)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CARE_OF)}
+                    name='care_of'
+                    overrideValues={{label: ContactFieldTitles.CARE_OF}}
                   />
                 </Authorization>
               </Column>

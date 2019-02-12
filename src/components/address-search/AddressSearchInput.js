@@ -9,8 +9,7 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {stringifyQuery} from '$src/api/createUrl';
 import {KeyCodes} from '$src/enums';
-import {AddressFieldMunicipalities} from '$components/enums';
-import {hasNumber} from '$util/helpers';
+import {findFromOcdString, hasNumber} from '$util/helpers';
 
 const SERVICE_MAP_URL = 'https://api.hel.fi/servicemap/v2';
 type Language = 'fi' | 'sv';
@@ -191,8 +190,10 @@ class AddressSearchInput extends Component<Props, State> {
             }
           } else {
             const {filteredAddresses, selectedStreet, value} = this.state;
+
             if(selectedStreet) {
               const address = filteredAddresses.find((address) => this.getAddressText(address).toLowerCase() === (value ? value.toLowerCase() : ''));
+
               if(address) {
                 this.handleAddressItemClick(address);
               }
@@ -504,22 +505,13 @@ class AddressSearchInput extends Component<Props, State> {
   };
 
   handleAddressItemClick = (address: Address) => {
-    const {addressDetailsCallBack, onChange} = this.props,
+    const {onChange} = this.props,
       newValue = `${this.getAddressText(address)}`;
 
     this.setState({value: newValue});
     this.closeMenu();
+    this.fetchAddressDetails(address);
 
-    if(address.street.municipality === AddressFieldMunicipalities.HELSINKI) {
-      this.fetchAddressDetails(address);
-    } else {
-      if(addressDetailsCallBack) {
-        addressDetailsCallBack({
-          postalCode: '',
-          city: address.street.municipality ? capitalize(address.street.municipality) : '',
-        });
-      }
-    }
 
     if(onChange) {
       onChange(newValue);
@@ -531,6 +523,7 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   fetchAddressDetails = (address: Address) => {
+    const {addressDetailsCallBack} = this.props;
     const coordinates = address.location.coordinates;
 
     if(coordinates.length >= 2) {
@@ -545,16 +538,19 @@ class AddressSearchInput extends Component<Props, State> {
         .then((response) => response.json())
         .then((results) => {
           const details = results.results;
+          const postalCode = details.length
+            ? details[0].origin_id || ''
+            : '';
+          const country = details.length
+            ? findFromOcdString(details[0].ocd_id, 'country') || ''
+            : '';
 
-          if(details.length) {
-            const {addressDetailsCallBack} = this.props;
-
-            if(addressDetailsCallBack) {
-              addressDetailsCallBack({
-                postalCode: details[0].origin_id,
-                city: address.street.municipality ? capitalize(address.street.municipality) : '',
-              });
-            }
+          if(addressDetailsCallBack) {
+            addressDetailsCallBack({
+              postalCode,
+              city: address.street.municipality ? capitalize(address.street.municipality) : '',
+              country,
+            });
           }
         })
         .catch((error) => {
@@ -597,9 +593,11 @@ class AddressSearchInput extends Component<Props, State> {
 
               const text = this.getFullStreetText(street);
 
-              return(
-                <li key={index} onClick={handleClick} className={classNames('list-item', {'is-focused': focusedValue === street})}>{text}</li>
-              );
+              return <li
+                key={index}
+                onClick={handleClick}
+                className={classNames('list-item', {'is-focused': focusedValue === street})}
+              >{text}</li>;
             })}
             {selectedStreet && !!addresses.length && !filteredAddresses.length &&
               <li className='no-result-item'>Ei osoitteita</li>

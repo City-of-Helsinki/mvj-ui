@@ -27,6 +27,7 @@ export const getContentContact = (contact: Object) => {
     address: get(contact, 'address'),
     postal_code: get(contact, 'postal_code'),
     city: get(contact, 'city'),
+    care_of: contact.care_of,
     email: get(contact, 'email'),
     phone: get(contact, 'phone'),
     language: get(contact, 'language'),
