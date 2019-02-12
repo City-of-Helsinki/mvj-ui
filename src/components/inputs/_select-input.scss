@@ -49,6 +49,7 @@
       height: 18px;
       position: absolute;
       right: 0;
+      top: 0;
     }
 
     &__indicator {
@@ -78,7 +79,7 @@
 
     &__menu {
       left: rem-calc(-1px);
-      margin-top: 0;
+      margin-top: -1px;
       margin-bottom: 0;
       border-radius: 0;
       width: auto;
@@ -86,7 +87,7 @@
       z-index: 500;
       border: 2px solid $dark-green;
       border-radius: 0;
-      border-top: none;
+      border-top-width: 1px;
     }
 
     &__menu-list {
