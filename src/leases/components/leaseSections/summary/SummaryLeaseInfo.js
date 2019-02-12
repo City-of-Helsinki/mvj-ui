@@ -34,9 +34,10 @@ type StatusIndicatorProps = {
 const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
   <p
     className={classNames(
-      {'summary__status-indicator neutral': !researchState || researchState === ConstructabilityStatus.UNVERIFIED},
-      {'summary__status-indicator alert': researchState === ConstructabilityStatus.REQUIRES_MEASURES},
-      {'summary__status-indicator success': researchState === ConstructabilityStatus.COMPLETE}
+      {'summary__status-indicator summary__status-indicator--neutral': !researchState || researchState === ConstructabilityStatus.UNVERIFIED},
+      {'summary__status-indicator summary__status-indicator--alert': researchState === ConstructabilityStatus.REQUIRES_MEASURES},
+      {'summary__status-indicator summary__status-indicator--success': researchState === ConstructabilityStatus.COMPLETE},
+      {'summary__status-indicator summary__status-indicator--enquiry-sent': researchState === ConstructabilityStatus.ENQUIRY_SENT},
     )}
   >
     {getLabelOfOption(stateOptions, researchState || ConstructabilityStatus.UNVERIFIED)}

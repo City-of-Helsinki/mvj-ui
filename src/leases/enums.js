@@ -159,12 +159,13 @@ export const CreditInvoiceOptionsEnum = {
 /**
  * Constructability status enumerable.
  *
- * @type {{UNVERIFIED: string, REQUIRES_MEASURES: string, COMPLETE: string,}}
+ * @type {{UNVERIFIED: string, REQUIRES_MEASURES: string, COMPLETE: string, ENQUIRY_SENT: string}}
  */
 export const ConstructabilityStatus = {
   UNVERIFIED: 'unverified',
   REQUIRES_MEASURES: 'requires_measures',
   COMPLETE: 'complete',
+  ENQUIRY_SENT: 'enquiry_sent',
 };
 
 /**

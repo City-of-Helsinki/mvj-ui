@@ -153,16 +153,20 @@
     margin-bottom: 0;
     max-width: 100%;
 
-    &.neutral {
+    &--neutral {
       color: $neutral-color !important;
     }
 
-    &.alert {
+    &--alert {
       color: $red !important;
     }
 
-    &.success {
+    &--success {
       color: $dark-green !important;
+    }
+
+    &--enquiry-sent {
+      color: $yellow-enquiry-sent !important;
     }
   }
 }
