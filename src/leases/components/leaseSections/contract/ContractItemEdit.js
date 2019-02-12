@@ -10,7 +10,6 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
-import AddButtonThird from '$components/form/AddButtonThird';
 import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -23,7 +22,6 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
-import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
@@ -33,13 +31,13 @@ import {
   FormNames,
   LeaseContractChangesFieldPaths,
   LeaseContractChangesFieldTitles,
+  LeaseContractCollateralsFieldPaths,
+  LeaseContractCollateralsFieldTitles,
   LeaseContractsFieldPaths,
   LeaseContractsFieldTitles,
-  LeaseContractMortgageDocumentsFieldPaths,
-  LeaseContractMortgageDocumentsFieldTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getDecisionById, isContractActive} from '$src/leases/helpers';
+import {getDecisionById} from '$src/leases/helpers';
 import {
   formatDate,
   getFieldAttributes,
@@ -238,6 +236,7 @@ const renderContractChanges = ({
                   <AddButtonSecondary
                     label='Lisää sopimuksen muutos'
                     onClick={handleAdd}
+                    style={{marginTop: !fields.length ? 0 : undefined}}
                   />
                 </Column>
               </Row>
@@ -249,123 +248,184 @@ const renderContractChanges = ({
   );
 };
 
-type MortgageDocumentsProps = {
+type CollateralsProps = {
   attributes: Attributes,
+  collapseState: boolean,
+  errors: ?Object,
   fields: any,
   isSaveClicked: boolean,
+  onCollapseToggle: Function,
+  title: string,
   usersPermissions: UsersPermissionsType,
 }
 
-const renderMortgageDocuments = ({attributes, fields, isSaveClicked, usersPermissions}: MortgageDocumentsProps): Element<*> => {
+const renderCollaterals = ({
+  attributes,
+  collapseState,
+  errors,
+  fields,
+  fields: {name},
+  isSaveClicked,
+  onCollapseToggle,
+  title,
+  usersPermissions,
+}: CollateralsProps): Element<*> => {
+  const handleCollapseToggle = (val) => {
+    onCollapseToggle(val);
+  };
+
   const handleAdd = () => {
     fields.push({});
   };
+
+  const collateralsErrors = get(errors, name);
 
   return(
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <Fragment>
-            <SubTitle>{LeaseContractMortgageDocumentsFieldTitles.MORTGAGE_DOCUMENTS}</SubTitle>
-            {!hasPermissions(usersPermissions, UsersPermissions.ADD_MORTGAGEDOCUMENT) &&
-              (!fields || !fields.length) &&
-              <FormText>Ei panttikirjoja</FormText>
-            }
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={collapseState !== undefined ? collapseState : true}
+            hasErrors={isSaveClicked &&!isEmpty(collateralsErrors)}
+            headerTitle={title}
+            onToggle={handleCollapseToggle}
+          >
+            <BoxItemContainer>
+              {!hasPermissions(usersPermissions, UsersPermissions.ADD_COLLATERAL) &&
+                (!fields || !fields.length) &&
+                <FormText>Ei vakuuksia</FormText>
+              }
 
-            {fields && !!fields.length &&
-              <Fragment>
-                <Row>
-                  <Column small={4} medium={4} large={2}>
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractMortgageDocumentsFieldPaths.NUMBER)}>
-                      <FormTextTitle>{LeaseContractMortgageDocumentsFieldTitles.NUMBER}</FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column small={4} medium={4} large={2}>
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractMortgageDocumentsFieldPaths.DATE)}>
-                      <FormTextTitle>{LeaseContractMortgageDocumentsFieldTitles.DATE}</FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column small={4} medium={4} large={2}>
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractMortgageDocumentsFieldPaths.NOTE)}>
-                      <FormTextTitle>{LeaseContractMortgageDocumentsFieldTitles.NOTE}</FormTextTitle>
-                    </Authorization>
-                  </Column>
-                </Row>
+              {fields && !!fields.length && fields.map((change, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
+                      fields.remove(index);
+                    },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
+                    confirmationModalButtonText: 'Poista',
+                    confirmationModalLabel: DeleteModalLabels.COLLATERAL,
+                    confirmationModalTitle: DeleteModalTitles.COLLATERAL,
+                  });
+                };
 
-                {fields.map((doc, index) => {
-                  const handleRemove = () => {
-                    dispatch({
-                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                      confirmationFunction: () => {
-                        fields.remove(index);
-                      },
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.MORTGAGE_DOCUMENT,
-                      confirmationModalTitle: DeleteModalTitles.MORTGAGE_DOCUMENT,
-                    });
-                  };
-
-                  return (
-                    <Row key={index}>
-                      <Column small={4} medium={4} large={2}>
-                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractMortgageDocumentsFieldPaths.NUMBER)}>
-                          <FormField
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={getFieldAttributes(attributes, LeaseContractMortgageDocumentsFieldPaths.NUMBER)}
-                            invisibleLabel
-                            name={`${doc}.number`}
-                            overrideValues={{label: LeaseContractMortgageDocumentsFieldTitles.NUMBER}}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={4} medium={4} large={2}>
-                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractMortgageDocumentsFieldPaths.DATE)}>
-                          <FormField
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={getFieldAttributes(attributes, LeaseContractMortgageDocumentsFieldPaths.DATE)}
-                            invisibleLabel
-                            name={`${doc}.date`}
-                            overrideValues={{label: LeaseContractMortgageDocumentsFieldTitles.DATE}}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={3} medium={3} large={2}>
-                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractMortgageDocumentsFieldPaths.NOTE)}>
-                          <FormField
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={getFieldAttributes(attributes, LeaseContractMortgageDocumentsFieldPaths.NOTE)}
-                            invisibleLabel
-                            name={`${doc}.note`}
-                            overrideValues={{label: LeaseContractMortgageDocumentsFieldTitles.NOTE}}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column>
-                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_MORTGAGEDOCUMENT)}>
+                return (
+                  <BoxItem key={index}>
+                    <BoxContentWrapper>
+                      <ActionButtonWrapper>
+                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_COLLATERAL)}>
                           <RemoveButton
-                            className='third-level'
                             onClick={handleRemove}
-                            title="Poista panttikirja"
+                            title="Poista vakuus"
                           />
                         </Authorization>
-                      </Column>
-                    </Row>
-                  );
-                })}
-              </Fragment>
-            }
+                      </ActionButtonWrapper>
 
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_MORTGAGEDOCUMENT)}>
+                      <Row>
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TYPE)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.TYPE)}
+                              name={`${change}.type`}
+                              overrideValues={{label: LeaseContractCollateralsFieldTitles.TYPE}}
+                            />
+                          </Authorization>
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}
+                              name={`${change}.number`}
+                              overrideValues={{label: LeaseContractCollateralsFieldTitles.NUMBER}}
+                            />
+                          </Authorization>
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}
+                              name={`${change}.start_date`}
+                              overrideValues={{label: LeaseContractCollateralsFieldTitles.START_DATE}}
+                            />
+                          </Authorization>
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}
+                              name={`${change}.end_date`}
+                              overrideValues={{label: LeaseContractCollateralsFieldTitles.END_DATE}}
+                            />
+                          </Authorization>
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}
+                              name={`${change}.total_amount`}
+                              unit='€'
+                              overrideValues={{label: LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}}
+                            />
+                          </Authorization>
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}
+                              name={`${change}.paid_date`}
+                              overrideValues={{label: LeaseContractCollateralsFieldTitles.PAID_DATE}}
+                            />
+                          </Authorization>
+                        </Column>
+                      </Row>
+                      <Row>
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}
+                              name={`${change}.returned_date`}
+                              overrideValues={{label: LeaseContractCollateralsFieldTitles.RETURNED_DATE}}
+                            />
+                          </Authorization>
+                        </Column>
+                        <Column small={6} medium={8} large={10}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NOTE)}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.NOTE)}
+                              name={`${change}.note`}
+                              overrideValues={{label: LeaseContractCollateralsFieldTitles.NOTE}}
+                            />
+                          </Authorization>
+                        </Column>
+                      </Row>
+                    </BoxContentWrapper>
+                  </BoxItem>
+                );
+              })}
+            </BoxItemContainer>
+
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLATERAL)}>
               <Row>
                 <Column>
-                  <AddButtonThird
-                    label='Lisää panttikirja'
+                  <AddButtonSecondary
+                    label='Lisää vakuus'
                     onClick={handleAdd}
+                    style={{marginTop: !fields.length ? 0 : undefined}}
                   />
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </Collapse>
         );
       }}
     </AppConsumer>
@@ -374,6 +434,7 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked, usersPermis
 
 type Props = {
   attributes: Attributes,
+  collateralsCollapseState: boolean,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
   contractFileMethods: Methods,
@@ -392,6 +453,7 @@ type Props = {
 
 const ContractItemEdit = ({
   attributes,
+  collateralsCollapseState,
   contractCollapseState,
   contractChangesCollapseState,
   contractFileMethods,
@@ -412,32 +474,30 @@ const ContractItemEdit = ({
   const getContractTitle = (contract: ?Object) =>
     contract ? `${getLabelOfOption(typeOptions, contract.type) || '-'} ${contract.contract_number || ''}` : null;
 
-  const handleContractCollapseToggle = (val: boolean) => {
+  const handleCollapseToggle = (val: boolean, field: string) => {
     if(!contractId) return;
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
         [FormNames.CONTRACTS]: {
           [contractId]: {
-            contract: val,
+            [field]: val,
           },
         },
       },
     });
   };
 
-  const handleContractChangesCollapseToggle = (val: boolean) => {
-    if(!contractId) return;
+  const handleCollateralsCollapseToggle = (val: boolean) => {
+    handleCollapseToggle(val, 'collaterals');
+  };
 
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.CONTRACTS]: {
-          [contractId]: {
-            contract_changes: val,
-          },
-        },
-      },
-    });
+  const handleContractCollapseToggle = (val: boolean) => {
+    handleCollapseToggle(val, 'contract');
+  };
+
+  const handleContractChangesCollapseToggle = (val: boolean) => {
+    handleCollapseToggle(val, 'contract_changes');
   };
 
   const decisionReadOnlyRenderer = (value) => {
@@ -475,11 +535,6 @@ const ContractItemEdit = ({
           <Column>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGNING_DATE)}>
               <CollapseHeaderSubtitle>{formatDate(savedContract.signing_date) || '-'}</CollapseHeaderSubtitle>
-            </Authorization>
-          </Column>
-          <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_START_DATE) && isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_END_DATE)}>
-              <CollapseHeaderSubtitle>{isContractActive(savedContract) ? 'Voimassa' : 'Ei voimassa'}</CollapseHeaderSubtitle>
             </Authorization>
           </Column>
         </Fragment>
@@ -587,62 +642,6 @@ const ContractItemEdit = ({
             </Authorization>
           </Column>
         </Row>
-        <Row>
-          <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_NUMBER)}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.COLLATERAL_NUMBER)}
-                name={`${field}.collateral_number`}
-                overrideValues={{label: LeaseContractsFieldTitles.COLLATERAL_NUMBER}}
-              />
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_START_DATE)}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.COLLATERAL_START_DATE)}
-                name={`${field}.collateral_start_date`}
-                overrideValues={{label: LeaseContractsFieldTitles.COLLATERAL_START_DATE}}
-              />
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_END_DATE)}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.COLLATERAL_END_DATE)}
-                name={`${field}.collateral_end_date`}
-                overrideValues={{label: LeaseContractsFieldTitles.COLLATERAL_END_DATE}}
-              />
-            </Authorization>
-          </Column>
-          <Column small={6} medium={12} large={6}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.COLLATERAL_NOTE)}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.COLLATERAL_NOTE)}
-                name={`${field}.collateral_note`}
-                overrideValues={{label: LeaseContractsFieldTitles.COLLATERAL_NOTE}}
-              />
-            </Authorization>
-          </Column>
-        </Row>
-
-        <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractMortgageDocumentsFieldPaths.MORTGAGE_DOCUMENTS)}>
-          <Row>
-            <Column small={12}>
-              <FieldArray
-                attributes={attributes}
-                component={renderMortgageDocuments}
-                isSaveClicked={isSaveClicked}
-                name={`${field}.mortgage_documents`}
-                usersPermissions={usersPermissions}
-              />
-            </Column>
-          </Row>
-        </Authorization>
       </BoxContentWrapper>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.CONTRACT_CHANGES)}>
@@ -657,6 +656,20 @@ const ContractItemEdit = ({
           isSaveClicked={isSaveClicked}
           onCollapseToggle={handleContractChangesCollapseToggle}
           title={LeaseContractChangesFieldTitles.CONTRACT_CHANGES}
+          usersPermissions={usersPermissions}
+        />
+      </Authorization>
+
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.COLLATRALS)}>
+        <FieldArray
+          attributes={attributes}
+          collapseState={collateralsCollapseState}
+          component={renderCollaterals}
+          errors={errors}
+          name={`${field}.collaterals`}
+          isSaveClicked={isSaveClicked}
+          onCollapseToggle={handleCollateralsCollapseToggle}
+          title={LeaseContractCollateralsFieldTitles.COLLATRALS}
           usersPermissions={usersPermissions}
         />
       </Authorization>
@@ -681,6 +694,7 @@ export default connect(
     };
 
     if(id) {
+      newState.collateralsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.collaterals`);
       newState.contractCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract`);
       newState.contractChangesCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.contract_changes`);
     }

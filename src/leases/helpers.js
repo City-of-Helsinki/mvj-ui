@@ -434,13 +434,18 @@ export const getContentContractChanges = (contract: Object) =>
     });
   });
 
-export const getContentContractMortageDocuments = (contract: Object) =>
-  get(contract, 'mortgage_documents', []).map((doc) => {
+export const getContentContractCollaterals = (contract: Object) =>
+  get(contract, 'collaterals', []).map((collateral) => {
     return ({
-      id: doc.id,
-      number: doc.number,
-      date: doc.date,
-      note: doc.note,
+      id: collateral.id,
+      type: get(collateral, 'type.id') || get(collateral, 'type'),
+      number: collateral.number,
+      start_date: collateral.start_date,
+      end_date: collateral.end_date,
+      total_amount: collateral.total_amount,
+      paid_date: collateral.paid_date,
+      returned_date: collateral.returned_date,
+      note: collateral.note,
     });
   });
 
@@ -454,13 +459,9 @@ export const getContentContractItem = (contract: Object) => {
     is_readjustment_decision: contract.is_readjustment_decision,
     decision: get(contract, 'decision.id') || get(contract, 'decision'),
     ktj_link: contract.ktj_link,
-    collateral_number: contract.collateral_number,
-    collateral_start_date: contract.collateral_start_date,
-    collateral_end_date: contract.collateral_end_date,
-    collateral_note: contract.collateral_note,
     institution_identifier: contract.institution_identifier,
     contract_changes: getContentContractChanges(contract),
-    mortgage_documents: getContentContractMortageDocuments(contract),
+    collaterals: getContentContractCollaterals(contract),
   };
 };
 
@@ -1048,17 +1049,6 @@ export const addDecisionsFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-const getContractMortgageDocumentsForDb = (contract: Object) => {
-  return get(contract, 'mortgage_documents', []).map((doc) => {
-    return {
-      id: doc.id || undefined,
-      number: doc.number,
-      date: doc.date,
-      note: doc.note,
-    };
-  });
-};
-
 const getContractChangesForDb = (contract: Object) => {
   return get(contract, 'contract_changes', []).map((change) => {
     return {
@@ -1070,6 +1060,22 @@ const getContractChangesForDb = (contract: Object) => {
       third_call_sent: change.third_call_sent,
       description: change.description,
       decision: change.decision,
+    };
+  });
+};
+
+const getPayloadCollaterals = (contract: Object) => {
+  return get(contract, 'collaterals', []).map((collateral) => {
+    return {
+      id: collateral.id || undefined,
+      type: collateral.type,
+      number: collateral.number,
+      start_date: collateral.start_date,
+      end_date: collateral.end_date,
+      total_amount: convertStrToDecimalNumber(collateral.total_amount),
+      paid_date: collateral.paid_date,
+      returned_date: collateral.returned_date,
+      note: collateral.note,
     };
   });
 };
@@ -1091,7 +1097,7 @@ export const addContractsFormValues = (payload: Object, values: Object) => {
       collateral_note: contract.collateral_note,
       institution_identifier: contract.institution_identifier,
       contract_changes: getContractChangesForDb(contract),
-      mortgage_documents: getContractMortgageDocumentsForDb(contract),
+      collaterals: getPayloadCollaterals(contract),
     };
   });
 
@@ -1425,18 +1431,6 @@ export const getAreasSum = (areas: Array<Object>) => {
     });
   }
   return areasSum;
-};
-
-export const isContractActive = (contract: Object) => {
-  const now = moment();
-  const startDate = contract.collateral_start_date;
-  const endDate = contract.collateral_end_date;
-
-  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
-    return false;
-  }
-
-  return true;
 };
 
 export const isRentActive = (rent: ?Object) => {
