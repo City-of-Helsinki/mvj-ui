@@ -593,6 +593,48 @@ const ContractItemEdit = ({
         </Row>
         <Row>
           <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGN_BY_DATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.SIGN_BY_DATE)}
+                name={`${field}.sign_by_date`}
+                overrideValues={{label: LeaseContractsFieldTitles.SIGN_BY_DATE}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.FIRST_CALL_SENT)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.FIRST_CALL_SENT)}
+                name={`${field}.first_call_sent`}
+                overrideValues={{label: LeaseContractsFieldTitles.FIRST_CALL_SENT}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SECOND_CALL_SENT)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.SECOND_CALL_SENT)}
+                name={`${field}.second_call_sent`}
+                overrideValues={{label: LeaseContractsFieldTitles.SECOND_CALL_SENT}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.THIRD_CALL_SENT)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.THIRD_CALL_SENT)}
+                name={`${field}.third_call_sent`}
+                overrideValues={{label: LeaseContractsFieldTitles.THIRD_CALL_SENT}}
+              />
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
               <FormField
                 disableTouched={isSaveClicked}

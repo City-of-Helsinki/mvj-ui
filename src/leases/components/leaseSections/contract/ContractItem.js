@@ -148,6 +148,32 @@ const ContractItem = ({
       </Row>
       <Row>
         <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGN_BY_DATE)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.SIGN_BY_DATE}</FormTextTitle>
+            <FormText>{formatDate(contract.sign_by_date) || '–'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.FIRST_CALL_SENT)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.FIRST_CALL_SENT}</FormTextTitle>
+            <FormText>{formatDate(contract.first_call_sent) || '–'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SECOND_CALL_SENT)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.SECOND_CALL_SENT}</FormTextTitle>
+            <FormText>{formatDate(contract.second_call_sent) || '–'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.THIRD_CALL_SENT)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.THIRD_CALL_SENT}</FormTextTitle>
+            <FormText>{formatDate(contract.third_call_sent) || '–'}</FormText>
+          </Authorization>
+        </Column>
+      </Row>
+      <Row>
+        <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
             <FormTextTitle>{LeaseContractsFieldTitles.IS_READJUSTMENT_DECISION}</FormTextTitle>
             <FormText>{contract.is_readjustment_decision ? 'Kyllä' : 'Ei'}</FormText>

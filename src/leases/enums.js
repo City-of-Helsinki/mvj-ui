@@ -953,11 +953,15 @@ export const LeaseContractsFieldPaths = {
   CONTRACTS: 'contracts',
   CONTRACT_NUMBER: 'contracts.child.children.contract_number',
   DECISION: 'contracts.child.children.decision',
+  FIRST_CALL_SENT: 'contracts.child.children.first_call_sent',
   INSTITUTION_IDENTIFIER: 'contracts.child.children.institution_identifier',
   IS_READJUSTMENT_DECISION: 'contracts.child.children.is_readjustment_decision',
   KTJ_LINK: 'contracts.child.children.ktj_link',
+  SECOND_CALL_SENT: 'contracts.child.children.second_call_sent',
+  SIGN_BY_DATE: 'contracts.child.children.sign_by_date',
   SIGNING_DATE: 'contracts.child.children.signing_date',
   SIGNING_NOTE: 'contracts.child.children.signing_note',
+  THIRD_CALL_SENT: 'contracts.child.children.third_call_sent',
   TYPE: 'contracts.child.children.type',
 };
 
@@ -970,11 +974,15 @@ export const LeaseContractsFieldTitles = {
   CONTRACTS: 'Sopimukset',
   CONTRACT_NUMBER: 'Sopimusnumero',
   DECISION: 'Päätös',
+  FIRST_CALL_SENT: '1. kutsu lähetetty',
   INSTITUTION_IDENTIFIER: 'Laitostunnus',
   IS_READJUSTMENT_DECISION: 'Järjestelypäätös',
   KTJ_LINK: 'Ktj dokumentti',
+  SECOND_CALL_SENT: '2. kutsu lähetetty',
+  SIGN_BY_DATE: 'Allekirjoitettava mennessä',
   SIGNING_DATE: 'Allekirjoituspvm',
   SIGNING_NOTE: 'Allekirjoituksen huomautus',
+  THIRD_CALL_SENT: '3. kutsu lähetetty',
   TYPE: 'Sopimuksen tyyppi',
 };
 
