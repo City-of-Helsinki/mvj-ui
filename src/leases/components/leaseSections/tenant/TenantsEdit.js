@@ -191,7 +191,6 @@ class TenantsEdit extends PureComponent<Props, State> {
     }
 
     if(contactModalSettings && contactModalSettings.contact) {
-      console.log('contact', contactModalSettings);
       // Update contact dropdown after creating/patching a contact
       change(contactModalSettings.field, getContentContact(contactModalSettings.contact));
       receiveContactModalSettings(null);

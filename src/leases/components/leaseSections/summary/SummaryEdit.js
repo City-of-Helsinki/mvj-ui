@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import Authorization from '$components/authorization/Authorization';
@@ -231,7 +230,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTENDED_USE)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.INTENDED_USE)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.INTENDED_USE)}
                       name='intended_use'
                       overrideValues={{label: LeaseFieldTitles.INTENDED_USE}}
                     />
@@ -241,7 +240,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTENDED_USE_NOTE)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.INTENDED_USE_NOTE)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.INTENDED_USE_NOTE)}
                       name='intended_use_note'
                       overrideValues={{label: LeaseFieldTitles.INTENDED_USE_NOTE}}
                     />
@@ -253,7 +252,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.FINANCING)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.FINANCING)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.FINANCING)}
                       name='financing'
                       overrideValues={{label: LeaseFieldTitles.FINANCING}}
                     />
@@ -263,7 +262,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.MANAGEMENT)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.MANAGEMENT)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.MANAGEMENT)}
                       name='management'
                       overrideValues={{label: LeaseFieldTitles.MANAGEMENT}}
                     />
@@ -273,7 +272,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.TRANSFERABLE)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.TRANSFERABLE)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.TRANSFERABLE)}
                       name='transferable'
                       overrideValues={{label: LeaseFieldTitles.TRANSFERABLE}}
                     />
@@ -283,7 +282,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.HITAS)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.HITAS)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.HITAS)}
                       name='hitas'
                       overrideValues={{label: LeaseFieldTitles.HITAS}}
                     />
@@ -321,7 +320,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTICE_PERIOD)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.NOTICE_PERIOD)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.NOTICE_PERIOD)}
                       name='notice_period'
                       overrideValues={{label: LeaseFieldTitles.NOTICE_PERIOD}}
                     />
@@ -331,7 +330,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTICE_NOTE)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.NOTICE_NOTE)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.NOTICE_NOTE)}
                       name='notice_note'
                       overrideValues={{label: LeaseFieldTitles.NOTICE_NOTE}}
                     />
@@ -343,7 +342,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REFERENCE_NUMBER)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.REFERENCE_NUMBER)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.REFERENCE_NUMBER)}
                       name='reference_number'
                       validate={referenceNumber}
                       readOnlyValueRenderer={this.referenceNumberReadOnlyRenderer}
@@ -358,7 +357,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTE)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.NOTE)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.NOTE)}
                       name='note'
                       overrideValues={{label: LeaseFieldTitles.NOTE}}
                     />
@@ -370,7 +369,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.IS_SUBJECT_TO_VAT)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.IS_SUBJECT_TO_VAT)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.IS_SUBJECT_TO_VAT)}
                       name='is_subject_to_vat'
                       overrideValues={{label: LeaseFieldTitles.IS_SUBJECT_TO_VAT}}
                     />
@@ -388,10 +387,20 @@ class SummaryEdit extends PureComponent<Props, State> {
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SPECIAL_PROJECT)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.SPECIAL_PROJECT)}
+                      name='special_project'
+                      overrideValues={{label: LeaseFieldTitles.SPECIAL_PROJECT}}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING)}
                       name='supportive_housing'
                       overrideValues={{label: LeaseFieldTitles.SUPPORTIVE_HOUSING}}
                     />
@@ -401,19 +410,53 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATISTICAL_USE)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.STATISTICAL_USE)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.STATISTICAL_USE)}
                       name='statistical_use'
                       overrideValues={{label: LeaseFieldTitles.STATISTICAL_USE}}
                     />
                   </Authorization>
                 </Column>
               </Row>
+
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REAL_ESTATE_DEVELOPER)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.REAL_ESTATE_DEVELOPER)}
+                      name='real_estate_developer'
+                      overrideValues={{label: LeaseFieldTitles.REAL_ESTATE_DEVELOPER}}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CONVEYANCE_NUMBER)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.CONVEYANCE_NUMBER)}
+                      name='conveyance_number'
+                      overrideValues={{label: LeaseFieldTitles.CONVEYANCE_NUMBER}}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.BUILDING_SELLING_PRICE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.BUILDING_SELLING_PRICE)}
+                      name='building_selling_price'
+                      overrideValues={{label: LeaseFieldTitles.BUILDING_SELLING_PRICE}}
+                    />
+                  </Authorization>
+                </Column>
+              </Row>
+
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REGULATED)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.REGULATED)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.REGULATED)}
                       name='regulated'
                       overrideValues={{label: LeaseFieldTitles.REGULATED}}
                     />
@@ -423,7 +466,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REGULATION)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, LeaseFieldPaths.REGULATION)}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.REGULATION)}
                       name='regulation'
                       overrideValues={{label: LeaseFieldTitles.REGULATION}}
                     />

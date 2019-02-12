@@ -170,31 +170,35 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
 
 export const getContentSummary = (lease: Object) => {
   return {
-    state: lease.state,
-    start_date: lease.start_date,
-    end_date: lease.end_date,
-    lessor: getContentLessor(lease.lessor),
-    preparer: getContentUser(lease.preparer),
+    building_selling_price: lease.building_selling_price,
     classification: lease.classification,
-    intended_use: lease.intended_use,
-    supportive_housing: lease.supportive_housing,
-    statistical_use: lease.statistical_use,
-    intended_use_note: lease.intended_use_note,
+    constructability_areas: getContentConstructability(lease),
+    conveyance_number: lease.conveyance_number,
+    end_date: lease.end_date,
     financing: lease.financing,
+    hitas: lease.hitas,
+    infill_development_compensations: getContentInfillDevelopmentCompensations(lease),
+    intended_use: lease.intended_use,
+    intended_use_note: lease.intended_use_note,
+    is_subject_to_vat: lease.is_subject_to_vat,
+    lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
+    lessor: getContentLessor(lease.lessor),
     management: lease.management,
-    transferable: lease.transferable,
+    note: lease.note,
+    notice_note: lease.notice_note,
+    notice_period: lease.notice_period,
+    preparer: getContentUser(lease.preparer),
+    real_estate_developer: lease.real_estate_developer,
+    reference_number: lease.reference_number,
     regulated: lease.regulated,
     regulation: lease.regulation,
-    hitas: lease.hitas,
-    notice_period: lease.notice_period,
-    notice_note: lease.notice_note,
-    reference_number: lease.reference_number,
-    note: lease.note,
+    special_project: lease.special_project,
+    state: lease.state,
+    start_date: lease.start_date,
+    statistical_use: lease.statistical_use,
+    supportive_housing: lease.supportive_housing,
     tenants: getContentTenants(lease).filter((tenant) => isTenantActive(tenant.tenant)),
-    lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
-    constructability_areas: getContentConstructability(lease),
-    infill_development_compensations: getContentInfillDevelopmentCompensations(lease),
-    is_subject_to_vat: lease.is_subject_to_vat,
+    transferable: lease.transferable,
   };
 };
 
@@ -495,6 +499,7 @@ export const getContentConstructabilityDescriptions = (area: Object, type: strin
         type: description.type,
         user: getContentUser(description.user),
         text: description.text,
+        is_static: description.is_static,
         ahjo_reference_number: description.ahjo_reference_number,
         modified_at: description.modified_at,
       };
@@ -514,6 +519,8 @@ export const getContentConstructability = (lease: Object) =>
       postal_code: area.postal_code,
       city: area.city,
       preconstruction_state: area.preconstruction_state,
+      preconstruction_estimated_construction_readiness_moment: area.preconstruction_estimated_construction_readiness_moment,
+      preconstruction_inspection_moment: area.preconstruction_inspection_moment,
       demolition_state: area.demolition_state,
       polluted_land_state: area.polluted_land_state,
       polluted_land_rent_condition_state: area.polluted_land_rent_condition_state,
@@ -919,27 +926,31 @@ export const getPayloadCreateLease = (lease: Object) => {
 };
 
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
-  payload.state = summary.state;
-  payload.start_date = summary.start_date;
-  payload.end_date = summary.end_date;
-  payload.lessor = get(summary, 'lessor.value');
-  payload.preparer = get(summary, 'preparer.value');
+  payload.building_selling_price = convertStrToDecimalNumber(summary.building_selling_price);
   payload.classification = summary.classification;
-  payload.intended_use = summary.intended_use;
-  payload.supportive_housing = summary.supportive_housing;
-  payload.statistical_use = summary.statistical_use;
-  payload.intended_use_note = summary.intended_use_note;
+  payload.conveyance_number = summary.conveyance_number;
+  payload.end_date = summary.end_date;
   payload.financing = summary.financing;
+  payload.hitas = summary.hitas;
+  payload.intended_use = summary.intended_use;
+  payload.intended_use_note = summary.intended_use_note;
+  payload.is_subject_to_vat = summary.is_subject_to_vat;
+  payload.lessor = get(summary, 'lessor.value');
+  payload.notice_note = summary.notice_note;
+  payload.notice_period = summary.notice_period;
   payload.management = summary.management;
-  payload.transferable = summary.transferable;
+  payload.note = summary.note;
+  payload.preparer = get(summary, 'preparer.value');
+  payload.reference_number = summary.reference_number;
+  payload.real_estate_developer = summary.real_estate_developer;
   payload.regulated = summary.regulated;
   payload.regulation = summary.regulation;
-  payload.hitas = summary.hitas;
-  payload.notice_period = summary.notice_period;
-  payload.notice_note = summary.notice_note;
-  payload.reference_number = summary.reference_number;
-  payload.note = summary.note;
-  payload.is_subject_to_vat = summary.is_subject_to_vat;
+  payload.special_project = summary.special_project;
+  payload.start_date = summary.start_date;
+  payload.state = summary.state;
+  payload.statistical_use = summary.statistical_use;
+  payload.supportive_housing = summary.supportive_housing;
+  payload.transferable = summary.transferable;
 
   return payload;
 };
@@ -1132,7 +1143,7 @@ export const addInspectionsFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-export const getConstructabilityDescriptionsForDb = (area: Object) => {
+export const getPayloadConstructabilityDescriptions = (area: Object) => {
   const descriptionsPreconstruction = get(area, 'descriptionsPreconstruction', []).map((description) => {
     return {...description, 'type': ConstructabilityType.PRECONSTRUCTION};
   });
@@ -1159,6 +1170,7 @@ export const getConstructabilityDescriptionsForDb = (area: Object) => {
   return descriptions.map((description) => {
     return {
       id: description.id || undefined,
+      is_static: description.is_static,
       type: description.type,
       text: description.text,
       ahjo_reference_number: description.ahjo_reference_number,
@@ -1166,53 +1178,54 @@ export const getConstructabilityDescriptionsForDb = (area: Object) => {
   });
 };
 
-export const getConstructabilityItemForDb = (area: Object, values: Object) => {
-  area.preconstruction_state = values.preconstruction_state;
-  area.demolition_state = values.demolition_state;
-  area.polluted_land_state = values.polluted_land_state;
-  area.polluted_land_rent_condition_state = values.polluted_land_rent_condition_state;
-  area.polluted_land_rent_condition_date = values.polluted_land_rent_condition_date;
-  area.polluted_land_planner = values.polluted_land_planner.value;
-  area.polluted_land_projectwise_number = values.polluted_land_projectwise_number;
-  area.polluted_land_matti_report_number = values.polluted_land_matti_report_number;
-  area.constructability_report_state = values.constructability_report_state;
-  area.constructability_report_investigation_state = values.constructability_report_investigation_state;
-  area.constructability_report_signing_date = values.constructability_report_signing_date;
-  area.constructability_report_signer = values.constructability_report_signer;
-  area.constructability_report_geotechnical_number = values.constructability_report_geotechnical_number;
-  area.other_state = values.other_state;
-  area.constructability_descriptions = getConstructabilityDescriptionsForDb(values);
-  return area;
+export const getPayloadConstructabilityArea = (area: Object, values: Object) => {
+  return {
+    ...area,
+    preconstruction_state: values.preconstruction_state,
+    preconstruction_estimated_construction_readiness_moment: values.preconstruction_estimated_construction_readiness_moment,
+    preconstruction_inspection_moment: values.preconstruction_inspection_moment,
+    demolition_state: values.demolition_state,
+    polluted_land_state: values.polluted_land_state,
+    polluted_land_rent_condition_state: values.polluted_land_rent_condition_state,
+    polluted_land_rent_condition_date: values.polluted_land_rent_condition_date,
+    polluted_land_planner: values.polluted_land_planner.value,
+    polluted_land_projectwise_number: values.polluted_land_projectwise_number,
+    polluted_land_matti_report_number: values.polluted_land_matti_report_number,
+    constructability_report_state: values.constructability_report_state,
+    constructability_report_investigation_state: values.constructability_report_investigation_state,
+    constructability_report_signing_date: values.constructability_report_signing_date,
+    constructability_report_signer: values.constructability_report_signer,
+    constructability_report_geotechnical_number: values.constructability_report_geotechnical_number,
+    other_state: values.other_state,
+    constructability_descriptions: getPayloadConstructabilityDescriptions(values),
+  };
 };
 
 export const addConstructabilityFormValues = (payload: Object, values: Object) => {
   const areas = payload.lease_areas;
   const constAreas = get(values, 'lease_areas', []);
+
   if(areas && !!areas.length) {
     payload.lease_areas = areas.map((area) => {
       const constArea = constAreas.find(x => x.id === area.id);
+
       if(constArea) {
-        return getConstructabilityItemForDb(area, constArea);
+        return getPayloadConstructabilityArea(area, constArea);
       }
       return area;
     });
   } else if(constAreas && !!constAreas.length) {
     payload.lease_areas = constAreas.map((area) => {
-      return getConstructabilityItemForDb({
+      return getPayloadConstructabilityArea({
         id: area.id,
-        city: area.city,
         location: area.location,
         area: area.area,
         identifier: area.identifier,
         type: area.type,
-        address: area.address,
-        postal_code: area.postal_code,
-        section_area: area.section_area,
       }, area);
     });
-  } else {
-    payload.lease_areas = [];
   }
+
   return payload;
 };
 

@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
+import Comments from '../constructability/Comments';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -138,84 +139,128 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
         <SubTitle>Rakentamiskelpoisuus</SubTitle>
         {!constructabilityAreas.length && <FormText>Ei vuokrakohteita</FormText>}
-        {!!constructabilityAreas.length &&
-          constructabilityAreas.map((area, index) => {
-            return (
-              <ListItems key={index}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
-                  <Row>
-                    <Column><ListItem><strong>{area.identifier || '-'}</strong></ListItem></Column>
-                  </Row>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}>
-                  <Row>
-                    <Column small={6} large={4}>
-                      <ListItem>Esirakentaminen, johtosiirrot, kunnallistekniikka</ListItem>
-                    </Column>
-                    <Column small={6} large={4}>
-                      <StatusIndicator
-                        researchState={area.preconstruction_state}
-                        stateOptions={constructabilityStateOptions}
-                      />
-                    </Column>
-                  </Row>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}>
-                  <Row>
-                    <Column small={6} large={4}>
-                      <ListItem>Purku</ListItem>
-                    </Column>
-                    <Column small={6} large={4}>
-                      <StatusIndicator
-                        researchState={area.demolition_state}
-                        stateOptions={constructabilityStateOptions}
-                      />
-                    </Column>
-                  </Row>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}>
-                  <Row>
-                    <Column small={6} large={4}>
-                      <ListItem>Pima ja jäte</ListItem>
-                    </Column>
-                    <Column small={6} large={4}>
-                      <StatusIndicator
-                        researchState={area.polluted_land_state}
-                        stateOptions={constructabilityStateOptions}
-                      />
-                    </Column>
-                  </Row>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}>
-                  <Row>
-                    <Column small={6} large={4}>
-                      <ListItem>Rakennettavuusselvitys</ListItem>
-                    </Column>
-                    <Column small={6} large={4}>
-                      <StatusIndicator
-                        researchState={area.constructability_report_state}
-                        stateOptions={constructabilityStateOptions}
-                      />
-                    </Column>
-                  </Row>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.OTHER_STATE)}>
-                  <Row>
-                    <Column small={6} large={4}>
-                      <ListItem>Muut</ListItem>
-                    </Column>
-                    <Column small={6} large={4}>
-                      <StatusIndicator
-                        researchState={area.other_state}
-                        stateOptions={constructabilityStateOptions}
-                      />
-                    </Column>
-                  </Row>
-                </Authorization>
-              </ListItems>
-            );
-          })
-        }
+        {!!constructabilityAreas.length && constructabilityAreas.map((area, index) => {
+          const descriptionsDemolition = area.descriptionsDemolition.filter((item) => item.is_static);
+          const descriptionsOther = area.descriptionsOther.filter((item) => item.is_static);
+          const descriptionsPollutedLand = area.descriptionsPollutedLand.filter((item) => item.is_static);
+          const descriptionsPreconstruction = area.descriptionsPreconstruction.filter((item) => item.is_static);
+          const descriptionsReport = area.descriptionsReport.filter((item) => item.is_static);
+
+          return (
+            <ListItems key={index}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
+                <Row>
+                  <Column><ListItem><strong>{area.identifier || '-'}</strong></ListItem></Column>
+                </Row>
+              </Authorization>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}>
+                <Row>
+                  <Column small={6} large={4}>
+                    <ListItem>Esirakentaminen, johtosiirrot, kunnallistekniikka</ListItem>
+                  </Column>
+                  <Column small={6} large={4}>
+                    <StatusIndicator
+                      researchState={area.preconstruction_state}
+                      stateOptions={constructabilityStateOptions}
+                    />
+                  </Column>
+                  <Column small={12} large={4}>
+                    <Comments
+                      commentClassName='no-border-on-first-child'
+                      comments={descriptionsPreconstruction}
+                      showNoDataText={false}
+                      showTitle={false}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}>
+                <Row>
+                  <Column small={6} large={4}>
+                    <ListItem>Purku</ListItem>
+                  </Column>
+                  <Column small={6} large={4}>
+                    <StatusIndicator
+                      researchState={area.demolition_state}
+                      stateOptions={constructabilityStateOptions}
+                    />
+                  </Column>
+                  <Column small={12} large={4}>
+                    <Comments
+                      commentClassName='no-border-on-first-child'
+                      comments={descriptionsDemolition}
+                      showNoDataText={false}
+                      showTitle={false}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}>
+                <Row>
+                  <Column small={6} large={4}>
+                    <ListItem>Pima ja jäte</ListItem>
+                  </Column>
+                  <Column small={6} large={4}>
+                    <StatusIndicator
+                      researchState={area.polluted_land_state}
+                      stateOptions={constructabilityStateOptions}
+                    />
+                  </Column>
+                  <Column small={12} large={4}>
+                    <Comments
+                      commentClassName='no-border-on-first-child'
+                      comments={descriptionsPollutedLand}
+                      showNoDataText={false}
+                      showTitle={false}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}>
+                <Row>
+                  <Column small={6} large={4}>
+                    <ListItem>Rakennettavuusselvitys</ListItem>
+                  </Column>
+                  <Column small={6} large={4}>
+                    <StatusIndicator
+                      researchState={area.constructability_report_state}
+                      stateOptions={constructabilityStateOptions}
+                    />
+                  </Column>
+                  <Column small={12} large={4}>
+                    <Comments
+                      commentClassName='no-border-on-first-child'
+                      comments={descriptionsReport}
+                      showNoDataText={false}
+                      showTitle={false}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.OTHER_STATE)}>
+                <Row>
+                  <Column small={6} large={4}>
+                    <ListItem>Muut</ListItem>
+                  </Column>
+                  <Column small={6} large={4}>
+                    <StatusIndicator
+                      researchState={area.other_state}
+                      stateOptions={constructabilityStateOptions}
+                    />
+                  </Column>
+                  <Column small={12} large={4}>
+                    <Comments
+                      commentClassName='no-border-on-first-child'
+                      comments={descriptionsOther}
+                      showNoDataText={false}
+                      showTitle={false}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
+            </ListItems>
+          );
+        })}
       </Authorization>
     </Fragment>
   );

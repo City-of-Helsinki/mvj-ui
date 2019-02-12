@@ -369,7 +369,9 @@ export const FormNames = {
  * @type {{}}
  */
 export const LeaseFieldPaths = {
+  BUILDING_SELLING_PRICE: 'building_selling_price',
   CLASSIFICATION: 'classification',
+  CONVEYANCE_NUMBER: 'conveyance_number',
   DISTRICT: 'district',
   END_DATE: 'end_date',
   FINANCING: 'financing',
@@ -385,11 +387,13 @@ export const LeaseFieldPaths = {
   NOTICE_NOTE: 'notice_note',
   NOTICE_PERIOD: 'notice_period',
   PREPARER: 'preparer',
+  REAL_ESTATE_DEVELOPER: 'real_estate_developer',
   REFERENCE_NUMBER: 'reference_number',
   REGULATED: 'regulated',
   REGULATION: 'regulation',
   RELATED_LEASES: 'related_leases',
   RELATE_TO: 'relate_to',
+  SPECIAL_PROJECT: 'special_project',
   START_DATE: 'start_date',
   STATE: 'state',
   STATISTICAL_USE: 'statistical_use',
@@ -405,7 +409,9 @@ export const LeaseFieldPaths = {
  * @type {{}}
  */
 export const LeaseFieldTitles = {
+  BUILDING_SELLING_PRICE: 'Rakennuksen kauppahinta',
   CLASSIFICATION: 'Julkisuusluokka',
+  CONVEYANCE_NUMBER: 'Luovutusnumero',
   DISTRICT: 'Kaupunginosa',
   END_DATE: 'Loppupvm',
   FINANCING: 'Rahoitusmuoto',
@@ -422,11 +428,13 @@ export const LeaseFieldTitles = {
   NOTICE_NOTE: 'Irtisanomisajan huomautus',
   NOTICE_PERIOD: 'Irtisanomisaika',
   PREPARER: 'Valmistelija',
+  REAL_ESTATE_DEVELOPER: 'Rakennuttaja',
   REFERENCE_NUMBER: 'Diaarinumero',
   REGULATED: 'Sääntely',
   REGULATION: 'Sääntelymuoto',
   RELATED_LEASES: 'Liittyvät vuokraukset',
   RELATE_TO: 'Liittyy vuokraukseen',
+  SPECIAL_PROJECT: 'Erityishanke',
   START_DATE: 'Alkupvm',
   STATE: 'Tyyppi',
   STATISTICAL_USE: 'Tilastollinen pääkäyttötarkoitus',
@@ -463,6 +471,8 @@ export const LeaseAreasFieldPaths = {
   POLLUTED_LAND_RENT_CONDITION_DATE: 'lease_areas.child.children.polluted_land_rent_condition_date',
   POLLUTED_LAND_RENT_CONDITION_STATE: 'lease_areas.child.children.polluted_land_rent_condition_state',
   POLLUTED_LAND_STATE: 'lease_areas.child.children.polluted_land_state',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'lease_areas.child.children.preconstruction_estimated_construction_readiness_moment',
+  PRECONSTRUCTION_INSPECTION_MOMENT: 'lease_areas.child.children.preconstruction_inspection_moment',
   PRECONSTRUCTION_STATE: 'lease_areas.child.children.preconstruction_state',
   TYPE: 'lease_areas.child.children.type',
 };
@@ -494,6 +504,8 @@ export const LeaseAreasFieldTitles = {
   POLLUTED_LAND_RENT_CONDITION_DATE: 'Vuokraehdot pvm',
   POLLUTED_LAND_RENT_CONDITION_STATE: 'Vuokraehdot',
   POLLUTED_LAND_STATE: 'Selvitysaste',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'Arvioitu rakentamisvalmius (kk/v)',
+  PRECONSTRUCTION_INSPECTION_MOMENT: 'Tarkistuspäivä (kk/v)',
   PRECONSTRUCTION_STATE: 'Selvitysaste',
   TYPE: 'Määritelmä',
 };
@@ -608,6 +620,7 @@ export const LeasePlotsFieldTitles = {
 export const LeaseConstructabilityDescriptionsFieldPaths = {
   CONSTRUCTABILITY_DESCRIPTIONS: 'lease_areas.child.children.constructability_descriptions',
   AHJO_REFERENCE_NUMBER: 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number',
+  IS_STATIC: 'lease_areas.child.children.constructability_descriptions.child.children.is_static',
   TEXT: 'lease_areas.child.children.constructability_descriptions.child.children.text',
   TYPE: 'lease_areas.child.children.constructability_descriptions.child.children.type',
 };
@@ -620,6 +633,7 @@ export const LeaseConstructabilityDescriptionsFieldPaths = {
 export const LeaseConstructabilityDescriptionsFieldTitles = {
   CONSTRUCTABILITY_DESCRIPTIONS: 'Huomautukset',
   AHJO_REFERENCE_NUMBER: 'AHJO diaarinumero',
+  IS_STATIC: 'Pysyvä huomautus',
   TEXT: 'Huomautus',
   TYPE: 'Tyyppi',
 };

@@ -23,9 +23,11 @@ import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
 import {
   formatDate,
+  formatNumber,
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
+  isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
@@ -55,6 +57,7 @@ type State = {
   managementOptions: Array<Object>,
   noticePeriodOptions: Array<Object>,
   regulationOptions: Array<Object>,
+  specialProjectOptions: Array<Object>,
   stateOptions: Array<Object>,
   statisticalUseOptions: Array<Object>,
   summary: Object,
@@ -73,6 +76,7 @@ class Summary extends PureComponent<Props, State> {
     managementOptions: [],
     noticePeriodOptions: [],
     regulationOptions: [],
+    specialProjectOptions: [],
     stateOptions: [],
     statisticalUseOptions: [],
     summary: {},
@@ -91,6 +95,7 @@ class Summary extends PureComponent<Props, State> {
       newState.managementOptions = getFieldOptions(props.attributes, LeaseFieldPaths.MANAGEMENT);
       newState.noticePeriodOptions = getFieldOptions(props.attributes, LeaseFieldPaths.NOTICE_PERIOD);
       newState.regulationOptions = getFieldOptions(props.attributes, LeaseFieldPaths.REGULATION);
+      newState.specialProjectOptions = getFieldOptions(props.attributes, LeaseFieldPaths.SPECIAL_PROJECT);
       newState.stateOptions = getFieldOptions(props.attributes, LeaseFieldPaths.STATE);
       newState.statisticalUseOptions = getFieldOptions(props.attributes, LeaseFieldPaths.STATISTICAL_USE);
       newState.supportiveHousingOptions = getFieldOptions(props.attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING);
@@ -137,6 +142,7 @@ class Summary extends PureComponent<Props, State> {
       managementOptions,
       noticePeriodOptions,
       regulationOptions,
+      specialProjectOptions,
       stateOptions,
       statisticalUseOptions,
       summary,
@@ -323,6 +329,12 @@ class Summary extends PureComponent<Props, State> {
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SPECIAL_PROJECT)}>
+                    <FormTextTitle>{LeaseFieldTitles.SPECIAL_PROJECT}</FormTextTitle>
+                    <FormText>{getLabelOfOption(specialProjectOptions, summary.special_project) || '-'}</FormText>
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING)}>
                     <FormTextTitle>{LeaseFieldTitles.SUPPORTIVE_HOUSING}</FormTextTitle>
                     <FormText>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</FormText>
@@ -332,6 +344,26 @@ class Summary extends PureComponent<Props, State> {
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATISTICAL_USE)}>
                     <FormTextTitle>{LeaseFieldTitles.STATISTICAL_USE}</FormTextTitle>
                     <FormText>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</FormText>
+                  </Authorization>
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REAL_ESTATE_DEVELOPER)}>
+                    <FormTextTitle>{LeaseFieldTitles.REAL_ESTATE_DEVELOPER}</FormTextTitle>
+                    <FormText>{summary.real_estate_developer || '-'}</FormText>
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CONVEYANCE_NUMBER)}>
+                    <FormTextTitle>{LeaseFieldTitles.CONVEYANCE_NUMBER}</FormTextTitle>
+                    <FormText>{summary.conveyance_number || '-'}</FormText>
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.BUILDING_SELLING_PRICE)}>
+                    <FormTextTitle>{LeaseFieldTitles.BUILDING_SELLING_PRICE}</FormTextTitle>
+                    <FormText>{!isEmptyValue(summary.building_selling_price) ? `${formatNumber(summary.building_selling_price)} €` : '-'}</FormText>
                   </Authorization>
                 </Column>
               </Row>
@@ -351,6 +383,7 @@ class Summary extends PureComponent<Props, State> {
               </Row>
             </Collapse>
           </Column>
+
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RELATED_LEASES)}>
             <Column small={12} medium={4} large={3}>
               <RelatedLeases />
