@@ -243,13 +243,6 @@ export const fixedLengthNumber = (value: ?number, length: number = 2) => {
 
 export const getEpochTime = () => Math.round(new Date().getTime()/1000.0);
 
-export const formatDate = (date: ?string) => {
-  if (!date) return '';
-
-  const d = isNumber(date) ? moment.unix(Number(date)) : moment(date);
-  return d.format('DD.MM.YYYY');
-};
-
 export const formatNumberWithThousandSeparator = (x: any, separator?: string = ' ') => !isEmptyValue(x) ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator) : '';
 
 export const formatDecimalNumber = (x: ?number) => !isEmptyValue(x) ? parseFloat(x).toFixed(2).toString().replace('.', ',') : null;
@@ -258,37 +251,37 @@ export const formatNumber = (x: any) => !isEmptyValue(x) ? formatNumberWithThous
 
 export const convertStrToDecimalNumber = (x: any) => isEmptyValue(x) ? null : Number(x.toString().replace(',', '.').replace(/\s+/g, ''));
 
-export const formatDateRange = (startDate: any, endDate: any) => {
-  if (!startDate && !endDate) {
-    return '';
-  }
+/**
+* Format date string
+* @param date
+* @param format
+* @returns {string}
+*/
+export const formatDate = (date: any, format?: string = 'DD.MM.YYYY') => {
+  if (!date) return null;
 
-  const start = isNumber(startDate) ? moment.unix(startDate) : moment(startDate),
-    end = isNumber(endDate) ? moment.unix(endDate) : moment(endDate);
+  const d = isNumber(date) ? moment.unix(Number(date)) : moment(date);
+  return d.format(format);
+};
+
+/**
+* Format date range string
+* @param startDate
+* @param endDate
+* @returns {string}
+*/
+export const formatDateRange = (startDate: any, endDate: any) => {
+  if (!startDate && !endDate) return '';
 
   const dateFormat = 'DD.MM.YYYY';
 
-  if(!startDate) {
-    return `- ${end.format(dateFormat)}`;
-  }
-  if(!endDate) {
-    return `${start.format(dateFormat)} -`;
-  }
+  if(!startDate) return `- ${formatDate(endDate, dateFormat)}`;
+  if(!endDate) return `${formatDate(startDate, dateFormat)} -`;
 
-  return `${start.format(dateFormat)} - ${end.format(dateFormat)}`;
+  return `${formatDate(startDate, dateFormat)} - ${formatDate(endDate, dateFormat)}`;
 };
 
 export const isDecimalNumberStr = (value: any) => (!isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')));
-
-/**
- *
- * @param unix
- * @param format
- * @returns {string}
- */
-export const formatDateObj = (unix: any, format?: string = 'DD.MM.YYYY HH:mm') => {
-  return unix ? moment(unix).format(format) : null;
-};
 
 /**
  * get API-url without version suffix

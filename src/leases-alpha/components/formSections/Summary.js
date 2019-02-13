@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import FormField from '../../../components-alpha/form/FormField';
-import {formatDateObj, getTenantsYearlyShare} from '$util/helpers';
+import {formatDate, getTenantsYearlyShare} from '$util/helpers';
 type Props = Object;
 
 const getOptions = (field) => field.map(({value, display_name}) => ({value, label: display_name}));
@@ -115,7 +115,7 @@ const Summary = (props: Props) => {
 
               <ul className="application__state">
                 <li className="active">
-                  <span>Hakemus vastaanotettu <span>{formatDateObj(props.created_at)}</span></span></li>
+                  <span>Hakemus vastaanotettu <span>{formatDate(props.created_at, 'DD.MM.YYYY HH:mm')}</span></span></li>
                 <li><span>Vuokrauksen valmistelu</span></li>
                 <li><span>Vuokrausehdotus</span></li>
                 <li><span>Vuokrauspäätös</span></li>

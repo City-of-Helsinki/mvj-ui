@@ -5,7 +5,7 @@ import moment from 'moment';
 import {isDirty} from 'redux-form';
 
 import {FormNames, LitigantContactType} from './enums';
-import {getContentUser} from '$src/leases/helpers';
+import {getContentUser} from '$src/users/helpers';
 import {fixedLengthNumber, sortStringByKeyDesc} from '$util/helpers';
 import {getIsEditMode} from '$src/landUseContract/selectors';
 import {removeSessionStorageItem} from '$util/storage';

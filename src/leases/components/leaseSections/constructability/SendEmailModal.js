@@ -1,90 +1,115 @@
 // @flow
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import isEmpty from 'lodash/isEmpty';
+import React, {PureComponent} from 'react';
+import debounce from 'lodash/debounce';
 
 import Button from '$components/button/Button';
-import DualListBoxInput from '$components/inputs/DualListBoxInput';
+import DualListBox from 'react-dual-listbox';
 import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
+import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import TextAreaInput from '$components/inputs/TextAreaInput';
-import {fetchUsers} from '$src/users/actions';
+import {fetchUsers} from '$src/users/requestsAsync';
 import {ButtonColors} from '$components/enums';
 import {getUserOptions} from '$src/users/helpers';
-import {getUsers} from '$src/users/selectors';
+import {sortByLabelAsc} from '$util/helpers';
 
-import type {UserList} from '$src/users/types';
+type FilterProps = {
+  available: string,
+  selected: string,
+}
 
 type Props = {
-  fetchUsers: Function,
   isOpen: boolean,
   onCancel: Function,
   onClose: Function,
   onSend: Function,
-  users: UserList,
 }
 
 type State = {
-  note: string,
-  selectedUsers: Array<string>,
+  filter: FilterProps,
+  selectedUsers: Array<Object>,
+  text: string,
   userOptions: Array<Object>,
-  users: UserList,
 }
 
-class SendEmailModal extends Component<Props, State> {
+class SendEmailModal extends PureComponent<Props, State> {
   dualListBox: any
 
   state = {
-    note: '',
+    filter: {
+      available: '',
+      selected: '',
+    },
     selectedUsers: [],
+    text: '',
     userOptions: [],
-    users: [],
   };
 
-  static getDerivedStateFromProps(props, state) {
-    const retObj = {};
-
-    if(props.users !== state.users) {
-      retObj.userOptions = getUserOptions(props.users);
-      retObj.users = props.users;
-    }
-
-    if(!isEmpty(retObj)) {
-      return retObj;
-    }
-
-    return null;
-  }
-
-  componentDidMount() {
-    const {fetchUsers} = this.props;
-    fetchUsers();
-  }
-
-  componentDidUpdate(prevProps) {
-    // Clear selected list when opening modal
+  componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
+      // Set focus on first field
       if(this.dualListBox) {
         this.dualListBox.focus();
       }
+
+      // Clear inputs
       this.setState({
-        note: '',
+        filter: {
+          available: '',
+          selected: '',
+        },
         selectedUsers: [],
+        text: '',
       });
+
+      // Get default user list
+      this.getUserList('');
     }
   }
 
-  handleSetAvailableReference = (element: any) => {
-    this.dualListBox = element;
-  }
+  getUserList = async(search: string) => {
+    const {selectedUsers} = this.state;
+    const users = await fetchUsers({search});
+    // Both selected and available arrays on DualListBox use options for filtering. So add selectedUsers to search results and remove duplicates
+    const uniqueUsers = [...getUserOptions(users), ...selectedUsers]
+      .filter((a, index, array) => array.findIndex((b) => a.value === b.value) === index)
+      .sort(sortByLabelAsc);
 
-  handleChangeUserList = (selected: Array<string>) => {
+    this.setState({userOptions: uniqueUsers});
+  };
+
+  getUserListDebounced = debounce((search: string) => {
+    this.getUserList(search);
+  }, 500);
+
+  handleUserListChange = (selected: Array<Object>) => {
     this.setState({selectedUsers: selected});
   }
 
-  handleChangeNote = (e: any) => {
+  handleTextChange = (e: any) => {
     this.setState({
-      note: e.target.value,
+      text: e.target.value,
+    });
+  }
+
+  handleFilterChange = (filter: FilterProps) => {
+    const {filter: selectedFilter} = this.state;
+
+    this.setState({filter});
+
+    if(filter.available !== selectedFilter.available) {
+      // Fetch users when available filter changes.
+      this.getUserListDebounced(filter.available);
+    }
+  }
+
+  handleSend = () => {
+    const {onSend} = this.props;
+    const {selectedUsers, text} = this.state;
+
+    onSend({
+      recipients: selectedUsers.map((user) => Number(user.value)),
+      text,
     });
   }
 
@@ -93,9 +118,8 @@ class SendEmailModal extends Component<Props, State> {
       isOpen,
       onCancel,
       onClose,
-      onSend,
     } = this.props;
-    const {note, selectedUsers, userOptions} = this.state;
+    const {filter, selectedUsers, text, userOptions} = this.state;
 
     return (
       <Modal
@@ -105,24 +129,29 @@ class SendEmailModal extends Component<Props, State> {
         onClose={onClose}
       >
         <FormText>Valitse sähköpostin vastaanottajat</FormText>
-        <DualListBoxInput
+        <DualListBox
+          availableRef={(ref) => this.dualListBox = ref}
+          canFilter
+          filter={filter}
           filterPlaceholder='Hae vastaanottajia...'
-          onChange={this.handleChangeUserList}
+          onChange={this.handleUserListChange}
+          onFilterChange={this.handleFilterChange}
           options={userOptions}
           selected={selectedUsers}
-          setAvailabelReference={this.handleSetAvailableReference}
+          simpleValue={false}
         />
 
-        <FormText><label htmlFor='send-email_comment'> Sähköpostiin liittyvä kommentti</label></FormText>
+        <FormText><label htmlFor='send-email_text'> Sähköpostiin liittyvä kommentti</label></FormText>
         <TextAreaInput
           className="no-margin"
-          id='send-email_comment'
-          onChange={this.handleChangeNote}
+          id='send-email_text'
+          onChange={this.handleTextChange}
           placeholder=''
           rows={4}
-          value={note}
+          value={text}
         />
-        <div className='constructability__send-email-modal_footer'>
+
+        <ModalButtonWrapper>
           <Button
             className={ButtonColors.SECONDARY}
             onClick={onCancel}
@@ -131,23 +160,14 @@ class SendEmailModal extends Component<Props, State> {
           <Button
             className={ButtonColors.SUCCESS}
             disabled={!selectedUsers.length}
-            onClick={onSend}
+            onClick={this.handleSend}
             text='Lähetä'
           />
-        </div>
+        </ModalButtonWrapper>
       </Modal>
     );
   }
 }
 
 
-export default connect(
-  (state) => {
-    return {
-      users: getUsers(state),
-    };
-  },
-  {
-    fetchUsers,
-  }
-)(SendEmailModal);
+export default SendEmailModal;

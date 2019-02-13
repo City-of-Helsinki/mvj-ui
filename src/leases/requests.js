@@ -2,7 +2,12 @@
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
 
-import type {CreateChargePayload, LeaseId, Lease} from './types';
+import type {
+  CreateChargePayload,
+  Lease,
+  LeaseId,
+  SendEmailPayload,
+} from './types';
 
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('lease/'), {method: 'OPTIONS'}));
@@ -86,6 +91,15 @@ export const setRentInfoUncomplete = (leaseId: LeaseId): Generator<any, any, any
   const body = JSON.stringify({rent_info_complete: false});
 
   return callApi(new Request(createUrl(`lease_set_rent_info_completion_state/?lease=${leaseId}`), {
+    method: 'POST',
+    body,
+  }));
+};
+
+export const sendEmail = (payload: SendEmailPayload): Generator<any, any, any> => {
+  const body = JSON.stringify(payload);
+
+  return callApi(new Request(createUrl('send_email/'), {
     method: 'POST',
     body,
   }));

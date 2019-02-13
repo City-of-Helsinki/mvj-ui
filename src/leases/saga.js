@@ -30,6 +30,7 @@ import {
   fetchLeases,
   fetchSingleLease,
   patchLease,
+  sendEmail,
   startInvoicing,
   stopInvoicing,
   setRentInfoComplete,
@@ -246,6 +247,35 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
   }
 }
 
+function* sendEmailSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(sendEmail, payload);
+
+    switch (statusCode) {
+      case 200:
+        yield put(fetchSingleLeaseAfterEdit({
+          leaseId: payload.lease,
+          callbackFunctions: [
+            () => displayUIMessage({title: '', body: 'Sähköposti lähetetty'}),
+          ],
+        }));
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to send email with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(startInvoicing, leaseId);
@@ -390,6 +420,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/DELETE', deleteLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
+      yield takeLatest('mvj/leases/SEND_EMAIL', sendEmailSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/SET_RENT_INFO_COMPLETE', setRentInfoCompleteSaga),

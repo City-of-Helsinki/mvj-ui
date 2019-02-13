@@ -19,6 +19,7 @@ import {
   setRentInfoUncomplete,
   startInvoicing,
   stopInvoicing,
+  sendEmail,
   notFound,
   showEditMode,
   hideEditMode,
@@ -122,6 +123,19 @@ describe('Leases', () => {
         const newState = {...defaultState, isFetching: true};
 
         const state = leasesReducer({}, fetchLeases(''));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true when sending email', () => {
+        const newState = {...defaultState, isSaving: true};
+        const dummyPayload = {
+          type: 'constructability',
+          lease: 1,
+          recipients: [31, 3],
+          text: 'Testimeili',
+        };
+
+        const state = leasesReducer({}, sendEmail(dummyPayload));
         expect(state).to.deep.equal(newState);
       });
 

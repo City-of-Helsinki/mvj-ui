@@ -19,13 +19,13 @@ import {
   TenantContactType,
 } from './enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
-import {getUserFullName} from '$src/users/helpers';
-import {isEmptyValue} from '$util/helpers';
+import {getContentUser} from '$src/users/helpers';
 import {
   addEmptyOption,
   convertStrToDecimalNumber,
   fixedLengthNumber,
   formatDate,
+  isEmptyValue,
   sortByStartAndEndDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
@@ -145,18 +145,6 @@ export const getContentLessor = (lessor: ?Object) => {
     first_name: lessor.first_name,
     last_name: lessor.last_name,
     name: lessor.name,
-  };
-};
-
-export const getContentUser = (user: ?Object) => {
-  if(!user) return {};
-
-  return {
-    id: user.id,
-    value: user.id,
-    label: getUserFullName(user),
-    first_name: user.first_name,
-    last_name: user.last_name,
   };
 };
 
@@ -489,6 +477,23 @@ export const getContentInspectionItem = (inspection: Object) => {
 
 export const getContentInspections = (lease: Object) =>
   get(lease, 'inspections', []).map((inspection) => getContentInspectionItem(inspection));
+
+/**
+* Get content email logs
+* @param {Object} lease
+* @returns {Object[]}
+*/
+export const getContentEmailLogs = (lease: Lease): Array<Object> => {
+  return get(lease, 'email_logs', []).map((email) => {
+    return {
+      id: email.id,
+      created_at: email.created_at,
+      recipients: email.recipients.map((recipient) => getContentUser(recipient)),
+      text: email.text,
+      user: getContentUser(email.user),
+    };
+  });
+};
 
 export const getContentConstructabilityDescriptions = (area: Object, type: string) => {
   return get(area, 'constructability_descriptions', [])
@@ -1522,6 +1527,7 @@ export const mapLeaseSearchFilters = (query: Object) => {
 
   return searchQuery;
 };
+
 export const formatSeasonalDate = (day: ?string, month: ?string) => {
   if(!day || !month) return null;
 

@@ -30,6 +30,15 @@ export const RelationTypes = {
 };
 
 /**
+ * Send email type enumerable.
+ *
+ * @type {{}}
+ */
+export const SendEmailTypes = {
+  CONSTRUCTABILITY: 'constructability',
+};
+
+/**
  * Delete modal labels enumerable.
  *
  * @type {{}}

@@ -11,7 +11,7 @@ import FieldTypeMulti from '../../components-alpha/form/FieldTypeMulti';
 import {BaseValidator} from '../../components-alpha/form/validation';
 import {getCurrentApplication} from '../selectors';
 import {fetchSingleApplication} from '../actions';
-import {formatDateObj} from '$util/helpers';
+import {formatDate} from '$util/helpers';
 import {getAttributes} from '../../attributes/selectors';
 import FormActions from '../../leases-alpha/components/formSections/FormActions';
 import {getUser} from '../../role/selectors';
@@ -154,7 +154,7 @@ class ApplicationEdit extends Component<Props> {
     return (
       <form className="mvj-form" onSubmit={handleSubmit(handleSave)}>
         <div className="edit-modal__content">
-          <h1>{formatDateObj(application.updated_at)}</h1>
+          <h1>{formatDate(application.updated_at, 'DD.MM.YYYY HH:mm')}</h1>
 
           <Row className="edit-modal__section">
             <GroupTitle text="Hakemus"/>

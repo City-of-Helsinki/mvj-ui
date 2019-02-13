@@ -5,7 +5,7 @@ import flowRight from 'lodash/flowRight';
 import {translate} from 'react-i18next';
 import {connect} from 'react-redux';
 import {getFormInitialValues, reduxForm} from 'redux-form';
-import {formatDateObj} from '$util/helpers';
+import {formatDate} from '$util/helpers';
 import {getUser} from '../../../role/selectors';
 import NotesForm from './NotesForm';
 
@@ -33,7 +33,7 @@ class Notes extends Component<Props> {
             <div className="note__header">
               {/*<h3>{title}</h3>*/}
               <h4>{`${get(author, 'first_name')} ${get(author, 'last_name')}`} <span
-                className="date">{formatDateObj(modified_at)}</span></h4>
+                className="date">{formatDate(modified_at, 'DD.MM.YYYY HH:mm')}</span></h4>
             </div>
             <div className="note__content">
               {text}

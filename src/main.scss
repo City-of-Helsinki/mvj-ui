@@ -10,7 +10,8 @@
 @import "~react-redux-toastr/src/styles/index";
 @import "~react-datepicker/dist/react-datepicker.css";
 @import '../node_modules/leaflet-draw/dist/leaflet.draw.css';
-@import '~react-dual-listbox/lib/react-dual-listbox.css';
+@import 'node_modules/react-dual-listbox/src/scss/react-dual-listbox.scss';
+@import '~font-awesome/css/font-awesome.css';
 
 // Components
 @import "components/authorization/authorization";

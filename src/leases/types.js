@@ -32,6 +32,13 @@ export type FetchSingleLeaseAfterEditPayload = {
   callbackFuntions?: Array<Object | Function>,
 }
 
+export type SendEmailPayload = {
+  type: string,
+  lease: LeaseId,
+  recipients: Array<number>,
+  text: string,
+}
+
 export type FetchAttributesAction = Action<'mvj/leases/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', Attributes>;
 export type ReceiveMethodsAction = Action<'mvj/leases/RECEIVE_METHODS', Methods>;
@@ -52,6 +59,8 @@ export type SetRentInfoUncompleteAction = Action<'mvj/leases/SET_RENT_INFO_UNCOM
 export type LeaseAttributesNotFoundAction = Action<'mvj/leases/ATTRIBUTES_NOT_FOUND', void>;
 export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
 export type LeaseNotFoundByIdAction = Action<'mvj/leases/NOT_FOUND_BY_ID', LeaseId>;
+
+export type SendEmailAction = Action<'mvj/leases/SEND_EMAIL', SendEmailPayload>;
 
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;

@@ -3,7 +3,8 @@ import get from 'lodash/get';
 import {isDirty} from 'redux-form';
 
 import {FormNames} from '$src/infillDevelopment/enums';
-import {getContentLeaseIdentifier, getContentLeaseOption, getContentUser} from '$src/leases/helpers';
+import {getContentLeaseIdentifier, getContentLeaseOption} from '$src/leases/helpers';
+import {getContentUser} from '$src/users/helpers';
 import {convertStrToDecimalNumber} from '$util/helpers';
 import {getIsEditMode} from '$src/infillDevelopment/selectors';
 import {removeSessionStorageItem} from '$util/storage';

@@ -4203,6 +4203,11 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.1"
     readable-stream "^2.0.4"
 
+font-awesome@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
+  integrity sha1-j6jPBBGhoxr9B7BtKQK7n8gVoTM=
+
 for-each@^0.3.2:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/for-each/-/for-each-0.3.3.tgz#69b447e88a0a5d32c3e7084f3f1710034b21376e"
@@ -6960,6 +6965,11 @@ nan@^2.10.0, nan@^2.9.2:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
   integrity sha512-bAdJv7fBLhWC+/Bls0Oza+mvTaNQtP+1RyhhhvD95pgUJz6XM5IzgmxOkItJ9tkoCiplvAnXI1tNmmUD/eScyA==
 
+nanoid@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.0.1.tgz#deb55cac196e3f138071911dabbc3726eb048864"
+  integrity sha512-k1u2uemjIGsn25zmujKnotgniC/gxQ9sdegdezeDiKdkDW56THUMqlz3urndKCXJxA6yPzSZbXx/QCMe/pxqsA==
+
 nanomatch@^1.2.9:
   version "1.2.9"
   resolved "https://registry.yarnpkg.com/nanomatch/-/nanomatch-1.2.9.tgz#879f7150cb2dab7a471259066c104eee6e0fa7c2"
@@ -8469,15 +8479,15 @@ react-dom@^16.7.0:
     prop-types "^15.6.2"
     scheduler "^0.12.0"
 
-react-dual-listbox@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/react-dual-listbox/-/react-dual-listbox-1.3.2.tgz#ea3d1394f3dbfb4e601e1b165616d00860403cd6"
-  integrity sha512-BJXz3A1h+xnIS8W6lynY9msV4TJftepJSpkcBJBxgiMnjyVRZdcUwO+MtMOwz0N/3p2rKONVq2rz0FKHcxJXcg==
+react-dual-listbox@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/react-dual-listbox/-/react-dual-listbox-1.4.2.tgz#9da75a8e2e1b536ff946c3cbb4d2d0a7ba3cdc18"
+  integrity sha512-deHSLcmdrxzsMOX2XZJm6fRy1tgnpL1/eLC3zDLXJqfm/9Z/VD/5y+qhD0G6iNSTp+s8RAHN+MdxZDvGMBK1rg==
   dependencies:
     classnames "^2.2.5"
     lodash "^4.17.5"
+    nanoid "^2.0.0"
     prop-types "^15.5.8"
-    shortid "^2.2.8"
 
 react-error-overlay@^5.1.2:
   version "5.1.2"
@@ -9548,11 +9558,6 @@ shell-quote@1.6.1, shell-quote@^1.6.1:
     array-map "~0.0.0"
     array-reduce "~0.0.0"
     jsonify "~0.0.0"
-
-shortid@^2.2.8:
-  version "2.2.8"
-  resolved "https://registry.yarnpkg.com/shortid/-/shortid-2.2.8.tgz#033b117d6a2e975804f6f0969dbe7d3d0b355131"
-  integrity sha1-AzsRfWoul1gE9vCWnb59PQs1UTE=
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
