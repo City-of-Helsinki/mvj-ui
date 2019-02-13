@@ -43,6 +43,7 @@ const isSavingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/SET_RENT_INFO_COMPLETE': () => true,
   'mvj/leases/SET_RENT_INFO_UNCOMPLETE': () => true,
   'mvj/leases/COPY_AREAS_TO_CONTRACT': () => true,
+  'mvj/leases/SEND_EMAIL': () => true,
   'mvj/leases/RECEIVE_SINGLE': () => false,
   'mvj/leases/NOT_FOUND': () => false,
 }, false);

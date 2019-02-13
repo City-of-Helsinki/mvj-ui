@@ -12,6 +12,8 @@ import type {
   LeaseAttributesNotFoundAction,
   LeaseNotFoundAction,
   LeaseNotFoundByIdAction,
+  SendEmailAction,
+  SendEmailPayload,
   LeaseList,
   CreateLeaseAction,
   DeleteLeaseAction,
@@ -92,6 +94,9 @@ export const setRentInfoUncomplete = (leaseId: LeaseId): SetRentInfoUncompleteAc
 
 export const attributesNotFound = (): LeaseAttributesNotFoundAction =>
   createAction('mvj/leases/ATTRIBUTES_NOT_FOUND')();
+
+export const sendEmail = (payload: SendEmailPayload):SendEmailAction =>
+  createAction('mvj/leases/SEND_EMAIL')(payload);
 
 export const notFound = (): LeaseNotFoundAction =>
   createAction('mvj/leases/NOT_FOUND')();

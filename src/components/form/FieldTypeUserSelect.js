@@ -7,7 +7,7 @@ import debounce from 'lodash/debounce';
 
 import DropdownIndicator from '$components/inputs/DropdownIndicator';
 import LoadingIndicator from '$components/inputs/SelectLoadingIndicator';
-import {getContentUser} from '$src/leases/helpers';
+import {getContentUser} from '$src/users/helpers';
 import {addEmptyOption, sortByLabelAsc} from '$util/helpers';
 import {fetchUsers} from '$src/users/requestsAsync';
 

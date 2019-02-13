@@ -138,7 +138,7 @@ const getInvoiceOptions = (invoices: Array<Object>) => !isEmpty(invoices)
     .map((invoice) => {
       return {
         value: invoice.id,
-        label: `${formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}\t${formatDate(invoice.due_date)} (${invoice.number || '-'})`.trim(),
+        label: `${formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}\t${formatDate(invoice.due_date) || ''} (${invoice.number || '-'})`.trim(),
       };
     })
   : [];

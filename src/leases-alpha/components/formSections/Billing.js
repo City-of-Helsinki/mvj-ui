@@ -23,7 +23,7 @@ import {fetchInvoices} from '../../actions';
 import {getInvoices} from '../../selectors';
 import FilterableList from '../../../components-alpha/filterableList/FilterableList';
 import {
-  formatDateObj,
+  formatDate,
   getFractionFromFloat,
   getFullRent,
   getTenantsYearlyShare,
@@ -254,8 +254,8 @@ class Billing extends Component<Props, State> {
               isFetching={false}
               dataKeys={[
                 {key: 'reference_number', label: 'Laskunumero'},
-                {key: 'modified_at', label: 'Päiväys', renderer: (val) => formatDateObj(val)},
-                {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
+                {key: 'modified_at', label: 'Päiväys', renderer: (val) => formatDate(val, 'DD.MM.YYYY HH:mm')},
+                {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val, 'DD.MM.YYYY')},
                 {key: 'state', label: 'Tila', renderer: (val) => t(`leases:state.${val}`)},
               ]}
               onRowClick={this.handleInvoiceClick}

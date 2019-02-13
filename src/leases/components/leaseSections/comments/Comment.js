@@ -10,7 +10,7 @@ import TextAreaInput from '$components/inputs/TextAreaInput';
 import {editComment, hideEditModeById, showEditModeById} from '$src/comments/actions';
 import {ButtonColors} from '$components/enums';
 import {getCommentPatchPayload} from '$src/comments/helpers';
-import {formatDateObj} from '$util/helpers';
+import {formatDate} from '$util/helpers';
 import {getIsEditModeById} from '$src/comments/selectors';
 
 type Props = {
@@ -110,7 +110,7 @@ class Comment extends PureComponent<Props, State> {
           }
           <div className='comment-panel__comment_content-wrapper'>
             <p className='comment-panel__comment_info'>
-              <span className='comment-panel__comment_info_date'>{formatDateObj(comment.modified_at)}</span>
+              <span className='comment-panel__comment_info_date'>{formatDate(comment.modified_at, 'DD.MM.YYYY HH:mm')}</span>
               &nbsp;
               <span>{user.last_name} {user.first_name}</span>
             </p>

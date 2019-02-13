@@ -6,6 +6,7 @@
  * @type {{}}
  */
 export const UsersPermissions = {
+  VIEW_LEASE: 'view_lease',
   ADD_RELATEDLEASE: 'add_relatedlease',
   DELETE_RELATEDLEASE: 'delete_relatedlease',
   ADD_LEASEAREA: 'add_leasearea',
@@ -44,6 +45,8 @@ export const UsersPermissions = {
   DELETE_COLLATERAL: 'delete_collateral',
   ADD_INSPECTION: 'add_inspection',
   DELETE_INSPECTION: 'delete_inspection',
+  ADD_EMAILLOG: 'add_emaillog',
+  VIEW_EMAILLOG: 'view_emaillog',
   ADD_CONSTRUCTABILITYDESCRIPTION: 'add_constructabilitydescription',
   DELETE_CONSTRUCTABILITYDESCRIPTION: 'delete_constructabilitydescription',
   CHANGE_LEASE_IS_INVOICING_ENABLED: 'change_lease_is_invoicing_enabled',
