@@ -36,6 +36,7 @@ type State = {
 
 class SendEmail extends PureComponent<Props, State> {
   state = {
+    currentLease: {},
     emailLogs: [],
     isOpen: false,
   }

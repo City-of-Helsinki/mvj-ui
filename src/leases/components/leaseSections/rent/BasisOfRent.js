@@ -80,14 +80,14 @@ const BasisOfRent = ({
 
   const getPlansInspectedText = () => {
     if(!basisOfRent.plans_inspected_at) return '-';
-    if(!basisOfRent.plans_inspected_by) return formatDate(basisOfRent.plans_inspected_at);
-    return `${formatDate(basisOfRent.plans_inspected_at)} ${getUserFullName(basisOfRent.plans_inspected_by)}`;
+    if(!basisOfRent.plans_inspected_by) return formatDate(basisOfRent.plans_inspected_at) || '-';
+    return `${formatDate(basisOfRent.plans_inspected_at) || ''} ${getUserFullName(basisOfRent.plans_inspected_by)}`;
   };
 
   const getLockedText = () => {
     if(!basisOfRent.locked_at) return '-';
-    if(!basisOfRent.locked_by) return formatDate(basisOfRent.locked_at);
-    return `${formatDate(basisOfRent.locked_at)} ${getUserFullName(basisOfRent.locked_by)}`;
+    if(!basisOfRent.locked_by) return formatDate(basisOfRent.locked_at) || '-';
+    return `${formatDate(basisOfRent.locked_at) || ''} ${getUserFullName(basisOfRent.locked_by)}`;
   };
 
   const getBasicAnnualRent = () => {

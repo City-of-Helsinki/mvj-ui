@@ -120,14 +120,14 @@ const BasisOfRentEdit = ({
 
   const getPlansInspectedText = () => {
     if(!plansInspectedAt || !savedBasisOfRent || !savedBasisOfRent.plans_inspected_at) return '-';
-    if(!savedBasisOfRent.plans_inspected_by) return formatDate(savedBasisOfRent.plans_inspected_at);
-    return `${formatDate(savedBasisOfRent.plans_inspected_at)} ${getUserFullName(savedBasisOfRent.plans_inspected_by)}`;
+    if(!savedBasisOfRent.plans_inspected_by) return formatDate(savedBasisOfRent.plans_inspected_at) || '-';
+    return `${formatDate(savedBasisOfRent.plans_inspected_at) || ''} ${getUserFullName(savedBasisOfRent.plans_inspected_by)}`;
   };
 
   const getLockedText = () => {
     if(!lockedAt || !savedBasisOfRent || !savedBasisOfRent.locked_at) return '-';
-    if(!savedBasisOfRent.locked_by) return formatDate(savedBasisOfRent.locked_at);
-    return `${formatDate(savedBasisOfRent.locked_at)} ${getUserFullName(savedBasisOfRent.locked_by)}`;
+    if(!savedBasisOfRent.locked_by) return formatDate(savedBasisOfRent.locked_at) || '-';
+    return `${formatDate(savedBasisOfRent.locked_at) || ''} ${getUserFullName(savedBasisOfRent.locked_by)}`;
   };
 
   const getCurrentAmountPerArea = () => {

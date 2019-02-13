@@ -39,7 +39,7 @@ const Comment = ({
         </Authorization>
         <FormText>
           <strong>{getUserFullName(comment.user)}</strong>
-          {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
+          {comment.modified_at && `, ${formatDate(comment.modified_at) || ''}`}
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
             {comment.ahjo_reference_number &&
               <span>,&nbsp;

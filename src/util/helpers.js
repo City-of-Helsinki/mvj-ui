@@ -275,10 +275,10 @@ export const formatDateRange = (startDate: any, endDate: any) => {
 
   const dateFormat = 'DD.MM.YYYY';
 
-  if(!startDate) return `- ${formatDate(endDate, dateFormat)}`;
-  if(!endDate) return `${formatDate(startDate, dateFormat)} -`;
+  if(!startDate) return `- ${formatDate(endDate, dateFormat) || ''}`;
+  if(!endDate) return `${formatDate(startDate, dateFormat) || ''} -`;
 
-  return `${formatDate(startDate, dateFormat)} - ${formatDate(endDate, dateFormat)}`;
+  return `${formatDate(startDate, dateFormat) || ''} - ${formatDate(endDate, dateFormat) || ''}`;
 };
 
 export const isDecimalNumberStr = (value: any) => (!isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')));
