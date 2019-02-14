@@ -51,7 +51,7 @@ type State = {
   areasGeoJson: AreasGeoJson,
   areaLocationOptions: Array<Object>,
   areaTypeOptions: Array<Object>,
-  bounds?: ?Object,
+  bounds: ?Object,
   center: ?Array<Object>,
   currentLease: Lease,
   leaseAttributes: Attributes,

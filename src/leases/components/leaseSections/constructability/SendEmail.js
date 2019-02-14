@@ -94,19 +94,20 @@ class SendEmail extends PureComponent<Props, State> {
           />
         </Authorization>
 
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE)}>
-          <Row>
-            <Column small={12} medium={4} large={3}>
-              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE)}>
-                <Button
-                  className={`${ButtonColors.NEUTRAL} no-margin`}
-                  onClick={this.handleShowModal}
-                  style={{marginBottom: 15}}
-                  text='Lähetä sähköposti'
-                />
-              </Authorization>
-            </Column>
-            <Column small={12} medium={8} large={9}>
+        <Row>
+          <Column small={12} medium={4} large={3}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE)}>
+              <Button
+                className={`${ButtonColors.NEUTRAL} no-margin`}
+                onClick={this.handleShowModal}
+                style={{marginBottom: 15}}
+                text='Lähetä sähköposti'
+              />
+            </Authorization>
+          </Column>
+          <Column small={12} medium={8} large={9}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE_LEASE_AREAS) ||
+              hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_LEASE_AREAS)}>
               {!emailLogs.length && <FormText>Ei lähetettyjä sähköposteja</FormText>}
               {!!emailLogs.length &&
                 <div className='constructability__send-email_sent-emails'>
@@ -138,9 +139,9 @@ class SendEmail extends PureComponent<Props, State> {
                   })}
                 </div>
               }
-            </Column>
-          </Row>
-        </Authorization>
+            </Authorization>
+          </Column>
+        </Row>
       </Fragment>
     );
   }

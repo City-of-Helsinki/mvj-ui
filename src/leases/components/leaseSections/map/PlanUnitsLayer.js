@@ -87,6 +87,7 @@ const PlanUnitsLayer = ({
             <p><strong>Kaavayksikön laji:</strong> ${getLabelOfOption(planUnitTypeOptions, plan_unit_type) || '-'}</p>
             <p><strong>Kaavayksikön olotila:</strong> ${getLabelOfOption(planUnitStateOptions, plan_unit_state) || '-'}</p>
             <p><strong>Kaavayksikön käyttötarkoitus:</strong> ${getLabelOfOption(planUnitIntendedUseOptions, plan_unit_intended_use) || '-'}</p>`;
+
           layer.bindPopup(popupContent);
 
           if(id === defaultPlanUnit) {

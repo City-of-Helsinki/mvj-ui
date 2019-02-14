@@ -13,19 +13,30 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
+import {AreaNoteFieldTitles} from '$src/areaNote/enums';
 import {
   ConstructabilityStatus,
   LeaseAreaAddressesFieldPaths,
   LeaseAreasFieldPaths,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary, getFullAddress} from '$src/leases/helpers';
-import {getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
+import {getUserFullName} from '$src/users/helpers';
+import {
+  formatDate,
+  getFieldOptions,
+  getLabelOfOption,
+  hasPermissions,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type StatusIndicatorProps = {
   researchState: string,
@@ -47,9 +58,10 @@ const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
+  usersPermissions: UsersPermissionsType,
 }
 
-const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
+const SummaryLeaseInfo = ({attributes, currentLease, usersPermissions}: Props) => {
   const constructabilityStateOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE),
     summary = getContentSummary(currentLease),
     tenants = summary.tenants,
@@ -262,6 +274,47 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
           );
         })}
       </Authorization>
+
+      <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE_LEASE_AREAS) ||
+        hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_LEASE_AREAS)}>
+        {!!summary.area_notes.length &&
+          <Fragment>
+            <SubTitle>{AreaNoteFieldTitles.AREA_NOTES}</SubTitle>
+            <Row>
+              <Column small={4}>
+                <FormTextTitle>{AreaNoteFieldTitles.MODIFIED_AT}</FormTextTitle>
+              </Column>
+              <Column small={4}>
+                <FormTextTitle>{AreaNoteFieldTitles.USER}</FormTextTitle>
+              </Column>
+              <Column small={4}>
+                <FormTextTitle>{AreaNoteFieldTitles.NOTE}</FormTextTitle>
+              </Column>
+            </Row>
+            <ListItems>
+              {summary.area_notes.map((areaNote, index) => {
+                return(
+                  <Row key={index}>
+                    <Column small={4}>
+                      <ListItem>{formatDate(areaNote.modified_at) || '-'}</ListItem>
+                    </Column>
+                    <Column small={4}>
+                      <ListItem>{getUserFullName(areaNote.user) || '-'}</ListItem>
+                    </Column>
+                    <Column small={4} style={{lineHeight: 1}}>
+                      <ExternalLink
+                        className='no-margin'
+                        href={`${getRouteById(Routes.AREA_NOTES)}/?area_note=${areaNote.id}`}
+                        text={areaNote.note || '-'}
+                      />
+                    </Column>
+                  </Row>
+                );
+              })}
+            </ListItems>
+          </Fragment>
+        }
+      </Authorization>
     </Fragment>
   );
 };
@@ -271,6 +324,7 @@ export default connect(
     return {
       attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
 )(SummaryLeaseInfo);

@@ -20,6 +20,7 @@ type Props = {
   allowToEdit?: boolean,
   areaNoteMethods: Methods,
   areaNotes: AreaNoteList,
+  defaultAreaNote?: ?number,
   initializeAreaNote: Function,
   isEditMode: boolean,
   showEditMode: Function,
@@ -95,6 +96,7 @@ class AreaNotesLayer extends Component<Props, State> {
   }
 
   render() {
+    const {defaultAreaNote} = this.props;
     const {areaNotesGeoJson} = this.state;
 
     return (
@@ -106,11 +108,28 @@ class AreaNotesLayer extends Component<Props, State> {
         // coordsToLatLng={getCoordsToLatLng(areaNotesGeoJson)}
         onEachFeature={(feature, layer) => {
           if (feature.properties) {
+            const {
+              id,
+              modified_at,
+              note,
+              user,
+            } = feature.properties;
+
             const popupContent = `<p>
-              <strong>${formatDate(feature.properties.modified_at)} ${getUserFullName(feature.properties.user)}</strong><br/>
-              ${feature.properties.note || '-'}
+              <strong>${formatDate(modified_at)} ${getUserFullName(user)}</strong><br/>
+              ${note || '-'}
             </p>`;
+
             layer.bindPopup(popupContent);
+
+            if(id === defaultAreaNote) {
+              layer.setStyle({
+                fillOpacity: 0.9,
+              });
+              setTimeout(() => {
+                layer.openPopup();
+              }, 100);
+            }
           }
 
           layer.on({

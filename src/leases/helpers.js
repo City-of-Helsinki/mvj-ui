@@ -158,6 +158,7 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
 
 export const getContentSummary = (lease: Object) => {
   return {
+    area_notes: get(lease, 'area_notes', []),
     building_selling_price: lease.building_selling_price,
     classification: lease.classification,
     constructability_areas: getContentConstructability(lease),

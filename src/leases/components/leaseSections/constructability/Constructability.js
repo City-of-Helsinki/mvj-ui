@@ -2,26 +2,21 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 
-import Authorization from '$components/authorization/Authorization';
 import ConstructabilityItem from './ConstructabilityItem';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import {LeaseAreasFieldPaths} from '$src/leases/enums';
-import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentConstructability} from '$src/leases/helpers';
-import {getFieldOptions, hasPermissions} from '$src/util/helpers';
+import {getFieldOptions} from '$src/util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
-import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
-  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -68,7 +63,6 @@ class Constructability extends PureComponent<Props, State> {
   }
 
   render() {
-    const {usersPermissions} = this.props;
     const {
       areas,
       constructabilityReportInvestigationStateOptions,
@@ -82,9 +76,7 @@ class Constructability extends PureComponent<Props, State> {
       <Fragment>
         <h2>Rakentamiskelpoisuus</h2>
         <Divider />
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE)}>
-          <SendEmail />
-        </Authorization>
+        <SendEmail />
 
         {!areas || !areas.length &&
           <FormText className='no-margin'>Ei vuokra-alueita</FormText>
@@ -110,7 +102,6 @@ export default connect(
     return {
       attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
-      usersPermissions: getUsersPermissions(state),
     };
   },
 )(Constructability);
