@@ -79,7 +79,7 @@ const getOverlayLayers = (areaNoteMethods: Methods, areaNotes: AreaNoteList, are
 class AreaNoteListPage extends PureComponent<Props, State> {
   state = {
     areaNoteMethods: {},
-    araNotes: [],
+    areaNotes: [],
     bounds: null,
     center: null,
     isSearchInitialized: false,
