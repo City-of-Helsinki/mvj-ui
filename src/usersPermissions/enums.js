@@ -9,6 +9,8 @@ export const UsersPermissions = {
   VIEW_LEASE: 'view_lease',
   ADD_RELATEDLEASE: 'add_relatedlease',
   DELETE_RELATEDLEASE: 'delete_relatedlease',
+  CHANGE_LEASE_LEASE_AREAS: 'change_lease_lease_areas',
+  VIEW_LEASE_LEASE_AREAS: 'view_lease_lease_areas',
   ADD_LEASEAREA: 'add_leasearea',
   DELETE_LEASEAREA: 'delete_leasearea',
   ADD_LEASEAREAADDRESS: 'add_leaseareaaddress',

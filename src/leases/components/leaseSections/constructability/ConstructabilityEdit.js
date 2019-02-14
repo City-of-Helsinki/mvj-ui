@@ -5,22 +5,18 @@ import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import type {Element} from 'react';
 
-import Authorization from '$components/authorization/Authorization';
 import ConstructabilityItemEdit from './ConstructabilityItemEdit';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames, LeaseAreasFieldPaths} from '$src/leases/enums';
-import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentConstructability} from '$src/leases/helpers';
-import {getFieldOptions, hasPermissions} from '$util/helpers';
+import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
-import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type AreaProps = {
   attributes: Attributes,
@@ -73,7 +69,6 @@ type Props = {
   handleSubmit: Function,
   isSaveClicked: boolean,
   receiveFormValidFlags: Function,
-  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -130,7 +125,6 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
       errors,
       handleSubmit,
       isSaveClicked,
-      usersPermissions,
     } = this.props;
     const {
       constructabilityStateOptions,
@@ -143,9 +137,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
       <form onSubmit={handleSubmit}>
         <h2>Rakentamiskelpoisuus</h2>
         <Divider />
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE)}>
-          <SendEmail />
-        </Authorization>
+        <SendEmail />
 
         <FieldArray
           attributes={attributes}
@@ -173,7 +165,6 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
         isSaveClicked: getIsSaveClicked(state),
-        usersPermissions: getUsersPermissions(state),
       };
     },
     {

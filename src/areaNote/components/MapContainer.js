@@ -1,7 +1,6 @@
 // @ flow
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 import L from 'leaflet';
 import {
   LayersControl,
@@ -14,17 +13,10 @@ const {BaseLayer, Overlay} = LayersControl;
 import FullscreenControl from 'react-leaflet-fullscreen';
 import 'proj4';
 import 'proj4leaflet';
-import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 
-import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import GeoSearch from '$components/map/GeoSearch';
 import ZoomBox from '$components/map/ZoomBox';
-import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {minZoom, maxZoom} from '$src/constants';
-import {getAreaNoteList, getIsEditMode, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
-
-import type {Methods} from '$src/types';
 
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 const CRS = new L.Proj.CRS(
@@ -35,18 +27,11 @@ const CRS = new L.Proj.CRS(
   });
 
 type Props = {
-  allowEditing?: boolean,
-  areaNotes?: Array<Object>,
-  areaNoteMethods: Methods,
   bounds?: Object,
   center: Object,
   children: Object,
-  initializeAreaNote: Function,
-  isEditMode: boolean,
   overlayLayers?: Array<Object>,
-  showEditMode: Function,
   zoom: Number,
-  areas: Array<any>,
 };
 
 class MapContainer extends Component<Props> {
@@ -54,32 +39,8 @@ class MapContainer extends Component<Props> {
     router: PropTypes.object,
   };
 
-  onMouseOver = (e) => {
-    const {isEditMode} = this.props;
-
-    if(!isEditMode) {
-      const layer = e.target;
-      layer.setStyle({
-        fillOpacity: 0.7,
-      });
-      layer.openPopup();
-    }
-  }
-
-  onMouseOut = (e) => {
-    const {isEditMode} = this.props;
-
-    if(!isEditMode) {
-      const layer = e.target;
-      layer.setStyle({
-        fillOpacity: 0.2,
-      });
-      // layer.closePopup();
-    }
-  }
-
   render() {
-    const {allowEditing, areaNotes, areaNoteMethods, bounds, center, children, overlayLayers, zoom} = this.props;
+    const {bounds, center, children, overlayLayers, zoom} = this.props;
 
     return (
       <Map
@@ -124,13 +85,6 @@ class MapContainer extends Component<Props> {
               </LayerGroup>
             </Overlay>
           )}
-          {areaNoteMethods.GET &&
-            <Overlay checked name="Muistettavat ehdot">
-              <LayerGroup>
-                {!isEmpty(areaNotes) && <AreaNotesLayer allowEditing={allowEditing}/>}
-              </LayerGroup>
-            </Overlay>
-          }
         </LayersControl>
 
         <GeoSearch />
@@ -154,18 +108,4 @@ class MapContainer extends Component<Props> {
   }
 }
 
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        areaNoteMethods: getAreaNoteMethods(state),
-        areaNotes: getAreaNoteList(state),
-        isEditMode: getIsEditMode(state),
-      };
-    },
-    {
-      initializeAreaNote,
-      showEditMode,
-    },
-  ),
-)(MapContainer);
+export default MapContainer;

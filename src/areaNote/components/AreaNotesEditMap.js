@@ -22,7 +22,7 @@ const SHAPE_FILL_OPACITY = 0.5;
 const SHAPE_ERROR_COLOR = '#bd2719';
 
 type Props = {
-  allowEditing?: boolean,
+  allowToEdit: boolean,
   bounds?: Object,
   center?: Array<number>,
   createAreaNote: Function,
@@ -33,7 +33,6 @@ type Props = {
   isEditMode: boolean;
   onHideEdit?: Function,
   overlayLayers?: Array<Object>,
-  showEditTools: boolean,
 }
 
 type State = {
@@ -115,6 +114,7 @@ class AreaNotesEditMap extends Component<Props, State> {
 
   cancelChanges = () => {
     const {hideEditMode} = this.props;
+
     hideEditMode();
   }
 
@@ -152,22 +152,19 @@ class AreaNotesEditMap extends Component<Props, State> {
   }
 
   render() {
-    const {allowEditing, bounds, center, isEditMode, overlayLayers} = this.props;
+    const {allowToEdit, bounds, center, isEditMode, overlayLayers} = this.props;
     const {isNew, isValid} = this.state;
 
     return (
       <div className='map'>
         <MapContainer
-          allowEditing={allowEditing}
           bounds={bounds}
           center={(center && center.length > 1) ? center : defaultCoordinates}
           overlayLayers={overlayLayers}
           zoom={defaultZoom}
         >
-          <FeatureGroup
-            ref={this.setFeatureGroupRef}
-          >
-            {isEditMode &&
+          <FeatureGroup ref={this.setFeatureGroupRef}>
+            {allowToEdit && isEditMode &&
               <EditControl
                 position='topright'
                 onCreated={this.handleCreated}
@@ -200,18 +197,20 @@ class AreaNotesEditMap extends Component<Props, State> {
               />
             }
           </FeatureGroup>
-          <SaveConditionPanel
-            ref={this.setSaveConditionPanelRef}
-            disableDelete={isNew}
-            disableSave={!isValid}
-            isNew={isNew}
-            onCancel={this.cancelChanges}
-            onCreate={this.handleCreate}
-            onDelete={this.deleteAreaNote}
-            onEdit={this.handleEdit}
-            overlayLayers={overlayLayers}
-            show={isEditMode}
-          />
+
+          {allowToEdit &&
+            <SaveConditionPanel
+              ref={this.setSaveConditionPanelRef}
+              disableDelete={isNew}
+              disableSave={!isValid}
+              isNew={isNew}
+              onCancel={this.cancelChanges}
+              onCreate={this.handleCreate}
+              onDelete={this.deleteAreaNote}
+              onEdit={this.handleEdit}
+              show={isEditMode}
+            />
+          }
         </MapContainer>
       </div>
     );

@@ -6,9 +6,11 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import AreaNotesLayer from './AreaNotesLayer';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
@@ -19,7 +21,9 @@ import {fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode} from 
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/areaNote/enums';
+import {getAreaNoteById, getAreaNoteCoordinates} from '$src/areaNote/helpers';
 import {getSearchQuery, getUrlParams} from '$util/helpers';
+import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -45,12 +49,41 @@ type Props = {
 }
 
 type State = {
+  areaNoteMethods: Methods,
+  areaNotes: AreaNoteList,
+  bounds: ?Object,
+  center: ?Array<Object>,
   isSearchInitialized: boolean,
+  overlayLayers: Array<Object>,
 }
+
+const getOverlayLayers = (areaNoteMethods: Methods, areaNotes: AreaNoteList, areaNoteId: ?number) => {
+  const layers = [];
+
+  {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+    layers.push({
+      checked: true,
+      component: <AreaNotesLayer
+        key='area_notes'
+        allowToEdit={true}
+        areaNotes={areaNotes}
+        defaultAreaNote={areaNoteId}
+      />,
+      name: 'Muistettavat ehdot',
+    });
+  }
+
+  return layers;
+};
 
 class AreaNoteListPage extends PureComponent<Props, State> {
   state = {
+    areaNoteMethods: {},
+    areaNotes: [],
+    bounds: null,
+    center: null,
     isSearchInitialized: false,
+    overlayLayers: [],
   }
 
   componentDidMount() {
@@ -84,6 +117,29 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     };
 
     initializeSearchForm();
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.areaNotes !== state.areaNotes || props.areaNoteMethods !== state.areaNoteMethods) {
+      const {location: {search}} = props;
+      const query = getUrlParams(search);
+      const areaNoteId = query.area_note;
+
+      newState.areaNotes = props.areaNotes;
+      newState.overlayLayers = getOverlayLayers(props.areaNoteMethods, props.areaNotes, Number(areaNoteId));
+
+      if(areaNoteId) {
+        const areaNote = getAreaNoteById(props.areaNotes, Number(areaNoteId));
+        const coordinates = getAreaNoteCoordinates(areaNote);
+
+        newState.bounds = coordinates.length ? getCoordinatesBounds(coordinates) : undefined;
+        newState.center = coordinates.length ? getCoordinatesCenter(coordinates) : undefined;
+      }
+    }
+
+    return !isEmpty(newState) ? newState : null;
   }
 
   componentDidUpdate(prevProps) {
@@ -138,7 +194,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 
   render() {
     const {isEditMode, isFetching, isFetchingCommonAttributes, areaNoteMethods} = this.props;
-    const {isSearchInitialized} = this.state;
+    const {bounds, center, isSearchInitialized, overlayLayers} = this.state;
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
@@ -168,7 +224,12 @@ class AreaNoteListPage extends PureComponent<Props, State> {
         <div style={{position: 'relative'}}>
           {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>}
 
-          <AreaNotesEditMap allowEditing/>
+          <AreaNotesEditMap
+            allowToEdit
+            bounds={bounds}
+            center={center}
+            overlayLayers={overlayLayers}
+          />
         </div>
       </PageContainer>
     );

@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import BasicInformation from './sections/BasicInformation';
 import BasicInformationEdit from './sections/BasicInformationEdit';
 import Compensations from './sections/Compensations';
@@ -30,6 +31,7 @@ import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {
   clearFormValidFlags,
@@ -56,6 +58,7 @@ import {
 } from '$src/landUseContract/helpers';
 import {getSearchQuery, getUrlParams} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
+import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {
   getAttributes,
@@ -67,10 +70,13 @@ import {
 } from '$src/landUseContract/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {LandUseContract} from '$src/landUseContract/types';
+import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
+  areaNoteMethods: Methods,
+  areaNotes: AreaNoteList,
   attributes: Attributes,
   basicInformationFormValues: Object,
   change: Function,
@@ -82,6 +88,7 @@ type Props = {
   decisionsFormValues: Object,
   destroy: Function,
   editLandUseContract: Function,
+  fetchAreaNoteList: Function,
   fetchContactAttributes: Function,
   fetchLandUseContractAttributes: Function,
   fetchSingleLandUseContract: Function,
@@ -134,6 +141,7 @@ class LandUseContractPage extends Component<Props, State> {
       attributes,
       clearFormValidFlags,
       contactAttributes,
+      fetchAreaNoteList,
       fetchContactAttributes,
       fetchLandUseContractAttributes,
       fetchSingleLandUseContract,
@@ -150,6 +158,8 @@ class LandUseContractPage extends Component<Props, State> {
       pageTitle: 'Maankäyttösopimukset',
       showSearch: false,
     });
+
+    fetchAreaNoteList({});
 
     fetchSingleLandUseContract(landUseContractId);
 
@@ -548,6 +558,28 @@ class LandUseContractPage extends Component<Props, State> {
     destroy(FormNames.LITIGANTS);
   }
 
+  getOverlayLayers = () => {
+    const layers = [];
+    const {
+      areaNoteMethods,
+      areaNotes,
+    } = this.props;
+
+    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+      layers.push({
+        checked: false,
+        component: <AreaNotesLayer
+          key='area_notes'
+          allowToEdit={false}
+          areaNotes={areaNotes}
+        />,
+        name: 'Muistettavat ehdot',
+      });
+    }
+
+    return layers;
+  }
+
   render() {
     const {activeTab} = this.state;
     const {
@@ -570,6 +602,7 @@ class LandUseContractPage extends Component<Props, State> {
     const {isRestoreModalOpen} = this.state;
     const identifier = getContentLandUseContractIdentifier(currentLandUseContract);
     const areFormsValid = this.getAreFormsValid();
+    const overlayLayers = this.getOverlayLayers();
 
     return (
       <FullWidthContainer>
@@ -676,7 +709,8 @@ class LandUseContractPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 <AreaNotesEditMap
-                  showEditTools={false}
+                  allowToEdit={false}
+                  overlayLayers={overlayLayers}
                 />
               </ContentContainer>
             </TabPane>
@@ -693,6 +727,8 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNoteMethods: getAreaNoteMethods(state),
+        areaNotes: getAreaNoteList(state),
         attributes: getAttributes(state),
         basicInformationFormValues: getFormValues(FormNames.BASIC_INFORMATION)(state),
         compensationsFormValues: getFormValues(FormNames.COMPENSATIONS)(state),
@@ -724,6 +760,7 @@ export default flowRight(
       clearFormValidFlags,
       destroy,
       editLandUseContract,
+      fetchAreaNoteList,
       fetchContactAttributes,
       fetchLandUseContractAttributes,
       fetchSingleLandUseContract,

@@ -2,6 +2,10 @@
 import proj4 from 'proj4';
 import get from 'lodash/get';
 
+import {getCoordinatesOfGeometry} from '$util/map';
+
+import type {AreaNote} from './types';
+
 proj4.defs('EPSG:3879', '+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
 proj4.defs('WGS84', '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees');
 
@@ -116,3 +120,18 @@ export const convertFeatureCollectionToFeature = (polygons: Array<Object>) => {
     },
   };
 };
+
+/**
+* Find area note by id
+* @param {Object[]} araNotes
+* @param {number} id
+* @returns {Object}
+*/
+export const getAreaNoteById =(areaNotes: Array<AreaNote>, id: ?number) => id ? areaNotes.find((areaNote) => areaNote.id === id) : null;
+
+/**
+* Find area note by id
+* @param {Object} araNotes
+* @returns {Array[]}
+*/
+export const getAreaNoteCoordinates = (areaNote: ?AreaNote) => areaNote ? getCoordinatesOfGeometry(areaNote.geometry) : [];
