@@ -7,8 +7,10 @@ import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
@@ -49,7 +51,7 @@ import {
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getAreaNoteList} from '$src/areaNote/selectors';
+import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getIsFetching, getLeasesList} from '$src/leases/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -63,6 +65,7 @@ const visualizationTypeOptions = [
 ];
 
 type Props = {
+  areaNoteMethods: Methods,
   areaNotes: AreaNoteList,
   createLease: Function,
   fetchAreaNoteList: Function,
@@ -337,6 +340,28 @@ class LeaseListPage extends PureComponent<Props, State> {
     return false;
   }
 
+  getOverlayLayers = () => {
+    const layers = [];
+    const {
+      areaNoteMethods,
+      areaNotes,
+    } = this.props;
+
+    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+      layers.push({
+        checked: false,
+        component: <AreaNotesLayer
+          key='area_notes'
+          allowToEdit={false}
+          areaNotes={areaNotes}
+        />,
+        name: 'Muistettavat ehdot',
+      });
+    }
+
+    return layers;
+  }
+
   render() {
     const {
       activePage,
@@ -346,7 +371,6 @@ class LeaseListPage extends PureComponent<Props, State> {
       visualizationType,
     } = this.state;
     const {
-      areaNotes,
       createLease,
       isFetchingCommonAttributes,
       leaseAttributes,
@@ -355,12 +379,12 @@ class LeaseListPage extends PureComponent<Props, State> {
       location: {query},
       isFetching,
     } = this.props;
-
     const leases = getContentLeases(content, query);
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
     const isBasicSearchByDefault = this.isBasicSearchByDefault();
     const columns = this.getColumns();
+    const overlayLayers = this.getOverlayLayers();
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
@@ -440,8 +464,8 @@ class LeaseListPage extends PureComponent<Props, State> {
           )}
           {visualizationType === 'map' && (
             <AreaNotesEditMap
-              areaNotes={areaNotes}
-              showEditTools={false}
+              allowToEdit={false}
+              overlayLayers={overlayLayers}
             />
           )}
         </TableWrapper>
@@ -455,6 +479,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNoteMethods: getAreaNoteMethods(state),
         areaNotes: getAreaNoteList(state),
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),

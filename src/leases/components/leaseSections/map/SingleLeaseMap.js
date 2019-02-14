@@ -3,7 +3,9 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
+import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import AreasLayer from './AreasLayer';
 import Divider from '$components/content/Divider';
@@ -27,15 +29,19 @@ import {
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
+import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {AreasGeoJson} from './AreasLayer';
 import type {PlanUnitsGeoJson} from './PlanUnitsLayer';
 import type {PlotsGeoJson} from './PlotsLayer';
+import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
+  areaNoteMethods: Methods,
+  areaNotes: AreaNoteList,
   currentLease: Lease,
   leaseAttributes: Attributes,
   location: Object,
@@ -126,7 +132,12 @@ class SingleLeaseMap extends PureComponent<Props, State> {
 
   getOverlayLayers = () => {
     const layers = [];
-    const {leaseAttributes, location: {search}} = this.props;
+    const {
+      areaNoteMethods,
+      areaNotes,
+      leaseAttributes,
+      location: {search},
+    } = this.props;
     const {
       areasGeoJson,
       areaLocationOptions,
@@ -213,6 +224,17 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         name: 'Vuokrakohteet',
       });
     }
+    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+      layers.push({
+        checked: false,
+        component: <AreaNotesLayer
+          key='area_notes'
+          allowToEdit={false}
+          areaNotes={areaNotes}
+        />,
+        name: 'Muistettavat ehdot',
+      });
+    }
 
     return layers;
   }
@@ -227,10 +249,10 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         <Divider />
 
         <AreaNotesEditMap
+          allowToEdit={false}
           bounds={bounds}
           center={center}
           overlayLayers={overlayLayers}
-          showEditTools={false}
         />
       </Fragment>
     );
@@ -243,6 +265,8 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNoteMethods: getAreaNoteMethods(state),
+        areaNotes: getAreaNoteList(state),
         leaseAttributes: getLeaseAttributes(state),
         currentLease: getCurrentLease(state),
       };

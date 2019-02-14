@@ -2,8 +2,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
 import RentBasisLayer from './RentBasisLayer';
@@ -12,15 +14,16 @@ import {RentBasisFieldPaths} from '$src/rentbasis/enums';
 import {getContentRentBasisGeoJson} from '$src/rentbasis/helpers';
 import {getFieldOptions, isFieldAllowedToRead, sortByLabelDesc} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} from '$util/map';
-import {
-  getAttributes as getRentBasisAttributes,
-  getRentBasis,
-} from '$src/rentbasis/selectors';
+import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
+import {getAttributes as getRentBasisAttributes, getRentBasis} from '$src/rentbasis/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {RentBasis} from '$src/rentbasis/types';
+import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
+  areaNoteMethods: Methods,
+  areaNotes: AreaNoteList,
   rentBasis: RentBasis,
   rentBasisAttributes: Attributes,
 }
@@ -79,7 +82,7 @@ class SingleRentBasisMap extends Component<Props, State> {
 
   getOverlayLayers = () => {
     const {financingOptions, geoJSON, indexOptions, managementOptions, plotTypeOptions} = this.state;
-    const {rentBasisAttributes} = this.props;
+    const {areaNoteMethods, areaNotes, rentBasisAttributes} = this.props;
     const layers = [];
 
     if(isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)) {
@@ -94,6 +97,17 @@ class SingleRentBasisMap extends Component<Props, State> {
           plotTypeOptions={plotTypeOptions}
         />,
         name: 'Vuokrausperusteet',
+      });
+    }
+    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+      layers.push({
+        checked: false,
+        component: <AreaNotesLayer
+          key='area_notes'
+          allowToEdit={false}
+          areaNotes={areaNotes}
+        />,
+        name: 'Muistettavat ehdot',
       });
     }
 
@@ -113,10 +127,10 @@ class SingleRentBasisMap extends Component<Props, State> {
         <Divider />
 
         <AreaNotesEditMap
+          allowToEdit={false}
           bounds={bounds}
           center={center}
           overlayLayers={overlayLayers}
-          showEditTools={false}
         />
       </ContentContainer>
     );
@@ -127,6 +141,8 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNoteMethods: getAreaNoteMethods(state),
+        areaNotes: getAreaNoteList(state),
         rentBasis: getRentBasis(state),
         rentBasisAttributes: getRentBasisAttributes(state),
       };

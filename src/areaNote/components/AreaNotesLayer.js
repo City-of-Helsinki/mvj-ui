@@ -9,7 +9,6 @@ import {convertAreaNoteListToGeoJson, convertFeatureToFeatureCollection} from '$
 import {getUserFullName} from '$src/users/helpers';
 import {formatDate} from '$src/util/helpers';
 import {
-  getAreaNoteList,
   getIsEditMode,
   getMethods as getAreaNoteMethods,
 } from '$src/areaNote/selectors';
@@ -18,7 +17,7 @@ import type {Methods} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  allowEditing?: boolean,
+  allowToEdit?: boolean,
   areaNoteMethods: Methods,
   areaNotes: AreaNoteList,
   initializeAreaNote: Function,
@@ -33,7 +32,7 @@ type State = {
 
 class AreaNotesLayer extends Component<Props, State> {
   static defaultProps = {
-    allowEditing: false,
+    allowToEdit: false,
   }
 
   state = {
@@ -48,12 +47,14 @@ class AreaNotesLayer extends Component<Props, State> {
         areaNotes: props.areaNotes,
       };
     }
+
     return null;
   }
 
   onClick = (e: any, feature: Object) => {
-    const {allowEditing, areaNoteMethods, initializeAreaNote, showEditMode} = this.props;
-    if(!areaNoteMethods.PATCH || !allowEditing) return;
+    const {allowToEdit, areaNoteMethods, initializeAreaNote, showEditMode} = this.props;
+
+    if(!areaNoteMethods.PATCH || !allowToEdit) return;
 
     initializeAreaNote({
       geoJSON: convertFeatureToFeatureCollection(feature),
@@ -74,6 +75,7 @@ class AreaNotesLayer extends Component<Props, State> {
 
     if(!isEditMode) {
       const layer = e.target;
+
       layer.setStyle({
         fillOpacity: 0.7,
       });
@@ -85,6 +87,7 @@ class AreaNotesLayer extends Component<Props, State> {
 
     if(!isEditMode) {
       const layer = e.target;
+
       layer.setStyle({
         fillOpacity: 0.2,
       });
@@ -129,7 +132,6 @@ export default connect(
   (state) => {
     return {
       areaNoteMethods: getAreaNoteMethods(state),
-      areaNotes: getAreaNoteList(state),
       isEditMode: getIsEditMode(state),
     };
   },

@@ -6,9 +6,11 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import AreaNotesLayer from './AreaNotesLayer';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
@@ -136,9 +138,32 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     this.props.hideEditMode();
   }
 
+  getOverlayLayers = () => {
+    const layers = [];
+    const {
+      areaNoteMethods,
+      areaNotes,
+    } = this.props;
+
+    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+      layers.push({
+        checked: true,
+        component: <AreaNotesLayer
+          key='area_notes'
+          allowToEdit={true}
+          areaNotes={areaNotes}
+        />,
+        name: 'Muistettavat ehdot',
+      });
+    }
+
+    return layers;
+  }
+
   render() {
     const {isEditMode, isFetching, isFetchingCommonAttributes, areaNoteMethods} = this.props;
     const {isSearchInitialized} = this.state;
+    const overlayLayers = this.getOverlayLayers();
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
@@ -168,7 +193,10 @@ class AreaNoteListPage extends PureComponent<Props, State> {
         <div style={{position: 'relative'}}>
           {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>}
 
-          <AreaNotesEditMap allowEditing/>
+          <AreaNotesEditMap
+            allowToEdit
+            overlayLayers={overlayLayers}
+          />
         </div>
       </PageContainer>
     );

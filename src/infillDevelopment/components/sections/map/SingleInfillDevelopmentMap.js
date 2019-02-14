@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import Divider from '$components/content/Divider';
 import InfillDevelopmentLeaseLayer from './InfillDevelopmentLeaseLayer';
 import Loader from '$components/loader/Loader';
@@ -18,6 +19,7 @@ import {getContentLeaseIdentifier, getLeaseCoordinates} from '$src/leases/helper
 import {getContentInfillDevelopmentLeaseGeoJson} from '$src/infillDevelopment/helpers';
 import {getFieldOptions, getUrlParams} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
+import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getCurrentInfillDevelopment} from '$src/infillDevelopment/selectors';
 import {
   getAllLeases,
@@ -25,12 +27,15 @@ import {
   getIsFetchingAllLeases,
 } from '$src/leases/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
+import type {AreaNoteList} from '$src/areaNote/types';
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
   allLeases: Array<Lease>,
+  areaNoteMethods: Methods,
+  areaNotes: AreaNoteList,
   currentInfillDevelopment: InfillDevelopment,
   fetchLeaseById: Function,
   isFetchingAllLeases: Array<boolean>,
@@ -155,7 +160,12 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
   }
 
   setInfillDevelopmentLayers = () => {
-    const {allLeases, location: {search}} = this.props;
+    const {
+      allLeases,
+      areaNoteMethods,
+      areaNotes,
+      location: {search},
+    } = this.props;
     const query = getUrlParams(search);
     const {
       areaLocationOptions,
@@ -173,26 +183,36 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
       const leaseData = allLeases[leaseId];
       const identifier = getContentLeaseIdentifier(leaseData);
 
-      const component = <InfillDevelopmentLeaseLayer
-        areaLocationOptions={areaLocationOptions}
-        areaTypeOptions={areaTypeOptions}
-        color={mapColors[index % mapColors.length]}
-        geoJSONData={getContentInfillDevelopmentLeaseGeoJson(leaseData)}
-        highlighted={Boolean(query.lease && Number(query.lease) === leaseId)}
-        leaseIdentifier={identifier}
-        planUnitIntendedUseOptions={planUnitIntendedUseOptions}
-        planUnitStateOptions={planUnitStateOptions}
-        planUnitTypeOptions={planUnitTypeOptions}
-        plotDivisionStateOptions={plotDivisionStateOptions}
-        plotTypeOptions={plotTypeOptions}
-      />;
-
       return {
         checked: true,
-        component: component,
+        component: <InfillDevelopmentLeaseLayer
+          areaLocationOptions={areaLocationOptions}
+          areaTypeOptions={areaTypeOptions}
+          color={mapColors[index % mapColors.length]}
+          geoJSONData={getContentInfillDevelopmentLeaseGeoJson(leaseData)}
+          highlighted={Boolean(query.lease && Number(query.lease) === leaseId)}
+          leaseIdentifier={identifier}
+          planUnitIntendedUseOptions={planUnitIntendedUseOptions}
+          planUnitStateOptions={planUnitStateOptions}
+          planUnitTypeOptions={planUnitTypeOptions}
+          plotDivisionStateOptions={plotDivisionStateOptions}
+          plotTypeOptions={plotTypeOptions}
+        />,
         name: identifier,
       };
     });
+
+    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+      layers.push({
+        checked: false,
+        component: <AreaNotesLayer
+          key='area_notes'
+          allowToEdit={false}
+          areaNotes={areaNotes}
+        />,
+        name: 'Muistettavat ehdot',
+      });
+    }
 
     this.setState({
       layers: layers,
@@ -218,10 +238,10 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
           </LoaderWrapper>
         }
         <AreaNotesEditMap
+          allowToEdit={false}
           bounds={bounds}
           center={center}
           overlayLayers={layers}
-          showEditTools={false}
         />
       </Fragment>
     );
@@ -235,6 +255,8 @@ export default flowRight(
     (state) => {
       return {
         allLeases: getAllLeases(state),
+        areaNoteMethods: getAreaNoteMethods(state),
+        areaNotes: getAreaNoteList(state),
         currentInfillDevelopment: getCurrentInfillDevelopment(state),
         isFetchingAllLeases: getIsFetchingAllLeases(state),
         leaseAttributes: getLeaseAttributes(state),
