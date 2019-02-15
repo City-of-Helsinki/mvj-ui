@@ -108,32 +108,36 @@ const renderPlanUnits = ({
             headerTitle={title}
             onToggle={handleCollapseToggle}
           >
-            <BoxItemContainer>
-              {!isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS) && (!fields || !fields.length) &&
-                <FormText>{noDataText}</FormText>
-              }
-              {fields.map((planunit, index) => {
-                const handleRemove = () => {
-                  dispatch({
-                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                    confirmationFunction: () => {
-                      fields.remove(index);
-                    },
-                    confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText: 'Poista',
-                    confirmationModalLabel: DeleteModalLabels.PLAN_UNIT,
-                    confirmationModalTitle: DeleteModalTitles.PLAN_UNIT,
-                  });
-                };
+            {!isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS) && (!fields || !fields.length) &&
+              <FormText>{noDataText}</FormText>
+            }
 
-                return <PlanUnitItemEdit
-                  key={index}
-                  field={planunit}
-                  isSaveClicked={isSaveClicked}
-                  onRemove={handleRemove}
-                />;
-              })}
-            </BoxItemContainer>
+            {!!fields.length &&
+              <BoxItemContainer>
+                {fields.map((planunit, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.PLAN_UNIT,
+                      confirmationModalTitle: DeleteModalTitles.PLAN_UNIT,
+                    });
+                  };
+
+                  return <PlanUnitItemEdit
+                    key={index}
+                    field={planunit}
+                    isSaveClicked={isSaveClicked}
+                    onRemove={handleRemove}
+                  />;
+                })}
+              </BoxItemContainer>
+            }
+
 
             <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_PLANUNIT)}>
               <Row>
@@ -204,33 +208,37 @@ const renderPlots = ({
             headerTitle={title}
             onToggle={handleCollapseToggle}
           >
-            <BoxItemContainer>
-              {!isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS) && (!fields || !fields.length) &&
-                <FormText>{noDataText}</FormText>
-              }
-              {fields.map((plot, index) => {
-                const handleDelete = () => {
-                  dispatch({
-                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                    confirmationFunction: () => {
-                      fields.remove(index);
-                    },
-                    confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText: 'Poista',
-                    confirmationModalLabel: DeleteModalLabels.PLOT,
-                    confirmationModalTitle: DeleteModalTitles.PLOT,
-                  });
-                };
 
-                return <PlotItemEdit
-                  key={index}
-                  field={plot}
-                  index={index}
-                  onRemove={handleDelete}
-                  plotsData={plotsData}
-                />;
-              })}
-            </BoxItemContainer>
+            {!isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS) && (!fields || !fields.length) &&
+              <FormText>{noDataText}</FormText>
+            }
+
+            {!!fields.length &&
+              <BoxItemContainer>
+                {fields.map((plot, index) => {
+                  const handleDelete = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.PLOT,
+                      confirmationModalTitle: DeleteModalTitles.PLOT,
+                    });
+                  };
+
+                  return <PlotItemEdit
+                    key={index}
+                    field={plot}
+                    index={index}
+                    onRemove={handleDelete}
+                    plotsData={plotsData}
+                  />;
+                })}
+              </BoxItemContainer>
+            }
 
             <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_PLOT)}>
               <Row>

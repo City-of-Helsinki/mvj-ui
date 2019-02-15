@@ -12,7 +12,7 @@ import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import FullWidthContainer from '$components/content/FullWidthContainer';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBox from '$components/content/GreenBox';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
 import {
@@ -180,9 +180,9 @@ class NewContactPage extends Component<Props> {
 
               <PageContainer className='with-small-control-bar'>
                 <ContentContainer>
-                  <GreenBoxEdit className='no-margin'>
+                  <GreenBox className='no-margin'>
                     <ContactForm isFocusedOnMount/>
-                  </GreenBoxEdit>
+                  </GreenBox>
                 </ContentContainer>
               </PageContainer>
             </FullWidthContainer>

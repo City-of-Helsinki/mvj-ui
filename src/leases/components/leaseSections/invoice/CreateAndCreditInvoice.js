@@ -2,9 +2,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import scrollToComponent from 'react-scroll-to-component';
+import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButton from '$components/form/AddButton';
 import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import CreditInvoiceForm from './forms/CreditInvoiceForm';
@@ -207,11 +208,16 @@ class CreateAndCreditInvoice extends Component <Props> {
         </Authorization>
 
         <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
-          <AddButtonSecondary
-            disabled={isCreateInvoicePanelOpen}
-            label='Luo lasku'
-            onClick={this.handleOpenCreateInvoicePanelButtonClick}
-          />
+          <Row>
+            <Column>
+              <AddButton
+                disabled={isCreateInvoicePanelOpen}
+                label='Luo lasku'
+                onClick={this.handleOpenCreateInvoicePanelButtonClick}
+                style={{marginTop: 15}}
+              />
+            </Column>
+          </Row>
         </Authorization>
 
         <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>

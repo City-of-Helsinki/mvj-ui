@@ -30,39 +30,44 @@
       color: $black;
 
       div:last-of-type {
-        height: 18px;
+        height: rem-calc(18px);
         margin: 0;
         padding: 0;
       }
     }
 
+    &__single-value {
+      padding-right: rem-calc(15px);
+    }
+
     &__input {
       input {
-        margin-top: -1px;
-        height: 14px;
-        padding: 2px !important;
+        margin-top: rem-calc(-1px);
+        height: rem-calc(14px);
+        padding: rem-calc(2px) !important;
         margin-bottom: 0;
       }
     }
 
     &__indicators {
-      height: 18px;
+      height: rem-calc(18px);
       position: absolute;
       right: 0;
       top: 0;
     }
 
     &__indicator {
-      padding: 1px;
+      padding: rem-calc(1px);
+
       svg {
-        height: 16px;
-        width: 16px;
+        height: rem-calc(16px);
+        width: rem-calc(16px);
       }
     }
 
     &__indicator-separator {
-      margin-top: 2px;
-      margin-bottom: 2px;
+      margin-top: rem-calc(2px);
+      margin-bottom: rem-calc(2px);
     }
 
     &__dropdown-indicator {
@@ -70,7 +75,7 @@
       background-image: url(../assets/icons/icon_arrow_down.svg);
       height: rem-calc(14px);
       width: rem-calc(14px);
-      margin: 0 2px;
+      margin: rem-calc(0 2px);
 
       &.menu-is-open {
         background-image: url(../assets/icons/icon_arrow_up.svg);
@@ -79,7 +84,7 @@
 
     &__menu {
       left: rem-calc(-1px);
-      margin-top: -1px;
+      margin-top: rem-calc(-1px);
       margin-bottom: 0;
       border-radius: 0;
       width: auto;
@@ -105,7 +110,7 @@
     &__option {
       font-size: rem-calc(14px);
       padding: rem-calc(2px 5px);
-      min-height: 20px;
+      min-height: rem-calc(20px);
       white-space: nowrap;
 
       &:hover {
