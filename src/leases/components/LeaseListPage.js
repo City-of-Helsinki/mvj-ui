@@ -30,6 +30,7 @@ import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {createLease, fetchLeases} from '$src/leases/actions';
+import {fetchLessors} from '$src/lessor/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {leaseStateFilterOptions} from '$src/leases/constants';
 import {PermissionMissingTexts} from '$src/enums';
@@ -70,6 +71,7 @@ type Props = {
   createLease: Function,
   fetchAreaNoteList: Function,
   fetchLeases: Function,
+  fetchLessors: Function,
   history: Object,
   initialize: Function,
   isFetching: boolean,
@@ -106,7 +108,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    const {fetchAreaNoteList, initialize, receiveTopNavigationSettings} = this.props;
+    const {fetchAreaNoteList, fetchLessors, initialize, receiveTopNavigationSettings} = this.props;
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
 
@@ -117,6 +119,8 @@ class LeaseListPage extends PureComponent<Props, State> {
     });
 
     fetchAreaNoteList({});
+
+    fetchLessors({limit: 10000});
 
     this.search();
 
@@ -203,7 +207,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
 
-    fetchLeases(getSearchQuery(mapLeaseSearchFilters(searchQuery)));
+    fetchLeases(mapLeaseSearchFilters(searchQuery));
   }
 
   handleSearchChange = (query) => {
@@ -489,6 +493,7 @@ export default flowRight(
       createLease,
       fetchAreaNoteList,
       fetchLeases,
+      fetchLessors,
       initialize,
       receiveTopNavigationSettings,
     },

@@ -26,6 +26,7 @@ import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
 import leaseCreateChargeReducer from '../leaseCreateCharge/reducer';
 import leaseTypeReducer from '../leaseType/reducer';
+import lessorReducer from '$src/lessor/reducer';
 import mapDataReducer from '../mapData/reducer';
 import penaltyInterestReducer from '../penaltyInterest/reducer';
 import previewInvoicesReducer from '../previewInvoices/reducer';
@@ -63,6 +64,7 @@ export default (history: Object): Reducer<RootState> =>
     lease: leaseReducer,
     leaseCreateCharge: leaseCreateChargeReducer,
     leaseType: leaseTypeReducer,
+    lessor: lessorReducer,
     mapData: mapDataReducer,
     oidc,
     penaltyInterest: penaltyInterestReducer,

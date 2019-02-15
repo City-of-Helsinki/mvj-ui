@@ -57,8 +57,8 @@ export const createContactOnModal = (contact: Contact): CreateContactOnModalActi
 export const editContactOnModal = (contact: Contact): EditContactOnModalAction =>
   createAction('mvj/contacts/EDIT_ON_MODAL')(contact);
 
-export const fetchContacts = (search: string): FetchContactsAction =>
-  createAction('mvj/contacts/FETCH_ALL')(search);
+export const fetchContacts = (params: Object): FetchContactsAction =>
+  createAction('mvj/contacts/FETCH_ALL')(params);
 
 export const receiveContacts = (contacts: ContactList): ReceiveContactsAction =>
   createAction('mvj/contacts/RECEIVE_ALL')(contacts);

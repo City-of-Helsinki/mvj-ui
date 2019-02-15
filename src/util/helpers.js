@@ -533,7 +533,7 @@ export const hasPermissions = (permissions: UsersPermissions, key: string) =>
  */
 export const getFieldAttributeOptions = (fieldAttributes: Object, addEmpty: boolean = true, optionRenderer?: ?Function, sortFn?: Function) => {
   const options = get(fieldAttributes, `choices`, []).map((item) => ({
-    value: item.value,
+    value: item.value.toString(),
     label: optionRenderer ? optionRenderer(item) : item.display_name,
   }));
 

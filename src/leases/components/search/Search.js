@@ -6,17 +6,26 @@ import {clearFields, formValueSelector, getFormValues, reduxForm} from 'redux-fo
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FieldTypes} from '$components/enums';
-import {FormNames, LeaseFieldPaths, LeaseTenantContactSetFieldPaths} from '$src/leases/enums';
+import {
+  FormNames,
+  LeaseDecisionsFieldPaths,
+  LeaseFieldPaths,
+  LeaseTenantContactSetFieldPaths,
+} from '$src/leases/enums';
+import {getContactOptions} from '$src/contacts/helpers';
 import {getDistrictOptions} from '$src/district/helpers';
-import {getFieldOptions} from '$util/helpers';
+import {addEmptyOption, getFieldOptions} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes as getLeaseAttributes, getIsFetchingAttributes} from '$src/leases/selectors';
+import {getLessorList} from '$src/lessor/selectors';
 
 import type {Attributes} from '$src/types';
+import type {LessorList} from '$src/lessor/types';
 
 type Props = {
   anyTouched: boolean,
@@ -30,6 +39,7 @@ type Props = {
   isFetchingAttributes: boolean,
   isSearchInitialized: boolean,
   leaseAttributes: Attributes,
+  lessors: LessorList,
   location: Object,
   municipality: string,
   onSearch: Function,
@@ -38,8 +48,11 @@ type Props = {
 }
 
 type State = {
+  decisionMakerOptions: Array<Object>,
   isBasicSearch: boolean,
   leaseAttributes: Attributes,
+  lessors: LessorList,
+  lessorOptions: Array<Object>,
   municipalityOptions: Array<Object>,
   tenantTypeOptions: Array<Object>,
   typeOptions: Array<Object>,
@@ -49,8 +62,11 @@ class Search extends Component<Props, State> {
   _isMounted: boolean;
 
   state = {
+    decisionMakerOptions: [],
     isBasicSearch: true,
     leaseAttributes: {},
+    lessors: [],
+    lessorOptions: [],
     municipalityOptions: [],
     tenantTypeOptions: [],
     typeOptions: [],
@@ -72,12 +88,18 @@ class Search extends Component<Props, State> {
 
     if(props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
+      newState.decisionMakerOptions = getFieldOptions(props.leaseAttributes, LeaseDecisionsFieldPaths.DECISION_MAKER);
       newState.municipalityOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.MUNICIPALITY);
       newState.tenantTypeOptions = getFieldOptions(props.leaseAttributes, LeaseTenantContactSetFieldPaths.TYPE, false);
       newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.TYPE);
     }
 
-    return newState;
+    if(props.lessors !== state.lessors) {
+      newState.lessors = props.lessors;
+      newState.lessorOptions = addEmptyOption(getContactOptions(props.lessors));
+    }
+
+    return !isEmpty(newState) ? newState : null;
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -158,13 +180,14 @@ class Search extends Component<Props, State> {
       isFetchingAttributes,
     } = this.props;
     const {
+      decisionMakerOptions,
       isBasicSearch,
+      lessorOptions,
       municipalityOptions,
       tenantTypeOptions,
       typeOptions,
     } = this.state;
     const districtOptions = getDistrictOptions(districts);
-
 
     return (
       <div className='lease-search'>
@@ -200,6 +223,44 @@ class Search extends Component<Props, State> {
                   }}
                   invisibleLabel
                   name='tenant_name'
+                />
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Y-tunnus</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Y-tunnus',
+                    type: FieldTypes.STRING,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name='business_id'
+                />
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Henkilötunnus</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Henkilötunnus',
+                    type: FieldTypes.STRING,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name='national_identification_number'
                 />
               </div>
             </div>
@@ -244,6 +305,28 @@ class Search extends Component<Props, State> {
                     />
                   </Column>
                 </Row>
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Vuokranantaja</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Vuokranantaja',
+                    type: FieldTypes.CHOICE,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name='lessor'
+                  overrideValues={{
+                    options: lessorOptions,
+                  }}
+                />
               </div>
             </div>
 
@@ -426,14 +509,14 @@ class Search extends Component<Props, State> {
 
             <div className='lease-search__row'>
               <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Kohteen tunnus</span>
+                <span className='lease-search__label'>Kiinteistötunnus</span>
               </div>
               <div className='lease-search__input-column'>
                 <FormField
                   autoBlur
                   disableDirty
                   fieldAttributes={{
-                    label: 'Kohteen tunnus',
+                    label: 'Kiinteistötunnus',
                     type: FieldTypes.STRING,
                     read_only: false,
                   }}
@@ -458,6 +541,98 @@ class Search extends Component<Props, State> {
                   }}
                   invisibleLabel
                   name='address'
+                />
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Sopimusnro</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Sopimusnro',
+                    type: FieldTypes.STRING,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name='contract_number'
+                />
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Päätös</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <Row>
+                  <Column small={6}>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Päätöksen tekijä',
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='decision_maker'
+                      overrideValues={{options: decisionMakerOptions}}
+                    />
+                  </Column>
+                  <Column small={6}>
+                    <FormField
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Päätöspvm',
+                        type: FieldTypes.DATE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='decision_date'
+                    />
+                  </Column>
+                </Row>
+              </div>
+            </div>
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Diaarinro</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Diaarinro',
+                    type: FieldTypes.STRING,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name='reference_number'
+                />
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Laskunro</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Laskunro',
+                    type: FieldTypes.STRING,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name='invoice_number'
                 />
               </div>
             </div>
@@ -499,6 +674,7 @@ export default flowRight(
         formValues: getFormValues(formName)(state),
         isFetchingAttributes: getIsFetchingAttributes(state),
         leaseAttributes: getLeaseAttributes(state),
+        lessors: getLessorList(state),
         municipality: municipality,
       };
     },

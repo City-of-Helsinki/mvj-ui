@@ -63,7 +63,7 @@
     "proj4leaflet": "^1.0.1",
     "prop-types": "^15.6.0",
     "react": "^16.7.0",
-    "react-datepicker": "^1.4.1",
+    "react-datepicker": "1.6.0",
     "react-dev-utils": "^7.0.1",
     "react-dom": "^16.7.0",
     "react-dual-listbox": "^1.4.2",

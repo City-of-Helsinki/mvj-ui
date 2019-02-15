@@ -28,8 +28,8 @@ export const editContact = (contact: Contact): Generator<any, any, any> => {
   }));
 };
 
-export const fetchContacts = (search: string): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`contact/${search || ''}`)));
+export const fetchContacts = (params: Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('contact/', params)));
 };
 
 export const fetchSingleContact = (id: ContactId): Generator<any, any, any> => {

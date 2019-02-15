@@ -194,7 +194,7 @@ class ContactListPage extends Component<Props, State> {
     }
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    fetchContacts(getSearchQuery(searchQuery));
+    fetchContacts(searchQuery);
   }
 
   handleRowClick = (id) => {

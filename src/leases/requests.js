@@ -13,8 +13,8 @@ export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('lease/'), {method: 'OPTIONS'}));
 };
 
-export const fetchLeases = (search: string): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`lease/${search || ''}`)));
+export const fetchLeases = (params: ?Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('lease/', params)));
 };
 
 export const fetchSingleLease = (id: LeaseId): Generator<any, any, any> => {
