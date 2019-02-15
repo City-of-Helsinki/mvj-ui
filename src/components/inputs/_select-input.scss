@@ -38,6 +38,9 @@
 
     &__single-value {
       padding-right: rem-calc(15px);
+      height: 100%;
+      margin-top: 1px;
+      overflow: hidden;
     }
 
     &__input {
