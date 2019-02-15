@@ -128,6 +128,7 @@ export const getSearchQuery = (filters: any) => {
     if (filter != null && (!isEmpty(filter) || isNumber(filter) || typeof 'boolean')) {
       if (isArray(filter)) {
         const items = [];
+
         forEach(filter, (item) => {
           items.push(encodeURIComponent(item));
         });
@@ -163,7 +164,7 @@ export const getUrlParams = (search: string = ''): Object => {
         query[key] = [query[key], ...values];
       }
     } else {
-      query[key] = values;
+      query[key] = values.length === 1 ? values[0] : values;
     }
   });
 

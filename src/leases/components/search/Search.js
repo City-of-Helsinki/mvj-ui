@@ -584,7 +584,7 @@ class Search extends Component<Props, State> {
                       overrideValues={{options: decisionMakerOptions}}
                     />
                   </Column>
-                  <Column small={6}>
+                  <Column small={3}>
                     <FormField
                       disableDirty
                       fieldAttributes={{
@@ -594,6 +594,19 @@ class Search extends Component<Props, State> {
                       }}
                       invisibleLabel
                       name='decision_date'
+                    />
+                  </Column>
+                  <Column small={3}>
+                    <FormField
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Pykälä',
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      unit='§'
+                      name='decision_section'
                     />
                   </Column>
                 </Row>
