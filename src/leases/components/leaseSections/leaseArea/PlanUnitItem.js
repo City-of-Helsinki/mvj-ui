@@ -126,9 +126,9 @@ const PlanUnitItem = ({
           </Authorization>
         </Column>
         <Column small={12} medium={12} large={6}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_DATE_OF_APPROVAL)}>
-            <FormTextTitle>{LeasePlanUnitsFieldTitles.PLOT_DIVISION_DATE_OF_APPROVAL}</FormTextTitle>
-            <FormText>{formatDate(planUnit.plot_division_date_of_approval) || '-'}</FormText>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_EFFECTIVE_DATE)}>
+            <FormTextTitle>{LeasePlanUnitsFieldTitles.PLOT_DIVISION_EFFECTIVE_DATE}</FormTextTitle>
+            <FormText>{formatDate(planUnit.plot_division_effective_date) || '-'}</FormText>
           </Authorization>
         </Column>
       </Row>

@@ -111,7 +111,7 @@ class FieldTypeSelect extends PureComponent<Props, State> {
           onMenuOpen={this.handleMenuOpen}
           options={options}
           placeholder={placeholder || 'Valitse...'}
-          value={options && options.find((option) => option.value === value)}
+          value={options && options.find((option) => option.value == value)}
         />
       </div>
     );

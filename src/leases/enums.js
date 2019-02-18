@@ -378,6 +378,7 @@ export const FormNames = {
  * @type {{}}
  */
 export const LeaseFieldPaths = {
+  ARRANGEMENT_DECISION: 'arrangement_decision',
   BUILDING_SELLING_PRICE: 'building_selling_price',
   CLASSIFICATION: 'classification',
   CONVEYANCE_NUMBER: 'conveyance_number',
@@ -418,6 +419,7 @@ export const LeaseFieldPaths = {
  * @type {{}}
  */
 export const LeaseFieldTitles = {
+  ARRANGEMENT_DECISION: 'Järjestelypäätös',
   BUILDING_SELLING_PRICE: 'Rakennuksen kauppahinta',
   CLASSIFICATION: 'Julkisuusluokka',
   CONVEYANCE_NUMBER: 'Luovutusnumero',
@@ -559,7 +561,7 @@ export const LeasePlanUnitsFieldPaths = {
   PLAN_UNIT_INTENDED_USE: 'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use',
   PLAN_UNIT_STATE: 'lease_areas.child.children.plan_units.child.children.plan_unit_state',
   PLAN_UNIT_TYPE: 'lease_areas.child.children.plan_units.child.children.plan_unit_type',
-  PLOT_DIVISION_DATE_OF_APPROVAL: 'lease_areas.child.children.plan_units.child.children.plot_division_date_of_approval',
+  PLOT_DIVISION_EFFECTIVE_DATE: 'lease_areas.child.children.plan_units.child.children.plot_division_effective_date',
   PLOT_DIVISION_IDENTIFIER: 'lease_areas.child.children.plan_units.child.children.plot_division_identifier',
   PLOT_DIVISION_STATE: 'lease_areas.child.children.plan_units.child.children.plot_division_state',
   SECTION_AREA: 'lease_areas.child.children.plan_units.child.children.section_area',
@@ -581,7 +583,7 @@ export const LeasePlanUnitsFieldTitles = {
   PLAN_UNIT_INTENDED_USE: 'Kaavayksikön käyttötarkoitus',
   PLAN_UNIT_STATE: 'Kaavayksikön olotila',
   PLAN_UNIT_TYPE: 'Kaavayksikön laji',
-  PLOT_DIVISION_DATE_OF_APPROVAL: 'Tonttijaon hyväksymispvm',
+  PLOT_DIVISION_EFFECTIVE_DATE: 'Tonttijaon voimaantulopvm',
   PLOT_DIVISION_IDENTIFIER: 'Tonttijaon tunnus',
   PLOT_DIVISION_STATE: 'Tonttijaon olotila',
   SECTION_AREA: 'Leikkausala',

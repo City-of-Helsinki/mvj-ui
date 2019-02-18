@@ -159,6 +159,7 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
 export const getContentSummary = (lease: Object) => {
   return {
     area_notes: get(lease, 'area_notes', []),
+    arrangement_decision: lease.arrangement_decision,
     building_selling_price: lease.building_selling_price,
     classification: lease.classification,
     constructability_areas: getContentConstructability(lease),
@@ -296,7 +297,7 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
       city: planunit.city,
       in_contract: planunit.in_contract,
       plot_division_identifier: planunit.plot_division_identifier,
-      plot_division_date_of_approval: planunit.plot_division_date_of_approval,
+      plot_division_effective_date: planunit.plot_division_effective_date,
       plot_division_state: get(planunit, 'plot_division_state.id') || get(planunit, 'plot_division_state'),
       detailed_plan_identifier: planunit.detailed_plan_identifier,
       detailed_plan_latest_processing_date: planunit.detailed_plan_latest_processing_date,
@@ -874,7 +875,7 @@ export const getContentPlanUnitFeatures = (planUnits: Array<Object>): PlanUnitsF
         detailed_plan_latest_processing_date: planUnit.detailed_plan_latest_processing_date,
         detailed_plan_latest_processing_date_note: planUnit.detailed_plan_latest_processing_date_note,
         plot_division_identifier: planUnit.plot_division_identifier,
-        plot_division_date_of_approval: planUnit.plot_division_date_of_approval,
+        plot_division_effective_date: planUnit.plot_division_effective_date,
         plot_division_state: planUnit.plot_division_state,
         plan_unit_type: planUnit.plan_unit_type,
         plan_unit_state: planUnit.plan_unit_state,
@@ -932,36 +933,38 @@ export const getPayloadCreateLease = (lease: Object) => {
 };
 
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
-  payload.building_selling_price = convertStrToDecimalNumber(summary.building_selling_price);
-  payload.classification = summary.classification;
-  payload.conveyance_number = summary.conveyance_number;
-  payload.end_date = summary.end_date;
-  payload.financing = summary.financing;
-  payload.hitas = summary.hitas;
-  payload.intended_use = summary.intended_use;
-  payload.intended_use_note = summary.intended_use_note;
-  payload.is_subject_to_vat = summary.is_subject_to_vat;
-  payload.lessor = get(summary, 'lessor.value');
-  payload.notice_note = summary.notice_note;
-  payload.notice_period = summary.notice_period;
-  payload.management = summary.management;
-  payload.note = summary.note;
-  payload.preparer = get(summary, 'preparer.value');
-  payload.reference_number = summary.reference_number;
-  payload.real_estate_developer = summary.real_estate_developer;
-  payload.regulated = summary.regulated;
-  payload.regulation = summary.regulation;
-  payload.special_project = summary.special_project;
-  payload.start_date = summary.start_date;
-  payload.state = summary.state;
-  payload.statistical_use = summary.statistical_use;
-  payload.supportive_housing = summary.supportive_housing;
-  payload.transferable = summary.transferable;
-
-  return payload;
+  return {
+    ...payload,
+    arrangement_decision: summary.arrangement_decision,
+    building_selling_price: convertStrToDecimalNumber(summary.building_selling_price),
+    classification: summary.classification,
+    conveyance_number: summary.conveyance_number,
+    end_date: summary.end_date,
+    financing: summary.financing,
+    hitas: summary.hitas,
+    intended_use: summary.intended_use,
+    intended_use_note: summary.intended_use_note,
+    is_subject_to_vat: summary.is_subject_to_vat,
+    lessor: get(summary, 'lessor.value'),
+    notice_note: summary.notice_note,
+    notice_period: summary.notice_period,
+    management: summary.management,
+    note: summary.note,
+    preparer: get(summary, 'preparer.value'),
+    reference_number: summary.reference_number,
+    real_estate_developer: summary.real_estate_developer,
+    regulated: summary.regulated,
+    regulation: summary.regulation,
+    special_project: summary.special_project,
+    start_date: summary.start_date,
+    state: summary.state,
+    statistical_use: summary.statistical_use,
+    supportive_housing: summary.supportive_housing,
+    transferable: summary.transferable,
+  };
 };
 
-const getAddressesForDb = (addresses: Array<Object>) =>
+const getPayloadAddresses = (addresses: Array<Object>) =>
   addresses.map((address) => {
     return {
       id: address.id || undefined,
@@ -971,7 +974,7 @@ const getAddressesForDb = (addresses: Array<Object>) =>
     };
   });
 
-const getPlotsForDb = (area: Object) => {
+const getPayloadPlots = (area: Object) => {
   const currentPlots = get(area, 'plots_current', []).map((plot) => {
     return {...plot, 'in_contract': false};
   });
@@ -997,7 +1000,7 @@ const getPlotsForDb = (area: Object) => {
   });
 };
 
-const getPlanUnitsForDb = (area: Object) => {
+const getPayloadPlanUnits = (area: Object) => {
   const currentPlanUnits = get(area, 'plan_units_current', []).map((planunit) => {
     return {...planunit, 'in_contract': false};
   });
@@ -1016,7 +1019,7 @@ const getPlanUnitsForDb = (area: Object) => {
       city: planunit.city,
       in_contract: planunit.in_contract,
       plot_division_identifier: planunit.plot_division_identifier,
-      plot_division_date_of_approval: planunit.plot_division_date_of_approval,
+      plot_division_effective_date: planunit.plot_division_effective_date,
       plot_division_state: planunit.plot_division_state,
       detailed_plan_identifier: planunit.detailed_plan_identifier,
       detailed_plan_latest_processing_date: planunit.detailed_plan_latest_processing_date,
@@ -1037,11 +1040,11 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
       identifier: area.identifier,
       area: convertStrToDecimalNumber(area.area),
       section_area: convertStrToDecimalNumber(area.area),
-      addresses: getAddressesForDb(get(area, 'addresses', [])),
+      addresses: getPayloadAddresses(get(area, 'addresses', [])),
       type: area.type,
       location: area.location,
-      plots: getPlotsForDb(area),
-      plan_units: getPlanUnitsForDb(area),
+      plots: getPayloadPlots(area),
+      plan_units: getPayloadPlanUnits(area),
       archived_at: area.archived_at,
       archived_note: area.archived_note,
       archived_decision: area.archived_decision,

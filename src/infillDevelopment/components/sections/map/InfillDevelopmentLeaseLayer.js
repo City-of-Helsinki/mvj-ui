@@ -3,7 +3,17 @@ import React, {PureComponent} from 'react';
 import {GeoJSON} from 'react-leaflet';
 
 import {mapColors} from '$src/constants';
-import {formatDate, formatNumber, getLabelOfOption} from '$util/helpers';
+import {
+  LeaseAreasFieldTitles,
+  LeasePlanUnitsFieldTitles,
+  LeasePlotsFieldTitles,
+} from '$src/leases/enums';
+import {
+  formatDate,
+  formatNumber,
+  getLabelOfOption,
+  isEmptyValue,
+} from '$util/helpers';
 
 type Props = {
   areaLocationOptions: Array<Object>,
@@ -91,7 +101,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
               plan_unit_intended_use,
               plan_unit_state,
               plan_unit_type,
-              plot_division_date_of_approval,
+              plot_division_effective_date,
               plot_division_identifier,
               plot_division_state,
               registration_date,
@@ -104,35 +114,35 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
               case 'area':
                 popupContent = `<p class='title'><strong>${leaseIdentifier}: Vuokrakohde</strong></p>
                   <p><strong>Id:</strong> ${id}</p>
-                  <p><strong>Tunnus:</strong> ${identifier}</p>
-                  <p><strong>Määritelmä:</strong> ${getLabelOfOption(areaTypeOptions, type) || '-'}</p>
-                  <p><strong>Kokonaisala:</strong> ${(area || area === 0) ? `${formatNumber(area)} m²` : ''}</p>
-                  <p><strong>Sijainti:</strong> ${getLabelOfOption(areaLocationOptions, location) || '-'}</p>`;
+                  <p><strong>${LeaseAreasFieldTitles.IDENTIFIER}:</strong> ${identifier}</p>
+                  <p><strong>${LeaseAreasFieldTitles.TYPE}:</strong> ${getLabelOfOption(areaTypeOptions, type) || '-'}</p>
+                  <p><strong>${LeaseAreasFieldTitles.AREA}:</strong> ${!isEmptyValue(area) ? `${formatNumber(area)} m²` : ''}</p>
+                  <p><strong>${LeaseAreasFieldTitles.LOCATION}:</strong> ${getLabelOfOption(areaLocationOptions, location) || '-'}</p>`;
                 break;
               case 'plan_unit':
                 popupContent = `<p class='title'><strong>${leaseIdentifier}: Kaavayksikkö</strong></p>
                   <p><strong>Id:</strong> ${id}</p>
-                  <p><strong>Tunnus:</strong> ${identifier}</p>
-                  <p><strong>Kokonaisala:</strong> ${(area || area === 0) ? `${formatNumber(area)} m²` : ''}</p>
-                  <p><strong>Leikkausala:</strong> ${(section_area || section_area === 0) ? `${formatNumber(section_area)} m²` : ''}</p>
-                  <p><strong>Asemakaava:</strong> ${detailed_plan_identifier || '-'}</p>
-                  <p><strong>Asemakaavan viimeisin käsittelypvm:</strong> ${formatDate(detailed_plan_latest_processing_date) || '-'}</p>
-                  <p><strong>Asemakaavan viimeisin käsittelypvm huomautus:</strong> ${detailed_plan_latest_processing_date_note || '-'}</p>
-                  <p><strong>Tonttijaon tunnus:</strong> ${plot_division_identifier || '-'}</p>
-                  <p><strong>Tonttijaon olotila:</strong> ${getLabelOfOption(plotDivisionStateOptions, plot_division_state) || '-'}</p>
-                  <p><strong>Tonttijaon hyväksymispvm:</strong> ${formatDate(plot_division_date_of_approval) || '-'}</p>
-                  <p><strong>Kaavayksikön laji:</strong> ${getLabelOfOption(planUnitTypeOptions, plan_unit_type) || '-'}</p>
-                  <p><strong>Kaavayksikön olotila:</strong> ${getLabelOfOption(planUnitStateOptions, plan_unit_state) || '-'}</p>
-                  <p><strong>Kaavayksikön käyttötarkoitus:</strong> ${getLabelOfOption(planUnitIntendedUseOptions, plan_unit_intended_use) || '-'}</p>`;
+                  <p><strong>${LeasePlanUnitsFieldTitles.IDENTIFIER}:</strong> ${identifier}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.AREA}:</strong> ${!isEmptyValue(area) ? `${formatNumber(area)} m²` : ''}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.SECTION_AREA}:</strong> ${!isEmptyValue(section_area) ? `${formatNumber(section_area)} m²` : ''}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.DETAILED_PLAN_IDENTIFIER}:</strong> ${detailed_plan_identifier || '-'}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}:</strong> ${formatDate(detailed_plan_latest_processing_date) || '-'}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}:</strong> ${detailed_plan_latest_processing_date_note || '-'}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.PLOT_DIVISION_IDENTIFIER}:</strong> ${plot_division_identifier || '-'}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.PLOT_DIVISION_STATE}:</strong> ${getLabelOfOption(plotDivisionStateOptions, plot_division_state) || '-'}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.PLOT_DIVISION_EFFECTIVE_DATE}:</strong> ${formatDate(plot_division_effective_date) || '-'}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.PLAN_UNIT_TYPE}:</strong> ${getLabelOfOption(planUnitTypeOptions, plan_unit_type) || '-'}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.PLAN_UNIT_STATE}:</strong> ${getLabelOfOption(planUnitStateOptions, plan_unit_state) || '-'}</p>
+                  <p><strong>${LeasePlanUnitsFieldTitles.PLAN_UNIT_INTENDED_USE}:</strong> ${getLabelOfOption(planUnitIntendedUseOptions, plan_unit_intended_use) || '-'}</p>`;
                 break;
               case 'plot':
                 popupContent = `<p class='title'><strong>${leaseIdentifier}: ${getLabelOfOption(plotTypeOptions, type) || '-'}</strong></p>
                   <p><strong>Id:</strong> ${id}</p>
-                  <p><strong>Tunnus:</strong> ${identifier}</p>
-                  <p><strong>Kokonaisala:</strong> ${(area || area === 0) ? `${formatNumber(area)} m²` : ''}</p>
-                  <p><strong>Leikkausala:</strong> ${(section_area || section_area === 0) ? `${formatNumber(section_area)} m²` : ''}</p>
-                  <p><strong>Rekisteröintipvm:</strong> ${formatDate(registration_date) || '-'}</p>
-                  <p><strong>Kumoamispvm:</strong> ${formatDate(repeal_date) || '-'}</p>`;
+                  <p><strong>${LeasePlotsFieldTitles.IDENTIFIER}:</strong> ${identifier}</p>
+                  <p><strong>${LeasePlotsFieldTitles.AREA}:</strong> ${!isEmptyValue(area) ? `${formatNumber(area)} m²` : ''}</p>
+                  <p><strong>${LeasePlotsFieldTitles.SECTION_AREA}:</strong> ${!isEmptyValue(section_area) ? `${formatNumber(section_area)} m²` : ''}</p>
+                  <p><strong>${LeasePlotsFieldTitles.REGISTRATION_DATE}:</strong> ${formatDate(registration_date) || '-'}</p>
+                  <p><strong>${LeasePlotsFieldTitles.REPEAL_DATE}:</strong> ${formatDate(repeal_date) || '-'}</p>`;
                 break;
             }
 

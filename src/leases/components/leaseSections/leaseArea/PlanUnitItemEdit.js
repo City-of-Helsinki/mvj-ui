@@ -175,12 +175,12 @@ const PlanUnitItemEdit = ({
             </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_DATE_OF_APPROVAL)}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_EFFECTIVE_DATE)}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_DATE_OF_APPROVAL)}
-                name={`${field}.plot_division_date_of_approval`}
-                overrideValues={{label: LeasePlanUnitsFieldTitles.PLOT_DIVISION_DATE_OF_APPROVAL}}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_EFFECTIVE_DATE)}
+                name={`${field}.plot_division_effective_date`}
+                overrideValues={{label: LeasePlanUnitsFieldTitles.PLOT_DIVISION_EFFECTIVE_DATE}}
               />
             </Authorization>
           </Column>

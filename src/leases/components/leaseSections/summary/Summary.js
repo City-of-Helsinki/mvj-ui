@@ -317,6 +317,12 @@ class Summary extends PureComponent<Props, State> {
                     <FormText>{summary.is_subject_to_vat ? 'Kyllä' : 'Ei'}</FormText>
                   </Authorization>
                 </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.ARRANGEMENT_DECISION)}>
+                    <FormTextTitle>{LeaseFieldTitles.ARRANGEMENT_DECISION}</FormTextTitle>
+                    <FormText>{summary.arrangement_decision ? 'Kyllä' : 'Ei'}</FormText>
+                  </Authorization>
+                </Column>
               </Row>
 
               <SummaryLeaseInfo />

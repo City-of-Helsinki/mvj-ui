@@ -375,6 +375,16 @@ class SummaryEdit extends PureComponent<Props, State> {
                     />
                   </Authorization>
                 </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.ARRANGEMENT_DECISION)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.ARRANGEMENT_DECISION)}
+                      name='arrangement_decision'
+                      overrideValues={{label: LeaseFieldTitles.ARRANGEMENT_DECISION}}
+                    />
+                  </Authorization>
+                </Column>
               </Row>
 
               <SummaryLeaseInfo />
