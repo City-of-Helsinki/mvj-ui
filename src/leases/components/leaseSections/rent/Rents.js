@@ -65,6 +65,7 @@ const Rents = ({
             <RentItem
               key={rent.id}
               rent={rent}
+              rents={rents}
             />
           );
         })}
@@ -74,6 +75,7 @@ const Rents = ({
           <RentItem
             key={rent.id}
             rent={rent}
+            rents={rents}
           />
         )}
       </Authorization>

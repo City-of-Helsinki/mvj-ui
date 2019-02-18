@@ -304,6 +304,7 @@ class RentItemEdit extends PureComponent<Props, State> {
       rentAdjustmentsCollapseState,
       rentCollapseState,
       rentType,
+      rents,
       usersPermissions,
     } = this.props;
     const {
@@ -322,7 +323,7 @@ class RentItemEdit extends PureComponent<Props, State> {
     return (
       <Collapse
         archived={archived}
-        defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
+        defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || (rents.length === 1 && !archived)}
         hasErrors={isSaveClicked && !isEmpty(rentErrors)}
         headerTitle={
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>

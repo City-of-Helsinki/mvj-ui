@@ -45,6 +45,7 @@ type Props = {
   payableRentsCollapseState: boolean,
   receiveCollapseStates: Function,
   rent: Object,
+  rents: Array<Object>,
   rentAdjustmentsCollapseState: boolean,
   rentCollapseState: boolean,
 }
@@ -57,6 +58,7 @@ const RentItem = ({
   payableRentsCollapseState,
   receiveCollapseStates,
   rent,
+  rents,
   rentAdjustmentsCollapseState,
   rentCollapseState,
 }: Props) => {
@@ -145,7 +147,7 @@ const RentItem = ({
   return (
     <Collapse
       archived={archived}
-      defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
+      defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || rents.length === 1}
       headerSubtitles={
         <Column small={6} medium={8} large={10}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE) ||
