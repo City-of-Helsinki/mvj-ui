@@ -1,7 +1,7 @@
 .rent-calculator {
   &__button-wrapper {
     padding-top: rem-calc(5px);
-    padding-bottom: rem-calc(20px);
+    padding-bottom: rem-calc(10px);
     display: flex;
     align-items: flex-end;
     height: 100%;
@@ -23,7 +23,7 @@
   }
 
   &__rent-wrapper {
-    padding: rem-calc(15px 15px 5px);
+    padding: rem-calc(10px 10px 0);
     background-color: $light-green;
     margin-top: rem-calc(5px);
     margin-bottom: rem-calc(10px);

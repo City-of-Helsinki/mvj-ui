@@ -116,11 +116,9 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     const states = isArray(query.state)
       ? query.state
-      : query.state ? [query.state] : null;
+      : query.state ? [query.state] : [];
 
-    if(states) {
-      this.setState({selectedStates: states});
-    }
+    this.setState({selectedStates: states});
 
     const setSearchFormReadyFlag = () => {
       this.setState({isSearchInitialized: true});
@@ -129,6 +127,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const initializeSearchForm = async() => {
       try {
         const searchQuery = {...query};
+
         delete searchQuery.page;
         delete searchQuery.state;
 
@@ -212,7 +211,8 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     }
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    fetchInfillDevelopments(getSearchQuery(searchQuery));
+
+    fetchInfillDevelopments(searchQuery);
   }
 
   handleRowClick = (id) => {
@@ -283,9 +283,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   render() {
     const {infillDevelopmentMethods, isFetching, isFetchingCommonAttributes} = this.props;
     const {activePage, count, infillDevelopments, isSearchInitialized, maxPage, selectedStates, stateOptions} = this.state;
-    const filteredInfillDevelopments = selectedStates.length
-      ? (infillDevelopments.filter((infillDevelopment) => selectedStates.indexOf(infillDevelopment.state) !== -1))
-      : infillDevelopments;
     const columns = this.getColumns();
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
@@ -326,7 +323,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
           }
           <SortableTable
             columns={columns}
-            data={filteredInfillDevelopments}
+            data={infillDevelopments}
             listTable
             onRowClick={this.handleRowClick}
             showCollapseArrowColumn

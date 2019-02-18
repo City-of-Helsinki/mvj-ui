@@ -51,11 +51,15 @@ const FieldTypeCheckbox = ({
       {label && <legend>{label}</legend>}
       {options && options.map((option, index) => {
         const {value: optionValue, label: optionLabel} = option;
+
         return (
           <label key={index} className='option-label'>
             <input
               type='checkbox'
-              checked={hasMultipleValues ? value.indexOf(optionValue) !== -1 : !!value}
+              checked={hasMultipleValues
+                ? value.indexOf(optionValue) !== -1
+                : !!value && value !== 'false'
+              }
               name={hasMultipleValues ? `${name}[${index}]` : name}
               onChange={(event) => handleChange(event, optionValue)}
               value={optionValue}

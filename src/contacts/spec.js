@@ -100,7 +100,7 @@ describe('Contacts', () => {
         const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = contactReducer({}, fetchContacts(''));
+        const state = contactReducer({}, fetchContacts({}));
         expect(state).to.deep.equal(newState);
       });
 

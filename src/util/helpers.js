@@ -125,9 +125,10 @@ export const getSearchQuery = (filters: any) => {
   let query = [];
 
   forEach(filters, (filter: any, key) => {
-    if (!isEmpty(filter) || isNumber(filter) || typeof 'boolean') {
+    if (filter != null && (!isEmpty(filter) || isNumber(filter) || typeof 'boolean')) {
       if (isArray(filter)) {
         const items = [];
+
         forEach(filter, (item) => {
           items.push(encodeURIComponent(item));
         });
@@ -152,18 +153,18 @@ export const getUrlParams = (search: string = ''): Object => {
   entries.forEach((entry) => {
     const split = entry.split('=');
     const key = decodeURIComponent(split[0]);
-    const value = decodeURIComponent(split[1]);
+    const values = decodeURIComponent(split[1]).split(',');
 
     if(!key) return;
 
     if(query[key]) {
       if(isArray(query[key])) {
-        query[key].push(value);
+        query[key].push(values);
       } else {
-        query[key] = [query[key], value];
+        query[key] = [query[key], ...values];
       }
     } else {
-      query[key] = value;
+      query[key] = values.length === 1 ? values[0] : values;
     }
   });
 
@@ -533,7 +534,7 @@ export const hasPermissions = (permissions: UsersPermissions, key: string) =>
  */
 export const getFieldAttributeOptions = (fieldAttributes: Object, addEmpty: boolean = true, optionRenderer?: ?Function, sortFn?: Function) => {
   const options = get(fieldAttributes, `choices`, []).map((item) => ({
-    value: item.value,
+    value: item.value.toString(),
     label: optionRenderer ? optionRenderer(item) : item.display_name,
   }));
 

@@ -8,6 +8,6 @@ type Props = {
 }
 
 const GreenBox = ({children, className}: Props) =>
-  <div className={classNames('green-box', className)}>{children}</div>;
+  <div className={classNames('content__green-box', className)}>{children}</div>;
 
 export default GreenBox;

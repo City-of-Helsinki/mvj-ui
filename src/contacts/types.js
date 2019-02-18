@@ -33,7 +33,7 @@ export type EditContactAction = Action<'mvj/contacts/EDIT', Contact>;
 export type CreateContactOnModalAction = Action<'mvj/contacts/CREATE_ON_MODAL', Contact>;
 export type EditContactOnModalAction = Action<'mvj/contacts/EDIT_ON_MODAL', Contact>;
 
-export type FetchContactsAction = Action<'mvj/contacts/FETCH_ALL', string>;
+export type FetchContactsAction = Action<'mvj/contacts/FETCH_ALL', Object>;
 export type ReceiveContactsAction = Action<'mvj/contacts/RECEIVE_ALL', ContactList>;
 
 export type FetchSingleContactAction = Action<'mvj/contacts/FETCH_SINGLE', ContactId>;

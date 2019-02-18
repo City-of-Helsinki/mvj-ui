@@ -38,8 +38,8 @@ export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
 export const attributesNotFound = (): InfillDevelopmentAttributesNotFoundAction =>
   createAction('mvj/infillDevelopment/ATTRIBUTES_NOT_FOUND')();
 
-export const fetchInfillDevelopments = (search: string): FetchInfillDevelopmentListAction =>
-  createAction('mvj/infillDevelopment/FETCH_ALL')(search);
+export const fetchInfillDevelopments = (query: Object): FetchInfillDevelopmentListAction =>
+  createAction('mvj/infillDevelopment/FETCH_ALL')(query);
 
 export const receiveInfillDevelopments= (infillDevelopments: InfillDevelopmentList): ReceiveInfillDevelopmentListAction =>
   createAction('mvj/infillDevelopment/RECEIVE_ALL')(infillDevelopments);

@@ -50,8 +50,8 @@ export const receiveAttributes = (attributes: Attributes): ReceiveAttributesActi
 export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
   createAction('mvj/leases/RECEIVE_METHODS')(methods);
 
-export const fetchLeases = (search: string): FetchLeasesAction =>
-  createAction('mvj/leases/FETCH_ALL')(search);
+export const fetchLeases = (params: Object): FetchLeasesAction =>
+  createAction('mvj/leases/FETCH_ALL')(params);
 
 export const receiveLeases = (leases: LeaseList): ReceiveLeasesAction =>
   createAction('mvj/leases/RECEIVE_ALL')(leases);

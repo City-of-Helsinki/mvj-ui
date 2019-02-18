@@ -10,7 +10,7 @@ import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import FullWidthContainer from '$components/content/FullWidthContainer';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBox from '$components/content/GreenBox';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
@@ -153,9 +153,9 @@ class NewRentBasisPage extends Component<Props> {
           }
 
           <ContentContainer>
-            <GreenBoxEdit className='no-margin'>
+            <GreenBox className='no-margin'>
               <RentBasisForm isFocusedOnMount />
-            </GreenBoxEdit>
+            </GreenBox>
           </ContentContainer>
         </PageContainer>
       </FullWidthContainer>

@@ -3,14 +3,14 @@ import React from 'react';
 
 import ContactForm from './forms/ContactForm';
 import ContentContainer from '$components/content/ContentContainer';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBox from '$components/content/GreenBox';
 
 const ContactEdit = () => {
   return (
     <ContentContainer>
-      <GreenBoxEdit className='no-margin'>
+      <GreenBox className='no-margin'>
         <ContactForm/>
-      </GreenBoxEdit>
+      </GreenBox>
     </ContentContainer>
   );
 };

@@ -5,7 +5,7 @@
 
   &__divider {
     border-top: 1px dashed $dark-green;
-    margin: rem-calc(15px) 0;
+    margin: rem-calc(15px 0);
     height: 1px;
     width: 100%;
 
@@ -21,11 +21,65 @@
   }
 
   &__gray-box {
-    display: block;
+    display: inline-block;
     width: 100%;
-    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
+    padding: rem-calc(10px 10px 0);
     background-color: $medium-gray;
     position: relative;
+  }
+
+  &__green-box {
+    display: inline-block;
+    width: 100%;
+    padding: rem-calc(10px 10px 0);
+    background-color: $green;
+    position: relative;
+
+    &.full-height {
+      height: 100%;
+    }
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    &.with-bottom-margin {
+      margin-bottom: rem-calc(15px);
+    }
+
+    &.with-top-margin {
+      margin-top: rem-calc(15px);
+    }
+
+    .map-link {
+      .icon {
+        width: rem-calc(22px);
+        height: rem-calc(22px);;
+        margin-right: rem-calc(5px);;
+        vertical-align: text-top;
+
+        &:hover {
+          fill: $dark-green;
+        }
+      }
+    }
+
+    h2 {
+      font-size: $font-large;
+      font-weight: $semibold;
+      color: $dark-green;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+
+    h3 {
+      font-size: $font-regular !important;
+      font-weight: $semibold;
+      color: $black;
+      margin: 0 0 rem-calc(10px) !important;
+      text-transform: uppercase;
+    }
   }
 
   &__list-item {
@@ -49,7 +103,7 @@
   }
 
   &__white-box {
-    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
+    padding: rem-calc(10px 10px 0);
     background-color: $white;
     margin-bottom: rem-calc(10px);
 
@@ -244,75 +298,13 @@
     padding: 0;
   }
 
-  .green-box {
-    display: block;
-    width: 100%;
-    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
-    background-color: $green;
-    position: relative;
-
-    &.full-height {
-      height: 100%;
-    }
-
-    &.no-margin {
-      margin: 0;
-    }
-
-    &.with-bottom-margin {
-      margin-bottom: rem-calc(15px);
-    }
-
-    &.with-top-margin {
-      margin-top: rem-calc(15px);
-    }
-
-    .map-link {
-      .icon {
-        width: rem-calc(22px);
-        height: rem-calc(22px);;
-        margin-right: rem-calc(5px);;
-        vertical-align: text-top;
-
-        &:hover {
-          fill: $dark-green;
-        }
-      }
-    }
-
-    h3 {
-      font-size: $font-regular;
-      font-weight: $semibold;
-      color: $black;
-      margin: 0 0 rem-calc(10px);
-      text-transform: uppercase;
-    }
-  }
-
-  .green-box-edit {
-    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
-    background-color: $green;
-    margin-bottom: rem-calc(10px);
-
-    h2 {
-      font-size: $font-large;
-      font-weight: $semibold;
-      color: $dark-green;
-      text-transform: uppercase;
-      margin: 0;
-    }
-
-    &.no-margin {
-      margin: 0;
-    }
-  }
-
   .box-item-container {
-    padding-top: rem-calc(2px);
+    display: inline-block;
+    width: 100%;
 
     .box-item {
       border-bottom: 1px dashed $black;
-      padding: 0 0 rem-calc(5px);
+      padding: 0;
       margin-bottom: rem-calc(10px);
       position: relative;
 
@@ -341,5 +333,7 @@
 
   .box-content-wrapper {
     position: relative;
+    display: inline-block;
+    width: 100%;
   }
 }

@@ -30,6 +30,7 @@ import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {createLease, fetchLeases} from '$src/leases/actions';
+import {fetchLessors} from '$src/lessor/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {leaseStateFilterOptions} from '$src/leases/constants';
 import {PermissionMissingTexts} from '$src/enums';
@@ -70,6 +71,7 @@ type Props = {
   createLease: Function,
   fetchAreaNoteList: Function,
   fetchLeases: Function,
+  fetchLessors: Function,
   history: Object,
   initialize: Function,
   isFetching: boolean,
@@ -106,7 +108,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    const {fetchAreaNoteList, initialize, receiveTopNavigationSettings} = this.props;
+    const {fetchAreaNoteList, fetchLessors, initialize, receiveTopNavigationSettings} = this.props;
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
 
@@ -117,6 +119,8 @@ class LeaseListPage extends PureComponent<Props, State> {
     });
 
     fetchAreaNoteList({});
+
+    fetchLessors({limit: 10000});
 
     this.search();
 
@@ -203,7 +207,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
 
-    fetchLeases(getSearchQuery(mapLeaseSearchFilters(searchQuery)));
+    fetchLeases(mapLeaseSearchFilters(searchQuery));
   }
 
   handleSearchChange = (query) => {
@@ -323,23 +327,6 @@ class LeaseListPage extends PureComponent<Props, State> {
     this.setState({visualizationType: value});
   }
 
-  isBasicSearchByDefault = () => {
-    const {location: {search}} = this.props;
-    const searchQuery = getUrlParams(search);
-
-    delete searchQuery.page;
-
-    if(Object.keys(searchQuery).length === 0) {
-      return true;
-    } else if(Object.keys(searchQuery).length === 1 && (searchQuery['identifier'] || searchQuery['lease_state'])) {
-      return true;
-    } else if(Object.keys(searchQuery).length === 2 && (searchQuery['identifier'] && searchQuery['lease_state'])) {
-      return true;
-    }
-
-    return false;
-  }
-
   getOverlayLayers = () => {
     const layers = [];
     const {
@@ -382,7 +369,6 @@ class LeaseListPage extends PureComponent<Props, State> {
     const leases = getContentLeases(content, query);
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
-    const isBasicSearchByDefault = this.isBasicSearchByDefault();
     const columns = this.getColumns();
     const overlayLayers = this.getOverlayLayers();
 
@@ -412,7 +398,6 @@ class LeaseListPage extends PureComponent<Props, State> {
           <Column small={12} large={6}>
             <Search
               attributes={leaseAttributes}
-              basicSearchByDefault={isBasicSearchByDefault}
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
               states={leaseStates}
@@ -489,6 +474,7 @@ export default flowRight(
       createLease,
       fetchAreaNoteList,
       fetchLeases,
+      fetchLessors,
       initialize,
       receiveTopNavigationSettings,
     },

@@ -47,9 +47,9 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchInfillDevelopmentsSaga({payload: search}): Generator<any, any, any> {
+function* fetchInfillDevelopmentsSaga({payload: query}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchInfillDevelopments, search);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchInfillDevelopments, query);
     switch (statusCode) {
       case 200:
         yield put(receiveInfillDevelopments(bodyAsJson));

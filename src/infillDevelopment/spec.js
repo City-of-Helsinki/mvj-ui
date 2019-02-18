@@ -131,7 +131,7 @@ describe('Infill development', () => {
         const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = infillDevelopmentReducer({}, fetchInfillDevelopments(''));
+        const state = infillDevelopmentReducer({}, fetchInfillDevelopments({}));
         expect(state).to.deep.equal(newState);
       });
 

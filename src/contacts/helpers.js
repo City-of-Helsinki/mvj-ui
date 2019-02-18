@@ -41,6 +41,16 @@ export const getContentContact = (contact: Object) => {
   };
 };
 
+/**
+* Get contact options from contact list
+* @param {Object[]} contacts
+* @returns {Object[]}
+*/
+export const getContactOptions = (contacts: Array<Object>): Array<Object> =>
+  contacts && contacts.length
+    ? contacts.map((contact) => ({value: contact.id.toString(), label: getContactFullName(contact)}))
+    : [];
+
 export const isContactFormDirty = (state: any) => {
   const isEditMode = getIsEditMode(state);
 

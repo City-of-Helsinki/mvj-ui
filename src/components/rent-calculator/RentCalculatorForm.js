@@ -7,7 +7,7 @@ import flowRight from 'lodash/flowRight';
 
 import ErrorField from '$components/form/ErrorField';
 import FormField from '$components/form/FormField';
-import {FormNames, RentCalculatorTypes} from '$components/enums';
+import {FieldTypes, FormNames, RentCalculatorTypes} from '$components/enums';
 import {validateRentCalculatorForm} from '$components/formValidations';
 import {formatDateRange} from '$util/helpers';
 import {getCurrentYear} from '$util/date';
@@ -194,7 +194,7 @@ class RentCalculatorForm extends Component<Props, State> {
           options: billingPeriodOptions,
         }}
       />,
-      fieldStyles: {width: '180px'},
+      fieldStyles: {width: '180px', marginBottom: 0},
       errorField: <Field
         name='billingPeriodErrors'
         component={ErrorField}
@@ -213,9 +213,10 @@ class RentCalculatorForm extends Component<Props, State> {
         <Row>
           <Column>
             <FormField
+              className='no-margin'
               fieldAttributes={{
                 label: 'Laskelman tyyppi',
-                type: 'radio-with-field',
+                type: FieldTypes.RADIO_WITH_FIELD,
                 required: true,
                 read_only: false,
               }}

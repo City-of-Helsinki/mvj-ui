@@ -291,128 +291,130 @@ const renderCollaterals = ({
             headerTitle={title}
             onToggle={handleCollapseToggle}
           >
-            <BoxItemContainer>
-              {!hasPermissions(usersPermissions, UsersPermissions.ADD_COLLATERAL) &&
-                (!fields || !fields.length) &&
-                <FormText>Ei vakuuksia</FormText>
-              }
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_COLLATERAL) &&
+              (!fields || !fields.length) &&
+              <FormText>Ei vakuuksia</FormText>
+            }
 
-              {fields && !!fields.length && fields.map((change, index) => {
-                const handleRemove = () => {
-                  dispatch({
-                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                    confirmationFunction: () => {
-                      fields.remove(index);
-                    },
-                    confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText: 'Poista',
-                    confirmationModalLabel: DeleteModalLabels.COLLATERAL,
-                    confirmationModalTitle: DeleteModalTitles.COLLATERAL,
-                  });
-                };
+            {!!fields.length &&
+              <BoxItemContainer>
+                {fields && !!fields.length && fields.map((change, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.COLLATERAL,
+                      confirmationModalTitle: DeleteModalTitles.COLLATERAL,
+                    });
+                  };
 
-                return (
-                  <BoxItem key={index}>
-                    <BoxContentWrapper>
-                      <ActionButtonWrapper>
-                        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_COLLATERAL)}>
-                          <RemoveButton
-                            onClick={handleRemove}
-                            title="Poista vakuus"
-                          />
-                        </Authorization>
-                      </ActionButtonWrapper>
+                  return (
+                    <BoxItem key={index}>
+                      <BoxContentWrapper>
+                        <ActionButtonWrapper>
+                          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_COLLATERAL)}>
+                            <RemoveButton
+                              onClick={handleRemove}
+                              title="Poista vakuus"
+                            />
+                          </Authorization>
+                        </ActionButtonWrapper>
 
-                      <Row>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TYPE)}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.TYPE)}
-                              name={`${change}.type`}
-                              overrideValues={{label: LeaseContractCollateralsFieldTitles.TYPE}}
-                            />
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}
-                              name={`${change}.number`}
-                              overrideValues={{label: LeaseContractCollateralsFieldTitles.NUMBER}}
-                            />
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}
-                              name={`${change}.start_date`}
-                              overrideValues={{label: LeaseContractCollateralsFieldTitles.START_DATE}}
-                            />
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}
-                              name={`${change}.end_date`}
-                              overrideValues={{label: LeaseContractCollateralsFieldTitles.END_DATE}}
-                            />
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}
-                              name={`${change}.total_amount`}
-                              unit='€'
-                              overrideValues={{label: LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}}
-                            />
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}
-                              name={`${change}.paid_date`}
-                              overrideValues={{label: LeaseContractCollateralsFieldTitles.PAID_DATE}}
-                            />
-                          </Authorization>
-                        </Column>
-                      </Row>
-                      <Row>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}
-                              name={`${change}.returned_date`}
-                              overrideValues={{label: LeaseContractCollateralsFieldTitles.RETURNED_DATE}}
-                            />
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={8} large={10}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NOTE)}>
-                            <FormField
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.NOTE)}
-                              name={`${change}.note`}
-                              overrideValues={{label: LeaseContractCollateralsFieldTitles.NOTE}}
-                            />
-                          </Authorization>
-                        </Column>
-                      </Row>
-                    </BoxContentWrapper>
-                  </BoxItem>
-                );
-              })}
-            </BoxItemContainer>
+                        <Row>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TYPE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.TYPE)}
+                                name={`${change}.type`}
+                                overrideValues={{label: LeaseContractCollateralsFieldTitles.TYPE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}
+                                name={`${change}.number`}
+                                overrideValues={{label: LeaseContractCollateralsFieldTitles.NUMBER}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}
+                                name={`${change}.start_date`}
+                                overrideValues={{label: LeaseContractCollateralsFieldTitles.START_DATE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}
+                                name={`${change}.end_date`}
+                                overrideValues={{label: LeaseContractCollateralsFieldTitles.END_DATE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}
+                                name={`${change}.total_amount`}
+                                unit='€'
+                                overrideValues={{label: LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}
+                                name={`${change}.paid_date`}
+                                overrideValues={{label: LeaseContractCollateralsFieldTitles.PAID_DATE}}
+                              />
+                            </Authorization>
+                          </Column>
+                        </Row>
+                        <Row>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}
+                                name={`${change}.returned_date`}
+                                overrideValues={{label: LeaseContractCollateralsFieldTitles.RETURNED_DATE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={6} medium={8} large={10}>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NOTE)}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.NOTE)}
+                                name={`${change}.note`}
+                                overrideValues={{label: LeaseContractCollateralsFieldTitles.NOTE}}
+                              />
+                            </Authorization>
+                          </Column>
+                        </Row>
+                      </BoxContentWrapper>
+                    </BoxItem>
+                  );
+                })}
+              </BoxItemContainer>
+            }
 
             <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLATERAL)}>
               <Row>
