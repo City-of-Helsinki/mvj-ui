@@ -24,7 +24,7 @@ export type ReceiveAttributesAction = Action<'mvj/infillDevelopment/RECEIVE_ATTR
 export type ReceiveMethodsAction = Action<'mvj/infillDevelopment/RECEIVE_METHODS', Methods>;
 export type InfillDevelopmentAttributesNotFoundAction = Action<'mvj/infillDevelopment/ATTRIBUTES_NOT_FOUND', void>;
 
-export type FetchInfillDevelopmentListAction = Action<'mvj/infillDevelopment/FETCH_ALL', string>;
+export type FetchInfillDevelopmentListAction = Action<'mvj/infillDevelopment/FETCH_ALL', Object>;
 export type ReceiveInfillDevelopmentListAction = Action<'mvj/infillDevelopment/RECEIVE_ALL', InfillDevelopmentList>;
 export type FetchSingleInfillDevelopmentAction = Action<'mvj/infillDevelopment/FETCH_SINGLE', InfillDevelopmentId>;
 export type ReceiveSingleInfillDevelopmentAction = Action<'mvj/infillDevelopment/RECEIVE_SINGLE', InfillDevelopment>;

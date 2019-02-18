@@ -19,7 +19,7 @@ import {
 } from '$src/leases/enums';
 import {getContactOptions} from '$src/contacts/helpers';
 import {getDistrictOptions} from '$src/district/helpers';
-import {addEmptyOption, getFieldOptions} from '$util/helpers';
+import {addEmptyOption, getFieldOptions, getUrlParams} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes as getLeaseAttributes, getIsFetchingAttributes} from '$src/leases/selectors';
 import {getLessorList} from '$src/lessor/selectors';
@@ -29,7 +29,6 @@ import type {LessorList} from '$src/lessor/types';
 
 type Props = {
   anyTouched: boolean,
-  basicSearchByDefault: boolean,
   change: Function,
   clearFields: Function,
   districts: Array<Object>,
@@ -73,10 +72,9 @@ class Search extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const {basicSearchByDefault} = this.props;
     this._isMounted = true;
 
-    this.setState({isBasicSearch: basicSearchByDefault});
+    this.setState({isBasicSearch: this.isSearchBasicMode()});
   }
 
   componentWillUnmount() {
@@ -117,6 +115,21 @@ class Search extends Component<Props, State> {
     if(isSearchInitialized && prevProps.formValues !== this.props.formValues) {
       this.onSearchChange();
     }
+  }
+
+  isSearchBasicMode = () => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    delete searchQuery.page;
+
+    if(!Object.keys(searchQuery).length ||
+      Object.keys(searchQuery).length === 1 && (searchQuery.identifier || searchQuery.lease_state) ||
+      Object.keys(searchQuery).length === 2 && (searchQuery.identifier && searchQuery.lease_state)) {
+      return true;
+    }
+
+    return false;
   }
 
   onSearchChange = debounce(() => {
@@ -678,6 +691,8 @@ const formName = FormNames.SEARCH;
 const selector = formValueSelector(formName);
 
 export default flowRight(
+  // $FlowFixMe
+  withRouter,
   connect(
     state => {
       const municipality = selector(state, 'municipality');
@@ -699,5 +714,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-  withRouter,
 )(Search);

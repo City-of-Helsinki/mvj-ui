@@ -1,31 +1,68 @@
 // @flow
 import React, {Fragment, PureComponent} from 'react';
+import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import FormField from '$components/form/FormField';
 import {FieldTypes} from '$components/enums';
-import {FormNames} from '$src/infillDevelopment/enums';
+import {
+  FormNames,
+  InfillDevelopmentCompensationLeaseDecisionsFieldPaths,
+} from '$src/infillDevelopment/enums';
+import {getFieldOptions, getUrlParams} from '$util/helpers';
+import {getAttributes as getInfillDevelopmentAttributes} from '$src/infillDevelopment/selectors';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
   formValues: Object,
+  infillDevelopmentAttributes: Attributes,
+  initialize: Function,
   isSearchInitialized: boolean,
+  location: Object,
   onSearch: Function,
   states: Array<Object>,
 }
 
-class Search extends PureComponent<Props> {
+type State = {
+  decisionMakerOptions: Array<Object>,
+  infillDevelopmentAttributes: Attributes,
+  isBasicSearch: boolean,
+}
+
+class Search extends PureComponent<Props, State> {
   _isMounted: boolean;
+
+  state = {
+    decisionMakerOptions: [],
+    infillDevelopmentAttributes: {},
+    isBasicSearch: true,
+  }
 
   componentDidMount() {
     this._isMounted = true;
+
+    this.setState({isBasicSearch: this.isSearchBasicMode()});
   }
 
   componentWillUnmount() {
     this._isMounted = false;
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.infillDevelopmentAttributes !== state.infillDevelopmentAttributes) {
+      newState.infillDevelopmentAttributes = props.infillDevelopmentAttributes;
+      newState.decisionMakerOptions = getFieldOptions(props.infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER);
+    }
+
+    return !isEmpty(newState) ? newState : null;
   }
 
   componentDidUpdate(prevProps: Object) {
@@ -36,12 +73,54 @@ class Search extends PureComponent<Props> {
     }
   }
 
+  isSearchBasicMode = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    delete query.page;
+
+    if(!Object.keys(query).length ||
+      (Object.keys(query).length === 1 && (query.search || query.state)) ||
+      (Object.keys(query).length === 2 && query.search && query.state)) return true;
+
+    return false;
+  }
+
   onSearchChange = debounce(() => {
     if(!this._isMounted) return;
 
     const {formValues, onSearch, states} = this.props;
     onSearch({...formValues, state: states.length ? states : undefined});
   }, 500);
+
+  toggleSearchType = () => {
+    const {formValues, initialize, onSearch, states} = this.props;
+    const isBasicSearch = this.state.isBasicSearch ? true : false;
+
+    this.setState({isBasicSearch: !isBasicSearch});
+
+    if(!isBasicSearch) {
+      const newFormValues = {};
+
+      if(formValues.search) {
+        newFormValues.search = formValues.search;
+      }
+
+      if(states.length) {
+        newFormValues.state = states;
+      }
+
+      onSearch(newFormValues);
+      initialize(newFormValues);
+    }
+  }
+
+  handleLinkKeyDown = (e: any) => {
+    if(e.keyCode === 13){
+      e.preventDefault();
+      this.toggleSearchType();
+    }
+  }
 
   handleClear = () => {
     const {onSearch} = this.props;
@@ -57,6 +136,8 @@ class Search extends PureComponent<Props> {
   }
 
   render () {
+    const {decisionMakerOptions, isBasicSearch} = this.state;
+
     return (
       <Fragment>
         <Row>
@@ -73,8 +154,88 @@ class Search extends PureComponent<Props> {
             />
           </Column>
         </Row>
+
+        {!isBasicSearch &&
+          <Fragment>
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Päätös</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <Row>
+                  <Column small={6}>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Päätöksen tekijä',
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='decision_maker'
+                      overrideValues={{options: decisionMakerOptions}}
+                    />
+                  </Column>
+                  <Column small={3}>
+                    <FormField
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Päätöspvm',
+                        type: FieldTypes.DATE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='decision_date'
+                    />
+                  </Column>
+                  <Column small={3}>
+                    <FormField
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Pykälä',
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      unit='§'
+                      name='decision_section'
+                    />
+                  </Column>
+                </Row>
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Diaarinro</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Diaarinro',
+                    type: FieldTypes.STRING,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name='reference_number'
+                />
+              </div>
+            </div>
+          </Fragment>
+        }
+
         <Row>
-          <Column small={6}></Column>
+          <Column small={6}>
+            <a
+              tabIndex={0}
+              onKeyDown={this.handleLinkKeyDown}
+              onClick={this.toggleSearchType}
+              className='lease-search__search-type-link'
+            >{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
+          </Column>
           <Column small={6}>
             <a
               tabIndex={0}
@@ -93,10 +254,13 @@ class Search extends PureComponent<Props> {
 const formName = FormNames.SEARCH;
 
 export default flowRight(
+  // $FlowFixMe
+  withRouter,
   connect(
     state => {
       return {
         formValues: getFormValues(formName)(state),
+        infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
       };
     },
   ),

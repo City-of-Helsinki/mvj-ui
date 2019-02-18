@@ -244,6 +244,7 @@ class Search extends PureComponent<Props, State> {
 const formName = FormNames.SEARCH;
 
 export default flowRight(
+  // $FlowFixMe
   withRouter,
   connect(
     state => {
