@@ -41,7 +41,7 @@ class Search extends PureComponent<Props, State> {
 
   state = {
     decisionMakerOptions: [],
-    infillDevelopmentAttributes: {},
+    infillDevelopmentAttributes: null,
     isBasicSearch: true,
   }
 

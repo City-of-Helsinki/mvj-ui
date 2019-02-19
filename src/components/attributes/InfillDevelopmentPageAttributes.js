@@ -2,7 +2,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 
 import {fetchAttributes as fetchInfillDevelopmentAttachmentAttributes} from '$src/infillDevelopmentAttachment/actions';
 import {
@@ -37,7 +36,7 @@ function InfillDevelopmentPageAttributes(WrappedComponent: any) {
         isFetchingInfillDevelopmentAttachmentAttributes,
       } = this.props;
 
-      if(isEmpty(infillDevelopmentAttachmentMethods) && !isFetchingInfillDevelopmentAttachmentAttributes) {
+      if(!infillDevelopmentAttachmentMethods && !isFetchingInfillDevelopmentAttachmentAttributes) {
         fetchInfillDevelopmentAttachmentAttributes();
       }
     }

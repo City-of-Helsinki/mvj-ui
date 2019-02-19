@@ -11,7 +11,7 @@ import createCollectionLetterReducer from './reducer';
 import type {CreateCollectionLetterState} from './types';
 
 const defaultState: CreateCollectionLetterState = {
-  attributes: {},
+  attributes: null,
   isFetchingAttributes: false,
 };
 

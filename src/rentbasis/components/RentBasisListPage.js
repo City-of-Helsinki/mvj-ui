@@ -22,7 +22,7 @@ import TableWrapper from '$components/table/TableWrapper';
 import {fetchRentBasisList, initializeRentBasis} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {
   FormNames,
   RentBasisFieldPaths,
@@ -36,12 +36,13 @@ import {
   getSearchQuery,
   getUrlParams,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {RentBasisList} from '$src/rentbasis/types';
 
 type Props = {
@@ -54,7 +55,7 @@ type Props = {
   location: Object,
   receiveTopNavigationSettings: Function,
   rentBasisAttributes: Attributes, // get vie withCommonAttributes HOC
-  rentBasisMethods: Methods, // get vie withCommonAttributes HOC
+  rentBasisMethods: MethodsType, // get vie withCommonAttributes HOC
   rentBasisListData: RentBasisList,
 }
 
@@ -265,13 +266,15 @@ class RentBasisListPage extends Component<Props, State> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!rentBasisMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
+    if(!rentBasisMethods) return null;
+
+    if(!isMethodAllowed(rentBasisMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
 
     return (
       <PageContainer>
         <Row>
           <Column small={12} large={6}>
-            <Authorization allow={rentBasisMethods.POST}>
+            <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
                 label='Luo vuokrausperuste'

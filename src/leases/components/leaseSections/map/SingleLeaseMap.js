@@ -17,6 +17,7 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
+import {Methods} from '$src/enums';
 import {
   getContentAreasGeoJson,
   getContentPlanUnitsGeoJson,
@@ -27,17 +28,18 @@ import {
   getFieldOptions,
   getUrlParams,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, LeafletGeoJson, Methods} from '$src/types';
+import type {Attributes, LeafletGeoJson, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   currentLease: Lease,
   leaseAttributes: Attributes,
@@ -74,7 +76,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
     bounds: null,
     center: null,
     currentLease: {},
-    leaseAttributes: {},
+    leaseAttributes: null,
     planUnitsGeoJson: {
       features: [],
       type: 'FeatureCollection',
@@ -221,7 +223,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         name: 'Vuokrakohteet',
       });
     }
-    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer

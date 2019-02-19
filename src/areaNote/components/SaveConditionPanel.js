@@ -11,12 +11,14 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/areaNote/enums';
 import {ButtonColors} from '$components/enums';
+import {Methods} from '$src/enums';
+import {isMethodAllowed} from '$util/helpers';
 import {getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 
 type Props = {
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   disableDelete: boolean,
   disableSave: boolean,
   isNew: boolean,
@@ -96,7 +98,7 @@ class SaveConditionPanel extends Component<Props, State> {
           return(
             <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
               <div className='save-condition-panel__container'>
-                <h2>{isNew ? 'Luo muistettava ehto' : areaNoteMethods.PATCH ? 'Muokkaa muistettavaa ehtoa' : 'Muokattava ehto'}</h2>
+                <h2>{isNew ? 'Luo muistettava ehto' : 'Muokkaa muistettavaa ehtoa'}</h2>
 
                 <Row>
                   <Column>
@@ -115,7 +117,7 @@ class SaveConditionPanel extends Component<Props, State> {
                 <div className='save-condition-panel__buttons-wrapper'>
                   <Row>
                     <Column>
-                      <Authorization allow={areaNoteMethods.DELETE}>
+                      <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.DELETE)}>
                         {!isNew &&
                           <Button
                             className={ButtonColors.ALERT}
@@ -131,7 +133,7 @@ class SaveConditionPanel extends Component<Props, State> {
                         text='Peruuta'
                       />
                       {isNew
-                        ? <Authorization allow={areaNoteMethods.POST}>
+                        ? <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.POST)}>
                           <Button
                             className={ButtonColors.SUCCESS}
                             disabled={disableSave}
@@ -139,7 +141,7 @@ class SaveConditionPanel extends Component<Props, State> {
                             text='Luo muistettava ehto'
                           />
                         </Authorization>
-                        : <Authorization allow={areaNoteMethods.PATCH}>
+                        : <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.PATCH)}>
                           <Button
                             className={ButtonColors.SUCCESS}
                             disabled={disableSave}

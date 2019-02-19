@@ -14,7 +14,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {Methods, ViewModes} from '$src/enums';
 import {
   FormNames,
   LeaseContractChangesFieldPaths,
@@ -31,11 +31,12 @@ import {
   getLabelOfOption,
   isEmptyValue,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
@@ -44,7 +45,7 @@ type Props = {
   contract: Object,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
-  contractFileMethods: Methods,
+  contractFileMethods: MethodsType,
   currentLease: Lease,
   onShowContractFileModal: Function,
   receiveCollapseStates: Function,
@@ -125,7 +126,7 @@ const ContractItem = ({
             <FormTextTitle>{LeaseContractsFieldTitles.CONTRACT_NUMBER}</FormTextTitle>
             <FormText>{contract.contract_number
               ? <Authorization
-                allow={contractFileMethods.GET}
+                allow={isMethodAllowed(contractFileMethods, Methods.GET)}
                 errorComponent={contract.contract_number}
               >
                 <a onClick={handleShowContractFileModal}>{contract.contract_number}</a>

@@ -21,7 +21,7 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/landUseContract/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
   ['mvj/landUseContract/HIDE_EDIT']: () => false,

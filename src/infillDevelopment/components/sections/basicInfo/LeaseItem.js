@@ -20,7 +20,7 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/infillDevelopment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {Methods, ViewModes} from '$src/enums';
 import {
   FormNames,
   InfillDevelopmentCompensationLeasesFieldPaths,
@@ -44,6 +44,7 @@ import {
   getReferenceNumberLink,
   isEmptyValue,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {
   getContentLeaseAreas,
@@ -65,7 +66,7 @@ import {
   getLeaseById,
 } from '$src/leases/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease, LeaseId} from '$src/leases/types';
 
 type Props = {
@@ -73,7 +74,7 @@ type Props = {
   fetchLeaseById: Function,
   id: number,
   infillDevelopmentAttachmentAttributes: Attributes,
-  infillDevelopmentAttachmentMethods: Methods,
+  infillDevelopmentAttachmentMethods: MethodsType,
   infillDevelopmentAttributes: Attributes,
   isFetching: boolean,
   lease: Lease,
@@ -98,7 +99,7 @@ class LeaseItem extends PureComponent<Props, State> {
   state = {
     decisionMakerOptions: [],
     identifier: null,
-    infillDevelopmentAttributes: {},
+    infillDevelopmentAttributes: null,
     intendedUseOptions: [],
     lease: {},
     planUnits: [],
@@ -386,7 +387,7 @@ class LeaseItem extends PureComponent<Props, State> {
           </Column>
         </Row>
 
-        <Authorization allow={infillDevelopmentAttachmentMethods.GET}>
+        <Authorization allow={isMethodAllowed(infillDevelopmentAttachmentMethods, Methods.GET)}>
           <SubTitle>{InfillDevelopmentCompensationAttachmentFieldTitles.ATTACHMENTS}</SubTitle>
 
           {!attachments.length && <FormText>Ei liitetiedostoja</FormText>}

@@ -68,7 +68,7 @@ import {
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
 import {ButtonColors, FormNames as ComponentFormNames} from '$components/enums';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
@@ -77,6 +77,7 @@ import {
   getUrlParams,
   hasPermissions,
   isFieldAllowedToRead,
+  isMethodAllowed,
   scrollToTopPage,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -97,7 +98,7 @@ import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} 
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {CommentList} from '$src/comments/types';
 import type {InvoiceList} from '$src/invoices/types';
 import type {Lease} from '$src/leases/types';
@@ -110,11 +111,11 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   clearPreviewInvoices: Function,
-  collectionCourtDecisionMethods: Methods, // Get via withLeasePageAttributes
-  collectionLetterMethods: Methods, // Get via withLeasePageAttributes
-  collectionNoteMethods: Methods, // Get via withLeasePageAttributes
+  collectionCourtDecisionMethods: MethodsType, // Get via withLeasePageAttributes
+  collectionLetterMethods: MethodsType, // Get via withLeasePageAttributes
+  collectionNoteMethods: MethodsType, // Get via withLeasePageAttributes
   comments: CommentList,
-  commentMethods: Methods, // get via withLeasePageAttributes HOC
+  commentMethods: MethodsType, // get via withLeasePageAttributes HOC
   contractsFormValues: Object,
   constructabilityFormValues: Object,
   currentLease: Object,
@@ -159,7 +160,7 @@ type Props = {
   isTenantsFormValid: boolean,
   isSaveClicked: boolean,
   leaseAttributes: Attributes, // get via withCommonAttributes HOC
-  leaseMethods: Methods, // get via withCommonAttributes HOC
+  leaseMethods: MethodsType, // get via withCommonAttributes HOC
   leaseTypeList: LeaseTypeList,
   location: Object,
   match: {
@@ -229,15 +230,15 @@ class LeasePage extends Component<Props, State> {
       fetchInvoiceSetsByLease(leaseId);
     }
     // Fetch collection court decisions if GET is allowed
-    if(collectionCourtDecisionMethods.GET) {
+    if(isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)) {
       fetchCollectionCourtDecisionsByLease(leaseId);
     }
     // Fetch collection letters if GET is allowed
-    if(collectionLetterMethods.GET) {
+    if(isMethodAllowed(collectionLetterMethods, Methods.GET)) {
       fetchCollectionLettersByLease(leaseId);
     }
     // Fetch collection notes if GET is allowed
-    if(collectionNoteMethods.GET) {
+    if(isMethodAllowed(collectionNoteMethods, Methods.GET)) {
       fetchCollectionNotesByLease(leaseId);
     }
 
@@ -304,15 +305,15 @@ class LeasePage extends Component<Props, State> {
       }
     }
     // Fetch collection court decisions when getting new collection court decision methods and GET is allowed
-    if(prevProps.collectionCourtDecisionMethods !== collectionCourtDecisionMethods && collectionCourtDecisionMethods.GET) {
+    if(prevProps.collectionCourtDecisionMethods !== collectionCourtDecisionMethods && isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)) {
       fetchCollectionCourtDecisionsByLease(leaseId);
     }
     // Fetch collection letters when getting new collection letter methods and GET is allowed
-    if(prevProps.collectionLetterMethods !== collectionLetterMethods && collectionLetterMethods.GET) {
+    if(prevProps.collectionLetterMethods !== collectionLetterMethods && isMethodAllowed(collectionLetterMethods, Methods.GET)) {
       fetchCollectionLettersByLease(leaseId);
     }
     // Fetch collection notes when getting new collection note methods and GET is allowed
-    if(prevProps.collectionNoteMethods !== collectionNoteMethods && collectionNoteMethods.GET) {
+    if(prevProps.collectionNoteMethods !== collectionNoteMethods && isMethodAllowed(collectionNoteMethods, Methods.GET)) {
       fetchCollectionNotesByLease(leaseId);
     }
 
@@ -857,18 +858,18 @@ class LeasePage extends Component<Props, State> {
 
     if(isFetching || isFetchingAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!leaseMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
+    if(!leaseMethods || isEmpty(currentLease)) return null;
 
-    if(isEmpty(currentLease)) return null;
+    if(!isMethodAllowed(leaseMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
 
     return (
       <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              allowComments={commentMethods.GET}
-              allowDelete={leaseMethods.DELETE}
-              allowEdit={leaseMethods.PATCH}
+              allowComments={isMethodAllowed(commentMethods, Methods.GET)}
+              allowDelete={isMethodAllowed(leaseMethods, Methods.DELETE)}
+              allowEdit={isMethodAllowed(leaseMethods, Methods.PATCH)}
               commentAmount={comments ? comments.length : 0}
               deleteModalTexts={{
                 buttonClassName: ButtonColors.ALERT,
@@ -898,7 +899,7 @@ class LeasePage extends Component<Props, State> {
             </LoaderWrapper>
           }
 
-          <Authorization allow={leaseMethods.PATCH}>
+          <Authorization allow={isMethodAllowed(leaseMethods, Methods.PATCH)}>
             <ConfirmationModal
               confirmButtonLabel='Palauta muutokset'
               isOpen={isRestoreModalOpen}
@@ -964,7 +965,7 @@ class LeasePage extends Component<Props, State> {
               },
               {
                 label: 'Kartta',
-                allow: leaseMethods.GET,
+                allow: isMethodAllowed(leaseMethods, Methods.GET),
               },
             ]}
             onTabClick={this.handleTabClick}
@@ -975,7 +976,7 @@ class LeasePage extends Component<Props, State> {
               <ContentContainer>
                 {isEditMode
                   ? <Authorization
-                    allow={leaseMethods.PATCH}
+                    allow={isMethodAllowed(leaseMethods, Methods.PATCH)}
                     errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
                   ><SummaryEdit /></Authorization>
                   : <Summary />
@@ -987,7 +988,7 @@ class LeasePage extends Component<Props, State> {
               <ContentContainer>
                 {isEditMode
                   ? <Authorization
-                    allow={leaseMethods.PATCH && isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}
+                    allow={isMethodAllowed(leaseMethods, Methods.PATCH) && isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}
                     errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
                   ><LeaseAreasEdit /></Authorization>
                   : <Authorization
@@ -1002,7 +1003,7 @@ class LeasePage extends Component<Props, State> {
               <ContentContainer>
                 {isEditMode
                   ? <Authorization
-                    allow={leaseMethods.PATCH && isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}
+                    allow={isMethodAllowed(leaseMethods, Methods.PATCH) && isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}
                     errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
                   ><TenantsEdit /></Authorization>
                   : <Authorization
@@ -1017,7 +1018,7 @@ class LeasePage extends Component<Props, State> {
               <ContentContainer>
                 {isEditMode
                   ? <Authorization
-                    allow={leaseMethods.PATCH &&
+                    allow={isMethodAllowed(leaseMethods, Methods.PATCH) &&
                       (isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS) ||
                       isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS))}
                     errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
@@ -1035,7 +1036,7 @@ class LeasePage extends Component<Props, State> {
               <ContentContainer>
                 {isEditMode
                   ? <Authorization
-                    allow={leaseMethods.PATCH &&
+                    allow={isMethodAllowed(leaseMethods, Methods.PATCH) &&
                       isFieldAllowedToRead(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS) ||
                       isFieldAllowedToRead(leaseAttributes, LeaseContractsFieldPaths.CONTRACTS) ||
                       isFieldAllowedToRead(leaseAttributes, LeaseInspectionsFieldPaths.INSPECTIONS)
@@ -1057,7 +1058,7 @@ class LeasePage extends Component<Props, State> {
               <ContentContainer>
                 {isEditMode
                   ? <Authorization
-                    allow={leaseMethods.PATCH && isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}
+                    allow={isMethodAllowed(leaseMethods, Methods.PATCH) && isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}
                     errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
                   ><ConstructabilityEdit /></Authorization>
                   : <Authorization
@@ -1081,7 +1082,7 @@ class LeasePage extends Component<Props, State> {
 
             <TabPane>
               <ContentContainer>
-                <Authorization allow={leaseMethods.GET}>
+                <Authorization allow={isMethodAllowed(leaseMethods, Methods.GET)}>
                   <SingleLeaseMap />
                 </Authorization>
               </ContentContainer>

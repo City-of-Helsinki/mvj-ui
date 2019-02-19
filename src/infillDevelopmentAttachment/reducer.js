@@ -19,13 +19,13 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/infillDevelopmentAttachment/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/infillDevelopmentAttachment/RECEIVE_METHODS']: (state: Attributes, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 export default combineReducers<Object, any>({
   attributes: attributesReducer,

@@ -37,7 +37,7 @@ class BasisOfRents extends PureComponent<Props, State> {
     currentLease: {},
     indexOptions: [],
     intendedUseOptions: [],
-    leaseAttributes: {},
+    leaseAttributes: null,
   }
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};

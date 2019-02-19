@@ -21,13 +21,13 @@ import commentReducer from './reducer';
 import type {CommentState} from './types';
 
 const defaultState: CommentState = {
-  attributes: {},
+  attributes: null,
   byLease: {},
   isEditModeById: {},
   isFetching: false,
   isFetchingAttributes: false,
   isSaveClicked: false,
-  methods: {},
+  methods: null,
 };
 
 describe('Comments', () => {

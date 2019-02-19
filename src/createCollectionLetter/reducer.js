@@ -17,7 +17,7 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/createCollectionLetter/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes || {};
   },
-}, {});
+}, null);
 
 export default combineReducers<Object, any>({
   attributes: attributesReducer,

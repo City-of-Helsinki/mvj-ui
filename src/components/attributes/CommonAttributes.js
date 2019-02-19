@@ -105,23 +105,23 @@ function CommonAttributes(WrappedComponent: any) {
         fetchUsersPermissions();
       }
 
-      if(!isFetchingAreaNoteAttributes && isEmpty(areaNoteMethods)) {
+      if(!isFetchingAreaNoteAttributes && !areaNoteMethods) {
         fetchAreaNoteAttributes();
       }
 
-      if(!isFetchingContactAttributes && isEmpty(contactMethods)) {
+      if(!isFetchingContactAttributes && !contactMethods) {
         fetchContactAttributes();
       }
 
-      if(!isFetchingInfillDevelopmentAttributes && isEmpty(infillDevelopmentMethods)) {
+      if(!isFetchingInfillDevelopmentAttributes && !infillDevelopmentMethods) {
         fetchInfillDevelopmentAttributes();
       }
 
-      if(!isFetchingLeaseAttributes && isEmpty(leaseMethods)) {
+      if(!isFetchingLeaseAttributes && !leaseMethods) {
         fetchLeaseAttributes();
       }
 
-      if(!isFetchingRentBasisAttributes && isEmpty(rentBasisMethods)) {
+      if(!isFetchingRentBasisAttributes && !rentBasisMethods) {
         fetchRentBasisAttributes();
       }
     }

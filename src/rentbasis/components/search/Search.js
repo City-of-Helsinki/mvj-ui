@@ -38,7 +38,7 @@ class Search extends PureComponent<Props, State> {
   state = {
     decisionMakerOptions: [],
     isBasicSearch: false,
-    rentBasisAttributes: {},
+    rentBasisAttributes: null,
   }
 
   componentDidMount() {

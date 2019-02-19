@@ -10,24 +10,25 @@ import Authorization from '$components/authorization/Authorization';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import {CancelChangesModalTexts} from '$src/enums';
+import {CancelChangesModalTexts, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
+import {isMethodAllowed} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 
 type Props = {
-  areaNoteMethods: Methods,
-  contactMethods: Methods,
+  areaNoteMethods: MethodsType,
+  contactMethods: MethodsType,
   history: Object,
-  infillDevelopmentMethods: Methods,
+  infillDevelopmentMethods: MethodsType,
   isFetchingCommonAttributes: boolean,
   isOpen: boolean,
-  leaseMethods: Methods,
+  leaseMethods: MethodsType,
   onLinkClick: Function,
-  rentBasisMethods: Methods,
+  rentBasisMethods: MethodsType,
 }
 
 type State = {
@@ -144,20 +145,20 @@ class SideMenu extends Component<Props, State> {
               {isFetchingCommonAttributes && <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>}
               {!isFetchingCommonAttributes &&
                 <ul hidden={!isOpen && !isClosing && !isOpening}>
-                  <Authorization allow={leaseMethods.GET}>
+                  <Authorization allow={isMethodAllowed(leaseMethods, Methods.GET)}>
                     <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.LEASES)}>Vuokraukset</Link></li>
                   </Authorization>
-                  <Authorization allow={contactMethods.GET}>
+                  <Authorization allow={isMethodAllowed(contactMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.CONTACTS)}>Asiakkaat</Link></li>
                   </Authorization>
                   <li><Link onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
-                  <Authorization allow={areaNoteMethods.GET}>
+                  <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_NOTES)}>Muistettavat ehdot</Link></li>
                   </Authorization>
-                  <Authorization allow={infillDevelopmentMethods.GET}>
+                  <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.INFILL_DEVELOPMENTS)}>Täydennysrakentamiskorvaukset</Link></li>
                   </Authorization>
-                  <Authorization allow={rentBasisMethods.GET}>
+                  <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperusteet</Link></li>
                   </Authorization>
                 </ul>

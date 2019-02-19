@@ -14,7 +14,7 @@ import Fraction from 'fraction.js';
 import ToastrIcons from '$components/toastr/ToastrIcons';
 import {Breakpoints} from '$src/foundation/enums';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {UsersPermissions} from '$src/usersPermissions/types';
 
 // import i18n from '../root/i18n';
@@ -501,7 +501,6 @@ export const isFieldRequired = (attributes: Attributes, field: string) =>
 * @param field
 * @returns {boolean}
 */
-
 export const isFieldAllowedToEdit = (attributes: Attributes, field: string) =>
   get(attributes, `${field}.read_only`) === false ? true : false;
 
@@ -511,9 +510,17 @@ export const isFieldAllowedToEdit = (attributes: Attributes, field: string) =>
  * @param field
  * @returns {boolean}
  */
-
 export const isFieldAllowedToRead = (attributes: Attributes, field: string) =>
   get(attributes, field) ? true : false;
+
+/**
+ * Check has user permission to a method
+ * @param {Object} methods
+ * @param {string} method
+ * @returns {boolean}
+ */
+export const isMethodAllowed = (methods: Methods, method: string) =>
+  get(methods, method) ? true : false;
 
 /**
  * Check has user permission to do action
@@ -521,7 +528,6 @@ export const isFieldAllowedToRead = (attributes: Attributes, field: string) =>
  * @param key
  * @returns {boolean}
  */
-
 export const hasPermissions = (permissions: UsersPermissions, key: string) =>
   permissions && permissions.find((permission) => permission.codename === key) ? true : false;
 

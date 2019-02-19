@@ -25,9 +25,10 @@ import {
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/contacts/enums';
 import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
+import {isMethodAllowed} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   getCurrentContact,
@@ -39,7 +40,7 @@ import {
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
 import type {Contact} from '../types';
 
@@ -47,7 +48,7 @@ type Props = {
   change: Function,
   contact: Contact,
   contactFormValues: Contact,
-  contactMethods: Methods, // get via withCommonAttributes HOC
+  contactMethods: MethodsType, // get via withCommonAttributes HOC
   editContact: Function,
   fetchSingleContact: Function,
   hideEditMode: Function,
@@ -278,21 +279,21 @@ class ContactPage extends Component<Props, State> {
 
     if(isFetching || isFetchingCommonAttributes) {
       return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
+        <PageContainer><Loader isLoading={true} /></PageContainer>
       );
     }
 
-    if(!contactMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.CONTACT} /></PageContainer>;
+    if(!contactMethods) return null;
+
+    if(!isMethodAllowed(contactMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.CONTACT} /></PageContainer>;
 
     return (
       <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              allowCopy={contactMethods.POST}
-              allowEdit={contactMethods.PATCH}
+              allowCopy={isMethodAllowed(contactMethods, Methods.POST)}
+              allowEdit={isMethodAllowed(contactMethods, Methods.PATCH)}
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && !isContactFormValid}
@@ -308,7 +309,7 @@ class ContactPage extends Component<Props, State> {
           onBack={this.handleBack}
         />
         <PageContainer className='with-small-control-bar'>
-          <Authorization allow={contactMethods.PATCH}>
+          <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
             <ConfirmationModal
               confirmButtonLabel='Palauta muutokset'
               isOpen={isRestoreModalOpen}
@@ -322,7 +323,7 @@ class ContactPage extends Component<Props, State> {
 
           {isEditMode
             ? <Authorization
-              allow={contactMethods.PATCH}
+              allow={isMethodAllowed(contactMethods, Methods.PATCH)}
               errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL}/>}
             > <ContactEdit /></Authorization>
             : <ContactReadonly contact={contact} />

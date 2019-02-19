@@ -54,7 +54,7 @@ type State = {
 class InvoiceSimulator extends Component<Props, State> {
   state = {
     billingPeriods: null,
-    invoiceAttributes: {},
+    invoiceAttributes: null,
     invoiceReceivableTypeOptions: [],
     invoiceTypeOptions: [],
     previewInvoices: null,

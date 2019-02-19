@@ -42,7 +42,6 @@ const isSavingReducer: Reducer<boolean> = handleActions({
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/infillDevelopment/FETCH_ATTRIBUTES': () => true,
   'mvj/infillDevelopment/ATTRIBUTES_NOT_FOUND': () => false,
-  'mvj/infillDevelopment/RECEIVE_ATTRIBUTES': () => false,
   'mvj/infillDevelopment/RECEIVE_METHODS': () => false,
 }, false);
 
@@ -50,13 +49,13 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/infillDevelopment/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/infillDevelopment/RECEIVE_METHODS']: (state: Attributes, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 const infillDevelopmentListReducer: Reducer<InfillDevelopmentList> = handleActions({
   ['mvj/infillDevelopment/RECEIVE_ALL']: (state: InfillDevelopmentList, {payload: infillDevelopments}: ReceiveInfillDevelopmentListAction) => {

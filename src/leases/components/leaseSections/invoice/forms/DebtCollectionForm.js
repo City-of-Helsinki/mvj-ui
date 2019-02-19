@@ -34,12 +34,14 @@ import {
   FormNames,
   LeaseDecisionsFieldPaths,
 } from '$src/leases/enums';
+import {Methods} from '$src/enums';
 import {getUserFullName} from '$src/users/helpers';
 import {getContentDecisions, getDecisionOptions} from '$src/leases/helpers';
 import {
   formatDate,
   isFieldAllowedToRead,
   isFieldRequired,
+  isMethodAllowed,
   sortStringByKeyAsc,
 } from '$util/helpers';
 import {getCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/selectors';
@@ -48,14 +50,14 @@ import {getCollectionNotesByLease} from '$src/collectionNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {CollectionCourtDecisionId} from '$src/collectionCourtDecision/types';
 import type {CollectionLetterId} from '$src/collectionLetter/types';
 import type {Lease} from '$src/leases/types';
 
 type NotesProps = {
   collectionNoteAttributes: Attributes,
-  collectionNoteMethods: Methods,
+  collectionNoteMethods: MethodsType,
   fields: any,
   onCreate: Function,
   saveCallback: Function,
@@ -96,7 +98,7 @@ const renderNotes = ({
           />
         );
       })}
-      <Authorization allow={collectionNoteMethods.POST}>
+      <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.POST)}>
         {!!fields.length < 1 &&
           <AddButtonThird
             label='Lisää huomautus'
@@ -111,11 +113,11 @@ const renderNotes = ({
 type Props = {
   collectionCourtDecisions: Array<Object>,
   collectionCourtDecisionAttributes: Attributes,  // get via withLeasePageAttributes HOC
-  collectionCourtDecisionMethods: Methods,        // get via withLeasePageAttributes HOC
+  collectionCourtDecisionMethods: MethodsType,    // get via withLeasePageAttributes HOC
   collectionLetterAttributes: Attributes,         // get via withLeasePageAttributes HOC
-  collectionLetterMethods: Methods,               // get via withLeasePageAttributes HOC
+  collectionLetterMethods: MethodsType,           // get via withLeasePageAttributes HOC
   collectionNoteAttributes: Attributes,           // get via withLeasePageAttributes HOC
-  collectionNoteMethods: Methods,                 // get via withLeasePageAttributes HOC
+  collectionNoteMethods: MethodsType,             // get via withLeasePageAttributes HOC
   collectionLetters: Array<Object>,
   collectionNotes: Array<Object>,
   createCollectionNote: Function,
@@ -291,12 +293,12 @@ class DebtCollectionForm extends PureComponent<Props, State> {
         {({dispatch}) => {
           return(
             <form onSubmit={handleSubmit}>
-              <Authorization allow={collectionLetterMethods.GET}>
+              <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.GET)}>
                 <Row>
                   <Column small={12} large={6}>
                     <SubTitle>{CollectionLetterFieldTitles.COLLECTION_LETTERS}</SubTitle>
 
-                    {!collectionNoteMethods.POST && (!sortedCollectionLetters || !sortedCollectionLetters.length) && <FormText>Ei perintäkirjeitä</FormText>}
+                    {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionLetters || !sortedCollectionLetters.length) && <FormText>Ei perintäkirjeitä</FormText>}
                     {sortedCollectionLetters && !!sortedCollectionLetters.length &&
                       <Row>
                         <Column small={6}>
@@ -352,7 +354,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 <FormText className='full-width'>{getUserFullName(collectionLetter.uploader) || '-'}</FormText>
                               }
                               removeButton={
-                                <Authorization allow={collectionLetterMethods.DELETE}>
+                                <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.DELETE)}>
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
@@ -366,7 +368,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       );
                     })}
 
-                    <Authorization allow={collectionLetterMethods.POST}>
+                    <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.POST)}>
                       <AddFileButton
                         label='Lisää perintäkirje'
                         name={'collectionLetterFileButtonId'}
@@ -377,12 +379,12 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                 </Row>
               </Authorization>
 
-              <Authorization allow={collectionCourtDecisionMethods.GET}>
+              <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)}>
                 <Row>
                   <Column small={12} large={6}>
                     <SubTitle>{CollectionCourtDecisionFieldTitles.COLLECTION_COURT_DECISIONS}</SubTitle>
 
-                    {!collectionNoteMethods.POST && (!sortedCollectionCourtDecisions || !sortedCollectionCourtDecisions.length) && <FormText>Ei käräjaoikeuden päätöksiä</FormText>}
+                    {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionCourtDecisions || !sortedCollectionCourtDecisions.length) && <FormText>Ei käräjaoikeuden päätöksiä</FormText>}
                     {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length &&
                       <Row>
                         <Column small={6}>
@@ -437,7 +439,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 <FormText className='full-width'>{getUserFullName(collectionCourtDecision.uploader) || '-'}</FormText>
                               }
                               removeButton={
-                                <Authorization allow={collectionCourtDecisionMethods.DELETE}>
+                                <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.DELETE)}>
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
@@ -451,7 +453,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       );
                     })}
 
-                    <Authorization allow={collectionCourtDecisionMethods.POST}>
+                    <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.POST)}>
                       <AddFileButton
                         label='Lisää käräjäoikeuden päätös'
                         name={'collectionCourtDecisionFileButtonId'}
@@ -479,12 +481,12 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                 </Row>
               </Authorization>
 
-              <Authorization allow={collectionNoteMethods.GET}>
+              <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.GET)}>
                 <Row>
                   <Column small={12} large={6}>
                     <SubTitle>Huomautukset</SubTitle>
 
-                    {!collectionNoteMethods.POST && (!sortedCollectionNotes || !sortedCollectionNotes.length) && <FormText>Ei huomautuksia</FormText>}
+                    {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionNotes || !sortedCollectionNotes.length) && <FormText>Ei huomautuksia</FormText>}
                     {sortedCollectionNotes && !!sortedCollectionNotes.length &&
                       <Row>
                         <Column small={6}>
@@ -538,7 +540,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 <FormText className='full-width'>{getUserFullName(note.user)}</FormText>
                               }
                               removeButton={
-                                <Authorization allow={collectionNoteMethods.DELETE}>
+                                <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.DELETE)}>
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
@@ -552,7 +554,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       );
                     })}
 
-                    <Authorization allow={collectionNoteMethods.POST}>
+                    <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.POST)}>
                       <FieldArray
                         component={renderNotes}
                         collectionNoteAttributes={collectionNoteAttributes}

@@ -5,20 +5,21 @@ import {GeoJSON} from 'react-leaflet';
 
 import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 
+import {Methods} from '$src/enums';
 import {convertAreaNoteListToGeoJson, convertFeatureToFeatureCollection} from '$src/areaNote/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {formatDate} from '$src/util/helpers';
+import {formatDate, isMethodAllowed} from '$src/util/helpers';
 import {
   getIsEditMode,
   getMethods as getAreaNoteMethods,
 } from '$src/areaNote/selectors';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
   allowToEdit?: boolean,
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   defaultAreaNote?: ?number,
   initializeAreaNote: Function,
@@ -55,7 +56,7 @@ class AreaNotesLayer extends Component<Props, State> {
   onClick = (e: any, feature: Object) => {
     const {allowToEdit, areaNoteMethods, initializeAreaNote, showEditMode} = this.props;
 
-    if(!areaNoteMethods.PATCH || !allowToEdit) return;
+    if(!isMethodAllowed(areaNoteMethods, Methods.PATCH) || !allowToEdit) return;
 
     initializeAreaNote({
       geoJSON: convertFeatureToFeatureCollection(feature),

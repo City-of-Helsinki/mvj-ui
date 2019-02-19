@@ -25,7 +25,7 @@ import invoiceReducer from './reducer';
 import type {InvoiceState} from './types';
 
 const defaultState: InvoiceState = {
-  attributes: {},
+  attributes: null,
   byLease: {},
   invoiceToCredit: null,
   isCreateClicked: false,
@@ -35,20 +35,16 @@ const defaultState: InvoiceState = {
   isEditClicked: false,
   isFetching: false,
   isFetchingAttributes: false,
-  methods: {},
+  methods: null,
   patchedInvoice: null,
 };
 
-// $FlowFixMe
 describe('Invoices', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('invoiceReducer', () => {
 
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'Foo',

@@ -2,7 +2,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 
 import {fetchAttributes as fetchCollectionCourtDecisionAttributes} from '$src/collectionCourtDecision/actions';
 import {fetchAttributes as fetchCollectionLetterAttributes} from '$src/collectionLetter/actions';
@@ -135,39 +134,39 @@ function LeasePageAttributes(WrappedComponent: any) {
         leaseCreateChargeAttributes,
       } = this.props;
 
-      if(isEmpty(collectionCourtDecisionMethods) && !isFetchingCollectionCourtDecisionAttributes) {
+      if(!collectionCourtDecisionMethods && !isFetchingCollectionCourtDecisionAttributes) {
         fetchCollectionCourtDecisionAttributes();
       }
 
-      if(isEmpty(collectionLetterMethods) && !isFetchingCollectionLetterAttributes) {
+      if(!collectionLetterMethods && !isFetchingCollectionLetterAttributes) {
         fetchCollectionLetterAttributes();
       }
 
-      if(isEmpty(collectionNoteMethods) && !isFetchingCollectionNoteAttributes) {
+      if(!collectionNoteMethods && !isFetchingCollectionNoteAttributes) {
         fetchCollectionNoteAttributes();
       }
 
-      if(isEmpty(commentMethods) && !isFetchingCommentAttributes) {
+      if(!commentMethods && !isFetchingCommentAttributes) {
         fetchCommentAttributes();
       }
 
-      if(isEmpty(contractFileMethods) && !isFetchingContractFileAttributes) {
+      if(!contractFileMethods && !isFetchingContractFileAttributes) {
         fetchContractFileAttributes();
       }
 
-      if(isEmpty(copyAreasToContractMethods) && !isFetchingCopyAreasToContractAttributes) {
+      if(!copyAreasToContractMethods && !isFetchingCopyAreasToContractAttributes) {
         fetchCopyAreasToContractAttributes();
       }
 
-      if(isEmpty(createCollectionLetterAttributes) && !isFetchingCreateCollectionLetterAttributes) {
+      if(!createCollectionLetterAttributes && !isFetchingCreateCollectionLetterAttributes) {
         fetchCreateCollectionLetterAttributes();
       }
 
-      if(isEmpty(invoiceMethods) && !isFetchingInvoiceAttributes) {
+      if(!invoiceMethods && !isFetchingInvoiceAttributes) {
         fetchInvoiceAttributes();
       }
 
-      if(isEmpty(leaseCreateChargeAttributes) && !isFetchingLeaseCreateChargeAttributes) {
+      if(!leaseCreateChargeAttributes && !isFetchingLeaseCreateChargeAttributes) {
         fetchLeaseCreateChargeAttributes();
       }
     }

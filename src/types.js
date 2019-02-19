@@ -11,9 +11,9 @@ export type Reducer<State> = (state: State, action: any) => State
 
 export type Selector<Value, Props> = (state: RootState, props: Props) => Value;
 
-export type Attributes = Object;
+export type Attributes = ?Object;
 
-export type Methods = Object;
+export type Methods = ?Object;
 
 type Coordinate = Array<number>;
 

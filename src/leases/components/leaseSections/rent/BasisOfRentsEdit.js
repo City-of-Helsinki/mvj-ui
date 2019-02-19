@@ -56,7 +56,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
     areaUnitOptions: [],
     indexOptions: [],
     intendedUseOptions: [],
-    leaseAttributes: {},
+    leaseAttributes: null,
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {

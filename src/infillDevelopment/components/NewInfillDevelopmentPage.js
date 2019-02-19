@@ -22,14 +22,15 @@ import {
   showEditMode,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
+import {isMethodAllowed} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValidById, getIsSaveClicked, getIsSaving} from '$src/infillDevelopment/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
@@ -38,7 +39,7 @@ type Props = {
   formValues: Object,
   hideEditMode: Function,
   history: Object,
-  infillDevelopmentMethods: Methods, // get via withCommonAttributes HOC
+  infillDevelopmentMethods: MethodsType, // get via withCommonAttributes HOC
   isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   isFormDirty: boolean,
   isFormValid: boolean,
@@ -127,14 +128,16 @@ class NewInfillDevelopmentPage extends Component<Props> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!infillDevelopmentMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
+    if(!infillDevelopmentMethods) return null;
+
+    if(!isMethodAllowed(infillDevelopmentMethods, Methods.POST)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
 
     return (
       <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              allowEdit={infillDevelopmentMethods.POST}
+              allowEdit={isMethodAllowed(infillDevelopmentMethods, Methods.POST)}
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isFormValid}

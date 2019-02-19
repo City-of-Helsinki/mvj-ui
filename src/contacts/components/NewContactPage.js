@@ -22,22 +22,22 @@ import {
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {ContactTypes, FormNames} from '$src/contacts/enums';
-import {isEmptyValue} from '$util/helpers';
+import {isEmptyValue, isMethodAllowed} from '$util/helpers';
 import {contactExists} from '$src/contacts/requestsAsync';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
 import type {Contact} from '../types';
 
 type Props = {
   contactFormValues: Contact,
-  contactMethods: Methods, // get via withCommonAttributes HOC
+  contactMethods: MethodsType, // get via withCommonAttributes HOC
   createContact: Function,
   hideEditMode: Function,
   history: Object,
@@ -119,7 +119,9 @@ class NewContactPage extends Component<Props> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!contactMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
+    if(!contactMethods) return null;
+
+    if(!isMethodAllowed(contactMethods, Methods.POST)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
 
     return (
       <AppConsumer>
@@ -164,7 +166,7 @@ class NewContactPage extends Component<Props> {
               <ControlButtonBar
                 buttonComponent={
                   <ControlButtons
-                    allowEdit={contactMethods.POST}
+                    allowEdit={isMethodAllowed(contactMethods, Methods.POST)}
                     isCopyDisabled={true}
                     isEditMode={true}
                     isSaveDisabled={isSaveClicked && !isContactFormValid}

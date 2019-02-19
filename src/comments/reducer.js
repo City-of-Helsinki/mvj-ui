@@ -41,7 +41,7 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/comments/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/comments/FETCH_ATTRIBUTES': () => true,
@@ -53,7 +53,7 @@ const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/comments/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 
 const byLeaseReducer: Reducer<CommentListMap> = handleActions({

@@ -27,6 +27,18 @@ export const KeyCodes = {
 };
 
 /**
+ * Methods enumerable.
+ *
+ * @type {{DELETE: string, GET: string, PATCH: string, POST: string,}}
+ */
+export const Methods = {
+  DELETE: 'DELETE',
+  GET: 'GET',
+  PATCH: 'PATCH',
+  POST: 'POST',
+};
+
+/**
  * Key code enumerable.
  *
  * @type {{BUTTON: string, LABEL: string, TITLE: string}}

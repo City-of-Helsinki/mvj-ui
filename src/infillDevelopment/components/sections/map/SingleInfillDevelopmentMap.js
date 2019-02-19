@@ -15,9 +15,10 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {fetchLeaseById} from '$src/leases/actions';
 import {mapColors} from '$src/constants';
 import {LeaseAreasFieldPaths, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths} from '$src/leases/enums';
+import {Methods} from '$src/enums';
 import {getContentLeaseIdentifier, getLeaseCoordinates} from '$src/leases/helpers';
 import {getContentInfillDevelopmentLeaseGeoJson} from '$src/infillDevelopment/helpers';
-import {getFieldOptions, getUrlParams} from '$util/helpers';
+import {getFieldOptions, getUrlParams, isMethodAllowed} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getCurrentInfillDevelopment} from '$src/infillDevelopment/selectors';
@@ -27,14 +28,14 @@ import {
   getIsFetchingAllLeases,
 } from '$src/leases/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
   allLeases: Array<Lease>,
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   currentInfillDevelopment: InfillDevelopment,
   fetchLeaseById: Function,
@@ -70,7 +71,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
     infillDevelopmentLeases: [],
     isLoading: false,
     layers: [],
-    leaseAttributes: {},
+    leaseAttributes: null,
     planUnitIntendedUseOptions: [],
     planUnitStateOptions: [],
     planUnitTypeOptions: [],
@@ -202,7 +203,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
       };
     });
 
-    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer

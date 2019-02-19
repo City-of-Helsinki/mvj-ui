@@ -456,7 +456,7 @@ class RentBasisForm extends PureComponent<Props, State> {
   state = {
     areaUnitOptions: [],
     indexOptions: [],
-    rentBasisAttributes: {},
+    rentBasisAttributes: null,
   }
 
   componentDidMount() {

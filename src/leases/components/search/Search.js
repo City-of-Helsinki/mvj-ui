@@ -64,7 +64,7 @@ class Search extends Component<Props, State> {
   state = {
     decisionMakerOptions: [],
     isBasicSearch: true,
-    leaseAttributes: {},
+    leaseAttributes: null,
     lessors: [],
     lessorOptions: [],
     municipalityOptions: [],

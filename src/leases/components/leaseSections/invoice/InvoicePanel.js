@@ -12,9 +12,10 @@ import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
 import ReactResizeDetector from 'react-resize-detector';
 import {receiveIsEditClicked} from '$src/invoices/actions';
-import {KeyCodes} from '$src/enums';
+import {KeyCodes, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {FormNames} from '$src/leases/enums';
+import {isMethodAllowed} from '$util/helpers';
 import {
   getInvoicesByLease,
   getIsEditClicked,
@@ -22,13 +23,13 @@ import {
 } from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 import type {InvoiceList} from '$src/invoices/types';
 
 type Props = {
   editedInvoice: Object,
   invoice: ?Object,
-  invoiceMethods: Methods,
+  invoiceMethods: MethodsType,
   invoices: InvoiceList,
   isEditClicked: boolean,
   isOpen: boolean,
@@ -207,8 +208,8 @@ class InvoicePanel extends PureComponent<Props, State> {
             />
           </div>
 
-          <div className={classNames('invoice-panel__body', {'with-footer': (invoiceMethods.PATCH && invoice && !invoice.sap_id)})}>
-            {invoiceMethods.PATCH && (!invoice || !invoice.sap_id)
+          <div className={classNames('invoice-panel__body', {'with-footer': (isMethodAllowed(invoiceMethods, Methods.PATCH) && invoice && !invoice.sap_id)})}>
+            {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id)
               ? <EditInvoiceForm
                 creditedInvoice={creditedInvoice}
                 invoice={invoice}
@@ -223,7 +224,7 @@ class InvoicePanel extends PureComponent<Props, State> {
             }
           </div>
 
-          <Authorization allow={invoiceMethods.PATCH}>
+          <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
             {invoice && !invoice.sap_id &&
               <div className='invoice-panel__footer'>
                 <Button

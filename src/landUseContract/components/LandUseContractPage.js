@@ -44,6 +44,7 @@ import {
   showEditMode,
 } from '$src/landUseContract/actions';
 import {FormNames} from '$src/landUseContract/enums';
+import {Methods} from '$src/enums';
 import {
   addLitigantsDataToPayload,
   clearUnsavedChanges,
@@ -56,7 +57,7 @@ import {
   getContentLitigants,
   isLitigantArchived,
 } from '$src/landUseContract/helpers';
-import {getSearchQuery, getUrlParams} from '$util/helpers';
+import {getSearchQuery, getUrlParams, isMethodAllowed} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
@@ -70,12 +71,12 @@ import {
 } from '$src/landUseContract/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {LandUseContract} from '$src/landUseContract/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   attributes: Attributes,
   basicInformationFormValues: Object,
@@ -565,7 +566,7 @@ class LandUseContractPage extends Component<Props, State> {
       areaNotes,
     } = this.props;
 
-    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer

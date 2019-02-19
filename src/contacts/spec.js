@@ -29,7 +29,7 @@ import contactReducer from './reducer';
 import type {ContactState} from './types';
 
 const defaultState: ContactState = {
-  attributes: {},
+  attributes: null,
   contactModalSettings: null,
   currentContact: {},
   initialContactFormValues: {
@@ -44,19 +44,15 @@ const defaultState: ContactState = {
   isFetchingAttributes: false,
   isSaveClicked: false,
   list: {},
-  methods: {},
+  methods: null,
 };
 
-// $FlowFixMe
 describe('Contacts', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('contactReducer', () => {
 
-      // $FlowFixMe
       it('should set isFetchingAttributes flag to true when fething attributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 

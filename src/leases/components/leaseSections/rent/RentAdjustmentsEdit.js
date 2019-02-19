@@ -67,7 +67,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     amountTypeOptions: [],
     currentLease: {},
     decisionOptions: [],
-    leaseAttributes: {},
+    leaseAttributes: null,
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {

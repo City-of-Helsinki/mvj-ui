@@ -33,8 +33,9 @@ import {
   LeaseTenantsFieldTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {Methods} from '$src/enums';
 import {validateTenantForm} from '$src/leases/formValidators';
-import {hasPermissions, isEmptyValue, isFieldAllowedToEdit} from '$util/helpers';
+import {hasPermissions, isEmptyValue, isFieldAllowedToEdit, isMethodAllowed} from '$util/helpers';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentTenantsFormData} from '$src/leases/helpers';
 import {contactExists} from '$src/contacts/requestsAsync';
@@ -52,7 +53,7 @@ import {
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ContactModalSettings} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
@@ -136,7 +137,7 @@ const renderTenants = ({
 type Props = {
   change: Function,
   contactFormValues: Object,
-  contactMethods: Methods,
+  contactMethods: MethodsType,
   contactModalSettings: ContactModalSettings,
   createContact: Function,
   currentLease: Lease,
@@ -288,7 +289,7 @@ class TenantsEdit extends PureComponent<Props, State> {
             <Fragment>
               {isFetchingContact && <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>}
 
-              <Authorization allow={contactMethods.POST || contactMethods.PATCH}>
+              <Authorization allow={isMethodAllowed(contactMethods, Methods.POST) || isMethodAllowed(contactMethods, Methods.PATCH)}>
                 <ContactModal
                   isOpen={isContactModalOpen}
                   onCancel={this.handleCancel}

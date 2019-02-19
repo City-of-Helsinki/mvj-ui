@@ -22,14 +22,15 @@ import {
   showEditMode,
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/rentbasis/enums';
 import {formatRentBasisForDb} from '$src/rentbasis/helpers';
+import {isMethodAllowed} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValid, getIsSaveClicked, getIsSaving} from '$src/rentbasis/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
@@ -45,7 +46,7 @@ type Props = {
   location: Object,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
-  rentBasisMethods: Methods,
+  rentBasisMethods: MethodsType,
   router: Object,
   showEditMode: Function,
 }
@@ -124,14 +125,16 @@ class NewRentBasisPage extends Component<Props> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!rentBasisMethods.POST) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
+    if(!rentBasisMethods) return null;
+
+    if(!isMethodAllowed(rentBasisMethods, Methods.POST)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
 
     return (
       <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              allowEdit={rentBasisMethods.POST}
+              allowEdit={isMethodAllowed(rentBasisMethods, Methods.POST)}
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isFormValid}

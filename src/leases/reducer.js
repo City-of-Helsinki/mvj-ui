@@ -71,7 +71,6 @@ const isFetchingByIdReducer: Reducer<Object> = handleActions({
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/leases/FETCH_ATTRIBUTES': () => true,
-  'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
   'mvj/leases/RECEIVE_METHODS': () => false,
   'mvj/leases/ATTRIBUTES_NOT_FOUND': () => false,
 }, false);
@@ -80,13 +79,13 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/leases/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/leases/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 const leasesListReducer: Reducer<LeaseList> = handleActions({
   ['mvj/leases/RECEIVE_ALL']: (state: LeaseList, {payload: leases}: ReceiveLeasesAction) => {

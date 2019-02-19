@@ -23,7 +23,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {Methods, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
@@ -45,6 +45,7 @@ import {
   getLabelOfOption,
   hasPermissions,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {
@@ -56,7 +57,7 @@ import {
 } from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -439,7 +440,7 @@ type Props = {
   collateralsCollapseState: boolean,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
-  contractFileMethods: Methods,
+  contractFileMethods: MethodsType,
   contractId: number,
   currentLease: Lease,
   decisionOptions: Array<Object>,
@@ -516,7 +517,7 @@ const ContractItemEdit = ({
 
     return <FormText>{value
       ? <Authorization
-        allow={contractFileMethods.GET}
+        allow={isMethodAllowed(contractFileMethods, Methods.GET)}
         errorComponent={value}
       >
         <a onClick={handleShowContractFileModal}>{value}</a>

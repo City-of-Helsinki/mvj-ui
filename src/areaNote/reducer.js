@@ -44,7 +44,6 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/areaNote/FETCH_ATTRIBUTES': () => true,
-  'mvj/areaNote/RECEIVE_ATTRIBUTES': () => false,
   'mvj/areaNote/RECEIVE_METHODS': () => false,
   'mvj/areaNote/ATTRIBUTES_NOT_FOUND': () => false,
 }, false);
@@ -53,13 +52,13 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/areaNote/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/areaNote/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 const areaNoteListReducer: Reducer<AreaNoteList> = handleActions({
   ['mvj/areaNote/RECEIVE_ALL']: (state: AreaNoteList, {payload: list}: ReceiveAreaNoteListAction) => {

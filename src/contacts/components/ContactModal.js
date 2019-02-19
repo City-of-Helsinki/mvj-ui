@@ -7,17 +7,19 @@ import ContactForm from './forms/ContactForm';
 import GreenBox from '$components/content/GreenBox';
 import Modal from '$components/modal/Modal';
 import {ButtonColors} from '$components/enums';
+import {Methods} from '$src/enums';
+import {isMethodAllowed} from '$util/helpers';
 import {
   getIsContactFormValid,
   getIsSaveClicked,
   getMethods as getContactMethods,
 } from '$src/contacts/selectors';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
-  contactMethods: Methods,
+  contactMethods: MethodsType,
   isContactFormValid: boolean,
   isOpen: boolean,
   isSaveClicked: boolean,
@@ -65,7 +67,7 @@ const ContactModal = ({
             {showSave &&
               <Button
                 className={ButtonColors.SUCCESS}
-                disabled={!contactMethods.PATCH || isSaveClicked && !isContactFormValid}
+                disabled={!isMethodAllowed(contactMethods, Methods.PATCH) || isSaveClicked && !isContactFormValid}
                 onClick={onSave}
                 text='Tallenna'
               />
@@ -73,7 +75,7 @@ const ContactModal = ({
             {showSaveAndAdd &&
               <Button
                 className={ButtonColors.SUCCESS}
-                disabled={!contactMethods.POST || (isSaveClicked && !isContactFormValid)}
+                disabled={!isMethodAllowed(contactMethods, Methods.POST) || (isSaveClicked && !isContactFormValid)}
                 onClick={onSaveAndAdd}
                 text='Tallenna ja Lisää'
               />

@@ -24,7 +24,7 @@ import {
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {ContactFieldPaths, FormNames} from '$src/contacts/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
@@ -33,13 +33,14 @@ import {
   getSearchQuery,
   getUrlParams,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$src/util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getContactList, getIsFetching} from '../selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
 import type {ContactList} from '../types';
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 const getContactCount = (contactList: ContactList) => get(contactList, 'count', 0);
@@ -55,7 +56,7 @@ const getContactMaxPage = (contactList: ContactList) => {
 type Props = {
   contactAttributes: Attributes,
   contactList: ContactList,
-  contactMethods: Methods, // get via withCommonAttributes HOC
+  contactMethods: MethodsType, // get via withCommonAttributes HOC
   fetchContacts: Function,
   history: Object,
   initializeContactForm: Function,
@@ -81,7 +82,7 @@ type State = {
 class ContactListPage extends Component<Props, State> {
   state = {
     activePage: 1,
-    contactAttributes: {},
+    contactAttributes: null,
     contactList: {},
     contacts: [],
     count: 0,
@@ -257,13 +258,15 @@ class ContactListPage extends Component<Props, State> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!contactMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.CONTACT} /></PageContainer>;
+    if(!contactMethods) return null;
+
+    if(!isMethodAllowed(contactMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.CONTACT} /></PageContainer>;
 
     return(
       <PageContainer>
         <Row>
           <Column small={12} large={6}>
-            <Authorization allow={contactMethods.POST}>
+            <Authorization allow={isMethodAllowed(contactMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
                 label='Luo asiakas'

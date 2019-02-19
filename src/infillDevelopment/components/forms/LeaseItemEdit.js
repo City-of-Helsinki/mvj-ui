@@ -26,7 +26,7 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/infillDevelopment/actions';
 import {createInfillDevelopmentAttachment, deleteInfillDevelopmentAttachment} from '$src/infillDevelopmentAttachment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {Methods, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
@@ -57,6 +57,7 @@ import {
   hasPermissions,
   isFieldAllowedToRead,
   isFieldRequired,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
@@ -83,7 +84,7 @@ import {
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease, LeaseId} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -381,7 +382,7 @@ type Props = {
   fetchLeaseById: Function,
   field: string,
   infillDevelopmentAttachmentAttributes: Attributes,
-  infillDevelopmentAttachmentMethods: Methods,
+  infillDevelopmentAttachmentMethods: MethodsType,
   infillDevelopmentAttributes: Attributes,
   isFetching: boolean,
   isSaveClicked: boolean,
@@ -738,7 +739,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
             </Column>
           </Row>
 
-          <Authorization allow={infillDevelopmentAttachmentMethods.GET}>
+          <Authorization allow={isMethodAllowed(infillDevelopmentAttachmentMethods, Methods.GET)}>
             {!!infillDevelopmentCompensationLeaseId &&
               <AppConsumer>
                 {({dispatch}) => {
@@ -796,7 +797,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                                   <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
                                 </Column>
                                 <Column small={3} large={2}>
-                                  <Authorization allow={infillDevelopmentAttachmentMethods.DELETE}>
+                                  <Authorization allow={isMethodAllowed(infillDevelopmentAttachmentMethods, Methods.DELETE)}>
                                     <RemoveButton
                                       className='third-level'
                                       onClick={handleRemove}
@@ -810,7 +811,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                         </Fragment>
                       }
 
-                      <Authorization allow={infillDevelopmentAttachmentMethods.POST}>
+                      <Authorization allow={isMethodAllowed(infillDevelopmentAttachmentMethods, Methods.POST)}>
                         <AddFileButton
                           label='Lisää tiedosto'
                           name={`${infillDevelopmentCompensationLeaseId}`}
