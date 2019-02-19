@@ -336,7 +336,10 @@ class ContactForm extends Component<Props> {
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.NOTE)}
                     name='note'
-                    overrideValues={{label: ContactFieldTitles.NOTE}}
+                    overrideValues={{
+                      fieldType: FieldTypes.TEXTAREA,
+                      label: ContactFieldTitles.NOTE,
+                    }}
                   />
                 </Authorization>
               </Column>
