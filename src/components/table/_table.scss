@@ -1,8 +1,9 @@
 .pagination {
   display: flex;
-  padding-left: 0;
+  padding: 0 1px;
   list-style: none;
   border-radius: rem-calc(4px);
+  margin-top: rem-calc(10px);
 
   &__item {
     a {
@@ -100,7 +101,7 @@
   &__container {
     max-width: 100%;
     overflow: hidden;
-    margin-bottom: rem-calc(10px);
+    margin-bottom: 0;
 
     table {
       border-collapse: collapse;

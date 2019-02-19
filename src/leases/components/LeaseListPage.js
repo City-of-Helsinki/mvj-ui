@@ -431,7 +431,8 @@ class LeaseListPage extends PureComponent<Props, State> {
           {isFetching &&
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
           }
-          {visualizationType === 'table' && (
+
+          {visualizationType === 'table' &&
             <Fragment>
               <SortableTable
                 columns={columns}
@@ -446,13 +447,13 @@ class LeaseListPage extends PureComponent<Props, State> {
                 onPageClick={(page) => this.handlePageClick(page)}
               />
             </Fragment>
-          )}
-          {visualizationType === 'map' && (
+          }
+          {visualizationType === 'map' &&
             <AreaNotesEditMap
               allowToEdit={false}
               overlayLayers={overlayLayers}
             />
-          )}
+          }
         </TableWrapper>
       </PageContainer>
     );

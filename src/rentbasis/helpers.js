@@ -8,6 +8,7 @@ import {convertStrToDecimalNumber} from '$util/helpers';
 import {getIsEditMode} from '$src/rentbasis/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
+import type {LeafletGeoJson} from '$src/types';
 import type {RentBasis} from './types';
 
 const getContentRentRates = (rentBasis: Object) => {
@@ -169,9 +170,10 @@ export const formatRentBasisForDb = (rentBasis: Object) => {
 };
 
 // Functions to get infill development compensation lease areas GeoJSON
-export const getContentRentBasisGeoJson = (rentBasis: RentBasis) => {
+export const getContentRentBasisGeoJson = (rentBasis: RentBasis): LeafletGeoJson => {
   const features = [];
   const geometry = rentBasis.geometry;
+
   if(!isEmpty(geometry)) {
     features.push({
       ...geometry,

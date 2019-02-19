@@ -4,26 +4,12 @@ import {GeoJSON} from 'react-leaflet';
 
 import {formatDate, getLabelOfOption} from '$util/helpers';
 
-type Coordinate = Array<number>;
-
-type RentBasisFeature = {
-  geometry: {
-    coordinates: Array<Coordinate>,
-    type: string,
-  },
-  properties: Object,
-  type: 'Feature',
-}
-
-export type RentBasisGeoJson = {
-  features: Array<RentBasisFeature>,
-  type: 'FeatureCollection',
-}
+import type {LeafletGeoJson} from '$src/types';
 
 type Props = {
   color: string,
   financingOptions: Array<Object>,
-  geoJSON: RentBasisGeoJson,
+  geoJSON: LeafletGeoJson,
   indexOptions: Array<Object>,
   managementOptions: Array<Object>,
   plotTypeOptions: Array<Object>,

@@ -7,6 +7,7 @@ import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
@@ -112,7 +113,7 @@ class Search extends Component<Props, State> {
       }
     }
 
-    if(isSearchInitialized && prevProps.formValues !== this.props.formValues) {
+    if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       this.onSearchChange();
     }
   }

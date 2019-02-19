@@ -17,7 +17,7 @@ import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} fr
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getAttributes as getRentBasisAttributes, getRentBasis} from '$src/rentbasis/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, LeafletGeoJson, Methods} from '$src/types';
 import type {RentBasis} from '$src/rentbasis/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
@@ -32,7 +32,7 @@ type State = {
   bounds?: ?Object,
   center: ?Array<Object>,
   financingOptions: Array<Object>,
-  geoJSON: Object,
+  geoJSON: LeafletGeoJson,
   indexOptions: Array<Object>,
   managementOptions: Array<Object>,
   plotTypeOptions: Array<Object>,

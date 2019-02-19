@@ -4,35 +4,13 @@ import {GeoJSON} from 'react-leaflet';
 
 import {formatDate, formatNumber, getLabelOfOption} from '$util/helpers';
 
-type Coordinate = Array<number>;
-
-type PlotFeature = {
-  geometry: {
-    coordinates: Array<Coordinate>,
-    type: string,
-  },
-  properties: {
-    area: ?number,
-    id: number,
-    identifier: ?string,
-    registration_date: ?string,
-    repeal_date: ?string,
-    section_area: ?number,
-  },
-  type: 'Feature',
-}
-
-export type PlotsGeoJson = {
-  features: Array<PlotFeature>,
-  type: 'FeatureCollection',
-}
+import type {LeafletGeoJson} from '$src/types';
 
 type Props = {
   color: string,
   defaultPlot?: number,
-  plotsGeoJson: PlotsGeoJson,
+  plotsGeoJson: LeafletGeoJson,
   typeOptions: Array<Object>,
-
 }
 
 const PlotsLayer = ({

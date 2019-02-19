@@ -5,26 +5,12 @@ import {GeoJSON} from 'react-leaflet';
 import {LeasePlanUnitsFieldTitles} from '$src/leases/enums';
 import {formatDate, formatNumber, getLabelOfOption} from '$util/helpers';
 
-type Coordinate = Array<number>;
-
-type PlanUnitsFeature = {
-  geometry: {
-    coordinates: Array<Coordinate>,
-    type: string,
-  },
-  properties: Object,
-  type: 'Feature',
-}
-
-export type PlanUnitsGeoJson = {
-  features: Array<PlanUnitsFeature>,
-  type: 'FeatureCollection',
-}
+import type {LeafletGeoJson} from '$src/types';
 
 type Props = {
   color: string,
   defaultPlanUnit?: number,
-  planUnitsGeoJson: PlanUnitsGeoJson,
+  planUnitsGeoJson: LeafletGeoJson,
   planUnitIntendedUseOptions: Array<Object>,
   planUnitStateOptions: Array<Object>,
   planUnitTypeOptions: Array<Object>,

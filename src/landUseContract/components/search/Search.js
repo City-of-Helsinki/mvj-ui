@@ -5,6 +5,7 @@ import {getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
+import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
 import {FieldTypes} from '$components/enums';
@@ -31,7 +32,7 @@ class Search extends Component<Props> {
   componentDidUpdate(prevProps: Object) {
     const {isSearchInitialized} = this.props;
 
-    if(isSearchInitialized && JSON.stringify(prevProps.formValues) !== JSON.stringify(this.props.formValues)) {
+    if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       this.onSearchChange();
     }
   }
