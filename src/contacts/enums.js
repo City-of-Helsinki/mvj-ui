@@ -60,7 +60,7 @@ export const ContactFieldTitles = {
   ADDRESS: 'Katuosoite',
   ADDRESS_PROTECTION: 'Turvakielto',
   BUSINESS_ID: 'Y-tunnus',
-  CARE_OF: 'C/O',
+  CARE_OF: 'c/o',
   CITY: 'Postitoimipaikka',
   COUNTRY: 'Maa',
   CUSTOMER_NUMBER: 'Asiakasnumero',
