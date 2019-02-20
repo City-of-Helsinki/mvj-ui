@@ -13,6 +13,8 @@ import {hasAnyPageDirtyForms} from '$src/helpers';
 import {getSearchQuery, getUrlParams} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 
+import type {UserGroups} from '$src/usersPermissions/types';
+
 type Props = {
   history: Object,
   isMenuOpen: boolean,
@@ -22,6 +24,7 @@ type Props = {
   pageTitle: string,
   showSearch: boolean,
   toggleSideMenu: Function,
+  userGroups: UserGroups,
   username: string,
 }
 
@@ -78,6 +81,7 @@ class TopNavigation extends Component<Props, State> {
       pageTitle,
       showSearch,
       toggleSideMenu,
+      userGroups,
       username,
     } = this.props;
     const {identifier} = this.state;
@@ -184,7 +188,7 @@ class TopNavigation extends Component<Props, State> {
                 }
 
                 <div className="username-wrapper">
-                  <p className="username">{username}</p>
+                  <p className="username">{username}{!!userGroups && !!userGroups.length && ` (${userGroups.join(', ')})`}</p>
                   <button className='logout-link' onClick={handleLogout}>Kirjaudu ulos</button>
                 </div>
               </div>

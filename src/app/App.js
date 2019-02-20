@@ -24,9 +24,11 @@ import {getEpochTime} from '$util/helpers';
 import {getError} from '../api/selectors';
 import {getApiToken, getApiTokenExpires, getIsFetching, getLoggedInUser} from '../auth/selectors';
 import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
+import {getUserGroups} from '$src/usersPermissions/selectors';
 
 import type {ApiError} from '../api/types';
 import type {ApiToken} from '../auth/types';
+import type {UserGroups} from '$src/usersPermissions/types';
 import type {RootState} from '../root/types';
 
 type Props = {
@@ -45,6 +47,7 @@ type Props = {
   pageTitle: string,
   showSearch: boolean,
   user: Object,
+  userGroups: UserGroups,
 };
 
 type State = {
@@ -142,6 +145,7 @@ class App extends Component<Props, State> {
       pageTitle,
       showSearch,
       user,
+      userGroups,
     } = this.props;
     const {displaySideMenu} = this.state;
 
@@ -230,6 +234,7 @@ class App extends Component<Props, State> {
                   pageTitle={pageTitle}
                   showSearch={showSearch}
                   toggleSideMenu={this.toggleSideMenu}
+                  userGroups={userGroups}
                   username={get(user, 'profile.name')}
                 />
 
@@ -272,6 +277,7 @@ const mapStateToProps = (state: RootState) => {
     pageTitle: getPageTitle(state),
     showSearch: getShowSearch(state),
     user,
+    userGroups: getUserGroups(state),
   };
 };
 

@@ -4,7 +4,9 @@ import {handleActions} from 'redux-actions';
 
 import type {Reducer} from '../types';
 import type {
+  UserGroups,
   UsersPermissions,
+  ReceiveUserGroupsAction,
   ReceiveUsersPermissionsAction,
 } from './types';
 
@@ -20,7 +22,14 @@ const usersPermissionsReducer: Reducer<UsersPermissions> = handleActions({
   },
 }, []);
 
+const groupsReducer: Reducer<UserGroups> = handleActions({
+  ['mvj/usersPermissions/RECEIVE_GROUPS']: (state: UserGroups, {payload: groups}: ReceiveUserGroupsAction) => {
+    return groups;
+  },
+}, []);
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
+  groups: groupsReducer,
   permissions: usersPermissionsReducer,
 });

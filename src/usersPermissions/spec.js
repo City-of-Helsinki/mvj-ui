@@ -2,6 +2,7 @@
 import {expect} from 'chai';
 import {
   fetchUsersPermissions,
+  receiveUserGroups,
   receiveUsersPermissions,
   notFound,
 } from './actions';
@@ -10,6 +11,7 @@ import usersPermissionsReducer from './reducer';
 import type {UsersPermissionsState} from './types';
 
 const defaultState: UsersPermissionsState = {
+  groups: [],
   isFetching: false,
   permissions: [],
 };
@@ -24,6 +26,15 @@ describe('Users permissions', () => {
     describe('usersPermissionsReducer', () => {
 
       // $FlowFixMe
+      it('should update user groups', () => {
+        const dummyUserGroups = ['UserGroup1'];
+
+        const newState = {...defaultState, groups: dummyUserGroups};
+
+        const state = usersPermissionsReducer({}, receiveUserGroups(dummyUserGroups));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update users permissions', () => {
         const dummyUsersPermissions = [
           {
