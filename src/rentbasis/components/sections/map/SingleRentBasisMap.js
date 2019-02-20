@@ -17,7 +17,6 @@ import {
   getFieldOptions,
   isFieldAllowedToRead,
   isMethodAllowed,
-  sortByLabelDesc,
 } from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} from '$util/map';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
@@ -78,7 +77,7 @@ class SingleRentBasisMap extends Component<Props, State> {
     if(props.rentBasisAttributes !== state.rentBasisAttributes) {
       newState.rentBasisAttributes = props.rentBasisAttributes;
       newState.financingOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.FINANCING);
-      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true, null, sortByLabelDesc);
+      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true);
       newState.managementOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT);
       newState.plotTypeOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE);
     }
