@@ -21,7 +21,7 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {Methods, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {
   FormNames,
@@ -34,19 +34,20 @@ import {
   formatDateRange,
   hasPermissions,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
   collapseState: boolean,
-  contactMethods: Methods,
+  contactMethods: MethodsType,
   contact: ?Object,
   contactType: 'billing' | 'contact',
   errors: ?Object,
@@ -181,7 +182,7 @@ const OtherTenantItemEdit = ({
                     </Authorization>
                   </Column>
                   <Column small={3} medium={4}>
-                    <Authorization allow={contactMethods.POST}>
+                    <Authorization allow={isMethodAllowed(contactMethods, Methods.POST)}>
                       <div className='contact-buttons-wrapper'>
                         <AddButtonThird
                           label='Luo asiakas'
@@ -224,7 +225,7 @@ const OtherTenantItemEdit = ({
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
           {!!contact &&
             <SubTitle>Asiakkaan tiedot
-              <Authorization allow={contactMethods.PATCH}>
+              <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
                 <EditButton
                   className='inline-button'
                   onClick={handleEditClick}

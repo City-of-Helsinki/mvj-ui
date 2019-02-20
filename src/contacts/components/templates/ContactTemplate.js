@@ -65,6 +65,14 @@ const ContactTemplate = ({attributes, contact}: Props) => {
         </Row>
         <Row>
           <Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CARE_OF)}>
+              <FormTextTitle>{ContactFieldTitles.CARE_OF}</FormTextTitle>
+              <FormText>{contact.care_of || '-'}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          <Column>
             <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS)}>
               <FormTextTitle>{ContactFieldTitles.ADDRESS}</FormTextTitle>
               <FormText>{contact.address || '-'}</FormText>
@@ -88,14 +96,6 @@ const ContactTemplate = ({attributes, contact}: Props) => {
             <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.COUNTRY)}>
               <FormTextTitle>{ContactFieldTitles.COUNTRY}</FormTextTitle>
               <FormText>{getLabelOfOption(countryOptions, contact.country) || '-'}</FormText>
-            </Authorization>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CARE_OF)}>
-              <FormTextTitle>{ContactFieldTitles.CARE_OF}</FormTextTitle>
-              <FormText>{contact.care_of || '-'}</FormText>
             </Authorization>
           </Column>
         </Row>

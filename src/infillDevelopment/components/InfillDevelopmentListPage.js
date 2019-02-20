@@ -22,7 +22,7 @@ import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {
   FormNames,
   InfillDevelopmentCompensationFieldPaths,
@@ -35,12 +35,13 @@ import {
   getSearchQuery,
   getUrlParams,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {InfillDevelopmentList} from '$src/infillDevelopment/types';
 
 const getInfillDevelopmentCount = (infillDevelopmentList: InfillDevelopmentList) => {
@@ -60,7 +61,7 @@ type Props = {
   fetchInfillDevelopments: Function,
   history: Object,
   infillDevelopmentAttributes: Attributes, // get via withCommonAttributes HOC
-  infillDevelopmentMethods: Methods, // get via withCommonAttributes HOC
+  infillDevelopmentMethods: MethodsType, // get via withCommonAttributes HOC
   infillDevelopmentList: InfillDevelopmentList,
   initialize: Function,
   isFetching: boolean,
@@ -86,7 +87,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   state = {
     activePage: 1,
     count: 0,
-    infillDevelopmentAttributes: {},
+    infillDevelopmentAttributes: null,
     infillDevelopments: [],
     infillDevelopmentList: {},
     isSearchInitialized: false,
@@ -287,13 +288,15 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!infillDevelopmentMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
+    if(!infillDevelopmentMethods) return null;
+
+    if(!isMethodAllowed(infillDevelopmentMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
 
     return (
       <PageContainer>
         <Row>
           <Column small={12} large={6}>
-            <Authorization allow={infillDevelopmentMethods.POST}>
+            <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
                 label='Luo täydennysrakentamiskorvaus'

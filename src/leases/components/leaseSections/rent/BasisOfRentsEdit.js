@@ -25,7 +25,6 @@ import {
   getFieldOptions,
   hasPermissions,
   isEmptyValue,
-  sortByLabelDesc,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -56,7 +55,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
     areaUnitOptions: [],
     indexOptions: [],
     intendedUseOptions: [],
-    leaseAttributes: {},
+    leaseAttributes: null,
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -67,7 +66,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
       newState.areaUnitOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT, true, (option) =>
         !isEmptyValue(option.display_name) ? option.display_name.replace('^2', '²') : option.display_name
       );
-      newState.indexOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX, true, null, sortByLabelDesc);
+      newState.indexOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX, true);
       newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE);
     }
 

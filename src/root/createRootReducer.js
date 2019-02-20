@@ -18,6 +18,7 @@ import contractFileReducer from '$src/contractFile/reducer';
 import copyAreasToContractReducer from '$src/copyAreasToContract/reducer';
 import createCollectionLetterReducer from '$src/createCollectionLetter/reducer';
 import districtsReducer from '../district/reducer';
+import indexReducer from '$src/index/reducer';
 import infillDevelopmentReducer from '$src/infillDevelopment/reducer';
 import infillDevelopmentAttachmentReducer from '$src/infillDevelopmentAttachment/reducer';
 import invoiceReducer from '$src/invoices/reducer';
@@ -56,6 +57,7 @@ export default (history: Object): Reducer<RootState> =>
     createCollectionLetter: createCollectionLetterReducer,
     district: districtsReducer,
     form: formReducer,
+    index: indexReducer,
     infillDevelopment: infillDevelopmentReducer,
     infillDevelopmentAttachment: infillDevelopmentAttachmentReducer,
     invoice: invoiceReducer,

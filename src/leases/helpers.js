@@ -35,9 +35,7 @@ import {getIsEditMode} from './selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
-import type {AreasFeature, AreasGeoJson} from '$src/leases/components/leaseSections/map/AreasLayer';
-import type {PlanUnitsFeature, PlanUnitsGeoJson} from '$src/leases/components/leaseSections/map/PlanUnitsLayer';
-import type {PlotsFeature, PlotsGeoJson} from '$src/leases/components/leaseSections/map/PlotsLayer';
+import type {LeafletFeature, LeafletGeoJson} from '$src/types';
 
 export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
@@ -794,7 +792,7 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
 };
 
 // Helper functions to get lease map content
-export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<AreasFeature>  => {
+export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<LeafletFeature>  => {
   return areas.map((area) => {
     return {
       type: 'Feature',
@@ -811,7 +809,7 @@ export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<AreasF
   });
 };
 
-export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
+export const getContentAreasGeoJson = (lease: Lease): LeafletGeoJson => {
   const areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
 
   const features = getContentLeaseAreasFeatures(areas);
@@ -822,7 +820,7 @@ export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
   };
 };
 
-export const getContentLeasePlotsFeatures = (plots: Array<Object>): PlotsFeature => {
+export const getContentLeasePlotsFeatures = (plots: Array<Object>): Array<LeafletFeature> => {
   return plots.map((plot) => {
     return {
       type: 'Feature',
@@ -841,7 +839,7 @@ export const getContentLeasePlotsFeatures = (plots: Array<Object>): PlotsFeature
   });
 };
 
-export const getContentPlotsGeoJson = (lease: Lease, inContract: boolean = false): PlotsGeoJson => {
+export const getContentPlotsGeoJson = (lease: Lease, inContract: boolean = false): LeafletGeoJson => {
   const plots = [];
   get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)
@@ -860,7 +858,7 @@ export const getContentPlotsGeoJson = (lease: Lease, inContract: boolean = false
   };
 };
 
-export const getContentPlanUnitFeatures = (planUnits: Array<Object>): PlanUnitsFeature => {
+export const getContentPlanUnitFeatures = (planUnits: Array<Object>): Array<LeafletFeature> => {
   return planUnits.map((planUnit) => {
     return {
       type: 'Feature',
@@ -885,7 +883,7 @@ export const getContentPlanUnitFeatures = (planUnits: Array<Object>): PlanUnitsF
   });
 };
 
-export const getContentPlanUnitsGeoJson = (lease: Lease, inContract: boolean = false): PlanUnitsGeoJson => {
+export const getContentPlanUnitsGeoJson = (lease: Lease, inContract: boolean = false): LeafletGeoJson => {
   const planUnits = [];
   get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)

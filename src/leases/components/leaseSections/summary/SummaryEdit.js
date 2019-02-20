@@ -19,7 +19,7 @@ import ListItems from '$components/content/ListItems';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {Methods, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
@@ -28,6 +28,7 @@ import {
   getFieldAttributes,
   getReferenceNumberLink,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getMethods as getInfillDevelopmentMethods} from '$src/infillDevelopment/selectors';
@@ -40,7 +41,7 @@ import {
 } from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
@@ -50,7 +51,7 @@ type Props = {
   currentLease: Lease,
   errors: ?Object,
   handleSubmit: Function,
-  infillDevelopmentMethods: Methods,
+  infillDevelopmentMethods: MethodsType,
   isSaveClicked: boolean,
   receiveCollapseStates: Function,
   receiveFormValidFlags: Function,
@@ -296,7 +297,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={infillDevelopmentMethods.GET}>
+                  <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
                     <FormTextTitle>{LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
                     {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
                       ? <FormText>-</FormText>

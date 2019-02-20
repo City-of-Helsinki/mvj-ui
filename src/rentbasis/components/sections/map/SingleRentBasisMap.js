@@ -10,19 +10,24 @@ import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
 import RentBasisLayer from './RentBasisLayer';
 import {mapColors} from '$src/constants';
+import {Methods} from '$src/enums';
 import {RentBasisFieldPaths} from '$src/rentbasis/enums';
 import {getContentRentBasisGeoJson} from '$src/rentbasis/helpers';
-import {getFieldOptions, isFieldAllowedToRead, sortByLabelDesc} from '$util/helpers';
+import {
+  getFieldOptions,
+  isFieldAllowedToRead,
+  isMethodAllowed,
+} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} from '$util/map';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getAttributes as getRentBasisAttributes, getRentBasis} from '$src/rentbasis/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, LeafletGeoJson, Methods as MethodsType} from '$src/types';
 import type {RentBasis} from '$src/rentbasis/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   rentBasis: RentBasis,
   rentBasisAttributes: Attributes,
@@ -32,7 +37,7 @@ type State = {
   bounds?: ?Object,
   center: ?Array<Object>,
   financingOptions: Array<Object>,
-  geoJSON: Object,
+  geoJSON: LeafletGeoJson,
   indexOptions: Array<Object>,
   managementOptions: Array<Object>,
   plotTypeOptions: Array<Object>,
@@ -54,7 +59,7 @@ class SingleRentBasisMap extends Component<Props, State> {
     overlayLayers: [],
     plotTypeOptions: [],
     rentBasis: {},
-    rentBasisAttributes: {},
+    rentBasisAttributes: null,
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -72,7 +77,7 @@ class SingleRentBasisMap extends Component<Props, State> {
     if(props.rentBasisAttributes !== state.rentBasisAttributes) {
       newState.rentBasisAttributes = props.rentBasisAttributes;
       newState.financingOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.FINANCING);
-      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true, null, sortByLabelDesc);
+      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true);
       newState.managementOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT);
       newState.plotTypeOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE);
     }
@@ -99,7 +104,7 @@ class SingleRentBasisMap extends Component<Props, State> {
         name: 'Vuokrausperusteet',
       });
     }
-    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer

@@ -17,27 +17,27 @@ import RightSubtitle from '$components/content/RightSubtitle';
 import InvoiceTableAndPanel from './InvoiceTableAndPanel';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
-import {PermissionMissingTexts, ViewModes} from '$src/enums';
+import {Methods, PermissionMissingTexts, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {LeaseInvoicingFieldPaths, LeaseInvoicingFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
+import {hasPermissions, isFieldAllowedToRead, isMethodAllowed} from '$util/helpers';
 import {getInvoiceToCredit} from '$src/invoices/selectors';
 import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
-  collectionCourtDecisionMethods: Methods, // Get via withLeasePageAttributes HOC
-  collectionLetterMethods: Methods, // Get via withLeasePageAttributes HOC
-  collectionNoteMethods: Methods, // Get via withLeasePageAttributes HOC
+  collectionCourtDecisionMethods: MethodsType, // Get via withLeasePageAttributes HOC
+  collectionLetterMethods: MethodsType, // Get via withLeasePageAttributes HOC
+  collectionNoteMethods: MethodsType, // Get via withLeasePageAttributes HOC
   currentLease: Lease,
-  invoiceMethods: Methods, // Get vie withLeasePageAttributes HOC
+  invoiceMethods: MethodsType, // Get vie withLeasePageAttributes HOC
   invoicesCollapseState: boolean,
   invoiceToCredit: ?string,
   isInvoicingEnabled: boolean,
@@ -117,7 +117,7 @@ class Invoices extends PureComponent<Props> {
       usersPermissions,
     } = this.props;
 
-    if(!invoiceMethods.GET) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+    if(!isMethodAllowed(invoiceMethods, Methods.GET)) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
 
     return (
       <AppConsumer>
@@ -197,16 +197,16 @@ class Invoices extends PureComponent<Props> {
                 </Collapse>
               </Authorization>
               <Authorization
-                allow={collectionLetterMethods.GET ||
-                  collectionCourtDecisionMethods.GET ||
-                  collectionNoteMethods.GET ||
+                allow={isMethodAllowed(collectionLetterMethods, Methods.GET) ||
+                  isMethodAllowed(collectionCourtDecisionMethods, Methods.GET) ||
+                  isMethodAllowed(collectionNoteMethods, Methods.GET) ||
                   hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)}
               >
                 <h2>Perintä</h2>
                 <Divider />
-                <Authorization allow={collectionLetterMethods.GET ||
-                  collectionCourtDecisionMethods.GET ||
-                  collectionNoteMethods.GET}>
+                <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.GET) ||
+                  isMethodAllowed(collectionCourtDecisionMethods, Methods.GET) ||
+                  isMethodAllowed(collectionNoteMethods, Methods.GET)}>
                   <DebtCollection />
                 </Authorization>
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)}>

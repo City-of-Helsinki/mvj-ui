@@ -15,11 +15,11 @@ import collectionCourtDecisionReducer from './reducer';
 import type {CollectionCourtDecisionState} from './types';
 
 const defaultState: CollectionCourtDecisionState = {
-  attributes: {},
+  attributes: null,
   byLease: {},
   isFetchingAttributes: false,
   isFetchingByLease: {},
-  methods: {},
+  methods: null,
 };
 
 // $FlowFixMe

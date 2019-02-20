@@ -23,7 +23,7 @@ import rentBasisReducer from './reducer';
 import type {RentBasisState} from './types';
 
 const defaultState: RentBasisState = {
-  attributes: {},
+  attributes: null,
   initialValues: {
     decisions: [{}],
     property_identifiers: [{}],
@@ -36,20 +36,16 @@ const defaultState: RentBasisState = {
   isSaveClicked: false,
   isSaving: false,
   list: {},
-  methods: {},
+  methods: null,
   rentbasis: {},
 };
 
-// $FlowFixMe
 describe('Rent basis', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('rentBasisReducer', () => {
 
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'foo',

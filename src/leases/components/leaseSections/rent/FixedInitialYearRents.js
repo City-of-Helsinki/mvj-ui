@@ -38,7 +38,7 @@ type State = {
 class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
   state = {
     intendedUseOptions: [],
-    leaseAttributes: {},
+    leaseAttributes: null,
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {

@@ -17,6 +17,7 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
+import {Methods} from '$src/enums';
 import {
   getContentAreasGeoJson,
   getContentPlanUnitsGeoJson,
@@ -27,20 +28,18 @@ import {
   getFieldOptions,
   getUrlParams,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, LeafletGeoJson, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
-import type {AreasGeoJson} from './AreasLayer';
-import type {PlanUnitsGeoJson} from './PlanUnitsLayer';
-import type {PlotsGeoJson} from './PlotsLayer';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   currentLease: Lease,
   leaseAttributes: Attributes,
@@ -48,20 +47,20 @@ type Props = {
 }
 
 type State = {
-  areasGeoJson: AreasGeoJson,
+  areasGeoJson: LeafletGeoJson,
   areaLocationOptions: Array<Object>,
   areaTypeOptions: Array<Object>,
   bounds: ?Object,
   center: ?Array<Object>,
   currentLease: Lease,
   leaseAttributes: Attributes,
-  planUnitsGeoJson: PlanUnitsGeoJson,
-  planUnitsContractGeoJson: PlanUnitsGeoJson,
+  planUnitsGeoJson: LeafletGeoJson,
+  planUnitsContractGeoJson: LeafletGeoJson,
   planUnitIntendedUseOptions: Array<Object>,
   planUnitStateOptions: Array<Object>,
   planUnitTypeOptions: Array<Object>,
-  plotsGeoJson: PlotsGeoJson,
-  plotsContractGeoJson: PlotsGeoJson,
+  plotsGeoJson: LeafletGeoJson,
+  plotsContractGeoJson: LeafletGeoJson,
   plotDivisionStateOptions: Array<Object>,
   plotTypeOptions: Array<Object>,
 }
@@ -77,7 +76,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
     bounds: null,
     center: null,
     currentLease: {},
-    leaseAttributes: {},
+    leaseAttributes: null,
     planUnitsGeoJson: {
       features: [],
       type: 'FeatureCollection',
@@ -224,7 +223,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         name: 'Vuokrakohteet',
       });
     }
-    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer

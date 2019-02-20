@@ -13,6 +13,7 @@ import contractFileSaga from '$src/contractFile/saga';
 import copyAreasToContractSaga from '$src/copyAreasToContract/saga';
 import createCollectionLetterSaga from '$src/createCollectionLetter/saga';
 import districtSaga from '../district/saga';
+import indexSaga from '$src/index/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
 import infillDevelopmentAttachmentSaga from '../infillDevelopmentAttachment/saga';
 import invoiceSaga from '../invoices/saga';
@@ -48,6 +49,7 @@ export default () =>
       fork(copyAreasToContractSaga),
       fork(createCollectionLetterSaga),
       fork(districtSaga),
+      fork(indexSaga),
       fork(infillDevelopmentSaga),
       fork(infillDevelopmentAttachmentSaga),
       fork(invoiceSaga),

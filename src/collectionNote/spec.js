@@ -15,11 +15,11 @@ import collectionNoteReducer from './reducer';
 import type {CollectionNoteState} from './types';
 
 const defaultState: CollectionNoteState = {
-  attributes: {},
+  attributes: null,
   byLease: {},
   isFetchingAttributes: false,
   isFetchingByLease: {},
-  methods: {},
+  methods: null,
 };
 
 // $FlowFixMe

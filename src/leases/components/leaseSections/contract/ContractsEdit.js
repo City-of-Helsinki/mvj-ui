@@ -20,14 +20,15 @@ import {
   FormNames,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {Methods} from '$src/enums';
 import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts, getDecisionOptions} from '$src/leases/helpers';
-import {hasPermissions} from '$util/helpers';
+import {hasPermissions, isMethodAllowed} from '$util/helpers';
 import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -104,7 +105,7 @@ const renderContracts = ({
 
 type Props = {
   attributes: Attributes,
-  contractFileMethods: Methods,
+  contractFileMethods: MethodsType,
   currentLease: Lease,
   receiveFormValidFlags: Function,
   usersPermissions: UsersPermissionsType,
@@ -170,7 +171,7 @@ class ContractsEdit extends PureComponent<Props, State> {
 
     return (
       <form>
-        <Authorization allow={contractFileMethods.GET}>
+        <Authorization allow={isMethodAllowed(contractFileMethods, Methods.GET)}>
           <ContractFileModal
             contractId={contractId}
             onClose={this.handleCloseContractFileModal}

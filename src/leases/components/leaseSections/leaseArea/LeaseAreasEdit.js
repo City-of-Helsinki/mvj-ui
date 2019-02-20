@@ -23,12 +23,14 @@ import {
   LeaseAreasFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {Methods} from '$src/enums';
 import {getAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById} from '$src/leases/helpers';
 import {
   formatNumber,
   hasPermissions,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getMethods as getCopyAreasToContractMethods} from '$src/copyAreasToContract/selectors';
 import {
@@ -38,7 +40,7 @@ import {
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {store} from '$src/root/startApp';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -130,7 +132,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
 type Props = {
   change: Function,
   copyAreasToContract: Function,
-  copyAreasToContractMethods: Methods,
+  copyAreasToContractMethods: MethodsType,
   currentLease: Lease,
   editedActiveAreas: Array<Object>,
   editedArchivedAreas: Array<Object>,
@@ -330,7 +332,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               <h2>Vuokra-alue</h2>
               <RightSubtitle
                 buttonComponent={
-                  <Authorization allow={copyAreasToContractMethods.POST}>
+                  <Authorization allow={isMethodAllowed(copyAreasToContractMethods, Methods.POST)}>
                     <Button
                       className={ButtonColors.NEUTRAL}
                       onClick={handleCopyAreasToContract}

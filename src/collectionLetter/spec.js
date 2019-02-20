@@ -14,11 +14,11 @@ import collectionLetterReducer from './reducer';
 
 import type {CollectionLetterState} from './types';
 const defaultState: CollectionLetterState = {
-  attributes: {},
+  attributes: null,
   byLease: {},
   isFetchingAttributes: false,
   isFetchingByLease: {},
-  methods: {},
+  methods: null,
 };
 
 // $FlowFixMe

@@ -7,17 +7,18 @@ import ContractFileModal from './ContractFileModal';
 import ContractItem from './ContractItem';
 import FormText from '$components/form/FormText';
 import {LeaseContractsFieldPaths} from '$src/leases/enums';
+import {Methods} from '$src/enums';
 import {getContentContracts} from '$src/leases/helpers';
-import {getFieldOptions} from '$util/helpers';
+import {getFieldOptions, isMethodAllowed} from '$util/helpers';
 import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
-  contractFileMethods: Methods,
+  contractFileMethods: MethodsType,
   currentLease: Lease,
 }
 
@@ -32,7 +33,7 @@ type State = {
 
 class Contracts extends PureComponent<Props, State> {
   state = {
-    attributes: {},
+    attributes: null,
     contractId: -1,
     contracts: [],
     currentLease: {},
@@ -76,7 +77,7 @@ class Contracts extends PureComponent<Props, State> {
 
     return (
       <Fragment>
-        <Authorization allow={contractFileMethods.GET}>
+        <Authorization allow={isMethodAllowed(contractFileMethods, Methods.GET)}>
           <ContractFileModal
             contractId={contractId}
             onClose={this.handleCloseContractFileModal}
@@ -99,7 +100,6 @@ class Contracts extends PureComponent<Props, State> {
 
 export default connect(
   (state) => {
-
     return {
       attributes: getAttributes(state),
       contractFileMethods: getContractFileMethods(state),

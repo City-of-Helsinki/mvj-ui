@@ -22,13 +22,13 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/collectionCourtDecision/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/collectionCourtDecision/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 const isFetchingByLeaseReducer: Reducer<Object> = handleActions({
   ['mvj/collectionCourtDecision/FETCH_BY_LEASE']: (state: Object, {payload: lease}: FetchCollectionCourtDecisionsByLeaseAction) => {

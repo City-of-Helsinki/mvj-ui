@@ -47,7 +47,7 @@ class ContractRents extends PureComponent<Props, State> {
     amountPeriodOptions: [],
     baseAmountPeriodOptions: [],
     intendedUseOptions: [],
-    leaseAttributes: {},
+    leaseAttributes: null,
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {

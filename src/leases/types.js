@@ -1,5 +1,4 @@
 // @flow
-
 import type {Action, Attributes, Methods} from '../types';
 
 export type LeaseState = {

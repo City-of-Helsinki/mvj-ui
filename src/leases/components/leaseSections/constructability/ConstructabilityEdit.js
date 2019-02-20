@@ -83,7 +83,7 @@ type State = {
 
 class ConstructabilityEdit extends PureComponent<Props, State> {
   state = {
-    attributes: {},
+    attributes: null,
     constructabilityStateOptions: [],
     currentLease: {},
     locationOptions: [],

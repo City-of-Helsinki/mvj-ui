@@ -27,6 +27,18 @@ export const KeyCodes = {
 };
 
 /**
+ * Methods enumerable.
+ *
+ * @type {{DELETE: string, GET: string, PATCH: string, POST: string,}}
+ */
+export const Methods = {
+  DELETE: 'DELETE',
+  GET: 'GET',
+  PATCH: 'PATCH',
+  POST: 'POST',
+};
+
+/**
  * Key code enumerable.
  *
  * @type {{BUTTON: string, LABEL: string, TITLE: string}}
@@ -46,6 +58,7 @@ export const PermissionMissingTexts = {
   AREA_NOTE: 'Ei oikeuksia muistettaviin ehtoihiin',
   CONTACT: 'Ei oikeuksia asiakkaisiin',
   GENERAL: 'Ei oikeuksia sisältöön.',
+  INDEX: 'Ei oikeksia elinkustannusindekseihin',
   INFILL_DEVELOPMENT: 'Ei oikeksia täydennysrakennuskorvauksiin',
   LEASE: 'Ei oikeuksia vuokrauksiin.',
   LEASE_TENANTS_EDIT: 'Ei oikeuksia muokata vuokralaisia',

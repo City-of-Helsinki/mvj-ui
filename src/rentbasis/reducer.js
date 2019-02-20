@@ -37,7 +37,6 @@ const isSavingReducer: Reducer<boolean> = handleActions({
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/rentbasis/FETCH_ATTRIBUTES': () => true,
-  'mvj/rentbasis/RECEIVE_ATTRIBUTES': () => false,
   'mvj/rentbasis/RECEIVE_METHODS': () => false,
   'mvj/rentbasis/ATTRIBUTES_NOT_FOUND': () => false,
 }, false);
@@ -46,13 +45,13 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/rentbasis/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/rentbasis/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 const rentBasisListReducer: Reducer<RentBasisList> = handleActions({
   ['mvj/rentbasis/RECEIVE_ALL']: (state: RentBasisList, {payload: rentbasis}: ReceiveRentBasisListAction) => {

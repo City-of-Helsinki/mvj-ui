@@ -15,6 +15,6 @@ const attributeTypesReducer: Reducer<AttributesState> = handleActions({
   ['mvj/attribute/RECEIVE']: (state: AttributesState, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 export default attributeTypesReducer;

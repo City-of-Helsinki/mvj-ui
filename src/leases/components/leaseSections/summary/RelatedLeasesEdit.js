@@ -46,7 +46,7 @@ type State = {
 class RelatedLeasesEdit extends Component<Props, State> {
   state = {
     currentLease: {},
-    leaseAttributes: {},
+    leaseAttributes: null,
     newLease: null,
     relatedLeasesAll: [],
     relatedLeasesFrom: [],

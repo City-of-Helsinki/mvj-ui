@@ -33,7 +33,7 @@ type State = {
 class Constructability extends PureComponent<Props, State> {
   state = {
     areas: [],
-    attributes: {},
+    attributes: null,
     constructabilityReportInvestigationStateOptions: [],
     constructabilityStateOptions: [],
     currentLease: {},

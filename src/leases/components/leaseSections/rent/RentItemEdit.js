@@ -107,7 +107,7 @@ class RentItemEdit extends PureComponent<Props, State> {
     errors: null,
     fixedInitialYearRentErrors: null,
     indexAdjustedRents: [],
-    leaseAttributes: {},
+    leaseAttributes: null,
     payableRents: [],
     rentAdjustmentsErrors: null,
     rentErrors: null,

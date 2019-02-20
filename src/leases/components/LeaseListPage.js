@@ -33,7 +33,7 @@ import {createLease, fetchLeases} from '$src/leases/actions';
 import {fetchLessors} from '$src/lessor/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {leaseStateFilterOptions} from '$src/leases/constants';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {
   FormNames,
   LeaseAreasFieldPaths,
@@ -50,14 +50,15 @@ import {
   getSearchQuery,
   getUrlParams,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getIsFetching, getLeasesList} from '$src/leases/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Attributes, Methods} from '$src/types';
-import type {LeaseList} from '../types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {LeaseList} from '$src/leases/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 const visualizationTypeOptions = [
@@ -66,7 +67,7 @@ const visualizationTypeOptions = [
 ];
 
 type Props = {
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   createLease: Function,
   fetchAreaNoteList: Function,
@@ -77,7 +78,7 @@ type Props = {
   isFetching: boolean,
   isFetchingCommonAttributes: boolean,
   leaseAttributes: Attributes,
-  leaseMethods: Methods,
+  leaseMethods: MethodsType,
   leases: LeaseList,
   lessors: Array<Object>,
   location: Object,
@@ -334,7 +335,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       areaNotes,
     } = this.props;
 
-    {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer
@@ -374,11 +375,13 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!leaseMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
+    if(!leaseMethods) return null;
+
+    if(!isMethodAllowed(leaseMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
 
     return (
       <PageContainer>
-        <Authorization allow={leaseMethods.POST}>
+        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
           <CreateLeaseModal
             isOpen={isModalOpen}
             onClose={this.hideCreateLeaseModal}
@@ -387,7 +390,7 @@ class LeaseListPage extends PureComponent<Props, State> {
         </Authorization>
         <Row>
           <Column small={12} large={6}>
-            <Authorization allow={leaseMethods.POST}>
+            <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
                 label='Luo vuokratunnus'
@@ -431,7 +434,8 @@ class LeaseListPage extends PureComponent<Props, State> {
           {isFetching &&
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
           }
-          {visualizationType === 'table' && (
+
+          {visualizationType === 'table' &&
             <Fragment>
               <SortableTable
                 columns={columns}
@@ -446,13 +450,13 @@ class LeaseListPage extends PureComponent<Props, State> {
                 onPageClick={(page) => this.handlePageClick(page)}
               />
             </Fragment>
-          )}
-          {visualizationType === 'map' && (
+          }
+          {visualizationType === 'map' &&
             <AreaNotesEditMap
               allowToEdit={false}
               overlayLayers={overlayLayers}
             />
-          )}
+          }
         </TableWrapper>
       </PageContainer>
     );

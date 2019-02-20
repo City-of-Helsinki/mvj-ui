@@ -38,7 +38,6 @@ import {
   isEmptyValue,
   isFieldAllowedToRead,
   isFieldRequired,
-  sortByLabelDesc,
 } from '$util/helpers';
 import {validateRentBasisForm} from '$src/rentbasis/formValidators';
 import {
@@ -456,7 +455,7 @@ class RentBasisForm extends PureComponent<Props, State> {
   state = {
     areaUnitOptions: [],
     indexOptions: [],
-    rentBasisAttributes: {},
+    rentBasisAttributes: null,
   }
 
   componentDidMount() {
@@ -475,7 +474,7 @@ class RentBasisForm extends PureComponent<Props, State> {
       newState.areaUnitOptions = getFieldOptions(props.rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT, true, (option) =>
         !isEmptyValue(option.display_name) ? option.display_name.replace(/\^2/g, '²') : option.display_name
       );
-      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true, null, sortByLabelDesc);
+      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true);
     }
 
     return newState;

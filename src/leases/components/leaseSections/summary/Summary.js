@@ -17,7 +17,7 @@ import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {Methods, ViewModes} from '$src/enums';
 import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
@@ -29,13 +29,14 @@ import {
   getReferenceNumberLink,
   isEmptyValue,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getMethods as getInfillDevelopmentMethods} from '$src/infillDevelopment/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
@@ -43,7 +44,7 @@ type Props = {
   collapseStateBasic: boolean,
   collapseStateStatistical: boolean,
   currentLease: Lease,
-  infillDevelopmentMethods: Methods,
+  infillDevelopmentMethods: MethodsType,
   receiveCollapseStates: Function,
 }
 
@@ -66,7 +67,7 @@ type State = {
 
 class Summary extends PureComponent<Props, State> {
   state = {
-    attributes: {},
+    attributes: null,
     classificationOptions: [],
     currentLease: {},
     financingOptions: [],
@@ -258,7 +259,7 @@ class Summary extends PureComponent<Props, State> {
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={infillDevelopmentMethods.GET}>
+                  <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
                     <FormTextTitle>{LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
                     {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
                       ? <FormText>-</FormText>

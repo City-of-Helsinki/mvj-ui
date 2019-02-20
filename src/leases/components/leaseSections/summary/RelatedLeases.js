@@ -30,7 +30,7 @@ type State = {
 class RelatedLeases extends PureComponent<Props, State> {
   state = {
     currentLease: {},
-    leaseAttributes: {},
+    leaseAttributes: null,
     relatedLeasesFrom: [],
     relatedLeasesTo: [],
     stateOptions: [],

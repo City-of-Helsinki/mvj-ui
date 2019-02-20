@@ -103,7 +103,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     columns: [],
     formatedInvoices: [],
     invoices: null,
-    invoiceAttributes: {},
+    invoiceAttributes: null,
     invoiceSets: [],
     invoiceSetOptions: [],
     openedInvoice: null,

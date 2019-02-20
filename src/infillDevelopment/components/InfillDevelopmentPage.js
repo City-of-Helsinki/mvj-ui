@@ -34,7 +34,7 @@ import {
   showEditMode,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {FormNames, InfillDevelopmentCompensationLeasesFieldPaths} from '$src/infillDevelopment/enums';
 import {
   clearUnsavedChanges,
@@ -42,7 +42,7 @@ import {
   getContentInfillDevelopmentCopy,
   getContentInfillDevelopmentForDb,
 } from '$src/infillDevelopment/helpers';
-import {getSearchQuery, getUrlParams, isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
+import {getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, scrollToTopPage} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
@@ -61,7 +61,7 @@ import {
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import {withInfillDevelopmentPageAttributes} from '$components/attributes/InfillDevelopmentPageAttributes';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
 
@@ -78,7 +78,7 @@ type Props = {
   history: Object,
   infillDevelopmentAttributes: Attributes, // get via withCommonAttributes HOC
   infillDevelopmentFormValues: Object,
-  infillDevelopmentMethods: Methods, // get via withCommonAttributes HOC
+  infillDevelopmentMethods: MethodsType, // get via withCommonAttributes HOC
   isEditMode: boolean,
   isFetching: boolean,
   isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
@@ -402,15 +402,17 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
     if(isFetching || isFetchingCommonAttributes || isFetchingInfillDevelopmentPageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!infillDevelopmentMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
+    if(!infillDevelopmentMethods) return null;
+
+    if(!isMethodAllowed(infillDevelopmentMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
 
     return (
       <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              allowCopy={infillDevelopmentMethods.POST}
-              allowEdit={infillDevelopmentMethods.PATCH}
+              allowCopy={isMethodAllowed(infillDevelopmentMethods, Methods.POST)}
+              allowEdit={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}
               isCancelDisabled={false}
               isCopyDisabled={false}
               isEditDisabled={false}
@@ -435,7 +437,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
             </LoaderWrapper>
           }
 
-          <Authorization allow={infillDevelopmentMethods.PATCH}>
+          <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}>
             <ConfirmationModal
               confirmButtonLabel='Palauta muutokset'
               isOpen={isRestoreModalOpen}
@@ -469,7 +471,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
               <ContentContainer>
                 {isEditMode
                   ? <Authorization
-                    allow={infillDevelopmentMethods.PATCH}
+                    allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}
                     errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL}/>}
                   >
                     <InfillDevelopmentForm infillDevelopment={formatedInfillDevelopment}/>

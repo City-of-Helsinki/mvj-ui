@@ -67,13 +67,13 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/invoices/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/invoices/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 const byLeaseReducer: Reducer<InvoiceListMap> = handleActions({
   ['mvj/invoices/RECEIVE_BY_LEASE']: (state: InvoiceListMap, {payload}: ReceiveInvoicesByLeaseAction) => {

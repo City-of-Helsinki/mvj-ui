@@ -22,7 +22,7 @@ import landUseContractReducer from './reducer';
 import type {LandUseContractState} from './types';
 
 const baseState: LandUseContractState = {
-  attributes: {},
+  attributes: null,
   collapseStates: {},
   current: {},
   isEditMode: false,
@@ -39,16 +39,12 @@ const baseState: LandUseContractState = {
   list: {},
 };
 
-// $FlowFixMe
 describe('Land use contract', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('landUseContractReducer', () => {
 
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           id: 1,

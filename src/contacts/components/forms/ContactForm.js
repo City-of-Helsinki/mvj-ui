@@ -145,6 +145,18 @@ class ContactForm extends Component<Props> {
             </Row>
             <Row>
               <Column>
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CARE_OF)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CARE_OF)}
+                    name='care_of'
+                    overrideValues={{label: ContactFieldTitles.CARE_OF}}
+                  />
+                </Authorization>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
                 <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS)}>
                   <FormField
                     disableTouched={isSaveClicked}
@@ -187,18 +199,6 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.COUNTRY)}
                     name='country'
                     overrideValues={{label: ContactFieldTitles.COUNTRY}}
-                  />
-                </Authorization>
-              </Column>
-            </Row>
-            <Row>
-              <Column>
-                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CARE_OF)}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CARE_OF)}
-                    name='care_of'
-                    overrideValues={{label: ContactFieldTitles.CARE_OF}}
                   />
                 </Authorization>
               </Column>
@@ -336,7 +336,10 @@ class ContactForm extends Component<Props> {
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.NOTE)}
                     name='note'
-                    overrideValues={{label: ContactFieldTitles.NOTE}}
+                    overrideValues={{
+                      fieldType: FieldTypes.TEXTAREA,
+                      label: ContactFieldTitles.NOTE,
+                    }}
                   />
                 </Authorization>
               </Column>

@@ -251,6 +251,7 @@
     font-size: $font-small;
     box-shadow: none;
     margin-bottom: 0;
+    min-height: rem-calc(65px);
 
     @include focusInput();
 

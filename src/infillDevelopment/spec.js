@@ -26,7 +26,7 @@ import infillDevelopmentReducer from './reducer';
 import type {InfillDevelopmentState} from './types';
 
 const defaultState: InfillDevelopmentState = {
-  attributes: {},
+  attributes: null,
   collapseStates: {},
   current: {},
   initialValues: {},
@@ -39,7 +39,7 @@ const defaultState: InfillDevelopmentState = {
   isSaveClicked: false,
   isSaving: false,
   list: {},
-  methods: {},
+  methods: null,
 };
 
 describe('Infill development', () => {

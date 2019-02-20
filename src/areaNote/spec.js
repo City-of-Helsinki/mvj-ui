@@ -23,7 +23,7 @@ import areaNotesReducer from './reducer';
 import type {AreaNoteState} from './types';
 
 const defaultState: AreaNoteState = {
-  attributes: {},
+  attributes: null,
   initialValues: {
     id: -1,
     geoJSON: {},
@@ -34,7 +34,7 @@ const defaultState: AreaNoteState = {
   isFetching: false,
   isFetchingAttributes: false,
   list: [],
-  methods: {},
+  methods: null,
 };
 
 describe('AreaNoteList', () => {

@@ -12,9 +12,9 @@ import copyAreasToContractReducer from './reducer';
 import type {CopyAreasToContractState} from './types';
 
 const defaultState: CopyAreasToContractState = {
-  attributes: {},
+  attributes: null,
   isFetchingAttributes: false,
-  methods: {},
+  methods: null,
 };
 
 describe('Copy areas to contract', () => {

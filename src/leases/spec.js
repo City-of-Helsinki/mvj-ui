@@ -33,7 +33,7 @@ import leasesReducer from './reducer';
 import type {LeaseState} from './types';
 
 const defaultState: LeaseState = {
-  attributes: {},
+  attributes: null,
   byId: {},
   collapseStates: {},
   current: {},
@@ -54,19 +54,15 @@ const defaultState: LeaseState = {
   isSaveClicked: false,
   isSaving: false,
   list: {},
-  methods: {},
+  methods: null,
 };
 
-// $FlowFixMe
 describe('Leases', () => {
 
-  // $FlowFixMe
   describe('Reducer', () => {
 
-    // $FlowFixMe
     describe('leasesReducer', () => {
 
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           foo: 'bar',

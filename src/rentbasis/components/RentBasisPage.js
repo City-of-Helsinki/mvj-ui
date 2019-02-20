@@ -33,11 +33,12 @@ import {
   showEditMode,
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {
   getSearchQuery,
   getUrlParams,
   isFieldAllowedToRead,
+  isMethodAllowed,
   scrollToTopPage,
 } from '$util/helpers';
 import {FormNames, RentBasisFieldPaths} from '$src/rentbasis/enums';
@@ -60,7 +61,7 @@ import {
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {RentBasis} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
@@ -89,7 +90,7 @@ type Props = {
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   rentBasisAttributes: Attributes, // Get via withCommonAttributes HOC
-  rentBasisMethods: Methods, // Get via withCommonAttributes HOC
+  rentBasisMethods: MethodsType, // Get via withCommonAttributes HOC
   rentBasisData: RentBasis,
   router: Object,
   showEditMode: Function,
@@ -179,7 +180,7 @@ class RentBasisPage extends Component<Props, State> {
     }
 
     // Fetch rent basis when getting new comment methods and user is authorisized to read content
-    if(prevProps.rentBasisMethods !== this.props.rentBasisMethods && this.props.rentBasisMethods.GET) {
+    if(prevProps.rentBasisMethods !== this.props.rentBasisMethods && isMethodAllowed(this.props.rentBasisMethods, Methods.GET)) {
       fetchSingleRentBasis(rentBasisId);
     }
   }
@@ -353,15 +354,17 @@ class RentBasisPage extends Component<Props, State> {
 
     if(isFetching || isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!rentBasisMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
+    if(!rentBasisMethods) return null;
+
+    if(!isMethodAllowed(rentBasisMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
 
     return (
       <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              allowCopy={rentBasisMethods.POST}
-              allowEdit={rentBasisMethods.PATCH}
+              allowCopy={isMethodAllowed(rentBasisMethods, Methods.POST)}
+              allowEdit={isMethodAllowed(rentBasisMethods, Methods.PATCH)}
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && !isFormValid}
@@ -384,7 +387,7 @@ class RentBasisPage extends Component<Props, State> {
             </LoaderWrapper>
           }
 
-          <Authorization allow={rentBasisMethods.PATCH}>
+          <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.PATCH)}>
             <ConfirmationModal
               confirmButtonLabel='Palauta muutokset'
               isOpen={isRestoreModalOpen}

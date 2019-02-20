@@ -29,7 +29,7 @@ type State = {
 
 class Decisions extends PureComponent<Props, State> {
   state = {
-    attributes: {},
+    attributes: null,
     conditionTypeOptions: [],
     currentLease: {},
     decisionMakerOptions: [],

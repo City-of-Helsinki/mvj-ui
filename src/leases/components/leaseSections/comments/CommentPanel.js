@@ -22,11 +22,13 @@ import {
 } from '$src/comments/actions';
 import {ButtonColors, CloseCommentPanelTexts, FormNames} from '$components/enums';
 import {CommentFieldPaths} from '$src/comments/enums';
+import {Methods} from '$src/enums';
 import {
   getFieldOptions,
   isFieldAllowedToEdit,
+  isMethodAllowed,
   sortStringByKeyDesc,
-} from '$src/util/helpers';
+} from '$util/helpers';
 import {getContentComments} from '$src/leases/helpers';
 import {
   getAttributes as getCommentAttributes,
@@ -36,7 +38,7 @@ import {
 } from '$src/comments/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {CommentList} from '$src/comments/types';
 import type {Lease} from '$src/leases/types';
 
@@ -44,7 +46,7 @@ type Props = {
   clearEditFlags: Function,
   commentAttributes: Attributes,
   commentList: CommentList,
-  commentMethods: Methods,
+  commentMethods: MethodsType,
   createComment: Function,
   currentLease: Lease,
   editModeFlags: Object,
@@ -62,7 +64,7 @@ type Props = {
 type State = {
   allowEdit: boolean,
   commentAttributes: Attributes,
-  commentMethods: Methods,
+  commentMethods: MethodsType,
   comments: Array<Object>,
   commentList: CommentList,
   isClosing: boolean,
@@ -82,8 +84,8 @@ class CommentPanel extends PureComponent<Props, State> {
 
   state = {
     allowEdit: false,
-    commentAttributes: {},
-    commentMethods: {},
+    commentAttributes: null,
+    commentMethods: null,
     comments: [],
     commentList: [],
     isClosing: false,
@@ -108,7 +110,7 @@ class CommentPanel extends PureComponent<Props, State> {
     if(props.commentMethods !== state.commentMethods || props.commentAttributes !== state.commentAttributes) {
       newState.commentAttributes = props.commentAttributes;
       newState.commentMethods = props.commentMethods;
-      newState.allowEdit = isFieldAllowedToEdit(props.commentAttributes, CommentFieldPaths.TOPIC) && props.commentMethods.PATCH;
+      newState.allowEdit = isFieldAllowedToEdit(props.commentAttributes, CommentFieldPaths.TOPIC) && isMethodAllowed(props.commentMethods, Methods.PATCH);
     }
 
     return newState;
@@ -123,7 +125,7 @@ class CommentPanel extends PureComponent<Props, State> {
       receiveIsSaveClicked,
     } = this.props;
 
-    if(isEmpty(commentList) && commentMethods.GET) {
+    if(isEmpty(commentList) && isMethodAllowed(commentMethods, Methods.GET)) {
       fetchCommentsByLease(leaseId);
     }
 
@@ -270,7 +272,7 @@ class CommentPanel extends PureComponent<Props, State> {
               </AppConsumer>
             </div>
 
-            <Authorization allow={commentMethods.POST}>
+            <Authorization allow={isMethodAllowed(commentMethods, Methods.POST)}>
               <NewCommentForm onAddComment={this.createComment} />
             </Authorization>
 

@@ -19,20 +19,20 @@ import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import {fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/areaNote/enums';
 import {getAreaNoteById, getAreaNoteCoordinates} from '$src/areaNote/helpers';
-import {getSearchQuery, getUrlParams} from '$util/helpers';
+import {getSearchQuery, getUrlParams, isMethodAllowed} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Methods} from '$src/types';
+import type {Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   fetchAreaNoteList: Function,
   hideEditMode: Function,
@@ -49,7 +49,7 @@ type Props = {
 }
 
 type State = {
-  areaNoteMethods: Methods,
+  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   bounds: ?Object,
   center: ?Array<Object>,
@@ -57,10 +57,10 @@ type State = {
   overlayLayers: Array<Object>,
 }
 
-const getOverlayLayers = (areaNoteMethods: Methods, areaNotes: AreaNoteList, areaNoteId: ?number) => {
+const getOverlayLayers = (areaNoteMethods: MethodsType, areaNotes: AreaNoteList, areaNoteId: ?number) => {
   const layers = [];
 
-  {areaNoteMethods.GET && !isEmpty(areaNotes) &&
+  {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
     layers.push({
       checked: true,
       component: <AreaNotesLayer
@@ -78,7 +78,7 @@ const getOverlayLayers = (areaNoteMethods: Methods, areaNotes: AreaNoteList, are
 
 class AreaNoteListPage extends PureComponent<Props, State> {
   state = {
-    areaNoteMethods: {},
+    areaNoteMethods: null,
     areaNotes: [],
     bounds: null,
     center: null,
@@ -198,13 +198,15 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!areaNoteMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.AREA_NOTE} /></PageContainer>;
+    if(!areaNoteMethods) return null;
+
+    if(!isMethodAllowed(areaNoteMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.AREA_NOTE} /></PageContainer>;
 
     return (
       <PageContainer>
         <Row>
           <Column small={12} large={6}>
-            <Authorization allow={areaNoteMethods.POST}>
+            <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
                 disabled={isEditMode}

@@ -36,7 +36,6 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/contacts/FETCH_ATTRIBUTES': () => true,
-  'mvj/contacts/RECEIVE_ATTRIBUTES': () => false,
   'mvj/contacts/RECEIVE_METHODS': () => false,
   'mvj/contacts/ATTRIBUTES_NOT_FOUND': () => false,
 }, false);
@@ -45,13 +44,13 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/contacts/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
   },
-}, {});
+}, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   ['mvj/contacts/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
     return methods;
   },
-}, {});
+}, null);
 
 const contactsListReducer: Reducer<ContactList> = handleActions({
   ['mvj/contacts/RECEIVE_ALL']: (state: ContactList, {payload: contacts}: ReceiveContactsAction) => {
