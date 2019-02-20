@@ -32,7 +32,7 @@ const CheckboxButtons = ({
           onChange(newValue);
         };
 
-        const isChecked = value ? value.toString().indexOf(option.value.toString()) !== -1 : false;
+        const isChecked = value ? value.indexOf(option.value) !== -1 : false;
 
         return (
           <label

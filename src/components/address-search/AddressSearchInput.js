@@ -405,7 +405,7 @@ class AddressSearchInput extends Component<Props, State> {
   handleOnChange = (e: any) => {
     const {onChange} = this.props;
     const {selectedStreet} = this.state;
-    const newValue = e.target.value.toString();
+    const newValue = e.target.value;
 
     if(!selectedStreet && hasNumber(newValue)) {
       this.searchByKeyword(newValue);

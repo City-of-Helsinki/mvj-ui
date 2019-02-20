@@ -48,7 +48,7 @@ export const getContentContact = (contact: Object) => {
 */
 export const getContactOptions = (contacts: Array<Object>): Array<Object> =>
   contacts && contacts.length
-    ? contacts.map((contact) => ({value: contact.id.toString(), label: getContactFullName(contact)}))
+    ? contacts.map((contact) => ({value: contact.id, label: getContactFullName(contact)}))
     : [];
 
 export const isContactFormDirty = (state: any) => {

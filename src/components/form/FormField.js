@@ -142,7 +142,7 @@ const FormFieldInput = ({
       case FieldTypeOptions.ADDRESS:
       case FieldTypeOptions.INTEGER:
       case FieldTypeOptions.STRING:
-        return isEmptyValue(value) ? value.toString() : value;
+        return value;
       case FieldTypeOptions.REFERENCE_NUMBER:
         return value
           ? <ExternalLink
