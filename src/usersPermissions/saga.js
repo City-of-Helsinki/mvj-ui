@@ -18,7 +18,7 @@ function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
     let {response: {status: statusCode}, bodyAsJson} = yield call(fetchUsersPermissions);
     switch (statusCode) {
       case 200:
-        yield put(receiveUsersPermissions(bodyAsJson));
+        yield put(receiveUsersPermissions(bodyAsJson.permissions));
         break;
       default:
         yield put(receiveError(bodyAsJson));
