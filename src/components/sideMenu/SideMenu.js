@@ -23,6 +23,7 @@ type Props = {
   areaNoteMethods: MethodsType,
   contactMethods: MethodsType,
   history: Object,
+  indexMethods: MethodsType,
   infillDevelopmentMethods: MethodsType,
   isFetchingCommonAttributes: boolean,
   isOpen: boolean,
@@ -100,6 +101,7 @@ class SideMenu extends Component<Props, State> {
     const {
       areaNoteMethods,
       contactMethods,
+      indexMethods,
       infillDevelopmentMethods,
       isFetchingCommonAttributes,
       isOpen,
@@ -150,6 +152,9 @@ class SideMenu extends Component<Props, State> {
                   </Authorization>
                   <Authorization allow={isMethodAllowed(contactMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.CONTACTS)}>Asiakkaat</Link></li>
+                  </Authorization>
+                  <Authorization allow={isMethodAllowed(indexMethods, Methods.GET)}>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.INDEX)}>Elinkustannusindeksi</Link></li>
                   </Authorization>
                   <li><Link onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
                   <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.GET)}>
