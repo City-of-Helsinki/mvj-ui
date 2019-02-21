@@ -57,12 +57,16 @@ const defaultState: LeaseState = {
   methods: null,
 };
 
+// $FlowFixMe
 describe('Leases', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('leasesReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           foo: 'bar',

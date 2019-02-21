@@ -39,12 +39,16 @@ const defaultState: InvoiceState = {
   patchedInvoice: null,
 };
 
+// $FlowFixMe
 describe('Invoices', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('invoiceReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'Foo',

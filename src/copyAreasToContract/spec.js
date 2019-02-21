@@ -15,12 +15,16 @@ const defaultState: CopyAreasToContractState = {
   methods: null,
 };
 
+// $FlowFixMe
 describe('Copy areas to contract', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('copyAreasToContractReducer', () => {
 
+      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 

@@ -139,6 +139,7 @@ export const getSearchQuery = (filters: any) => {
         return;
       }
 
+      // $FlowFixMe
       query.push(`${key}=${isArray(filter) ? filter.join(',') : encodeURIComponent(filter)}`);
     }
   });

@@ -5,7 +5,7 @@ import Tooltip from '$components/tooltip/Tooltip';
 
 type Props = {
   children?: any,
-  infoText?: string,
+  infoText?: ?string,
   required?: boolean,
   title?: string,
 }

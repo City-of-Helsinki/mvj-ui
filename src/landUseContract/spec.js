@@ -39,12 +39,16 @@ const baseState: LandUseContractState = {
   list: {},
 };
 
+// $FlowFixMe
 describe('Land use contract', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('landUseContractReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           id: 1,

@@ -37,12 +37,16 @@ const defaultState: AreaNoteState = {
   methods: null,
 };
 
+// $FlowFixMe
 describe('AreaNoteList', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('areaNotesReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {foo: 'bar'};
 

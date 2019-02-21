@@ -17,12 +17,16 @@ const defaultState: InfillDevelopmentAttachmentState = {
   methods: null,
 };
 
+// $FlowFixMe
 describe('Infill development attachment', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('infillDevelopmentAttachmentReducer', () => {
 
+      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 

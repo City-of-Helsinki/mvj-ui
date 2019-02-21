@@ -40,12 +40,16 @@ const defaultState: RentBasisState = {
   rentbasis: {},
 };
 
+// $FlowFixMe
 describe('Rent basis', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('rentBasisReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'foo',

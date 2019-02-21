@@ -22,12 +22,16 @@ const defaultState: UiDataState = {
   methods: null,
 };
 
+// $FlowFixMe
 describe('Ui data', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('uiDataReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'foo',
