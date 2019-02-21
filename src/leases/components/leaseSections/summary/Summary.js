@@ -15,12 +15,14 @@ import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
-import FormTitleAndText from '$components/form/FormTitleAndText';
+
 import {receiveCollapseStates} from '$src/leases/actions';
 import {Methods, ViewModes} from '$src/enums';
 import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
+import {UiDataPrefixes} from '$src/uiData/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
+import {getKeyWithPrefix, getUiDataValue} from '$src/uiData/helpers';
 import {
   formatDate,
   formatNumber,
@@ -35,9 +37,11 @@ import {getUserFullName} from '$src/users/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getMethods as getInfillDevelopmentMethods} from '$src/infillDevelopment/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
+import {getUiDataList} from '$src/uiData/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UiDataList} from '$src/uiData/types';
 
 type Props = {
   attributes: Attributes,
@@ -46,6 +50,7 @@ type Props = {
   currentLease: Lease,
   infillDevelopmentMethods: MethodsType,
   receiveCollapseStates: Function,
+  uiDataList: UiDataList,
 }
 
 type State = {
@@ -149,7 +154,13 @@ class Summary extends PureComponent<Props, State> {
       summary,
       supportiveHousingOptions,
     } = this.state;
-    const {attributes, collapseStateBasic, collapseStateStatistical, infillDevelopmentMethods} = this.props;
+    const {
+      attributes,
+      collapseStateBasic,
+      collapseStateStatistical,
+      infillDevelopmentMethods,
+      uiDataList,
+    } = this.props;
     const infillDevelopmentCompensations = summary.infill_development_compensations;
 
     return (
@@ -175,7 +186,7 @@ class Summary extends PureComponent<Props, State> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATE)}>
-                    <FormTextTitle>{LeaseFieldTitles.STATE}</FormTextTitle>
+                    <FormTextTitle infoText={getUiDataValue(uiDataList, getKeyWithPrefix(UiDataPrefixes.LEASE, LeaseFieldPaths.STATE))}>{LeaseFieldTitles.STATE}</FormTextTitle>
                     <FormText>{getLabelOfOption(stateOptions, summary.state) || '-'}</FormText>
                   </Authorization>
                 </Column>
@@ -253,10 +264,8 @@ class Summary extends PureComponent<Props, State> {
                 </Column>
                 {/* TODO: Get vuokrausperuste via API */}
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Vuokrausperuste'
-                    text={'-'}
-                  />
+                  <FormTextTitle>Vuokrausperuste</FormTextTitle>
+                  <FormText>-</FormText>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
@@ -410,6 +419,7 @@ export default connect(
       collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.statistical`),
       currentLease: getCurrentLease(state),
       infillDevelopmentMethods: getInfillDevelopmentMethods(state),
+      uiDataList: getUiDataList(state),
     };
   },
   {

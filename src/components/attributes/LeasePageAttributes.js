@@ -37,7 +37,6 @@ import {
   getMethods as getContractFileMethods,
 } from '$src/contractFile/selectors';
 import {
-  getAttributes as getCopyAreasToContractAttributes,
   getIsFetchingAttributes as getIsFetchingCopyAreasToContractAttributes,
   getMethods as getCopyAreasToContractMethods,
 } from '$src/copyAreasToContract/selectors';
@@ -68,7 +67,6 @@ function LeasePageAttributes(WrappedComponent: any) {
     commentAttributes: Attributes,
     commentMethods: Methods,
     contractFileMethods: Methods,
-    copyAreasToContractAttributes: Attributes,
     copyAreasToContractMethods: Methods,
     createCollectionLetterAttributes: Attributes,
     fetchCollectionCourtDecisionAttributes: Function,
@@ -230,7 +228,6 @@ const withLeasePageAttributes = flowRight(
         commentAttributes: getCommentAttributes(state),
         commentMethods: getCommentMethods(state),
         contractFileMethods: getContractFileMethods(state),
-        copyAreasToContractAttributes: getCopyAreasToContractAttributes(state),
         copyAreasToContractMethods: getCopyAreasToContractMethods(state),
         createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
         invoiceAttributes: getInvoiceAttributes(state),

@@ -1,5 +1,4 @@
 // @flow
-
 import {all, fork} from 'redux-saga/effects';
 import areaNoteSaga from '../areaNote/saga';
 import authSaga from '../auth/saga';
@@ -29,6 +28,7 @@ import previewInvoicesSaga from '../previewInvoices/saga';
 import relatedLeaseSaga from '../relatedLease/saga';
 import rentBasisSaga from '../rentbasis/saga';
 import rentForPeriodSaga from '../rentForPeriod/saga';
+import uiDataSaga from '$src/uiData/saga';
 import userSaga from '../users/saga';
 import usersPermissionsSaga from '../usersPermissions/saga';
 import vatSaga from '../vat/saga';
@@ -65,6 +65,7 @@ export default () =>
       fork(relatedLeaseSaga),
       fork(rentBasisSaga),
       fork(rentForPeriodSaga),
+      fork(uiDataSaga),
       fork(userSaga),
       fork(usersPermissionsSaga),
       fork(vatSaga),
