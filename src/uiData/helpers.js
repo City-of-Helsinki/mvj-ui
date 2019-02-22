@@ -1,4 +1,5 @@
 // @flow
+import {UiDataPrefixes} from '$src/uiData/enums';
 
 import type {UiDataList} from './types';
 
@@ -11,17 +12,22 @@ import type {UiDataList} from './types';
 export const getKeyWithPrefix = (prefix: string, key: string) => `${prefix}.${key}`;
 
 /*
+* Get key for ui data on lease pagge
+* @param {string} key
+* @return {string}
+*/
+export const getUiDataLeaseKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.LEASE, key);
+
+/*
 * Return value of ui data object by key
 * @param {Object[]} uiDataList
 * @param {string} key
 * @return {string|null}
 */
-export const getUiDataValue = (uiDataList: UiDataList, key: string) => {
+export const getUiDataByKey = (uiDataList: UiDataList, key: string) => {
   const uiData = uiDataList.find((item) => {
-    console.log(item.key, key);
     return item.key === key;
   });
 
-  console.log(uiDataList, uiData, key);
-  return uiData ? uiData.value : null;
+  return uiData ? uiData : null;
 };

@@ -1,15 +1,21 @@
 // @flow
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
-import {receiveError} from '$src/api/actions';
+import {SubmissionError} from 'redux-form';
 
+import {receiveError} from '$src/api/actions';
 import {
   attributesNotFound,
+  fetchUiDataList as fetchUiDataListAction,
   receiveAttributes,
   receiveMethods,
   receiveUiDataList,
   notFound,
 } from './actions';
+import {displayUIMessage} from '$src/util/helpers';
 import {
+  createUiData,
+  deleteUiData,
+  editUiData,
   fetchAttributes,
   fetchUiDataList,
 } from './requests';
@@ -20,7 +26,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        const attributes = bodyAsJson.attributes;
+        const attributes = bodyAsJson.fields;
         const methods = bodyAsJson.methods;
 
         yield put(receiveAttributes(attributes));
@@ -37,7 +43,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchUiDataListSaga(query: Object): Generator<any, any, any> {
+function* fetchUiDataListSaga({payload: query}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchUiDataList, query);
 
@@ -56,11 +62,77 @@ function* fetchUiDataListSaga(query: Object): Generator<any, any, any> {
   }
 }
 
+function* createUiDataSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createUiData, payload);
+
+    switch (statusCode) {
+      case 201:
+        yield put(fetchUiDataListAction({}));
+        displayUIMessage({title: '', body: 'Ohjeteksti tallennettu'});
+        break;
+      default:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create ui data with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* deleteUiDataSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(deleteUiData, id);
+
+    switch (statusCode) {
+      case 204:
+        yield put(fetchUiDataListAction({}));
+        displayUIMessage({title: '', body: 'Ohjeteksti poistettu'});
+        break;
+      default:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to delete ui data with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* editUiDataSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editUiData, payload);
+
+    switch (statusCode) {
+      case 200:
+        yield put(fetchUiDataListAction({}));
+        displayUIMessage({title: '', body: 'Ohjeteksti tallennettu'});
+        break;
+      default:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit ui data with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/uiData/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/uiData/FETCH_ALL', fetchUiDataListSaga);
+      yield takeLatest('mvj/uiData/CREATE', createUiDataSaga);
+      yield takeLatest('mvj/uiData/DELETE', deleteUiDataSaga);
+      yield takeLatest('mvj/uiData/EDIT', editUiDataSaga);
     }),
   ]);
 }

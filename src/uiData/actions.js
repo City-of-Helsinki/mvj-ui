@@ -4,12 +4,17 @@ import {createAction} from 'redux-actions';
 import type {Attributes, Methods} from '$src/types';
 import type {
   UiDataList,
+  CreateUiDataPayload,
+  EditUiDataPayload,
   FetchAttributesAction,
   ReceiveAttributesAction,
   ReceiveMethodsAction,
   AttributesNotFoundAction,
   FetchUiDataListAction,
   ReceiveUiDataListAction,
+  CreateUiDataAction,
+  DeleteUiDataAction,
+  EditUiDataAction,
   NotFoundAction,
 } from '$src/uiData/types';
 
@@ -30,6 +35,15 @@ export const fetchUiDataList = (query: Object): FetchUiDataListAction =>
 
 export const receiveUiDataList = (uiDataList: UiDataList): ReceiveUiDataListAction =>
   createAction('mvj/uiData/RECEIVE_ALL')(uiDataList);
+
+export const createUiData = (payload: CreateUiDataPayload): CreateUiDataAction =>
+  createAction('mvj/uiData/CREATE')(payload);
+
+export const deleteUiData = (id: number): DeleteUiDataAction =>
+  createAction('mvj/uiData/DELETE')(id);
+
+export const editUiData = (payload: EditUiDataPayload): EditUiDataAction =>
+  createAction('mvj/uiData/EDIT')(payload);
 
 export const notFound = (): NotFoundAction =>
   createAction('mvj/uiData/NOT_FOUND')();

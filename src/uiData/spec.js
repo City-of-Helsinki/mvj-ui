@@ -7,6 +7,8 @@ import {
   receiveAttributes,
   receiveMethods,
   fetchUiDataList,
+  createUiData,
+  editUiData,
   receiveUiDataList,
   notFound,
 } from './actions';
@@ -89,6 +91,29 @@ describe('Ui data', () => {
         const newState = {...defaultState, isFetching: true};
 
         const state = uiDataReducer({}, fetchUiDataList());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when creating ui data', () => {
+        const dummyPaload = {
+          key: 'lorem',
+          value: 'ipsum',
+        };
+        const newState = {...defaultState, isFetching: true};
+
+        const state = uiDataReducer({}, createUiData(dummyPaload));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when editing ui data', () => {
+        const dummyPaload = {
+          id: 1,
+          key: 'lorem',
+          value: 'ipsum',
+        };
+        const newState = {...defaultState, isFetching: true};
+
+        const state = uiDataReducer({}, editUiData(dummyPaload));
         expect(state).to.deep.equal(newState);
       });
 

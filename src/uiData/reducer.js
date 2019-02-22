@@ -30,6 +30,9 @@ const methodsReducer: Reducer<Methods> = handleActions({
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/uiData/FETCH_ALL': () => true,
+  'mvj/uiData/CREATE': () => true,
+  'mvj/uiData/DELETE': () => true,
+  'mvj/uiData/EDIT': () => true,
   'mvj/uiData/RECEIVE_ALL': () => false,
   'mvj/uiData/NOT_FOUND': () => false,
 }, false);
