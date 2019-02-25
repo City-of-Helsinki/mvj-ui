@@ -35,6 +35,7 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getFullAddress} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatNumber,
   getFieldAttributes,
@@ -138,21 +139,33 @@ const renderComments = connect(
                 <Row>
                   <Column small={6} medium={6} large={8}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.TEXT)}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.TEXT)}>
+                      <FormTextTitle
+                        required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.TEXT)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseConstructabilityDescriptionsFieldPaths.TEXT)}
+                      >
                         {LeaseConstructabilityDescriptionsFieldTitles.TEXT}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} medium={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC)}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC)}>
+                      <FormTextTitle
+                        required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC)}
+                      >
                         {LeaseConstructabilityDescriptionsFieldTitles.IS_STATIC}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} medium={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}>
+                      <FormTextTitle
+                        required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}
+                      >
                         {LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER}
                       </FormTextTitle>
                     </Authorization>
@@ -420,6 +433,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}
                 name={`${field}.preconstruction_state`}
                 overrideValues={{label: LeaseAreasFieldTitles.PRECONSTRUCTION_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}
               />
             </Authorization>
           </Column>
@@ -430,6 +445,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}
                 name={`${field}.preconstruction_estimated_construction_readiness_moment`}
                 overrideValues={{label: LeaseAreasFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}
               />
             </Authorization>
           </Column>
@@ -440,6 +457,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT)}
                 name={`${field}.preconstruction_inspection_moment`}
                 overrideValues={{label: LeaseAreasFieldTitles.PRECONSTRUCTION_INSPECTION_MOMENT}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT)}
               />
             </Authorization>
           </Column>
@@ -481,6 +500,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}
                 name={`${field}.demolition_state`}
                 overrideValues={{label: LeaseAreasFieldTitles.DEMOLITION_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.DEMOLITION_STATE)}
               />
             </Authorization>
           </Column>
@@ -522,6 +543,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}
                 name={`${field}.polluted_land_state`}
                 overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}
               />
             </Authorization>
           </Column>
@@ -532,6 +555,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}
                 name={`${field}.polluted_land_rent_condition_state`}
                 overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}
               />
             </Authorization>
           </Column>
@@ -542,6 +567,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_DATE)}
                 name={`${field}.polluted_land_rent_condition_date`}
                 overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_DATE)}
               />
             </Authorization>
           </Column>
@@ -555,6 +582,8 @@ const ConstructabilityItemEdit = ({
                   fieldType: FieldTypes.USER,
                   label: LeaseAreasFieldTitles.POLLUTED_LAND_PLANNER,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER)}
               />
             </Authorization>
           </Column>
@@ -565,6 +594,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER)}
                 name={`${field}.polluted_land_projectwise_number`}
                 overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_PROJECTWISE_NUMBER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER)}
               />
             </Authorization>
           </Column>
@@ -575,6 +606,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}
                 name={`${field}.polluted_land_matti_report_number`}
                 overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_MATTI_REPORT_NUMBER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}
               />
             </Authorization>
           </Column>
@@ -616,6 +649,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}
                 name={`${field}.constructability_report_state`}
                 overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}
               />
             </Authorization>
           </Column>
@@ -626,6 +661,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE)}
                 name={`${field}.constructability_report_investigation_state`}
                 overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE)}
               />
             </Authorization>
           </Column>
@@ -636,6 +673,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE)}
                 name={`${field}.constructability_report_signing_date`}
                 overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_SIGNING_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE)}
               />
             </Authorization>
           </Column>
@@ -646,6 +685,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER)}
                 name={`${field}.constructability_report_signer`}
                 overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_SIGNER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER)}
               />
             </Authorization>
           </Column>
@@ -656,6 +697,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}
                 name={`${field}.constructability_report_geotechnical_number`}
                 overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}
               />
             </Authorization>
           </Column>
@@ -697,6 +740,8 @@ const ConstructabilityItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.OTHER_STATE)}
                 name={`${field}.other_state`}
                 overrideValues={{label: LeaseAreasFieldTitles.OTHER_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.OTHER_STATE)}
               />
             </Authorization>
           </Column>

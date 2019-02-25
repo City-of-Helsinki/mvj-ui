@@ -39,6 +39,7 @@ import {
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   getSearchQuery,
@@ -352,21 +353,33 @@ const AddressItems = ({attributes, change, fields, isSaveClicked, usersPermissio
               <Row>
                 <Column small={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
-                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
+                    <FormTextTitle
+                      required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESS)}
+                    >
                       {LeaseAreaAddressesFieldTitles.ADDRESS}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={3} large={2}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
-                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+                    <FormTextTitle
+                      required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.POSTAL_CODE)}
+                    >
                       {LeaseAreaAddressesFieldTitles.POSTAL_CODE}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={3} large={2}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
-                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
+                    <FormTextTitle
+                      required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.CITY)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.CITY)}
+                    >
                       {LeaseAreaAddressesFieldTitles.CITY}
                     </FormTextTitle>
                   </Authorization>
@@ -543,6 +556,8 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.IDENTIFIER)}
                   name={`${field}.identifier`}
                   overrideValues={{label: LeaseAreasFieldTitles.IDENTIFIER}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.IDENTIFIER)}
                 />
               </Authorization>
             </Column>
@@ -553,6 +568,8 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.TYPE)}
                   name={`${field}.type`}
                   overrideValues={{label: LeaseAreasFieldTitles.TYPE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.TYPE)}
                 />
               </Authorization>
             </Column>
@@ -564,6 +581,8 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   name={`${field}.area`}
                   unit='m²'
                   overrideValues={{label: LeaseAreasFieldTitles.AREA}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.AREA)}
                 />
               </Authorization>
             </Column>
@@ -574,6 +593,8 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.LOCATION)}
                   name={`${field}.location`}
                   overrideValues={{label: LeaseAreasFieldTitles.LOCATION}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LOCATION)}
                 />
               </Authorization>
             </Column>

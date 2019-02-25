@@ -30,6 +30,7 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {formatDueDates, formatSeasonalDate} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   hasPermissions,
@@ -87,7 +88,9 @@ const SeasonalDates = connect(
     >
       <Row>
         <Column small={12}>
-          <FormTextTitle>{LeaseRentsFieldTitles.SEASONAL_DATES}</FormTextTitle>
+          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.SEASONAL_DATES)}>
+            {LeaseRentsFieldTitles.SEASONAL_DATES}
+          </FormTextTitle>
         </Column>
       </Row>
       <Authorization
@@ -187,7 +190,11 @@ const renderDueDates = ({
         <Column>
           <FormTextTitle
             required={isFieldRequired(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}
-          >{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseRentDueDatesFieldPaths.DUE_DATES)}
+          >
+            {LeaseRentDueDatesFieldTitles.DUE_DATES}
+          </FormTextTitle>
         </Column>
       </Row>
       <Authorization
@@ -273,7 +280,11 @@ const renderDueDatesOneTime = ({dueDates, fields, isSaveClicked, leaseAttributes
         <Column>
           <FormTextTitle
             required={isFieldRequired(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}
-          >{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseRentDueDatesFieldPaths.DUE_DATES)}
+          >
+            {LeaseRentDueDatesFieldTitles.DUE_DATES}
+          </FormTextTitle>
         </Column>
       </Row>
       <Authorization
@@ -348,6 +359,8 @@ const BasicInfoEmpty = ({isSaveClicked, leaseAttributes}: BasicInfoEmptyProps) =
             fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
             name='type'
             overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.TYPE)}
           />
         </Column>
       </Row>
@@ -388,6 +401,8 @@ const BasicInfoIndex = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
               name='type'
               overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.TYPE)}
             />
           </Authorization>
         </Column>
@@ -398,6 +413,8 @@ const BasicInfoIndex = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}
               name='start_date'
               overrideValues={{label: LeaseRentsFieldTitles.START_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.START_DATE)}
             />
           </Authorization>
         </Column>
@@ -408,6 +425,8 @@ const BasicInfoIndex = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}
               name='end_date'
               overrideValues={{label: LeaseRentsFieldTitles.END_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.END_DATE)}
             />
           </Authorization>
         </Column>
@@ -418,6 +437,8 @@ const BasicInfoIndex = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.CYCLE)}
               name='cycle'
               overrideValues={{label: LeaseRentsFieldTitles.CYCLE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.CYCLE)}
             />
           </Authorization>
         </Column>
@@ -430,6 +451,8 @@ const BasicInfoIndex = ({
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE)}
                 name='index_type'
                 overrideValues={{label: LeaseRentsFieldTitles.INDEX_TYPE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.INDEX_TYPE)}
               />
             </Authorization>
           </Column>
@@ -442,6 +465,8 @@ const BasicInfoIndex = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}
               name='due_dates_type'
               overrideValues={{label: LeaseRentsFieldTitles.DUE_DATES_TYPE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.DUE_DATES_TYPE)}
             />
           </Authorization>
         </Column>
@@ -470,6 +495,8 @@ const BasicInfoIndex = ({
                   label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
                   options: rentCustomDateOptions,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}
               />
             </Authorization>
           </Column>
@@ -477,7 +504,9 @@ const BasicInfoIndex = ({
         {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
-              <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+                {LeaseRentsFieldTitles.YEARLY_DUE_DATES}
+              </FormTextTitle>
               <FormText>{yearlyDueDates && !!yearlyDueDates
                 ? formatDueDates(yearlyDueDates)
                 : '-'}</FormText>
@@ -496,6 +525,8 @@ const BasicInfoIndex = ({
                   fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.MANUAL_RATIO)}
                   name='manual_ratio'
                   overrideValues={{label: LeaseRentsFieldTitles.MANUAL_RATIO}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.MANUAL_RATIO)}
                 />
               </Authorization>
             </Column>
@@ -508,6 +539,8 @@ const BasicInfoIndex = ({
                   fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.MANUAL_RATIO_PREVIOUS)}
                   name='manual_ratio_previous'
                   overrideValues={{label: LeaseRentsFieldTitles.MANUAL_RATIO_PREVIOUS}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.MANUAL_RATIO_PREVIOUS)}
                 />
               </Authorization>
             </Column>
@@ -531,6 +564,8 @@ const BasicInfoIndex = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)}
               name='note'
               overrideValues={{label: LeaseRentsFieldTitles.NOTE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.NOTE)}
             />
           </Authorization>
         </Column>
@@ -564,6 +599,8 @@ const BasicInfoOneTime = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
               name='type'
               overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.TYPE)}
             />
           </Authorization>
         </Column>
@@ -574,6 +611,8 @@ const BasicInfoOneTime = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}
               name='start_date'
               overrideValues={{label: LeaseRentsFieldTitles.START_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.START_DATE)}
             />
           </Authorization>
         </Column>
@@ -584,6 +623,8 @@ const BasicInfoOneTime = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}
               name='end_date'
               overrideValues={{label: LeaseRentsFieldTitles.END_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.END_DATE)}
             />
           </Authorization>
         </Column>
@@ -595,6 +636,8 @@ const BasicInfoOneTime = ({
               name='amount'
               unit='€'
               overrideValues={{label: LeaseRentsFieldTitles.AMOUNT}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.AMOUNT)}
             />
           </Authorization>
         </Column>
@@ -608,6 +651,8 @@ const BasicInfoOneTime = ({
                 label: LeaseRentsFieldTitles.DUE_DATES_TYPE,
                 options: oneTimeRentDueDateTypeOptions,
               }}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.DUE_DATES_TYPE)}
             />
           </Authorization>
         </Column>
@@ -635,6 +680,8 @@ const BasicInfoOneTime = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)}
               name='note'
               overrideValues={{label: LeaseRentsFieldTitles.NOTE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.NOTE)}
             />
           </Column>
         </Row>
@@ -672,6 +719,8 @@ const BasicInfoFixed = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
               name='type'
               overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.TYPE)}
             />
           </Authorization>
         </Column>
@@ -682,6 +731,8 @@ const BasicInfoFixed = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}
               name='start_date'
               overrideValues={{label: LeaseRentsFieldTitles.START_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.START_DATE)}
             />
           </Authorization>
         </Column>
@@ -692,6 +743,8 @@ const BasicInfoFixed = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}
               name='end_date'
               overrideValues={{label: LeaseRentsFieldTitles.END_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.END_DATE)}
             />
           </Authorization>
         </Column>
@@ -702,6 +755,8 @@ const BasicInfoFixed = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}
               name='due_dates_type'
               overrideValues={{label: LeaseRentsFieldTitles.DUE_DATES_TYPE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.DUE_DATES_TYPE)}
             />
           </Authorization>
         </Column>
@@ -730,6 +785,8 @@ const BasicInfoFixed = ({
                   label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
                   options: rentCustomDateOptions,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}
               />
             </Authorization>
           </Column>
@@ -737,7 +794,9 @@ const BasicInfoFixed = ({
         {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
-              <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+                {LeaseRentsFieldTitles.YEARLY_DUE_DATES}
+              </FormTextTitle>
               <FormText>{yearlyDueDates && !!yearlyDueDates
                 ? formatDueDates(yearlyDueDates)
                 : '-'}</FormText>
@@ -762,6 +821,8 @@ const BasicInfoFixed = ({
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)}
               name='note'
               overrideValues={{label: LeaseRentsFieldTitles.NOTE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.NOTE)}
             />
           </Authorization>
         </Column>
@@ -786,6 +847,8 @@ const BasicInfoFree = ({isSaveClicked, leaseAttributes}: BasicInfoFreeProps) => 
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
               name='type'
               overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.TYPE)}
             />
           </Authorization>
         </Column>
@@ -796,6 +859,8 @@ const BasicInfoFree = ({isSaveClicked, leaseAttributes}: BasicInfoFreeProps) => 
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}
               name='start_date'
               overrideValues={{label: LeaseRentsFieldTitles.START_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.START_DATE)}
             />
           </Authorization>
         </Column>
@@ -806,6 +871,8 @@ const BasicInfoFree = ({isSaveClicked, leaseAttributes}: BasicInfoFreeProps) => 
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}
               name='end_date'
               overrideValues={{label: LeaseRentsFieldTitles.END_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.END_DATE)}
             />
           </Authorization>
         </Column>
@@ -819,6 +886,8 @@ const BasicInfoFree = ({isSaveClicked, leaseAttributes}: BasicInfoFreeProps) => 
               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)}
               name='note'
               overrideValues={{label: LeaseRentsFieldTitles.NOTE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.NOTE)}
             />
           </Column>
         </Row>

@@ -39,6 +39,9 @@ import {
   TenantContactType,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getContactFullName} from '$src/contacts/helpers';
+import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   formatNumber,
@@ -50,8 +53,6 @@ import {
   isFieldRequired,
   isMethodAllowed,
 } from '$util/helpers';
-import {getContactFullName} from '$src/contacts/helpers';
-import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -269,6 +270,8 @@ const TenantItemEdit = ({
                           fieldType: FieldTypes.CONTACT,
                           label: LeaseTenantContactSetFieldTitles.CONTACT,
                         }}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}
                       />
                     </Authorization>
                   </Column>
@@ -290,7 +293,11 @@ const TenantItemEdit = ({
             <Row>
               <Column small={12} medium={6} large={4}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-                  <FormTextTitle required={isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) || isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)}>
+                  <FormTextTitle
+                    required={isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) || isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR)}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}
+                  >
                     {LeaseTenantsFieldTitles.SHARE_FRACTION}
                   </FormTextTitle>
                   <Authorization
@@ -330,7 +337,9 @@ const TenantItemEdit = ({
               </Column>
               <Column small={12} medium={6} large={4}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-                  <FormTextTitle>{LeaseTenantsFieldTitles.SHARE_PERCENTAGE}</FormTextTitle>
+                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_PERCENTAGE)}>
+                    {LeaseTenantsFieldTitles.SHARE_PERCENTAGE}
+                  </FormTextTitle>
                   <FormText>{!isEmptyValue(share) ? `${formatNumber(share)} %` : '-'}</FormText>
                 </Authorization>
               </Column>
@@ -341,6 +350,8 @@ const TenantItemEdit = ({
                     fieldAttributes={getFieldAttributes(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}
                     name={`${field}.tenant.start_date`}
                     overrideValues={{label: LeaseTenantContactSetFieldTitles.START_DATE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}
                   />
                 </Authorization>
               </Column>
@@ -351,6 +362,8 @@ const TenantItemEdit = ({
                     fieldAttributes={getFieldAttributes(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}
                     name={`${field}.tenant.end_date`}
                     overrideValues={{label: LeaseTenantContactSetFieldTitles.END_DATE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)}
                   />
                 </Authorization>
               </Column>
@@ -366,6 +379,8 @@ const TenantItemEdit = ({
                     fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.REFERENCE)}
                     name={`${field}.reference`}
                     overrideValues={{label: LeaseTenantsFieldTitles.REFERENCE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.REFERENCE)}
                   />
                 </Authorization>
               </Column>

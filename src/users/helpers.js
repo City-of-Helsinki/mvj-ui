@@ -41,7 +41,7 @@ export const getContentUser = (user: ?Object) => {
 export const getUserOptions = (users: UserList): Array<Object> => {
   return users.map((user) => {
     return {
-      value: user.id,
+      value: user.id ? user.id.toString() : null,
       label: getUserFullName(user),
     };
   }).sort(sortByLabelAsc);

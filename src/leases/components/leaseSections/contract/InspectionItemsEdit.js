@@ -20,6 +20,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   hasPermissions,
@@ -81,22 +82,38 @@ const InspectionItemsEdit = ({
                 {largeScreen &&
                   <Row>
                     <Column large={2}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.INSPECTOR)}>
+                      <FormTextTitle
+                        required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.INSPECTOR)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.INSPECTOR)}
+                      >
                         {LeaseInspectionsFieldTitles.INSPECTOR}
                       </FormTextTitle>
                     </Column>
                     <Column large={2}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.SUPERVISION_DATE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.SUPERVISION_DATE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.SUPERVISION_DATE)}
+                      >
                         {LeaseInspectionsFieldTitles.SUPERVISION_DATE}
                       </FormTextTitle>
                     </Column>
                     <Column large={2}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.SUPERVISED_DATE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.SUPERVISED_DATE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.SUPERVISED_DATE)}
+                      >
                         {LeaseInspectionsFieldTitles.SUPERVISED_DATE}
                       </FormTextTitle>
                     </Column>
                     <Column large={6}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}>
+                      <FormTextTitle
+                        required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.DESCRIPTION)}
+                      >
                         {LeaseInspectionsFieldTitles.DESCRIPTION}
                       </FormTextTitle>
                     </Column>
@@ -198,6 +215,8 @@ const InspectionItemsEdit = ({
                                 fieldAttributes={getFieldAttributes(attributes, LeaseInspectionsFieldPaths.INSPECTOR)}
                                 name={`${inspection}.inspector`}
                                 overrideValues={{label: LeaseInspectionsFieldTitles.INSPECTOR}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.INSPECTOR)}
                               />
                             </Authorization>
                           </Column>
@@ -208,6 +227,8 @@ const InspectionItemsEdit = ({
                                 fieldAttributes={getFieldAttributes(attributes, LeaseInspectionsFieldPaths.SUPERVISION_DATE)}
                                 name={`${inspection}.supervision_date`}
                                 overrideValues={{label: LeaseInspectionsFieldTitles.SUPERVISION_DATE}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.SUPERVISION_DATE)}
                               />
                             </Authorization>
                           </Column>
@@ -218,6 +239,8 @@ const InspectionItemsEdit = ({
                                 fieldAttributes={getFieldAttributes(attributes, LeaseInspectionsFieldPaths.SUPERVISED_DATE)}
                                 name={`${inspection}.supervised_date`}
                                 overrideValues={{label: LeaseInspectionsFieldTitles.SUPERVISED_DATE}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.SUPERVISED_DATE)}
                               />
                             </Authorization>
                           </Column>
@@ -228,6 +251,8 @@ const InspectionItemsEdit = ({
                                 fieldAttributes={getFieldAttributes(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}
                                 name={`${inspection}.description`}
                                 overrideValues={{label: LeaseInspectionsFieldTitles.DESCRIPTION}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.DESCRIPTION)}
                               />
                             </Authorization>
                           </Column>

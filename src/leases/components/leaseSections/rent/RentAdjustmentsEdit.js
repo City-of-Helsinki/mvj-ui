@@ -26,6 +26,7 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatNumber,
   getFieldAttributes,
@@ -161,6 +162,8 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE)}
                                 name={`${discount}.type`}
                                 overrideValues={{label: LeaseRentAdjustmentsFieldTitles.TYPE}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.TYPE)}
                               />
                             </Authorization>
                           </Column>
@@ -171,6 +174,8 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}
                                 name={`${discount}.intended_use`}
                                 overrideValues={{label: LeaseRentAdjustmentsFieldTitles.INTENDED_USE}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}
                               />
                             </Authorization>
                           </Column>
@@ -183,6 +188,8 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                     fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}
                                     name={`${discount}.start_date`}
                                     overrideValues={{label: LeaseRentAdjustmentsFieldTitles.START_DATE}}
+                                    enableUiDataEdit
+                                    uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.START_DATE)}
                                   />
                                 </Authorization>
                               </Column>
@@ -193,6 +200,8 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                     fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}
                                     name={`${discount}.end_date`}
                                     overrideValues={{label: LeaseRentAdjustmentsFieldTitles.END_DATE}}
+                                    enableUiDataEdit
+                                    uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.END_DATE)}
                                   />
                                 </Authorization>
                               </Column>
@@ -200,7 +209,11 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                           </Column>
                           <Column small={6} medium={4} large={2}>
                             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
-                              <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
+                              <FormTextTitle
+                                required={isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
+                              >
                                 {LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}
                               </FormTextTitle>
 
@@ -246,6 +259,8 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                 name={`${discount}.amount_left`}
                                 unit='€'
                                 overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_LEFT}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}
                               />
                             </Authorization>
                           </Column>
@@ -261,6 +276,8 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                   options: decisionOptions,
 
                                 }}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.DECISION)}
                               />
                             </Authorization>
                           </Column>
@@ -273,6 +290,8 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.NOTE)}
                                 name={`${discount}.note`}
                                 overrideValues={{label: LeaseRentAdjustmentsFieldTitles.NOTE}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.NOTE)}
                               />
                             </Authorization>
                           </Column>

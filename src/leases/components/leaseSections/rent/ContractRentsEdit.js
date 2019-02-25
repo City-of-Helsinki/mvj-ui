@@ -20,6 +20,7 @@ import {
 } from '$src/leases/enums';
 import {Breakpoints} from '$src/foundation/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   hasPermissions,
   isFieldAllowedToRead,
@@ -64,14 +65,22 @@ const ContractRentsEdit = ({
               <Row showFor={Breakpoints.LARGE}>
                 <Column large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
-                    <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
+                    <FormTextTitle
+                      required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT)}
+                    >
                       {LeaseRentContractRentsFieldTitles.AMOUNT}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
-                    <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
+                    <FormTextTitle
+                      required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.INTENDED_USE)}
+                    >
                       {LeaseRentContractRentsFieldTitles.INTENDED_USE}
                     </FormTextTitle>
                   </Authorization>
@@ -80,7 +89,11 @@ const ContractRentsEdit = ({
                   rentType === RentTypes.MANUAL) &&
                   <Column large={3}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
-                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
+                      <FormTextTitle
+                        required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
+                      >
                         {LeaseRentContractRentsFieldTitles.BASE_AMOUNT}
                       </FormTextTitle>
                     </Authorization>
@@ -90,7 +103,11 @@ const ContractRentsEdit = ({
                   rentType === RentTypes.MANUAL) &&
                   <Column large={2}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
-                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
+                      <FormTextTitle
+                        required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
+                      >
                         {LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}
                       </FormTextTitle>
                     </Authorization>
@@ -98,14 +115,22 @@ const ContractRentsEdit = ({
                 }
                 <Column large={1}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
-                    <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
+                    <FormTextTitle
+                      required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.START_DATE)}
+                    >
                       {LeaseRentContractRentsFieldTitles.START_DATE}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column large={1}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
-                    <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
+                    <FormTextTitle
+                      required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)}
+                    >
                       {LeaseRentContractRentsFieldTitles.END_DATE}
                     </FormTextTitle>
                   </Authorization>

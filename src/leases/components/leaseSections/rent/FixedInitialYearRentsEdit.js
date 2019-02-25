@@ -24,6 +24,7 @@ import {
   LeaseRentFixedInitialYearRentsFieldTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   hasPermissions,
@@ -71,28 +72,44 @@ const FixedInitialYearRentsEdit = ({
                 <Row>
                   <Column large={2}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
-                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}
+                      >
                         {LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column large={2}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
-                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
+                      <FormTextTitle
+                        required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}
+                      >
                         {LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column large={1}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
-                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}
+                      >
                         {LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column large={1}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
-                      <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}
+                      >
                         {LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}
                       </FormTextTitle>
                     </Authorization>
@@ -121,7 +138,7 @@ const FixedInitialYearRentsEdit = ({
                           <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}
-                            invisibleLabel={true}
+                            invisibleLabel
                             name={`${rent}.intended_use`}
                             overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}}
                           />
@@ -132,7 +149,7 @@ const FixedInitialYearRentsEdit = ({
                           <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}
-                            invisibleLabel={true}
+                            invisibleLabel
                             name={`${rent}.amount`}
                             unit='€'
                             overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}}
@@ -144,7 +161,7 @@ const FixedInitialYearRentsEdit = ({
                           <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}
-                            invisibleLabel={true}
+                            invisibleLabel
                             name={`${rent}.start_date`}
                             overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}}
                           />
@@ -155,7 +172,7 @@ const FixedInitialYearRentsEdit = ({
                           <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}
-                            invisibleLabel={true}
+                            invisibleLabel
                             name={`${rent}.end_date`}
                             overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}}
                           />
@@ -193,6 +210,8 @@ const FixedInitialYearRentsEdit = ({
                                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}
                                 name={`${rent}.intended_use`}
                                 overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}
                               />
                             </Authorization>
                           </Column>
@@ -204,6 +223,8 @@ const FixedInitialYearRentsEdit = ({
                                 name={`${rent}.amount`}
                                 unit='€'
                                 overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}S
                               />
                             </Authorization>
                           </Column>
@@ -214,6 +235,8 @@ const FixedInitialYearRentsEdit = ({
                                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}
                                 name={`${rent}.start_date`}
                                 overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}
                               />
                             </Authorization>
                           </Column>
@@ -224,6 +247,8 @@ const FixedInitialYearRentsEdit = ({
                                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}
                                 name={`${rent}.end_date`}
                                 overrideValues={{label: LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}
                               />
                             </Authorization>
                           </Column>

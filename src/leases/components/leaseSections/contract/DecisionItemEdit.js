@@ -22,6 +22,7 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getDecisionById} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
   getFieldAttributes,
@@ -139,6 +140,8 @@ const DecisionItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseDecisionsFieldPaths.DECISION_MAKER)}
                 name={`${field}.decision_maker`}
                 overrideValues={{label: LeaseDecisionsFieldTitles.DECISION_MAKER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DECISION_MAKER)}
               />
             </Authorization>
           </Column>
@@ -149,6 +152,8 @@ const DecisionItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseDecisionsFieldPaths.DECISION_DATE)}
                 name={`${field}.decision_date`}
                 overrideValues={{label: LeaseDecisionsFieldTitles.DECISION_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DECISION_DATE)}
               />
             </Authorization>
           </Column>
@@ -161,6 +166,8 @@ const DecisionItemEdit = ({
                 unit='§'
                 readOnlyValueRenderer={sectionReadOnlyRenderer}
                 overrideValues={{label: LeaseDecisionsFieldTitles.SECTION}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.SECTION)}
               />
             </Authorization>
           </Column>
@@ -171,6 +178,8 @@ const DecisionItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseDecisionsFieldPaths.TYPE)}
                 name={`${field}.type`}
                 overrideValues={{label: LeaseDecisionsFieldTitles.TYPE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.TYPE)}
               />
             </Authorization>
           </Column>
@@ -185,6 +194,8 @@ const DecisionItemEdit = ({
                   label: LeaseDecisionsFieldTitles.REFERENCE_NUMBER,
                   fieldType: FieldTypes.REFERENCE_NUMBER,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.REFERENCE_NUMBER)}
               />
             </Authorization>
           </Column>
@@ -197,6 +208,8 @@ const DecisionItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseDecisionsFieldPaths.DESCRIPTION)}
                 name={`${field}.description`}
                 overrideValues={{label: LeaseDecisionsFieldTitles.DESCRIPTION}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DESCRIPTION)}
               />
             </Authorization>
           </Column>

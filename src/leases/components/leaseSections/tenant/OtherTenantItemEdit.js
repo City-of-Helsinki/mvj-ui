@@ -30,13 +30,14 @@ import {
   TenantContactType,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   hasPermissions,
   isFieldAllowedToRead,
   isMethodAllowed,
 } from '$util/helpers';
-import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getMethods as getContactMethods} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -178,6 +179,8 @@ const OtherTenantItemEdit = ({
                           fieldType: FieldTypes.CONTACT,
                           label: LeaseTenantContactSetFieldTitles.CONTACT,
                         }}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}
                       />
                     </Authorization>
                   </Column>
@@ -205,6 +208,8 @@ const OtherTenantItemEdit = ({
                     fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}
                     name={`${field}.start_date`}
                     overrideValues={{label: LeaseTenantContactSetFieldTitles.START_DATE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}
                   />
                 </Authorization>
               </Column>
@@ -215,6 +220,8 @@ const OtherTenantItemEdit = ({
                     fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}
                     name={`${field}.end_date`}
                     overrideValues={{label: LeaseTenantContactSetFieldTitles.END_DATE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)}
                   />
                 </Authorization>
               </Column>

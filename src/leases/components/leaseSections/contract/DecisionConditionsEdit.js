@@ -27,6 +27,7 @@ import {
   LeaseDecisionConditionsFieldTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   hasPermissions,
@@ -94,28 +95,44 @@ const DecisionConditionsEdit = ({
                   <Row>
                     <Column large={2}>
                       <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
-                        <FormTextTitle required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
+                        <FormTextTitle
+                          required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.TYPE)}
+                        >
                           {LeaseDecisionConditionsFieldTitles.TYPE}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
                     <Column large={2}>
                       <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
-                        <FormTextTitle required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
+                        <FormTextTitle
+                          required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}
+                        >
                           {LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
                     <Column large={2}>
                       <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
-                        <FormTextTitle required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
+                        <FormTextTitle
+                          required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}
+                        >
                           {LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
                     <Column large={6}>
                       <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
-                        <FormTextTitle required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
+                        <FormTextTitle
+                          required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
+                        >
                           {LeaseDecisionConditionsFieldTitles.DESCRIPTION}
                         </FormTextTitle>
                       </Authorization>
@@ -218,6 +235,8 @@ const DecisionConditionsEdit = ({
                                   fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}
                                   name={`${condition}.type`}
                                   overrideValues={{label: LeaseDecisionConditionsFieldTitles.TYPE}}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.TYPE)}
                                 />
                               </Authorization>
                             </Column>
@@ -228,6 +247,8 @@ const DecisionConditionsEdit = ({
                                   fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}
                                   name={`${condition}.supervision_date`}
                                   overrideValues={{label: LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}
                                 />
                               </Authorization>
                             </Column>
@@ -238,6 +259,8 @@ const DecisionConditionsEdit = ({
                                   fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}
                                   name={`${condition}.supervised_date`}
                                   overrideValues={{label: LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}
                                 />
                               </Authorization>
                             </Column>
@@ -248,6 +271,8 @@ const DecisionConditionsEdit = ({
                                   fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
                                   name={`${condition}.description`}
                                   overrideValues={{label: LeaseDecisionConditionsFieldTitles.DESCRIPTION}}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
                                 />
                               </Authorization>
                             </Column>

@@ -19,6 +19,7 @@ import {
   ContactTypes,
   FormNames,
 } from '$src/contacts/enums';
+import {getUiDataContactKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   isEmptyValue,
@@ -103,6 +104,8 @@ class ContactForm extends Component<Props> {
                     name='type'
                     setRefForField={this.setRefForFirstField}
                     overrideValues={{label: ContactFieldTitles.TYPE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.TYPE)}
                   />
                 </Authorization>
               </Column>
@@ -114,6 +117,8 @@ class ContactForm extends Component<Props> {
                       fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.LAST_NAME)}
                       name='last_name'
                       overrideValues={{label: ContactFieldTitles.LAST_NAME}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataContactKey(ContactFieldPaths.LAST_NAME)}
                     />
                   </Authorization>
                 </Column>
@@ -126,6 +131,8 @@ class ContactForm extends Component<Props> {
                       fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.FIRST_NAME)}
                       name='first_name'
                       overrideValues={{label: ContactFieldTitles.FIRST_NAME}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataContactKey(ContactFieldPaths.FIRST_NAME)}
                     />
                   </Authorization>
                 </Column>
@@ -138,6 +145,8 @@ class ContactForm extends Component<Props> {
                       fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.NAME)}
                       name='name'
                       overrideValues={{label: ContactFieldTitles.NAME}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataContactKey(ContactFieldPaths.NAME)}
                     />
                   </Authorization>
                 </Column>
@@ -151,6 +160,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CARE_OF)}
                     name='care_of'
                     overrideValues={{label: ContactFieldTitles.CARE_OF}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.CARE_OF)}
                   />
                 </Authorization>
               </Column>
@@ -167,6 +178,8 @@ class ContactForm extends Component<Props> {
                       fieldType: FieldTypes.ADDRESS,
                       label: ContactFieldTitles.ADDRESS,
                     }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.ADDRESS)}
                   />
                 </Authorization>
               </Column>
@@ -179,6 +192,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.POSTAL_CODE)}
                     name='postal_code'
                     overrideValues={{label: ContactFieldTitles.POSTAL_CODE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.POSTAL_CODE)}
                   />
                 </Authorization>
               </Column>
@@ -189,6 +204,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CITY)}
                     name='city'
                     overrideValues={{label: ContactFieldTitles.CITY}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.CITY)}
                   />
                 </Authorization>
               </Column>
@@ -199,6 +216,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.COUNTRY)}
                     name='country'
                     overrideValues={{label: ContactFieldTitles.COUNTRY}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.COUNTRY)}
                   />
                 </Authorization>
               </Column>
@@ -211,6 +230,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.PHONE)}
                     name='phone'
                     overrideValues={{label: ContactFieldTitles.PHONE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.PHONE)}
                   />
                 </Authorization>
               </Column>
@@ -221,6 +242,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.EMAIL)}
                     name='email'
                     overrideValues={{label: ContactFieldTitles.EMAIL}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.EMAIL)}
                   />
                 </Authorization>
               </Column>
@@ -236,6 +259,8 @@ class ContactForm extends Component<Props> {
                       fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}
                       name='national_identification_number'
                       overrideValues={{label: ContactFieldTitles.NATIONAL_IDENTIFICATION_NUMBER}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataContactKey(ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}
                     />
                   </Authorization>
                 </Column>
@@ -248,6 +273,8 @@ class ContactForm extends Component<Props> {
                       fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.BUSINESS_ID)}
                       name='business_id'
                       overrideValues={{label: ContactFieldTitles.BUSINESS_ID}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataContactKey(ContactFieldPaths.BUSINESS_ID)}
                     />
                   </Authorization>
                 </Column>
@@ -259,6 +286,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.LANGUAGE)}
                     name='language'
                     overrideValues={{label: ContactFieldTitles.LANGUAGE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.LANGUAGE)}
                   />
                 </Authorization>
               </Column>
@@ -269,6 +298,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.SAP_CUSTOMER_NUMBER)}
                     name='sap_customer_number'
                     overrideValues={{label: ContactFieldTitles.SAP_CUSTOMER_NUMBER}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.SAP_CUSTOMER_NUMBER)}
                   />
                 </Authorization>
               </Column>
@@ -281,6 +312,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.PARTNER_CODE)}
                     name='partner_code'
                     overrideValues={{label: ContactFieldTitles.PARTNER_CODE}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.PARTNER_CODE)}
                   />
                 </Authorization>
               </Column>
@@ -291,6 +324,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS)}
                     name='electronic_billing_address'
                     overrideValues={{label: ContactFieldTitles.ELECTRONIC_BILLING_ADDRESS}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS)}
                   />
                 </Authorization>
               </Column>
@@ -301,6 +336,8 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CUSTOMER_NUMBER)}
                     name='customer_number'
                     overrideValues={{label: ContactFieldTitles.CUSTOMER_NUMBER}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.CUSTOMER_NUMBER)}
                   />
                 </Authorization>
               </Column>
@@ -313,17 +350,21 @@ class ContactForm extends Component<Props> {
                     fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.IS_LESSOR)}
                     name='is_lessor'
                     overrideValues={{label: ContactFieldTitles.IS_LESSOR}}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.IS_LESSOR)}
                   />
                 </Authorization>
               </Column>
               {type === ContactTypes.PERSON &&
-                <Column small={12} medium={6} large={6}>
+                <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS_PROTECTION)}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.ADDRESS_PROTECTION)}
                       name='address_protection'
                       overrideValues={{label: ContactFieldTitles.ADDRESS_PROTECTION}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataContactKey(ContactFieldPaths.ADDRESS_PROTECTION)}
                     />
                   </Authorization>
                 </Column>
@@ -340,6 +381,8 @@ class ContactForm extends Component<Props> {
                       fieldType: FieldTypes.TEXTAREA,
                       label: ContactFieldTitles.NOTE,
                     }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.NOTE)}
                   />
                 </Authorization>
               </Column>

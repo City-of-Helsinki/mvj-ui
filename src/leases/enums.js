@@ -659,7 +659,9 @@ export const LeaseTenantsFieldPaths = {
   TENANTS: 'tenants',
   REFERENCE: 'tenants.child.children.reference',
   SHARE_DENIMONATOR: 'tenants.child.children.share_denominator',
+  SHARE_FRACTION: 'tenants.child.children.share_fraction',
   SHARE_NUMERATOR: 'tenants.child.children.share_numerator',
+  SHARE_PERCENTAGE: 'tenants.child.children.share_percentage',
 };
 
 /**
@@ -722,6 +724,7 @@ export const LeaseRentsFieldPaths = {
   MANUAL_RATIO: 'rents.child.children.manual_ratio',
   MANUAL_RATIO_PREVIOUS: 'rents.child.children.manual_ratio_previous',
   NOTE: 'rents.child.children.note',
+  SEASONAL_DATES: 'rents.child.children.seasonal_dates',
   SEASONAL_END_DAY: 'rents.child.children.seasonal_end_day',
   SEASONAL_END_MONTH: 'rents.child.children.seasonal_end_month',
   SEASONAL_START_DAY: 'rents.child.children.seasonal_start_day',
@@ -730,6 +733,7 @@ export const LeaseRentsFieldPaths = {
   TYPE: 'rents.child.children.type',
   X_VALUE: 'rents.child.children.x_value',
   Y_VALUE: 'rents.child.children.y_value',
+  YEARLY_DUE_DATES: 'rents.child.children.yearly_due_dates',
   Y_VALUE_START: 'rents.child.children.y_value_start',
 };
 
@@ -897,12 +901,16 @@ export const LeaseBasisOfRentsFieldPaths = {
   ARCHIVED_NOTE: 'basis_of_rents.child.children.archived_note',
   AREA: 'basis_of_rents.child.children.area',
   AREA_UNIT: 'basis_of_rents.child.children.area_unit',
+  BASE_YEAR_RENT: 'basis_of_rents.child.children.base_year_rent',
   DISCOUNT_PERCENTAGE: 'basis_of_rents.child.children.discount_percentage',
+  DISCOUNTED_INITIAL_YEAR_RENT: 'basis_of_rents.child.children.discounted_intial_year_rent',
   INDEX: 'basis_of_rents.child.children.index',
+  INITIAL_YEAR_RENT: 'basis_of_rents.child.children.intial_year_rent',
   INTENDED_USE: 'basis_of_rents.child.children.intended_use',
   LOCKED_AT: 'basis_of_rents.child.children.locked_at',
   PLANS_INSPECTED_AT: 'basis_of_rents.child.children.plans_inspected_at',
   PROFIT_MARGIN_PERCENTAGE: 'basis_of_rents.child.children.profit_margin_percentage',
+  UNIT_PRICE: 'basis_of_rents.child.children.unit_price',
 };
 
 /**
@@ -917,12 +925,16 @@ export const LeaseBasisOfRentsFieldTitles = {
   ARCHIVED_NOTE: 'Arkitoinnin huomautus',
   AREA: 'Pinta-ala',
   AREA_UNIT: 'Pinta-alan yksikkö',
+  BASE_YEAR_RENT: 'Perusvuosivuokra (ind 100)',
   DISCOUNT_PERCENTAGE: 'Alennusprosentti',
+  DISCOUNTED_INITIAL_YEAR_RENT: 'Alennettu alkuvuosivuokra (ind)',
   INDEX: 'Indeksi',
+  INITIAL_YEAR_RENT: 'Alkuvuosivuokra (ind)',
   INTENDED_USE: 'Käyttötarkoitus',
   LOCKED_AT: 'Laskelma lukittu',
   PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
+  UNIT_PRICE: 'Yksikköhinta (ind)',
 };
 
 /**

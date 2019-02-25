@@ -29,6 +29,7 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatNumber,
   getFieldOptions,
@@ -144,25 +145,33 @@ const LeaseArea = ({
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
-            <FormTextTitle>{LeaseAreasFieldTitles.IDENTIFIER}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.IDENTIFIER)}>
+              {LeaseAreasFieldTitles.IDENTIFIER}
+            </FormTextTitle>
             <FormText>{area.identifier || '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.TYPE)}>
-            <FormTextTitle>{LeaseAreasFieldTitles.TYPE}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.TYPE)}>
+              {LeaseAreasFieldTitles.TYPE}
+            </FormTextTitle>
             <FormText>{getLabelOfOption(typeOptions, area.type) || '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
-            <FormTextTitle>{LeaseAreasFieldTitles.AREA}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.AREA)}>
+              {LeaseAreasFieldTitles.AREA}
+            </FormTextTitle>
             <FormText>{!isEmptyValue(area.area) ? `${formatNumber(area.area)} m²` : '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LOCATION)}>
-            <FormTextTitle>{LeaseAreasFieldTitles.LOCATION}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LOCATION)}>
+              {LeaseAreasFieldTitles.LOCATION}
+            </FormTextTitle>
             <FormText>{getLabelOfOption(locationOptions, area.location) || '-'}</FormText>
           </Authorization>
         </Column>
@@ -182,17 +191,23 @@ const LeaseArea = ({
             <Row>
               <Column small={6} large={4}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
-                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.ADDRESS}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESS)}>
+                    {LeaseAreaAddressesFieldTitles.ADDRESS}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
               <Column small={3} large={2}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
-                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.POSTAL_CODE}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+                    {LeaseAreaAddressesFieldTitles.POSTAL_CODE}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
               <Column small={3} large={2}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
-                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.CITY}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.CITY)}>
+                    {LeaseAreaAddressesFieldTitles.CITY}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
             </Row>

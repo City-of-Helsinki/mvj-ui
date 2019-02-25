@@ -23,6 +23,7 @@ import {
   PlotType,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   getSearchQuery,
@@ -96,6 +97,8 @@ const PlotItemsEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.IDENTIFIER)}
                 name={`${field}.identifier`}
                 overrideValues={{label: LeasePlotsFieldTitles.IDENTIFIER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.IDENTIFIER)}
               />
             </Authorization>
           </Column>
@@ -106,6 +109,8 @@ const PlotItemsEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.TYPE)}
                 name={`${field}.type`}
                 overrideValues={{label: LeasePlotsFieldTitles.TYPE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.TYPE)}
               />
             </Authorization>
           </Column>
@@ -127,6 +132,8 @@ const PlotItemsEdit = ({
                 name={`${field}.area`}
                 unit='m²'
                 overrideValues={{label: LeasePlotsFieldTitles.AREA}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.AREA)}
               />
             </Authorization>
           </Column>
@@ -138,6 +145,8 @@ const PlotItemsEdit = ({
                 name={`${field}.section_area`}
                 unit='m²'
                 overrideValues={{label: LeasePlotsFieldTitles.SECTION_AREA}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.SECTION_AREA)}
               />
             </Authorization>
           </Column>
@@ -148,6 +157,8 @@ const PlotItemsEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.REGISTRATION_DATE)}
                 name={`${field}.registration_date`}
                 overrideValues={{label: LeasePlotsFieldTitles.REGISTRATION_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.REGISTRATION_DATE)}
               />
             </Authorization>
           </Column>
@@ -158,6 +169,8 @@ const PlotItemsEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.REPEAL_DATE)}
                 name={`${field}.repeal_date`}
                 overrideValues={{label: LeasePlotsFieldTitles.REPEAL_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.REPEAL_DATE)}
               />
             </Authorization>
           </Column>

@@ -12,7 +12,21 @@ import type {UiDataList} from './types';
 export const getKeyWithPrefix = (prefix: string, key: string) => `${prefix}.${key}`;
 
 /*
-* Get key for ui data on lease pagge
+* Get key for ui data on lease comment panel
+* @param {string} key
+* @return {string}
+*/
+export const getUiDataCommentKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.COMMENT, key);
+
+/*
+* Get key for ui data on contact page
+* @param {string} key
+* @return {string}
+*/
+export const getUiDataContactKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.CONTACT, key);
+
+/*
+* Get key for ui data on lease page
 * @param {string} key
 * @return {string}
 */

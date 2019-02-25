@@ -4,6 +4,8 @@
 * Ui Data prefix enumerable
 */
 export const UiDataPrefixes = {
+  COMMENT: 'comment',
+  CONTACT: 'contact',
   LEASE: 'lease',
 };
 
