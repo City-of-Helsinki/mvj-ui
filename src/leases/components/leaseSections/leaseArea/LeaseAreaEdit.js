@@ -70,6 +70,7 @@ type PlanUnitsProps = {
   noDataText: string,
   onCollapseToggle: Function,
   title: string,
+  uiDataKey: string,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -84,6 +85,7 @@ const renderPlanUnits = ({
   noDataText,
   onCollapseToggle,
   title,
+  uiDataKey,
   usersPermissions,
 }: PlanUnitsProps): Element<*> => {
   const handleAdd = () => {
@@ -108,6 +110,8 @@ const renderPlanUnits = ({
             hasErrors={isSaveClicked && !isEmpty(planUnitErrors)}
             headerTitle={title}
             onToggle={handleCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={uiDataKey}
           >
             {!isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS) && (!fields || !fields.length) &&
               <FormText>{noDataText}</FormText>
@@ -169,6 +173,7 @@ type PlotsProps = {
   onCollapseToggle: Function,
   plotsData: Array<Object>,
   title: string,
+  uiDataKey: string,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -184,6 +189,7 @@ const renderPlots = ({
   onCollapseToggle,
   plotsData,
   title,
+  uiDataKey,
   usersPermissions,
 }: PlotsProps): Element<*> => {
   const handleAdd = () => {
@@ -208,6 +214,8 @@ const renderPlots = ({
             hasErrors={isSaveClicked && !isEmpty(plotErrors)}
             headerTitle={title}
             onToggle={handleCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={uiDataKey}
           >
 
             {!isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS) && (!fields || !fields.length) &&
@@ -348,7 +356,9 @@ const AddressItems = ({attributes, change, fields, isSaveClicked, usersPermissio
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>{LeaseAreaAddressesFieldTitles.ADDRESSES}</SubTitle>
+            <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+              {LeaseAreaAddressesFieldTitles.ADDRESSES}
+            </SubTitle>
             {fields && !!fields.length &&
               <Row>
                 <Column small={6} large={4}>
@@ -633,6 +643,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 onCollapseToggle={this.handlePlotsContractCollapseToggle}
                 plotsData={get(savedArea, 'plots_contract', [])}
                 title='Kiinteistöt / määräalat sopimuksessa'
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS_CONTRACT)}
                 usersPermissions={usersPermissions}
               />
             </Column>
@@ -649,6 +660,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 onCollapseToggle={this.handlePlotsCurrentCollapseToggle}
                 plotsData={get(savedArea, 'plots_current', [])}
                 title='Kiinteistöt / määräalat nykyhetkellä'
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS)}
                 usersPermissions={usersPermissions}
               />
             </Column>
@@ -669,6 +681,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 noDataText='Ei kaavayksiköitä sopimuksessa'
                 onCollapseToggle={this.handlePlanUnitContractCollapseToggle}
                 title='Kaavayksiköt sopimuksessa'
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT)}
                 usersPermissions={usersPermissions}
               />
             </Column>
@@ -684,6 +697,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 noDataText='Ei kaavayksiköitä nykyhetkellä'
                 onCollapseToggle={this.handlePlanUnitCurrentCollapseToggle}
                 title='Kaavayksiköt nykyhetkellä'
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}
                 usersPermissions={usersPermissions}
               />
             </Column>

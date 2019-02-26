@@ -21,6 +21,7 @@ import {Methods, PermissionMissingTexts, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {LeaseInvoicingFieldPaths, LeaseInvoicingFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {hasPermissions, isFieldAllowedToRead, isMethodAllowed} from '$util/helpers';
 import {getInvoiceToCredit} from '$src/invoices/selectors';
 import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
@@ -175,8 +176,10 @@ class Invoices extends PureComponent<Props> {
 
               <Collapse
                 defaultOpen={invoicesCollapseState !== undefined ? invoicesCollapseState : true}
-                headerTitle='Laskut'
+                headerTitle={LeaseInvoicingFieldTitles.INVOICES}
                 onToggle={this.handleInvoicesCollapseToggle}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseInvoicingFieldPaths.INVOICES)}
               >
                 <InvoiceTableAndPanel
                   invoiceToCredit={invoiceToCredit}
@@ -190,8 +193,10 @@ class Invoices extends PureComponent<Props> {
               <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
                 <Collapse
                   defaultOpen={previewInvoicesCollapseState !== undefined ? previewInvoicesCollapseState : true}
-                  headerTitle='Laskujen esikatselu'
+                  headerTitle={LeaseInvoicingFieldTitles.PREVIEW_INVOICES}
                   onToggle={this.handlePreviewInvoicesCollapseToggle}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseInvoicingFieldPaths.PREVIEW_INVOICES)}
                 >
                   <InvoiceSimulator />
                 </Collapse>

@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
 import SortableTable from '$components/table/SortableTable';
+import {LeaseIndexAdjustedRentsFieldTitles} from '$src/leases/enums';
 import {
   formatDate,
   formatNumber,
@@ -32,7 +33,7 @@ const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
       columns={[
         {
           key: 'amount',
-          text: 'Indeksitarkastettu vuokra',
+          text: LeaseIndexAdjustedRentsFieldTitles.AMOUNT,
           renderer: (val, row) => {
             const func = val
               ? <AmountWithVat amount={val} date={row.end_date} />
@@ -42,10 +43,31 @@ const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
           ascSortFunction: sortNumberByKeyAsc,
           descSortFunction: sortNumberByKeyDesc,
         },
-        {key: 'intended_use', text: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
-        {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
-        {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
-        {key: 'factor', text: 'Laskentakerroin', renderer: (val) => formatNumber(val), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {
+          key: 'intended_use',
+          text: LeaseIndexAdjustedRentsFieldTitles.INTENDED_USE,
+          renderer: (val) => getLabelOfOption(intendedUseOptions, val),
+          ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions),
+          descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions),
+        },
+        {
+          key: 'start_date',
+          text: LeaseIndexAdjustedRentsFieldTitles.START_DATE,
+          renderer: (val) => formatDate(val),
+          defaultSorting: 'desc',
+        },
+        {
+          key: 'end_date',
+          text: LeaseIndexAdjustedRentsFieldTitles.END_DATE,
+          renderer: (val) => formatDate(val),
+        },
+        {
+          key: 'factor',
+          text: LeaseIndexAdjustedRentsFieldTitles.FACTOR, 
+          renderer: (val) => formatNumber(val),
+          ascSortFunction: sortNumberByKeyAsc,
+          descSortFunction: sortNumberByKeyDesc,
+        },
       ]}
       data={indexAdjustedRents}
       fixedHeader={true}

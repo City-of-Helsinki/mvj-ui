@@ -9,6 +9,7 @@ type Props = {
   children?: any,
   enableUiDataEdit?: boolean,
   required?: boolean,
+  style?: Object,
   title?: string,
   uiDataKey?: ?string,
 }
@@ -79,6 +80,7 @@ class FormTextTitle extends PureComponent<Props, State> {
       children,
       enableUiDataEdit,
       required,
+      style,
       title,
       uiDataKey,
     } = this.props;
@@ -88,6 +90,7 @@ class FormTextTitle extends PureComponent<Props, State> {
       onMouseEnter={this.handleMouseEnter}
       onMouseLeave={this.handleMouseLeave}
       className={classNames('form__text-title', {'show-add-button': showAddButton})}
+      style={style}
     >
       {children || title}
       {required &&<i className='required'> *</i>}

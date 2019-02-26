@@ -178,7 +178,9 @@ const PlotItemsEdit = ({
         <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.IDENTIFIER)}>
           {savedPlot && savedPlot.identifier &&
             <Fragment>
-              <SubTitle>{LeasePlotsFieldTitles.KTJ_LINK}</SubTitle>
+              <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.KTJ_LINK)}>
+                {LeasePlotsFieldTitles.KTJ_LINK}
+              </SubTitle>
               <Row>
                 {savedPlot.type === PlotType.REAL_PROPERTY &&
                   <Column small={12} medium={6}>

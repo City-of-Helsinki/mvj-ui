@@ -21,6 +21,7 @@ import {
   InvoiceRowsFieldTitles,
 } from '$src/invoices/enums';
 import {CreditInvoiceOptionsEnum, FormNames} from '$src/leases/enums';
+import {getUiDataCreditInvoiceKey} from '$src/uiData/helpers';
 import {
   addEmptyOption,
   getFieldAttributes,
@@ -119,6 +120,8 @@ const CreditInvoiceForm = ({
                 name='type'
                 setRefForField={setRefForFirstField}
                 overrideValues={{options: isInvoiceSet ? CreditInvoiceSetOptions : CreditInvoiceOptions}}
+                enableUiDataEdit
+                uiDataKey={getUiDataCreditInvoiceKey('type')}
               />
             </Column>
             {(type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE || type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT) &&
@@ -136,6 +139,8 @@ const CreditInvoiceForm = ({
                       label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE,
                       options: receivableTypeOptions,
                     }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataCreditInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
                   />
                 </Authorization>
               </Column>
@@ -154,6 +159,8 @@ const CreditInvoiceForm = ({
                   }}
                   name='amount'
                   unit='€'
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreditInvoiceKey('amount')}
                 />
               </Column>
             }
@@ -166,6 +173,8 @@ const CreditInvoiceForm = ({
                   fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.NOTES)}
                   name='notes'
                   overrideValues={{label: InvoiceFieldTitles.NOTES}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreditInvoiceKey(InvoiceFieldPaths.NOTES)}
                 />
               </Authorization>
             </Column>

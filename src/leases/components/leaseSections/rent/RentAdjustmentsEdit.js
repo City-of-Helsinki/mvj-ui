@@ -116,191 +116,193 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
         {({dispatch}) => {
           return(
             <Fragment>
-              <BoxItemContainer>
-                {fields && !!fields.length && fields.map((discount, index) => {
-                  const handleRemove = () => {
-                    dispatch({
-                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                      confirmationFunction: () => {
-                        fields.remove(index);
-                      },
-                      confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.RENT_ADJUSTMENT,
-                      confirmationModalTitle: DeleteModalTitles.RENT_ADJUSTMENT,
-                    });
-                  };
+              {fields && !!fields.length &&
+                <BoxItemContainer>
+                  {fields.map((discount, index) => {
+                    const handleRemove = () => {
+                      dispatch({
+                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                        confirmationFunction: () => {
+                          fields.remove(index);
+                        },
+                        confirmationModalButtonClassName: ButtonColors.ALERT,
+                        confirmationModalButtonText: 'Poista',
+                        confirmationModalLabel: DeleteModalLabels.RENT_ADJUSTMENT,
+                        confirmationModalTitle: DeleteModalTitles.RENT_ADJUSTMENT,
+                      });
+                    };
 
-                  const getFullAmountText = () => {
-                    const {adjustments} = this.props;
-                    const {amountTypeOptions} = this.state;
-                    const adjustment = adjustments[index];
+                    const getFullAmountText = () => {
+                      const {adjustments} = this.props;
+                      const {amountTypeOptions} = this.state;
+                      const adjustment = adjustments[index];
 
-                    if(!adjustment.full_amount) return null;
+                      if(!adjustment.full_amount) return null;
 
-                    return `${formatNumber(adjustment.full_amount)} ${getLabelOfOption(amountTypeOptions, adjustment.amount_type)}`;
-                  };
+                      return `${formatNumber(adjustment.full_amount)} ${getLabelOfOption(amountTypeOptions, adjustment.amount_type)}`;
+                    };
 
-                  const fullAmountText = getFullAmountText();
+                    const fullAmountText = getFullAmountText();
 
-                  return (
-                    <BoxItem key={index}>
-                      <BoxContentWrapper>
-                        <ActionButtonWrapper>
-                          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RENTADJUSTMENT)}>
-                            <RemoveButton
-                              onClick={handleRemove}
-                              title="Poista alennus/korotus"
-                            />
-                          </Authorization>
-                        </ActionButtonWrapper>
-                        <Row>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE)}
-                                name={`${discount}.type`}
-                                overrideValues={{label: LeaseRentAdjustmentsFieldTitles.TYPE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.TYPE)}
+                    return (
+                      <BoxItem key={index}>
+                        <BoxContentWrapper>
+                          <ActionButtonWrapper>
+                            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RENTADJUSTMENT)}>
+                              <RemoveButton
+                                onClick={handleRemove}
+                                title="Poista alennus/korotus"
                               />
                             </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}
-                                name={`${discount}.intended_use`}
-                                overrideValues={{label: LeaseRentAdjustmentsFieldTitles.INTENDED_USE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}
-                              />
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Row>
-                              <Column small={6}>
-                                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}>
-                                  <FormField
-                                    disableTouched={isSaveClicked}
-                                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}
-                                    name={`${discount}.start_date`}
-                                    overrideValues={{label: LeaseRentAdjustmentsFieldTitles.START_DATE}}
-                                    enableUiDataEdit
-                                    uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.START_DATE)}
-                                  />
-                                </Authorization>
-                              </Column>
-                              <Column small={6}>
-                                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}>
-                                  <FormField
-                                    disableTouched={isSaveClicked}
-                                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}
-                                    name={`${discount}.end_date`}
-                                    overrideValues={{label: LeaseRentAdjustmentsFieldTitles.END_DATE}}
-                                    enableUiDataEdit
-                                    uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.END_DATE)}
-                                  />
-                                </Authorization>
-                              </Column>
-                            </Row>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
-                              <FormTextTitle
-                                required={isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
-                              >
-                                {LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}
-                              </FormTextTitle>
-
+                          </ActionButtonWrapper>
+                          <Row>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE)}>
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE)}
+                                  name={`${discount}.type`}
+                                  overrideValues={{label: LeaseRentAdjustmentsFieldTitles.TYPE}}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.TYPE)}
+                                />
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}>
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}
+                                  name={`${discount}.intended_use`}
+                                  overrideValues={{label: LeaseRentAdjustmentsFieldTitles.INTENDED_USE}}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}
+                                />
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
                               <Row>
-                                <Authorization
-                                  allow={
-                                    isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT) ||
-                                    isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)
-                                  }
-                                  errorComponent={<Column><FormText>{fullAmountText}</FormText></Column>}
-                                >
-                                  <Column small={6}>
-                                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
-                                      <FormField
-                                        disableTouched={isSaveClicked}
-                                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
-                                        invisibleLabel
-                                        name={`${discount}.full_amount`}
-                                        overrideValues={{label: LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}}
-                                      />
-                                    </Authorization>
-                                  </Column>
-                                  <Column small={6}>
-                                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}>
-                                      <FormField
-                                        disableTouched={isSaveClicked}
-                                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}
-                                        invisibleLabel
-                                        name={`${discount}.amount_type`}
-                                        overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_TYPE}}
-                                      />
-                                    </Authorization>
-                                  </Column>
-                                </Authorization>
+                                <Column small={6}>
+                                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}>
+                                    <FormField
+                                      disableTouched={isSaveClicked}
+                                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}
+                                      name={`${discount}.start_date`}
+                                      overrideValues={{label: LeaseRentAdjustmentsFieldTitles.START_DATE}}
+                                      enableUiDataEdit
+                                      uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.START_DATE)}
+                                    />
+                                  </Authorization>
+                                </Column>
+                                <Column small={6}>
+                                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}>
+                                    <FormField
+                                      disableTouched={isSaveClicked}
+                                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}
+                                      name={`${discount}.end_date`}
+                                      overrideValues={{label: LeaseRentAdjustmentsFieldTitles.END_DATE}}
+                                      enableUiDataEdit
+                                      uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.END_DATE)}
+                                    />
+                                  </Authorization>
+                                </Column>
                               </Row>
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}
-                                name={`${discount}.amount_left`}
-                                unit='€'
-                                overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_LEFT}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}
-                              />
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}
-                                name={`${discount}.decision`}
-                                readOnlyValueRenderer={this.decisionReadOnlyRenderer}
-                                overrideValues={{
-                                  label: LeaseRentAdjustmentsFieldTitles.DECISION,
-                                  options: decisionOptions,
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
+                                <FormTextTitle
+                                  required={isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
+                                >
+                                  {LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}
+                                </FormTextTitle>
 
-                                }}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.DECISION)}
-                              />
-                            </Authorization>
-                          </Column>
-                        </Row>
-                        <Row>
-                          <Column medium={12}>
-                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.NOTE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.NOTE)}
-                                name={`${discount}.note`}
-                                overrideValues={{label: LeaseRentAdjustmentsFieldTitles.NOTE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.NOTE)}
-                              />
-                            </Authorization>
-                          </Column>
-                        </Row>
-                      </BoxContentWrapper>
-                    </BoxItem>
-                  );
-                })}
-              </BoxItemContainer>
+                                <Row>
+                                  <Authorization
+                                    allow={
+                                      isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT) ||
+                                      isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)
+                                    }
+                                    errorComponent={<Column><FormText>{fullAmountText}</FormText></Column>}
+                                  >
+                                    <Column small={6}>
+                                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
+                                        <FormField
+                                          disableTouched={isSaveClicked}
+                                          fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
+                                          invisibleLabel
+                                          name={`${discount}.full_amount`}
+                                          overrideValues={{label: LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}}
+                                        />
+                                      </Authorization>
+                                    </Column>
+                                    <Column small={6}>
+                                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}>
+                                        <FormField
+                                          disableTouched={isSaveClicked}
+                                          fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}
+                                          invisibleLabel
+                                          name={`${discount}.amount_type`}
+                                          overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_TYPE}}
+                                        />
+                                      </Authorization>
+                                    </Column>
+                                  </Authorization>
+                                </Row>
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}>
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}
+                                  name={`${discount}.amount_left`}
+                                  unit='€'
+                                  overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_LEFT}}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}
+                                />
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}>
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}
+                                  name={`${discount}.decision`}
+                                  readOnlyValueRenderer={this.decisionReadOnlyRenderer}
+                                  overrideValues={{
+                                    label: LeaseRentAdjustmentsFieldTitles.DECISION,
+                                    options: decisionOptions,
+
+                                  }}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.DECISION)}
+                                />
+                              </Authorization>
+                            </Column>
+                          </Row>
+                          <Row>
+                            <Column medium={12}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.NOTE)}>
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.NOTE)}
+                                  name={`${discount}.note`}
+                                  overrideValues={{label: LeaseRentAdjustmentsFieldTitles.NOTE}}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.NOTE)}
+                                />
+                              </Authorization>
+                            </Column>
+                          </Row>
+                        </BoxContentWrapper>
+                      </BoxItem>
+                    );
+                  })}
+                </BoxItemContainer>
+              }
 
               <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RENTADJUSTMENT)}>
                 <Row>

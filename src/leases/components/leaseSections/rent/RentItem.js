@@ -22,11 +22,16 @@ import {
   LeaseRentFixedInitialYearRentsFieldTitles,
   LeaseRentContractRentsFieldPaths,
   LeaseRentContractRentsFieldTitles,
+  LeaseIndexAdjustedRentsFieldPaths,
+  LeaseIndexAdjustedRentsFieldTitles,
   LeaseRentAdjustmentsFieldPaths,
   LeaseRentAdjustmentsFieldTitles,
+  LeasePayableRentsFieldPaths,
+  LeasePayableRentsFieldTitles,
   RentTypes,
 } from '$src/leases/enums';
 import {isRentActive, isRentArchived} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   getFieldOptions,
@@ -177,6 +182,7 @@ const RentItem = ({
             defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true}
             headerTitle={LeaseRentFixedInitialYearRentsFieldTitles.FIXED_INITIAL_YEAR_RENTS}
             onToggle={handleFixedInitialYearRentsCollapseToggle}
+            uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}
           >
             <FixedInitialYearRents fixedInitialYearRents={fixedInitialYearRents} />
           </Collapse>
@@ -192,6 +198,7 @@ const RentItem = ({
             defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true}
             headerTitle={LeaseRentContractRentsFieldTitles.CONTRACT_RENTS}
             onToggle={handleContractRentsCollapseToggle}
+            uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}
           >
             <ContractRents
               contractRents={get(rent, 'contract_rents', [])}
@@ -206,8 +213,9 @@ const RentItem = ({
         <Collapse
           className='collapse__secondary'
           defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
-          headerTitle='Indeksitarkistettu vuokra'
+          headerTitle={LeaseIndexAdjustedRentsFieldTitles.INDEX_ADJUSTED_RENTS}
           onToggle={handleIndexAdjustedRentsCollapseToggle}
+          uiDataKey={getUiDataLeaseKey(LeaseIndexAdjustedRentsFieldPaths.INDEX_ADJUSTED_RENTS)}
         >
           <IndexAdjustedRents indexAdjustedRents={indexAdjustedRents} />
         </Collapse>
@@ -220,8 +228,9 @@ const RentItem = ({
           <Collapse
             className='collapse__secondary'
             defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
-            headerTitle={<span>{LeaseRentAdjustmentsFieldTitles.RENT_ADJUSTMENTS} ({rentAdjustments.length})</span>}
+            headerTitle={`${LeaseRentAdjustmentsFieldTitles.RENT_ADJUSTMENTS} (${rentAdjustments.length})`}
             onToggle={handleRentAdjustmentsCollapseToggle}
+            uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS)}
           >
             <RentAdjustments rentAdjustments={rentAdjustments} />
           </Collapse>
@@ -233,8 +242,9 @@ const RentItem = ({
         <Collapse
           className='collapse__secondary'
           defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
-          headerTitle='Perittävä vuokra'
+          headerTitle={LeasePayableRentsFieldTitles.PAYABLE_RENTS}
           onToggle={handlePayableRentsCollapseToggle}
+          uiDataKey={getUiDataLeaseKey(LeasePayableRentsFieldPaths.PAYABLE_RENTS)}
         >
           <PayableRents payableRents={payableRents} />
         </Collapse>

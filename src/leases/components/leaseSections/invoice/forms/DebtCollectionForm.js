@@ -33,10 +33,17 @@ import {
   DeleteModalTitles,
   FormNames,
   LeaseDecisionsFieldPaths,
+  LeaseDecisionsFieldTitles,
 } from '$src/leases/enums';
 import {Methods} from '$src/enums';
 import {getUserFullName} from '$src/users/helpers';
 import {getContentDecisions, getDecisionOptions} from '$src/leases/helpers';
+import {
+  getUiDataCollectionCourtDecisionKey,
+  getUiDataCollectionLetterKey,
+  getUiDataCollectionNoteKey,
+  getUiDataLeaseKey,
+} from '$src/uiData/helpers';
 import {
   formatDate,
   isFieldAllowedToRead,
@@ -296,24 +303,34 @@ class DebtCollectionForm extends PureComponent<Props, State> {
               <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.GET)}>
                 <Row>
                   <Column small={12} large={6}>
-                    <SubTitle>{CollectionLetterFieldTitles.COLLECTION_LETTERS}</SubTitle>
+                    <SubTitle
+                      enableUiDataEdit
+                      uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.COLLECTION_LETTERS)}
+                    >
+                      {CollectionLetterFieldTitles.COLLECTION_LETTERS}
+                    </SubTitle>
 
                     {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionLetters || !sortedCollectionLetters.length) && <FormText>Ei perintäkirjeitä</FormText>}
                     {sortedCollectionLetters && !!sortedCollectionLetters.length &&
                       <Row>
                         <Column small={6}>
                           <Authorization allow={isFieldAllowedToRead(collectionLetterAttributes, CollectionLetterFieldPaths.FILE)}>
-                            <FormTextTitle>{CollectionLetterFieldTitles.FILE}</FormTextTitle>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.FILE)}>
+                              {CollectionLetterFieldTitles.FILE}
+                            </FormTextTitle>
                           </Authorization>
                         </Column>
                         <Column small={3}>
                           <Authorization allow={isFieldAllowedToRead(collectionLetterAttributes, CollectionLetterFieldPaths.UPLOADED_AT)}>
-                            <FormTextTitle>{CollectionLetterFieldTitles.UPLOADED_AT}</FormTextTitle>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.UPLOADED_AT)}>
+                              {CollectionLetterFieldTitles.UPLOADED_AT}
+                            </FormTextTitle>
                           </Authorization>
                         </Column>
                         <Column small={3}>
-                          {/* TODO: Check that CollectionLetterFieldPaths.UPLOADER field exists in attributes when added to API */}
-                          <FormTextTitle>{CollectionLetterFieldTitles.UPLOADER}</FormTextTitle>
+                          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.UPLOADER)}>
+                            {CollectionLetterFieldTitles.UPLOADER}
+                          </FormTextTitle>
                         </Column>
                       </Row>
                     }
@@ -382,24 +399,34 @@ class DebtCollectionForm extends PureComponent<Props, State> {
               <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)}>
                 <Row>
                   <Column small={12} large={6}>
-                    <SubTitle>{CollectionCourtDecisionFieldTitles.COLLECTION_COURT_DECISIONS}</SubTitle>
+                    <SubTitle
+                      enableUiDataEdit
+                      uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.COLLECTION_COURT_DECISIONS)}
+                    >
+                      {CollectionCourtDecisionFieldTitles.COLLECTION_COURT_DECISIONS}
+                    </SubTitle>
 
                     {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionCourtDecisions || !sortedCollectionCourtDecisions.length) && <FormText>Ei käräjaoikeuden päätöksiä</FormText>}
                     {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length &&
                       <Row>
                         <Column small={6}>
                           <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.FILE)}>
-                            <FormTextTitle>{CollectionCourtDecisionFieldTitles.FILE}</FormTextTitle>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.FILE)}>
+                              {CollectionCourtDecisionFieldTitles.FILE}
+                            </FormTextTitle>
                           </Authorization>
                         </Column>
                         <Column small={3}>
                           <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
-                            <FormTextTitle>{CollectionCourtDecisionFieldTitles.UPLOADED_AT}</FormTextTitle>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
+                              {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
+                            </FormTextTitle>
                           </Authorization>
                         </Column>
                         <Column small={3}>
-                          {/* TODO: Check that attributes has CollectionCourtDecisionFieldPaths.UPLOADER when added API */}
-                          <FormTextTitle>{CollectionCourtDecisionFieldTitles.UPLOADER}</FormTextTitle>
+                          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.UPLOADER)}>
+                            {CollectionCourtDecisionFieldTitles.UPLOADER}
+                          </FormTextTitle>
                         </Column>
                       </Row>
                     }
@@ -467,7 +494,12 @@ class DebtCollectionForm extends PureComponent<Props, State> {
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS) && isFieldAllowedToRead(leaseAttributes, LeaseDecisionsFieldPaths.REFERENCE_NUMBER)}>
                 <Row>
                   <Column small={12} large={6}>
-                    <SubTitle>Vuokrauksen purkamispäätös</SubTitle>
+                    <SubTitle
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DEBT_COLLECTION_DECISIONS)}
+                    >
+                      {LeaseDecisionsFieldTitles.DEBT_COLLECTION_DECISIONS}
+                    </SubTitle>
 
                     {!debtCollectionDecisions.length && <FormText>Ei purkamispäätöksiä</FormText>}
                     {!!debtCollectionDecisions.length && debtCollectionDecisions.map((decision, index) =>
@@ -484,26 +516,38 @@ class DebtCollectionForm extends PureComponent<Props, State> {
               <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.GET)}>
                 <Row>
                   <Column small={12} large={6}>
-                    <SubTitle>Huomautukset</SubTitle>
+                    <SubTitle
+                      enableUiDataEdit
+                      uiDataKey={getUiDataCollectionNoteKey(CollectionNoteFieldPaths.COLLECTION_NOTES)}
+                    >
+                      {CollectionNoteFieldTitles.COLLECTION_NOTES}
+                    </SubTitle>
 
                     {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionNotes || !sortedCollectionNotes.length) && <FormText>Ei huomautuksia</FormText>}
                     {sortedCollectionNotes && !!sortedCollectionNotes.length &&
                       <Row>
                         <Column small={6}>
                           <Authorization allow={isFieldAllowedToRead(collectionNoteAttributes, CollectionNoteFieldPaths.NOTE)}>
-                            <FormTextTitle required={isFieldRequired(collectionNoteAttributes, CollectionNoteFieldPaths.NOTE)}>
+                            <FormTextTitle
+                              required={isFieldRequired(collectionNoteAttributes, CollectionNoteFieldPaths.NOTE)}
+                              enableUiDataEdit
+                              uiDataKey={getUiDataCollectionNoteKey(CollectionNoteFieldPaths.NOTE)}
+                            >
                               {CollectionNoteFieldTitles.NOTE}
                             </FormTextTitle>
                           </Authorization>
                         </Column>
                         <Column small={3}>
                           <Authorization allow={isFieldAllowedToRead(collectionNoteAttributes, CollectionNoteFieldPaths.MODIFIED_AT)}>
-                            <FormTextTitle>{CollectionNoteFieldTitles.MODIFIED_AT}</FormTextTitle>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionNoteKey(CollectionNoteFieldPaths.MODIFIED_AT)}>
+                              {CollectionNoteFieldTitles.MODIFIED_AT}
+                            </FormTextTitle>
                           </Authorization>
                         </Column>
                         <Column small={3}>
-                          {/* TODO: Check that attributes has CollectionNoteFieldPaths.USER when added API */}
-                          <FormTextTitle>{CollectionNoteFieldTitles.USER}</FormTextTitle>
+                          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionNoteKey(CollectionNoteFieldPaths.USER)}>
+                            {CollectionNoteFieldTitles.USER}
+                          </FormTextTitle>
                         </Column>
                       </Row>
                     }

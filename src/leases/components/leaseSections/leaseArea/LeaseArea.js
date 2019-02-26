@@ -184,7 +184,9 @@ const LeaseArea = ({
         </Column>
       </Row>
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
-        <SubTitle>{LeaseAreaAddressesFieldTitles.ADDRESSES}</SubTitle>
+        <SubTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+          {LeaseAreaAddressesFieldTitles.ADDRESSES}
+        </SubTitle>
         {!addresses || !addresses.length && <FormText>Ei osoitteita</FormText>}
         {!!addresses.length &&
           <Fragment>
@@ -246,6 +248,7 @@ const LeaseArea = ({
               defaultOpen={plotsContractCollapseState !== undefined ? plotsContractCollapseState : !archived}
               headerTitle='Kiinteistöt / määräalat sopimuksessa'
               onToggle={handlePlotsContractCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS_CONTRACT)}
             >
               <BoxItemContainer>
                 {!area.plots_contract || !area.plots_contract.length &&
@@ -267,6 +270,7 @@ const LeaseArea = ({
               defaultOpen={plotsCurrentCollapseState !== undefined ? plotsCurrentCollapseState : !archived}
               headerTitle='Kiinteistöt / määräalat nykyhetkellä'
               onToggle={handlePlotsCurrentCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS)}
             >
               {!area.plots_current || !area.plots_current.length &&
                 <FormText>Ei kiinteistöjä/määräaloja nykyhetkellä</FormText>
@@ -293,6 +297,7 @@ const LeaseArea = ({
               defaultOpen={planUnitsContractCollapseState !== undefined ? planUnitsContractCollapseState : !archived}
               headerTitle='Kaavayksiköt sopimuksessa'
               onToggle={handlePlanUnitContractCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT)}
             >
               <BoxItemContainer>
                 {!area.plan_units_contract || !area.plan_units_contract.length &&
@@ -314,6 +319,7 @@ const LeaseArea = ({
               defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : !archived}
               headerTitle='Kaavayksiköt nykyhetkellä'
               onToggle={handlePlanUnitCurrentCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}
             >
               <BoxItemContainer>
                 {!area.plan_units_current || !area.plan_units_current.length &&

@@ -113,8 +113,11 @@
     p {
       margin: 0;
       color: $black;
+      font-size: rem-calc(14px);
       white-space: pre-line;
       display: inline-block;
+      font-weight: normal;
+      text-transform: none;
     }
   }
 }

@@ -6,6 +6,7 @@
  * @type {{}}
  */
 export const CollectionLetterFieldPaths = {
+  COLLECTION_LETTERS: 'collection_letters',
   FILE: 'file',
   UPLOADED_AT: 'uploaded_at',
   UPLOADER: 'uploader',

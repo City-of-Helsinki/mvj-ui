@@ -35,6 +35,7 @@ type Props = {
   deleteUiData: Function,
   enableUiDataEdit: boolean,
   editUiData: Function,
+  innerRef?: Function,
   onTooltipClose: Function,
   uiDataAttributes: Attributes,
   uiDataList: UiDataList,
@@ -121,10 +122,13 @@ class Tooltip extends PureComponent<Props, State> {
     const target = event.target,
       el = ReactDOM.findDOMNode(this);
 
-    if (isOpen) event.preventDefault();
+    if (isOpen) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
 
     if (isOpen && el && target !== el && !el.contains(target)) {
-      this.closeTooltip();
+      this.closeTooltip(event);
     }
   };
 
@@ -140,14 +144,20 @@ class Tooltip extends PureComponent<Props, State> {
   closeTooltip = (e: any) => {
     const {onTooltipClose} = this.props;
 
-    if(e) e.preventDefault();
+    if(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
     this.setState({isOpen: false});
     onTooltipClose();
   }
 
   openTooltip = (e: any) => {
-    if(e) e.preventDefault();
+    if(e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
 
     this.setState({
       isOpen: true,
@@ -226,7 +236,7 @@ class Tooltip extends PureComponent<Props, State> {
   }
 
   render() {
-    const {enableUiDataEdit, uiDataKey} = this.props;
+    const {enableUiDataEdit, innerRef, uiDataKey} = this.props;
     const {
       allowToAddUiData,
       allowToDeleteUiData,
@@ -242,7 +252,6 @@ class Tooltip extends PureComponent<Props, State> {
     const text = uiData ? uiData.value || '' : '';
     const name = `${uiDataKey || ''}__input`;
 
-    console.log('pos', position);
     if(!uiDataKey && !enableUiDataEdit) return null;
 
     return(
@@ -265,7 +274,7 @@ class Tooltip extends PureComponent<Props, State> {
           };
 
           return(
-            <div className='tooltip__component'>
+            <div className='tooltip__component' ref={innerRef}>
               <div className='tooltip__container'>
                 {enableUiDataEdit && allowToAddUiData && !uiData &&
                   <button className='tooltip__add-button' onClick={this.openTooltip} style={{display: isOpen ? 'inherit' : null}} type='button'>

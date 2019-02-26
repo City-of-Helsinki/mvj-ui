@@ -182,9 +182,10 @@ const ConstructabilityItem = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Esirakentaminen, johtosiirrot ja kunnallistekniikka'
+        headerTitle={LeaseAreasFieldTitles.PRECONSTRUCTION}
         onToggle={handlePreconstructionCollapseToggle}
-        showTitleOnOpen={true}
+        showTitleOnOpen
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.PRECONSTRUCTION)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -230,9 +231,10 @@ const ConstructabilityItem = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Purku'
+        headerTitle={LeaseAreasFieldTitles.DEMOLITION}
         onToggle={handleDemolitionCollapseToggle}
-        showTitleOnOpen={true}
+        showTitleOnOpen
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.DEMOLITION)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -262,9 +264,10 @@ const ConstructabilityItem = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Pima ja jäte'
+        headerTitle={LeaseAreasFieldTitles.POLLUTED_LAND}
         onToggle={handlePollutedLandCollapseToggle}
         showTitleOnOpen={true}
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -335,9 +338,10 @@ const ConstructabilityItem = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Rakennettavuusselvitys'
+        headerTitle={LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT}
         onToggle={handleConstructabilityReportCollapseToggle}
-        showTitleOnOpen={true}
+        showTitleOnOpen
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -400,9 +404,10 @@ const ConstructabilityItem = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Muut'
+        headerTitle={LeaseAreasFieldTitles.OTHER}
         onToggle={handleOtherCollapseToggle}
-        showTitleOnOpen={true}
+        showTitleOnOpen
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.OTHER)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>

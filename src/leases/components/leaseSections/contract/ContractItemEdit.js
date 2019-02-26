@@ -115,6 +115,8 @@ const renderContractChanges = ({
             hasErrors={isSaveClicked &&!isEmpty(contractChangeErrors)}
             headerTitle={title}
             onToggle={handleCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseContractChangesFieldPaths.CONTRACT_CHANGES)}
           >
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTCHANGE) &&
               (!fields || !fields.length) &&
@@ -307,6 +309,8 @@ const renderCollaterals = ({
             hasErrors={isSaveClicked &&!isEmpty(collateralsErrors)}
             headerTitle={title}
             onToggle={handleCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.COLLATRALS)}
           >
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_COLLATERAL) &&
               (!fields || !fields.length) &&

@@ -241,6 +241,7 @@ const ContractItem = ({
           defaultOpen={contractChangesCollapseState !== undefined ? contractChangesCollapseState : true}
           headerTitle={LeaseContractChangesFieldTitles.CONTRACT_CHANGES}
           onToggle={handleContractChangesCollapseToggle}
+          uiDataKey={LeaseContractChangesFieldPaths.CONTRACT_CHANGES}
         >
           {!contract.contract_changes || !contract.contract_changes.length && <FormText>Ei sopimuksen muutoksia</FormText>}
           {contract.contract_changes && !!contract.contract_changes.length &&
@@ -329,6 +330,7 @@ const ContractItem = ({
           defaultOpen={collateralsCollapseState !== undefined ? collateralsCollapseState : true}
           headerTitle={LeaseContractCollateralsFieldTitles.COLLATRALS}
           onToggle={handleCollateralsCollapseToggle}
+          uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.COLLATRALS)}
         >
           {!contract.collaterals || !contract.collaterals.length && <FormText>Ei vakuuksia</FormText>}
           {contract.collaterals && !!contract.collaterals.length &&

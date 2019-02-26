@@ -123,7 +123,9 @@ const PlotItem = ({areaArchived, attributes, location, plot}: Props) => {
       <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.IDENTIFIER)}>
         {plot.identifier &&
           <Fragment>
-            <SubTitle>{LeasePlotsFieldTitles.KTJ_LINK}</SubTitle>
+            <SubTitle uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.KTJ_LINK)}>
+              {LeasePlotsFieldTitles.KTJ_LINK}
+            </SubTitle>
 
             <Row>
               {plot.type === PlotType.REAL_PROPERTY &&

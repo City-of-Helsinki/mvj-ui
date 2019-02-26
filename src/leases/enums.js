@@ -467,22 +467,27 @@ export const LeaseAreasFieldPaths = {
   ARCHIVED_DECISION: 'lease_areas.child.children.archived_decision',
   ARCHIVED_NOTE: 'lease_areas.child.children.archived_note',
   AREA: 'lease_areas.child.children.area',
+  CONSTRUCTABILITY_REPORT: 'lease_areas.child.children.constructability_report',
   CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER: 'lease_areas.child.children.constructability_report_geotechnical_number',
   CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'lease_areas.child.children.constructability_report_investigation_state',
   CONSTRUCTABILITY_REPORT_SIGNING_DATE: 'lease_areas.child.children.constructability_report_signing_date',
   CONSTRUCTABILITY_REPORT_SIGNER: 'lease_areas.child.children.constructability_report_signer',
   CONSTRUCTABILITY_REPORT_STATE: 'lease_areas.child.children.constructability_report_state',
+  DEMOLITION: 'lease_areas.child.children.demolition',
   DEMOLITION_STATE: 'lease_areas.child.children.demolition_state',
   GEOMETRY: 'lease_areas.child.children.geometry',
   IDENTIFIER: 'lease_areas.child.children.identifier',
   LOCATION: 'lease_areas.child.children.location',
+  OTHER: 'lease_areas.child.children.other',
   OTHER_STATE: 'lease_areas.child.children.other_state',
+  POLLUTED_LAND: 'lease_areas.child.children.polluted_land',
   POLLUTED_LAND_MATTI_REPORT_NUMBER: 'lease_areas.child.children.polluted_land_matti_report_number',
   POLLUTED_LAND_PLANNER: 'lease_areas.child.children.polluted_land_planner',
   POLLUTED_LAND_PROJECTWISE_NUMBER: 'lease_areas.child.children.polluted_land_projectwise_number',
   POLLUTED_LAND_RENT_CONDITION_DATE: 'lease_areas.child.children.polluted_land_rent_condition_date',
   POLLUTED_LAND_RENT_CONDITION_STATE: 'lease_areas.child.children.polluted_land_rent_condition_state',
   POLLUTED_LAND_STATE: 'lease_areas.child.children.polluted_land_state',
+  PRECONSTRUCTION: 'lease_areas.child.children.preconstruction',
   PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'lease_areas.child.children.preconstruction_estimated_construction_readiness_moment',
   PRECONSTRUCTION_INSPECTION_MOMENT: 'lease_areas.child.children.preconstruction_inspection_moment',
   PRECONSTRUCTION_STATE: 'lease_areas.child.children.preconstruction_state',
@@ -500,22 +505,27 @@ export const LeaseAreasFieldTitles = {
   ARCHIVED_DECISION: 'Päätös',
   ARCHIVED_NOTE: 'Huomautus',
   AREA: 'Pinta-ala',
+  CONSTRUCTABILITY_REPORT: 'Rakennettavuusselvitys',
   CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER: 'Geoteknisen palvelun tiedosto',
   CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'Selvitys',
   CONSTRUCTABILITY_REPORT_SIGNING_DATE: 'Allekirjoituspvm',
   CONSTRUCTABILITY_REPORT_SIGNER: 'Allekirjoittaja',
   CONSTRUCTABILITY_REPORT_STATE: 'Selvitysaste',
+  DEMOLITION: 'Purku',
   DEMOLITION_STATE: 'Selvitysaste',
   GEOMETRY: 'Karttalinkki',
   IDENTIFIER: 'Kohteen tunnus',
   LOCATION: 'Sijainti',
+  OTHER: 'Muut',
   OTHER_STATE: 'Selvitysaste',
+  POLLUTED_LAND: 'Pima ja jäte',
   POLLUTED_LAND_MATTI_REPORT_NUMBER: 'Matti-raportti',
   POLLUTED_LAND_PLANNER: 'PIMA valmistelija',
   POLLUTED_LAND_PROJECTWISE_NUMBER: 'ProjectWise numero',
   POLLUTED_LAND_RENT_CONDITION_DATE: 'Vuokraehdot pvm',
   POLLUTED_LAND_RENT_CONDITION_STATE: 'Vuokraehdot',
   POLLUTED_LAND_STATE: 'Selvitysaste',
+  PRECONSTRUCTION: 'Esirakentaminen, johtosiirrot ja kunnallistekniikka',
   PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'Arvioitu rakentamisvalmius (kk/v)',
   PRECONSTRUCTION_INSPECTION_MOMENT: 'Tarkistuspäivä (kk/v)',
   PRECONSTRUCTION_STATE: 'Selvitysaste',
@@ -553,6 +563,7 @@ export const LeaseAreaAddressesFieldTitles = {
  */
 export const LeasePlanUnitsFieldPaths = {
   PLAN_UNITS: 'lease_areas.child.children.plan_units',
+  PLAN_UNITS_CONTRACT: 'lease_areas.child.children.plan_units_contract',
   AREA: 'lease_areas.child.children.plan_units.child.children.area',
   DETAILED_PLAN_IDENTIFIER: 'lease_areas.child.children.plan_units.child.children.detailed_plan_identifier',
   DETAILED_PLAN_LATEST_PROCESSING_DATE: 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date',
@@ -597,6 +608,7 @@ export const LeasePlanUnitsFieldTitles = {
  */
 export const LeasePlotsFieldPaths = {
   PLOTS: 'lease_areas.child.children.plots',
+  PLOTS_CONTRACT: 'lease_areas.child.children.plots_contract',
   AREA: 'lease_areas.child.children.plots.child.children.area',
   GEOMETRY: 'lease_areas.child.children.plots.child.children.geometry',
   IDENTIFIER: 'lease_areas.child.children.plots.child.children.identifier',
@@ -854,6 +866,34 @@ export const LeaseRentContractRentsFieldTitles = {
 };
 
 /**
+ * Lease index adjusted rents field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseIndexAdjustedRentsFieldPaths = {
+  INDEX_ADJUSTED_RENTS: 'rents.child.children.index_adjusted_rents',
+  AMOUNT: 'rents.child.children.index_adjusted_rents.child.children.amount',
+  END_DATE: 'rents.child.children.index_adjusted_rents.child.children.end_date',
+  FACTOR: 'rents.child.children.index_adjusted_rents.child.children.factor',
+  INTENDED_USE: 'rents.child.children.index_adjusted_rents.child.children.intended_use',
+  START_DATE: 'rents.child.children.index_adjusted_rents.child.children.start_date',
+};
+
+/**
+ * Lease index adjusted rents field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseIndexAdjustedRentsFieldTitles = {
+  INDEX_ADJUSTED_RENTS: 'Indeksitarkistettu vuokra',
+  AMOUNT: 'Indeksitarkistettu vuokra',
+  END_DATE: 'Loppupvm',
+  FACTOR: 'Laskentakerroin',
+  INTENDED_USE: 'Käyttötarkoitus',
+  START_DATE: 'Alkupvm',
+};
+
+/**
  * Lease rent adjustments field paths enumerable.
  *
  * @type {{}}
@@ -887,6 +927,34 @@ export const LeaseRentAdjustmentsFieldTitles = {
   NOTE: 'Huomautus',
   START_DATE: 'Alkupvm',
   TYPE: 'Tyyppi',
+};
+
+/**
+ * Lease payable rents field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeasePayableRentsFieldPaths = {
+  PAYABLE_RENTS: 'rents.child.children.payable_rents',
+  AMOUNT: 'rents.child.children.payable_rents.child.children.amount',
+  CALENDAR_YEAR_RENT: 'rents.child.children.payable_rents.child.children.calendar_year_rent',
+  DIFFERENCE_PERCENT: 'rents.child.children.payable_rents.child.children.difference_percent',
+  END_DATE: 'rents.child.children.payable_rents.child.children.end_date',
+  START_DATE: 'rents.child.children.payable_rents.child.children.start_date',
+};
+
+/**
+ * Lease payable rents field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeasePayableRentsFieldTitles = {
+  PAYABLE_RENTS: 'Perittävä vuokra',
+  AMOUNT: 'Perittävä vuokra',
+  CALENDAR_YEAR_RENT: 'Kalenterivuosivuokra',
+  DIFFERENCE_PERCENT: 'Nousu',
+  END_DATE: 'Loppupvm',
+  START_DATE: 'Alkupvm',
 };
 
 /**
@@ -943,6 +1011,7 @@ export const LeaseBasisOfRentsFieldTitles = {
  * @type {{}}
  */
 export const LeaseDecisionsFieldPaths = {
+  DEBT_COLLECTION_DECISIONS: 'debt_collection_decisions',
   DECISIONS: 'decisions',
   DECISION_DATE: 'decisions.child.children.decision_date',
   DECISION_MAKER: 'decisions.child.children.decision_maker',
@@ -958,6 +1027,7 @@ export const LeaseDecisionsFieldPaths = {
  * @type {{}}
  */
 export const LeaseDecisionsFieldTitles = {
+  DEBT_COLLECTION_DECISIONS: 'Vuokrauksen purkamispäätös',
   DECISIONS: 'Päätökset',
   DECISION_DATE: 'Päätöspvm',
   DECISION_MAKER: 'Päättäjä',
@@ -1133,7 +1203,9 @@ export const LeaseInspectionsFieldTitles = {
  * @type {{}}
  */
 export const LeaseInvoicingFieldPaths = {
+  INVOICES: 'invoices',
   IS_INVOICING_ENABLED: 'is_invoicing_enabled',
+  PREVIEW_INVOICES: 'preview_invoices',
 };
 
 /**
@@ -1142,7 +1214,9 @@ export const LeaseInvoicingFieldPaths = {
  * @type {{}}
  */
 export const LeaseInvoicingFieldTitles = {
+  INVOICES: 'Laskut',
   INVOICING: 'Laskutus',
   INVOICING_DISABLED: 'Laskutus keskeytetty',
   INVOICING_ENABLED: 'Laskutus käynnissä',
+  PREVIEW_INVOICES: 'Laskujen esikatselu',
 };

@@ -28,6 +28,7 @@ export const InvoiceType = {
 export const InvoiceFieldPaths = {
   ADJUSTED_DUE_DATE: 'adjusted_due_date',
   BILLED_AMOUNT: 'billed_amount',
+  BILLING_PERIOD: 'billing_period',
   BILLING_PERIOD_END_DATE: 'billing_period_end_date',
   BILLING_PERIOD_START_DATE: 'billing_period_start_date',
   COLLECTION_CHARGE: 'collection_charge',
@@ -46,6 +47,7 @@ export const InvoiceFieldPaths = {
   RECIPIENT: 'recipient',
   SAP_ID: 'sap_id',
   SENT_TO_SAP_AT: 'sent_to_sap_at',
+  SHARE: 'share',
   STATE: 'state',
   TYPE: 'type',
   TOTAL_AMOUNT: 'total_amount',

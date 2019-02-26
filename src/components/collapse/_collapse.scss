@@ -100,6 +100,26 @@
       font-weight: $semibold;
       color: $black;
       margin: 0;
+
+      .tooltip__component {
+        display: inline-block;
+        position: relative;
+        line-height: rem-calc(18px);
+        margin-left: rem-calc(5px);
+        top: -4px;
+
+        .tooltip__add-button {
+          display: none;
+        }
+      }
+
+      &.show-add-button {
+        .tooltip__component {
+          .tooltip__add-button {
+            display: inherit;
+          }
+        }
+      }
     }
 
     &_icon {
@@ -164,6 +184,7 @@
     position: relative;
     padding: 0;
     display: none;
+    line-height: 1;
   }
 
   &__content-wrapper {
@@ -216,6 +237,10 @@
       &_title {
         font-size: rem-calc(16px);
         text-transform: uppercase;
+
+        .tooltip__component {
+          top: -2px;
+        }
       }
 
       .arrow-icon {

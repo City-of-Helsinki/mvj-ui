@@ -518,7 +518,7 @@
       }
     }
 
-    &:hover {
+    &.show-add-button {
       .tooltip__component {
         .tooltip__add-button {
           display: inherit;

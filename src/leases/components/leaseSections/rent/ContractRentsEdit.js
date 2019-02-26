@@ -61,7 +61,7 @@ const ContractRentsEdit = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            {(fields && !!fields.length) &&
+            {fields && !!fields.length &&
               <Row showFor={Breakpoints.LARGE}>
                 <Column large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
@@ -137,33 +137,36 @@ const ContractRentsEdit = ({
                 </Column>
               </Row>
             }
-            <BoxItemContainer>
-              {fields && !!fields.length && fields.map((rent, index) => {
-                const handleRemove = () => {
-                  dispatch({
-                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                    confirmationFunction: () => {
-                      fields.remove(index);
-                    },
-                    confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText: 'Poista',
-                    confirmationModalLabel: DeleteModalLabels.CONTRACT_RENT,
-                    confirmationModalTitle: DeleteModalTitles.CONTRACT_RENT,
-                  });
-                };
+            
+            {fields && !!fields.length &&
+              <BoxItemContainer>
+                {fields.map((rent, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.CONTRACT_RENT,
+                      confirmationModalTitle: DeleteModalTitles.CONTRACT_RENT,
+                    });
+                  };
 
-                return(
-                  <ContractRentEdit
-                    key={index}
-                    field={rent}
-                    onRemove={handleRemove}
-                    rentField={rentField}
-                    rentType={rentType}
-                    showRemove={!!fields && fields.length > 1}
-                  />
-                );
-              })}
-            </BoxItemContainer>
+                  return(
+                    <ContractRentEdit
+                      key={index}
+                      field={rent}
+                      onRemove={handleRemove}
+                      rentField={rentField}
+                      rentType={rentType}
+                      showRemove={!!fields && fields.length > 1}
+                    />
+                  );
+                })}
+              </BoxItemContainer>
+            }
 
             <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTRENT)}>
               <Row>

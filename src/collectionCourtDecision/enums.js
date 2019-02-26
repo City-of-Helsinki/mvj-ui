@@ -6,6 +6,7 @@
  * @type {{}}
  */
 export const CollectionCourtDecisionFieldPaths = {
+  COLLECTION_COURT_DECISIONS: 'collection_court_decisions',
   FILE: 'file',
   UPLOADED_AT: 'uploaded_at',
   UPLOADER: 'uploader',

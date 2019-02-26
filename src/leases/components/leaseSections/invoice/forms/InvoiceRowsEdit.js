@@ -14,6 +14,7 @@ import SubTitle from '$components/content/SubTitle';
 import {ButtonColors} from '$components/enums';
 import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
+import {getUiDataInvoiceKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
@@ -36,22 +37,36 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>{InvoiceRowsFieldTitles.ROWS}</SubTitle>
+            <SubTitle enableUiDataEdit uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.ROWS)}>
+              {InvoiceRowsFieldTitles.ROWS}
+            </SubTitle>
             {!!fields && !!fields.length &&
               <Fragment>
                 <Row>
-                  <Column small={3} large={3}>
-                    <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
+                  <Column small={4}>
+                    <FormTextTitle
+                      required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.TENANT)}
+                    >
                       {InvoiceRowsFieldTitles.TENANT}
                     </FormTextTitle>
                   </Column>
-                  <Column small={3} large={3}>
-                    <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                  <Column small={4}>
+                    <FormTextTitle
+                      required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
+                    >
                       {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
                     </FormTextTitle>
                   </Column>
-                  <Column small={3} large={3}>
-                    <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                  <Column small={4}>
+                    <FormTextTitle
+                      required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.AMOUNT)}
+                    >
                       {InvoiceRowsFieldTitles.AMOUNT}
                     </FormTextTitle>
                   </Column>
@@ -72,7 +87,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
 
                   return (
                     <Row key={index}>
-                      <Column small={3} large={3}>
+                      <Column small={4}>
                         <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
                           <FormField
                             disableTouched={isEditClicked}
@@ -86,7 +101,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
                           />
                         </Authorization>
                       </Column>
-                      <Column small={3} large={3}>
+                      <Column small={4}>
                         <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
                           <FormField
                             disableTouched={isEditClicked}
@@ -97,7 +112,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
                           />
                         </Authorization>
                       </Column>
-                      <Column small={2} large={3}>
+                      <Column small={4}>
                         <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
                           <FormField
                             disableTouched={isEditClicked}

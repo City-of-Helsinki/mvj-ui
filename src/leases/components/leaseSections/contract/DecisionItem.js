@@ -159,6 +159,7 @@ const DecisionItem = ({
           defaultOpen={conditionsCollapseState !== undefined ? conditionsCollapseState : true}
           headerTitle={LeaseDecisionConditionsFieldTitles.CONDITIONS}
           onToggle={handleConditionsCollapseToggle}
+          uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.CONDITIONS)}
         >
           {!decision.conditions || !decision.conditions.length && <FormText>Ei ehtoja</FormText> }
           {decision.conditions && !!decision.conditions.length &&

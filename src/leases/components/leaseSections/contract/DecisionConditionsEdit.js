@@ -83,6 +83,8 @@ const DecisionConditionsEdit = ({
             hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
             headerTitle={LeaseDecisionConditionsFieldTitles.CONDITIONS}
             onToggle={handleCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.CONDITIONS)}
           >
 
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONDITION) && (!fields || !fields.length) &&

@@ -128,7 +128,9 @@ const renderComments = connect(
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
+            <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+              {LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}
+            </SubTitle>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONSTRUCTABILITYDESCRIPTION) &&
               (!fields || !fields.length) &&
               <FormText><em>Ei huomautuksia</em></FormText>
@@ -422,8 +424,10 @@ const ConstructabilityItemEdit = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Esirakentaminen, johtosiirrot ja kunnallistekniikka'
+        headerTitle={LeaseAreasFieldTitles.PRECONSTRUCTION}
         onToggle={handlePreconstructionCollapseToggle}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.PRECONSTRUCTION)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -489,8 +493,10 @@ const ConstructabilityItemEdit = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Purku'
+        headerTitle={LeaseAreasFieldTitles.DEMOLITION}
         onToggle={handleDemolitionCollapseToggle}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.DEMOLITION)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -532,8 +538,10 @@ const ConstructabilityItemEdit = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Pima ja jäte'
+        headerTitle={LeaseAreasFieldTitles.POLLUTED_LAND}
         onToggle={handlePollutedLandCollapseToggle}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -638,8 +646,10 @@ const ConstructabilityItemEdit = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Rakennettavuusselvitys'
+        headerTitle={LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT}
         onToggle={handleConstructabilityReportCollapseToggle}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -729,8 +739,10 @@ const ConstructabilityItemEdit = ({
             </Column>
           </Authorization>
         }
-        headerTitle='Muut'
+        headerTitle={LeaseAreasFieldTitles.OTHER}
         onToggle={handleOtherCollapseToggle}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.OTHER)}
       >
         <Row>
           <Column small={6} medium={4} large={2}>

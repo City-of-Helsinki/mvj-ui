@@ -68,7 +68,7 @@ function* createUiDataSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        yield put(fetchUiDataListAction({}));
+        yield put(fetchUiDataListAction({limit: 10000}));
         displayUIMessage({title: '', body: 'Ohjeteksti tallennettu'});
         break;
       default:
@@ -89,7 +89,7 @@ function* deleteUiDataSaga({payload: id}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 204:
-        yield put(fetchUiDataListAction({}));
+        yield put(fetchUiDataListAction({limit: 10000}));
         displayUIMessage({title: '', body: 'Ohjeteksti poistettu'});
         break;
       default:
@@ -110,7 +110,7 @@ function* editUiDataSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(fetchUiDataListAction({}));
+        yield put(fetchUiDataListAction({limit: 10000}));
         displayUIMessage({title: '', body: 'Ohjeteksti tallennettu'});
         break;
       default:
