@@ -96,6 +96,13 @@ export const getUiDataPenaltyInterestKey = (key: string) => getKeyWithPrefix(UiD
 export const getUiDataRelatedLeaseKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.RELATED_LEASE, key);
 
 /*
+* Get key for ui data on rent basis section
+* @param {string} key
+* @return {string}
+*/
+export const getUiDataRentBasisKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.RENT_BASIS, key);
+
+/*
 * Return value of ui data object by key
 * @param {Object[]} uiDataList
 * @param {string} key

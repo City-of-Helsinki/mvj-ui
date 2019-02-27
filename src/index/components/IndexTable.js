@@ -28,7 +28,7 @@ const IndexTable = ({yearlyIndexes}: Props) => {
           </tr>
         </thead>
         <tbody>
-          {!yearlyIndexes.length && <tr className='no-data-row'><td colSpamn={14}>Ei indeksejä</td></tr>}
+          {!yearlyIndexes.length && <tr className='no-data-row'><td colSpan={14}>Ei indeksejä</td></tr>}
 
           {!!yearlyIndexes.length && yearlyIndexes.map((item, index) => {
             return <tr key={index}>

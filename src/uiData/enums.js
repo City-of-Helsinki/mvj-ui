@@ -16,6 +16,7 @@ export const UiDataPrefixes = {
   LEASE: 'lease',
   PENALTY_INTEREST: 'penalty_interest',
   RELATED_LEASE: 'related_lease',
+  RENT_BASIS: 'rent_basis',
 };
 
 /*
