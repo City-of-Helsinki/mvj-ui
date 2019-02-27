@@ -12,6 +12,8 @@ export const UiDataPrefixes = {
   CREATE_CHARGE: 'create_charge',
   CREATE_COLLECTION_LETTER: 'create_collection_letter',
   CREDIT_INVOICE: 'credit_invoice',
+  INFILL_DEVELOPMENT: 'infill_development',
+  INFILL_DEVELOPMENT_ATTACHMENT: 'infill_development_attachment',
   INVOICE: 'invoice',
   LEASE: 'lease',
   PENALTY_INTEREST: 'penalty_interest',

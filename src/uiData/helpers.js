@@ -68,6 +68,20 @@ export const getUiDataCreateCollectionLetterKey = (key: string) => getKeyWithPre
 export const getUiDataCreditInvoiceKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.CREDIT_INVOICE, key);
 
 /*
+* Get key for ui data on infll development compensation page
+* @param {string} key
+* @return {string}
+*/
+export const getUiDataInfillDevelopmentKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.INFILL_DEVELOPMENT, key);
+
+/*
+* Get key for ui data on infll development compensation attachment section
+* @param {string} key
+* @return {string}
+*/
+export const getUiDataInfillDevelopmentAttachmentKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.INFILL_DEVELOPMENT_ATTACHMENT, key);
+
+/*
 * Get key for ui data on lease invoice tab
 * @param {string} key
 * @return {string}

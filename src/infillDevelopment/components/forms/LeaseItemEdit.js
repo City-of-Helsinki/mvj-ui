@@ -49,6 +49,7 @@ import {
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataInfillDevelopmentKey, getUiDataInfillDevelopmentAttachmentKey} from '$src/uiData/helpers';
 import {
   convertStrToDecimalNumber,
   formatDate,
@@ -110,7 +111,9 @@ const renderDecisions = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>{InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISIONS}</SubTitle>
+            <SubTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS)}>
+              {InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISIONS}
+            </SubTitle>
 
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONDECISION) &&
               (!fields || !fields.length) &&
@@ -121,28 +124,44 @@ const renderDecisions = ({
                 <Row>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER)}>
-                      <FormTextTitle required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER)}>
+                      <FormTextTitle
+                        required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER)}
+                      >
                         {InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISION_MAKER}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE)}>
-                      <FormTextTitle required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE)}
+                      >
                         {InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISION_DATE}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION)}>
-                      <FormTextTitle required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION)}>
+                      <FormTextTitle
+                        required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION)}
+                      >
                         {InfillDevelopmentCompensationLeaseDecisionsFieldTitles.SECTION}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER)}>
-                      <FormTextTitle required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER)}>
+                      <FormTextTitle
+                        required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER)}
+                      >
                         {InfillDevelopmentCompensationLeaseDecisionsFieldTitles.REFERENCE_NUMBER}
                       </FormTextTitle>
                     </Authorization>
@@ -260,7 +279,9 @@ const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked,
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>{InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.INTENDED_USES}</SubTitle>
+            <SubTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES)}>
+              {InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.INTENDED_USES}
+            </SubTitle>
 
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONINTENDEDUSE) &&
               (!fields || !fields.length) &&
@@ -271,21 +292,33 @@ const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked,
                 <Row>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE)}>
-                      <FormTextTitle required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE)}
+                      >
                         {InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.INTENDED_USE}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2)}>
-                      <FormTextTitle required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2)}>
+                      <FormTextTitle
+                        required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2)}
+                      >
                         {InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.FLOOR_M2}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2)}>
-                      <FormTextTitle required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2)}>
+                      <FormTextTitle
+                        required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2)}
+                      >
                         {InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.AMOUNT_PER_FLOOR_M2}
                       </FormTextTitle>
                     </Authorization>
@@ -557,12 +590,16 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                     fieldType: FieldTypes.LEASE,
                     label: InfillDevelopmentCompensationLeasesFieldTitles.LEASE,
                   }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}
                 />
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}>
-                <FormTextTitle>Vuokralainen</FormTextTitle>
+                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(LeaseTenantsFieldPaths.TENANTS)}>
+                  Vuokralainen
+                </FormTextTitle>
 
                 {isFetching && <FormText>Ladataan...</FormText>}
                 {!isFetching && !tenants.length && <FormText>-</FormText>}
@@ -583,7 +620,9 @@ class LeaseItemEdit extends PureComponent<Props, State> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePlotsFieldPaths.PLOTS)}>
-                <FormTextTitle>Kiinteistö</FormTextTitle>
+                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(LeasePlotsFieldPaths.PLOTS)}>
+                  Kiinteistö
+                </FormTextTitle>
 
                 {isFetching && <FormText>Ladataan...</FormText>}
                 {!isFetching && !plots.length && <FormText>-</FormText>}
@@ -596,7 +635,9 @@ class LeaseItemEdit extends PureComponent<Props, State> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
-                <FormTextTitle>Kaavayksikkö</FormTextTitle>
+                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+                  Kaavayksikkö
+                </FormTextTitle>
 
                 {isFetching && <FormText>Ladataan...</FormText>}
                 {!isFetching && !planUnits.length && <FormText>-</FormText>}
@@ -650,6 +691,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   name={`${field}.monetary_compensation_amount`}
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.MONETARY_COMPENSATION_AMOUNT}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT)}
                 />
               </Authorization>
             </Column>
@@ -661,6 +704,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   name={`${field}.compensation_investment_amount`}
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.COMPENSATION_INVESTMENT_AMOUNT}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT)}
                 />
               </Authorization>
             </Column>
@@ -668,7 +713,9 @@ class LeaseItemEdit extends PureComponent<Props, State> {
               <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT) ||
                 isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT)}
               >
-                <FormTextTitle>Korvaus yhteensä</FormTextTitle>
+                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.TOTAL_COMPENSATION)}>
+                  {InfillDevelopmentCompensationLeasesFieldTitles.TOTAL_COMPENSATION}
+                </FormTextTitle>
                 <FormText>{`${formatNumber(totalCompensation)} €`}</FormText>
               </Authorization>
             </Column>
@@ -680,6 +727,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   name={`${field}.increase_in_value`}
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.INCREASE_IN_VALUE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE)}
                 />
               </Authorization>
             </Column>
@@ -691,6 +740,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   name={`${field}.part_of_the_increase_in_value`}
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.PART_OF_THE_INCREASE_IN_VALUE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE)}
                 />
               </Authorization>
             </Column>
@@ -702,6 +753,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   name={`${field}.discount_in_rent`}
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.DISCOUNT_IN_RENT}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT)}
                 />
               </Authorization>
             </Column>
@@ -714,6 +767,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.YEAR)}
                   name={`${field}.year`}
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.YEAR}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.YEAR)}
                 />
               </Authorization>
             </Column>
@@ -724,6 +779,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE)}
                   name={`${field}.sent_to_sap_date`}
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.SENT_TO_SAP_DATE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE)}
                 />
               </Authorization>
             </Column>
@@ -734,6 +791,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE)}
                   name={`${field}.paid_date`}
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.PAID_DATE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE)}
                 />
               </Authorization>
             </Column>
@@ -745,23 +804,31 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                 {({dispatch}) => {
                   return(
                     <Fragment>
-                      <SubTitle>{InfillDevelopmentCompensationAttachmentFieldTitles.ATTACHMENTS}</SubTitle>
+                      <SubTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentAttachmentKey(InfillDevelopmentCompensationAttachmentFieldPaths.ATTACHMENTS)}>
+                        {InfillDevelopmentCompensationAttachmentFieldTitles.ATTACHMENTS}
+                      </SubTitle>
 
                       {!!attachments && !!attachments.length &&
                         <Fragment>
                           <Row>
                             <Column small={3} large={4}>
                               <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttachmentAttributes, InfillDevelopmentCompensationAttachmentFieldPaths.FILE)}>
-                                <FormTextTitle>{InfillDevelopmentCompensationAttachmentFieldTitles.FILE}</FormTextTitle>
+                                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentAttachmentKey(InfillDevelopmentCompensationAttachmentFieldPaths.FILE)}>
+                                  {InfillDevelopmentCompensationAttachmentFieldTitles.FILE}
+                                </FormTextTitle>
                               </Authorization>
                             </Column>
                             <Column small={3} large={2}>
                               <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttachmentAttributes, InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT)}>
-                                <FormTextTitle>{InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADED_AT}</FormTextTitle>
+                                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentAttachmentKey(InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT)}>
+                                  {InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADED_AT}
+                                </FormTextTitle>
                               </Authorization>
                             </Column>
                             <Column small={3} large={2}>
-                              <FormTextTitle>{InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADER}</FormTextTitle>
+                              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentAttachmentKey(InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADER)}>
+                                {InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADER}
+                              </FormTextTitle>
                             </Column>
                           </Row>
                           {attachments.map((file, index) => {
@@ -833,6 +900,8 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   fieldAttributes={getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.NOTE)}
                   name={`${field}.note`}
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.NOTE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.NOTE)}
                 />
               </Column>
             </Row>

@@ -18,6 +18,7 @@ import {
   InfillDevelopmentCompensationLeasesFieldPaths,
   InfillDevelopmentCompensationLeasesFieldTitles,
 } from '$src/infillDevelopment/enums';
+import {getUiDataInfillDevelopmentKey} from '$src/uiData/helpers';
 import {
   formatDate,
   getFieldOptions,
@@ -55,19 +56,25 @@ const InfillDevelopmentTemplate = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.NAME)}>
-              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.NAME}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.NAME)}>
+                {InfillDevelopmentCompensationFieldTitles.NAME}
+              </FormTextTitle>
               <FormText>{infillDevelopment.name || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
-              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.DETAILED_PLAN_IDENTIFIER}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
+                {InfillDevelopmentCompensationFieldTitles.DETAILED_PLAN_IDENTIFIER}
+              </FormTextTitle>
               <FormText>{infillDevelopment.detailed_plan_identifier || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.REFERENCE_NUMBER)}>
-              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.REFERENCE_NUMBER)}>
+                {InfillDevelopmentCompensationFieldTitles.REFERENCE_NUMBER}
+              </FormTextTitle>
               <FormText>{infillDevelopment.reference_number
                 ? <ExternalLink
                   href={getReferenceNumberLink(infillDevelopment.reference_number)}
@@ -79,7 +86,9 @@ const InfillDevelopmentTemplate = ({
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE)}>
-              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.STATE}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.STATE)}>
+                {InfillDevelopmentCompensationFieldTitles.STATE}
+              </FormTextTitle>
               <FormText>{getLabelOfOption(stateOptions, infillDevelopment.state) || '-'}</FormText>
             </Authorization>
           </Column>
@@ -87,26 +96,34 @@ const InfillDevelopmentTemplate = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.USER)}>
-              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.USER}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.USER)}>
+                {InfillDevelopmentCompensationFieldTitles.USER}
+              </FormTextTitle>
               <FormText>{getUserFullName(infillDevelopment.user) || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.LEASE_CONTRACT_CHANGE_DATE)}>
-              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.LEASE_CONTRACT_CHANGE_DATE}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.LEASE_CONTRACT_CHANGE_DATE)}>
+                {InfillDevelopmentCompensationFieldTitles.LEASE_CONTRACT_CHANGE_DATE}
+              </FormTextTitle>
               <FormText>{formatDate(infillDevelopment.lease_contract_change_date) || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={12} medium={4} large={8}>
             <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.NOTE)}>
-              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.NOTE}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.NOTE)}>
+                {InfillDevelopmentCompensationFieldTitles.NOTE}
+              </FormTextTitle>
               <FormText>{infillDevelopment.note || '-'}</FormText>
             </Authorization>
           </Column>
         </Row>
 
         <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)}>
-          <SubTitle>{InfillDevelopmentCompensationLeasesFieldTitles.INFILL_DEVELOPMENT_COMPENSATION_LEASES}</SubTitle>
+          <SubTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)}>
+            {InfillDevelopmentCompensationLeasesFieldTitles.INFILL_DEVELOPMENT_COMPENSATION_LEASES}
+          </SubTitle>
 
           {!leases.length && <FormText>Ei vuokrauksia</FormText>}
           {!!leases.length &&

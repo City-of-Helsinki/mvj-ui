@@ -80,6 +80,7 @@ export const InfillDevelopmentCompensationLeasesFieldPaths = {
   PAID_DATE: 'infill_development_compensation_leases.child.children.paid_date',
   PART_OF_THE_INCREASE_IN_VALUE: 'infill_development_compensation_leases.child.children.part_of_the_increase_in_value',
   SENT_TO_SAP_DATE: 'infill_development_compensation_leases.child.children.sent_to_sap_date',
+  TOTAL_COMPENSATION: 'infill_development_compensation_leases.child.children.total_compensation',
   YEAR: 'infill_development_compensation_leases.child.children.year',
 };
 
@@ -99,6 +100,7 @@ export const InfillDevelopmentCompensationLeasesFieldTitles = {
   PAID_DATE: 'Maksettu',
   PART_OF_THE_INCREASE_IN_VALUE: 'Osuus arvonnoususta',
   SENT_TO_SAP_DATE: 'Maksu lähetetty SAP',
+  TOTAL_COMPENSATION: 'Korvaus yhteensä',
   YEAR: 'Arvioitu maksuvuosi',
 };
 
