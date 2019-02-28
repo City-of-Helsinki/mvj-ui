@@ -13,12 +13,16 @@ const defaultState: ApiState = {
   error: null,
 };
 
+// $FlowFixMe
 describe('API', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('apiReducer', () => {
 
+      // $FlowFixMe
       it('should update error', () => {
         const dummyError = {'error': 'test'};
         const newState = {...defaultState, error: dummyError};

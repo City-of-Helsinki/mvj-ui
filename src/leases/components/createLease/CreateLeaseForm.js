@@ -15,6 +15,7 @@ import {FormNames, LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
 import {filterOptionsByLabel} from '$components/form/filter';
 import {getDistrictOptions} from '$src/district/helpers';
 import {getPayloadCreateLease} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
@@ -94,6 +95,8 @@ class CreateLeaseForm extends Component<Props> {
                 name='state'
                 setRefForField={this.setRefForFirstField}
                 overrideValues={{label: LeaseFieldTitles.STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATE)}
               />
             </Authorization>
           </Column>
@@ -105,6 +108,8 @@ class CreateLeaseForm extends Component<Props> {
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.TYPE)}
                 name='type'
                 overrideValues={{label: LeaseFieldTitles.TYPE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.TYPE)}
               />
             </Authorization>
           </Column>
@@ -114,6 +119,8 @@ class CreateLeaseForm extends Component<Props> {
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.MUNICIPALITY)}
                 name='municipality'
                 overrideValues={{label: LeaseFieldTitles.MUNICIPALITY}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MUNICIPALITY)}
               />
             </Authorization>
           </Column>
@@ -127,6 +134,8 @@ class CreateLeaseForm extends Component<Props> {
                   label: LeaseFieldTitles.DISTRICT,
                   options: districtOptions,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.DISTRICT)}
               />
             </Authorization>
           </Column>
@@ -139,6 +148,8 @@ class CreateLeaseForm extends Component<Props> {
                 name='reference_number'
                 validate={referenceNumber}
                 overrideValues={{label: LeaseFieldTitles.REFERENCE_NUMBER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REFERENCE_NUMBER)}
               />
             </Authorization>
           </Column>
@@ -148,6 +159,8 @@ class CreateLeaseForm extends Component<Props> {
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.NOTE)}
                 name='note'
                 overrideValues={{label: LeaseFieldTitles.NOTE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTE)}
               />
             </Authorization>
           </Column>
@@ -162,6 +175,8 @@ class CreateLeaseForm extends Component<Props> {
                   fieldType: FieldTypes.LEASE,
                   label: LeaseFieldTitles.RELATE_TO,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)}
               />
             </Authorization>
           </Column>

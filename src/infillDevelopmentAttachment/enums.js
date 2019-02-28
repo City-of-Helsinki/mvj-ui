@@ -5,8 +5,10 @@
  * @type {{}}
  */
 export const InfillDevelopmentCompensationAttachmentFieldPaths = {
+  ATTACHMENTS: 'attachments',
   FILE: 'file',
   UPLOADED_AT: 'uploaded_at',
+  UPLOADER: 'uploader',
 };
 
 /**

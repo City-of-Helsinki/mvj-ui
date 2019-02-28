@@ -21,18 +21,23 @@ import {ViewModes} from '$src/enums';
 import {
   ContractRentPeriods,
   FormNames,
-  LeaseRentAdjustmentsFieldPaths,
-  LeaseRentAdjustmentsFieldTitles,
-  LeaseRentContractRentsFieldPaths,
-  LeaseRentContractRentsFieldTitles,
+  LeaseRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldTitles,
-  LeaseRentsFieldPaths,
+  LeaseRentContractRentsFieldPaths,
+  LeaseRentContractRentsFieldTitles,
+  LeaseIndexAdjustedRentsFieldPaths,
+  LeaseIndexAdjustedRentsFieldTitles,
+  LeaseRentAdjustmentsFieldPaths,
+  LeaseRentAdjustmentsFieldTitles,
+  LeasePayableRentsFieldPaths,
+  LeasePayableRentsFieldTitles,
   RentDueDateTypes,
   RentTypes,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {isRentActive, isRentArchived} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   getFieldOptions,
@@ -361,6 +366,8 @@ class RentItemEdit extends PureComponent<Props, State> {
               hasErrors={isSaveClicked && !isEmpty(fixedInitialYearRentErrors)}
               headerTitle={LeaseRentFixedInitialYearRentsFieldTitles.FIXED_INITIAL_YEAR_RENTS}
               onToggle={this.handleFixedInitialYearRentsCollapseToggle}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}
             >
               <FieldArray
                 component={FixedInitialYearRentsEdit}
@@ -381,6 +388,8 @@ class RentItemEdit extends PureComponent<Props, State> {
               hasErrors={isSaveClicked && !isEmpty(contractRentErrors)}
               headerTitle={LeaseRentContractRentsFieldTitles.CONTRACT_RENTS}
               onToggle={this.handleContractRentsCollapseToggle}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}
             >
               <FieldArray
                 component={ContractRentsEdit}
@@ -398,8 +407,10 @@ class RentItemEdit extends PureComponent<Props, State> {
           <Collapse
             className='collapse__secondary'
             defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
-            headerTitle='Indeksitarkistettu vuokra'
+            headerTitle={LeaseIndexAdjustedRentsFieldTitles.INDEX_ADJUSTED_RENTS}
             onToggle={this.handleIndexAdjustedRentsCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseIndexAdjustedRentsFieldPaths.INDEX_ADJUSTED_RENTS)}
           >
             <IndexAdjustedRents indexAdjustedRents={indexAdjustedRents} />
           </Collapse>
@@ -413,8 +424,10 @@ class RentItemEdit extends PureComponent<Props, State> {
               className='collapse__secondary'
               defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
               hasErrors={isSaveClicked && !isEmpty(rentAdjustmentsErrors)}
-              headerTitle={<span>{LeaseRentAdjustmentsFieldTitles.RENT_ADJUSTMENTS} ({rentAdjustments ? rentAdjustments.length : 0})</span>}
+              headerTitle={`${LeaseRentAdjustmentsFieldTitles.RENT_ADJUSTMENTS} (${rentAdjustments.length})`}
               onToggle={this.handleRentAdjustmentsCollapseToggle}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS)}
             >
               <FieldArray
                 component={RentAdjustmentsEdit}
@@ -430,8 +443,10 @@ class RentItemEdit extends PureComponent<Props, State> {
           <Collapse
             className='collapse__secondary'
             defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
-            headerTitle='Perittävä vuokra'
+            headerTitle={LeasePayableRentsFieldTitles.PAYABLE_RENTS}
             onToggle={this.handlePayableRentsCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeasePayableRentsFieldPaths.PAYABLE_RENTS)}
           >
             <PayableRents payableRents={payableRents} />
           </Collapse>

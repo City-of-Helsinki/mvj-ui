@@ -20,6 +20,7 @@ import {
   LeaseDecisionsFieldPaths,
   LeaseDecisionsFieldTitles,
 } from '$src/leases/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {formatDate, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
@@ -96,31 +97,41 @@ const DecisionItem = ({
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISION_MAKER)}>
-            <FormTextTitle>{LeaseDecisionsFieldTitles.DECISION_MAKER}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DECISION_MAKER)}>
+              {LeaseDecisionsFieldTitles.DECISION_MAKER}
+            </FormTextTitle>
             <FormText>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISION_DATE)}>
-            <FormTextTitle>{LeaseDecisionsFieldTitles.DECISION_DATE}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DECISION_DATE)}>
+              {LeaseDecisionsFieldTitles.DECISION_DATE}
+            </FormTextTitle>
             <FormText>{formatDate(decision.decision_date) || '–'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={1}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.SECTION)}>
-            <FormTextTitle>{LeaseDecisionsFieldTitles.SECTION}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.SECTION)}>
+              {LeaseDecisionsFieldTitles.SECTION}
+            </FormTextTitle>
             <FormText>{decision.section ? `${decision.section} §` : '–'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={8} large={3}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.TYPE)}>
-            <FormTextTitle>{LeaseDecisionsFieldTitles.TYPE}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.TYPE)}>
+              {LeaseDecisionsFieldTitles.TYPE}
+            </FormTextTitle>
             <FormText>{getLabelOfOption(typeOptions, decision.type) || '–'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.REFERENCE_NUMBER)}>
-            <FormTextTitle>{LeaseDecisionsFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.REFERENCE_NUMBER)}>
+              {LeaseDecisionsFieldTitles.REFERENCE_NUMBER}
+            </FormTextTitle>
             {decision.reference_number
               ? <ExternalLink
                 href={getReferenceNumberLink(decision.reference_number)}
@@ -134,7 +145,9 @@ const DecisionItem = ({
       <Row>
         <Column small={12}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DESCRIPTION)}>
-            <FormTextTitle>{LeaseDecisionsFieldTitles.DESCRIPTION}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DESCRIPTION)}>
+              {LeaseDecisionsFieldTitles.DESCRIPTION}
+            </FormTextTitle>
             <FormText>{decision.description || '–'}</FormText>
           </Authorization>
         </Column>
@@ -146,6 +159,7 @@ const DecisionItem = ({
           defaultOpen={conditionsCollapseState !== undefined ? conditionsCollapseState : true}
           headerTitle={LeaseDecisionConditionsFieldTitles.CONDITIONS}
           onToggle={handleConditionsCollapseToggle}
+          uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.CONDITIONS)}
         >
           {!decision.conditions || !decision.conditions.length && <FormText>Ei ehtoja</FormText> }
           {decision.conditions && !!decision.conditions.length &&
@@ -154,22 +168,30 @@ const DecisionItem = ({
                 <Row>
                   <Column large={2}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
-                      <FormTextTitle>{LeaseDecisionConditionsFieldTitles.TYPE}</FormTextTitle>
+                      <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.TYPE)}>
+                        {LeaseDecisionConditionsFieldTitles.TYPE}
+                      </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column large={2}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
-                      <FormTextTitle>{LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}</FormTextTitle>
+                      <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
+                        {LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}
+                      </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column large={2}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
-                      <FormTextTitle>{LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}</FormTextTitle>
+                      <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
+                        {LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}
+                      </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column large={6}>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
-                      <FormTextTitle>{LeaseDecisionConditionsFieldTitles.DESCRIPTION}</FormTextTitle>
+                      <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
+                        {LeaseDecisionConditionsFieldTitles.DESCRIPTION}
+                      </FormTextTitle>
                     </Authorization>
                   </Column>
                 </Row>
@@ -216,13 +238,17 @@ const DecisionItem = ({
                       <Row>
                         <Column small={6} medium={4}>
                           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
-                            <FormTextTitle>{LeaseDecisionConditionsFieldTitles.TYPE}</FormTextTitle>
+                            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.TYPE)}>
+                              {LeaseDecisionConditionsFieldTitles.TYPE}
+                            </FormTextTitle>
                             <FormText>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</FormText>
                           </Authorization>
                         </Column>
                         <Column small={6} medium={4}>
                           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
-                            <FormTextTitle>{LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}</FormTextTitle>
+                            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
+                              {LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}
+                            </FormTextTitle>
                             <FormText className={(condition.supervision_date && !condition.supervised_date) ? 'alert' : ''}>
                               {condition.supervision_date
                                 ? <span><i/>{formatDate(condition.supervision_date)}</span>
@@ -233,7 +259,9 @@ const DecisionItem = ({
                         </Column>
                         <Column small={6} medium={4}>
                           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
-                            <FormTextTitle>{LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}</FormTextTitle>
+                            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
+                              {LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}
+                            </FormTextTitle>
                             <FormText className={condition.supervised_date ? 'success' : ''}>
                               {condition.supervised_date
                                 ? <span><i/>{formatDate(condition.supervised_date)}</span>
@@ -244,7 +272,9 @@ const DecisionItem = ({
                         </Column>
                         <Column small={12} medium={12}>
                           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
-                            <FormTextTitle>{LeaseDecisionConditionsFieldTitles.DESCRIPTION}</FormTextTitle>
+                            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
+                              {LeaseDecisionConditionsFieldTitles.DESCRIPTION}
+                            </FormTextTitle>
                             <FormText>{condition.description || '–'}</FormText>
                           </Authorization>
                         </Column>

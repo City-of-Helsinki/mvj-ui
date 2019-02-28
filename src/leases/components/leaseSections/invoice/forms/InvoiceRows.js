@@ -7,10 +7,12 @@ import AmountWithVat from '$components/vat/AmountWithVat';
 import Authorization from '$components/authorization/Authorization';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import SubTitle from '$components/content/SubTitle';
 import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentTenantItem} from '$src/leases/helpers';
+import {getUiDataInvoiceKey} from '$src/uiData/helpers';
 import {getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
@@ -20,6 +22,7 @@ type Props = {
   invoiceDate: ?string,
   invoiceDueDate: ?string,
   receivableTypeOptions: Array<Object>,
+  relativeTo?: any,
   rows: Array<Object>,
 }
 
@@ -28,6 +31,7 @@ const InvoiceRows = ({
   invoiceDate,
   invoiceDueDate,
   receivableTypeOptions,
+  relativeTo,
   rows,
 }: Props) => {
   const getRowsSum = (items: Array<Object>) => items.reduce((sum, item) => sum + Number(item.amount), 0);
@@ -37,10 +41,30 @@ const InvoiceRows = ({
   return(
     <Row>
       <Column small={12}>
-        <SubTitle>{InvoiceRowsFieldTitles.ROWS}</SubTitle>
+        <SubTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.ROWS)}>
+          {InvoiceRowsFieldTitles.ROWS}
+        </SubTitle>
         {!rows.length && <FormText>-</FormText>}
         {!!rows.length &&
           <Fragment>
+            <Row>
+              <Column small={4}>
+                <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.TENANT)}>
+                  {InvoiceRowsFieldTitles.TENANT}
+                </FormTextTitle>
+              </Column>
+              <Column small={4}>
+                <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                  {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
+                </FormTextTitle>
+              </Column>
+              <Column small={4}>
+                <FormTextTitle style={{textAlign: 'right'}} enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.AMOUNT)}>
+                  {InvoiceRowsFieldTitles.AMOUNT}
+                </FormTextTitle>
+              </Column>
+            </Row>
+
             {rows.map((row) => {
               const contact = get(getContentTenantItem(row.tenantFull), 'contact');
 
@@ -51,12 +75,12 @@ const InvoiceRows = ({
                       <FormText>{getContactFullName(contact) || '-'}</FormText>
                     </Authorization>
                   </Column>
-                  <Column small={2}>
+                  <Column small={4}>
                     <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
                       <FormText>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</FormText>
                     </Authorization>
                   </Column>
-                  <Column small={6}>
+                  <Column small={4}>
                     <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
                       <FormText className='align-right'>{row.amount
                         ? <AmountWithVat amount={row.amount} date={invoiceDate} />
@@ -69,8 +93,8 @@ const InvoiceRows = ({
             })}
             <Divider className='invoice-divider' />
             <Row>
-              <Column small={4}><FormText><strong>Yhteensä</strong></FormText></Column>
-              <Column small={8}>
+              <Column small={8}><FormText><strong>Yhteensä</strong></FormText></Column>
+              <Column small={4}>
                 <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
                   <FormText className='align-right'>
                     <strong><AmountWithVat amount={sum} date={invoiceDueDate} /></strong>

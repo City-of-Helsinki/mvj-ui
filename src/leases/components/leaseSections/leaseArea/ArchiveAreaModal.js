@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
@@ -13,7 +12,8 @@ import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
 import {FormNames, LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
 import {ButtonColors} from '$components/enums';
-import {isFieldAllowedToRead} from '$util/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
+import {getFieldAttributes, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -80,12 +80,14 @@ class ArchiveAreaModal extends Component<Props> {
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}>
                 <FormField
                   setRefForField={this.setRefForFirstField}
-                  fieldAttributes={get(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}
+                  fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}
                   name='archived_decision'
                   overrideValues={{
                     label: LeaseAreasFieldTitles.ARCHIVED_DECISION,
                     options: decisionOptions,
                   }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_DECISION)}
                 />
               </Authorization>
             </Column>
@@ -94,9 +96,11 @@ class ArchiveAreaModal extends Component<Props> {
             <Column>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}>
                 <FormField
-                  fieldAttributes={get(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}
+                  fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}
                   name='archived_note'
                   overrideValues={{label: LeaseAreasFieldTitles.ARCHIVED_NOTE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_NOTE)}
                 />
               </Authorization>
             </Column>

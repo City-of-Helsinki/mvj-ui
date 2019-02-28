@@ -60,6 +60,7 @@ import {
 } from '$util/storage';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import {withInfillDevelopmentPageAttributes} from '$components/attributes/InfillDevelopmentPageAttributes';
+import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
@@ -499,6 +500,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
 export default flowRight(
   withCommonAttributes,
+  withUiDataList,
   withInfillDevelopmentPageAttributes,
   connect(
     (state) => {

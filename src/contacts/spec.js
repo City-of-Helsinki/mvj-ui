@@ -47,12 +47,16 @@ const defaultState: ContactState = {
   methods: null,
 };
 
+// $FlowFixMe
 describe('Contacts', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('contactReducer', () => {
 
+      // $FlowFixMe
       it('should set isFetchingAttributes flag to true when fething attributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 

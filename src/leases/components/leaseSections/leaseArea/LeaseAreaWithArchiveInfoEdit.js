@@ -25,6 +25,7 @@ import {
   LeaseAreaAddressesFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getFullAddress, getLeaseAreaById} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
@@ -35,7 +36,7 @@ import {
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getFullAddress, getLeaseAreaById} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getAttributes,
   getCollapseStateByKey,
@@ -175,7 +176,9 @@ const LeaseAreaWithArchiveInfoEdit = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_AT)}>
-              <FormTextTitle>{LeaseAreasFieldTitles.ARCHIVED_AT}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_AT)}>
+                {LeaseAreasFieldTitles.ARCHIVED_AT}
+              </FormTextTitle>
               <FormText>{formatDate(archivedAt) || '-'}</FormText>
             </Authorization>
           </Column>
@@ -189,6 +192,8 @@ const LeaseAreaWithArchiveInfoEdit = ({
                   label: LeaseAreasFieldTitles.ARCHIVED_DECISION,
                   options: decisionOptions,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_DECISION)}
               />
             </Authorization>
           </Column>
@@ -199,6 +204,8 @@ const LeaseAreaWithArchiveInfoEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}
                 name={`${field}.archived_note`}
                 overrideValues={{label: LeaseAreasFieldTitles.ARCHIVED_NOTE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_NOTE)}
               />
             </Authorization>
           </Column>

@@ -82,6 +82,7 @@ type InputProps = {
   disabled: boolean,
   disableDirty: boolean,
   disableTouched: boolean,
+  enableUiDataEdit?: boolean,
   ErrorComponent: Function | Object,
   fieldType: string,
   filterOption?: Function,
@@ -95,11 +96,14 @@ type InputProps = {
   options: ?Array<Object>,
   placeholder?: string,
   readOnlyValueRenderer?: any,
+  relativeTo?: any,
   required: boolean,
   rows?: number,
   setRefForField?: Function,
-  valueSelectedCallback?: Function,
+  tooltipStyle?: Object,
+  uiDataKey: ?string,
   unit?: string,
+  valueSelectedCallback?: Function,
 }
 
 const FormFieldInput = ({
@@ -111,6 +115,7 @@ const FormFieldInput = ({
   disabled,
   disableDirty,
   disableTouched,
+  enableUiDataEdit,
   ErrorComponent,
   fieldType,
   filterOption,
@@ -124,10 +129,13 @@ const FormFieldInput = ({
   options,
   placeholder,
   readOnlyValueRenderer,
+  relativeTo,
   required,
   rows,
   setRefForField,
+  tooltipStyle,
   valueSelectedCallback,
+  uiDataKey,
   unit,
 }: InputProps) => {
   const getText = (type: string, value: any) => {
@@ -180,14 +188,26 @@ const FormFieldInput = ({
   if(allowEdit) {
     return (
       <div className={classNames('form-field', className)}>
-        {label && fieldType === 'boolean' && !invisibleLabel &&
-          <FormTextTitle required={required}>{label}</FormTextTitle>
+        {label && fieldType === FieldTypeOptions.BOOLEAN && !invisibleLabel &&
+          <FormTextTitle
+            enableUiDataEdit={enableUiDataEdit}
+            relativeTo={relativeTo}
+            required={required}
+            tooltipStyle={tooltipStyle}
+            uiDataKey={uiDataKey}
+          >
+            {label}
+          </FormTextTitle>
         }
-        {label && fieldType !== 'boolean' &&
+        {label && fieldType !== FieldTypeOptions.BOOLEAN &&
           <FormFieldLabel
             className={invisibleLabel ? 'invisible' : ''}
             htmlFor={input.name}
+            enableUiDataEdit={enableUiDataEdit}
+            relativeTo={relativeTo}
             required={required}
+            tooltipStyle={tooltipStyle}
+            uiDataKey={uiDataKey}
           >
             {label}
           </FormFieldLabel>
@@ -203,9 +223,19 @@ const FormFieldInput = ({
 
   if(allowRead){
     const text = getText(fieldType, input.value);
+
     return (
       <Fragment>
-        {!invisibleLabel && <FormTextTitle>{label}</FormTextTitle>}
+        {!invisibleLabel &&
+          <FormTextTitle
+            enableUiDataEdit={enableUiDataEdit}
+            relativeTo={relativeTo}
+            tooltipStyle={tooltipStyle}
+            uiDataKey={uiDataKey}
+          >
+            {label}
+          </FormTextTitle>
+        }
         {readOnlyValueRenderer
           ? readOnlyValueRenderer(input.value, options)
           : <FormText>{text || '-'}</FormText>
@@ -224,6 +254,7 @@ type Props = {
   disabled?: boolean,
   disableDirty?: boolean,
   disableTouched?: boolean,
+  enableUiDataEdit?: boolean,
   ErrorComponent?: any,
   fieldAttributes: Object,
   filterOption?: Function,
@@ -235,10 +266,13 @@ type Props = {
   overrideValues?: Object,
   placeholder?: string,
   readOnlyValueRenderer?: Function,
+  relativeTo?: any,
   rows?: number,
   setRefForField?: Function,
+  tooltipStyle?: Object,
   validate?: Function,
   valueSelectedCallback?: Function,
+  uiDataKey?: ?string,
   unit?: string,
 }
 
@@ -267,6 +301,7 @@ class FormField extends PureComponent<Props, State> {
     disabled: false,
     disableDirty: false,
     disableTouched: false,
+    enableUiDataEdit: false,
     fieldAttributes: null,
     invisibleLabel: false,
     isLoading: false,
@@ -311,6 +346,7 @@ class FormField extends PureComponent<Props, State> {
       disabled,
       disableDirty,
       disableTouched,
+      enableUiDataEdit,
       ErrorComponent = ErrorBlock,
       filterOption,
       invisibleLabel,
@@ -321,9 +357,12 @@ class FormField extends PureComponent<Props, State> {
       overrideValues,
       placeholder,
       readOnlyValueRenderer,
+      relativeTo,
       rows,
       setRefForField,
+      tooltipStyle,
       valueSelectedCallback,
+      uiDataKey,
       unit,
     } = this.props;
     const {
@@ -346,6 +385,7 @@ class FormField extends PureComponent<Props, State> {
         disabled={disabled}
         disableDirty={disableDirty}
         disableTouched={disableTouched}
+        enableUiDataEdit={enableUiDataEdit}
         ErrorComponent={ErrorComponent}
         fieldType={fieldType}
         filterOption={filterOption}
@@ -359,14 +399,17 @@ class FormField extends PureComponent<Props, State> {
         options={options}
         placeholder={placeholder}
         readOnlyValueRenderer={readOnlyValueRenderer}
+        relativeTo={relativeTo}
         required={required}
         rows={rows}
         setRefForField={setRefForField}
+        tooltipStyle={tooltipStyle}
         validate={allowEdit
           ? [this.handleGenericValidate, this.handleValidate]
           : null
         }
         valueSelectedCallback={valueSelectedCallback}
+        uiDataKey={uiDataKey}
         unit={unit}
         {...overrideValues}
       />

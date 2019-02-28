@@ -20,6 +20,7 @@ import {
   LeaseAreasFieldTitles,
 } from '$src/leases/enums';
 import {getFullAddress} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
   formatNumber,
@@ -108,19 +109,25 @@ const LeaseAreaWithArchiveInfo = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_AT)}>
-              <FormTextTitle>{LeaseAreasFieldTitles.ARCHIVED_AT}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_AT)}>
+                {LeaseAreasFieldTitles.ARCHIVED_AT}
+              </FormTextTitle>
               <FormText>{formatDate(area.archived_at) || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}>
-              <FormTextTitle>{LeaseAreasFieldTitles.ARCHIVED_DECISION}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_DECISION)}>
+                {LeaseAreasFieldTitles.ARCHIVED_DECISION}
+              </FormTextTitle>
               <FormText>{getLabelOfOption(decisionOptions, area.archived_decision) || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={12} medium={4} large={8}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}>
-              <FormTextTitle>{LeaseAreasFieldTitles.ARCHIVED_NOTE}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_NOTE)}>
+                {LeaseAreasFieldTitles.ARCHIVED_NOTE}
+              </FormTextTitle>
               <FormText>{area.archived_note || '-'}</FormText>
             </Authorization>
           </Column>

@@ -23,6 +23,7 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getSavedBasisOfRent} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
   convertStrToDecimalNumber,
@@ -223,7 +224,7 @@ const BasisOfRentEdit = ({
       }
           ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX))
-        ? '<th>Yksikköhinta (ind)</th>'
+        ? `<th>${LeaseBasisOfRentsFieldTitles.UNIT_PRICE}</th>`
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
@@ -232,14 +233,14 @@ const BasisOfRentEdit = ({
       }
           ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA))
-        ? '<th>Perusvuosivuokra (ind 100)</th>'
+        ? `<th>${LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}</th>`
         : ''
       }
           ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE))
-        ? '<th>Alkuvuosivuokra (ind)</th>'
+        ? `<th>${LeaseBasisOfRentsFieldTitles.INITIAL_YEAR_RENT}</th>`
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
@@ -251,7 +252,7 @@ const BasisOfRentEdit = ({
             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE))
-        ? '<th>Alennettu alkuvuosivuokra (ind)</th>'
+        ? `<th>${LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT}</th>`
         : ''
       }
         </tr>
@@ -361,6 +362,8 @@ const BasisOfRentEdit = ({
                 disabled={!!get(savedBasisOfRent, 'locked_at')}
                 name={`${field}.intended_use`}
                 overrideValues={{label: LeaseBasisOfRentsFieldTitles.INTENDED_USE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INTENDED_USE)}
               />
             </Authorization>
           </Column>
@@ -369,12 +372,16 @@ const BasisOfRentEdit = ({
               allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) || isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)}
               errorComponent={
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
-                  <FormTextTitle>{LeaseBasisOfRentsFieldTitles.AREA}</FormTextTitle>
+                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AREA)}>{LeaseBasisOfRentsFieldTitles.AREA}</FormTextTitle>
                   <FormText>{areaText}</FormText>
                 </Authorization>
               }
             >
-              <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+              <FormTextTitle
+                required={isFieldRequired(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AREA)}
+              >
                 {LeaseBasisOfRentsFieldTitles.AREA}
               </FormTextTitle>
               <Row>
@@ -457,7 +464,7 @@ const BasisOfRentEdit = ({
                 }}
                 invisibleLabel
                 name={`${field}.locked_at`}
-                overrideValues={{label: 'Laskelma lukittu'}}
+                overrideValues={{label: LeaseBasisOfRentsFieldTitles.LOCKED_AT}}
               />
             </Authorization>
           </Column>
@@ -468,13 +475,19 @@ const BasisOfRentEdit = ({
               allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}
               errorComponent={
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-                  <FormTextTitle>{LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}</FormTextTitle>
+                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                    {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
+                  </FormTextTitle>
                   <FormText>{amountPerAreaText}</FormText>
                 </Authorization>
               }
             >
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-                <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                <FormTextTitle
+                  required={isFieldRequired(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}
+                >
                   {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
                 </FormTextTitle>
               </Authorization>
@@ -531,12 +544,16 @@ const BasisOfRentEdit = ({
                   label: LeaseBasisOfRentsFieldTitles.INDEX,
                   options: indexOptions,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INDEX)}
               />
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
-              <FormTextTitle>Yksikköhinta (ind)</FormTextTitle>
+              <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.UNIT_PRICE)}>
+                {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
+              </FormTextTitle>
               <FormText>{currentAmountPerAreaText}</FormText>
             </Authorization>
           </Column>
@@ -552,6 +569,9 @@ const BasisOfRentEdit = ({
                 name={`${field}.profit_margin_percentage`}
                 unit='%'
                 overrideValues={{label: LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE}}
+                enableUiDataEdit
+                tooltipStyle={{right: 17}}
+                uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)}
               />
             </Authorization>
           </Column>
@@ -560,7 +580,9 @@ const BasisOfRentEdit = ({
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
             }>
-              <FormTextTitle>Perusvuosivuokra (ind 100)</FormTextTitle>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
+              </FormTextTitle>
               <FormText>{!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</FormText>
             </Authorization>
           </Column>
@@ -571,7 +593,9 @@ const BasisOfRentEdit = ({
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
             }>
-              <FormTextTitle>Alkuvuosivuokra (ind)</FormTextTitle>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INITIAL_YEAR_RENT)}>
+                {LeaseBasisOfRentsFieldTitles.INITIAL_YEAR_RENT}
+              </FormTextTitle>
               <FormText>{!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}</FormText>
             </Authorization>
           </Column>
@@ -587,6 +611,9 @@ const BasisOfRentEdit = ({
                 name={`${field}.discount_percentage`}
                 unit='%'
                 overrideValues={{label: LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE}}
+                enableUiDataEdit
+                tooltipStyle={{right: 17}}
+                uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}
               />
             </Authorization>
           </Column>
@@ -598,7 +625,9 @@ const BasisOfRentEdit = ({
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
             }>
-              <FormTextTitle>Alennettu alkuvuosivuokra (ind)</FormTextTitle>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT)}>
+                {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT}
+              </FormTextTitle>
               <FormText>{!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</FormText>
             </Authorization>
           </Column>

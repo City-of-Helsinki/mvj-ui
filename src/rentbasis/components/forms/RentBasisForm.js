@@ -31,6 +31,7 @@ import {
   RentBasisRentRatesFieldTitles,
 } from '$src/rentbasis/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataRentBasisKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   getFieldOptions,
@@ -70,7 +71,12 @@ const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes, 
       {({dispatch}) => {
         return(
           <Fragment>
-            <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER)}>
+            <FormTextTitle
+              required={isFieldRequired(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER)}
+              enableUiDataEdit
+              tooltipStyle={{right: 20}}
+              uiDataKey={getUiDataRentBasisKey(RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)}
+            >
               {RentBasisPropertyIdentifiersFieldTitles.PROPERTY_IDENTIFIERS}
             </FormTextTitle>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTPROPERTYIDENTIFIER) &&
@@ -104,6 +110,8 @@ const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes, 
                             invisibleLabel
                             name={`${field}.identifier`}
                             overrideValues={{label: RentBasisPropertyIdentifiersFieldTitles.IDENTIFIER}}
+                            enableUiDataEdit
+                            uiDataKey={getUiDataRentBasisKey(RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER)}
                           />
                         </Authorization>
                       }
@@ -156,7 +164,9 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes, usersPermi
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>{RentBasisDecisionsFieldTitles.DECISIONS}</SubTitle>
+            <SubTitle enableUiDataEdit uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.DECISIONS)}>
+              {RentBasisDecisionsFieldTitles.DECISIONS}
+            </SubTitle>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTDECISION) &&
               (!fields || !fields.length) &&
               <FormText>Ei sopimuksia</FormText>
@@ -165,28 +175,46 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes, usersPermi
               <Row>
                 <Column small={3} large={2}>
                   <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER)}>
-                    <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER)}>
+                    <FormTextTitle
+                      required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.DECISION_MAKER)}
+                    >
                       {RentBasisDecisionsFieldTitles.DECISION_MAKER}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={3} large={2}>
                   <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_DATE)}>
-                    <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_DATE)}>
+                    <FormTextTitle
+                      required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_DATE)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.DECISION_DATE)}
+                    >
                       {RentBasisDecisionsFieldTitles.DECISION_DATE}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={3} large={2}>
                   <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.SECTION)}>
-                    <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.SECTION)}>
+                    <FormTextTitle
+                      required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.SECTION)}
+                      enableUiDataEdit
+                      tooltipStyle={{right: 12}}
+                      uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.SECTION)}
+                    >
                       {RentBasisDecisionsFieldTitles.SECTION}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={3} large={2}>
                   <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}>
-                    <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}>
+                    <FormTextTitle
+                      required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}
+                      enableUiDataEdit
+                      tooltipStyle={{right: 20}}
+                      uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}
+                    >
                       {RentBasisDecisionsFieldTitles.REFERENCE_NUMBER}
                     </FormTextTitle>
                   </Authorization>
@@ -311,7 +339,9 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>{RentBasisRentRatesFieldTitles.RENT_RATES}</SubTitle>
+            <SubTitle enableUiDataEdit uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.RENT_RATES)}>
+              {RentBasisRentRatesFieldTitles.RENT_RATES}
+            </SubTitle>
 
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_BASISOFRENTRATE) &&
               (!fields || !fields.length) &&
@@ -322,21 +352,35 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
                 <Row>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)}>
-                      <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)}
+                      >
                         {RentBasisRentRatesFieldTitles.BUILD_PERMISSION_TYPE}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}>
-                      <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}>
+                      <FormTextTitle
+                        required={isFieldRequired(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}
+                        enableUiDataEdit
+                        tooltipStyle={{right: 12}}
+                        uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.AMOUNT)}
+                      >
                         {RentBasisRentRatesFieldTitles.AMOUNT}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
                     <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT)}>
-                      <FormTextTitle required={isFieldRequired(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT)}>
+                      <FormTextTitle
+                        required={isFieldRequired(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT)}
+                        enableUiDataEdit
+                        tooltipStyle={{right: 20}}
+                        uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.AREA_UNIT)}
+                      >
                         {RentBasisRentRatesFieldTitles.AREA_UNIT}
                       </FormTextTitle>
                     </Authorization>
@@ -377,6 +421,7 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
                             fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}
                             invisibleLabel
                             name={`${field}.amount`}
+                            unit='€'
                             overrideValues={{label: RentBasisRentRatesFieldTitles.AMOUNT}}
                           />
                         </Authorization>
@@ -510,6 +555,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                 name='plot_type'
                 setRefForField={this.setRefForFirstField}
                 overrideValues={{label: RentBasisFieldTitles.PLOT_TYPE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.PLOT_TYPE)}
               />
             </Authorization>
           </Column>
@@ -520,6 +567,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.START_DATE)}
                 name='start_date'
                 overrideValues={{label: RentBasisFieldTitles.START_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.START_DATE)}
               />
             </Authorization>
           </Column>
@@ -530,6 +579,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.END_DATE)}
                 name='end_date'
                 overrideValues={{label: RentBasisFieldTitles.END_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.END_DATE)}
               />
             </Authorization>
           </Column>
@@ -554,6 +605,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER)}
                 name='detailed_plan_identifier'
                 overrideValues={{label: RentBasisFieldTitles.DETAILED_PLAN_IDENTIFIER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER)}
               />
             </Authorization>
           </Column>
@@ -565,6 +618,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT)}
                 name='management'
                 overrideValues={{label: RentBasisFieldTitles.MANAGEMENT}}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.MANAGEMENT)}
               />
             </Authorization>
           </Column>
@@ -576,6 +631,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.FINANCING)}
                 name='financing'
                 overrideValues={{label: RentBasisFieldTitles.FINANCING}}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.FINANCING)}
               />
             </Authorization>
           </Column>
@@ -588,6 +645,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.LEASE_RIGHTS_END_DATE)}
                 name='lease_rights_end_date'
                 overrideValues={{label: RentBasisFieldTitles.LEASE_RIGHTS_END_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.LEASE_RIGHTS_END_DATE)}
               />
             </Authorization>
           </Column>
@@ -601,6 +660,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                   label: RentBasisFieldTitles.INDEX,
                   options: indexOptions,
                 }}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.INDEX)}
               />
             </Authorization>
           </Column>
@@ -643,6 +704,8 @@ class RentBasisForm extends PureComponent<Props, State> {
                 fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisFieldPaths.NOTE)}
                 name='note'
                 overrideValues={{label: RentBasisFieldTitles.NOTE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.NOTE)}
               />
             </Column>
           </Row>

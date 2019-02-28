@@ -60,6 +60,7 @@ import {
 } from '$src/rentbasis/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
@@ -459,6 +460,7 @@ const mapStateToProps = (state: RootState) => {
 
 export default flowRight(
   withCommonAttributes,
+  withUiDataList,
   withRouter,
   connect(
     mapStateToProps,

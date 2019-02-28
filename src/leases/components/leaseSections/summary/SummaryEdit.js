@@ -24,6 +24,7 @@ import {FieldTypes} from '$components/enums';
 import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
 import {getContentSummary} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   getReferenceNumberLink,
@@ -164,6 +165,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.STATE)}
                       name='state'
                       overrideValues={{label: LeaseFieldTitles.STATE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATE)}
                     />
                   </Authorization>
                 </Column>
@@ -174,6 +177,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.START_DATE)}
                       name='start_date'
                       overrideValues={{label: LeaseFieldTitles.START_DATE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.START_DATE)}
                     />
                   </Authorization>
                 </Column>
@@ -184,6 +189,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.END_DATE)}
                       name='end_date'
                       overrideValues={{label: LeaseFieldTitles.END_DATE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.END_DATE)}
                     />
                   </Authorization>
                 </Column>
@@ -199,6 +206,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                         fieldType: FieldTypes.LESSOR,
                         label: LeaseFieldTitles.LESSOR,
                       }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.LESSOR)}
                     />
                   </Authorization>
                 </Column>
@@ -212,6 +221,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                         fieldType: FieldTypes.USER,
                         label: LeaseFieldTitles.PREPARER,
                       }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.PREPARER)}
                     />
                   </Authorization>
                 </Column>
@@ -222,6 +233,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.CLASSIFICATION)}
                       name='classification'
                       overrideValues={{label: 'Julkisuusluokka'}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.CLASSIFICATION)}
                     />
                   </Authorization>
                 </Column>
@@ -234,6 +247,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.INTENDED_USE)}
                       name='intended_use'
                       overrideValues={{label: LeaseFieldTitles.INTENDED_USE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTENDED_USE)}
                     />
                   </Authorization>
                 </Column>
@@ -244,6 +259,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.INTENDED_USE_NOTE)}
                       name='intended_use_note'
                       overrideValues={{label: LeaseFieldTitles.INTENDED_USE_NOTE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTENDED_USE_NOTE)}
                     />
                   </Authorization>
                 </Column>
@@ -256,6 +273,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.FINANCING)}
                       name='financing'
                       overrideValues={{label: LeaseFieldTitles.FINANCING}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.FINANCING)}
                     />
                   </Authorization>
                 </Column>
@@ -266,6 +285,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.MANAGEMENT)}
                       name='management'
                       overrideValues={{label: LeaseFieldTitles.MANAGEMENT}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MANAGEMENT)}
                     />
                   </Authorization>
                 </Column>
@@ -276,6 +297,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.TRANSFERABLE)}
                       name='transferable'
                       overrideValues={{label: LeaseFieldTitles.TRANSFERABLE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.TRANSFERABLE)}
                     />
                   </Authorization>
                 </Column>
@@ -286,6 +309,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.HITAS)}
                       name='hitas'
                       overrideValues={{label: LeaseFieldTitles.HITAS}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HITAS)}
                     />
                   </Authorization>
                 </Column>
@@ -298,7 +323,12 @@ class SummaryEdit extends PureComponent<Props, State> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
-                    <FormTextTitle>{LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
+                    <FormTextTitle
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}
+                    >
+                      {LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}
+                    </FormTextTitle>
                     {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
                       ? <FormText>-</FormText>
                       : <ListItems>
@@ -324,6 +354,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.NOTICE_PERIOD)}
                       name='notice_period'
                       overrideValues={{label: LeaseFieldTitles.NOTICE_PERIOD}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTICE_PERIOD)}
                     />
                   </Authorization>
                 </Column>
@@ -334,6 +366,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.NOTICE_NOTE)}
                       name='notice_note'
                       overrideValues={{label: LeaseFieldTitles.NOTICE_NOTE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTICE_NOTE)}
                     />
                   </Authorization>
                 </Column>
@@ -351,6 +385,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                         label: LeaseFieldTitles.REFERENCE_NUMBER,
                         fieldType: FieldTypes.REFERENCE_NUMBER,
                       }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REFERENCE_NUMBER)}
                     />
                   </Authorization>
                 </Column>
@@ -361,6 +397,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.NOTE)}
                       name='note'
                       overrideValues={{label: LeaseFieldTitles.NOTE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTE)}
                     />
                   </Authorization>
                 </Column>
@@ -373,6 +411,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.IS_SUBJECT_TO_VAT)}
                       name='is_subject_to_vat'
                       overrideValues={{label: LeaseFieldTitles.IS_SUBJECT_TO_VAT}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.IS_SUBJECT_TO_VAT)}
                     />
                   </Authorization>
                 </Column>
@@ -383,6 +423,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.ARRANGEMENT_DECISION)}
                       name='arrangement_decision'
                       overrideValues={{label: LeaseFieldTitles.ARRANGEMENT_DECISION}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}
                     />
                   </Authorization>
                 </Column>
@@ -404,6 +446,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.SPECIAL_PROJECT)}
                       name='special_project'
                       overrideValues={{label: LeaseFieldTitles.SPECIAL_PROJECT}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SPECIAL_PROJECT)}
                     />
                   </Authorization>
                 </Column>
@@ -414,6 +458,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING)}
                       name='supportive_housing'
                       overrideValues={{label: LeaseFieldTitles.SUPPORTIVE_HOUSING}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUPPORTIVE_HOUSING)}
                     />
                   </Authorization>
                 </Column>
@@ -424,6 +470,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.STATISTICAL_USE)}
                       name='statistical_use'
                       overrideValues={{label: LeaseFieldTitles.STATISTICAL_USE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATISTICAL_USE)}
                     />
                   </Authorization>
                 </Column>
@@ -437,6 +485,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.REAL_ESTATE_DEVELOPER)}
                       name='real_estate_developer'
                       overrideValues={{label: LeaseFieldTitles.REAL_ESTATE_DEVELOPER}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REAL_ESTATE_DEVELOPER)}
                     />
                   </Authorization>
                 </Column>
@@ -447,6 +497,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.CONVEYANCE_NUMBER)}
                       name='conveyance_number'
                       overrideValues={{label: LeaseFieldTitles.CONVEYANCE_NUMBER}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.CONVEYANCE_NUMBER)}
                     />
                   </Authorization>
                 </Column>
@@ -457,6 +509,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.BUILDING_SELLING_PRICE)}
                       name='building_selling_price'
                       overrideValues={{label: LeaseFieldTitles.BUILDING_SELLING_PRICE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.BUILDING_SELLING_PRICE)}
                     />
                   </Authorization>
                 </Column>
@@ -470,6 +524,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.REGULATED)}
                       name='regulated'
                       overrideValues={{label: LeaseFieldTitles.REGULATED}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REGULATED)}
                     />
                   </Authorization>
                 </Column>
@@ -480,6 +536,8 @@ class SummaryEdit extends PureComponent<Props, State> {
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.REGULATION)}
                       name='regulation'
                       overrideValues={{label: LeaseFieldTitles.REGULATION}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REGULATION)}
                     />
                   </Authorization>
                 </Column>

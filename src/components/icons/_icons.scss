@@ -5,6 +5,11 @@
   height: rem-calc(25px);
   width: rem-calc(25px);
 
+  &.icons__add {
+    fill: $dark-green;
+    stroke: $dark-green;
+  }
+
   &.icons__trash {
     #Artboard {
       fill: $dark-green;

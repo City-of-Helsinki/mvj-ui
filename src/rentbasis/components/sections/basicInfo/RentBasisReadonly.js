@@ -24,6 +24,7 @@ import {
   RentBasisRentRatesFieldPaths,
   RentBasisRentRatesFieldTitles,
 } from '$src/rentbasis/enums';
+import {getUiDataRentBasisKey} from '$src/uiData/helpers';
 import {
   formatDate,
   formatNumber,
@@ -63,7 +64,9 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
         <Row>
           <Column small={6} medium={4} large={3}>
             <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE)}>
-              <FormTextTitle>{RentBasisFieldTitles.PLOT_TYPE}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.PLOT_TYPE)}>
+                {RentBasisFieldTitles.PLOT_TYPE}
+              </FormTextTitle>
               <FormText>{getLabelOfOption(plotTypeOptions, rentBasis.plot_type) || '-'}</FormText>
             </Authorization>
           </Column>
@@ -71,13 +74,17 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
             <Row>
               <Column small={6}>
                 <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.START_DATE)}>
-                  <FormTextTitle>{RentBasisFieldTitles.START_DATE}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.START_DATE)}>
+                    {RentBasisFieldTitles.START_DATE}
+                  </FormTextTitle>
                   <FormText>{formatDate(rentBasis.start_date) || '-'}</FormText>
                 </Authorization>
               </Column>
               <Column small={6}>
                 <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.END_DATE)}>
-                  <FormTextTitle>{RentBasisFieldTitles.END_DATE}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.END_DATE)}>
+                    {RentBasisFieldTitles.END_DATE}
+                  </FormTextTitle>
                   <FormText>{formatDate(rentBasis.end_date) || '-'}</FormText>
                 </Authorization>
               </Column>
@@ -88,7 +95,9 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
         <Row>
           <Column small={6} medium={4} large={3}>
             <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)}>
-              <FormTextTitle>{RentBasisPropertyIdentifiersFieldTitles.PROPERTY_IDENTIFIERS}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)}>
+                {RentBasisPropertyIdentifiersFieldTitles.PROPERTY_IDENTIFIERS}
+              </FormTextTitle>
               {rentBasis.property_identifiers && !!rentBasis.property_identifiers.length
                 ? <ListItems>
                   {rentBasis.property_identifiers.map((item, index) =>
@@ -103,19 +112,25 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
-              <FormTextTitle>{RentBasisFieldTitles.DETAILED_PLAN_IDENTIFIER}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
+                {RentBasisFieldTitles.DETAILED_PLAN_IDENTIFIER}
+              </FormTextTitle>
               <FormText>{rentBasis.detailed_plan_identifier || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT)}>
-              <FormTextTitle>{RentBasisFieldTitles.MANAGEMENT}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.MANAGEMENT)}>
+                {RentBasisFieldTitles.MANAGEMENT}
+              </FormTextTitle>
               <FormText>{getLabelOfOption(managementOptions, rentBasis.management) || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.FINANCING)}>
-              <FormTextTitle>{RentBasisFieldTitles.FINANCING}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.FINANCING)}>
+                {RentBasisFieldTitles.FINANCING}
+              </FormTextTitle>
               <FormText>{getLabelOfOption(financingOptions, rentBasis.financing) || '-'}</FormText>
             </Authorization>
           </Column>
@@ -124,13 +139,17 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
         <Row>
           <Column small={6} medium={4} large={3}>
             <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.LEASE_RIGHTS_END_DATE)}>
-              <FormTextTitle>{RentBasisFieldTitles.LEASE_RIGHTS_END_DATE}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.LEASE_RIGHTS_END_DATE)}>
+                {RentBasisFieldTitles.LEASE_RIGHTS_END_DATE}
+              </FormTextTitle>
               <FormText>{formatDate(rentBasis.lease_rights_end_date) || '-'}</FormText>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.INDEX)}>
-              <FormTextTitle>{RentBasisFieldTitles.INDEX}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.INDEX)}>
+                {RentBasisFieldTitles.INDEX}
+              </FormTextTitle>
               <FormText>{getLabelOfOption(indexOptions, rentBasis.index) || '-'}</FormText>
             </Authorization>
           </Column>
@@ -139,29 +158,39 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISIONS)}>
           <Row>
             <Column>
-              <SubTitle>{RentBasisDecisionsFieldTitles.DECISIONS}</SubTitle>
+              <SubTitle uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.DECISIONS)}>
+                {RentBasisDecisionsFieldTitles.DECISIONS}
+              </SubTitle>
               {decisions.length
                 ? (
                   <ListItems>
                     <Row>
                       <Column small={3} large={2}>
                         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER)}>
-                          <FormTextTitle>{RentBasisDecisionsFieldTitles.DECISION_MAKER}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.DECISION_MAKER)}>
+                            {RentBasisDecisionsFieldTitles.DECISION_MAKER}
+                          </FormTextTitle>
                         </Authorization>
                       </Column>
                       <Column small={3} large={1}>
                         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_DATE)}>
-                          <FormTextTitle>{RentBasisDecisionsFieldTitles.DECISION_DATE}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.DECISION_DATE)}>
+                            {RentBasisDecisionsFieldTitles.DECISION_DATE}
+                          </FormTextTitle>
                         </Authorization>
                       </Column>
                       <Column small={3} large={2}>
                         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.SECTION)}>
-                          <FormTextTitle>{RentBasisDecisionsFieldTitles.SECTION}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.SECTION)}>
+                            {RentBasisDecisionsFieldTitles.SECTION}
+                          </FormTextTitle>
                         </Authorization>
                       </Column>
                       <Column small={3} large={2}>
                         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}>
-                          <FormTextTitle>{RentBasisDecisionsFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}>
+                            {RentBasisDecisionsFieldTitles.REFERENCE_NUMBER}
+                          </FormTextTitle>
                         </Authorization>
                       </Column>
                     </Row>
@@ -207,24 +236,32 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.RENT_RATES)}>
           <Row>
             <Column>
-              <SubTitle>{RentBasisRentRatesFieldTitles.RENT_RATES}</SubTitle>
+              <SubTitle uiDataKey={RentBasisRentRatesFieldPaths.RENT_RATES}>
+                {RentBasisRentRatesFieldTitles.RENT_RATES}
+              </SubTitle>
               {rentBasis.rent_rates && !!rentBasis.rent_rates.length
                 ? (
                   <ListItems>
                     <Row>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)}>
-                          <FormTextTitle>{RentBasisRentRatesFieldTitles.BUILD_PERMISSION_TYPE}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)}>
+                            {RentBasisRentRatesFieldTitles.BUILD_PERMISSION_TYPE}
+                          </FormTextTitle>
                         </Authorization>
                       </Column>
                       <Column small={3} medium={4} large={1}>
                         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}>
-                          <FormTextTitle>{RentBasisRentRatesFieldTitles.AMOUNT}</FormTextTitle>
+                          <FormTextTitle  uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.AMOUNT)}>
+                            {RentBasisRentRatesFieldTitles.AMOUNT}
+                          </FormTextTitle>
                         </Authorization>
                       </Column>
                       <Column small={3} medium={4} large={1}>
                         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT)}>
-                          <FormTextTitle>{RentBasisRentRatesFieldTitles.AREA_UNIT}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.AREA_UNIT)}>
+                            {RentBasisRentRatesFieldTitles.AREA_UNIT}
+                          </FormTextTitle>
                         </Authorization>
                       </Column>
                     </Row>
@@ -259,7 +296,9 @@ const RentBasisReadonly = ({rentBasis, rentBasisAttributes}: Props) => {
         <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.NOTE)}>
           <Row>
             <Column>
-              <FormTextTitle>{RentBasisFieldTitles.NOTE}</FormTextTitle>
+              <FormTextTitle uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.NOTE)}>
+                {RentBasisFieldTitles.NOTE}
+              </FormTextTitle>
               <FormText>{rentBasis.note || '-'}</FormText>
             </Column>
           </Row>

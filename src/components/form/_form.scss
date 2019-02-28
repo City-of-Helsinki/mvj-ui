@@ -47,6 +47,20 @@
     white-space: nowrap;
     position: relative;
 
+    .tooltip__component {
+      .tooltip__add-button {
+        display: none;
+      }
+    }
+
+    &.show-add-button {
+      .tooltip__component {
+        .tooltip__add-button {
+          display: inherit;
+        }
+      }
+    }
+
     &.invisible {
       position: absolute;
       visibility: hidden;
@@ -481,8 +495,9 @@
   }
 
   &__text-title {
+    display: block;
     overflow: visible;
-    max-width: 100%;
+    width: 100%;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
     color: $dark-gray;
@@ -495,6 +510,20 @@
       font-size: 18px;
       font-weight: $semibold;
       position: absolute;
+    }
+
+    .tooltip__component {
+      .tooltip__add-button {
+        display: none;
+      }
+    }
+
+    &.show-add-button {
+      .tooltip__component {
+        .tooltip__add-button {
+          display: inherit;
+        }
+      }
     }
   }
 
@@ -664,7 +693,6 @@
     cursor: pointer;
     position: relative;
     top: 0;
-    width: rem-calc(20px);
     height: rem-calc(20px);
 
     #Artboard {
@@ -690,9 +718,8 @@
     }
 
     &.third-level {
-      top: rem-calc(-5px);
+      top: rem-calc(-1px);
       height: rem-calc(20px);
-      width: rem-calc(20px);
 
       .icons {
         height: rem-calc(15px);
@@ -723,6 +750,7 @@
 
     &_button {
       padding-left: rem-calc(5px);
+      line-height: 1;
     }
 
     &.absolute-remove-button-position {

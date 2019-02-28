@@ -97,6 +97,7 @@ import {getVats} from '$src/vat/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
+import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {CommentList} from '$src/comments/types';
@@ -858,9 +859,11 @@ class LeasePage extends Component<Props, State> {
 
     if(isFetching || isFetchingAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!leaseMethods || isEmpty(currentLease)) return null;
+    if(!leaseMethods) return null;
 
     if(!isMethodAllowed(leaseMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
+
+    if(isEmpty(currentLease)) return null;
 
     return (
       <FullWidthContainer>
@@ -1097,6 +1100,7 @@ class LeasePage extends Component<Props, State> {
 export default flowRight(
   withCommonAttributes,
   withLeasePageAttributes,
+  withUiDataList,
   withRouter,
   connect(
     (state, props: Props) => {

@@ -15,7 +15,7 @@ const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/createCollectionLetter/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
-    return attributes || {};
+    return attributes;
   },
 }, null);
 

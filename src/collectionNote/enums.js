@@ -6,6 +6,7 @@
  * @type {{}}
  */
 export const CollectionNoteFieldPaths = {
+  COLLECTION_NOTES: 'collection_notes',
   FILE: 'file',
   MODIFIED_AT: 'modified_at',
   NOTE: 'note',

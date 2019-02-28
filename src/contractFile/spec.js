@@ -19,12 +19,16 @@ const defaultState: ContractFileState = {
   methods: {},
 };
 
+// $FlowFixMe
 describe('contractFile', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('contractFileReducer', () => {
 
+      // $FlowFixMe
       it('should update isFetchingAttributes flag to true when fetching attributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 

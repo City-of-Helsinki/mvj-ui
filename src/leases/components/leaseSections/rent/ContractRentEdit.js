@@ -21,6 +21,7 @@ import {
   RentTypes,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatNumber,
   getFieldAttributes,
@@ -266,7 +267,11 @@ const ContractRent = ({
           <Row>
             <Column small={6} medium={4}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
-                <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
+                <FormTextTitle
+                  required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT)}
+                >
                   {LeaseRentContractRentsFieldTitles.AMOUNT}
                 </FormTextTitle>
               </Authorization>
@@ -312,6 +317,8 @@ const ContractRent = ({
                   fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}
                   name={`${field}.intended_use`}
                   overrideValues={{label: LeaseRentContractRentsFieldTitles.INTENDED_USE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.INTENDED_USE)}
                 />
               </Authorization>
             </Column>
@@ -319,7 +326,11 @@ const ContractRent = ({
               rentType === RentTypes.MANUAL) &&
               <Column small={6} medium={4}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
-                  <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
+                  <FormTextTitle
+                    required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.BASE_AMOUNT)}
+                  >
                     {LeaseRentContractRentsFieldTitles.BASE_AMOUNT}
                   </FormTextTitle>
                 </Authorization>
@@ -370,6 +381,9 @@ const ContractRent = ({
                     name={`${field}.base_year_rent`}
                     unit='€'
                     overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}}
+                    enableUiDataEdit
+                    tooltipStyle={{right: 12}}
+                    uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
                   />
                 </Authorization>
               </Column>
@@ -383,6 +397,8 @@ const ContractRent = ({
                       fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}
                       name={`${field}.start_date`}
                       overrideValues={{label: LeaseRentContractRentsFieldTitles.START_DATE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.START_DATE)}
                     />
                   </Authorization>
                 </Column>
@@ -393,6 +409,8 @@ const ContractRent = ({
                       fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}
                       name={`${field}.end_date`}
                       overrideValues={{label: LeaseRentContractRentsFieldTitles.END_DATE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)}
                     />
                   </Authorization>
                 </Column>

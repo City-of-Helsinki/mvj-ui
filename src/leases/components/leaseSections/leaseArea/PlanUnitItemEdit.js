@@ -16,6 +16,7 @@ import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
 import {FormNames, LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   getSearchQuery,
@@ -83,6 +84,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes,  LeasePlanUnitsFieldPaths.IDENTIFIER)}
                 name={`${field}.identifier`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.IDENTIFIER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.IDENTIFIER)}
               />
             </Authorization>
           </Column>
@@ -104,6 +107,9 @@ const PlanUnitItemEdit = ({
                 name={`${field}.area`}
                 unit='m²'
                 overrideValues={{label: LeasePlanUnitsFieldTitles.AREA}}
+                enableUiDataEdit
+                tooltipStyle={{right: 22}}
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.AREA)}
               />
             </Authorization>
           </Column>
@@ -115,6 +121,9 @@ const PlanUnitItemEdit = ({
                 name={`${field}.section_area`}
                 unit='m²'
                 overrideValues={{label: LeasePlanUnitsFieldTitles.SECTION_AREA}}
+                enableUiDataEdit
+                tooltipStyle={{right: 22}}
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.SECTION_AREA)}
               />
             </Authorization>
           </Column>
@@ -127,6 +136,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER)}
                 name={`${field}.detailed_plan_identifier`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.DETAILED_PLAN_IDENTIFIER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER)}
               />
             </Authorization>
           </Column>
@@ -137,6 +148,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE)}
                 name={`${field}.detailed_plan_latest_processing_date`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE)}
               />
             </Authorization>
           </Column>
@@ -149,6 +162,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE)}
                 name={`${field}.detailed_plan_latest_processing_date_note`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE)}
               />
             </Authorization>
           </Column>
@@ -161,6 +176,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER)}
                 name={`${field}.plot_division_identifier`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.PLOT_DIVISION_IDENTIFIER}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER)}
               />
             </Authorization>
           </Column>
@@ -171,6 +188,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE)}
                 name={`${field}.plot_division_state`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.PLOT_DIVISION_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE)}
               />
             </Authorization>
           </Column>
@@ -181,6 +200,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_EFFECTIVE_DATE)}
                 name={`${field}.plot_division_effective_date`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.PLOT_DIVISION_EFFECTIVE_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLOT_DIVISION_EFFECTIVE_DATE)}
               />
             </Authorization>
           </Column>
@@ -193,6 +214,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE)}
                 name={`${field}.plan_unit_type`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.PLAN_UNIT_TYPE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE)}
               />
             </Authorization>
           </Column>
@@ -203,6 +226,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE)}
                 name={`${field}.plan_unit_state`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.PLAN_UNIT_STATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE)}
               />
             </Authorization>
           </Column>
@@ -213,6 +238,8 @@ const PlanUnitItemEdit = ({
                 fieldAttributes={getFieldAttributes(attributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE)}
                 name={`${field}.plan_unit_intended_use`}
                 overrideValues={{label: LeasePlanUnitsFieldTitles.PLAN_UNIT_INTENDED_USE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE)}
               />
             </Authorization>
           </Column>

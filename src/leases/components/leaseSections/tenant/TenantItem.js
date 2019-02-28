@@ -20,6 +20,7 @@ import {
   LeaseTenantContactSetFieldTitles,
 } from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
   formatNumber,
@@ -59,7 +60,9 @@ const TenantItem = ({
           <Row>
             <Column small={12}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
-                <FormTextTitle>{LeaseTenantContactSetFieldTitles.CONTACT}</FormTextTitle>
+                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}>
+                  {LeaseTenantContactSetFieldTitles.CONTACT}
+                </FormTextTitle>
                 <FormText>
                   {contact
                     ? <ExternalLink
@@ -78,25 +81,33 @@ const TenantItem = ({
           <Row>
             <Column small={12} medium={6} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-                <FormTextTitle>{LeaseTenantsFieldTitles.SHARE_FRACTION}</FormTextTitle>
+                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}>
+                  {LeaseTenantsFieldTitles.SHARE_FRACTION}
+                </FormTextTitle>
                 <FormText>{tenant.share_numerator || ''} / {tenant.share_denominator || ''}</FormText>
               </Authorization>
             </Column>
             <Column small={12} medium={6} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-                <FormTextTitle>{LeaseTenantsFieldTitles.SHARE_PERCENTAGE}</FormTextTitle>
+                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_PERCENTAGE)}>
+                  {LeaseTenantsFieldTitles.SHARE_PERCENTAGE}
+                </FormTextTitle>
                 <FormText>{!isEmptyValue(share) ? `${formatNumber(share)} %` : '-'}</FormText>
               </Authorization>
             </Column>
             <Column small={6} medium={3} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
-                <FormTextTitle>{LeaseTenantContactSetFieldTitles.START_DATE}</FormTextTitle>
+                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}>
+                  {LeaseTenantContactSetFieldTitles.START_DATE}
+                </FormTextTitle>
                 <FormText>{formatDate(get(tenant, 'tenant.start_date'))}</FormText>
               </Authorization>
             </Column>
             <Column small={6} medium={3} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
-                <FormTextTitle>{LeaseTenantContactSetFieldTitles.END_DATE}</FormTextTitle>
+                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)}>
+                  {LeaseTenantContactSetFieldTitles.END_DATE}
+                </FormTextTitle>
                 <FormText>{formatDate(get(tenant, 'tenant.end_date'))}</FormText>
               </Authorization>
             </Column>
@@ -107,7 +118,9 @@ const TenantItem = ({
           <Row>
             <Column>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.REFERENCE)}>
-                <FormTextTitle>{LeaseTenantsFieldTitles.REFERENCE}</FormTextTitle>
+                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.REFERENCE)}>
+                  {LeaseTenantsFieldTitles.REFERENCE}
+                </FormTextTitle>
                 <FormText>{tenant.reference || '-'}</FormText>
               </Authorization>
             </Column>

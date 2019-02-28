@@ -6,6 +6,7 @@ import Authorization from '$components/authorization/Authorization';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles} from '$src/leases/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {formatDate, isFieldAllowedToRead} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
@@ -47,25 +48,33 @@ const InspectionItem = ({attributes, inspection, largeScreen}: Props) => {
       <Row>
         <Column small={6} medium={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTOR)}>
-            <FormTextTitle>{LeaseInspectionsFieldTitles.INSPECTOR}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.INSPECTOR)}>
+              {LeaseInspectionsFieldTitles.INSPECTOR}
+            </FormTextTitle>
             <FormText>{inspection.inspector || '–'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISION_DATE)}>
-            <FormTextTitle>{LeaseInspectionsFieldTitles.SUPERVISION_DATE}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.SUPERVISION_DATE)}>
+              {LeaseInspectionsFieldTitles.SUPERVISION_DATE}
+            </FormTextTitle>
             <FormText className={(inspection.supervision_date && !inspection.supervised_date) ? 'alert' : ''}>{inspection.supervision_date ? <span><i/>{formatDate(inspection.supervision_date)}</span> : '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISED_DATE)}>
-            <FormTextTitle>{LeaseInspectionsFieldTitles.SUPERVISED_DATE}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.SUPERVISED_DATE)}>
+              {LeaseInspectionsFieldTitles.SUPERVISED_DATE}
+            </FormTextTitle>
             <FormText className={inspection.supervised_date ? 'success' : ''}>{inspection.supervised_date ? <span><i/>{formatDate(inspection.supervised_date)}</span> : '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={12}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}>
-            <FormTextTitle>{LeaseInspectionsFieldTitles.DESCRIPTION}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.DESCRIPTION)}>
+              {LeaseInspectionsFieldTitles.DESCRIPTION}
+            </FormTextTitle>
             <FormText>{inspection.description || '–'}</FormText>
           </Authorization>
         </Column>

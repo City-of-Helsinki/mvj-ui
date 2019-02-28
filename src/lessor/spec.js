@@ -10,12 +10,16 @@ const defaultState: LessorState = {
   list: [],
 };
 
+// $FlowFixMe
 describe('Lessors', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('lessorReducer', () => {
 
+      // $FlowFixMe
       it('receive lessor list', () => {
         const dummyLessors = [{
           foo: 'bar',

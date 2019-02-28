@@ -5,7 +5,8 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Comment from './Comment';
 import FormText from '$components/form/FormText';
 import SubTitle from '$components/content/SubTitle';
-import {LeaseConstructabilityDescriptionsFieldTitles} from '$src/leases/enums';
+import {LeaseConstructabilityDescriptionsFieldPaths, LeaseConstructabilityDescriptionsFieldTitles} from '$src/leases/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 
 type Props = {
   commentClassName?: string,
@@ -22,7 +23,9 @@ const Comments = ({
 }: Props) =>
   <Fragment>
     {showTitle &&
-      <SubTitle>{LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}</SubTitle>
+      <SubTitle uiDataKey={getUiDataLeaseKey(LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
+        {LeaseConstructabilityDescriptionsFieldTitles.CONSTRUCTABILITY_DESCRIPTIONS}
+      </SubTitle>
     }
     {comments && !!comments.length
       ? <BoxItemContainer>

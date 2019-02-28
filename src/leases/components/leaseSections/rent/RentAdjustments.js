@@ -10,6 +10,8 @@ import DecisionLink from '$components/links/DecisionLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles} from '$src/leases/enums';
+import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
   formatNumber,
@@ -17,7 +19,6 @@ import {
   getLabelOfOption,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -54,13 +55,17 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE)}>
-                    <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.TYPE}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.TYPE)}>
+                      {LeaseRentAdjustmentsFieldTitles.TYPE}
+                    </FormTextTitle>
                     <FormText>{getLabelOfOption(typeOptions, adjustment.type) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}>
-                    <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.INTENDED_USE}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}>
+                      {LeaseRentAdjustmentsFieldTitles.INTENDED_USE}
+                    </FormTextTitle>
                     <FormText>{getLabelOfOption(intendedUseOptions, adjustment.intended_use) || '-'}</FormText>
                   </Authorization>
                 </Column>
@@ -68,13 +73,17 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                   <Row>
                     <Column small={6}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}>
-                        <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.START_DATE}</FormTextTitle>
+                        <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.START_DATE)}>
+                          {LeaseRentAdjustmentsFieldTitles.START_DATE}
+                        </FormTextTitle>
                         <FormText>{formatDate(adjustment.start_date) || '-'}</FormText>
                       </Authorization>
                     </Column>
                     <Column small={6}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}>
-                        <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.END_DATE}</FormTextTitle>
+                        <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.END_DATE)}>
+                          {LeaseRentAdjustmentsFieldTitles.END_DATE}
+                        </FormTextTitle>
                         <FormText>{formatDate(adjustment.end_date) || '-'}</FormText>
                       </Authorization>
                     </Column>
@@ -82,19 +91,25 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
-                    <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
+                      {LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}
+                    </FormTextTitle>
                     <FormText>{getFullAmountText(adjustment) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}>
-                    <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.AMOUNT_LEFT}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}>
+                      {LeaseRentAdjustmentsFieldTitles.AMOUNT_LEFT}
+                    </FormTextTitle>
                     <FormText>{adjustment.amount_left ? `${formatNumber(adjustment.amount_left)} €` : '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}>
-                    <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.DECISION}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.DECISION)}>
+                      {LeaseRentAdjustmentsFieldTitles.DECISION}
+                    </FormTextTitle>
                     <DecisionLink
                       decision={decision}
                       decisionOptions={decisionOptions}
@@ -106,7 +121,9 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.NOTE)}>
                 <Row>
                   <Column>
-                    <FormTextTitle>{LeaseRentAdjustmentsFieldTitles.NOTE}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.NOTE)}>
+                      {LeaseRentAdjustmentsFieldTitles.NOTE}
+                    </FormTextTitle>
                     <FormText>{adjustment.note || '-'}</FormText>
                   </Column>
                 </Row>

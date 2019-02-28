@@ -29,6 +29,7 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatNumber,
   getFieldOptions,
@@ -144,25 +145,33 @@ const LeaseArea = ({
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
-            <FormTextTitle>{LeaseAreasFieldTitles.IDENTIFIER}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.IDENTIFIER)}>
+              {LeaseAreasFieldTitles.IDENTIFIER}
+            </FormTextTitle>
             <FormText>{area.identifier || '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.TYPE)}>
-            <FormTextTitle>{LeaseAreasFieldTitles.TYPE}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.TYPE)}>
+              {LeaseAreasFieldTitles.TYPE}
+            </FormTextTitle>
             <FormText>{getLabelOfOption(typeOptions, area.type) || '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
-            <FormTextTitle>{LeaseAreasFieldTitles.AREA}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.AREA)}>
+              {LeaseAreasFieldTitles.AREA}
+            </FormTextTitle>
             <FormText>{!isEmptyValue(area.area) ? `${formatNumber(area.area)} m²` : '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LOCATION)}>
-            <FormTextTitle>{LeaseAreasFieldTitles.LOCATION}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LOCATION)}>
+              {LeaseAreasFieldTitles.LOCATION}
+            </FormTextTitle>
             <FormText>{getLabelOfOption(locationOptions, area.location) || '-'}</FormText>
           </Authorization>
         </Column>
@@ -175,24 +184,32 @@ const LeaseArea = ({
         </Column>
       </Row>
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
-        <SubTitle>{LeaseAreaAddressesFieldTitles.ADDRESSES}</SubTitle>
+        <SubTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+          {LeaseAreaAddressesFieldTitles.ADDRESSES}
+        </SubTitle>
         {!addresses || !addresses.length && <FormText>Ei osoitteita</FormText>}
         {!!addresses.length &&
           <Fragment>
             <Row>
               <Column small={6} large={4}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
-                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.ADDRESS}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESS)}>
+                    {LeaseAreaAddressesFieldTitles.ADDRESS}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
               <Column small={3} large={2}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
-                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.POSTAL_CODE}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+                    {LeaseAreaAddressesFieldTitles.POSTAL_CODE}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
               <Column small={3} large={2}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
-                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.CITY}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.CITY)}>
+                    {LeaseAreaAddressesFieldTitles.CITY}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
             </Row>
@@ -231,6 +248,7 @@ const LeaseArea = ({
               defaultOpen={plotsContractCollapseState !== undefined ? plotsContractCollapseState : !archived}
               headerTitle='Kiinteistöt / määräalat sopimuksessa'
               onToggle={handlePlotsContractCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS_CONTRACT)}
             >
               <BoxItemContainer>
                 {!area.plots_contract || !area.plots_contract.length &&
@@ -252,6 +270,7 @@ const LeaseArea = ({
               defaultOpen={plotsCurrentCollapseState !== undefined ? plotsCurrentCollapseState : !archived}
               headerTitle='Kiinteistöt / määräalat nykyhetkellä'
               onToggle={handlePlotsCurrentCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS)}
             >
               {!area.plots_current || !area.plots_current.length &&
                 <FormText>Ei kiinteistöjä/määräaloja nykyhetkellä</FormText>
@@ -278,6 +297,7 @@ const LeaseArea = ({
               defaultOpen={planUnitsContractCollapseState !== undefined ? planUnitsContractCollapseState : !archived}
               headerTitle='Kaavayksiköt sopimuksessa'
               onToggle={handlePlanUnitContractCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT)}
             >
               <BoxItemContainer>
                 {!area.plan_units_contract || !area.plan_units_contract.length &&
@@ -299,6 +319,7 @@ const LeaseArea = ({
               defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : !archived}
               headerTitle='Kaavayksiköt nykyhetkellä'
               onToggle={handlePlanUnitCurrentCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}
             >
               <BoxItemContainer>
                 {!area.plan_units_current || !area.plan_units_current.length &&

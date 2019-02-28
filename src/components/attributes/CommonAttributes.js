@@ -10,6 +10,7 @@ import {fetchAttributes as fetchIndexAttributes} from '$src/index/actions';
 import {fetchAttributes as fetchInfillDevelopmentAttributes} from '$src/infillDevelopment/actions';
 import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
 import {fetchAttributes as fetchRentBasisAttributes} from '$src/rentbasis/actions';
+import {fetchAttributes as fetchUiDataAttributes} from '$src/uiData/actions';
 import {fetchUsersPermissions} from '$src/usersPermissions/actions';
 import {
   getAttributes as getAreaNoteAttributes,
@@ -42,6 +43,11 @@ import {
   getMethods as getRentBasisMethods,
 } from '$src/rentbasis/selectors';
 import {
+  getAttributes as getUiDataAttributes,
+  getIsFetchingAttributes as getIsFetchingUiDataAttributes,
+  getMethods as getUiDataMethods,
+} from '$src/uiData/selectors';
+import {
   getUsersPermissions,
   getIsFetching as getIsFetchingUsersPermissions,
 } from '$src/usersPermissions/selectors';
@@ -61,6 +67,7 @@ function CommonAttributes(WrappedComponent: any) {
     fetchInfillDevelopmentAttributes: Function,
     fetchLeaseAttributes: Function,
     fetchRentBasisAttributes: Function,
+    fetchUiDataAttributes: Function,
     fetchUsersPermissions: Function,
     indexAttributes: Attributes,
     indexMethods: Methods,
@@ -72,11 +79,14 @@ function CommonAttributes(WrappedComponent: any) {
     isFetchingInfillDevelopmentAttributes: boolean,
     isFetchingLeaseAttributes: boolean,
     isFetchingRentBasisAttributes: boolean,
+    isFetchingUiDataAttributes: boolean,
     isFetchingUsersPermissions: boolean,
     leaseAttributes: Attributes,
     leaseMethods: Methods,
     rentBasisAttributes: Attributes,
     rentBasisMethods: Methods,
+    uiDataAttributes: Attributes,
+    uiDataMethods: Methods,
     usersPermissions: UsersPermissions,
   }
 
@@ -99,6 +109,7 @@ function CommonAttributes(WrappedComponent: any) {
         fetchInfillDevelopmentAttributes,
         fetchLeaseAttributes,
         fetchRentBasisAttributes,
+        fetchUiDataAttributes,
         fetchUsersPermissions,
         indexMethods,
         infillDevelopmentMethods,
@@ -108,9 +119,11 @@ function CommonAttributes(WrappedComponent: any) {
         isFetchingInfillDevelopmentAttributes,
         isFetchingLeaseAttributes,
         isFetchingRentBasisAttributes,
+        isFetchingUiDataAttributes,
         isFetchingUsersPermissions,
         leaseMethods,
         rentBasisMethods,
+        uiDataMethods,
         usersPermissions,
       } = this.props;
 
@@ -141,6 +154,10 @@ function CommonAttributes(WrappedComponent: any) {
       if(!isFetchingRentBasisAttributes && !rentBasisMethods) {
         fetchRentBasisAttributes();
       }
+
+      if(!isFetchingUiDataAttributes && !uiDataMethods) {
+        fetchUiDataAttributes();
+      }
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -150,6 +167,7 @@ function CommonAttributes(WrappedComponent: any) {
         this.props.isFetchingInfillDevelopmentAttributes !== prevProps.isFetchingInfillDevelopmentAttributes ||
         this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes ||
         this.props.isFetchingRentBasisAttributes !== prevProps.isFetchingRentBasisAttributes ||
+        this.props.isFetchingUiDataAttributes !== prevProps.isFetchingUiDataAttributes ||
         this.props.isFetchingUsersPermissions !== prevProps.isFetchingUsersPermissions) {
         this.setIsFetchingCommonAttributes();
       }
@@ -163,6 +181,7 @@ function CommonAttributes(WrappedComponent: any) {
         isFetchingInfillDevelopmentAttributes,
         isFetchingLeaseAttributes,
         isFetchingRentBasisAttributes,
+        isFetchingUiDataAttributes,
         isFetchingUsersPermissions,
       } = this.props;
       const isFetching = isFetchingAreaNoteAttributes ||
@@ -171,6 +190,7 @@ function CommonAttributes(WrappedComponent: any) {
         isFetchingInfillDevelopmentAttributes ||
         isFetchingLeaseAttributes ||
         isFetchingRentBasisAttributes ||
+        isFetchingUiDataAttributes ||
         isFetchingUsersPermissions;
 
       this.setState({isFetchingCommonAttributes: isFetching});
@@ -201,11 +221,14 @@ const withCommonAttributes = flowRight(
         isFetchingInfillDevelopmentAttributes: getIsFetchingInfillDevelopmentAttributes(state),
         isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
         isFetchingRentBasisAttributes: getIsFetchingRentBasisAttributes(state),
+        isFetchingUiDataAttributes: getIsFetchingUiDataAttributes(state),
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         leaseAttributes: getLeaseAttributes(state),
         leaseMethods: getLeaseMethods(state),
         rentBasisAttributes: getRentBasisAttributes(state),
         rentBasisMethods: getRentBasisMethods(state),
+        uiDataAttributes: getUiDataAttributes(state),
+        uiDataMethods: getUiDataMethods(state),
         usersPermissions: getUsersPermissions(state),
       };
     },
@@ -216,6 +239,7 @@ const withCommonAttributes = flowRight(
       fetchInfillDevelopmentAttributes,
       fetchLeaseAttributes,
       fetchRentBasisAttributes,
+      fetchUiDataAttributes,
       fetchUsersPermissions,
     }
   ),

@@ -1,5 +1,4 @@
 // @flow
-
 import {combineReducers} from 'redux';
 import {reducer as formReducer} from 'redux-form';
 import {reducer as oidc} from 'redux-oidc';
@@ -34,6 +33,7 @@ import previewInvoicesReducer from '../previewInvoices/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
 import rentForPeriodReducer from '../rentForPeriod/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
+import uiDataReducer from '$src/uiData/reducer';
 import usersReducer from '../users/reducer';
 import usersPermissionsReducer from '../usersPermissions/reducer';
 import vatReducer from '../vat/reducer';
@@ -76,6 +76,7 @@ export default (history: Object): Reducer<RootState> =>
     router: connectRouter(history),
     toastr: toastrReducer,
     topNavigation: topNavigationReducer,
+    uiData: uiDataReducer,
     user: usersReducer,
     usersPermissions: usersPermissionsReducer,
     vat: vatReducer,

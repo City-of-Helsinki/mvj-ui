@@ -42,12 +42,16 @@ const defaultState: InfillDevelopmentState = {
   methods: null,
 };
 
+// $FlowFixMe
 describe('Infill development', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('infillDevelopmentReducer', () => {
 
+      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 

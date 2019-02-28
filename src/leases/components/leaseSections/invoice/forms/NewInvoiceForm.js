@@ -25,6 +25,7 @@ import {DeleteModalLabels, DeleteModalTitles, FormNames, RecipientOptions} from 
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
+import {getUiDataCreateChargeKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   hasPermissions,
@@ -67,7 +68,10 @@ const InvoiceRows = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>Erittely</SubTitle>
+            <SubTitle
+              enableUiDataEdit
+              uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.ROWS)}
+            >Erittely</SubTitle>
             {!!fields && !!fields.length &&
               <Fragment>
                 <Row>
@@ -76,7 +80,11 @@ const InvoiceRows = ({
                       ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)
                       : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
                     >
-                      <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                      <FormTextTitle
+                        required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)}
+                      >
                         {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
                       </FormTextTitle>
                     </Authorization>
@@ -86,7 +94,12 @@ const InvoiceRows = ({
                       ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.AMOUNT)
                       : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
                     >
-                      <FormTextTitle required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                      <FormTextTitle
+                        required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
+                        enableUiDataEdit
+                        tooltipStyle={{right: 12}}
+                        uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.AMOUNT)}
+                      >
                         {InvoiceRowsFieldTitles.AMOUNT}
                       </FormTextTitle>
                     </Authorization>
@@ -250,6 +263,8 @@ const NewInvoiceForm = ({
                     label: 'Vuokralainen',
                     options: recipientOptions,
                   }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreateChargeKey(InvoiceFieldPaths.RECIPIENT)}
                 />
               </Authorization>
             </Column>
@@ -266,6 +281,8 @@ const NewInvoiceForm = ({
                   }
                   name='due_date'
                   overrideValues={{label: InvoiceFieldTitles.DUE_DATE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.DUE_DATE)}
                 />
               </Authorization>
             </Column>
@@ -282,6 +299,8 @@ const NewInvoiceForm = ({
                   }
                   name='billing_period_start_date'
                   overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE)}
                 />
               </Authorization>
             </Column>
@@ -298,6 +317,8 @@ const NewInvoiceForm = ({
                   }
                   name='billing_period_end_date'
                   overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE)}
                 />
               </Authorization>
             </Column>
@@ -316,6 +337,8 @@ const NewInvoiceForm = ({
                   }
                   name='notes'
                   overrideValues={{label: InvoiceFieldTitles.NOTES}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.NOTES)}
                 />
               </Authorization>
             </Column>

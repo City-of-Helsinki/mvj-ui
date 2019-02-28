@@ -39,6 +39,7 @@ import {
 } from '$src/contacts/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
@@ -348,6 +349,7 @@ const mapStateToProps = (state: RootState) => {
 
 export default flowRight(
   withCommonAttributes,
+  withUiDataList,
   withRouter,
   connect(
     mapStateToProps,

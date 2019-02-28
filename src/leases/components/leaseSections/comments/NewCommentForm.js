@@ -10,6 +10,7 @@ import FormField from '$components/form/FormField';
 import {receiveIsSaveClicked} from '$src/comments/actions';
 import {ButtonColors, FieldTypes, FormNames} from '$components/enums';
 import {CommentFieldPaths, CommentFieldTitles} from '$src/comments/enums';
+import {getUiDataCommentKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
 import {
   getAttributes as getCommentAttributes,
@@ -56,6 +57,8 @@ const NewCommentForm = ({
           fieldAttributes={getFieldAttributes(commentAttributes, CommentFieldPaths.TOPIC)}
           name='topic'
           overrideValues={{label: CommentFieldTitles.TOPIC}}
+          enableUiDataEdit
+          uiDataKey={getUiDataCommentKey(CommentFieldPaths.TOPIC)}
         />
       </Authorization>
       <Authorization allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TEXT)}>
@@ -68,6 +71,8 @@ const NewCommentForm = ({
             label: CommentFieldTitles.TEXT,
             fieldType: FieldTypes.TEXTAREA,
           }}
+          enableUiDataEdit
+          uiDataKey={getUiDataCommentKey(CommentFieldPaths.TEXT)}
         />
       </Authorization>
       <Button

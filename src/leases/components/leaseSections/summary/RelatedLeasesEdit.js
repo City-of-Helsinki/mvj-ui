@@ -9,8 +9,10 @@ import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
 import RelatedLeaseItem from './RelatedLeaseItem';
 import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
 import {LeaseFieldPaths} from '$src/leases/enums';
+import {RelatedLeasePaths} from '$src/relatedLease/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
+import {getUiDataRelatedLeaseKey} from '$src/uiData/helpers';
 import {getFieldOptions, hasPermissions} from '$src/util/helpers';
 import {
   getAttributes as getLeaseAttributes,
@@ -123,7 +125,11 @@ class RelatedLeasesEdit extends Component<Props, State> {
 
         <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RELATEDLEASE)}>
           <div className="summary__related-leases_input-wrapper">
-            <FormFieldLabel htmlFor='related-lease'>Liitä vuokratunnukseen</FormFieldLabel>
+            <FormFieldLabel
+              htmlFor='related-lease'
+              enableUiDataEdit
+              uiDataKey={getUiDataRelatedLeaseKey(RelatedLeasePaths.TO_LEASE)}
+            >Liitä vuokratunnukseen</FormFieldLabel>
             <Row>
               <Column>
                 <LeaseSelectInput

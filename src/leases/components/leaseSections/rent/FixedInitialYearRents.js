@@ -11,6 +11,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles} from '$src/leases/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
   formatNumber,
@@ -65,22 +66,30 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
             <Row>
               <Column large={2}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
-                  <FormTextTitle>{LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
+                    {LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
               <Column large={2}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
-                  <FormTextTitle>{LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
+                    {LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
               <Column large={1}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
-                  <FormTextTitle>{LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
+                    {LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
               <Column large={1}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
-                  <FormTextTitle>{LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}</FormTextTitle>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
+                    {LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}
+                  </FormTextTitle>
                 </Authorization>
               </Column>
             </Row>
@@ -118,25 +127,33 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
                     <Row>
                       <Column small={6} medium={3} large={2}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
-                          <FormTextTitle>{LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE)}>
+                            {LeaseRentFixedInitialYearRentsFieldTitles.INTENDED_USE}
+                          </FormTextTitle>
                           <FormText>{getLabelOfOption(intendedUseOptions, rent.intended_use) || '-'}</FormText>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={3} large={2}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
-                          <FormTextTitle>{LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
+                            {LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT}
+                          </FormTextTitle>
                           <FormText>{!isEmptyValue(rent.amount) ? `${formatNumber(rent.amount)} €` : '-'}</FormText>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={3} large={1}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
-                          <FormTextTitle>{LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.START_DATE)}>
+                            {LeaseRentFixedInitialYearRentsFieldTitles.START_DATE}
+                          </FormTextTitle>
                           <FormText>{formatDate(rent.start_date) || '-'}</FormText>
                         </Authorization>
                       </Column>
                       <Column  small={6} medium={3} large={1}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
-                          <FormTextTitle>{LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}</FormTextTitle>
+                          <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.END_DATE)}>
+                            {LeaseRentFixedInitialYearRentsFieldTitles.END_DATE}
+                          </FormTextTitle>
                           <FormText>{formatDate(rent.end_date) || '-'}</FormText>
                         </Authorization>
                       </Column>

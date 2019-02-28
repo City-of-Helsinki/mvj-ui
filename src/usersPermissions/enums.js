@@ -69,4 +69,5 @@ export const UsersPermissions = {
   DELETE_BASISOFRENTDECISION: 'delete_basisofrentdecision',
   ADD_BASISOFRENTRATE: 'add_basisofrentrate',
   DELETE_BASISOFRENTRATE: 'delete_basisofrentrate',
+  EDIT_GLOBAL_UI_DATA: 'edit_global_ui_data',
 };

@@ -12,8 +12,9 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
 import InspectionItem from './InspectionItem';
 import {LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles} from '$src/leases/enums';
-import {isFieldAllowedToRead} from '$util/helpers';
 import {getContentInspections} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
+import {isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
@@ -64,22 +65,30 @@ class Inspections extends PureComponent<Props, State> {
               <Row>
                 <Column large={2}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTOR)}>
-                    <FormTextTitle>{LeaseInspectionsFieldTitles.INSPECTOR}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.INSPECTOR)}>
+                      {LeaseInspectionsFieldTitles.INSPECTOR}
+                    </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column large={2}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISION_DATE)}>
-                    <FormTextTitle>{LeaseInspectionsFieldTitles.SUPERVISION_DATE}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.SUPERVISION_DATE)}>
+                      {LeaseInspectionsFieldTitles.SUPERVISION_DATE}
+                    </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column large={2}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISED_DATE)}>
-                    <FormTextTitle>{LeaseInspectionsFieldTitles.SUPERVISED_DATE}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.SUPERVISED_DATE)}>
+                      {LeaseInspectionsFieldTitles.SUPERVISED_DATE}
+                    </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column large={6}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}>
-                    <FormTextTitle>{LeaseInspectionsFieldTitles.DESCRIPTION}</FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.DESCRIPTION)}>
+                      {LeaseInspectionsFieldTitles.DESCRIPTION}
+                    </FormTextTitle>
                   </Authorization>
                 </Column>
               </Row>

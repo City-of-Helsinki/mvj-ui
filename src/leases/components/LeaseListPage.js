@@ -56,6 +56,7 @@ import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getIsFetching, getLeasesList} from '$src/leases/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {LeaseList} from '$src/leases/types';
@@ -465,6 +466,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
 export default flowRight(
   withCommonAttributes,
+  withUiDataList,
   connect(
     (state) => {
       return {

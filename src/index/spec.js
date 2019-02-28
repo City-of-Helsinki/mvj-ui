@@ -22,12 +22,16 @@ const defaultState: IndexState = {
   methods: null,
 };
 
+// $FlowFixMe
 describe('Index', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('indexReducer', () => {
 
+      // $FlowFixMe
       it('should set isFetchingAttributes flag to true when fetching attributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 

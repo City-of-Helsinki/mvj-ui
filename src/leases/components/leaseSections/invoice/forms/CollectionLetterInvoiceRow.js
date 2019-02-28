@@ -85,7 +85,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
               label: 'Perittävä lasku',
               read_only: false,
             }}
-            invisibleLabel={true}
+            invisibleLabel
             name={field}
             overrideValues={{options: filteredInvoiceOptions}}
           />
@@ -111,6 +111,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
               <RemoveButton
                 className='third-level'
                 onClick={onRemove}
+                style={{height: 'unset'}}
                 title="Poista rivi"
               />
             }

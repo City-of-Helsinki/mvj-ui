@@ -15,12 +15,16 @@ const defaultState: DistrictState = {
   isFetching: false,
 };
 
+// $FlowFixMe
 describe('Districts', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('districtReducer', () => {
 
+      // $FlowFixMe
       it('should update districts received by municipality', () => {
         const dummyMunicipality = 1;
         const dummyDistricts = [

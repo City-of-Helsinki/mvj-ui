@@ -24,6 +24,7 @@ import {
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
+import {getUiDataInfillDevelopmentKey} from '$src/uiData/helpers';
 import {getSearchQuery, getUrlParams, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes as getInfillDevelopmentAttributes} from '$src/infillDevelopment/selectors';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
@@ -69,7 +70,9 @@ const LeaseInfo = ({
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}>
-            <FormTextTitle>{InfillDevelopmentCompensationLeasesFieldTitles.LEASE}</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}>
+              {InfillDevelopmentCompensationLeasesFieldTitles.LEASE}
+            </FormTextTitle>
             <ExternalLink
               href={`${getRouteById(Routes.LEASES)}/${leaseId}`}
               text={identifier || '-'}
@@ -78,7 +81,9 @@ const LeaseInfo = ({
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}>
-            <FormTextTitle>Vuokralainen</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(LeaseTenantsFieldPaths.TENANTS)}>
+              Vuokralainen
+            </FormTextTitle>
 
             {!tenants.length && <FormText>-</FormText>}
             {!!tenants.length &&
@@ -98,7 +103,9 @@ const LeaseInfo = ({
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePlotsFieldPaths.PLOTS)}>
-            <FormTextTitle>Kiinteistö</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(LeasePlotsFieldPaths.PLOTS)}>
+              Kiinteistö
+            </FormTextTitle>
 
             {!plots.length && <FormText>-</FormText>}
             {!!plots.length &&
@@ -110,7 +117,9 @@ const LeaseInfo = ({
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
-            <FormTextTitle>Kaavayksikkö</FormTextTitle>
+            <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+              Kaavayksikkö
+            </FormTextTitle>
 
             {!planUnits.length && <FormText>-</FormText>}
             {!!planUnits.length &&

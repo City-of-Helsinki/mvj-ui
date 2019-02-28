@@ -39,6 +39,7 @@ import {
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   getSearchQuery,
@@ -69,6 +70,7 @@ type PlanUnitsProps = {
   noDataText: string,
   onCollapseToggle: Function,
   title: string,
+  uiDataKey: string,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -83,6 +85,7 @@ const renderPlanUnits = ({
   noDataText,
   onCollapseToggle,
   title,
+  uiDataKey,
   usersPermissions,
 }: PlanUnitsProps): Element<*> => {
   const handleAdd = () => {
@@ -107,6 +110,8 @@ const renderPlanUnits = ({
             hasErrors={isSaveClicked && !isEmpty(planUnitErrors)}
             headerTitle={title}
             onToggle={handleCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={uiDataKey}
           >
             {!isFieldAllowedToEdit(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS) && (!fields || !fields.length) &&
               <FormText>{noDataText}</FormText>
@@ -168,6 +173,7 @@ type PlotsProps = {
   onCollapseToggle: Function,
   plotsData: Array<Object>,
   title: string,
+  uiDataKey: string,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -183,6 +189,7 @@ const renderPlots = ({
   onCollapseToggle,
   plotsData,
   title,
+  uiDataKey,
   usersPermissions,
 }: PlotsProps): Element<*> => {
   const handleAdd = () => {
@@ -207,6 +214,8 @@ const renderPlots = ({
             hasErrors={isSaveClicked && !isEmpty(plotErrors)}
             headerTitle={title}
             onToggle={handleCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={uiDataKey}
           >
 
             {!isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS) && (!fields || !fields.length) &&
@@ -347,26 +356,40 @@ const AddressItems = ({attributes, change, fields, isSaveClicked, usersPermissio
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle>{LeaseAreaAddressesFieldTitles.ADDRESSES}</SubTitle>
+            <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+              {LeaseAreaAddressesFieldTitles.ADDRESSES}
+            </SubTitle>
             {fields && !!fields.length &&
               <Row>
                 <Column small={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
-                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
+                    <FormTextTitle
+                      required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESS)}
+                    >
                       {LeaseAreaAddressesFieldTitles.ADDRESS}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={3} large={2}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
-                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+                    <FormTextTitle
+                      required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.POSTAL_CODE)}
+                    >
                       {LeaseAreaAddressesFieldTitles.POSTAL_CODE}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={3} large={2}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
-                    <FormTextTitle required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
+                    <FormTextTitle
+                      required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.CITY)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.CITY)}
+                    >
                       {LeaseAreaAddressesFieldTitles.CITY}
                     </FormTextTitle>
                   </Authorization>
@@ -543,6 +566,8 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.IDENTIFIER)}
                   name={`${field}.identifier`}
                   overrideValues={{label: LeaseAreasFieldTitles.IDENTIFIER}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.IDENTIFIER)}
                 />
               </Authorization>
             </Column>
@@ -553,6 +578,8 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.TYPE)}
                   name={`${field}.type`}
                   overrideValues={{label: LeaseAreasFieldTitles.TYPE}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.TYPE)}
                 />
               </Authorization>
             </Column>
@@ -564,6 +591,9 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   name={`${field}.area`}
                   unit='m²'
                   overrideValues={{label: LeaseAreasFieldTitles.AREA}}
+                  enableUiDataEdit
+                  tooltipStyle={{right: 22}}
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.AREA)}
                 />
               </Authorization>
             </Column>
@@ -574,6 +604,8 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.LOCATION)}
                   name={`${field}.location`}
                   overrideValues={{label: LeaseAreasFieldTitles.LOCATION}}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LOCATION)}
                 />
               </Authorization>
             </Column>
@@ -612,6 +644,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 onCollapseToggle={this.handlePlotsContractCollapseToggle}
                 plotsData={get(savedArea, 'plots_contract', [])}
                 title='Kiinteistöt / määräalat sopimuksessa'
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS_CONTRACT)}
                 usersPermissions={usersPermissions}
               />
             </Column>
@@ -628,6 +661,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 onCollapseToggle={this.handlePlotsCurrentCollapseToggle}
                 plotsData={get(savedArea, 'plots_current', [])}
                 title='Kiinteistöt / määräalat nykyhetkellä'
+                uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS)}
                 usersPermissions={usersPermissions}
               />
             </Column>
@@ -648,6 +682,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 noDataText='Ei kaavayksiköitä sopimuksessa'
                 onCollapseToggle={this.handlePlanUnitContractCollapseToggle}
                 title='Kaavayksiköt sopimuksessa'
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT)}
                 usersPermissions={usersPermissions}
               />
             </Column>
@@ -663,6 +698,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 noDataText='Ei kaavayksiköitä nykyhetkellä'
                 onCollapseToggle={this.handlePlanUnitCurrentCollapseToggle}
                 title='Kaavayksiköt nykyhetkellä'
+                uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}
                 usersPermissions={usersPermissions}
               />
             </Column>

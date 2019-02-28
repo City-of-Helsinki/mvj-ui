@@ -24,6 +24,9 @@ import {
 } from '$src/createCollectionLetter/enums';
 import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
+import {PenaltyInterestFieldPaths, PenaltyInterestFieldTitles} from '$src/penaltyInterest/enums';
+import {getInvoiceTenantOptions} from '$src/leases/helpers';
+import {getUiDataCreateCollectionLetterKey, getUiDataPenaltyInterestKey} from '$src/uiData/helpers';
 import {
   convertStrToDecimalNumber,
   formatDate,
@@ -32,7 +35,6 @@ import {
   isFieldAllowedToEdit,
   sortStringByKeyDesc,
 } from '$util/helpers';
-import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {
   getAttributes as getCreateCollectionLetterAttributes,
 } from '$src/createCollectionLetter/selectors';
@@ -64,19 +66,37 @@ const renderInvoices = ({
       {!!fields && !!fields.length &&
         <Row>
           <Column small={4}>
-            <FormTextTitle required title='Perittävä lasku' />
+            <FormTextTitle
+              required
+              enableUiDataEdit
+              uiDataKey={getUiDataPenaltyInterestKey(PenaltyInterestFieldPaths.INVOICE)}
+            >
+              {PenaltyInterestFieldTitles.INVOICE}
+            </FormTextTitle>
           </Column>
           <Column small={2}>
-            <FormTextTitle title='Perittävä maksuerä' />
+            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataPenaltyInterestKey(PenaltyInterestFieldPaths.OUTSTANDING_AMOUNT)}>
+              {PenaltyInterestFieldTitles.OUTSTANDING_AMOUNT}
+            </FormTextTitle>
           </Column>
           <Column small={2}>
-            <FormTextTitle title='Korko' />
+            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataPenaltyInterestKey(PenaltyInterestFieldPaths.TOTAL_INTEREST_AMOUNT)}>
+              {PenaltyInterestFieldTitles.TOTAL_INTEREST_AMOUNT}
+            </FormTextTitle>
           </Column>
           <Column small={2}>
-            <FormTextTitle title='Perimispalkkio' />
+            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataPenaltyInterestKey(PenaltyInterestFieldPaths.COLLECTION_CHARGE)}>
+              {PenaltyInterestFieldTitles.COLLECTION_CHARGE}
+            </FormTextTitle>
           </Column>
           <Column small={2}>
-            <FormTextTitle title='Yhteensä' />
+            <FormTextTitle
+              enableUiDataEdit
+              tooltipStyle={{right: fields.length > 1 ? 20 : 0}}
+              uiDataKey={getUiDataPenaltyInterestKey(PenaltyInterestFieldPaths.TOTAL)}
+            >
+              {PenaltyInterestFieldTitles.TOTAL}
+            </FormTextTitle>
           </Column>
         </Row>
       }
@@ -180,6 +200,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
       invoiceOptions,
       tenantOptions,
     } = this.state;
+
     return(
       <form>
         <Row>
@@ -194,7 +215,10 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                     overrideValues={{
                       fieldType: FieldTypes.MULTISELECT,
                       label: CreateCollectionLetterFieldTitles.TENANTS,
-                      options: tenantOptions}}
+                      options: tenantOptions}
+                    }
+                    enableUiDataEdit
+                    uiDataKey={getUiDataCreateCollectionLetterKey(CreateCollectionLetterFieldPaths.TENANTS)}
                   />
                 </Authorization>
               </Column>
@@ -207,6 +231,8 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                     overrideValues={{
                       label: CreateCollectionLetterFieldTitles.TEMPLATE,
                     }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataCreateCollectionLetterKey(CreateCollectionLetterFieldPaths.TEMPLATE)}
                   />
                 </Authorization>
               </Column>
@@ -218,6 +244,9 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                     name='collection_charge'
                     unit='€'
                     overrideValues={{label: CreateCollectionLetterFieldTitles.COLLECTION_CHARGE}}
+                    enableUiDataEdit
+                    tooltipStyle={{right: 12}}
+                    uiDataKey={getUiDataCreateCollectionLetterKey(CreateCollectionLetterFieldPaths.COLLECTION_CHARGE)}
                   />
                 </Authorization>
               </Column>
@@ -228,7 +257,12 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
         <Row>
           <Column small={12}>
             <Authorization allow={isFieldAllowedToEdit(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.INVOICES)}>
-              <SubTitle>{CreateCollectionLetterFieldTitles.INVOICES}</SubTitle>
+              <SubTitle
+                enableUiDataEdit
+                uiDataKey={getUiDataCreateCollectionLetterKey(CreateCollectionLetterFieldPaths.INVOICES)}
+              >
+                {CreateCollectionLetterFieldTitles.INVOICES}
+              </SubTitle>
               <FieldArray
                 disableDirty
                 collectionCharge={collectionCharge}

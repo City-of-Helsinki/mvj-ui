@@ -1,5 +1,6 @@
 // @flow
 import React, {PureComponent} from 'react';
+import ReactDOM from 'react-dom';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
@@ -17,6 +18,7 @@ type Props = {
   children: Object,
   className?: string,
   defaultOpen: boolean,
+  enableUiDataEdit?: boolean,
   hasErrors: boolean,
   headerSubtitles?: any,
   headerTitle: any,
@@ -26,6 +28,8 @@ type Props = {
   onToggle?: Function,
   onUnarchive?: Function,
   showTitleOnOpen?: boolean,
+  tooltipStyle?: Object,
+  uiDataKey?: ?string,
 }
 
 type State = {
@@ -38,6 +42,7 @@ type State = {
 class Collapse extends PureComponent<Props, State> {
   component: any
   content: any
+  tooltip: any
   _isMounted: boolean
 
   static defaultProps = {
@@ -104,26 +109,31 @@ class Collapse extends PureComponent<Props, State> {
     });
   }
 
-  handleToggle = () => {
+  handleToggle = (e: any) => {
     const {onToggle} = this.props;
     const {isOpen} = this.state;
+    const target = e.target;
+    const tooltipEl = ReactDOM.findDOMNode(this.tooltip);
 
-    if(isOpen) {
-      this.setState({
-        isCollapsing: true,
-        isExpanding: false,
-        isOpen: false,
-      });
-    } else {
-      this.setState({
-        isCollapsing: false,
-        isExpanding: true,
-        isOpen: true,
-      });
-    }
+    if (!tooltipEl ||
+      (tooltipEl && target !== tooltipEl && !tooltipEl.contains(target))) {
+      if(isOpen) {
+        this.setState({
+          isCollapsing: true,
+          isExpanding: false,
+          isOpen: false,
+        });
+      } else {
+        this.setState({
+          isCollapsing: false,
+          isExpanding: true,
+          isOpen: true,
+        });
+      }
 
-    if(onToggle) {
-      onToggle(!isOpen);
+      if(onToggle) {
+        onToggle(!isOpen);
+      }
     }
   };
 
@@ -140,6 +150,7 @@ class Collapse extends PureComponent<Props, State> {
       archived,
       children,
       className,
+      enableUiDataEdit,
       hasErrors,
       headerSubtitles,
       headerTitle,
@@ -148,6 +159,8 @@ class Collapse extends PureComponent<Props, State> {
       onRemove,
       onUnarchive,
       showTitleOnOpen,
+      tooltipStyle,
+      uiDataKey,
     } = this.props;
 
     return (
@@ -174,7 +187,12 @@ class Collapse extends PureComponent<Props, State> {
                     onClick={this.handleToggle}
                   >
                     <AccordionIcon className="arrow-icon"/>
-                    <CollapseHeaderTitle>
+                    <CollapseHeaderTitle
+                      enableUiDataEdit={enableUiDataEdit}
+                      uiDataKey={uiDataKey}
+                      tooltipRef={(ref) => this.tooltip = ref}
+                      tooltipStyle={tooltipStyle}
+                    >
                       {headerTitle}
                     </CollapseHeaderTitle>
                   </a>

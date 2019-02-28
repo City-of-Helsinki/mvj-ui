@@ -27,6 +27,7 @@ import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
 import type {RentBasisState} from '$src/rentbasis/types';
 import type {RentForPeriodState} from '$src/rentForPeriod/types';
+import type {UiDataState} from '$src/uiData/types';
 import type {UserState} from '../users/types';
 import type {UsersPermissionsState} from '$src/usersPermissions/types';
 import type {VatState} from '$src/vat/types';
@@ -61,6 +62,7 @@ export type RootState = {
   previewInvoices: PreviewInvoicesState,
   rentBasis: RentBasisState,
   rentForPeriod: RentForPeriodState,
+  uiData: UiDataState,
   user: UserState,
   usersPermissions: UsersPermissionsState,
   vat: VatState,

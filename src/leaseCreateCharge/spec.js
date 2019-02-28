@@ -15,12 +15,16 @@ const defaultState: LeaseCreateChargeState = {
   isFetchingAttributes: false,
 };
 
+// $FlowFixMe
 describe('Lease create charge', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('leaseCreateChargeReducer', () => {
 
+      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = {...defaultState, isFetchingAttributes: true};
 
