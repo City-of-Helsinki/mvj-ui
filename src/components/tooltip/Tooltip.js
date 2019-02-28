@@ -17,18 +17,19 @@ import TextAreaInput from '$components/inputs/TextAreaInput';
 import {createUiData, deleteUiData, editUiData} from '$src/uiData/actions';
 import {ButtonColors} from '$components/enums';
 import {DeleteUiDataModalTexts} from '$src/uiData/enums';
-import {Methods} from '$src/enums';
-import {getFieldAttributes, isMethodAllowed} from '$util/helpers';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getFieldAttributes, hasPermissions} from '$util/helpers';
 import {getUiDataByKey} from '$src/uiData/helpers';
 import {
   getAttributes as getUiDataAttributes,
-  getMethods as getUiDataMethods,
   getUiDataList,
 } from '$src/uiData/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {genericValidator} from '$components/form/validations';
 
-import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {UiDataList} from '$src/uiData/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   createUiData: Function,
@@ -37,11 +38,12 @@ type Props = {
   editUiData: Function,
   innerRef?: Function,
   onTooltipClose: Function,
+  relativeTo?: any,
   style?: Object,
   uiDataAttributes: Attributes,
   uiDataList: UiDataList,
-  uiDataMethods: MethodsType,
   uiDataKey: ?string,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -55,7 +57,7 @@ type State = {
   position: 'position-top-left' | 'position-top-right' | 'position-bottom-left' | 'position-bottom-right';
   uiData: ?Object,
   uiDataList: UiDataList,
-  uiDataMethods: MethodsType,
+  usersPermissions: UsersPermissionsType,
 }
 
 class Tooltip extends PureComponent<Props, State> {
@@ -70,7 +72,7 @@ class Tooltip extends PureComponent<Props, State> {
     position: 'position-bottom-right',
     uiData: null,
     uiDataList: [],
-    uiDataMethods: null,
+    usersPermissions: [],
   }
 
   componentDidMount() {
@@ -99,11 +101,11 @@ class Tooltip extends PureComponent<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
-    if(props.uiDataMethods !== state.uiDataMethods) {
-      newState.uiDataMethods = props.uiDataMethods;
-      newState.allowToAddUiData = isMethodAllowed(props.uiDataMethods, Methods.POST);
-      newState.allowToDeleteUiData = isMethodAllowed(props.uiDataMethods, Methods.DELETE);
-      newState.allowToEditUiData = isMethodAllowed(props.uiDataMethods, Methods.PATCH);
+    if(props.usersPermissions !== state.usersPermissions) {
+      newState.usersPermissions = props.usersPermissions;
+      newState.allowToAddUiData = hasPermissions(props.usersPermissions, UsersPermissions.EDIT_GLOBAL_UI_DATA);
+      newState.allowToDeleteUiData = hasPermissions(props.usersPermissions, UsersPermissions.EDIT_GLOBAL_UI_DATA);
+      newState.allowToEditUiData = hasPermissions(props.usersPermissions, UsersPermissions.EDIT_GLOBAL_UI_DATA);
     }
 
     if(props.uiDataList !== state.uiDataList && props.uiDataKey) {
@@ -176,14 +178,24 @@ class Tooltip extends PureComponent<Props, State> {
   }
 
   calculatePosition = () => {
-    const {innerHeight: screenHeight, innerWidth: screenWidth} = window;
+    const {relativeTo} = this.props;
+    let {innerHeight: height, innerWidth: width} = window;
     const el = ReactDOM.findDOMNode(this);
 
     if(el) {
       // $FlowFixMe
-      const {x, y} = el.getBoundingClientRect();
-      const top = !!(y > screenHeight - y);
-      const left = !!(x > screenWidth - x);
+      let {x, y} = el.getBoundingClientRect();
+
+      if(relativeTo) {
+        const {x: x2, y: y2, height: height2, width: width2} = relativeTo.getBoundingClientRect();
+        x -= x2;
+        y -= y2;
+        height = height2;
+        width = width2;
+      }
+
+      const top = !!(y > height - y);
+      const left = !!(x > width - x);
 
       if(top) {
         if(left) {
@@ -350,7 +362,7 @@ export default connect(
     return {
       uiDataAttributes: getUiDataAttributes(state),
       uiDataList: getUiDataList(state),
-      uiDataMethods: getUiDataMethods(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

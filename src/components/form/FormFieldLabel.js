@@ -10,6 +10,7 @@ type Props = {
   className?: string,
   enableUiDataEdit?: boolean,
   htmlFor: string,
+  relativeTo?: any,
   required?: boolean,
   tooltipStyle?: Object,
   uiDataKey?: ?string,
@@ -82,6 +83,7 @@ class FormFieldLabel extends PureComponent<Props, State> {
       className,
       enableUiDataEdit = false,
       htmlFor,
+      relativeTo,
       required,
       tooltipStyle,
       uiDataKey,
@@ -101,6 +103,7 @@ class FormFieldLabel extends PureComponent<Props, State> {
           <Tooltip
             enableUiDataEdit={enableUiDataEdit}
             onTooltipClose={this.handleTooltipClose}
+            relativeTo={relativeTo}
             style={tooltipStyle}
             uiDataKey={uiDataKey}
           />

@@ -215,11 +215,13 @@ class InvoicePanel extends PureComponent<Props, State> {
                 invoice={invoice}
                 initialValues={{...invoice}}
                 onCreditedInvoiceClick={onCreditedInvoiceClick}
+                relativeTo={this.component}
               />
               : <InvoiceTemplate
                 creditedInvoice={creditedInvoice}
                 invoice={invoice}
                 onCreditedInvoiceClick={onCreditedInvoiceClick}
+                relativeTo={this.component}
               />
             }
           </div>

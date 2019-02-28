@@ -8,6 +8,7 @@ import Tooltip from '$components/tooltip/Tooltip';
 type Props = {
   children?: any,
   enableUiDataEdit?: boolean,
+  relativeTo?: any,
   required?: boolean,
   style?: Object,
   title?: string,
@@ -80,6 +81,7 @@ class FormTextTitle extends PureComponent<Props, State> {
     const {
       children,
       enableUiDataEdit,
+      relativeTo,
       required,
       style,
       title,
@@ -100,6 +102,7 @@ class FormTextTitle extends PureComponent<Props, State> {
         <Tooltip
           enableUiDataEdit={enableUiDataEdit}
           onTooltipClose={this.handleTooltipClose}
+          relativeTo={relativeTo}
           style={tooltipStyle}
           uiDataKey={uiDataKey}
         />

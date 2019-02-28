@@ -22,6 +22,7 @@ type Props = {
   invoiceDate: ?string,
   invoiceDueDate: ?string,
   receivableTypeOptions: Array<Object>,
+  relativeTo?: any,
   rows: Array<Object>,
 }
 
@@ -30,6 +31,7 @@ const InvoiceRows = ({
   invoiceDate,
   invoiceDueDate,
   receivableTypeOptions,
+  relativeTo,
   rows,
 }: Props) => {
   const getRowsSum = (items: Array<Object>) => items.reduce((sum, item) => sum + Number(item.amount), 0);
@@ -39,7 +41,7 @@ const InvoiceRows = ({
   return(
     <Row>
       <Column small={12}>
-        <SubTitle enableUiDataEdit uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.ROWS)}>
+        <SubTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.ROWS)}>
           {InvoiceRowsFieldTitles.ROWS}
         </SubTitle>
         {!rows.length && <FormText>-</FormText>}
@@ -47,17 +49,17 @@ const InvoiceRows = ({
           <Fragment>
             <Row>
               <Column small={4}>
-                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.TENANT)}>
+                <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.TENANT)}>
                   {InvoiceRowsFieldTitles.TENANT}
                 </FormTextTitle>
               </Column>
               <Column small={4}>
-                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
                   {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
                 </FormTextTitle>
               </Column>
               <Column small={4}>
-                <FormTextTitle style={{textAlign: 'right'}} enableUiDataEdit uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.AMOUNT)}>
+                <FormTextTitle style={{textAlign: 'right'}} enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.AMOUNT)}>
                   {InvoiceRowsFieldTitles.AMOUNT}
                 </FormTextTitle>
               </Column>

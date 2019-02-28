@@ -96,6 +96,7 @@ type InputProps = {
   options: ?Array<Object>,
   placeholder?: string,
   readOnlyValueRenderer?: any,
+  relativeTo?: any,
   required: boolean,
   rows?: number,
   setRefForField?: Function,
@@ -128,6 +129,7 @@ const FormFieldInput = ({
   options,
   placeholder,
   readOnlyValueRenderer,
+  relativeTo,
   required,
   rows,
   setRefForField,
@@ -189,6 +191,7 @@ const FormFieldInput = ({
         {label && fieldType === FieldTypeOptions.BOOLEAN && !invisibleLabel &&
           <FormTextTitle
             enableUiDataEdit={enableUiDataEdit}
+            relativeTo={relativeTo}
             required={required}
             tooltipStyle={tooltipStyle}
             uiDataKey={uiDataKey}
@@ -201,6 +204,7 @@ const FormFieldInput = ({
             className={invisibleLabel ? 'invisible' : ''}
             htmlFor={input.name}
             enableUiDataEdit={enableUiDataEdit}
+            relativeTo={relativeTo}
             required={required}
             tooltipStyle={tooltipStyle}
             uiDataKey={uiDataKey}
@@ -225,6 +229,7 @@ const FormFieldInput = ({
         {!invisibleLabel &&
           <FormTextTitle
             enableUiDataEdit={enableUiDataEdit}
+            relativeTo={relativeTo}
             tooltipStyle={tooltipStyle}
             uiDataKey={uiDataKey}
           >
@@ -261,6 +266,7 @@ type Props = {
   overrideValues?: Object,
   placeholder?: string,
   readOnlyValueRenderer?: Function,
+  relativeTo?: any,
   rows?: number,
   setRefForField?: Function,
   tooltipStyle?: Object,
@@ -351,6 +357,7 @@ class FormField extends PureComponent<Props, State> {
       overrideValues,
       placeholder,
       readOnlyValueRenderer,
+      relativeTo,
       rows,
       setRefForField,
       tooltipStyle,
@@ -392,6 +399,7 @@ class FormField extends PureComponent<Props, State> {
         options={options}
         placeholder={placeholder}
         readOnlyValueRenderer={readOnlyValueRenderer}
+        relativeTo={relativeTo}
         required={required}
         rows={rows}
         setRefForField={setRefForField}

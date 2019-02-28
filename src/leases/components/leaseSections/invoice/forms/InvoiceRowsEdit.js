@@ -25,10 +25,11 @@ type Props = {
   fields: any,
   invoiceAttributes: Attributes,
   isEditClicked: boolean,
+  relativeTo: any,
   tenantOptions: Array<Object>,
 }
 
-const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOptions}: Props): Element<*> => {
+const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, tenantOptions}: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -38,7 +39,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
       {({dispatch}) => {
         return(
           <Fragment>
-            <SubTitle enableUiDataEdit uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.ROWS)}>
+            <SubTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.ROWS)}>
               {InvoiceRowsFieldTitles.ROWS}
             </SubTitle>
             {!!fields && !!fields.length &&
@@ -48,6 +49,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
                     <FormTextTitle
                       required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}
                       enableUiDataEdit
+                      relativeTo={relativeTo}
                       uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.TENANT)}
                     >
                       {InvoiceRowsFieldTitles.TENANT}
@@ -57,6 +59,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
                     <FormTextTitle
                       required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
                       enableUiDataEdit
+                      relativeTo={relativeTo}
                       uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
                     >
                       {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
@@ -66,6 +69,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
                     <FormTextTitle
                       required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
                       enableUiDataEdit
+                      relativeTo={relativeTo}
                       tooltipStyle={{right: fields.length > 1 ? 32 : 17}}
                       uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.AMOUNT)}
                     >
