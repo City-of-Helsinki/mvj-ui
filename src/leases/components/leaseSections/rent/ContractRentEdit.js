@@ -382,6 +382,7 @@ const ContractRent = ({
                     unit='€'
                     overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}}
                     enableUiDataEdit
+                    tooltipStyle={{right: 12}}
                     uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
                   />
                 </Authorization>

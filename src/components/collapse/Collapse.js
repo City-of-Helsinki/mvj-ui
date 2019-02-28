@@ -28,6 +28,7 @@ type Props = {
   onToggle?: Function,
   onUnarchive?: Function,
   showTitleOnOpen?: boolean,
+  tooltipStyle?: Object,
   uiDataKey?: ?string,
 }
 
@@ -158,6 +159,7 @@ class Collapse extends PureComponent<Props, State> {
       onRemove,
       onUnarchive,
       showTitleOnOpen,
+      tooltipStyle,
       uiDataKey,
     } = this.props;
 
@@ -189,6 +191,7 @@ class Collapse extends PureComponent<Props, State> {
                       enableUiDataEdit={enableUiDataEdit}
                       uiDataKey={uiDataKey}
                       tooltipRef={(ref) => this.tooltip = ref}
+                      tooltipStyle={tooltipStyle}
                     >
                       {headerTitle}
                     </CollapseHeaderTitle>

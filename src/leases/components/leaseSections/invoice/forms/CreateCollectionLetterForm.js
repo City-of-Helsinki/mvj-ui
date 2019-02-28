@@ -90,7 +90,11 @@ const renderInvoices = ({
             </FormTextTitle>
           </Column>
           <Column small={2}>
-            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataPenaltyInterestKey(PenaltyInterestFieldPaths.TOTAL)}>
+            <FormTextTitle
+              enableUiDataEdit
+              tooltipStyle={{right: fields.length > 1 ? 20 : 0}}
+              uiDataKey={getUiDataPenaltyInterestKey(PenaltyInterestFieldPaths.TOTAL)}
+            >
               {PenaltyInterestFieldTitles.TOTAL}
             </FormTextTitle>
           </Column>
@@ -241,6 +245,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                     unit='€'
                     overrideValues={{label: CreateCollectionLetterFieldTitles.COLLECTION_CHARGE}}
                     enableUiDataEdit
+                    tooltipStyle={{right: 12}}
                     uiDataKey={getUiDataCreateCollectionLetterKey(CreateCollectionLetterFieldPaths.COLLECTION_CHARGE)}
                   />
                 </Authorization>

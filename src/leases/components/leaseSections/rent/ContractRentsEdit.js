@@ -106,6 +106,7 @@ const ContractRentsEdit = ({
                       <FormTextTitle
                         required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 12}}
                         uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
                       >
                         {LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}
@@ -137,7 +138,7 @@ const ContractRentsEdit = ({
                 </Column>
               </Row>
             }
-            
+
             {fields && !!fields.length &&
               <BoxItemContainer>
                 {fields.map((rent, index) => {

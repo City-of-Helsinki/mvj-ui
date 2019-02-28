@@ -166,6 +166,7 @@ const renderComments = connect(
                       <FormTextTitle
                         required={isFieldRequired(attributes, LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 20}}
                         uiDataKey={getUiDataLeaseKey(LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER)}
                       >
                         {LeaseConstructabilityDescriptionsFieldTitles.AHJO_REFERENCE_NUMBER}

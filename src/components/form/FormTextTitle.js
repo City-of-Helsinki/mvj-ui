@@ -11,6 +11,7 @@ type Props = {
   required?: boolean,
   style?: Object,
   title?: string,
+  tooltipStyle?: Object,
   uiDataKey?: ?string,
 }
 
@@ -82,6 +83,7 @@ class FormTextTitle extends PureComponent<Props, State> {
       required,
       style,
       title,
+      tooltipStyle,
       uiDataKey,
     } = this.props;
     const {showAddButton} = this.state;
@@ -98,6 +100,7 @@ class FormTextTitle extends PureComponent<Props, State> {
         <Tooltip
           enableUiDataEdit={enableUiDataEdit}
           onTooltipClose={this.handleTooltipClose}
+          style={tooltipStyle}
           uiDataKey={uiDataKey}
         />
       }

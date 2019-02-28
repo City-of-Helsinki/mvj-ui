@@ -72,6 +72,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
                   <FormTextTitle
                     required={isFieldRequired(attributes, InvoicePaymentsFieldPaths.PAID_AMOUNT)}
                     enableUiDataEdit
+                    tooltipStyle={{right: 12}}
                     uiDataKey={getUiDataInvoiceKey(InvoicePaymentsFieldPaths.PAID_AMOUNT)}
                   >
                     {InvoicePaymentsFieldTitles.PAID_AMOUNT}
@@ -81,6 +82,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
                   <FormTextTitle
                     required={isFieldRequired(attributes, InvoicePaymentsFieldPaths.PAID_DATE)}
                     enableUiDataEdit
+                    tooltipStyle={{right: 20}}
                     uiDataKey={getUiDataInvoiceKey(InvoicePaymentsFieldPaths.PAID_DATE)}
                   >
                     {InvoicePaymentsFieldTitles.PAID_DATE}
@@ -390,7 +392,7 @@ const EditInvoiceForm = ({
           <SubTitle enableUiDataEdit uiDataKey={getUiDataInvoiceKey(InvoicePaymentsFieldPaths.PAYMENTS)}>
             {InvoicePaymentsFieldTitles.PAYMENTS}
           </SubTitle>
-          
+
           <Row>
             <Column small={12} medium={8}>
               <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAYMENTS)}>

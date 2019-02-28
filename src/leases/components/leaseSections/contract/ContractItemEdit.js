@@ -403,6 +403,7 @@ const renderCollaterals = ({
                                 unit='€'
                                 overrideValues={{label: LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}}
                                 enableUiDataEdit
+                                tooltipStyle={{right: 12}}
                                 uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}
                               />
                             </Authorization>

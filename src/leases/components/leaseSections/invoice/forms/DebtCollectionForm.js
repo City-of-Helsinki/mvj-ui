@@ -328,7 +328,11 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                           </Authorization>
                         </Column>
                         <Column small={3}>
-                          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.UPLOADER)}>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            tooltipStyle={{right: 20}}
+                            uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.UPLOADER)}
+                          >
                             {CollectionLetterFieldTitles.UPLOADER}
                           </FormTextTitle>
                         </Column>
@@ -375,6 +379,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
+                                    style={{height: 'unset'}}
                                     title='Poista tiedosto'
                                   />
                                 </Authorization>
@@ -424,7 +429,11 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                           </Authorization>
                         </Column>
                         <Column small={3}>
-                          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.UPLOADER)}>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            tooltipStyle={{right: 20}}
+                            uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.UPLOADER)}
+                          >
                             {CollectionCourtDecisionFieldTitles.UPLOADER}
                           </FormTextTitle>
                         </Column>
@@ -462,7 +471,6 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                           <Column small={3}>
                             <FieldAndRemoveButtonWrapper
                               field={
-                                // TODO: Check that attributes has CollectionCourtDecisionFieldPaths.UPLOADER when added API
                                 <FormText className='full-width'>{getUserFullName(collectionCourtDecision.uploader) || '-'}</FormText>
                               }
                               removeButton={
@@ -470,6 +478,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
+                                    style={{height: 'unset'}}
                                     title='Poista käräjäoikeuden päätös'
                                   />
                                 </Authorization>
@@ -545,7 +554,11 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                           </Authorization>
                         </Column>
                         <Column small={3}>
-                          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionNoteKey(CollectionNoteFieldPaths.USER)}>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            tooltipStyle={{right: 20}}
+                            uiDataKey={getUiDataCollectionNoteKey(CollectionNoteFieldPaths.USER)}
+                          >
                             {CollectionNoteFieldTitles.USER}
                           </FormTextTitle>
                         </Column>
@@ -588,6 +601,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
+                                    style={{height: 'unset'}}
                                     title='Poista huomautus'
                                   />
                                 </Authorization>

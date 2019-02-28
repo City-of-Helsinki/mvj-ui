@@ -97,6 +97,7 @@ const InvoiceRows = ({
                       <FormTextTitle
                         required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 12}}
                         uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.AMOUNT)}
                       >
                         {InvoiceRowsFieldTitles.AMOUNT}

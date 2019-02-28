@@ -149,6 +149,7 @@ const renderDecisions = ({
                       <FormTextTitle
                         required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 12}}
                         uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION)}
                       >
                         {InfillDevelopmentCompensationLeaseDecisionsFieldTitles.SECTION}
@@ -306,6 +307,7 @@ const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked,
                       <FormTextTitle
                         required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 32}}
                         uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2)}
                       >
                         {InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.FLOOR_M2}
@@ -317,6 +319,7 @@ const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked,
                       <FormTextTitle
                         required={isFieldRequired(infillDevelopmentAttributes, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 44}}
                         uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2)}
                       >
                         {InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.AMOUNT_PER_FLOOR_M2}
@@ -692,6 +695,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.MONETARY_COMPENSATION_AMOUNT}}
                   enableUiDataEdit
+                  tooltipStyle={{right: 12}}
                   uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT)}
                 />
               </Authorization>
@@ -705,6 +709,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.COMPENSATION_INVESTMENT_AMOUNT}}
                   enableUiDataEdit
+                  tooltipStyle={{right: 12}}
                   uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT)}
                 />
               </Authorization>
@@ -728,6 +733,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.INCREASE_IN_VALUE}}
                   enableUiDataEdit
+                  tooltipStyle={{right: 12}}
                   uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE)}
                 />
               </Authorization>
@@ -741,6 +747,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.PART_OF_THE_INCREASE_IN_VALUE}}
                   enableUiDataEdit
+                  tooltipStyle={{right: 12}}
                   uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE)}
                 />
               </Authorization>
@@ -754,6 +761,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   unit='€'
                   overrideValues={{label: InfillDevelopmentCompensationLeasesFieldTitles.DISCOUNT_IN_RENT}}
                   enableUiDataEdit
+                  tooltipStyle={{right: 12}}
                   uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT)}
                 />
               </Authorization>
@@ -868,6 +876,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                                     <RemoveButton
                                       className='third-level'
                                       onClick={handleRemove}
+                                      style={{right: 12}}
                                       title="Poista liitetiedosto"
                                     />
                                   </Authorization>

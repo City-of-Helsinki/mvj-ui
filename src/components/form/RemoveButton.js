@@ -9,12 +9,13 @@ type Props = {
   className?: string,
   disabled?: boolean,
   onClick: Function,
+  style?: Object,
   title?: string,
   type?: string,
 }
 
 const RemoveButton = (props: Props) => {
-  const {className, disabled, onClick, title, type = 'button'} = props;
+  const {className, disabled, onClick, style, title, type = 'button'} = props;
 
   const createdClassName = createClassName(
     'form__remove-button',
@@ -26,6 +27,7 @@ const RemoveButton = (props: Props) => {
     <button
       className={createdClassName}
       disabled={disabled}
+      style={style}
       type={type}
       title={title}
       onClick={onClick}

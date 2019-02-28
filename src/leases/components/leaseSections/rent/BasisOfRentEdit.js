@@ -570,6 +570,7 @@ const BasisOfRentEdit = ({
                 unit='%'
                 overrideValues={{label: LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE}}
                 enableUiDataEdit
+                tooltipStyle={{right: 17}}
                 uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)}
               />
             </Authorization>
@@ -611,6 +612,7 @@ const BasisOfRentEdit = ({
                 unit='%'
                 overrideValues={{label: LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE}}
                 enableUiDataEdit
+                tooltipStyle={{right: 17}}
                 uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}
               />
             </Authorization>

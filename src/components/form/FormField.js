@@ -99,6 +99,7 @@ type InputProps = {
   required: boolean,
   rows?: number,
   setRefForField?: Function,
+  tooltipStyle?: Object,
   uiDataKey: ?string,
   unit?: string,
   valueSelectedCallback?: Function,
@@ -130,6 +131,7 @@ const FormFieldInput = ({
   required,
   rows,
   setRefForField,
+  tooltipStyle,
   valueSelectedCallback,
   uiDataKey,
   unit,
@@ -188,6 +190,7 @@ const FormFieldInput = ({
           <FormTextTitle
             enableUiDataEdit={enableUiDataEdit}
             required={required}
+            tooltipStyle={tooltipStyle}
             uiDataKey={uiDataKey}
           >
             {label}
@@ -199,6 +202,7 @@ const FormFieldInput = ({
             htmlFor={input.name}
             enableUiDataEdit={enableUiDataEdit}
             required={required}
+            tooltipStyle={tooltipStyle}
             uiDataKey={uiDataKey}
           >
             {label}
@@ -221,6 +225,7 @@ const FormFieldInput = ({
         {!invisibleLabel &&
           <FormTextTitle
             enableUiDataEdit={enableUiDataEdit}
+            tooltipStyle={tooltipStyle}
             uiDataKey={uiDataKey}
           >
             {label}
@@ -258,6 +263,7 @@ type Props = {
   readOnlyValueRenderer?: Function,
   rows?: number,
   setRefForField?: Function,
+  tooltipStyle?: Object,
   validate?: Function,
   valueSelectedCallback?: Function,
   uiDataKey?: ?string,
@@ -347,6 +353,7 @@ class FormField extends PureComponent<Props, State> {
       readOnlyValueRenderer,
       rows,
       setRefForField,
+      tooltipStyle,
       valueSelectedCallback,
       uiDataKey,
       unit,
@@ -388,6 +395,7 @@ class FormField extends PureComponent<Props, State> {
         required={required}
         rows={rows}
         setRefForField={setRefForField}
+        tooltipStyle={tooltipStyle}
         validate={allowEdit
           ? [this.handleGenericValidate, this.handleValidate]
           : null

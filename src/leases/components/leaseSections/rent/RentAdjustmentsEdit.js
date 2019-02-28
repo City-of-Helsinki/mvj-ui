@@ -261,6 +261,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                                   unit='€'
                                   overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_LEFT}}
                                   enableUiDataEdit
+                                  tooltipStyle={{right: 12}}
                                   uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}
                                 />
                               </Authorization>

@@ -108,6 +108,7 @@ const PlanUnitItemEdit = ({
                 unit='m²'
                 overrideValues={{label: LeasePlanUnitsFieldTitles.AREA}}
                 enableUiDataEdit
+                tooltipStyle={{right: 22}}
                 uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.AREA)}
               />
             </Authorization>
@@ -121,6 +122,7 @@ const PlanUnitItemEdit = ({
                 unit='m²'
                 overrideValues={{label: LeasePlanUnitsFieldTitles.SECTION_AREA}}
                 enableUiDataEdit
+                tooltipStyle={{right: 22}}
                 uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.SECTION_AREA)}
               />
             </Authorization>

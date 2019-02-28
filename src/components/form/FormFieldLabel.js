@@ -11,6 +11,7 @@ type Props = {
   enableUiDataEdit?: boolean,
   htmlFor: string,
   required?: boolean,
+  tooltipStyle?: Object,
   uiDataKey?: ?string,
 }
 
@@ -82,6 +83,7 @@ class FormFieldLabel extends PureComponent<Props, State> {
       enableUiDataEdit = false,
       htmlFor,
       required,
+      tooltipStyle,
       uiDataKey,
     } = this.props;
     const {showAddButton} = this.state;
@@ -99,6 +101,7 @@ class FormFieldLabel extends PureComponent<Props, State> {
           <Tooltip
             enableUiDataEdit={enableUiDataEdit}
             onTooltipClose={this.handleTooltipClose}
+            style={tooltipStyle}
             uiDataKey={uiDataKey}
           />
         }

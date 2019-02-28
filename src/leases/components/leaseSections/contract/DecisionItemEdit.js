@@ -167,6 +167,7 @@ const DecisionItemEdit = ({
                 readOnlyValueRenderer={sectionReadOnlyRenderer}
                 overrideValues={{label: LeaseDecisionsFieldTitles.SECTION}}
                 enableUiDataEdit
+                tooltipStyle={{right: 12}}
                 uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.SECTION)}
               />
             </Authorization>

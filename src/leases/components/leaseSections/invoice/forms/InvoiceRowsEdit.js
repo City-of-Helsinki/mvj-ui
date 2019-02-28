@@ -7,6 +7,7 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Authorization from '$components/authorization/Authorization';
+import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
@@ -65,6 +66,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
                     <FormTextTitle
                       required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
                       enableUiDataEdit
+                      tooltipStyle={{right: fields.length > 1 ? 32 : 17}}
                       uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.AMOUNT)}
                     >
                       {InvoiceRowsFieldTitles.AMOUNT}
@@ -113,27 +115,27 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, tenantOption
                         </Authorization>
                       </Column>
                       <Column small={4}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
-                          <FormField
-                            disableTouched={isEditClicked}
-                            fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
-                            invisibleLabel
-                            name={`${row}.amount`}
-                            unit='€'
-                            overrideValues={{label: InvoiceRowsFieldTitles.AMOUNT}}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={1} large={2}>
-                        <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
-                          {fields.length > 1 &&
-                            <RemoveButton
-                              className='third-level'
-                              onClick={handleRemove}
-                              title="Poista rivi"
+                        <FieldAndRemoveButtonWrapper
+                          field={<Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                            <FormField
+                              disableTouched={isEditClicked}
+                              fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
+                              invisibleLabel
+                              name={`${row}.amount`}
+                              unit='€'
+                              overrideValues={{label: InvoiceRowsFieldTitles.AMOUNT}}
                             />
-                          }
-                        </Authorization>
+                          </Authorization>}
+                          removeButton={<Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
+                            {fields.length > 1 &&
+                              <RemoveButton
+                                className='third-level'
+                                onClick={handleRemove}
+                                title="Poista rivi"
+                              />
+                            }
+                          </Authorization>}
+                        />
                       </Column>
                     </Row>
                   );

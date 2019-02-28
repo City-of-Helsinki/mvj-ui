@@ -133,6 +133,7 @@ const PlotItemsEdit = ({
                 unit='m²'
                 overrideValues={{label: LeasePlotsFieldTitles.AREA}}
                 enableUiDataEdit
+                tooltipStyle={{right: 22}}
                 uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.AREA)}
               />
             </Authorization>
@@ -146,6 +147,7 @@ const PlotItemsEdit = ({
                 unit='m²'
                 overrideValues={{label: LeasePlotsFieldTitles.SECTION_AREA}}
                 enableUiDataEdit
+                tooltipStyle={{right: 22}}
                 uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.SECTION_AREA)}
               />
             </Authorization>

@@ -10,6 +10,7 @@ type Props = {
   enableUiDataEdit?: boolean,
   style?: Object,
   tooltipRef?: Function,
+  tooltipStyle?: Object,
   uiDataKey?: ?string,
 }
 
@@ -80,6 +81,7 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
       enableUiDataEdit,
       style,
       tooltipRef,
+      tooltipStyle,
       uiDataKey,
     } = this.props;
     const {showAddButton} = this.state;
@@ -96,6 +98,7 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
           innerRef={tooltipRef}
           enableUiDataEdit={enableUiDataEdit}
           onTooltipClose={this.handleTooltipClose}
+          style={tooltipStyle}
           uiDataKey={uiDataKey}
         />
       }

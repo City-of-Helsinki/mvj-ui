@@ -74,6 +74,7 @@ const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes, 
             <FormTextTitle
               required={isFieldRequired(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER)}
               enableUiDataEdit
+              tooltipStyle={{right: 20}}
               uiDataKey={getUiDataRentBasisKey(RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)}
             >
               {RentBasisPropertyIdentifiersFieldTitles.PROPERTY_IDENTIFIERS}
@@ -199,6 +200,7 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes, usersPermi
                     <FormTextTitle
                       required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.SECTION)}
                       enableUiDataEdit
+                      tooltipStyle={{right: 12}}
                       uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.SECTION)}
                     >
                       {RentBasisDecisionsFieldTitles.SECTION}
@@ -210,6 +212,7 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes, usersPermi
                     <FormTextTitle
                       required={isFieldRequired(rentBasisAttributes, RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}
                       enableUiDataEdit
+                      tooltipStyle={{right: 20}}
                       uiDataKey={getUiDataRentBasisKey(RentBasisDecisionsFieldPaths.REFERENCE_NUMBER)}
                     >
                       {RentBasisDecisionsFieldTitles.REFERENCE_NUMBER}
@@ -363,6 +366,7 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
                       <FormTextTitle
                         required={isFieldRequired(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 12}}
                         uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.AMOUNT)}
                       >
                         {RentBasisRentRatesFieldTitles.AMOUNT}
@@ -374,6 +378,7 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
                       <FormTextTitle
                         required={isFieldRequired(rentBasisAttributes, RentBasisRentRatesFieldPaths.AREA_UNIT)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 20}}
                         uiDataKey={getUiDataRentBasisKey(RentBasisRentRatesFieldPaths.AREA_UNIT)}
                       >
                         {RentBasisRentRatesFieldTitles.AREA_UNIT}
@@ -416,6 +421,7 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
                             fieldAttributes={getFieldAttributes(rentBasisAttributes, RentBasisRentRatesFieldPaths.AMOUNT)}
                             invisibleLabel
                             name={`${field}.amount`}
+                            unit='€'
                             overrideValues={{label: RentBasisRentRatesFieldTitles.AMOUNT}}
                           />
                         </Authorization>

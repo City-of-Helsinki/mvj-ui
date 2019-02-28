@@ -37,6 +37,7 @@ type Props = {
   editUiData: Function,
   innerRef?: Function,
   onTooltipClose: Function,
+  style?: Object,
   uiDataAttributes: Attributes,
   uiDataList: UiDataList,
   uiDataMethods: MethodsType,
@@ -236,7 +237,7 @@ class Tooltip extends PureComponent<Props, State> {
   }
 
   render() {
-    const {enableUiDataEdit, innerRef, uiDataKey} = this.props;
+    const {enableUiDataEdit, innerRef, style, uiDataKey} = this.props;
     const {
       allowToAddUiData,
       allowToDeleteUiData,
@@ -274,7 +275,7 @@ class Tooltip extends PureComponent<Props, State> {
           };
 
           return(
-            <div className='tooltip__component' ref={innerRef}>
+            <div className='tooltip__component' ref={innerRef} style={style}>
               <div className='tooltip__container'>
                 {enableUiDataEdit && allowToAddUiData && !uiData &&
                   <button className='tooltip__add-button' onClick={this.openTooltip} style={{display: isOpen ? 'inherit' : null}} type='button'>

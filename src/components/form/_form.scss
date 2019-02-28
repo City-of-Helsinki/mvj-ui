@@ -693,7 +693,6 @@
     cursor: pointer;
     position: relative;
     top: 0;
-    width: rem-calc(20px);
     height: rem-calc(20px);
 
     #Artboard {
@@ -719,9 +718,8 @@
     }
 
     &.third-level {
-      top: rem-calc(-5px);
+      top: rem-calc(-1px);
       height: rem-calc(20px);
-      width: rem-calc(20px);
 
       .icons {
         height: rem-calc(15px);
@@ -752,6 +750,7 @@
 
     &_button {
       padding-left: rem-calc(5px);
+      line-height: 1;
     }
 
     &.absolute-remove-button-position {

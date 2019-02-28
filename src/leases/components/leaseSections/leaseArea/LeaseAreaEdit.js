@@ -592,6 +592,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   unit='m²'
                   overrideValues={{label: LeaseAreasFieldTitles.AREA}}
                   enableUiDataEdit
+                  tooltipStyle={{right: 22}}
                   uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.AREA)}
                 />
               </Authorization>

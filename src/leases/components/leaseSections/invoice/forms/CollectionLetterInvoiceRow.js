@@ -111,6 +111,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
               <RemoveButton
                 className='third-level'
                 onClick={onRemove}
+                style={{height: 'unset'}}
                 title="Poista rivi"
               />
             }

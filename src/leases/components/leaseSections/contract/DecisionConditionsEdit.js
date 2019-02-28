@@ -133,6 +133,7 @@ const DecisionConditionsEdit = ({
                         <FormTextTitle
                           required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
                           enableUiDataEdit
+                          tooltipStyle={{right: 20}}
                           uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
                         >
                           {LeaseDecisionConditionsFieldTitles.DESCRIPTION}

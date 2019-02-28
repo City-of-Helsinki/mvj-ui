@@ -112,6 +112,7 @@ const InspectionItemsEdit = ({
                       <FormTextTitle
                         required={isFieldRequired(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}
                         enableUiDataEdit
+                        tooltipStyle={{right: 20}}
                         uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.DESCRIPTION)}
                       >
                         {LeaseInspectionsFieldTitles.DESCRIPTION}
@@ -252,6 +253,7 @@ const InspectionItemsEdit = ({
                                 name={`${inspection}.description`}
                                 overrideValues={{label: LeaseInspectionsFieldTitles.DESCRIPTION}}
                                 enableUiDataEdit
+                                tooltipStyle={{right: 25}}
                                 uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.DESCRIPTION)}
                               />
                             </Authorization>

@@ -160,6 +160,7 @@ const CreditInvoiceForm = ({
                   name='amount'
                   unit='€'
                   enableUiDataEdit
+                  tooltipStyle={{right: 12}}
                   uiDataKey={getUiDataCreditInvoiceKey('amount')}
                 />
               </Column>
