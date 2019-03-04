@@ -62,6 +62,7 @@ export const DeleteModalLabels = {
   INVOICE_PAYMENT: 'Haluatko varmasti poistaa maksun?',
   INVOICE_ROW: 'Haluatko varmasti poistaa laskurivin?',
   LEASE_AREA: 'Haluatko varmasti poistaa kohteen?',
+  LEASE_AREA_ATTACHMENT: 'Haluatko varmasti poistaa tiedoston?',
   OTHER_TENANT: 'Haluatko varmasti poistaa laskunsaajan/yhteyshenkilön?',
   PLAN_UNIT: 'Haluatko varmasti poistaa kaavayksikön?',
   PLOT: 'Haluatko varmasti poistaa kiinteistön/määräalan?',
@@ -95,6 +96,7 @@ export const DeleteModalTitles = {
   INVOICE_PAYMENT: 'Poista maksu',
   INVOICE_ROW: 'Poista laskurivi',
   LEASE_AREA: 'Poista kohde',
+  LEASE_AREA_ATTACHMENT: 'Poista tiedosto',
   OTHER_TENANT: 'Poista laskunsaaja/yhteyshenkilö',
   PLAN_UNIT: 'Poista kaavayksikkö',
   PLOT: 'Poista kiinteistö/määräala',
@@ -468,7 +470,7 @@ export const LeaseAreasFieldPaths = {
   ARCHIVED_NOTE: 'lease_areas.child.children.archived_note',
   AREA: 'lease_areas.child.children.area',
   CONSTRUCTABILITY_REPORT: 'lease_areas.child.children.constructability_report',
-  CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER: 'lease_areas.child.children.constructability_report_geotechnical_number',
+  CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS: 'lease_areas.child.children.constructability_report_geotechnical_attachments',
   CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'lease_areas.child.children.constructability_report_investigation_state',
   CONSTRUCTABILITY_REPORT_SIGNING_DATE: 'lease_areas.child.children.constructability_report_signing_date',
   CONSTRUCTABILITY_REPORT_SIGNER: 'lease_areas.child.children.constructability_report_signer',
@@ -481,7 +483,7 @@ export const LeaseAreasFieldPaths = {
   OTHER: 'lease_areas.child.children.other',
   OTHER_STATE: 'lease_areas.child.children.other_state',
   POLLUTED_LAND: 'lease_areas.child.children.polluted_land',
-  POLLUTED_LAND_MATTI_REPORT_NUMBER: 'lease_areas.child.children.polluted_land_matti_report_number',
+  POLLUTED_LAND_MATTI_REPORTS: 'lease_areas.child.children.polluted_land_matti_reports',
   POLLUTED_LAND_PLANNER: 'lease_areas.child.children.polluted_land_planner',
   POLLUTED_LAND_PROJECTWISE_NUMBER: 'lease_areas.child.children.polluted_land_projectwise_number',
   POLLUTED_LAND_RENT_CONDITION_DATE: 'lease_areas.child.children.polluted_land_rent_condition_date',
@@ -506,7 +508,7 @@ export const LeaseAreasFieldTitles = {
   ARCHIVED_NOTE: 'Huomautus',
   AREA: 'Pinta-ala',
   CONSTRUCTABILITY_REPORT: 'Rakennettavuusselvitys',
-  CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER: 'Geoteknisen palvelun tiedosto',
+  CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS: 'Geoteknisen palvelun tiedosto',
   CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'Selvitys',
   CONSTRUCTABILITY_REPORT_SIGNING_DATE: 'Allekirjoituspvm',
   CONSTRUCTABILITY_REPORT_SIGNER: 'Allekirjoittaja',
@@ -519,7 +521,7 @@ export const LeaseAreasFieldTitles = {
   OTHER: 'Muut',
   OTHER_STATE: 'Selvitysaste',
   POLLUTED_LAND: 'Pima ja jäte',
-  POLLUTED_LAND_MATTI_REPORT_NUMBER: 'Matti-raportti',
+  POLLUTED_LAND_MATTI_REPORTS: 'Matti raportti',
   POLLUTED_LAND_PLANNER: 'PIMA valmistelija',
   POLLUTED_LAND_PROJECTWISE_NUMBER: 'ProjectWise numero',
   POLLUTED_LAND_RENT_CONDITION_DATE: 'Vuokraehdot pvm',
@@ -530,6 +532,30 @@ export const LeaseAreasFieldTitles = {
   PRECONSTRUCTION_INSPECTION_MOMENT: 'Tarkistuspäivä (kk/v)',
   PRECONSTRUCTION_STATE: 'Selvitysaste',
   TYPE: 'Määritelmä',
+};
+
+/**
+ * Lease area attachments field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreaAttachmentsFieldPaths = {
+  ATTACHMENTS: 'lease_areas.child.children.attachments',
+  FILE: 'lease_areas.child.children.attachments.child.children.file',
+  UPLOADED_AT: 'lease_areas.child.children.attachments.child.children.uploaded_at',
+  UPLOADER: 'lease_areas.child.children.attachments.child.children.uploader',
+};
+
+/**
+ * Lease area attachments field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreaAttachmentsFieldTitles = {
+  ATTACHMENTS: 'Tiedostot',
+  FILE: 'Nimi',
+  UPLOADED_AT: 'Pvm',
+  UPLOADER: 'Lataaja',
 };
 
 /**

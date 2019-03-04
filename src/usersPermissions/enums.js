@@ -51,6 +51,8 @@ export const UsersPermissions = {
   VIEW_EMAILLOG: 'view_emaillog',
   ADD_CONSTRUCTABILITYDESCRIPTION: 'add_constructabilitydescription',
   DELETE_CONSTRUCTABILITYDESCRIPTION: 'delete_constructabilitydescription',
+  ADD_LEASEAREAATTACHMENT: 'add_leaseareaattachment',
+  DELETE_LEASEAREAATTACHMENT: 'delete_leaseareaattachment',
   CHANGE_LEASE_IS_INVOICING_ENABLED: 'change_lease_is_invoicing_enabled',
   VIEW_INVOICE: 'view_invoice',
   ADD_INVOICE: 'add_invoice',

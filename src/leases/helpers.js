@@ -18,6 +18,7 @@ import {
   RentTypes,
   TenantContactType,
 } from './enums';
+import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
 import {getContentUser} from '$src/users/helpers';
 import {
@@ -532,12 +533,12 @@ export const getContentConstructability = (lease: Object) =>
       polluted_land_rent_condition_date: area.polluted_land_rent_condition_date,
       polluted_land_planner: getContentUser(area.polluted_land_planner),
       polluted_land_projectwise_number: area.polluted_land_projectwise_number,
-      polluted_land_matti_report_number: area.polluted_land_matti_report_number,
+      polluted_land_matti_reports: get(area, 'attachments', []).filter((file) => file.type === LeaseAreaAttachmentTypes.MATTI_REPORT),
       constructability_report_state: area.constructability_report_state,
       constructability_report_investigation_state: area.constructability_report_investigation_state,
       constructability_report_signing_date: area.constructability_report_signing_date,
       constructability_report_signer: area.constructability_report_signer,
-      constructability_report_geotechnical_number: area.constructability_report_geotechnical_number,
+      constructability_report_geotechnical_attachments: get(area, 'attachments', []).filter((file) => file.type === LeaseAreaAttachmentTypes.GEOTECHNICAL),
       other_state: area.other_state,
       descriptionsPreconstruction: getContentConstructabilityDescriptions(area, ConstructabilityType.PRECONSTRUCTION),
       descriptionsDemolition: getContentConstructabilityDescriptions(area, ConstructabilityType.DEMOLITION),
@@ -1197,12 +1198,10 @@ export const getPayloadConstructabilityArea = (area: Object, values: Object) => 
     polluted_land_rent_condition_date: values.polluted_land_rent_condition_date,
     polluted_land_planner: values.polluted_land_planner.value,
     polluted_land_projectwise_number: values.polluted_land_projectwise_number,
-    polluted_land_matti_report_number: values.polluted_land_matti_report_number,
     constructability_report_state: values.constructability_report_state,
     constructability_report_investigation_state: values.constructability_report_investigation_state,
     constructability_report_signing_date: values.constructability_report_signing_date,
     constructability_report_signer: values.constructability_report_signer,
-    constructability_report_geotechnical_number: values.constructability_report_geotechnical_number,
     other_state: values.other_state,
     constructability_descriptions: getPayloadConstructabilityDescriptions(values),
   };

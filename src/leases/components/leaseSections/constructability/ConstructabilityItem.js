@@ -8,14 +8,18 @@ import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import Comments from './Comments';
+import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import StatusIndicator from './StatusIndicator';
+import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {
   FormNames,
   LeaseAreaAddressesFieldPaths,
+  LeaseAreaAttachmentsFieldPaths,
+  LeaseAreaAttachmentsFieldTitles,
   LeaseAreasFieldPaths,
   LeaseAreasFieldTitles,
   LeaseConstructabilityDescriptionsFieldPaths,
@@ -138,6 +142,9 @@ const ConstructabilityItem = ({
       },
     });
   };
+
+  const pollutedLandMattiAttachments = area.polluted_land_matti_reports;
+  const constructabilityReportGeotechnicalAttachments = area.constructability_report_geotechnical_attachments;
 
   return (
     <Collapse key={area.id}
@@ -310,15 +317,64 @@ const ConstructabilityItem = ({
               <FormText>{area.polluted_land_projectwise_number || '-'}</FormText>
             </Authorization>
           </Column>
-          <Column small={6} medium={3} large={2}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}>
-                {LeaseAreasFieldTitles.POLLUTED_LAND_MATTI_REPORT_NUMBER}
-              </FormTextTitle>
-              <FormText>{area.polluted_land_matti_report_number || '-'}</FormText>
-            </Authorization>
-          </Column>
         </Row>
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.ATTACHMENTS)}>
+          <SubTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORTS)}>
+            {LeaseAreasFieldTitles.POLLUTED_LAND_MATTI_REPORTS}
+          </SubTitle>
+          {!pollutedLandMattiAttachments.length &&
+            <FormText>Ei Matti raportteja</FormText>
+          }
+          {!!pollutedLandMattiAttachments.length &&
+            <Fragment>
+              <Row>
+                <Column small={3} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.FILE)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.FILE)}>
+                      {LeaseAreaAttachmentsFieldTitles.FILE}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                      {LeaseAreaAttachmentsFieldTitles.UPLOADED_AT}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.UPLOADER)}>
+                    {LeaseAreaAttachmentsFieldTitles.UPLOADER}
+                  </FormTextTitle>
+                </Column>
+              </Row>
+
+              {pollutedLandMattiAttachments.map((file, index) => {
+                return (
+                  <Row key={index}>
+                    <Column small={3} large={4}>
+                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.FILE)}>
+                        <FileDownloadLink
+                          fileUrl={file.file}
+                          label={file.filename}
+                        />
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                        <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
+                    </Column>
+                  </Row>
+                );
+              })}
+            </Fragment>
+          }
+        </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
           <Comments comments={area.descriptionsPollutedLand} />
@@ -376,15 +432,63 @@ const ConstructabilityItem = ({
               <FormText>{area.constructability_report_signer || '-'}</FormText>
             </Authorization>
           </Column>
-          <Column small={6} medium={3} large={2}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}>
-                {LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER}
-              </FormTextTitle>
-              <FormText>{area.constructability_report_geotechnical_number || '-'}</FormText>
-            </Authorization>
-          </Column>
         </Row>
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.ATTACHMENTS)}>
+          <SubTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS)}>
+            {LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS}
+          </SubTitle>
+          {!constructabilityReportGeotechnicalAttachments.length &&
+            <FormText>Ei geoteknisen palvelun tiedostoja</FormText>
+          }
+          {!!constructabilityReportGeotechnicalAttachments.length &&
+            <Fragment>
+              <Row>
+                <Column small={3} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.FILE)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.FILE)}>
+                      {LeaseAreaAttachmentsFieldTitles.FILE}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                      {LeaseAreaAttachmentsFieldTitles.UPLOADED_AT}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.UPLOADER)}>
+                    {LeaseAreaAttachmentsFieldTitles.UPLOADER}
+                  </FormTextTitle>
+                </Column>
+              </Row>
+              {constructabilityReportGeotechnicalAttachments.map((file, index) => {
+                return (
+                  <Row key={index}>
+                    <Column small={3} large={4}>
+                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.FILE)}>
+                        <FileDownloadLink
+                          fileUrl={file.file}
+                          label={file.filename}
+                        />
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                        <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
+                    </Column>
+                  </Row>
+                );
+              })}
+            </Fragment>
+          }
+        </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
           <Comments comments={area.descriptionsReport} />

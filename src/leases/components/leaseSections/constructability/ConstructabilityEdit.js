@@ -121,7 +121,6 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
 
   render () {
     const {
-      attributes,
       errors,
       handleSubmit,
       isSaveClicked,
@@ -140,7 +139,6 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
         <SendEmail />
 
         <FieldArray
-          attributes={attributes}
           component={renderAreas}
           constructabilityStateOptions={constructabilityStateOptions}
           errors={errors}

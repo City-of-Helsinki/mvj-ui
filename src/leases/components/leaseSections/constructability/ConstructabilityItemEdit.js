@@ -9,11 +9,13 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
+import AddFileButton from '$components/form/AddFileButton';
 import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import Comments from './Comments';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
+import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -21,6 +23,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import StatusIndicator from './StatusIndicator';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
+import {createLeaseAreaAttachment, deleteLeaseAreaAttachment} from '$src/leaseAreaAttachment/actions';
 import {ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
@@ -28,15 +31,20 @@ import {
   DeleteModalTitles,
   FormNames,
   LeaseAreaAddressesFieldPaths,
+  LeaseAreaAttachmentsFieldPaths,
+  LeaseAreaAttachmentsFieldTitles,
   LeaseAreasFieldPaths,
   LeaseAreasFieldTitles,
   LeaseConstructabilityDescriptionsFieldPaths,
   LeaseConstructabilityDescriptionsFieldTitles,
 } from '$src/leases/enums';
+import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getFullAddress} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
+import {getUserFullName} from '$src/users/helpers';
 import {
+  formatDate,
   formatNumber,
   getFieldAttributes,
   getLabelOfOption,
@@ -46,11 +54,12 @@ import {
   isFieldAllowedToRead,
   isFieldRequired,
 } from '$util/helpers';
-import {getCollapseStateByKey} from '$src/leases/selectors';
+import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const getPreconstructionErrors = (errors: ?Object, area: string) => {
@@ -74,7 +83,6 @@ const getPollutedLandErrors = (errors: ?Object, area: string) => {
     ...get(errors, `${area}.polluted_land_rent_condition_date`, {}),
     ...get(errors, `${area}.polluted_land_planner`, {}),
     ...get(errors, `${area}.polluted_land_projectwise_number`, {}),
-    ...get(errors, `${area}.polluted_land_matti_report_number`, {}),
     ...get(errors, `${area}.descriptionsPollutedLand`, {}),
   };
 };
@@ -266,6 +274,9 @@ type Props = {
   attributes: Attributes,
   constructabilityReportCollapseState: boolean,
   constructabilityStateOptions: Array<Object>,
+  createLeaseAreaAttachment: Function,
+  currentLease: Lease,
+  deleteLeaseAreaAttachment: Function,
   demolitionCollapseState: boolean,
   errors: ?Object,
   field: string,
@@ -288,6 +299,9 @@ const ConstructabilityItemEdit = ({
   attributes,
   constructabilityReportCollapseState,
   constructabilityStateOptions,
+  createLeaseAreaAttachment,
+  currentLease,
+  deleteLeaseAreaAttachment,
   demolitionCollapseState,
   errors,
   field,
@@ -373,12 +387,43 @@ const ConstructabilityItemEdit = ({
     });
   };
 
+  const handleAddMattiReport = (e: any) => {
+    createLeaseAreaAttachment({
+      lease: currentLease.id,
+      data: {
+        lease_area: areaId,
+        type: LeaseAreaAttachmentTypes.MATTI_REPORT,
+      },
+      file: e.target.files[0],
+    });
+  };
+
+  const handleAddGeotechnicalAttachment = (e: any) => {
+    createLeaseAreaAttachment({
+      lease: currentLease.id,
+      data: {
+        lease_area: areaId,
+        type: LeaseAreaAttachmentTypes.GEOTECHNICAL,
+      },
+      file: e.target.files[0],
+    });
+  };
+
+  const handleDeleteLeaseAreaAttachment = (fileId: number) => {
+    deleteLeaseAreaAttachment({
+      id: fileId,
+      lease: currentLease.id,
+    });
+  };
+
   const areaErrors = get(errors, field);
   const preconstructionErrors = getPreconstructionErrors(errors, field);
   const demolitionErrors = getDemolitionErrors(errors, field);
   const pollutedLandErrors = getPollutedLandErrors(errors, field);
   const constructabilityReportErrors = getConstructabilityReportErrors(errors, field);
   const otherErrors = getOtherErrors(errors, field);
+  const pollutedLandMattiAttachments = savedArea.polluted_land_matti_reports;
+  const constructabilityReportGeotechnicalAttachments = savedArea.constructability_report_geotechnical_attachments;
 
   return (
     <Collapse
@@ -608,19 +653,102 @@ const ConstructabilityItemEdit = ({
               />
             </Authorization>
           </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}
-                name={`${field}.polluted_land_matti_report_number`}
-                overrideValues={{label: LeaseAreasFieldTitles.POLLUTED_LAND_MATTI_REPORT_NUMBER}}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORT_NUMBER)}
-              />
-            </Authorization>
-          </Column>
         </Row>
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.ATTACHMENTS)}>
+          <AppConsumer>
+            {({dispatch}) => {
+              return(
+                <Fragment>
+                  <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORTS)}>
+                    {LeaseAreasFieldTitles.POLLUTED_LAND_MATTI_REPORTS}
+                  </SubTitle>
+                  {!hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREAATTACHMENT) && !pollutedLandMattiAttachments.length &&
+                    <FormText>Ei Matti raportteja</FormText>
+                  }
+                  {!!pollutedLandMattiAttachments.length &&
+                    <Fragment>
+                      <Row>
+                        <Column small={3} large={4}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.FILE)}>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.FILE)}>
+                              {LeaseAreaAttachmentsFieldTitles.FILE}
+                            </FormTextTitle>
+                          </Authorization>
+                        </Column>
+                        <Column small={3} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                              {LeaseAreaAttachmentsFieldTitles.UPLOADED_AT}
+                            </FormTextTitle>
+                          </Authorization>
+                        </Column>
+                        <Column small={3} large={2}>
+                          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.UPLOADER)}>
+                            {LeaseAreaAttachmentsFieldTitles.UPLOADER}
+                          </FormTextTitle>
+                        </Column>
+                      </Row>
+                      {pollutedLandMattiAttachments.map((file, index) => {
+                        const handleRemove = () => {
+                          dispatch({
+                            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                            confirmationFunction: () => {
+                              handleDeleteLeaseAreaAttachment(file.id);
+                            },
+                            confirmationModalButtonClassName: ButtonColors.ALERT,
+                            confirmationModalButtonText: 'Poista',
+                            confirmationModalLabel: DeleteModalLabels.LEASE_AREA_ATTACHMENT,
+                            confirmationModalTitle: DeleteModalTitles.LEASE_AREA_ATTACHMENT,
+                          });
+                        };
+
+                        return (
+                          <Row key={index}>
+                            <Column small={3} large={4}>
+                              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.FILE)}>
+                                <FileDownloadLink
+                                  fileUrl={file.file}
+                                  label={file.filename}
+                                />
+                              </Authorization>
+                            </Column>
+                            <Column small={3} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                                <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
+                              </Authorization>
+                            </Column>
+                            <Column small={3} large={2}>
+                              <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
+                            </Column>
+                            <Column small={3} large={2}>
+                              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEAREAATTACHMENT)}>
+                                <RemoveButton
+                                  className='third-level'
+                                  onClick={handleRemove}
+                                  style={{right: 12}}
+                                  title="Poista liitetiedosto"
+                                />
+                              </Authorization>
+                            </Column>
+                          </Row>
+                        );
+                      })}
+                    </Fragment>
+                  }
+
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREAATTACHMENT)}>
+                    <AddFileButton
+                      label='Lisää tiedosto'
+                      name='add_polluted_land_matti_report_button'
+                      onChange={handleAddMattiReport}
+                    />
+                  </Authorization>
+                </Fragment>
+              );
+            }}
+          </AppConsumer>
+        </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
           <FieldArray
@@ -701,19 +829,102 @@ const ConstructabilityItemEdit = ({
               />
             </Authorization>
           </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}
-                name={`${field}.constructability_report_geotechnical_number`}
-                overrideValues={{label: LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER}}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_NUMBER)}
-              />
-            </Authorization>
-          </Column>
         </Row>
+
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.ATTACHMENTS)}>
+          <AppConsumer>
+            {({dispatch}) => {
+              return(
+                <Fragment>
+                  <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS)}>
+                    {LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS}
+                  </SubTitle>
+                  {!hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREAATTACHMENT) && !constructabilityReportGeotechnicalAttachments.length &&
+                    <FormText>Ei geoteknisen palvelun tiedostoja</FormText>
+                  }
+                  {!!constructabilityReportGeotechnicalAttachments.length &&
+                    <Fragment>
+                      <Row>
+                        <Column small={3} large={4}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.FILE)}>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.FILE)}>
+                              {LeaseAreaAttachmentsFieldTitles.FILE}
+                            </FormTextTitle>
+                          </Authorization>
+                        </Column>
+                        <Column small={3} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                              {LeaseAreaAttachmentsFieldTitles.UPLOADED_AT}
+                            </FormTextTitle>
+                          </Authorization>
+                        </Column>
+                        <Column small={3} large={2}>
+                          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreaAttachmentsFieldPaths.UPLOADER)}>
+                            {LeaseAreaAttachmentsFieldTitles.UPLOADER}
+                          </FormTextTitle>
+                        </Column>
+                      </Row>
+                      {constructabilityReportGeotechnicalAttachments.map((file, index) => {
+                        const handleRemove = () => {
+                          dispatch({
+                            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                            confirmationFunction: () => {
+                              handleDeleteLeaseAreaAttachment(file.id);
+                            },
+                            confirmationModalButtonClassName: ButtonColors.ALERT,
+                            confirmationModalButtonText: 'Poista',
+                            confirmationModalLabel: DeleteModalLabels.LEASE_AREA_ATTACHMENT,
+                            confirmationModalTitle: DeleteModalTitles.LEASE_AREA_ATTACHMENT,
+                          });
+                        };
+
+                        return (
+                          <Row key={index}>
+                            <Column small={3} large={4}>
+                              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.FILE)}>
+                                <FileDownloadLink
+                                  fileUrl={file.file}
+                                  label={file.filename}
+                                />
+                              </Authorization>
+                            </Column>
+                            <Column small={3} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.UPLOADED_AT)}>
+                                <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
+                              </Authorization>
+                            </Column>
+                            <Column small={3} large={2}>
+                              <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
+                            </Column>
+                            <Column small={3} large={2}>
+                              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEAREAATTACHMENT)}>
+                                <RemoveButton
+                                  className='third-level'
+                                  onClick={handleRemove}
+                                  style={{right: 12}}
+                                  title="Poista liitetiedosto"
+                                />
+                              </Authorization>
+                            </Column>
+                          </Row>
+                        );
+                      })}
+                    </Fragment>
+                  }
+
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREAATTACHMENT)}>
+                    <AddFileButton
+                      label='Lisää tiedosto'
+                      name='add_constructability_report_geotechnical_attachment_button'
+                      onChange={handleAddGeotechnicalAttachment}
+                    />
+                  </Authorization>
+                </Fragment>
+              );
+            }}
+          </AppConsumer>
+        </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
           <FieldArray
@@ -784,7 +995,9 @@ export default connect(
     return {
       areaCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.area`),
       areaId: id,
+      attributes: getAttributes(state),
       constructabilityReportCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.constructability_report`),
+      currentLease: getCurrentLease(state),
       demolitionCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.demolition`),
       otherCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.other`),
       pollutedLandCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.polluted_land`),
@@ -793,6 +1006,8 @@ export default connect(
     };
   },
   {
+    createLeaseAreaAttachment,
+    deleteLeaseAreaAttachment,
     receiveCollapseStates,
   }
 )(ConstructabilityItemEdit);
