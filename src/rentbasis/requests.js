@@ -9,8 +9,8 @@ export const fetchAttributes = () => {
   return callApi(new Request(createUrl('basis_of_rent/'), {method: 'OPTIONS'}));
 };
 
-export const fetchRentBasisList = (search: string): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`basis_of_rent/${search || ''}`)));
+export const fetchRentBasisList = (params: ?Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`basis_of_rent/`, params)));
 };
 
 export const fetchSingleRentBasis = (id: RentBasisId): Generator<any, any, any> => {

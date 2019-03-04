@@ -22,13 +22,14 @@ import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {TableSortOrder} from '$components/enums';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {
   FormNames,
   InfillDevelopmentCompensationFieldPaths,
   InfillDevelopmentCompensationLeasesFieldPaths,
 } from '$src/infillDevelopment/enums';
-import {getContentInfillDevelopmentList} from '$src/infillDevelopment/helpers';
+import {getContentInfillDevelopmentList, mapInfillDevelopmentSearchFilters} from '$src/infillDevelopment/helpers';
 import {
   getFieldOptions,
   getLabelOfOption,
@@ -80,6 +81,8 @@ type State = {
   isSearchInitialized: boolean,
   maxPage: number,
   selectedStates: Array<string>,
+  sortKey: string,
+  sortOrder: string,
   stateOptions: Array<Object>,
 }
 
@@ -93,6 +96,8 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     isSearchInitialized: false,
     maxPage: 1,
     selectedStates: [],
+    sortKey: 'name',
+    sortOrder: TableSortOrder.ASCENDING,
     stateOptions: [],
   }
 
@@ -103,6 +108,8 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       location: {search},
     } = this.props;
     const query = getUrlParams(search);
+    const newState = {};
+
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
@@ -113,13 +120,20 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     this.search();
 
     const page = query.page ? Number(query.page) : 1;
-    this.setState({activePage: page});
+    newState.activePage = page;
 
     const states = isArray(query.state)
       ? query.state
       : query.state ? [query.state] : [];
 
-    this.setState({selectedStates: states});
+    newState.selectedStates = states;
+
+    if(query.sort_key || query.sort_order) {
+      newState.sortKey = query.sort_key;
+      newState.sortOrder = query.sort_order;
+    }
+
+    this.setState(newState);
 
     const setSearchFormReadyFlag = () => {
       this.setState({isSearchInitialized: true});
@@ -131,6 +145,8 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
         delete searchQuery.page;
         delete searchQuery.state;
+        delete searchQuery.sort_key;
+        delete searchQuery.sort_order;
 
         await initialize(FormNames.SEARCH, searchQuery);
         setSearchFormReadyFlag();
@@ -163,6 +179,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   componentDidUpdate = (prevProps) => {
     const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const {activePage} = this.state;
     const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
@@ -171,10 +188,22 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
-        this.setState({selectedStates: []});
+        this.setState({
+          selectedStates: [],
+          sortKey: 'name',
+          sortOrder: TableSortOrder.ASCENDING,
+        });
+
         initialize(FormNames.SEARCH, {});
       }
     }
+
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    if(page !== activePage) {
+      this.setState({activePage: page});
+    }
+
   }
 
   handleCreateButtonClick = () => {
@@ -213,7 +242,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
 
-    fetchInfillDevelopments(searchQuery);
+    fetchInfillDevelopments(mapInfillDevelopmentSearchFilters(searchQuery));
   }
 
   handleRowClick = (id) => {
@@ -255,6 +284,22 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     this.handleSearchChange(searchQuery);
   }
 
+  handleSortingChange = ({sortKey, sortOrder}) => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    searchQuery.sort_key = sortKey;
+    searchQuery.sort_order = sortOrder;
+
+    this.setState({
+      sortKey,
+      sortOrder,
+    });
+
+    this.handleSearchChange(searchQuery);
+  }
+
+
   getColumns = () => {
     const {infillDevelopmentAttributes, stateOptions} = this.state;
     const columns = [];
@@ -271,6 +316,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       columns.push({
         key: 'leaseIdentifiers',
         text: 'Vuokratunnus',
+        sortable: false,
       });
     }
 
@@ -283,7 +329,17 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
   render() {
     const {infillDevelopmentMethods, isFetching, isFetchingCommonAttributes} = this.props;
-    const {activePage, count, infillDevelopments, isSearchInitialized, maxPage, selectedStates, stateOptions} = this.state;
+    const {
+      activePage,
+      count,
+      infillDevelopments,
+      isSearchInitialized,
+      maxPage,
+      selectedStates,
+      sortKey,
+      sortOrder,
+      stateOptions,
+    } = this.state;
     const columns = this.getColumns();
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
@@ -308,6 +364,8 @@ class InfillDevelopmentListPage extends Component<Props, State> {
             <Search
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
               states={selectedStates}
             />
 
@@ -329,7 +387,12 @@ class InfillDevelopmentListPage extends Component<Props, State> {
             data={infillDevelopments}
             listTable
             onRowClick={this.handleRowClick}
+            onSortingChange={this.handleSortingChange}
+            serverSideSorting
             showCollapseArrowColumn
+            sortable
+            sortKey={sortKey}
+            sortOrder={sortOrder}
           />
           <Pagination
             activePage={activePage}

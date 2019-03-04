@@ -6,6 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import {isDirty} from 'redux-form';
 
+import {TableSortOrder} from '$components/enums';
 import {
   ConstructabilityType,
   FormNames,
@@ -1518,6 +1519,26 @@ export const mapLeaseSearchFilters = (query: Object) => {
   searchQuery.lease_state = isArray(searchQuery.lease_state)
     ? searchQuery.lease_state
     : searchQuery.lease_state ? [searchQuery.lease_state] : [];
+
+  if(searchQuery.sort_key) {
+    if(searchQuery.sort_key === 'identifier') {
+      searchQuery.ordering = [
+        'identifier__type__identifier',
+        'identifier__municipality__identifier',
+        'identifier__district__identifier',
+        'identifier__sequence',
+      ];
+    } else {
+      searchQuery.ordering = [searchQuery.sort_key];
+    }
+
+    if(searchQuery.sort_order === TableSortOrder.DESCENDING) {
+      searchQuery.ordering = searchQuery.ordering.map((key) => `-${key}`);
+    }
+
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
+  }
 
   searchQuery.lease_state.forEach((state) => {
     if(state === LeaseState.RESERVE) {

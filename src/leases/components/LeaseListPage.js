@@ -33,6 +33,7 @@ import {createLease, fetchLeases} from '$src/leases/actions';
 import {fetchLessors} from '$src/lessor/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {leaseStateFilterOptions} from '$src/leases/constants';
+import {TableSortOrder} from '$components/enums';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {
   FormNames,
@@ -91,6 +92,8 @@ type State = {
   isModalOpen: boolean,
   leaseStates: Array<string>,
   isSearchInitialized: boolean,
+  sortKey: string,
+  sortOrder: string,
   visualizationType: string,
 }
 
@@ -102,6 +105,8 @@ class LeaseListPage extends PureComponent<Props, State> {
     isModalOpen: false,
     leaseStates: [],
     isSearchInitialized: false,
+    sortKey: 'identifier',
+    sortOrder: TableSortOrder.ASCENDING,
     visualizationType: 'table',
   }
 
@@ -113,6 +118,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {fetchAreaNoteList, fetchLessors, initialize, receiveTopNavigationSettings} = this.props;
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
+    const newState = {};
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASES),
@@ -127,19 +133,26 @@ class LeaseListPage extends PureComponent<Props, State> {
     this.search();
 
     const page = query.page ? Number(query.page) : 1;
-    this.setState({activePage: page});
+    newState.activePage = page;
 
     const states = isArray(query.lease_state)
       ? query.lease_state
       : query.lease_state ? [query.lease_state] : undefined;
 
     if(states) {
-      this.setState({leaseStates: states});
+      newState.leaseStates = states;
+    }
+
+    if(query.sort_key || query.sort_order) {
+      newState.sortKey = query.sort_key;
+      newState.sortOrder = query.sort_order;
     }
 
     const setSearchFormReadyFlag = () => {
       this.setState({isSearchInitialized: true});
     };
+
+    this.setState(newState);
 
     const initializeSearchForm = async() => {
       try {
@@ -147,11 +160,13 @@ class LeaseListPage extends PureComponent<Props, State> {
 
         delete searchQuery.page;
         delete searchQuery.lease_state;
+        delete searchQuery.sort_key;
+        delete searchQuery.sort_order;
 
-        if(searchQuery.tenant_role) {
-          searchQuery.tenant_role = isArray(searchQuery.tenant_role)
-            ? searchQuery.tenant_role
-            : [searchQuery.tenant_role];
+        if(searchQuery.tenantcontact_type) {
+          searchQuery.tenantcontact_type = isArray(searchQuery.tenantcontact_type)
+            ? searchQuery.tenantcontact_type
+            : [searchQuery.tenantcontact_type];
         }
 
 
@@ -177,7 +192,12 @@ class LeaseListPage extends PureComponent<Props, State> {
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
-        this.setState({leaseStates: []});
+        this.setState({
+          leaseStates: [],
+          sortKey: 'identifier',
+          sortOrder: TableSortOrder.ASCENDING,
+        });
+        
         initialize(FormNames.SEARCH, {});
       }
     }
@@ -263,6 +283,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       columns.push({
         key: 'lease_area_identifiers',
         text: 'Vuokrakohde',
+        sortable: false,
       });
     }
 
@@ -270,6 +291,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       columns.push({
         key: 'addresses',
         text: 'Osoite',
+        sortable: false,
       });
     }
 
@@ -277,6 +299,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       columns.push({
         key: 'tenants',
         text: 'Vuokralainen',
+        sortable: false,
       });
     }
 
@@ -351,12 +374,29 @@ class LeaseListPage extends PureComponent<Props, State> {
     return layers;
   }
 
+  handleSortingChange = ({sortKey, sortOrder}) => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    searchQuery.sort_key = sortKey;
+    searchQuery.sort_order = sortOrder;
+
+    this.setState({
+      sortKey,
+      sortOrder,
+    });
+
+    this.handleSearchChange(searchQuery);
+  }
+
   render() {
     const {
       activePage,
       isModalOpen,
       leaseStates,
       isSearchInitialized,
+      sortKey,
+      sortOrder,
       visualizationType,
     } = this.state;
     const {
@@ -404,6 +444,8 @@ class LeaseListPage extends PureComponent<Props, State> {
               attributes={leaseAttributes}
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
               states={leaseStates}
             />
           </Column>
@@ -443,7 +485,12 @@ class LeaseListPage extends PureComponent<Props, State> {
                 data={leases}
                 listTable
                 onRowClick={this.handleRowClick}
+                onSortingChange={this.handleSortingChange}
+                serverSideSorting
                 showCollapseArrowColumn
+                sortable
+                sortKey={sortKey}
+                sortOrder={sortOrder}
               />
               <Pagination
                 activePage={activePage}

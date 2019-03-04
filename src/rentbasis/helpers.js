@@ -4,6 +4,7 @@ import {isDirty} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 
 import {FormNames} from './enums';
+import {TableSortOrder} from '$components/enums';
 import {convertStrToDecimalNumber} from '$util/helpers';
 import {getIsEditMode} from '$src/rentbasis/selectors';
 import {removeSessionStorageItem} from '$util/storage';
@@ -196,6 +197,40 @@ export const getContentRentBasisGeoJson = (rentBasis: RentBasis): LeafletGeoJson
     type: 'FeatureCollection',
     features: features,
   };
+};
+
+/**
+* Map rent basis search filters for API
+* @param {Object} query
+* @returns {Object}
+*/
+export const mapRentBasisSearchFilters = (query: Object) => {
+  const searchQuery = {...query};
+
+  if(searchQuery.sort_key) {
+    if(searchQuery.sort_key === 'start_date') {
+      searchQuery.ordering = [
+        'start_date',
+        'end_date',
+      ];
+    } else if(searchQuery.sort_key === 'end_date') {
+      searchQuery.ordering = [
+        'end_date',
+        'start_date',
+      ];
+    } else {
+      searchQuery.ordering = [searchQuery.sort_key];
+    }
+
+    if(searchQuery.sort_order === TableSortOrder.DESCENDING) {
+      searchQuery.ordering = searchQuery.ordering.map((key) => `-${key}`);
+    }
+
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
+  }
+
+  return searchQuery;
 };
 
 export const isRentBasisFormDirty = (state: any) => {

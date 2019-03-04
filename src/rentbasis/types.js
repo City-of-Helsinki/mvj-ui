@@ -24,7 +24,7 @@ export type ReceiveAttributesAction = Action<'mvj/rentbasis/RECEIVE_ATTRIBUTES',
 export type ReceiveMethodsAction = Action<'mvj/rentbasis/RECEIVE_METHODS', Methods>;
 export type RentBasisAttributesNotFoundAction = Action<'mvj/rentbasis/ATTRIBUTES_NOT_FOUND', void>;
 
-export type FetchRentBasisListAction = Action<'mvj/rentbasis/FETCH_ALL', string>;
+export type FetchRentBasisListAction = Action<'mvj/rentbasis/FETCH_ALL', ?Object>;
 export type ReceiveRentBasisListAction = Action<'mvj/rentbasis/RECEIVE_ALL', RentBasisList>;
 export type FetchSingleRentBasisAction = Action<'mvj/rentbasis/FETCH_SINGLE', RentBasisId>;
 export type ReceiveSingleRentBasisAction = Action<'mvj/rentbasis/RECEIVE_SINGLE', RentBasis>;

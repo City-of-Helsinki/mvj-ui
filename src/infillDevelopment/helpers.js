@@ -2,6 +2,7 @@
 import get from 'lodash/get';
 import {isDirty} from 'redux-form';
 
+import {TableSortOrder} from '$components/enums';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentLeaseIdentifier, getContentLeaseOption} from '$src/leases/helpers';
 import {getContentUser} from '$src/users/helpers';
@@ -231,6 +232,28 @@ export const getContentInfillDevelopmentLeaseGeoJson = (lease: Object) => {
     type: 'FeatureCollection',
     features: features,
   };
+};
+
+/**
+* Map infill development search filters for API
+* @param {Object} query
+* @returns {Object}
+*/
+export const mapInfillDevelopmentSearchFilters = (query: Object) => {
+  const searchQuery = {...query};
+
+  if(searchQuery.sort_key) {
+    searchQuery.ordering = [searchQuery.sort_key];
+
+    if(searchQuery.sort_order === TableSortOrder.DESCENDING) {
+      searchQuery.ordering = searchQuery.ordering.map((key) => `-${key}`);
+    }
+
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
+  }
+
+  return searchQuery;
 };
 
 export const isInfillDevelopmentFormDirty = (state: any) => {

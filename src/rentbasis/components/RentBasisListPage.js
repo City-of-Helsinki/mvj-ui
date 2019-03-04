@@ -22,6 +22,7 @@ import TableWrapper from '$components/table/TableWrapper';
 import {fetchRentBasisList, initializeRentBasis} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {TableSortOrder} from '$components/enums';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {
   FormNames,
@@ -29,6 +30,7 @@ import {
   RentBasisPropertyIdentifiersFieldPaths,
   RentBasisRentRatesFieldPaths,
 } from '$src/rentbasis/enums';
+import {mapRentBasisSearchFilters} from '$src/rentbasis/helpers';
 import {
   formatDate,
   getFieldOptions,
@@ -62,12 +64,16 @@ type Props = {
 type State = {
   activePage: number,
   isSearchInitialized: boolean,
+  sortKey: string,
+  sortOrder: string,
 }
 
 class RentBasisListPage extends Component<Props, State> {
   state = {
     activePage: 1,
     isSearchInitialized: false,
+    sortKey: 'start_date',
+    sortOrder: TableSortOrder.DESCENDING,
   }
 
   componentDidMount() {
@@ -76,7 +82,8 @@ class RentBasisListPage extends Component<Props, State> {
       location: {search},
       receiveTopNavigationSettings,
     } = this.props;
-    const searchQuery = getUrlParams(search);
+    const newState = {};
+    const query = getUrlParams(search);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.RENT_BASIS),
@@ -86,8 +93,15 @@ class RentBasisListPage extends Component<Props, State> {
 
     this.search();
 
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-    this.setState({activePage: page});
+    const page = query.page ? Number(query.page) : 1;
+    newState.activePage = page;
+
+    if(query.sort_key || query.sort_order) {
+      newState.sortKey = query.sort_key;
+      newState.sortOrder = query.sort_order;
+    }
+
+    this.setState(newState);
 
     const setSearchFormReadyFlag = () => {
       this.setState({isSearchInitialized: true});
@@ -95,7 +109,11 @@ class RentBasisListPage extends Component<Props, State> {
 
     const initializeSearchForm = async() => {
       try {
+        const searchQuery = {...query};
+
         delete searchQuery.page;
+        delete searchQuery.sort_key;
+        delete searchQuery.sort_order;
 
         await initialize(FormNames.SEARCH, searchQuery);
 
@@ -111,6 +129,8 @@ class RentBasisListPage extends Component<Props, State> {
   componentDidUpdate(prevProps) {
     const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const {activePage} = this.state;
+
     const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
@@ -119,8 +139,19 @@ class RentBasisListPage extends Component<Props, State> {
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
+        this.setState({
+          sortKey: 'start_date',
+          sortOrder: TableSortOrder.DESCENDING,
+        });
+
         initialize(FormNames.SEARCH, {});
       }
+    }
+
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    if(page !== activePage) {
+      this.setState({activePage: page});
     }
   }
 
@@ -148,7 +179,7 @@ class RentBasisListPage extends Component<Props, State> {
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
 
-    fetchRentBasisList(getSearchQuery(searchQuery));
+    fetchRentBasisList(mapRentBasisSearchFilters(searchQuery));
   }
 
   handleCreateButtonClick = () => {
@@ -228,6 +259,7 @@ class RentBasisListPage extends Component<Props, State> {
     if(isFieldAllowedToRead(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)) {
       columns.push({
         key: 'property_identifiers',
+        sortable: false,
         text: 'Kohteen tunnus',
       });
     }
@@ -237,6 +269,7 @@ class RentBasisListPage extends Component<Props, State> {
         key: 'build_permission_types',
         text: 'Pääkäyttötarkoitus',
         renderer: (val) => val ? getLabelOfOption(buildPermissionTypeOptions, val) : '-',
+        sortable: false,
       });
     }
 
@@ -251,6 +284,22 @@ class RentBasisListPage extends Component<Props, State> {
     return columns;
   }
 
+  handleSortingChange = ({sortKey, sortOrder}) => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    searchQuery.sort_key = sortKey;
+    searchQuery.sort_order = sortOrder;
+
+    this.setState({
+      sortKey,
+      sortOrder,
+    });
+
+    this.handleSearchChange(searchQuery);
+  }
+
+
   render() {
     const {
       isFetching,
@@ -258,7 +307,7 @@ class RentBasisListPage extends Component<Props, State> {
       rentBasisListData,
       rentBasisMethods,
     } = this.props;
-    const {activePage, isSearchInitialized} = this.state;
+    const {activePage, isSearchInitialized, sortKey, sortOrder} = this.state;
     const count = this.getRentBasisCount(rentBasisListData);
     const rentBasisList = this.getRentBasisList(rentBasisListData);
     const maxPage = this.getRentBasisMaxPage(rentBasisListData);
@@ -286,6 +335,8 @@ class RentBasisListPage extends Component<Props, State> {
             <Search
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
             />
           </Column>
         </Row>
@@ -310,7 +361,12 @@ class RentBasisListPage extends Component<Props, State> {
             data={rentBasisList}
             listTable
             onRowClick={this.handleRowClick}
+            onSortingChange={this.handleSortingChange}
+            serverSideSorting
             showCollapseArrowColumn
+            sortable
+            sortKey={sortKey}
+            sortOrder={sortOrder}
           />
           <Pagination
             activePage={activePage}
