@@ -45,11 +45,15 @@ type Props = {
   onSelectNext?: Function,
   onSelectPrevious?: Function,
   onSelectRow?: Function,
+  onSortingChange?: Function,
   selectedRow?: Object | null,
   showCollapseArrowColumn?: boolean,
   showGroupRadioButton?: boolean,
   showRadioButton?: boolean,
   radioButtonDisabledFunction?: Function,
+  serverSideSorting?: boolean,
+  sortKey?: string,
+  sortOrder?: string,
   sortable?: boolean,
 }
 
@@ -200,7 +204,7 @@ class SortableTable extends Component<Props, State> {
       newState.data = props.data;
       newState.columns = props.columns;
 
-      newState.sortedData = props.sortable
+      newState.sortedData = props.sortable && !props.serverSideSorting
         ? sortData(props.data, props.columns, state.sortKey, state.sortOrder)
         : props.data;
     }
@@ -286,8 +290,9 @@ class SortableTable extends Component<Props, State> {
   }
 
   onSortingChange = (column: Column) => {
-    const {sortKey, sortOrder} = this.state;
-    const {columns, data} = this.props;
+    const {columns, data, onSortingChange, serverSideSorting} = this.props;
+    const sortKey = serverSideSorting ? this.props.sortKey : this.state.sortKey;
+    const sortOrder = serverSideSorting ? this.props.sortOrder : this.state.sortOrder;
 
     let newSortKey = sortKey,
       newSortOrder = TableSortOrder.DESCENDING;
@@ -301,11 +306,23 @@ class SortableTable extends Component<Props, State> {
       newSortOrder = column.defaultSortOrder || TableSortOrder.DESCENDING;
     }
 
-    this.setState({
-      sortedData: sortData(data, columns, newSortKey, newSortOrder),
-      sortKey: newSortKey,
-      sortOrder: newSortOrder,
-    });
+    if(serverSideSorting) {
+      if(onSortingChange) {
+        onSortingChange({
+          sortKey: newSortKey,
+          sortOrder: newSortOrder,
+        });
+      } else {
+        console.error('Sorting table: onSortingChange function is missing');
+      }
+
+    } else {
+      this.setState({
+        sortedData: sortData(data, columns, newSortKey, newSortOrder),
+        sortKey: newSortKey,
+        sortOrder: newSortOrder,
+      });
+    }
   }
 
   handleSelectRow = (row: Object) => {
@@ -389,6 +406,7 @@ class SortableTable extends Component<Props, State> {
       onRowClick,
       radioButtonDisabledFunction,
       selectedRow,
+      serverSideSorting,
       showCollapseArrowColumn,
       showGroupRadioButton,
       showRadioButton,
@@ -398,11 +416,12 @@ class SortableTable extends Component<Props, State> {
       scrollHeaderColumnStyles,
       scrollHeaderWidth,
       sortedData,
-      sortKey,
-      sortOrder,
     } = this.state;
     const noDataColSpan = this.getNoDataColSpan();
     const fixedMaxHeight = this.calculateMaxHeight();
+
+    const sortKey = serverSideSorting ? this.props.sortKey : this.state.sortKey;
+    const sortOrder = serverSideSorting ? this.props.sortOrder : this.state.sortOrder;
 
     return (
       <div

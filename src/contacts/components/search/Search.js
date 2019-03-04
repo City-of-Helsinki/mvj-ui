@@ -15,6 +15,8 @@ type Props = {
   formValues: Object,
   isSearchInitialized: boolean,
   onSearch: Function,
+  sortKey: ?string,
+  sortOrder: ?string,
 }
 
 class Search extends PureComponent<Props> {
@@ -39,14 +41,27 @@ class Search extends PureComponent<Props> {
   onSearchChange = debounce(() => {
     if(!this._isMounted) return;
 
-    const {formValues, onSearch} = this.props;
-    onSearch({...formValues});
+    const {formValues, onSearch, sortKey, sortOrder} = this.props;
+    const newValues = {...formValues};
+
+    if(sortKey) {
+      newValues.sort_key = sortKey;
+      newValues.sort_order = sortOrder;
+    }
+
+    onSearch(newValues);
   }, 500);
 
   handleClear = () => {
-    const {onSearch} = this.props;
+    const {onSearch, sortKey, sortOrder} = this.props;
+    const query = {};
 
-    onSearch({});
+    if(sortKey || sortOrder) {
+      query.sort_key = sortKey;
+      query.sort_order = sortOrder;
+    }
+
+    onSearch(query);
   }
 
   handleClearKeyDown = (e: any) => {

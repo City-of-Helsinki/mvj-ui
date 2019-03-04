@@ -27,6 +27,8 @@ type Props = {
   isSearchInitialized: boolean,
   location: Object,
   onSearch: Function,
+  sortKey: ?string,
+  sortOrder: ?string,
   states: Array<Object>,
 }
 
@@ -79,6 +81,8 @@ class Search extends PureComponent<Props, State> {
     const query = getUrlParams(search);
 
     delete query.page;
+    delete query.sort_key;
+    delete query.sort_order;
 
     if(!Object.keys(query).length ||
       (Object.keys(query).length === 1 && (query.search || query.state)) ||
@@ -90,12 +94,23 @@ class Search extends PureComponent<Props, State> {
   onSearchChange = debounce(() => {
     if(!this._isMounted) return;
 
-    const {formValues, onSearch, states} = this.props;
-    onSearch({...formValues, state: states.length ? states : undefined});
+    const {formValues, onSearch, sortKey, sortOrder, states} = this.props;
+    const newValues = {...formValues};
+
+    if(sortKey || sortOrder) {
+      newValues.sort_key = sortKey;
+      newValues.sort_order = sortOrder;
+    }
+
+    if(states.length) {
+      newValues.lease_state = states;
+    }
+
+    onSearch(newValues);
   }, 500);
 
   toggleSearchType = () => {
-    const {formValues, initialize, onSearch, states} = this.props;
+    const {formValues, initialize, onSearch, sortKey, sortOrder, states} = this.props;
     const isBasicSearch = this.state.isBasicSearch ? true : false;
 
     this.setState({isBasicSearch: !isBasicSearch});
@@ -111,6 +126,11 @@ class Search extends PureComponent<Props, State> {
         newFormValues.state = states;
       }
 
+      if(sortKey || sortOrder) {
+        newFormValues.sort_key = sortKey;
+        newFormValues.sort_order = sortOrder;
+      }
+
       onSearch(newFormValues);
       initialize(newFormValues);
     }
@@ -124,9 +144,15 @@ class Search extends PureComponent<Props, State> {
   }
 
   handleClear = () => {
-    const {onSearch} = this.props;
+    const {onSearch, sortKey, sortOrder} = this.props;
+    const query = {};
 
-    onSearch({});
+    if(sortKey || sortOrder) {
+      query.sort_key = sortKey;
+      query.sort_order = sortOrder;
+    }
+
+    onSearch(query);
   }
 
   handleClearKeyDown = (e: any) => {

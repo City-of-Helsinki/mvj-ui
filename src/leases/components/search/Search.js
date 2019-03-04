@@ -44,6 +44,8 @@ type Props = {
   municipality: string,
   onSearch: Function,
   router: Object,
+  sortKey: ?string,
+  sortOrder: ?string,
   states: Array<Object>,
 }
 
@@ -112,7 +114,6 @@ class Search extends Component<Props, State> {
         clearFields(false, false, 'search_district');
       }
     }
-
     if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       this.onSearchChange();
     }
@@ -123,6 +124,8 @@ class Search extends Component<Props, State> {
     const searchQuery = getUrlParams(search);
 
     delete searchQuery.page;
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
 
     if(!Object.keys(searchQuery).length ||
       Object.keys(searchQuery).length === 1 && (searchQuery.identifier || searchQuery.lease_state) ||
@@ -136,8 +139,13 @@ class Search extends Component<Props, State> {
   onSearchChange = debounce(() => {
     if(!this._isMounted) return;
 
-    const {formValues, onSearch, states} = this.props;
+    const {formValues, onSearch, sortKey, sortOrder, states} = this.props;
     const newValues = {...formValues};
+
+    if(sortKey || sortOrder) {
+      newValues.sort_key = sortKey;
+      newValues.sort_order = sortOrder;
+    }
 
     if(states.length) {
       newValues.lease_state = states;
@@ -147,7 +155,7 @@ class Search extends Component<Props, State> {
   }, 500);
 
   toggleSearchType = () => {
-    const {formValues, initialize, onSearch, states} = this.props;
+    const {formValues, initialize, onSearch, sortKey, sortOrder, states} = this.props;
     const isBasicSearch = this.state.isBasicSearch ? true : false;
 
     this.setState({isBasicSearch: !isBasicSearch});
@@ -163,6 +171,11 @@ class Search extends Component<Props, State> {
         newFormValues.lease_state = states;
       }
 
+      if(sortKey || sortOrder) {
+        newFormValues.sort_key = sortKey;
+        newFormValues.sort_order = sortOrder;
+      }
+
       onSearch(newFormValues);
       initialize(newFormValues);
     }
@@ -176,9 +189,15 @@ class Search extends Component<Props, State> {
   }
 
   handleClear = () => {
-    const {onSearch} = this.props;
+    const {onSearch, sortKey, sortOrder} = this.props;
+    const query = {};
 
-    onSearch({});
+    if(sortKey || sortOrder) {
+      query.sort_key = sortKey;
+      query.sort_order = sortOrder;
+    }
+
+    onSearch(query);
   }
 
   handleClearKeyDown = (e: any) => {

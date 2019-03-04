@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import {isDirty} from 'redux-form';
 
 import {ContactTypes, FormNames} from './enums';
+import {TableSortOrder} from '$components/enums';
 import {getIsEditMode} from '$src/contacts/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
@@ -55,6 +56,35 @@ export const isContactFormDirty = (state: any) => {
   const isEditMode = getIsEditMode(state);
 
   return isEditMode && isDirty(FormNames.CONTACT)(state);
+};
+
+/**
+* Map contact search filters for API
+* @param {Object} query
+* @returns {Object}
+*/
+export const mapContactSearchFilters = (query: Object) => {
+  const searchQuery = {...query};
+
+  if(searchQuery.sort_key) {
+    if(searchQuery.sort_key === 'names') {
+      searchQuery.ordering = [
+        'names',
+        'first_name',
+      ];
+    } else {
+      searchQuery.ordering = [searchQuery.sort_key];
+    }
+
+    if(searchQuery.sort_order === TableSortOrder.DESCENDING) {
+      searchQuery.ordering = searchQuery.ordering.map((key) => `-${key}`);
+    }
+
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
+  }
+
+  return searchQuery;
 };
 
 export const clearUnsavedChanges = () => {

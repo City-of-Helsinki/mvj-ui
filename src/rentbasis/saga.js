@@ -45,9 +45,9 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchRentBasisListSaga({payload: search}): Generator<any, any, any> {
+function* fetchRentBasisListSaga({payload: query}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchRentBasisList, search);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchRentBasisList, query);
     switch (statusCode) {
       case 200:
         yield put(receiveRentBasisList(bodyAsJson));

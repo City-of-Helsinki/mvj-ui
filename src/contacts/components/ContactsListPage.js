@@ -26,7 +26,8 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {ContactFieldPaths, FormNames} from '$src/contacts/enums';
-import {getContactFullName} from '$src/contacts/helpers';
+import {TableSortOrder} from '$components/enums';
+import {getContactFullName, mapContactSearchFilters} from '$src/contacts/helpers';
 import {
   getFieldOptions,
   getLabelOfOption,
@@ -76,6 +77,8 @@ type State = {
   count: number,
   isSearchInitialized: boolean,
   maxPage: number,
+  sortKey: string,
+  sortOrder: string,
   typeOptions: Array<Object>,
 }
 
@@ -88,6 +91,8 @@ class ContactListPage extends Component<Props, State> {
     count: 0,
     isSearchInitialized: false,
     maxPage: 0,
+    sortKey: 'names',
+    sortOrder: TableSortOrder.ASCENDING,
     typeOptions: [],
   }
 
@@ -115,6 +120,7 @@ class ContactListPage extends Component<Props, State> {
     const {initialize, receiveTopNavigationSettings} = this.props;
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
+    const newState = {};
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.CONTACTS),
@@ -125,7 +131,14 @@ class ContactListPage extends Component<Props, State> {
     this.search();
 
     const page = query.page ? Number(query.page) : 1;
-    this.setState({activePage: page});
+    newState.activePage = page;
+
+    if(query.sort_key || query.sort_order) {
+      newState.sortKey = query.sort_key;
+      newState.sortOrder = query.sort_order;
+    }
+
+    this.setState(newState);
 
     const setSearchFormReadyFlag = () => {
       this.setState({isSearchInitialized: true});
@@ -135,6 +148,8 @@ class ContactListPage extends Component<Props, State> {
       try {
         const searchQuery = {...query};
         delete searchQuery.page;
+        delete searchQuery.sort_key;
+        delete searchQuery.sort_order;
 
         await initialize(FormNames.SEARCH, searchQuery);
         setSearchFormReadyFlag();
@@ -149,6 +164,7 @@ class ContactListPage extends Component<Props, State> {
   componentDidUpdate(prevProps) {
     const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const {activePage} = this.state;
     const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
@@ -157,8 +173,19 @@ class ContactListPage extends Component<Props, State> {
       delete searchQuery.page;
 
       if(!Object.keys(searchQuery).length) {
+        this.setState({
+          sortKey: 'names',
+          sortOrder: TableSortOrder.ASCENDING,
+        });
+
         initialize(FormNames.SEARCH, {});
       }
+    }
+
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    if(page !== activePage) {
+      this.setState({activePage: page});
     }
   }
 
@@ -195,7 +222,7 @@ class ContactListPage extends Component<Props, State> {
     }
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    fetchContacts(searchQuery);
+    fetchContacts(mapContactSearchFilters(searchQuery));
   }
 
   handleRowClick = (id) => {
@@ -231,19 +258,47 @@ class ContactListPage extends Component<Props, State> {
     const columns = [];
 
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.TYPE)) {
-      columns.push({key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)});
+      columns.push({
+        key: 'type',
+        text: 'Asiakastyyppi',
+        renderer: (val) => getLabelOfOption(typeOptions, val),
+        sortable: false,
+      });
     }
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.FIRST_NAME) ||
       isFieldAllowedToRead(contactAttributes, ContactFieldPaths.LAST_NAME) ||
       isFieldAllowedToRead(contactAttributes, ContactFieldPaths.NAME)) {
-      columns.push({key: 'first_name', text: 'Nimi', renderer: (val, row) => getContactFullName(row)});
+      columns.push({
+        key: 'names',
+        text: 'Nimi',
+        renderer: (val, row) => getContactFullName(row),
+      });
     }
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.BUSINESS_ID)) {
-      columns.push({key: 'business_id', text: 'Y-tunnus'});
+      columns.push({
+        key: 'business_id',
+        text: 'Y-tunnus',
+      });
     }
 
     return columns;
   }
+
+  handleSortingChange = ({sortKey, sortOrder}) => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    searchQuery.sort_key = sortKey;
+    searchQuery.sort_order = sortOrder;
+
+    this.setState({
+      sortKey,
+      sortOrder,
+    });
+
+    this.handleSearchChange(searchQuery);
+  }
+
 
   render() {
     const {contactMethods, isFetching, isFetchingCommonAttributes} = this.props;
@@ -253,6 +308,8 @@ class ContactListPage extends Component<Props, State> {
       count,
       isSearchInitialized,
       maxPage,
+      sortKey,
+      sortOrder,
     } = this.state;
     const columns = this.getColumns();
 
@@ -278,6 +335,9 @@ class ContactListPage extends Component<Props, State> {
             <Search
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
+
             />
 
             <TableFilters
@@ -297,6 +357,12 @@ class ContactListPage extends Component<Props, State> {
             data={contacts}
             listTable
             onRowClick={this.handleRowClick}
+            onSortingChange={this.handleSortingChange}
+            serverSideSorting
+            sortable
+            sortKey={sortKey}
+            sortOrder={sortOrder}
+
           />
           <Pagination
             activePage={activePage}

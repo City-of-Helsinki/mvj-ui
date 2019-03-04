@@ -37,8 +37,8 @@ export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
 export const attributesNotFound = (): RentBasisAttributesNotFoundAction =>
   createAction('mvj/rentbasis/ATTRIBUTES_NOT_FOUND')();
 
-export const fetchRentBasisList = (search: string): FetchRentBasisListAction =>
-  createAction('mvj/rentbasis/FETCH_ALL')(search);
+export const fetchRentBasisList = (query: ?Object): FetchRentBasisListAction =>
+  createAction('mvj/rentbasis/FETCH_ALL')(query);
 
 export const receiveRentBasisList = (rentbasis: RentBasisList): ReceiveRentBasisListAction =>
   createAction('mvj/rentbasis/RECEIVE_ALL')(rentbasis);

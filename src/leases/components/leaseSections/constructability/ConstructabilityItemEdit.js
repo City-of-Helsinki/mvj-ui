@@ -740,7 +740,7 @@ const ConstructabilityItemEdit = ({
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREAATTACHMENT)}>
                     <AddFileButton
                       label='Lisää tiedosto'
-                      name='add_polluted_land_matti_report_button'
+                      name={`add_polluted_land_matti_report_button_${areaId}`}
                       onChange={handleAddMattiReport}
                     />
                   </Authorization>
@@ -916,7 +916,7 @@ const ConstructabilityItemEdit = ({
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREAATTACHMENT)}>
                     <AddFileButton
                       label='Lisää tiedosto'
-                      name='add_constructability_report_geotechnical_attachment_button'
+                      name={`add_constructability_report_geotechnical_attachment_button_${areaId}`}
                       onChange={handleAddGeotechnicalAttachment}
                     />
                   </Authorization>
