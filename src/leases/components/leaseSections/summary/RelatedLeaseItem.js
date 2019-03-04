@@ -4,8 +4,10 @@ import {connect} from 'react-redux';
 import classNames from 'classnames';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import AccordionIcon from '$components/icons/AccordionIcon';
 import Authorization from '$components/authorization/Authorization';
 import ExternalLink from '$components/links/ExternalLink';
+import FormText from '$components/form/FormText';
 import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
@@ -62,34 +64,33 @@ const RelatedLeaseItem = ({
             <div className="related-leases-item_wrapper">
               <div className="left-border-overlay" />
               <div className="connection-line" />
-              <div className={classNames('related-leases-item_badge')}></div>
-              {!!active &&
-                <div className={classNames('related-leases-item_info')}>
-                  <p className="identifier">{identifier}</p>
-                </div>
-              }
-              {!active &&
-                <div className={classNames('related-leases-item_info')}>
-                  <p className="identifier">
-                    <ExternalLink
+              <div className={classNames('related-leases-item_badge')}>
+                {!active && <AccordionIcon/>}
+              </div>
+              <div className={classNames('related-leases-item_info')}>
+                <p className="identifier">
+                  {active
+                    ? identifier
+                    : <ExternalLink
                       href={`${getRouteById(Routes.LEASES)}/${lease.id}`}
                       text={identifier || ''}
                     />
-                  </p>
-                  <p>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</p>
-                  <p className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</p>
+                  }
+                </p>
+                <FormText>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</FormText>
+                <FormText className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</FormText>
 
-                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
-                    {onDelete &&
-                      <RemoveButton
-                        className='related-leases-item_remove-button'
-                        onClick={handleDelete}
-                        title='Poista liitos'
-                      />
-                    }
-                  </Authorization>
-                </div>
-              }
+                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
+                  {onDelete &&
+                    <RemoveButton
+                      className='related-leases-item_remove-button'
+                      onClick={handleDelete}
+                      title='Poista liitos'
+                    />
+                  }
+                </Authorization>
+              </div>
+
             </div>
           </div>
         );

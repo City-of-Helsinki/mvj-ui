@@ -24,6 +24,34 @@
       margin-left: -7.5px;
       margin-right: -7.5px;
 
+      &_wrapper {
+        position: relative;
+        padding: rem-calc(7.5px 0 7.5px 23px);
+      }
+
+      .left-border-overlay {
+        border-left: 3px solid $green;
+        position: absolute;
+        left: -1px;
+      }
+
+      &_badge {
+        height: rem-calc(15px);
+        width: rem-calc(15px);
+        position: absolute;
+        left: rem-calc(-8px);
+        border-radius: 50%;
+        top: rem-calc(3px);
+
+        .icons {
+          height: rem-calc(15px);
+          width: rem-calc(15px);
+          left: rem-calc(10px);
+
+          @include transform(rotate(-90deg));
+        }
+      }
+
       &.indented {
         padding-left: 42.5px;
 
@@ -38,38 +66,36 @@
           top: 17.5px;
           left: -26px;
         }
+
+        .related-leases-item {
+          &_wrapper {
+            padding-left: 0;
+          }
+
+          &_badge {
+            top: rem-calc(4px);
+            left: rem-calc(-10px);
+
+            .icons {
+              @include transform(rotate(0deg));
+            }
+          }
+        }
       }
 
-      &_wrapper {
-        position: relative;
-        padding: rem-calc(7.5px 0);
-      }
 
-      .left-border-overlay {
-        border-left: 3px solid $green;
-        position: absolute;
-        left: -1px;
-      }
-
-      &_badge {
-        background-color: $dark-green;
-        height: rem-calc(20px);
-        width: rem-calc(20px);
-        position: absolute;
-        left: rem-calc(-11px);;
-        border-radius: 50%;
-      }
 
       &_info {
         padding-left: rem-calc(20px);
 
         p {
-          line-height: rem-calc(20px);
+          line-height: rem-calc(16px);
           margin-bottom: 0;
         }
 
         .identifier {
           font-size: rem-calc(18px);
+          line-height: rem-calc(20px);
           font-weight: $semibold;
 
           a {
@@ -98,12 +124,15 @@
 
       &.active {
         background-color: $white;
+
         .left-border-overlay {
           border-color: $white !important;
         }
 
-        .related-leases-item{
+        .related-leases-item {
           &_badge {
+            top: rem-calc(10px);
+            left: rem-calc(-8px);
             background-color: $black;
           }
         }
