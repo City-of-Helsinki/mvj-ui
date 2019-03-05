@@ -28,6 +28,7 @@ type Props = {
   isFetchingCommonAttributes: boolean,
   isOpen: boolean,
   leaseMethods: MethodsType,
+  leaseholdTransferMethods: MethodsType,
   onLinkClick: Function,
   rentBasisMethods: MethodsType,
 }
@@ -106,6 +107,7 @@ class SideMenu extends Component<Props, State> {
       isFetchingCommonAttributes,
       isOpen,
       leaseMethods,
+      leaseholdTransferMethods,
       rentBasisMethods,
     } = this.props;
     const {isClosing, isOpening} = this.state;
@@ -162,6 +164,9 @@ class SideMenu extends Component<Props, State> {
                   </Authorization>
                   <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.INFILL_DEVELOPMENTS)}>Täydennysrakentamiskorvaukset</Link></li>
+                  </Authorization>
+                  <Authorization allow={isMethodAllowed(leaseholdTransferMethods, Methods.GET)}>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.LEASEHOLD_TRANSFER)}>Vuokraoikeuden siirrot</Link></li>
                   </Authorization>
                   <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperusteet</Link></li>

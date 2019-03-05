@@ -15,6 +15,7 @@ import LandUseContractListPage from '$src/landUseContract/components/LandUseCont
 import LandUseContractPage from '$src/landUseContract/components/LandUseContractPage';
 import LeaseListPage from '$src/leases/components/LeaseListPage';
 import LeasePage from '$src/leases/components/LeasePage';
+import LeaseholdTransferListPage from '$src/leaseholdTransfer/components/LeaseholdTransferListPage';
 import NewContactPage from '$src/contacts/components/NewContactPage';
 import NewInfillDevelopmentPage from '$src/infillDevelopment/components/NewInfillDevelopmentPage';
 import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
@@ -31,6 +32,7 @@ export const Routes = {
   INFILL_DEVELOPMENT_NEW: 'infill_development_new',
   LAND_USE_CONTRACTS: 'land_use_contracts',
   LEASES: 'leases',
+  LEASEHOLD_TRANSFER: 'leasehold_transfer',
   LOGOUT: 'logout',
   RENT_BASIS: 'rent_basis',
   RENT_BASIS_NEW: 'rent_basis_new',
@@ -47,6 +49,7 @@ export const getRouteById = (id: string): string => {
     [Routes.INFILL_DEVELOPMENT_NEW]: '/uusitaydennysrakennuskorvaus',
     [Routes.LAND_USE_CONTRACTS]: '/maankayttosopimus',
     [Routes.LEASES]: '/vuokraukset',
+    [Routes.LEASEHOLD_TRANSFER]: '/vuokraoikeudensiirrot',
     [Routes.LOGOUT]: '/logout',
     [Routes.RENT_BASIS]: '/vuokrausperusteet',
     [Routes.RENT_BASIS_NEW]: '/uusivuokrausperuste',
@@ -71,6 +74,7 @@ export default
     <Route exact path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}`} component={InfillDevelopmentListPage} />
     <Route exact path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/:infillDevelopmentId`} component={InfillDevelopmentPage} />
     <Route exact path={getRouteById(Routes.INFILL_DEVELOPMENT_NEW)} component={NewInfillDevelopmentPage} />
+    <Route exact path={getRouteById(Routes.LEASEHOLD_TRANSFER)} component={LeaseholdTransferListPage} />
     <Route exact path={getRouteById(Routes.RENT_BASIS)} component={RentBasisListPage} />
     <Route exact path={`${getRouteById(Routes.RENT_BASIS)}/:rentBasisId`} component={RentBasisPage} />
     <Route exact path={getRouteById(Routes.RENT_BASIS_NEW)} component={NewRentBasisPage} />
