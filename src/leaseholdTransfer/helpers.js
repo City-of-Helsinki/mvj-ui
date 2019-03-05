@@ -15,11 +15,7 @@ export const mapLeaseholdTransferSearchFilters = (query: Object) => {
   const searchQuery = {...query};
 
   if(searchQuery.sort_key) {
-    if(searchQuery.sort_key === 'properties') {
-      searchQuery.ordering = ['institution_identifier'];
-    } else {
-      searchQuery.ordering = [searchQuery.sort_key];
-    }
+    searchQuery.ordering = [searchQuery.sort_key];
 
     if(searchQuery.sort_order === TableSortOrder.DESCENDING) {
       searchQuery.ordering = searchQuery.ordering.map((key) => `-${key}`);
@@ -49,6 +45,7 @@ export const getLeaseholdTransfers = (list: LeaseholdTransferList) =>
     .map((item) => {
       return {
         properties: item.properties,
+        institution_identifier: item.institution_identifier,
         decision_date: item.decision_date,
         acquirers: get(item, 'parties', []).filter((party) => party.type === LeaseholdTransferPartyTypes.ACQUIRER),
         conveyors: get(item, 'parties', []).filter((party) => party.type === LeaseholdTransferPartyTypes.CONVEYOR),

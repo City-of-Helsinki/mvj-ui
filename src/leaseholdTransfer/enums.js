@@ -23,6 +23,7 @@ export const LeaseholdTransferFieldPaths = {
   ACQUIRERS: 'acquirers',
   CONVEYORS: 'conveyors',
   DECISION_DATE: 'decision_date',
+  INSTITUTION_IDENTIFIER: 'institution_identifier',
   PARTIES: 'parties',
   PROPERTIES: 'properties',
 };
@@ -34,5 +35,6 @@ export const LeaseholdTransferFieldTitles = {
   ACQUIRERS: 'Uusi vuokralainen',
   CONVEYORS: 'Vanha vuokralainen',
   DECISION_DATE: 'Päätöspvm',
+  INSTITUTION_IDENTIFIER: 'Laitostunnus',
   PROPERTIES: 'Kohde',
 };

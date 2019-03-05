@@ -14,6 +14,7 @@ import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from '$src/leaseholdTransfer/components/search/Search';
 import SortableTable from '$components/table/SortableTable';
+import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
 import {fetchLeaseholdTransferList} from '$src/leaseholdTransfer/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -48,6 +49,13 @@ const getColumns = (leaseholdTransferAttributes: Attributes) => {
     columns.push({
       key: 'properties',
       text: LeaseholdTransferFieldTitles.PROPERTIES,
+      sortable: false,
+    });
+  }
+  if(isFieldAllowedToRead(leaseholdTransferAttributes, LeaseholdTransferFieldPaths.INSTITUTION_IDENTIFIER)) {
+    columns.push({
+      key: 'institution_identifier',
+      text: LeaseholdTransferFieldTitles.INSTITUTION_IDENTIFIER,
     });
   }
   if(isFieldAllowedToRead(leaseholdTransferAttributes, LeaseholdTransferFieldPaths.DECISION_DATE)) {
@@ -59,16 +67,16 @@ const getColumns = (leaseholdTransferAttributes: Attributes) => {
   }
   if(isFieldAllowedToRead(leaseholdTransferAttributes, LeaseholdTransferFieldPaths.PARTIES)) {
     columns.push({
-      key: 'acquirers',
-      text: LeaseholdTransferFieldTitles.ACQUIRERS,
+      key: 'conveyors',
+      text: LeaseholdTransferFieldTitles.CONVEYORS,
       renderer: (val) => val.name,
       sortable: false,
     });
   }
   if(isFieldAllowedToRead(leaseholdTransferAttributes, LeaseholdTransferFieldPaths.PARTIES)) {
     columns.push({
-      key: 'conveyors',
-      text: LeaseholdTransferFieldTitles.CONVEYORS,
+      key: 'acquirers',
+      text: LeaseholdTransferFieldTitles.ACQUIRERS,
       renderer: (val) => val.name,
       sortable: false,
     });
@@ -186,8 +194,6 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     if(currentSearch !== prevSearch) {
       this.search();
 
-      delete searchQuery.page;
-
       if(!Object.keys(searchQuery).length) {
         const setSearchFormReady = () => {
           this.setState({isSearchInitialized: true});
@@ -198,6 +204,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
         };
 
         this.setState({
+          activePage: 1,
           isSearchInitialized: false,
           sortKey: 'decision_date',
           sortOrder: TableSortOrder.DESCENDING,
@@ -279,6 +286,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     const {
       activePage,
       columns,
+      count,
       isSearchInitialized,
       leaseholdTransfers,
       maxPage,
@@ -302,6 +310,16 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
               onSearch={this.handleSearchChange}
               sortKey={sortKey}
               sortOrder={sortOrder}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column small={12} medium={6}></Column>
+          <Column small={12} medium={6}>
+            <TableFilters
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              filterOptions={[]}
+              filterValue={[]}
             />
           </Column>
         </Row>

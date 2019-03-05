@@ -13,6 +13,7 @@ import {FormNames} from '$src/contacts/enums';
 
 type Props = {
   formValues: Object,
+  initialize: Function,
   isSearchInitialized: boolean,
   onSearch: Function,
   sortKey: ?string,
@@ -49,11 +50,11 @@ class Search extends PureComponent<Props> {
       newValues.sort_order = sortOrder;
     }
 
-    onSearch(newValues);
+    onSearch(newValues, true);
   }, 500);
 
   handleClear = () => {
-    const {onSearch, sortKey, sortOrder} = this.props;
+    const {initialize, onSearch, sortKey, sortOrder} = this.props;
     const query = {};
 
     if(sortKey || sortOrder) {
@@ -61,7 +62,8 @@ class Search extends PureComponent<Props> {
       query.sort_order = sortOrder;
     }
 
-    onSearch(query);
+    initialize({});
+    onSearch(query, true);
   }
 
   handleClearKeyDown = (e: any) => {
