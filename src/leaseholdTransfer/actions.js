@@ -7,6 +7,10 @@ import type {
   ReceiveAttributesAction,
   ReceiveMethodsAction,
   AttributesNotFoundAction,
+  LeaseholdTransferList,
+  FetchLeaseholdTransferListAction,
+  ReceiveLeaseholdTransferListAction,
+  NotFoundAction,
 } from '$src/leaseholdTransfer/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -20,3 +24,12 @@ export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
 
 export const attributesNotFound = (): AttributesNotFoundAction =>
   createAction('mvj/leaseholdTransfer/ATTRIBUTES_NOT_FOUND')();
+
+export const fetchLeaseholdTransferList = (query?: Object): FetchLeaseholdTransferListAction =>
+  createAction('mvj/leaseholdTransfer/FETCH')(query);
+
+export const receiveLeaseholdTransferList = (list: LeaseholdTransferList): ReceiveLeaseholdTransferListAction =>
+  createAction('mvj/leaseholdTransfer/RECEIVE')(list);
+
+export const notFound = (): NotFoundAction =>
+  createAction('mvj/leaseholdTransfer/NOT_FOUND')();
