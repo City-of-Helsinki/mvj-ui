@@ -9,7 +9,7 @@ import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
 import {FieldTypes} from '$components/enums';
-import {FormNames} from '$src/contacts/enums';
+import {FormNames} from '$src/leaseholdTransfer/enums';
 
 type Props = {
   formValues: Object,
@@ -61,7 +61,6 @@ class Search extends PureComponent<Props> {
       query.sort_key = sortKey;
       query.sort_order = sortOrder;
     }
-
     initialize({});
     onSearch(query, true);
   }

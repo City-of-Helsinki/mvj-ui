@@ -20,6 +20,7 @@ import type {InvoiceSetState} from '$src/invoiceSets/types';
 import type {LandUseContractState} from '$src/landUseContract/types';
 import type {LeaseState} from '$src/leases/types';
 import type {LeaseCreateChargeState} from '$src/leaseCreateCharge/types';
+import type {LeaseholdTransferState} from '$src/leaseholdTransfer/types';
 import type {LeaseTypeState} from '$src/leaseType/types';
 import type {LessorState} from '$src/lessor/types';
 import type {MapDataState} from '$src/mapData/types';
@@ -55,6 +56,7 @@ export type RootState = {
   landUseContract: LandUseContractState,
   lease: LeaseState,
   leaseCreateCharge: LeaseCreateChargeState,
+  leaseholdTransfer: LeaseholdTransferState,
   leaseType: LeaseTypeState,
   lessor: LessorState,
   mapData: MapDataState,

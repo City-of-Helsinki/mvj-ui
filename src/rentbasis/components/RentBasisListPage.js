@@ -103,7 +103,7 @@ class RentBasisListPage extends Component<Props, State> {
 
     this.setState(newState);
 
-    const setSearchFormReadyFlag = () => {
+    const setSearchFormReady = () => {
       this.setState({isSearchInitialized: true});
     };
 
@@ -117,7 +117,7 @@ class RentBasisListPage extends Component<Props, State> {
 
         await initialize(FormNames.SEARCH, searchQuery);
 
-        setSearchFormReadyFlag();
+        setSearchFormReady();
       } catch(e) {
         console.error(`Failed to initialize search form with error, ${e}`);
       }
@@ -129,36 +129,40 @@ class RentBasisListPage extends Component<Props, State> {
   componentDidUpdate(prevProps) {
     const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
-    const {activePage} = this.state;
 
     const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
       this.search();
 
-      delete searchQuery.page;
-
       if(!Object.keys(searchQuery).length) {
+        const setSearchFormReady = () => {
+          this.setState({isSearchInitialized: true});
+        };
+
+        const clearSearchForm = async() => {
+          await initialize(FormNames.SEARCH, {});
+        };
+
         this.setState({
+          activePage: 1,
+          isSearchInitialized: false,
           sortKey: 'start_date',
           sortOrder: TableSortOrder.DESCENDING,
+        }, async() => {
+          await clearSearchForm();
+          setSearchFormReady();
         });
-
-        initialize(FormNames.SEARCH, {});
       }
-    }
-
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
-    if(page !== activePage) {
-      this.setState({activePage: page});
     }
   }
 
-  handleSearchChange = (query) => {
+  handleSearchChange = (query, resetActivePage?: boolean = false) => {
     const {history} = this.props;
 
-    this.setState({activePage: 1});
+    if(resetActivePage) {
+      this.setState({activePage: 1});
+    }
 
     return history.push({
       pathname: getRouteById(Routes.RENT_BASIS),
@@ -298,7 +302,6 @@ class RentBasisListPage extends Component<Props, State> {
 
     this.handleSearchChange(searchQuery);
   }
-
 
   render() {
     const {

@@ -106,7 +106,7 @@ class Search extends PureComponent<Props, State> {
       newValues.lease_state = states;
     }
 
-    onSearch(newValues);
+    onSearch(newValues, true);
   }, 500);
 
   toggleSearchType = () => {
@@ -131,8 +131,8 @@ class Search extends PureComponent<Props, State> {
         newFormValues.sort_order = sortOrder;
       }
 
-      onSearch(newFormValues);
       initialize(newFormValues);
+      onSearch(newFormValues, true);
     }
   }
 
@@ -144,7 +144,7 @@ class Search extends PureComponent<Props, State> {
   }
 
   handleClear = () => {
-    const {onSearch, sortKey, sortOrder} = this.props;
+    const {initialize, onSearch, sortKey, sortOrder} = this.props;
     const query = {};
 
     if(sortKey || sortOrder) {
@@ -152,7 +152,8 @@ class Search extends PureComponent<Props, State> {
       query.sort_order = sortOrder;
     }
 
-    onSearch(query);
+    initialize({});
+    onSearch(query, true, true);
   }
 
   handleClearKeyDown = (e: any) => {

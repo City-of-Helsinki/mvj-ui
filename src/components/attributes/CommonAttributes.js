@@ -9,6 +9,7 @@ import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchAttributes as fetchIndexAttributes} from '$src/index/actions';
 import {fetchAttributes as fetchInfillDevelopmentAttributes} from '$src/infillDevelopment/actions';
 import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
+import {fetchAttributes as fetchLeaseholdTransferAttributes} from '$src/leaseholdTransfer/actions';
 import {fetchAttributes as fetchRentBasisAttributes} from '$src/rentbasis/actions';
 import {fetchAttributes as fetchUiDataAttributes} from '$src/uiData/actions';
 import {fetchUsersPermissions} from '$src/usersPermissions/actions';
@@ -38,6 +39,11 @@ import {
   getMethods as getLeaseMethods,
 } from '$src/leases/selectors';
 import {
+  getAttributes as getLeaseholdTransferAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseholdTransferAttributes,
+  getMethods as getLeaseholdTransferMethods,
+} from '$src/leaseholdTransfer/selectors';
+import {
   getAttributes as getRentBasisAttributes,
   getIsFetchingAttributes as getIsFetchingRentBasisAttributes,
   getMethods as getRentBasisMethods,
@@ -66,6 +72,7 @@ function CommonAttributes(WrappedComponent: any) {
     fetchIndexAttributes: Function,
     fetchInfillDevelopmentAttributes: Function,
     fetchLeaseAttributes: Function,
+    fetchLeaseholdTransferAttributes: Function,
     fetchRentBasisAttributes: Function,
     fetchUiDataAttributes: Function,
     fetchUsersPermissions: Function,
@@ -78,11 +85,14 @@ function CommonAttributes(WrappedComponent: any) {
     isFetchingIndexAttributes: boolean,
     isFetchingInfillDevelopmentAttributes: boolean,
     isFetchingLeaseAttributes: boolean,
+    isFetchingLeaseholdTransferAttributes: boolean,
     isFetchingRentBasisAttributes: boolean,
     isFetchingUiDataAttributes: boolean,
     isFetchingUsersPermissions: boolean,
     leaseAttributes: Attributes,
     leaseMethods: Methods,
+    leaseholdTransferAttributes: Attributes,
+    leaseholdTransferMethods: Methods,
     rentBasisAttributes: Attributes,
     rentBasisMethods: Methods,
     uiDataAttributes: Attributes,
@@ -108,6 +118,7 @@ function CommonAttributes(WrappedComponent: any) {
         fetchIndexAttributes,
         fetchInfillDevelopmentAttributes,
         fetchLeaseAttributes,
+        fetchLeaseholdTransferAttributes,
         fetchRentBasisAttributes,
         fetchUiDataAttributes,
         fetchUsersPermissions,
@@ -118,10 +129,13 @@ function CommonAttributes(WrappedComponent: any) {
         isFetchingIndexAttributes,
         isFetchingInfillDevelopmentAttributes,
         isFetchingLeaseAttributes,
+        isFetchingLeaseholdTransferAttributes,
         isFetchingRentBasisAttributes,
         isFetchingUiDataAttributes,
         isFetchingUsersPermissions,
         leaseMethods,
+        leaseholdTransferAttributes,
+        leaseholdTransferMethods,
         rentBasisMethods,
         uiDataMethods,
         usersPermissions,
@@ -151,6 +165,10 @@ function CommonAttributes(WrappedComponent: any) {
         fetchLeaseAttributes();
       }
 
+      if(!isFetchingLeaseholdTransferAttributes && !leaseholdTransferAttributes && !leaseholdTransferMethods) {
+        fetchLeaseholdTransferAttributes();
+      }
+
       if(!isFetchingRentBasisAttributes && !rentBasisMethods) {
         fetchRentBasisAttributes();
       }
@@ -166,6 +184,7 @@ function CommonAttributes(WrappedComponent: any) {
         this.props.isFetchingIndexAttributes !== prevProps.isFetchingIndexAttributes ||
         this.props.isFetchingInfillDevelopmentAttributes !== prevProps.isFetchingInfillDevelopmentAttributes ||
         this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes ||
+        this.props.isFetchingLeaseholdTransferAttributes !== prevProps.isFetchingLeaseholdTransferAttributes ||
         this.props.isFetchingRentBasisAttributes !== prevProps.isFetchingRentBasisAttributes ||
         this.props.isFetchingUiDataAttributes !== prevProps.isFetchingUiDataAttributes ||
         this.props.isFetchingUsersPermissions !== prevProps.isFetchingUsersPermissions) {
@@ -180,6 +199,7 @@ function CommonAttributes(WrappedComponent: any) {
         isFetchingIndexAttributes,
         isFetchingInfillDevelopmentAttributes,
         isFetchingLeaseAttributes,
+        isFetchingLeaseholdTransferAttributes,
         isFetchingRentBasisAttributes,
         isFetchingUiDataAttributes,
         isFetchingUsersPermissions,
@@ -189,6 +209,7 @@ function CommonAttributes(WrappedComponent: any) {
         isFetchingIndexAttributes ||
         isFetchingInfillDevelopmentAttributes ||
         isFetchingLeaseAttributes ||
+        isFetchingLeaseholdTransferAttributes ||
         isFetchingRentBasisAttributes ||
         isFetchingUiDataAttributes ||
         isFetchingUsersPermissions;
@@ -220,11 +241,14 @@ const withCommonAttributes = flowRight(
         isFetchingIndexAttributes: getIsFetchingIndexAttributes(state),
         isFetchingInfillDevelopmentAttributes: getIsFetchingInfillDevelopmentAttributes(state),
         isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
+        isFetchingLeaseholdTransferAttributes: getIsFetchingLeaseholdTransferAttributes(state),
         isFetchingRentBasisAttributes: getIsFetchingRentBasisAttributes(state),
         isFetchingUiDataAttributes: getIsFetchingUiDataAttributes(state),
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         leaseAttributes: getLeaseAttributes(state),
         leaseMethods: getLeaseMethods(state),
+        leaseholdTransferAttributes: getLeaseholdTransferAttributes(state),
+        leaseholdTransferMethods: getLeaseholdTransferMethods(state),
         rentBasisAttributes: getRentBasisAttributes(state),
         rentBasisMethods: getRentBasisMethods(state),
         uiDataAttributes: getUiDataAttributes(state),
@@ -238,6 +262,7 @@ const withCommonAttributes = flowRight(
       fetchIndexAttributes,
       fetchInfillDevelopmentAttributes,
       fetchLeaseAttributes,
+      fetchLeaseholdTransferAttributes,
       fetchRentBasisAttributes,
       fetchUiDataAttributes,
       fetchUsersPermissions,

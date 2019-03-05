@@ -61,6 +61,7 @@ export const PermissionMissingTexts = {
   INDEX: 'Ei oikeksia elinkustannusindekseihin',
   INFILL_DEVELOPMENT: 'Ei oikeksia täydennysrakennuskorvauksiin',
   LEASE: 'Ei oikeuksia vuokrauksiin.',
+  LEASEHOLD_TRANSFER: 'Ei oikeuksia vuokraoikeuden siirtoihin',
   LEASE_TENANTS_EDIT: 'Ei oikeuksia muokata vuokralaisia',
   RENT_BASIS: 'Ei oikeuksia vuokrausperusteisiin.',
 };

@@ -135,7 +135,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     this.setState(newState);
 
-    const setSearchFormReadyFlag = () => {
+    const setSearchFormReady = () => {
       this.setState({isSearchInitialized: true});
     };
 
@@ -149,7 +149,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
         delete searchQuery.sort_order;
 
         await initialize(FormNames.SEARCH, searchQuery);
-        setSearchFormReadyFlag();
+        setSearchFormReady();
       } catch(e) {
         console.error(`Failed to initialize search form with error, ${e}`);
       }
@@ -179,31 +179,32 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   componentDidUpdate = (prevProps) => {
     const {location: {search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
-    const {activePage} = this.state;
     const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
       this.search();
 
-      delete searchQuery.page;
-
       if(!Object.keys(searchQuery).length) {
+        const setSearchFormReady = () => {
+          this.setState({isSearchInitialized: true});
+        };
+
+        const clearSearchForm = async() => {
+          await initialize(FormNames.SEARCH, {});
+        };
+
         this.setState({
+          activePage: 1,
+          isSearchInitialized: false,
           selectedStates: [],
           sortKey: 'name',
           sortOrder: TableSortOrder.ASCENDING,
+        }, async() => {
+          await clearSearchForm();
+          setSearchFormReady();
         });
-
-        initialize(FormNames.SEARCH, {});
       }
     }
-
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
-    if(page !== activePage) {
-      this.setState({activePage: page});
-    }
-
   }
 
   handleCreateButtonClick = () => {
@@ -217,11 +218,16 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     });
   }
 
-  handleSearchChange = (query: Object) => {
+  handleSearchChange = (query: Object, resetActivePage?: boolean = false, resetFilters?: boolean = false) => {
     const {history} = this.props;
 
-    this.setState({activePage: 1});
-    delete query.page;
+    if(resetActivePage) {
+      this.setState({activePage: 1});
+    }
+
+    if(resetFilters) {
+      this.setState({selectedStates: []});
+    }
 
     return history.push({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
@@ -281,7 +287,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     this.setState({selectedStates: states});
 
-    this.handleSearchChange(searchQuery);
+    this.handleSearchChange(searchQuery, true);
   }
 
   handleSortingChange = ({sortKey, sortOrder}) => {
@@ -298,7 +304,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     this.handleSearchChange(searchQuery);
   }
-
 
   getColumns = () => {
     const {infillDevelopmentAttributes, stateOptions} = this.state;

@@ -184,28 +184,30 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {location: {search: currentSearch}, initialize} = this.props;
     const searchQuery = getUrlParams(currentSearch);
     const {location: {search: prevSearch}} = prevProps;
-    const {activePage} = this.state;
 
     if(currentSearch !== prevSearch) {
       this.search();
 
-      delete searchQuery.page;
-
       if(!Object.keys(searchQuery).length) {
+        const setSearchFormReady = () => {
+          this.setState({isSearchInitialized: true});
+        };
+
+        const clearSearchForm = async() => {
+          await initialize(FormNames.SEARCH, {});
+        };
+
         this.setState({
+          activePage: 1,
+          isSearchInitialized: false,
           leaseStates: [],
           sortKey: 'identifier',
           sortOrder: TableSortOrder.ASCENDING,
+        }, async() => {
+          await clearSearchForm();
+          setSearchFormReady();
         });
-        
-        initialize(FormNames.SEARCH, {});
       }
-    }
-
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
-    if(page !== activePage) {
-      this.setState({activePage: page});
     }
   }
 
@@ -232,10 +234,16 @@ class LeaseListPage extends PureComponent<Props, State> {
     fetchLeases(mapLeaseSearchFilters(searchQuery));
   }
 
-  handleSearchChange = (query) => {
+  handleSearchChange = (query, resetActivePage?: boolean = false, resetFilters?: boolean = false) => {
     const {history} = this.props;
 
-    this.setState({activePage: 1});
+    if(resetActivePage) {
+      this.setState({activePage: 1});
+    }
+
+    if(resetFilters) {
+      this.setState({leaseStates: []});
+    }
 
     return history.push({
       pathname: getRouteById(Routes.LEASES),
@@ -345,7 +353,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     this.setState({leaseStates: values});
 
-    this.handleSearchChange(searchQuery);
+    this.handleSearchChange(searchQuery, true);
   }
 
   handleVisualizationTypeChange = (value: string) => {
