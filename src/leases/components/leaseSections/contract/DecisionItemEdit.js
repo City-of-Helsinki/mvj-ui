@@ -125,6 +125,9 @@ const DecisionItemEdit = ({
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.TYPE)}>
             {savedDecision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, savedDecision.type)}</span> : ''}
           </Authorization>
+          {!!savedDecision.conditions && !!savedDecision.conditions.length &&
+            ` (${savedDecision.conditions.length} ${savedDecision.conditions.length === 1 ? 'ehto' : 'ehtoa'})`
+          }
         </Fragment>
         : '-'
       }

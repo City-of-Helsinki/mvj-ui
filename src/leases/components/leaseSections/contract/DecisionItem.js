@@ -91,6 +91,9 @@ const DecisionItem = ({
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.TYPE)}>
           {decision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}</span> : ''}
         </Authorization>
+        {!!decision.conditions && !!decision.conditions.length &&
+          ` (${decision.conditions.length} ${decision.conditions.length === 1 ? 'ehto' : 'ehtoa'})`
+        }
       </Fragment>}
       onToggle={handleDecisionCollapseToggle}
     >
