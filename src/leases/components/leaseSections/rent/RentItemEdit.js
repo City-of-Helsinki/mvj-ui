@@ -424,7 +424,7 @@ class RentItemEdit extends PureComponent<Props, State> {
               className='collapse__secondary'
               defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
               hasErrors={isSaveClicked && !isEmpty(rentAdjustmentsErrors)}
-              headerTitle={`${LeaseRentAdjustmentsFieldTitles.RENT_ADJUSTMENTS} (${rentAdjustments.length})`}
+              headerTitle={`${LeaseRentAdjustmentsFieldTitles.RENT_ADJUSTMENTS} (${rentAdjustments ? rentAdjustments.length : 0})`}
               onToggle={this.handleRentAdjustmentsCollapseToggle}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS)}
