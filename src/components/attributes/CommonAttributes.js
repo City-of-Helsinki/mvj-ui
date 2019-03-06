@@ -8,6 +8,7 @@ import {fetchAttributes as fetchAreaNoteAttributes} from '$src/areaNote/actions'
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchAttributes as fetchIndexAttributes} from '$src/index/actions';
 import {fetchAttributes as fetchInfillDevelopmentAttributes} from '$src/infillDevelopment/actions';
+import {fetchAttributes as fetchInvoiceAttributes} from '$src/invoices/actions';
 import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
 import {fetchAttributes as fetchLeaseholdTransferAttributes} from '$src/leaseholdTransfer/actions';
 import {fetchAttributes as fetchRentBasisAttributes} from '$src/rentbasis/actions';
@@ -33,6 +34,11 @@ import {
   getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttributes,
   getMethods as getInfillDevelopmentMethods,
 } from '$src/infillDevelopment/selectors';
+import {
+  getAttributes as getInvoiceAttributes,
+  getIsFetchingAttributes as getIsFetchingInvoiceAttributes,
+  getMethods as getInvoiceMethods,
+} from '$src/invoices/selectors';
 import {
   getAttributes as getLeaseAttributes,
   getIsFetchingAttributes as getIsFetchingLeaseAttributes,
@@ -71,6 +77,7 @@ function CommonAttributes(WrappedComponent: any) {
     fetchContactAttributes: Function,
     fetchIndexAttributes: Function,
     fetchInfillDevelopmentAttributes: Function,
+    fetchInvoiceAttributes: Function,
     fetchLeaseAttributes: Function,
     fetchLeaseholdTransferAttributes: Function,
     fetchRentBasisAttributes: Function,
@@ -80,10 +87,13 @@ function CommonAttributes(WrappedComponent: any) {
     indexMethods: Methods,
     infillDevelopmentAttributes: Attributes,
     infillDevelopmentMethods: Methods,
+    invoiceAttributes: Attributes,
+    invoiceMethods: Methods,
     isFetchingAreaNoteAttributes: boolean,
     isFetchingContactAttributes: boolean,
     isFetchingIndexAttributes: boolean,
     isFetchingInfillDevelopmentAttributes: boolean,
+    isFetchingInvoiceAttributes: boolean,
     isFetchingLeaseAttributes: boolean,
     isFetchingLeaseholdTransferAttributes: boolean,
     isFetchingRentBasisAttributes: boolean,
@@ -117,6 +127,7 @@ function CommonAttributes(WrappedComponent: any) {
         fetchContactAttributes,
         fetchIndexAttributes,
         fetchInfillDevelopmentAttributes,
+        fetchInvoiceAttributes,
         fetchLeaseAttributes,
         fetchLeaseholdTransferAttributes,
         fetchRentBasisAttributes,
@@ -124,10 +135,13 @@ function CommonAttributes(WrappedComponent: any) {
         fetchUsersPermissions,
         indexMethods,
         infillDevelopmentMethods,
+        invoiceAttributes,
+        invoiceMethods,
         isFetchingAreaNoteAttributes,
         isFetchingContactAttributes,
         isFetchingIndexAttributes,
         isFetchingInfillDevelopmentAttributes,
+        isFetchingInvoiceAttributes,
         isFetchingLeaseAttributes,
         isFetchingLeaseholdTransferAttributes,
         isFetchingRentBasisAttributes,
@@ -161,6 +175,10 @@ function CommonAttributes(WrappedComponent: any) {
         fetchInfillDevelopmentAttributes();
       }
 
+      if(!isFetchingInvoiceAttributes && !invoiceMethods && !invoiceAttributes) {
+        fetchInvoiceAttributes();
+      }
+
       if(!isFetchingLeaseAttributes && !leaseMethods) {
         fetchLeaseAttributes();
       }
@@ -183,6 +201,7 @@ function CommonAttributes(WrappedComponent: any) {
         this.props.isFetchingContactAttributes !== prevProps.isFetchingContactAttributes ||
         this.props.isFetchingIndexAttributes !== prevProps.isFetchingIndexAttributes ||
         this.props.isFetchingInfillDevelopmentAttributes !== prevProps.isFetchingInfillDevelopmentAttributes ||
+        this.props.isFetchingInvoiceAttributes !== prevProps.isFetchingInvoiceAttributes ||
         this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes ||
         this.props.isFetchingLeaseholdTransferAttributes !== prevProps.isFetchingLeaseholdTransferAttributes ||
         this.props.isFetchingRentBasisAttributes !== prevProps.isFetchingRentBasisAttributes ||
@@ -198,6 +217,7 @@ function CommonAttributes(WrappedComponent: any) {
         isFetchingContactAttributes,
         isFetchingIndexAttributes,
         isFetchingInfillDevelopmentAttributes,
+        isFetchingInvoiceAttributes,
         isFetchingLeaseAttributes,
         isFetchingLeaseholdTransferAttributes,
         isFetchingRentBasisAttributes,
@@ -208,6 +228,7 @@ function CommonAttributes(WrappedComponent: any) {
         isFetchingContactAttributes ||
         isFetchingIndexAttributes ||
         isFetchingInfillDevelopmentAttributes ||
+        isFetchingInvoiceAttributes ||
         isFetchingLeaseAttributes ||
         isFetchingLeaseholdTransferAttributes ||
         isFetchingRentBasisAttributes ||
@@ -236,10 +257,13 @@ const withCommonAttributes = flowRight(
         indexMethods: getIndexMethods(state),
         infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
         infillDevelopmentMethods: getInfillDevelopmentMethods(state),
+        invoiceAttributes: getInvoiceAttributes(state),
+        invoiceMethods: getInvoiceMethods(state),
         isFetchingAreaNoteAttributes: getIsFetchingAreaNoteAttributes(state),
         isFetchingContactAttributes: getIsFetchingContactAttributes(state),
         isFetchingIndexAttributes: getIsFetchingIndexAttributes(state),
         isFetchingInfillDevelopmentAttributes: getIsFetchingInfillDevelopmentAttributes(state),
+        isFetchingInvoiceAttributes: getIsFetchingInvoiceAttributes(state),
         isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
         isFetchingLeaseholdTransferAttributes: getIsFetchingLeaseholdTransferAttributes(state),
         isFetchingRentBasisAttributes: getIsFetchingRentBasisAttributes(state),
@@ -261,6 +285,7 @@ const withCommonAttributes = flowRight(
       fetchContactAttributes,
       fetchIndexAttributes,
       fetchInfillDevelopmentAttributes,
+      fetchInvoiceAttributes,
       fetchLeaseAttributes,
       fetchLeaseholdTransferAttributes,
       fetchRentBasisAttributes,

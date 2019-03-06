@@ -14,6 +14,6 @@ export const getMethods: Selector<Methods, void> = (state: RootState): Methods =
 
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.leaseholdTransfer.isFetching;
-  
-export const getLeaseholdTransferList: Selector<LeaseholdTransferList, void> = (state: RootState): Methods =>
+
+export const getLeaseholdTransferList: Selector<LeaseholdTransferList, void> = (state: RootState): LeaseholdTransferList =>
   state.leaseholdTransfer.list;

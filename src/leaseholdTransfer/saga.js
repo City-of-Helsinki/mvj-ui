@@ -60,7 +60,7 @@ export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leaseholdTransfer/FETCH_ATTRIBUTES', fetchAttributesSaga);
-      yield takeLatest('mvj/leaseholdTransfer/FETCH', fetchLeaseholdTransferListSaga);
+      yield takeLatest('mvj/leaseholdTransfer/FETCH_ALL', fetchLeaseholdTransferListSaga);
     }),
   ]);
 }

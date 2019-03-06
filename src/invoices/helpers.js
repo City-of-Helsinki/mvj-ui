@@ -43,7 +43,7 @@ const getContentIncoiceRows = (invoice: Object) => {
  * @param rows
  * @returns {object}
  */
-const getContentInvoiceReceivableTypes = (rows: Array<Object>) => {
+export const getContentInvoiceReceivableTypes = (rows: Array<Object>) => {
   const receivableTypes = [];
 
   rows.forEach((row) => {

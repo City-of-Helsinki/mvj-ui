@@ -9,8 +9,8 @@ export const fetchAttributes = () => {
   return callApi(new Request(createUrl('invoice/'), {method: 'OPTIONS'}));
 };
 
-export const fetchInvoices = (search: string): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`invoice/${search || ''}`)));
+export const fetchInvoices = (params: ?Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('invoice/', params)));
 };
 
 export const createInvoice = (invoice: Invoice): Generator<any, any, any> => {

@@ -26,10 +26,10 @@ export const attributesNotFound = (): AttributesNotFoundAction =>
   createAction('mvj/leaseholdTransfer/ATTRIBUTES_NOT_FOUND')();
 
 export const fetchLeaseholdTransferList = (query?: Object): FetchLeaseholdTransferListAction =>
-  createAction('mvj/leaseholdTransfer/FETCH')(query);
+  createAction('mvj/leaseholdTransfer/FETCH_ALL')(query);
 
 export const receiveLeaseholdTransferList = (list: LeaseholdTransferList): ReceiveLeaseholdTransferListAction =>
-  createAction('mvj/leaseholdTransfer/RECEIVE')(list);
+  createAction('mvj/leaseholdTransfer/RECEIVE_ALL')(list);
 
 export const notFound = (): NotFoundAction =>
   createAction('mvj/leaseholdTransfer/NOT_FOUND')();

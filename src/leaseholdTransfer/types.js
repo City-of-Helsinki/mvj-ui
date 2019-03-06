@@ -16,6 +16,6 @@ export type ReceiveAttributesAction = Action<'mvj/leaseholdTransfer/RECEIVE_ATTR
 export type ReceiveMethodsAction = Action<'mvj/leaseholdTransfer/RECEIVE_METHODS', Methods>;
 export type AttributesNotFoundAction = Action<'mvj/leaseholdTransfer/ATTRIBUTES_NOT_FOUND', void>;
 
-export type FetchLeaseholdTransferListAction = Action<'mvj/leaseholdTransfer/FETCH', ?Object>;
-export type ReceiveLeaseholdTransferListAction = Action<'mvj/leaseholdTransfer/RECEIVE', LeaseholdTransferList>;
+export type FetchLeaseholdTransferListAction = Action<'mvj/leaseholdTransfer/FETCH_ALL', ?Object>;
+export type ReceiveLeaseholdTransferListAction = Action<'mvj/leaseholdTransfer/RECEIVE_ALL', LeaseholdTransferList>;
 export type NotFoundAction = Action<'mvj/leaseholdTransfer/NOT_FOUND', void>;
