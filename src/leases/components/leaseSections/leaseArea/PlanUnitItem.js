@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
+import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles} from '$src/leases/enums';
@@ -24,6 +25,7 @@ import {
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
+import {createPaikkatietovipunenUrl} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
 
@@ -103,7 +105,13 @@ const PlanUnitItem = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
               {LeasePlanUnitsFieldTitles.DETAILED_PLAN_IDENTIFIER}
             </FormTextTitle>
-            <FormText>{planUnit.detailed_plan_identifier || '-'}</FormText>
+            {planUnit.detailed_plan_identifier
+              ? <ExternalLink
+                href={createPaikkatietovipunenUrl(`helreport/planpdfloader.asp?id=${planUnit.detailed_plan_identifier}.pdf`)}
+                text={planUnit.detailed_plan_identifier}
+              />
+              : <FormText>-</FormText>
+            }
           </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
@@ -131,7 +139,13 @@ const PlanUnitItem = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER)}>
               {LeasePlanUnitsFieldTitles.PLOT_DIVISION_IDENTIFIER}
             </FormTextTitle>
-            <FormText>{planUnit.plot_division_identifier || '-'}</FormText>
+            {planUnit.plot_division_identifier
+              ? <ExternalLink
+                href={createPaikkatietovipunenUrl(`tonttijaot/Tonttijaot_PDF/tj${planUnit.plot_division_identifier}.pdf`)}
+                text={planUnit.plot_division_identifier}
+              />
+              : <FormText>-</FormText>
+            }
           </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>

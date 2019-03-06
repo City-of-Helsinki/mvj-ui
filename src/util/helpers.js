@@ -11,6 +11,7 @@ import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
 import Fraction from 'fraction.js';
 
+import {PAIKKATIETOVIPUNEN_URL} from '$src/constants';
 import ToastrIcons from '$components/toastr/ToastrIcons';
 import {Breakpoints} from '$src/foundation/enums';
 
@@ -611,3 +612,10 @@ export const findFromOcdString = (ocd: string, key: string) => {
     ? property[1]
     : null;
 };
+
+/**
+  * Create url that is shown for links to paikkatietovipunen
+  * @param {string} url
+  * @returns {string}
+  */
+export const createPaikkatietovipunenUrl = (url: string) => `${PAIKKATIETOVIPUNEN_URL}/${url}`;

@@ -98,6 +98,11 @@ export const mapColors = [
 ];
 
 /**
+ * Url of the paikkatietovipunen
+ */
+export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen:10058';
+
+/**
  * Maximum number of results per page on list tables
  */
 export const LIST_TABLE_PAGE_SIZE = 25;
