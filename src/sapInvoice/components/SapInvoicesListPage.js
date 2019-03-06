@@ -219,6 +219,10 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     fetchSapInvoices(mapSapInvoiceSearchFilters(searchQuery));
   }
 
+  handleRowClick = (id, row) => {
+    window.open(`${getRouteById(Routes.LEASES)}/${row.lease}?tab=6&opened_invoice=${id}`, '_blank');
+  };
+
   handleSearchChange = (query: any) => {
     const {history} = this.props;
 
@@ -296,6 +300,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
             columns={columns}
             data={sapInvoices}
             listTable
+            onRowClick={this.handleRowClick}
             onSortingChange={this.handleSortingChange}
             serverSideSorting
             sortable

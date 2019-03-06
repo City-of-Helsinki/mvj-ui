@@ -1,9 +1,11 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import ReactResizeDetector from 'react-resize-detector';
 import scrollToComponent from 'react-scroll-to-component';
+import flowRight from 'lodash/flowRight';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
 import InvoicePanel from './InvoicePanel';
@@ -33,6 +35,7 @@ import {
   formatNumber,
   getFieldOptions,
   getLabelOfOption,
+  getUrlParams,
   hasPermissions,
   isFieldAllowedToRead,
   sortNumberByKeyAsc,
@@ -65,6 +68,7 @@ type Props = {
   invoiceAttributes: Attributes,
   invoiceToCredit: ?Object,
   invoiceSets: Array<Object>,
+  location: Object,
   onInvoiceToCreditChange: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
@@ -73,6 +77,7 @@ type Props = {
 
 type State = {
   columns: Array<Object>,
+  defaultInvoiceDisplayed: boolean,
   formatedInvoices: Array<Object>,
   invoices: InvoiceList | null,
   invoiceAttributes: Attributes,
@@ -101,6 +106,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 
   state = {
     columns: [],
+    defaultInvoiceDisplayed: false,
     formatedInvoices: [],
     invoices: null,
     invoiceAttributes: null,
@@ -130,8 +136,27 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     const newState = {};
 
     if(props.invoices !== state.invoices) {
+      const formatedInvoices = getContentInvoices(props.invoices);
       newState.invoices = props.invoices;
-      newState.formatedInvoices = getContentInvoices(props.invoices);
+      newState.formatedInvoices = formatedInvoices;
+
+      if(!state.defaultInvoiceDisplayed) {
+        const {location: {search}} = props;
+        const query = getUrlParams(search);
+
+        if(query.opened_invoice) {
+          const invoice = formatedInvoices
+            ? formatedInvoices.find((invoice) => invoice.id = query.opened_invoice)
+            : null;
+
+          if(invoice) {
+            newState.openedInvoice = invoice;
+            newState.defaultInvoiceDisplayed = true;
+          }
+        } else {
+          newState.defaultInvoiceDisplayed = true;
+        }
+      }
     }
     if(props.invoiceSets !== state.invoiceSets) {
       newState.invoiceSets = props.invoiceSets;
@@ -171,6 +196,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
       this.scrollToOpenedRow();
       this.calculateTableHeight();
       this.calculateTableWidth();
+      this.scrolToPanel();
+      this.initilizeEditInvoiceForm(this.state.openedInvoice);
     }
 
     if(this.props.patchedInvoice) {
@@ -532,9 +559,6 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     this.setState({
       openedInvoice: row,
     });
-
-    this.scrolToPanel();
-    this.initilizeEditInvoiceForm(row);
   }
 
   handleSelectRow = (row: Object) => {
@@ -628,22 +652,25 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 }
 
 
-export default connect(
-  (state) => {
-    const currentLease = getCurrentLease(state);
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      const currentLease = getCurrentLease(state);
 
-    return {
-      invoices: getInvoicesByLease(state, currentLease.id),
-      invoiceAttributes: getInvoiceAttributes(state),
-      invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
-      isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
-      patchedInvoice: getPatchedInvoice(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    clearPatchedInvoice,
-    initialize,
-    patchInvoice,
-  }
+      return {
+        invoices: getInvoicesByLease(state, currentLease.id),
+        invoiceAttributes: getInvoiceAttributes(state),
+        invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
+        isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
+        patchedInvoice: getPatchedInvoice(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      clearPatchedInvoice,
+      initialize,
+      patchInvoice,
+    },
+  )
 )(InvoiceTableAndPanel);

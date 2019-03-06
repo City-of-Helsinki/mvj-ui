@@ -713,6 +713,8 @@ class LeasePage extends Component<Props, State> {
     delete query.lease_area;
     delete query.plan_unit;
     delete query.plot;
+    delete query.opened_invoice;
+
 
     return history.push({
       pathname: `${getRouteById(Routes.LEASES)}`,
