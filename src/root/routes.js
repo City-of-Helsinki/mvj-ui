@@ -21,6 +21,7 @@ import NewInfillDevelopmentPage from '$src/infillDevelopment/components/NewInfil
 import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
 import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
 import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
+import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage';
 
 export const Routes = {
   AREA_NOTES: 'area_notes',
@@ -36,6 +37,7 @@ export const Routes = {
   LOGOUT: 'logout',
   RENT_BASIS: 'rent_basis',
   RENT_BASIS_NEW: 'rent_basis_new',
+  SAP_INVOICES: 'sap_invoices',
 };
 
 export const getRouteById = (id: string): string => {
@@ -53,6 +55,7 @@ export const getRouteById = (id: string): string => {
     [Routes.LOGOUT]: '/logout',
     [Routes.RENT_BASIS]: '/vuokrausperusteet',
     [Routes.RENT_BASIS_NEW]: '/uusivuokrausperuste',
+    [Routes.SAP_INVOICES]: '/saplaskut',
   };
 
   return routes[id] ? routes[id] : '';
@@ -74,6 +77,7 @@ export default
     <Route exact path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}`} component={InfillDevelopmentListPage} />
     <Route exact path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/:infillDevelopmentId`} component={InfillDevelopmentPage} />
     <Route exact path={getRouteById(Routes.INFILL_DEVELOPMENT_NEW)} component={NewInfillDevelopmentPage} />
+    <Route exact path={getRouteById(Routes.SAP_INVOICES)} component={SapInvoicesListPage} />
     <Route exact path={getRouteById(Routes.LEASEHOLD_TRANSFER)} component={LeaseholdTransferListPage} />
     <Route exact path={getRouteById(Routes.RENT_BASIS)} component={RentBasisListPage} />
     <Route exact path={`${getRouteById(Routes.RENT_BASIS)}/:rentBasisId`} component={RentBasisPage} />

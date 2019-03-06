@@ -30,4 +30,14 @@
     height: rem-calc(20px);
     width: rem-calc(20px);
   }
+
+  &.icon-small {
+    height: rem-calc(15px);
+    width: rem-calc(15px);
+  }
+
+  &.icon-green {
+    fill: $dark-green;
+    stroke: $dark-green;
+  }
 }

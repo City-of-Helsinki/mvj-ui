@@ -2,7 +2,6 @@
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
-import {getSearchQuery} from '$util/helpers';
 import {
   fetchInvoicesByLease,
   receiveAttributes,
@@ -51,7 +50,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchInvoicesByLeaseSaga({payload: leaseId}): Generator<any, any, any> {
   try {
-    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchInvoices, getSearchQuery({lease: leaseId, limit: 10000}));
+    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchInvoices, {lease: leaseId, limit: 10000});
     let invoices = body.results;
     while(statusCode === 200 && body.next) {
       const {response: {status}, bodyAsJson} = yield call(fetchInvoices, `?${body.next.split('?').pop()}`);

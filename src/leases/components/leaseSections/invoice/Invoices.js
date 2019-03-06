@@ -23,7 +23,7 @@ import {LeaseInvoicingFieldPaths, LeaseInvoicingFieldTitles} from '$src/leases/e
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {hasPermissions, isFieldAllowedToRead, isMethodAllowed} from '$util/helpers';
-import {getInvoiceToCredit} from '$src/invoices/selectors';
+import {getInvoiceToCredit, getMethods as getInvoiceMethods} from '$src/invoices/selectors';
 import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -38,7 +38,7 @@ type Props = {
   collectionLetterMethods: MethodsType, // Get via withLeasePageAttributes HOC
   collectionNoteMethods: MethodsType, // Get via withLeasePageAttributes HOC
   currentLease: Lease,
-  invoiceMethods: MethodsType, // Get vie withLeasePageAttributes HOC
+  invoiceMethods: MethodsType,
   invoicesCollapseState: boolean,
   invoiceToCredit: ?string,
   isInvoicingEnabled: boolean,
@@ -234,6 +234,7 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
       return {
         currentLease: currentLease,
+        invoiceMethods: getInvoiceMethods(state),
         invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.invoices`),
         invoiceToCredit: getInvoiceToCredit(state),
         isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,

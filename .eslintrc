@@ -26,6 +26,7 @@
     "object-curly-spacing": [2, "never"],
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
     "semi": [2, "always"],
+    "react/display-name": "off",
     "react/no-find-dom-node": "off",
     "no-case-declarations": "off"
   },

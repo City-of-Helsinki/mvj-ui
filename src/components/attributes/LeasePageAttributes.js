@@ -10,7 +10,6 @@ import {fetchAttributes as fetchCommentAttributes} from '$src/comments/actions';
 import {fetchAttributes as fetchContractFileAttributes} from '$src/contractFile/actions';
 import {fetchAttributes as fetchCopyAreasToContractAttributes} from '$src/copyAreasToContract/actions';
 import {fetchAttributes as fetchCreateCollectionLetterAttributes} from '$src/createCollectionLetter/actions';
-import {fetchAttributes as fetchInvoiceAttributes} from '$src/invoices/actions';
 import {fetchAttributes as fetchLeaseCreateChargeAttributes} from '$src/leaseCreateCharge/actions';
 import {
   getAttributes as getCollectionCourtDecisionAttributes,
@@ -45,11 +44,6 @@ import {
   getIsFetchingAttributes as getIsFetchignCreateCollectionLetterAttributes,
 } from '$src/createCollectionLetter/selectors';
 import {
-  getAttributes as getInvoiceAttributes,
-  getIsFetchingAttributes as getIsFetchingInvoiceAttributes,
-  getMethods as getInvoiceMethods,
-} from '$src/invoices/selectors';
-import {
   getAttributes as getLeaseCreateChargeAttributes,
   getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes,
 } from '$src/leaseCreateCharge/selectors';
@@ -76,10 +70,7 @@ function LeasePageAttributes(WrappedComponent: any) {
     fetchContractFileAttributes: Function,
     fetchCopyAreasToContractAttributes: Function,
     fetchCreateCollectionLetterAttributes: Function,
-    fetchInvoiceAttributes: Function,
     fetchLeaseCreateChargeAttributes: Function,
-    invoiceAttributes: Attributes,
-    invoiceMethods: Methods,
     isFetchingCollectionCourtDecisionAttributes: boolean,
     isFetchingCollectionLetterAttributes: boolean,
     isFetchingCollectionNoteAttributes: boolean,
@@ -87,7 +78,6 @@ function LeasePageAttributes(WrappedComponent: any) {
     isFetchingContractFileAttributes: boolean,
     isFetchingCopyAreasToContractAttributes: boolean,
     isFetchingCreateCollectionLetterAttributes: boolean,
-    isFetchingInvoiceAttributes: boolean,
     isFetchingLeaseCreateChargeAttributes: boolean,
     leaseCreateChargeAttributes: Attributes,
   }
@@ -117,9 +107,7 @@ function LeasePageAttributes(WrappedComponent: any) {
         fetchContractFileAttributes,
         fetchCopyAreasToContractAttributes,
         fetchCreateCollectionLetterAttributes,
-        fetchInvoiceAttributes,
         fetchLeaseCreateChargeAttributes,
-        invoiceMethods,
         isFetchingCollectionCourtDecisionAttributes,
         isFetchingCollectionLetterAttributes,
         isFetchingCollectionNoteAttributes,
@@ -127,7 +115,6 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingContractFileAttributes,
         isFetchingCopyAreasToContractAttributes,
         isFetchingCreateCollectionLetterAttributes,
-        isFetchingInvoiceAttributes,
         isFetchingLeaseCreateChargeAttributes,
         leaseCreateChargeAttributes,
       } = this.props;
@@ -160,10 +147,6 @@ function LeasePageAttributes(WrappedComponent: any) {
         fetchCreateCollectionLetterAttributes();
       }
 
-      if(!invoiceMethods && !isFetchingInvoiceAttributes) {
-        fetchInvoiceAttributes();
-      }
-
       if(!leaseCreateChargeAttributes && !isFetchingLeaseCreateChargeAttributes) {
         fetchLeaseCreateChargeAttributes();
       }
@@ -177,7 +160,6 @@ function LeasePageAttributes(WrappedComponent: any) {
         this.props.isFetchingContractFileAttributes !== prevProps.isFetchingContractFileAttributes ||
         this.props.isFetchingCopyAreasToContractAttributes !== prevProps.isFetchingCopyAreasToContractAttributes ||
         this.props.isFetchingCreateCollectionLetterAttributes !== prevProps.isFetchingCreateCollectionLetterAttributes ||
-        this.props.isFetchingInvoiceAttributes !== prevProps.isFetchingInvoiceAttributes ||
         this.props.isFetchingLeaseCreateChargeAttributes !== prevProps.isFetchingLeaseCreateChargeAttributes) {
         this.setIsFetchingCommonAttributes();
       }
@@ -192,7 +174,6 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingContractFileAttributes,
         isFetchingCopyAreasToContractAttributes,
         isFetchingCreateCollectionLetterAttributes,
-        isFetchingInvoiceAttributes,
         isFetchingLeaseCreateChargeAttributes,
       } = this.props;
       const isFetching = isFetchingCollectionCourtDecisionAttributes ||
@@ -202,7 +183,6 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingContractFileAttributes ||
         isFetchingCopyAreasToContractAttributes ||
         isFetchingCreateCollectionLetterAttributes ||
-        isFetchingInvoiceAttributes ||
         isFetchingLeaseCreateChargeAttributes;
 
       this.setState({isFetchingLeasePageAttributes: isFetching});
@@ -230,8 +210,6 @@ const withLeasePageAttributes = flowRight(
         contractFileMethods: getContractFileMethods(state),
         copyAreasToContractMethods: getCopyAreasToContractMethods(state),
         createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
-        invoiceAttributes: getInvoiceAttributes(state),
-        invoiceMethods: getInvoiceMethods(state),
         isFetchingCollectionCourtDecisionAttributes: getIsFetchingCollectionCourtDecisionAttributes(state),
         isFetchingCollectionLetterAttributes: getIsFetchignCollectionLetterAttributes(state),
         isFetchingCollectionNoteAttributes: getIsFetchingCollectionNoteAttributes(state),
@@ -239,7 +217,6 @@ const withLeasePageAttributes = flowRight(
         isFetchingContractFileAttributes: getIsFetchingContractFileAttributes(state),
         isFetchingCopyAreasToContractAttributes: getIsFetchingCopyAreasToContractAttributes(state),
         isFetchingCreateCollectionLetterAttributes: getIsFetchignCreateCollectionLetterAttributes(state),
-        isFetchingInvoiceAttributes: getIsFetchingInvoiceAttributes(state),
         isFetchingLeaseCreateChargeAttributes: getIsFetchingLeaseCreateChargeAttributes(state),
         leaseCreateChargeAttributes: getLeaseCreateChargeAttributes(state),
       };
@@ -252,7 +229,6 @@ const withLeasePageAttributes = flowRight(
       fetchContractFileAttributes,
       fetchCopyAreasToContractAttributes,
       fetchCreateCollectionLetterAttributes,
-      fetchInvoiceAttributes,
       fetchLeaseCreateChargeAttributes,
     }
   ),
