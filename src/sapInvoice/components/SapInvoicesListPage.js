@@ -23,6 +23,7 @@ import {TableSortOrder} from '$components/enums';
 import {InvoiceFieldPaths, InvoiceRowsFieldPaths} from '$src/invoices/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatReceivableTypesString} from '$src/invoices/helpers';
+import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {
   getSapInvoiceListCount,
   getSapInvoiceListMaxPage,
@@ -82,6 +83,7 @@ const getColumns = (invoiceAttributes: Attributes) => {
     columns.push({
       key: 'lease',
       text: 'Vuokratunnus',
+      renderer: (val) => getContentLeaseIdentifier(val),
     });
   }
   if(isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)) {
@@ -220,7 +222,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
   }
 
   handleRowClick = (id, row) => {
-    window.open(`${getRouteById(Routes.LEASES)}/${row.lease}?tab=6&opened_invoice=${id}`, '_blank');
+    window.open(`${getRouteById(Routes.LEASES)}/${row.lease.id}?tab=6&opened_invoice=${id}`, '_blank');
   };
 
   handleSearchChange = (query: any) => {
