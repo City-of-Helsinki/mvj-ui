@@ -117,6 +117,13 @@ export const getUiDataRelatedLeaseKey = (key: string) => getKeyWithPrefix(UiData
 export const getUiDataRentBasisKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.RENT_BASIS, key);
 
 /*
+* Get key for ui data on trade register company extended component
+* @param {string} key
+* @return {string}
+*/
+export const getUiDataTradeRegisterCompanyExtendedKey = (key: string) => getKeyWithPrefix(UiDataPrefixes.TRADE_REGISTER_COMPANY_EXTENDED, key);
+
+/*
 * Return value of ui data object by key
 * @param {Object[]} uiDataList
 * @param {string} key

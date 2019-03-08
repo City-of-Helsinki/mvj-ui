@@ -3,7 +3,7 @@
   flex-direction: column;
   margin-bottom: rem-calc(10px);
 
-  .no-margin {
+  &.no-margin {
     margin: 0;
   }
 

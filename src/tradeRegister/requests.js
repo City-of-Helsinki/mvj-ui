@@ -1,0 +1,7 @@
+// @flow
+import callApi from '$src/api/callApi';
+import createUrlWithoutVersionSuffix from '$src/api/createUrlWithoutVersionSuffix';
+
+export const fetchCompanyExtended = (businessId: string): Generator<any, any, any> => {
+  return callApi(new Request(createUrlWithoutVersionSuffix(`trade_register/company_extended/${businessId}/`)));
+};

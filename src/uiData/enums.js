@@ -19,6 +19,7 @@ export const UiDataPrefixes = {
   PENALTY_INTEREST: 'penalty_interest',
   RELATED_LEASE: 'related_lease',
   RENT_BASIS: 'rent_basis',
+  TRADE_REGISTER_COMPANY_EXTENDED: 'trade_register_company_extended',
 };
 
 /*
