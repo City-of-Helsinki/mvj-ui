@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 
-import ContentContainer from '$components/content/ContentContainer';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import GreenBox from '$components/content/GreenBox';
 
@@ -13,13 +12,11 @@ type Props = {
 
 const ContactReadonly = ({contact}: Props) => {
   return (
-    <ContentContainer>
-      <GreenBox>
-        <ContactTemplate
-          contact={contact}
-        />
-      </GreenBox>
-    </ContentContainer>
+    <GreenBox>
+      <ContactTemplate
+        contact={contact}
+      />
+    </GreenBox>
   );
 };
 

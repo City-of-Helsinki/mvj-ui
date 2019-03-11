@@ -373,7 +373,6 @@ export const FormNames = {
   TENANTS: 'tenants-form',
 };
 
-
 /**
  * Lease field paths enumerable.
  *

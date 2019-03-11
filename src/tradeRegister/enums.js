@@ -19,6 +19,15 @@ export const CollapseStatePaths = {
 };
 
 /**
+ * Trade register form names enumerable.
+ *
+ * @type {{}}
+ */
+export const FormNames = {
+  SEARCH: 'trade-register-search-form',
+};
+
+/**
   * Company extended field paths
   */
 export const CompanyExtendedFieldPaths = {

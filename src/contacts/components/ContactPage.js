@@ -11,11 +11,17 @@ import AuthorizationError from '$components/authorization/AuthorizationError';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactEdit from './ContactEdit';
 import ContactReadonly from './ContactReadonly';
+import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
+import Tabs from '$components/tabs/Tabs';
+import TabPane from '$components/tabs/TabPane';
+import TabContent from '$components/tabs/TabContent';
+import TradeRegisterTemplate from '$src/tradeRegister/components/TradeRegisterTemplate';
 import {
   editContact,
   fetchSingleContact,
@@ -26,9 +32,14 @@ import {
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {Methods, PermissionMissingTexts} from '$src/enums';
-import {FormNames} from '$src/contacts/enums';
+import {ContactTypes, FormNames} from '$src/contacts/enums';
 import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
-import {isMethodAllowed} from '$util/helpers';
+import {
+  getSearchQuery,
+  getUrlParams,
+  isMethodAllowed,
+  scrollToTopPage,
+} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   getCurrentContact,
@@ -71,11 +82,13 @@ type Props = {
 }
 
 type State = {
+  activeTab: number,
   isRestoreModalOpen: boolean,
 }
 
 class ContactPage extends Component<Props, State> {
   state = {
+    activeTab: 0,
     isRestoreModalOpen: false,
   }
 
@@ -85,10 +98,12 @@ class ContactPage extends Component<Props, State> {
     const {
       fetchSingleContact,
       hideEditMode,
+      location: {search},
       match: {params: {contactId}},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
+    const query = getUrlParams(search);
 
     receiveIsSaveClicked(false);
 
@@ -100,12 +115,17 @@ class ContactPage extends Component<Props, State> {
 
     fetchSingleContact(contactId);
 
+    if (query.tab) {
+      this.setState({activeTab: query.tab});
+    }
+
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const {match: {params: {contactId}}} = this.props;
+    const {activeTab} = this.state;
 
     if(isEmpty(prevProps.contact) && !isEmpty(this.props.contact)) {
       const storedContactId = getSessionStorageItem('contactId');
@@ -118,6 +138,10 @@ class ContactPage extends Component<Props, State> {
     if(prevProps.isEditMode && !this.props.isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
+    }
+
+    if(prevState.activeTab !== activeTab) {
+      scrollToTopPage();
     }
   }
 
@@ -227,12 +251,30 @@ class ContactPage extends Component<Props, State> {
 
   handleBack = () => {
     const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    // Remove page specific url parameters when moving to lease list page
+    delete query.tab;
 
     return history.push({
       pathname: `${getRouteById(Routes.CONTACTS)}`,
-      search: search,
+      search: getSearchQuery(query),
     });
   }
+
+  handleTabClick = (tabId) => {
+    const {history, location, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    this.setState({activeTab: tabId}, () => {
+      query.tab = tabId;
+
+      return history.push({
+        ...location,
+        search: getSearchQuery(query),
+      });
+    });
+  };
 
   cancelChanges = () => {
     const {hideEditMode} = this.props;
@@ -268,13 +310,14 @@ class ContactPage extends Component<Props, State> {
     const {
       contact,
       contactMethods,
+      isContactFormDirty,
       isContactFormValid,
       isEditMode,
       isFetching,
       isFetchingCommonAttributes,
       isSaveClicked,
     } = this.props;
-    const {isRestoreModalOpen} = this.state;
+    const {activeTab, isRestoreModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
 
@@ -322,13 +365,51 @@ class ContactPage extends Component<Props, State> {
             />
           </Authorization>
 
-          {isEditMode
-            ? <Authorization
-              allow={isMethodAllowed(contactMethods, Methods.PATCH)}
-              errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL}/>}
-            > <ContactEdit /></Authorization>
-            : <ContactReadonly contact={contact} />
-          }
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {
+                label: 'Perustiedot',
+                allow: true,
+                isDirty: isContactFormDirty,
+                hasError: isSaveClicked && !isContactFormValid,
+              },
+              {
+                label: 'Kaupparekisteri',
+                allow: !!contact.business_id && contact.type !== ContactTypes.PERSON,
+              },
+            ]}
+            onTabClick={this.handleTabClick}
+          />
+
+          <TabContent active={activeTab}>
+            <TabPane>
+              <ContentContainer>
+                <h2>Perustiedot</h2>
+                <Divider />
+                {isEditMode
+                  ? <Authorization
+                    allow={isMethodAllowed(contactMethods, Methods.PATCH)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL}/>}
+                  > <ContactEdit /></Authorization>
+                  : <ContactReadonly contact={contact} />
+                }
+              </ContentContainer>
+            </TabPane>
+
+            {!!contact.business_id && contact.type !== ContactTypes.PERSON &&
+              <TabPane>
+                <ContentContainer>
+                  <h2>Kaupparekisteri</h2>
+                  <Divider />
+                  <TradeRegisterTemplate
+                    businessId={contact.business_id}
+                  />
+                </ContentContainer>
+              </TabPane>
+            }
+          </TabContent>
         </PageContainer>
       </FullWidthContainer>
     );

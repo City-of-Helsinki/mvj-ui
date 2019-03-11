@@ -164,7 +164,7 @@ class SideMenu extends Component<Props, State> {
                   <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_NOTES)}>Muistettavat ehdot</Link></li>
                   </Authorization>
-                  <li><Link onClick={handleClick} to={getRouteById(Routes.TRADE_REGISTER)}>Kaupparekisteri</Link></li>
+                  <li><Link onClick={handleClick} to={getRouteById(Routes.TRADE_REGISTER)}>Kaupparekisterihaku</Link></li>
                   <Authorization allow={isMethodAllowed(invoiceMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.SAP_INVOICES)}>SAP laskut</Link></li>
                   </Authorization>

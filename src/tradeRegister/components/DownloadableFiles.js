@@ -55,7 +55,7 @@ const DownloadableFiles = ({
       {!isFetchingCompanyExtended &&
         <Fragment>
           {!companyExtended &&
-            <FormText>Ladattavat tiedostot ei saatavilla</FormText>
+            <FormText>Ladattavia tiedostoja ei saatavilla</FormText>
           }
           {!!companyExtended &&
             <Fragment>

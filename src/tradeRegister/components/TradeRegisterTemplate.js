@@ -38,6 +38,20 @@ type Props = {
 
 class TradeRegisterTemplate extends PureComponent<Props> {
   componentDidMount() {
+    this.fetchCompanyDataIfNeeded();
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const {
+      businessId,
+    } = this.props;
+
+    if(businessId !== prevProps.businessId) {
+      this.fetchCompanyDataIfNeeded();
+    }
+  }
+
+  fetchCompanyDataIfNeeded = () => {
     const {
       businessId,
       companyExtended,
@@ -48,15 +62,17 @@ class TradeRegisterTemplate extends PureComponent<Props> {
       fetchTradeRegisterCompanyRepresentById,
     } = this.props;
 
-    if(!companyExtended) {
+    if(!businessId) return;
+
+    if(companyExtended === undefined) {
       fetchTradeRegisterCompanyExtendedById(businessId);
     }
 
-    if(!companyNotice) {
+    if(companyNotice === undefined) {
       fetchTradeRegisterCompanyNoticeById(businessId);
     }
 
-    if(!companyRepresent) {
+    if(companyRepresent === undefined) {
       fetchTradeRegisterCompanyRepresentById(businessId);
     }
   }

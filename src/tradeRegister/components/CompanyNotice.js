@@ -76,7 +76,7 @@ const CompanyNotice = ({
           }
           {!!companyNotice &&
             <Fragment>
-              {!notices.length && <FormText>Ei vierillä olevia ilmoituksia</FormText>}
+              {!notices.length && <FormText>Ei vireillä olevia ilmoituksia</FormText>}
 
               {!!notices.length &&
                 <Fragment>

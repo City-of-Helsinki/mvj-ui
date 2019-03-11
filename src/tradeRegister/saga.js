@@ -60,7 +60,6 @@ function* fetchCompanyRepresentByIdSaga({payload: businessId}): Generator<any, a
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchCompanyRepresent, businessId);
 
-    console.log('fetch');
     switch (statusCode) {
       case 200:
         yield put(receiveTradeRegisterCompanyRepresentById({[businessId.toString()]: bodyAsJson.companyRepresentInfoResponseTypeDetails}));
