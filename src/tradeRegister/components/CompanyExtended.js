@@ -17,6 +17,7 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/tradeRegister/actions';
 import {
   CollapseStatePaths,
+  CompanyStates,
   CompanyExtendedFieldPaths,
   CompanyExtendedFieldTitles,
 } from '$src/tradeRegister/enums';
@@ -31,6 +32,7 @@ import {
 type Props = {
   businessId: string,
   companyExtended: ?Object,
+  companyExtendedCollapseState: ?boolean,
   companyNameCollapseState: ?boolean,
   contactInformationCollapseState: ?boolean,
   isFetchingCompanyExtended: boolean,
@@ -40,11 +42,18 @@ type Props = {
 const CompanyExtended = ({
   businessId,
   companyExtended,
+  companyExtendedCollapseState,
   companyNameCollapseState,
   contactInformationCollapseState,
   isFetchingCompanyExtended,
   receiveCollapseStates,
 }: Props) => {
+  const handleCollapseToggleCompanyExtended = (val: boolean) => {
+    receiveCollapseStates({
+      [`${CollapseStatePaths.COMPANY_EXTENDED}.${businessId}`]: val,
+    });
+  };
+
   const handleCollapseToggleCompanyName = (val: boolean) => {
     receiveCollapseStates({
       [`${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldPaths.COMPANY_NAME}.${businessId}`]: val,
@@ -65,8 +74,11 @@ const CompanyExtended = ({
 
   return (
     <Collapse
-      defaultOpen
-      headerTitle='Laajennetut perustiedot'
+      defaultOpen={companyExtendedCollapseState !== undefined ? companyExtendedCollapseState : true}
+      headerTitle={CompanyExtendedFieldTitles.COMPANY_EXTENDED}
+      onToggle={handleCollapseToggleCompanyExtended}
+      enableUiDataEdit
+      uiDataKey={getUiDataTradeRegisterCompanyExtendedKey(CompanyExtendedFieldPaths.COMPANY_EXTENDED)}
     >
       {isFetchingCompanyExtended &&
         <LoaderWrapper>
@@ -163,7 +175,9 @@ const CompanyExtended = ({
                   <FormTextTitle enableUiDataEdit uiDataKey={getUiDataTradeRegisterCompanyExtendedKey(CompanyExtendedFieldPaths.STATE_TYPE)}>
                     {CompanyExtendedFieldTitles.STATE_TYPE}
                   </FormTextTitle>
-                  <FormText>{get(companyExtended, CompanyExtendedFieldPaths.STATE_TYPE) || '-'}</FormText>
+                  <FormText>{CompanyStates[get(companyExtended, CompanyExtendedFieldPaths.STATE_TYPE)] ||
+                    get(companyExtended, CompanyExtendedFieldPaths.STATE_TYPE) ||
+                    '-'}</FormText>
                 </Column>
                 <Column small={12} medium={4} large={2}>
                   <FormTextTitle enableUiDataEdit uiDataKey={getUiDataTradeRegisterCompanyExtendedKey(CompanyExtendedFieldPaths.STATE_REGISTRATION_DATE)}>
@@ -415,7 +429,7 @@ const CompanyExtended = ({
                 uiDataKey={getUiDataTradeRegisterCompanyExtendedKey(CompanyExtendedFieldPaths.CONTACT_INFORMATION)}
               >
                 <Row>
-                  <Column small={12} medium={4} large={2}>
+                  <Column small={12} medium={4} large={4}>
                     <FormTextTitle enableUiDataEdit uiDataKey={getUiDataTradeRegisterCompanyExtendedKey(CompanyExtendedFieldPaths.CONTACT_INFORMATION_HOMEPAGE)}>
                       {CompanyExtendedFieldTitles.CONTACT_INFORMATION_HOMEPAGE}
                     </FormTextTitle>
@@ -424,7 +438,7 @@ const CompanyExtended = ({
                       : <FormText>-</FormText>
                     }
                   </Column>
-                  <Column small={12} medium={4} large={2}>
+                  <Column small={12} medium={4} large={4}>
                     <FormTextTitle enableUiDataEdit uiDataKey={getUiDataTradeRegisterCompanyExtendedKey(CompanyExtendedFieldPaths.CONTACT_INFORMATION_EMAIL)}>
                       {CompanyExtendedFieldTitles.CONTACT_INFORMATION_EMAIL}
                     </FormTextTitle>
@@ -440,7 +454,7 @@ const CompanyExtended = ({
                     <FormTextTitle enableUiDataEdit uiDataKey={getUiDataTradeRegisterCompanyExtendedKey(CompanyExtendedFieldPaths.CONTACT_INFORMATION_FAX)}>
                       {CompanyExtendedFieldTitles.CONTACT_INFORMATION_FAX}
                     </FormTextTitle>
-                    <FormText>{get(companyExtended, CompanyExtendedFieldPaths.CONTACT_INFORMATION_FAX) || '-'}</FormText>
+                    <FormText>{get(companyExtended, CompanyExtendedFieldPaths.CONTACT_INFORMATION_FAX, []).join(', ') || '-'}</FormText>
                   </Column>
                 </Row>
 
@@ -530,6 +544,7 @@ export default connect(
   (state, props: Props) => {
     return {
       companyExtended: getCompanyExtendedById(state, props.businessId),
+      companyExtendedCollapseState: getCollapseStateByKey(state, `${CollapseStatePaths.COMPANY_EXTENDED}.${props.businessId}`),
       companyNameCollapseState: getCollapseStateByKey(state, `${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldTitles.COMPANY_NAME}.${props.businessId}`),
       contactInformationCollapseState: getCollapseStateByKey(state, `${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldTitles.CONTACT_INFORMATION}.${props.businessId}`),
       isFetchingCompanyExtended: getIsFetchingCompanyExtendedById(state, props.businessId),

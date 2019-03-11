@@ -17,7 +17,7 @@ class TradeRegisterSearchPage extends PureComponent<Props> {
       <PageContainer>
         <ContentContainer>
           <TradeRegisterTemplate
-            businessId='0831312-4'
+            businessId='1995405-8'
           />
         </ContentContainer>
       </PageContainer>
@@ -27,6 +27,6 @@ class TradeRegisterSearchPage extends PureComponent<Props> {
 
 export default flowRight(
   connect(
-    
+
   ),
 )(TradeRegisterSearchPage);

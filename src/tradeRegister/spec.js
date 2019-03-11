@@ -5,6 +5,12 @@ import {
   fetchTradeRegisterCompanyExtendedById,
   companyExtendedNotFoundById,
   receiveTradeRegisterCompanyExtendedById,
+  fetchTradeRegisterCompanyNoticeById,
+  companyNoticeNotFoundById,
+  receiveTradeRegisterCompanyNoticeById,
+  fetchTradeRegisterCompanyRepresentById,
+  companyRepresentNotFoundById,
+  receiveTradeRegisterCompanyRepresentById,
   receiveCollapseStates,
 } from './actions';
 import tradeRegisterReducer from './reducer';
@@ -14,7 +20,11 @@ import type {TradeRegisterState} from './types';
 const defaultState: TradeRegisterState = {
   collapseStates: {},
   companyExtendedById: {},
+  companyNoticeById: {},
+  companyRepresentById: {},
   isFetchingCompanyExtendedById: {},
+  isFetchingCompanyNoticeById: {},
+  isFetchingCompanyRepresentById: {},
 };
 
 // $FlowFixMe
@@ -65,6 +75,88 @@ describe('Trade register', () => {
         };
 
         const state = tradeRegisterReducer({}, receiveTradeRegisterCompanyExtendedById(dummyPayload));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingCompanyNoticeById to true when fetching company notice info', () => {
+        const dummyBusinessId = '123';
+
+        const newState = {...defaultState, isFetchingCompanyNoticeById: {
+          [dummyBusinessId]: true,
+        }};
+
+        const state = tradeRegisterReducer({}, fetchTradeRegisterCompanyNoticeById(dummyBusinessId));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingCompanyNoticeById to false when by companyNoticenotFoundById', () => {
+        const dummyBusinessId = '123';
+
+        const newState = {...defaultState, isFetchingCompanyNoticeById: {
+          [dummyBusinessId]: false,
+        }};
+
+        let state = tradeRegisterReducer({}, fetchTradeRegisterCompanyNoticeById(dummyBusinessId));
+        state = tradeRegisterReducer(state, companyNoticeNotFoundById(dummyBusinessId));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update companyNoticeById', () => {
+        const dummyBusinessId = '123';
+        const dummyPayload = {
+          [dummyBusinessId]: {foo: 'bar'},
+        };
+
+        const newState = {
+          ...defaultState,
+          companyNoticeById: dummyPayload,
+          isFetchingCompanyNoticeById: {
+            [dummyBusinessId]: false,
+          },
+        };
+
+        const state = tradeRegisterReducer({}, receiveTradeRegisterCompanyNoticeById(dummyPayload));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingCompanyRepresentById to true when fetching company represent info', () => {
+        const dummyBusinessId = '123';
+
+        const newState = {...defaultState, isFetchingCompanyRepresentById: {
+          [dummyBusinessId]: true,
+        }};
+
+        const state = tradeRegisterReducer({}, fetchTradeRegisterCompanyRepresentById(dummyBusinessId));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingCompanyRepresentById to false when by companyRepresentnotFoundById', () => {
+        const dummyBusinessId = '123';
+
+        const newState = {...defaultState, isFetchingCompanyRepresentById: {
+          [dummyBusinessId]: false,
+        }};
+
+        let state = tradeRegisterReducer({}, fetchTradeRegisterCompanyRepresentById(dummyBusinessId));
+        state = tradeRegisterReducer(state, companyRepresentNotFoundById(dummyBusinessId));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update companyRepresentById', () => {
+        const dummyBusinessId = '123';
+        const dummyPayload = {
+          [dummyBusinessId]: {foo: 'bar'},
+        };
+
+        const newState = {
+          ...defaultState,
+          companyRepresentById: dummyPayload,
+          isFetchingCompanyRepresentById: {
+            [dummyBusinessId]: false,
+          },
+        };
+
+        const state = tradeRegisterReducer({}, receiveTradeRegisterCompanyRepresentById(dummyPayload));
         expect(state).to.deep.equal(newState);
       });
 

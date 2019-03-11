@@ -20,6 +20,8 @@ export const UiDataPrefixes = {
   RELATED_LEASE: 'related_lease',
   RENT_BASIS: 'rent_basis',
   TRADE_REGISTER_COMPANY_EXTENDED: 'trade_register_company_extended',
+  TRADE_REGISTER_COMPANY_NOTICE: 'trade_register_company_notice',
+  TRADE_REGISTER_COMPANY_REPRESENT: 'trade_register_company_represent',
 };
 
 /*
