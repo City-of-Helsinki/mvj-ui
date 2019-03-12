@@ -7,6 +7,7 @@ import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
 import Comments from '../constructability/Comments';
+import ErrorBlock from '$components/form/ErrorBlock';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -66,7 +67,11 @@ const SummaryLeaseInfo = ({attributes, currentLease, usersPermissions}: Props) =
     summary = getContentSummary(currentLease),
     tenants = summary.tenants,
     leaseAreas = summary.lease_areas,
-    constructabilityAreas = get(summary, 'constructability_areas', []);
+    constructabilityAreas = get(summary, 'constructability_areas', []),
+    totalShare = tenants.reduce((sum, cur) => {
+      const share = cur.share_numerator && cur.share_denominator ? Number(cur.share_numerator)/Number(cur.share_denominator) : 0;
+      return sum + share;
+    }, 0);
 
   return (
     <Fragment>
@@ -79,7 +84,7 @@ const SummaryLeaseInfo = ({attributes, currentLease, usersPermissions}: Props) =
               <FormTextTitle title='Vuokralainen' />
             </Column>
             <Column small={6} large={4}>
-              <FormTextTitle title='Osuus' />
+              <FormTextTitle title='Hallintaosuus' />
             </Column>
           </Row>
           <ListItems>
@@ -99,6 +104,14 @@ const SummaryLeaseInfo = ({attributes, currentLease, usersPermissions}: Props) =
                 </Row>
               );
             })}
+            {!!tenants.length && totalShare > 1 &&
+              <Row>
+                <Column small={6} large={4}></Column>
+                <Column small={6} large={4}>
+                  <ErrorBlock error='Vuokralaisten hallintaosuus on yli 100%' />
+                </Column>
+              </Row>
+            }
           </ListItems>
         </Fragment>
       }

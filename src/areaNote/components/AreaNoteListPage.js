@@ -22,7 +22,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/areaNote/enums';
 import {getAreaNoteById, getAreaNoteCoordinates} from '$src/areaNote/helpers';
-import {getSearchQuery, getUrlParams, isMethodAllowed} from '$util/helpers';
+import {getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
@@ -93,6 +93,8 @@ class AreaNoteListPage extends PureComponent<Props, State> {
       receiveTopNavigationSettings,
     } = this.props;
     const query = getUrlParams(search);
+
+    setPageTitle('Muistettavat ehdot');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.AREA_NOTES),

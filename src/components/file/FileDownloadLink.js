@@ -12,6 +12,7 @@ import {getApiToken} from '$src/auth/selectors';
 type Props = {
   apiToken: string,
   className?: string,
+  fileName?: string,
   fileUrl: string,
   label: string,
 }
@@ -26,7 +27,7 @@ class FileDownloadLink extends PureComponent<Props, State> {
   }
 
   handleClick = () => {
-    const {apiToken, fileUrl, label} = this.props;
+    const {apiToken, fileName: fileNameProp, fileUrl, label} = this.props;
     const {isLoading} = this.state;
 
     if(isLoading) return;
@@ -49,7 +50,7 @@ class FileDownloadLink extends PureComponent<Props, State> {
         switch(response.status) {
           case 200:
             const blob = await response.blob();
-            const filename = getFileNameFromResponse(response);
+            const filename = fileNameProp ? fileNameProp : getFileNameFromResponse(response);
 
             saveAs(blob, filename || label);
             break;

@@ -12,7 +12,7 @@ import {fetchIndexList} from '$src/index/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {getContentYearlyIndexes} from '$src/index/helpers';
-import {isMethodAllowed} from '$util/helpers';
+import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIndexList, getIsFetching} from '$src/index/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -46,9 +46,11 @@ class IndexListPage extends PureComponent<Props, State> {
       receiveTopNavigationSettings,
     } = this.props;
 
+    setPageTitle('Elinkustannusindeksit');
+
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INDEX),
-      pageTitle: 'Elinkustannusindeksi',
+      pageTitle: 'Elinkustannusindeksit',
       showSearch: false,
     });
 

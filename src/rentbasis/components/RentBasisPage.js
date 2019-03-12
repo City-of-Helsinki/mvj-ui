@@ -40,6 +40,7 @@ import {
   isFieldAllowedToRead,
   isMethodAllowed,
   scrollToTopPage,
+  setPageTitle,
 } from '$util/helpers';
 import {FormNames, RentBasisFieldPaths} from '$src/rentbasis/enums';
 import {
@@ -128,6 +129,8 @@ class RentBasisPage extends Component<Props, State> {
       receiveTopNavigationSettings,
     } = this.props;
     const query = getUrlParams(search);
+
+    setPageTitle(`${rentBasisId} | Vuokrausperuste`);
 
     receiveIsSaveClicked(false);
 

@@ -27,7 +27,7 @@ class DropDown extends Component {
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     document.addEventListener('click', this.onDocumentClick);
   }
 

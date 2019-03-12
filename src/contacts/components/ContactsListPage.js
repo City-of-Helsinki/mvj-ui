@@ -35,7 +35,8 @@ import {
   getUrlParams,
   isFieldAllowedToRead,
   isMethodAllowed,
-} from '$src/util/helpers';
+  setPageTitle,
+} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getContactList, getIsFetching} from '../selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -121,6 +122,8 @@ class ContactListPage extends Component<Props, State> {
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
     const newState = {};
+
+    setPageTitle('Asiakkaat');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.CONTACTS),

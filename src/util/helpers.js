@@ -21,6 +21,24 @@ import type {UsersPermissions} from '$src/usersPermissions/types';
 // import i18n from '../root/i18n';
 
 /**
+ * Compose page title
+ * @param [string] title
+ * @param [boolean] presend
+ */
+export const composePageTitle = (title: string = '', prepend?: boolean = true) => {
+  return prepend ? `${title ? `${title} | ` : ''}Maanvuokrausjärjestelmä | Helsingin Kaupunki` : title;
+};
+
+/**
+ * Set page title
+ * @param [string] title
+ * @param [boolean] presend
+ */
+export const setPageTitle = (title: string, prepend?: boolean) => {
+  document.title = composePageTitle(title, prepend);
+};
+
+/**
  *
  * @returns {number}
  */
@@ -171,14 +189,6 @@ export const getUrlParams = (search: string = ''): Object => {
   });
 
   return query;
-};
-
-/**
- *
- * @param title
- */
-export const setPageTitle = (title: string) => {
-  document.title = `${title}`;
 };
 
 /**

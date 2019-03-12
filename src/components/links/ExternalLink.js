@@ -16,10 +16,14 @@ const ExternalLink = ({
   href,
   openInNewTab = true,
   text,
-}: Props) =>
-  <a className={classNames('links__external-link', className)} target={openInNewTab ? '_blank' : '_self'} href={href}>
+}: Props) => {
+  const isRelativePath = href && href.substring(0, 4) !== 'www.' ? true : false;
+
+  return <a className={classNames('links__external-link', className)} target={openInNewTab ? '_blank' : '_self'} href={isRelativePath ? href : `http://${href || ''}`}>
     <span>{text}</span>
     <ExternalLinkIcon />
   </a>;
+};
+
 
 export default ExternalLink;

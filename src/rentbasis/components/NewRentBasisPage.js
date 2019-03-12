@@ -25,7 +25,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/rentbasis/enums';
 import {formatRentBasisForDb} from '$src/rentbasis/helpers';
-import {isMethodAllowed} from '$util/helpers';
+import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValid, getIsSaveClicked, getIsSaving} from '$src/rentbasis/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -59,6 +59,8 @@ class NewRentBasisPage extends Component<Props> {
       receiveTopNavigationSettings,
       showEditMode,
     } = this.props;
+
+    setPageTitle('Uusi vuokrausperuste');
 
     receiveIsSaveClicked(false);
 

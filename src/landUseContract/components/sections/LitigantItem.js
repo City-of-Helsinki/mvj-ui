@@ -59,7 +59,7 @@ const LitigantItem = ({
           <Row>
             <Column small={12} medium={6} large={4}>
               <FormTitleAndText
-                title='Osuus murtolukuna'
+                title='Hallintaosuus'
                 text={`${get(litigant, 'share_numerator', '')} / ${get(litigant, 'share_denominator', '')}`}
               />
             </Column>

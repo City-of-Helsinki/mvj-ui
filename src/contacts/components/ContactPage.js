@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, Component} from 'react';
 import {connect} from 'react-redux';
 import {change, getFormValues, isDirty} from 'redux-form';
 import {withRouter} from 'react-router';
@@ -11,24 +11,39 @@ import AuthorizationError from '$components/authorization/AuthorizationError';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactEdit from './ContactEdit';
 import ContactReadonly from './ContactReadonly';
+import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
+import Tabs from '$components/tabs/Tabs';
+import TabPane from '$components/tabs/TabPane';
+import TabContent from '$components/tabs/TabContent';
+import TradeRegisterTemplate from '$src/tradeRegister/components/TradeRegisterTemplate';
 import {
   editContact,
   fetchSingleContact,
   hideEditMode,
   initializeContactForm,
   receiveIsSaveClicked,
+  receiveSingleContact,
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {Methods, PermissionMissingTexts} from '$src/enums';
-import {FormNames} from '$src/contacts/enums';
+import {ContactTypes, FormNames} from '$src/contacts/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
-import {isMethodAllowed} from '$util/helpers';
+import {
+  hasPermissions,
+  getSearchQuery,
+  getUrlParams,
+  isMethodAllowed,
+  scrollToTopPage,
+  setPageTitle,
+} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   getCurrentContact,
@@ -43,6 +58,7 @@ import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import type {Contact} from '../types';
 
 type Props = {
@@ -66,16 +82,20 @@ type Props = {
     params: Object,
   },
   receiveIsSaveClicked: Function,
+  receiveSingleContact: Function,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
+  usersPermissions: UsersPermissionsType, // via withCommonAttributes HOC
 }
 
 type State = {
+  activeTab: number,
   isRestoreModalOpen: boolean,
 }
 
 class ContactPage extends Component<Props, State> {
   state = {
+    activeTab: 0,
     isRestoreModalOpen: false,
   }
 
@@ -85,10 +105,14 @@ class ContactPage extends Component<Props, State> {
     const {
       fetchSingleContact,
       hideEditMode,
+      location: {search},
       match: {params: {contactId}},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
+    const query = getUrlParams(search);
+
+    this.setPageTitle();
 
     receiveIsSaveClicked(false);
 
@@ -100,14 +124,23 @@ class ContactPage extends Component<Props, State> {
 
     fetchSingleContact(contactId);
 
+    if (query.tab) {
+      this.setState({activeTab: query.tab});
+    }
+
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
-  componentDidUpdate(prevProps) {
-    const {match: {params: {contactId}}} = this.props;
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const {contact, match: {params: {contactId}}} = this.props;
+    const {activeTab} = this.state;
 
-    if(isEmpty(prevProps.contact) && !isEmpty(this.props.contact)) {
+    if(contact !== prevProps.contact) {
+      this.setPageTitle();
+    }
+
+    if(isEmpty(prevProps.contact) && !isEmpty(contact)) {
       const storedContactId = getSessionStorageItem('contactId');
 
       if(Number(contactId) === storedContactId) {
@@ -119,6 +152,19 @@ class ContactPage extends Component<Props, State> {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
     }
+
+    if(prevState.activeTab !== activeTab) {
+      scrollToTopPage();
+    }
+  }
+
+  setPageTitle = () => {
+    const {contact} = this.props;
+    const nameInfo = getContactFullName(contact);
+
+    setPageTitle(`${nameInfo
+      ? `${nameInfo} | `
+      : ''}Asiakas`);
   }
 
   componentWillUnmount() {
@@ -126,12 +172,16 @@ class ContactPage extends Component<Props, State> {
       hideEditMode,
       match: {params: {contactId}},
       location: {pathname},
+      receiveSingleContact,
     } = this.props;
 
     if(pathname !== `${getRouteById(Routes.CONTACTS)}/${contactId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
+
+    // Clear current contact
+    receiveSingleContact({});
 
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
@@ -227,12 +277,30 @@ class ContactPage extends Component<Props, State> {
 
   handleBack = () => {
     const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    // Remove page specific url parameters when moving to lease list page
+    delete query.tab;
 
     return history.push({
       pathname: `${getRouteById(Routes.CONTACTS)}`,
-      search: search,
+      search: getSearchQuery(query),
     });
   }
+
+  handleTabClick = (tabId) => {
+    const {history, location, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    this.setState({activeTab: tabId}, () => {
+      query.tab = tabId;
+
+      return history.push({
+        ...location,
+        search: getSearchQuery(query),
+      });
+    });
+  };
 
   cancelChanges = () => {
     const {hideEditMode} = this.props;
@@ -268,13 +336,15 @@ class ContactPage extends Component<Props, State> {
     const {
       contact,
       contactMethods,
+      isContactFormDirty,
       isContactFormValid,
       isEditMode,
       isFetching,
       isFetchingCommonAttributes,
       isSaveClicked,
+      usersPermissions,
     } = this.props;
-    const {isRestoreModalOpen} = this.state;
+    const {activeTab, isRestoreModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
 
@@ -322,13 +392,58 @@ class ContactPage extends Component<Props, State> {
             />
           </Authorization>
 
-          {isEditMode
-            ? <Authorization
-              allow={isMethodAllowed(contactMethods, Methods.PATCH)}
-              errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL}/>}
-            > <ContactEdit /></Authorization>
-            : <ContactReadonly contact={contact} />
-          }
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {
+                label: 'Perustiedot',
+                allow: true,
+                isDirty: isContactFormDirty,
+                hasError: isSaveClicked && !isContactFormValid,
+              },
+              {
+                label: 'Kaupparekisteri',
+                allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !!contact.business_id && contact.type !== ContactTypes.PERSON,
+              },
+            ]}
+            onTabClick={this.handleTabClick}
+          />
+
+          <TabContent active={activeTab}>
+            <TabPane>
+              <ContentContainer>
+                <h2>Perustiedot</h2>
+                <Divider />
+                {isEditMode
+                  ? <Authorization
+                    allow={isMethodAllowed(contactMethods, Methods.PATCH)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL}/>}
+                  > <ContactEdit /></Authorization>
+                  : <ContactReadonly contact={contact} />
+                }
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <Authorization
+                  allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}
+                  errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                >
+                  {!!contact.business_id && contact.type !== ContactTypes.PERSON &&
+                    <Fragment>
+                      <h2>Kaupparekisteri</h2>
+                      <Divider />
+                      <TradeRegisterTemplate
+                        businessId={contact.business_id}
+                      />
+                    </Fragment>
+                  }
+                </Authorization>
+              </ContentContainer>
+            </TabPane>
+          </TabContent>
         </PageContainer>
       </FullWidthContainer>
     );
@@ -360,6 +475,7 @@ export default flowRight(
       hideEditMode,
       initializeContactForm,
       receiveIsSaveClicked,
+      receiveSingleContact,
       receiveTopNavigationSettings,
       showEditMode,
     }

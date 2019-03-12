@@ -25,7 +25,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {ContactTypes, FormNames} from '$src/contacts/enums';
-import {isEmptyValue, isMethodAllowed} from '$util/helpers';
+import {isEmptyValue, isMethodAllowed, setPageTitle} from '$util/helpers';
 import {contactExists} from '$src/contacts/requestsAsync';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
@@ -56,7 +56,10 @@ class NewContactPage extends Component<Props> {
   componentDidMount() {
     const {receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode} = this.props;
 
+    setPageTitle('Uusi asiakas');
+
     receiveIsSaveClicked(false);
+
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.CONTACTS),
       pageTitle: 'Asiakkaat',

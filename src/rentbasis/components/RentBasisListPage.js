@@ -39,6 +39,7 @@ import {
   getUrlParams,
   isFieldAllowedToRead,
   isMethodAllowed,
+  setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
@@ -84,6 +85,8 @@ class RentBasisListPage extends Component<Props, State> {
     } = this.props;
     const newState = {};
     const query = getUrlParams(search);
+
+    setPageTitle('Vuokrausperusteet');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.RENT_BASIS),

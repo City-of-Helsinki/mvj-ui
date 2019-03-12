@@ -25,7 +25,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
-import {isMethodAllowed} from '$util/helpers';
+import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValidById, getIsSaveClicked, getIsSaving} from '$src/infillDevelopment/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -60,6 +60,8 @@ class NewInfillDevelopmentPage extends Component<Props> {
       receiveTopNavigationSettings,
       showEditMode,
     } = this.props;
+
+    setPageTitle('Uusi täydennysrakentamiskorvaus');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),

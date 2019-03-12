@@ -28,6 +28,7 @@ import {
   getLabelOfOption,
   getSearchQuery,
   getUrlParams,
+  setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
@@ -80,6 +81,8 @@ class LandUseContractListPage extends Component<Props, State> {
       receiveTopNavigationSettings,
     } = this.props;
     const searchQuery = getUrlParams(search);
+
+    setPageTitle('Maankäyttösopimukset');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LAND_USE_CONTRACTS),

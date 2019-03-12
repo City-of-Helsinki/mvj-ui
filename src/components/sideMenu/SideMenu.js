@@ -5,18 +5,22 @@ import {Link} from 'react-router-dom';
 import {withRouter} from 'react-router';
 import classnames from 'classnames';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import Authorization from '$components/authorization/Authorization';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
+import SubMenu from './SubMenu';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {CancelChangesModalTexts, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
-import {isMethodAllowed} from '$util/helpers';
+import {hasPermissions, isMethodAllowed} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import type {Methods as MethodsType} from '$src/types';
 
 type Props = {
@@ -32,11 +36,14 @@ type Props = {
   leaseholdTransferMethods: MethodsType,
   onLinkClick: Function,
   rentBasisMethods: MethodsType,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
   isClosing: boolean,
+  isOpen: boolean,
   isOpening: boolean,
+  subMenuKey: string,
 }
 
 class SideMenu extends Component<Props, State> {
@@ -45,24 +52,34 @@ class SideMenu extends Component<Props, State> {
 
   state = {
     isClosing: false,
+    isOpen: false,
     isOpening: false,
+    subMenuKey: '',
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.isOpen !== state.isOpen) {
+      newState.isOpen = props.isOpen;
+
+      if(props.isOpen) {
+        newState.isOpening = true;
+      } else {
+        newState.isClosing = true;
+      }
+    }
+
+    return !isEmpty(newState) ? newState : null;
   }
 
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
       const linkNode: any = ReactDOM.findDOMNode(this.firstLink);
 
-      this.setState({
-        isOpening: true,
-      });
-
       if(linkNode) {
         linkNode.focus();
       }
-    } else if(prevProps.isOpen && !this.props.isOpen) {
-      this.setState({
-        isClosing: true,
-      });
     }
   }
 
@@ -99,6 +116,10 @@ class SideMenu extends Component<Props, State> {
     return null;
   }
 
+  handleHeaderClick = (key) => {
+    this.setState({subMenuKey: key});
+  }
+
   render() {
     const {
       areaNoteMethods,
@@ -111,9 +132,11 @@ class SideMenu extends Component<Props, State> {
       leaseMethods,
       leaseholdTransferMethods,
       rentBasisMethods,
+      usersPermissions,
     } = this.props;
-    const {isClosing, isOpening} = this.state;
+    const {isClosing, isOpening, subMenuKey} = this.state;
     const width =  this.getSideMenuWidth();
+
 
     return(
       <AppConsumer>
@@ -121,6 +144,8 @@ class SideMenu extends Component<Props, State> {
           const handleClick = (e: any) => {
             const {onLinkClick} = this.props,
               hasDirtyPages = hasAnyPageDirtyForms();
+
+            this.setState({subMenuKey: ''});
 
             if(hasDirtyPages) {
               const target = e.target;
@@ -147,7 +172,17 @@ class SideMenu extends Component<Props, State> {
           };
 
           return(
-            <div ref={this.setComponentRef} className={classnames('side-menu', {'is-menu-open': isOpen})} style={{width: width}}>
+            <div
+              ref={this.setComponentRef}
+              className={classnames('side-menu',
+                {
+                  'is-closing': isClosing,
+                  'is-menu-open': isOpen,
+                  'is-opening': isOpening,
+                },
+              )}
+              style={{width: width}}
+            >
               {isFetchingCommonAttributes && <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>}
               {!isFetchingCommonAttributes &&
                 <ul hidden={!isOpen && !isClosing && !isOpening}>
@@ -157,24 +192,53 @@ class SideMenu extends Component<Props, State> {
                   <Authorization allow={isMethodAllowed(contactMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.CONTACTS)}>Asiakkaat</Link></li>
                   </Authorization>
-                  <Authorization allow={isMethodAllowed(indexMethods, Methods.GET)}>
-                    <li><Link onClick={handleClick} to={getRouteById(Routes.INDEX)}>Elinkustannusindeksi</Link></li>
-                  </Authorization>
                   <li><Link onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
                   <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_NOTES)}>Muistettavat ehdot</Link></li>
                   </Authorization>
-                  <Authorization allow={isMethodAllowed(invoiceMethods, Methods.GET)}>
-                    <li><Link onClick={handleClick} to={getRouteById(Routes.SAP_INVOICES)}>SAP laskut</Link></li>
-                  </Authorization>
                   <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.INFILL_DEVELOPMENTS)}>Täydennysrakentamiskorvaukset</Link></li>
                   </Authorization>
-                  <Authorization allow={isMethodAllowed(leaseholdTransferMethods, Methods.GET)}>
-                    <li><Link onClick={handleClick} to={getRouteById(Routes.LEASEHOLD_TRANSFER)}>Vuokraoikeuden siirrot</Link></li>
-                  </Authorization>
                   <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperusteet</Link></li>
+                  </Authorization>
+                  <Authorization allow={isMethodAllowed(indexMethods, Methods.GET) ||
+                    hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) ||
+                    isMethodAllowed(invoiceMethods, Methods.GET) ||
+                    isMethodAllowed(leaseholdTransferMethods, Methods.GET)}
+                  >
+                    <SubMenu
+                      header='Työkalut'
+                      isOpen={subMenuKey === 'tools'}
+                      items={[
+                        {
+                          allow: isMethodAllowed(indexMethods, Methods.GET),
+                          onClick: handleClick,
+                          text: 'Elinkustannusindeksit',
+                          to: getRouteById(Routes.INDEX),
+                        },
+                        {
+                          allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE),
+                          onClick: handleClick,
+                          text: 'Kaupparekisterihaku',
+                          to: getRouteById(Routes.TRADE_REGISTER),
+                        },
+                        {
+                          allow: isMethodAllowed(invoiceMethods, Methods.GET),
+                          onClick: handleClick,
+                          text: 'SAP laskut',
+                          to: getRouteById(Routes.SAP_INVOICES),
+                        },
+                        {
+                          allow: isMethodAllowed(leaseholdTransferMethods, Methods.GET),
+                          onClick: handleClick,
+                          text: 'Vuokraoikeuden siirrot',
+                          to: getRouteById(Routes.LEASEHOLD_TRANSFER),
+                        },
+                      ]}
+                      menuKey='tools'
+                      onHeaderClick={this.handleHeaderClick}
+                    />
                   </Authorization>
                 </ul>
               }

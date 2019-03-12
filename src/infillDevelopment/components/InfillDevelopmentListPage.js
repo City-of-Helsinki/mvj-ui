@@ -37,6 +37,7 @@ import {
   getUrlParams,
   isFieldAllowedToRead,
   isMethodAllowed,
+  setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
@@ -110,6 +111,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const query = getUrlParams(search);
     const newState = {};
 
+    setPageTitle('Täydennysrakentamiskorvaukset');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),

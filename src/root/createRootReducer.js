@@ -35,6 +35,7 @@ import rentBasisReducer from '../rentbasis/reducer';
 import rentForPeriodReducer from '../rentForPeriod/reducer';
 import sapInvoiceReducer from '$src/sapInvoice/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
+import tradeRegisterReducer from '$src/tradeRegister/reducer';
 import uiDataReducer from '$src/uiData/reducer';
 import usersReducer from '../users/reducer';
 import usersPermissionsReducer from '../usersPermissions/reducer';
@@ -80,6 +81,7 @@ export default (history: Object): Reducer<RootState> =>
     sapInvoice: sapInvoiceReducer,
     toastr: toastrReducer,
     topNavigation: topNavigationReducer,
+    tradeRegister: tradeRegisterReducer,
     uiData: uiDataReducer,
     user: usersReducer,
     usersPermissions: usersPermissionsReducer,

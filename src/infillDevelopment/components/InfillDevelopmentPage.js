@@ -30,6 +30,7 @@ import {
   fetchSingleInfillDevelopment,
   hideEditMode,
   receiveFormInitialValues,
+  receiveSingleInfillDevelopment,
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/infillDevelopment/actions';
@@ -42,7 +43,14 @@ import {
   getContentInfillDevelopmentCopy,
   getContentInfillDevelopmentForDb,
 } from '$src/infillDevelopment/helpers';
-import {getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, scrollToTopPage} from '$util/helpers';
+import {
+  getSearchQuery,
+  getUrlParams,
+  isFieldAllowedToRead,
+  isMethodAllowed,
+  scrollToTopPage,
+  setPageTitle,
+} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
@@ -93,6 +101,7 @@ type Props = {
     params: Object,
   },
   receiveFormInitialValues: Function,
+  receiveSingleInfillDevelopment: Function,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
@@ -131,6 +140,8 @@ class InfillDevelopmentPage extends Component<Props, State> {
       receiveTopNavigationSettings,
     } = this.props;
     const query = getUrlParams(search);
+
+    this.setPageTitle();
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
@@ -177,6 +188,10 @@ class InfillDevelopmentPage extends Component<Props, State> {
     } = this.props;
     const {activeTab} = this.state;
 
+    if(prevProps.currentInfillDevelopment !== currentInfillDevelopment) {
+      this.setPageTitle();
+    }
+
     if(isEmpty(prevProps.currentInfillDevelopment) && !isEmpty(currentInfillDevelopment)) {
       const storedInfillDevelopmentId = getSessionStorageItem('infillDevelopmentId');
 
@@ -211,6 +226,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
       hideEditMode,
       match: {params: {infillDevelopmentId}},
       location: {pathname},
+      receiveSingleInfillDevelopment,
     } = this.props;
 
     if(pathname !== `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${infillDevelopmentId}`) {
@@ -219,8 +235,20 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
     this.stopAutoSaveTimer();
 
+    // Clear current infill development compensation
+    receiveSingleInfillDevelopment({});
+
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  setPageTitle = () => {
+    const {currentInfillDevelopment} = this.props;
+    const name = (currentInfillDevelopment && currentInfillDevelopment.name) || '';
+
+    setPageTitle(`${name
+      ? `${name} | `
+      : ''}Täydennysrakentamiskorvaus`);
   }
 
   handleLeavePage = (e) => {
@@ -525,6 +553,7 @@ export default flowRight(
       fetchSingleInfillDevelopment,
       hideEditMode,
       receiveFormInitialValues,
+      receiveSingleInfillDevelopment,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
       showEditMode,
