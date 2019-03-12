@@ -65,4 +65,5 @@ export const PermissionMissingTexts = {
   LEASEHOLD_TRANSFER: 'Ei oikeuksia vuokraoikeuden siirtoihin',
   LEASE_TENANTS_EDIT: 'Ei oikeuksia muokata vuokralaisia',
   RENT_BASIS: 'Ei oikeuksia vuokrausperusteisiin.',
+  TRADE_REGISTER: 'Ei oikeuksia kaupparekisteriotteisiin',
 };

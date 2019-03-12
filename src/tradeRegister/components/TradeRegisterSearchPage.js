@@ -6,21 +6,30 @@ import {Row, Column} from 'react-foundation';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
+import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
 import Search from '$src/tradeRegister/components/Search';
 import TradeRegisterTemplate from '$src/tradeRegister/components/TradeRegisterTemplate';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/tradeRegister/enums';
-import {getSearchQuery, getUrlParams} from '$util/helpers';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {hasPermissions, getSearchQuery, getUrlParams} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   history: Object,
   initialize: Function,
+  isFetchingCommonAttributes: boolean, // Via withCommonAttributes HOC
   location: Object,
   receiveTopNavigationSettings: Function,
+  usersPermissions: UsersPermissionsType, // Via withCommonAttributes
 };
 
 type State = {
@@ -79,16 +88,19 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
   }
 
   render() {
+    const {isFetchingCommonAttributes, usersPermissions} = this.props;
     const {businessId} = this.state;
+
+    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.TRADE_REGISTER} /></PageContainer>;
 
     return (
       <PageContainer>
         <Row>
           <Column small={12} medium={6} large={8}></Column>
           <Column small={12} medium={6} large={4}>
-            <Search
-              onSearch={this.handleSearchChange}
-            />
+            <Search onSearch={this.handleSearchChange} />
           </Column>
         </Row>
 
@@ -108,6 +120,7 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
+  withCommonAttributes,
   withRouter,
   connect(
     null,

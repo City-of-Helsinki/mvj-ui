@@ -12,11 +12,13 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {CancelChangesModalTexts, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
-import {isMethodAllowed} from '$util/helpers';
+import {hasPermissions, isMethodAllowed} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import type {Methods as MethodsType} from '$src/types';
 
 type Props = {
@@ -32,6 +34,7 @@ type Props = {
   leaseholdTransferMethods: MethodsType,
   onLinkClick: Function,
   rentBasisMethods: MethodsType,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -111,6 +114,7 @@ class SideMenu extends Component<Props, State> {
       leaseMethods,
       leaseholdTransferMethods,
       rentBasisMethods,
+      usersPermissions,
     } = this.props;
     const {isClosing, isOpening} = this.state;
     const width =  this.getSideMenuWidth();
@@ -164,7 +168,9 @@ class SideMenu extends Component<Props, State> {
                   <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_NOTES)}>Muistettavat ehdot</Link></li>
                   </Authorization>
-                  <li><Link onClick={handleClick} to={getRouteById(Routes.TRADE_REGISTER)}>Kaupparekisterihaku</Link></li>
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.TRADE_REGISTER)}>Kaupparekisterihaku</Link></li>
+                  </Authorization>
                   <Authorization allow={isMethodAllowed(invoiceMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.SAP_INVOICES)}>SAP laskut</Link></li>
                   </Authorization>

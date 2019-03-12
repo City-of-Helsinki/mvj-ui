@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, Component} from 'react';
 import {connect} from 'react-redux';
 import {change, getFormValues, isDirty} from 'redux-form';
 import {withRouter} from 'react-router';
@@ -33,8 +33,10 @@ import {
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {ContactTypes, FormNames} from '$src/contacts/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
 import {
+  hasPermissions,
   getSearchQuery,
   getUrlParams,
   isMethodAllowed,
@@ -54,6 +56,7 @@ import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import type {Contact} from '../types';
 
 type Props = {
@@ -79,6 +82,7 @@ type Props = {
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
+  usersPermissions: UsersPermissionsType, // via withCommonAttributes HOC
 }
 
 type State = {
@@ -316,6 +320,7 @@ class ContactPage extends Component<Props, State> {
       isFetching,
       isFetchingCommonAttributes,
       isSaveClicked,
+      usersPermissions,
     } = this.props;
     const {activeTab, isRestoreModalOpen} = this.state;
 
@@ -377,7 +382,7 @@ class ContactPage extends Component<Props, State> {
               },
               {
                 label: 'Kaupparekisteri',
-                allow: !!contact.business_id && contact.type !== ContactTypes.PERSON,
+                allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !!contact.business_id && contact.type !== ContactTypes.PERSON,
               },
             ]}
             onTabClick={this.handleTabClick}
@@ -398,17 +403,24 @@ class ContactPage extends Component<Props, State> {
               </ContentContainer>
             </TabPane>
 
-            {!!contact.business_id && contact.type !== ContactTypes.PERSON &&
-              <TabPane>
-                <ContentContainer>
-                  <h2>Kaupparekisteri</h2>
-                  <Divider />
-                  <TradeRegisterTemplate
-                    businessId={contact.business_id}
-                  />
-                </ContentContainer>
-              </TabPane>
-            }
+            <TabPane>
+              <ContentContainer>
+                <Authorization
+                  allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}
+                  errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                >
+                  {!!contact.business_id && contact.type !== ContactTypes.PERSON &&
+                    <Fragment>
+                      <h2>Kaupparekisteri</h2>
+                      <Divider />
+                      <TradeRegisterTemplate
+                        businessId={contact.business_id}
+                      />
+                    </Fragment>
+                  }
+                </Authorization>
+              </ContentContainer>
+            </TabPane>
           </TabContent>
         </PageContainer>
       </FullWidthContainer>
