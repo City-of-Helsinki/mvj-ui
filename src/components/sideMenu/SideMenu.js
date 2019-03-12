@@ -202,39 +202,44 @@ class SideMenu extends Component<Props, State> {
                   <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperusteet</Link></li>
                   </Authorization>
-                  <SubMenu
-                    header='Työkalut'
-                    isOpen={subMenuKey === 'tools'}
-                    items={[
-                      {
-                        allow: isMethodAllowed(indexMethods, Methods.GET),
-                        onClick: handleClick,
-                        text: 'Elinkustannusindeksit',
-                        to: getRouteById(Routes.INDEX),
-                      },
-                      {
-                        allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE),
-                        onClick: handleClick,
-                        text: 'Kaupparekisterihaku',
-                        to: getRouteById(Routes.TRADE_REGISTER),
-                      },
-                      {
-                        allow: isMethodAllowed(invoiceMethods, Methods.GET),
-                        onClick: handleClick,
-                        text: 'SAP laskut',
-                        to: getRouteById(Routes.SAP_INVOICES),
-                      },
-                      {
-                        allow: isMethodAllowed(leaseholdTransferMethods, Methods.GET),
-                        onClick: handleClick,
-                        text: 'Vuokraoikeuden siirrot',
-                        to: getRouteById(Routes.LEASEHOLD_TRANSFER),
-                      },
-                    ]}
-
-                    menuKey='tools'
-                    onHeaderClick={this.handleHeaderClick}
-                  />
+                  <Authorization allow={isMethodAllowed(indexMethods, Methods.GET) ||
+                    hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) ||
+                    isMethodAllowed(invoiceMethods, Methods.GET) ||
+                    isMethodAllowed(leaseholdTransferMethods, Methods.GET)}
+                  >
+                    <SubMenu
+                      header='Työkalut'
+                      isOpen={subMenuKey === 'tools'}
+                      items={[
+                        {
+                          allow: isMethodAllowed(indexMethods, Methods.GET),
+                          onClick: handleClick,
+                          text: 'Elinkustannusindeksit',
+                          to: getRouteById(Routes.INDEX),
+                        },
+                        {
+                          allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE),
+                          onClick: handleClick,
+                          text: 'Kaupparekisterihaku',
+                          to: getRouteById(Routes.TRADE_REGISTER),
+                        },
+                        {
+                          allow: isMethodAllowed(invoiceMethods, Methods.GET),
+                          onClick: handleClick,
+                          text: 'SAP laskut',
+                          to: getRouteById(Routes.SAP_INVOICES),
+                        },
+                        {
+                          allow: isMethodAllowed(leaseholdTransferMethods, Methods.GET),
+                          onClick: handleClick,
+                          text: 'Vuokraoikeuden siirrot',
+                          to: getRouteById(Routes.LEASEHOLD_TRANSFER),
+                        },
+                      ]}
+                      menuKey='tools'
+                      onHeaderClick={this.handleHeaderClick}
+                    />
+                  </Authorization>
                 </ul>
               }
             </div>
