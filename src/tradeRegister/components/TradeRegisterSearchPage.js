@@ -17,7 +17,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {FormNames} from '$src/tradeRegister/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {hasPermissions, getSearchQuery, getUrlParams} from '$util/helpers';
+import {hasPermissions, getSearchQuery, getUrlParams, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
@@ -48,6 +48,8 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
       receiveTopNavigationSettings,
     } = this.props;
     const query = getUrlParams(search);
+
+    setPageTitle('Kaupparekisterihaku');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.TRADE_REGISTER),

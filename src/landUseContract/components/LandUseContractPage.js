@@ -41,6 +41,7 @@ import {
   hideEditMode,
   receiveFormValidFlags,
   receiveIsSaveClicked,
+  receiveSingleLandUseContract,
   showEditMode,
 } from '$src/landUseContract/actions';
 import {FormNames} from '$src/landUseContract/enums';
@@ -57,7 +58,7 @@ import {
   getContentLitigants,
   isLitigantArchived,
 } from '$src/landUseContract/helpers';
-import {getSearchQuery, getUrlParams, isMethodAllowed} from '$util/helpers';
+import {getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
@@ -119,6 +120,7 @@ type Props = {
   },
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
+  receiveSingleLandUseContract: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
   showEditMode: Function,
@@ -154,6 +156,8 @@ class LandUseContractPage extends Component<Props, State> {
     } = this.props;
     const query = getUrlParams(search);
 
+    this.setPageTitle();
+
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LAND_USE_CONTRACTS),
       pageTitle: 'Maankäyttösopimukset',
@@ -182,12 +186,16 @@ class LandUseContractPage extends Component<Props, State> {
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const {
       currentLandUseContract,
       isEditMode,
       match: {params: {landUseContractId}},
     } = this.props;
+
+    if(prevProps.currentLandUseContract !== currentLandUseContract) {
+      this.setPageTitle();
+    }
 
     if(isEmpty(prevProps.currentLandUseContract) && !isEmpty(currentLandUseContract)) {
       const storedLandUseContractId = getSessionStorageItem('landUseContractId');
@@ -209,14 +217,27 @@ class LandUseContractPage extends Component<Props, State> {
       hideEditMode,
       location: {pathname},
       match: {params: {landUseContractId}},
+      receiveSingleLandUseContract,
     } = this.props;
 
     if(pathname !== `${getRouteById(Routes.LAND_USE_CONTRACTS)}/${landUseContractId}`) {
       clearUnsavedChanges();
     }
 
+    // Clear current land use contract
+    receiveSingleLandUseContract({});
+
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  setPageTitle = () => {
+    const {currentLandUseContract} = this.props;
+    const identifier = getContentLandUseContractIdentifier(currentLandUseContract);
+
+    setPageTitle(`${identifier
+      ? `${identifier} | `
+      : ''}Maankäyttösopimus`);
   }
 
   startAutoSaveTimer = () => {
@@ -769,6 +790,7 @@ export default flowRight(
       initialize,
       receiveFormValidFlags,
       receiveIsSaveClicked,
+      receiveSingleLandUseContract,
       receiveTopNavigationSettings,
       showEditMode,
     }

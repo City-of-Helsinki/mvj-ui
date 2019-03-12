@@ -48,6 +48,7 @@ import {
   fetchSingleLease,
   hideEditMode,
   patchLease,
+  receiveSingleLease,
   receiveFormValidFlags,
   receiveIsSaveClicked,
   showEditMode,
@@ -70,7 +71,7 @@ import {
 import {ButtonColors, FormNames as ComponentFormNames} from '$components/enums';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {clearUnsavedChanges} from '$src/leases/helpers';
+import {clearUnsavedChanges, getContentLeaseIdentifier} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {
   getSearchQuery,
@@ -79,6 +80,7 @@ import {
   isFieldAllowedToRead,
   isMethodAllowed,
   scrollToTopPage,
+  setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getCommentsByLease} from '$src/comments/selectors';
@@ -168,6 +170,7 @@ type Props = {
     params: Object,
   },
   patchLease: Function,
+  receiveSingleLease: Function,
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
@@ -263,6 +266,8 @@ class LeasePage extends Component<Props, State> {
     } = this.props;
     const query = getUrlParams(search);
 
+    this.setPageTitle();
+
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASES),
       pageTitle: 'Vuokraukset',
@@ -339,6 +344,10 @@ class LeasePage extends Component<Props, State> {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
     }
+
+    if(prevProps.currentLease !== currentLease) {
+      this.setPageTitle();
+    }
   }
 
   componentWillUnmount() {
@@ -348,6 +357,7 @@ class LeasePage extends Component<Props, State> {
       hideEditMode,
       location: {pathname},
       match: {params: {leaseId}},
+      receiveSingleLease,
     } = this.props;
 
 
@@ -357,10 +367,22 @@ class LeasePage extends Component<Props, State> {
     this.stopAutoSaveTimer();
 
     clearPreviewInvoices();
+    // Clear current lease
+    receiveSingleLease({});
+
     destroy(ComponentFormNames.INVOICE_SIMULATOR);
     destroy(ComponentFormNames.RENT_CALCULATOR);
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  setPageTitle = () => {
+    const {currentLease} = this.props;
+    const identifier = getContentLeaseIdentifier(currentLease);
+
+    setPageTitle(`${identifier
+      ? `${identifier} | `
+      : ''}Vuokraus`);
   }
 
   startAutoSaveTimer = () => {
@@ -1164,6 +1186,7 @@ export default flowRight(
       patchLease,
       receiveFormValidFlags,
       receiveIsSaveClicked,
+      receiveSingleLease,
       receiveTopNavigationSettings,
       showEditMode,
     }

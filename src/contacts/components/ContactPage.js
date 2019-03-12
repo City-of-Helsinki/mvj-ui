@@ -28,6 +28,7 @@ import {
   hideEditMode,
   initializeContactForm,
   receiveIsSaveClicked,
+  receiveSingleContact,
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -41,6 +42,7 @@ import {
   getUrlParams,
   isMethodAllowed,
   scrollToTopPage,
+  setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
@@ -80,6 +82,7 @@ type Props = {
     params: Object,
   },
   receiveIsSaveClicked: Function,
+  receiveSingleContact: Function,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
   usersPermissions: UsersPermissionsType, // via withCommonAttributes HOC
@@ -109,6 +112,8 @@ class ContactPage extends Component<Props, State> {
     } = this.props;
     const query = getUrlParams(search);
 
+    this.setPageTitle();
+
     receiveIsSaveClicked(false);
 
     receiveTopNavigationSettings({
@@ -128,10 +133,14 @@ class ContactPage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const {match: {params: {contactId}}} = this.props;
+    const {contact, match: {params: {contactId}}} = this.props;
     const {activeTab} = this.state;
 
-    if(isEmpty(prevProps.contact) && !isEmpty(this.props.contact)) {
+    if(contact !== prevProps.contact) {
+      this.setPageTitle();
+    }
+
+    if(isEmpty(prevProps.contact) && !isEmpty(contact)) {
       const storedContactId = getSessionStorageItem('contactId');
 
       if(Number(contactId) === storedContactId) {
@@ -149,17 +158,30 @@ class ContactPage extends Component<Props, State> {
     }
   }
 
+  setPageTitle = () => {
+    const {contact} = this.props;
+    const nameInfo = getContactFullName(contact);
+
+    setPageTitle(`${nameInfo
+      ? `${nameInfo} | `
+      : ''}Asiakas`);
+  }
+
   componentWillUnmount() {
     const {
       hideEditMode,
       match: {params: {contactId}},
       location: {pathname},
+      receiveSingleContact,
     } = this.props;
 
     if(pathname !== `${getRouteById(Routes.CONTACTS)}/${contactId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
+
+    // Clear current contact
+    receiveSingleContact({});
 
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
@@ -453,6 +475,7 @@ export default flowRight(
       hideEditMode,
       initializeContactForm,
       receiveIsSaveClicked,
+      receiveSingleContact,
       receiveTopNavigationSettings,
       showEditMode,
     }

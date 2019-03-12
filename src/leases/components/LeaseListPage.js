@@ -52,6 +52,7 @@ import {
   getUrlParams,
   isFieldAllowedToRead,
   isMethodAllowed,
+  setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
@@ -119,6 +120,8 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
     const newState = {};
+
+    setPageTitle('Vuokraukset');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASES),

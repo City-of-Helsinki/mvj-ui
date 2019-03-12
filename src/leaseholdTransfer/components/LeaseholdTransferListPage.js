@@ -34,6 +34,7 @@ import {
   getUrlParams,
   isFieldAllowedToRead,
   isMethodAllowed,
+  setPageTitle,
 } from '$src/util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getLeaseholdTransferList} from '$src/leaseholdTransfer/selectors';
@@ -129,6 +130,8 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     const {initialize, location: {search}, receiveTopNavigationSettings} = this.props;
     const query = getUrlParams(search);
     const newState = {};
+
+    setPageTitle('Vuokraoikeusien siirrot');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASEHOLD_TRANSFER),

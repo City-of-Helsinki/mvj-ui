@@ -39,6 +39,7 @@ import {
   isEmptyValue,
   isFieldAllowedToRead,
   isMethodAllowed,
+  setPageTitle,
 } from '$src/util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getSapInvoices as getSapInvoiceList} from '$src/sapInvoice/selectors';
@@ -147,6 +148,8 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     const {location: {search}, receiveTopNavigationSettings} = this.props;
     const query = getUrlParams(search);
     const newState = {};
+
+    setPageTitle('SAP laskut');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.SAP_INVOICES),
