@@ -710,7 +710,7 @@ export const LeaseTenantsFieldTitles = {
   TENANTS: 'Vuokralaiset',
   REFERENCE: 'Viite',
   SHARE_DENIMONATOR: 'Jakaja',
-  SHARE_FRACTION: 'Osuus murtolukuna',
+  SHARE_FRACTION: 'Hallintaosuus',
   SHARE_NUMERATOR: 'Jaettava',
   SHARE_PERCENTAGE: 'Laskun hallintaosuus',
 };

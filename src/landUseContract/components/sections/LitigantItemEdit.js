@@ -180,7 +180,7 @@ const LitigantItemEdit = ({
       headerSubtitles={savedLitigant &&
         <Fragment>
           <Column>
-            <CollapseHeaderSubtitle><span>Osuus murtolukuna:</span> {savedLitigant.share_numerator || ''} / {savedLitigant.share_denominator || ''}</CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle><span>Hallintaosuus:</span> {savedLitigant.share_numerator || ''} / {savedLitigant.share_denominator || ''}</CollapseHeaderSubtitle>
           </Column>
           <Column>
             <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(savedLitigant, 'litigant.start_date'), get(savedLitigant, 'litigant.end_date')) || '-'}</CollapseHeaderSubtitle>
@@ -223,7 +223,7 @@ const LitigantItemEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={12} medium={6} large={4}>
-                <FormTextTitle required title='Osuus murtolukuna' />
+                <FormTextTitle required title='Hallintaosuus' />
                 <Row>
                   <Column>
                     <FormField

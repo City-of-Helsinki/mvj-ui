@@ -50,7 +50,7 @@ const Litigant = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <CollapseHeaderSubtitle><span>Osuus murtolukuna:</span> {get(litigant, 'share_numerator', '')} / {get(litigant, 'share_denominator', '')}</CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle><span>Hallintaosuus:</span> {get(litigant, 'share_numerator', '')} / {get(litigant, 'share_denominator', '')}</CollapseHeaderSubtitle>
           </Column>
           <Column>
             <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(litigant, 'litigant.start_date'), get(litigant, 'litigant.end_date')) || '-'}</CollapseHeaderSubtitle>
