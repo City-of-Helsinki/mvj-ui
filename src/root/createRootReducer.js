@@ -6,6 +6,7 @@ import {reducer as toastrReducer} from 'react-redux-toastr';
 import {connectRouter} from 'connected-react-router';
 import apiReducer from '../api/reducer';
 import areaNoteReducer from '../areaNote/reducer';
+import auditLogReducer from '$src/auditLog/reducer';
 import authReducer from '../auth/reducer';
 import billingPeriodReducer from '../billingPeriods/reducer';
 import collectionCourtDecisionReducer from '../collectionCourtDecision/reducer';
@@ -48,6 +49,7 @@ export default (history: Object): Reducer<RootState> =>
   combineReducers<Object, any>({
     api: apiReducer,
     areaNote: areaNoteReducer,
+    auditLog: auditLogReducer,
     auth: authReducer,
     billingPeriod: billingPeriodReducer,
     collectionCourtDecision: collectionCourtDecisionReducer,

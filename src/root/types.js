@@ -1,6 +1,7 @@
 // @flow
 import type {ApiState} from '$src/api/types';
 import type {AreaNoteState} from '$src/areaNote/types';
+import type {AuditLogState} from '$src/auditLog/types';
 import type {AuthState} from '$src/auth/types';
 import type {BillingPeriodState} from '$src/billingPeriods/types';
 import type {CollectionCourtDecisionState} from '$src/collectionCourtDecision/types';
@@ -39,6 +40,7 @@ export type RootState = {
   api: ApiState,
   apiToken: AuthState,
   areaNote: AreaNoteState,
+  auditLog: AuditLogState,
   billingPeriod: BillingPeriodState,
   collectionCourtDecision: CollectionCourtDecisionState,
   collectionLetter: CollectionLetterState,
