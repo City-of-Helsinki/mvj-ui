@@ -9,14 +9,14 @@ import type {SapInvoiceList} from '$src/sapInvoice/types';
 
 /*
 * Map sap invoice list count from API response
-* @param {Object} query
+* @param {Object} list
 * @returns {number}
 */
 export const getSapInvoiceListCount = (list: SapInvoiceList) => get(list, 'count', 0);
 
 /*
 * Map sap invoices from API response
-* @param {Object} query
+* @param {Object} list
 * @returns {number}
 */
 export const getSapInvoices = (list: SapInvoiceList) =>
@@ -35,7 +35,8 @@ export const getSapInvoices = (list: SapInvoiceList) =>
 
 /*
 * Map sap invoice max page from API response
-* @param {Object} query
+* @param {Object} list
+* @param {number} size
 * @returns {number}
 */
 export const getSapInvoiceListMaxPage = (list: SapInvoiceList, size: number) => {

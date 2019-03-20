@@ -1,6 +1,7 @@
 // @flow
 import {all, fork} from 'redux-saga/effects';
 import areaNoteSaga from '../areaNote/saga';
+import auditLogSaga from '$src/auditLog/saga';
 import authSaga from '../auth/saga';
 import billingPeriodsSaga from '../billingPeriods/saga';
 import collectionCourtDecisionSaga from '../collectionCourtDecision/saga';
@@ -42,6 +43,7 @@ export default () =>
   function* rootSaga() {
     yield all([
       fork(areaNoteSaga),
+      fork(auditLogSaga),
       fork(authSaga),
       fork(billingPeriodsSaga),
       fork(collectionCourtDecisionSaga),

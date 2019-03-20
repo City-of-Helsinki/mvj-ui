@@ -1,6 +1,7 @@
 // @flow
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
+import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
 import FormText from '$components/form/FormText';
@@ -59,11 +60,24 @@ const DownloadableFiles = ({
           }
           {!!companyExtended &&
             <Fragment>
-              <FileDownloadLink
-                fileName={`kaupparekisteriote_${businessId}.pdf`}
-                fileUrl={createUrlWithoutVersionSuffix(`trade_register/trade_register_entry/${businessId}/`)}
-                label='Kaupparekisteriote (pdf)'
-              />
+              <Row>
+                <Column>
+                  <FileDownloadLink
+                    fileName={`kaupparekisteriote_${businessId}.pdf`}
+                    fileUrl={createUrlWithoutVersionSuffix(`trade_register/trade_register_entry/${businessId}/`)}
+                    label='Kaupparekisteriote (pdf)'
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <FileDownloadLink
+                    fileName={`yhteisosaannot_${businessId}.pdf`}
+                    fileUrl={createUrlWithoutVersionSuffix(`trade_register/statute/${businessId}/`)}
+                    label='Yhteisösäännöt (pdf)'
+                  />
+                </Column>
+              </Row>
             </Fragment>
           }
         </Fragment>

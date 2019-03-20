@@ -146,7 +146,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 
         if(query.opened_invoice) {
           const invoice = formatedInvoices
-            ? formatedInvoices.find((invoice) => invoice.id = query.opened_invoice)
+            ? formatedInvoices.find((invoice) => invoice.id == query.opened_invoice)
             : null;
 
           if(invoice) {

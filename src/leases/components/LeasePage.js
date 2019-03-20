@@ -22,6 +22,7 @@ import FullWidthContainer from '$components/content/FullWidthContainer';
 import Invoices from './leaseSections/invoice/Invoices';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
+import LeaseAuditLog from './leaseSections/auditLog/LeaseAuditLog';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -875,6 +876,7 @@ class LeasePage extends Component<Props, State> {
       isSaving,
       leaseAttributes,
       leaseMethods,
+      match: {params: {leaseId}},
       usersPermissions,
     } = this.props;
     const showDelete = this.shouldShowDelete();
@@ -994,6 +996,10 @@ class LeasePage extends Component<Props, State> {
                 label: 'Kartta',
                 allow: isMethodAllowed(leaseMethods, Methods.GET),
               },
+              {
+                label: 'Muutoshistoria',
+                allow: isMethodAllowed(leaseMethods, Methods.GET),
+              },
             ]}
             onTabClick={this.handleTabClick}
           />
@@ -1111,6 +1117,14 @@ class LeasePage extends Component<Props, State> {
               <ContentContainer>
                 <Authorization allow={isMethodAllowed(leaseMethods, Methods.GET)}>
                   <SingleLeaseMap />
+                </Authorization>
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <Authorization allow={isMethodAllowed(leaseMethods, Methods.GET)}>
+                  <LeaseAuditLog leaseId={leaseId}/>
                 </Authorization>
               </ContentContainer>
             </TabPane>
