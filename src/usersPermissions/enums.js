@@ -59,6 +59,7 @@ export const UsersPermissions = {
   VIEW_INVOICESET: 'view_invoiceset',
   ADD_COLLECTIONLETTER: 'add_collectionletter',
   VIEW_COLLECTIONLETTER: 'view_collectionletter',
+  VIEW_CONTACT: 'view_contact',
   ADD_INFILLDEVELOPMENTCOMPENSATIONLEASE: 'add_infilldevelopmentcompensationlease',
   DELETE_INFILLDEVELOPMENTCOMPENSATIONLEASE: 'delete_infilldevelopmentcompensationlease',
   ADD_INFILLDEVELOPMENTCOMPENSATIONDECISION: 'add_infilldevelopmentcompensationdecision',

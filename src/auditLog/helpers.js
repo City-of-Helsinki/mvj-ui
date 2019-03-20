@@ -237,7 +237,6 @@ export const getAuditLogContentLabel = (
       break;
   }
 
-  console.log(contentType, fieldAttributes);
   return get(fieldAttributes, 'label') || getGeneralAuditLogContentLabel(key);
 };
 

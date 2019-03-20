@@ -49,8 +49,8 @@ const AuditLogTableItemChange = ({
         infillDevelopmentCompensationAttributes,
         contentType,
         change.key) || '-'}</td>
-      <td><ShowMore text={change.oldValue || '-'} /></td>
-      <td><ShowMore text={change.newValue || '-'} /></td>
+      <td><ShowMore className='no-margin' text={change.oldValue || '-'} /></td>
+      <td><ShowMore className='no-margin' text={change.newValue || '-'} /></td>
     </tr>
   );
 };

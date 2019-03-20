@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
+import ContactAuditLog from './ContactAuditLog';
 import ContactEdit from './ContactEdit';
 import ContactReadonly from './ContactReadonly';
 import ContentContainer from '$components/content/ContentContainer';
@@ -342,6 +343,7 @@ class ContactPage extends Component<Props, State> {
       isFetching,
       isFetchingCommonAttributes,
       isSaveClicked,
+      match: {params: {contactId}},
       usersPermissions,
     } = this.props;
     const {activeTab, isRestoreModalOpen} = this.state;
@@ -406,6 +408,10 @@ class ContactPage extends Component<Props, State> {
                 label: 'Kaupparekisteri',
                 allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !!contact.business_id && contact.type !== ContactTypes.PERSON,
               },
+              {
+                label: 'Muutoshistoria',
+                allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_CONTACT),
+              },
             ]}
             onTabClick={this.handleTabClick}
           />
@@ -440,6 +446,17 @@ class ContactPage extends Component<Props, State> {
                       />
                     </Fragment>
                   }
+                </Authorization>
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <Authorization
+                  allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_CONTACT)}
+                  errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                >
+                  <ContactAuditLog contactId={contactId} />
                 </Authorization>
               </ContentContainer>
             </TabPane>
