@@ -18,6 +18,7 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Tabs from '$components/tabs/Tabs';
 import TabPane from '$components/tabs/TabPane';
@@ -52,6 +53,7 @@ import {
   getIsEditMode,
   getIsFetching,
   getIsSaveClicked,
+  getIsSaving,
 } from '$src/contacts/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
@@ -78,6 +80,7 @@ type Props = {
   isFetching: boolean,
   isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   isSaveClicked: boolean,
+  isSaving: boolean,
   location: Object,
   match: {
     params: Object,
@@ -343,6 +346,7 @@ class ContactPage extends Component<Props, State> {
       isFetching,
       isFetchingCommonAttributes,
       isSaveClicked,
+      isSaving,
       match: {params: {contactId}},
       usersPermissions,
     } = this.props;
@@ -382,6 +386,11 @@ class ContactPage extends Component<Props, State> {
           onBack={this.handleBack}
         />
         <PageContainer className='with-small-control-bar'>
+          {isSaving &&
+            <LoaderWrapper className='overlay-wrapper'>
+              <Loader isLoading={isSaving} />
+            </LoaderWrapper>
+          }
           <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
             <ConfirmationModal
               confirmButtonLabel='Palauta muutokset'
@@ -476,6 +485,7 @@ const mapStateToProps = (state: RootState) => {
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
     isSaveClicked: getIsSaveClicked(state),
+    isSaving: getIsSaving(state),
   };
 };
 

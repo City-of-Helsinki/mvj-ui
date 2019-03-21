@@ -43,6 +43,7 @@ const defaultState: ContactState = {
   isFetching: false,
   isFetchingAttributes: false,
   isSaveClicked: false,
+  isSaving: false,
   list: {},
   methods: null,
 };
@@ -157,7 +158,7 @@ describe('Contacts', () => {
 
       it('should update isFetching flag to true by editContact', () => {
         const newState = {...defaultState};
-        newState.isFetching = true;
+        newState.isSaving = true;
 
         const state = contactReducer({}, editContact({}));
         expect(state).to.deep.equal(newState);
