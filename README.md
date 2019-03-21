@@ -21,7 +21,28 @@ Based on [React Boilerplate](https://github.com/nordsoftware/react-boilerplate).
 - [Enzyme](https://github.com/airbnb/enzyme) React testing utilities
 - And more...
 
-## Usage
+## Usage with Docker
+
+Start the docker container with:
+
+```bash
+docker-compose up
+```
+
+The project is now live at [http://localhost:3000](http://localhost:3000)
+
+You can log into the container to execute some commands like so:
+
+```bash
+docker exec -it mvj-ui bash
+```
+
+If you want to set up full integration with mvj backend and tunnistamo, check
+[here](https://github.com/City-of-Helsinki/mvj#connecting-to-tunnistamo)
+for the guidance.
+
+## Usage w/o Docker
+
 
 #### 1. Yarn
 Make sure you have [Yarn](https://yarnpkg.com/en/docs/install) installed globally.
