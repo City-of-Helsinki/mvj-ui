@@ -2,6 +2,7 @@
 import React, {PureComponent} from 'react';
 import classNames from 'classnames';
 
+
 const MAX_CHARS = 130;
 
 type Props = {
@@ -62,15 +63,25 @@ class ShowMore extends PureComponent<Props, State> {
     }
   }
 
+  replaceLineBreakWithBr = (text: string): any  =>
+    text.split('\n').map((item, key) =>
+      <span key={key}>
+        {item}
+        <br />
+      </span>
+    );
+
   getTextToDisplay = () => {
     const {maxChars, text} = this.props;
+
     if (this.state.open) {
-      return text;
+      return this.replaceLineBreakWithBr(text);
     }
+
     if(text && text.length > (maxChars || MAX_CHARS)) {
-      return `${this.props.text.substring(0, (maxChars || MAX_CHARS))}...`;
+      return this.replaceLineBreakWithBr(`${this.props.text.substring(0, (maxChars || MAX_CHARS))}...`);
     } else {
-      return text;
+      return this.replaceLineBreakWithBr(text);
     }
   }
 

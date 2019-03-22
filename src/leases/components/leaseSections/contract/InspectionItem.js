@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import Authorization from '$components/authorization/Authorization';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
+import ShowMore from '$components/showMore/ShowMore';
 import {LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles} from '$src/leases/enums';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {formatDate, isFieldAllowedToRead} from '$util/helpers';
@@ -38,7 +39,7 @@ const InspectionItem = ({attributes, inspection, largeScreen}: Props) => {
         </Column>
         <Column large={6}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}>
-            <FormText>{inspection.description || '–'}</FormText>
+            <ShowMore text={inspection.description || '–'} />
           </Authorization>
         </Column>
       </Row>
@@ -75,7 +76,7 @@ const InspectionItem = ({attributes, inspection, largeScreen}: Props) => {
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.DESCRIPTION)}>
               {LeaseInspectionsFieldTitles.DESCRIPTION}
             </FormTextTitle>
-            <FormText>{inspection.description || '–'}</FormText>
+            <ShowMore text={inspection.description || '–'} />
           </Authorization>
         </Column>
       </Row>
