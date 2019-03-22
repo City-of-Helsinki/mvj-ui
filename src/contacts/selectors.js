@@ -24,6 +24,9 @@ export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootStat
 export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boolean =>
   state.contact.isSaveClicked;
 
+export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean =>
+  state.contact.isSaving;
+
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.contact.attributes;
 

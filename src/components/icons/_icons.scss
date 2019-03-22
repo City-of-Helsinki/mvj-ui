@@ -22,6 +22,12 @@
     }
   }
 
+  &.icons__attach {
+    #Artboard {
+      fill: $black;
+    }
+  }
+
   &.icons__archive {
     stroke: none !important;
   }

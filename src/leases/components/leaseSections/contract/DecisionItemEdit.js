@@ -54,6 +54,7 @@ type Props = {
   errors: ?Object,
   field: string,
   isSaveClicked: boolean,
+  onAttach: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
   usersPermissions: UsersPermissionsType,
@@ -68,6 +69,7 @@ const DecisionItemEdit = ({
   errors,
   field,
   isSaveClicked,
+  onAttach,
   onRemove,
   receiveCollapseStates,
   usersPermissions,
@@ -98,6 +100,10 @@ const DecisionItemEdit = ({
         },
       },
     });
+  };
+
+  const handleAttach = () => {
+    onAttach(decisionId);
   };
 
   const sectionReadOnlyRenderer = (value: ?string) => value ? `${value} §` : '-';
@@ -131,6 +137,7 @@ const DecisionItemEdit = ({
         </Fragment>
         : '-'
       }
+      onAttach={decisionId && hasPermissions(usersPermissions, UsersPermissions.ADD_DECISION) ? handleAttach : null}
       onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_DECISION) ? onRemove : null}
       onToggle={handleDecisionCollapseToggle}
     >

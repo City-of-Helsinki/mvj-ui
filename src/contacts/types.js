@@ -12,6 +12,7 @@ export type ContactState = {
   isFetching: boolean,
   isFetchingAttributes: boolean,
   isSaveClicked: boolean,
+  isSaving: boolean,
   list: ContactList,
   methods: Methods,
 };

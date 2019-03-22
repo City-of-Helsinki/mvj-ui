@@ -10,6 +10,9 @@ import type {
   LeaseList,
 } from './types';
 
+export const getIsAttachDecisionModalOpen: Selector<boolean, void> = (state: RootState): boolean =>
+  state.lease.isAttachDecisionModalOpen;
+
 export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolean =>
   state.lease.isEditMode;
 

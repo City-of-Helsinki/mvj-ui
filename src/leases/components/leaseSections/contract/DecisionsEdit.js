@@ -8,25 +8,35 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
+import AttachDecisionModal from './AttachDecisionModal';
 import Authorization from '$components/authorization/Authorization';
 import DecisionItemEdit from './DecisionItemEdit';
 import FormText from '$components/form/FormText';
-import {receiveFormValidFlags} from '$src/leases/actions';
+import {
+  copyDecisionToLeases,
+  hideAttachDecisionModal,
+  receiveFormValidFlags,
+  showAttachDecisionModal,
+} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasPermissions} from '$util/helpers';
+import {getCurrentLease, getIsAttachDecisionModalOpen} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
+import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type DecisionsProps = {
   fields: any,
+  onAttach: Function,
   usersPermissions: UsersPermissionsType,
 }
 
 const renderDecisions = ({
   fields,
+  onAttach,
   usersPermissions,
 }: DecisionsProps): Element<*> => {
   const handleAdd = () => {
@@ -38,7 +48,7 @@ const renderDecisions = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            {!hasPermissions(usersPermissions, UsersPermissions.ADD_DECISIONS) &&
+            {!hasPermissions(usersPermissions, UsersPermissions.ADD_DECISION) &&
               (!fields || !fields.length) &&
               <FormText className='no-margin'>Ei päätöksiä</FormText>
             }
@@ -60,10 +70,11 @@ const renderDecisions = ({
                 key={index}
                 index={index}
                 field={decision}
+                onAttach={onAttach}
                 onRemove={handleRemove}
               />;
             })}
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_DECISIONS)}>
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_DECISION)}>
               <Row>
                 <Column>
                   <AddButton
@@ -81,13 +92,32 @@ const renderDecisions = ({
 };
 
 type Props = {
+  copyDecisionToLeases: Function,
+  currentLease: Lease,
+  hideAttachDecisionModal: Function,
+  isAttachDecisionModalOpen: boolean,
   receiveFormValidFlags: Function,
+  showAttachDecisionModal: Function,
   usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
+type State = {
+  decisionToAttach: ?number,
+}
 
-class DecisionsEdit extends PureComponent<Props> {
+
+class DecisionsEdit extends PureComponent<Props, State> {
+  state = {
+    decisionToAttach: null,
+  }
+
+  componentDidMount = () => {
+    const {hideAttachDecisionModal} = this.props;
+
+    hideAttachDecisionModal();
+  }
+
   componentDidUpdate(prevProps) {
     const {receiveFormValidFlags} = this.props;
 
@@ -98,14 +128,51 @@ class DecisionsEdit extends PureComponent<Props> {
     }
   }
 
+  handleAttach = (decisionId) => {
+    const {showAttachDecisionModal} = this.props;
+
+    showAttachDecisionModal();
+    this.setState({decisionToAttach: decisionId});
+  }
+
+  handleModalCancelAndClose = () => {
+    const {hideAttachDecisionModal} = this.props;
+
+    hideAttachDecisionModal();
+    this.setState({decisionToAttach: null});
+  }
+
+  handleAttachDecisions = (payload: Object) => {
+    const {copyDecisionToLeases} = this.props;
+    const {decisionToAttach} = this.state;
+
+    copyDecisionToLeases({
+      ...payload,
+      decision: decisionToAttach,
+    });
+  }
+
   render() {
-    const {usersPermissions} = this.props;
+    const {
+      currentLease,
+      isAttachDecisionModalOpen,
+      usersPermissions,
+    } = this.props;
 
     return (
       <form>
+        <AttachDecisionModal
+          currentLeaseId={currentLease.id}
+          isOpen={isAttachDecisionModalOpen}
+          onCancel={this.handleModalCancelAndClose}
+          onClose={this.handleModalCancelAndClose}
+          onSubmit={this.handleAttachDecisions}
+        />
+
         <FieldArray
           component={renderDecisions}
           name="decisions"
+          onAttach={this.handleAttach}
           usersPermissions={usersPermissions}
         />
       </form>
@@ -119,11 +186,16 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        currentLease: getCurrentLease(state),
+        isAttachDecisionModalOpen: getIsAttachDecisionModalOpen(state),
         usersPermissions: getUsersPermissions(state),
       };
     },
     {
+      copyDecisionToLeases,
+      hideAttachDecisionModal,
       receiveFormValidFlags,
+      showAttachDecisionModal,
     },
   ),
   reduxForm({

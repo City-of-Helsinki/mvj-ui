@@ -6,6 +6,7 @@ import {SubmissionError} from 'redux-form';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   fetchSingleLeaseAfterEdit,
+  hideAttachDecisionModal,
   hideEditMode,
   attributesNotFound,
   notFound,
@@ -23,6 +24,7 @@ import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {displayUIMessage, getSearchQuery, getUrlParams} from '$src/util/helpers';
 import {
   copyAreasToContract,
+  copyDecisionToLeases,
   createCharge,
   createLease,
   deleteLease,
@@ -409,6 +411,30 @@ function* copyAreasToContractSaga({payload: leaseId}): Generator<any, any, any> 
   }
 }
 
+function* copyDecisionToLeasesSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}} = yield call(copyDecisionToLeases, payload);
+
+    switch (statusCode) {
+      case 200:
+        yield put(hideAttachDecisionModal());
+        // Set isSaving flag to false
+        yield put(notFound());
+        displayUIMessage({title: '', body: 'Päätös kopioitu vuokrauksiin'});
+        break;
+      default:
+        displayUIMessage({title: '', body: 'Päätöksen kopioiminen vuokrauksiin epäonnistui'}, {type: 'error'});
+        // Set isSaving flag to false
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    yield put(notFound());
+    console.error('Failed to copy decision to leases with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -427,6 +453,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/SET_RENT_INFO_UNCOMPLETE', setRentInfoUncompleteSaga),
       yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
       yield takeLatest('mvj/leases/COPY_AREAS_TO_CONTRACT', copyAreasToContractSaga);
+      yield takeLatest('mvj/leases/COPY_DECISION_TO_LEASES', copyDecisionToLeasesSaga);
     }),
   ]);
 }

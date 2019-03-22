@@ -56,7 +56,7 @@ export const getContentLeaseTenants = (lease: Object, query: Object = {}) => {
 
 export const getContentLeaseOption = (lease: Lease) => {
   return {
-    value: lease.id,
+    value: lease.id ? lease.id.toString() : null,
     label: getContentLeaseIdentifier(lease),
   };
 };

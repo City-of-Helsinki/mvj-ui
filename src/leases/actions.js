@@ -33,6 +33,9 @@ import type {
   HideEditModeAction,
   ShowEditModeAction,
   CopyAreasToContractAction,
+  CopyDecisionToLeasesAction,
+  HideAttachDecisionModalAction,
+  ShowAttachDecisionModalAction,
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
@@ -112,6 +115,15 @@ export const showEditMode = (): ShowEditModeAction =>
 
 export const copyAreasToContract = (leaseId: LeaseId): CopyAreasToContractAction =>
   createAction('mvj/leases/COPY_AREAS_TO_CONTRACT')(leaseId);
+
+export const copyDecisionToLeases = (payload: Object): CopyDecisionToLeasesAction =>
+  createAction('mvj/leases/COPY_DECISION_TO_LEASES')(payload);
+  
+export const hideAttachDecisionModal = (): HideAttachDecisionModalAction =>
+  createAction('mvj/leases/HIDE_ATTACH_DECISION_MODAL')();
+
+export const showAttachDecisionModal = (): ShowAttachDecisionModalAction =>
+  createAction('mvj/leases/SHOW_ATTACH_DECISION_MODAL')();
 
 export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
   createAction('mvj/leases/RECEIVE_FORM_VALID_FLAGS')(valid);

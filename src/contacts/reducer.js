@@ -26,11 +26,15 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/contacts/FETCH_ALL': () => true,
   'mvj/contacts/FETCH_SINGLE': () => true,
   'mvj/contacts/CREATE': () => true,
-  'mvj/contacts/EDIT': () => true,
   'mvj/contacts/CREATE_ON_MODAL': () => true,
   'mvj/contacts/EDIT_ON_MODAL': () => true,
   'mvj/contacts/NOT_FOUND': () => false,
   'mvj/contacts/RECEIVE_ALL': () => false,
+  'mvj/contacts/RECEIVE_SINGLE': () => false,
+}, false);
+
+const isSavingReducer: Reducer<boolean> = handleActions({
+  'mvj/contacts/EDIT': () => true,
   'mvj/contacts/RECEIVE_SINGLE': () => false,
 }, false);
 
@@ -108,6 +112,7 @@ export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
+  isSaving: isSavingReducer,
   list: contactsListReducer,
   methods: methodsReducer,
 });

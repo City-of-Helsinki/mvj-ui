@@ -21,6 +21,11 @@ import type {
   ReceiveCollapseStatesAction,
 } from '$src/leases/types';
 
+const isAttachDecisionModalOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/HIDE_ATTACH_DECISION_MODAL': () => false,
+  'mvj/leases/SHOW_ATTACH_DECISION_MODAL': () => true,
+}, false);
+
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/leases/HIDE_EDIT': () => false,
   'mvj/leases/SHOW_EDIT': () => true,
@@ -43,6 +48,7 @@ const isSavingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/SET_RENT_INFO_COMPLETE': () => true,
   'mvj/leases/SET_RENT_INFO_UNCOMPLETE': () => true,
   'mvj/leases/COPY_AREAS_TO_CONTRACT': () => true,
+  'mvj/leases/COPY_DECISION_TO_LEASES': () => true,
   'mvj/leases/SEND_EMAIL': () => true,
   'mvj/leases/RECEIVE_SINGLE': () => false,
   'mvj/leases/NOT_FOUND': () => false,
@@ -155,6 +161,7 @@ export default combineReducers<Object, any>({
   byId: byIdReducer,
   collapseStates: collapseStatesReducer,
   current: currentLeaseReducer,
+  isAttachDecisionModalOpen: isAttachDecisionModalOpenReducer,
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,

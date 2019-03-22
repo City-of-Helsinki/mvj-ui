@@ -15,6 +15,7 @@ import {
   createLease,
   deleteLease,
   patchLease,
+  copyAreasToContract,
   setRentInfoComplete,
   setRentInfoUncomplete,
   startInvoicing,
@@ -23,6 +24,8 @@ import {
   notFound,
   showEditMode,
   hideEditMode,
+  hideAttachDecisionModal,
+  showAttachDecisionModal,
   receiveFormValidFlags,
   clearFormValidFlags,
   receiveIsSaveClicked,
@@ -37,6 +40,7 @@ const defaultState: LeaseState = {
   byId: {},
   collapseStates: {},
   current: {},
+  isAttachDecisionModalOpen: false,
   isEditMode: false,
   isFetching: false,
   isFetchingAttributes: false,
@@ -192,6 +196,13 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isSaving flag to true by copyAreasToContract', () => {
+        const newState = {...defaultState, isSaving: true};
+
+        const state = leasesReducer({}, copyAreasToContract(1));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isSaving flag to true when starting invoicing', () => {
         const newState = {...defaultState, isSaving: true};
 
@@ -268,6 +279,22 @@ describe('Leases', () => {
 
         let state = leasesReducer({}, showEditMode());
         state = leasesReducer({}, hideEditMode());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isAttachDecisionModalOpen flag to true', () => {
+        const newState = {...defaultState, isAttachDecisionModalOpen: true};
+
+        const state = leasesReducer({}, showAttachDecisionModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isAttachDecisionModalOpen flag to false', () => {
+        const newState = {...defaultState};
+        newState.isAttachDecisionModalOpen = false;
+
+        let state = leasesReducer({}, showAttachDecisionModal());
+        state = leasesReducer({}, hideAttachDecisionModal());
         expect(state).to.deep.equal(newState);
       });
 

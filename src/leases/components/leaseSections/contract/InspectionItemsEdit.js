@@ -17,7 +17,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
 import RemoveButton from '$components/form/RemoveButton';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -180,7 +180,10 @@ const InspectionItemsEdit = ({
                                   fieldAttributes={getFieldAttributes(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}
                                   invisibleLabel
                                   name={`${inspection}.description`}
-                                  overrideValues={{label: LeaseInspectionsFieldTitles.DESCRIPTION}}
+                                  overrideValues={{
+                                    fieldType: FieldTypes.TEXTAREA,
+                                    label: LeaseInspectionsFieldTitles.DESCRIPTION,
+                                  }}
                                 />
                               </Authorization>
                             }
@@ -251,10 +254,13 @@ const InspectionItemsEdit = ({
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}
                                 name={`${inspection}.description`}
-                                overrideValues={{label: LeaseInspectionsFieldTitles.DESCRIPTION}}
                                 enableUiDataEdit
                                 tooltipStyle={{right: 25}}
                                 uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.DESCRIPTION)}
+                                overrideValues={{
+                                  fieldType: FieldTypes.TEXTAREA,
+                                  label: LeaseInspectionsFieldTitles.DESCRIPTION,
+                                }}
                               />
                             </Authorization>
                           </Column>
