@@ -6,7 +6,7 @@ type Props = {
   legend?: string,
   onChange: Function,
   options: Array<Object>,
-  value?: Array<string>,
+  value: any,
 }
 
 const CheckboxButtons = ({
@@ -16,24 +16,27 @@ const CheckboxButtons = ({
   options,
   value,
 }: Props) => {
+  const hasMultipleValues = options && options.length > 1;
+
+  const handleChange = (event: any, optionValue) => {
+    if (hasMultipleValues) {
+      const newValue = [...value];
+
+      if (event.target.checked) {
+        newValue.push(optionValue);
+      } else {
+        newValue.splice(newValue.indexOf(optionValue), 1);
+      }
+
+      return onChange(newValue);
+    }
+    return onChange(value ? false : true);
+  };
+
   return (
     <fieldset className='inputs__checkbox'>
       {legend && <legend>{legend}</legend>}
       {options.map((option, index) => {
-        const handleChange = () => {
-          const newValue = value ? [...value] : [],
-            optionValue = option.value;
-
-          if (newValue.indexOf(optionValue) === -1) {
-            newValue.push(optionValue);
-          } else {
-            newValue.splice(newValue.indexOf(optionValue), 1);
-          }
-          onChange(newValue);
-        };
-
-        const isChecked = value ? value.indexOf(option.value) !== -1 : false;
-
         return (
           <label
             key={index}
@@ -41,9 +44,12 @@ const CheckboxButtons = ({
           >
             <input
               className='inputs__checkbox_checkbox'
-              checked={isChecked}
+              checked={hasMultipleValues
+                ? value.indexOf(option.value) !== -1
+                : !!value && value !== 'false'
+              }
               name={checkboxName}
-              onChange={handleChange}
+              onChange={(event) => handleChange(event, option.value)}
               type='checkbox'
               value={option.value}
             />

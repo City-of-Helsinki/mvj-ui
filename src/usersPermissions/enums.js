@@ -35,7 +35,7 @@ export const UsersPermissions = {
   DELETE_RENTADJUSTMENT: 'delete_rentadjustment',
   ADD_LEASEBASISOFRENT: 'add_leasebasisofrent',
   DELETE_LEASEBASISOFRENT: 'delete_leasebasisofrent',
-  ADD_DECISIONS: 'add_decision',
+  ADD_DECISION: 'add_decision',
   DELETE_DECISION: 'delete_decision',
   ADD_CONDITION: 'add_condition',
   DELETE_CONDITION: 'delete_condition',

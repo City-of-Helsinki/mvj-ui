@@ -1,6 +1,6 @@
 // @flow
 import callApi from '../api/callApi';
-import createUrl from '../api/createUrl';
+import createUrl, {standardStringifyQuery} from '../api/createUrl';
 
 import type {
   CreateChargePayload,
@@ -46,6 +46,12 @@ export const patchLease = (lease: Lease): Generator<any, any, any> => {
 
 export const copyAreasToContract = (leaseId: LeaseId): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`lease_copy_areas_to_contract/?lease=${leaseId}`), {
+    method: 'POST',
+  }));
+};
+
+export const copyDecisionToLeases = (params: Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`/decision_copy_to_leases/?${standardStringifyQuery(params)}`), {
     method: 'POST',
   }));
 };

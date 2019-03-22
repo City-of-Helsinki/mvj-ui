@@ -640,6 +640,27 @@
     }
   }
 
+  &__attach-button {
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+
+    .icons {
+      #Artboard {
+        fill: $black !important;
+      }
+    }
+
+    &:hover {
+      .icons {
+        #Artboard {
+          fill: $dark-green !important;
+        }
+      }
+    }
+  }
+
   &__copy-to-clipboard-button {
     z-index: 1;
     cursor: pointer;

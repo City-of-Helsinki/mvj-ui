@@ -6,13 +6,14 @@ export type LeaseState = {
   byId: Object,
   collapseStates: Object,
   current: Lease,
-  isSaving: boolean,
+  isAttachDecisionModalOpen: boolean,
   isFormValidById: Object,
   isEditMode: boolean,
   isFetching: boolean,
   isFetchingById: {},
   isFetchingAttributes: boolean,
   isSaveClicked: boolean,
+  isSaving: boolean,
   list: LeaseList,
   methods: Methods,
 };
@@ -67,6 +68,10 @@ export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
 export type ReceiveIsSaveClickedAction = Action<'mvj/leases/RECEIVE_SAVE_CLICKED', boolean>;
 
 export type CopyAreasToContractAction = Action<'mvj/leases/COPY_AREAS_TO_CONTRACT', LeaseId>;
+
+export type CopyDecisionToLeasesAction = Action<'mvj/leases/COPY_DECISION_TO_LEASES', Object>;
+export type HideAttachDecisionModalAction = Action<'mvj/leases/HIDE_ATTACH_DECISION_MODAL', void>;
+export type ShowAttachDecisionModalAction = Action<'mvj/leases/SHOW_ATTACH_DECISION_MODAL', void>;
 
 export type CreateChargeAction = Action<'mvj/leases/CREATE_CHARGE', CreateChargePayload>;
 

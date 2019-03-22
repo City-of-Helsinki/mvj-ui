@@ -9,6 +9,7 @@ import ReactResizeDetector from 'react-resize-detector';
 import AccordionIcon from '../icons/AccordionIcon';
 import ArchiveButton from '../form/ArchiveButton';
 import CollapseHeaderTitle from './CollapseHeaderTitle';
+import AttachButton from '../form/AttachButton';
 import CopyToClipboardButton from '../form/CopyToClipboardButton';
 import RemoveButton from '../form/RemoveButton';
 import UnarchiveButton from '../form/UnarchiveButton';
@@ -23,6 +24,7 @@ type Props = {
   headerSubtitles?: any,
   headerTitle: any,
   onArchive?: Function,
+  onAttach?: Function,
   onCopyToClipboard?: Function,
   onRemove?: Function,
   onToggle?: Function,
@@ -155,6 +157,7 @@ class Collapse extends PureComponent<Props, State> {
       headerSubtitles,
       headerTitle,
       onArchive,
+      onAttach,
       onCopyToClipboard,
       onRemove,
       onUnarchive,
@@ -203,6 +206,7 @@ class Collapse extends PureComponent<Props, State> {
             <div className='collapse__header_button-wrapper'>
               {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
 
+              {onAttach && <AttachButton onClick={onAttach} />}
               {onCopyToClipboard && <CopyToClipboardButton onClick={onCopyToClipboard} />}
               {onArchive && <ArchiveButton onClick={onArchive}/>}
               {onUnarchive && <UnarchiveButton onClick={onUnarchive}/>}
