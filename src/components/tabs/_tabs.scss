@@ -1,95 +1,68 @@
 .tabs {
-  background-color: transparent;
-  border: none;
-  text-align: center;
-  position: relative;
-  text-align: left;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
+  background-color: $light-gray;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
 
-  > li {
-    float: none;
-    margin-right: rem-calc(10px);
-    color: $black;
-    background: $medium-gray;
-    display: inline-block;
-    height: rem-calc(32px);
+  &__wrapper {
+    width: 100%;
+    margin: 0 auto;
+    max-width: $content-max-width;
+    padding: rem-calc(0 20px);
+  }
 
-    > a {
-      @include transition(none);
+  ul {
+    margin: 0;
 
-      color: $black !important;
-      text-decoration: none !important;
-      font-size: rem-calc(14px);
-	    font-weight: 600;
-      padding: rem-calc(0 0 0 20px);
-      display: flex;
-      height: 32px;
-      align-items: center;
-      position: relative;
-      border: 2px solid $medium-gray;
+    > li {
+      float: none;
+      color: $black;
+      background: $light-gray;
+      display: inline-block;
+      height: rem-calc(40px);
 
-      &:focus {
-        border-color: $dark-green !important;
-        outline: none;
-        border-style: dotted;
+      > a {
+        @include transition(none);
 
-        &::after {
+        color: $black !important;
+        text-decoration: none !important;
+        font-size: rem-calc(14px);
+  	    font-weight: 600;
+        padding: rem-calc(0 0 0 25px);
+        display: flex;
+        height: 40px;
+        align-items: center;
+        position: relative;
+        border: 2px solid $light-gray;
+
+        &:focus {
           border-color: $dark-green !important;
+          outline: none;
           border-style: dotted;
-          border-left: none;
         }
-      }
 
-      &:hover {
-        background-color: $light-gray-secondary;
-        border-color: $light-gray-secondary !important;
-
-        &::after {
+        &:hover {
           background-color: $light-gray-secondary;
           border-color: $light-gray-secondary !important;
         }
       }
     }
+    > li.is-active {
+      background: $white !important;
 
-    > a::after {
-      position: absolute;
-      content: "";
-      background-color: $medium-gray;
-      top: -2px;
-      right: -6px;
-      height: rem-calc(32px);
-      width: 14px;
-      transform: skewX(15deg);
-      border: 2px solid $medium-gray;
-      border-left: none;
-    }
-  }
-  > li.is-active {
-    background: $white !important;
+      > a {
+        border-color: $white;
 
-    > a {
-      border-color: $white;
-
-      &:hover {
-        background: $white;
-        border-color: $white !important;
-
-        &::after {
+        &:hover {
+          background: $white;
           border-color: $white !important;
         }
       }
     }
-
-    > a::after {
-        background-color: $white;
-        border-color: $white;
-    }
   }
 
   &__label {
-    padding-right: rem-calc(20px);
+    padding-right: rem-calc(25px);
   }
 
   &__error-badge {

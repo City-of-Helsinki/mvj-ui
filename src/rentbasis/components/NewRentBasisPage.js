@@ -14,6 +14,7 @@ import GreenBox from '$components/content/GreenBox';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
+import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import RentBasisForm from './forms/RentBasisForm';
 import {
   createRentBasis,
@@ -134,22 +135,24 @@ class NewRentBasisPage extends Component<Props> {
 
     return (
       <FullWidthContainer>
-        <ControlButtonBar
-          buttonComponent={
-            <ControlButtons
-              allowEdit={isMethodAllowed(rentBasisMethods, Methods.POST)}
-              isCopyDisabled={true}
-              isEditMode={true}
-              isSaveDisabled={isSaveClicked && !isFormValid}
-              onCancel={this.cancelChanges}
-              onSave={this.saveChanges}
-              showCommentButton={false}
-              showCopyButton={true}
-            />
-          }
-          infoComponent={<h1>Uusi vuokrausperuste</h1>}
-          onBack={this.handleBack}
-        />
+        <PageNavigationWrapper>
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowEdit={isMethodAllowed(rentBasisMethods, Methods.POST)}
+                isCopyDisabled={true}
+                isEditMode={true}
+                isSaveDisabled={isSaveClicked && !isFormValid}
+                onCancel={this.cancelChanges}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={true}
+              />
+            }
+            infoComponent={<h1>Uusi vuokrausperuste</h1>}
+            onBack={this.handleBack}
+          />
+        </PageNavigationWrapper>
 
         <PageContainer className='with-small-control-bar'>
           {isSaving &&

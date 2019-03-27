@@ -16,6 +16,7 @@ import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
+import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import RentBasisEdit from './sections/basicInfo/RentBasisEdit';
 import RentBasisInfo from './RentBasisInfo';
 import RentBasisReadonly from './sections/basicInfo/RentBasisReadonly';
@@ -364,27 +365,46 @@ class RentBasisPage extends Component<Props, State> {
 
     return (
       <FullWidthContainer>
-        <ControlButtonBar
-          buttonComponent={
-            <ControlButtons
-              allowCopy={isMethodAllowed(rentBasisMethods, Methods.POST)}
-              allowEdit={isMethodAllowed(rentBasisMethods, Methods.PATCH)}
-              isCopyDisabled={false}
-              isEditMode={isEditMode}
-              isSaveDisabled={isSaveClicked && !isFormValid}
-              onCancel={this.cancelChanges}
-              onCopy={this.copyRentBasis}
-              onEdit={this.showEditMode}
-              onSave={this.saveChanges}
-              showCommentButton={false}
-              showCopyButton={true}
-            />
-          }
-          infoComponent={<RentBasisInfo identifier={rentBasis.id}/>}
-          onBack={this.handleBack}
-        />
+        <PageNavigationWrapper>
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowCopy={isMethodAllowed(rentBasisMethods, Methods.POST)}
+                allowEdit={isMethodAllowed(rentBasisMethods, Methods.PATCH)}
+                isCopyDisabled={false}
+                isEditMode={isEditMode}
+                isSaveDisabled={isSaveClicked && !isFormValid}
+                onCancel={this.cancelChanges}
+                onCopy={this.copyRentBasis}
+                onEdit={this.showEditMode}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={true}
+              />
+            }
+            infoComponent={<RentBasisInfo identifier={rentBasis.id}/>}
+            onBack={this.handleBack}
+          />
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {
+                label: 'Perustiedot',
+                allow: true,
+                isDirty: isFormDirty,
+                hasError: isSaveClicked && !isFormValid,
+              },
+              {
+                label: 'Kartta',
+                allow: isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY),
+              },
+            ]}
+            onTabClick={this.handleTabClick}
+          />
+        </PageNavigationWrapper>
 
-        <PageContainer className='with-control-bar'>
+        <PageContainer className='with-control-bar-and-tabs' hasTabs>
           {isSaving &&
             <LoaderWrapper className='overlay-wrapper'>
               <Loader isLoading={isSaving} />
@@ -403,23 +423,7 @@ class RentBasisPage extends Component<Props, State> {
             />
           </Authorization>
 
-          <Tabs
-            active={activeTab}
-            isEditMode={isEditMode}
-            tabs={[
-              {
-                label: 'Perustiedot',
-                allow: true,
-                isDirty: isFormDirty,
-                hasError: isSaveClicked && !isFormValid,
-              },
-              {
-                label: 'Kartta',
-                allow: isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY),
-              },
-            ]}
-            onTabClick={this.handleTabClick}
-          />
+
           <TabContent active={activeTab}>
             <TabPane>
               {isEditMode

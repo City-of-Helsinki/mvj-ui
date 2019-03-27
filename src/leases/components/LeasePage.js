@@ -27,6 +27,7 @@ import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
+import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import Rents from './leaseSections/rent/Rents';
 import RentsEdit from './leaseSections/rent/RentsEdit';
 import SingleLeaseMap from './leaseSections/map/SingleLeaseMap';
@@ -893,56 +894,33 @@ class LeasePage extends Component<Props, State> {
 
     return (
       <FullWidthContainer>
-        <ControlButtonBar
-          buttonComponent={
-            <ControlButtons
-              allowComments={isMethodAllowed(commentMethods, Methods.GET)}
-              allowDelete={isMethodAllowed(leaseMethods, Methods.DELETE)}
-              allowEdit={isMethodAllowed(leaseMethods, Methods.PATCH)}
-              commentAmount={comments ? comments.length : 0}
-              deleteModalTexts={{
-                buttonClassName: ButtonColors.ALERT,
-                buttonText: DeleteLeaseTexts.BUTTON,
-                label: DeleteLeaseTexts.LABEL,
-                title: DeleteLeaseTexts.TITLE,
-              }}
-              isCancelDisabled={activeTab == 6}
-              isEditDisabled={activeTab == 6}
-              isEditMode={isEditMode}
-              isSaveDisabled={activeTab == 6 || (isSaveClicked && !areFormsValid)}
-              onCancel={this.cancelChanges}
-              onComment={this.toggleCommentPanel}
-              onDelete={showDelete ? this.handleDelete : null}
-              onEdit={this.openEditMode}
-              onSave={this.saveChanges}
-            />
-          }
-          infoComponent={<LeaseInfo />}
-          onBack={this.handleBack}
-        />
-
-        <PageContainer className='with-control-bar'>
-          {isSaving &&
-            <LoaderWrapper className='overlay-wrapper'>
-              <Loader isLoading={isSaving} />
-            </LoaderWrapper>
-          }
-
-          <Authorization allow={isMethodAllowed(leaseMethods, Methods.PATCH)}>
-            <ConfirmationModal
-              confirmButtonLabel='Palauta muutokset'
-              isOpen={isRestoreModalOpen}
-              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-              onCancel={this.cancelRestoreUnsavedChanges}
-              onClose={this.cancelRestoreUnsavedChanges}
-              onSave={this.restoreUnsavedChanges}
-              title='Palauta tallentamattomat muutokset'
-            />
-          </Authorization>
-
-          <CommentPanel
-            isOpen={isCommentPanelOpen}
-            onClose={this.toggleCommentPanel}
+        <PageNavigationWrapper>
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowComments={isMethodAllowed(commentMethods, Methods.GET)}
+                allowDelete={isMethodAllowed(leaseMethods, Methods.DELETE)}
+                allowEdit={isMethodAllowed(leaseMethods, Methods.PATCH)}
+                commentAmount={comments ? comments.length : 0}
+                deleteModalTexts={{
+                  buttonClassName: ButtonColors.ALERT,
+                  buttonText: DeleteLeaseTexts.BUTTON,
+                  label: DeleteLeaseTexts.LABEL,
+                  title: DeleteLeaseTexts.TITLE,
+                }}
+                isCancelDisabled={activeTab == 6}
+                isEditDisabled={activeTab == 6}
+                isEditMode={isEditMode}
+                isSaveDisabled={activeTab == 6 || (isSaveClicked && !areFormsValid)}
+                onCancel={this.cancelChanges}
+                onComment={this.toggleCommentPanel}
+                onDelete={showDelete ? this.handleDelete : null}
+                onEdit={this.openEditMode}
+                onSave={this.saveChanges}
+              />
+            }
+            infoComponent={<LeaseInfo />}
+            onBack={this.handleBack}
           />
 
           <Tabs
@@ -1002,6 +980,31 @@ class LeasePage extends Component<Props, State> {
               },
             ]}
             onTabClick={this.handleTabClick}
+          />
+        </PageNavigationWrapper>
+
+        <PageContainer className='with-control-bar-and-tabs' hasTabs>
+          {isSaving &&
+            <LoaderWrapper className='overlay-wrapper'>
+              <Loader isLoading={isSaving} />
+            </LoaderWrapper>
+          }
+
+          <Authorization allow={isMethodAllowed(leaseMethods, Methods.PATCH)}>
+            <ConfirmationModal
+              confirmButtonLabel='Palauta muutokset'
+              isOpen={isRestoreModalOpen}
+              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              onCancel={this.cancelRestoreUnsavedChanges}
+              onClose={this.cancelRestoreUnsavedChanges}
+              onSave={this.restoreUnsavedChanges}
+              title='Palauta tallentamattomat muutokset'
+            />
+          </Authorization>
+
+          <CommentPanel
+            isOpen={isCommentPanelOpen}
+            onClose={this.toggleCommentPanel}
           />
 
           <TabContent active={activeTab}>

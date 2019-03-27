@@ -27,6 +27,7 @@ import InvoicesEdit from './sections/InvoicesEdit';
 import Litigants from './sections/Litigants';
 import LitigantsEdit from './sections/LitigantsEdit';
 import PageContainer from '$components/content/PageContainer';
+import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
@@ -628,37 +629,26 @@ class LandUseContractPage extends Component<Props, State> {
 
     return (
       <FullWidthContainer>
-        <ControlButtonBar
-          buttonComponent={
-            <ControlButtons
-              allowEdit={true}
-              isCancelDisabled={false}
-              isCopyDisabled={true}
-              isEditDisabled={false}
-              isEditMode={isEditMode}
-              isSaveDisabled={isSaveClicked && !areFormsValid}
-              onCancel={this.cancelChanges}
-              onEdit={this.handleShowEditMode}
-              onSave={this.saveChanges}
-              showCommentButton={false}
-              showCopyButton={false}
-            />
-          }
-          infoComponent={<h1>{identifier}</h1>}
-          onBack={this.handleBack}
-        />
-
-        <PageContainer className='with-small-control-bar'>
-          <ConfirmationModal
-            confirmButtonLabel='Palauta muutokset'
-            isOpen={isRestoreModalOpen}
-            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-            onCancel={this.cancelRestoreUnsavedChanges}
-            onClose={this.cancelRestoreUnsavedChanges}
-            onSave={this.restoreUnsavedChanges}
-            title='Palauta tallentamattomat muutokset'
+        <PageNavigationWrapper>
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowEdit={true}
+                isCancelDisabled={false}
+                isCopyDisabled={true}
+                isEditDisabled={false}
+                isEditMode={isEditMode}
+                isSaveDisabled={isSaveClicked && !areFormsValid}
+                onCancel={this.cancelChanges}
+                onEdit={this.handleShowEditMode}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={false}
+              />
+            }
+            infoComponent={<h1>{identifier}</h1>}
+            onBack={this.handleBack}
           />
-
           <Tabs
             active={activeTab}
             isEditMode={isEditMode}
@@ -671,6 +661,20 @@ class LandUseContractPage extends Component<Props, State> {
             ]}
             onTabClick={(id) => this.handleTabClick(id)}
           />
+        </PageNavigationWrapper>
+
+        <PageContainer className='with-small-control-bar-and-tabs' hasTabs>
+          <ConfirmationModal
+            confirmButtonLabel='Palauta muutokset'
+            isOpen={isRestoreModalOpen}
+            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+            onCancel={this.cancelRestoreUnsavedChanges}
+            onClose={this.cancelRestoreUnsavedChanges}
+            onSave={this.restoreUnsavedChanges}
+            title='Palauta tallentamattomat muutokset'
+          />
+
+
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
