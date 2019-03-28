@@ -191,7 +191,7 @@ const LeaseArea = ({
         {!!addresses.length &&
           <Fragment>
             <Row>
-              <Column small={6} large={4}>
+              <Column small={3} large={4}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
                   <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.ADDRESS)}>
                     {LeaseAreaAddressesFieldTitles.ADDRESS}
@@ -212,12 +212,19 @@ const LeaseArea = ({
                   </FormTextTitle>
                 </Authorization>
               </Column>
+              <Column small={3} large={2}>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.IS_PRIMARY)}>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.IS_PRIMARY)}>
+                    {LeaseAreaAddressesFieldTitles.IS_PRIMARY}
+                  </FormTextTitle>
+                </Authorization>
+              </Column>
             </Row>
             <ListItems>
               {addresses.map((address) => {
                 return (
                   <Row key={address.id}>
-                    <Column small={6} large={4}>
+                    <Column small={3} large={4}>
                       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
                         <ListItem>{address.address || '-'}</ListItem>
                       </Authorization>
@@ -230,6 +237,11 @@ const LeaseArea = ({
                     <Column small={3} large={2}>
                       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
                         <ListItem>{address.city || '-'}</ListItem>
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.IS_PRIMARY)}>
+                        <ListItem>{address.is_primary ? 'Kyllä' : 'Ei'}</ListItem>
                       </Authorization>
                     </Column>
                   </Row>

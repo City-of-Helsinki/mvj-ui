@@ -17,6 +17,7 @@ import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -291,7 +292,7 @@ const Address = ({
 
   return(
     <Row>
-      <Column small={6} large={4}>
+      <Column small={3} large={4}>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
           <FormField
             disableTouched={isSaveClicked}
@@ -314,7 +315,7 @@ const Address = ({
           />
         </Authorization>
       </Column>
-      <Column small={2} large={2}>
+      <Column small={3} large={2}>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
           <FormField
             disableTouched={isSaveClicked}
@@ -325,14 +326,29 @@ const Address = ({
           />
         </Authorization>
       </Column>
-      <Column small={1}>
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEAREAADDRESS)}>
-          <RemoveButton
-            className='third-level'
-            onClick={onRemove}
-            title="Poista osoite"
-          />
-        </Authorization>
+      <Column small={3} large={2}>
+        <FieldAndRemoveButtonWrapper
+          field={
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.IS_PRIMARY)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseAreaAddressesFieldPaths.IS_PRIMARY)}
+                invisibleLabel
+                name={`${field}.is_primary`}
+                overrideValues={{label: LeaseAreaAddressesFieldTitles.IS_PRIMARY}}
+              />
+            </Authorization>
+          }
+          removeButton={
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEAREAADDRESS)}>
+              <RemoveButton
+                className='third-level'
+                onClick={onRemove}
+                title="Poista osoite"
+              />
+            </Authorization>
+          }
+        />
       </Column>
     </Row>
   );
@@ -361,7 +377,7 @@ const AddressItems = ({attributes, change, fields, isSaveClicked, usersPermissio
             </SubTitle>
             {fields && !!fields.length &&
               <Row>
-                <Column small={6} large={4}>
+                <Column small={3} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
                     <FormTextTitle
                       required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}
@@ -391,6 +407,17 @@ const AddressItems = ({attributes, change, fields, isSaveClicked, usersPermissio
                       uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.CITY)}
                     >
                       {LeaseAreaAddressesFieldTitles.CITY}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.IS_PRIMARY)}>
+                    <FormTextTitle
+                      required={isFieldRequired(attributes, LeaseAreaAddressesFieldPaths.IS_PRIMARY)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseAreaAddressesFieldPaths.IS_PRIMARY)}
+                    >
+                      {LeaseAreaAddressesFieldTitles.IS_PRIMARY}
                     </FormTextTitle>
                   </Authorization>
                 </Column>

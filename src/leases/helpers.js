@@ -252,13 +252,14 @@ export const getContentRelatedLeasesTo = (lease: Object) =>
     })
     .sort(compareRelatedLeases);
 
-export const getContentAddresses = (addresses: Array<Object>): Array<Object> => {
-  return addresses.map((address) => {
+export const getContentLeaseAreaAddresses = (area: Object): Array<Object> => {
+  return get(area, 'addresses', []).map((address) => {
     return {
       id: address.id,
       address: address.address,
       postal_code: address.postal_code,
       city: address.city,
+      is_primary: address.is_primary,
     };
   });
 };
@@ -273,8 +274,6 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean): Arra
       geometry: plot.geometry,
       area: plot.area,
       section_area: plot.section_area,
-      postal_code: plot.postal_code,
-      city: plot.city,
       type: plot.type,
       registration_date: plot.registration_date,
       repeal_date: plot.repeal_date,
@@ -293,8 +292,6 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
       geometry: planunit.geometry,
       area: planunit.area,
       section_area: planunit.section_area,
-      postal_code: planunit.postal_code,
-      city: planunit.city,
       in_contract: planunit.in_contract,
       plot_division_identifier: planunit.plot_division_identifier,
       plot_division_effective_date: planunit.plot_division_effective_date,
@@ -316,7 +313,7 @@ export const getContentLeaseAreaItem = (area: Object) => {
     geometry: area.geometry,
     area: area.area,
     section_area: area.section_area,
-    addresses: getContentAddresses(area.addresses),
+    addresses: getContentLeaseAreaAddresses(area),
     postal_code: area.postal_code,
     city: area.city,
     type: area.type,
@@ -522,9 +519,6 @@ export const getContentConstructability = (lease: Object) =>
       location: area.location,
       area: area.area,
       section_area: area.section_area,
-      address: area.address,
-      postal_code: area.postal_code,
-      city: area.city,
       preconstruction_state: area.preconstruction_state,
       preconstruction_estimated_construction_readiness_moment: area.preconstruction_estimated_construction_readiness_moment,
       preconstruction_inspection_moment: area.preconstruction_inspection_moment,
@@ -610,8 +604,20 @@ export const getContentPayableRents = (rent: Object) =>
         difference_percent: item.difference_percent,
         calendar_year_rent: item.calendar_year_rent,
       };
-    })
-    .sort(sortByStartAndEndDateDesc);
+    });
+
+export const getContentEqualizedRents = (rent: Object) =>
+  get(rent, 'equalized_rents', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        payable_amount: item.payable_amount,
+        equalized_payable_amount: item.equalized_payable_amount,
+        equalization_factor: item.equalization_factor,
+      };
+    });
 
 export const getContentRentAdjustments = (rent: Object) =>
   get(rent, 'rent_adjustments', [])
@@ -642,8 +648,7 @@ export const getContentIndexAdjustedRents = (rent: Object) =>
         end_date: item.end_date,
         factor: item.factor,
       };
-    })
-    .sort(sortByStartAndEndDateDesc);
+    });
 
 export const getContentContractRents = (rent: Object) =>
   get(rent, 'contract_rents', [])
@@ -717,6 +722,7 @@ export const getContentRents = (lease: Object) =>
         index_adjusted_rents: getContentIndexAdjustedRents(rent),
         rent_adjustments: getContentRentAdjustments(rent),
         payable_rents: getContentPayableRents(rent),
+        equalized_rents: getContentEqualizedRents(rent),
         yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
       };
     })
@@ -964,13 +970,14 @@ export const addSummaryFormValues = (payload: Object, summary: Object) => {
   };
 };
 
-const getPayloadAddresses = (addresses: Array<Object>) =>
-  addresses.map((address) => {
+const getPayloadLeaseAreaAddresses = (area: Object) =>
+  get(area, 'addresses', []).map((address) => {
     return {
       id: address.id || undefined,
       address: address.address,
       postal_code: address.postal_code,
       city: address.city,
+      is_primary: address.is_primary,
     };
   });
 
@@ -989,8 +996,6 @@ const getPayloadPlots = (area: Object) => {
       identifier: plot.identifier,
       area: convertStrToDecimalNumber(plot.area),
       section_area: convertStrToDecimalNumber(plot.section_area),
-      postal_code: plot.postal_code,
-      city: plot.city,
       type: plot.type,
       location: plot.location,
       registration_date: plot.registration_date,
@@ -1015,8 +1020,6 @@ const getPayloadPlanUnits = (area: Object) => {
       identifier: planunit.identifier,
       area: convertStrToDecimalNumber(planunit.area),
       section_area: convertStrToDecimalNumber(planunit.section_area),
-      postal_code: planunit.postal_code,
-      city: planunit.city,
       in_contract: planunit.in_contract,
       plot_division_identifier: planunit.plot_division_identifier,
       plot_division_effective_date: planunit.plot_division_effective_date,
@@ -1040,7 +1043,7 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
       identifier: area.identifier,
       area: convertStrToDecimalNumber(area.area),
       section_area: convertStrToDecimalNumber(area.area),
-      addresses: getPayloadAddresses(get(area, 'addresses', [])),
+      addresses: getPayloadLeaseAreaAddresses(area),
       type: area.type,
       location: area.location,
       plots: getPayloadPlots(area),

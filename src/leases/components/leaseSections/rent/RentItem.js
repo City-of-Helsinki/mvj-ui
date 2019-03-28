@@ -9,6 +9,7 @@ import BasicInfo from './BasicInfo';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import ContractRents from './ContractRents';
+import EqualizedRents from './EqualizedRents';
 import FixedInitialYearRents from './FixedInitialYearRents';
 import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
@@ -28,6 +29,8 @@ import {
   LeaseRentAdjustmentsFieldTitles,
   LeasePayableRentsFieldPaths,
   LeasePayableRentsFieldTitles,
+  LeaseEqualizedRentsFieldPaths,
+  LeaseEqualizedRentsFieldTitles,
   RentTypes,
 } from '$src/leases/enums';
 import {isRentActive, isRentArchived} from '$src/leases/helpers';
@@ -44,6 +47,7 @@ import type {Attributes} from '$src/types';
 
 type Props = {
   contractRentsCollapseState: boolean,
+  equalizedRentsCollapseState: boolean,
   fixedInitialYearRentsCollapseState: boolean,
   indexAdjustedRentsCollapseState: boolean,
   leaseAttributes: Attributes,
@@ -57,6 +61,7 @@ type Props = {
 
 const RentItem = ({
   contractRentsCollapseState,
+  equalizedRentsCollapseState,
   fixedInitialYearRentsCollapseState,
   indexAdjustedRentsCollapseState,
   leaseAttributes,
@@ -67,86 +72,55 @@ const RentItem = ({
   rentAdjustmentsCollapseState,
   rentCollapseState,
 }: Props) => {
-  const handleRentCollapseToggle = (val: boolean) => {
+  const handleCollapseToggle = (key: string, val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.RENTS]: {
           [rent.id]: {
-            rent: val,
+            [key]: val,
           },
         },
       },
     });
+  };
+
+  const handleRentCollapseToggle = (val: boolean) => {
+    handleCollapseToggle('rent', val);
   };
 
   const handleFixedInitialYearRentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.RENTS]: {
-          [rent.id]: {
-            fixed_initial_year_rents: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('fixed_initial_year_rents', val);
   };
 
-
   const handleContractRentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.RENTS]: {
-          [rent.id]: {
-            contract_rents: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('contract_rents', val);
   };
 
   const handleIndexAdjustedRentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.RENTS]: {
-          [rent.id]: {
-            index_adjusted_rents: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('index_adjusted_rents', val);
   };
 
   const handleRentAdjustmentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.RENTS]: {
-          [rent.id]: {
-            rent_adjustments: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('rent_adjustments', val);
   };
 
   const handlePayableRentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.RENTS]: {
-          [rent.id]: {
-            payable_rents: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('payable_rents', val);
+  };
+
+  const handleEqualizedRentsCollapseToggle = (val: boolean) => {
+    handleCollapseToggle('equalized_rents', val);
   };
 
   const active = isRentActive(rent),
     archived = isRentArchived(rent),
     rentType = get(rent, 'type'),
     fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []),
+    contractRents = get(rent, 'contract_rents', []),
     indexAdjustedRents = get(rent, 'index_adjusted_rents', []),
     rentAdjustments = get(rent, 'rent_adjustments', []),
     payableRents = get(rent, 'payable_rents', []),
+    equalizedRents = get(rent, 'equalized_rents', []),
     typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
 
   return (
@@ -180,7 +154,7 @@ const RentItem = ({
           <Collapse
             className='collapse__secondary'
             defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true}
-            headerTitle={LeaseRentFixedInitialYearRentsFieldTitles.FIXED_INITIAL_YEAR_RENTS}
+            headerTitle={`${LeaseRentFixedInitialYearRentsFieldTitles.FIXED_INITIAL_YEAR_RENTS} (${fixedInitialYearRents.length})`}
             onToggle={handleFixedInitialYearRentsCollapseToggle}
             uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}
           >
@@ -196,30 +170,32 @@ const RentItem = ({
           <Collapse
             className='collapse__secondary'
             defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true}
-            headerTitle={LeaseRentContractRentsFieldTitles.CONTRACT_RENTS}
+            headerTitle={`${LeaseRentContractRentsFieldTitles.CONTRACT_RENTS} (${contractRents.length})`}
             onToggle={handleContractRentsCollapseToggle}
             uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}
           >
             <ContractRents
-              contractRents={get(rent, 'contract_rents', [])}
+              contractRents={contractRents}
               rentType={rentType}
             />
           </Collapse>
         }
       </Authorization>
 
-      {!!indexAdjustedRents.length &&
-        (rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
-        <Collapse
-          className='collapse__secondary'
-          defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
-          headerTitle={LeaseIndexAdjustedRentsFieldTitles.INDEX_ADJUSTED_RENTS}
-          onToggle={handleIndexAdjustedRentsCollapseToggle}
-          uiDataKey={getUiDataLeaseKey(LeaseIndexAdjustedRentsFieldPaths.INDEX_ADJUSTED_RENTS)}
-        >
-          <IndexAdjustedRents indexAdjustedRents={indexAdjustedRents} />
-        </Collapse>
-      }
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseIndexAdjustedRentsFieldPaths.INDEX_ADJUSTED_RENTS)}>
+        {!!indexAdjustedRents.length &&
+          (rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
+            headerTitle={`${LeaseIndexAdjustedRentsFieldTitles.INDEX_ADJUSTED_RENTS} (${indexAdjustedRents.length})`}
+            onToggle={handleIndexAdjustedRentsCollapseToggle}
+            uiDataKey={getUiDataLeaseKey(LeaseIndexAdjustedRentsFieldPaths.INDEX_ADJUSTED_RENTS)}
+          >
+            <IndexAdjustedRents indexAdjustedRents={indexAdjustedRents} />
+          </Collapse>
+        }
+      </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS)}>
         {(rentType === RentTypes.INDEX ||
@@ -237,18 +213,34 @@ const RentItem = ({
         }
       </Authorization>
 
-      {!!payableRents.length &&
-        (rentType === RentTypes.INDEX || rentType === RentTypes.FIXED || rentType === RentTypes.MANUAL) &&
-        <Collapse
-          className='collapse__secondary'
-          defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
-          headerTitle={LeasePayableRentsFieldTitles.PAYABLE_RENTS}
-          onToggle={handlePayableRentsCollapseToggle}
-          uiDataKey={getUiDataLeaseKey(LeasePayableRentsFieldPaths.PAYABLE_RENTS)}
-        >
-          <PayableRents payableRents={payableRents} />
-        </Collapse>
-      }
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePayableRentsFieldPaths.PAYABLE_RENTS)}>
+        {!!payableRents.length &&
+          (rentType === RentTypes.INDEX || rentType === RentTypes.FIXED || rentType === RentTypes.MANUAL) &&
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
+            headerTitle={`${LeasePayableRentsFieldTitles.PAYABLE_RENTS} (${payableRents.length})`}
+            onToggle={handlePayableRentsCollapseToggle}
+            uiDataKey={getUiDataLeaseKey(LeasePayableRentsFieldPaths.PAYABLE_RENTS)}
+          >
+            <PayableRents payableRents={payableRents} />
+          </Collapse>
+        }
+      </Authorization>
+
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseEqualizedRentsFieldPaths.EQUALIZED_RENTS)}>
+        {!!equalizedRents.length &&
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={equalizedRentsCollapseState !== undefined ? equalizedRentsCollapseState : false}
+            headerTitle={`${LeaseEqualizedRentsFieldTitles.EQUALIZED_RENTS} (${equalizedRents.length})`}
+            onToggle={handleEqualizedRentsCollapseToggle}
+            uiDataKey={getUiDataLeaseKey(LeaseEqualizedRentsFieldPaths.EQUALIZED_RENTS)}
+          >
+            <EqualizedRents equalizedRents={equalizedRents} />
+          </Collapse>
+        }
+      </Authorization>
     </Collapse>
   );
 };
@@ -259,6 +251,7 @@ export default connect(
 
     return {
       contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.contract_rents`),
+      equalizedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.equalized_rents`),
       fixedInitialYearRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.fixed_initial_year_rents`),
       indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.index_adjusted_rents`),
       leaseAttributes: getLeaseAttributes(state),

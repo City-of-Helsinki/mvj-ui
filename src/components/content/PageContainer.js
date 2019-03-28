@@ -16,6 +16,14 @@ class PageContainer extends PureComponent<Props> {
     this.component = el;
   }
 
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
   handleResize = () => {
     const pageNavigation = document.getElementsByClassName('content__page-navigator-wrapper');
 
@@ -24,7 +32,6 @@ class PageContainer extends PureComponent<Props> {
 
       this.component.style.marginTop =  height + 'px';
     }
-
   }
 
   render() {

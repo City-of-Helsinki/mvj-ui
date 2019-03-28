@@ -566,6 +566,7 @@ export const LeaseAreaAddressesFieldPaths = {
   ADDRESSES: 'lease_areas.child.children.addresses',
   ADDRESS: 'lease_areas.child.children.addresses.child.children.address',
   CITY: 'lease_areas.child.children.addresses.child.children.city',
+  IS_PRIMARY: 'lease_areas.child.children.addresses.child.children.is_primary',
   POSTAL_CODE: 'lease_areas.child.children.addresses.child.children.postal_code',
 };
 
@@ -578,6 +579,7 @@ export const LeaseAreaAddressesFieldTitles = {
   ADDRESSES: 'Osoitteet',
   ADDRESS: 'Osoite',
   CITY: 'Kaupunki',
+  IS_PRIMARY: 'Ensisijainen osoite',
   POSTAL_CODE: 'Postinumero',
 };
 
@@ -980,6 +982,34 @@ export const LeasePayableRentsFieldTitles = {
   DIFFERENCE_PERCENT: 'Nousu',
   END_DATE: 'Loppupvm',
   START_DATE: 'Alkupvm',
+};
+
+/**
+ * Lease equalized rents field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseEqualizedRentsFieldPaths = {
+  EQUALIZED_RENTS: 'rents.child.children.equalized_rents',
+  END_DATE: 'rents.child.children.equalized_rents.child.children.end_date',
+  EQUALIZATION_FACTOR: 'rents.child.children.equalized_rents.child.children.equalization_factor',
+  EQUALIZED_PAYABLE_AMOUNT: 'rents.child.children.equalized_rents.child.children.equalized_payable_amount',
+  PAYABLE_AMOUNT: 'rents.child.children.equalized_rents.child.children.payable_amount',
+  START_DATE: 'rents.child.children.equalized_rents.child.children.start_date',
+};
+
+/**
+ * Lease equalized rents field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const  LeaseEqualizedRentsFieldTitles = {
+  EQUALIZED_RENTS: 'Tasatut vuokrat',
+  END_DATE: 'Loppupäivämäärä',
+  EQUALIZATION_FACTOR: 'Tasauskerroin',
+  EQUALIZED_PAYABLE_AMOUNT: 'Tasattu perittävä vuokra',
+  PAYABLE_AMOUNT: 'Perittävä vuokra',
+  START_DATE: 'Alkupäivämäärä',
 };
 
 /**
