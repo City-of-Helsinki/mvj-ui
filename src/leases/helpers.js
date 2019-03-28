@@ -604,8 +604,20 @@ export const getContentPayableRents = (rent: Object) =>
         difference_percent: item.difference_percent,
         calendar_year_rent: item.calendar_year_rent,
       };
-    })
-    .sort(sortByStartAndEndDateDesc);
+    });
+
+export const getContentEqualizedRents = (rent: Object) =>
+  get(rent, 'equalized_rents', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        payable_amount: item.payable_amount,
+        equalized_payable_amount: item.equalized_payable_amount,
+        equalization_factor: item.equalization_factor,
+      };
+    });
 
 export const getContentRentAdjustments = (rent: Object) =>
   get(rent, 'rent_adjustments', [])
@@ -636,8 +648,7 @@ export const getContentIndexAdjustedRents = (rent: Object) =>
         end_date: item.end_date,
         factor: item.factor,
       };
-    })
-    .sort(sortByStartAndEndDateDesc);
+    });
 
 export const getContentContractRents = (rent: Object) =>
   get(rent, 'contract_rents', [])
@@ -711,6 +722,7 @@ export const getContentRents = (lease: Object) =>
         index_adjusted_rents: getContentIndexAdjustedRents(rent),
         rent_adjustments: getContentRentAdjustments(rent),
         payable_rents: getContentPayableRents(rent),
+        equalized_rents: getContentEqualizedRents(rent),
         yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
       };
     })
