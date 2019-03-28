@@ -23,7 +23,7 @@
     position: relative;
     width: 100%;
     margin: 0 auto;
-    max-width: 1300px;
+    max-width: $content-max-width;
   }
 
   input:-ms-input-placeholder {

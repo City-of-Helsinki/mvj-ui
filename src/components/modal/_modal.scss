@@ -71,7 +71,7 @@
 
   &.modal-large {
     .modal__wrapper {
-      width: rem-calc(1300px);
+      width: rem-calc($content-max-width);
     }
   }
 

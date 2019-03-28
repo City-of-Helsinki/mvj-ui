@@ -20,6 +20,7 @@ import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
+import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import Tabs from '$components/tabs/Tabs';
 import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
@@ -366,43 +367,26 @@ class ContactPage extends Component<Props, State> {
 
     return (
       <FullWidthContainer>
-        <ControlButtonBar
-          buttonComponent={
-            <ControlButtons
-              allowCopy={isMethodAllowed(contactMethods, Methods.POST)}
-              allowEdit={isMethodAllowed(contactMethods, Methods.PATCH)}
-              isCopyDisabled={false}
-              isEditMode={isEditMode}
-              isSaveDisabled={isSaveClicked && !isContactFormValid}
-              onCancel={this.cancelChanges}
-              onCopy={this.copyContact}
-              onEdit={this.showEditMode}
-              onSave={this.saveChanges}
-              showCommentButton={false}
-              showCopyButton={true}
-            />
-          }
-          infoComponent={<h1>{nameInfo}</h1>}
-          onBack={this.handleBack}
-        />
-        <PageContainer className='with-small-control-bar'>
-          {isSaving &&
-            <LoaderWrapper className='overlay-wrapper'>
-              <Loader isLoading={isSaving} />
-            </LoaderWrapper>
-          }
-          <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
-            <ConfirmationModal
-              confirmButtonLabel='Palauta muutokset'
-              isOpen={isRestoreModalOpen}
-              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-              onCancel={this.cancelRestoreUnsavedChanges}
-              onClose={this.cancelRestoreUnsavedChanges}
-              onSave={this.restoreUnsavedChanges}
-              title='Palauta tallentamattomat muutokset'
-            />
-          </Authorization>
-
+        <PageNavigationWrapper>
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowCopy={isMethodAllowed(contactMethods, Methods.POST)}
+                allowEdit={isMethodAllowed(contactMethods, Methods.PATCH)}
+                isCopyDisabled={false}
+                isEditMode={isEditMode}
+                isSaveDisabled={isSaveClicked && !isContactFormValid}
+                onCancel={this.cancelChanges}
+                onCopy={this.copyContact}
+                onEdit={this.showEditMode}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={true}
+              />
+            }
+            infoComponent={<h1>{nameInfo}</h1>}
+            onBack={this.handleBack}
+          />
           <Tabs
             active={activeTab}
             isEditMode={isEditMode}
@@ -424,6 +408,24 @@ class ContactPage extends Component<Props, State> {
             ]}
             onTabClick={this.handleTabClick}
           />
+        </PageNavigationWrapper>
+        <PageContainer className='with-small-control-bar-and-tabs' hasTabs>
+          {isSaving &&
+            <LoaderWrapper className='overlay-wrapper'>
+              <Loader isLoading={isSaving} />
+            </LoaderWrapper>
+          }
+          <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
+            <ConfirmationModal
+              confirmButtonLabel='Palauta muutokset'
+              isOpen={isRestoreModalOpen}
+              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              onCancel={this.cancelRestoreUnsavedChanges}
+              onClose={this.cancelRestoreUnsavedChanges}
+              onSave={this.restoreUnsavedChanges}
+              title='Palauta tallentamattomat muutokset'
+            />
+          </Authorization>
 
           <TabContent active={activeTab}>
             <TabPane>

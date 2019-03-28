@@ -49,11 +49,9 @@
 }
 
 .control-button-bar {
-  position: fixed;
   z-index: 1000;
   background-color: $light-gray;
-  left: 0;
-  right: 0;
+  width: 100%;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
 
   &__wrapper {
@@ -63,16 +61,17 @@
     position: relative;
     width: 100%;
     margin: 0 auto;
-    max-width: 1300px;
-    padding: 10px 20px;
+    max-width: $content-max-width;
+    padding: rem-calc(10px 20px);
   }
 
   .back-button-wrapper {
     flex: 0 0 0;
-    align-self: flex-end;
+    align-self: center;
     padding-right: rem-calc(15px);
 
     button {
+      top: unset;
       cursor: pointer;
     }
   }

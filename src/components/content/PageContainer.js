@@ -6,6 +6,7 @@ import ReactResizeDetector from 'react-resize-detector';
 type Props = {
   children?: any,
   className?: string,
+  hasTabs?: boolean,
 }
 
 class PageContainer extends PureComponent<Props> {
@@ -15,26 +16,28 @@ class PageContainer extends PureComponent<Props> {
     this.component = el;
   }
 
-  onResize = () => {
-    const controlButtonBar = document.getElementsByClassName('control-button-bar');
-    if(controlButtonBar.length) {
-      const clientHeight = controlButtonBar[0].clientHeight;
-      if(clientHeight) {
-        this.component.style.marginTop =  clientHeight + 'px';
-      }
+  handleResize = () => {
+    const pageNavigation = document.getElementsByClassName('content__page-navigator-wrapper');
+
+    if(pageNavigation.length) {
+      const {height} = pageNavigation[0].getClientRects()[0];
+
+      this.component.style.marginTop =  height + 'px';
     }
+
   }
 
   render() {
-    const {children, className} = this.props;
+    const {children, className, hasTabs} = this.props;
 
     return <div
       ref={this.setRef}
       className={classNames('content__page-container', className)}
+      style={{paddingTop: hasTabs ? 0 : null}}
     >
       <ReactResizeDetector
         handleHeight
-        onResize={this.onResize}
+        onResize={this.handleResize}
       />
       {children}
     </div>;

@@ -19,6 +19,7 @@ import InfillDevelopmentTemplate from './sections/basicInfo/InfillDevelopmentTem
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
+import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import SingleInfillDevelopmentMap from './sections/map/SingleInfillDevelopmentMap';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
@@ -437,46 +438,28 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
     return (
       <FullWidthContainer>
-        <ControlButtonBar
-          buttonComponent={
-            <ControlButtons
-              allowCopy={isMethodAllowed(infillDevelopmentMethods, Methods.POST)}
-              allowEdit={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}
-              isCancelDisabled={false}
-              isCopyDisabled={false}
-              isEditDisabled={false}
-              isEditMode={isEditMode}
-              isSaveDisabled={isSaveClicked && !isFormValid}
-              onCancel={this.cancelChanges}
-              onCopy={this.copyInfillDevelopment}
-              onEdit={this.handleShowEditMode}
-              onSave={this.saveChanges}
-              showCommentButton={false}
-              showCopyButton={true}
-            />
-          }
-          infoComponent={<h1>{formatedInfillDevelopment.name}</h1>}
-          onBack={this.handleBack}
-        />
-
-        <PageContainer className='with-small-control-bar'>
-          {isSaving &&
-            <LoaderWrapper className='overlay-wrapper'>
-              <Loader isLoading={isSaving} />
-            </LoaderWrapper>
-          }
-
-          <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}>
-            <ConfirmationModal
-              confirmButtonLabel='Palauta muutokset'
-              isOpen={isRestoreModalOpen}
-              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-              onCancel={this.cancelRestoreUnsavedChanges}
-              onClose={this.cancelRestoreUnsavedChanges}
-              onSave={this.restoreUnsavedChanges}
-              title='Palauta tallentamattomat muutokset'
-            />
-          </Authorization>
+        <PageNavigationWrapper>
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowCopy={isMethodAllowed(infillDevelopmentMethods, Methods.POST)}
+                allowEdit={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}
+                isCancelDisabled={false}
+                isCopyDisabled={false}
+                isEditDisabled={false}
+                isEditMode={isEditMode}
+                isSaveDisabled={isSaveClicked && !isFormValid}
+                onCancel={this.cancelChanges}
+                onCopy={this.copyInfillDevelopment}
+                onEdit={this.handleShowEditMode}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={true}
+              />
+            }
+            infoComponent={<h1>{formatedInfillDevelopment.name}</h1>}
+            onBack={this.handleBack}
+          />
 
           <Tabs
             active={activeTab}
@@ -495,6 +478,28 @@ class InfillDevelopmentPage extends Component<Props, State> {
             ]}
             onTabClick={this.handleTabClick}
           />
+        </PageNavigationWrapper>
+
+        <PageContainer className='with-small-control-bar-and-tabs' hasTabs>
+          {isSaving &&
+            <LoaderWrapper className='overlay-wrapper'>
+              <Loader isLoading={isSaving} />
+            </LoaderWrapper>
+          }
+
+          <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}>
+            <ConfirmationModal
+              confirmButtonLabel='Palauta muutokset'
+              isOpen={isRestoreModalOpen}
+              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              onCancel={this.cancelRestoreUnsavedChanges}
+              onClose={this.cancelRestoreUnsavedChanges}
+              onSave={this.restoreUnsavedChanges}
+              title='Palauta tallentamattomat muutokset'
+            />
+          </Authorization>
+
+
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>

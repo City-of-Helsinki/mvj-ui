@@ -15,6 +15,7 @@ import FullWidthContainer from '$components/content/FullWidthContainer';
 import GreenBox from '$components/content/GreenBox';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
+import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import {
   createContact,
   hideEditMode,
@@ -167,22 +168,24 @@ class NewContactPage extends Component<Props> {
 
           return(
             <FullWidthContainer>
-              <ControlButtonBar
-                buttonComponent={
-                  <ControlButtons
-                    allowEdit={isMethodAllowed(contactMethods, Methods.POST)}
-                    isCopyDisabled={true}
-                    isEditMode={true}
-                    isSaveDisabled={isSaveClicked && !isContactFormValid}
-                    onCancel={this.cancelChanges}
-                    onSave={handleCreate}
-                    showCommentButton={false}
-                    showCopyButton={true}
-                  />
-                }
-                infoComponent={<h1>Uusi asiakas</h1>}
-                onBack={this.handleBack}
-              />
+              <PageNavigationWrapper>
+                <ControlButtonBar
+                  buttonComponent={
+                    <ControlButtons
+                      allowEdit={isMethodAllowed(contactMethods, Methods.POST)}
+                      isCopyDisabled={true}
+                      isEditMode={true}
+                      isSaveDisabled={isSaveClicked && !isContactFormValid}
+                      onCancel={this.cancelChanges}
+                      onSave={handleCreate}
+                      showCommentButton={false}
+                      showCopyButton={true}
+                    />
+                  }
+                  infoComponent={<h1>Uusi asiakas</h1>}
+                  onBack={this.handleBack}
+                />
+              </PageNavigationWrapper>
 
               <PageContainer className='with-small-control-bar'>
                 <ContentContainer>
