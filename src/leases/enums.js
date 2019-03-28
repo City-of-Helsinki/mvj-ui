@@ -566,6 +566,7 @@ export const LeaseAreaAddressesFieldPaths = {
   ADDRESSES: 'lease_areas.child.children.addresses',
   ADDRESS: 'lease_areas.child.children.addresses.child.children.address',
   CITY: 'lease_areas.child.children.addresses.child.children.city',
+  IS_PRIMARY: 'lease_areas.child.children.addresses.child.children.is_primary',
   POSTAL_CODE: 'lease_areas.child.children.addresses.child.children.postal_code',
 };
 
@@ -578,6 +579,7 @@ export const LeaseAreaAddressesFieldTitles = {
   ADDRESSES: 'Osoitteet',
   ADDRESS: 'Osoite',
   CITY: 'Kaupunki',
+  IS_PRIMARY: 'Ensisijainen osoite',
   POSTAL_CODE: 'Postinumero',
 };
 
