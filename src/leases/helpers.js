@@ -9,6 +9,7 @@ import {isDirty} from 'redux-form';
 import {TableSortOrder} from '$components/enums';
 import {
   ConstructabilityType,
+  DecisionTypeKinds,
   FormNames,
   LeaseState,
   LeaseStatus,
@@ -798,6 +799,14 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
     };
   });
 };
+
+/**
+ * Get debt collection decisions from lease data
+ * @param lease
+ * @returns {Object[]}
+ */
+export const getContentDebtCollectionDecisions = (lease: Object) =>
+  get(lease, 'decisions', []).filter((decision) => decision.type.kind === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
 
 // Helper functions to get lease map content
 export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<LeafletFeature>  => {

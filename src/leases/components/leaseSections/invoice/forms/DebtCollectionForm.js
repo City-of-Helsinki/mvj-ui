@@ -32,7 +32,6 @@ import {CollectionLetterFieldPaths, CollectionLetterFieldTitles} from '$src/coll
 import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
 import {ButtonColors} from '$components/enums';
 import {
-  DecisionTypes,
   DeleteModalLabels,
   DeleteModalTitles,
   FormNames,
@@ -41,7 +40,7 @@ import {
 } from '$src/leases/enums';
 import {Methods} from '$src/enums';
 import {getUserFullName} from '$src/users/helpers';
-import {getContentDecisions, getDecisionOptions} from '$src/leases/helpers';
+import {getContentDebtCollectionDecisions, getDecisionOptions} from '$src/leases/helpers';
 import {
   getUiDataCollectionCourtDecisionKey,
   getUiDataCollectionLetterKey,
@@ -196,8 +195,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
     if(props.currentLease !== state.currentLease) {
       newStates.currentLease = props.currentLease;
       newStates.decisionOptions = getDecisionOptions(props.currentLease);
-      newStates.debtCollectionDecisions = getContentDecisions(props.currentLease)
-        .filter((decision) => decision.type === DecisionTypes.LAND_LEASE_DEMOLITION);
+      newStates.debtCollectionDecisions = getContentDebtCollectionDecisions(props.currentLease);
     }
 
     if(!isEmpty(newStates)) {
@@ -325,12 +323,15 @@ class DebtCollectionForm extends PureComponent<Props, State> {
         {({dispatch}) => {
           return(
             <form onSubmit={handleSubmit}>
-              <CollectionCourtDecisionModal
-                isOpen={isCollectionCourtDecisionModalOpen}
-                onClose={this.handleHideCollectionCourtDecisionModal}
-                onSave={this.handleSaveCourtDecisionFile}
-                title='Lisää käräjäoikeuden päätös'
-              />
+              <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.POST)}>
+                <CollectionCourtDecisionModal
+                  isOpen={isCollectionCourtDecisionModalOpen}
+                  onClose={this.handleHideCollectionCourtDecisionModal}
+                  onSave={this.handleSaveCourtDecisionFile}
+                  title='Lisää käräjäoikeuden päätös'
+                />
+              </Authorization>
+
               <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.GET)}>
                 <Row>
                   <Column small={12}>
@@ -557,12 +558,14 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
                           return (
                             <BoxItem key={index}>
-                              <ActionButtonWrapper>
-                                <RemoveButton
-                                  onClick={handleRemove}
-                                  title="Poista käräjäoikeuden päätös"
-                                />
-                              </ActionButtonWrapper>
+                              <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.DELETE)}>
+                                <ActionButtonWrapper>
+                                  <RemoveButton
+                                    onClick={handleRemove}
+                                    title="Poista käräjäoikeuden päätös"
+                                  />
+                                </ActionButtonWrapper>
+                              </Authorization>
                               <Row>
                                 <Column small={6}>
                                   <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.FILE)}>

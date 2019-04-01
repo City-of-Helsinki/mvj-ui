@@ -21,6 +21,16 @@ export const ContractRentPeriods = {
 };
 
 /**
+ * Decision type kinds enumerable.
+ *
+ * @type {{}}
+ */
+export const DecisionTypeKinds = {
+  BASIS_OF_RENT: 'basis_of_rent',
+  LEASE_CANCELLATION: 'lease_cancellation',
+};
+
+/**
  * Lease relation type enumerable.
  *
  * @type {{}}
@@ -199,15 +209,6 @@ export const ConstructabilityType = {
   POLLUTED_LAND: 'polluted_land',
   REPORT: 'report',
   OTHER: 'other',
-};
-
-/**
- * Decision type enumerable.
- *
- * @type {{}}
- */
-export const DecisionTypes = {
-  LAND_LEASE_DEMOLITION: 63,
 };
 
 /**
