@@ -8,6 +8,7 @@ import {
   receiveMethods,
   attributesNotFound,
   fetchCollectionCourtDecisionsByLease as fetchCollectionCourtDecisionsByLeaseAction,
+  hideCollectionCourtDecisionModal,
   receiveCollectionCourtDecisionsByLease,
   notFoundByLease,
 } from './actions';
@@ -68,6 +69,7 @@ function* uploadCollectionCourtDecisionSaga({payload}): Generator<any, any, any>
     switch (statusCode) {
       case 201:
         yield put(fetchCollectionCourtDecisionsByLeaseAction(payload.data.lease));
+        yield put(hideCollectionCourtDecisionModal());
         displayUIMessage({title: '', body: 'Käräjäoikeuden päätös tallennettu'});
         break;
       default:

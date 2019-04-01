@@ -19,6 +19,7 @@ const defaultState: CollectionCourtDecisionState = {
   byLease: {},
   isFetchingAttributes: false,
   isFetchingByLease: {},
+  isModalOpen: false,
   methods: null,
 };
 

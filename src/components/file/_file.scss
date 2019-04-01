@@ -3,4 +3,20 @@
     max-width: 100%;
     word-wrap: break-word;
   }
+
+  &__file-input {
+    input {
+      display: none;
+    }
+
+    label {
+      background-color: $white;
+      cursor: pointer;
+      color: $dark-green;
+      font-weight: $semibold;
+      font-size: rem-calc(14px);
+      padding: 0;
+      margin: rem-calc(2px 0 0);
+    }
+  }
 }
