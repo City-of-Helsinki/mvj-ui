@@ -1,0 +1,21 @@
+// @flow
+import type {Action, Attributes, Methods} from '$src/types';
+
+export type InvoiceNoteState = {
+  attributes: Attributes,
+  isFetching: boolean,
+  isFetchingAttributes: boolean,
+  list: Object,
+  methods: Methods,
+};
+
+export type InvoiceNoteList = Object;
+
+export type FetchAttributesAction = Action<'mvj/invoiceNote/FETCH_ATTRIBUTES', void>;
+export type ReceiveAttributesAction = Action<'mvj/invoiceNote/RECEIVE_ATTRIBUTES', Attributes>;
+export type ReceiveMethodsAction = Action<'mvj/invoiceNote/RECEIVE_METHODS', Methods>;
+export type AttributesNotFoundAction = Action<'mvj/invoiceNote/ATTRIBUTES_NOT_FOUND', void>;
+
+export type FetchInvoiceNoteListAction = Action<'mvj/invoiceNote/FETCH_ALL', Object>;
+export type ReceiveInvoiceNoteListAction = Action<'mvj/invoiceNote/RECEIVE_ALL', InvoiceNoteList>;
+export type NotFoundAction = Action<'mvj/invoiceNote/NOT_FOUND', void>;

@@ -63,13 +63,16 @@ class ShowMore extends PureComponent<Props, State> {
     }
   }
 
-  replaceLineBreakWithBr = (text: string): any  =>
-    text.split('\n').map((item, key) =>
-      <span key={key}>
+  replaceLineBreakWithBr = (text: string): any  => {
+    const items = text.split('\n');
+
+    return items.map((item, index) =>
+      <span key={index}>
         {item}
-        <br />
+        {index <  items.length - 1 && <br />}
       </span>
     );
+  }
 
   getTextToDisplay = () => {
     const {maxChars, text} = this.props;

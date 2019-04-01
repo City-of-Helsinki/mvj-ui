@@ -40,13 +40,11 @@ import {removeSessionStorageItem} from '$util/storage';
 import type {Lease} from './types';
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
 
-export const getContentLeaseIdentifier = (item:Object) => {
-  if(isEmpty(item)) {
-    return null;
-  }
+export const getContentLeaseIdentifier = (item:Object) =>
+  !isEmpty(item)
+    ? `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`
+    : null;
 
-  return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
-};
 
 export const getContentLeaseTenants = (lease: Object, query: Object = {}) => {
   return get(lease, 'tenants', [])

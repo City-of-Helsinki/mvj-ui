@@ -629,3 +629,29 @@ export const findFromOcdString = (ocd: string, key: string) => {
   * @returns {string}
   */
 export const createPaikkatietovipunenUrl = (url: string) => `${PAIKKATIETOVIPUNEN_URL}/${url}`;
+
+
+/**
+* Map api response list count
+* @param {Object} query
+* @returns {number}
+*/
+export const getApiReponseListCount = (list: Object) => get(list, 'count', 0);
+
+/**
+* Map api response list max page
+* @param {Object} query
+* @returns {number}
+*/
+export const getApiReponseListMaxPage = (list: Object, size: number) => {
+  const count = getApiReponseListCount(list);
+
+  return Math.ceil(count/size);
+};
+
+/**
+* Map api response list items
+* @param {Object} query
+* @returns {number}
+*/
+export const getApiResponseListItems = (list: Object) => get(list, 'results', []);
