@@ -17,3 +17,6 @@ export const getIsFetching: Selector<boolean, void> = (state: RootState): boolea
 
 export const getInvoiceNoteList: Selector<InvoiceNoteList, void> = (state: RootState): InvoiceNoteList =>
   state.invoiceNote.list;
+
+export const getIsCreateModalOpen: Selector<boolean, void> = (state: RootState): boolean  =>
+  state.invoiceNote.isCreateModalOpen;

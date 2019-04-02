@@ -4,6 +4,7 @@ import {createAction} from 'redux-actions';
 import type {Attributes, Methods} from '$src/types';
 
 import type {
+  CreateInvoiceNoteAndFetchListPayload,
   InvoiceNoteList,
   FetchAttributesAction,
   ReceiveAttributesAction,
@@ -11,7 +12,10 @@ import type {
   AttributesNotFoundAction,
   FetchInvoiceNoteListAction,
   ReceiveInvoiceNoteListAction,
+  CreateInvoiceNoteAndFetchListAction,
   NotFoundAction,
+  HideCreateInvoiceNoteModalAction,
+  ShowCreateInvoiceNoteModalAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -32,5 +36,14 @@ export const fetchInvoiceNoteList = (params: Object): FetchInvoiceNoteListAction
 export const receiveInvoiceNoteList = (invoiceNotes: InvoiceNoteList): ReceiveInvoiceNoteListAction =>
   createAction('mvj/invoiceNote/RECEIVE_ALL')(invoiceNotes);
 
+export const createInvoiceNoteAndFetchList = (payload: CreateInvoiceNoteAndFetchListPayload): CreateInvoiceNoteAndFetchListAction =>
+  createAction('mvj/invoiceNote/CREATE_AND_FETCH')(payload);
+
 export const notFound = (): NotFoundAction =>
   createAction('mvj/invoiceNote/NOT_FOUND')();
+
+export const hideCreateInvoiceNoteModal = (): HideCreateInvoiceNoteModalAction =>
+  createAction('mvj/invoiceNote/HIDE_CREATE_MODAL')();
+
+export const showCreateInvoiceNoteModal = (): ShowCreateInvoiceNoteModalAction =>
+  createAction('mvj/invoiceNote/SHOW_CREATE_MODAL')();

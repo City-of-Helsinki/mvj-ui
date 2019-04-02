@@ -1,6 +1,14 @@
 // @flow
 
 /**
+ * Invoice note form names enumerable.
+ *
+ * @type {{}}
+ */
+export const FormNames = {
+  CREATE_INVOICE_NOTE: 'create-invoice-note-form',
+};
+/**
  * Invoice note paths enumerable.
  *
  * @type {{}}

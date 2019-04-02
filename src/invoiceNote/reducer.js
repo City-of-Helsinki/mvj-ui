@@ -31,6 +31,7 @@ const methodsReducer: Reducer<Methods> = handleActions({
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/invoiceNote/FETCH_ALL': () => true,
+  'mvj/invoiceNote/CREATE_AND_FETCH': () => true,
   'mvj/invoiceNote/RECEIVE_ALL': () => false,
   'mvj/invoiceNote/NOT_FOUND': () => false,
 }, false);
@@ -41,8 +42,14 @@ const listReducer: Reducer<InvoiceNoteList> = handleActions({
   },
 }, {});
 
+const isCreateModalOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/invoiceNote/HIDE_CREATE_MODAL': () => false,
+  'mvj/invoiceNote/SHOW_CREATE_MODAL': () => true,
+}, false);
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
+  isCreateModalOpen: isCreateModalOpenReducer,
   isFetching: isFetchingReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   list: listReducer,

@@ -6,7 +6,11 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
+import CreateInvoiceNoteModal from './CreateInvoiceNoteModal';
+import ExternalLink from '$components/links/ExternalLink';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
@@ -15,7 +19,14 @@ import ShowMore from '$components/showMore/ShowMore';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
-import {fetchInvoiceNoteList} from '$src/invoiceNote/actions';
+import {
+  createInvoiceNoteAndFetchList,
+  fetchInvoiceNoteList,
+  hideCreateInvoiceNoteModal,
+  receiveInvoiceNoteList,
+  showCreateInvoiceNoteModal,
+} from '$src/invoiceNote/actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {Methods, PermissionMissingTexts} from '$src/enums';
 import {InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/enums';
@@ -31,7 +42,7 @@ import {
   isMethodAllowed,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getInvoiceNoteList, getIsFetching} from '$src/invoiceNote/selectors';
+import {getInvoiceNoteList, getIsCreateModalOpen, getIsFetching} from '$src/invoiceNote/selectors';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
@@ -44,7 +55,13 @@ const getColumns = (invoiceNoteAttributes: Attributes) => {
     columns.push({
       key: 'lease',
       text: InvoiceNoteFieldTitles.LEASE,
-      renderer: (val) => getContentLeaseIdentifier(val),
+      renderer: (val) => val
+        ? <ExternalLink
+          className='no-margin'
+          href={`${getRouteById(Routes.LEASES)}/${val.id}?tab=6`}
+          text={getContentLeaseIdentifier(val)}
+        />
+        : '-',
     });
   }
 
@@ -76,14 +93,20 @@ const getColumns = (invoiceNoteAttributes: Attributes) => {
 };
 
 type Props = {
+  createInvoiceNoteAndFetchList: Function,
   fetchInvoiceNoteList: Function,
+  hideCreateInvoiceNoteModal: Function,
   history: Object,
   invoiceNoteAttributes: Attributes,
   invoiceNoteList: InvoiceNoteList,
   invoiceNoteMethods: MethodsType,
+  isCreateModalOpen: boolean,
   isFetching: boolean,
   isFetchingCommonAttributes: boolean,
   location: Object,
+  receiveInvoiceNoteList: Function,
+  receiveTopNavigationSettings: Function,
+  showCreateInvoiceNoteModal: Function,
 }
 
 type State = {
@@ -108,10 +131,16 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const {location: {search}} = this.props;
+    const {location: {search}, receiveTopNavigationSettings} = this.props;
     const query = getUrlParams(search);
-
     const page = query.page ? Number(query.page) : 1;
+
+    receiveTopNavigationSettings({
+      linkUrl: getRouteById(Routes.INVOICE_NOTES),
+      pageTitle: 'Laskujen tiedotteet',
+      showSearch: false,
+    });
+
     this.setState({activePage: page});
 
     this.search();
@@ -133,6 +162,26 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
     }
 
     return !isEmpty(newState) ? newState : null;
+  }
+
+  componentDidUpdate(prevProps) {
+    const {location: {search: currentSearch}} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+    if(currentSearch !== prevSearch) {
+      const query = getUrlParams(currentSearch);
+      const page = query.page ? Number(query.page) : 1;
+
+      this.setState({activePage: page}, () => {
+        this.search();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const {receiveInvoiceNoteList} = this.props;
+
+    // Clear invoice note list
+    receiveInvoiceNoteList({});
   }
 
   search = () => {
@@ -168,9 +217,33 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
     });
   }
 
+  hideCreateInvoiceNoteModal = () => {
+    const {hideCreateInvoiceNoteModal} = this.props;
+
+    hideCreateInvoiceNoteModal();
+  }
+
+  showCreateInvoiceNoteModal = () => {
+    const {showCreateInvoiceNoteModal} = this.props;
+
+    showCreateInvoiceNoteModal();
+  }
+
+  createInvoiceNote = (data: Object) => {
+    const {createInvoiceNoteAndFetchList, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    createInvoiceNoteAndFetchList({
+      data,
+      query,
+    });
+  }
+
   render() {
     const {
+      invoiceNoteList,
       invoiceNoteMethods,
+      isCreateModalOpen,
       isFetching,
       isFetchingCommonAttributes,
     } = this.props;
@@ -182,7 +255,7 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
       maxPage,
     } = this.state;
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingCommonAttributes || isFetching && isEmpty(invoiceNoteList)) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!invoiceNoteMethods) return null;
 
@@ -190,6 +263,24 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
 
     return (
       <PageContainer>
+        <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}>
+          <CreateInvoiceNoteModal
+            isOpen={isCreateModalOpen}
+            onClose={this.hideCreateInvoiceNoteModal}
+            onSubmit={this.createInvoiceNote}
+          />
+        </Authorization>
+        <Row>
+          <Column small={12} large={6}>
+            <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo tiedote'
+                onClick={this.showCreateInvoiceNoteModal}
+              />
+            </Authorization>
+          </Column>
+        </Row>
         <Row>
           <Column small={12} medium={6}></Column>
           <Column small={12} medium={6}>
@@ -230,11 +321,17 @@ export default flowRight(
     (state) => {
       return {
         invoiceNoteList: getInvoiceNoteList(state),
+        isCreateModalOpen: getIsCreateModalOpen(state),
         isFetching: getIsFetching(state),
       };
     },
     {
+      createInvoiceNoteAndFetchList,
       fetchInvoiceNoteList,
+      hideCreateInvoiceNoteModal,
+      receiveInvoiceNoteList,
+      receiveTopNavigationSettings,
+      showCreateInvoiceNoteModal,
     }
   ),
 )(InvoiceNoteListPage);

@@ -9,6 +9,8 @@ import {
   fetchInvoiceNoteList,
   receiveInvoiceNoteList,
   notFound,
+  hideCreateInvoiceNoteModal,
+  showCreateInvoiceNoteModal,
 } from './actions';
 import invoiceNoteReducer from './reducer';
 
@@ -16,6 +18,7 @@ import type {InvoiceNoteState} from './types';
 
 const defaultState: InvoiceNoteState = {
   attributes: null,
+  isCreateModalOpen: false,
   isFetching: false,
   isFetchingAttributes: false,
   list: {},
@@ -86,6 +89,21 @@ describe('Invoice Note', () => {
         newState.list = dummyList;
 
         const state = invoiceNoteReducer({}, receiveInvoiceNoteList(dummyList));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should set isCreateModalOpen to false', () => {
+        const newState = {...defaultState, isCreateModalOpen: false};
+
+        let state = invoiceNoteReducer({}, showCreateInvoiceNoteModal());
+        state = invoiceNoteReducer(state, hideCreateInvoiceNoteModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should set isCreateModalOpen to true', () => {
+        const newState = {...defaultState, isCreateModalOpen: true};
+
+        const state = invoiceNoteReducer({}, showCreateInvoiceNoteModal());
         expect(state).to.deep.equal(newState);
       });
     });
