@@ -69,6 +69,7 @@ export const DeleteModalLabels = {
   DECISION: 'Haluatko varmasti poistaa päätöksen?',
   FIXED_INITIAL_YEAR_RENT: 'Haluatko varmasti poistaa kiinteän alkuvuosivuokran?',
   INSPECTION: 'Haluatko varmasti poistaa tarkastuksen?',
+  INVOICE_NOTE: 'Haluatko varmasti poistaa tiedotteen?',
   INVOICE_PAYMENT: 'Haluatko varmasti poistaa maksun?',
   INVOICE_ROW: 'Haluatko varmasti poistaa laskurivin?',
   LEASE_AREA: 'Haluatko varmasti poistaa kohteen?',
@@ -103,6 +104,7 @@ export const DeleteModalTitles = {
   DECISION: 'Poista päätös',
   FIXED_INITIAL_YEAR_RENT: 'Poista kiinteä alkuvuosivuokra',
   INSPECTION: 'Poista tarkastus',
+  INVOICE_NOTE: 'Poista laskujen tiedote',
   INVOICE_PAYMENT: 'Poista maksu',
   INVOICE_ROW: 'Poista laskurivi',
   LEASE_AREA: 'Poista kohde',
@@ -347,32 +349,6 @@ export const TenantContactType = {
   TENANT: 'tenant',
   BILLING: 'billing',
   CONTACT: 'contact',
-};
-
-/**
- * Lease form names enumerable.
- *
- * @type {{}}
- */
-export const FormNames = {
-  ARCHIVE_AREA: 'archive-area-form',
-  CONSTRUCTABILITY: 'constructability-form',
-  CONTRACTS: 'contracts-form',
-  CREATE_COLLECTION_COURT_DECISION: 'create-collection-court-decision-form',
-  CREATE_COLLECTION_LETTER: 'create-collection-letter-form',
-  CREATE_LEASE: 'create-lease-form',
-  DEBT_COLLECTION: 'debt-collection-form',
-  DECISIONS: 'decisions-form',
-  INSPECTIONS: 'inspections-form',
-  INVOICE_CREDIT: 'credit-invoice-form',
-  INVOICE_EDIT: 'edit-invoice-form',
-  INVOICE_NEW: 'new-invoice-form',
-  LEASE_AREAS: 'lease-areas-form',
-  REFUND: 'refund-form',
-  RENTS: 'rents-form',
-  SEARCH: 'lease-search-form',
-  SUMMARY: 'summary-form',
-  TENANTS: 'tenants-form',
 };
 
 /**
@@ -1276,4 +1252,22 @@ export const LeaseInvoicingFieldTitles = {
   INVOICING_DISABLED: 'Laskutus keskeytetty',
   INVOICING_ENABLED: 'Laskutus käynnissä',
   PREVIEW_INVOICES: 'Laskujen esikatselu',
+};
+
+/**
+ * Lease invoice notes field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInvoiceNotesFieldPaths = {
+  INVOICE_NOTES: 'invoice_notes',
+};
+
+/**
+ * Lease invoice notes field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInvoiceNotesFieldTitles = {
+  INVOICE_NOTES: 'Laskujen tiedotteet',
 };

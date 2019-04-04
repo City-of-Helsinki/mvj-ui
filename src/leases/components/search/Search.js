@@ -12,8 +12,8 @@ import isEqual from 'lodash/isEqual';
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FieldTypes} from '$components/enums';
+import {FormNames} from '$src/enums';
 import {
-  FormNames,
   LeaseDecisionsFieldPaths,
   LeaseFieldPaths,
   LeaseTenantContactSetFieldPaths,
@@ -708,7 +708,7 @@ class Search extends Component<Props, State> {
   }
 }
 
-const formName = FormNames.SEARCH;
+const formName = FormNames.LEASE_SEARCH;
 const selector = formValueSelector(formName);
 
 export default flowRight(

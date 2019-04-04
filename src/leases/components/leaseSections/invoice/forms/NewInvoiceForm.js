@@ -18,10 +18,11 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreateClicked} from '$src/invoices/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {LeaseCreateChargeFieldPaths, LeaseCreateChargeRowsFieldPaths} from '$src/leaseCreateCharge/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames, RecipientOptions} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, RecipientOptions} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
@@ -381,7 +382,7 @@ const NewInvoiceForm = ({
   );
 };
 
-const formName = FormNames.INVOICE_NEW;
+const formName = FormNames.LEASE_INVOICE_NEW;
 const selector = formValueSelector(formName);
 
 export default flowRight(

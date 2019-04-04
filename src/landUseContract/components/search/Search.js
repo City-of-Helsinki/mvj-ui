@@ -8,8 +8,8 @@ import flowRight from 'lodash/flowRight';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
+import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {FormNames} from '$src/landUseContract/enums';
 
 type Props = {
   formValues: Object,

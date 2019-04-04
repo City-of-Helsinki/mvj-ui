@@ -16,9 +16,8 @@ import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {
-  FormNames,
   LeaseTenantContactSetFieldPaths,
   LeaseTenantContactSetFieldTitles,
 } from '$src/leases/enums';
@@ -53,7 +52,7 @@ const OtherTenantItem = ({
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.TENANTS]: {
+        [FormNames.LEASE_TENANTS]: {
           others: {
             [tenant.id]: val,
           },
@@ -150,7 +149,7 @@ export default connect(
     const id = props.tenant.id;
     return {
       attributes: getAttributes(state),
-      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.TENANTS}.others.${id}`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_TENANTS}.others.${id}`),
     };
   },
   {

@@ -12,7 +12,6 @@ const FileInput = ({
   onChange,
   value,
 }: Props) => {
-  console.log(value);
   return (
     <div className='file__file-input'>
       <input type="file" id={name} name={name} onChange={onChange}/>

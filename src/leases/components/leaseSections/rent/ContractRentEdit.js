@@ -13,9 +13,9 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
+import {FormNames} from '$src/enums';
 import {
   ContractRentPeriods,
-  FormNames,
   LeaseRentContractRentsFieldPaths,
   LeaseRentContractRentsFieldTitles,
   RentTypes,
@@ -423,7 +423,7 @@ const ContractRent = ({
   }
 };
 
-const formName = FormNames.RENTS;
+const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
 
 export default flowRight(

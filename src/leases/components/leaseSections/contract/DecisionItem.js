@@ -12,9 +12,8 @@ import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {
-  FormNames,
   LeaseDecisionConditionsFieldPaths,
   LeaseDecisionConditionsFieldTitles,
   LeaseDecisionsFieldPaths,
@@ -26,6 +25,8 @@ import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes} from '$src/types';
+
+const formName = FormNames.LEASE_DECISIONS;
 
 type Props = {
   attributes: Attributes,
@@ -50,28 +51,24 @@ const DecisionItem = ({
   receiveCollapseStates,
   typeOptions,
 }: Props) => {
-  const handleDecisionCollapseToggle = (val: boolean) => {
+  const handleCollapseToggle = (key: string, val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.DECISIONS]: {
+        [formName]: {
           [decision.id]: {
-            decision: val,
+            [key]: val,
           },
         },
       },
     });
   };
 
+  const handleDecisionCollapseToggle = (val: boolean) => {
+    handleCollapseToggle('decision', val);
+  };
+
   const handleConditionsCollapseToggle = (val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.DECISIONS]: {
-          [decision.id]: {
-            conditions: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('conditions', val);
   };
 
   return (
@@ -301,8 +298,8 @@ export default flowRight(
       const id = props.decision.id;
       return {
         attributes: getAttributes(state),
-        conditionsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.conditions`),
-        decisionCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.decision`),
+        conditionsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.conditions`),
+        decisionCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.decision`),
       };
     },
     {

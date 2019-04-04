@@ -10,8 +10,9 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import DecisionItemEdit from './DecisionItemEdit';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getContentDecisions} from '$src/landUseContract/helpers';
 import {getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
@@ -106,7 +107,7 @@ class DecisionsEdit extends Component<Props, State> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.DECISIONS]: this.props.valid,
+        [FormNames.LAND_USE_CONTRACT_DECISIONS]: this.props.valid,
       });
     }
   }
@@ -141,7 +142,7 @@ class DecisionsEdit extends Component<Props, State> {
   }
 }
 
-const formName = FormNames.DECISIONS;
+const formName = FormNames.LAND_USE_CONTRACT_DECISIONS;
 
 export default flowRight(
   connect(

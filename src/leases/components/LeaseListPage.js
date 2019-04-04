@@ -34,9 +34,8 @@ import {fetchLessors} from '$src/lessor/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {leaseStateFilterOptions} from '$src/leases/constants';
 import {TableSortOrder} from '$components/enums';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
-  FormNames,
   LeaseAreasFieldPaths,
   LeaseAreaAddressesFieldPaths,
   LeaseFieldPaths,
@@ -173,7 +172,7 @@ class LeaseListPage extends PureComponent<Props, State> {
         }
 
 
-        await initialize(FormNames.SEARCH, searchQuery);
+        await initialize(FormNames.LEASE_SEARCH, searchQuery);
         setSearchFormReadyFlag();
       } catch(e) {
         console.error(`Failed to initialize search form with error, ${e}`);
@@ -197,7 +196,7 @@ class LeaseListPage extends PureComponent<Props, State> {
         };
 
         const clearSearchForm = async() => {
-          await initialize(FormNames.SEARCH, {});
+          await initialize(FormNames.LEASE_SEARCH, {});
         };
 
         this.setState({

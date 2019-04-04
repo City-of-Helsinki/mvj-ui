@@ -3,7 +3,7 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import merge from 'lodash/merge';
 
-import {FormNames} from '$src/leases/enums';
+import {FormNames} from '$src/enums';
 
 import type {Attributes, Methods, Reducer} from '$src/types';
 import type {
@@ -43,6 +43,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 const isSavingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/DELETE': () => true,
   'mvj/leases/PATCH': () => true,
+  'mvj/leases/PATCH_INVOICE_NOTES': () => true,
   'mvj/leases/START_INVOICING': () => true,
   'mvj/leases/STOP_INVOICING': () => true,
   'mvj/leases/SET_RENT_INFO_COMPLETE': () => true,
@@ -123,25 +124,25 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   },
   ['mvj/leases/CLEAR_FORM_VALID_FLAGS']: () => {
     return {
-      [FormNames.CONSTRUCTABILITY]: true,
-      [FormNames.CONTRACTS]: true,
-      [FormNames.DECISIONS]: true,
-      [FormNames.INSPECTIONS]: true,
+      [FormNames.LEASE_CONSTRUCTABILITY]: true,
+      [FormNames.LEASE_CONTRACTS]: true,
+      [FormNames.LEASE_DECISIONS]: true,
+      [FormNames.LEASE_INSPECTIONS]: true,
       [FormNames.LEASE_AREAS]: true,
-      [FormNames.RENTS]: true,
-      [FormNames.SUMMARY]: true,
-      [FormNames.TENANTS]: true,
+      [FormNames.LEASE_RENTS]: true,
+      [FormNames.LEASE_SUMMARY]: true,
+      [FormNames.LEASE_TENANTS]: true,
     };
   },
 }, {
-  [FormNames.CONSTRUCTABILITY]: true,
-  [FormNames.CONTRACTS]: true,
-  [FormNames.DECISIONS]: true,
-  [FormNames.INSPECTIONS]: true,
+  [FormNames.LEASE_CONSTRUCTABILITY]: true,
+  [FormNames.LEASE_CONTRACTS]: true,
+  [FormNames.LEASE_DECISIONS]: true,
+  [FormNames.LEASE_INSPECTIONS]: true,
   [FormNames.LEASE_AREAS]: true,
-  [FormNames.RENTS]: true,
-  [FormNames.SUMMARY]: true,
-  [FormNames.TENANTS]: true,
+  [FormNames.LEASE_RENTS]: true,
+  [FormNames.LEASE_SUMMARY]: true,
+  [FormNames.LEASE_TENANTS]: true,
 });
 
 const isSaveClickedReducer: Reducer<boolean> = handleActions({

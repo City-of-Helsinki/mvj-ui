@@ -12,9 +12,9 @@ import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import Modal from '$components/modal/Modal';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
+import {FormNames} from '$src/enums';
 import {CollectionCourtDecisionFieldPaths, CollectionCourtDecisionFieldTitles} from '$src/collectionCourtDecision/enums';
 import {ButtonColors} from '$components/enums';
-import {FormNames} from '$src/leases/enums';
 import {
   getFieldAttributes,
   isFieldAllowedToEdit,
@@ -146,7 +146,7 @@ class CollectionCourtDecisionModal extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.CREATE_COLLECTION_COURT_DECISION;
+const formName = FormNames.LEASE_CREATE_COLLECTION_COURT_DECISION;
 const selector = formValueSelector(formName);
 
 export default flowRight(

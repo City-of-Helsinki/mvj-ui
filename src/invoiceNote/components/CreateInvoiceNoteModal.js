@@ -9,7 +9,8 @@ import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import Modal from '$components/modal/Modal';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
-import {FormNames, InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/enums';
+import {FormNames} from '$src/enums';
+import {InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {getFieldAttributes} from '$util/helpers';
 import {getAttributes} from '$src/invoiceNote/selectors';
@@ -99,7 +100,10 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
                 fieldAttributes={getFieldAttributes(invoiceNoteAttributes, InvoiceNoteFieldPaths.NOTES)}
                 name='notes'
                 disableDirty
-                overrideValues={{label: InvoiceNoteFieldTitles.NOTES}}
+                overrideValues={{
+                  label: InvoiceNoteFieldTitles.NOTES,
+                  fieldType: FieldTypes.TEXTAREA,
+                }}
               />
             </Column>
           </Row>
@@ -113,6 +117,7 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
             <Button
               className={ButtonColors.SUCCESS}
               disabled={!valid}
+              onClick={handleSubmit(this.handleSubmit)}
               type='submit'
               text='Tallenna'
             />
@@ -123,7 +128,7 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
   }
 }
 
-const formName = FormNames.CREATE_INVOICE_NOTE;
+const formName = FormNames.INVOICE_NOTE_CREATE;
 
 export default flowRight(
   connect(

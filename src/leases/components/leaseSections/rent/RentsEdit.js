@@ -20,11 +20,11 @@ import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseBasisOfRentsFieldPaths,
   LeaseBasisOfRentsFieldTitles,
   LeaseRentsFieldPaths,
@@ -164,7 +164,7 @@ class RentsEdit extends PureComponent<Props, State> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.RENTS]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
   }
@@ -341,7 +341,7 @@ class RentsEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.RENTS;
+const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
 
 export default flowRight(

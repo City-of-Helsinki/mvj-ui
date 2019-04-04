@@ -1,12 +1,4 @@
 // @flow
-
-/**
- * Leasehold transfer form names enumerable.
- */
-export const FormNames = {
-  SEARCH: 'leasehold-transfer-search-form',
-};
-
 /*
 * Leasehold transfer field paths enumerable
 */

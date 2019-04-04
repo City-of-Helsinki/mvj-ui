@@ -59,9 +59,9 @@ import {fetchLeaseTypes} from '$src/leaseType/actions';
 import {clearPreviewInvoices} from '$src/previewInvoices/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchVats} from '$src/vat/actions';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
   DeleteLeaseTexts,
-  FormNames,
   LeaseAreasFieldPaths,
   LeaseBasisOfRentsFieldPaths,
   LeaseContractsFieldPaths,
@@ -70,8 +70,7 @@ import {
   LeaseRentsFieldPaths,
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
-import {ButtonColors, FormNames as ComponentFormNames} from '$components/enums';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges, getContentLeaseIdentifier} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
@@ -372,8 +371,8 @@ class LeasePage extends Component<Props, State> {
     // Clear current lease
     receiveSingleLease({});
 
-    destroy(ComponentFormNames.INVOICE_SIMULATOR);
-    destroy(ComponentFormNames.RENT_CALCULATOR);
+    destroy(FormNames.INVOICE_SIMULATOR);
+    destroy(FormNames.RENT_CALCULATOR);
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
   }
@@ -447,36 +446,36 @@ class LeasePage extends Component<Props, State> {
   destroyAllForms = () => {
     const {destroy} = this.props;
 
-    destroy(FormNames.CONSTRUCTABILITY);
-    destroy(FormNames.CONTRACTS);
-    destroy(FormNames.DECISIONS);
-    destroy(FormNames.INSPECTIONS);
+    destroy(FormNames.LEASE_CONSTRUCTABILITY);
+    destroy(FormNames.LEASE_CONTRACTS);
+    destroy(FormNames.LEASE_DECISIONS);
+    destroy(FormNames.LEASE_INSPECTIONS);
     destroy(FormNames.LEASE_AREAS);
-    destroy(FormNames.RENTS);
-    destroy(FormNames.SUMMARY);
-    destroy(FormNames.TENANTS);
+    destroy(FormNames.LEASE_RENTS);
+    destroy(FormNames.LEASE_SUMMARY);
+    destroy(FormNames.LEASE_TENANTS);
   }
 
   initializeForms = (lease: Lease) => {
     const {initialize} = this.props,
       areas = contentHelpers.getContentLeaseAreas(lease);
 
-    initialize(FormNames.CONSTRUCTABILITY, {lease_areas: contentHelpers.getContentConstructability(lease)});
-    initialize(FormNames.CONTRACTS, {contracts: contentHelpers.getContentContracts(lease)});
-    initialize(FormNames.DECISIONS, {decisions: contentHelpers.getContentDecisions(lease)});
-    initialize(FormNames.INSPECTIONS, {inspections: contentHelpers.getContentInspections(lease)});
+    initialize(FormNames.LEASE_CONSTRUCTABILITY, {lease_areas: contentHelpers.getContentConstructability(lease)});
+    initialize(FormNames.LEASE_CONTRACTS, {contracts: contentHelpers.getContentContracts(lease)});
+    initialize(FormNames.LEASE_DECISIONS, {decisions: contentHelpers.getContentDecisions(lease)});
+    initialize(FormNames.LEASE_INSPECTIONS, {inspections: contentHelpers.getContentInspections(lease)});
     initialize(FormNames.LEASE_AREAS, {
       lease_areas_active: areas.filter((area) => !area.archived_at),
       lease_areas_archived: areas.filter((area) => area.archived_at),
     });
-    initialize(FormNames.RENTS, {
+    initialize(FormNames.LEASE_RENTS, {
       basis_of_rents: contentHelpers.getContentBasisOfRents(lease, false),
       basis_of_rents_archived: contentHelpers.getContentBasisOfRents(lease, true),
       is_rent_info_complete: lease.is_rent_info_complete,
       ...contentHelpers.getContentRentsFormData(lease),
     });
-    initialize(FormNames.SUMMARY, contentHelpers.getContentSummary(lease));
-    initialize(FormNames.TENANTS, {...contentHelpers.getContentTenantsFormData(lease)});
+    initialize(FormNames.LEASE_SUMMARY, contentHelpers.getContentSummary(lease));
+    initialize(FormNames.LEASE_TENANTS, {...contentHelpers.getContentTenantsFormData(lease)});
   }
 
   cancelRestoreUnsavedChanges = () => {
@@ -497,39 +496,39 @@ class LeasePage extends Component<Props, State> {
       this.bulkChange(FormNames.LEASE_AREAS, storedAreasFormValues);
     }
 
-    const storedConstructabilityFormValues = getSessionStorageItem(FormNames.CONSTRUCTABILITY);
+    const storedConstructabilityFormValues = getSessionStorageItem(FormNames.LEASE_CONSTRUCTABILITY);
     if(storedConstructabilityFormValues) {
-      this.bulkChange(FormNames.CONSTRUCTABILITY, storedConstructabilityFormValues);
+      this.bulkChange(FormNames.LEASE_CONSTRUCTABILITY, storedConstructabilityFormValues);
     }
 
-    const storedContractsFormValues = getSessionStorageItem(FormNames.CONTRACTS);
+    const storedContractsFormValues = getSessionStorageItem(FormNames.LEASE_CONTRACTS);
     if(storedContractsFormValues) {
-      this.bulkChange(FormNames.CONTRACTS, storedContractsFormValues);
+      this.bulkChange(FormNames.LEASE_CONTRACTS, storedContractsFormValues);
     }
 
-    const storedDecisionsFormValues = getSessionStorageItem(FormNames.DECISIONS);
+    const storedDecisionsFormValues = getSessionStorageItem(FormNames.LEASE_DECISIONS);
     if(storedDecisionsFormValues) {
-      this.bulkChange(FormNames.DECISIONS, storedDecisionsFormValues);
+      this.bulkChange(FormNames.LEASE_DECISIONS, storedDecisionsFormValues);
     }
 
-    const storedInspectionsFormValues = getSessionStorageItem(FormNames.INSPECTIONS);
+    const storedInspectionsFormValues = getSessionStorageItem(FormNames.LEASE_INSPECTIONS);
     if(storedInspectionsFormValues) {
-      this.bulkChange(FormNames.INSPECTIONS, storedInspectionsFormValues);
+      this.bulkChange(FormNames.LEASE_INSPECTIONS, storedInspectionsFormValues);
     }
 
-    const storedRentsFormValues = getSessionStorageItem(FormNames.RENTS);
+    const storedRentsFormValues = getSessionStorageItem(FormNames.LEASE_RENTS);
     if(storedRentsFormValues) {
-      this.bulkChange(FormNames.RENTS, storedRentsFormValues);
+      this.bulkChange(FormNames.LEASE_RENTS, storedRentsFormValues);
     }
 
-    const storedSummaryFormValues = getSessionStorageItem(FormNames.SUMMARY);
+    const storedSummaryFormValues = getSessionStorageItem(FormNames.LEASE_SUMMARY);
     if(storedSummaryFormValues) {
-      this.bulkChange(FormNames.SUMMARY, storedSummaryFormValues);
+      this.bulkChange(FormNames.LEASE_SUMMARY, storedSummaryFormValues);
     }
 
-    const storedTenantsFormValues = getSessionStorageItem(FormNames.TENANTS);
+    const storedTenantsFormValues = getSessionStorageItem(FormNames.LEASE_TENANTS);
     if(storedTenantsFormValues) {
-      this.bulkChange(FormNames.TENANTS, storedTenantsFormValues);
+      this.bulkChange(FormNames.LEASE_TENANTS, storedTenantsFormValues);
     }
 
     const storedFormValidity = getSessionStorageItem('leaseValidity');
@@ -576,31 +575,31 @@ class LeasePage extends Component<Props, State> {
     let isDirty = false;
 
     if(isConstructabilityFormDirty) {
-      setSessionStorageItem(FormNames.CONSTRUCTABILITY, constructabilityFormValues);
+      setSessionStorageItem(FormNames.LEASE_CONSTRUCTABILITY, constructabilityFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.CONSTRUCTABILITY);
+      removeSessionStorageItem(FormNames.LEASE_CONSTRUCTABILITY);
     }
 
     if(isContractsFormDirty) {
-      setSessionStorageItem(FormNames.CONTRACTS, contractsFormValues);
+      setSessionStorageItem(FormNames.LEASE_CONTRACTS, contractsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.CONTRACTS);
+      removeSessionStorageItem(FormNames.LEASE_CONTRACTS);
     }
 
     if(isDecisionsFormDirty) {
-      setSessionStorageItem(FormNames.DECISIONS, decisionsFormValues);
+      setSessionStorageItem(FormNames.LEASE_DECISIONS, decisionsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.DECISIONS);
+      removeSessionStorageItem(FormNames.LEASE_DECISIONS);
     }
 
     if(isInspectionsFormDirty) {
-      setSessionStorageItem(FormNames.INSPECTIONS, inspectionsFormValues);
+      setSessionStorageItem(FormNames.LEASE_INSPECTIONS, inspectionsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.INSPECTIONS);
+      removeSessionStorageItem(FormNames.LEASE_INSPECTIONS);
     }
 
     if(isLeaseAreasFormDirty) {
@@ -611,24 +610,24 @@ class LeasePage extends Component<Props, State> {
     }
 
     if(isRentsFormDirty) {
-      setSessionStorageItem(FormNames.RENTS, rentsFormValues);
+      setSessionStorageItem(FormNames.LEASE_RENTS, rentsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.RENTS);
+      removeSessionStorageItem(FormNames.LEASE_RENTS);
     }
 
     if(isSummaryFormDirty) {
-      setSessionStorageItem(FormNames.SUMMARY, summaryFormValues);
+      setSessionStorageItem(FormNames.LEASE_SUMMARY, summaryFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.SUMMARY);
+      removeSessionStorageItem(FormNames.LEASE_SUMMARY);
     }
 
     if(isTenantsFormDirty) {
-      setSessionStorageItem(FormNames.TENANTS, tenantsFormValues);
+      setSessionStorageItem(FormNames.LEASE_TENANTS, tenantsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.TENANTS);
+      removeSessionStorageItem(FormNames.LEASE_TENANTS);
     }
 
     if(isDirty) {
@@ -1149,37 +1148,37 @@ export default flowRight(
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
         comments: getCommentsByLease(state, currentLease.id),
-        constructabilityFormValues: getFormValues(FormNames.CONSTRUCTABILITY)(state),
-        contractsFormValues: getFormValues(FormNames.CONTRACTS)(state),
+        constructabilityFormValues: getFormValues(FormNames.LEASE_CONSTRUCTABILITY)(state),
+        contractsFormValues: getFormValues(FormNames.LEASE_CONTRACTS)(state),
         currentLease: currentLease,
-        decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
-        inspectionsFormValues: getFormValues(FormNames.INSPECTIONS)(state),
+        decisionsFormValues: getFormValues(FormNames.LEASE_DECISIONS)(state),
+        inspectionsFormValues: getFormValues(FormNames.LEASE_INSPECTIONS)(state),
         invoices: getInvoicesByLease(state, props.match.params.leaseId),
         isEditMode: getIsEditMode(state),
         isFormValidFlags: getIsFormValidFlags(state),
-        isConstructabilityFormDirty: isDirty(FormNames.CONSTRUCTABILITY)(state),
-        isConstructabilityFormValid: getIsFormValidById(state, FormNames.CONSTRUCTABILITY),
-        isContractsFormDirty: isDirty(FormNames.CONTRACTS)(state),
-        isContractsFormValid: getIsFormValidById(state, FormNames.CONTRACTS),
-        isDecisionsFormDirty: isDirty(FormNames.DECISIONS)(state),
-        isDecisionsFormValid: getIsFormValidById(state, FormNames.DECISIONS),
-        isInspectionsFormDirty: isDirty(FormNames.INSPECTIONS)(state),
-        isInspectionsFormValid: getIsFormValidById(state, FormNames.INSPECTIONS),
+        isConstructabilityFormDirty: isDirty(FormNames.LEASE_CONSTRUCTABILITY)(state),
+        isConstructabilityFormValid: getIsFormValidById(state, FormNames.LEASE_CONSTRUCTABILITY),
+        isContractsFormDirty: isDirty(FormNames.LEASE_CONTRACTS)(state),
+        isContractsFormValid: getIsFormValidById(state, FormNames.LEASE_CONTRACTS),
+        isDecisionsFormDirty: isDirty(FormNames.LEASE_DECISIONS)(state),
+        isDecisionsFormValid: getIsFormValidById(state, FormNames.LEASE_DECISIONS),
+        isInspectionsFormDirty: isDirty(FormNames.LEASE_INSPECTIONS)(state),
+        isInspectionsFormValid: getIsFormValidById(state, FormNames.LEASE_INSPECTIONS),
         isLeaseAreasFormDirty: isDirty(FormNames.LEASE_AREAS)(state),
         isLeaseAreasFormValid: getIsFormValidById(state, FormNames.LEASE_AREAS),
-        isRentsFormDirty: isDirty(FormNames.RENTS)(state),
-        isRentsFormValid: getIsFormValidById(state, FormNames.RENTS),
+        isRentsFormDirty: isDirty(FormNames.LEASE_RENTS)(state),
+        isRentsFormValid: getIsFormValidById(state, FormNames.LEASE_RENTS),
         isSaving: getIsSaving(state),
-        isSummaryFormDirty: isDirty(FormNames.SUMMARY)(state),
-        isSummaryFormValid: getIsFormValidById(state, FormNames.SUMMARY),
-        isTenantsFormDirty: isDirty(FormNames.TENANTS)(state),
-        isTenantsFormValid: getIsFormValidById(state, FormNames.TENANTS),
+        isSummaryFormDirty: isDirty(FormNames.LEASE_SUMMARY)(state),
+        isSummaryFormValid: getIsFormValidById(state, FormNames.LEASE_SUMMARY),
+        isTenantsFormDirty: isDirty(FormNames.LEASE_TENANTS)(state),
+        isTenantsFormValid: getIsFormValidById(state, FormNames.LEASE_TENANTS),
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
         leaseTypeList: getLeaseTypeList(state),
-        rentsFormValues: getFormValues(FormNames.RENTS)(state),
-        summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
-        tenantsFormValues: getFormValues(FormNames.TENANTS)(state),
+        rentsFormValues: getFormValues(FormNames.LEASE_RENTS)(state),
+        summaryFormValues: getFormValues(FormNames.LEASE_SUMMARY)(state),
+        tenantsFormValues: getFormValues(FormNames.LEASE_TENANTS)(state),
         vats: getVats(state),
       };
     },

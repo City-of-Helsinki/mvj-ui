@@ -19,9 +19,8 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {FormNames} from '$src/landUseContract/enums';
 import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
 import {
   findItemById,
@@ -92,7 +91,7 @@ const LitigantBillingPersonEdit = ({
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.LITIGANTS]: {
+        [formName]: {
           billing_persons: {
             [billingPersonId]: val,
           },
@@ -195,7 +194,7 @@ const LitigantBillingPersonEdit = ({
   );
 };
 
-const formName = FormNames.LITIGANTS;
+const formName = FormNames.LAND_USE_CONTRACT_LITIGANTS;
 const selector = formValueSelector(formName);
 
 export default connect(
@@ -204,7 +203,7 @@ export default connect(
     return {
       attributes: getAttributes(state),
       billingPersonId: id,
-      collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LITIGANTS}.billing_persons.${id}`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.billing_persons.${id}`),
       contact: selector(state, `${props.field}.contact`),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),

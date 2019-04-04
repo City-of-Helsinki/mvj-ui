@@ -23,9 +23,8 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {TableSortOrder} from '$components/enums';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
-  FormNames,
   InfillDevelopmentCompensationFieldPaths,
   InfillDevelopmentCompensationLeasesFieldPaths,
 } from '$src/infillDevelopment/enums';
@@ -150,7 +149,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
         delete searchQuery.sort_key;
         delete searchQuery.sort_order;
 
-        await initialize(FormNames.SEARCH, searchQuery);
+        await initialize(FormNames.INFILL_DEVELOPMENT_SEARCH, searchQuery);
         setSearchFormReady();
       } catch(e) {
         console.error(`Failed to initialize search form with error, ${e}`);
@@ -192,7 +191,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
         };
 
         const clearSearchForm = async() => {
-          await initialize(FormNames.SEARCH, {});
+          await initialize(FormNames.INFILL_DEVELOPMENT_SEARCH, {});
         };
 
         this.setState({

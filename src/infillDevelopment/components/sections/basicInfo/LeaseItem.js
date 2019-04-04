@@ -20,9 +20,8 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/infillDevelopment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
-import {Methods, ViewModes} from '$src/enums';
+import {FormNames, Methods, ViewModes} from '$src/enums';
 import {
-  FormNames,
   InfillDevelopmentCompensationLeasesFieldPaths,
   InfillDevelopmentCompensationLeasesFieldTitles,
   InfillDevelopmentCompensationLeaseDecisionsFieldPaths,

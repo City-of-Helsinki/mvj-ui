@@ -35,8 +35,8 @@ import {
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {Methods, PermissionMissingTexts} from '$src/enums';
-import {ContactTypes, FormNames} from '$src/contacts/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
+import {ContactTypes} from '$src/contacts/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
 import {

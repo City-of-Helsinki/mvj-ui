@@ -17,9 +17,8 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import LeaseArea from './LeaseArea';
 import LeaseAreaEdit from './LeaseAreaEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {
-  FormNames,
   LeaseAreasFieldPaths,
   LeaseAreasFieldTitles,
   LeaseAreaAddressesFieldPaths,

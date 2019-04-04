@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import isEmpty from 'lodash/isEmpty';
 
 import FormText from '$components/form/FormText';
-import {FormNames} from '$src/leases/enums';
+import {FormNames} from '$src/enums';
 import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
 
@@ -74,7 +74,7 @@ const CollectionLetterTotalRow = ({
   );
 };
 
-const formName = FormNames.CREATE_COLLECTION_LETTER;
+const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
 const selector = formValueSelector(formName);
 
 export default connect(

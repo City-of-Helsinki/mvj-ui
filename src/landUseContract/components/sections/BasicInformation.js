@@ -13,8 +13,7 @@ import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/landUseContract/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {getContentBasicInformation} from '$src/landUseContract/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
@@ -44,7 +43,7 @@ const BasicInformation = ({
   const handleBasicInformationCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.BASIC_INFORMATION]: {
+        [FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION]: {
           basic_information: val,
         },
       },
@@ -164,7 +163,7 @@ export default connect(
   (state) => {
     return {
       attributes: getAttributes(state),
-      basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.BASIC_INFORMATION}.basic_information`),
+      basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}.basic_information`),
       currentLandUseContract: getCurrentLandUseContract(state),
     };
   },

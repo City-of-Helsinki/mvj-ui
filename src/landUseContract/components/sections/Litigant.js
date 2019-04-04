@@ -9,8 +9,7 @@ import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle'
 import LitigantBillingPerson from './LitigantBillingPerson';
 import LitigantItem from './LitigantItem';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {FormNames} from '$src/landUseContract/enums';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
 import {formatDateRange} from '$util/helpers';
@@ -30,7 +29,7 @@ const Litigant = ({
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.LITIGANTS]: {
+        [FormNames.LAND_USE_CONTRACT_LITIGANTS]: {
           litigants: {
             [litigant.id]: val,
           },
@@ -82,7 +81,7 @@ export default connect(
   (state, props) => {
     const id = props.litigant.id;
     return {
-      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LITIGANTS}.litigants.${id}`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_LITIGANTS}.litigants.${id}`),
     };
   },
   {

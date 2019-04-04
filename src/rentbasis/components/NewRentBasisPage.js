@@ -23,8 +23,7 @@ import {
   showEditMode,
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {Methods, PermissionMissingTexts} from '$src/enums';
-import {FormNames} from '$src/rentbasis/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {formatRentBasisForDb} from '$src/rentbasis/helpers';
 import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';

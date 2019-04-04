@@ -7,8 +7,7 @@ import Collapse from '$components/collapse/Collapse';
 import ExternalLink from '$components/links/ExternalLink';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/landUseContract/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 
@@ -29,7 +28,7 @@ const ContractItem = ({
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.CONTRACTS]: {
+        [FormNames.LAND_USE_CONTRACT_CONTRACTS]: {
           [contract.id]: val,
         },
       },
@@ -95,7 +94,7 @@ export default connect(
     const id = props.contract.id;
 
     return {
-      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_CONTRACTS}.${id}`),
     };
   },
   {

@@ -14,9 +14,8 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {Methods, ViewModes} from '$src/enums';
+import {FormNames, Methods, ViewModes} from '$src/enums';
 import {
-  FormNames,
   LeaseContractChangesFieldPaths,
   LeaseContractChangesFieldTitles,
   LeaseContractsFieldPaths,
@@ -39,6 +38,8 @@ import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
+
+const formName = FormNames.LEASE_CONTRACTS;
 
 type Props = {
   attributes: Attributes,
@@ -68,7 +69,7 @@ const ContractItem = ({
   const handleCollapseToggle = (val: boolean, field: string) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.CONTRACTS]: {
+        [formName]: {
           [contract.id]: {
             [field]: val,
           },
@@ -425,9 +426,9 @@ export default connect(
 
     return {
       attributes: getAttributes(state),
-      collateralsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.collaterals`),
-      contractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract`),
-      contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract_changes`),
+      collateralsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.collaterals`),
+      contractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.contract`),
+      contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.contract_changes`),
       contractFileMethods: getContractFileMethods(state),
       currentLease: getCurrentLease(state),
     };

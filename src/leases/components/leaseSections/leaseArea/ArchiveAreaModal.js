@@ -10,7 +10,8 @@ import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
-import {FormNames, LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
+import {FormNames} from '$src/enums';
+import {LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
 import {ButtonColors} from '$components/enums';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToRead} from '$util/helpers';
@@ -124,7 +125,7 @@ class ArchiveAreaModal extends Component<Props> {
   }
 }
 
-const formName = FormNames.ARCHIVE_AREA;
+const formName = FormNames.LEASE_ARCHIVE_AREA;
 const selector = formValueSelector(formName);
 
 export default flowRight(

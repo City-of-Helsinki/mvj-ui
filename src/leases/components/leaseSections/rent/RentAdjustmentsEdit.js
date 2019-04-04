@@ -16,11 +16,11 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseRentAdjustmentsFieldPaths,
   LeaseRentAdjustmentsFieldTitles,
 } from '$src/leases/enums';
@@ -324,7 +324,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.RENTS;
+const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
 
 export default connect(

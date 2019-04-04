@@ -26,12 +26,11 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/infillDevelopment/actions';
 import {createInfillDevelopmentAttachment, deleteInfillDevelopmentAttachment} from '$src/infillDevelopmentAttachment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
-import {Methods, ViewModes} from '$src/enums';
+import {FormNames, Methods, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   InfillDevelopmentCompensationLeasesFieldPaths,
   InfillDevelopmentCompensationLeasesFieldTitles,
   InfillDevelopmentCompensationLeaseDecisionsFieldPaths,

@@ -11,7 +11,7 @@ import AmountWithVat from '$components/vat/AmountWithVat';
 import InvoicePanel from './InvoicePanel';
 import SortableTable from '$components/table/SortableTable';
 import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
-import {KeyCodes} from '$src/enums';
+import {FormNames, KeyCodes} from '$src/enums';
 import {
   InvoiceFieldPaths,
   InvoiceFieldTitles,
@@ -19,7 +19,6 @@ import {
   InvoiceRowsFieldTitles,
   InvoiceType,
 } from '$src/invoices/enums';
-import {FormNames} from '$src/leases/enums';
 import {TableSortOrder} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -335,7 +334,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 
   initilizeEditInvoiceForm = (invoice: Object) => {
     const {initialize} = this.props;
-    const formName = FormNames.INVOICE_EDIT;
+    const formName = FormNames.LEASE_INVOICE_EDIT;
 
     initialize(formName, invoice);
   }

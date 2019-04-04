@@ -20,9 +20,9 @@ import {
   fetchCommentsByLease,
   receiveIsSaveClicked,
 } from '$src/comments/actions';
-import {ButtonColors, CloseCommentPanelTexts, FormNames} from '$components/enums';
+import {FormNames, Methods} from '$src/enums';
+import {ButtonColors, CloseCommentPanelTexts} from '$components/enums';
 import {CommentFieldPaths} from '$src/comments/enums';
-import {Methods} from '$src/enums';
 import {
   getFieldOptions,
   isFieldAllowedToEdit,
@@ -198,7 +198,7 @@ class CommentPanel extends PureComponent<Props, State> {
   initializeNewCommentForm = () => {
     const {initialize} = this.props;
 
-    initialize(FormNames.NEW_COMMENT, {text: '', topic: ''});
+    initialize(FormNames.LEASE_NEW_COMMENT, {text: '', topic: ''});
   }
 
   handleFilterChange = (value: Array<string>) => {
@@ -338,7 +338,7 @@ export default flowRight(
         commentMethods: getCommentMethods(state),
         currentLease: currentLease,
         editModeFlags: getEditModeFlags(state),
-        isNewCommentFormDirty: isDirty(FormNames.NEW_COMMENT)(state),
+        isNewCommentFormDirty: isDirty(FormNames.LEASE_NEW_COMMENT)(state),
       };
     },
     {

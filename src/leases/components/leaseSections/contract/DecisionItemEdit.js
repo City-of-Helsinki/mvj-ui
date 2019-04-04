@@ -12,10 +12,9 @@ import Collapse from '$components/collapse/Collapse';
 import DecisionConditionsEdit from './DecisionConditionsEdit';
 import FormField from '$components/form/FormField';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {
-  FormNames,
   LeaseDecisionConditionsFieldPaths,
   LeaseDecisionsFieldPaths,
   LeaseDecisionsFieldTitles,
@@ -74,32 +73,26 @@ const DecisionItemEdit = ({
   receiveCollapseStates,
   usersPermissions,
 }: Props) => {
-  const handleDecisionCollapseToggle = (val: boolean) => {
+  const handleCollapseToggle = (key: string, val: boolean) => {
     if(!decisionId) {return;}
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.DECISIONS]: {
+        [FormNames.LEASE_DECISIONS]: {
           [decisionId]: {
-            decision: val,
+            [key]: val,
           },
         },
       },
     });
   };
 
-  const handleConditionsCollapseToggle = (val: boolean) => {
-    if(!decisionId) {return;}
+  const handleDecisionCollapseToggle = (val: boolean) => {
+    handleCollapseToggle('decision', val);
+  };
 
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.DECISIONS]: {
-          [decisionId]: {
-            conditions: val,
-          },
-        },
-      },
-    });
+  const handleConditionsCollapseToggle = (val: boolean) => {
+    handleCollapseToggle('conditions', val);
   };
 
   const handleAttach = () => {
@@ -241,7 +234,7 @@ const DecisionItemEdit = ({
   );
 };
 
-const formName = FormNames.DECISIONS;
+const formName = FormNames.LEASE_DECISIONS;
 const selector = formValueSelector(formName);
 
 export default connect(

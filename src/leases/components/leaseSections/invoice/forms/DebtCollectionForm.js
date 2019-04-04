@@ -27,6 +27,7 @@ import SubTitle from '$components/content/SubTitle';
 import {deleteCollectionCourtDecision, hideCollectionCourtDecisionModal, showCollectionCourtDecisionModal, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
 import {deleteCollectionLetter, uploadCollectionLetter} from '$src/collectionLetter/actions';
 import {createCollectionNote, deleteCollectionNote} from '$src/collectionNote/actions';
+import {FormNames, Methods} from '$src/enums';
 import {CollectionCourtDecisionFieldPaths, CollectionCourtDecisionFieldTitles} from '$src/collectionCourtDecision/enums';
 import {CollectionLetterFieldPaths, CollectionLetterFieldTitles} from '$src/collectionLetter/enums';
 import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
@@ -34,11 +35,9 @@ import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseDecisionsFieldPaths,
   LeaseDecisionsFieldTitles,
 } from '$src/leases/enums';
-import {Methods} from '$src/enums';
 import {getUserFullName} from '$src/users/helpers';
 import {getContentDebtCollectionDecisions, getDecisionOptions} from '$src/leases/helpers';
 import {
@@ -759,7 +758,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.DEBT_COLLECTION;
+const formName = FormNames.LEASE_DEBT_COLLECTION;
 
 export default flowRight(
   withWindowResize,

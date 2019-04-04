@@ -23,9 +23,8 @@ import {fetchRentBasisList, initializeRentBasis} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {TableSortOrder} from '$components/enums';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
-  FormNames,
   RentBasisFieldPaths,
   RentBasisPropertyIdentifiersFieldPaths,
   RentBasisRentRatesFieldPaths,
@@ -118,7 +117,7 @@ class RentBasisListPage extends Component<Props, State> {
         delete searchQuery.sort_key;
         delete searchQuery.sort_order;
 
-        await initialize(FormNames.SEARCH, searchQuery);
+        await initialize(FormNames.RENT_BASIS_SEARCH, searchQuery);
 
         setSearchFormReady();
       } catch(e) {
@@ -144,7 +143,7 @@ class RentBasisListPage extends Component<Props, State> {
         };
 
         const clearSearchForm = async() => {
-          await initialize(FormNames.SEARCH, {});
+          await initialize(FormNames.RENT_BASIS_SEARCH, {});
         };
 
         this.setState({

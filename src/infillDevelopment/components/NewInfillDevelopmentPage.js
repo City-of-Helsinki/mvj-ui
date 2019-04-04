@@ -23,8 +23,7 @@ import {
   showEditMode,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {Methods, PermissionMissingTexts} from '$src/enums';
-import {FormNames} from '$src/infillDevelopment/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
 import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';

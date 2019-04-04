@@ -24,8 +24,8 @@ import {
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {Methods, PermissionMissingTexts} from '$src/enums';
-import {ContactFieldPaths, FormNames} from '$src/contacts/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
+import {ContactFieldPaths} from '$src/contacts/enums';
 import {TableSortOrder} from '$components/enums';
 import {getContactFullName, mapContactSearchFilters} from '$src/contacts/helpers';
 import {
@@ -154,7 +154,7 @@ class ContactListPage extends Component<Props, State> {
         delete searchQuery.sort_key;
         delete searchQuery.sort_order;
 
-        await initialize(FormNames.SEARCH, searchQuery);
+        await initialize(FormNames.CONTACT_SEARCH, searchQuery);
         setSearchFormReady();
       } catch(e) {
         console.error(`Failed to initialize search form with error, ${e}`);
@@ -178,7 +178,7 @@ class ContactListPage extends Component<Props, State> {
         };
 
         const clearSearchForm = async() => {
-          await initialize(FormNames.SEARCH, {});
+          await initialize(FormNames.CONTACT_SEARCH, {});
         };
 
         this.setState({

@@ -43,7 +43,8 @@ import {
   scrollToTopPage,
   setPageTitle,
 } from '$util/helpers';
-import {FormNames, RentBasisFieldPaths} from '$src/rentbasis/enums';
+import {FormNames} from '$src/enums';
+import {RentBasisFieldPaths} from '$src/rentbasis/enums';
 import {
   clearUnsavedChanges,
   formatRentBasisForDb,

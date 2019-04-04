@@ -41,17 +41,6 @@ export const FieldTypes = {
 };
 
 /**
- * Component form names enumerable.
- *
- * @type {{INVOICE_SIMULATOR: string, NEW_COMMENT: string, RENT_CALCULATOR: string,}}
- */
-export const FormNames = {
-  INVOICE_SIMULATOR: 'invoice-simulator-form',
-  NEW_COMMENT: 'new-comment-form',
-  RENT_CALCULATOR: 'rent-calculator-form',
-};
-
-/**
  * Rent calculator type enumerable.
  *
  * @type {{YEAR: string, RANGE: string, BILLING_PERIOD: string,}}

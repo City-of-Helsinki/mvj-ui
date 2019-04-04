@@ -26,12 +26,11 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {Methods, ViewModes} from '$src/enums';
+import {FormNames, Methods, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseTenantContactSetFieldPaths,
   LeaseTenantContactSetFieldTitles,
   LeaseTenantsFieldPaths,
@@ -200,7 +199,7 @@ const TenantItemEdit = ({
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.TENANTS]: {
+        [formName]: {
           tenants: {
             [tenantId]: val,
           },
@@ -425,7 +424,7 @@ const TenantItemEdit = ({
   );
 };
 
-const formName = FormNames.TENANTS;
+const formName = FormNames.LEASE_TENANTS;
 const selector = formValueSelector(formName);
 
 export default connect(

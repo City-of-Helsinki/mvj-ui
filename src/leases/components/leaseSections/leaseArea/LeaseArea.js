@@ -19,9 +19,8 @@ import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {
-  FormNames,
   LeaseAreaAddressesFieldPaths,
   LeaseAreaAddressesFieldTitles,
   LeaseAreasFieldPaths,
@@ -66,60 +65,32 @@ const LeaseArea = ({
   plotsCurrentCollapseState,
   receiveCollapseStates,
 }: Props) => {
-  const handlePlanUnitContractCollapseToggle = (val: boolean) => {
-    if(!area.id) return;
-
+  const handleCollapseToggle = (key: string, val: boolean) => {
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
-        [FormNames.LEASE_AREAS]: {
+        [formName]: {
           [area.id]: {
-            plan_units_contract: val,
+            [key]: val,
           },
         },
       },
     });
+  };
+
+  const handlePlanUnitContractCollapseToggle = (val: boolean) => {
+    handleCollapseToggle('plan_units_contract', val);
   };
 
   const handlePlanUnitCurrentCollapseToggle = (val: boolean) => {
-    if(!area.id) return;
-
-    receiveCollapseStates({
-      [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
-        [FormNames.LEASE_AREAS]: {
-          [area.id]: {
-            plan_units_current: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('plan_units_current', val);
   };
 
   const handlePlotsContractCollapseToggle = (val: boolean) => {
-    if(!area.id) return;
-
-    receiveCollapseStates({
-      [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
-        [FormNames.LEASE_AREAS]: {
-          [area.id]: {
-            plots_contract: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('plots_contract', val);
   };
 
   const handlePlotsCurrentCollapseToggle = (val: boolean) => {
-    if(!area.id) return;
-
-    receiveCollapseStates({
-      [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
-        [FormNames.LEASE_AREAS]: {
-          [area.id]: {
-            plots_current: val,
-          },
-        },
-      },
-    });
+    handleCollapseToggle('plots_current', val);
   };
 
   const getMapLinkUrl = () => {
@@ -353,6 +324,8 @@ const LeaseArea = ({
   );
 };
 
+const formName = FormNames.LEASE_AREAS;
+
 export default flowRight(
   // $FlowFixMe
   withRouter,
@@ -364,10 +337,10 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         isEditMode: isEditMode,
-        planUnitsContractCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plan_units_contract`),
-        planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plan_units_current`),
-        plotsContractCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plots_contract`),
-        plotsCurrentCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plots_current`),
+        planUnitsContractCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plan_units_contract`),
+        planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plan_units_current`),
+        plotsContractCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plots_contract`),
+        plotsCurrentCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plots_current`),
       };
     },
     {

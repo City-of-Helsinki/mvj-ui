@@ -21,10 +21,9 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {Methods, ViewModes} from '$src/enums';
+import {FormNames, Methods, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {
-  FormNames,
   LeaseTenantContactSetFieldPaths,
   LeaseTenantContactSetFieldTitles,
   TenantContactType,
@@ -120,7 +119,7 @@ const OtherTenantItemEdit = ({
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.TENANTS]: {
+        [formName]: {
           others: {
             [tenantId]: val,
           },
@@ -248,7 +247,7 @@ const OtherTenantItemEdit = ({
   );
 };
 
-const formName = FormNames.TENANTS;
+const formName = FormNames.LEASE_TENANTS;
 const selector = formValueSelector(formName);
 
 export default connect(
@@ -256,7 +255,7 @@ export default connect(
     const id = selector(state, `${props.field}.id`);
     return {
       attributes: getAttributes(state),
-      collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.TENANTS}.others.${id}`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.others.${id}`),
       contact: selector(state, `${props.field}.contact`),
       contactMethods: getContactMethods(state),
       errors: getErrorsByFormName(state, formName),

@@ -16,11 +16,11 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValid} from '$src/rentbasis/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   RentBasisFieldPaths,
   RentBasisFieldTitles,
   RentBasisDecisionsFieldPaths,

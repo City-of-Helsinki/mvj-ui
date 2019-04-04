@@ -10,11 +10,9 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
+import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {
-  FormNames,
-  InfillDevelopmentCompensationLeaseDecisionsFieldPaths,
-} from '$src/infillDevelopment/enums';
+import {InfillDevelopmentCompensationLeaseDecisionsFieldPaths} from '$src/infillDevelopment/enums';
 import {getFieldOptions, getUrlParams} from '$util/helpers';
 import {getAttributes as getInfillDevelopmentAttributes} from '$src/infillDevelopment/selectors';
 
@@ -279,7 +277,7 @@ class Search extends PureComponent<Props, State> {
 }
 
 
-const formName = FormNames.SEARCH;
+const formName = FormNames.INFILL_DEVELOPMENT_SEARCH;
 
 export default flowRight(
   // $FlowFixMe

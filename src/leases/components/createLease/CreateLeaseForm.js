@@ -10,8 +10,9 @@ import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
-import {FormNames, LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
+import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
 import {filterOptionsByLabel} from '$components/form/filter';
 import {getDistrictOptions} from '$src/district/helpers';
 import {getPayloadCreateLease} from '$src/leases/helpers';
@@ -200,7 +201,7 @@ class CreateLeaseForm extends Component<Props> {
   }
 }
 
-const formName = FormNames.CREATE_LEASE;
+const formName = FormNames.LEASE_CREATE_MODAL;
 const selector = formValueSelector(formName);
 
 export default flowRight(

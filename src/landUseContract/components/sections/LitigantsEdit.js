@@ -20,9 +20,10 @@ import {
   receiveIsSaveClicked,
 } from '$src/contacts/actions';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
-import {ContactTypes, FormNames as ContactFormNames} from '$src/contacts/enums';
+import {FormNames} from '$src/enums';
+import {ContactTypes} from '$src/contacts/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {validateLitigantForm} from '$src/landUseContract/formValidators';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentLitigants} from '$src/landUseContract/helpers';
@@ -154,7 +155,7 @@ class TenantsEdit extends PureComponent<Props, State> {
     const {change, contactModalSettings, receiveContactModalSettings, receiveFormValidFlags} = this.props;
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.LITIGANTS]: this.props.valid,
+        [FormNames.LAND_USE_CONTRACT_LITIGANTS]: this.props.valid,
       });
     }
 
@@ -290,14 +291,14 @@ class TenantsEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.LITIGANTS;
+const formName = FormNames.LAND_USE_CONTRACT_LITIGANTS;
 
 export default flowRight(
   connect(
     (state) => {
       return {
         contactModalSettings: getContactModalSettings(state),
-        contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
+        contactFormValues: getFormValues(FormNames.CONTACT)(state),
         currentLandUseContract: getCurrentLandUseContract(state),
         isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),

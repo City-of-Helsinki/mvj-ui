@@ -23,12 +23,12 @@ import {
   receiveIsSaveClicked,
 } from '$src/contacts/actions';
 import {receiveFormValidFlags} from '$src/leases/actions';
-import {ContactTypes, FormNames as ContactFormNames} from '$src/contacts/enums';
+import {ContactTypes} from '$src/contacts/enums';
 import {ButtonColors} from '$components/enums';
+import {FormNames} from '$src/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseTenantsFieldPaths,
   LeaseTenantsFieldTitles,
 } from '$src/leases/enums';
@@ -187,7 +187,7 @@ class TenantsEdit extends PureComponent<Props, State> {
     if(prevProps.valid !== this.props.valid) {
 
       receiveFormValidFlags({
-        [FormNames.TENANTS]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
 
@@ -334,7 +334,7 @@ class TenantsEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.TENANTS;
+const formName = FormNames.LEASE_TENANTS;
 
 export default flowRight(
   connect(
@@ -342,7 +342,7 @@ export default flowRight(
       return {
         contactMethods: getContactMethods(state),
         contactModalSettings: getContactModalSettings(state),
-        contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
+        contactFormValues: getFormValues(FormNames.CONTACT)(state),
         currentLease: getCurrentLease(state),
         isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),

@@ -59,7 +59,7 @@ const getColumns = (invoiceNoteAttributes: Attributes) => {
         ? <ExternalLink
           className='no-margin'
           href={`${getRouteById(Routes.LEASES)}/${val.id}?tab=6`}
-          text={getContentLeaseIdentifier(val)}
+          text={getContentLeaseIdentifier(val) || '-'}
         />
         : '-',
     });
