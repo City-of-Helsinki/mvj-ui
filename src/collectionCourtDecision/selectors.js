@@ -18,5 +18,5 @@ export const getCollectionCourtDecisionsByLease: Selector<boolean, LeaseId> = (s
 export const getIsFetchingByLease: Selector<boolean, LeaseId> = (state: RootState, lease: LeaseId): boolean =>
   state.collectionCourtDecision.isFetchingByLease[lease];
 
-export const getIsCollectionCourtDecisionModalOpen: Selector<boolean, void> = (state: RootState): boolean =>
-  state.collectionCourtDecision.isModalOpen;
+export const getIsCollectionCourtDecisionPanelOpen: Selector<boolean, void> = (state: RootState): boolean =>
+  state.collectionCourtDecision.isPanelOpen;

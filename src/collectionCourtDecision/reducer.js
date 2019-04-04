@@ -30,9 +30,9 @@ const methodsReducer: Reducer<Methods> = handleActions({
   },
 }, null);
 
-const isModalOpenReducer: Reducer<boolean> = handleActions({
-  'mvj/collectionCourtDecision/HIDE_MODAL': () => false,
-  'mvj/collectionCourtDecision/SHOW_MODAL': () => true,
+const isPanelOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/collectionCourtDecision/HIDE_PANEL': () => false,
+  'mvj/collectionCourtDecision/SHOW_PANEL': () => true,
 }, false);
 
 const isFetchingByLeaseReducer: Reducer<Object> = handleActions({
@@ -70,6 +70,6 @@ export default combineReducers<Object, any>({
   byLease: byLeaseReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isFetchingByLease: isFetchingByLeaseReducer,
-  isModalOpen: isModalOpenReducer,
+  isPanelOpen: isPanelOpenReducer,
   methods: methodsReducer,
 });

@@ -9,6 +9,8 @@ import {
   fetchCollectionCourtDecisionsByLease,
   receiveCollectionCourtDecisionsByLease,
   notFoundByLease,
+  hideCollectionCourtDecisionPanel,
+  showCollectionCourtDecisionPanel,
 } from './actions';
 import collectionCourtDecisionReducer from './reducer';
 
@@ -19,7 +21,7 @@ const defaultState: CollectionCourtDecisionState = {
   byLease: {},
   isFetchingAttributes: false,
   isFetchingByLease: {},
-  isModalOpen: false,
+  isPanelOpen: false,
   methods: null,
 };
 
@@ -93,6 +95,21 @@ describe('collectionCourtDecision', () => {
         const newState = {...defaultState, isFetchingByLease: {[lease]: false}};
 
         const state = collectionCourtDecisionReducer({}, notFoundByLease(lease));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isPanelOpen flag to false', () => {
+        const newState = {...defaultState, isPanelOpen: false};
+
+        let state = collectionCourtDecisionReducer({}, showCollectionCourtDecisionPanel());
+        state = collectionCourtDecisionReducer(state, hideCollectionCourtDecisionPanel());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isPanelOpen flag to true', () => {
+        const newState = {...defaultState, isPanelOpen: true};
+
+        const state = collectionCourtDecisionReducer({}, showCollectionCourtDecisionPanel());
         expect(state).to.deep.equal(newState);
       });
     });

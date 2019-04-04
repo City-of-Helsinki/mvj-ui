@@ -15,8 +15,8 @@ import type {
   CollectionCourtDecisionsNotFoundByLeaseAction,
   UploadCollectionCourtDecisionAction,
   DeleteCollectionCourtDecisionAction,
-  HideCollectionCourtDecisionModalAction,
-  ShowCollectionCourtDecisionModalAction,
+  HideCollectionCourtDecisionPanelAction,
+  ShowCollectionCourtDecisionPanelAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -46,8 +46,8 @@ export const uploadCollectionCourtDecision = (payload: UploadCollectionCourtDeci
 export const deleteCollectionCourtDecision = (payload: DeleteCollectionCourtDecisionPayload): DeleteCollectionCourtDecisionAction =>
   createAction('mvj/collectionCourtDecision/DELETE')(payload);
 
-export const hideCollectionCourtDecisionModal = (): HideCollectionCourtDecisionModalAction =>
-  createAction('mvj/collectionCourtDecision/HIDE_MODAL')();
+export const hideCollectionCourtDecisionPanel = (): HideCollectionCourtDecisionPanelAction =>
+  createAction('mvj/collectionCourtDecision/HIDE_PANEL')();
 
-export const showCollectionCourtDecisionModal = (): ShowCollectionCourtDecisionModalAction =>
-  createAction('mvj/collectionCourtDecision/SHOW_MODAL')();
+export const showCollectionCourtDecisionPanel = (): ShowCollectionCourtDecisionPanelAction =>
+  createAction('mvj/collectionCourtDecision/SHOW_PANEL')();

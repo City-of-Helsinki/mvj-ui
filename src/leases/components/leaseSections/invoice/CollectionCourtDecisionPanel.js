@@ -1,5 +1,5 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -9,9 +9,9 @@ import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FileInput from '$components/file/FileInput';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import Modal from '$components/modal/Modal';
-import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
+import ButtonWrapper from '$components/content/ButtonWrapper';
 import {FormNames} from '$src/enums';
 import {CollectionCourtDecisionFieldPaths, CollectionCourtDecisionFieldTitles} from '$src/collectionCourtDecision/enums';
 import {ButtonColors} from '$components/enums';
@@ -28,6 +28,7 @@ type Props = {
   decisionDate: ?string,
   initialize: Function,
   isOpen: boolean,
+  largeScreen: boolean,
   note: ?string,
   onClose: Function,
   onSave: Function,
@@ -39,7 +40,7 @@ type State = {
   file: ?Object,
 }
 
-class CollectionCourtDecisionModal extends PureComponent<Props, State> {
+class CollectionCourtDecisionPanel extends PureComponent<Props, State> {
   state = {
     file: null,
   }
@@ -86,49 +87,63 @@ class CollectionCourtDecisionModal extends PureComponent<Props, State> {
     const {
       collectionCourtDecisionAttributes,
       isOpen,
+      largeScreen,
       onClose,
-      title,
       valid,
     } = this.props;
     const {file} = this.state;
 
+    if(!isOpen) return null;
+
     return (
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        title={title}
-      >
+      <Fragment>
         <Row>
-          <Column small={12} medium={4}>
-            <FormTextTitle required>{CollectionCourtDecisionFieldTitles.FILE}</FormTextTitle>
+          <Column small={6} large={3}>
+            {!largeScreen &&
+              <FormTextTitle required>{CollectionCourtDecisionFieldTitles.FILE}</FormTextTitle>
+            }
             <FileInput
               name={'collection_court_decision_file'}
               onChange={this.handleFileChange}
               value={file}
             />
           </Column>
-          <Column small={12} medium={4}>
+          <Column small={3} large={1}>
+            {!largeScreen &&
+              <FormTextTitle>{CollectionCourtDecisionFieldTitles.UPLOADED_AT}</FormTextTitle>
+            }
+            <FormText>-</FormText>
+          </Column>
+          <Column small={3} large={2}>
+            {!largeScreen &&
+              <FormTextTitle>{CollectionCourtDecisionFieldTitles.UPLOADER}</FormTextTitle>
+            }
+            <FormText>-</FormText>
+          </Column>
+          <Column small={3} large={2}>
             <Authorization allow={isFieldAllowedToEdit(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.DECISION_DATE)}>
               <FormField
                 disableDirty
                 fieldAttributes={getFieldAttributes(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.DECISION_DATE)}
                 name='decision_date'
+                invisibleLabel={largeScreen}
                 overrideValues={{label: CollectionCourtDecisionFieldTitles.DECISION_DATE}}
               />
             </Authorization>
           </Column>
-          <Column small={12} medium={4}>
+          <Column small={9} large={4}>
             <Authorization allow={isFieldAllowedToEdit(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.NOTE)}>
               <FormField
                 disableDirty
                 fieldAttributes={getFieldAttributes(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.NOTE)}
+                invisibleLabel={largeScreen}
                 name='note'
                 overrideValues={{label: CollectionCourtDecisionFieldTitles.NOTE}}
               />
             </Authorization>
           </Column>
         </Row>
-        <ModalButtonWrapper>
+        <ButtonWrapper>
           <Button
             className={ButtonColors.ALERT}
             onClick={onClose}
@@ -140,8 +155,8 @@ class CollectionCourtDecisionModal extends PureComponent<Props, State> {
             onClick={this.handleSave}
             text='Tallenna'
           />
-        </ModalButtonWrapper>
-      </Modal>
+        </ButtonWrapper>
+      </Fragment>
     );
   }
 }
@@ -162,4 +177,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(CollectionCourtDecisionModal);
+)(CollectionCourtDecisionPanel);

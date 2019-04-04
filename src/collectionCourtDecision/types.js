@@ -7,7 +7,7 @@ export type CollectionCourtDecisionState = {
   byLease: Object,
   isFetchingAttributes: boolean,
   isFetchingByLease: Object,
-  isModalOpen: boolean,
+  isPanelOpen: boolean,
   methods: Methods,
 };
 export type CollectionCourtDecisionId = number;
@@ -34,5 +34,5 @@ export type CollectionCourtDecisionsNotFoundByLeaseAction = Action<'mvj/collecti
 export type UploadCollectionCourtDecisionAction = Action<'mvj/collectionCourtDecision/UPLOAD', UploadCollectionCourtDecisionPayload>;
 export type DeleteCollectionCourtDecisionAction = Action<'mvj/collectionCourtDecision/DELETE', DeleteCollectionCourtDecisionPayload>;
 
-export type HideCollectionCourtDecisionModalAction = Action<'mvj/collectionCourtDecision/HIDE_MODAL', void>;
-export type ShowCollectionCourtDecisionModalAction = Action<'mvj/collectionCourtDecision/SHOW_MODAL', void>;
+export type HideCollectionCourtDecisionPanelAction = Action<'mvj/collectionCourtDecision/HIDE_PANEL', void>;
+export type ShowCollectionCourtDecisionPanelAction = Action<'mvj/collectionCourtDecision/SHOW_PANEL', void>;

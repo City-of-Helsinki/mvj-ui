@@ -14,7 +14,7 @@ import AddFileButton from '$components/form/AddFileButton';
 import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
-import CollectionCourtDecisionModal from '../CollectionCourtDecisionModal';
+import CollectionCourtDecisionPanel from '../CollectionCourtDecisionPanel';
 import DecisionLink from '$components/links/DecisionLink';
 import NewCollectionNote from './NewCollectionNote';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
@@ -24,7 +24,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import ShowMore from '$components/showMore/ShowMore';
 import SubTitle from '$components/content/SubTitle';
-import {deleteCollectionCourtDecision, hideCollectionCourtDecisionModal, showCollectionCourtDecisionModal, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
+import {deleteCollectionCourtDecision, hideCollectionCourtDecisionPanel, showCollectionCourtDecisionPanel, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
 import {deleteCollectionLetter, uploadCollectionLetter} from '$src/collectionLetter/actions';
 import {createCollectionNote, deleteCollectionNote} from '$src/collectionNote/actions';
 import {FormNames, Methods} from '$src/enums';
@@ -53,7 +53,7 @@ import {
   isMethodAllowed,
   sortStringByKeyAsc,
 } from '$util/helpers';
-import {getCollectionCourtDecisionsByLease, getIsCollectionCourtDecisionModalOpen} from '$src/collectionCourtDecision/selectors';
+import {getCollectionCourtDecisionsByLease, getIsCollectionCourtDecisionPanelOpen} from '$src/collectionCourtDecision/selectors';
 import {getCollectionLettersByLease} from '$src/collectionLetter/selectors';
 import {getCollectionNotesByLease} from '$src/collectionNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -136,11 +136,11 @@ type Props = {
   deleteCollectionLetter: Function,
   deleteCollectionNote: Function,
   handleSubmit: Function,
-  hideCollectionCourtDecisionModal: Function,
-  isCollectionCourtDecisionModalOpen: boolean,
+  hideCollectionCourtDecisionPanel: Function,
+  isCollectionCourtDecisionPanelOpen: boolean,
   largeScreen: boolean,
   leaseAttributes: Attributes,
-  showCollectionCourtDecisionModal: Function,
+  showCollectionCourtDecisionPanel: Function,
   uploadCollectionCourtDecision: Function,
   uploadCollectionLetter: Function,
   valid: boolean,
@@ -284,16 +284,16 @@ class DebtCollectionForm extends PureComponent<Props, State> {
     });
   }
 
-  handleShowCollectionCourtDecisionModal = () => {
-    const {showCollectionCourtDecisionModal} = this.props;
+  handleShowCollectionCourtDecisionPanel = () => {
+    const {showCollectionCourtDecisionPanel} = this.props;
 
-    showCollectionCourtDecisionModal();
+    showCollectionCourtDecisionPanel();
   }
 
-  handleHideCollectionCourtDecisionModal = () => {
-    const {hideCollectionCourtDecisionModal} = this.props;
+  handleHideCollectionCourtDecisionPanel = () => {
+    const {hideCollectionCourtDecisionPanel} = this.props;
 
-    hideCollectionCourtDecisionModal();
+    hideCollectionCourtDecisionPanel();
   }
 
   render() {
@@ -305,7 +305,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
       collectionNoteAttributes,
       collectionNoteMethods,
       handleSubmit,
-      isCollectionCourtDecisionModalOpen,
+      isCollectionCourtDecisionPanelOpen,
       largeScreen,
       leaseAttributes,
     } = this.props;
@@ -322,15 +322,6 @@ class DebtCollectionForm extends PureComponent<Props, State> {
         {({dispatch}) => {
           return(
             <form onSubmit={handleSubmit}>
-              <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.POST)}>
-                <CollectionCourtDecisionModal
-                  isOpen={isCollectionCourtDecisionModalOpen}
-                  onClose={this.handleHideCollectionCourtDecisionModal}
-                  onSave={this.handleSaveCourtDecisionFile}
-                  title='Lisää käräjäoikeuden päätös'
-                />
-              </Authorization>
-
               <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.GET)}>
                 <Row>
                   <Column small={12}>
@@ -442,7 +433,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                     </SubTitle>
 
                     {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionCourtDecisions || !sortedCollectionCourtDecisions.length) && <FormText>Ei käräjaoikeuden päätöksiä</FormText>}
-                    {largeScreen && sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length &&
+                    {largeScreen && ((sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length) || isCollectionCourtDecisionPanelOpen) &&
                       <Row>
                         <Column large={3}>
                           <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.FILE)}>
@@ -539,9 +530,9 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       );
                     })}
 
-                    {!largeScreen &&
+                    {!largeScreen && sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length &&
                       <BoxItemContainer>
-                        {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length && sortedCollectionCourtDecisions.map((collectionCourtDecision, index) => {
+                        {sortedCollectionCourtDecisions.map((collectionCourtDecision, index) => {
                           const handleRemove = () => {
                             dispatch({
                               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
@@ -610,16 +601,25 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                             </BoxItem>
                           );
                         })}
-
                       </BoxItemContainer>
                     }
-
                     <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.POST)}>
-                      <AddButtonThird
-                        label='Lisää käräjäoikeuden päätös'
-                        onClick={this.handleShowCollectionCourtDecisionModal}
-                        style={{margin: 0}}
-                      />
+                      <Fragment>
+                        <CollectionCourtDecisionPanel
+                          isOpen={isCollectionCourtDecisionPanelOpen}
+                          largeScreen={largeScreen}
+                          onClose={this.handleHideCollectionCourtDecisionPanel}
+                          onSave={this.handleSaveCourtDecisionFile}
+                          title='Lisää käräjäoikeuden päätös'
+                        />
+                        {!isCollectionCourtDecisionPanelOpen &&
+                          <AddButtonThird
+                            label='Lisää käräjäoikeuden päätös'
+                            onClick={this.handleShowCollectionCourtDecisionPanel}
+                            style={{margin: 0}}
+                          />
+                        }
+                      </Fragment>
                     </Authorization>
                   </Column>
                 </Row>
@@ -771,7 +771,7 @@ export default flowRight(
         collectionLetters: getCollectionLettersByLease(state, currentLease.id),
         collectionNotes: getCollectionNotesByLease(state, currentLease.id),
         currentLease: currentLease,
-        isCollectionCourtDecisionModalOpen: getIsCollectionCourtDecisionModalOpen(state),
+        isCollectionCourtDecisionPanelOpen: getIsCollectionCourtDecisionPanelOpen(state),
         leaseAttributes: getLeaseAttributes(state),
       };
     },
@@ -780,8 +780,8 @@ export default flowRight(
       deleteCollectionCourtDecision,
       deleteCollectionLetter,
       deleteCollectionNote,
-      hideCollectionCourtDecisionModal,
-      showCollectionCourtDecisionModal,
+      hideCollectionCourtDecisionPanel,
+      showCollectionCourtDecisionPanel,
       uploadCollectionCourtDecision,
       uploadCollectionLetter,
     }
