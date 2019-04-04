@@ -8,8 +8,8 @@ import flowRight from 'lodash/flowRight';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
+import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {FormNames} from '$src/leaseholdTransfer/enums';
 
 type Props = {
   formValues: Object,
@@ -105,7 +105,7 @@ class Search extends PureComponent<Props> {
 }
 
 
-const formName = FormNames.SEARCH;
+const formName = FormNames.LEASEHOLD_TRANSFER_SEARCH;
 
 export default flowRight(
   connect(

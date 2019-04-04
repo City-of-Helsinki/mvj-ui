@@ -18,10 +18,9 @@ import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
 import RentAdjustmentsEdit from './RentAdjustmentsEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {
   ContractRentPeriods,
-  FormNames,
   LeaseRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldTitles,
@@ -209,7 +208,7 @@ class RentItemEdit extends PureComponent<Props, State> {
 
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.RENTS]: {
+        [FormNames.LEASE_RENTS]: {
           [rentId]: {
             [key]: val,
           },
@@ -435,7 +434,7 @@ class RentItemEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.RENTS;
+const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
 
 export default connect(
@@ -457,12 +456,12 @@ export default connect(
     };
 
     if(id) {
-      newProps.equalizedRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.equalized_rents`);
-      newProps.fixedInitialYearRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.fixed_initial_year_rents`);
-      newProps.indexAdjustedRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.index_adjusted_rents`);
-      newProps.payableRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.payable_rents`);
-      newProps.rentAdjustmentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.rent_adjustments`);
-      newProps.rentCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.rent`);
+      newProps.equalizedRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`);
+      newProps.fixedInitialYearRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.fixed_initial_year_rents`);
+      newProps.indexAdjustedRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.index_adjusted_rents`);
+      newProps.payableRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.payable_rents`);
+      newProps.rentAdjustmentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.rent_adjustments`);
+      newProps.rentCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.rent`);
     }
 
     return newProps;

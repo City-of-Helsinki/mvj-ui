@@ -24,9 +24,9 @@ import LitigantBillingPersonEdit from './LitigantBillingPersonEdit';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
 import {
@@ -158,7 +158,7 @@ const LitigantItemEdit = ({
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.LITIGANTS]: {
+        [FormNames.LAND_USE_CONTRACT_LITIGANTS]: {
           litigants: {
             [litigantId]: val,
           },
@@ -305,7 +305,7 @@ const LitigantItemEdit = ({
   );
 };
 
-const formName = FormNames.LITIGANTS;
+const formName = FormNames.LAND_USE_CONTRACT_LITIGANTS;
 const selector = formValueSelector(formName);
 
 export default connect(

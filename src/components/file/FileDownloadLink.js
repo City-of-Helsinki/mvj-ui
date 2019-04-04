@@ -88,9 +88,11 @@ class FileDownloadLink extends PureComponent<Props, State> {
       tabIndex={0}
     >
       {label}
-      <LoaderWrapper className='small-inline-wrapper'>
-        <Loader isLoading={isLoading} className='small' />
-      </LoaderWrapper>
+      {isLoading &&
+        <LoaderWrapper className='small-inline-wrapper'>
+          <Loader isLoading={isLoading} className='small' />
+        </LoaderWrapper>
+      }
     </a>;
   }
 }

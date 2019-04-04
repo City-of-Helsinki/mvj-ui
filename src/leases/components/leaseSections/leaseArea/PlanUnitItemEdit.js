@@ -14,7 +14,8 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {FormNames, LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles} from '$src/leases/enums';
+import {FormNames} from '$src/enums';
+import {LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {

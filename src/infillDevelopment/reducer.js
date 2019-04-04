@@ -3,6 +3,8 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import merge from 'lodash/merge';
 
+import {FormNames} from '$src/enums';
+
 import type {Attributes, Methods, Reducer} from '../types';
 import type {
   InfillDevelopment,
@@ -16,8 +18,6 @@ import type {
   ReceiveSingleInfillDevelopmentAction,
   ReceiveCollapseStatesAction,
 } from './types';
-
-import {FormNames} from '$src/infillDevelopment/enums';
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/infillDevelopment/HIDE_EDIT': () => false,

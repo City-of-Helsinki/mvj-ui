@@ -15,6 +15,7 @@ import {
   createLease,
   deleteLease,
   patchLease,
+  patchLeaseInvoiceNotes,
   copyAreasToContract,
   setRentInfoComplete,
   setRentInfoUncomplete,
@@ -178,13 +179,25 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isSaving flag to true when editing existing lease', () => {
+      it('should update isSaving flag to true when editing lease', () => {
         const dummyLease = {
           foo: 'bar',
         };
         const newState = {...defaultState, isSaving: true};
 
         const state = leasesReducer({}, patchLease(dummyLease));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true when editing lease invoice notes', () => {
+        const dummyLease = {
+          invoice_notes: [{
+            foo: 'bar',
+          }],
+        };
+        const newState = {...defaultState, isSaving: true};
+
+        const state = leasesReducer({}, patchLeaseInvoiceNotes(dummyLease));
         expect(state).to.deep.equal(newState);
       });
 

@@ -10,9 +10,8 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {FormNames} from '$src/landUseContract/enums';
 import {getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
@@ -50,7 +49,7 @@ const ContractItemEdit = ({
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.CONTRACTS]: {
+        [formName]: {
           [contractId]: val,
         },
       },
@@ -148,7 +147,7 @@ const ContractItemEdit = ({
   );
 };
 
-const formName = FormNames.CONTRACTS;
+const formName = FormNames.LAND_USE_CONTRACT_CONTRACTS;
 const selector = formValueSelector(formName);
 
 export default connect(

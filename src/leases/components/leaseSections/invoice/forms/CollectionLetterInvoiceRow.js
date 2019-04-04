@@ -13,7 +13,7 @@ import Loader from '$src/components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RemoveButton from '$components/form/RemoveButton';
 import {fetchPenaltyInterestByInvoice} from '$src/penaltyInterest/actions';
-import {FormNames} from '$src/leases/enums';
+import {FormNames} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {convertStrToDecimalNumber, formatNumber, hasPermissions} from '$util/helpers';
 import {
@@ -122,7 +122,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
   }
 }
 
-const formName = FormNames.CREATE_COLLECTION_LETTER;
+const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
 const selector = formValueSelector(formName);
 
 export default connect(

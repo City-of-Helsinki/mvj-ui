@@ -7,8 +7,8 @@ import flowRight from 'lodash/flowRight';
 
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
+import {FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
-import {FormNames} from '$src/tradeRegister/enums';
 
 type Props = {
   formValues: Object,
@@ -62,7 +62,7 @@ const Search = ({
 };
 
 
-const formName = FormNames.SEARCH;
+const formName = FormNames.TRADE_REGISTER_SEARCH;
 
 export default flowRight(
   connect(

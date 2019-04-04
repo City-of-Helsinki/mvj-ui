@@ -16,8 +16,8 @@ import FormField from '$components/form/FormField';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {FormNames} from '$src/enums';
 import {
-  FormNames,
   LeasePlotsFieldPaths,
   LeasePlotsFieldTitles,
   PlotType,

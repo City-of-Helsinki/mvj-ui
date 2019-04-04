@@ -7,9 +7,9 @@ import {Row, Column} from 'react-foundation';
 import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
-import {FormNames} from '$src/leases/enums';
 import {getFieldAttributes, isFieldAllowedToRead} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
@@ -68,7 +68,7 @@ const NewCollectionNote = ({
   );
 };
 
-const formName = FormNames.DEBT_COLLECTION;
+const formName = FormNames.LEASE_DEBT_COLLECTION;
 const selector = formValueSelector(formName);
 
 export default connect(

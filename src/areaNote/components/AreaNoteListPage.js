@@ -19,8 +19,7 @@ import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import {fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {Methods, PermissionMissingTexts} from '$src/enums';
-import {FormNames} from '$src/areaNote/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {getAreaNoteById, getAreaNoteCoordinates} from '$src/areaNote/helpers';
 import {getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
@@ -110,7 +109,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 
     const initializeSearchForm = async() => {
       try {
-        await initialize(FormNames.SEARCH, query);
+        await initialize(FormNames.AREA_NOTE_SEARCH, query);
 
         setSearchFormReadyFlag();
       } catch(e) {
@@ -153,7 +152,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
       this.search();
 
       if(!Object.keys(searchQuery).length) {
-        initialize(FormNames.SEARCH, {});
+        initialize(FormNames.AREA_NOTE_SEARCH, {});
       }
     }
   }

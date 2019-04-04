@@ -25,16 +25,6 @@ export const DeleteModalTitles = {
 };
 
 /**
- * Contact form names enumerable.
- *
- * @type {{INFILL_DEVELOPMENT: string, SEARCH: string,}}
- */
-export const FormNames = {
-  INFILL_DEVELOPMENT: 'infill-development-form',
-  SEARCH: 'infill-development-search-form',
-};
-
-/**
  * Infill development compensation field paths enumerable.
  *
  * @type {{}}

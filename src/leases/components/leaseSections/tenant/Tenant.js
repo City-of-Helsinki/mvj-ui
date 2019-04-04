@@ -10,8 +10,8 @@ import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle'
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths} from '$src/leases/enums';
-import {ViewModes} from '$src/enums';
+import {LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths} from '$src/leases/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {formatDateRange, isFieldAllowedToRead} from '$util/helpers';
@@ -35,7 +35,7 @@ const Tenant = ({
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.TENANTS]: {
+        [FormNames.LEASE_TENANTS]: {
           tenants: {
             [tenant.id]: val,
           },
@@ -101,7 +101,7 @@ export default connect(
     const id = props.tenant.id;
     return {
       attributes: getAttributes(state),
-      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.TENANTS}.tenants.${id}`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_TENANTS}.tenants.${id}`),
     };
   },
   {

@@ -7,9 +7,10 @@ import moment from 'moment';
 import {isDirty} from 'redux-form';
 
 import {TableSortOrder} from '$components/enums';
+import {FormNames} from '$src/enums';
 import {
   ConstructabilityType,
-  FormNames,
+  DecisionTypeKinds,
   LeaseState,
   LeaseStatus,
   RecipientOptions,
@@ -39,13 +40,11 @@ import {removeSessionStorageItem} from '$util/storage';
 import type {Lease} from './types';
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
 
-export const getContentLeaseIdentifier = (item:Object) => {
-  if(isEmpty(item)) {
-    return null;
-  }
+export const getContentLeaseIdentifier = (item:Object) =>
+  !isEmpty(item)
+    ? `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`
+    : null;
 
-  return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
-};
 
 export const getContentLeaseTenants = (lease: Object, query: Object = {}) => {
   return get(lease, 'tenants', [])
@@ -543,6 +542,25 @@ export const getContentConstructability = (lease: Object) =>
     };
   });
 
+/**
+* Get single invoice note fields
+* @param {Object} invoiceNote
+* @returns {Object}
+*/
+export const getContentInvoiceNote = (invoiceNote: Object) => ({
+  id: invoiceNote.id,
+  billing_period_start_date: invoiceNote.billing_period_start_date,
+  billing_period_end_date: invoiceNote.billing_period_end_date,
+  notes: invoiceNote.notes,
+});
+
+/**
+* Get invoice notes of a lease
+* @param {Object} lease
+* @returns {Object[]}
+*/
+export const getContentInvoiceNotes = (lease: Lease) => get(lease, 'invoice_notes', []).map((note) => getContentInvoiceNote(note));
+
 export const getContentContactDetails = (contact: Object) => {
   return {
     id: contact.id,
@@ -798,6 +816,14 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
     };
   });
 };
+
+/**
+ * Get debt collection decisions from lease data
+ * @param lease
+ * @returns {Object[]}
+ */
+export const getContentDebtCollectionDecisions = (lease: Object) =>
+  get(lease, 'decisions', []).filter((decision) => decision.type.kind === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
 
 // Helper functions to get lease map content
 export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<LeafletFeature>  => {
@@ -1571,24 +1597,24 @@ export const isAnyLeaseFormDirty = (state: any) => {
   const isEditMode = getIsEditMode(state);
 
   return isEditMode && (
-    isDirty(FormNames.CONSTRUCTABILITY)(state) ||
-    isDirty(FormNames.CONTRACTS)(state) ||
-    isDirty(FormNames.DECISIONS)(state) ||
-    isDirty(FormNames.INSPECTIONS)(state) ||
+    isDirty(FormNames.LEASE_CONSTRUCTABILITY)(state) ||
+    isDirty(FormNames.LEASE_CONTRACTS)(state) ||
+    isDirty(FormNames.LEASE_DECISIONS)(state) ||
+    isDirty(FormNames.LEASE_INSPECTIONS)(state) ||
     isDirty(FormNames.LEASE_AREAS)(state) ||
-    isDirty(FormNames.RENTS)(state) ||
-    isDirty(FormNames.SUMMARY)(state) ||
-    isDirty(FormNames.TENANTS)(state));
+    isDirty(FormNames.LEASE_RENTS)(state) ||
+    isDirty(FormNames.LEASE_SUMMARY)(state) ||
+    isDirty(FormNames.LEASE_TENANTS)(state));
 };
 
 export const clearUnsavedChanges = () => {
-  removeSessionStorageItem(FormNames.CONSTRUCTABILITY);
-  removeSessionStorageItem(FormNames.CONTRACTS);
-  removeSessionStorageItem(FormNames.DECISIONS);
-  removeSessionStorageItem(FormNames.INSPECTIONS);
+  removeSessionStorageItem(FormNames.LEASE_CONSTRUCTABILITY);
+  removeSessionStorageItem(FormNames.LEASE_CONTRACTS);
+  removeSessionStorageItem(FormNames.LEASE_DECISIONS);
+  removeSessionStorageItem(FormNames.LEASE_INSPECTIONS);
   removeSessionStorageItem(FormNames.LEASE_AREAS);
-  removeSessionStorageItem(FormNames.RENTS);
-  removeSessionStorageItem(FormNames.SUMMARY);
-  removeSessionStorageItem(FormNames.TENANTS);
+  removeSessionStorageItem(FormNames.LEASE_RENTS);
+  removeSessionStorageItem(FormNames.LEASE_SUMMARY);
+  removeSessionStorageItem(FormNames.LEASE_TENANTS);
   removeSessionStorageItem('leaseId');
 };

@@ -17,13 +17,13 @@ import FileDownloadButton from '$components/file/FileDownloadButton';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import SubTitle from '$components/content/SubTitle';
+import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {
   CreateCollectionLetterFieldPaths,
   CreateCollectionLetterFieldTitles,
 } from '$src/createCollectionLetter/enums';
 import {InvoiceType} from '$src/invoices/enums';
-import {FormNames} from '$src/leases/enums';
 import {PenaltyInterestFieldPaths, PenaltyInterestFieldTitles} from '$src/penaltyInterest/enums';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {getUiDataCreateCollectionLetterKey, getUiDataPenaltyInterestKey} from '$src/uiData/helpers';
@@ -292,7 +292,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.CREATE_COLLECTION_LETTER;
+const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
 const selector = formValueSelector(formName);
 
 export default flowRight(

@@ -23,9 +23,9 @@ import {
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {ContactTypes, FormNames} from '$src/contacts/enums';
+import {ContactTypes} from '$src/contacts/enums';
 import {isEmptyValue, isMethodAllowed, setPageTitle} from '$util/helpers';
 import {contactExists} from '$src/contacts/requestsAsync';
 import {getRouteById, Routes} from '$src/root/routes';

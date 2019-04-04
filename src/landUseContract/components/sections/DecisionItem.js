@@ -8,8 +8,7 @@ import DecisionConditions from './DecisionConditions';
 import ExternalLink from '$components/links/ExternalLink';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/landUseContract/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 
@@ -31,7 +30,7 @@ const DecisionItem = ({
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.DECISIONS]: {
+        [FormNames.LAND_USE_CONTRACT_DECISIONS]: {
           [decision.id]: {
             decision: val,
           },
@@ -102,7 +101,7 @@ export default connect(
     const id = props.decision.id;
 
     return {
-      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.decision`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_DECISIONS}.${id}.decision`),
     };
   },
   {

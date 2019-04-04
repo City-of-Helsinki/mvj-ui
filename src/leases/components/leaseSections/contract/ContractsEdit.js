@@ -7,8 +7,8 @@ import flowRight from 'lodash/flowRight';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import Authorization from '$components/authorization/Authorization';
 import AddButton from '$components/form/AddButton';
+import Authorization from '$components/authorization/Authorization';
 import ContractFileModal from './ContractFileModal';
 import ContractItemEdit from './ContractItemEdit';
 import FormText from '$components/form/FormText';
@@ -17,10 +17,9 @@ import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {Methods} from '$src/enums';
+import {FormNames, Methods} from '$src/enums';
 import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts, getDecisionOptions} from '$src/leases/helpers';
 import {hasPermissions, isMethodAllowed} from '$util/helpers';
@@ -146,7 +145,7 @@ class ContractsEdit extends PureComponent<Props, State> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.CONTRACTS]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
   }
@@ -192,7 +191,7 @@ class ContractsEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.CONTRACTS;
+const formName = FormNames.LEASE_CONTRACTS;
 
 export default flowRight(
   connect(

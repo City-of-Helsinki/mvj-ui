@@ -45,8 +45,7 @@ import {
   receiveSingleLandUseContract,
   showEditMode,
 } from '$src/landUseContract/actions';
-import {FormNames} from '$src/landUseContract/enums';
-import {Methods} from '$src/enums';
+import {FormNames, Methods} from '$src/enums';
 import {
   addLitigantsDataToPayload,
   clearUnsavedChanges,
@@ -284,45 +283,45 @@ class LandUseContractPage extends Component<Props, State> {
     let isDirty = false;
 
     if(isBasicInformationFormDirty) {
-      setSessionStorageItem(FormNames.BASIC_INFORMATION, basicInformationFormValues);
+      setSessionStorageItem(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION, basicInformationFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.BASIC_INFORMATION);
+      removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION);
     }
 
     if(isDecisionsFormDirty) {
-      setSessionStorageItem(FormNames.DECISIONS, decisionsFormValues);
+      setSessionStorageItem(FormNames.LAND_USE_CONTRACT_DECISIONS, decisionsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.DECISIONS);
+      removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_DECISIONS);
     }
 
     if(isContractsFormDirty) {
-      setSessionStorageItem(FormNames.CONTRACTS, contractsFormValues);
+      setSessionStorageItem(FormNames.LAND_USE_CONTRACT_CONTRACTS, contractsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.CONTRACTS);
+      removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_CONTRACTS);
     }
 
     if(isCompensationsFormDirty) {
-      setSessionStorageItem(FormNames.COMPENSATIONS, compensationsFormValues);
+      setSessionStorageItem(FormNames.LAND_USE_CONTRACT_COMPENSATIONS, compensationsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.COMPENSATIONS);
+      removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_COMPENSATIONS);
     }
 
     if(isInvoicesFormDirty) {
-      setSessionStorageItem(FormNames.INVOICES, invoicesFormValues);
+      setSessionStorageItem(FormNames.LAND_USE_CONTRACT_INVOICES, invoicesFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.INVOICES);
+      removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_INVOICES);
     }
 
     if(isLitigantsFormDirty) {
-      setSessionStorageItem(FormNames.LITIGANTS, litigantsFormValues);
+      setSessionStorageItem(FormNames.LAND_USE_CONTRACT_LITIGANTS, litigantsFormValues);
       isDirty = true;
     } else {
-      removeSessionStorageItem(FormNames.LITIGANTS);
+      removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_LITIGANTS);
     }
 
     if(isDirty) {
@@ -353,34 +352,34 @@ class LandUseContractPage extends Component<Props, State> {
     this.destroyAllForms();
     this.initializeForms(currentLandUseContract);
 
-    const storedBasicInformationFormValues = getSessionStorageItem(FormNames.BASIC_INFORMATION);
+    const storedBasicInformationFormValues = getSessionStorageItem(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION);
     if(storedBasicInformationFormValues) {
-      this.bulkChange(FormNames.BASIC_INFORMATION, storedBasicInformationFormValues);
+      this.bulkChange(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION, storedBasicInformationFormValues);
     }
 
-    const storedDecisionsFormValues = getSessionStorageItem(FormNames.DECISIONS);
+    const storedDecisionsFormValues = getSessionStorageItem(FormNames.LAND_USE_CONTRACT_DECISIONS);
     if(storedDecisionsFormValues) {
-      this.bulkChange(FormNames.DECISIONS, storedDecisionsFormValues);
+      this.bulkChange(FormNames.LAND_USE_CONTRACT_DECISIONS, storedDecisionsFormValues);
     }
 
-    const storedContractsFormValues = getSessionStorageItem(FormNames.CONTRACTS);
+    const storedContractsFormValues = getSessionStorageItem(FormNames.LAND_USE_CONTRACT_CONTRACTS);
     if(storedContractsFormValues) {
-      this.bulkChange(FormNames.CONTRACTS, storedContractsFormValues);
+      this.bulkChange(FormNames.LAND_USE_CONTRACT_CONTRACTS, storedContractsFormValues);
     }
 
-    const storedCompensationsFormValues = getSessionStorageItem(FormNames.COMPENSATIONS);
+    const storedCompensationsFormValues = getSessionStorageItem(FormNames.LAND_USE_CONTRACT_COMPENSATIONS);
     if(storedCompensationsFormValues) {
-      this.bulkChange(FormNames.COMPENSATIONS, storedCompensationsFormValues);
+      this.bulkChange(FormNames.LAND_USE_CONTRACT_COMPENSATIONS, storedCompensationsFormValues);
     }
 
-    const storedInvoicesFormValues = getSessionStorageItem(FormNames.INVOICES);
+    const storedInvoicesFormValues = getSessionStorageItem(FormNames.LAND_USE_CONTRACT_INVOICES);
     if(storedInvoicesFormValues) {
-      this.bulkChange(FormNames.INVOICES, storedInvoicesFormValues);
+      this.bulkChange(FormNames.LAND_USE_CONTRACT_INVOICES, storedInvoicesFormValues);
     }
 
-    const storedLitigantsFormValues = getSessionStorageItem(FormNames.LITIGANTS);
+    const storedLitigantsFormValues = getSessionStorageItem(FormNames.LAND_USE_CONTRACT_LITIGANTS);
     if(storedLitigantsFormValues) {
-      this.bulkChange(FormNames.LITIGANTS, storedLitigantsFormValues);
+      this.bulkChange(FormNames.LAND_USE_CONTRACT_LITIGANTS, storedLitigantsFormValues);
     }
 
     const storedFormValidity = getSessionStorageItem('leaseValidity');
@@ -440,15 +439,15 @@ class LandUseContractPage extends Component<Props, State> {
     const {initialize} = this.props;
     const litigants = getContentLitigants(landUseContract);
 
-    initialize(FormNames.BASIC_INFORMATION, getContentBasicInformation(landUseContract));
-    initialize(FormNames.LITIGANTS, {
+    initialize(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION, getContentBasicInformation(landUseContract));
+    initialize(FormNames.LAND_USE_CONTRACT_LITIGANTS, {
       activeLitigants: litigants.filter((litigant) => !isLitigantArchived(litigant.litigant)),
       archivedLitigants: litigants.filter((litigant) => isLitigantArchived(litigant.litigant)),
     });
-    initialize(FormNames.DECISIONS, {decisions: getContentDecisions(landUseContract)});
-    initialize(FormNames.CONTRACTS, {contracts: getContentContracts(landUseContract)});
-    initialize(FormNames.COMPENSATIONS, {compensations: getContentCompensations(landUseContract)});
-    initialize(FormNames.INVOICES, {invoices: getContentInvoices(landUseContract)});
+    initialize(FormNames.LAND_USE_CONTRACT_DECISIONS, {decisions: getContentDecisions(landUseContract)});
+    initialize(FormNames.LAND_USE_CONTRACT_CONTRACTS, {contracts: getContentContracts(landUseContract)});
+    initialize(FormNames.LAND_USE_CONTRACT_COMPENSATIONS, {compensations: getContentCompensations(landUseContract)});
+    initialize(FormNames.LAND_USE_CONTRACT_INVOICES, {invoices: getContentInvoices(landUseContract)});
   }
 
   cancelChanges = () => {
@@ -573,12 +572,12 @@ class LandUseContractPage extends Component<Props, State> {
   destroyAllForms = () => {
     const {destroy} = this.props;
 
-    destroy(FormNames.BASIC_INFORMATION);
-    destroy(FormNames.DECISIONS);
-    destroy(FormNames.CONTRACTS);
-    destroy(FormNames.COMPENSATIONS);
-    destroy(FormNames.INVOICES);
-    destroy(FormNames.LITIGANTS);
+    destroy(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION);
+    destroy(FormNames.LAND_USE_CONTRACT_DECISIONS);
+    destroy(FormNames.LAND_USE_CONTRACT_CONTRACTS);
+    destroy(FormNames.LAND_USE_CONTRACT_COMPENSATIONS);
+    destroy(FormNames.LAND_USE_CONTRACT_INVOICES);
+    destroy(FormNames.LAND_USE_CONTRACT_LITIGANTS);
   }
 
   getOverlayLayers = () => {
@@ -756,29 +755,29 @@ export default flowRight(
         areaNoteMethods: getAreaNoteMethods(state),
         areaNotes: getAreaNoteList(state),
         attributes: getAttributes(state),
-        basicInformationFormValues: getFormValues(FormNames.BASIC_INFORMATION)(state),
-        compensationsFormValues: getFormValues(FormNames.COMPENSATIONS)(state),
+        basicInformationFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION)(state),
+        compensationsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_COMPENSATIONS)(state),
         contactAttributes: getContactAttributes(state),
-        contractsFormValues: getFormValues(FormNames.CONTRACTS)(state),
+        contractsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_CONTRACTS)(state),
         currentLandUseContract: getCurrentLandUseContract(state),
-        decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
-        invoicesFormValues: getFormValues(FormNames.INVOICES)(state),
-        isBasicInformationFormDirty: isDirty(FormNames.BASIC_INFORMATION)(state),
-        isBasicInformationFormValid: getIsFormValidById(state, FormNames.BASIC_INFORMATION),
-        isCompensationsFormDirty: isDirty(FormNames.COMPENSATIONS)(state),
-        isCompensationsFormValid: getIsFormValidById(state, FormNames.COMPENSATIONS),
-        isContractsFormDirty: isDirty(FormNames.CONTRACTS)(state),
-        isContractsFormValid: getIsFormValidById(state, FormNames.CONTRACTS),
-        isDecisionsFormDirty: isDirty(FormNames.DECISIONS)(state),
-        isDecisionsFormValid: getIsFormValidById(state, FormNames.DECISIONS),
-        isInvoicesFormDirty: isDirty(FormNames.INVOICES)(state),
-        isInvoicesFormValid: getIsFormValidById(state, FormNames.INVOICES),
-        isLitigantsFormDirty: isDirty(FormNames.LITIGANTS)(state),
-        isLitigantsFormValid: getIsFormValidById(state, FormNames.LITIGANTS),
+        decisionsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_DECISIONS)(state),
+        invoicesFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_INVOICES)(state),
+        isBasicInformationFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION)(state),
+        isBasicInformationFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION),
+        isCompensationsFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_COMPENSATIONS)(state),
+        isCompensationsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_COMPENSATIONS),
+        isContractsFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_CONTRACTS)(state),
+        isContractsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_CONTRACTS),
+        isDecisionsFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_DECISIONS)(state),
+        isDecisionsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_DECISIONS),
+        isInvoicesFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_INVOICES)(state),
+        isInvoicesFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_INVOICES),
+        isLitigantsFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_LITIGANTS)(state),
+        isLitigantsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_LITIGANTS),
         isEditMode: getIsEditMode(state),
         isFormValidFlags: getIsFormValidFlags(state),
         isSaveClicked: getIsSaveClicked(state),
-        litigantsFormValues: getFormValues(FormNames.LITIGANTS)(state),
+        litigantsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_LITIGANTS)(state),
       };
     },
     {

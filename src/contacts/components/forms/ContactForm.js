@@ -12,12 +12,12 @@ import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {receiveContactFormValid} from '$src/contacts/actions';
+import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {
   ContactFieldPaths,
   ContactFieldTitles,
   ContactTypes,
-  FormNames,
 } from '$src/contacts/enums';
 import {getUiDataContactKey} from '$src/uiData/helpers';
 import {

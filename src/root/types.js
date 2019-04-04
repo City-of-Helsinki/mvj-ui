@@ -17,6 +17,7 @@ import type {IndexState} from '$src/index/types';
 import type {InfillDevelopmentState} from '$src/infillDevelopment/types';
 import type {InfillDevelopmentAttachmentState} from '$src/infillDevelopmentAttachment/types';
 import type {InvoiceState} from '$src/invoices/types';
+import type {InvoiceNoteState} from '$src/invoiceNote/types';
 import type {InvoiceSetState} from '$src/invoiceSets/types';
 import type {LandUseContractState} from '$src/landUseContract/types';
 import type {LeaseState} from '$src/leases/types';
@@ -56,6 +57,7 @@ export type RootState = {
   infillDevelopment: InfillDevelopmentState,
   infillDevelopmentAttachment: InfillDevelopmentAttachmentState,
   invoice: InvoiceState,
+  invoiceNote: InvoiceNoteState,
   invoiceSet: InvoiceSetState,
   landUseContract: LandUseContractState,
   lease: LeaseState,

@@ -3,7 +3,7 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import merge from 'lodash/merge';
 
-import {FormNames} from './enums';
+import {FormNames} from '$src/enums';
 
 import type {Attributes, Reducer} from '$src/types';
 import type {
@@ -55,21 +55,21 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   },
   ['mvj/landUseContract/CLEAR_FORM_VALID_FLAGS']: () => {
     return {
-      [FormNames.BASIC_INFORMATION]: true,
-      [FormNames.COMPENSATIONS]: true,
-      [FormNames.CONTRACTS]: true,
-      [FormNames.DECISIONS]: true,
-      [FormNames.INVOICES]: true,
-      [FormNames.LITIGANTS]: true,
+      [FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION]: true,
+      [FormNames.LAND_USE_CONTRACT_COMPENSATIONS]: true,
+      [FormNames.LAND_USE_CONTRACT_CONTRACTS]: true,
+      [FormNames.LAND_USE_CONTRACT_DECISIONS]: true,
+      [FormNames.LAND_USE_CONTRACT_INVOICES]: true,
+      [FormNames.LAND_USE_CONTRACT_LITIGANTS]: true,
     };
   },
 }, {
-  [FormNames.BASIC_INFORMATION]: true,
-  [FormNames.COMPENSATIONS]: true,
-  [FormNames.CONTRACTS]: true,
-  [FormNames.DECISIONS]: true,
-  [FormNames.INVOICES]: true,
-  [FormNames.LITIGANTS]: true,
+  [FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION]: true,
+  [FormNames.LAND_USE_CONTRACT_COMPENSATIONS]: true,
+  [FormNames.LAND_USE_CONTRACT_CONTRACTS]: true,
+  [FormNames.LAND_USE_CONTRACT_DECISIONS]: true,
+  [FormNames.LAND_USE_CONTRACT_INVOICES]: true,
+  [FormNames.LAND_USE_CONTRACT_LITIGANTS]: true,
 });
 
 const isSaveClickedReducer: Reducer<boolean> = handleActions({

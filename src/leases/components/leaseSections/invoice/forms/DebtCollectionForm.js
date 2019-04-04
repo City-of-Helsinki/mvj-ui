@@ -8,9 +8,13 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonThird from '$components/form/AddButtonThird';
 import AddFileButton from '$components/form/AddFileButton';
 import Authorization from '$components/authorization/Authorization';
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
+import CollectionCourtDecisionPanel from '../CollectionCourtDecisionPanel';
 import DecisionLink from '$components/links/DecisionLink';
 import NewCollectionNote from './NewCollectionNote';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
@@ -20,24 +24,22 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import ShowMore from '$components/showMore/ShowMore';
 import SubTitle from '$components/content/SubTitle';
-import {deleteCollectionCourtDecision, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
+import {deleteCollectionCourtDecision, hideCollectionCourtDecisionPanel, showCollectionCourtDecisionPanel, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
 import {deleteCollectionLetter, uploadCollectionLetter} from '$src/collectionLetter/actions';
 import {createCollectionNote, deleteCollectionNote} from '$src/collectionNote/actions';
+import {FormNames, Methods} from '$src/enums';
 import {CollectionCourtDecisionFieldPaths, CollectionCourtDecisionFieldTitles} from '$src/collectionCourtDecision/enums';
 import {CollectionLetterFieldPaths, CollectionLetterFieldTitles} from '$src/collectionLetter/enums';
 import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
 import {ButtonColors} from '$components/enums';
 import {
-  DecisionTypes,
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseDecisionsFieldPaths,
   LeaseDecisionsFieldTitles,
 } from '$src/leases/enums';
-import {Methods} from '$src/enums';
 import {getUserFullName} from '$src/users/helpers';
-import {getContentDecisions, getDecisionOptions} from '$src/leases/helpers';
+import {getContentDebtCollectionDecisions, getDecisionOptions} from '$src/leases/helpers';
 import {
   getUiDataCollectionCourtDecisionKey,
   getUiDataCollectionLetterKey,
@@ -51,11 +53,12 @@ import {
   isMethodAllowed,
   sortStringByKeyAsc,
 } from '$util/helpers';
-import {getCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/selectors';
+import {getCollectionCourtDecisionsByLease, getIsCollectionCourtDecisionPanelOpen} from '$src/collectionCourtDecision/selectors';
 import {getCollectionLettersByLease} from '$src/collectionLetter/selectors';
 import {getCollectionNotesByLease} from '$src/collectionNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
+import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {CollectionCourtDecisionId} from '$src/collectionCourtDecision/types';
@@ -133,7 +136,11 @@ type Props = {
   deleteCollectionLetter: Function,
   deleteCollectionNote: Function,
   handleSubmit: Function,
+  hideCollectionCourtDecisionPanel: Function,
+  isCollectionCourtDecisionPanelOpen: boolean,
+  largeScreen: boolean,
   leaseAttributes: Attributes,
+  showCollectionCourtDecisionPanel: Function,
   uploadCollectionCourtDecision: Function,
   uploadCollectionLetter: Function,
   valid: boolean,
@@ -187,8 +194,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
     if(props.currentLease !== state.currentLease) {
       newStates.currentLease = props.currentLease;
       newStates.decisionOptions = getDecisionOptions(props.currentLease);
-      newStates.debtCollectionDecisions = getContentDecisions(props.currentLease)
-        .filter((decision) => decision.type === DecisionTypes.LAND_LEASE_DEMOLITION);
+      newStates.debtCollectionDecisions = getContentDebtCollectionDecisions(props.currentLease);
     }
 
     if(!isEmpty(newStates)) {
@@ -210,7 +216,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
     }
   }
 
-  handleCollectionCourtDecisionFileChange = (e) => {
+  handleSaveCourtDecisionFile = ({decision_date, file, note}) => {
     const {
       currentLease,
       uploadCollectionCourtDecision,
@@ -218,9 +224,11 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
     uploadCollectionCourtDecision({
       data: {
+        decision_date: decision_date,
+        note: note,
         lease: currentLease.id,
       },
-      file: e.target.files[0],
+      file: file,
     });
   }
 
@@ -276,6 +284,18 @@ class DebtCollectionForm extends PureComponent<Props, State> {
     });
   }
 
+  handleShowCollectionCourtDecisionPanel = () => {
+    const {showCollectionCourtDecisionPanel} = this.props;
+
+    showCollectionCourtDecisionPanel();
+  }
+
+  handleHideCollectionCourtDecisionPanel = () => {
+    const {hideCollectionCourtDecisionPanel} = this.props;
+
+    hideCollectionCourtDecisionPanel();
+  }
+
   render() {
     const {
       collectionCourtDecisionAttributes,
@@ -285,6 +305,8 @@ class DebtCollectionForm extends PureComponent<Props, State> {
       collectionNoteAttributes,
       collectionNoteMethods,
       handleSubmit,
+      isCollectionCourtDecisionPanelOpen,
+      largeScreen,
       leaseAttributes,
     } = this.props;
     const {
@@ -302,7 +324,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
             <form onSubmit={handleSubmit}>
               <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.GET)}>
                 <Row>
-                  <Column small={12} large={6}>
+                  <Column small={12}>
                     <SubTitle
                       enableUiDataEdit
                       uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.COLLECTION_LETTERS)}
@@ -313,21 +335,21 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                     {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionLetters || !sortedCollectionLetters.length) && <FormText>Ei perintäkirjeitä</FormText>}
                     {sortedCollectionLetters && !!sortedCollectionLetters.length &&
                       <Row>
-                        <Column small={6}>
+                        <Column small={6} large={3}>
                           <Authorization allow={isFieldAllowedToRead(collectionLetterAttributes, CollectionLetterFieldPaths.FILE)}>
                             <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.FILE)}>
                               {CollectionLetterFieldTitles.FILE}
                             </FormTextTitle>
                           </Authorization>
                         </Column>
-                        <Column small={3}>
+                        <Column small={3} large={1}>
                           <Authorization allow={isFieldAllowedToRead(collectionLetterAttributes, CollectionLetterFieldPaths.UPLOADED_AT)}>
                             <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionLetterKey(CollectionLetterFieldPaths.UPLOADED_AT)}>
                               {CollectionLetterFieldTitles.UPLOADED_AT}
                             </FormTextTitle>
                           </Authorization>
                         </Column>
-                        <Column small={3}>
+                        <Column small={3} large={2}>
                           <FormTextTitle
                             enableUiDataEdit
                             tooltipStyle={{right: 20}}
@@ -355,7 +377,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
                       return (
                         <Row key={index}>
-                          <Column small={6}>
+                          <Column small={6} large={3}>
                             <Authorization allow={isFieldAllowedToRead(collectionLetterAttributes, CollectionLetterFieldPaths.FILE)}>
                               <FileDownloadLink
                                 fileUrl={collectionLetter.file}
@@ -363,15 +385,14 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                               />
                             </Authorization>
                           </Column>
-                          <Column small={3}>
+                          <Column small={3} large={1}>
                             <Authorization allow={isFieldAllowedToRead(collectionLetterAttributes, CollectionLetterFieldPaths.UPLOADED_AT)}>
                               <FormText>{formatDate(collectionLetter.uploaded_at) || '-'}</FormText>
                             </Authorization>
                           </Column>
-                          <Column small={3}>
+                          <Column small={3} large={2}>
                             <FieldAndRemoveButtonWrapper
                               field={
-                                // TODO: Check that CollectionLetterFieldPaths.UPLOADER field exists in attributes when added to API
                                 <FormText className='full-width'>{getUserFullName(collectionLetter.uploader) || '-'}</FormText>
                               }
                               removeButton={
@@ -403,7 +424,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
               <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)}>
                 <Row>
-                  <Column small={12} large={6}>
+                  <Column small={12}>
                     <SubTitle
                       enableUiDataEdit
                       uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.COLLECTION_COURT_DECISIONS)}
@@ -412,23 +433,23 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                     </SubTitle>
 
                     {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionCourtDecisions || !sortedCollectionCourtDecisions.length) && <FormText>Ei käräjaoikeuden päätöksiä</FormText>}
-                    {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length &&
+                    {largeScreen && ((sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length) || isCollectionCourtDecisionPanelOpen) &&
                       <Row>
-                        <Column small={6}>
+                        <Column large={3}>
                           <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.FILE)}>
                             <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.FILE)}>
                               {CollectionCourtDecisionFieldTitles.FILE}
                             </FormTextTitle>
                           </Authorization>
                         </Column>
-                        <Column small={3}>
+                        <Column large={1}>
                           <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
                             <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
                               {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
                             </FormTextTitle>
                           </Authorization>
                         </Column>
-                        <Column small={3}>
+                        <Column large={2}>
                           <FormTextTitle
                             enableUiDataEdit
                             tooltipStyle={{right: 20}}
@@ -437,9 +458,23 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                             {CollectionCourtDecisionFieldTitles.UPLOADER}
                           </FormTextTitle>
                         </Column>
+                        <Column large={2}>
+                          <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.DECISION_DATE)}>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.DECISION_DATE)}>
+                              {CollectionCourtDecisionFieldTitles.DECISION_DATE}
+                            </FormTextTitle>
+                          </Authorization>
+                        </Column>
+                        <Column large={4}>
+                          <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.NOTE)}>
+                            <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.NOTE)}>
+                              {CollectionCourtDecisionFieldTitles.NOTE}
+                            </FormTextTitle>
+                          </Authorization>
+                        </Column>
                       </Row>
                     }
-                    {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length && sortedCollectionCourtDecisions.map((collectionCourtDecision, index) => {
+                    {largeScreen && sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length && sortedCollectionCourtDecisions.map((collectionCourtDecision, index) => {
                       const handleRemove = () => {
                         dispatch({
                           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
@@ -455,7 +490,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
                       return (
                         <Row key={index}>
-                          <Column small={6}>
+                          <Column large={3}>
                             <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.FILE)}>
                               <FileDownloadLink
                                 fileUrl={collectionCourtDecision.file}
@@ -463,15 +498,21 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                               />
                             </Authorization>
                           </Column>
-                          <Column small={3}>
+                          <Column large={1}>
                             <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
                               <FormText>{formatDate(collectionCourtDecision.uploaded_at) || '-'}</FormText>
                             </Authorization>
                           </Column>
-                          <Column small={3}>
+                          <Column large={2}>
+                            <FormText>{getUserFullName(collectionCourtDecision.uploader) || '-'}</FormText>
+                          </Column>
+                          <Column large={2}>
+                            <FormText>{formatDate(collectionCourtDecision.decision_date) || '-'}</FormText>
+                          </Column>
+                          <Column large={4}>
                             <FieldAndRemoveButtonWrapper
                               field={
-                                <FormText className='full-width'>{getUserFullName(collectionCourtDecision.uploader) || '-'}</FormText>
+                                <FormText className='full-width'>{collectionCourtDecision.note || '-'}</FormText>
                               }
                               removeButton={
                                 <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.DELETE)}>
@@ -489,12 +530,96 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       );
                     })}
 
+                    {!largeScreen && sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length &&
+                      <BoxItemContainer>
+                        {sortedCollectionCourtDecisions.map((collectionCourtDecision, index) => {
+                          const handleRemove = () => {
+                            dispatch({
+                              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                              confirmationFunction: () => {
+                                this.handleDeleteCollectionCourtDecision(collectionCourtDecision.id);
+                              },
+                              confirmationModalButtonClassName: ButtonColors.ALERT,
+                              confirmationModalButtonText: 'Poista',
+                              confirmationModalLabel: DeleteModalLabels.COLLECTION_COURT_DECISION,
+                              confirmationModalTitle: DeleteModalTitles.COLLECTION_COURT_DECISION,
+                            });
+                          };
+
+                          return (
+                            <BoxItem key={index}>
+                              <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.DELETE)}>
+                                <ActionButtonWrapper>
+                                  <RemoveButton
+                                    onClick={handleRemove}
+                                    title="Poista käräjäoikeuden päätös"
+                                  />
+                                </ActionButtonWrapper>
+                              </Authorization>
+                              <Row>
+                                <Column small={6}>
+                                  <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.FILE)}>
+                                    <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.FILE)}>
+                                      {CollectionCourtDecisionFieldTitles.FILE}
+                                    </FormTextTitle>
+                                    <FileDownloadLink
+                                      fileUrl={collectionCourtDecision.file}
+                                      label={collectionCourtDecision.filename}
+                                    />
+                                  </Authorization>
+                                </Column>
+                                <Column small={3}>
+                                  <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
+                                    <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
+                                      {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
+                                    </FormTextTitle>
+                                    <FormText>{formatDate(collectionCourtDecision.uploaded_at) || '-'}</FormText>
+                                  </Authorization>
+                                </Column>
+                                <Column small={3}>
+                                  <FormTextTitle
+                                    enableUiDataEdit
+                                    uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.UPLOADER)}
+                                  >
+                                    {CollectionCourtDecisionFieldTitles.UPLOADER}
+                                  </FormTextTitle>
+                                  <FormText>{getUserFullName(collectionCourtDecision.uploader) || '-'}</FormText>
+                                </Column>
+                                <Column small={3}>
+                                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.DECISION_DATE)}>
+                                    {CollectionCourtDecisionFieldTitles.DECISION_DATE}
+                                  </FormTextTitle>
+                                  <FormText>{formatDate(collectionCourtDecision.decision_date) || '-'}</FormText>
+                                </Column>
+                                <Column small={9}>
+                                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.NOTE)}>
+                                    {CollectionCourtDecisionFieldTitles.NOTE}
+                                  </FormTextTitle>
+                                  <FormText>{collectionCourtDecision.note || '-'}</FormText>
+                                </Column>
+                              </Row>
+                            </BoxItem>
+                          );
+                        })}
+                      </BoxItemContainer>
+                    }
                     <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.POST)}>
-                      <AddFileButton
-                        label='Lisää käräjäoikeuden päätös'
-                        name={'collectionCourtDecisionFileButtonId'}
-                        onChange={this.handleCollectionCourtDecisionFileChange}
-                      />
+                      <Fragment>
+                        <CollectionCourtDecisionPanel
+                          isOpen={isCollectionCourtDecisionPanelOpen}
+                          largeScreen={largeScreen}
+                          onClose={this.handleHideCollectionCourtDecisionPanel}
+                          onSave={this.handleSaveCourtDecisionFile}
+                          title='Lisää käräjäoikeuden päätös'
+                        />
+                        {!isCollectionCourtDecisionPanelOpen &&
+                          <AddButtonThird
+                            label='Lisää käräjäoikeuden päätös'
+                            onClick={this.handleShowCollectionCourtDecisionPanel}
+                            style={{margin: 0}}
+                          />
+                        }
+                      </Fragment>
                     </Authorization>
                   </Column>
                 </Row>
@@ -633,9 +758,10 @@ class DebtCollectionForm extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.DEBT_COLLECTION;
+const formName = FormNames.LEASE_DEBT_COLLECTION;
 
 export default flowRight(
+  withWindowResize,
   withLeasePageAttributes,
   connect(
     (state) => {
@@ -645,6 +771,7 @@ export default flowRight(
         collectionLetters: getCollectionLettersByLease(state, currentLease.id),
         collectionNotes: getCollectionNotesByLease(state, currentLease.id),
         currentLease: currentLease,
+        isCollectionCourtDecisionPanelOpen: getIsCollectionCourtDecisionPanelOpen(state),
         leaseAttributes: getLeaseAttributes(state),
       };
     },
@@ -653,6 +780,8 @@ export default flowRight(
       deleteCollectionCourtDecision,
       deleteCollectionLetter,
       deleteCollectionNote,
+      hideCollectionCourtDecisionPanel,
+      showCollectionCourtDecisionPanel,
       uploadCollectionCourtDecision,
       uploadCollectionLetter,
     }

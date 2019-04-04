@@ -16,8 +16,8 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
+import {FormNames} from '$src/enums';
 import {
-  FormNames,
   LeaseBasisOfRentsFieldPaths,
   LeaseBasisOfRentsFieldTitles,
 } from '$src/leases/enums';
@@ -637,7 +637,7 @@ const BasisOfRentEdit = ({
   );
 };
 
-const selector = formValueSelector(FormNames.RENTS);
+const selector = formValueSelector(FormNames.LEASE_RENTS);
 
 export default connect(
   (state, props) => {

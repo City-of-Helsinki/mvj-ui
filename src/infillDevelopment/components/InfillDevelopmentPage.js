@@ -36,8 +36,8 @@ import {
   showEditMode,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {Methods, PermissionMissingTexts} from '$src/enums';
-import {FormNames, InfillDevelopmentCompensationLeasesFieldPaths} from '$src/infillDevelopment/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
+import {InfillDevelopmentCompensationLeasesFieldPaths} from '$src/infillDevelopment/enums';
 import {
   clearUnsavedChanges,
   getContentInfillDevelopment,

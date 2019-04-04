@@ -10,8 +10,9 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import ContractItemEdit from './ContractItemEdit';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getContentContracts} from '$src/landUseContract/helpers';
 import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
@@ -108,7 +109,7 @@ class ContractsEdit extends Component<Props, State> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.CONTRACTS]: this.props.valid,
+        [FormNames.LAND_USE_CONTRACT_CONTRACTS]: this.props.valid,
       });
     }
   }
@@ -143,7 +144,7 @@ class ContractsEdit extends Component<Props, State> {
   }
 }
 
-const formName = FormNames.CONTRACTS;
+const formName = FormNames.LAND_USE_CONTRACT_CONTRACTS;
 
 export default flowRight(
   connect(

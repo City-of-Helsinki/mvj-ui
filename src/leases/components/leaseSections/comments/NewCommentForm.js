@@ -8,7 +8,8 @@ import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import {receiveIsSaveClicked} from '$src/comments/actions';
-import {ButtonColors, FieldTypes, FormNames} from '$components/enums';
+import {FormNames} from '$src/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {CommentFieldPaths, CommentFieldTitles} from '$src/comments/enums';
 import {getUiDataCommentKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
@@ -85,7 +86,7 @@ const NewCommentForm = ({
   );
 };
 
-const formName = FormNames.NEW_COMMENT;
+const formName = FormNames.LEASE_NEW_COMMENT;
 const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {

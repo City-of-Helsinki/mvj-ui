@@ -17,6 +17,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   InvoiceCreditInvoicesFieldPaths,
@@ -28,7 +29,7 @@ import {
   InvoiceRowsFieldPaths,
   InvoiceType,
 } from '$src/invoices/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
@@ -586,7 +587,7 @@ const EditInvoiceForm = ({
   );
 };
 
-const formName = FormNames.INVOICE_EDIT;
+const formName = FormNames.LEASE_INVOICE_EDIT;
 
 export default flowRight(
   connect(

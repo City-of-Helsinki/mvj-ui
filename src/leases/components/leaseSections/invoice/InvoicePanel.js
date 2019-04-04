@@ -12,9 +12,8 @@ import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
 import ReactResizeDetector from 'react-resize-detector';
 import {receiveIsEditClicked} from '$src/invoices/actions';
-import {KeyCodes, Methods} from '$src/enums';
+import {FormNames, KeyCodes, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {FormNames} from '$src/leases/enums';
 import {isMethodAllowed} from '$util/helpers';
 import {
   getInvoicesByLease,
@@ -249,7 +248,7 @@ class InvoicePanel extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.INVOICE_EDIT;
+const formName = FormNames.LEASE_INVOICE_EDIT;
 export default connect(
   (state) => {
     const currentLease = getCurrentLease(state);

@@ -10,8 +10,8 @@ import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {FormNames} from '$src/landUseContract/enums';
 import {getDistrictOptions} from '$src/district/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes} from '$src/landUseContract/selectors';
@@ -120,7 +120,7 @@ class CreateLandUseContractForm extends Component<Props> {
   }
 }
 
-const formName = FormNames.CREATE_LAND_USE_CONTRACT;
+const formName = FormNames.LAND_USE_CONTRACT_CREATE;
 const selector = formValueSelector(formName);
 
 export default flowRight(

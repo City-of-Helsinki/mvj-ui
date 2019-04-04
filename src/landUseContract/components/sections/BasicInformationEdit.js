@@ -18,9 +18,9 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -115,7 +115,7 @@ class BasicInformationEdit extends Component<Props> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.BASIC_INFORMATION]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
   }
@@ -125,7 +125,7 @@ class BasicInformationEdit extends Component<Props> {
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.BASIC_INFORMATION]: {
+        [formName]: {
           basic_information: val,
         },
       },
@@ -288,7 +288,7 @@ class BasicInformationEdit extends Component<Props> {
   }
 }
 
-const formName = FormNames.BASIC_INFORMATION;
+const formName = FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION;
 
 export default flowRight(
   connect(

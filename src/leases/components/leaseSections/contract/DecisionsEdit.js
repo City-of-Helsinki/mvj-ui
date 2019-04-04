@@ -18,8 +18,9 @@ import {
   receiveFormValidFlags,
   showAttachDecisionModal,
 } from '$src/leases/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasPermissions} from '$util/helpers';
 import {getCurrentLease, getIsAttachDecisionModalOpen} from '$src/leases/selectors';
@@ -123,7 +124,7 @@ class DecisionsEdit extends PureComponent<Props, State> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.DECISIONS]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
   }
@@ -180,7 +181,7 @@ class DecisionsEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.DECISIONS;
+const formName = FormNames.LEASE_DECISIONS;
 
 export default flowRight(
   connect(

@@ -6,7 +6,7 @@ import {FieldArray, reduxForm} from 'redux-form';
 
 import InspectionItemsEdit from './InspectionItemsEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames} from '$src/leases/enums';
+import {FormNames} from '$src/enums';
 
 type Props = {
   handleSubmit: Function,
@@ -20,7 +20,7 @@ class InspectionsEdit extends Component<Props> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.INSPECTIONS]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
   }
@@ -39,7 +39,7 @@ class InspectionsEdit extends Component<Props> {
   }
 }
 
-const formName = FormNames.INSPECTIONS;
+const formName = FormNames.LEASE_INSPECTIONS;
 
 export default flowRight(
   connect(

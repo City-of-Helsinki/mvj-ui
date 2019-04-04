@@ -2,25 +2,33 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import Button from '$components/button/Button';
 import Collapse from '$components/collapse/Collapse';
-import DebtCollection from './DebtCollection';
-import Divider from '$components/content/Divider';
-import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
 import CreateAndCreditInvoice from './CreateAndCreditInvoice';
 import CreateCollectionLetter from './CreateCollectionLetter';
+import DebtCollection from './DebtCollection';
+import Divider from '$components/content/Divider';
+import InvoiceNotes from './InvoiceNotes';
+import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import InvoiceTableAndPanel from './InvoiceTableAndPanel';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
 import {Methods, PermissionMissingTexts, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {LeaseInvoicingFieldPaths, LeaseInvoicingFieldTitles} from '$src/leases/enums';
+import {
+  LeaseInvoiceNotesFieldPaths,
+  LeaseInvoiceNotesFieldTitles,
+  LeaseInvoicingFieldPaths,
+  LeaseInvoicingFieldTitles,
+} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getContentInvoiceNotes} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {hasPermissions, isFieldAllowedToRead, isMethodAllowed} from '$util/helpers';
 import {getInvoiceToCredit, getMethods as getInvoiceMethods} from '$src/invoices/selectors';
@@ -39,6 +47,7 @@ type Props = {
   collectionNoteMethods: MethodsType, // Get via withLeasePageAttributes HOC
   currentLease: Lease,
   invoiceMethods: MethodsType,
+  invoiceNotesCollapseState: boolean,
   invoicesCollapseState: boolean,
   invoiceToCredit: ?string,
   isInvoicingEnabled: boolean,
@@ -53,7 +62,17 @@ type Props = {
   usersPermissions: UsersPermissionsType,
 }
 
-class Invoices extends PureComponent<Props> {
+type State = {
+  currentLease: Lease,
+  invoiceNotes: Array<Object>,
+}
+
+class Invoices extends PureComponent<Props, State> {
+  state = {
+    currentLease: {},
+    invoiceNotes: [],
+  }
+
   creditPanel: any
 
   componentDidMount = () => {
@@ -63,28 +82,38 @@ class Invoices extends PureComponent<Props> {
     receiveInvoiceToCredit(null);
   }
 
-  handleInvoicesCollapseToggle = (val: boolean) => {
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.invoiceNotes = getContentInvoiceNotes(props.currentLease);
+    }
+    return !isEmpty(newState) ? newState : null;
+  }
+
+  handleCollapseToggle = (key: string, val: boolean) => {
     const {receiveCollapseStates} = this.props;
 
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         invoices: {
-          invoices: val,
+          [key]: val,
         },
       },
     });
+  }
+
+  handleInvoicesCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle('invoices', val);
+  };
+
+  handleInvoiceNotesCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle('invoice_notes', val);
   };
 
   handlePreviewInvoicesCollapseToggle = (val: boolean) => {
-    const {receiveCollapseStates} = this.props;
-
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        invoices: {
-          preview_invoices: val,
-        },
-      },
-    });
+    this.handleCollapseToggle('preview_invoices', val);
   };
 
   handleInvoiceToCreditChange = (val: string) => {
@@ -110,6 +139,7 @@ class Invoices extends PureComponent<Props> {
       collectionLetterMethods,
       collectionNoteMethods,
       invoiceMethods,
+      invoiceNotesCollapseState,
       invoicesCollapseState,
       invoiceToCredit,
       isInvoicingEnabled,
@@ -117,6 +147,7 @@ class Invoices extends PureComponent<Props> {
       previewInvoicesCollapseState,
       usersPermissions,
     } = this.props;
+    const {invoiceNotes} = this.state;
 
     if(!isMethodAllowed(invoiceMethods, Methods.GET)) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
 
@@ -190,6 +221,21 @@ class Invoices extends PureComponent<Props> {
                 </Authorization>
               </Collapse>
 
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICENOTE)}>
+                <Collapse
+                  defaultOpen={invoiceNotesCollapseState !== undefined ? invoiceNotesCollapseState : true}
+                  headerTitle={`${LeaseInvoiceNotesFieldTitles.INVOICE_NOTES} (${invoiceNotes.length})`}
+                  onToggle={this.handleInvoiceNotesCollapseToggle}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseInvoiceNotesFieldPaths.INVOICE_NOTES)}
+                >
+                  <InvoiceNotes
+                    initialValues={{invoice_notes: invoiceNotes}} 
+                    invoiceNotes={invoiceNotes}
+                  />
+                </Collapse>
+              </Authorization>
+
               <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
                 <Collapse
                   defaultOpen={previewInvoicesCollapseState !== undefined ? previewInvoicesCollapseState : true}
@@ -236,6 +282,7 @@ export default flowRight(
         currentLease: currentLease,
         invoiceMethods: getInvoiceMethods(state),
         invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.invoices`),
+        invoiceNotesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.invoice_notes`),
         invoiceToCredit: getInvoiceToCredit(state),
         isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
         previewInvoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.preview_invoices`),

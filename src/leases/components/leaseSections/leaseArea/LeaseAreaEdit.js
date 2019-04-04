@@ -26,12 +26,11 @@ import PlotItemEdit from './PlotItemEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseAreaAddressesFieldPaths,
   LeaseAreaAddressesFieldTitles,
   LeaseAreasFieldPaths,
@@ -486,68 +485,36 @@ type Props = {
 }
 
 class LeaseAreaEdit extends PureComponent<Props> {
-  handlePlanUnitContractCollapseToggle = (val: boolean) => {
+  handleCollapseToggle = (key: string, val: boolean) => {
     const {areaId, receiveCollapseStates} = this.props;
 
     if(!areaId) {return;}
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.LEASE_AREAS]: {
+        [formName]: {
           [areaId]: {
-            plan_units_contract: val,
+            [key]: val,
           },
         },
       },
     });
+  };
+
+  handlePlanUnitContractCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle('plan_units_contract', val);
   };
 
   handlePlanUnitCurrentCollapseToggle = (val: boolean) => {
-    const {areaId, receiveCollapseStates} = this.props;
-
-    if(!areaId) {return;}
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.LEASE_AREAS]: {
-          [areaId]: {
-            plan_units_current: val,
-          },
-        },
-      },
-    });
+    this.handleCollapseToggle('plan_units_current', val);
   };
 
   handlePlotsContractCollapseToggle = (val: boolean) => {
-    const {areaId, receiveCollapseStates} = this.props;
-
-    if(!areaId) {return;}
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.LEASE_AREAS]: {
-          [areaId]: {
-            plots_contract: val,
-          },
-        },
-      },
-    });
+    this.handleCollapseToggle('plots_contract', val);
   };
 
   handlePlotsCurrentCollapseToggle = (val: boolean) => {
-    const {areaId, receiveCollapseStates} = this.props;
-
-    if(!areaId) {return;}
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.LEASE_AREAS]: {
-          [areaId]: {
-            plots_current: val,
-          },
-        },
-      },
-    });
+    this.handleCollapseToggle('plots_current', val);
   };
 
   getMapLinkUrl = () => {
@@ -752,10 +719,10 @@ export default flowRight(
         errors: getErrorsByFormName(state, formName),
         geometry: selector(state, `${props.field}.geometry`),
         isSaveClicked: getIsSaveClicked(state),
-        planUnitsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plan_units_contract`),
-        planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plan_units_current`),
-        plotsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plots_contract`),
-        plotsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plots_current`),
+        planUnitsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.plan_units_contract`),
+        planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.plan_units_current`),
+        plotsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.plots_contract`),
+        plotsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.plots_current`),
         usersPermissions: getUsersPermissions(state),
       };
     },

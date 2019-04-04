@@ -13,16 +13,6 @@ export const ContactTypes = {
 };
 
 /**
- * Contact form names enumerable.
- *
- * @type {{CONTACT: string, SEARCH: string,}}
- */
-export const FormNames = {
-  CONTACT: 'contact-form',
-  SEARCH: 'contact-search-form',
-};
-
-/**
  * Contact field paths enumerable.
  *
  * @type {{}}

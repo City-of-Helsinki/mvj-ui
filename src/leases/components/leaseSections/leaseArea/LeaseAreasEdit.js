@@ -14,12 +14,12 @@ import Divider from '$components/content/Divider';
 import LeaseAreaWithArchiveInfoEdit from './LeaseAreaWithArchiveInfoEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {copyAreasToContract, receiveFormValidFlags} from '$src/leases/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   AreaLocation,
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseAreasFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
@@ -233,7 +233,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       showArchiveAreaModal: true,
     });
 
-    initialize(FormNames.ARCHIVE_AREA, {});
+    initialize(FormNames.LEASE_ARCHIVE_AREA, {});
   }
 
   handleHideArchiveAreaModal = () => {

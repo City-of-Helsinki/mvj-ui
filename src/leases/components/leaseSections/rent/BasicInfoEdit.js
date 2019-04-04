@@ -16,10 +16,10 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/constants';
+import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {
   FixedDueDates,
-  FormNames,
   LeaseRentDueDatesFieldPaths,
   LeaseRentDueDatesFieldTitles,
   LeaseRentsFieldPaths,
@@ -47,7 +47,7 @@ import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
-const formName = FormNames.RENTS;
+const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
 
 type SeasonalDatesProps = {

@@ -11,8 +11,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/landUseContract/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {formatDate, getFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
@@ -39,7 +38,7 @@ const DecisionConditions = ({
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.DECISIONS]: {
+        [FormNames.LAND_USE_CONTRACT_DECISIONS]: {
           [decisionId]: {
             conditions: val,
           },
@@ -159,7 +158,7 @@ export default flowRight(
       const decisionId = props.decisionId;
 
       return {
-        collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${decisionId}.conditions`),
+        collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_DECISIONS}.${decisionId}.conditions`),
       };
     },
     {

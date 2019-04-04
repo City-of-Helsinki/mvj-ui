@@ -15,9 +15,8 @@ import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
 import RentAdjustments from './RentAdjustments';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {
-  FormNames,
   LeaseRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldTitles,
@@ -44,6 +43,8 @@ import {
 import {getAttributes as getLeaseAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
+
+const formName = FormNames.LEASE_RENTS;
 
 type Props = {
   contractRentsCollapseState: boolean,
@@ -75,7 +76,7 @@ const RentItem = ({
   const handleCollapseToggle = (key: string, val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.RENTS]: {
+        [formName]: {
           [rent.id]: {
             [key]: val,
           },
@@ -250,14 +251,14 @@ export default connect(
     const id = props.rent.id;
 
     return {
-      contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.contract_rents`),
-      equalizedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.equalized_rents`),
-      fixedInitialYearRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.fixed_initial_year_rents`),
-      indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.index_adjusted_rents`),
+      contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.contract_rents`),
+      equalizedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`),
+      fixedInitialYearRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.fixed_initial_year_rents`),
+      indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.index_adjusted_rents`),
       leaseAttributes: getLeaseAttributes(state),
-      payableRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.payable_rents`),
-      rentCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.rent`),
-      rentAdjustmentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.rent_adjustments`),
+      payableRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.payable_rents`),
+      rentCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.rent`),
+      rentAdjustmentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.rent_adjustments`),
     };
   },
   {

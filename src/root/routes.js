@@ -11,6 +11,7 @@ import ContactPage from '$src/contacts/components/ContactPage';
 import IndexListPage from '$src/index/components/IndexListPage';
 import InfillDevelopmentPage from '$src/infillDevelopment/components/InfillDevelopmentPage';
 import InfillDevelopmentListPage from '$src/infillDevelopment/components/InfillDevelopmentListPage';
+import InvoiceNoteListPage from '$src/invoiceNote/components/InvoiceNoteListPage';
 import LandUseContractListPage from '$src/landUseContract/components/LandUseContractListPage';
 import LandUseContractPage from '$src/landUseContract/components/LandUseContractPage';
 import LeaseListPage from '$src/leases/components/LeaseListPage';
@@ -32,6 +33,7 @@ export const Routes = {
   INDEX: 'index',
   INFILL_DEVELOPMENTS: 'infill_developments',
   INFILL_DEVELOPMENT_NEW: 'infill_development_new',
+  INVOICE_NOTES: 'invoice_notes',
   LAND_USE_CONTRACTS: 'land_use_contracts',
   LEASES: 'leases',
   LEASEHOLD_TRANSFER: 'leasehold_transfer',
@@ -51,6 +53,7 @@ export const getRouteById = (id: string): string => {
     [Routes.INDEX]: '/indeksi',
     [Routes.INFILL_DEVELOPMENTS]: '/taydennysrakennuskorvaus',
     [Routes.INFILL_DEVELOPMENT_NEW]: '/uusitaydennysrakennuskorvaus',
+    [Routes.INVOICE_NOTES]: '/laskujentiedotteet',
     [Routes.LAND_USE_CONTRACTS]: '/maankayttosopimus',
     [Routes.LEASES]: '/vuokraukset',
     [Routes.LEASEHOLD_TRANSFER]: '/vuokraoikeudensiirrot',
@@ -73,6 +76,7 @@ export default
     <Route exact path={getRouteById(Routes.CONTACTS)} component={ContactListPage} />
     <Route exact path={`${getRouteById(Routes.CONTACTS)}/:contactId`} component={ContactPage}/>
     <Route exact path={getRouteById(Routes.CONTACT_NEW)} component={NewContactPage} />
+    <Route exact path={getRouteById(Routes.INVOICE_NOTES)} component={InvoiceNoteListPage} />
     <Route exact path={`${getRouteById(Routes.INDEX)}`} component={IndexListPage} />
     <Route exact path={getRouteById(Routes.LAND_USE_CONTRACTS)} component={LandUseContractListPage} />
     <Route exact path={`${getRouteById(Routes.LAND_USE_CONTRACTS)}/:landUseContractId`} component={LandUseContractPage} />

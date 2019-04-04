@@ -13,6 +13,7 @@ import FormField from '$components/form/FormField';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreditClicked} from '$src/invoices/actions';
 import {CreditInvoiceOptions, CreditInvoiceSetOptions} from '$src/leases/constants';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   InvoiceFieldPaths,
@@ -20,7 +21,7 @@ import {
   InvoiceRowsFieldPaths,
   InvoiceRowsFieldTitles,
 } from '$src/invoices/enums';
-import {CreditInvoiceOptionsEnum, FormNames} from '$src/leases/enums';
+import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
 import {getUiDataCreditInvoiceKey} from '$src/uiData/helpers';
 import {
   addEmptyOption,
@@ -203,7 +204,7 @@ const CreditInvoiceForm = ({
   );
 };
 
-const formName = FormNames.REFUND;
+const formName = FormNames.LEASE_REFUND;
 const selector = formValueSelector(formName);
 
 export default flowRight(

@@ -18,6 +18,7 @@ import type {
   CreateLeaseAction,
   DeleteLeaseAction,
   PatchLeaseAction,
+  PatchLeaseInvoiceNotesAction,
   FetchLeasesAction,
   FetchSingleLeaseAction,
   FetchSingleLeaseAfterEditAction,
@@ -83,6 +84,9 @@ export const deleteLease = (leaseId: LeaseId): DeleteLeaseAction =>
 export const patchLease = (lease: Lease): PatchLeaseAction =>
   createAction('mvj/leases/PATCH')(lease);
 
+export const patchLeaseInvoiceNotes = (lease: Lease): PatchLeaseInvoiceNotesAction =>
+  createAction('mvj/leases/PATCH_INVOICE_NOTES')(lease);
+
 export const startInvoicing = (id: LeaseId): StartInvoicingAction =>
   createAction('mvj/leases/START_INVOICING')(id);
 
@@ -118,7 +122,7 @@ export const copyAreasToContract = (leaseId: LeaseId): CopyAreasToContractAction
 
 export const copyDecisionToLeases = (payload: Object): CopyDecisionToLeasesAction =>
   createAction('mvj/leases/COPY_DECISION_TO_LEASES')(payload);
-  
+
 export const hideAttachDecisionModal = (): HideAttachDecisionModalAction =>
   createAction('mvj/leases/HIDE_ATTACH_DECISION_MODAL')();
 

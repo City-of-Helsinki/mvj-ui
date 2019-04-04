@@ -7,7 +7,8 @@ import flowRight from 'lodash/flowRight';
 
 import ErrorField from '$components/form/ErrorField';
 import FormField from '$components/form/FormField';
-import {FieldTypes, FormNames, RentCalculatorTypes} from '$components/enums';
+import {FormNames} from '$src/enums';
+import {FieldTypes, RentCalculatorTypes} from '$components/enums';
 import {validateRentCalculatorForm} from '$components/formValidations';
 import {formatDateRange} from '$util/helpers';
 import {getCurrentYear} from '$util/date';

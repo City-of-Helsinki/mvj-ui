@@ -13,7 +13,7 @@ import {
   receiveIsSaveClicked,
 } from './actions';
 import {receiveError} from '../api/actions';
-import {FormNames} from '../components/enums';
+import {FormNames} from '$src/enums';
 import {displayUIMessage} from '$util/helpers';
 import {
   createComment,
@@ -79,7 +79,7 @@ function* createCommentSaga({payload: comment}): Generator<any, any, any> {
       case 201:
         yield put(fetchCommentsByLease(bodyAsJson.lease));
         yield put(receiveIsSaveClicked(false));
-        yield put(initialize(FormNames.NEW_COMMENT, {text: '', topic: ''}));
+        yield put(initialize(FormNames.LEASE_NEW_COMMENT, {text: '', topic: ''}));
         displayUIMessage({title: '', body: 'Kommentti luotu'});
         break;
       case 400:

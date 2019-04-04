@@ -14,8 +14,7 @@ import PageContainer from '$components/content/PageContainer';
 import Search from '$src/tradeRegister/components/Search';
 import TradeRegisterTemplate from '$src/tradeRegister/components/TradeRegisterTemplate';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {PermissionMissingTexts} from '$src/enums';
-import {FormNames} from '$src/tradeRegister/enums';
+import {FormNames, PermissionMissingTexts} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasPermissions, getSearchQuery, getUrlParams, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -61,7 +60,7 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
       this.setState({businessId: query.business_id});
     }
 
-    initialize(FormNames.SEARCH, query);
+    initialize(FormNames.TRADE_REGISTER_SEARCH, query);
   }
 
   componentDidUpdate(prevProps) {
@@ -73,7 +72,7 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
       this.setState({
         businessId: searchQuery.business_id || '',
       }, () => {
-        initialize(FormNames.SEARCH, {business_id: searchQuery.business_id || ''});
+        initialize(FormNames.TRADE_REGISTER_SEARCH, {business_id: searchQuery.business_id || ''});
       });
     }
   }

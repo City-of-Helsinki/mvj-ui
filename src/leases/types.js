@@ -52,6 +52,7 @@ export type ReceiveLeaseByIdAction = Action<'mvj/leases/RECEIVE_BY_ID', Lease>;
 export type CreateLeaseAction = Action<'mvj/leases/CREATE', Lease>;
 export type DeleteLeaseAction = Action<'mvj/leases/DELETE', LeaseId>;
 export type PatchLeaseAction = Action<'mvj/leases/PATCH', Lease>;
+export type PatchLeaseInvoiceNotesAction = Action<'mvj/leases/PATCH_INVOICE_NOTES', Lease>;
 export type StartInvoicingAction = Action<'mvj/leases/START_INVOICING', LeaseId>;
 export type StopInvoicingAction = Action<'mvj/leases/STOP_INVOICING', LeaseId>;
 export type SetRentInfoCompleteAction = Action<'mvj/leases/SET_RENT_INFO_COMPLETE', LeaseId>;

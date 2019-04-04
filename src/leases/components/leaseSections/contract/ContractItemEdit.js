@@ -23,12 +23,11 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {Methods, ViewModes} from '$src/enums';
+import {FormNames, Methods, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
-  FormNames,
   LeaseContractChangesFieldPaths,
   LeaseContractChangesFieldTitles,
   LeaseContractCollateralsFieldPaths,
@@ -519,7 +518,7 @@ const ContractItemEdit = ({
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.CONTRACTS]: {
+        [FormNames.LEASE_CONTRACTS]: {
           [contractId]: {
             [field]: val,
           },
@@ -783,7 +782,7 @@ const ContractItemEdit = ({
   );
 };
 
-const formName = FormNames.CONTRACTS;
+const formName = FormNames.LEASE_CONTRACTS;
 const selector = formValueSelector(formName);
 
 export default connect(

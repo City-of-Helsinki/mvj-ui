@@ -16,8 +16,9 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
 import RemoveButton from '../../../components/form/RemoveButton';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/types';
@@ -142,7 +143,7 @@ class InvoicesEdit extends Component<Props> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.CONTRACTS]: this.props.valid,
+        [FormNames.LAND_USE_CONTRACT_CONTRACTS]: this.props.valid,
       });
     }
   }
@@ -165,7 +166,7 @@ class InvoicesEdit extends Component<Props> {
   }
 }
 
-const formName = FormNames.INVOICES;
+const formName = FormNames.LAND_USE_CONTRACT_INVOICES;
 
 export default flowRight(
   connect(

@@ -10,8 +10,9 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
+import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {FormNames, RentBasisDecisionsFieldPaths} from '$src/rentbasis/enums';
+import {RentBasisDecisionsFieldPaths} from '$src/rentbasis/enums';
 import {getFieldOptions, getUrlParams} from '$util/helpers';
 import {getAttributes as getRentBasisAttributes} from '$src/rentbasis/selectors';
 
@@ -266,7 +267,7 @@ class Search extends PureComponent<Props, State> {
 }
 
 
-const formName = FormNames.SEARCH;
+const formName = FormNames.RENT_BASIS_SEARCH;
 
 export default flowRight(
   // $FlowFixMe

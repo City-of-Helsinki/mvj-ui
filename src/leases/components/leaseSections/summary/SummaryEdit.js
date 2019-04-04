@@ -19,9 +19,9 @@ import ListItems from '$components/content/ListItems';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
-import {Methods, ViewModes} from '$src/enums';
+import {FormNames, Methods, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
+import {LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
 import {getContentSummary} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -61,20 +61,25 @@ type Props = {
 }
 
 type State = {
+  currentLease: Lease,
   summary: Object,
 }
 
 class SummaryEdit extends PureComponent<Props, State> {
   state = {
+    currentLease: {},
     summary: {},
   }
 
-  componentDidMount() {
-    const {currentLease} = this.props;
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
 
-    if(!isEmpty(currentLease)) {
-      this.updateSummary(currentLease);
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.summary = getContentSummary(props.currentLease);
     }
+
+    return !isEmpty(newState) ? newState : null;
   }
 
   componentDidUpdate(prevProps) {
@@ -82,43 +87,29 @@ class SummaryEdit extends PureComponent<Props, State> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.SUMMARY]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
-
-    if(prevProps.currentLease !== this.props.currentLease) {
-      this.updateSummary(this.props.currentLease);
-    }
   }
 
-  handleBasicInfoToggle = (val: boolean) => {
+  handleCollapseToggle = (key: string, val: boolean) => {
     const {receiveCollapseStates} = this.props;
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.SUMMARY]: {
-          basic: val,
+        [formName]: {
+          [key]: val,
         },
       },
     });
   }
 
-  handleStatisticalInfoToggle = (val: boolean) => {
-    const {receiveCollapseStates} = this.props;
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.SUMMARY]: {
-          statistical: val,
-        },
-      },
-    });
+  handleBasicInfoCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle('basic', val);
   }
 
-  updateSummary = (currentLease: Lease) => {
-    this.setState({
-      summary: getContentSummary(currentLease),
-    });
+  handleStatisticalInfoCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle('statistical', val);
   }
 
   referenceNumberReadOnlyRenderer = (value: ?string) => {
@@ -155,7 +146,7 @@ class SummaryEdit extends PureComponent<Props, State> {
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
               headerTitle='Perustiedot'
-              onToggle={this.handleBasicInfoToggle}
+              onToggle={this.handleBasicInfoCollapseToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -436,7 +427,7 @@ class SummaryEdit extends PureComponent<Props, State> {
             <Collapse
               defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
               headerTitle='Tilastotiedot'
-              onToggle={this.handleStatisticalInfoToggle}
+              onToggle={this.handleStatisticalInfoCollapseToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -555,7 +546,7 @@ class SummaryEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.SUMMARY;
+const formName = FormNames.LEASE_SUMMARY;
 const selector = formValueSelector(formName);
 
 export default flowRight(
@@ -563,8 +554,8 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
-        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.SUMMARY}.basic`),
-        collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.SUMMARY}.statistical`),
+        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.basic`),
+        collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.statistical`),
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
         infillDevelopmentMethods: getInfillDevelopmentMethods(state),

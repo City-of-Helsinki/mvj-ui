@@ -4,7 +4,8 @@ import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import {isDirty} from 'redux-form';
 
-import {FormNames, LitigantContactType} from './enums';
+import {FormNames} from '$src/enums';
+import {LitigantContactType} from './enums';
 import {getContentUser} from '$src/users/helpers';
 import {fixedLengthNumber, sortStringByKeyDesc} from '$util/helpers';
 import {getIsEditMode} from '$src/landUseContract/selectors';
@@ -259,19 +260,19 @@ export const isAnyLandUseContractFormDirty = (state: any) => {
   const isEditMode = getIsEditMode(state);
 
   return isEditMode && (
-    isDirty(FormNames.BASIC_INFORMATION)(state) ||
-    isDirty(FormNames.COMPENSATIONS)(state) ||
-    isDirty(FormNames.CONTRACTS)(state) ||
-    isDirty(FormNames.DECISIONS)(state) ||
-    isDirty(FormNames.INVOICES)(state));
+    isDirty(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION)(state) ||
+    isDirty(FormNames.LAND_USE_CONTRACT_COMPENSATIONS)(state) ||
+    isDirty(FormNames.LAND_USE_CONTRACT_CONTRACTS)(state) ||
+    isDirty(FormNames.LAND_USE_CONTRACT_DECISIONS)(state) ||
+    isDirty(FormNames.LAND_USE_CONTRACT_INVOICES)(state));
 };
 
 export const clearUnsavedChanges = () => {
-  removeSessionStorageItem(FormNames.BASIC_INFORMATION);
-  removeSessionStorageItem(FormNames.COMPENSATIONS);
-  removeSessionStorageItem(FormNames.CONTRACTS);
-  removeSessionStorageItem(FormNames.DECISIONS);
-  removeSessionStorageItem(FormNames.INVOICES);
+  removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION);
+  removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_COMPENSATIONS);
+  removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_CONTRACTS);
+  removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_DECISIONS);
+  removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_INVOICES);
   removeSessionStorageItem('landUseContractId');
   removeSessionStorageItem('landUseContractValidity');
 };

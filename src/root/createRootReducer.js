@@ -22,6 +22,7 @@ import indexReducer from '$src/index/reducer';
 import infillDevelopmentReducer from '$src/infillDevelopment/reducer';
 import infillDevelopmentAttachmentReducer from '$src/infillDevelopmentAttachment/reducer';
 import invoiceReducer from '$src/invoices/reducer';
+import invoiceNoteReducer from '$src/invoiceNote/reducer';
 import invoiceSetReducer from '$src/invoiceSets/reducer';
 import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
@@ -66,6 +67,7 @@ export default (history: Object): Reducer<RootState> =>
     infillDevelopment: infillDevelopmentReducer,
     infillDevelopmentAttachment: infillDevelopmentAttachmentReducer,
     invoice: invoiceReducer,
+    invoiceNote: invoiceNoteReducer,
     invoiceSet: invoiceSetReducer,
     landUseContract: landUseContractReducer,
     lease: leaseReducer,

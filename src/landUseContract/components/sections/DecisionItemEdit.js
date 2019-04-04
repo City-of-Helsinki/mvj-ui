@@ -20,9 +20,9 @@ import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getFieldAttributes, getFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
@@ -281,7 +281,7 @@ const DecisionItemEdit = ({
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.DECISIONS]: {
+        [formName]: {
           [decisionId]: {
             decision: val,
           },
@@ -295,7 +295,7 @@ const DecisionItemEdit = ({
 
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.DECISIONS]: {
+        [formName]: {
           [decisionId]: {
             conditions: val,
           },
@@ -392,7 +392,7 @@ const DecisionItemEdit = ({
   );
 };
 
-const formName = FormNames.DECISIONS;
+const formName = FormNames.LAND_USE_CONTRACT_DECISIONS;
 const selector = formValueSelector(formName);
 
 export default flowRight(

@@ -19,9 +19,9 @@ import TableWrapper from '$components/table/TableWrapper';
 import {fetchLeaseholdTransferList} from '$src/leaseholdTransfer/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {TableSortOrder} from '$components/enums';
-import {FormNames, LeaseholdTransferFieldPaths, LeaseholdTransferFieldTitles} from '$src/leaseholdTransfer/enums';
+import {LeaseholdTransferFieldPaths, LeaseholdTransferFieldTitles} from '$src/leaseholdTransfer/enums';
 import {
   getLeaseholdTransferListCount,
   getLeaseholdTransferListMaxPage,
@@ -162,7 +162,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
         delete searchQuery.sort_key;
         delete searchQuery.sort_order;
 
-        await initialize(FormNames.SEARCH, searchQuery);
+        await initialize(FormNames.LEASEHOLD_TRANSFER_SEARCH, searchQuery);
         setSearchFormReady();
       } catch(e) {
         console.error(`Failed to initialize search form with error, ${e}`);
@@ -203,7 +203,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
         };
 
         const clearSearchForm = async() => {
-          await initialize(FormNames.SEARCH, {});
+          await initialize(FormNames.LEASEHOLD_TRANSFER_SEARCH, {});
         };
 
         this.setState({

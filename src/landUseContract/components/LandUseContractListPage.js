@@ -21,7 +21,7 @@ import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
-import {FormNames} from '$src/landUseContract/enums';
+import {FormNames} from '$src/enums';
 import {getContentLandUseContractList} from '$src/landUseContract/helpers';
 import {
   getFieldOptions,
@@ -153,7 +153,7 @@ class LandUseContractListPage extends Component<Props, State> {
 
     this.setState({isModalOpen: true});
 
-    initialize(FormNames.CREATE_LAND_USE_CONTRACT, {});
+    initialize(FormNames.LAND_USE_CONTRACT_CREATE, {});
   }
 
   hideCreateLandUseContractModal = () => {

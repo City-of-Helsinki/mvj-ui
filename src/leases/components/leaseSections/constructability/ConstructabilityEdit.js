@@ -10,7 +10,8 @@ import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import {receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames, LeaseAreasFieldPaths} from '$src/leases/enums';
+import {FormNames}from '$src/enums';
+import {LeaseAreasFieldPaths} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
 import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
@@ -96,7 +97,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.CONSTRUCTABILITY]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
   }
@@ -153,7 +154,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.CONSTRUCTABILITY;
+const formName = FormNames.LEASE_CONSTRUCTABILITY;
 
 export default flowRight(
   connect(

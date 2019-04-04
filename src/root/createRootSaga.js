@@ -17,6 +17,7 @@ import indexSaga from '$src/index/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
 import infillDevelopmentAttachmentSaga from '../infillDevelopmentAttachment/saga';
 import invoiceSaga from '../invoices/saga';
+import invoiceNoteSaga from '../invoiceNote/saga';
 import invoiceSetSaga from '../invoiceSets/saga';
 import landUseContractSaga from '../landUseContract/saga';
 import leaseSaga from '../leases/saga';
@@ -59,6 +60,7 @@ export default () =>
       fork(infillDevelopmentSaga),
       fork(infillDevelopmentAttachmentSaga),
       fork(invoiceSaga),
+      fork(invoiceNoteSaga),
       fork(invoiceSetSaga),
       fork(landUseContractSaga),
       fork(leaseSaga),

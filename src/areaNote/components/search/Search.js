@@ -8,7 +8,7 @@ import flowRight from 'lodash/flowRight';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
-import {FormNames} from '$src/areaNote/enums';
+import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 
 type Props = {
@@ -90,7 +90,7 @@ class Search extends PureComponent<Props> {
 }
 
 
-const formName = FormNames.SEARCH;
+const formName = FormNames.AREA_NOTE_SEARCH;
 
 export default flowRight(
   connect(

@@ -17,8 +17,8 @@ import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 
 import {receiveCollapseStates} from '$src/leases/actions';
-import {Methods, ViewModes} from '$src/enums';
-import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
+import {FormNames, Methods, ViewModes} from '$src/enums';
+import {LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -111,28 +111,24 @@ class Summary extends PureComponent<Props, State> {
     return newState;
   }
 
-  handleBasicInfoToggle = (val: boolean) => {
+  handleCollapseToggle = (key: string, val: boolean) => {
     const {receiveCollapseStates} = this.props;
 
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.SUMMARY]: {
-          basic: val,
+        [FormNames.LEASE_SUMMARY]: {
+          [key]: val,
         },
       },
     });
   }
 
-  handleStatisticalInfoToggle = (val: boolean) => {
-    const {receiveCollapseStates} = this.props;
+  handleBasicInfoCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle('basic', val);
+  }
 
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.SUMMARY]: {
-          statistical: val,
-        },
-      },
-    });
+  handleStatisticalInfoCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle('statistical', val);
   }
 
   render() {
@@ -176,7 +172,7 @@ class Summary extends PureComponent<Props, State> {
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               headerTitle='Perustiedot'
-              onToggle={this.handleBasicInfoToggle}
+              onToggle={this.handleBasicInfoCollapseToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -374,7 +370,7 @@ class Summary extends PureComponent<Props, State> {
             <Collapse
               defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
               headerTitle='Tilastotiedot'
-              onToggle={this.handleStatisticalInfoToggle}
+              onToggle={this.handleStatisticalInfoCollapseToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -464,8 +460,8 @@ export default connect(
   (state) => {
     return {
       attributes: getAttributes(state),
-      collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.basic`),
-      collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.statistical`),
+      collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_SUMMARY}.basic`),
+      collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_SUMMARY}.statistical`),
       currentLease: getCurrentLease(state),
       infillDevelopmentMethods: getInfillDevelopmentMethods(state),
     };

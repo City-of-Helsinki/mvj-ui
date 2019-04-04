@@ -18,8 +18,9 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
 
@@ -127,7 +128,7 @@ class CompensationsEdit extends Component<Props> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.COMPENSATIONS]: this.props.valid,
+        [formName]: this.props.valid,
       });
     }
   }
@@ -285,7 +286,7 @@ class CompensationsEdit extends Component<Props> {
   }
 }
 
-const formName = FormNames.COMPENSATIONS;
+const formName = FormNames.LAND_USE_CONTRACT_COMPENSATIONS;
 const selector = formValueSelector(formName);
 
 export default flowRight(
