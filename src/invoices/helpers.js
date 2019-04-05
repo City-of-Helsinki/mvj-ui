@@ -1,8 +1,9 @@
 // @flow
+import moment from 'moment';
 import get from 'lodash/get';
 
 import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
-import {InvoiceType} from './enums';
+import {InvoiceState, InvoiceType} from './enums';
 import {convertStrToDecimalNumber, getLabelOfOption, sortStringAsc} from '$util/helpers';
 
 /**
@@ -132,6 +133,17 @@ export const getContentIncoive = (invoice: Object) => {
  */
 export const getContentInvoices = (invoices: Array<Object>): Array<Object> => {
   return invoices && invoices.length ? invoices.map((invoice) => getContentIncoive(invoice)) : [];
+};
+
+/**
+ * Get overdue invoices content to show on UI
+ * @param invoices
+ * @returns {object}
+ */
+export const getContentOverdueInvoices = (invoices: Array<Object>): Array<Object> => {
+  return invoices && invoices.length ? invoices
+    .filter((invoice) => invoice.state === InvoiceState.OPEN && invoice.due_date && moment(invoice.due_date).isBefore(new Date(), 'day'))
+    .map((invoice) => getContentIncoive(invoice)) : [];
 };
 
 /**
