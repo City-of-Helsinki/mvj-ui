@@ -3,9 +3,13 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
+import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import AmountWithVat from '$components/vat/AmountWithVat';
 import Authorization from '$components/authorization/Authorization';
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import Comments from '../constructability/Comments';
 import ErrorBlock from '$components/form/ErrorBlock';
 import ExternalLink from '$components/links/ExternalLink';
@@ -14,7 +18,9 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
+import {Methods} from '$src/enums';
 import {AreaNoteFieldTitles} from '$src/areaNote/enums';
+import {InvoiceFieldPaths, InvoiceFieldTitles} from '$src/invoices/enums';
 import {
   ConstructabilityStatus,
   LeaseAreaAddressesFieldPaths,
@@ -22,20 +28,29 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
+import {getContentOverdueInvoices} from '$src/invoices/helpers';
 import {getContentSummary, getFullAddress} from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
   formatDate,
+  formatDateRange,
   getFieldOptions,
   getLabelOfOption,
   hasPermissions,
   isFieldAllowedToRead,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
+import {
+  getAttributes as getInvoiceAttributes,
+  getInvoicesByLease,
+  getMethods as getInvoiceMethods,
+} from '$src/invoices/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -59,10 +74,22 @@ const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
+  invoiceAttributes: Attributes,
+  invoiceMethods: MethodsType,
+  invoices: Array<Object>,
+  largeScreen: boolean,
   usersPermissions: UsersPermissionsType,
 }
 
-const SummaryLeaseInfo = ({attributes, currentLease, usersPermissions}: Props) => {
+const SummaryLeaseInfo = ({
+  attributes,
+  currentLease,
+  invoiceAttributes,
+  invoiceMethods,
+  invoices,
+  largeScreen,
+  usersPermissions,
+}: Props) => {
   const constructabilityStateOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE),
     summary = getContentSummary(currentLease),
     tenants = summary.tenants,
@@ -72,6 +99,9 @@ const SummaryLeaseInfo = ({attributes, currentLease, usersPermissions}: Props) =
       const share = cur.share_numerator && cur.share_denominator ? Number(cur.share_numerator)/Number(cur.share_denominator) : 0;
       return sum + share;
     }, 0);
+
+  const overdueInvoices = getContentOverdueInvoices(invoices);
+  console.log(overdueInvoices);
 
   return (
     <Fragment>
@@ -328,16 +358,143 @@ const SummaryLeaseInfo = ({attributes, currentLease, usersPermissions}: Props) =
           </Fragment>
         }
       </Authorization>
+
+      <Authorization allow={isMethodAllowed(invoiceMethods, Methods.GET)}>
+        {!!overdueInvoices.length &&
+          <Fragment>
+            <SubTitle>Erääntyneet laskut</SubTitle>
+            {largeScreen &&
+              <Fragment>
+                <Row>
+                  <Column large={4}>
+                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
+                      <FormTextTitle>{InvoiceFieldTitles.RECIPIENT}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column large={2}>
+                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+                      <FormTextTitle>{InvoiceFieldTitles.DUE_DATE}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column large={2}>
+                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)}>
+                      <FormTextTitle>{InvoiceFieldTitles.NUMBER}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column large={2}>
+                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE) ||
+                      isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                      <FormTextTitle>{InvoiceFieldTitles.BILLING_PERIOD}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column large={2}>
+                    <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
+                      <FormTextTitle>{InvoiceFieldTitles.OUTSTANDING_AMOUNT}</FormTextTitle>
+                    </Authorization>
+                  </Column>
+                </Row>
+                <ListItems>
+                  {overdueInvoices.map((invoice, index) => {
+                    return(
+                      <Row key={index}>
+                        <Column large={4}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
+                            <ListItem>{getContactFullName(invoice.recipientFull) || '-'}</ListItem>
+                          </Authorization>
+                        </Column>
+                        <Column large={2}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+                            <ListItem>{formatDate(invoice.due_date) || '-'}</ListItem>
+                          </Authorization>
+                        </Column>
+                        <Column large={2}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)}>
+                            <ListItem>{invoice.number || '-'}</ListItem>
+                          </Authorization>
+                        </Column>
+                        <Column large={2}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE) ||
+                            isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                            <ListItem>{formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'}</ListItem>
+                          </Authorization>
+                        </Column>
+                        <Column large={2}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
+                            <ListItem><AmountWithVat amount={invoice.outstanding_amount || 0} date={invoice.due_date} /></ListItem>
+                          </Authorization>
+                        </Column>
+                      </Row>
+                    );
+                  })}
+                </ListItems>
+              </Fragment>
+            }
+
+            {!largeScreen &&
+              <BoxItemContainer>
+                {overdueInvoices.map((invoice, index) => {
+                  return(
+                    <BoxItem key={index} className='no-border-on-first-child no-border-on-last-child'>
+                      <Row>
+                        <Column small={6}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
+                            <FormTextTitle>{InvoiceFieldTitles.RECIPIENT}</FormTextTitle>
+                            <FormText>{getContactFullName(invoice.recipientFull) || '-'}</FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={6}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+                            <FormTextTitle>{InvoiceFieldTitles.DUE_DATE}</FormTextTitle>
+                            <FormText>{formatDate(invoice.due_date) || '-'}</FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={6}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)}>
+                            <FormTextTitle>{InvoiceFieldTitles.NUMBER}</FormTextTitle>
+                            <FormText>{invoice.number || '-'}</FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={6}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE) ||
+                            isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                            <FormTextTitle>{InvoiceFieldTitles.BILLING_PERIOD}</FormTextTitle>
+                            <FormText>{formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'}</FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={6}>
+                          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
+                            <FormTextTitle>{InvoiceFieldTitles.OUTSTANDING_AMOUNT}</FormTextTitle>
+                            <FormText><AmountWithVat amount={invoice.outstanding_amount || 0} date={invoice.due_date} /></FormText>
+                          </Authorization>
+                        </Column>
+                      </Row>
+                    </BoxItem>
+                  );
+                })}
+              </BoxItemContainer>
+            }
+
+          </Fragment>
+        }
+      </Authorization>
     </Fragment>
   );
 };
 
-export default connect(
-  (state) => {
-    return {
-      attributes: getAttributes(state),
-      currentLease: getCurrentLease(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
+export default flowRight(
+  withWindowResize,
+  connect(
+    (state) => {
+      const currentLease = getCurrentLease(state);
+
+      return {
+        attributes: getAttributes(state),
+        currentLease: currentLease,
+        invoiceAttributes: getInvoiceAttributes(state),
+        invoiceMethods: getInvoiceMethods(state),
+        invoices: getInvoicesByLease(state, currentLease.id),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+  ),
 )(SummaryLeaseInfo);
