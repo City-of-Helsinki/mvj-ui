@@ -4,6 +4,11 @@
     "@babel/preset-react",
     "@babel/preset-flow",
   ],
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  },
   "plugins": [
     "react-hot-loader/babel",
     "@babel/plugin-proposal-class-properties",

@@ -1,31 +1,6 @@
 import L from 'leaflet';
 
 /**
- * Avalable languages
- * @type {[*]}
- */
-export const AvailableLanguages = [
-  'en',
-  'fi',
-];
-
-/**
- * Language to fallback
- * @type {string}
- */
-export const FallbackLanguage = 'en';
-
-/**
- * Languages
- * @type {[*]}
- */
-
-export const Languages = [
-  {id: 'en', label: 'EN'},
-  {id: 'fi', label: 'FI'},
-];
-
-/**
  * KTJ-links & datasets
  * @type {[*]}
  */

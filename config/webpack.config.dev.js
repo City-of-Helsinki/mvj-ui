@@ -48,6 +48,9 @@ module.exports = {
     chunkFilename: '[id].js',
   },
   resolve: {
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+    },
     modules: [
       path.join(__dirname, 'src'),
       'node_modules',
