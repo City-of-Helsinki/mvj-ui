@@ -1,6 +1,6 @@
 .modal {
   &__wrapper {
-    z-index: 1005;
+    z-index: 1080 d;
     background-color: $white;
     width: rem-calc(800px);
     max-width: 100%;
@@ -44,7 +44,7 @@
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 1004;
+    z-index: 1070;
     background-color: rgba(0, 0, 0, 0.65);
     opacity: 0;
     visibility: hidden;
