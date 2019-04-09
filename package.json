@@ -5,6 +5,14 @@
   "main": "src/index.js",
   "author": "Ville Ristimäki <ville.ristimaki@nordsoftware.com>",
   "license": "MIT",
+  "nyc": {
+    "require": [
+      "@babel/register",
+      "./src/test.js"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
   "scripts": {
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
     "flow-typed": "flow-typed install",
@@ -13,8 +21,8 @@
     "compile": "node scripts/compile.js",
     "precommit": "npm-run-all flow lint",
     "prepush": "npm-run-all test",
-    "test": "mocha --compilers js:@babel/register --require src/test.js --recursive \"src/**/*spec.js\"",
-    "test:coverage": "istanbul cover _mocha -- --compilers js:@babel/register --require src/test.js --recursive \"src/**/*spec.js\"",
+    "test": "mocha --require @babel/register --require src/test.js \"src/**/*spec.js\"",
+    "test:coverage": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha \"src/**/*spec.js\" --exit",
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
@@ -41,6 +49,7 @@
     "fraction.js": "^4.0.12",
     "fs-extra": "3.0.1",
     "fuse.js": "^2.6.2",
+    "history": "^4.9.0",
     "html-webpack-plugin": "^3.2.0",
     "leaflet": "^1.4.0",
     "leaflet-draw": "^1.0.4",
@@ -93,27 +102,29 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
+    "babel-plugin-istanbul": "^5.1.1",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
-    "chai": "^4.0.0",
+    "chai": "^4.2.0",
     "chai-enzyme": "^1.0.0-beta.0",
     "cheerio": "^0.22.0",
     "clean-webpack-plugin": "^1.0.1",
-    "codecov": "^2.3.0",
+    "codecov": "^3.3.0",
+    "cross-env": "^5.2.0",
     "debug": "^2.6.3",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
-    "eslint": "^5.12.1",
-    "eslint-loader": "^2.1.1",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.11.2",
+    "eslint": "^5.16.0",
+    "eslint-loader": "^2.1.2",
     "eslint-plugin-react": "^7.12.4",
     "flow-bin": "^0.91",
     "flow-typed": "^2.5.1",
-    "istanbul": "v1.1.0-alpha.1",
     "json-loader": "^0.5.4",
-    "mocha": "^5.2.0",
+    "mocha": "^6.1.2",
     "nodemon": "^1.18.10",
     "npm-run-all": "^4.1.5",
-    "sinon": "^4.0.0",
-    "sinon-chai": "^3.0.0",
+    "nyc": "^13.3.0",
+    "sinon": "^7.3.1",
+    "sinon-chai": "^3.3.0",
     "style-loader": "^0.23.1"
   }
 }
