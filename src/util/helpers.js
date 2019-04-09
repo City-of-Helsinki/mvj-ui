@@ -1,7 +1,5 @@
 // @flow
 import React from 'react';
-import {Languages} from '../constants';
-import find from 'lodash/find';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -17,8 +15,6 @@ import {Breakpoints} from '$src/foundation/enums';
 
 import type {Attributes, Methods} from '$src/types';
 import type {UsersPermissions} from '$src/usersPermissions/types';
-
-// import i18n from '../root/i18n';
 
 /**
  * Compose page title
@@ -58,8 +54,8 @@ export const getDocumentWidth = () => {
 };
 
 /**
- *
- * @returns {*}
+ * Get foundation breakpoint
+ * @returns {string}
  */
 export const getFoundationBreakpoint = () => {
   const width = getDocumentWidth();
@@ -75,15 +71,14 @@ export const getFoundationBreakpoint = () => {
 };
 
 /**
- *
- * @returns {*}
+ * Get is the screen size large
+ * @returns {boolean}
  */
 export const isLargeScreen = () => {
   const breakpoint = getFoundationBreakpoint();
 
   switch (breakpoint) {
     case Breakpoints.SMALL:
-      return false;
     case Breakpoints.MEDIUM:
       return false;
     default:
@@ -92,16 +87,9 @@ export const isLargeScreen = () => {
 };
 
 /**
- *
- * @param language
+ * Scroll to the top of the page
  * @returns {boolean}
  */
-export const isAllowedLanguage = (language: string) => {
-  return !!find(Languages, (item) => {
-    return language === item;
-  });
-};
-
 export const scrollToTopPage = () => {
   const body = document.getElementsByTagName('body');
   const html = document.getElementsByTagName('html');
@@ -111,33 +99,6 @@ export const scrollToTopPage = () => {
   if(html.length) {
     html[0].scrollTop = 0;
   }
-};
-
-export const getActiveLanguage = () => {
-  // const {language} = i18n;
-  // let active = null;
-  //
-  // forEach(Languages, (item) => {
-  //   if (item.id === language) {
-  //     active = item;
-  //     return false;
-  //   }
-  // });
-  //
-  // return active;
-  return {};
-};
-
-export const cloneObject = (obj: Object) => {
-  var clone = {};
-  for(const i in obj) {
-    if(obj[i] != null &&  typeof(obj[i]) === 'object') {
-      clone[i] = cloneObject(obj[i]);
-    } else {
-      clone[i] = obj[i];
-    }
-  }
-  return clone;
 };
 
 export const getSearchQuery = (filters: any) => {
@@ -192,47 +153,15 @@ export const getUrlParams = (search: string = ''): Object => {
 };
 
 /**
- * Generate formData from fields
- * @param formData
- * @param data
- * @param previousKey
- * @returns {*}
- */
-export const generateFormData = (formData: Object, data: Object, previousKey: string) => {
-  if (data instanceof Object) {
-    Object.keys(data).forEach(key => {
-      const value = data[key];
-      if (value instanceof Object && !Array.isArray(value)) {
-        return generateFormData(formData, value, key);
-      }
-      if (previousKey) {
-        key = `${previousKey}[${key}]`;
-      }
-      if (Array.isArray(value)) {
-        value.forEach(val => {
-          formData.append(`${key}[]`, val);
-        });
-      } else {
-        formData.append(key, value);
-      }
-    });
-  }
-
-  return formData;
-};
-
-/**
  * Display message in UI
- * @param message
- * @param opts
+ * @param {Object} message - Title and the body of the message
+ * @param {Object} opts - Options
  */
 export const displayUIMessage = (message: Object, opts?: Object = {type: 'success'}) => {
   const {title, body} = message;
   const icon = <ToastrIcons name={opts.type} />;
   return toastr[opts.type](title, body, {...opts, icon: icon});
 };
-
-export const isEmptyValue = (value: any): boolean => (value === null || value === undefined || value === '');
 
 /**
  * Format number to fixed length
@@ -256,6 +185,8 @@ export const fixedLengthNumber = (value: ?number, length: number = 2) => {
 
 export const getEpochTime = () => Math.round(new Date().getTime()/1000.0);
 
+export const isEmptyValue = (value: any): boolean => (value === null || value === undefined || value === '');
+
 export const formatNumberWithThousandSeparator = (x: any, separator?: string = ' ') => !isEmptyValue(x) ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator) : '';
 
 export const formatDecimalNumber = (x: ?number) => !isEmptyValue(x) ? parseFloat(x).toFixed(2).toString().replace('.', ',') : null;
@@ -266,8 +197,8 @@ export const convertStrToDecimalNumber = (x: any) => isEmptyValue(x) ? null : Nu
 
 /**
 * Format date string
-* @param date
-* @param format
+* @param {string} date
+* @param {string} format
 * @returns {string}
 */
 export const formatDate = (date: any, format?: string = 'DD.MM.YYYY') => {
@@ -279,8 +210,8 @@ export const formatDate = (date: any, format?: string = 'DD.MM.YYYY') => {
 
 /**
 * Format date range string
-* @param startDate
-* @param endDate
+* @param {string} startDate
+* @param {string} endDate
 * @returns {string}
 */
 export const formatDateRange = (startDate: any, endDate: any) => {
