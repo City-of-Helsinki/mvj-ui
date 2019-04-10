@@ -23,9 +23,9 @@ import {
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/contacts/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {ContactFieldPaths} from '$src/contacts/enums';
-import {TableSortOrder} from '$components/enums';
 import {getContactFullName, mapContactSearchFilters} from '$src/contacts/helpers';
 import {
   getApiResponseCount,
@@ -84,8 +84,8 @@ class ContactListPage extends Component<Props, State> {
     count: 0,
     isSearchInitialized: false,
     maxPage: 0,
-    sortKey: 'names',
-    sortOrder: TableSortOrder.ASCENDING,
+    sortKey: DEFAULT_SORT_KEY,
+    sortOrder: DEFAULT_SORT_ORDER,
     typeOptions: [],
   }
 
@@ -135,6 +135,9 @@ class ContactListPage extends Component<Props, State> {
     if(currentSearch !== prevSearch) {
       this.search();
 
+      delete searchQuery.sort_key;
+      delete searchQuery.sort_order;
+
       if(!Object.keys(searchQuery).length) {
         this.setSearchFormValues();
       }
@@ -169,8 +172,8 @@ class ContactListPage extends Component<Props, State> {
     this.setState({
       activePage: page,
       isSearchInitialized: false,
-      sortKey: searchQuery.sort_key ? searchQuery.sort_key : 'names',
-      sortOrder: searchQuery.sort_order ? searchQuery.sort_order : TableSortOrder.ASCENDING,
+      sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
       setSearchFormReady();
@@ -290,7 +293,6 @@ class ContactListPage extends Component<Props, State> {
 
     this.handleSearchChange(searchQuery);
   }
-
 
   render() {
     const {contactMethods, isFetching, isFetchingCommonAttributes} = this.props;
