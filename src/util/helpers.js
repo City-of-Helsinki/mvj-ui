@@ -567,15 +567,15 @@ export const createPaikkatietovipunenUrl = (url: string) => `${PAIKKATIETOVIPUNE
 * @param {Object} query
 * @returns {number}
 */
-export const getApiReponseListCount = (list: Object) => get(list, 'count', 0);
+export const getApiResponseCount = (list: Object) => get(list, 'count', 0);
 
 /**
 * Map api response list max page
 * @param {Object} query
 * @returns {number}
 */
-export const getApiReponseListMaxPage = (list: Object, size: number) => {
-  const count = getApiReponseListCount(list);
+export const getApiResponseMaxPage = (list: Object, size: number) => {
+  const count = getApiResponseCount(list);
 
   return Math.ceil(count/size);
 };
@@ -585,4 +585,4 @@ export const getApiReponseListMaxPage = (list: Object, size: number) => {
 * @param {Object} query
 * @returns {number}
 */
-export const getApiResponseListItems = (list: Object) => get(list, 'results', []);
+export const getApiResponseResults = (list: Object) => get(list, 'results', []);

@@ -33,9 +33,9 @@ import {InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/en
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {
   formatDate,
-  getApiReponseListCount,
-  getApiResponseListItems,
-  getApiReponseListMaxPage,
+  getApiResponseCount,
+  getApiResponseResults,
+  getApiResponseMaxPage,
   getSearchQuery,
   getUrlParams,
   isFieldAllowedToRead,
@@ -156,9 +156,9 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
 
     if(props.invoiceNoteList !== state.invoiceNoteList) {
       newState.invoiceNoteList = props.invoiceNoteList;
-      newState.count = getApiReponseListCount(props.invoiceNoteList);
-      newState.invoiceNotes = getApiResponseListItems(props.invoiceNoteList);
-      newState.maxPage = getApiReponseListMaxPage(props.invoiceNoteList, LIST_TABLE_PAGE_SIZE);
+      newState.count = getApiResponseCount(props.invoiceNoteList);
+      newState.invoiceNotes = getApiResponseResults(props.invoiceNoteList);
+      newState.maxPage = getApiResponseMaxPage(props.invoiceNoteList, LIST_TABLE_PAGE_SIZE);
     }
 
     return !isEmpty(newState) ? newState : null;

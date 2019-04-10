@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -29,6 +28,9 @@ import {ContactFieldPaths} from '$src/contacts/enums';
 import {TableSortOrder} from '$components/enums';
 import {getContactFullName, mapContactSearchFilters} from '$src/contacts/helpers';
 import {
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getApiResponseResults,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -44,16 +46,6 @@ import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import type {ContactList} from '../types';
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
-
-const getContactCount = (contactList: ContactList) => get(contactList, 'count', 0);
-
-const getContacts = (contactList: ContactList) => get(contactList, 'results', []);
-
-const getContactMaxPage = (contactList: ContactList) => {
-  const count = getContactCount(contactList);
-
-  return Math.ceil(count/LIST_TABLE_PAGE_SIZE);
-};
 
 type Props = {
   contactAttributes: Attributes,
@@ -109,19 +101,16 @@ class ContactListPage extends Component<Props, State> {
 
     if(props.contactList !== state.contactList) {
       newState.contactList = props.contactList;
-      newState.count = getContactCount(props.contactList);
-      newState.contacts = getContacts(props.contactList);
-      newState.maxPage = getContactMaxPage(props.contactList);
+      newState.count = getApiResponseCount(props.contactList);
+      newState.contacts = getApiResponseResults(props.contactList);
+      newState.maxPage = getApiResponseMaxPage(props.contactList, LIST_TABLE_PAGE_SIZE);
     }
 
     return newState;
   }
 
   componentDidMount() {
-    const {initialize, receiveTopNavigationSettings} = this.props;
-    const {location: {search}} = this.props;
-    const query = getUrlParams(search);
-    const newState = {};
+    const {receiveTopNavigationSettings} = this.props;
 
     setPageTitle('Asiakkaat');
 
@@ -131,41 +120,15 @@ class ContactListPage extends Component<Props, State> {
       showSearch: false,
     });
 
+    this.setSearchFormValues();
+
     this.search();
 
-    const page = query.page ? Number(query.page) : 1;
-    newState.activePage = page;
-
-    if(query.sort_key || query.sort_order) {
-      newState.sortKey = query.sort_key;
-      newState.sortOrder = query.sort_order;
-    }
-
-    this.setState(newState);
-
-    const setSearchFormReady = () => {
-      this.setState({isSearchInitialized: true});
-    };
-
-    const initializeSearchForm = async() => {
-      try {
-        const searchQuery = {...query};
-        delete searchQuery.page;
-        delete searchQuery.sort_key;
-        delete searchQuery.sort_order;
-
-        await initialize(FormNames.CONTACT_SEARCH, searchQuery);
-        setSearchFormReady();
-      } catch(e) {
-        console.error(`Failed to initialize search form with error, ${e}`);
-      }
-    };
-
-    initializeSearchForm();
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
     const searchQuery = getUrlParams(currentSearch);
 
@@ -173,25 +136,45 @@ class ContactListPage extends Component<Props, State> {
       this.search();
 
       if(!Object.keys(searchQuery).length) {
-        const setSearchFormReady = () => {
-          this.setState({isSearchInitialized: true});
-        };
-
-        const clearSearchForm = async() => {
-          await initialize(FormNames.CONTACT_SEARCH, {});
-        };
-
-        this.setState({
-          activePage: 1,
-          isSearchInitialized: false,
-          sortKey: 'names',
-          sortOrder: TableSortOrder.ASCENDING,
-        }, async() => {
-          await clearSearchForm();
-          setSearchFormReady();
-        });
+        this.setSearchFormValues();
       }
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    this.setSearchFormValues();
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      const initialValues = {...searchQuery};
+      delete initialValues.page;
+      delete initialValues.sort_key;
+      delete initialValues.sort_order;
+      await initialize(FormNames.CONTACT_SEARCH, initialValues);
+    };
+
+    this.setState({
+      activePage: page,
+      isSearchInitialized: false,
+      sortKey: searchQuery.sort_key ? searchQuery.sort_key : 'names',
+      sortOrder: searchQuery.sort_order ? searchQuery.sort_order : TableSortOrder.ASCENDING,
+    }, async() => {
+      await initializeSearchForm();
+      setSearchFormReady();
+    });
   }
 
   handleCreateButtonClick = () => {
