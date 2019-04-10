@@ -86,12 +86,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const {
-      initialize,
-      location: {search},
-      receiveTopNavigationSettings,
-    } = this.props;
-    const query = getUrlParams(search);
+    const {receiveTopNavigationSettings} = this.props;
 
     setPageTitle('Muistettavat ehdot');
 
@@ -103,21 +98,9 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 
     this.search();
 
-    const setSearchFormReadyFlag = () => {
-      this.setState({isSearchInitialized: true});
-    };
+    this.setSearchFormValues();
 
-    const initializeSearchForm = async() => {
-      try {
-        await initialize(FormNames.AREA_NOTE_SEARCH, query);
-
-        setSearchFormReadyFlag();
-      } catch(e) {
-        console.error(`Failed to initialize search form with error, ${e}`);
-      }
-    };
-
-    initializeSearchForm();
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -144,7 +127,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
     const searchQuery = getUrlParams(currentSearch);
 
@@ -152,7 +135,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
       this.search();
 
       if(!Object.keys(searchQuery).length) {
-        initialize(FormNames.AREA_NOTE_SEARCH, {});
+        this.setSearchFormValues();
       }
     }
   }
@@ -161,6 +144,33 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     const {hideEditMode} = this.props;
 
     hideEditMode();
+
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    this.setSearchFormValues();
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      const initialValues = {...searchQuery};
+      await initialize(FormNames.AREA_NOTE_SEARCH, initialValues);
+    };
+
+    this.setState({
+      isSearchInitialized: false,
+    }, async() => {
+      await initializeSearchForm();
+      setSearchFormReady();
+    });
   }
 
   handleCreateButtonClick = () => {
