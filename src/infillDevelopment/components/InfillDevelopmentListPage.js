@@ -22,7 +22,7 @@ import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {TableSortOrder} from '$components/enums';
+import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/infillDevelopment/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
   InfillDevelopmentCompensationFieldPaths,
@@ -96,19 +96,13 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     isSearchInitialized: false,
     maxPage: 1,
     selectedStates: [],
-    sortKey: 'name',
-    sortOrder: TableSortOrder.ASCENDING,
+    sortKey: DEFAULT_SORT_KEY,
+    sortOrder: DEFAULT_SORT_ORDER,
     stateOptions: [],
   }
 
   componentDidMount() {
-    const {
-      initialize,
-      receiveTopNavigationSettings,
-      location: {search},
-    } = this.props;
-    const query = getUrlParams(search);
-    const newState = {};
+    const {receiveTopNavigationSettings} = this.props;
 
     setPageTitle('Täydennysrakentamiskorvaukset');
 
@@ -120,43 +114,9 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     this.search();
 
-    const page = query.page ? Number(query.page) : 1;
-    newState.activePage = page;
+    this.setSearchFormValues();
 
-    const states = isArray(query.state)
-      ? query.state
-      : query.state ? [query.state] : [];
-
-    newState.selectedStates = states;
-
-    if(query.sort_key || query.sort_order) {
-      newState.sortKey = query.sort_key;
-      newState.sortOrder = query.sort_order;
-    }
-
-    this.setState(newState);
-
-    const setSearchFormReady = () => {
-      this.setState({isSearchInitialized: true});
-    };
-
-    const initializeSearchForm = async() => {
-      try {
-        const searchQuery = {...query};
-
-        delete searchQuery.page;
-        delete searchQuery.state;
-        delete searchQuery.sort_key;
-        delete searchQuery.sort_order;
-
-        await initialize(FormNames.INFILL_DEVELOPMENT_SEARCH, searchQuery);
-        setSearchFormReady();
-      } catch(e) {
-        console.error(`Failed to initialize search form with error, ${e}`);
-      }
-    };
-
-    initializeSearchForm();
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -178,34 +138,62 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   }
 
   componentDidUpdate = (prevProps) => {
-    const {location: {search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
     const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
       this.search();
 
+      delete searchQuery.sort_key;
+      delete searchQuery.sort_order;
+
       if(!Object.keys(searchQuery).length) {
-        const setSearchFormReady = () => {
-          this.setState({isSearchInitialized: true});
-        };
-
-        const clearSearchForm = async() => {
-          await initialize(FormNames.INFILL_DEVELOPMENT_SEARCH, {});
-        };
-
-        this.setState({
-          activePage: 1,
-          isSearchInitialized: false,
-          selectedStates: [],
-          sortKey: 'name',
-          sortOrder: TableSortOrder.ASCENDING,
-        }, async() => {
-          await clearSearchForm();
-          setSearchFormReady();
-        });
+        this.setSearchFormValues();
       }
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    this.setSearchFormValues();
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+    const states = isArray(searchQuery.state)
+      ? searchQuery.state
+      : searchQuery.state ? [searchQuery.state] : [];
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      const initialValues = {...searchQuery};
+
+      delete initialValues.page;
+      delete initialValues.lease_state;
+      delete initialValues.sort_key;
+      delete initialValues.sort_order;
+      await initialize(FormNames.INFILL_DEVELOPMENT_SEARCH, initialValues);
+    };
+
+    this.setState({
+      activePage: page,
+      isSearchInitialized: false,
+      selectedStates: states,
+      sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
+    }, async() => {
+      await initializeSearchForm();
+      setSearchFormReady();
+    });
   }
 
   handleCreateButtonClick = () => {
