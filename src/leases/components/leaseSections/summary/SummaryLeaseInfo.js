@@ -101,7 +101,6 @@ const SummaryLeaseInfo = ({
     }, 0);
 
   const overdueInvoices = getContentOverdueInvoices(invoices);
-  console.log(overdueInvoices);
 
   return (
     <Fragment>

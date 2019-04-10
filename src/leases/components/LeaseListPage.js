@@ -32,8 +32,12 @@ import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {createLease, fetchLeases} from '$src/leases/actions';
 import {fetchLessors} from '$src/lessor/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {leaseStateFilterOptions} from '$src/leases/constants';
-import {TableSortOrder} from '$components/enums';
+import {
+  DEFAULT_LEASE_STATES,
+  DEFAULT_ONLY_ACTIVE_LEASES,
+  DEFAULT_SORT_KEY,
+  DEFAULT_SORT_ORDER,
+  leaseStateFilterOptions} from '$src/leases/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
   LeaseAreasFieldPaths,
@@ -103,10 +107,10 @@ class LeaseListPage extends PureComponent<Props, State> {
   state = {
     activePage: 1,
     isModalOpen: false,
-    leaseStates: [],
+    leaseStates: DEFAULT_LEASE_STATES,
     isSearchInitialized: false,
-    sortKey: 'identifier',
-    sortOrder: TableSortOrder.ASCENDING,
+    sortKey: DEFAULT_SORT_KEY,
+    sortOrder: DEFAULT_SORT_ORDER,
     visualizationType: 'table',
   }
 
@@ -115,10 +119,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    const {fetchAreaNoteList, fetchLessors, initialize, receiveTopNavigationSettings} = this.props;
-    const {location: {search}} = this.props;
-    const query = getUrlParams(search);
-    const newState = {};
+    const {fetchAreaNoteList, fetchLessors, receiveTopNavigationSettings} = this.props;
 
     setPageTitle('Vuokraukset');
 
@@ -134,83 +135,71 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     this.search();
 
-    const page = query.page ? Number(query.page) : 1;
-    newState.activePage = page;
+    this.setSearchFormValues();
 
-    const states = isArray(query.lease_state)
-      ? query.lease_state
-      : query.lease_state ? [query.lease_state] : undefined;
-
-    if(states) {
-      newState.leaseStates = states;
-    }
-
-    if(query.sort_key || query.sort_order) {
-      newState.sortKey = query.sort_key;
-      newState.sortOrder = query.sort_order;
-    }
-
-    const setSearchFormReadyFlag = () => {
-      this.setState({isSearchInitialized: true});
-    };
-
-    this.setState(newState);
-
-    const initializeSearchForm = async() => {
-      try {
-        const searchQuery = {...query};
-
-        delete searchQuery.page;
-        delete searchQuery.lease_state;
-        delete searchQuery.sort_key;
-        delete searchQuery.sort_order;
-
-        if(searchQuery.tenantcontact_type) {
-          searchQuery.tenantcontact_type = isArray(searchQuery.tenantcontact_type)
-            ? searchQuery.tenantcontact_type
-            : [searchQuery.tenantcontact_type];
-        }
-
-
-        await initialize(FormNames.LEASE_SEARCH, searchQuery);
-        setSearchFormReadyFlag();
-      } catch(e) {
-        console.error(`Failed to initialize search form with error, ${e}`);
-      }
-    };
-
-    initializeSearchForm();
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}} = this.props;
     const searchQuery = getUrlParams(currentSearch);
     const {location: {search: prevSearch}} = prevProps;
 
     if(currentSearch !== prevSearch) {
       this.search();
 
+      delete searchQuery.sort_key;
+      delete searchQuery.sort_order;
+
       if(!Object.keys(searchQuery).length) {
-        const setSearchFormReady = () => {
-          this.setState({isSearchInitialized: true});
-        };
-
-        const clearSearchForm = async() => {
-          await initialize(FormNames.LEASE_SEARCH, {});
-        };
-
-        this.setState({
-          activePage: 1,
-          isSearchInitialized: false,
-          leaseStates: [],
-          sortKey: 'identifier',
-          sortOrder: TableSortOrder.ASCENDING,
-        }, async() => {
-          await clearSearchForm();
-          setSearchFormReady();
-        });
+        this.setSearchFormValues();
       }
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    this.setSearchFormValues();
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+    const states = isArray(searchQuery.lease_state)
+      ? searchQuery.lease_state
+      : searchQuery.lease_state ? [searchQuery.lease_state] : DEFAULT_LEASE_STATES;
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      const initialValues = {...searchQuery};
+      initialValues.only_active_leases = searchQuery.only_active_leases != undefined
+        ? searchQuery.only_active_leases
+        : DEFAULT_ONLY_ACTIVE_LEASES;
+
+      delete initialValues.page;
+      delete initialValues.lease_state;
+      delete initialValues.sort_key;
+      delete initialValues.sort_order;
+      await initialize(FormNames.LEASE_SEARCH, initialValues);
+    };
+
+    this.setState({
+      activePage: page,
+      isSearchInitialized: false,
+      leaseStates: states,
+      sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
+    }, async() => {
+      await initializeSearchForm();
+      setSearchFormReady();
+    });
   }
 
   showCreateLeaseModal = () => {
@@ -225,6 +214,9 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {fetchLeases, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
+    const leaseStates = isArray(searchQuery.lease_state)
+      ? searchQuery.lease_state
+      : searchQuery.lease_state ? [searchQuery.lease_state] : DEFAULT_LEASE_STATES;
 
     if(page > 1) {
       searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
@@ -233,10 +225,17 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
 
+    searchQuery.lease_state = leaseStates;
+    searchQuery.only_active_leases = searchQuery.only_active_leases != undefined
+      ? searchQuery.only_active_leases
+      : DEFAULT_ONLY_ACTIVE_LEASES;
+    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
+    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
+
     fetchLeases(mapLeaseSearchFilters(searchQuery));
   }
 
-  handleSearchChange = (query, resetActivePage?: boolean = false, resetFilters?: boolean = false) => {
+  handleSearchChange = (query: Object, resetActivePage?: boolean = false, resetFilters?: boolean = false) => {
     const {history} = this.props;
 
     if(resetActivePage) {
@@ -244,7 +243,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     }
 
     if(resetFilters) {
-      this.setState({leaseStates: []});
+      this.setState({leaseStates: DEFAULT_LEASE_STATES});
     }
 
     return history.push({
