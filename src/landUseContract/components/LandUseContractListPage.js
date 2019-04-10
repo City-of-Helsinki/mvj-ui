@@ -76,11 +76,8 @@ class LandUseContractListPage extends Component<Props, State> {
     const {
       attributes,
       fetchLandUseContractAttributes,
-      initialize,
-      location: {search},
       receiveTopNavigationSettings,
     } = this.props;
-    const searchQuery = getUrlParams(search);
 
     setPageTitle('Maankäyttösopimukset');
 
@@ -96,56 +93,69 @@ class LandUseContractListPage extends Component<Props, State> {
 
     this.search();
 
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-    this.setState({activePage: page});
+    this.setSearchFormValues();
 
-    const states = isArray(searchQuery.state)
-      ? searchQuery.state
-      : searchQuery.state ? [searchQuery.state] : null;
-    if(states) {
-      this.setState({selectedStates: states});
-    }
-
-    const setSearchFormReadyFlag = () => {
-      this.setState({isSearchInitialized: true});
-    };
-
-    const initializeSearchForm = async() => {
-      try {
-        delete searchQuery.page;
-        delete searchQuery.state;
-
-        await initialize(FormNames.LAND_USE_CONTRACT_SEARCH, searchQuery);
-
-        setSearchFormReadyFlag();
-      } catch(e) {
-        console.error(`Failed to initialize search form with error, ${e}`);
-      }
-    };
-
-    initializeSearchForm();
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}, initialize} = this.props;
+    const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
-      const searchQuery = getUrlParams(currentSearch);
-
       this.search();
 
-      delete searchQuery.page;
+      delete searchQuery.sort_key;
+      delete searchQuery.sort_order;
 
       if(!Object.keys(searchQuery).length) {
-        this.setState({selectedStates: []});
-        initialize(FormNames.LAND_USE_CONTRACT_SEARCH, {});
+        this.setSearchFormValues();
       }
     }
 
     if(prevProps.landUseContractListData !== this.props.landUseContractListData) {
       this.updateTableData();
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    this.setSearchFormValues();
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+    const states = isArray(searchQuery.state)
+      ? searchQuery.state
+      : searchQuery.state ? [searchQuery.lease_state] : [];
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      const initialValues = {...searchQuery};
+      delete initialValues.page;
+      delete initialValues.state;
+      delete initialValues.sort_key;
+      delete initialValues.sort_order;
+      await initialize(FormNames.CONTACT_SEARCH, initialValues);
+    };
+
+    this.setState({
+      activePage: page,
+      isSearchInitialized: false,
+      selectedStates: states,
+    }, async() => {
+      await initializeSearchForm();
+      setSearchFormReady();
+    });
   }
 
   handleCreateButtonClick = () => {
