@@ -194,9 +194,6 @@ class SideMenu extends Component<Props, State> {
                   <Authorization allow={isMethodAllowed(contactMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.CONTACTS)}>Asiakkaat</Link></li>
                   </Authorization>
-                  <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.GET)}>
-                    <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.INVOICE_NOTES)}>Laskujen tiedotteet</Link></li>
-                  </Authorization>
                   <li><Link onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
                   <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.GET)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_NOTES)}>Muistettavat ehdot</Link></li>
@@ -209,6 +206,7 @@ class SideMenu extends Component<Props, State> {
                   </Authorization>
                   <Authorization allow={isMethodAllowed(indexMethods, Methods.GET) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) ||
+                    isMethodAllowed(invoiceNoteMethods, Methods.GET) ||
                     isMethodAllowed(invoiceMethods, Methods.GET) ||
                     isMethodAllowed(leaseholdTransferMethods, Methods.GET)}
                   >
@@ -227,6 +225,12 @@ class SideMenu extends Component<Props, State> {
                           onClick: handleClick,
                           text: 'Kaupparekisterihaku',
                           to: getRouteById(Routes.TRADE_REGISTER),
+                        },
+                        {
+                          allow: isMethodAllowed(invoiceNoteMethods, Methods.GET),
+                          onClick: handleClick,
+                          text: 'Laskujen tiedotteet',
+                          to: getRouteById(Routes.INVOICE_NOTES),
                         },
                         {
                           allow: isMethodAllowed(invoiceMethods, Methods.GET),
