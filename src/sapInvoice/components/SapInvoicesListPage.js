@@ -18,8 +18,8 @@ import TableWrapper from '$components/table/TableWrapper';
 import {fetchSapInvoices} from '$src/sapInvoice/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/sapInvoice/constants';
 import {Methods, PermissionMissingTexts} from '$src/enums';
-import {TableSortOrder} from '$components/enums';
 import {InvoiceFieldPaths, InvoiceRowsFieldPaths} from '$src/invoices/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatReceivableTypesString} from '$src/invoices/helpers';
@@ -140,14 +140,12 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     maxPage: 0,
     sapInvoiceList: {},
     sapInvoices: [],
-    sortKey: 'due_date',
-    sortOrder: TableSortOrder.DESCENDING,
+    sortKey: DEFAULT_SORT_KEY,
+    sortOrder: DEFAULT_SORT_ORDER,
   }
 
   componentDidMount() {
-    const {location: {search}, receiveTopNavigationSettings} = this.props;
-    const query = getUrlParams(search);
-    const newState = {};
+    const {receiveTopNavigationSettings} = this.props;
 
     setPageTitle('SAP laskut');
 
@@ -159,15 +157,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
 
     this.search();
 
-    const page = query.page ? Number(query.page) : 1;
-    newState.activePage = page;
-
-    if(query.sort_key || query.sort_order) {
-      newState.sortKey = query.sort_key;
-      newState.sortOrder = query.sort_order;
-    }
-
-    this.setState(newState);
+    this.setSearchValues();
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -190,24 +180,36 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
   componentDidUpdate(prevProps) {
     const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
-    const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
-      if(!Object.keys(searchQuery).length) {
-        this.setState({
-          activePage: 1,
-          sortKey: 'due_date',
-          sortOrder: TableSortOrder.DESCENDING,
-        }, this.search());
-      } else {
-        this.search();
-      }
+      this.search();
+
+      this.setSearchValues();
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    this.setSearchValues();
+  }
+
+  setSearchValues = () => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    this.setState({
+      activePage: page,
+      sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
+    });
   }
 
   search = () => {
     const {fetchSapInvoices, location: {search}} = this.props;
-    const {sortKey, sortOrder} = this.state;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
@@ -218,8 +220,8 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
 
-    searchQuery.sort_key = sortKey;
-    searchQuery.sort_order = sortOrder;
+    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
+    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
     fetchSapInvoices(mapSapInvoiceSearchFilters(searchQuery));
   }
