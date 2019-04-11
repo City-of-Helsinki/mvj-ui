@@ -927,7 +927,7 @@ export const LeaseRentAdjustmentsFieldTitles = {
   AMOUNT_TYPE: 'Määrän tyyppi',
   DECISION: 'Päätös',
   END_DATE: 'Loppupvm',
-  FULL_AMOUNT: 'Kokonaismäärä',
+  FULL_AMOUNT: 'Määrä',
   INTENDED_USE: 'Käyttötarkoitus',
   NOTE: 'Huomautus',
   START_DATE: 'Alkupvm',
