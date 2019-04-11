@@ -823,7 +823,7 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
  * @returns {Object[]}
  */
 export const getContentDebtCollectionDecisions = (lease: Object) =>
-  get(lease, 'decisions', []).filter((decision) => decision.type.kind === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
+  get(lease, 'decisions', []).filter((decision) => get(decision, 'type.kind') === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
 
 // Helper functions to get lease map content
 export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<LeafletFeature>  => {
