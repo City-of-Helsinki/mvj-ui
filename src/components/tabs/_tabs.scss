@@ -18,6 +18,7 @@
       color: $black;
       background: $light-gray;
       display: inline-block;
+      vertical-align: top;
       height: rem-calc(40px);
 
       > a {
