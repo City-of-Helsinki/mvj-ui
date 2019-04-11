@@ -182,6 +182,9 @@ class LeaseListPage extends PureComponent<Props, State> {
       initialValues.only_active_leases = searchQuery.only_active_leases != undefined
         ? searchQuery.only_active_leases
         : DEFAULT_ONLY_ACTIVE_LEASES;
+      initialValues.tenantcontact_type = isArray(searchQuery.tenantcontact_type)
+        ? searchQuery.tenantcontact_type
+        : searchQuery.tenantcontact_type ? [searchQuery.tenantcontact_type] : [];
 
       delete initialValues.page;
       delete initialValues.lease_state;

@@ -10,6 +10,13 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
+import SearchChangeTypeLink from '$components/search/SearchChangeTypeLink';
+import SearchClearLink from '$components/search/SearchClearLink';
+import SearchContainer from '$components/search/SearchContainer';
+import SearchInputColumn from '$components/search/SearchInputColumn';
+import SearchLabel from '$components/search/SearchLabel';
+import SearchLabelColumn from '$components/search/SearchLabelColumn';
+import SearchRow from '$components/search/SearchRow';
 import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {RentBasisDecisionsFieldPaths} from '$src/rentbasis/enums';
@@ -102,33 +109,7 @@ class Search extends PureComponent<Props, State> {
   }, 500);
 
   toggleSearchType = () => {
-    const {formValues, initialize, onSearch, sortKey, sortOrder} = this.props;
-    const isBasicSearch = this.state.isBasicSearch ? true : false;
-
-    this.setState({isBasicSearch: !isBasicSearch});
-
-    if(!isBasicSearch) {
-      const newFormValues = {};
-
-      if(formValues.search) {
-        newFormValues.search = formValues.search;
-      }
-
-      if(sortKey || sortOrder) {
-        newFormValues.sort_key = sortKey;
-        newFormValues.sort_order = sortOrder;
-      }
-
-      initialize(newFormValues);
-      onSearch(newFormValues, true);
-    }
-  }
-
-  handleLinkKeyDown = (e: any) => {
-    if(e.keyCode === 13){
-      e.preventDefault();
-      this.toggleSearchType();
-    }
+    this.setState({isBasicSearch: !this.state.isBasicSearch});
   }
 
   handleClear = () => {
@@ -144,19 +125,11 @@ class Search extends PureComponent<Props, State> {
     onSearch(query, true);
   }
 
-
-  handleClearKeyDown = (e: any) => {
-    if(e.keyCode === 13){
-      e.preventDefault();
-      this.handleClear();
-    }
-  }
-
   render () {
     const {decisionMakerOptions, isBasicSearch} = this.state;
 
     return (
-      <div className='search'>
+      <SearchContainer>
         <Row>
           <Column small={12}>
             <FormField
@@ -174,11 +147,11 @@ class Search extends PureComponent<Props, State> {
 
         {!isBasicSearch &&
           <Fragment>
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Päätös</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Päätös</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <Row>
                   <Column small={6}>
                     <FormField
@@ -220,13 +193,13 @@ class Search extends PureComponent<Props, State> {
                     />
                   </Column>
                 </Row>
-              </div>
-            </div>
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Diaarinro</span>
-              </div>
-              <div className='lease-search__input-column'>
+              </SearchInputColumn>
+            </SearchRow>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Diaarinro</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -238,30 +211,20 @@ class Search extends PureComponent<Props, State> {
                   invisibleLabel
                   name='reference_number'
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
           </Fragment>
         }
 
         <Row>
           <Column small={6}>
-            <a
-              tabIndex={0}
-              onKeyDown={this.handleLinkKeyDown}
-              onClick={this.toggleSearchType}
-              className='lease-search__search-type-link'
-            >{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
+            <SearchChangeTypeLink onClick={this.toggleSearchType}>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</SearchChangeTypeLink>
           </Column>
           <Column small={6}>
-            <a
-              tabIndex={0}
-              onKeyDown={this.handleClearKeyDown}
-              onClick={this.handleClear}
-              className='lease-search__clear-link'
-            >Tyhjennä haku</a>
+            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
           </Column>
         </Row>
-      </div>
+      </SearchContainer>
     );
   }
 }
