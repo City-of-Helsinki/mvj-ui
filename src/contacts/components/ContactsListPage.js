@@ -217,6 +217,9 @@ class ContactListPage extends Component<Props, State> {
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
 
+    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
+    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
+
     fetchContacts(mapContactSearchFilters(searchQuery));
   }
 

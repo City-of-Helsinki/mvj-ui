@@ -7,6 +7,10 @@ import flowRight from 'lodash/flowRight';
 
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
+import SearchInputColumn from '$components/search/SearchInputColumn';
+import SearchLabel from '$components/search/SearchLabel';
+import SearchLabelColumn from '$components/search/SearchLabelColumn';
+import SearchRow from '$components/search/SearchRow';
 import {FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 
@@ -31,11 +35,11 @@ const Search = ({
     <form onSubmit={handleSubmit(handleSearch)}>
       <Row>
         <Column small={12}>
-          <div className='lease-search__row' style={{marginBottom: 15}}>
-            <div className='lease-search__label-column' style={{width: 'unset', marginRight: 10}}>
-              <span className='lease-search__label'>Y-tunnus</span>
-            </div>
-            <div className='lease-search__input-column'>
+          <SearchRow style={{marginBottom: 15}}>
+            <SearchLabelColumn style={{width: 'unset', marginRight: 10}}>
+              <SearchLabel>Y-tunnus</SearchLabel>
+            </SearchLabelColumn>
+            <SearchInputColumn>
               <FormField
                 autoBlur
                 disableDirty
@@ -47,14 +51,14 @@ const Search = ({
                 invisibleLabel
                 name='business_id'
               />
-            </div>
+            </SearchInputColumn>
 
             <Button
               className={`${ButtonColors.SUCCESS} no-margin-right`}
               onClick={handleSearch}
               text='Hae'
             />
-          </div>
+          </SearchRow>
         </Column>
       </Row>
     </form>
