@@ -119,7 +119,7 @@ const DecisionItemEdit = ({
             {savedDecision.decision_date ? <span>&nbsp;&nbsp;{formatDate(savedDecision.decision_date)}</span> : ''}
           </Authorization>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.SECTION)}>
-            {savedDecision.section ? <span>&nbsp;&nbsp;{savedDecision.section}§</span> : ''}
+            {savedDecision.section ? <span>&nbsp;&nbsp;{savedDecision.section} §</span> : ''}
           </Authorization>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.TYPE)}>
             {savedDecision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, savedDecision.type)}</span> : ''}
