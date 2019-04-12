@@ -202,7 +202,7 @@ class SideMenu extends Component<Props, State> {
                     <li><Link onClick={handleClick} to={getRouteById(Routes.INFILL_DEVELOPMENTS)}>Täydennysrakentamiskorvaukset</Link></li>
                   </Authorization>
                   <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
-                    <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperusteet</Link></li>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperiaatteet</Link></li>
                   </Authorization>
                   <Authorization allow={isMethodAllowed(indexMethods, Methods.GET) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) ||

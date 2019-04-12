@@ -71,7 +71,7 @@ const RentBasisLayer = ({
           };
 
           const identifierText = getPropertyIdentifierString();
-          const popupContent = `<p class='title'><strong>Vuokrausperusteet</strong></p>
+          const popupContent = `<p class='title'><strong>Vuokrausperiaatteet</strong></p>
             <p><strong>Id:</strong> ${id}</p>
             <p><strong>Tonttityyppi:</strong> ${getLabelOfOption(plotTypeOptions, plot_type) || '-'}</p>
             <p><strong>Alkupvm:</strong> ${formatDate(start_date) || '-'}</p>

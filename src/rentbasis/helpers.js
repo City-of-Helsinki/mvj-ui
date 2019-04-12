@@ -25,7 +25,12 @@ const getContentRentRates = (rentBasis: Object) => {
   });
 };
 
-const getContentPropertyIdentifiers = (rentBasis: Object) => {
+/**
+  * Get basis of rent property identifiers
+  * @param rentBasis
+  * @returns {Object[]}
+  */
+export const getContentPropertyIdentifiers = (rentBasis: Object) => {
   const items = get(rentBasis, 'property_identifiers', []);
 
   return items.map((item) => {

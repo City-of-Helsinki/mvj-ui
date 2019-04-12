@@ -93,7 +93,7 @@ function* createRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById(Routes.RENT_BASIS)}/${bodyAsJson.id}`));
-        displayUIMessage({title: '', body: 'Vuokrausperuste luotu'});
+        displayUIMessage({title: '', body: 'Vuokrausperiaate luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -119,7 +119,7 @@ function* editRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
       case 200:
         yield put(receiveSingleRentBasis(bodyAsJson));
         yield put(hideEditMode());
-        displayUIMessage({title: '', body: 'Vuokrausperuste tallennettu'});
+        displayUIMessage({title: '', body: 'Vuokrausperiaate tallennettu'});
         break;
       case 400:
         yield put(notFound());

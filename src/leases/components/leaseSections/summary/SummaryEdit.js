@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import Authorization from '$components/authorization/Authorization';
@@ -13,7 +14,6 @@ import ExternalLink from '$components/links/ExternalLink';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
@@ -40,6 +40,7 @@ import {
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
+import {getMethods as getRentBasisMethods} from '$src/rentbasis/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
@@ -56,6 +57,7 @@ type Props = {
   isSaveClicked: boolean,
   receiveCollapseStates: Function,
   receiveFormValidFlags: Function,
+  rentBasisMethods: MethodsType,
   startDate: ?string,
   valid: boolean,
 }
@@ -132,9 +134,11 @@ class SummaryEdit extends PureComponent<Props, State> {
       handleSubmit,
       infillDevelopmentMethods,
       isSaveClicked,
+      rentBasisMethods,
     } = this.props;
     const {summary} = this.state;
     const infillDevelopmentCompensations = summary.infill_development_compensations;
+    const matchingBasisOfRents = summary.matching_basis_of_rents;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -305,12 +309,28 @@ class SummaryEdit extends PureComponent<Props, State> {
                     />
                   </Authorization>
                 </Column>
-                {/* TODO: Allow to edit vuokrausperuste */}
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Vuokrausperuste'
-                    text='-'
-                  />
+                  <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MATCHING_BASIS_OF_RENTS)}>
+                      {LeaseFieldTitles.MATCHING_BASIS_OF_RENTS}
+                    </FormTextTitle>
+                    {!matchingBasisOfRents || !matchingBasisOfRents.length
+                      ? <FormText>-</FormText>
+                      : <ListItems>
+                        {matchingBasisOfRents.map((item, index1) => {
+                          return get(item, 'property_identifiers', []).map((property, index2) =>
+                            <ListItem key={`${index1}_${index2}`}>
+                              <ExternalLink
+                                className='no-margin'
+                                href={`${getRouteById(Routes.RENT_BASIS)}/${item.id}`}
+                                text={property.identifier}
+                              />
+                            </ListItem>
+                          );
+                        })}
+                      </ListItems>
+                    }
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
@@ -560,6 +580,7 @@ export default flowRight(
         errors: getErrorsByFormName(state, formName),
         infillDevelopmentMethods: getInfillDevelopmentMethods(state),
         isSaveClicked: getIsSaveClicked(state),
+        rentBasisMethods: getRentBasisMethods(state),
         startDate: selector(state, 'start_date'),
       };
     },

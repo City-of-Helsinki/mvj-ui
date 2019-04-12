@@ -82,11 +82,11 @@ class RentBasisListPage extends Component<Props, State> {
   componentDidMount() {
     const {receiveTopNavigationSettings} = this.props;
 
-    setPageTitle('Vuokrausperusteet');
+    setPageTitle('Vuokrausperiaatteet');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.RENT_BASIS),
-      pageTitle: 'Vuokrausperusteet',
+      pageTitle: 'Vuokrausperiaatteet',
       showSearch: false,
     });
 

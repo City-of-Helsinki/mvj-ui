@@ -22,6 +22,7 @@ import {
 } from './enums';
 import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
+import {getContentPropertyIdentifiers} from '$src/rentbasis/helpers';
 import {getContentUser} from '$src/users/helpers';
 import {
   addEmptyOption,
@@ -155,6 +156,21 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
     };
   });
 
+/**
+  * Get global basis of rents
+  * @param {Object} lease
+  * @returns {Object[]}
+  */
+export const getContentMatchingBasisOfRents = (lease: Object) =>
+  get(lease, 'matching_basis_of_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        property_identifiers: getContentPropertyIdentifiers(item),
+      };
+    });
+
+
 export const getContentSummary = (lease: Object) => {
   return {
     area_notes: get(lease, 'area_notes', []),
@@ -173,6 +189,7 @@ export const getContentSummary = (lease: Object) => {
     lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
     lessor: getContentLessor(lease.lessor),
     management: lease.management,
+    matching_basis_of_rents: getContentMatchingBasisOfRents(lease),
     note: lease.note,
     notice_note: lease.notice_note,
     notice_period: lease.notice_period,

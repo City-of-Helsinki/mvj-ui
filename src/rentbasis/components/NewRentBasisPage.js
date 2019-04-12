@@ -60,13 +60,13 @@ class NewRentBasisPage extends Component<Props> {
       showEditMode,
     } = this.props;
 
-    setPageTitle('Uusi vuokrausperuste');
+    setPageTitle('Uusi vuokrausperiaate');
 
     receiveIsSaveClicked(false);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.RENT_BASIS),
-      pageTitle: 'Vuokrausperusteet',
+      pageTitle: 'Vuokrausperiaatteet',
       showSearch: false,
     });
 
