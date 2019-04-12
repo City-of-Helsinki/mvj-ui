@@ -1579,16 +1579,32 @@ export const mapLeaseSearchFilters = (query: Object) => {
   return searchQuery;
 };
 
+/**
+ * Format seasonal date as string
+ * @param [string] day
+ * @param [string] month
+ * @returns [string]
+ */
 export const formatSeasonalDate = (day: ?string, month: ?string) => {
   if(!day || !month) return null;
 
-  return `${day}.${month}`;
+  return `${day}.${month}.`;
 };
 
+/**
+ * Format single due date as string
+ * @param [Object] dates
+ * @returns [string]
+ */
 const formatDueDate = (date: Object) => {
-  return `${date.day}.${date.month}`;
+  return `${date.day}.${date.month}.`;
 };
 
+/**
+ * Format due dates as string
+ * @param [Object[]] dates
+ * @returns [string]
+ */
 export const formatDueDates = (dates: Array<Object>) => {
   return dates.map((date) => formatDueDate(date)).join(', ');
 };
