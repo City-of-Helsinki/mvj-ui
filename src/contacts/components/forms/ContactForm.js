@@ -330,14 +330,17 @@ class ContactForm extends Component<Props> {
                 </Authorization>
               </Column>
               <Column small={12} medium={6} large={4}>
-                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CUSTOMER_NUMBER)}>
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ID)}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={getFieldAttributes(attributes, ContactFieldPaths.CUSTOMER_NUMBER)}
-                    name='customer_number'
-                    overrideValues={{label: ContactFieldTitles.CUSTOMER_NUMBER}}
+                    fieldAttributes={{
+                      ...getFieldAttributes(attributes, ContactFieldPaths.ID),
+                      read_only: true,
+                    }}
+                    name='id'
+                    overrideValues={{label: ContactFieldTitles.ID}}
                     enableUiDataEdit
-                    uiDataKey={getUiDataContactKey(ContactFieldPaths.CUSTOMER_NUMBER)}
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.ID)}
                   />
                 </Authorization>
               </Column>
