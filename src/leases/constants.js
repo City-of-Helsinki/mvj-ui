@@ -1,4 +1,5 @@
 // @flow
+import {TableSortOrder} from '$components/enums';
 import {CreditInvoiceOptionsEnum, RentDueDateTypes} from './enums';
 /**
  * Credit invoice options
@@ -52,3 +53,11 @@ export const rentCustomDateOptions = [
   {value: '4', label: '4'},
   {value: '12', label: '12'},
 ];
+
+/**
+ * Lease list page default values
+ */
+export const DEFAULT_LEASE_STATES = ['lease'];
+export const DEFAULT_ONLY_ACTIVE_LEASES = true;
+export const DEFAULT_SORT_KEY = 'identifier';
+export const DEFAULT_SORT_ORDER = TableSortOrder.ASCENDING;

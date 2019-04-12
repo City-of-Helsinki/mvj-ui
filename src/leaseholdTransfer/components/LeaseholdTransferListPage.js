@@ -19,8 +19,8 @@ import TableWrapper from '$components/table/TableWrapper';
 import {fetchLeaseholdTransferList} from '$src/leaseholdTransfer/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/leaseholdTransfer/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
-import {TableSortOrder} from '$components/enums';
 import {LeaseholdTransferFieldPaths, LeaseholdTransferFieldTitles} from '$src/leaseholdTransfer/enums';
 import {
   getLeaseholdTransferListCount,
@@ -122,14 +122,12 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     leaseholdTransferList: {},
     leaseholdTransfers: [],
     maxPage: 0,
-    sortKey: 'decision_date',
-    sortOrder: TableSortOrder.DESCENDING,
+    sortKey: DEFAULT_SORT_KEY,
+    sortOrder: DEFAULT_SORT_ORDER,
   }
 
   componentDidMount() {
-    const {initialize, location: {search}, receiveTopNavigationSettings} = this.props;
-    const query = getUrlParams(search);
-    const newState = {};
+    const {receiveTopNavigationSettings} = this.props;
 
     setPageTitle('Vuokraoikeusien siirrot');
 
@@ -141,35 +139,9 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
 
     this.search();
 
-    const page = query.page ? Number(query.page) : 1;
-    newState.activePage = page;
+    this.setSearchFormValues();
 
-    if(query.sort_key || query.sort_order) {
-      newState.sortKey = query.sort_key;
-      newState.sortOrder = query.sort_order;
-    }
-
-    this.setState(newState);
-
-    const setSearchFormReady = () => {
-      this.setState({isSearchInitialized: true});
-    };
-
-    const initializeSearchForm = async() => {
-      try {
-        const searchQuery = {...query};
-        delete searchQuery.page;
-        delete searchQuery.sort_key;
-        delete searchQuery.sort_order;
-
-        await initialize(FormNames.LEASEHOLD_TRANSFER_SEARCH, searchQuery);
-        setSearchFormReady();
-      } catch(e) {
-        console.error(`Failed to initialize search form with error, ${e}`);
-      }
-    };
-
-    initializeSearchForm();
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -190,33 +162,57 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {initialize, location: {search: currentSearch}} = this.props;
+    const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
     const searchQuery = getUrlParams(currentSearch);
 
     if(currentSearch !== prevSearch) {
       this.search();
 
+      delete searchQuery.sort_key;
+      delete searchQuery.sort_order;
+
       if(!Object.keys(searchQuery).length) {
-        const setSearchFormReady = () => {
-          this.setState({isSearchInitialized: true});
-        };
-
-        const clearSearchForm = async() => {
-          await initialize(FormNames.LEASEHOLD_TRANSFER_SEARCH, {});
-        };
-
-        this.setState({
-          activePage: 1,
-          isSearchInitialized: false,
-          sortKey: 'decision_date',
-          sortOrder: TableSortOrder.DESCENDING,
-        }, async () => {
-          await clearSearchForm();
-          setSearchFormReady();
-        });
+        this.setSearchFormValues();
       }
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    this.setSearchFormValues();
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      const initialValues = {...searchQuery};
+
+      delete initialValues.page;
+      delete initialValues.sort_key;
+      delete initialValues.sort_order;
+      await initialize(FormNames.LEASEHOLD_TRANSFER_SEARCH, initialValues);
+    };
+
+    this.setState({
+      activePage: page,
+      isSearchInitialized: false,
+      sortKey: searchQuery.sort_key || DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order || DEFAULT_SORT_ORDER,
+    }, async() => {
+      await initializeSearchForm();
+      setSearchFormReady();
+    });
   }
 
   search = () => {
@@ -230,6 +226,9 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
+
+    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
+    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
     fetchLeaseholdTransferList(mapLeaseholdTransferSearchFilters(searchQuery));
   }

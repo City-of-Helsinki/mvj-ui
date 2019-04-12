@@ -194,11 +194,11 @@ const ContactTemplate = ({attributes, contact}: Props) => {
             </Authorization>
           </Column>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CUSTOMER_NUMBER)}>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.CUSTOMER_NUMBER)}>
-                {ContactFieldTitles.CUSTOMER_NUMBER}
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ID)}>
+              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ID)}>
+                {ContactFieldTitles.ID}
               </FormTextTitle>
-              <FormText>{contact.customer_number || '-'}</FormText>
+              <FormText>{contact.id || '-'}</FormText>
             </Authorization>
           </Column>
         </Row>

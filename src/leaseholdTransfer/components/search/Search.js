@@ -1,5 +1,5 @@
 // @flow
-import React, {Fragment, PureComponent} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -8,6 +8,8 @@ import flowRight from 'lodash/flowRight';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
+import SearchClearLink from '$components/search/SearchClearLink';
+import SearchContainer from '$components/search/SearchContainer';
 import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 
@@ -54,27 +56,20 @@ class Search extends PureComponent<Props> {
   }, 500);
 
   handleClear = () => {
-    const {initialize, onSearch, sortKey, sortOrder} = this.props;
+    const {onSearch, sortKey, sortOrder} = this.props;
     const query = {};
 
     if(sortKey || sortOrder) {
       query.sort_key = sortKey;
       query.sort_order = sortOrder;
     }
-    initialize({});
-    onSearch(query, true);
-  }
 
-  handleClearKeyDown = (e: any) => {
-    if(e.keyCode === 13){
-      e.preventDefault();
-      this.handleClear();
-    }
+    onSearch(query, true);
   }
 
   render () {
     return (
-      <Fragment>
+      <SearchContainer>
         <Row>
           <Column large={12}>
             <FormField
@@ -91,15 +86,10 @@ class Search extends PureComponent<Props> {
         </Row>
         <Row>
           <Column small={12}>
-            <a
-              tabIndex={0}
-              onKeyDown={this.handleClearKeyDown}
-              onClick={this.handleClear}
-              className='lease-search__clear-link'
-            >Tyhjennä haku</a>
+            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
           </Column>
         </Row>
-      </Fragment>
+      </SearchContainer>
     );
   }
 }

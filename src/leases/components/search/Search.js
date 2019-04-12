@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {clearFields, formValueSelector, getFormValues, reduxForm} from 'redux-form';
@@ -10,6 +10,13 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
+import SearchChangeTypeLink from '$components/search/SearchChangeTypeLink';
+import SearchClearLink from '$components/search/SearchClearLink';
+import SearchContainer from '$components/search/SearchContainer';
+import SearchInputColumn from '$components/search/SearchInputColumn';
+import SearchLabel from '$components/search/SearchLabel';
+import SearchLabelColumn from '$components/search/SearchLabelColumn';
+import SearchRow from '$components/search/SearchRow';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FieldTypes} from '$components/enums';
 import {FormNames} from '$src/enums';
@@ -42,6 +49,7 @@ type Props = {
   lessors: LessorList,
   location: Object,
   municipality: string,
+  onClear: Function,
   onSearch: Function,
   router: Object,
   sortKey: ?string,
@@ -60,7 +68,7 @@ type State = {
   typeOptions: Array<Object>,
 }
 
-class Search extends Component<Props, State> {
+class Search extends PureComponent<Props, State> {
   _isMounted: boolean;
 
   state = {
@@ -155,41 +163,11 @@ class Search extends Component<Props, State> {
   }, 500);
 
   toggleSearchType = () => {
-    const {formValues, initialize, onSearch, sortKey, sortOrder, states} = this.props;
-    const isBasicSearch = this.state.isBasicSearch ? true : false;
-
-    this.setState({isBasicSearch: !isBasicSearch});
-
-    if(!isBasicSearch) {
-      const newFormValues = {};
-
-      if(formValues.identifier) {
-        newFormValues.identifier = formValues.identifier;
-      }
-
-      if(states.length) {
-        newFormValues.lease_state = states;
-      }
-
-      if(sortKey || sortOrder) {
-        newFormValues.sort_key = sortKey;
-        newFormValues.sort_order = sortOrder;
-      }
-
-      initialize(newFormValues);
-      onSearch(newFormValues, true);
-    }
-  }
-
-  handleLinkKeyDown = (e: any) => {
-    if(e.keyCode === 13){
-      e.preventDefault();
-      this.toggleSearchType();
-    }
+    this.setState({isBasicSearch: !this.state.isBasicSearch});
   }
 
   handleClear = () => {
-    const {initialize, onSearch, sortKey, sortOrder} = this.props;
+    const {onSearch, sortKey, sortOrder} = this.props;
     const query = {};
 
     if(sortKey || sortOrder) {
@@ -197,15 +175,7 @@ class Search extends Component<Props, State> {
       query.sort_order = sortOrder;
     }
 
-    initialize({});
     onSearch(query, true, true);
-  }
-
-  handleClearKeyDown = (e: any) => {
-    if(e.keyCode === 13){
-      e.preventDefault();
-      this.handleClear();
-    }
   }
 
   render () {
@@ -224,7 +194,7 @@ class Search extends Component<Props, State> {
     const districtOptions = getDistrictOptions(districts);
 
     return (
-      <div className='lease-search'>
+      <SearchContainer>
         <Row>
           <Column large={12}>
             <FormField
@@ -240,13 +210,13 @@ class Search extends Component<Props, State> {
             />
           </Column>
         </Row>
-        {!isBasicSearch && (
-          <div>
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Vuokralainen</span>
-              </div>
-              <div className='lease-search__input-column'>
+        {!isBasicSearch &&
+          <Fragment>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Vuokralainen</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -258,14 +228,14 @@ class Search extends Component<Props, State> {
                   invisibleLabel
                   name='tenant_name'
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Y-tunnus</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Y-tunnus</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -277,14 +247,14 @@ class Search extends Component<Props, State> {
                   invisibleLabel
                   name='business_id'
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Henkilötunnus</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Henkilötunnus</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -296,14 +266,14 @@ class Search extends Component<Props, State> {
                   invisibleLabel
                   name='national_identification_number'
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Rooli</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Rooli</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <Row>
                   <Column small={12} medium={6}>
                     <FormField
@@ -339,14 +309,14 @@ class Search extends Component<Props, State> {
                     />
                   </Column>
                 </Row>
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Vuokranantaja</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Vuokranantaja</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -361,14 +331,14 @@ class Search extends Component<Props, State> {
                     options: lessorOptions,
                   }}
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Vuokratunnus</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Vuokratunnus</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <Row>
                   <Column small={3}>
                     <FormField
@@ -426,14 +396,14 @@ class Search extends Component<Props, State> {
                     />
                   </Column>
                 </Row>
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Alkupvm</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Alkupvm</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <Row>
                   <Column small={6}>
                     <FormField
@@ -461,14 +431,14 @@ class Search extends Component<Props, State> {
                     />
                   </Column>
                 </Row>
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Loppupvm</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Loppupvm</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <Row>
                   <Column small={6}>
                     <FormField
@@ -496,14 +466,12 @@ class Search extends Component<Props, State> {
                     />
                   </Column>
                 </Row>
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'></span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn></SearchLabelColumn>
+              <SearchInputColumn>
                 <Row>
                   <Column small={6}>
                     <FormField
@@ -538,14 +506,14 @@ class Search extends Component<Props, State> {
                     />
                   </Column>
                 </Row>
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Kiinteistötunnus</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Kiinteistötunnus</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -557,14 +525,14 @@ class Search extends Component<Props, State> {
                   invisibleLabel
                   name='property_identifier'
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Vuokrakohteen osoite</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Vuokrakohteen osoite</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -576,14 +544,14 @@ class Search extends Component<Props, State> {
                   invisibleLabel
                   name='address'
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Sopimusnro</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Sopimusnro</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -595,14 +563,14 @@ class Search extends Component<Props, State> {
                   invisibleLabel
                   name='contract_number'
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Päätös</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Päätös</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <Row>
                   <Column small={6}>
                     <FormField
@@ -644,13 +612,14 @@ class Search extends Component<Props, State> {
                     />
                   </Column>
                 </Row>
-              </div>
-            </div>
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Diaarinro</span>
-              </div>
-              <div className='lease-search__input-column'>
+              </SearchInputColumn>
+            </SearchRow>
+
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Diaarinro</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -662,14 +631,14 @@ class Search extends Component<Props, State> {
                   invisibleLabel
                   name='reference_number'
                 />
-              </div>
-            </div>
+              </SearchInputColumn>
+            </SearchRow>
 
-            <div className='lease-search__row'>
-              <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Laskunro</span>
-              </div>
-              <div className='lease-search__input-column'>
+            <SearchRow>
+              <SearchLabelColumn>
+                <SearchLabel>Laskunro</SearchLabel>
+              </SearchLabelColumn>
+              <SearchInputColumn>
                 <FormField
                   autoBlur
                   disableDirty
@@ -681,29 +650,20 @@ class Search extends Component<Props, State> {
                   invisibleLabel
                   name='invoice_number'
                 />
-              </div>
-            </div>
-          </div>
-        )}
+              </SearchInputColumn>
+            </SearchRow>
+          </Fragment>
+        }
+
         <Row>
           <Column small={6}>
-            <a
-              tabIndex={0}
-              onKeyDown={this.handleLinkKeyDown}
-              onClick={this.toggleSearchType}
-              className='lease-search__search-type-link'
-            >{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
+            <SearchChangeTypeLink onClick={this.toggleSearchType}>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</SearchChangeTypeLink>
           </Column>
           <Column small={6}>
-            <a
-              tabIndex={0}
-              onKeyDown={this.handleClearKeyDown}
-              onClick={this.handleClear}
-              className='lease-search__clear-link'
-            >Tyhjennä haku</a>
+            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
           </Column>
         </Row>
-      </div>
+      </SearchContainer>
     );
   }
 }

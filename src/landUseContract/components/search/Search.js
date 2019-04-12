@@ -8,6 +8,8 @@ import flowRight from 'lodash/flowRight';
 import isEqual from 'lodash/isEqual';
 
 import FormField from '$components/form/FormField';
+import SearchClearLink from '$components/search/SearchClearLink';
+import SearchContainer from '$components/search/SearchContainer';
 import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 
@@ -50,16 +52,9 @@ class Search extends Component<Props> {
     onSearch({});
   }
 
-  handleClearKeyDown = (e: any) => {
-    if(e.keyCode === 13){
-      e.preventDefault();
-      this.handleClear();
-    }
-  }
-
   render () {
     return (
-      <div className='search'>
+      <SearchContainer>
         <Row>
           <Column large={12}>
             <FormField
@@ -76,15 +71,10 @@ class Search extends Component<Props> {
         </Row>
         <Row>
           <Column small={12}>
-            <a
-              tabIndex={0}
-              onKeyDown={this.handleClearKeyDown}
-              onClick={this.handleClear}
-              className='lease-search__clear-link'
-            >Tyhjennä haku</a>
+            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
           </Column>
         </Row>
-      </div>
+      </SearchContainer>
     );
   }
 }

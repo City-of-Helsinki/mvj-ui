@@ -132,13 +132,13 @@ class RentBasisPage extends Component<Props, State> {
     } = this.props;
     const query = getUrlParams(search);
 
-    setPageTitle(`${rentBasisId} | Vuokrausperuste`);
+    setPageTitle(`${rentBasisId} | Vuokrausperiaate`);
 
     receiveIsSaveClicked(false);
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.RENT_BASIS),
-      pageTitle: 'Vuokrausperusteet',
+      pageTitle: 'Vuokrausperiaatteet',
       showSearch: false,
     });
 

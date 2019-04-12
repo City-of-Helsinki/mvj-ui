@@ -351,7 +351,6 @@
     overflow: visible;
 
     &_header {
-      cursor: pointer;
       display: table-row;
 
       @include focus();

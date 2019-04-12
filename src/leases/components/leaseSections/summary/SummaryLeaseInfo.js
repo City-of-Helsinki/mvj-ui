@@ -101,7 +101,6 @@ const SummaryLeaseInfo = ({
     }, 0);
 
   const overdueInvoices = getContentOverdueInvoices(invoices);
-  console.log(overdueInvoices);
 
   return (
     <Fragment>
@@ -158,7 +157,7 @@ const SummaryLeaseInfo = ({
                 </Column>
               </Authorization>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
-                <Column small={6} large={4}>
+                <Column small={6} large={8}>
                   <FormTextTitle title='Kohteen osoite' />
                 </Column>
               </Authorization>
@@ -173,7 +172,7 @@ const SummaryLeaseInfo = ({
                       </Column>
                     </Authorization>
                     <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
-                      <Column small={6} large={4}>
+                      <Column small={6} large={8}>
                         {!area.addresses || !area.addresses.length && <ListItem>-</ListItem>}
 
                         {!!area.addresses && !!area.addresses.length &&

@@ -20,7 +20,7 @@ export const getContentContact = (contact: Object) => {
   return {
     id: get(contact, 'id'),
     value: get(contact, 'id'),
-    label: getContactFullName(contact),
+    label: `${getContactFullName(contact)}${contact.care_of ? ` c/o ${contact.care_of}` : ''}`,
     type: get(contact, 'type'),
     first_name: get(contact, 'first_name'),
     last_name: get(contact, 'last_name'),
@@ -50,7 +50,10 @@ export const getContentContact = (contact: Object) => {
 */
 export const getContactOptions = (contacts: Array<Object>): Array<Object> =>
   contacts && contacts.length
-    ? contacts.map((contact) => ({value: contact.id, label: getContactFullName(contact)}))
+    ? contacts.map((contact) => ({
+      value: contact.id,
+      label: `${getContactFullName(contact)}${contact.care_of ? ` c/o ${contact.care_of}` : ''}`,
+    }))
     : [];
 
 export const isContactFormDirty = (state: any) => {

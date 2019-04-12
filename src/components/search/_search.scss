@@ -1,4 +1,4 @@
-.lease-search {
+.search {
   &__row {
     display: flex;
   }
@@ -19,7 +19,7 @@
     color: $dark-gray;
   }
 
-  &__search-type-link {
+  &__change-type-link {
     font-weight: $semibold !important;
   }
 

@@ -2,6 +2,7 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
@@ -36,6 +37,7 @@ import {getUserFullName} from '$src/users/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getMethods as getInfillDevelopmentMethods} from '$src/infillDevelopment/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
+import {getMethods as getRentBasisMethods} from '$src/rentbasis/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
@@ -47,6 +49,7 @@ type Props = {
   currentLease: Lease,
   infillDevelopmentMethods: MethodsType,
   receiveCollapseStates: Function,
+  rentBasisMethods: MethodsType,
 }
 
 type State = {
@@ -151,8 +154,10 @@ class Summary extends PureComponent<Props, State> {
       collapseStateBasic,
       collapseStateStatistical,
       infillDevelopmentMethods,
+      rentBasisMethods,
     } = this.props;
     const infillDevelopmentCompensations = summary.infill_development_compensations;
+    const matchingBasisOfRents = summary.matching_basis_of_rents;
 
     return (
       <Fragment>
@@ -277,10 +282,28 @@ class Summary extends PureComponent<Props, State> {
                     <FormText>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</FormText>
                   </Authorization>
                 </Column>
-                {/* TODO: Get vuokrausperuste via API */}
                 <Column small={12} medium={6} large={4}>
-                  <FormTextTitle>Vuokrausperuste</FormTextTitle>
-                  <FormText>-</FormText>
+                  <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MATCHING_BASIS_OF_RENTS)}>
+                      {LeaseFieldTitles.MATCHING_BASIS_OF_RENTS}
+                    </FormTextTitle>
+                    {!matchingBasisOfRents || !matchingBasisOfRents.length
+                      ? <FormText>-</FormText>
+                      : <ListItems>
+                        {matchingBasisOfRents.map((item, index1) => {
+                          return get(item, 'property_identifiers', []).map((property, index2) =>
+                            <ListItem key={`${index1}_${index2}`}>
+                              <ExternalLink
+                                className='no-margin'
+                                href={`${getRouteById(Routes.RENT_BASIS)}/${item.id}`}
+                                text={property.identifier}
+                              />
+                            </ListItem>
+                          );
+                        })}
+                      </ListItems>
+                    }
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
@@ -464,6 +487,7 @@ export default connect(
       collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_SUMMARY}.statistical`),
       currentLease: getCurrentLease(state),
       infillDevelopmentMethods: getInfillDevelopmentMethods(state),
+      rentBasisMethods: getRentBasisMethods(state),
     };
   },
   {

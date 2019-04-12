@@ -47,7 +47,7 @@ export const RentBasisFieldPaths = {
  * @type {{}}
  */
 export const RentBasisFieldTitles = {
-  IDENTIFIER: 'Vuokrausperustetunnus',
+  IDENTIFIER: 'Vuokrausperiaatetunnus',
   DETAILED_PLAN_IDENTIFIER: 'Asemakaava',
   END_DATE: 'Loppupvm',
   FINANCING: 'Rahoitusmuoto',

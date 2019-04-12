@@ -94,7 +94,8 @@ const BasisOfRent = ({
   const getBasicAnnualRent = () => {
     if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return null;
     return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
-      * Number(convertStrToDecimalNumber(basisOfRent.area));
+      * Number(convertStrToDecimalNumber(basisOfRent.area))
+      * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 + 1 : 1);
   };
 
   const getInitialYearRent = () => {

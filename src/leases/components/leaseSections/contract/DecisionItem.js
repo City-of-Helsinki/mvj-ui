@@ -83,7 +83,7 @@ const DecisionItem = ({
           {decision.decision_date ? <span>&nbsp;&nbsp;{formatDate(decision.decision_date)}</span> : ''}
         </Authorization>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.SECTION)}>
-          {decision.section ? <span>&nbsp;&nbsp;{decision.section}§</span> : ''}
+          {decision.section ? <span>&nbsp;&nbsp;{decision.section} §</span> : ''}
         </Authorization>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.TYPE)}>
           {decision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}</span> : ''}

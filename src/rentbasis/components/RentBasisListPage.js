@@ -22,7 +22,7 @@ import TableWrapper from '$components/table/TableWrapper';
 import {fetchRentBasisList, initializeRentBasis} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {TableSortOrder} from '$components/enums';
+import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/rentbasis/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
   RentBasisFieldPaths,
@@ -32,6 +32,9 @@ import {
 import {mapRentBasisSearchFilters} from '$src/rentbasis/helpers';
 import {
   formatDate,
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getApiResponseResults,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -72,91 +75,80 @@ class RentBasisListPage extends Component<Props, State> {
   state = {
     activePage: 1,
     isSearchInitialized: false,
-    sortKey: 'start_date',
-    sortOrder: TableSortOrder.DESCENDING,
+    sortKey: DEFAULT_SORT_KEY,
+    sortOrder: DEFAULT_SORT_ORDER,
   }
 
   componentDidMount() {
-    const {
-      initialize,
-      location: {search},
-      receiveTopNavigationSettings,
-    } = this.props;
-    const newState = {};
-    const query = getUrlParams(search);
+    const {receiveTopNavigationSettings} = this.props;
 
-    setPageTitle('Vuokrausperusteet');
+    setPageTitle('Vuokrausperiaatteet');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.RENT_BASIS),
-      pageTitle: 'Vuokrausperusteet',
+      pageTitle: 'Vuokrausperiaatteet',
       showSearch: false,
     });
 
     this.search();
 
-    const page = query.page ? Number(query.page) : 1;
-    newState.activePage = page;
+    this.setSearchFormValues();
 
-    if(query.sort_key || query.sort_order) {
-      newState.sortKey = query.sort_key;
-      newState.sortOrder = query.sort_order;
+    window.addEventListener('popstate', this.handlePopState);
+  }
+
+  componentDidUpdate(prevProps) {
+    const {location: {search: currentSearch}} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+    const searchQuery = getUrlParams(currentSearch);
+
+    if(currentSearch !== prevSearch) {
+      this.search();
+
+      delete searchQuery.sort_key;
+      delete searchQuery.sort_order;
+
+      if(!Object.keys(searchQuery).length) {
+        this.setSearchFormValues();
+      }
     }
+  }
 
-    this.setState(newState);
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    this.setSearchFormValues();
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     const setSearchFormReady = () => {
       this.setState({isSearchInitialized: true});
     };
 
     const initializeSearchForm = async() => {
-      try {
-        const searchQuery = {...query};
+      const initialValues = {...searchQuery};
 
-        delete searchQuery.page;
-        delete searchQuery.sort_key;
-        delete searchQuery.sort_order;
-
-        await initialize(FormNames.RENT_BASIS_SEARCH, searchQuery);
-
-        setSearchFormReady();
-      } catch(e) {
-        console.error(`Failed to initialize search form with error, ${e}`);
-      }
+      delete initialValues.page;
+      delete initialValues.sort_key;
+      delete initialValues.sort_order;
+      await initialize(FormNames.RENT_BASIS_SEARCH, initialValues);
     };
 
-    initializeSearchForm();
-  }
-
-  componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}, initialize} = this.props;
-    const {location: {search: prevSearch}} = prevProps;
-
-    const searchQuery = getUrlParams(currentSearch);
-
-    if(currentSearch !== prevSearch) {
-      this.search();
-
-      if(!Object.keys(searchQuery).length) {
-        const setSearchFormReady = () => {
-          this.setState({isSearchInitialized: true});
-        };
-
-        const clearSearchForm = async() => {
-          await initialize(FormNames.RENT_BASIS_SEARCH, {});
-        };
-
-        this.setState({
-          activePage: 1,
-          isSearchInitialized: false,
-          sortKey: 'start_date',
-          sortOrder: TableSortOrder.DESCENDING,
-        }, async() => {
-          await clearSearchForm();
-          setSearchFormReady();
-        });
-      }
-    }
+    this.setState({
+      activePage: page,
+      isSearchInitialized: false,
+      sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
+    }, async() => {
+      await initializeSearchForm();
+      setSearchFormReady();
+    });
   }
 
   handleSearchChange = (query, resetActivePage?: boolean = false) => {
@@ -184,6 +176,8 @@ class RentBasisListPage extends Component<Props, State> {
     }
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
+    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
+    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
     fetchRentBasisList(mapRentBasisSearchFilters(searchQuery));
   }
@@ -230,13 +224,9 @@ class RentBasisListPage extends Component<Props, State> {
     });
   }
 
-  getRentBasisCount = (rentBasisList: RentBasisList) => {
-    return get(rentBasisList, 'count', 0);
-  }
-
   getRentBasisList = (rentBasisList: RentBasisList) => {
-    const items = get(rentBasisList, 'results', []);
-    return items.map((item) => {
+    const results = getApiResponseResults(rentBasisList);
+    return results.map((item) => {
       return {
         id: item.id,
         property_identifiers: get(item, 'property_identifiers').map((item) => item.identifier),
@@ -246,15 +236,6 @@ class RentBasisListPage extends Component<Props, State> {
         end_date: get(item, 'end_date'),
       };
     });
-  }
-
-  getRentBasisMaxPage = (rentBasisList: RentBasisList) => {
-    const count = this.getRentBasisCount(rentBasisList);
-
-    if(!count) {
-      return 0;
-    }
-    return Math.ceil(count/LIST_TABLE_PAGE_SIZE);
   }
 
   getColumns = () => {
@@ -313,9 +294,9 @@ class RentBasisListPage extends Component<Props, State> {
       rentBasisMethods,
     } = this.props;
     const {activePage, isSearchInitialized, sortKey, sortOrder} = this.state;
-    const count = this.getRentBasisCount(rentBasisListData);
+    const count = getApiResponseCount(rentBasisListData);
     const rentBasisList = this.getRentBasisList(rentBasisListData);
-    const maxPage = this.getRentBasisMaxPage(rentBasisListData);
+    const maxPage = getApiResponseMaxPage(rentBasisListData, LIST_TABLE_PAGE_SIZE);
     const columns = this.getColumns();
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;

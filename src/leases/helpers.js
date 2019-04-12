@@ -22,6 +22,7 @@ import {
 } from './enums';
 import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
+import {getContentPropertyIdentifiers} from '$src/rentbasis/helpers';
 import {getContentUser} from '$src/users/helpers';
 import {
   addEmptyOption,
@@ -155,6 +156,21 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
     };
   });
 
+/**
+  * Get global basis of rents
+  * @param {Object} lease
+  * @returns {Object[]}
+  */
+export const getContentMatchingBasisOfRents = (lease: Object) =>
+  get(lease, 'matching_basis_of_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        property_identifiers: getContentPropertyIdentifiers(item),
+      };
+    });
+
+
 export const getContentSummary = (lease: Object) => {
   return {
     area_notes: get(lease, 'area_notes', []),
@@ -173,6 +189,7 @@ export const getContentSummary = (lease: Object) => {
     lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
     lessor: getContentLessor(lease.lessor),
     management: lease.management,
+    matching_basis_of_rents: getContentMatchingBasisOfRents(lease),
     note: lease.note,
     notice_note: lease.notice_note,
     notice_period: lease.notice_period,
@@ -823,7 +840,7 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
  * @returns {Object[]}
  */
 export const getContentDebtCollectionDecisions = (lease: Object) =>
-  get(lease, 'decisions', []).filter((decision) => decision.type.kind === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
+  get(lease, 'decisions', []).filter((decision) => get(decision, 'type.kind') === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
 
 // Helper functions to get lease map content
 export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<LeafletFeature>  => {
@@ -1579,16 +1596,32 @@ export const mapLeaseSearchFilters = (query: Object) => {
   return searchQuery;
 };
 
+/**
+ * Format seasonal date as string
+ * @param [string] day
+ * @param [string] month
+ * @returns [string]
+ */
 export const formatSeasonalDate = (day: ?string, month: ?string) => {
   if(!day || !month) return null;
 
-  return `${day}.${month}`;
+  return `${day}.${month}.`;
 };
 
+/**
+ * Format single due date as string
+ * @param [Object] dates
+ * @returns [string]
+ */
 const formatDueDate = (date: Object) => {
-  return `${date.day}.${date.month}`;
+  return `${date.day}.${date.month}.`;
 };
 
+/**
+ * Format due dates as string
+ * @param [Object[]] dates
+ * @returns [string]
+ */
 export const formatDueDates = (dates: Array<Object>) => {
   return dates.map((date) => formatDueDate(date)).join(', ');
 };

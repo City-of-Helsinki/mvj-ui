@@ -101,7 +101,7 @@ class SingleRentBasisMap extends Component<Props, State> {
           managementOptions={managementOptions}
           plotTypeOptions={plotTypeOptions}
         />,
-        name: 'Vuokrausperusteet',
+        name: 'Vuokrausperiaatteet',
       });
     }
     {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
