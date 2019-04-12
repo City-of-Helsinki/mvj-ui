@@ -64,6 +64,7 @@ const getColumns = (invoiceAttributes: Attributes) => {
       key: 'recipient',
       text: 'Laskunsaaja',
       renderer: (val) => getContactFullName(val) || '-',
+      sortable: false,
     });
   }
   if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)) {
@@ -85,6 +86,7 @@ const getColumns = (invoiceAttributes: Attributes) => {
       key: 'lease',
       text: 'Vuokratunnus',
       renderer: (val) => getContentLeaseIdentifier(val),
+      sortable: false,
     });
   }
   if(isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)) {
