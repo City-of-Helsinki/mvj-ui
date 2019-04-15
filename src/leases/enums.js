@@ -857,6 +857,7 @@ export const LeaseRentFixedInitialYearRentsFieldTitles = {
 export const LeaseRentContractRentsFieldPaths = {
   CONTRACT_RENTS: 'rents.child.children.contract_rents',
   AMOUNT: 'rents.child.children.contract_rents.child.children.amount',
+  AMOUNT_FIXED_RENT: 'rents.child.children.contract_rents.child.children.amount_fixed_rent',
   PERIOD: 'rents.child.children.contract_rents.child.children.period',
   BASE_AMOUNT: 'rents.child.children.contract_rents.child.children.base_amount',
   BASE_AMOUNT_PERIOD: 'rents.child.children.contract_rents.child.children.base_amount_period',
@@ -874,6 +875,7 @@ export const LeaseRentContractRentsFieldPaths = {
 export const LeaseRentContractRentsFieldTitles = {
   CONTRACT_RENTS: 'Sopimusvuokra',
   AMOUNT: 'Perusvuosivuokra',
+  AMOUNT_FIXED_RENT: 'Sopimusvuokra',
   PERIOD: 'Yksikkö',
   BASE_AMOUNT: 'Vuokranlaskennan perusteena oleva vuokra',
   BASE_AMOUNT_PERIOD: 'Yksikkö',
