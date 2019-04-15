@@ -525,6 +525,20 @@ class Search extends PureComponent<Props, State> {
                   invisibleLabel
                   name='property_identifier'
                 />
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Geometria puuttuu',
+                    type: FieldTypes.CHECKBOX,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name='has_not_geometry'
+                  overrideValues={{
+                    options: [{value: true, label: 'Geometria puuttuu'}],
+                  }}
+                />
               </SearchInputColumn>
             </SearchRow>
 
