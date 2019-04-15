@@ -15,6 +15,7 @@ import {
   LeaseStatus,
   RecipientOptions,
   RelationTypes,
+  RentAdjustmentAmountTypes,
   RentCycles,
   RentDueDateTypes,
   RentTypes,
@@ -1326,15 +1327,18 @@ export const addTenantsFormValues = (payload: Object, values: Object) => {
 
   return payload;
 };
-
-export const getContentRentAdjustmentsForDb = (rent: Object) =>
+/**
+  * Get payload of rent adjustments for API PATCH request
+  *
+  */
+export const getPayloadRentAdjustments = (rent: Object) =>
   get(rent, 'rent_adjustments', []).map((item) => {
     return {
       id: item.id || undefined,
       type: item.type,
       intended_use: item.intended_use,
       start_date: item.start_date,
-      end_date: item.end_date,
+      end_date: item.amount_type !== RentAdjustmentAmountTypes.AMOUNT_TOTAL ? item.end_date : null,
       full_amount: convertStrToDecimalNumber(item.full_amount),
       amount_type: item.amount_type,
       amount_left: convertStrToDecimalNumber(item.amount_left),
@@ -1493,7 +1497,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       rentData.seasonal_end_day = rent.seasonal_end_day || null;
       rentData.seasonal_end_month = rent.seasonal_end_month || null;
       rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
-      rentData.rent_adjustments = getContentRentAdjustmentsForDb(rent);
+      rentData.rent_adjustments = getPayloadRentAdjustments(rent);
     }
 
     return rentData;

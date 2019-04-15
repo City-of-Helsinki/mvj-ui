@@ -1,7 +1,7 @@
 // @flow
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import {RentDueDateTypes, RentTypes} from './enums';
+import {RentAdjustmentAmountTypes, RentDueDateTypes, RentTypes} from './enums';
 import {dateGreaterOrEqual} from '$components/form/validations';
 
 export const validateSummaryForm = (values: Object) => {
@@ -116,10 +116,12 @@ const getRentAdjustmentArrayErrors = (rentAdjustments: Array<Object>) => {
   const errorArray = [];
 
   rentAdjustments.forEach((adjustment, adjustmentIndex) => {
-    const endDateError = dateGreaterOrEqual(adjustment.end_date, adjustment.start_date);
+    if(adjustment.amount_type !== RentAdjustmentAmountTypes.AMOUNT_TOTAL) {
+      const endDateError = dateGreaterOrEqual(adjustment.end_date, adjustment.start_date);
 
-    if(endDateError) {
-      errorArray[adjustmentIndex] = {end_date: endDateError};
+      if(endDateError) {
+        errorArray[adjustmentIndex] = {end_date: endDateError};
+      }
     }
   });
 

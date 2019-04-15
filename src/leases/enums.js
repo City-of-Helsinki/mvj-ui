@@ -40,6 +40,17 @@ export const RelationTypes = {
 };
 
 /**
+ * Lease rent adjustemnt amount type enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentAmountTypes = {
+  AMOUNT_PER_YEAR: 'amount_per_year',
+  AMOUNT_TOTAL: 'amount_total',
+  PERCENT_PER_YEAR: 'percent_per_year',
+};
+
+/**
  * Send email type enumerable.
  *
  * @type {{}}
