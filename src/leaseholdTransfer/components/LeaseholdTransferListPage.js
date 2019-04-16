@@ -129,11 +129,11 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
   componentDidMount() {
     const {receiveTopNavigationSettings} = this.props;
 
-    setPageTitle('Vuokraoikeusien siirrot');
+    setPageTitle('Vuokraoikeuden siirrot');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASEHOLD_TRANSFER),
-      pageTitle: 'Vuokraoikeuksien siirrot',
+      pageTitle: 'Vuokraoikeuden siirrot',
       showSearch: false,
     });
 
