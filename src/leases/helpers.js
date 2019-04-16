@@ -9,6 +9,7 @@ import {isDirty} from 'redux-form';
 import {TableSortOrder} from '$components/enums';
 import {FormNames} from '$src/enums';
 import {
+  CollateralTypes,
   ConstructabilityType,
   DecisionTypeKinds,
   LeaseState,
@@ -448,7 +449,9 @@ export const getContentContractCollaterals = (contract: Object) =>
     return ({
       id: collateral.id,
       type: get(collateral, 'type.id') || get(collateral, 'type'),
+      other_type: get(collateral, 'other_type.id') || get(collateral, 'type'),
       number: collateral.number,
+      deed_date: collateral.deed_date,
       start_date: collateral.start_date,
       end_date: collateral.end_date,
       total_amount: collateral.total_amount,
@@ -1145,19 +1148,46 @@ const getContractChangesForDb = (contract: Object) => {
   });
 };
 
+/**
+  * Get payload of contract collateral for API PATCH request
+  *
+  */
 const getPayloadCollaterals = (contract: Object) => {
   return get(contract, 'collaterals', []).map((collateral) => {
-    return {
-      id: collateral.id || undefined,
-      type: collateral.type,
-      number: collateral.number,
-      start_date: collateral.start_date,
-      end_date: collateral.end_date,
-      total_amount: convertStrToDecimalNumber(collateral.total_amount),
-      paid_date: collateral.paid_date,
-      returned_date: collateral.returned_date,
-      note: collateral.note,
-    };
+    switch(collateral.type) {
+      case CollateralTypes.FINANCIAL_GUARANTEE:
+        return {
+          id: collateral.id,
+          type: collateral.type,
+          total_amount: collateral.total_amount,
+          paid_date: collateral.paid_date,
+          returned_date: collateral.returned_date,
+          note: collateral.note,
+        };
+      case CollateralTypes.MORTGAGE_DOCUMENT:
+        return {
+          id: collateral.id,
+          type: collateral.type.id,
+          number: collateral.number,
+          deed_date: collateral.deed_date,
+          total_amount: collateral.total_amount,
+          note: collateral.note,
+        };
+      case CollateralTypes.OTHER:
+      default:
+        return {
+          id: collateral.id,
+          type: collateral.type,
+          other_type: collateral.other_type,
+          number: collateral.number,
+          start_date: collateral.start_date,
+          end_date: collateral.end_date,
+          total_amount: collateral.total_amount,
+          paid_date: collateral.paid_date,
+          returned_date: collateral.returned_date,
+          note: collateral.note,
+        };
+    }
   });
 };
 
@@ -1327,6 +1357,7 @@ export const addTenantsFormValues = (payload: Object, values: Object) => {
 
   return payload;
 };
+
 /**
   * Get payload of rent adjustments for API PATCH request
   *

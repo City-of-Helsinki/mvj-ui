@@ -1,5 +1,6 @@
 // @flow
 import {getDayMonth} from '../util/date';
+
 /**
  * Area location enumerable.
  *
@@ -8,6 +9,17 @@ import {getDayMonth} from '../util/date';
 export const AreaLocation = {
   SURFACE: 'surface',
   UNDERGROUND: 'underground',
+};
+
+/**
+ * Collateral types enumerable.
+ *
+ * @type {{}}
+ */
+export const CollateralTypes = {
+  FINANCIAL_GUARANTEE: 2,
+  MORTGAGE_DOCUMENT: 1,
+  OTHER: 3,
 };
 
 /**
@@ -1148,7 +1160,7 @@ export const LeaseContractsFieldTitles = {
   SECOND_CALL_SENT: '2. kutsu lähetetty',
   SIGN_BY_DATE: 'Allekirjoitettava mennessä',
   SIGNING_DATE: 'Allekirjoituspvm',
-  SIGNING_NOTE: 'Allekirjoituksen huomautus',
+  SIGNING_NOTE: 'Huomautus',
   THIRD_CALL_SENT: '3. kutsu lähetetty',
   TYPE: 'Sopimuksen tyyppi',
 };
@@ -1160,9 +1172,12 @@ export const LeaseContractsFieldTitles = {
  */
 export const LeaseContractCollateralsFieldPaths = {
   COLLATRALS: 'contracts.child.children.collaterals',
+  DEED_DATE: 'contracts.child.children.collaterals.child.children.deed_date',
   END_DATE: 'contracts.child.children.collaterals.child.children.end_date',
   NOTE: 'contracts.child.children.collaterals.child.children.note',
   NUMBER: 'contracts.child.children.collaterals.child.children.number',
+  NUMBER_MORTGAGE_DOCUMENT: 'contracts.child.children.collaterals.child.children.number_mortgage_document',
+  OTHER_TYPE: 'contracts.child.children.collaterals.child.children.other_type',
   PAID_DATE: 'contracts.child.children.collaterals.child.children.paid_date',
   RETURNED_DATE: 'contracts.child.children.collaterals.child.children.returned_date',
   START_DATE: 'contracts.child.children.collaterals.child.children.start_date',
@@ -1177,14 +1192,17 @@ export const LeaseContractCollateralsFieldPaths = {
  */
 export const LeaseContractCollateralsFieldTitles = {
   COLLATRALS: 'Vakuudet',
-  END_DATE: 'Vuokravakuuden loppupvm',
+  DEED_DATE: 'Panttikirjan pvm',
+  END_DATE: 'Vakuuden loppupvm',
   NOTE: 'Huomautus',
-  NUMBER: 'Vuokravakuusnumero',
+  NUMBER: 'Vuokravakuusnro',
+  NUMBER_MORTGAGE_DOCUMENT: 'Panttikirjan numero',
+  OTHER_TYPE: 'Vakuuden laji',
   PAID_DATE: 'Maksettu pvm',
   RETURNED_DATE: 'Palautettu pvm',
-  START_DATE: 'Vuokravakuuden alkupvm',
+  START_DATE: 'Vakuuden alkupvm',
   TOTAL_AMOUNT: 'Vakuuden määrä',
-  TYPE: 'Vakuuden laji',
+  TYPE: 'Vakuuden tyyppi',
 };
 
 /**
