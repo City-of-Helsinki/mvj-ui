@@ -72,17 +72,32 @@ const getContentInvoiceTotalSharePercentage = (invoice: Object) => {
 };
 
 /**
+ * Get credit or interest invoice content to show on UI
+ * @param invoice - Credit or interest invoice
+ * @returns {object}
+ */
+const getContentCreditOrInterestInvoice = (invoice: Object) => ({
+  id: invoice.id,
+  number: invoice.number,
+  due_date: invoice.due_date,
+  total_amount: invoice.total_amount,
+});
+
+/**
  * Get credit invoices of single invoice to show on UI
  * @param invoice
  * @returns {object}
  */
 const getContentCreditInvoices = (invoice: Object) =>
-  get(invoice, 'credit_invoices', []).map((item) => ({
-    id: item.id,
-    number: item.number,
-    due_date: item.due_date,
-    total_amount: item.total_amount,
-  }));
+  get(invoice, 'credit_invoices', []).map((item) => getContentCreditOrInterestInvoice(item));
+
+/**
+ * Get interest invoices of single invoice to show on UI
+ * @param invoice
+ * @returns {object}
+ */
+const getContentInterestInvoices = (invoice: Object) =>
+  get(invoice, 'interest_invoices', []).map((item) => getContentCreditOrInterestInvoice(item));
 
 /**
  * Get single invoice content to show on UI
@@ -122,6 +137,8 @@ export const getContentIncoive = (invoice: Object) => {
     receivableTypes: getContentInvoiceReceivableTypes(rows),
     credit_invoices: getContentCreditInvoices(invoice),
     credited_invoice: invoice.credited_invoice,
+    interest_invoices: getContentInterestInvoices(invoice),
+    interest_invoice_for: invoice.interest_invoice_for,
     invoiceset: invoice.invoiceset,
   };
 };

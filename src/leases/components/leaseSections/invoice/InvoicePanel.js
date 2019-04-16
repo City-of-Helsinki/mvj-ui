@@ -34,7 +34,7 @@ type Props = {
   isOpen: boolean,
   minHeight: number,
   onClose: Function,
-  onCreditedInvoiceClick: Function,
+  onInvoiceLinkClick: Function,
   onKeyDown?: Function,
   onResize: Function,
   receiveIsEditClicked: Function,
@@ -43,6 +43,9 @@ type Props = {
 }
 
 type State = {
+  creditedInvoice: ?Object,
+  interestInvoiceFor: ?Object,
+  invoice: ?Object,
   isClosing: boolean,
   isOpening: boolean,
 }
@@ -52,8 +55,12 @@ class InvoicePanel extends PureComponent<Props, State> {
   component: any
   container: any
   invoiceFormFirstField: any
+  _isMounted: boolean
 
   state = {
+    creditedInvoice: null,
+    interestInvoiceFor: null,
+    invoice: null,
     isClosing: false,
     isOpening: false,
   }
@@ -69,11 +76,13 @@ class InvoicePanel extends PureComponent<Props, State> {
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown);
     this.component.addEventListener('transitionend', this.transitionEnds);
+    this._isMounted = false;
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
     this.component.removeEventListener('transitionend', this.transitionEnds);
+    this._isMounted = true;
   }
 
   handleKeyDown = (e: any) => {
@@ -93,6 +102,25 @@ class InvoicePanel extends PureComponent<Props, State> {
     }
   }
 
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.invoice !== state.invoice) {
+      const invoice = props.invoice;
+      const invoices = props.invoices;
+
+      newState.invoice = invoice;
+      newState.creditedInvoice = invoice && invoice.credited_invoice && !isEmpty(invoices)
+        ? invoices.find((item) => item.id === (invoice.credited_invoice))
+        : null;
+      newState.interestInvoiceFor = invoice && invoice.interest_invoice_for && !isEmpty(invoices)
+        ? invoices.find((item) => item.id === (invoice.interest_invoice_for))
+        : null;
+    }
+
+    return !isEmpty(newState) ? newState : null;
+  }
+
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
       this.setState({
@@ -106,6 +134,8 @@ class InvoicePanel extends PureComponent<Props, State> {
   }
 
   transitionEnds = (e: any) => {
+    if(!this._isMounted) return;
+    
     if(e.srcElement === this.component) {
       const {isOpen} = this.props;
 
@@ -156,15 +186,6 @@ class InvoicePanel extends PureComponent<Props, State> {
     }
   }
 
-  getCreditedInvoice = () => {
-    const {invoice, invoices} = this.props;
-    if(isEmpty(invoice) || isEmpty(invoices)) {
-      return null;
-    }
-
-    return invoices.find((item) => item.id === (invoice ? invoice.credited_invoice : 0));
-  }
-
   render() {
     const {
       invoice,
@@ -173,11 +194,15 @@ class InvoicePanel extends PureComponent<Props, State> {
       isOpen,
       minHeight,
       onClose,
-      onCreditedInvoiceClick,
+      onInvoiceLinkClick,
       valid,
     } = this.props;
-    const {isClosing, isOpening} = this.state;
-    const creditedInvoice = this.getCreditedInvoice();
+    const {
+      creditedInvoice,
+      interestInvoiceFor,
+      isClosing,
+      isOpening,
+    } = this.state;
 
     return(
       <div
@@ -211,15 +236,17 @@ class InvoicePanel extends PureComponent<Props, State> {
             {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id)
               ? <EditInvoiceForm
                 creditedInvoice={creditedInvoice}
+                interestInvoiceFor={interestInvoiceFor}
                 invoice={invoice}
                 initialValues={{...invoice}}
-                onCreditedInvoiceClick={onCreditedInvoiceClick}
+                onInvoiceLinkClick={onInvoiceLinkClick}
                 relativeTo={this.component}
               />
               : <InvoiceTemplate
                 creditedInvoice={creditedInvoice}
+                interestInvoiceFor={interestInvoiceFor}
                 invoice={invoice}
-                onCreditedInvoiceClick={onCreditedInvoiceClick}
+                onInvoiceLinkClick={onInvoiceLinkClick}
                 relativeTo={this.component}
               />
             }
