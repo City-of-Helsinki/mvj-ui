@@ -314,7 +314,7 @@ const FirstDayOfEveryMonth = [
  *
  * @type {{}}
  */
-export const DueDatesPosition = {
+export const DueDatesPositions = {
   START_OF_MONTH: 'start_of_month',
   MIDDLE_OF_MONTH: 'middle_of_month',
 };
@@ -325,13 +325,13 @@ export const DueDatesPosition = {
  * @type {{}}
  */
 export const FixedDueDates = {
-  [DueDatesPosition.START_OF_MONTH]: {
+  [DueDatesPositions.START_OF_MONTH]: {
     '1': [getDayMonth(2, 1)],
     '2': [getDayMonth(2, 1), getDayMonth(1, 7)],
     '4': [getDayMonth(2, 1), getDayMonth(1, 4), getDayMonth(1, 7), getDayMonth(1, 10)],
     '12': FirstDayOfEveryMonth,
   },
-  [DueDatesPosition.MIDDLE_OF_MONTH]: {
+  [DueDatesPositions.MIDDLE_OF_MONTH]: {
     '1': [getDayMonth(30, 6)],
     '2': [getDayMonth(15, 3), getDayMonth(30, 9)],
     '4': [getDayMonth(1, 3), getDayMonth(15, 4), getDayMonth(15, 7), getDayMonth(15, 10)],

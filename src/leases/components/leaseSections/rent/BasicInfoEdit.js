@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {change, Field, FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -19,6 +18,7 @@ import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/
 import {FormNames} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {
+  DueDatesPositions,
   FixedDueDates,
   LeaseRentDueDatesFieldPaths,
   LeaseRentDueDatesFieldTitles,
@@ -928,9 +928,11 @@ const BasicInfoEdit = ({
     const leaseTypeId = get(currentLease, 'type.id');
     const leaseType = leaseTypes.find((item) => item.id === leaseTypeId);
 
-    if(!dueDatesPerYear ||isEmpty(leaseType) || dueDatesType !== RentDueDateTypes.FIXED) return [];
+    if(!dueDatesPerYear || !leaseType || dueDatesType !== RentDueDateTypes.FIXED) return [];
 
-    return FixedDueDates[get(leaseType, 'due_dates_position')][dueDatesPerYear];
+    return FixedDueDates[rentType === RentTypes.FIXED
+      ? DueDatesPositions.START_OF_MONTH
+      : leaseType.due_dates_position][dueDatesPerYear];
   };
 
   const yearlyDueDates = getYearlyDueDates();
