@@ -174,18 +174,6 @@ const CollateralMortgageDocument = ({
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.OTHER_TYPE)}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.OTHER_TYPE)}
-              name={`${field}.other_type`}
-              overrideValues={{label: LeaseContractCollateralsFieldTitles.OTHER_TYPE}}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.OTHER_TYPE)}
-            />
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}>
             <FormField
               disableTouched={isSaveClicked}
