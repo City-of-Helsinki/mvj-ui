@@ -8,6 +8,7 @@ import {
   attributesNotFound,
   fetchLeaseholdTransferList,
   receiveLeaseholdTransferList,
+  deleteLeaseholdTransferAndUpdateList,
   notFound,
 } from './actions';
 import leaseholdTransferReducer from './reducer';
@@ -73,6 +74,13 @@ describe('Leasehold transfer', () => {
         const newState = {...defaultState, isFetching: true};
 
         const state = leaseholdTransferReducer({}, fetchLeaseholdTransferList({}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should set isFetching flag to true when deleting leasehold transfer', () => {
+        const newState = {...defaultState, isFetching: true};
+
+        const state = leaseholdTransferReducer({}, deleteLeaseholdTransferAndUpdateList({id: 1, searchQuery: {}}));
         expect(state).to.deep.equal(newState);
       });
 

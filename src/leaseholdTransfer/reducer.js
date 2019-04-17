@@ -30,6 +30,7 @@ const methodsReducer: Reducer<Methods> = handleActions({
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leaseholdTransfer/FETCH_ALL': () => true,
+  'mvj/leaseholdTransfer/DELETE_AND_UPDATE': () => true,
   'mvj/leaseholdTransfer/RECEIVE_ALL': () => false,
   'mvj/leaseholdTransfer/NOT_FOUND': () => false,
 }, false);

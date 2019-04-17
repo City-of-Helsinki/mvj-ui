@@ -28,7 +28,6 @@ export const KeyCodes = {
 
 /**
  * Methods enumerable.
- *
  * @type {{DELETE: string, GET: string, PATCH: string, POST: string,}}
  */
 export const Methods = {
@@ -40,13 +39,28 @@ export const Methods = {
 
 /**
  * Cancel changes modal texts enumerable.
- *
  * @type {{}}
  */
 export const CancelChangesModalTexts = {
   BUTTON: 'Poistu tallentamatta',
   LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>,
   TITLE: 'Poistu tallentamatta',
+};
+
+/**
+ * Delete modal label text enumerable.
+ * @type {{}}
+ */
+export const DeleteModalLabels = {
+  LEASEHOLD_TRANSFER: 'Haluatko varmasti poistaa vuokraoikeuden siirron?',
+};
+
+/**
+ * Delete modal title text enumerable.
+ * @type {{}}
+ */
+export const DeleteModalTitles = {
+  LEASEHOLD_TRANSFER: 'Poista vuokraoikeuden siirto',
 };
 
 /**

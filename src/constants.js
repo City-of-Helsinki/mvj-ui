@@ -78,6 +78,11 @@ export const mapColors = [
 export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen:10058';
 
 /**
+ * Delete modal button text
+ */
+export const DeleteModalButtonText = 'Poista';
+
+/**
  * Maximum number of results per page on list tables
  */
 export const LIST_TABLE_PAGE_SIZE = 25;

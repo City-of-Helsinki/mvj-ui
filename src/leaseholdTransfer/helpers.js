@@ -40,10 +40,11 @@ export const getLeaseholdTransferListCount = (list: LeaseholdTransferList) => ge
 * @param {Object} query
 * @returns {number}
 */
-export const getLeaseholdTransfers = (list: LeaseholdTransferList) =>
+export const getContentLeaseholdTransfers = (list: LeaseholdTransferList) =>
   get(list, 'results', [])
     .map((item) => {
       return {
+        id: item.id,
         properties: item.properties,
         institution_identifier: item.institution_identifier,
         decision_date: item.decision_date,

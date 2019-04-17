@@ -10,6 +10,10 @@ export type LeaseholdTransferState = {
 }
 
 export type LeaseholdTransferList = Object;
+export type DeleteAndUpdateLeaseholdTrasferPayload = {
+  id: number,
+  searchQuery: Object,
+}
 
 export type FetchAttributesAction = Action<'mvj/leaseholdTransfer/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/leaseholdTransfer/RECEIVE_ATTRIBUTES', Attributes>;
@@ -18,4 +22,5 @@ export type AttributesNotFoundAction = Action<'mvj/leaseholdTransfer/ATTRIBUTES_
 
 export type FetchLeaseholdTransferListAction = Action<'mvj/leaseholdTransfer/FETCH_ALL', ?Object>;
 export type ReceiveLeaseholdTransferListAction = Action<'mvj/leaseholdTransfer/RECEIVE_ALL', LeaseholdTransferList>;
+export type DeleteLeaseholdTransferAndUpdateListAction = Action<'mvj/leaseholdTransfer/DELETE_AND_UPDATE', DeleteAndUpdateLeaseholdTrasferPayload>;
 export type NotFoundAction = Action<'mvj/leaseholdTransfer/NOT_FOUND', void>;
