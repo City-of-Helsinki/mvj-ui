@@ -36,6 +36,8 @@ const getContentIncoiceRows = (invoice: Object) => {
     description: row.description,
     amount: row.amount,
     receivable_type: get(row, 'receivable_type.id') || get(row, 'receivable_type'),
+    billing_period_end_date: row.billing_period_end_date,
+    billing_period_start_date: row.billing_period_start_date,
   }));
 };
 
@@ -180,7 +182,7 @@ const getPayloadInvoicePayments = (invoice: Object) => {
 
 /**
  * Get rows for invoice payload for API
- * @param invoice
+ * @param {Object} invoice
  * @returns {object}
  */
 const getPayloadInvoiceRows = (invoice: Object) => {
@@ -189,6 +191,9 @@ const getPayloadInvoiceRows = (invoice: Object) => {
       tenant: row.tenant,
       receivable_type: row.receivable_type,
       amount: convertStrToDecimalNumber(row.amount),
+      billing_period_start_date: row.billing_period_start_date,
+      billing_period_end_date: row.billing_period_end_date,
+      description: row.description,
     };
   });
 };

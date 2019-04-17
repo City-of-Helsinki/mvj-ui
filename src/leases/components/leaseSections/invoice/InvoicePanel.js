@@ -94,6 +94,7 @@ class InvoicePanel extends PureComponent<Props, State> {
       case KeyCodes.ARROW_LEFT:
       case KeyCodes.ARROW_RIGHT:
         if(onKeyDown) {
+          e.preventDefault();
           onKeyDown(e.keyCode);
         }
         break;
@@ -135,7 +136,7 @@ class InvoicePanel extends PureComponent<Props, State> {
 
   transitionEnds = (e: any) => {
     if(!this._isMounted) return;
-    
+
     if(e.srcElement === this.component) {
       const {isOpen} = this.props;
 

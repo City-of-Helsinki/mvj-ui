@@ -5,18 +5,19 @@ import {Row, Column} from 'react-foundation';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Authorization from '$components/authorization/Authorization';
-import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
-import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {ButtonColors} from '$components/enums';
 import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getUiDataInvoiceKey} from '$src/uiData/helpers';
-import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired} from '$util/helpers';
+import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
 import type {Attributes} from '$src/types';
@@ -44,106 +45,101 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, 
             </SubTitle>
             {!!fields && !!fields.length &&
               <Fragment>
-                <Row>
-                  <Column small={4}>
-                    <FormTextTitle
-                      required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}
-                      enableUiDataEdit
-                      relativeTo={relativeTo}
-                      uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.TENANT)}
-                    >
-                      {InvoiceRowsFieldTitles.TENANT}
-                    </FormTextTitle>
-                  </Column>
-                  <Column small={4}>
-                    <FormTextTitle
-                      required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
-                      enableUiDataEdit
-                      relativeTo={relativeTo}
-                      uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
-                    >
-                      {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
-                    </FormTextTitle>
-                  </Column>
-                  <Column small={4}>
-                    <FormTextTitle
-                      required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
-                      enableUiDataEdit
-                      relativeTo={relativeTo}
-                      tooltipStyle={{right: fields.length > 1 ? 32 : 17}}
-                      uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.AMOUNT)}
-                    >
-                      {InvoiceRowsFieldTitles.AMOUNT}
-                    </FormTextTitle>
-                  </Column>
-                </Row>
-                {fields.map((row, index) => {
-                  const handleRemove = () => {
-                    dispatch({
-                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                      confirmationFunction: () => {
-                        fields.remove(index);
-                      },
-                      confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.INVOICE_ROW,
-                      confirmationModalTitle: DeleteModalTitles.INVOICE_ROW,
-                    });
-                  };
+                <BoxItemContainer>
+                  {fields.map((row, index) => {
+                    const handleRemove = () => {
+                      dispatch({
+                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                        confirmationFunction: () => {
+                          fields.remove(index);
+                        },
+                        confirmationModalButtonClassName: ButtonColors.ALERT,
+                        confirmationModalButtonText: 'Poista',
+                        confirmationModalLabel: DeleteModalLabels.INVOICE_ROW,
+                        confirmationModalTitle: DeleteModalTitles.INVOICE_ROW,
+                      });
+                    };
 
-                  return (
-                    <Row key={index}>
-                      <Column small={4}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
-                          <FormField
-                            disableTouched={isEditClicked}
-                            fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}
-                            invisibleLabel
-                            name={`${row}.tenant`}
-                            overrideValues={{
-                              label: InvoiceRowsFieldTitles.TENANT,
-                              options: tenantOptions,
-                            }}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={4}>
-                        <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
-                          <FormField
-                            disableTouched={isEditClicked}
-                            fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
-                            invisibleLabel
-                            name={`${row}.receivable_type`}
-                            overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={4}>
-                        <FieldAndRemoveButtonWrapper
-                          field={<Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
-                            <FormField
-                              disableTouched={isEditClicked}
-                              fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
-                              invisibleLabel
-                              name={`${row}.amount`}
-                              unit='€'
-                              overrideValues={{label: InvoiceRowsFieldTitles.AMOUNT}}
+                    return (
+                      <BoxItem key={index}>
+                        <ActionButtonWrapper>
+                          <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
+                            <RemoveButton
+                              onClick={handleRemove}
+                              title="Poista rivi"
                             />
-                          </Authorization>}
-                          removeButton={<Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
-                            {fields.length > 1 &&
-                              <RemoveButton
-                                className='third-level'
-                                onClick={handleRemove}
-                                title="Poista rivi"
+                          </Authorization>
+                        </ActionButtonWrapper>
+                        <Row key={index}>
+                          <Column small={4}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
+                              <FormField
+                                disableTouched={isEditClicked}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}
+                                name={`${row}.tenant`}
+                                overrideValues={{
+                                  label: InvoiceRowsFieldTitles.TENANT,
+                                  options: tenantOptions,
+                                }}
                               />
-                            }
-                          </Authorization>}
-                        />
-                      </Column>
-                    </Row>
-                  );
-                })}
+                            </Authorization>
+                          </Column>
+                          <Column small={4}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                              <FormField
+                                disableTouched={isEditClicked}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
+                                name={`${row}.receivable_type`}
+                                overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={4}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                              <FormField
+                                disableTouched={isEditClicked}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
+                                name={`${row}.amount`}
+                                unit='€'
+                                overrideValues={{label: InvoiceRowsFieldTitles.AMOUNT}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={4}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_START_DATE)}>
+                              <FormField
+                                disableTouched={isEditClicked}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_START_DATE)}
+                                name={`${row}.billing_period_start_date`}
+                                overrideValues={{label: InvoiceRowsFieldTitles.BILLING_PERIOD_START_DATE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={4}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_END_DATE)}>
+                              <FormField
+                                disableTouched={isEditClicked}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_END_DATE)}
+                                name={`${row}.billing_period_end_date`}
+                                overrideValues={{label: InvoiceRowsFieldTitles.BILLING_PERIOD_END_DATE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={4}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.DESCRIPTION)}>
+                              <FormField
+                                disableTouched={isEditClicked}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.DESCRIPTION)}
+                                name={`${row}.description`}
+                                overrideValues={{label: InvoiceRowsFieldTitles.DESCRIPTION}}
+                              />
+                            </Authorization>
+                          </Column>
+                        </Row>
+                      </BoxItem>
+                    );
+                  })}
+                </BoxItemContainer>
               </Fragment>
             }
 

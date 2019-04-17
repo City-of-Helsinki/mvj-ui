@@ -214,7 +214,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   scrolToPanel = () => {
     setTimeout(() => {
       scrollToComponent(this.panel, {
-        offset: -130,
+        offset: -240,
         align: 'top',
         duration: 450,
       });

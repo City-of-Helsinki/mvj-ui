@@ -72,7 +72,7 @@ class CreateAndCreditInvoice extends Component <Props> {
 
     setTimeout(() => {
       scrollToComponent(this.createPanel, {
-        offset: -130,
+        offset: -200,
         align: 'top',
         duration: 450,
       });
@@ -121,7 +121,7 @@ class CreateAndCreditInvoice extends Component <Props> {
 
     setTimeout(() => {
       scrollToComponent(this.creditPanel, {
-        offset: -130,
+        offset: -200,
         align: 'top',
         duration: 450,
       });
