@@ -21,7 +21,7 @@ import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames, Methods, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
-import {LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
+import {LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
 import {getContentSummary} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -428,15 +428,11 @@ class SummaryEdit extends PureComponent<Props, State> {
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.ARRANGEMENT_DECISION)}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.ARRANGEMENT_DECISION)}
-                      name='arrangement_decision'
-                      overrideValues={{label: LeaseFieldTitles.ARRANGEMENT_DECISION}}
-                      enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}
-                    />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+                    <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}>
+                      {LeaseFieldTitles.ARRANGEMENT_DECISION}
+                    </FormTextTitle>
+                    <FormText>{summary.arrangement_decision ? 'Kyllä' : 'Ei'}</FormText>
                   </Authorization>
                 </Column>
               </Row>

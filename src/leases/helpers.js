@@ -176,7 +176,8 @@ export const getContentMatchingBasisOfRents = (lease: Object) =>
 export const getContentSummary = (lease: Object) => {
   return {
     area_notes: get(lease, 'area_notes', []),
-    arrangement_decision: lease.arrangement_decision,
+    // Set arrangement decision to true if there is any contract where is_readjustment_decision == true
+    arrangement_decision: get(lease, 'contracts', []).find((contract) => contract.is_readjustment_decision) ? true : false,
     building_selling_price: lease.building_selling_price,
     classification: lease.classification,
     constructability_areas: getContentConstructability(lease),
@@ -988,7 +989,6 @@ export const getPayloadCreateLease = (lease: Object) => {
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
   return {
     ...payload,
-    arrangement_decision: summary.arrangement_decision,
     building_selling_price: convertStrToDecimalNumber(summary.building_selling_price),
     classification: summary.classification,
     conveyance_number: summary.conveyance_number,
