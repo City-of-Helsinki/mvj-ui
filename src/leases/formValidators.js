@@ -1,7 +1,13 @@
 // @flow
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import {RentAdjustmentAmountTypes, RentDueDateTypes, RentTypes} from './enums';
+import moment from 'moment';
+import {
+  RentAdjustmentAmountTypes,
+  RentCycles,
+  RentDueDateTypes,
+  RentTypes,
+} from './enums';
 import {dateGreaterOrEqual} from '$components/form/validations';
 
 export const validateSummaryForm = (values: Object) => {
@@ -84,14 +90,34 @@ export const validateTenantForm = (values: Object) => {
   return errors;
 };
 
-const getFixedInitialYearRentArrayErrors = (rents: Array<Object>) => {
+const getFixedInitialYearRentArrayErrors = (rent: Object, fixedInitialYearRents: Array<Object>) => {
   const errorArray = [];
 
-  rents.forEach((rent, rentIndex) => {
-    const endDateError = dateGreaterOrEqual(rent.end_date, rent.start_date);
+  fixedInitialYearRents.forEach((item, index) => {
+    let endDateError = dateGreaterOrEqual(item.end_date, item.start_date);
+
+    if(!endDateError && rent.type === RentTypes.INDEX || rent.type === RentTypes.MANUAL) {
+      switch(rent.cycle) {
+        case RentCycles.JANUARY_TO_DECEMBER:
+          endDateError = item.end_date
+            ? moment(item.end_date).format('DD.MM') !== '31.12'
+              ? 'Loppupvm tulee olla 31.12.'
+              : null
+            : null;
+          break;
+        case RentCycles.APRIL_TO_MARCH:
+          endDateError = item.end_date
+            ? moment(item.end_date).format('DD.MM') !== '31.03'
+              ? 'Loppupvm tulee olla 31.3.'
+              : null
+            : null;
+          break;
+
+      }
+    }
 
     if(endDateError) {
-      errorArray[rentIndex] = {end_date: endDateError};
+      errorArray[index] = {end_date: endDateError};
     }
   });
 
@@ -140,7 +166,7 @@ const getRentErrors = (rent: Object) => {
     errors.equalization_end_date = equalizationEndDateError;
   }
 
-  const fixedInitialYearRentErrors = getFixedInitialYearRentArrayErrors(get(rent, 'fixed_initial_year_rents', []));
+  const fixedInitialYearRentErrors = getFixedInitialYearRentArrayErrors(rent, get(rent, 'fixed_initial_year_rents', []));
   if(fixedInitialYearRentErrors.length) {
     errors.fixed_initial_year_rents = fixedInitialYearRentErrors;
   }
