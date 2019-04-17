@@ -275,11 +275,11 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
             dispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
-                const query = this.getSearchQuery();
-                
+                const searchQuery = this.getSearchQuery();
+
                 deleteLeaseholdTransferAndUpdateList({
                   id,
-                  query,
+                  searchQuery,
                 });
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,

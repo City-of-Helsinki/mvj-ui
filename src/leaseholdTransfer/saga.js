@@ -59,13 +59,13 @@ function* fetchLeaseholdTransferListSaga({payload: query}): Generator<any, any, 
   }
 }
 
-function* deleteLeaseholdTransferAndupdateListSaga({payload: {id, query}}): Generator<any, any, any> {
+function* deleteLeaseholdTransferAndupdateListSaga({payload: {id, searchQuery}}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(deleteLeaseholdTransfer, id);
 
     switch (statusCode) {
       case 204:
-        yield put(fetchLeaseholdTransferListAction(query));
+        yield put(fetchLeaseholdTransferListAction(searchQuery));
         displayUIMessage({title: '', body: 'Vuokraoikeuden siirto poistettu'});
         break;
       default:
