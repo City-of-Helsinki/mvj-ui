@@ -80,8 +80,13 @@ class ContractRents extends PureComponent<Props, State> {
             <Row>
               <Column large={2}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
-                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT)}>
-                    {LeaseRentContractRentsFieldTitles.AMOUNT}
+                  <FormTextTitle uiDataKey={rentType !== RentTypes.FIXED
+                    ? getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT)
+                    : getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT_FIXED_RENT)}>
+                    {rentType !== RentTypes.FIXED
+                      ? LeaseRentContractRentsFieldTitles.AMOUNT
+                      : LeaseRentContractRentsFieldTitles.AMOUNT_FIXED_RENT
+                    }
                   </FormTextTitle>
                 </Authorization>
               </Column>

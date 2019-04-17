@@ -158,6 +158,7 @@ class SortableTable extends Component<Props, State> {
   scrollBodyWrapper: any
   scrollHeaderWrapper: any
   thead: any
+  _isMounted: boolean
 
   state = {
     collapse: true,
@@ -219,6 +220,7 @@ class SortableTable extends Component<Props, State> {
       this.scrollHeaderWrapper.addEventListener('scroll', this.updateBodyPosition);
       this.setTableScrollHeaderColumnStyles();
     }
+    this._isMounted = true;
   }
 
   componentWillUnmount() {
@@ -228,6 +230,7 @@ class SortableTable extends Component<Props, State> {
       this.scrollBodyWrapper.removeEventListener('scroll', this.updateHeaderPosition);
       this.scrollHeaderWrapper.removeEventListener('scroll', this.updateBodyPosition);
     }
+    this._isMounted = false;
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -265,6 +268,8 @@ class SortableTable extends Component<Props, State> {
   }
 
   setTableScrollHeaderColumnStyles = () => {
+    if(!this._isMounted) return;
+    
     const ths = [].slice.call(this.thead.querySelectorAll('th'));
 
     const scrollHeaderColumnStyles = ths.map((th) => {

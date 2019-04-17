@@ -16,6 +16,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollateralEdit from './CollateralEdit';
 import DecisionLink from '$components/links/DecisionLink';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
@@ -267,7 +268,6 @@ const renderContractChanges = ({
 };
 
 type CollateralsProps = {
-  attributes: Attributes,
   collapseState: boolean,
   errors: ?Object,
   fields: any,
@@ -278,7 +278,6 @@ type CollateralsProps = {
 }
 
 const renderCollaterals = ({
-  attributes,
   collapseState,
   errors,
   fields,
@@ -318,7 +317,7 @@ const renderCollaterals = ({
 
             {!!fields.length &&
               <BoxItemContainer>
-                {fields && !!fields.length && fields.map((change, index) => {
+                {fields && !!fields.length && fields.map((field, index) => {
                   const handleRemove = () => {
                     dispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
@@ -333,121 +332,11 @@ const renderCollaterals = ({
                   };
 
                   return (
-                    <BoxItem key={index}>
-                      <BoxContentWrapper>
-                        <ActionButtonWrapper>
-                          <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_COLLATERAL)}>
-                            <RemoveButton
-                              onClick={handleRemove}
-                              title="Poista vakuus"
-                            />
-                          </Authorization>
-                        </ActionButtonWrapper>
-
-                        <Row>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TYPE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.TYPE)}
-                                name={`${change}.type`}
-                                overrideValues={{label: LeaseContractCollateralsFieldTitles.TYPE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TYPE)}
-                              />
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.NUMBER)}
-                                name={`${change}.number`}
-                                overrideValues={{label: LeaseContractCollateralsFieldTitles.NUMBER}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.NUMBER)}
-                              />
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}
-                                name={`${change}.start_date`}
-                                overrideValues={{label: LeaseContractCollateralsFieldTitles.START_DATE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.START_DATE)}
-                              />
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}
-                                name={`${change}.end_date`}
-                                overrideValues={{label: LeaseContractCollateralsFieldTitles.END_DATE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.END_DATE)}
-                              />
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}
-                                name={`${change}.total_amount`}
-                                unit='€'
-                                overrideValues={{label: LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}}
-                                enableUiDataEdit
-                                tooltipStyle={{right: 12}}
-                                uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}
-                              />
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.PAID_DATE)}
-                                name={`${change}.paid_date`}
-                                overrideValues={{label: LeaseContractCollateralsFieldTitles.PAID_DATE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.PAID_DATE)}
-                              />
-                            </Authorization>
-                          </Column>
-                        </Row>
-                        <Row>
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}
-                                name={`${change}.returned_date`}
-                                overrideValues={{label: LeaseContractCollateralsFieldTitles.RETURNED_DATE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.RETURNED_DATE)}
-                              />
-                            </Authorization>
-                          </Column>
-                          <Column small={6} medium={8} large={10}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.NOTE)}>
-                              <FormField
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.NOTE)}
-                                name={`${change}.note`}
-                                overrideValues={{label: LeaseContractCollateralsFieldTitles.NOTE}}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.NOTE)}
-                              />
-                            </Authorization>
-                          </Column>
-                        </Row>
-                      </BoxContentWrapper>
-                    </BoxItem>
+                    <CollateralEdit
+                      key={index}
+                      field={field}
+                      onRemove={handleRemove}
+                    />
                   );
                 })}
               </BoxItemContainer>
@@ -625,18 +514,6 @@ const ContractItemEdit = ({
               />
             </Authorization>
           </Column>
-          <Column small={6} medium={12} large={6}>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGNING_NOTE)}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.SIGNING_NOTE)}
-                name={`${field}.signing_note`}
-                overrideValues={{label: LeaseContractsFieldTitles.SIGNING_NOTE}}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.SIGNING_NOTE)}
-              />
-            </Authorization>
-          </Column>
         </Row>
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -742,8 +619,22 @@ const ContractItemEdit = ({
                   idKey='kohdetunnus'
                   label='Vuokraoikeustodistus'
                 />
-                : <p>-</p>
+                : <FormText>-</FormText>
               }
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          <Column small={12}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGNING_NOTE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.SIGNING_NOTE)}
+                name={`${field}.signing_note`}
+                overrideValues={{label: LeaseContractsFieldTitles.SIGNING_NOTE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.SIGNING_NOTE)}
+              />
             </Authorization>
           </Column>
         </Row>
@@ -767,7 +658,6 @@ const ContractItemEdit = ({
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.COLLATRALS)}>
         <FieldArray
-          attributes={attributes}
           collapseState={collateralsCollapseState}
           component={renderCollaterals}
           errors={errors}

@@ -1,5 +1,6 @@
 // @flow
 import {getDayMonth} from '../util/date';
+
 /**
  * Area location enumerable.
  *
@@ -8,6 +9,17 @@ import {getDayMonth} from '../util/date';
 export const AreaLocation = {
   SURFACE: 'surface',
   UNDERGROUND: 'underground',
+};
+
+/**
+ * Collateral types enumerable.
+ *
+ * @type {{}}
+ */
+export const CollateralTypes = {
+  FINANCIAL_GUARANTEE: 2,
+  MORTGAGE_DOCUMENT: 1,
+  OTHER: 3,
 };
 
 /**
@@ -37,6 +49,17 @@ export const DecisionTypeKinds = {
  */
 export const RelationTypes = {
   TRANSFER: 'transfer',
+};
+
+/**
+ * Lease rent adjustemnt amount type enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentAmountTypes = {
+  AMOUNT_PER_YEAR: 'amount_per_year',
+  AMOUNT_TOTAL: 'amount_total',
+  PERCENT_PER_YEAR: 'percent_per_year',
 };
 
 /**
@@ -291,7 +314,7 @@ const FirstDayOfEveryMonth = [
  *
  * @type {{}}
  */
-export const DueDatesPosition = {
+export const DueDatesPositions = {
   START_OF_MONTH: 'start_of_month',
   MIDDLE_OF_MONTH: 'middle_of_month',
 };
@@ -302,13 +325,13 @@ export const DueDatesPosition = {
  * @type {{}}
  */
 export const FixedDueDates = {
-  [DueDatesPosition.START_OF_MONTH]: {
+  [DueDatesPositions.START_OF_MONTH]: {
     '1': [getDayMonth(2, 1)],
     '2': [getDayMonth(2, 1), getDayMonth(1, 7)],
     '4': [getDayMonth(2, 1), getDayMonth(1, 4), getDayMonth(1, 7), getDayMonth(1, 10)],
     '12': FirstDayOfEveryMonth,
   },
-  [DueDatesPosition.MIDDLE_OF_MONTH]: {
+  [DueDatesPositions.MIDDLE_OF_MONTH]: {
     '1': [getDayMonth(30, 6)],
     '2': [getDayMonth(15, 3), getDayMonth(30, 9)],
     '4': [getDayMonth(1, 3), getDayMonth(15, 4), getDayMonth(15, 7), getDayMonth(15, 10)],
@@ -846,6 +869,7 @@ export const LeaseRentFixedInitialYearRentsFieldTitles = {
 export const LeaseRentContractRentsFieldPaths = {
   CONTRACT_RENTS: 'rents.child.children.contract_rents',
   AMOUNT: 'rents.child.children.contract_rents.child.children.amount',
+  AMOUNT_FIXED_RENT: 'rents.child.children.contract_rents.child.children.amount_fixed_rent',
   PERIOD: 'rents.child.children.contract_rents.child.children.period',
   BASE_AMOUNT: 'rents.child.children.contract_rents.child.children.base_amount',
   BASE_AMOUNT_PERIOD: 'rents.child.children.contract_rents.child.children.base_amount_period',
@@ -863,6 +887,7 @@ export const LeaseRentContractRentsFieldPaths = {
 export const LeaseRentContractRentsFieldTitles = {
   CONTRACT_RENTS: 'Sopimusvuokra',
   AMOUNT: 'Perusvuosivuokra',
+  AMOUNT_FIXED_RENT: 'Sopimusvuokra',
   PERIOD: 'Yksikkö',
   BASE_AMOUNT: 'Vuokranlaskennan perusteena oleva vuokra',
   BASE_AMOUNT_PERIOD: 'Yksikkö',
@@ -1135,7 +1160,7 @@ export const LeaseContractsFieldTitles = {
   SECOND_CALL_SENT: '2. kutsu lähetetty',
   SIGN_BY_DATE: 'Allekirjoitettava mennessä',
   SIGNING_DATE: 'Allekirjoituspvm',
-  SIGNING_NOTE: 'Allekirjoituksen huomautus',
+  SIGNING_NOTE: 'Huomautus',
   THIRD_CALL_SENT: '3. kutsu lähetetty',
   TYPE: 'Sopimuksen tyyppi',
 };
@@ -1147,9 +1172,12 @@ export const LeaseContractsFieldTitles = {
  */
 export const LeaseContractCollateralsFieldPaths = {
   COLLATRALS: 'contracts.child.children.collaterals',
+  DEED_DATE: 'contracts.child.children.collaterals.child.children.deed_date',
   END_DATE: 'contracts.child.children.collaterals.child.children.end_date',
   NOTE: 'contracts.child.children.collaterals.child.children.note',
   NUMBER: 'contracts.child.children.collaterals.child.children.number',
+  NUMBER_MORTGAGE_DOCUMENT: 'contracts.child.children.collaterals.child.children.number_mortgage_document',
+  OTHER_TYPE: 'contracts.child.children.collaterals.child.children.other_type',
   PAID_DATE: 'contracts.child.children.collaterals.child.children.paid_date',
   RETURNED_DATE: 'contracts.child.children.collaterals.child.children.returned_date',
   START_DATE: 'contracts.child.children.collaterals.child.children.start_date',
@@ -1164,14 +1192,17 @@ export const LeaseContractCollateralsFieldPaths = {
  */
 export const LeaseContractCollateralsFieldTitles = {
   COLLATRALS: 'Vakuudet',
-  END_DATE: 'Vuokravakuuden loppupvm',
+  DEED_DATE: 'Panttikirjan pvm',
+  END_DATE: 'Vakuuden loppupvm',
   NOTE: 'Huomautus',
-  NUMBER: 'Vuokravakuusnumero',
+  NUMBER: 'Vuokravakuusnro',
+  NUMBER_MORTGAGE_DOCUMENT: 'Panttikirjan numero',
+  OTHER_TYPE: 'Vakuuden laji',
   PAID_DATE: 'Maksettu pvm',
   RETURNED_DATE: 'Palautettu pvm',
-  START_DATE: 'Vuokravakuuden alkupvm',
+  START_DATE: 'Vakuuden alkupvm',
   TOTAL_AMOUNT: 'Vakuuden määrä',
-  TYPE: 'Vakuuden laji',
+  TYPE: 'Vakuuden tyyppi',
 };
 
 /**

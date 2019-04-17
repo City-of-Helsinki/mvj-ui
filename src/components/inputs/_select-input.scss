@@ -44,11 +44,13 @@
     }
 
     &__input {
+      vertical-align: top;
+
       input {
-        margin-top: rem-calc(-1px);
         height: rem-calc(14px);
         padding: rem-calc(2px) !important;
         margin-bottom: 0;
+        box-shadow: none;
       }
     }
 

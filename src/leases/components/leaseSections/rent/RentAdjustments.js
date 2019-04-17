@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
@@ -9,7 +9,11 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import DecisionLink from '$components/links/DecisionLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import {LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles} from '$src/leases/enums';
+import {
+  LeaseRentAdjustmentsFieldPaths,
+  LeaseRentAdjustmentsFieldTitles,
+  RentAdjustmentAmountTypes,
+} from '$src/leases/enums';
 import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
@@ -81,10 +85,14 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                     </Column>
                     <Column small={6}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}>
-                        <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.END_DATE)}>
-                          {LeaseRentAdjustmentsFieldTitles.END_DATE}
-                        </FormTextTitle>
-                        <FormText>{formatDate(adjustment.end_date) || '-'}</FormText>
+                        {adjustment.amount_type !== RentAdjustmentAmountTypes.AMOUNT_TOTAL &&
+                          <Fragment>
+                            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.END_DATE)}>
+                              {LeaseRentAdjustmentsFieldTitles.END_DATE}
+                            </FormTextTitle>
+                            <FormText>{formatDate(adjustment.end_date) || '-'}</FormText>
+                          </Fragment>
+                        }
                       </Authorization>
                     </Column>
                   </Row>
@@ -99,10 +107,14 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}>
-                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}>
-                      {LeaseRentAdjustmentsFieldTitles.AMOUNT_LEFT}
-                    </FormTextTitle>
-                    <FormText>{adjustment.amount_left ? `${formatNumber(adjustment.amount_left)} €` : '-'}</FormText>
+                    {adjustment.amount_type === RentAdjustmentAmountTypes.AMOUNT_TOTAL &&
+                      <Fragment>
+                        <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT)}>
+                          {LeaseRentAdjustmentsFieldTitles.AMOUNT_LEFT}
+                        </FormTextTitle>
+                        <FormText>{adjustment.amount_left ? `${formatNumber(adjustment.amount_left)} €` : '-'}</FormText>
+                      </Fragment>
+                    }
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>

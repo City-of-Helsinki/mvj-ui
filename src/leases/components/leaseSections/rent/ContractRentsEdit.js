@@ -68,9 +68,13 @@ const ContractRentsEdit = ({
                     <FormTextTitle
                       required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
                       enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT)}
+                      uiDataKey={rentType !== RentTypes.FIXED
+                        ? getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT)
+                        : getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT_FIXED_RENT)}
                     >
-                      {LeaseRentContractRentsFieldTitles.AMOUNT}
+                      {rentType !== RentTypes.FIXED
+                        ? LeaseRentContractRentsFieldTitles.AMOUNT
+                        : LeaseRentContractRentsFieldTitles.AMOUNT_FIXED_RENT}
                     </FormTextTitle>
                   </Authorization>
                 </Column>

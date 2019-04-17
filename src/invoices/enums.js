@@ -36,6 +36,7 @@ export const InvoiceFieldPaths = {
   CREDITED_INVOICE: 'credited_invoice',
   DELIVERY_METHOD: 'delivery_method',
   DUE_DATE: 'due_date',
+  INTEREST_INVOICE_FOR: 'interest_invoice_for',
   INVOICING_DATE: 'invoicing_date',
   INVOICESET: 'invoiceset',
   LEASE: 'lease',
@@ -70,6 +71,7 @@ export const InvoiceFieldTitles = {
   CREDITED_INVOICE: 'Hyvitetty lasku',
   DELIVERY_METHOD: 'E vai paperilasku',
   DUE_DATE: 'Eräpäivä',
+  INTEREST_INVOICE_FOR: 'Korkolasku laskulle',
   INVOICING_DATE: 'Laskutuspvm',
   INVOICESET: 'Laskuryhmät',
   LEASE: 'Vuokraus',
@@ -107,6 +109,30 @@ export const InvoiceCreditInvoicesFieldPaths = {
  */
 export const InvoiceCreditInvoicesFieldTitles = {
   CREDIT_INVOICES: 'Hyvityslaskut',
+  DUE_DATE: 'Eräpäivä',
+  NUMBER: 'Laskunumero',
+  TOTAL_AMOUNT: 'Summa',
+};
+
+/**
+ * Invoice interest invoices field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const InvoiceInterestInvoicesFieldPaths = {
+  INTEREST_INVOICES: 'interest_invoices',
+  DUE_DATE: 'interest_invoices.child.children.due_date',
+  NUMBER: 'interest_invoices.child.children.number',
+  TOTAL_AMOUNT: 'interest_invoices.child.children.total_amount',
+};
+
+/**
+ * Invoice interest invoices field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const InvoiceInterestInvoicesFieldTitles = {
+  INTEREST_INVOICES: 'Korkolaskut',
   DUE_DATE: 'Eräpäivä',
   NUMBER: 'Laskunumero',
   TOTAL_AMOUNT: 'Summa',

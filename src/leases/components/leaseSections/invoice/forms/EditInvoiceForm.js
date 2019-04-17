@@ -24,6 +24,8 @@ import {
   InvoiceCreditInvoicesFieldTitles,
   InvoiceFieldPaths,
   InvoiceFieldTitles,
+  InvoiceInterestInvoicesFieldPaths,
+  InvoiceInterestInvoicesFieldTitles,
   InvoicePaymentsFieldPaths,
   InvoicePaymentsFieldTitles,
   InvoiceRowsFieldPaths,
@@ -170,33 +172,47 @@ const renderPayments = ({attributes, fields, isEditClicked, relativeTo}: Payment
 type Props = {
   creditedInvoice: ?Object,
   handleSubmit: Function,
+  interestInvoiceFor: ?Object,
   invoice: ?Object,
   invoiceAttributes: Attributes,
   isEditClicked: boolean,
   lease: Lease,
-  onCreditedInvoiceClick: Function,
+  onInvoiceLinkClick: Function,
   relativeTo: any
 }
 
 const EditInvoiceForm = ({
   creditedInvoice,
   handleSubmit,
+  interestInvoiceFor,
   invoice,
   invoiceAttributes,
   isEditClicked,
   lease,
-  onCreditedInvoiceClick,
+  onInvoiceLinkClick,
   relativeTo,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
     if(invoice) {
-      onCreditedInvoiceClick(invoice.credited_invoice);
+      onInvoiceLinkClick(invoice.credited_invoice);
     }
   };
 
   const handleCreditedInvoiceKeyDown = (e: any) => {
     if(e.keyCode === 13) {
       handleCreditedInvoiceClick();
+    }
+  };
+
+  const handleInterestInvoiceForClick = () => {
+    if(invoice) {
+      onInvoiceLinkClick(invoice.interest_invoice_for);
+    }
+  };
+
+  const handleInterestInvoiceForKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      handleInterestInvoiceForClick();
     }
   };
 
@@ -214,6 +230,7 @@ const EditInvoiceForm = ({
   const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
   const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
   const creditInvoices = invoice ? invoice.credit_invoices : [];
+  const interestInvoices = invoice ? invoice.interest_invoices : [];
   const showOldInvoiceInfo = shouldShowOldInvoiceInfo();
 
   return (
@@ -475,8 +492,9 @@ const EditInvoiceForm = ({
             <FormText>{(invoice && getLabelOfOption(typeOptions, invoice.type)) || '-'}</FormText>
           </Authorization>
         </Column>
-        {creditedInvoice &&
-          <Column small={4}>
+
+        <Column small={4}>
+          {creditedInvoice &&
             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.CREDITED_INVOICE)}>
               <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.CREDITED_INVOICE)}>
                 {InvoiceFieldTitles.CREDITED_INVOICE}
@@ -485,11 +503,29 @@ const EditInvoiceForm = ({
                 className='no-margin'
                 onKeyDown={handleCreditedInvoiceKeyDown}
                 onClick={handleCreditedInvoiceClick}
-                tabIndex={0}>{creditedInvoice.number ? creditedInvoice.number : 'Numeroimaton'}</a>}
+                tabIndex={0}>{creditedInvoice && creditedInvoice.number
+                  ? creditedInvoice.number
+                  : 'Numeroimaton'
+                }</a>}
               </FormText>
             </Authorization>
-          </Column>
-        }
+          }
+        </Column>
+        <Column small={4}>
+          {interestInvoiceFor &&
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INTEREST_INVOICE_FOR)}>
+              <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.INTEREST_INVOICE_FOR)}>
+                {InvoiceFieldTitles.INTEREST_INVOICE_FOR}
+              </FormTextTitle>
+              <FormText>{<a
+                className='no-margin'
+                onKeyDown={handleInterestInvoiceForKeyDown}
+                onClick={handleInterestInvoiceForClick}
+                tabIndex={0}>{interestInvoiceFor.number ? interestInvoiceFor.number : 'Numeroimaton'}</a>}
+              </FormText>
+            </Authorization>
+          }
+        </Column>
       </Row>
       <Row>
         <Column small={12}>
@@ -539,7 +575,7 @@ const EditInvoiceForm = ({
 
                 {creditInvoices.map((item) => {
                   const handleCreditInvoiceClick = () => {
-                    onCreditedInvoiceClick(item.id);
+                    onInvoiceLinkClick(item.id);
                   };
 
                   const handleCreditInvoiceKeyDown = (e: any) => {
@@ -556,6 +592,70 @@ const EditInvoiceForm = ({
                             className='no-margin'
                             onKeyDown={handleCreditInvoiceKeyDown}
                             onClick={handleCreditInvoiceClick}
+                            tabIndex={0}>{item.number ? item.number : 'Numeroimaton'}</a>
+                        </FormText>
+                      </Column>
+                      <Column small={4}>
+                        <FormText><AmountWithVat amount={item.total_amount} date={item.due_date} /></FormText>
+                      </Column>
+                      <Column small={4}>
+                        <FormText>{formatDate(item.due_date)}</FormText>
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </Fragment>
+            }
+          </Fragment>
+        }
+      </Authorization>
+
+      <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INTEREST_INVOICE_FOR)}>
+        {!!interestInvoices.length &&
+          <Fragment>
+            <SubTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceInterestInvoicesFieldPaths.INTEREST_INVOICES)}>
+              {InvoiceInterestInvoicesFieldTitles.INTEREST_INVOICES}
+            </SubTitle>
+
+            {!!interestInvoices.length &&
+              <Fragment>
+                <Row>
+                  <Column small={4}>
+                    <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceInterestInvoicesFieldPaths.NUMBER)}>
+                      {InvoiceInterestInvoicesFieldTitles.NUMBER}
+                    </FormTextTitle>
+                  </Column>
+                  <Column small={4}>
+                    <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceInterestInvoicesFieldPaths.TOTAL_AMOUNT)}>
+                      {InvoiceInterestInvoicesFieldTitles.TOTAL_AMOUNT}
+                    </FormTextTitle>
+                  </Column>
+                  <Column small={4}>
+                    <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceInterestInvoicesFieldPaths.DUE_DATE)}>
+                      {InvoiceInterestInvoicesFieldTitles.DUE_DATE}
+                    </FormTextTitle>
+                  </Column>
+                </Row>
+
+                {interestInvoices.map((item) => {
+                  const handleInterestInvoiceClick = () => {
+                    onInvoiceLinkClick(item.id);
+                  };
+
+                  const handleInterestInvoiceKeyDown = (e: any) => {
+                    if(e.keyCode === 13) {
+                      handleInterestInvoiceClick();
+                    }
+                  };
+
+                  return (
+                    <Row key={item.id}>
+                      <Column small={4}>
+                        <FormText>
+                          <a
+                            className='no-margin'
+                            onKeyDown={handleInterestInvoiceKeyDown}
+                            onClick={handleInterestInvoiceClick}
                             tabIndex={0}>{item.number ? item.number : 'Numeroimaton'}</a>
                         </FormText>
                       </Column>

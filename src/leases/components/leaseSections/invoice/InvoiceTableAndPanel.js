@@ -575,7 +575,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     this.calculateTableHeight();
   }
 
-  handleOnCreditedInvoiceClick = (invoiceId: number) => {
+  handleInvoiceLinkClick = (invoiceId: number) => {
     const {formatedInvoices} = this.state,
       selectedInvoice = formatedInvoices.find((invoice) => invoice.id === invoiceId);
 
@@ -640,7 +640,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
           isOpen={!!openedInvoice}
           minHeight={tableHeight}
           onClose={this.handleInvoicePanelClose}
-          onCreditedInvoiceClick={this.handleOnCreditedInvoiceClick}
+          onInvoiceLinkClick={this.handleInvoiceLinkClick}
           onKeyDown={this.handleKeyDown}
           onResize={this.handlePanelResize}
           onSave={this.editInvoice}

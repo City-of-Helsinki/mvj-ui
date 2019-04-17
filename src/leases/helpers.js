@@ -9,12 +9,14 @@ import {isDirty} from 'redux-form';
 import {TableSortOrder} from '$components/enums';
 import {FormNames} from '$src/enums';
 import {
+  CollateralTypes,
   ConstructabilityType,
   DecisionTypeKinds,
   LeaseState,
   LeaseStatus,
   RecipientOptions,
   RelationTypes,
+  RentAdjustmentAmountTypes,
   RentCycles,
   RentDueDateTypes,
   RentTypes,
@@ -174,7 +176,8 @@ export const getContentMatchingBasisOfRents = (lease: Object) =>
 export const getContentSummary = (lease: Object) => {
   return {
     area_notes: get(lease, 'area_notes', []),
-    arrangement_decision: lease.arrangement_decision,
+    // Set arrangement decision to true if there is any contract where is_readjustment_decision == true
+    arrangement_decision: get(lease, 'contracts', []).find((contract) => contract.is_readjustment_decision) ? true : false,
     building_selling_price: lease.building_selling_price,
     classification: lease.classification,
     constructability_areas: getContentConstructability(lease),
@@ -447,7 +450,9 @@ export const getContentContractCollaterals = (contract: Object) =>
     return ({
       id: collateral.id,
       type: get(collateral, 'type.id') || get(collateral, 'type'),
+      other_type: collateral.other_type,
       number: collateral.number,
+      deed_date: collateral.deed_date,
       start_date: collateral.start_date,
       end_date: collateral.end_date,
       total_amount: collateral.total_amount,
@@ -984,7 +989,6 @@ export const getPayloadCreateLease = (lease: Object) => {
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
   return {
     ...payload,
-    arrangement_decision: summary.arrangement_decision,
     building_selling_price: convertStrToDecimalNumber(summary.building_selling_price),
     classification: summary.classification,
     conveyance_number: summary.conveyance_number,
@@ -1144,19 +1148,46 @@ const getContractChangesForDb = (contract: Object) => {
   });
 };
 
+/**
+  * Get payload of contract collateral for API PATCH request
+  *
+  */
 const getPayloadCollaterals = (contract: Object) => {
   return get(contract, 'collaterals', []).map((collateral) => {
-    return {
-      id: collateral.id || undefined,
-      type: collateral.type,
-      number: collateral.number,
-      start_date: collateral.start_date,
-      end_date: collateral.end_date,
-      total_amount: convertStrToDecimalNumber(collateral.total_amount),
-      paid_date: collateral.paid_date,
-      returned_date: collateral.returned_date,
-      note: collateral.note,
-    };
+    switch(collateral.type) {
+      case CollateralTypes.FINANCIAL_GUARANTEE:
+        return {
+          id: collateral.id,
+          type: collateral.type,
+          total_amount: convertStrToDecimalNumber(collateral.total_amount),
+          paid_date: collateral.paid_date,
+          returned_date: collateral.returned_date,
+          note: collateral.note,
+        };
+      case CollateralTypes.MORTGAGE_DOCUMENT:
+        return {
+          id: collateral.id,
+          type: collateral.type,
+          number: collateral.number,
+          deed_date: collateral.deed_date,
+          total_amount: convertStrToDecimalNumber(collateral.total_amount),
+          note: collateral.note,
+        };
+      case CollateralTypes.OTHER:
+      default:
+        return {
+          id: collateral.id,
+          type: collateral.type,
+          other_type: collateral.other_type,
+          number: collateral.number,
+          start_date: collateral.start_date,
+          end_date: collateral.end_date,
+          total_amount: convertStrToDecimalNumber(collateral.total_amount),
+          paid_date: collateral.paid_date,
+          returned_date: collateral.returned_date,
+          note: collateral.note,
+        };
+    }
   });
 };
 
@@ -1327,14 +1358,18 @@ export const addTenantsFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-export const getContentRentAdjustmentsForDb = (rent: Object) =>
+/**
+  * Get payload of rent adjustments for API PATCH request
+  *
+  */
+export const getPayloadRentAdjustments = (rent: Object) =>
   get(rent, 'rent_adjustments', []).map((item) => {
     return {
       id: item.id || undefined,
       type: item.type,
       intended_use: item.intended_use,
       start_date: item.start_date,
-      end_date: item.end_date,
+      end_date: item.amount_type !== RentAdjustmentAmountTypes.AMOUNT_TOTAL ? item.end_date : null,
       full_amount: convertStrToDecimalNumber(item.full_amount),
       amount_type: item.amount_type,
       amount_left: convertStrToDecimalNumber(item.amount_left),
@@ -1493,7 +1528,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       rentData.seasonal_end_day = rent.seasonal_end_day || null;
       rentData.seasonal_end_month = rent.seasonal_end_month || null;
       rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
-      rentData.rent_adjustments = getContentRentAdjustmentsForDb(rent);
+      rentData.rent_adjustments = getPayloadRentAdjustments(rent);
     }
 
     return rentData;
@@ -1585,6 +1620,11 @@ export const mapLeaseSearchFilters = (query: Object) => {
     delete searchQuery.sort_key;
     delete searchQuery.sort_order;
   }
+
+  if(searchQuery.has_not_geometry === 'true') {
+    searchQuery.has_geometry = false;
+  }
+  delete searchQuery.has_not_geometry;
 
   searchQuery.lease_state.forEach((state) => {
     if(state === LeaseState.RESERVE) {
