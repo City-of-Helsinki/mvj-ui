@@ -10,6 +10,8 @@ import type {
   LeaseholdTransferList,
   FetchLeaseholdTransferListAction,
   ReceiveLeaseholdTransferListAction,
+  DeleteAndUpdateLeaseholdTrasferPayload,
+  DeleteLeaseholdTransferAndUpdateListAction,
   NotFoundAction,
 } from '$src/leaseholdTransfer/types';
 
@@ -30,6 +32,9 @@ export const fetchLeaseholdTransferList = (query?: Object): FetchLeaseholdTransf
 
 export const receiveLeaseholdTransferList = (list: LeaseholdTransferList): ReceiveLeaseholdTransferListAction =>
   createAction('mvj/leaseholdTransfer/RECEIVE_ALL')(list);
+
+export const deleteLeaseholdTransferAndUpdateList = (payload: DeleteAndUpdateLeaseholdTrasferPayload): DeleteLeaseholdTransferAndUpdateListAction =>
+  createAction('mvj/leaseholdTransfer/DELETE_AND_UPDATE')(payload);
 
 export const notFound = (): NotFoundAction =>
   createAction('mvj/leaseholdTransfer/NOT_FOUND')();

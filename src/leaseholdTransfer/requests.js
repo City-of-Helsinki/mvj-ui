@@ -9,3 +9,7 @@ export const fetchAttributes = () => {
 export const fetchLeaseholdTransferList = (query?: Object) => {
   return callApi(new Request(createUrl('leasehold_transfer/', query)));
 };
+
+export const deleteLeaseholdTransfer = (id: number) => {
+  return callApi(new Request(createUrl(`leasehold_transfer/${id}/`), {method: 'DELETE'}));
+};
