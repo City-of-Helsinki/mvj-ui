@@ -107,3 +107,27 @@
     right: 0;
   }
 }
+
+.sendup-button {
+  color: $dark-green;
+  font-size: rem-calc(14px);
+  font-weight: $semibold;
+  font-family: $body-font-family;
+  cursor: pointer;
+
+  .icons__sendup {
+    vertical-align: bottom;
+    margin-left: rem-calc(5px);
+    fill: $dark-green;
+    stroke: $dark-green;
+  }
+
+  &:hover {
+    color: $dark-green-hover;
+
+    .icons__sendup {
+      fill: $dark-green-hover;
+      stroke: $dark-green-hover;
+    }
+  }
+}

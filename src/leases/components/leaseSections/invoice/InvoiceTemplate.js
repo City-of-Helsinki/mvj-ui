@@ -98,7 +98,7 @@ const InvoiceTemplate = ({
   return (
     <Fragment>
       <Row>
-        <Column small={12}>
+        <Column small={8}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.RECIPIENT)}>
               {InvoiceFieldTitles.RECIPIENT}
@@ -106,8 +106,6 @@ const InvoiceTemplate = ({
             <FormText>{invoice ? getContactFullName(invoice.recipientFull) : '-'}</FormText>
           </Authorization>
         </Column>
-      </Row>
-      <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)}>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.NUMBER)}>
@@ -116,6 +114,8 @@ const InvoiceTemplate = ({
             <FormText>{(invoice && invoice.number) || '-'}</FormText>
           </Authorization>
         </Column>
+      </Row>
+      <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.SENT_TO_SAP_AT)}>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.SENT_TO_SAP_AT)}>

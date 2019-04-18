@@ -13,6 +13,7 @@ export type InvoiceState = {
   isEditClicked: boolean,
   isFetching: boolean,
   isFetchingAttributes: boolean,
+  isSaving: boolean,
   methods: Methods,
   patchedInvoice: ?Invoice,
 };
@@ -20,6 +21,10 @@ export type Invoice = Object;
 export type InvoiceId = number;
 export type InvoiceList = Array<Object>;
 export type InvoiceListMap = Object;
+export type ExportInvoiceToLaskeAndUpdateListPayload = {
+  id: InvoiceId,
+  lease: LeaseId,
+};
 
 export type FetchAttributesAction = Action<'mvj/invoices/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/invoices/RECEIVE_ATTRIBUTES', Attributes>;
@@ -31,6 +36,7 @@ export type ReceiveInvoicesByLeaseAction = Action<'mvj/invoices/RECEIVE_BY_LEASE
 export type CreateInvoiceAction = Action<'mvj/invoices/CREATE', Invoice>;
 export type CreditInvoiceAction = Action<'mvj/invoices/CREDIT_INVOICE', Object>;
 export type PatchInvoiceAction = Action<'mvj/invoices/PATCH', Invoice>;
+export type ExportInvoiceToLaskeAndUpdateListAction = Action<'mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE', ExportInvoiceToLaskeAndUpdateListPayload>;
 export type ReceivePatchedInvoiceAction = Action<'mvj/invoices/RECEIVE_PATCHED', Invoice>;
 export type ClearPatchedInvoiceAction = Action<'mvj/invoices/CLEAR_PATCHED', void>;
 

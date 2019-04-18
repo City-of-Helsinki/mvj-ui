@@ -15,6 +15,7 @@ import {
   fetchInvoicesByLease,
   createInvoice,
   patchInvoice,
+  exportInvoiceToLaskeAndUpdateList,
   receivePatchedInvoice,
   clearPatchedInvoice,
   notFound,
@@ -35,6 +36,7 @@ const defaultState: InvoiceState = {
   isEditClicked: false,
   isFetching: false,
   isFetchingAttributes: false,
+  isSaving: false,
   methods: null,
   patchedInvoice: null,
 };
@@ -153,10 +155,17 @@ describe('Invoices', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when patching invoice', () => {
-        const newState = {...defaultState, isFetching: true};
+      it('should update isSaving flag to true when patching invoice', () => {
+        const newState = {...defaultState, isSaving: true};
 
         const state = invoiceReducer({}, patchInvoice({}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true when exporting invoice to laske', () => {
+        const newState = {...defaultState, isSaving: true};
+
+        const state = invoiceReducer({}, exportInvoiceToLaskeAndUpdateList({id: 1, lease: 1}));
         expect(state).to.deep.equal(newState);
       });
 

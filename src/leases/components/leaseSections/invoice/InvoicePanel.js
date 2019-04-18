@@ -10,6 +10,8 @@ import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import ReactResizeDetector from 'react-resize-detector';
 import {receiveIsEditClicked} from '$src/invoices/actions';
 import {FormNames, KeyCodes, Methods} from '$src/enums';
@@ -18,6 +20,7 @@ import {isMethodAllowed} from '$util/helpers';
 import {
   getInvoicesByLease,
   getIsEditClicked,
+  getIsSaving as getIsSavingInvoice,
   getMethods as getInvoiceMethods,
 } from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -32,6 +35,7 @@ type Props = {
   invoices: InvoiceList,
   isEditClicked: boolean,
   isOpen: boolean,
+  isSavingInvoice: boolean,
   minHeight: number,
   onClose: Function,
   onInvoiceLinkClick: Function,
@@ -193,6 +197,7 @@ class InvoicePanel extends PureComponent<Props, State> {
       invoiceMethods,
       isEditClicked,
       isOpen,
+      isSavingInvoice,
       minHeight,
       onClose,
       onInvoiceLinkClick,
@@ -211,6 +216,9 @@ class InvoicePanel extends PureComponent<Props, State> {
         style={{minHeight: minHeight}}
         ref={this.setComponentRef}
       >
+        {isSavingInvoice &&
+          <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isSavingInvoice}/></LoaderWrapper>
+        }
         <div
           ref={this.setContainerRef}
           className="invoice-panel__container"
@@ -286,6 +294,7 @@ export default connect(
       invoiceMethods: getInvoiceMethods(state),
       invoices: getInvoicesByLease(state, currentLease.id),
       isEditClicked: getIsEditClicked(state),
+      isSavingInvoice: getIsSavingInvoice(state),
       valid: isValid(formName)(state),
     };
   },

@@ -18,6 +18,7 @@ import {
 import {receiveError} from '$src/api/actions';
 import {displayUIMessage} from '$util/helpers';
 import {
+  exportInvoiceToLaske,
   fetchAttributes,
   fetchInvoices,
   createInvoice,
@@ -147,6 +148,24 @@ function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
   }
 }
 
+function* exportInvoiceToLaskeAndUpdateListSaga({payload: {id, lease}}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(exportInvoiceToLaske, id);
+
+    if(statusCode === 200 && bodyAsJson.success) {
+      yield put(fetchInvoicesByLease(lease));
+      displayUIMessage({title: '', body: 'Lasku lähetetty SAP:iin'});
+    } else {
+      yield put(notFound());
+      yield put(receiveError(new SubmissionError({...bodyAsJson})));
+    }
+  } catch (error) {
+    console.error('Failed to export invoice to laske with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -155,6 +174,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/invoices/CREATE', createInvoiceSaga);
       yield takeLatest('mvj/invoices/CREDIT_INVOICE', creditInvoiceSaga);
       yield takeLatest('mvj/invoices/PATCH', patchInvoiceSaga);
+      yield takeLatest('mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE', exportInvoiceToLaskeAndUpdateListSaga);
     }),
   ]);
 }

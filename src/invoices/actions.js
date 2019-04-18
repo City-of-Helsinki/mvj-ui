@@ -15,6 +15,8 @@ import type {
   CreateInvoiceAction,
   CreditInvoiceAction,
   PatchInvoiceAction,
+  ExportInvoiceToLaskeAndUpdateListAction,
+  ExportInvoiceToLaskeAndUpdateListPayload,
   ReceivePatchedInvoiceAction,
   ClearPatchedInvoiceAction,
   InvoiceNotFoundAction,
@@ -53,6 +55,9 @@ export const creditInvoice = (invoice: Object): CreditInvoiceAction =>
 
 export const patchInvoice = (invoice: Invoice): PatchInvoiceAction =>
   createAction('mvj/invoices/PATCH')(invoice);
+
+export const exportInvoiceToLaskeAndUpdateList = (payload: ExportInvoiceToLaskeAndUpdateListPayload): ExportInvoiceToLaskeAndUpdateListAction =>
+  createAction('mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE')(payload);
 
 export const receivePatchedInvoice = (invoice: Invoice): ReceivePatchedInvoiceAction =>
   createAction('mvj/invoices/RECEIVE_PATCHED')(invoice);

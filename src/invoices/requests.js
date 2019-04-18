@@ -3,7 +3,7 @@
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
 
-import type {Invoice} from './types';
+import type {Invoice, InvoiceId} from './types';
 
 export const fetchAttributes = () => {
   return callApi(new Request(createUrl('invoice/'), {method: 'OPTIONS'}));
@@ -40,5 +40,11 @@ export const patchInvoice = (invoice: Invoice): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`invoice/${id}/`), {
     method: 'PATCH',
     body,
+  }));
+};
+
+export const exportInvoiceToLaske = (id: InvoiceId): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`invoice_export_to_laske/?invoice=${id}`), {
+    method: 'POST',
   }));
 };

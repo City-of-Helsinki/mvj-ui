@@ -20,8 +20,14 @@ import type {
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/invoices/CREATE': () => true,
-  'mvj/invoices/PATCH': () => true,
   'mvj/invoices/FETCH_BY_LEASE': () => true,
+  'mvj/invoices/NOT_FOUND': () => false,
+  'mvj/invoices/RECEIVE_BY_LEASE': () => false,
+}, false);
+
+const isSavingReducer: Reducer<boolean> = handleActions({
+  'mvj/invoices/PATCH': () => true,
+  'mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE': () => true,
   'mvj/invoices/NOT_FOUND': () => false,
   'mvj/invoices/RECEIVE_BY_LEASE': () => false,
 }, false);
@@ -105,6 +111,7 @@ export default combineReducers<Object, any>({
   isCreatePanelOpen: isCreatePanelOpenReducer,
   isCreditClicked: isCreditClickedReducer,
   isCreditPanelOpen: isCreditPanelOpenReducer,
+  isSaving: isSavingReducer,
   isEditClicked: isEditClickedReducer,
   isFetching: isFetchingReducer,
   isFetchingAttributes: isFetchingAttributesReducer,

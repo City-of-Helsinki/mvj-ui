@@ -7,6 +7,9 @@ import type {LeaseId} from '$src/leases/types';
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.invoice.isFetching;
 
+export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean =>
+  state.invoice.isSaving;
+
 export const getIsCreateInvoicePanelOpen: Selector<boolean, void> = (state: RootState): boolean =>
   state.invoice.isCreatePanelOpen;
 

@@ -16,7 +16,9 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
+import SendupButton from '$components/button/SendupButton';
 import SubTitle from '$components/content/SubTitle';
+import {exportInvoiceToLaskeAndUpdateList} from '$src/invoices/actions';
 import {FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
@@ -32,6 +34,7 @@ import {
   InvoiceType,
 } from '$src/invoices/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
@@ -42,6 +45,7 @@ import {
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
+  hasPermissions,
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
@@ -49,9 +53,11 @@ import {
 } from '$util/helpers';
 import {getAttributes as getInvoiceAttributes, getIsEditClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type PaymentsProps = {
   attributes: Attributes,
@@ -171,26 +177,30 @@ const renderPayments = ({attributes, fields, isEditClicked, relativeTo}: Payment
 
 type Props = {
   creditedInvoice: ?Object,
+  currentLease: Lease,
+  exportInvoiceToLaskeAndUpdateList: Function,
   handleSubmit: Function,
   interestInvoiceFor: ?Object,
   invoice: ?Object,
   invoiceAttributes: Attributes,
   isEditClicked: boolean,
-  lease: Lease,
   onInvoiceLinkClick: Function,
-  relativeTo: any
+  relativeTo: any,
+  usersPermissions: UsersPermissionsType,
 }
 
 const EditInvoiceForm = ({
   creditedInvoice,
+  currentLease,
+  exportInvoiceToLaskeAndUpdateList,
   handleSubmit,
   interestInvoiceFor,
   invoice,
   invoiceAttributes,
   isEditClicked,
-  lease,
   onInvoiceLinkClick,
   relativeTo,
+  usersPermissions,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
     if(invoice) {
@@ -216,6 +226,15 @@ const EditInvoiceForm = ({
     }
   };
 
+  const handleExportToLaske = () => {
+    if(invoice) {
+      exportInvoiceToLaskeAndUpdateList({
+        id: invoice.id,
+        lease: currentLease.id,
+      });
+    }
+  };
+
   const shouldShowOldInvoiceInfo = () => {
     return Boolean(invoice &&
       (invoice.payment_notification_date ||
@@ -226,7 +245,7 @@ const EditInvoiceForm = ({
   };
 
   const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
-  const tenantOptions = getInvoiceTenantOptions(lease);
+  const tenantOptions = getInvoiceTenantOptions(currentLease);
   const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
   const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
   const creditInvoices = invoice ? invoice.credit_invoices : [];
@@ -236,7 +255,7 @@ const EditInvoiceForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <Row>
-        <Column small={12}>
+        <Column small={8}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.RECIPIENT)}>
               {InvoiceFieldTitles.RECIPIENT}
@@ -244,8 +263,6 @@ const EditInvoiceForm = ({
             <FormText>{invoice ? getContactFullName(invoice.recipientFull) : '-'}</FormText>
           </Authorization>
         </Column>
-      </Row>
-      <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)}>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.NUMBER)}>
@@ -254,6 +271,8 @@ const EditInvoiceForm = ({
             <FormText>{(invoice && invoice.number) || '-'}</FormText>
           </Authorization>
         </Column>
+      </Row>
+      <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.SENT_TO_SAP_AT)}>
             <FormTextTitle  enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.SENT_TO_SAP_AT)}>
@@ -269,6 +288,17 @@ const EditInvoiceForm = ({
             </FormTextTitle>
             <FormText>{(invoice && invoice.sap_id) || '-'}</FormText>
           </Authorization>
+        </Column>
+        <Column small={4}>
+          {invoice && !invoice.sent_to_sap_at &&
+            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
+              <SendupButton
+                onClick={handleExportToLaske}
+                text='Lähetä SAP:iin'
+                title='Lähetä SAP:iin'
+              />
+            </Authorization>
+          }
         </Column>
       </Row>
       <Row>
@@ -693,10 +723,14 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        currentLease: getCurrentLease(state),
         invoiceAttributes: getInvoiceAttributes(state),
         isEditClicked: getIsEditClicked(state),
-        lease: getCurrentLease(state),
+        usersPermissions: getUsersPermissions(state),
       };
+    },
+    {
+      exportInvoiceToLaskeAndUpdateList,
     },
   ),
   reduxForm({
