@@ -95,7 +95,7 @@ const BasisOfRent = ({
     if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return null;
     return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
       * Number(convertStrToDecimalNumber(basisOfRent.area))
-      * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 + 1 : 1);
+      * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
   };
 
   const getInitialYearRent = () => {
@@ -104,7 +104,7 @@ const BasisOfRent = ({
     if(!isDecimalNumberStr(currentAmountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return null;
     return Number(convertStrToDecimalNumber(currentAmountPerArea))
       * Number(convertStrToDecimalNumber(basisOfRent.area))
-      * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 + 1 : 1);
+      * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
   };
 
   const getDiscountedInitialYearRent = () => {
