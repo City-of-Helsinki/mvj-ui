@@ -11,9 +11,12 @@ import AreasLayer from './AreasLayer';
 import Divider from '$components/content/Divider';
 import PlanUnitsLayer from './PlanUnitsLayer';
 import PlotsLayer from './PlotsLayer';
+import Title from '$components/content/Title';
 import {mapColors} from '$src/constants';
 import {
   LeaseAreasFieldPaths,
+  LeaseFieldPaths,
+  LeaseFieldTitles,
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
@@ -24,6 +27,7 @@ import {
   getContentPlotsGeoJson,
   getLeaseCoordinates,
 } from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldOptions,
   getUrlParams,
@@ -32,7 +36,7 @@ import {
 } from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
-import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes as getLeaseAttributes, getCurrentLease, getIsEditMode} from '$src/leases/selectors';
 
 import type {Attributes, LeafletGeoJson, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
@@ -42,6 +46,7 @@ type Props = {
   areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   currentLease: Lease,
+  isEditMode: boolean,
   leaseAttributes: Attributes,
   location: Object,
 }
@@ -239,12 +244,15 @@ class SingleLeaseMap extends PureComponent<Props, State> {
   }
 
   render() {
+    const {isEditMode} = this.props;
     const {bounds, center} = this.state;
     const overlayLayers = this.getOverlayLayers();
 
     return(
       <Fragment>
-        <h2>Kartta</h2>
+        <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MAP)}>
+          {LeaseFieldTitles.MAP}
+        </Title>
         <Divider />
 
         <AreaNotesEditMap
@@ -266,6 +274,7 @@ export default flowRight(
       return {
         areaNoteMethods: getAreaNoteMethods(state),
         areaNotes: getAreaNoteList(state),
+        isEditMode: getIsEditMode(state),
         leaseAttributes: getLeaseAttributes(state),
         currentLease: getCurrentLease(state),
       };

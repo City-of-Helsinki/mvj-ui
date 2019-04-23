@@ -10,17 +10,19 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RentCalculatorForm from './RentCalculatorForm';
 import RentForPeriod from './RentForPeriod';
+import SubTitle from '$components/content/SubTitle';
 import {fetchBillingPeriodsByLease} from '$src/billingPeriods/actions';
 import {deleteRentForPeriodByLease, fetchRentForPeriodByLease, receiveIsSaveClicked} from '$src/rentForPeriod/actions';
 import {FormNames} from '$src/enums';
-import {ButtonColors, RentCalculatorTypes} from '$components/enums';
+import {ButtonColors, RentCalculatorFieldPaths, RentCalculatorFieldTitles, RentCalculatorTypes} from '$components/enums';
 import {RentCycles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRents} from '$src/leases/helpers';
 import {hasPermissions} from '$util/helpers';
 import {getCurrentYear} from '$util/date';
+import {getUiDataRentCalculatorKey} from '$src/uiData/helpers';
 import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
-import {getCurrentLease} from '$src/leases/selectors';
+import {getCurrentLease, getIsEditMode} from '$src/leases/selectors';
 import {
   getIsFetching,
   getIsSaveClicked,
@@ -43,6 +45,7 @@ type Props = {
   fetchBillingPeriodsByLease: Function,
   fetchRentForPeriodByLease: Function,
   fetching: boolean,
+  isEditMode: boolean,
   receiveIsSaveClicked: Function,
   rentForPeriodArray: Array<Object>,
   saveClicked: boolean,
@@ -173,6 +176,7 @@ class RentCalculator extends Component<Props> {
   render() {
     const {
       fetching,
+      isEditMode,
       rentForPeriodArray,
       saveClicked,
       usersPermissions,
@@ -183,7 +187,9 @@ class RentCalculator extends Component<Props> {
 
     return (
       <div className='rent-calculator'>
-        <span className='rent-calculator__title'>Vuokra ajalle</span>
+        <SubTitle style={{textTransform: 'uppercase'}} enableUiDataEdit={isEditMode} uiDataKey={getUiDataRentCalculatorKey(RentCalculatorFieldPaths.TYPE)}>
+          {RentCalculatorFieldTitles.TYPE}
+        </SubTitle>
         <Row>
           <Column small={12} medium={6} large={4}>
             <RentCalculatorForm
@@ -237,6 +243,7 @@ export default flowRight(
         currentLease: currentLease,
         endDate: selector(state, 'billing_end_date'),
         fetching: getIsFetching(state),
+        isEditMode: getIsEditMode(state),
         rentForPeriodArray: getRentForPeriodArrayByLease(state, currentLease.id),
         saveClicked: getIsSaveClicked(state),
         startDate: selector(state, 'billing_start_date'),

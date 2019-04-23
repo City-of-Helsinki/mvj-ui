@@ -13,6 +13,8 @@ import GreenBox from '$components/content/GreenBox';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItem from './RentItem';
 import RightSubtitle from '$components/content/RightSubtitle';
+import Title from '$components/content/Title';
+import {RentCalculatorFieldPaths, RentCalculatorFieldTitles} from '$components/enums';
 import {
   LeaseBasisOfRentsFieldPaths,
   LeaseBasisOfRentsFieldTitles,
@@ -22,6 +24,7 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRentsFormData} from '$src/leases/helpers';
 import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
+import {getUiDataLeaseKey, getUiDataRentCalculatorKey} from '$src/uiData/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
@@ -47,7 +50,9 @@ const Rents = ({
 
   return (
     <Fragment>
-      <h2>{LeaseRentsFieldTitles.RENTS}</h2>
+      <Title uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}>
+        {LeaseRentsFieldTitles.RENTS}
+      </Title>
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
         <RightSubtitle
           text={currentLease.is_rent_info_complete
@@ -81,7 +86,9 @@ const Rents = ({
       </Authorization>
 
       <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
-        <h2>Vuokralaskelma</h2>
+        <Title uiDataKey={getUiDataRentCalculatorKey(RentCalculatorFieldPaths.RENT_CALCULATOR)}>
+          {RentCalculatorFieldTitles.RENT_CALCULATOR}
+        </Title>
         <Divider />
         <GreenBox>
           <RentCalculator />
@@ -89,7 +96,9 @@ const Rents = ({
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
-        <h2>{LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}</h2>
+        <Title uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+          {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
+        </Title>
         <Divider />
         <BasisOfRents />
       </Authorization>

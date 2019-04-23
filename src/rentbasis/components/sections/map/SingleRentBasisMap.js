@@ -6,8 +6,6 @@ import isEmpty from 'lodash/isEmpty';
 
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
-import ContentContainer from '$components/content/ContentContainer';
-import Divider from '$components/content/Divider';
 import RentBasisLayer from './RentBasisLayer';
 import {mapColors} from '$src/constants';
 import {Methods} from '$src/enums';
@@ -127,17 +125,12 @@ class SingleRentBasisMap extends Component<Props, State> {
     const overlayLayers = this.getOverlayLayers();
 
     return(
-      <ContentContainer>
-        <h2>Kartta</h2>
-        <Divider />
-
-        <AreaNotesEditMap
-          allowToEdit={false}
-          bounds={bounds}
-          center={center}
-          overlayLayers={overlayLayers}
-        />
-      </ContentContainer>
+      <AreaNotesEditMap
+        allowToEdit={false}
+        bounds={bounds}
+        center={center}
+        overlayLayers={overlayLayers}
+      />
     );
   }
 }

@@ -102,6 +102,92 @@
     margin-bottom: rem-calc(10px);
   }
 
+  &__title {
+    font-family: $font-family-source;
+    font-size: rem-calc(20px);
+    line-height: rem-calc(22px);
+    font-weight: $semibold;
+    color: $black;
+    text-transform: uppercase;
+    margin: 0;
+    display: block;
+
+    .tooltip__component {
+      display: inline-block;
+      position: relative;
+      margin-left: rem-calc(5px);
+      top: -1px;
+
+      .tooltip__add-button {
+        display: none;
+      }
+    }
+
+    &.show-add-button {
+      .tooltip__component {
+        .tooltip__add-button {
+          display: inherit;
+        }
+      }
+    }
+  }
+
+  &__title-h3 {
+    font-family: $font-family-source;
+    font-size: rem-calc(20px);
+    line-height: rem-calc(22px);
+    font-weight: $semibold;
+    color: $black;
+    margin: 0;
+
+    .tooltip__component {
+      display: inline-block;
+      position: relative;
+      margin-left: rem-calc(5px);
+      top: 0;
+
+      .tooltip__add-button {
+        display: none;
+      }
+    }
+
+    &.show-add-button {
+      .tooltip__component {
+        .tooltip__add-button {
+          display: inherit;
+        }
+      }
+    }
+  }
+
+  &__sub-title {
+    font-size: $font-regular;
+    line-height: normal;
+    font-weight: 600;
+    color: $black;
+    margin: 0 0 rem-calc(5px);
+    display: block;
+
+    .tooltip__component {
+      display: inline-block;
+      position: relative;
+      margin-left: rem-calc(5px);
+      top: 0;
+
+      .tooltip__add-button {
+        display: none;
+      }
+    }
+
+    &.show-add-button {
+      .tooltip__component {
+        .tooltip__add-button {
+          display: inherit;
+        }
+      }
+    }
+  }
+
   &__truncated-text {
     display: block;
     overflow: hidden;
@@ -256,34 +342,7 @@
     margin-top: 0;
   }
 
-  .sub-title {
-    font-size: $font-regular;
-    line-height: normal;
-    font-weight: 600;
-    color: $black;
-    margin: 0 0 rem-calc(5px);
-    display: block;
 
-    .tooltip__component {
-      display: inline-block;
-      position: relative;
-      line-height: rem-calc(18px);
-      margin-left: rem-calc(5px);
-      top: -1px;
-
-      .tooltip__add-button {
-        display: none;
-      }
-    }
-
-    &.show-add-button {
-      .tooltip__component {
-        .tooltip__add-button {
-          display: inherit;
-        }
-      }
-    }
-  }
 
   .right-subtitle {
     position: absolute;

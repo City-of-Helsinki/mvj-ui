@@ -17,6 +17,7 @@ import InvoiceNotes from './InvoiceNotes';
 import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import InvoiceTableAndPanel from './InvoiceTableAndPanel';
+import Title from '$components/content/Title';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
 import {Methods, PermissionMissingTexts, ViewModes} from '$src/enums';
@@ -184,7 +185,9 @@ class Invoices extends PureComponent<Props, State> {
 
           return(
             <Fragment>
-              <h2>Laskutus</h2>
+              <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInvoicingFieldPaths.INVOICING)}>
+                {LeaseInvoicingFieldTitles.INVOICING}
+              </Title>
               <RightSubtitle
                 buttonComponent={
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_IS_INVOICING_ENABLED)}>
@@ -230,7 +233,7 @@ class Invoices extends PureComponent<Props, State> {
                   uiDataKey={getUiDataLeaseKey(LeaseInvoiceNotesFieldPaths.INVOICE_NOTES)}
                 >
                   <InvoiceNotes
-                    initialValues={{invoice_notes: invoiceNotes}} 
+                    initialValues={{invoice_notes: invoiceNotes}}
                     invoiceNotes={invoiceNotes}
                   />
                 </Collapse>
@@ -253,7 +256,9 @@ class Invoices extends PureComponent<Props, State> {
                   isMethodAllowed(collectionNoteMethods, Methods.GET) ||
                   hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)}
               >
-                <h2>Perintä</h2>
+                <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInvoicingFieldPaths.DEBT_COLLECTION)}>
+                  {LeaseInvoicingFieldTitles.DEBT_COLLECTION}
+                </Title>
                 <Divider />
                 <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.GET) ||
                   isMethodAllowed(collectionCourtDecisionMethods, Methods.GET) ||

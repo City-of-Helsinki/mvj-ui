@@ -5,7 +5,10 @@ import {connect} from 'react-redux';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import Tenant from './Tenant';
+import Title from '$components/content/Title';
+import {LeaseTenantsFieldPaths, LeaseTenantsFieldTitles} from '$src/leases/enums';
 import {getContentTenantsFormData} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Lease} from '$src/leases/types';
@@ -21,7 +24,9 @@ const Tenants = ({currentLease}: Props) => {
 
   return (
     <Fragment>
-      <h2>Vuokralaiset</h2>
+      <Title uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.TENANTS)}>
+        {LeaseTenantsFieldTitles.TENANTS}
+      </Title>
       <Divider />
       {(!tenants.length) && <FormText className='no-margin'>Ei vuokralaisia</FormText>}
       {!!tenants.length && tenants.map((tenant) =>

@@ -18,6 +18,7 @@ import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
+import Title from '$components/content/Title';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames, Methods, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
@@ -142,15 +143,19 @@ class SummaryEdit extends PureComponent<Props, State> {
 
     return (
       <form onSubmit={handleSubmit}>
-        <h2>Yhteenveto</h2>
+        <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUMMARY)}>
+          {LeaseFieldTitles.SUMMARY}
+        </Title>
         <Divider />
         <Row className='summary__content-wrapper'>
           <Column small={12} medium={8} large={9}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle='Perustiedot'
+              headerTitle={LeaseFieldTitles.SUMMARY_BASIC_INFO}
               onToggle={this.handleBasicInfoCollapseToggle}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUMMARY_BASIC_INFO)}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -442,8 +447,10 @@ class SummaryEdit extends PureComponent<Props, State> {
 
             <Collapse
               defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
-              headerTitle='Tilastotiedot'
+              headerTitle={LeaseFieldTitles.SUMMARY_STATISTICAL_INFO}
               onToggle={this.handleStatisticalInfoCollapseToggle}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUMMARY_STATISTICAL_INFO)}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>

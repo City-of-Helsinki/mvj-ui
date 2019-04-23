@@ -17,7 +17,7 @@ type State = {
   showAddButton: boolean,
 }
 
-class SubTitle extends PureComponent<Props, State> {
+class Title extends PureComponent<Props, State> {
   timer: any;
 
   state = {
@@ -83,10 +83,10 @@ class SubTitle extends PureComponent<Props, State> {
     } = this.props;
     const {showAddButton} = this.state;
 
-    return <span
+    return <h2
       onMouseEnter={this.handleMouseEnter}
       onMouseLeave={this.handleMouseLeave}
-      className={classNames('content__sub-title', {'show-add-button': showAddButton})}
+      className={classNames('content__title', {'show-add-button': showAddButton})}
       style={style}
     >
       <span>{children}</span>
@@ -98,8 +98,8 @@ class SubTitle extends PureComponent<Props, State> {
           uiDataKey={uiDataKey}
         />
       }
-    </span>;
+    </h2>;
   }
 }
 
-export default SubTitle;
+export default Title;

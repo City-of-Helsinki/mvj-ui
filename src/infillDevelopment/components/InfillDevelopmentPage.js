@@ -13,6 +13,7 @@ import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import InfillDevelopmentForm from './forms/InfillDevelopmentForm';
 import InfillDevelopmentTemplate from './sections/basicInfo/InfillDevelopmentTemplate';
@@ -24,6 +25,7 @@ import SingleInfillDevelopmentMap from './sections/map/SingleInfillDevelopmentMa
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
+import Title from '$components/content/Title';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
   clearFormValidFlags,
@@ -37,13 +39,18 @@ import {
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
-import {InfillDevelopmentCompensationLeasesFieldPaths} from '$src/infillDevelopment/enums';
+import {
+  InfillDevelopmentCompensationFieldPaths,
+  InfillDevelopmentCompensationFieldTitles,
+  InfillDevelopmentCompensationLeasesFieldPaths,
+} from '$src/infillDevelopment/enums';
 import {
   clearUnsavedChanges,
   getContentInfillDevelopment,
   getContentInfillDevelopmentCopy,
   getContentInfillDevelopmentForDb,
 } from '$src/infillDevelopment/helpers';
+import {getUiDataInfillDevelopmentKey} from '$src/uiData/helpers';
 import {
   getSearchQuery,
   getUrlParams,
@@ -466,13 +473,13 @@ class InfillDevelopmentPage extends Component<Props, State> {
             isEditMode={isEditMode}
             tabs={[
               {
-                label: 'Perustiedot',
+                label: InfillDevelopmentCompensationFieldTitles.BASIC_INFO,
                 allow: true,
                 isDirty: isInfillDevelopmentFormDirty,
                 hasError: isSaveClicked && !isFormValid,
               },
               {
-                label: 'Kartta',
+                label: InfillDevelopmentCompensationFieldTitles.MAP,
                 allow: isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE),
               },
             ]}
@@ -503,6 +510,11 @@ class InfillDevelopmentPage extends Component<Props, State> {
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
+                <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.BASIC_INFO)}>
+                  {InfillDevelopmentCompensationFieldTitles.BASIC_INFO}
+                </Title>
+                <Divider />
+
                 {isEditMode
                   ? <Authorization
                     allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}
@@ -520,6 +532,11 @@ class InfillDevelopmentPage extends Component<Props, State> {
                   allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}
                   errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL}/>}
                 >
+                  <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.MAP)}>
+                    {InfillDevelopmentCompensationFieldTitles.MAP}
+                  </Title>
+                  <Divider />
+
                   <SingleInfillDevelopmentMap />
                 </Authorization>
               </ContentContainer>

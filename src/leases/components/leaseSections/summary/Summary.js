@@ -16,6 +16,7 @@ import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
+import Title from '$components/content/Title';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {FormNames, Methods, ViewModes} from '$src/enums';
 import {LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
@@ -160,7 +161,9 @@ class Summary extends PureComponent<Props, State> {
 
     return (
       <Fragment>
-        <h2>Yhteenveto</h2>
+        <Title uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUMMARY)}>
+          {LeaseFieldTitles.SUMMARY}
+        </Title>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CLASSIFICATION)}>
           <RightSubtitle
             className='publicity-label'
@@ -175,8 +178,9 @@ class Summary extends PureComponent<Props, State> {
           <Column small={12} medium={8} large={9}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              headerTitle='Perustiedot'
+              headerTitle={LeaseFieldTitles.SUMMARY_BASIC_INFO}
               onToggle={this.handleBasicInfoCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUMMARY_BASIC_INFO)}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -391,8 +395,9 @@ class Summary extends PureComponent<Props, State> {
 
             <Collapse
               defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
-              headerTitle='Tilastotiedot'
+              headerTitle={LeaseFieldTitles.SUMMARY_STATISTICAL_INFO}
               onToggle={this.handleStatisticalInfoCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUMMARY_STATISTICAL_INFO)}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>

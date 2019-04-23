@@ -7,12 +7,13 @@ import Authorization from '$components/authorization/Authorization';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
 import RelatedLeaseItem from './RelatedLeaseItem';
+import TitleH3 from '$components/content/TitleH3';
 import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
-import {LeaseFieldPaths} from '$src/leases/enums';
+import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
 import {RelatedLeasePaths} from '$src/relatedLease/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
-import {getUiDataRelatedLeaseKey} from '$src/uiData/helpers';
+import {getUiDataLeaseKey, getUiDataRelatedLeaseKey} from '$src/uiData/helpers';
 import {getFieldOptions, hasPermissions} from '$src/util/helpers';
 import {
   getAttributes as getLeaseAttributes,
@@ -121,7 +122,9 @@ class RelatedLeasesEdit extends Component<Props, State> {
 
     return (
       <div className="summary__related-leases">
-        <h3>Historia</h3>
+        <TitleH3 enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}>
+          {LeaseFieldTitles.HISTORY }
+        </TitleH3>
 
         <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RELATEDLEASE)}>
           <div className="summary__related-leases_input-wrapper">

@@ -20,6 +20,8 @@ export const ContactTypes = {
 export const ContactFieldPaths = {
   ADDRESS: 'address',
   ADDRESS_PROTECTION: 'address_protection',
+  AUDIT_LOG: 'audit_log',
+  BASIC_INFO: 'basic_info',
   BUSINESS_ID: 'business_id',
   CARE_OF: 'care_of',
   CITY: 'city',
@@ -38,6 +40,7 @@ export const ContactFieldPaths = {
   PHONE: 'phone',
   POSTAL_CODE: 'postal_code',
   SAP_CUSTOMER_NUMBER: 'sap_customer_number',
+  TRADE_REGISTER: 'trade_register',
   TYPE: 'type',
 };
 
@@ -49,6 +52,8 @@ export const ContactFieldPaths = {
 export const ContactFieldTitles = {
   ADDRESS: 'Katuosoite',
   ADDRESS_PROTECTION: 'Turvakielto',
+  AUDIT_LOG: 'Muutoshistoria',
+  BASIC_INFO: 'Perustiedot',
   BUSINESS_ID: 'Y-tunnus',
   CARE_OF: 'c/o',
   CITY: 'Postitoimipaikka',
@@ -67,5 +72,6 @@ export const ContactFieldTitles = {
   PHONE: 'Puhelinnumero',
   POSTAL_CODE: 'Postinumero',
   SAP_CUSTOMER_NUMBER: 'SAP asiakasnumero',
+  TRADE_REGISTER: 'Kaupparekisteri',
   TYPE: 'Asiakastyyppi',
 };

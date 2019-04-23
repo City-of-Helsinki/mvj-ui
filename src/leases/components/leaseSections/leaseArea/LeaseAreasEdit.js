@@ -13,6 +13,7 @@ import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
 import LeaseAreaWithArchiveInfoEdit from './LeaseAreaWithArchiveInfoEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
+import Title from '$components/content/Title';
 import {copyAreasToContract, receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
@@ -25,6 +26,7 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {Methods} from '$src/enums';
 import {getAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatNumber,
   hasPermissions,
@@ -329,7 +331,9 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                 />
               </Authorization>
 
-              <h2>Vuokra-alue</h2>
+              <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}>
+                Vuokra-alue
+              </Title>
               <RightSubtitle
                 buttonComponent={
                   <Authorization allow={isMethodAllowed(copyAreasToContractMethods, Methods.POST)}>

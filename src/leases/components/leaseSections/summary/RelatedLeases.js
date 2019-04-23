@@ -3,9 +3,11 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 
 import RelatedLeaseItem from './RelatedLeaseItem';
-import {LeaseFieldPaths} from '$src/leases/enums';
+import TitleH3 from '$components/content/TitleH3';
+import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
 import {getFieldOptions} from '$src/util/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
@@ -62,7 +64,9 @@ class RelatedLeases extends PureComponent<Props, State> {
     } = this.state;
     return (
       <div className="summary__related-leases">
-        <h3>Historia</h3>
+        <TitleH3 uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}>
+          {LeaseFieldTitles.HISTORY }
+        </TitleH3>
         <div className="summary__related-leases_items">
           <div className="summary__related-leases_items_border-left" />
           {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {

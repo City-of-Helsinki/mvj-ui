@@ -52,6 +52,26 @@ export const RentCalculatorTypes = {
 };
 
 /**
+ * Rent calculator field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const RentCalculatorFieldPaths = {
+  RENT_CALCULATOR: 'rent-calculator',
+  TYPE: 'type',
+};
+
+/**
+ * Rent calculator field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const RentCalculatorFieldTitles = {
+  RENT_CALCULATOR: 'Vuokralaskelma',
+  TYPE: 'Vuokra ajalle', 
+};
+
+/**
  * Rent explanation subject type enumerable.
  *
  * @type {{CONTRACT_RENT: string, FIXED_INITIAL_YEAR_RENT: string, RENT: string,}}

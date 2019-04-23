@@ -24,6 +24,7 @@ import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import Tabs from '$components/tabs/Tabs';
 import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
+import Title from '$components/content/Title';
 import TradeRegisterTemplate from '$src/tradeRegister/components/TradeRegisterTemplate';
 import {
   editContact,
@@ -36,9 +37,14 @@ import {
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
-import {ContactTypes} from '$src/contacts/enums';
+import {
+  ContactFieldPaths,
+  ContactFieldTitles,
+  ContactTypes,
+} from '$src/contacts/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
+import {getUiDataContactKey} from '$src/uiData/helpers';
 import {
   hasPermissions,
   getSearchQuery,
@@ -430,7 +436,9 @@ class ContactPage extends Component<Props, State> {
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
-                <h2>Perustiedot</h2>
+                <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataContactKey(ContactFieldPaths.BASIC_INFO)}>
+                  {ContactFieldTitles.BASIC_INFO}
+                </Title>
                 <Divider />
                 {isEditMode
                   ? <Authorization
@@ -450,7 +458,9 @@ class ContactPage extends Component<Props, State> {
                 >
                   {!!contact.business_id && contact.type !== ContactTypes.PERSON &&
                     <Fragment>
-                      <h2>Kaupparekisteri</h2>
+                      <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataContactKey(ContactFieldPaths.TRADE_REGISTER)}>
+                        {ContactFieldTitles.TRADE_REGISTER}
+                      </Title>
                       <Divider />
                       <TradeRegisterTemplate
                         businessId={contact.business_id}
@@ -467,6 +477,10 @@ class ContactPage extends Component<Props, State> {
                   allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_CONTACT)}
                   errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
                 >
+                  <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataContactKey(ContactFieldPaths.AUDIT_LOG)}>
+                    {ContactFieldTitles.AUDIT_LOG}
+                  </Title>
+                  <Divider />
                   <ContactAuditLog contactId={contactId} />
                 </Authorization>
               </ContentContainer>
