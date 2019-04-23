@@ -52,9 +52,6 @@ type Props = {
   onClear: Function,
   onSearch: Function,
   router: Object,
-  sortKey: ?string,
-  sortOrder: ?string,
-  states: Array<Object>,
 }
 
 type State = {
@@ -126,7 +123,12 @@ class Search extends PureComponent<Props, State> {
       change('district', '');
     }
     if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
-      this.onSearchChange();
+      const {location: {search}} = this.props;
+      const searchQuery = getUrlParams(search);
+      const addOnlyActiveLeases = searchQuery.only_active_leases != undefined ||
+        prevProps.formValues.only_active_leases !== this.props.formValues.only_active_leases;
+
+      this.onSearchChange(addOnlyActiveLeases);
     }
   }
 
@@ -147,19 +149,14 @@ class Search extends PureComponent<Props, State> {
     return false;
   }
 
-  onSearchChange = debounce(() => {
+  onSearchChange = debounce((addOnlyActiveLeases) => {
     if(!this._isMounted) return;
 
-    const {formValues, onSearch, sortKey, sortOrder, states} = this.props;
+    const {formValues, onSearch} = this.props;
     const newValues = {...formValues};
 
-    if(sortKey || sortOrder) {
-      newValues.sort_key = sortKey;
-      newValues.sort_order = sortOrder;
-    }
-
-    if(states.length) {
-      newValues.lease_state = states;
+    if(!addOnlyActiveLeases) {
+      delete newValues.only_active_leases;
     }
 
     onSearch(newValues, true);
@@ -170,13 +167,8 @@ class Search extends PureComponent<Props, State> {
   }
 
   handleClear = () => {
-    const {onSearch, sortKey, sortOrder} = this.props;
+    const {onSearch} = this.props;
     const query = {};
-
-    if(sortKey || sortOrder) {
-      query.sort_key = sortKey;
-      query.sort_order = sortOrder;
-    }
 
     onSearch(query, true, true);
   }
