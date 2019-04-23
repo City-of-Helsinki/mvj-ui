@@ -83,9 +83,14 @@ class Search extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const {fetchDistrictsByMunicipality, municipality} = this.props;
     this._isMounted = true;
 
     this.setState({isBasicSearch: this.isSearchBasicMode()});
+
+    if(municipality) {
+      fetchDistrictsByMunicipality(municipality);
+    }
   }
 
   componentWillUnmount() {
@@ -112,15 +117,13 @@ class Search extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {clearFields, fetchDistrictsByMunicipality, isSearchInitialized} = this.props;
+    const {change, fetchDistrictsByMunicipality, isSearchInitialized} = this.props;
 
     if(Number(prevProps.municipality) !== Number(this.props.municipality)) {
       if(this.props.municipality) {
         fetchDistrictsByMunicipality(this.props.municipality);
       }
-      if(this.props.anyTouched) {
-        clearFields(false, false, 'search_district');
-      }
+      change('district', '');
     }
     if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       this.onSearchChange();
@@ -350,7 +353,7 @@ class Search extends PureComponent<Props, State> {
                         read_only: false,
                       }}
                       invisibleLabel
-                      name='lease_type'
+                      name='type'
                       overrideValues={{options: typeOptions}}
                     />
                   </Column>
