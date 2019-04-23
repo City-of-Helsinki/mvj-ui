@@ -56,6 +56,7 @@ type State = {
   isSaveClicked: boolean,
   position: 'position-top-left' | 'position-top-right' | 'position-bottom-left' | 'position-bottom-right';
   uiData: ?Object,
+  uiDataKey: ?string,
   uiDataList: UiDataList,
   usersPermissions: UsersPermissionsType,
 }
@@ -71,6 +72,7 @@ class Tooltip extends PureComponent<Props, State> {
     isSaveClicked: false,
     position: 'position-bottom-right',
     uiData: null,
+    uiDataKey: null,
     uiDataList: [],
     usersPermissions: [],
   }
@@ -108,9 +110,10 @@ class Tooltip extends PureComponent<Props, State> {
       newState.allowToEditUiData = hasPermissions(props.usersPermissions, UsersPermissions.EDIT_GLOBAL_UI_DATA);
     }
 
-    if(props.uiDataList !== state.uiDataList && props.uiDataKey) {
+    if(props.uiDataList !== state.uiDataList || props.uiDataKey !== state.uiDataKey) {
       newState.uiDataList = props.uiDataList,
-      newState.uiData = getUiDataByKey(props.uiDataList, props.uiDataKey);
+      newState.uiDataKey = props.uiDataKey,
+      newState.uiData = getUiDataByKey(props.uiDataList, props.uiDataKey || '');
     }
 
     return !isEmpty(newState) ? newState : null;

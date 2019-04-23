@@ -19,9 +19,10 @@ import GreenBox from '$components/content/GreenBox';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
+import Title from '$components/content/Title';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
 import {FormNames} from '$src/enums';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, RentCalculatorFieldPaths, RentCalculatorFieldTitles} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
@@ -33,6 +34,7 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateRentForm} from '$src/leases/formValidators';
 import {getContentRentsFormData} from '$src/leases/helpers';
+import {getUiDataLeaseKey, getUiDataRentCalculatorKey} from '$src/uiData/helpers';
 import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
 import {
   getAttributes as getLeaseAttributes,
@@ -256,7 +258,9 @@ class RentsEdit extends PureComponent<Props, State> {
           return(
             <form>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>
-                <h2>{LeaseRentsFieldTitles.RENTS}</h2>
+                <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}>
+                  {LeaseRentsFieldTitles.RENTS}
+                </Title>
 
                 <RightSubtitle
                   buttonComponent={
@@ -303,7 +307,9 @@ class RentsEdit extends PureComponent<Props, State> {
               </Authorization>
 
               <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
-                <h2>Vuokralaskelma</h2>
+                <Title enableUiDataEdit uiDataKey={getUiDataRentCalculatorKey(RentCalculatorFieldPaths.RENT_CALCULATOR)}>
+                  {RentCalculatorFieldTitles.RENT_CALCULATOR}
+                </Title>
                 <Divider />
                 <GreenBox>
                   <RentCalculator />
@@ -311,7 +317,9 @@ class RentsEdit extends PureComponent<Props, State> {
               </Authorization>
 
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
-                <h2>{LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}</h2>
+                <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+                  {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
+                </Title>
                 <Divider />
                 <FieldArray
                   ref={this.setActiveBasisOfRentsRef}

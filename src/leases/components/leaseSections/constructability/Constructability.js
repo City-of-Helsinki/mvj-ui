@@ -6,8 +6,10 @@ import ConstructabilityItem from './ConstructabilityItem';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
-import {LeaseAreasFieldPaths} from '$src/leases/enums';
+import Title from '$components/content/Title';
+import {LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getFieldOptions} from '$src/util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -74,7 +76,9 @@ class Constructability extends PureComponent<Props, State> {
 
     return (
       <Fragment>
-        <h2>Rakentamiskelpoisuus</h2>
+        <Title uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY)}>
+          {LeaseAreasFieldTitles.CONSTRUCTABILITY}
+        </Title>
         <Divider />
         <SendEmail />
 

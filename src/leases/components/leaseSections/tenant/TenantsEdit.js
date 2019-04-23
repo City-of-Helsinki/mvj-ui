@@ -15,6 +15,7 @@ import FormText from '$components/form/FormText';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import TenantItemEdit from './TenantItemEdit';
+import Title from '$components/content/Title';
 import {
   createContactOnModal as createContact,
   editContactOnModal as editContact,
@@ -38,6 +39,7 @@ import {validateTenantForm} from '$src/leases/formValidators';
 import {hasPermissions, isEmptyValue, isFieldAllowedToEdit, isMethodAllowed} from '$util/helpers';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentTenantsFormData} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {contactExists} from '$src/contacts/requestsAsync';
 import {
   getMethods as getContactMethods,
@@ -306,7 +308,9 @@ class TenantsEdit extends PureComponent<Props, State> {
               </Authorization>
 
               <form onSubmit={handleSubmit}>
-                <h2>{LeaseTenantsFieldTitles.TENANTS}</h2>
+                <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.TENANTS)}>
+                  {LeaseTenantsFieldTitles.TENANTS}
+                </Title>
                 <Divider />
 
                 <FieldArray

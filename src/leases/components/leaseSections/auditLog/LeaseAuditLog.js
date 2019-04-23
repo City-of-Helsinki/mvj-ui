@@ -9,16 +9,24 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import Pagination from '$components/table/Pagination';
 import TableWrapper from '$components/table/TableWrapper';
+import Title from '$components/content/Title';
 import {fetchAuditLogByLease} from '$src/auditLog/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {
+  LeaseFieldPaths,
+  LeaseFieldTitles,
+} from '$src/leases/enums';
 import {getAuditLogCount, getAuditLogItems, getAuditLogMaxPage} from '$src/auditLog/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getAuditLogByLease, getIsFetchingByLease} from '$src/auditLog/selectors';
+import {getIsEditMode} from '$src/leases/selectors';
 
 import type {AuditLogList} from '$src/auditLog/types';
 
 type Props = {
   auditLogList: AuditLogList,
   fetchAuditLogByLease: Function,
+  isEditMode: boolean,
   isFetching: boolean,
   leaseId: string,
 }
@@ -79,12 +87,14 @@ class LeaseAuditLog extends PureComponent<Props, State> {
   }
 
   render() {
-    const {isFetching} = this.props;
+    const {isEditMode, isFetching} = this.props;
     const {activePage, auditLogItems, maxPage} = this.state;
 
     return(
       <Fragment>
-        <h2>Muutoshistoria</h2>
+        <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.AUDIT_LOG)}>
+          {LeaseFieldTitles.AUDIT_LOG}
+        </Title>
         <Divider />
 
         <TableWrapper>
@@ -110,6 +120,7 @@ export default connect(
   (state, props: Props) => {
     return {
       auditLogList: getAuditLogByLease(state, props.leaseId),
+      isEditMode: getIsEditMode(state),
       isFetching: getIsFetchingByLease(state, props.leaseId),
     };
   },

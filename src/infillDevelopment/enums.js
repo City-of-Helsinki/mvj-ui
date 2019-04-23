@@ -30,8 +30,10 @@ export const DeleteModalTitles = {
  * @type {{}}
  */
 export const InfillDevelopmentCompensationFieldPaths = {
+  BASIC_INFO: 'basic_info',
   DETAILED_PLAN_IDENTIFIER: 'detailed_plan_identifier',
   LEASE_CONTRACT_CHANGE_DATE: 'lease_contract_change_date',
+  MAP: 'map',
   NAME: 'name',
   NOTE: 'note',
   REFERENCE_NUMBER: 'reference_number',
@@ -45,8 +47,10 @@ export const InfillDevelopmentCompensationFieldPaths = {
  * @type {{}}
  */
 export const InfillDevelopmentCompensationFieldTitles = {
+  BASIC_INFO: 'Perustiedot',
   DETAILED_PLAN_IDENTIFIER: 'Asemakaavan nro.',
   LEASE_CONTRACT_CHANGE_DATE: 'Vuokrasopimuksen muutospvm',
+  MAP: 'Kartta',
   NAME: 'Hankkeen nimi',
   NOTE: 'Huomautus',
   REFERENCE_NUMBER: 'Diaarinumero',

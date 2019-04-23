@@ -29,6 +29,7 @@ export const DeleteModalTitles = {
  */
 export const RentBasisFieldPaths = {
   ID: 'id',
+  BASIC_INFO: 'basic_info',
   DETAILED_PLAN_IDENTIFIER: 'detailed_plan_identifier',
   END_DATE: 'end_date',
   FINANCING: 'financing',
@@ -36,6 +37,7 @@ export const RentBasisFieldPaths = {
   INDEX: 'index',
   LEASE_RIGHTS_END_DATE: 'lease_rights_end_date',
   MANAGEMENT: 'management',
+  MAP: 'map',
   NOTE: 'note',
   PLOT_TYPE: 'plot_type',
   START_DATE: 'start_date',
@@ -48,6 +50,7 @@ export const RentBasisFieldPaths = {
  */
 export const RentBasisFieldTitles = {
   IDENTIFIER: 'Vuokrausperiaatetunnus',
+  BASIC_INFO: 'Perustiedot',
   DETAILED_PLAN_IDENTIFIER: 'Asemakaava',
   END_DATE: 'Loppupvm',
   FINANCING: 'Rahoitusmuoto',
@@ -55,6 +58,7 @@ export const RentBasisFieldTitles = {
   INDEX: 'Indeksi',
   LEASE_RIGHTS_END_DATE: 'Vuokraoikeus päättyy',
   MANAGEMENT: 'Hallintamuoto',
+  MAP: 'Kartta',
   NOTE: 'Huomautus',
   PLOT_TYPE: 'Tonttityyppi',
   START_DATE: 'Alkupvm',

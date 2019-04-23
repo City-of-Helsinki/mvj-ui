@@ -19,7 +19,7 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
-import {ButtonColors} from '$components/enums';
+import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
@@ -201,7 +201,10 @@ const DecisionConditionsEdit = ({
                                   fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
                                   invisibleLabel
                                   name={`${condition}.description`}
-                                  overrideValues={{label: LeaseDecisionConditionsFieldTitles.DESCRIPTION}}
+                                  overrideValues={{
+                                    label: LeaseDecisionConditionsFieldTitles.DESCRIPTION,
+                                    fieldType: FieldTypes.TEXTAREA,
+                                  }}
                                 />
                               </Authorization>
                             }
@@ -273,7 +276,10 @@ const DecisionConditionsEdit = ({
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
                                   name={`${condition}.description`}
-                                  overrideValues={{label: LeaseDecisionConditionsFieldTitles.DESCRIPTION}}
+                                  overrideValues={{
+                                    label: LeaseDecisionConditionsFieldTitles.DESCRIPTION,
+                                    fieldType: FieldTypes.TEXTAREA,
+                                  }}
                                   enableUiDataEdit
                                   uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)}
                                 />

@@ -19,6 +19,7 @@ export const UiDataPrefixes = {
   PENALTY_INTEREST: 'penalty_interest',
   RELATED_LEASE: 'related_lease',
   RENT_BASIS: 'rent_basis',
+  RENT_CALCULATOR: 'rent_calculator',
   TRADE_REGISTER_COMPANY_EXTENDED: 'trade_register_company_extended',
   TRADE_REGISTER_COMPANY_NOTICE: 'trade_register_company_notice',
   TRADE_REGISTER_COMPANY_REPRESENT: 'trade_register_company_represent',

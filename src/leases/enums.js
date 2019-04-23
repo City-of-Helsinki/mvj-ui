@@ -381,12 +381,14 @@ export const TenantContactType = {
  */
 export const LeaseFieldPaths = {
   ARRANGEMENT_DECISION: 'arrangement_decision',
+  AUDIT_LOG: 'audit_log',
   BUILDING_SELLING_PRICE: 'building_selling_price',
   CLASSIFICATION: 'classification',
   CONVEYANCE_NUMBER: 'conveyance_number',
   DISTRICT: 'district',
   END_DATE: 'end_date',
   FINANCING: 'financing',
+  HISTORY: 'history',
   HITAS: 'hitas',
   IDENTIFIER: 'identifier',
   INFILL_DEVELOPMENT_COMPENSATIONS: 'infill_development_compensations',
@@ -395,6 +397,7 @@ export const LeaseFieldPaths = {
   IS_SUBJECT_TO_VAT: 'is_subject_to_vat',
   LESSOR: 'lessor',
   MANAGEMENT: 'management',
+  MAP: 'map',
   MATCHING_BASIS_OF_RENTS: 'matching_basis_of_rents',
   MUNICIPALITY: 'municipality',
   NOTE: 'note',
@@ -412,6 +415,9 @@ export const LeaseFieldPaths = {
   STATE: 'state',
   STATISTICAL_USE: 'statistical_use',
   STATUS: 'status',
+  SUMMARY: 'summary',
+  SUMMARY_BASIC_INFO: 'summary_basic_info',
+  SUMMARY_STATISTICAL_INFO: 'summary_statistical_info',
   SUPPORTIVE_HOUSING: 'supportive_housing',
   TRANSFERABLE: 'transferable',
   TYPE: 'type',
@@ -424,12 +430,14 @@ export const LeaseFieldPaths = {
  */
 export const LeaseFieldTitles = {
   ARRANGEMENT_DECISION: 'Järjestelypäätös',
+  AUDIT_LOG: 'Muutoshistoria',
   BUILDING_SELLING_PRICE: 'Rakennuksen kauppahinta',
   CLASSIFICATION: 'Julkisuusluokka',
   CONVEYANCE_NUMBER: 'Luovutusnumero',
   DISTRICT: 'Kaupunginosa',
   END_DATE: 'Loppupvm',
   FINANCING: 'Rahoitusmuoto',
+  HISTORY: 'Historia',
   HITAS: 'Hitas',
   IDENTIFIER: 'Vuokratunnus',
   INFILL_DEVELOPMENT_COMPENSATIONS: 'Täydennysrakentamiskorvaus',
@@ -438,6 +446,7 @@ export const LeaseFieldTitles = {
   IS_SUBJECT_TO_VAT: 'Arvonlisävelvollinen',
   LESSOR: 'Vuokranantaja',
   MANAGEMENT: 'Hallintamuoto',
+  MAP: 'Kartta',
   MATCHING_BASIS_OF_RENTS: 'Vuokrausperiaatteet',
   MUNICIPALITY: 'Kunta',
   NOTE: 'Huomautus',
@@ -455,6 +464,9 @@ export const LeaseFieldTitles = {
   STATE: 'Tyyppi',
   STATISTICAL_USE: 'Tilastollinen pääkäyttötarkoitus',
   STATUS: 'Olotila',
+  SUMMARY: 'Yhteenveto',
+  SUMMARY_BASIC_INFO: 'Perustiedot',
+  SUMMARY_STATISTICAL_INFO: 'Tilastotiedot',
   SUPPORTIVE_HOUSING: 'Erityisasunnot',
   TRANSFERABLE: 'Siirto-oikeus',
   TYPE: 'Vuokrauksen laji',
@@ -471,6 +483,7 @@ export const LeaseAreasFieldPaths = {
   ARCHIVED_DECISION: 'lease_areas.child.children.archived_decision',
   ARCHIVED_NOTE: 'lease_areas.child.children.archived_note',
   AREA: 'lease_areas.child.children.area',
+  CONSTRUCTABILITY: 'lease_areas.child.children.constructability',
   CONSTRUCTABILITY_REPORT: 'lease_areas.child.children.constructability_report',
   CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS: 'lease_areas.child.children.constructability_report_geotechnical_attachments',
   CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'lease_areas.child.children.constructability_report_investigation_state',
@@ -509,6 +522,7 @@ export const LeaseAreasFieldTitles = {
   ARCHIVED_DECISION: 'Päätös',
   ARCHIVED_NOTE: 'Huomautus',
   AREA: 'Pinta-ala',
+  CONSTRUCTABILITY: 'Rakentamiskelpoisuus',
   CONSTRUCTABILITY_REPORT: 'Rakennettavuusselvitys',
   CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS: 'Geoteknisen palvelun tiedosto',
   CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE: 'Selvitys',
@@ -1269,7 +1283,9 @@ export const LeaseInspectionsFieldTitles = {
  * @type {{}}
  */
 export const LeaseInvoicingFieldPaths = {
+  DEBT_COLLECTION: 'debt_collection',
   INVOICES: 'invoices',
+  INVOICING: 'invoicing',
   IS_INVOICING_ENABLED: 'is_invoicing_enabled',
   PREVIEW_INVOICES: 'preview_invoices',
 };
@@ -1280,6 +1296,7 @@ export const LeaseInvoicingFieldPaths = {
  * @type {{}}
  */
 export const LeaseInvoicingFieldTitles = {
+  DEBT_COLLECTION: 'Perintä',
   INVOICES: 'Laskut',
   INVOICING: 'Laskutus',
   INVOICING_DISABLED: 'Laskutus keskeytetty',

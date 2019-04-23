@@ -416,10 +416,14 @@ class LandUseContractPage extends Component<Props, State> {
 
   handleBack = () => {
     const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    // Remove page specific url parameters when moving to lease list page
+    delete query.tab;
 
     return history.push({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
-      search: search,
+      search: getSearchQuery(query),
     });
   }
 

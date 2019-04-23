@@ -5,7 +5,6 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
-import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -49,9 +48,6 @@ const InfillDevelopmentTemplate = ({
 
   return (
     <Fragment>
-      <h2>Perustiedot</h2>
-      <Divider />
-
       <GreenBox>
         <Row>
           <Column small={6} medium={4} large={2}>

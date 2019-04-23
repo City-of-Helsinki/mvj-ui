@@ -7,6 +7,7 @@ import ContractsEdit from './ContractsEdit';
 import DecisionsEdit from './DecisionsEdit';
 import Divider from '$components/content/Divider';
 import InspectionsEdit from './InspectionsEdit';
+import Title from '$components/content/Title';
 import {
   LeaseContractsFieldPaths,
   LeaseContractsFieldTitles,
@@ -15,6 +16,7 @@ import {
   LeaseInspectionsFieldPaths,
   LeaseInspectionsFieldTitles,
 } from '$src/leases/enums';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -27,19 +29,25 @@ const DecisionsMainEdit = ({attributes}: Props) => {
   return(
     <Fragment>
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISIONS)}>
-        <h2>{LeaseDecisionsFieldTitles.DECISIONS}</h2>
+        <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DECISIONS)}>
+          {LeaseDecisionsFieldTitles.DECISIONS}
+        </Title>
         <Divider />
         <DecisionsEdit />
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
-        <h2>{LeaseContractsFieldTitles.CONTRACTS}</h2>
+        <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.CONTRACTS)}>
+          {LeaseContractsFieldTitles.CONTRACTS}
+        </Title>
         <Divider />
         <ContractsEdit/>
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}>
-        <h2>{LeaseInspectionsFieldTitles.INSPECTIONS}</h2>
+        <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.INSPECTIONS)}>
+          {LeaseInspectionsFieldTitles.INSPECTIONS}
+        </Title>
         <Divider />
         <InspectionsEdit />
       </Authorization>

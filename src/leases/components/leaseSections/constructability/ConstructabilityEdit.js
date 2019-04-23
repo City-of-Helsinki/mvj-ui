@@ -9,10 +9,12 @@ import ConstructabilityItemEdit from './ConstructabilityItemEdit';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
+import Title from '$components/content/Title';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames}from '$src/enums';
-import {LeaseAreasFieldPaths} from '$src/leases/enums';
+import {LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
+import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -135,7 +137,9 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
 
     return (
       <form onSubmit={handleSubmit}>
-        <h2>Rakentamiskelpoisuus</h2>
+        <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY)}>
+          {LeaseAreasFieldTitles.CONSTRUCTABILITY}
+        </Title>
         <Divider />
         <SendEmail />
 

@@ -10,8 +10,10 @@ import flowRight from 'lodash/flowRight';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
+import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -24,6 +26,7 @@ import SingleRentBasisMap from './sections/map/SingleRentBasisMap';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
+import Title from '$components/content/Title';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
   editRentBasis,
@@ -44,13 +47,14 @@ import {
   setPageTitle,
 } from '$util/helpers';
 import {FormNames} from '$src/enums';
-import {RentBasisFieldPaths} from '$src/rentbasis/enums';
+import {RentBasisFieldPaths, RentBasisFieldTitles} from '$src/rentbasis/enums';
 import {
   clearUnsavedChanges,
   formatRentBasisForDb,
   getContentCopiedRentBasis,
   getContentRentBasis,
 } from '$src/rentbasis/helpers';
+import {getUiDataRentBasisKey} from '$src/uiData/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
@@ -304,10 +308,14 @@ class RentBasisPage extends Component<Props, State> {
 
   handleBack = () => {
     const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    // Remove page specific url parameters when moving to lease list page
+    delete query.tab;
 
     return history.push({
       pathname: `${getRouteById(Routes.RENT_BASIS)}`,
-      search: search,
+      search: getSearchQuery(query),
     });
   }
 
@@ -391,13 +399,13 @@ class RentBasisPage extends Component<Props, State> {
             isEditMode={isEditMode}
             tabs={[
               {
-                label: 'Perustiedot',
+                label: RentBasisFieldTitles.BASIC_INFO,
                 allow: true,
                 isDirty: isFormDirty,
                 hasError: isSaveClicked && !isFormValid,
               },
               {
-                label: 'Kartta',
+                label: RentBasisFieldTitles.MAP,
                 allow: isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY),
               },
             ]}
@@ -427,23 +435,38 @@ class RentBasisPage extends Component<Props, State> {
 
           <TabContent active={activeTab}>
             <TabPane>
-              {isEditMode
-                ? <Authorization
-                  allow={rentBasisMethods.PATCH}
+              <ContentContainer>
+                <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.BASIC_INFO)}>
+                  {RentBasisFieldTitles.BASIC_INFO}
+                </Title>
+                <Divider />
+
+                {isEditMode
+                  ? <Authorization
+                    allow={rentBasisMethods.PATCH}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  >
+                    <RentBasisEdit />
+                  </Authorization>
+                  : <RentBasisReadonly rentBasis={rentBasis} />
+                }
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <Authorization
+                  allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)}
                   errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
                 >
-                  <RentBasisEdit />
+                  <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.MAP)}>
+                    {RentBasisFieldTitles.MAP}
+                  </Title>
+                  <Divider />
+
+                  <SingleRentBasisMap />
                 </Authorization>
-                : <RentBasisReadonly rentBasis={rentBasis} />
-              }
-            </TabPane>
-            <TabPane>
-              <Authorization
-                allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)}
-                errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
-              >
-                <SingleRentBasisMap />
-              </Authorization>
+              </ContentContainer>
             </TabPane>
           </TabContent>
         </PageContainer>

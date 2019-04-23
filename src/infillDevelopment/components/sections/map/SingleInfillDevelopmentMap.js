@@ -8,7 +8,6 @@ import isEmpty from 'lodash/isEmpty';
 
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
-import Divider from '$components/content/Divider';
 import InfillDevelopmentLeaseLayer from './InfillDevelopmentLeaseLayer';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -230,9 +229,6 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
 
     return(
       <Fragment>
-        <h2>Kartta</h2>
-        <Divider />
-
         {isLoading &&
           <LoaderWrapper className='relative-overlay-wrapper'>
             <Loader isLoading={isLoading} />

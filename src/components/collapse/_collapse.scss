@@ -104,9 +104,9 @@
       .tooltip__component {
         display: inline-block;
         position: relative;
-        line-height: rem-calc(18px);
         margin-left: rem-calc(5px);
-        top: -4px;
+        vertical-align: top;
+        top: 0;
 
         .tooltip__add-button {
           display: none;
@@ -239,7 +239,7 @@
         text-transform: uppercase;
 
         .tooltip__component {
-          top: -2px;
+          top: 2px;
         }
       }
 

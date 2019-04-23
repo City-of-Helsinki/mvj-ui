@@ -11,6 +11,7 @@ import Collapse from '$components/collapse/Collapse';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
+import ShowMore from '$components/showMore/ShowMore';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {FormNames, ViewModes} from '$src/enums';
 import {
@@ -227,7 +228,7 @@ const DecisionItem = ({
                       </Column>
                       <Column large={6}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
-                          <FormText>{condition.description || '–'}</FormText>
+                          <ShowMore className='no-margin' text={condition.description || '–'} />
                         </Authorization>
                       </Column>
                     </Row>
@@ -275,7 +276,7 @@ const DecisionItem = ({
                             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
                               {LeaseDecisionConditionsFieldTitles.DESCRIPTION}
                             </FormTextTitle>
-                            <FormText>{condition.description || '–'}</FormText>
+                            <ShowMore className='no-margin' text={condition.description || '–'} />
                           </Authorization>
                         </Column>
                       </Row>

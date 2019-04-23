@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 
 import AuditLogTable from '$components/auditLog/AuditLogTable';
-import Divider from '$components/content/Divider';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import Pagination from '$components/table/Pagination';
@@ -84,9 +83,6 @@ class ContactAuditLog extends PureComponent<Props, State> {
 
     return(
       <Fragment>
-        <h2>Muutoshistoria</h2>
-        <Divider />
-
         <TableWrapper>
           {isFetching &&
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
