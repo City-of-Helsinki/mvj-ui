@@ -85,6 +85,24 @@ class Search extends PureComponent<Props> {
           </Column>
         </Row>
         <Row>
+          <Column small={12} medium={6}>
+            <FormField
+              autoBlur
+              disableDirty
+              fieldAttributes={{
+                label: 'Näytä poistetut',
+                type: FieldTypes.CHECKBOX,
+                read_only: false,
+              }}
+              invisibleLabel
+              name='with_deleted'
+              overrideValues={{
+                options: [{value: true, label: 'Näytä poistetut'}],
+              }}
+            />
+          </Column>
+        </Row>
+        <Row>
           <Column small={12}>
             <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
           </Column>

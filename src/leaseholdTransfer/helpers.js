@@ -25,6 +25,10 @@ export const mapLeaseholdTransferSearchFilters = (query: Object) => {
     delete searchQuery.sort_order;
   }
 
+  if(searchQuery.with_deleted !== 'true') {
+    delete searchQuery.with_deleted;
+  }
+
   return searchQuery;
 };
 
