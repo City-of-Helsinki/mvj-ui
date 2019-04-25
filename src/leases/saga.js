@@ -317,6 +317,9 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
       case 200:
         const currentLease = yield select(getCurrentLease);
         yield put(receiveSingleLease({...currentLease, is_invoicing_enabled: true}));
+        // Update invoice and invoice set lists after starting invoicing 
+        yield put(fetchInvoicesByLease(leaseId));
+        yield put(fetchInvoiceSetsByLease(leaseId));
         displayUIMessage({title: '', body: 'Laskutus käynnistetty'});
         break;
       default:
