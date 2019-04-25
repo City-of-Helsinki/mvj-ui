@@ -6,6 +6,11 @@ import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import {isDirty} from 'redux-form';
 
+import {} from '$util/date';
+import {
+  getSplittedDateRangesWithItems,
+  sortByStartAndEndDateDesc,
+} from '$util/date';
 import {TableSortOrder} from '$components/enums';
 import {FormNames} from '$src/enums';
 import {
@@ -31,8 +36,8 @@ import {
   convertStrToDecimalNumber,
   fixedLengthNumber,
   formatDate,
+  formatDateRange,
   isEmptyValue,
-  sortByStartAndEndDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
@@ -206,7 +211,7 @@ export const getContentSummary = (lease: Object) => {
     start_date: lease.start_date,
     statistical_use: lease.statistical_use,
     supportive_housing: lease.supportive_housing,
-    tenants: getContentTenants(lease).filter((tenant) => isTenantActive(tenant.tenant)),
+    tenants: getContentTenants(lease).filter((tenant) => !isTenantArchived(tenant.tenant)),
     transferable: lease.transferable,
   };
 };
@@ -623,6 +628,30 @@ export const getContentTenants = (lease: Object) =>
       contact_persons: getContentTenantContactPersons(tenant),
     };
   }).sort((a, b) => sortStringByKeyDesc(a, b, 'tenant.start_date'));
+
+/**
+  * Get warnings if share on date range is greater than 100%
+  * @param {Object[]} tenants
+  * @returns {string[]}
+  */
+export const getTenantShareWarnings = (tenants: Array<Object>): Array<string> => {
+  const dateRanges = getSplittedDateRangesWithItems(tenants, 'tenant.start_date', 'tenant.end_date');
+  const warnings = [];
+  dateRanges.forEach((dateRange) => {
+    const tenants = dateRange.items;
+
+    const totalShare = tenants.reduce((sum, cur) => {
+      const share = cur.share_numerator && cur.share_denominator ? Number(cur.share_numerator)/Number(cur.share_denominator) : 0;
+      return sum + share;
+    }, 0);
+
+    if(totalShare > 1) {
+      warnings.push(`Hallintaosuus välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on yli 100%`);
+    }
+  });
+
+  return warnings;
+};
 
 export const getContentTenantsFormData = (lease: Object) => {
   const tenants = getContentTenants(lease);

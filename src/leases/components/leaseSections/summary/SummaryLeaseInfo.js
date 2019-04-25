@@ -29,7 +29,7 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentOverdueInvoices} from '$src/invoices/helpers';
-import {getContentSummary, getFullAddress} from '$src/leases/helpers';
+import {getContentSummary, getFullAddress, getTenantShareWarnings} from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
   formatDate,
@@ -71,6 +71,105 @@ const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
     {getLabelOfOption(stateOptions, researchState || ConstructabilityStatus.UNVERIFIED)}
   </p>;
 
+type TenantsProps = {
+  largeScreen: boolean,
+  tenants: Array<Object>,
+  tenantWarnings: Array<Object>,
+}
+
+const Tenants = ({
+  largeScreen,
+  tenants,
+  tenantWarnings,
+}: TenantsProps) => {
+  if(largeScreen) {
+    return(
+      <Fragment>
+        {!!tenants.length &&
+          <Fragment>
+            <Row>
+              <Column large={4}>
+                <FormTextTitle title='Vuokralainen' />
+              </Column>
+              <Column large={4}>
+                <FormTextTitle title='Hallintaosuus' />
+              </Column>
+              <Column large={4}>
+                <FormTextTitle title='Ajalla' />
+              </Column>
+            </Row>
+            <ListItems>
+              {tenants.map((contact, index) => {
+                return (
+                  <Row key={index}>
+                    <Column large={4}>
+                      <ListItem>
+                        <ExternalLink
+                          className='no-margin'
+                          href={`${getRouteById(Routes.CONTACTS)}/${get(contact, 'tenant.contact.id')}`}
+                          text={getContactFullName(get(contact, 'tenant.contact')) || '-'}
+                        />
+                      </ListItem>
+                    </Column>
+                    <Column large={4}><ListItem>{contact.share_numerator} / {contact.share_denominator}</ListItem></Column>
+                    <Column large={4}><ListItem>{formatDateRange(contact.tenant.start_date, contact.tenant.end_date) || '-'}</ListItem></Column>
+                  </Row>
+                );
+              })}
+              {!!tenantWarnings.length && tenantWarnings.map((error, index) =>
+                <Row key={index}>
+                  <Column large={4}></Column>
+                  <Column large={4}>
+                    <ErrorBlock error={error} />
+                  </Column>
+                </Row>
+              )}
+            </ListItems>
+          </Fragment>
+        }
+      </Fragment>
+    );
+  } else {
+    return(
+      <BoxItemContainer>
+        {tenants.map((contact, index) => {
+          return (
+            <BoxItem key={index} className='no-border-on-first-child no-border-on-last-child'>
+              <Row key={index}>
+                <Column small={6}>
+                  <FormTextTitle title='Vuokralainen' />
+                  <FormText>
+                    <ExternalLink
+                      className='no-margin'
+                      href={`${getRouteById(Routes.CONTACTS)}/${get(contact, 'tenant.contact.id')}`}
+                      text={getContactFullName(get(contact, 'tenant.contact')) || '-'}
+                    />
+                  </FormText>
+                </Column>
+                <Column small={6}>
+                  <FormTextTitle title='Hallintaosuus' />
+                  <FormText>{contact.share_numerator} / {contact.share_denominator}</FormText>
+                </Column>
+                <Column small={6}>
+                  <FormTextTitle title='Ajalla' />
+                  <FormText>{formatDateRange(contact.tenant.start_date, contact.tenant.end_date) || '-'}</FormText>
+                </Column>
+              </Row>
+            </BoxItem>
+          );
+        })}
+        {!!tenantWarnings.length && tenantWarnings.map((error, index) =>
+          <Row key={index}>
+            <Column small={12}>
+              <ErrorBlock error={error} />
+            </Column>
+          </Row>
+        )}
+      </BoxItemContainer>
+    );
+  }
+};
+
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
@@ -93,12 +192,9 @@ const SummaryLeaseInfo = ({
   const constructabilityStateOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE),
     summary = getContentSummary(currentLease),
     tenants = summary.tenants,
+    tenantWarnings = getTenantShareWarnings(summary.tenants),
     leaseAreas = summary.lease_areas,
-    constructabilityAreas = get(summary, 'constructability_areas', []),
-    totalShare = tenants.reduce((sum, cur) => {
-      const share = cur.share_numerator && cur.share_denominator ? Number(cur.share_numerator)/Number(cur.share_denominator) : 0;
-      return sum + share;
-    }, 0);
+    constructabilityAreas = get(summary, 'constructability_areas', []);
 
   const overdueInvoices = getContentOverdueInvoices(invoices);
 
@@ -106,44 +202,11 @@ const SummaryLeaseInfo = ({
     <Fragment>
       <SubTitle>Vuokralaiset</SubTitle>
       {!tenants.length && <FormText>Ei vuokralaisia</FormText>}
-      {!!tenants.length &&
-        <Fragment>
-          <Row>
-            <Column small={6} large={4}>
-              <FormTextTitle title='Vuokralainen' />
-            </Column>
-            <Column small={6} large={4}>
-              <FormTextTitle title='Hallintaosuus' />
-            </Column>
-          </Row>
-          <ListItems>
-            {tenants.map((contact, index) => {
-              return (
-                <Row key={index}>
-                  <Column small={6} large={4}>
-                    <ListItem>
-                      <ExternalLink
-                        className='no-margin'
-                        href={`${getRouteById(Routes.CONTACTS)}/${get(contact, 'tenant.contact.id')}`}
-                        text={getContactFullName(get(contact, 'tenant.contact')) || '-'}
-                      />
-                    </ListItem>
-                  </Column>
-                  <Column small={6} large={4}><ListItem>{contact.share_numerator} / {contact.share_denominator}</ListItem></Column>
-                </Row>
-              );
-            })}
-            {!!tenants.length && totalShare > 1 &&
-              <Row>
-                <Column small={6} large={4}></Column>
-                <Column small={6} large={4}>
-                  <ErrorBlock error='Vuokralaisten hallintaosuus on yli 100%' />
-                </Column>
-              </Row>
-            }
-          </ListItems>
-        </Fragment>
-      }
+      <Tenants
+        largeScreen={largeScreen}
+        tenants={tenants}
+        tenantWarnings={tenantWarnings}
+      />
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
         <SubTitle>Vuokrakohteet</SubTitle>

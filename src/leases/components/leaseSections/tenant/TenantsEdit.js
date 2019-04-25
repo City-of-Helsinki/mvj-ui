@@ -2,7 +2,7 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import {FieldArray, getFormValues, reduxForm} from 'redux-form';
+import {Field, FieldArray, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import type {Element} from 'react';
 
@@ -16,6 +16,8 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import TenantItemEdit from './TenantItemEdit';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
+import WarningField from '$components/form/WarningField';
 import {
   createContactOnModal as createContact,
   editContactOnModal as editContact,
@@ -35,7 +37,7 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {Methods} from '$src/enums';
-import {validateTenantForm} from '$src/leases/formValidators';
+import {validateTenantForm, warnTenantForm} from '$src/leases/formValidators';
 import {hasPermissions, isEmptyValue, isFieldAllowedToEdit, isMethodAllowed} from '$util/helpers';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentTenantsFormData} from '$src/leases/helpers';
@@ -59,6 +61,28 @@ import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ContactModalSettings} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+
+type WarningsProps = {
+  meta: Object,
+}
+
+const TenantWarnings = ({
+  meta: {warning},
+}: WarningsProps): Element<*> => {
+  return <Fragment>
+    {warning && !!warning.length &&
+      <WarningContainer>
+        {warning.map((item, index) =>
+          <WarningField
+            key={index}
+            meta={{warning: item}}
+            showWarning={true}
+          />
+        )}
+      </WarningContainer>
+    }
+  </Fragment>;
+};
 
 type TenantsProps = {
   archived: boolean,
@@ -311,6 +335,11 @@ class TenantsEdit extends PureComponent<Props, State> {
                 <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.TENANTS)}>
                   {LeaseTenantsFieldTitles.TENANTS}
                 </Title>
+                <Field
+                  name='tenantWarnings'
+                  component={TenantWarnings}
+                  showWarning={true}
+                />
                 <Divider />
 
                 <FieldArray
@@ -368,5 +397,6 @@ export default flowRight(
     form: formName,
     destroyOnUnmount: false,
     validate: validateTenantForm,
+    warn: warnTenantForm,
   }),
 )(TenantsEdit);

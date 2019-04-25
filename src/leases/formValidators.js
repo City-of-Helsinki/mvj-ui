@@ -2,12 +2,14 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
+
 import {
   RentAdjustmentAmountTypes,
   RentCycles,
   RentDueDateTypes,
   RentTypes,
 } from './enums';
+import {getTenantShareWarnings} from '$src/leases/helpers';
 import {dateGreaterOrEqual} from '$components/form/validations';
 
 export const validateSummaryForm = (values: Object) => {
@@ -88,6 +90,18 @@ export const validateTenantForm = (values: Object) => {
   }
 
   return errors;
+};
+
+export const warnTenantForm = (values: Object) => {
+  const warnings = {};
+  const {tenants} = values;
+
+  const tenantWarnings = getTenantShareWarnings(tenants);
+  if(tenantWarnings.length) {
+    warnings.tenantWarnings = tenantWarnings;
+  }
+
+  return warnings;
 };
 
 const getFixedInitialYearRentArrayErrors = (rent: Object, fixedInitialYearRents: Array<Object>) => {
