@@ -183,7 +183,7 @@ export const InvoiceRowsFieldPaths = {
 export const InvoiceRowsFieldTitles = {
   ROWS: 'Erittely',
   AMOUNT: 'Määrä (alviton)',
-  BILLING_PERIOD_END_DATE: 'Lakutuskauden loppupvm',
+  BILLING_PERIOD_END_DATE: 'Laskutuskauden loppupvm',
   BILLING_PERIOD_START_DATE: 'Laskutuskauden alkupvm',
   DESCRIPTION: 'Selite',
   RECEIVABLE_TYPE: 'Saamislaji',
