@@ -90,6 +90,14 @@
     margin-bottom: rem-calc(10px);
   }
 
+  &__warning-field {
+    color: $red;
+    display: block;
+    font-size: rem-calc(13px);
+    line-height: rem-calc(15px);
+    margin-bottom: rem-calc(10px);
+  }
+
   &__boolean, &__checkbox {
     legend {
       visibility: hidden;

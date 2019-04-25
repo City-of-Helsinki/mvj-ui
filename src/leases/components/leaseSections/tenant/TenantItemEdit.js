@@ -430,6 +430,7 @@ const selector = formValueSelector(formName);
 export default connect(
   (state, props) => {
     const id = selector(state, `${props.field}.id`);
+
     return {
       attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.tenants.${id}`),

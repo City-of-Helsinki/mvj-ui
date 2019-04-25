@@ -219,10 +219,10 @@ export const formatDateRange = (startDate: any, endDate: any) => {
 
   const dateFormat = 'DD.MM.YYYY';
 
-  if(!startDate) return `- ${formatDate(endDate, dateFormat) || ''}`;
-  if(!endDate) return `${formatDate(startDate, dateFormat) || ''} -`;
+  if(!startDate) return `–${formatDate(endDate, dateFormat) || ''}`;
+  if(!endDate) return `${formatDate(startDate, dateFormat) || ''}–`;
 
-  return `${formatDate(startDate, dateFormat) || ''} - ${formatDate(endDate, dateFormat) || ''}`;
+  return `${formatDate(startDate, dateFormat) || ''}–${formatDate(endDate, dateFormat) || ''}`;
 };
 
 export const isDecimalNumberStr = (value: any) => (!isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')));
@@ -370,19 +370,6 @@ const getFileNameByContentDisposition = (contentDisposition) => {
 export const getFileNameFromResponse = (response: any) => {
   const disposition = response.headers.get('content-disposition');
   return getFileNameByContentDisposition(disposition);
-};
-
-export const sortByStartAndEndDateDesc = (a: Object, b: Object) => {
-  const startA = get(a, 'start_date', ''),
-    endA = get(a, 'end_date', ''),
-    startB = get(b, 'start_date', ''),
-    endB = get(b, 'end_date', '');
-
-  if(startA > startB) return -1;
-  if(startA < startB) return 1;
-  if(endA > endB) return -1;
-  if(endA < endB) return 1;
-  return 0;
 };
 
 const selectElementContents = (el) => {
