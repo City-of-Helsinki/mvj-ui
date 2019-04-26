@@ -7,6 +7,7 @@ import {getRouteById, Routes} from '$src/root/routes';
 import {
   fetchSingleLeaseAfterEdit,
   hideAttachDecisionModal,
+  hideCreateModal,
   hideEditMode,
   attributesNotFound,
   notFound,
@@ -184,6 +185,34 @@ function* createLeaseSaga({payload: lease}): Generator<any, any, any> {
   }
 }
 
+function* createLeaseAndUpdateCurrentLeaseSaga({payload: lease}): Generator<any, any, any> {
+  try {
+    const currentLease = lease.relate_to;
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createLease, lease);
+
+    switch (statusCode) {
+      case 201:
+        yield put(fetchSingleLeaseAfterEdit({
+          leaseId: currentLease,
+          callbackFunctions: [
+            hideCreateModal(),
+            receiveIsSaveClicked(false),
+            () => displayUIMessage({title: '', body: 'Vuokraus luotu'}),
+          ],
+        }));
+        break;
+      default:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 function* deleteLeaseSaga({payload: leaseId}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(deleteLease, leaseId);
@@ -317,7 +346,7 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
       case 200:
         const currentLease = yield select(getCurrentLease);
         yield put(receiveSingleLease({...currentLease, is_invoicing_enabled: true}));
-        // Update invoice and invoice set lists after starting invoicing 
+        // Update invoice and invoice set lists after starting invoicing
         yield put(fetchInvoicesByLease(leaseId));
         yield put(fetchInvoiceSetsByLease(leaseId));
         displayUIMessage({title: '', body: 'Laskutus käynnistetty'});
@@ -478,6 +507,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_SINGLE_AFTER_EDIT', fetchSingleLeaseAfterEditSaga);
       yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
+      yield takeLatest('mvj/leases/CREATE_AND_UPDATE', createLeaseAndUpdateCurrentLeaseSaga);
       yield takeLatest('mvj/leases/DELETE', deleteLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
       yield takeLatest('mvj/leases/PATCH_INVOICE_NOTES', patchLeaseInvoiceNotesSaga);

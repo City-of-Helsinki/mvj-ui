@@ -997,7 +997,7 @@ export const getLeaseCoordinates = (lease: Lease) => {
 };
 
 export const getPayloadCreateLease = (lease: Object) => {
-  const relatedTo = !isEmpty(lease.relate_to)
+  const relateTo = !isEmpty(lease.relate_to)
     ? !isEmptyValue(lease.relate_to.value)
       ? lease.relate_to.value
       : undefined
@@ -1010,8 +1010,8 @@ export const getPayloadCreateLease = (lease: Object) => {
     district: lease.district,
     reference_number: lease.reference_number,
     note: lease.note,
-    relate_to: relatedTo,
-    relation_type: relatedTo ? RelationTypes.TRANSFER : undefined,
+    relate_to: relateTo,
+    relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
   };
 };
 

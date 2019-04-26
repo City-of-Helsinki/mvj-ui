@@ -26,6 +26,11 @@ const isAttachDecisionModalOpenReducer: Reducer<boolean> = handleActions({
   'mvj/leases/SHOW_ATTACH_DECISION_MODAL': () => true,
 }, false);
 
+const isCreateModalOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/HIDE_CREATE_MODAL': () => false,
+  'mvj/leases/SHOW_CREATE_MODAL': () => true,
+}, false);
+
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/leases/HIDE_EDIT': () => false,
   'mvj/leases/SHOW_EDIT': () => true,
@@ -43,6 +48,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 const isSavingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/DELETE': () => true,
   'mvj/leases/PATCH': () => true,
+  'mvj/leases/CREATE_AND_UPDATE': () => true,
   'mvj/leases/PATCH_INVOICE_NOTES': () => true,
   'mvj/leases/START_INVOICING': () => true,
   'mvj/leases/STOP_INVOICING': () => true,
@@ -163,6 +169,7 @@ export default combineReducers<Object, any>({
   collapseStates: collapseStatesReducer,
   current: currentLeaseReducer,
   isAttachDecisionModalOpen: isAttachDecisionModalOpenReducer,
+  isCreateModalOpen: isCreateModalOpenReducer,
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,

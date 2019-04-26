@@ -16,6 +16,7 @@ import type {
   SendEmailPayload,
   LeaseList,
   CreateLeaseAction,
+  CreateLeaseAndUpdateCurrentLeaseAction,
   DeleteLeaseAction,
   PatchLeaseAction,
   PatchLeaseInvoiceNotesAction,
@@ -37,6 +38,8 @@ import type {
   CopyDecisionToLeasesAction,
   HideAttachDecisionModalAction,
   ShowAttachDecisionModalAction,
+  HideCreateModalAction,
+  ShowCreateModalAction,
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
@@ -77,6 +80,9 @@ export const receiveLeaseById = (lease: Lease): ReceiveLeaseByIdAction =>
 
 export const createLease = (lease: Lease): CreateLeaseAction =>
   createAction('mvj/leases/CREATE')(lease);
+
+export const createLeaseAndUpdateCurrentLease = (lease: Lease): CreateLeaseAndUpdateCurrentLeaseAction =>
+  createAction('mvj/leases/CREATE_AND_UPDATE')(lease);
 
 export const deleteLease = (leaseId: LeaseId): DeleteLeaseAction =>
   createAction('mvj/leases/DELETE')(leaseId);
@@ -128,6 +134,12 @@ export const hideAttachDecisionModal = (): HideAttachDecisionModalAction =>
 
 export const showAttachDecisionModal = (): ShowAttachDecisionModalAction =>
   createAction('mvj/leases/SHOW_ATTACH_DECISION_MODAL')();
+
+export const hideCreateModal = (): HideCreateModalAction =>
+  createAction('mvj/leases/HIDE_CREATE_MODAL')();
+
+export const showCreateModal = (): ShowCreateModalAction =>
+  createAction('mvj/leases/SHOW_CREATE_MODAL')();
 
 export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
   createAction('mvj/leases/RECEIVE_FORM_VALID_FLAGS')(valid);

@@ -6,6 +6,7 @@ import Modal from '$components/modal/Modal';
 
 
 type Props = {
+  allowToChangeRelateTo?: boolean,
   isOpen: boolean,
   onClose: Function,
   onSubmit: Function,
@@ -13,6 +14,10 @@ type Props = {
 
 class CreateLease extends Component<Props> {
   form: any
+
+  static defaultProps = {
+    allowToChangeRelateTo: true,
+  }
 
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
@@ -26,6 +31,7 @@ class CreateLease extends Component<Props> {
 
   render () {
     const {
+      allowToChangeRelateTo,
       isOpen,
       onClose,
       onSubmit,
@@ -40,6 +46,7 @@ class CreateLease extends Component<Props> {
       >
         <CreateLeaseForm
           ref={this.setRefForForm}
+          allowToChangeRelateTo={allowToChangeRelateTo}
           onClose={onClose}
           onSubmit={onSubmit}
         />

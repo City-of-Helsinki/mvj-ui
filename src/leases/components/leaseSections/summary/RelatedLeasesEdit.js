@@ -2,37 +2,47 @@
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
+import {initialize} from 'redux-form';
 
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
+import CreateLeaseModal from '$src/leases/components/createLease/CreateLeaseModal';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
 import RelatedLeaseItem from './RelatedLeaseItem';
 import TitleH3 from '$components/content/TitleH3';
+import {createLeaseAndUpdateCurrentLease, hideCreateModal, showCreateModal} from '$src/leases/actions';
 import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
-import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
+import {FormNames, Methods} from '$src/enums';
+import {LeaseFieldPaths, LeaseFieldTitles, RelationTypes} from '$src/leases/enums';
 import {RelatedLeasePaths} from '$src/relatedLease/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
 import {getUiDataLeaseKey, getUiDataRelatedLeaseKey} from '$src/uiData/helpers';
-import {getFieldOptions, hasPermissions} from '$src/util/helpers';
+import {getFieldOptions, hasPermissions, isMethodAllowed} from '$src/util/helpers';
 import {
   getAttributes as getLeaseAttributes,
+  getMethods as getLeaseMethods,
   getCurrentLease,
+  getIsCreateModalOpen,
 } from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
+  createLeaseAndUpdateCurrentLease: Function,
   createReleatedLease: Function,
   currentLease: Lease,
   deleteReleatedLease: Function,
-  isDeleteRelatedLeaseModalOpen: boolean,
-  hideDeleteRelatedLeaseModal: Function,
+  hideCreateModal: Function,
+  initialize: Function,
+  isCreateModalOpen: boolean,
   leaseAttributes: Attributes,
-  showDeleteRelatedLeaseModal: Function,
+  leaseMethods: MethodsType,
+  showCreateModal: Function,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -110,8 +120,36 @@ class RelatedLeasesEdit extends Component<Props, State> {
     deleteReleatedLease({id: id, leaseId: currentLease.id});
   }
 
+  showCreateLeaseModal = () => {
+    const {initialize, showCreateModal} = this.props;
+
+    initialize(FormNames.LEASE_CREATE_MODAL, {});
+    showCreateModal();
+  }
+
+  hideCreateLeaseModal = () => {
+    const {hideCreateModal} = this.props;
+
+    hideCreateModal();
+  }
+
+  handleCreateLease = (payload: Object) => {
+    const {createLeaseAndUpdateCurrentLease, currentLease} = this.props;
+
+    createLeaseAndUpdateCurrentLease({
+      ...payload,
+      relate_to: currentLease.id,
+      relation_type: RelationTypes.TRANSFER,
+    });
+  }
+
   render() {
-    const {currentLease, usersPermissions} = this.props;
+    const {
+      currentLease,
+      isCreateModalOpen,
+      leaseMethods,
+      usersPermissions,
+    } = this.props;
     const {
       newLease,
       relatedLeasesAll,
@@ -122,6 +160,14 @@ class RelatedLeasesEdit extends Component<Props, State> {
 
     return (
       <div className="summary__related-leases">
+        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+          <CreateLeaseModal
+            allowToChangeRelateTo={false}
+            isOpen={isCreateModalOpen}
+            onClose={this.hideCreateLeaseModal}
+            onSubmit={this.handleCreateLease}
+          />
+        </Authorization>
         <TitleH3 enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}>
           {LeaseFieldTitles.HISTORY }
         </TitleH3>
@@ -145,6 +191,13 @@ class RelatedLeasesEdit extends Component<Props, State> {
               </Column>
             </Row>
           </div>
+        </Authorization>
+        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+          <AddButtonSecondary
+            className='no-top-margin'
+            label='Luo vuokratunnus'
+            onClick={this.showCreateLeaseModal}
+          />
         </Authorization>
 
         <div className="summary__related-leases_items">
@@ -191,12 +244,18 @@ export default connect(
   (state) => {
     return {
       currentLease: getCurrentLease(state),
+      isCreateModalOpen: getIsCreateModalOpen(state),
       leaseAttributes: getLeaseAttributes(state),
+      leaseMethods: getLeaseMethods(state),
       usersPermissions: getUsersPermissions(state),
     };
   },
   {
+    createLeaseAndUpdateCurrentLease,
     createReleatedLease,
     deleteReleatedLease,
+    hideCreateModal,
+    initialize,
+    showCreateModal,
   }
 )(RelatedLeasesEdit);
