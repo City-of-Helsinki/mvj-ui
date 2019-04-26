@@ -27,11 +27,11 @@ import type {DistrictList} from '$src/district/types';
 
 
 type Props = {
+  allowToChangeRelateTo: boolean,
   change: Function,
   districts: DistrictList,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
-  handleSubmit: Function,
   leaseAttributes: Attributes,
   municipality: string,
   onClose: Function,
@@ -77,8 +77,8 @@ class CreateLeaseForm extends Component<Props> {
 
   render() {
     const {
+      allowToChangeRelateTo,
       districts,
-      handleSubmit,
       leaseAttributes,
       onClose,
       valid,
@@ -87,7 +87,7 @@ class CreateLeaseForm extends Component<Props> {
     const districtOptions = getDistrictOptions(districts);
 
     return (
-      <form onSubmit={handleSubmit}>
+      <div>
         <Row>
           <Column small={4} medium={3}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.STATE)}>
@@ -166,22 +166,24 @@ class CreateLeaseForm extends Component<Props> {
             </Authorization>
           </Column>
         </Row>
-        <Row>
-          <Column small={4} medium={3}>
-            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.RELATE_TO)}>
-              <FormField
-                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.RELATE_TO)}
-                name='relate_to'
-                overrideValues={{
-                  fieldType: FieldTypes.LEASE,
-                  label: LeaseFieldTitles.RELATE_TO,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)}
-              />
-            </Authorization>
-          </Column>
-        </Row>
+        {allowToChangeRelateTo &&
+          <Row>
+            <Column small={4} medium={3}>
+              <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.RELATE_TO)}>
+                <FormField
+                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.RELATE_TO)}
+                  name='relate_to'
+                  overrideValues={{
+                    fieldType: FieldTypes.LEASE,
+                    label: LeaseFieldTitles.RELATE_TO,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)}
+                />
+              </Authorization>
+            </Column>
+          </Row>
+        }
 
         <ModalButtonWrapper>
           <Button
@@ -196,7 +198,7 @@ class CreateLeaseForm extends Component<Props> {
             text='Luo tunnus'
           />
         </ModalButtonWrapper>
-      </form>
+      </div>
     );
   }
 }

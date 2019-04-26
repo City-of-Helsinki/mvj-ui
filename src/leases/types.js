@@ -7,6 +7,7 @@ export type LeaseState = {
   collapseStates: Object,
   current: Lease,
   isAttachDecisionModalOpen: boolean,
+  isCreateModalOpen: boolean,
   isFormValidById: Object,
   isEditMode: boolean,
   isFetching: boolean,
@@ -50,6 +51,7 @@ export type ReceiveSingleLeaseAction = Action<'mvj/leases/RECEIVE_SINGLE', Lease
 export type FetchLeaseByIdAction = Action<'mvj/leases/FETCH_BY_ID', LeaseId>;
 export type ReceiveLeaseByIdAction = Action<'mvj/leases/RECEIVE_BY_ID', Lease>;
 export type CreateLeaseAction = Action<'mvj/leases/CREATE', Lease>;
+export type CreateLeaseAndUpdateCurrentLeaseAction = Action<'mvj/leases/CREATE_AND_UPDATE', Lease>;
 export type DeleteLeaseAction = Action<'mvj/leases/DELETE', LeaseId>;
 export type PatchLeaseAction = Action<'mvj/leases/PATCH', Lease>;
 export type PatchLeaseInvoiceNotesAction = Action<'mvj/leases/PATCH_INVOICE_NOTES', Lease>;
@@ -65,6 +67,9 @@ export type SendEmailAction = Action<'mvj/leases/SEND_EMAIL', SendEmailPayload>;
 
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
+
+export type HideCreateModalAction = Action<'mvj/leases/HIDE_CREATE_MODAL', void>;
+export type ShowCreateModalAction = Action<'mvj/leases/SHOW_CREATE_MODAL', void>;
 
 export type ReceiveIsSaveClickedAction = Action<'mvj/leases/RECEIVE_SAVE_CLICKED', boolean>;
 

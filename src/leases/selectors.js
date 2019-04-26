@@ -13,6 +13,9 @@ import type {
 export const getIsAttachDecisionModalOpen: Selector<boolean, void> = (state: RootState): boolean =>
   state.lease.isAttachDecisionModalOpen;
 
+export const getIsCreateModalOpen: Selector<boolean, void> = (state: RootState): boolean =>
+  state.lease.isCreateModalOpen;
+
 export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolean =>
   state.lease.isEditMode;
 

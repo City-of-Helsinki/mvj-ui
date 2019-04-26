@@ -10,11 +10,11 @@ import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
-import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import IconRadioButtons from '$components/button/IconRadioButtons';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';

@@ -13,6 +13,7 @@ import {
   receiveLeaseById,
   notFoundById,
   createLease,
+  createLeaseAndUpdateCurrentLease,
   deleteLease,
   patchLease,
   patchLeaseInvoiceNotes,
@@ -27,6 +28,8 @@ import {
   hideEditMode,
   hideAttachDecisionModal,
   showAttachDecisionModal,
+  hideCreateModal,
+  showCreateModal,
   receiveFormValidFlags,
   clearFormValidFlags,
   receiveIsSaveClicked,
@@ -42,6 +45,7 @@ const defaultState: LeaseState = {
   collapseStates: {},
   current: {},
   isAttachDecisionModalOpen: false,
+  isCreateModalOpen: false,
   isEditMode: false,
   isFetching: false,
   isFetchingAttributes: false,
@@ -179,6 +183,16 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isSaving flag to true when creating new lease and updating current lease', () => {
+        const dummyLease = {
+          foo: 'bar',
+        };
+        const newState = {...defaultState, isSaving: true};
+
+        const state = leasesReducer({}, createLeaseAndUpdateCurrentLease(dummyLease));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isSaving flag to true when editing lease', () => {
         const dummyLease = {
           foo: 'bar',
@@ -308,6 +322,21 @@ describe('Leases', () => {
 
         let state = leasesReducer({}, showAttachDecisionModal());
         state = leasesReducer({}, hideAttachDecisionModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isCreateModalOpen flag to true', () => {
+        const newState = {...defaultState, isCreateModalOpen: true};
+
+        const state = leasesReducer({}, showCreateModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isCreateModalOpen flag to false', () => {
+        const newState = {...defaultState, isCreateModalOpen: false};
+
+        let state = leasesReducer({}, showCreateModal());
+        state = leasesReducer({}, hideCreateModal());
         expect(state).to.deep.equal(newState);
       });
 
