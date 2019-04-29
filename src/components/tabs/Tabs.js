@@ -7,7 +7,7 @@ import Authorization from '$components/authorization/Authorization';
 type Props = {
   active: ?number,
   className?: string,
-  isEditMode: boolean,
+  isEditMode?: boolean,
   onTabClick: Function,
   tabs: Array<any>,
 };
