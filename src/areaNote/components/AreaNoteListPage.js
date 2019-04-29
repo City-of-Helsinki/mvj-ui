@@ -216,7 +216,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     return (
       <PageContainer>
         <Row>
-          <Column small={12} large={6}>
+          <Column small={12} large={4}>
             <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
@@ -226,7 +226,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
               />
             </Authorization>
           </Column>
-          <Column small={12} large={6}>
+          <Column small={12} large={8}>
             <Search
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}

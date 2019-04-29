@@ -347,7 +347,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     return (
       <PageContainer>
         <Row>
-          <Column small={12} large={6}>
+          <Column small={12} large={4}>
             <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
@@ -356,7 +356,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
               />
             </Authorization>
           </Column>
-          <Column small={12} large={6}>
+          <Column small={12} large={8}>
             <Search
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
@@ -364,15 +364,16 @@ class InfillDevelopmentListPage extends Component<Props, State> {
               sortOrder={sortOrder}
               states={selectedStates}
             />
-
-            <TableFilters
-              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-              filterOptions={stateOptions}
-              filterValue={selectedStates}
-              onFilterChange={this.handleSelectedStatesChange}
-            />
           </Column>
         </Row>
+
+        <TableFilters
+          alignFiltersRight
+          amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+          filterOptions={stateOptions}
+          filterValue={selectedStates}
+          onFilterChange={this.handleSelectedStatesChange}
+        />
 
         <TableWrapper>
           {isFetching &&

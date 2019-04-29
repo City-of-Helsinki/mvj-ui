@@ -348,8 +348,8 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
           return (
             <PageContainer>
               <Row>
-                <Column small={12} large={6}></Column>
-                <Column small={12} large={6}>
+                <Column small={12} large={4}></Column>
+                <Column small={12} large={8}>
                   <Search
                     isSearchInitialized={isSearchInitialized}
                     onSearch={this.handleSearchChange}
@@ -358,16 +358,11 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
                   />
                 </Column>
               </Row>
-              <Row>
-                <Column small={12} medium={6}></Column>
-                <Column small={12} medium={6}>
-                  <TableFilters
-                    amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-                    filterOptions={[]}
-                    filterValue={[]}
-                  />
-                </Column>
-              </Row>
+              <TableFilters
+                amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+                filterOptions={[]}
+                filterValue={[]}
+              />
 
               <TableWrapper>
                 {isFetching &&

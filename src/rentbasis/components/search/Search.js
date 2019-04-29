@@ -147,72 +147,78 @@ class Search extends PureComponent<Props, State> {
 
         {!isBasicSearch &&
           <Fragment>
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Päätös</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <Row>
-                  <Column small={6}>
+            <Row>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Päätös</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <Row>
+                      <Column small={12}>
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Päätöksen tekijä',
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='decision_maker'
+                          overrideValues={{options: decisionMakerOptions}}
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Päätöspvm',
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='decision_date'
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Pykälä',
+                            type: FieldTypes.STRING,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          unit='§'
+                          name='decision_section'
+                        />
+                      </Column>
+                    </Row>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Diaarinro</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
                     <FormField
                       autoBlur
                       disableDirty
                       fieldAttributes={{
-                        label: 'Päätöksen tekijä',
-                        type: FieldTypes.CHOICE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='decision_maker'
-                      overrideValues={{options: decisionMakerOptions}}
-                    />
-                  </Column>
-                  <Column small={3}>
-                    <FormField
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Päätöspvm',
-                        type: FieldTypes.DATE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='decision_date'
-                    />
-                  </Column>
-                  <Column small={3}>
-                    <FormField
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Pykälä',
+                        label: 'Diaarinro',
                         type: FieldTypes.STRING,
                         read_only: false,
                       }}
                       invisibleLabel
-                      unit='§'
-                      name='decision_section'
+                      name='reference_number'
                     />
-                  </Column>
-                </Row>
-              </SearchInputColumn>
-            </SearchRow>
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Diaarinro</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Diaarinro',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='reference_number'
-                />
-              </SearchInputColumn>
-            </SearchRow>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+            </Row>
           </Fragment>
         }
 

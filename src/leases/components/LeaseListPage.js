@@ -25,6 +25,7 @@ import Search from './search/Search';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableIcon from '$components/icons/TableIcon';
+import TableFilterWrapper from '$components/table/TableFilterWrapper';
 import TableWrapper from '$components/table/TableWrapper';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -473,7 +474,7 @@ class LeaseListPage extends PureComponent<Props, State> {
           />
         </Authorization>
         <Row>
-          <Column small={12} large={6}>
+          <Column small={12} large={4}>
             <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
@@ -482,7 +483,7 @@ class LeaseListPage extends PureComponent<Props, State> {
               />
             </Authorization>
           </Column>
-          <Column small={12} large={6}>
+          <Column small={12} large={8}>
             <Search
               attributes={leaseAttributes}
               isSearchInitialized={isSearchInitialized}
@@ -491,8 +492,16 @@ class LeaseListPage extends PureComponent<Props, State> {
           </Column>
         </Row>
 
-        <Row>
-          <Column small={12} medium={6}>
+        <TableFilterWrapper
+          filterComponent={
+            <TableFilters
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              filterOptions={leaseStateFilterOptions}
+              filterValue={leaseStates}
+              onFilterChange={this.handleLeaseStatesChange}
+            />
+          }
+          visualizationComponent={
             <VisualisationTypeWrapper>
               <IconRadioButtons
                 legend={'Kartta/taulukko'}
@@ -502,16 +511,8 @@ class LeaseListPage extends PureComponent<Props, State> {
                 value={visualizationType}
               />
             </VisualisationTypeWrapper>
-          </Column>
-          <Column small={12} medium={6}>
-            <TableFilters
-              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-              filterOptions={leaseStateFilterOptions}
-              filterValue={leaseStates}
-              onFilterChange={this.handleLeaseStatesChange}
-            />
-          </Column>
-        </Row>
+          }
+        />
 
         <TableWrapper>
           {isFetching &&

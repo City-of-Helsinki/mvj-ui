@@ -308,7 +308,7 @@ class RentBasisListPage extends Component<Props, State> {
     return (
       <PageContainer>
         <Row>
-          <Column small={12} large={6}>
+          <Column small={12} large={4}>
             <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
@@ -317,7 +317,7 @@ class RentBasisListPage extends Component<Props, State> {
               />
             </Authorization>
           </Column>
-          <Column small={12} large={6}>
+          <Column small={12} large={8}>
             <Search
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
@@ -327,16 +327,11 @@ class RentBasisListPage extends Component<Props, State> {
           </Column>
         </Row>
 
-        <Row>
-          <Column small={12} medium={6}></Column>
-          <Column small={12} medium={6}>
-            <TableFilters
-              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-              filterOptions={[]}
-              filterValue={[]}
-            />
-          </Column>
-        </Row>
+        <TableFilters
+          amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+          filterOptions={[]}
+          filterValue={[]}
+        />
 
         <TableWrapper>
           {isFetching &&

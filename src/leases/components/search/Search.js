@@ -191,7 +191,7 @@ class Search extends PureComponent<Props, State> {
     return (
       <SearchContainer>
         <Row>
-          <Column large={12}>
+          <Column small={12}>
             <FormField
               autoBlur
               disableDirty
@@ -207,70 +207,183 @@ class Search extends PureComponent<Props, State> {
         </Row>
         {!isBasicSearch &&
           <Fragment>
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Vuokralainen</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Vuokralainen',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='tenant_name'
-                />
-              </SearchInputColumn>
-            </SearchRow>
+            <Row>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Vuokralainen</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vuokralainen',
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='tenant_name'
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Alkupvm</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <Row>
+                      <Column small={6}>
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Vuokrauksen alkupvm alkaen',
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='lease_start_date_start'
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          className='with-dash'
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Vuokrauksen alkupvm loppuen',
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='lease_start_date_end'
+                        />
+                      </Column>
+                    </Row>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+            </Row>
 
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Y-tunnus</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Y-tunnus',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='business_id'
-                />
-              </SearchInputColumn>
-            </SearchRow>
+            <Row>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Y-tunnus</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Y-tunnus',
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='business_id'
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Henkilötunnus</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Henkilötunnus',
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='national_identification_number'
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Loppupvm</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <Row>
+                      <Column small={6}>
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Vuokrauksen loppupvm alkaen',
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='lease_end_date_start'
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          className='with-dash'
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Vuokrauksen loppupvm loppuen',
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='lease_end_date_end'
+                        />
+                      </Column>
+                    </Row>
+                    <Row>
+                      <Column small={6}>
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Voimassa',
+                            type: FieldTypes.CHECKBOX,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='only_active_leases'
+                          overrideValues={{
+                            options: [{value: true, label: 'Voimassa'}],
+                          }}
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Päättyneet',
+                            type: FieldTypes.CHECKBOX,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='only_expired_leases'
+                          overrideValues={{
+                            options: [{value: true, label: 'Päättyneet'}],
+                          }}
+                        />
+                      </Column>
+                    </Row>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+            </Row>
 
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Henkilötunnus</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Henkilötunnus',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='national_identification_number'
-                />
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Rooli</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <Row>
-                  <Column small={12} medium={6}>
+            <Row>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Rooli</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
                     <FormField
                       autoBlur
                       disableDirty
@@ -286,8 +399,12 @@ class Search extends PureComponent<Props, State> {
                         options: tenantTypeOptions,
                       }}
                     />
-                  </Column>
-                  <Column small={12} medium={6}>
+                  </SearchInputColumn>
+                </SearchRow>
+                <SearchRow>
+                  <SearchLabelColumn>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
                     <FormField
                       autoBlur
                       disableDirty
@@ -302,365 +419,263 @@ class Search extends PureComponent<Props, State> {
                         options: [{value: true, label: 'Vain entiset asiakkaat'}],
                       }}
                     />
-                  </Column>
-                </Row>
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Vuokranantaja</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Vuokranantaja',
-                    type: FieldTypes.CHOICE,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='lessor'
-                  overrideValues={{
-                    options: lessorOptions,
-                  }}
-                />
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Vuokratunnus</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <Row>
-                  <Column small={3}>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Vuokrakohteen osoite</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
                     <FormField
                       autoBlur
                       disableDirty
                       fieldAttributes={{
-                        label: 'Tyyppi',
-                        type: FieldTypes.CHOICE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='type'
-                      overrideValues={{options: typeOptions}}
-                    />
-                  </Column>
-                  <Column small={3}>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Kunta',
-                        type: FieldTypes.CHOICE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='municipality'
-                      overrideValues={{options: municipalityOptions}}
-                    />
-                  </Column>
-                  <Column small={3}>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Kaupunginosa',
-                        type: FieldTypes.CHOICE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='district'
-                      overrideValues={{options: districtOptions}}
-                    />
-                  </Column>
-                  <Column small={3}>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Juokseva numero',
+                        label: 'Vuokrakohteen osoite',
                         type: FieldTypes.STRING,
                         read_only: false,
                       }}
                       invisibleLabel
-                      name='sequence'
+                      name='address'
                     />
-                  </Column>
-                </Row>
-              </SearchInputColumn>
-            </SearchRow>
+                  </SearchInputColumn>
+                </SearchRow>
 
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Alkupvm</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <Row>
-                  <Column small={6}>
-                    <FormField
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Vuokrauksen alkupvm alkaen',
-                        type: FieldTypes.DATE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='lease_start_date_start'
-                    />
-                  </Column>
-                  <Column small={6}>
-                    <FormField
-                      className='with-dash'
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Vuokrauksen alkupvm loppuen',
-                        type: FieldTypes.DATE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='lease_start_date_end'
-                    />
-                  </Column>
-                </Row>
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Loppupvm</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <Row>
-                  <Column small={6}>
-                    <FormField
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Vuokrauksen loppupvm alkaen',
-                        type: FieldTypes.DATE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='lease_end_date_start'
-                    />
-                  </Column>
-                  <Column small={6}>
-                    <FormField
-                      className='with-dash'
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Vuokrauksen loppupvm loppuen',
-                        type: FieldTypes.DATE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='lease_end_date_end'
-                    />
-                  </Column>
-                </Row>
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn></SearchLabelColumn>
-              <SearchInputColumn>
-                <Row>
-                  <Column small={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Sopimusnro</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
                     <FormField
                       autoBlur
                       disableDirty
                       fieldAttributes={{
-                        label: 'Voimassa',
-                        type: FieldTypes.CHECKBOX,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='only_active_leases'
-                      overrideValues={{
-                        options: [{value: true, label: 'Voimassa'}],
-                      }}
-                    />
-                  </Column>
-                  <Column small={6}>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Päättyneet',
-                        type: FieldTypes.CHECKBOX,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='only_expired_leases'
-                      overrideValues={{
-                        options: [{value: true, label: 'Päättyneet'}],
-                      }}
-                    />
-                  </Column>
-                </Row>
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Kiinteistötunnus</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Kiinteistötunnus',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='property_identifier'
-                />
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Geometria puuttuu',
-                    type: FieldTypes.CHECKBOX,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='has_not_geometry'
-                  overrideValues={{
-                    options: [{value: true, label: 'Geometria puuttuu'}],
-                  }}
-                />
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Vuokrakohteen osoite</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Vuokrakohteen osoite',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='address'
-                />
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Sopimusnro</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Sopimusnro',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='contract_number'
-                />
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Päätös</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <Row>
-                  <Column small={6}>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Päätöksen tekijä',
-                        type: FieldTypes.CHOICE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='decision_maker'
-                      overrideValues={{options: decisionMakerOptions}}
-                    />
-                  </Column>
-                  <Column small={3}>
-                    <FormField
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Päätöspvm',
-                        type: FieldTypes.DATE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='decision_date'
-                    />
-                  </Column>
-                  <Column small={3}>
-                    <FormField
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Pykälä',
+                        label: 'Sopimusnro',
                         type: FieldTypes.STRING,
                         read_only: false,
                       }}
                       invisibleLabel
-                      unit='§'
-                      name='decision_section'
+                      name='contract_number'
                     />
-                  </Column>
-                </Row>
-              </SearchInputColumn>
-            </SearchRow>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+            </Row>
+            <Row>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Vuokranantaja</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vuokranantaja',
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='lessor'
+                      overrideValues={{
+                        options: lessorOptions,
+                      }}
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Vuokratunnus</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <Row>
+                      <Column small={6}>
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Tyyppi',
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='type'
+                          overrideValues={{options: typeOptions}}
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Kunta',
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='municipality'
+                          overrideValues={{options: municipalityOptions}}
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Kaupunginosa',
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='district'
+                          overrideValues={{options: districtOptions}}
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Juokseva numero',
+                            type: FieldTypes.STRING,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='sequence'
+                        />
+                      </Column>
+                    </Row>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Päätös</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <Row>
+                      <Column small={12}>
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Päätöksen tekijä',
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='decision_maker'
+                          overrideValues={{options: decisionMakerOptions}}
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Päätöspvm',
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name='decision_date'
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: 'Pykälä',
+                            type: FieldTypes.STRING,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          unit='§'
+                          name='decision_section'
+                        />
+                      </Column>
+                    </Row>
+                  </SearchInputColumn>
+                </SearchRow>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Diaarinro</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Diaarinro',
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='reference_number'
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+            </Row>
 
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Diaarinro</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Diaarinro',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='reference_number'
-                />
-              </SearchInputColumn>
-            </SearchRow>
-
-            <SearchRow>
-              <SearchLabelColumn>
-                <SearchLabel>Laskunro</SearchLabel>
-              </SearchLabelColumn>
-              <SearchInputColumn>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: 'Laskunro',
-                    type: FieldTypes.STRING,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name='invoice_number'
-                />
-              </SearchInputColumn>
-            </SearchRow>
+            <Row>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Kiinteistötunnus</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Kiinteistötunnus',
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='property_identifier'
+                    />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Geometria puuttuu',
+                        type: FieldTypes.CHECKBOX,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='has_not_geometry'
+                      overrideValues={{
+                        options: [{value: true, label: 'Geometria puuttuu'}],
+                      }}
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+              <Column small={12} large={6}>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Laskunro</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Laskunro',
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='invoice_number'
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+              </Column>
+            </Row>
           </Fragment>
         }
 

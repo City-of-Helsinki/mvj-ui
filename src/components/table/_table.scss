@@ -400,6 +400,7 @@
     display: flex;
 
     &_filter-wrapper {
+      display: flex;
       flex: 1 1 0%;
 
       &_title {
@@ -408,6 +409,14 @@
         padding: 0;
         display: block;
         margin: rem-calc(0 0 2px);
+      }
+    }
+
+    &_filter-inner-wrapper {
+      margin: auto;
+
+      &--align-right {
+        margin-right: 0;
       }
     }
 
@@ -423,6 +432,22 @@
         line-height: rem-calc(20px);
         margin-bottom: rem-calc(5px);
       }
+    }
+  }
+
+  &__table-filter-wrapper {
+    display: flex;
+
+    @include breakpoint(medium down){
+      flex-direction: column;
+    }
+
+    &_visualization-wrapper {
+      padding-right: rem-calc(20px);
+    }
+
+    &_filter-wrapper {
+      flex: 1 1 0%;
     }
   }
 

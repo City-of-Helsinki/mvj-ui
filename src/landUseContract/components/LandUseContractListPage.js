@@ -282,14 +282,14 @@ class LandUseContractListPage extends Component<Props, State> {
         />
 
         <Row>
-          <Column small={12} large={6}>
+          <Column small={12} large={4}>
             <AddButtonSecondary
               className='no-top-margin'
               label='Luo maankäyttösopimus'
               onClick={this.handleCreateButtonClick}
             />
           </Column>
-          <Column small={12} large={6}>
+          <Column small={12} large={8}>
             <Search
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
@@ -298,17 +298,13 @@ class LandUseContractListPage extends Component<Props, State> {
           </Column>
         </Row>
 
-        <Row>
-          <Column small={12} medium={6}></Column>
-          <Column small={12} medium={6}>
-            <TableFilters
-              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-              filterOptions={stateOptions}
-              filterValue={selectedStates}
-              onFilterChange={this.handleSelectedStatesChange}
-            />
-          </Column>
-        </Row>
+        <TableFilters
+          alignFiltersRight
+          amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+          filterOptions={stateOptions}
+          filterValue={selectedStates}
+          onFilterChange={this.handleSelectedStatesChange}
+        />
 
         <TableWrapper>
           {isFetching &&
