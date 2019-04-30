@@ -412,7 +412,10 @@ class SummaryEdit extends PureComponent<Props, State> {
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.NOTE)}
                       name='note'
-                      overrideValues={{label: LeaseFieldTitles.NOTE}}
+                      overrideValues={{
+                        label: LeaseFieldTitles.NOTE,
+                        fieldType: FieldTypes.TEXTAREA,
+                      }}
                       enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTE)}
                     />
