@@ -647,6 +647,8 @@ export const getTenantShareWarnings = (tenants: Array<Object>): Array<string> =>
 
     if(totalShare > 1) {
       warnings.push(`Hallintaosuus välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on yli 100%`);
+    } else if(totalShare < 1) {
+      warnings.push(`Hallintaosuus välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on alle 100%`);
     }
   });
 
