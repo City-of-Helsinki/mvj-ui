@@ -54,6 +54,7 @@ export const getContentLeaseholdTransfers = (list: LeaseholdTransferList) =>
         decision_date: item.decision_date,
         acquirers: get(item, 'parties', []).filter((party) => party.type === LeaseholdTransferPartyTypes.ACQUIRER),
         conveyors: get(item, 'parties', []).filter((party) => party.type === LeaseholdTransferPartyTypes.CONVEYOR),
+        deleted: item.deleted,
       };
     });
 

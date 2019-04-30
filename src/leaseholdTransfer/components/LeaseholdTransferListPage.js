@@ -329,6 +329,14 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
                 sortable: false,
               });
             }
+            if(isFieldAllowedToRead(leaseholdTransferAttributes, LeaseholdTransferFieldPaths.DELETED)) {
+              columns.push({
+                key: 'deleted',
+                text: LeaseholdTransferFieldTitles.DELETED,
+                renderer: (val) => formatDate(val),
+                sortable: false,
+              });
+            }
             if(isMethodAllowed(leaseholdTransferMethods, Methods.DELETE)) {
               columns.push({
                 key: 'id',
