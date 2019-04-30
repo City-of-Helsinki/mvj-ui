@@ -141,6 +141,7 @@ class ContactPage extends Component<Props, State> {
 
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -186,6 +187,7 @@ class ContactPage extends Component<Props, State> {
       receiveSingleContact,
     } = this.props;
 
+
     if(pathname !== `${getRouteById(Routes.CONTACTS)}/${contactId}`) {
       clearUnsavedChanges();
     }
@@ -196,6 +198,16 @@ class ContactPage extends Component<Props, State> {
 
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+    const tab = query.tab ? Number(query.tab) : 0;
+
+    // Set correct active tab on back/forward button press
+    this.setState({activeTab: tab});
   }
 
   startAutoSaveTimer = () => {

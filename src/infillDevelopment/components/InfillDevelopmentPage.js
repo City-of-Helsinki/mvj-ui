@@ -173,7 +173,9 @@ class InfillDevelopmentPage extends Component<Props, State> {
     }
 
     hideEditMode();
+
     window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -190,8 +192,6 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {
       currentInfillDevelopment,
       isEditMode,
-      location,
-      location: {search},
       match: {params: {infillDevelopmentId}},
     } = this.props;
     const {activeTab} = this.state;
@@ -214,14 +214,6 @@ class InfillDevelopmentPage extends Component<Props, State> {
     if(prevProps.isEditMode && !isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
-    }
-
-    if (prevProps.location !== location) {
-      const query = getUrlParams(search);
-
-      this.setState({
-        activeTab: query.tab,
-      });
     }
 
     if(prevState.activeTab !== activeTab) {
@@ -247,7 +239,18 @@ class InfillDevelopmentPage extends Component<Props, State> {
     receiveSingleInfillDevelopment({});
 
     hideEditMode();
+
     window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+    const tab = query.tab ? Number(query.tab) : 0;
+
+    // Set correct active tab on back/forward button press
+    this.setState({activeTab: tab});
   }
 
   setPageTitle = () => {

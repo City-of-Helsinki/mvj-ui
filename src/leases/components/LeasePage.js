@@ -280,6 +280,7 @@ class LeasePage extends Component<Props, State> {
     }
 
     window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   componentDidUpdate(prevProps:Props, prevState: State) {
@@ -294,13 +295,10 @@ class LeasePage extends Component<Props, State> {
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       isEditMode,
-      location,
-      location: {search},
       match: {params: {leaseId}},
       usersPermissions,
     } = this.props;
     const {activeTab} = this.state;
-    const query = getUrlParams(search);
 
     if(prevProps.usersPermissions !== usersPermissions) {
       if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
@@ -322,10 +320,6 @@ class LeasePage extends Component<Props, State> {
     // Fetch collection notes when getting new collection note methods and GET is allowed
     if(prevProps.collectionNoteMethods !== collectionNoteMethods && isMethodAllowed(collectionNoteMethods, Methods.GET)) {
       fetchCollectionNotesByLease(leaseId);
-    }
-
-    if (prevProps.location !== location) {
-      this.setState({activeTab: query.tab});
     }
 
     if(prevState.activeTab !== activeTab) {
@@ -374,7 +368,18 @@ class LeasePage extends Component<Props, State> {
     destroy(FormNames.INVOICE_SIMULATOR);
     destroy(FormNames.RENT_CALCULATOR);
     hideEditMode();
+
     window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+    const tab = query.tab ? Number(query.tab) : 0;
+
+    // Set correct active tab on back/forward button press
+    this.setState({activeTab: tab});
   }
 
   setPageTitle = () => {
