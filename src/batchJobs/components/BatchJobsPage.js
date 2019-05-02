@@ -9,10 +9,12 @@ import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import PageContainer from '$components/content/PageContainer';
 import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
+import Runs from '$src/batchJobs/components/Runs';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import Title from '$components/content/Title';
+
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {
   getSearchQuery,
@@ -37,7 +39,9 @@ class BatchJobsPage extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const {receiveTopNavigationSettings} = this.props;
+    const {
+      receiveTopNavigationSettings,
+    } = this.props;
 
     setPageTitle('Eräajot');
 
@@ -113,6 +117,8 @@ class BatchJobsPage extends PureComponent<Props, State> {
                 <Title>Ajot</Title>
                 <Divider/>
 
+                <Runs />
+
               </ContentContainer>
             </TabPane>
 
@@ -136,7 +142,6 @@ export default flowRight(
   connect(
     () => {
       return {
-
       };
     },
     {
