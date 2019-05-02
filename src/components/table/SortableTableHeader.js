@@ -84,7 +84,7 @@ const SortableTableHeader = ({
             <th
               key={column.key}
               className={classNames(kebabCase(column.key), {'sortable': isSortable})}
-              style={{...columnStyle, minWidth: column.minWidth}}
+              style={{...column.style, ...columnStyle, minWidth: column.minWidth}}
               onClick={handleColumnClick}
             >
               <div

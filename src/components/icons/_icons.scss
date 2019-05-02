@@ -10,6 +10,16 @@
     stroke: $dark-green;
   }
 
+  &__error {
+    fill: $red;
+  }
+
+  &__success {
+    #Artboard {
+      fill: $dark-green;
+    }
+  }
+
   &.icons__trash {
     #Artboard {
       fill: $dark-green;

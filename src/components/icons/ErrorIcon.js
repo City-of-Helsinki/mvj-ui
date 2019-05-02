@@ -7,7 +7,7 @@ type Props = {
 }
 
 const ErrorIcon = ({className}: Props) =>
-  <svg viewBox="0 0 16 16" className={classNames('icons', className)}>
+  <svg viewBox="0 0 16 16" className={classNames('icons', 'icons__error', className)}>
     <title>Virhe</title>
     <g stroke="none">
       <g transform="translate(-610.000000, -338.000000)">

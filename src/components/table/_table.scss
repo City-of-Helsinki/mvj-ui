@@ -457,3 +457,50 @@
     align-items: flex-end;
   }
 }
+
+.table {
+  &__table-and-panel-wrapper {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+
+    &_table-wrapper {
+      width: 100%;
+      margin-bottom: rem-calc(10px);
+      z-index: 1;
+      background-color: $white;
+
+      @include transition(0.5s, max-width, ease-in-out);
+    }
+
+    &_panel-wrapper {
+      background-color: $white;
+      margin-bottom: rem-calc(10px);
+      position: absolute;
+      width: 607.5px;
+      max-width: 100%;
+      height: auto;
+      top: 0;
+      right: -607.5px;
+      z-index: 2;
+      border: none;
+      overflow: visible;
+      border-left: rem-calc(10px) solid $green;
+
+      @include transition(0.5s, right, ease-in-out);
+
+      &--is-open {
+        right: 0;
+        @include transition(0.5s, right, ease-in-out);
+      }
+    }
+  }
+
+  &__table-panel {
+    .close-button-component {
+      position: absolute;
+      right: 3px;
+      top: 6px;
+    }
+  }
+}

@@ -27,6 +27,7 @@ export type Column = {
   minWidth?: number,
   renderer?: Function,
   sortable?: boolean,
+  style?: Object,
   text: string,
 }
 
@@ -269,7 +270,7 @@ class SortableTable extends Component<Props, State> {
 
   setTableScrollHeaderColumnStyles = () => {
     if(!this._isMounted) return;
-    
+
     const ths = [].slice.call(this.thead.querySelectorAll('th'));
 
     const scrollHeaderColumnStyles = ths.map((th) => {
