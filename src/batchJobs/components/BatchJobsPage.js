@@ -10,6 +10,7 @@ import FullWidthContainer from '$components/content/FullWidthContainer';
 import PageContainer from '$components/content/PageContainer';
 import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import Runs from '$src/batchJobs/components/Runs';
+import Schedules from '$src/batchJobs/components/Schedules';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
@@ -118,7 +119,6 @@ class BatchJobsPage extends PureComponent<Props, State> {
                 <Divider/>
 
                 <Runs />
-
               </ContentContainer>
             </TabPane>
 
@@ -127,6 +127,7 @@ class BatchJobsPage extends PureComponent<Props, State> {
                 <Title>Ajastukset</Title>
                 <Divider/>
 
+                <Schedules />
               </ContentContainer>
             </TabPane>
           </TabContent>

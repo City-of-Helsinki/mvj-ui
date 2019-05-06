@@ -16,7 +16,7 @@ import Divider from '$components/content/Divider';
 import InvoiceNotes from './InvoiceNotes';
 import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
 import RightSubtitle from '$components/content/RightSubtitle';
-import InvoiceTableAndPanel from './InvoiceTableAndPanel';
+import InvoiceTableAndPanel from './InvoiceTableAndPanel2';
 import Title from '$components/content/Title';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';

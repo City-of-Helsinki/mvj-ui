@@ -1,6 +1,7 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {cloneElement, PureComponent} from 'react';
 import classNames from 'classnames';
+import scrollToComponent from 'react-scroll-to-component';
 import ReactResizeDetector from 'react-resize-detector';
 
 const TABLE_MIN_HEIGHT = 521;
@@ -21,6 +22,9 @@ type State = {
 }
 
 class TableAndPanelWrapper extends PureComponent<Props, State> {
+  panel: any
+  table: any
+
   state = {
     tableHeight: null,
     tableWidth: null,
@@ -28,6 +32,14 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
 
   container: any
   panelWrapper: any
+
+  setPanelRef = (el: any) => {
+    this.panel = el;
+  }
+
+  setTableRef = (el: any) => {
+    this.table = el;
+  }
 
   componentDidMount() {
     this.calculateTableHeight();
@@ -59,6 +71,21 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     this.calculateTableWidth();
   }
 
+  handlePanelResize = () => {
+    this.calculateTableHeight();
+    this.calculateTableWidth();
+  }
+
+  scrollToPanel = () => {
+    setTimeout(() => {
+      scrollToComponent(this.panelWrapper, {
+        offset: -190,
+        align: 'top',
+        duration: 450,
+      });
+    }, 50);
+  }
+
   transitionEnds = () => {
     const {isPanelOpen, onPanelClosed, onPanelOpened} = this.props;
     if(isPanelOpen) {
@@ -73,17 +100,17 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
   }
 
   calculateTableHeight = () => {
-    const {isPanelOpen, panelComponent, tableComponent} = this.props;
-    const {scrollHeight: panelHeight} = panelComponent,
-      tableMinHeight = TABLE_MIN_HEIGHT,
+    const {isPanelOpen} = this.props;
+    const {scrollHeight: panelHeight} = this.panelWrapper;
+    const tableMinHeight = TABLE_MIN_HEIGHT,
       borderHeight = 2;
-    let {scrollHeight: tableHeight} = tableComponent;
+    let tableHeight = 0;
 
-    if(isPanelOpen) {
-      tableHeight = panelHeight > tableMinHeight ? panelHeight : tableMinHeight;
-    } else {
-      tableHeight = tableMinHeight - borderHeight;
-    }
+    tableHeight = isPanelOpen
+      ? panelHeight > tableMinHeight
+        ? panelHeight
+        : tableMinHeight
+      : tableMinHeight - borderHeight;
 
     this.setState({
       tableHeight: tableHeight,
@@ -133,7 +160,7 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
           className='table__table-and-panel-wrapper_table-wrapper'
           style={{minHeight: hasData ? tableHeight || null : null, maxWidth: tableWidth || null}}
         >
-          {tableComponent}
+          {cloneElement(tableComponent, {ref: this.setTableRef, maxHeight: tableHeight})}
         </div>
         <div
           ref={this.setPanelWrapperRef}
@@ -141,9 +168,14 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
             'table__table-and-panel-wrapper_panel-wrapper',
             {'table__table-and-panel-wrapper_panel-wrapper--is-open': isPanelOpen}
           )}
-          style={{minHeight: tableHeight}}
         >
-          {panelComponent}
+          <ReactResizeDetector
+            handleHeight
+            onResize={this.handlePanelResize}
+            refreshMode='debounce'
+            refreshRate={1}
+          />
+          {cloneElement(panelComponent, {ref: this.setPanelRef})}
         </div>
       </div>
     );

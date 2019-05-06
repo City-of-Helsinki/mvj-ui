@@ -228,15 +228,14 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         if(selectedRows[0].scrollIntoViewIfNeeded) {
           selectedRows[0].scrollIntoViewIfNeeded();
         } else {
-          this.scrollIntoViewIfNeeded(selectedRows[0]);
+          this.scrollIntoViewIfNeeded(selectedRows[0], selectedRows[0].parentNode.parentNode.parentNode);
         }
       }
     }
   }
 
-  scrollIntoViewIfNeeded = (element: any) => {
-    const parent = element.parentNode.parentNode.parentNode,
-      parentComputedStyle = window.getComputedStyle(parent, null),
+  scrollIntoViewIfNeeded = (element: any, parent: any) => {
+    const parentComputedStyle = window.getComputedStyle(parent, null),
       parentBorderTopWidth = parseInt(parentComputedStyle.getPropertyValue('border-top-width')),
       overTop = element.offsetTop - parent.offsetTop < parent.scrollTop,
       overBottom = (element.offsetTop - parent.offsetTop + element.clientHeight - parentBorderTopWidth) > (parent.scrollTop + parent.clientHeight);

@@ -56,6 +56,7 @@ type Props = {
   sortKey?: string,
   sortOrder?: string,
   sortable?: boolean,
+  style?: Object,
 }
 
 type State = {
@@ -417,6 +418,7 @@ class SortableTable extends Component<Props, State> {
       showGroupRadioButton,
       showRadioButton,
       sortable,
+      style,
     } = this.props;
     const {
       scrollHeaderColumnStyles,
@@ -433,6 +435,7 @@ class SortableTable extends Component<Props, State> {
       <div
         ref={this.setContainerRef}
         className={classNames('sortable-table__container', {'fixed-table-container': fixedHeader})}
+        style={style}
       >
         {fixedHeader &&
           <ReactResizeDetector
