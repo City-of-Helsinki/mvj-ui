@@ -241,8 +241,8 @@ class InvoicePanel extends PureComponent<Props, State> {
             />
           </div>
 
-          <div className={classNames('invoice-panel__body', {'with-footer': (isMethodAllowed(invoiceMethods, Methods.PATCH) && invoice && !invoice.sap_id)})}>
-            {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id)
+          <div className={classNames('invoice-panel__body', {'with-footer': (isMethodAllowed(invoiceMethods, Methods.PATCH) && invoice && !invoice.sent_to_sap_at)})}>
+            {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sent_to_sap_at)
               ? <EditInvoiceForm
                 creditedInvoice={creditedInvoice}
                 interestInvoiceFor={interestInvoiceFor}
