@@ -68,7 +68,7 @@ export const RentCalculatorFieldPaths = {
  */
 export const RentCalculatorFieldTitles = {
   RENT_CALCULATOR: 'Vuokralaskelma',
-  TYPE: 'Vuokra ajalle', 
+  TYPE: 'Vuokra ajalle',
 };
 
 /**
@@ -102,6 +102,7 @@ export const RentExplanationType = {
 export const RentSubItemSubjectType = {
   INDEX: 'index',
   NEW_BASE_RENT: 'new_base_rent',
+  NOTICE: 'notice',
   RATIO: 'ratio',
   RENT_ADJUSTMENT: 'rentadjustment',
 };

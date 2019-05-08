@@ -497,6 +497,10 @@
       margin: 0;
     }
 
+    &.alert {
+      color: $red;
+    }
+
     &.semibold {
       font-weight: $semibold;
     }
