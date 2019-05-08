@@ -18,13 +18,13 @@ type Props = {
 
 class SubMenu extends PureComponent<Props> {
   componentDidMount() {
-    document.addEventListener('click', this.onDocumentClick);
-    document.addEventListener('keydown', this.onDocumentKeyDown);
+    window.addEventListener('click', this.onDocumentClick);
+    window.addEventListener('keydown', this.onDocumentKeyDown);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.onDocumentClick);
-    document.removeEventListener('keydown', this.onDocumentKeyDown);
+    window.removeEventListener('click', this.onDocumentClick);
+    window.removeEventListener('keydown', this.onDocumentKeyDown);
   }
 
   onDocumentClick = (event: any) => {

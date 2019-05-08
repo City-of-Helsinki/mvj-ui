@@ -78,13 +78,13 @@ class InvoicePanel extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keydown', this.handleKeyDown);
     this.component.addEventListener('transitionend', this.transitionEnds);
     this._isMounted = false;
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keydown', this.handleKeyDown);
     this.component.removeEventListener('transitionend', this.transitionEnds);
     this._isMounted = true;
   }

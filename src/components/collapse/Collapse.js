@@ -45,7 +45,6 @@ class Collapse extends PureComponent<Props, State> {
   component: any
   content: any
   tooltip: any
-  _isMounted: boolean
 
   static defaultProps = {
     defaultOpen: false,
@@ -70,12 +69,10 @@ class Collapse extends PureComponent<Props, State> {
 
   componentDidMount() {
     this.component.addEventListener('transitionend', this.transitionEnds);
-    this._isMounted = true;
   }
 
   componentWillUnmount() {
     this.component.removeEventListener('transitionend', this.transitionEnds);
-    this._isMounted = false;
   }
 
   componentDidUpdate = (prevProps: Object, prevState: Object) => {
@@ -86,10 +83,6 @@ class Collapse extends PureComponent<Props, State> {
   }
 
   onResize = () => {
-    if(!this._isMounted) {
-      return;
-    }
-
     this.calculateHeight();
   }
 
@@ -101,10 +94,6 @@ class Collapse extends PureComponent<Props, State> {
   }
 
   transitionEnds = () => {
-    if(!this._isMounted) {
-      return;
-    }
-
     this.setState({
       isCollapsing: false,
       isExpanding: false,

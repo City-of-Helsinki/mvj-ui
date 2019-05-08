@@ -32,13 +32,13 @@ class Dropdown extends Component<Props, State> {
   }
 
   componentDidMount() {
-    document.addEventListener('touchstart', this.handleDocumentClick);
-    document.addEventListener('mousedown', this.handleDocumentClick);
+    window.addEventListener('touchstart', this.handleDocumentClick);
+    window.addEventListener('mousedown', this.handleDocumentClick);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('touchstart', this.handleDocumentClick);
-    document.removeEventListener('mousedown', this.handleDocumentClick);
+    window.removeEventListener('touchstart', this.handleDocumentClick);
+    window.removeEventListener('mousedown', this.handleDocumentClick);
   }
 
   handleDocumentClick = (event: Event) => {
