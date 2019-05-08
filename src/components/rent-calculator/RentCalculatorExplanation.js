@@ -34,7 +34,6 @@ const RentCalculatorExplanation = ({attributes, date, explanation}: Props) => {
         <Column small={6}>
           <FormText
             className={classNames({
-              'alert': subjectType === RentExplanationSubjectType.NOTICE,
               'semibold': subjectType === RentExplanationSubjectType.RENT,
             })}>
             {description || '-'}
