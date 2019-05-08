@@ -73,7 +73,26 @@ import {
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges, getContentLeaseIdentifier} from '$src/leases/helpers';
-import * as contentHelpers from '$src/leases/helpers';
+import {
+  addAreasFormValues,
+  addConstructabilityFormValues,
+  addContractsFormValues,
+  addDecisionsFormValues,
+  addInspectionsFormValues,
+  addRentsFormValues,
+  addSummaryFormValues,
+  addTenantsFormValues,
+  getContentBasisOfRents,
+  getContentContracts,
+  getContentConstructability,
+  getContentDecisions,
+  getContentInspections,
+  getContentLeaseAreas,
+  getContentRentsFormData,
+  getContentSummary,
+  getContentTenantsFormData,
+  isUserAllowedToDeleteEmptyLease,
+} from '$src/leases/helpers';
 import {
   getSearchQuery,
   getUrlParams,
@@ -84,6 +103,7 @@ import {
   setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
+import {getLoggedInUser} from '$src/auth/selectors';
 import {getCommentsByLease} from '$src/comments/selectors';
 import {getInvoicesByLease} from '$src/invoices/selectors';
 import {
@@ -167,6 +187,7 @@ type Props = {
   leaseMethods: MethodsType, // get via withCommonAttributes HOC
   leaseTypeList: LeaseTypeList,
   location: Object,
+  loggedUser: Object,
   match: {
     params: Object,
   },
@@ -185,15 +206,22 @@ type Props = {
 
 type State = {
   activeTab: number,
+  allowToDeleteEmptyLease: boolean,
+  comments: CommentList,
+  currentLease: Lease,
   isCommentPanelOpen: boolean,
   isRestoreModalOpen: boolean,
+  loggedUser: Object,
 };
 
 class LeasePage extends Component<Props, State> {
   state = {
     activeTab: 0,
+    allowToDeleteEmptyLease: false,
+    currentLease: {},
     isCommentPanelOpen: false,
     isRestoreModalOpen: false,
+    loggedUser: Object,
   }
 
   timerAutoSave: any
@@ -202,7 +230,7 @@ class LeasePage extends Component<Props, State> {
     router: PropTypes.object,
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const {
       collectionCourtDecisionMethods,
       collectionLetterMethods,
@@ -218,10 +246,25 @@ class LeasePage extends Component<Props, State> {
       fetchVats,
       hideEditMode,
       leaseTypeList,
+      location: {search},
       match: {params: {leaseId}},
+      receiveTopNavigationSettings,
       usersPermissions,
       vats,
     } = this.props;
+    const query = getUrlParams(search);
+
+    this.setPageTitle();
+
+    receiveTopNavigationSettings({
+      linkUrl: getRouteById(Routes.LEASES),
+      pageTitle: 'Vuokraukset',
+      showSearch: true,
+    });
+
+    if (query.tab) {
+      this.setState({activeTab: query.tab});
+    }
 
     fetchSingleLease(leaseId);
 
@@ -258,29 +301,22 @@ class LeasePage extends Component<Props, State> {
     fetchAreaNoteList({});
 
     hideEditMode();
-  }
-
-  componentDidMount() {
-    const {
-      location: {search},
-      receiveTopNavigationSettings,
-    } = this.props;
-    const query = getUrlParams(search);
-
-    this.setPageTitle();
-
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.LEASES),
-      pageTitle: 'Vuokraukset',
-      showSearch: true,
-    });
-
-    if (query.tab) {
-      this.setState({activeTab: query.tab});
-    }
 
     window.addEventListener('beforeunload', this.handleLeavePage);
     window.addEventListener('popstate', this.handlePopState);
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.comments !== state.comments || props.currentLease !== state.currentLease || props.loggedUser !== state.loggedUser) {
+      newState.currentLease = props.currentLease;
+      newState.loggedUser = props.loggedUser;
+      newState.comments = props.comments;
+      newState.allowToDeleteEmptyLease = isUserAllowedToDeleteEmptyLease(props.currentLease, props.comments, props.loggedUser);
+    }
+
+    return !isEmpty(newState) ? newState : null;
   }
 
   componentDidUpdate(prevProps:Props, prevState: State) {
@@ -463,24 +499,24 @@ class LeasePage extends Component<Props, State> {
 
   initializeForms = (lease: Lease) => {
     const {initialize} = this.props,
-      areas = contentHelpers.getContentLeaseAreas(lease);
+      areas = getContentLeaseAreas(lease);
 
-    initialize(FormNames.LEASE_CONSTRUCTABILITY, {lease_areas: contentHelpers.getContentConstructability(lease)});
-    initialize(FormNames.LEASE_CONTRACTS, {contracts: contentHelpers.getContentContracts(lease)});
-    initialize(FormNames.LEASE_DECISIONS, {decisions: contentHelpers.getContentDecisions(lease)});
-    initialize(FormNames.LEASE_INSPECTIONS, {inspections: contentHelpers.getContentInspections(lease)});
+    initialize(FormNames.LEASE_CONSTRUCTABILITY, {lease_areas: getContentConstructability(lease)});
+    initialize(FormNames.LEASE_CONTRACTS, {contracts: getContentContracts(lease)});
+    initialize(FormNames.LEASE_DECISIONS, {decisions: getContentDecisions(lease)});
+    initialize(FormNames.LEASE_INSPECTIONS, {inspections: getContentInspections(lease)});
     initialize(FormNames.LEASE_AREAS, {
       lease_areas_active: areas.filter((area) => !area.archived_at),
       lease_areas_archived: areas.filter((area) => area.archived_at),
     });
     initialize(FormNames.LEASE_RENTS, {
-      basis_of_rents: contentHelpers.getContentBasisOfRents(lease, false),
-      basis_of_rents_archived: contentHelpers.getContentBasisOfRents(lease, true),
+      basis_of_rents: getContentBasisOfRents(lease, false),
+      basis_of_rents_archived: getContentBasisOfRents(lease, true),
       is_rent_info_complete: lease.is_rent_info_complete,
-      ...contentHelpers.getContentRentsFormData(lease),
+      ...getContentRentsFormData(lease),
     });
-    initialize(FormNames.LEASE_SUMMARY, contentHelpers.getContentSummary(lease));
-    initialize(FormNames.LEASE_TENANTS, {...contentHelpers.getContentTenantsFormData(lease)});
+    initialize(FormNames.LEASE_SUMMARY, getContentSummary(lease));
+    initialize(FormNames.LEASE_TENANTS, {...getContentTenantsFormData(lease)});
   }
 
   cancelRestoreUnsavedChanges = () => {
@@ -680,28 +716,28 @@ class LeasePage extends Component<Props, State> {
       let payload: Object = {id: currentLease.id};
 
       if(isConstructabilityFormDirty) {
-        payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
+        payload = addConstructabilityFormValues(payload, constructabilityFormValues);
       }
       if(isContractsFormDirty) {
-        payload = contentHelpers.addContractsFormValues(payload, contractsFormValues);
+        payload = addContractsFormValues(payload, contractsFormValues);
       }
       if(isDecisionsFormDirty) {
-        payload = contentHelpers.addDecisionsFormValues(payload, decisionsFormValues);
+        payload = addDecisionsFormValues(payload, decisionsFormValues);
       }
       if(isInspectionsFormDirty) {
-        payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
+        payload = addInspectionsFormValues(payload, inspectionsFormValues);
       }
       if(isLeaseAreasFormDirty) {
-        payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
+        payload = addAreasFormValues(payload, areasFormValues);
       }
       if(isRentsFormDirty) {
-        payload = contentHelpers.addRentsFormValues(payload, rentsFormValues, currentLease);
+        payload = addRentsFormValues(payload, rentsFormValues, currentLease);
       }
       if(isSummaryFormDirty) {
-        payload = contentHelpers.addSummaryFormValues(payload, summaryFormValues);
+        payload = addSummaryFormValues(payload, summaryFormValues);
       }
       if(isTenantsFormDirty) {
-        payload = contentHelpers.addTenantsFormValues(payload, tenantsFormValues);
+        payload = addTenantsFormValues(payload, tenantsFormValues);
       }
 
       patchLease(payload);
@@ -800,46 +836,6 @@ class LeasePage extends Component<Props, State> {
     return isFetchingLeasePageAttributes || isFetchingCommonAttributes;
   }
 
-  shouldShowDelete = () => {
-    const {comments, currentLease, invoices} = this.props;
-
-    if(!comments || isEmpty(currentLease) || !invoices) return false;
-
-    const {
-      basis_of_rents,
-      collection_court_decisions,
-      collection_letters,
-      collection_notes,
-      contracts,
-      decisions,
-      infill_development_compensations,
-      inspections,
-      lease_areas,
-      related_leases: {related_to, related_from},
-      rents,
-      tenants,
-    } = currentLease;
-    if(basis_of_rents.length ||
-      collection_court_decisions.length ||
-      collection_letters.length ||
-      collection_notes.length ||
-      comments.length ||
-      contracts.length ||
-      decisions.length ||
-      infill_development_compensations.length ||
-      inspections.length ||
-      invoices.length ||
-      lease_areas.length ||
-      related_to.length ||
-      related_from.length ||
-      rents.length ||
-      tenants.length) {
-      return false;
-    }
-
-    return true;
-  }
-
   handleDelete = () => {
     const {
       deleteLease,
@@ -852,6 +848,7 @@ class LeasePage extends Component<Props, State> {
   render() {
     const {
       activeTab,
+      allowToDeleteEmptyLease,
       isCommentPanelOpen,
       isRestoreModalOpen,
     } = this.state;
@@ -884,7 +881,6 @@ class LeasePage extends Component<Props, State> {
       match: {params: {leaseId}},
       usersPermissions,
     } = this.props;
-    const showDelete = this.shouldShowDelete();
     const areFormsValid = this.validateForms();
     const isFetchingAttributes = this.getIsFetchingAttributes();
 
@@ -903,7 +899,7 @@ class LeasePage extends Component<Props, State> {
             buttonComponent={
               <ControlButtons
                 allowComments={isMethodAllowed(commentMethods, Methods.GET)}
-                allowDelete={isMethodAllowed(leaseMethods, Methods.DELETE)}
+                allowDelete={isMethodAllowed(leaseMethods, Methods.DELETE) && (allowToDeleteEmptyLease || hasPermissions(usersPermissions, UsersPermissions.DELETE_NONEMPTY_LEASE))}
                 allowEdit={isMethodAllowed(leaseMethods, Methods.PATCH)}
                 commentAmount={comments ? comments.length : 0}
                 deleteModalTexts={{
@@ -918,7 +914,7 @@ class LeasePage extends Component<Props, State> {
                 isSaveDisabled={activeTab == 6 || (isSaveClicked && !areFormsValid)}
                 onCancel={this.cancelChanges}
                 onComment={this.toggleCommentPanel}
-                onDelete={showDelete ? this.handleDelete : null}
+                onDelete={this.handleDelete}
                 onEdit={this.openEditMode}
                 onSave={this.saveChanges}
               />
@@ -1181,6 +1177,7 @@ export default flowRight(
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
         leaseTypeList: getLeaseTypeList(state),
+        loggedUser: getLoggedInUser(state),
         rentsFormValues: getFormValues(FormNames.LEASE_RENTS)(state),
         summaryFormValues: getFormValues(FormNames.LEASE_SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.LEASE_TENANTS)(state),

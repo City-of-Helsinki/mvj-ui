@@ -46,7 +46,75 @@ import {getIsEditMode} from './selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
+import type {CommentList} from '$src/comments/types';
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
+
+/**
+  * Test is lease empty
+  * @param {Object} lease
+  * @return {boolean}
+  */
+export const isLeaseEmpty = (lease: Lease) => {
+  let empty = true;
+  const skipFields = [
+    'id',
+    'type',
+    'municipality',
+    'district',
+    'identifier',
+    'state',
+    'preparer',
+    'note',
+    'created_at',
+    'modified_at',
+  ];
+
+  forEach(Object.keys(lease), (key) => {
+    if(skipFields.indexOf(key) === -1) {
+      if(isArray(lease[key])) {
+        if(lease[key].length) {
+          empty = false;
+          return false;
+        }
+      } else {
+        if(key === 'related_leases') {
+          if(lease[key].related_to && lease[key].related_to.length || lease[key].related_from && lease[key].related_from.length) {
+            empty = false;
+            return false;
+          }
+        } else if(typeof lease[key] === 'boolean' && lease[key] || typeof lease[key] !== 'boolean' && !isEmptyValue(lease[key])) {
+          empty = false;
+          return false;
+        }
+      }
+    }
+  });
+
+  return empty;
+};
+
+/**
+  * Test is lease created by user
+  * @param {Object} lease
+  * @param {Object} user
+  * @return {boolean}
+  */
+export const isLeaseCreatedByUser = (lease: Lease, user: Object) => {
+  const preparerUsername = get(lease, 'preparer.username');
+  const userEmail = get(user, 'profile.email');
+
+  return !!preparerUsername && !!userEmail && preparerUsername === userEmail;
+};
+
+/**
+  * Test is user allowed to delete lease
+  * @param {Object} lease
+  * @param {Object[]} comments
+  * @param {Object} user
+  * @return {boolean}
+  */
+export const isUserAllowedToDeleteEmptyLease = (lease: Lease, comments: CommentList, user: Object) =>
+  isLeaseEmpty(lease) && comments && !comments.length && isLeaseCreatedByUser(lease, user);
 
 export const getContentLeaseIdentifier = (item:Object) =>
   !isEmpty(item)
