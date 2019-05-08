@@ -474,7 +474,7 @@ export const getContentDecision = (decision: Object) => {
  * @returns {}
  */
 export const getContentDecisions = (lease: Object) =>
-  get(lease, 'decisions', []).map((decision) => getContentDecision(decision));
+  get(lease, 'decisions', []).map((decision) => getContentDecision(decision)).sort((a, b) => sortStringByKeyDesc(a, b, 'decision_date'));
 
 /**
  * Get decision options from lease data
