@@ -20,6 +20,7 @@ export const KeyCodes = {
   TAB: 9,
   ENTER: 13,
   ESC: 27,
+  SPACE: 32,
   ARROW_LEFT: 37,
   ARROW_UP: 38,
   ARROW_RIGHT: 39,

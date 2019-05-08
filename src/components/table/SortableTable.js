@@ -32,7 +32,6 @@ export type Column = {
 }
 
 type Props = {
-  clickedRow?: Object | null,
   columns: Array<Column>,
   data: Array<Object>,
   defaultSortKey?: string,
@@ -45,14 +44,10 @@ type Props = {
   onRowClick?: Function,
   onSelectNext?: Function,
   onSelectPrevious?: Function,
-  onSelectRow?: Function,
   onSortingChange?: Function,
   selectedRow?: Object | null,
-  showCollapseArrowColumn?: boolean,
-  showGroupRadioButton?: boolean,
-  showRadioButton?: boolean,
-  radioButtonDisabledFunction?: Function,
   serverSideSorting?: boolean,
+  showCollapseArrowColumn?: boolean,
   sortKey?: string,
   sortOrder?: string,
   sortable?: boolean,
@@ -332,22 +327,15 @@ class SortableTable extends Component<Props, State> {
     }
   }
 
-  handleSelectRow = (row: Object) => {
-    const {onSelectRow} = this.props;
-    if(onSelectRow) {
-      onSelectRow(row);
-    }
-  }
-
   selectNext = () => {
-    const {onSelectNext, clickedRow} = this.props;
+    const {onSelectNext, selectedRow} = this.props;
 
-    if(!clickedRow || !onSelectNext) {
+    if(!selectedRow || !onSelectNext) {
       return;
     }
 
     const sortedRows = this.getRowsFromSortedData(),
-      index = sortedRows.findIndex((row) => row.id === clickedRow.id);
+      index = sortedRows.findIndex((row) => row.id === selectedRow.id);
 
     if(index < (sortedRows.length - 1)) {
       onSelectNext(sortedRows[index + 1]);
@@ -355,14 +343,14 @@ class SortableTable extends Component<Props, State> {
   }
 
   selectPrevious = () => {
-    const {onSelectPrevious, clickedRow} = this.props;
+    const {onSelectPrevious, selectedRow} = this.props;
 
-    if(!clickedRow || !onSelectPrevious) {
+    if(!selectedRow || !onSelectPrevious) {
       return;
     }
 
     const sortedRows = this.getRowsFromSortedData(),
-      index = sortedRows.findIndex((row) => row.id === clickedRow.id);
+      index = sortedRows.findIndex((row) => row.id === selectedRow.id);
 
     if(index > 0) {
       onSelectPrevious(sortedRows[index - 1]);
@@ -394,10 +382,9 @@ class SortableTable extends Component<Props, State> {
   }
 
   getNoDataColSpan = () => {
-    const {columns, showCollapseArrowColumn, showRadioButton} = this.props;
+    const {columns, showCollapseArrowColumn} = this.props;
     let colSpan = columns.length;
 
-    if(showRadioButton) colSpan++;
     if(showCollapseArrowColumn) colSpan++;
 
     return colSpan;
@@ -405,18 +392,14 @@ class SortableTable extends Component<Props, State> {
 
   render() {
     const {
-      clickedRow,
       columns,
       fixedHeader,
       listTable,
       noDataText,
       onRowClick,
-      radioButtonDisabledFunction,
       selectedRow,
       serverSideSorting,
       showCollapseArrowColumn,
-      showGroupRadioButton,
-      showRadioButton,
       sortable,
       style,
     } = this.props;
@@ -430,6 +413,8 @@ class SortableTable extends Component<Props, State> {
 
     const sortKey = serverSideSorting ? this.props.sortKey : this.state.sortKey;
     const sortOrder = serverSideSorting ? this.props.sortOrder : this.state.sortOrder;
+    const column = columns.find(((column) => sortKey === column.key));
+    const grouping = column ? column.grouping : null;
 
     return (
       <div
@@ -460,7 +445,6 @@ class SortableTable extends Component<Props, State> {
                   columnStyles={scrollHeaderColumnStyles}
                   onColumnClick={this.onSortingChange}
                   showCollapseArrowColumn={showCollapseArrowColumn}
-                  showRadioButton={showRadioButton}
                   sortable={sortable}
                   sortKey={sortKey}
                   sortOrder={sortOrder}
@@ -490,7 +474,6 @@ class SortableTable extends Component<Props, State> {
               fixedHeader={fixedHeader}
               onColumnClick={this.onSortingChange}
               showCollapseArrowColumn={showCollapseArrowColumn}
-              showRadioButton={showRadioButton}
               sortable={sortable}
               sortKey={sortKey}
               sortOrder={sortOrder}
@@ -501,45 +484,30 @@ class SortableTable extends Component<Props, State> {
               }
 
               {!!sortedData.length && sortedData.map((row, index) => {
-                const isRadioButtonDisabled = () => {
-                  if(radioButtonDisabledFunction) {
-                    return radioButtonDisabledFunction(row);
-                  }
 
-                  return false;
-                };
-
-                const isRadioDisabled = isRadioButtonDisabled(),
-                  isRowClicked = Boolean(clickedRow && !clickedRow.tableGroupName && (clickedRow.id === row.id)),
-                  isRowSelected = Boolean(selectedRow && !selectedRow.tableGroupName && (selectedRow.id === row.id));
+                const isRowSelected = Boolean(selectedRow && !selectedRow.tableGroupName && (selectedRow.id === row.id));
 
                 return row.isTableGroup
                   ? <SortableTableGroup
                     key={index}
-                    clickedRow={clickedRow}
+                    id={`group_${row.id}`}
                     columns={columns}
-                    disabled={isRadioDisabled}
+                    grouping={grouping}
                     onRowClick={onRowClick}
-                    onSelectRow={this.handleSelectRow}
-                    radioButtonDisabledFunction={radioButtonDisabledFunction}
                     row={row}
                     selectedRow={selectedRow}
                     showCollapseArrowColumn={showCollapseArrowColumn}
-                    showGroupRadioButton={showGroupRadioButton}
-                    showRadioButton={showRadioButton}
                   />
                   : <SortableTableRow
                     key={index}
                     columns={columns}
-                    disabled={isRadioDisabled}
+                    id={`row_${row.id}`}
+                    grouping={grouping}
                     groupRow={false}
-                    isClicked={isRowClicked}
                     isSelected={isRowSelected}
                     onRowClick={onRowClick}
-                    onSelectRow={this.handleSelectRow}
                     row={row}
                     showCollapseArrowColumn={showCollapseArrowColumn}
-                    showRadioButton={showGroupRadioButton || showRadioButton}
                   />;
               })}
             </tbody>

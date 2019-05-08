@@ -12,16 +12,13 @@ type Props = {
   className?: string,
   columns: Array<Column>,
   columnStyles?: Array<Object>,
-  disabled?: boolean,
+  id: string,
+  grouping: ?Object,
   groupRow: boolean,
-  isClicked: boolean,
   isSelected: boolean,
   onRowClick?: Function,
-  onSelectRow?: Function,
-  radioButtonDisabledFunction?: Function,
   row: Object,
   showCollapseArrowColumn?: boolean,
-  showRadioButton?: boolean,
 }
 
 type State = {
@@ -29,6 +26,8 @@ type State = {
 }
 
 class SortableTableRow extends PureComponent<Props, State> {
+  _isMounted = false;
+
   component: any
   buttonPressTimer: any;
   isClicked = false;
@@ -36,6 +35,14 @@ class SortableTableRow extends PureComponent<Props, State> {
 
   state = {
     collapse: false,
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   setRef = (el: any) => {
@@ -75,31 +82,6 @@ class SortableTableRow extends PureComponent<Props, State> {
     }
   };
 
-  handleClickRadioButton = () => {
-    const {isSelected, onSelectRow} = this.props;
-
-    if(isSelected && onSelectRow) {
-      onSelectRow(null);
-    }
-  }
-
-  handleKeyDownRadioButton = (e: any) => {
-    const {isSelected} = this.props;
-
-    if(isSelected && e.keyCode === 32) {
-      e.preventDefault();
-      this.handleClickRadioButton();
-    }
-  }
-
-  handleSelectRow = () => {
-    const {onSelectRow, row} = this.props;
-
-    if(onSelectRow) {
-      onSelectRow(row);
-    }
-  };
-
   handleCollapseArrowIconClick = () => {
     this.setState({
       collapse: !this.state.collapse,
@@ -127,18 +109,21 @@ class SortableTableRow extends PureComponent<Props, State> {
     return showIcon;
   }
 
+  forceUpdateHandler = () => {
+    this.forceUpdate();
+  }
+
   render() {
     const {
       className,
       columns,
-      disabled,
+      id,
+      grouping,
       groupRow,
-      isClicked,
       isSelected,
       onRowClick,
       row,
       showCollapseArrowColumn,
-      showRadioButton,
     } = this.props;
     const {collapse} = this.state;
 
@@ -147,9 +132,10 @@ class SortableTableRow extends PureComponent<Props, State> {
     return (
       <tr
         ref={this.setRef}
+        id={id}
         tabIndex={onRowClick ? 0 : undefined}
         onKeyDown={this.handleKeyDown}
-        className={classNames(className, {'selected': isClicked}, {'collapsed': collapse})}
+        className={classNames(className, {'selected': isSelected}, {'collapsed': collapse})}
       >
         {showCollapseArrowColumn &&
           <td className={classNames('collapse-arrow-column', {'no-icon': !showCollapseArrowIcon})}>
@@ -165,60 +151,45 @@ class SortableTableRow extends PureComponent<Props, State> {
             }
           </td>
         }
-        {showRadioButton &&
-          <td>
-            <label className='form-field__label invisible' htmlFor={`row_${row.id}`}>Rivi {row.id}</label>
-            <input type='radio'
-              checked={isSelected}
-              disabled={disabled}
-              id={`row_${row.id}`}
-              name={`row_${row.id}`}
-              onChange={this.handleSelectRow}
-              onClick={this.handleClickRadioButton}
-              onKeyDown={this.handleKeyDownRadioButton}
-            />
-          </td>
-        }
-        {columns.map(({arrayRenderer, dataClassName, disabled, grouping, key, renderer}) => {
+        {columns.map(({arrayRenderer, dataClassName, disabled, key, renderer}) => {
           const hide = groupRow && get(grouping, 'columnsToHide', []).indexOf(key) !== -1;
-          const isDisabled = disabled && isArray(get(row, key)) && get(row, key).length > 1;
 
           const handleTouchStart = () => {
-            if(!isDisabled) {
+            if(!disabled) {
               this.handleButtonPress();
             }
           };
 
           const handleTouchEnd = () => {
-            if(!isDisabled) {
+            if(!disabled) {
               this.handleButtonRelease();
             }
           };
 
           const handleMouseDown = () => {
-            if(!isDisabled) {
+            if(!disabled) {
               this.handleButtonPress();
             }
           };
 
           const handleMouseRelease = () => {
-            if(!isDisabled) {
+            if(!disabled) {
               this.handleButtonRelease();
             }
           };
 
           return hide
             ? <td
-              key={key}
-              className={classNames(dataClassName, {'disabled': isDisabled})}
+              key={`${row.id}_${key}`}
+              className={classNames(dataClassName, {'disabled': disabled})}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               onMouseDown={handleMouseDown}
               onMouseUp={this.handleButtonRelease}
             ></td>
             : <td
-              key={key}
-              className={classNames(dataClassName, {'disabled': isDisabled})}
+              key={`${row.id}_${key}`}
+              className={classNames(dataClassName, {'disabled': disabled})}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               onMouseDown={handleMouseDown}
@@ -226,11 +197,11 @@ class SortableTableRow extends PureComponent<Props, State> {
             >
               {renderer
                 ? isArray(get(row, key))
-                  ? <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => renderer(value, row) || '-'} open={collapse}/>
-                  : renderer(get(row, key), row) || '-'
+                  ? <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => renderer(value, row, this) || '-'} open={collapse}/>
+                  : renderer(get(row, key), row, this) || '-'
                 : isArray(get(row, key))
                   ? arrayRenderer
-                    ? arrayRenderer(get(row, key))
+                    ? arrayRenderer(get(row, key), this)
                     : <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => value || '-'} open={collapse}/>
                   : get(row, key) || '-'
               }

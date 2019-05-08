@@ -573,3 +573,29 @@ export const getApiResponseMaxPage = (list: Object, size: number) => {
 * @returns {number}
 */
 export const getApiResponseResults = (list: Object) => get(list, 'results', []);
+
+/**
+* Get React component by dom id
+* @param {string} id
+* @returns {Object}
+*/
+export const findReactById = (id: ?string): ?Object => {
+  if(!id) return null;
+
+  const dom = document.getElementById(id);
+
+  if(!dom) return null;
+
+  const key = Object.keys(dom).find(key=>key.startsWith('__reactInternalInstance$'));
+  // $FlowFixMe
+  const internalInstance = dom[key];
+  if (internalInstance == null) return null;
+
+  if (internalInstance.return) { // react 16+
+    return internalInstance._debugOwner
+      ? internalInstance._debugOwner.stateNode
+      : internalInstance.return.stateNode;
+  } else { // react <16
+    return internalInstance._currentElement._owner._instance;
+  }
+};

@@ -138,7 +138,7 @@ class Runs extends PureComponent<Props, State> {
             <SortableTable
               columns={columns}
               data={data}
-              clickedRow={openedRow}
+              selectedRow={openedRow}
               fixedHeader={true}
               onRowClick={this.handleRowClick}
             />
