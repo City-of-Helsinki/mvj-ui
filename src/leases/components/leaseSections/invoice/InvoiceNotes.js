@@ -119,23 +119,25 @@ const InvoiceNotesEdit = ({
       {({dispatch}) => {
         return (
           <Fragment>
-            <Row>
-              <Column small={3} large={2}>
-                <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE)}>
-                  <FormTextTitle>{InvoiceNoteFieldTitles.BILLING_PERIOD_START_DATE}</FormTextTitle>
-                </Authorization>
-              </Column>
-              <Column small={3} large={2}>
-                <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE)}>
-                  <FormTextTitle>{InvoiceNoteFieldTitles.BILLING_PERIOD_END_DATE}</FormTextTitle>
-                </Authorization>
-              </Column>
-              <Column small={6} large={8}>
-                <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.NOTES)}>
-                  <FormTextTitle>{InvoiceNoteFieldTitles.NOTES}</FormTextTitle>
-                </Authorization>
-              </Column>
-            </Row>
+            {fields && !!fields.length &&
+              <Row>
+                <Column small={3} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE)}>
+                    <FormTextTitle>{InvoiceNoteFieldTitles.BILLING_PERIOD_START_DATE}</FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE)}>
+                    <FormTextTitle>{InvoiceNoteFieldTitles.BILLING_PERIOD_END_DATE}</FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={6} large={8}>
+                  <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.NOTES)}>
+                    <FormTextTitle>{InvoiceNoteFieldTitles.NOTES}</FormTextTitle>
+                  </Authorization>
+                </Column>
+              </Row>
+            }
 
             {fields.map((note, index) => {
               const handleRemove = () => {

@@ -23,6 +23,9 @@
   }
 
   &__rent-wrapper {
+    display: inline-block;
+    width: 100%;
+    text-align: top;
     padding: rem-calc(10px 10px 0);
     background-color: $light-green;
     margin-top: rem-calc(5px);
