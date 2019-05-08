@@ -103,6 +103,8 @@ type State = {
 }
 
 class LeaseListPage extends PureComponent<Props, State> {
+  _isMounted: boolean
+
   firstLeaseModalField: any
 
   state = {
@@ -139,6 +141,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
@@ -154,6 +157,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -196,7 +200,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       delete initialValues.lease_state;
       delete initialValues.sort_key;
       delete initialValues.sort_order;
-      await initialize(FormNames.LEASE_SEARCH, initialValues);
+      initialize(FormNames.LEASE_SEARCH, initialValues);
     };
 
     this.setState({
@@ -207,7 +211,10 @@ class LeaseListPage extends PureComponent<Props, State> {
       sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 

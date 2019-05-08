@@ -76,6 +76,8 @@ type State = {
 }
 
 class ContactListPage extends Component<Props, State> {
+  _isMounted: boolean
+
   state = {
     activePage: 1,
     contactAttributes: null,
@@ -125,6 +127,7 @@ class ContactListPage extends Component<Props, State> {
     this.search();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
@@ -146,6 +149,7 @@ class ContactListPage extends Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -176,7 +180,10 @@ class ContactListPage extends Component<Props, State> {
       sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 

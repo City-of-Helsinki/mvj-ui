@@ -48,6 +48,8 @@ type State = {
 }
 
 class SideMenu extends Component<Props, State> {
+  _isMounted: boolean;
+
   component: any
   firstLink: any
 
@@ -85,14 +87,17 @@ class SideMenu extends Component<Props, State> {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.component.addEventListener('transitionend', this.transitionEnds);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.component.removeEventListener('transitionend', this.transitionEnds);
   }
 
   transitionEnds = () => {
+    if(!this._isMounted) return;
     this.setState({
       isClosing: false,
       isOpening: false,

@@ -16,15 +16,7 @@ function UiDataListHOC(WrappedComponent: any) {
     uiDataList: UiDataList,
   }
 
-  type State = {
-    isFetchingCommonAttributes: boolean,
-  }
-
-  return class CommonAttributes extends PureComponent<Props, State> {
-    state = {
-      isFetchingCommonAttributes: false,
-    }
-
+  return class CommonAttributes extends PureComponent<Props> {
     componentDidMount() {
       const {
         fetchUiDataList,

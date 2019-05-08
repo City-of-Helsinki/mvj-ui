@@ -2,8 +2,9 @@ import React, {PureComponent} from 'react';
 import {withRouter} from 'react-router';
 import {CallbackComponent} from 'redux-oidc';
 
-import {getRedirectUrlFromSessionStorage} from '../helpers';
-import userManager from '../util/user-manager';
+import {getRedirectUrlFromSessionStorage} from '$util/storage';
+import userManager from '$src/auth/util/user-manager';
+import {getRouteById, Routes} from '$src/root/routes';
 
 type Props = {
   history: Object,
@@ -13,7 +14,7 @@ class CallbackPage extends PureComponent<Props> {
   successCallback = () => {
     const {history} = this.props;
 
-    history.push(getRedirectUrlFromSessionStorage() || '/');
+    history.push(getRedirectUrlFromSessionStorage() || getRouteById(Routes.LEASES));
   }
 
   render() {

@@ -78,6 +78,8 @@ type State = {
 }
 
 class LeaseholdTransferListPage extends PureComponent<Props, State> {
+  _isMounted: boolean
+
   state = {
     activePage: 1,
     count: 0,
@@ -105,6 +107,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -139,6 +142,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -170,7 +174,10 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
       sortOrder: searchQuery.sort_order || DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 

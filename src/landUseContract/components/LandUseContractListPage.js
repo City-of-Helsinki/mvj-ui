@@ -62,6 +62,8 @@ type State = {
 }
 
 class LandUseContractListPage extends Component<Props, State> {
+  _isMounted: boolean
+
   state = {
     activePage: 1,
     count: 0,
@@ -96,6 +98,7 @@ class LandUseContractListPage extends Component<Props, State> {
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
@@ -121,6 +124,7 @@ class LandUseContractListPage extends Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -154,7 +158,10 @@ class LandUseContractListPage extends Component<Props, State> {
       selectedStates: states,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 

@@ -109,3 +109,20 @@ const isJson = (value: any) => {
   }
   return true;
 };
+
+/**
+ * Get redirect address stored to session storage
+ * @returns {string}
+ */
+export const getRedirectUrlFromSessionStorage = () => {
+  return getSessionStorageItem('redirectURL');
+};
+
+/**
+ * Set redirect address to session storage
+ * @param {string} url
+ * @returns {string}
+ */
+export const setRedirectUrlToSessionStorage = (url: string) => {
+  setSessionStorageItem('redirectURL', url);
+};
