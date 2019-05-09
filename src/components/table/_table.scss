@@ -100,7 +100,7 @@
 .sortable-table {
   &__container {
     max-width: 100%;
-    overflow: hidden;
+    overflow: auto;
     margin-bottom: 0;
 
     table {

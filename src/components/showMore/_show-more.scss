@@ -7,6 +7,10 @@
     margin: 0;
   }
 
+  &.inside-table {
+    max-width: 200px;
+  }
+
   p {
     margin: 0;
     font-size: rem-calc(14px);
