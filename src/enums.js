@@ -52,6 +52,7 @@ export const CancelChangesModalTexts = {
  * @type {{}}
  */
 export const DeleteModalLabels = {
+  LEASE_INSPECTION_ATTACHMENT: 'Haluatko varmasti poistaa tiedoston?',
   LEASEHOLD_TRANSFER: 'Haluatko varmasti poistaa vuokraoikeuden siirron?',
 };
 
@@ -60,7 +61,9 @@ export const DeleteModalLabels = {
  * @type {{}}
  */
 export const DeleteModalTitles = {
+  LEASE_INSPECTION_ATTACHMENT: 'Poista tiedosto',
   LEASEHOLD_TRANSFER: 'Poista vuokraoikeuden siirto',
+
 };
 
 /**

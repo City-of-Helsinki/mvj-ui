@@ -1278,6 +1278,30 @@ export const LeaseInspectionsFieldTitles = {
 };
 
 /**
+ * Lease area attachments field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInspectionAttachmentsFieldPaths = {
+  ATTACHMENTS: 'inspections.child.children.attachments',
+  FILE: 'inspections.child.children.attachments.child.children.file',
+  UPLOADED_AT: 'inspections.child.children.attachments.child.children.uploaded_at',
+  UPLOADER: 'inspections.child.children.attachments.child.children.uploader',
+};
+
+/**
+ * Lease area attachments field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInspectionAttachmentsFieldTitles = {
+  ATTACHMENTS: 'Tiedostot',
+  FILE: 'Nimi',
+  UPLOADED_AT: 'Pvm',
+  UPLOADER: 'Lataaja',
+};
+
+/**
  * Lease invoicing field paths enumerable.
  *
  * @type {{}}

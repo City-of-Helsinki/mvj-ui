@@ -218,6 +218,7 @@ class LeasePage extends Component<Props, State> {
   state = {
     activeTab: 0,
     allowToDeleteEmptyLease: false,
+    comments: [],
     currentLease: {},
     isCommentPanelOpen: false,
     isRestoreModalOpen: false,

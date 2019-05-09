@@ -565,6 +565,7 @@ export const getContentInspectionItem = (inspection: Object) => {
     supervision_date: inspection.supervision_date,
     supervised_date: inspection.supervised_date,
     description: inspection.description,
+    attachments: get(inspection, 'attachments', []),
   };
 };
 

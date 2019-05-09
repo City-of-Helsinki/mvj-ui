@@ -48,6 +48,8 @@ export const UsersPermissions = {
   DELETE_COLLATERAL: 'delete_collateral',
   ADD_INSPECTION: 'add_inspection',
   DELETE_INSPECTION: 'delete_inspection',
+  ADD_INSPECTIONATTACHMENT: 'add_inspectionattachment',
+  DELETE_INSPECTIONATTACHMENT: 'delete_inspectionattachment',
   ADD_EMAILLOG: 'add_emaillog',
   VIEW_EMAILLOG: 'view_emaillog',
   ADD_CONSTRUCTABILITYDESCRIPTION: 'add_constructabilitydescription',
