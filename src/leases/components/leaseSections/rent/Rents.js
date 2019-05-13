@@ -12,8 +12,10 @@ import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItem from './RentItem';
-import RightSubtitle from '$components/content/RightSubtitle';
+import SuccessField from '$components/form/SuccessField';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
+import WarningField from '$components/form/WarningField';
 import {RentCalculatorFieldPaths, RentCalculatorFieldTitles} from '$components/enums';
 import {
   LeaseBasisOfRentsFieldPaths,
@@ -22,7 +24,7 @@ import {
   LeaseRentsFieldTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getContentRentsFormData} from '$src/leases/helpers';
+import {getContentRentsFormData, getRentWarnings} from '$src/leases/helpers';
 import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
 import {getUiDataLeaseKey, getUiDataRentCalculatorKey} from '$src/uiData/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -47,20 +49,38 @@ const Rents = ({
   const rentsData = getContentRentsFormData(currentLease);
   const rents = get(rentsData, 'rents', []);
   const rentsArchived = get(rentsData, 'rentsArchived', []);
-
+  const warnings = getRentWarnings(rents);
   return (
     <Fragment>
       <Title uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}>
         {LeaseRentsFieldTitles.RENTS}
       </Title>
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
-        <RightSubtitle
-          text={currentLease.is_rent_info_complete
-            ? <span className="success">Tiedot kunnossa<i /></span>
-            : <span className="alert">Tiedot keskeneräiset<i /></span>
+        <WarningContainer alignCenter success={currentLease.is_rent_info_complete}>
+          {currentLease.is_rent_info_complete
+            ? <SuccessField
+              meta={{warning: 'Tiedot kunnossa'}}
+              showWarning={true}
+            />
+            : <WarningField
+              meta={{warning: 'Tiedot keskeneräiset'}}
+              showWarning={true}
+            />
           }
-        />
+        </WarningContainer>
       </Authorization>
+
+      {warnings && !!warnings.length &&
+        <WarningContainer style={{marginTop: isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE) ? 0 : null}}>
+          {warnings.map((item, index) =>
+            <WarningField
+              key={index}
+              meta={{warning: item}}
+              showWarning={true}
+            />
+          )}
+        </WarningContainer>
+      }
       <Divider />
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>

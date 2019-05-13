@@ -13,10 +13,10 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import RelatedLeases from './RelatedLeases';
-import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {FormNames, Methods, ViewModes} from '$src/enums';
 import {LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
@@ -165,13 +165,12 @@ class Summary extends PureComponent<Props, State> {
           {LeaseFieldTitles.SUMMARY}
         </Title>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CLASSIFICATION)}>
-          <RightSubtitle
-            className='publicity-label'
-            text={summary.classification
+          <WarningContainer hideIcon>
+            {summary.classification
               ? getLabelOfOption(classificationOptions, summary.classification)
               : '-'
             }
-          />
+          </WarningContainer>
         </Authorization>
         <Divider />
         <Row className='summary__content-wrapper'>
@@ -372,6 +371,14 @@ class Summary extends PureComponent<Props, State> {
                 </Column>
               </Row>
               <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.CONTRACT_NUMBERS)}>
+                      {LeaseFieldTitles.CONTRACT_NUMBERS}
+                    </FormTextTitle>
+                    <FormText>{summary.contract_numbers || '-'}</FormText>
+                  </Authorization>
+                </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.IS_SUBJECT_TO_VAT)}>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.IS_SUBJECT_TO_VAT)}>

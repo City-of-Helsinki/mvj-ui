@@ -6,8 +6,8 @@ import Authorization from '$components/authorization/Authorization';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import LeaseAreaWithArchiceInfo from './LeaseAreaWithArchiceInfo';
-import RightSubtitle from '$components/content/RightSubtitle';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
 import {LeaseAreasFieldPaths} from '$src/leases/enums';
 import {getAreasSum, getContentLeaseAreas, getDecisionOptions} from '$src/leases/helpers';
 import {formatNumber, isFieldAllowedToRead}  from '$util/helpers';
@@ -35,7 +35,7 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
         Vuokra-alue
       </Title>
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
-        <RightSubtitle text={<span>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></span>} />
+        <WarningContainer alignCenter hideIcon>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></WarningContainer>
       </Authorization>
       <Divider />
 

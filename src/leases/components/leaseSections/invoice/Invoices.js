@@ -15,9 +15,11 @@ import DebtCollection from './DebtCollection';
 import Divider from '$components/content/Divider';
 import InvoiceNotes from './InvoiceNotes';
 import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
-import RightSubtitle from '$components/content/RightSubtitle';
 import InvoiceTableAndPanel from './InvoiceTableAndPanel';
+import SuccessField from '$components/form/SuccessField';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
+import WarningField from '$components/form/WarningField';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
 import {Methods, PermissionMissingTexts, ViewModes} from '$src/enums';
@@ -188,7 +190,8 @@ class Invoices extends PureComponent<Props, State> {
               <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInvoicingFieldPaths.INVOICING)}>
                 {LeaseInvoicingFieldTitles.INVOICING}
               </Title>
-              <RightSubtitle
+              <WarningContainer
+                alignCenter
                 buttonComponent={
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_IS_INVOICING_ENABLED)}>
                     {isInvoicingEnabled
@@ -197,15 +200,21 @@ class Invoices extends PureComponent<Props, State> {
                     }
                   </Authorization>
                 }
-                text={
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED)}>
-                    {isInvoicingEnabled
-                      ? <span className="success">{LeaseInvoicingFieldTitles.INVOICING_ENABLED}<i/></span>
-                      : <span className="alert">{LeaseInvoicingFieldTitles.INVOICING_DISABLED}<i/></span>
-                    }
-                  </Authorization>
-                }
-              />
+                success={isInvoicingEnabled}
+              >
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED)}>
+                  {isInvoicingEnabled
+                    ? <SuccessField
+                      meta={{warning: LeaseInvoicingFieldTitles.INVOICING_ENABLED}}
+                      showWarning={true}
+                    />
+                    : <WarningField
+                      meta={{warning: LeaseInvoicingFieldTitles.INVOICING_DISABLED}}
+                      showWarning={true}
+                    />
+                  }
+                </Authorization>
+              </WarningContainer>
               <Divider />
 
               <Collapse

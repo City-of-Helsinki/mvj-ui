@@ -251,6 +251,10 @@ export const getContentSummary = (lease: Object) => {
     area_notes: get(lease, 'area_notes', []),
     // Set arrangement decision to true if there is any contract where is_readjustment_decision == true
     arrangement_decision: get(lease, 'contracts', []).find((contract) => contract.is_readjustment_decision) ? true : false,
+    contract_numbers: get(lease, 'contracts', [])
+      .filter((contract) => contract.contract_number)
+      .map((contract) => contract.contract_number)
+      .join(', '),
     building_selling_price: lease.building_selling_price,
     classification: lease.classification,
     constructability_areas: getContentConstructability(lease),
@@ -827,6 +831,26 @@ export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates')
     month: date.month,
   }));
 
+/**
+  * Get warnings if amount of fixed initial year rents is different than contract rents
+  * @param {Object[]} rents
+  * @returns {string[]}
+  */
+export const getRentWarnings = (rents: Array<Object>): Array<string> => {
+  const warnings = [];
+  rents.forEach((rent) => {
+    if(rent.type !== RentTypes.INDEX && rent.type !== RentTypes.MANUAL) return;
+
+    const fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []);
+    const contractRents = get(rent, 'contract_rents', []);
+
+    if(fixedInitialYearRents.length !== contractRents.length) {
+      warnings.push(`Vuokralla ${formatDateRange(rent.start_date, rent.end_date)} on eri määrä kiinteitä alkuvuosivuokria ja sopimusvuokria`);
+    }
+  });
+
+  return warnings;
+};
 
 export const getContentRents = (lease: Object) =>
   get(lease, 'rents', [])

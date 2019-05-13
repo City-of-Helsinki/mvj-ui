@@ -19,6 +19,7 @@ import ListItems from '$components/content/ListItems';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames, Methods, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
@@ -28,6 +29,8 @@ import {getContentSummary} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
   getReferenceNumberLink,
   isFieldAllowedToRead,
   isMethodAllowed,
@@ -64,18 +67,27 @@ type Props = {
 }
 
 type State = {
+  attributes: Attributes,
+  classificationOptions: Array<Object>,
   currentLease: Lease,
   summary: Object,
 }
 
 class SummaryEdit extends PureComponent<Props, State> {
   state = {
+    attributes: null,
+    classificationOptions: [],
     currentLease: {},
     summary: {},
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
+
+    if(props.attributes !== state.attributes) {
+      newState.attributes = props.attributes;
+      newState.classificationOptions = getFieldOptions(props.attributes, LeaseFieldPaths.CLASSIFICATION);
+    }
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
@@ -137,7 +149,7 @@ class SummaryEdit extends PureComponent<Props, State> {
       isSaveClicked,
       rentBasisMethods,
     } = this.props;
-    const {summary} = this.state;
+    const {classificationOptions, summary} = this.state;
     const infillDevelopmentCompensations = summary.infill_development_compensations;
     const matchingBasisOfRents = summary.matching_basis_of_rents;
 
@@ -146,6 +158,14 @@ class SummaryEdit extends PureComponent<Props, State> {
         <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUMMARY)}>
           {LeaseFieldTitles.SUMMARY}
         </Title>
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CLASSIFICATION)}>
+          <WarningContainer hideIcon>
+            {summary.classification
+              ? getLabelOfOption(classificationOptions, summary.classification)
+              : '-'
+            }
+          </WarningContainer>
+        </Authorization>
         <Divider />
         <Row className='summary__content-wrapper'>
           <Column small={12} medium={8} large={9}>
@@ -423,6 +443,14 @@ class SummaryEdit extends PureComponent<Props, State> {
                 </Column>
               </Row>
               <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.CONTRACT_NUMBERS)}>
+                      {LeaseFieldTitles.CONTRACT_NUMBERS}
+                    </FormTextTitle>
+                    <FormText>{summary.contract_numbers || '-'}</FormText>
+                  </Authorization>
+                </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.IS_SUBJECT_TO_VAT)}>
                     <FormField

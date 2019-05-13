@@ -12,8 +12,8 @@ import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
 import LeaseAreaWithArchiveInfoEdit from './LeaseAreaWithArchiveInfoEdit';
-import RightSubtitle from '$components/content/RightSubtitle';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
 import {copyAreasToContract, receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
@@ -334,7 +334,9 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}>
                 Vuokra-alue
               </Title>
-              <RightSubtitle
+              <WarningContainer
+                alignCenter
+                hideIcon
                 buttonComponent={
                   <Authorization allow={isMethodAllowed(copyAreasToContractMethods, Methods.POST)}>
                     <Button
@@ -344,12 +346,11 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                     />
                   </Authorization>
                 }
-                text={
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.AREA)}>
-                    <span>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></span>
-                  </Authorization>
-                }
-              />
+              >
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.AREA)}>
+                  Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup>
+                </Authorization>
+              </WarningContainer>
               <Divider />
 
               <FieldArray

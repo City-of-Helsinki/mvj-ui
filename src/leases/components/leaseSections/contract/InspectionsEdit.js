@@ -6,7 +6,6 @@ import {Row, Column} from 'react-foundation';
 import {FieldArray, reduxForm} from 'redux-form';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import AddButton from '$components/form/AddButton';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
 import BoxItemContainer from '$components/content/BoxItemContainer';
@@ -52,7 +51,8 @@ const renderInspections = ({
       >
         <Row>
           <Column>
-            <AddButton
+            <AddButtonSecondary
+              style={{marginTop: 0}}
               label='Lisää tarkastus'
               onClick={handleAdd}
             />
