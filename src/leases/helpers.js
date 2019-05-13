@@ -609,6 +609,37 @@ export const getContentConstructabilityDescriptions = (area: Object, type: strin
     });
 };
 
+/**
+  * Get constructability email content
+  * @param {Object} lease
+  * @param {Object} user
+  * @param {Object} text
+  * @returns {string}
+  */
+
+export const getContentConstructabilityEmail = (lease: Object, user: Object, text: ?string) => {
+  let emailContent = `Vuokratunnus: ${getContentLeaseIdentifier(lease) || '-'}\n`;
+  const leaseAreas = get(lease, 'lease_areas', []);
+
+  leaseAreas.forEach((area) => {
+    const addresses = getContentLeaseAreaAddresses(area).filter((address) => address.address).map((address) => getFullAddress(address));
+
+    emailContent += `\nVuokra-alue: ${area.identifier}`;
+    if(addresses.length) {
+      emailContent += `\nOsoite: ${addresses.join(' - ')}\n`;
+    }
+  });
+
+  if(text) {
+    emailContent += `\nViesti: ${text}\n`;
+  }
+
+  emailContent += `\nLähettäjä: ${get(user, 'profile.name')}`;
+
+  return emailContent;
+};
+
+
 export const getContentConstructability = (lease: Object) =>
   get(lease, 'lease_areas', []).map((area) => {
     return {
@@ -925,7 +956,7 @@ export const getContentBasisOfRents = (lease: Object, archived: boolean = true) 
 export const getFullAddress = (item: Object) => {
   if(isEmpty(item)) return null;
 
-  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''} ${item.postal_code || ''} ${item.city || ''}`;
+  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}${item.postal_code ? item.postal_code + ' ' : ''}${item.city || ''}`;
 };
 
 export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTenants: boolean) =>{
