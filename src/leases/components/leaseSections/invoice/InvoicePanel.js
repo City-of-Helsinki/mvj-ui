@@ -262,7 +262,7 @@ class InvoicePanel extends PureComponent<Props, State> {
           </div>
 
           <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
-            {invoice && !invoice.sap_id &&
+            {invoice && !invoice.sent_to_sap_at &&
               <div className='invoice-panel__footer'>
                 <Button
                   className={ButtonColors.SECONDARY}
