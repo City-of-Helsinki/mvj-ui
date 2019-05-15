@@ -25,6 +25,7 @@ import {
   RentCycles,
   RentDueDateTypes,
   RentTypes,
+  SubventionTypes,
   TenantContactType,
 } from './enums';
 import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
@@ -794,6 +795,80 @@ export const getContentEqualizedRents = (rent: Object) =>
       };
     });
 
+/**
+  * Calculate re-lease discount percent for rent adjustment subvention
+  * @param {string} subventionBasePercent
+  * @param {string} subventionGraduatedPercent
+  * @return {number}
+  */
+export const calculateReLeaseDiscountPercent = (subventionBasePercent: ?string, subventionGraduatedPercent: ?string) => {
+  return parseFloat(((1 - ((1 - Number(convertStrToDecimalNumber(subventionBasePercent) || 0)/100) * (1 - Number(convertStrToDecimalNumber(subventionGraduatedPercent) || 0)/100))) * 100).toFixed(2));
+};
+
+/**
+  * Calculate rent adjustment subvention amount
+  * @param {string} subventionType
+  * @param {string} subventionBasePercent
+  * @param {string} subventionGraduatedPercent
+  * @param {Object[]} managementSubventions
+  * @param {Object[]} temporarySubventions
+  * @param {string} subventionGraduatedPercent
+  * @return {number}
+  */
+export const calculateRentAdjustmentSubventionAmount = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+  let discount = 0;
+
+  if(subventionType === SubventionTypes.RE_LEASE_DISCOUNT) {
+    discount += calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
+  }
+
+  if(subventionType === SubventionTypes.X_DISCOUNT) {
+    if(managementSubventions) {
+      managementSubventions.forEach((subvention) => {
+        discount += Number(convertStrToDecimalNumber(subvention.subvention_percent) || 0);
+      });
+    }
+  }
+
+  if(temporarySubventions) {
+    temporarySubventions.forEach((subvention) => {
+      discount += Number(convertStrToDecimalNumber(subvention.subvention_percent) || 0);
+    });
+  }
+
+  return discount;
+};
+
+/**
+  * Get content of management subventions from rent adjustment
+  * @param {Object} rentAdjustment
+  * @return {Object}
+  */
+export const getContentManagementSubventions = (rentAdjustment: Object) =>
+  get(rentAdjustment, 'management_subventions', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        management: get(item, 'management.id') || item.management,
+        subvention_percent: item.subvention_percent,
+      };
+    });
+
+/**
+  * Get content of temporary subventions from rent adjustment
+  * @param {Object} rentAdjustment
+  * @return {Object}
+  */
+export const getContentTemporarySubventions = (rentAdjustment: Object) =>
+  get(rentAdjustment, 'temporary_subventions', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        description: item.description,
+        subvention_percent: item.subvention_percent,
+      };
+    });
+
 export const getContentRentAdjustments = (rent: Object) =>
   get(rent, 'rent_adjustments', [])
     .map((item) => {
@@ -808,6 +883,11 @@ export const getContentRentAdjustments = (rent: Object) =>
         amount_left: item.amount_left,
         decision: get(item, 'decision.id') || get(item, 'decision'),
         note: item.note,
+        subvention_type: item.subvention_type,
+        subvention_base_percent: item.subvention_base_percent,
+        subvention_graduated_percent: item.subvention_graduated_percent,
+        management_subventions: getContentManagementSubventions(item),
+        temporary_subventions: getContentTemporarySubventions(item),
       };
     })
     .sort(sortByStartAndEndDateDesc);
@@ -1514,6 +1594,36 @@ export const addTenantsFormValues = (payload: Object, values: Object) => {
 };
 
 /**
+  * Get content of management subventions from rent adjustment for payload
+  * @param {Object} rentAdjustment
+  * @return {Object}
+  */
+export const getPayloadManagementSubventions = (rentAdjustment: Object) =>
+  get(rentAdjustment, 'management_subventions', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        management: item.management,
+        subvention_percent: convertStrToDecimalNumber(item.subvention_percent),
+      };
+    });
+
+/**
+  * Get content of temporary subventions from rent adjustment for payload
+  * @param {Object} rentAdjustment
+  * @return {Object}
+  */
+export const getPayloadTemporarySubventions = (rentAdjustment: Object) =>
+  get(rentAdjustment, 'temporary_subventions', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        description: item.description,
+        subvention_percent: convertStrToDecimalNumber(item.subvention_percent),
+      };
+    });
+
+/**
   * Get payload of rent adjustments for API PATCH request
   *
   */
@@ -1530,6 +1640,11 @@ export const getPayloadRentAdjustments = (rent: Object) =>
       amount_left: convertStrToDecimalNumber(item.amount_left),
       decision: item.decision,
       note: item.note,
+      subvention_type: item.subvention_type,
+      subvention_base_percent: convertStrToDecimalNumber(item.subvention_base_percent),
+      subvention_graduated_percent: convertStrToDecimalNumber(item.subvention_graduated_percent),
+      management_subventions: getPayloadManagementSubventions(item),
+      temporary_subventions: getPayloadTemporarySubventions(item),
     };
   });
 

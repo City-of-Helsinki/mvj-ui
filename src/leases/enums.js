@@ -291,6 +291,16 @@ export const RentCycles = {
 };
 
 /**
+ * Subvention type enumerable.
+ *
+ * @type {{}}
+ */
+export const SubventionTypes = {
+  RE_LEASE_DISCOUNT: 're_lease_discount',
+  X_DISCOUNT: 'x_discount',
+};
+
+/**
  * Credit invoiceset options
  * @type {[*]}
  */
@@ -956,6 +966,10 @@ export const LeaseRentAdjustmentsFieldPaths = {
   INTENDED_USE: 'rents.child.children.rent_adjustments.child.children.intended_use',
   NOTE: 'rents.child.children.rent_adjustments.child.children.note',
   START_DATE: 'rents.child.children.rent_adjustments.child.children.start_date',
+  SUBVENTION_BASE_PERCENT: 'rents.child.children.rent_adjustments.child.children.subvention_base_percent',
+  SUBVENTION_GRADUATED_PERCENT: 'rents.child.children.rent_adjustments.child.children.subvention_graduated_percent',
+  SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'rents.child.children.rent_adjustments.child.children.subvention_re_lease_discount_precent',
+  SUBVENTION_TYPE: 'rents.child.children.rent_adjustments.child.children.subvention_type',
   TYPE: 'rents.child.children.rent_adjustments.child.children.type',
 };
 
@@ -974,7 +988,55 @@ export const LeaseRentAdjustmentsFieldTitles = {
   INTENDED_USE: 'Käyttötarkoitus',
   NOTE: 'Huomautus',
   START_DATE: 'Alkupvm',
+  SUBVENTION_BASE_PERCENT: 'Perusalennus markkinavuokrasta',
+  SUBVENTION_GRADUATED_PERCENT: 'Porrastettu alennus',
+  SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_TYPE: 'Subvention tyyppi',
   TYPE: 'Tyyppi',
+};
+
+/**
+ * Rent adjustment management subventions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentManagementSubventionsFieldPaths = {
+  MANAGEMENT_SUBVENTIONS: 'rents.child.children.rent_adjustments.child.children.management_subventions',
+  MANAGEMENT: 'rents.child.children.rent_adjustments.child.children.management_subventions.child.children.management',
+  SUBVENTION_PERCENT: 'rents.child.children.rent_adjustments.child.children.management_subventions.child.children.subvention_percent',
+};
+
+/**
+ * Rent adjustment management subventions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentManagementSubventionsFieldTitles = {
+  MANAGEMENT_SUBVENTIONS: 'Hallintamuodot',
+  MANAGEMENT: 'Hallintamuodon tyyppi',
+  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
+};
+
+/**
+ * Rent adjustment temporary subventions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentTemporarySubventionsFieldPaths = {
+  TEMPORARY_SUBVENTIONS: 'rents.child.children.rent_adjustments.child.children.temporary_subventions',
+  DESCRIPTION: 'rents.child.children.rent_adjustments.child.children.temporary_subventions.child.children.description',
+  SUBVENTION_PERCENT: 'rents.child.children.rent_adjustments.child.children.temporary_subventions.child.children.subvention_percent',
+};
+
+/**
+ * Rent adjustment temporary subventions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentTemporarySubventionsFieldTitles = {
+  TEMPORARY_SUBVENTIONS: 'Tilapäisalennukset',
+  DESCRIPTION: 'Tilapäisalennuksen tyyppi',
+  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
 };
 
 /**
