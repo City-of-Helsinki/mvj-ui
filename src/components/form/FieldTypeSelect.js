@@ -101,7 +101,7 @@ class FieldTypeSelect extends PureComponent<Props, State> {
             IndicatorSeparator: null,
             LoadingIndicator,
           }}
-          disabled={disabled}
+          isDisabled={disabled}
           filterOption={filterOption}
           id={name}
           onBlue={this.handleBlur}

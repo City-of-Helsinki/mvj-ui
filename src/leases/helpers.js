@@ -883,7 +883,7 @@ export const getContentRentAdjustments = (rent: Object) =>
         amount_left: item.amount_left,
         decision: get(item, 'decision.id') || get(item, 'decision'),
         note: item.note,
-        subvention_type: item.subvention_type,
+        subvention_type: get(item, 'subvention_type.id') || item.subvention_type,
         subvention_base_percent: item.subvention_base_percent,
         subvention_graduated_percent: item.subvention_graduated_percent,
         management_subventions: getContentManagementSubventions(item),
@@ -1012,7 +1012,7 @@ export const getContentRentsFormData = (lease: Object) => {
   };
 };
 
-export const getContentBasisOfRents = (lease: Object, archived: boolean = true) =>
+export const getContentBasisOfRents = (lease: Object) =>
   get(lease, 'basis_of_rents', [])
     .map((item) => {
       return {
@@ -1029,9 +1029,13 @@ export const getContentBasisOfRents = (lease: Object, archived: boolean = true) 
         locked_at: item.locked_at,
         locked_by: item.locked_by,
         archived_at: item.archived_at,
+        subvention_type: get(item, 'subvention_type.id') || item.subvention_type,
+        subvention_base_percent: item.subvention_base_percent,
+        subvention_graduated_percent: item.subvention_graduated_percent,
+        management_subventions: getContentManagementSubventions(item),
+        temporary_subventions: getContentTemporarySubventions(item),
       };
-    })
-    .filter((item) => !!item.archived_at === archived);
+    });
 
 export const getFullAddress = (item: Object) => {
   if(isEmpty(item)) return null;
@@ -1703,12 +1707,11 @@ export const getContentRentDueDatesForDb = (rent: Object) => {
 };
 
 
-export const getSavedBasisOfRent = (lease: Lease, id: ?number) => {
-  const basisOfRentsActive = getContentBasisOfRents(lease, false);
-  const basisOfRentsArchived = getContentBasisOfRents(lease, true);
-  const basisOfRents = [...basisOfRentsActive, ...basisOfRentsArchived];
+export const getBasisOfRentById = (lease: Lease, id: ?number) => {
+  const basisOfRents = getContentBasisOfRents(lease);
 
-  if(basisOfRents.length && isEmptyValue(id)) return null;
+  if(isEmptyValue(id)) return null;
+
   return basisOfRents.find((rent) => rent.id === id);
 };
 
@@ -1716,8 +1719,9 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
   payload.is_rent_info_complete = values.is_rent_info_complete ? true : false;
 
   const basisOfRents = [...get(values, 'basis_of_rents', []), ...get(values, 'basis_of_rents_archived', [])];
+
   payload.basis_of_rents = basisOfRents.map((item) => {
-    const savedBasisOfRent = getSavedBasisOfRent(currentLease, item.id);
+    const savedBasisOfRent = getBasisOfRentById(currentLease, item.id);
 
     if(savedBasisOfRent && savedBasisOfRent.locked_at) {
       return {
@@ -1725,7 +1729,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
         locked_at: item.locked_at,
       };
     } else {
-      const basisOfRentData: any = {
+      return {
         id: item.id || undefined,
         intended_use: item.intended_use,
         area: convertStrToDecimalNumber(item.area),
@@ -1737,9 +1741,12 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
         plans_inspected_at: item.plans_inspected_at,
         locked_at: item.locked_at,
         archived_at: item.archived_at,
+        subvention_type: item.subvention_type,
+        subvention_base_percent: convertStrToDecimalNumber(item.subvention_base_percent),
+        subvention_graduated_percent: convertStrToDecimalNumber(item.subvention_graduated_percent),
+        management_subventions: getPayloadManagementSubventions(item),
+        temporary_subventions: getPayloadTemporarySubventions(item),
       };
-
-      return basisOfRentData;
     }
   });
 
