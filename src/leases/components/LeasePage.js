@@ -511,8 +511,8 @@ class LeasePage extends Component<Props, State> {
       lease_areas_archived: areas.filter((area) => area.archived_at),
     });
     initialize(FormNames.LEASE_RENTS, {
-      basis_of_rents: getContentBasisOfRents(lease, false),
-      basis_of_rents_archived: getContentBasisOfRents(lease, true),
+      basis_of_rents: getContentBasisOfRents(lease).filter((item) => !item.archived_at),
+      basis_of_rents_archived: getContentBasisOfRents(lease).filter((item) => item.archived_at),
       is_rent_info_complete: lease.is_rent_info_complete,
       ...getContentRentsFormData(lease),
     });

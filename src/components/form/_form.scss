@@ -603,6 +603,10 @@
     &.no-top-margin {
       margin-top: 0;
     }
+
+    &.no-bottom-margin {
+      margin-bottom: 0;
+    }
   }
 
   &__add-file-button {
@@ -748,9 +752,7 @@
       }
     }
 
-    &.no-label {
-      margin-top: rem-calc(19px);
-    }
+
 
     &.position-topright {
       position: absolute;
@@ -766,6 +768,11 @@
         height: rem-calc(15px);
         width: rem-calc(15px);
       }
+    }
+
+    &.no-label {
+      top: 0;
+      margin-top: rem-calc(17px);
     }
   }
 
