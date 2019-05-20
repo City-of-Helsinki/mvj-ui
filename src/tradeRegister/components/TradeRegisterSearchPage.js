@@ -5,6 +5,7 @@ import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import ContentContainer from '$components/content/ContentContainer';
@@ -18,17 +19,17 @@ import {FormNames, PermissionMissingTexts} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasPermissions, getSearchQuery, getUrlParams, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   history: Object,
   initialize: Function,
-  isFetchingCommonAttributes: boolean, // Via withCommonAttributes HOC
+  isFetchingUsersPermissions: boolean,
   location: Object,
   receiveTopNavigationSettings: Function,
-  usersPermissions: UsersPermissionsType, // Via withCommonAttributes
+  usersPermissions: UsersPermissionsType,
 };
 
 type State = {
@@ -89,10 +90,12 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
   }
 
   render() {
-    const {isFetchingCommonAttributes, usersPermissions} = this.props;
+    const {isFetchingUsersPermissions, usersPermissions} = this.props;
     const {businessId} = this.state;
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(isEmpty(usersPermissions)) return null;
 
     if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.TRADE_REGISTER} /></PageContainer>;
 
@@ -121,10 +124,14 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
   withRouter,
   connect(
-    null,
+    (state) => {
+      return {
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
     {
       initialize,
       receiveTopNavigationSettings,

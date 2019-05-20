@@ -38,12 +38,7 @@ import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
-import {fetchAreaNoteList} from '$src/areaNote/actions';
-import {fetchCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/actions';
-import {fetchCollectionLettersByLease} from '$src/collectionLetter/actions';
-import {fetchCollectionNotesByLease} from '$src/collectionNote/actions';
 import {fetchInvoicesByLease} from '$src/invoices/actions';
-import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {
   clearFormValidFlags,
   deleteLease,
@@ -118,7 +113,6 @@ import {
 import {getLeaseTypeList} from '$src/leaseType/selectors';
 import {getVats} from '$src/vat/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
@@ -135,9 +129,6 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   clearPreviewInvoices: Function,
-  collectionCourtDecisionMethods: MethodsType, // Get via withLeasePageAttributes
-  collectionLetterMethods: MethodsType, // Get via withLeasePageAttributes
-  collectionNoteMethods: MethodsType, // Get via withLeasePageAttributes
   comments: CommentList,
   commentMethods: MethodsType, // get via withLeasePageAttributes HOC
   contractsFormValues: Object,
@@ -146,12 +137,7 @@ type Props = {
   decisionsFormValues: Object,
   deleteLease: Function,
   destroy: Function,
-  fetchAreaNoteList: Function,
-  fetchCollectionCourtDecisionsByLease: Function,
-  fetchCollectionLettersByLease: Function,
-  fetchCollectionNotesByLease: Function,
   fetchInvoicesByLease: Function,
-  fetchInvoiceSetsByLease: Function,
   fetchLeaseTypes: Function,
   fetchSingleLease: Function,
   fetchVats: Function,
@@ -162,7 +148,6 @@ type Props = {
   invoices: InvoiceList,
   isEditMode: boolean,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   isFetchingLeasePageAttributes: boolean, // get via withLeasePageAttributes HOC
   isFormValidFlags: Object,
   isConstructabilityFormDirty: boolean,
@@ -183,8 +168,8 @@ type Props = {
   isTenantsFormDirty: boolean,
   isTenantsFormValid: boolean,
   isSaveClicked: boolean,
-  leaseAttributes: Attributes, // get via withCommonAttributes HOC
-  leaseMethods: MethodsType, // get via withCommonAttributes HOC
+  leaseAttributes: Attributes,
+  leaseMethods: MethodsType,
   leaseTypeList: LeaseTypeList,
   location: Object,
   loggedUser: Object,
@@ -200,7 +185,7 @@ type Props = {
   showEditMode: Function,
   summaryFormValues: Object,
   tenantsFormValues: Object,
-  usersPermissions: UsersPermissionsType, // Get via withCommonAttributes HOC
+  usersPermissions: UsersPermissionsType,
   vats: VatList,
 }
 
@@ -233,19 +218,12 @@ class LeasePage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      collectionCourtDecisionMethods,
-      collectionLetterMethods,
-      collectionNoteMethods,
-      fetchAreaNoteList,
-      fetchCollectionLettersByLease,
-      fetchCollectionCourtDecisionsByLease,
-      fetchCollectionNotesByLease,
       fetchInvoicesByLease,
-      fetchInvoiceSetsByLease,
       fetchLeaseTypes,
       fetchSingleLease,
       fetchVats,
       hideEditMode,
+      invoices,
       leaseTypeList,
       location: {search},
       match: {params: {leaseId}},
@@ -269,37 +247,17 @@ class LeasePage extends Component<Props, State> {
 
     fetchSingleLease(leaseId);
 
-    // Fetch invoices if user has permissions
-    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
       fetchInvoicesByLease(leaseId);
     }
 
-    // Fetch invoice sets if user has permissions
-    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICESET)) {
-      fetchInvoiceSetsByLease(leaseId);
-    }
-    // Fetch collection court decisions if GET is allowed
-    if(isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)) {
-      fetchCollectionCourtDecisionsByLease(leaseId);
-    }
-    // Fetch collection letters if GET is allowed
-    if(isMethodAllowed(collectionLetterMethods, Methods.GET)) {
-      fetchCollectionLettersByLease(leaseId);
-    }
-    // Fetch collection notes if GET is allowed
-    if(isMethodAllowed(collectionNoteMethods, Methods.GET)) {
-      fetchCollectionNotesByLease(leaseId);
-    }
-
-    if(isEmpty(leaseTypeList)) {
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
       fetchLeaseTypes();
     }
 
-    if(isEmpty(vats)) {
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
       fetchVats();
     }
-
-    fetchAreaNoteList({});
 
     hideEditMode();
 
@@ -322,42 +280,18 @@ class LeasePage extends Component<Props, State> {
 
   componentDidUpdate(prevProps:Props, prevState: State) {
     const {
-      collectionCourtDecisionMethods,
-      collectionLetterMethods,
-      collectionNoteMethods,
       currentLease,
-      fetchCollectionCourtDecisionsByLease,
-      fetchCollectionLettersByLease,
-      fetchCollectionNotesByLease,
       fetchInvoicesByLease,
-      fetchInvoiceSetsByLease,
+      fetchLeaseTypes,
+      fetchVats,
+      invoices,
       isEditMode,
+      leaseTypeList,
       match: {params: {leaseId}},
       usersPermissions,
+      vats,
     } = this.props;
     const {activeTab} = this.state;
-
-    if(prevProps.usersPermissions !== usersPermissions) {
-      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
-        fetchInvoicesByLease(leaseId);
-      }
-
-      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICESET)) {
-        fetchInvoiceSetsByLease(leaseId);
-      }
-    }
-    // Fetch collection court decisions when getting new collection court decision methods and GET is allowed
-    if(prevProps.collectionCourtDecisionMethods !== collectionCourtDecisionMethods && isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)) {
-      fetchCollectionCourtDecisionsByLease(leaseId);
-    }
-    // Fetch collection letters when getting new collection letter methods and GET is allowed
-    if(prevProps.collectionLetterMethods !== collectionLetterMethods && isMethodAllowed(collectionLetterMethods, Methods.GET)) {
-      fetchCollectionLettersByLease(leaseId);
-    }
-    // Fetch collection notes when getting new collection note methods and GET is allowed
-    if(prevProps.collectionNoteMethods !== collectionNoteMethods && isMethodAllowed(collectionNoteMethods, Methods.GET)) {
-      fetchCollectionNotesByLease(leaseId);
-    }
 
     if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
@@ -368,6 +302,20 @@ class LeasePage extends Component<Props, State> {
 
       if(Number(leaseId) === storedLeaseId) {
         this.setState({isRestoreModalOpen: true});
+      }
+    }
+
+    if(usersPermissions !== prevProps.usersPermissions) {
+      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
+        fetchInvoicesByLease(leaseId);
+      }
+
+      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
+        fetchLeaseTypes();
+      }
+
+      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
+        fetchVats();
       }
     }
 
@@ -831,12 +779,6 @@ class LeasePage extends Component<Props, State> {
     );
   }
 
-  getIsFetchingAttributes = () => {
-    const {isFetchingLeasePageAttributes, isFetchingCommonAttributes} = this.props;
-
-    return isFetchingLeasePageAttributes || isFetchingCommonAttributes;
-  }
-
   handleDelete = () => {
     const {
       deleteLease,
@@ -857,14 +799,15 @@ class LeasePage extends Component<Props, State> {
       commentMethods,
       comments,
       currentLease,
-      isEditMode,
-      isFetching,
       isConstructabilityFormDirty,
       isConstructabilityFormValid,
       isContractsFormDirty,
       isContractsFormValid,
       isDecisionsFormDirty,
       isDecisionsFormValid,
+      isEditMode,
+      isFetching,
+      isFetchingLeasePageAttributes,
       isInspectionsFormDirty,
       isInspectionsFormValid,
       isLeaseAreasFormDirty,
@@ -883,9 +826,8 @@ class LeasePage extends Component<Props, State> {
       usersPermissions,
     } = this.props;
     const areFormsValid = this.validateForms();
-    const isFetchingAttributes = this.getIsFetchingAttributes();
 
-    if(isFetching || isFetchingAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetching || isFetchingLeasePageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!leaseMethods) return null;
 
@@ -1140,7 +1082,6 @@ class LeasePage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
   withLeasePageAttributes,
   withUiDataList,
   withRouter,
@@ -1149,7 +1090,7 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
-        comments: getCommentsByLease(state, currentLease.id),
+        comments: getCommentsByLease(state, props.match.params.leaseId),
         constructabilityFormValues: getFormValues(FormNames.LEASE_CONSTRUCTABILITY)(state),
         contractsFormValues: getFormValues(FormNames.LEASE_CONTRACTS)(state),
         currentLease: currentLease,
@@ -1191,12 +1132,7 @@ export default flowRight(
       clearPreviewInvoices,
       deleteLease,
       destroy,
-      fetchAreaNoteList,
-      fetchCollectionCourtDecisionsByLease,
-      fetchCollectionLettersByLease,
-      fetchCollectionNotesByLease,
       fetchInvoicesByLease,
-      fetchInvoiceSetsByLease,
       fetchLeaseTypes,
       fetchSingleLease,
       fetchVats,

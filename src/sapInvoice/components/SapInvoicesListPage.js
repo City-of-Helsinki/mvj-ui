@@ -43,7 +43,7 @@ import {
 } from '$src/util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getSapInvoices as getSapInvoiceList} from '$src/sapInvoice/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withSapInvoicesAttributes} from '$components/attributes/SapInvoicesAttributes';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {SapInvoiceList} from '$src/sapInvoice/types';
@@ -112,10 +112,10 @@ const getColumns = (invoiceAttributes: Attributes) => {
 type Props = {
   fetchSapInvoices: Function,
   history: Object,
-  invoiceAttributes: Attributes, // Via withCommonAttributes HOC
-  invoiceMethods: MethodsType, // Via withCommonAttributes HOC
+  invoiceAttributes: Attributes, // Via withSapInvoicesAttributes HOC
+  invoiceMethods: MethodsType, // Via withSapInvoicesAttributes HOC
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // Via withCommonAttributes HOC
+  isFetchingInvoiceAttributes: boolean, // Via withSapInvoicesAttributes HOC
   location: Object,
   receiveTopNavigationSettings: Function,
   sapInvoiceList: SapInvoiceList,
@@ -271,7 +271,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     const {
       invoiceMethods,
       isFetching,
-      isFetchingCommonAttributes,
+      isFetchingInvoiceAttributes,
     } = this.props;
     const {
       activePage,
@@ -283,7 +283,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       sortOrder,
     } = this.state;
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingInvoiceAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!invoiceMethods) return null;
 
@@ -328,7 +328,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withSapInvoicesAttributes,
   withRouter,
   connect(
     (state) => {

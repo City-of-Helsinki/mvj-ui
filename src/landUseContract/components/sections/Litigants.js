@@ -1,16 +1,21 @@
 // @flow
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
+import flowRight from 'lodash/flowRight';
 
 import FormText from '$components/form/FormText';
 import Litigant from './Litigant';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {getContentLitigants, isLitigantArchived} from '$src/landUseContract/helpers';
 import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
+import {withContactAttributes} from '$components/attributes/ContactAttributes';
 
 import type {LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   currentLandUseContract: LandUseContract,
+  isFetchingContactAttributes: boolean,
 }
 
 type State = {
@@ -44,7 +49,10 @@ class Litigants extends PureComponent<Props, State> {
   }
 
   render() {
+    const {isFetchingContactAttributes} = this.props;
     const {activeLitigants, archivedLitigants} = this.state;
+
+    if(isFetchingContactAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
     return (
       <Fragment>
@@ -67,10 +75,13 @@ class Litigants extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      currentLandUseContract: getCurrentLandUseContract(state),
-    };
-  }
+export default flowRight(
+  withContactAttributes,
+  connect(
+    (state) => {
+      return {
+        currentLandUseContract: getCurrentLandUseContract(state),
+      };
+    }
+  ),
 )(Litigants);

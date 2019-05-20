@@ -611,6 +611,7 @@
 
   &__add-file-button {
     display: inline-block;
+    vertical-align: text-top;
 
     &__label {
       font-family: $font-family-source;
@@ -618,7 +619,7 @@
       line-height: rem-calc(20px) !important;
       font-weight: $semibold !important;
       color: $dark-green !important;
-      margin: rem-calc(5px) 0 rem-calc(10px);
+      margin: 0 !important;
       cursor: pointer;
 
       @include focus();

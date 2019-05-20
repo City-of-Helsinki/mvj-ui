@@ -47,7 +47,7 @@ import {
 } from '$src/util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getLeaseholdTransferList} from '$src/leaseholdTransfer/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withLeaseholdTransferAttributes} from '$components/attributes/LeaseholdTransferAttributes';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {LeaseholdTransferList} from '$src/leaseholdTransfer/types';
@@ -58,7 +58,7 @@ type Props = {
   history: Object,
   initialize: Function,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean,
+  isFetchingLeaseholdTransferAttributes: boolean,
   leaseholdTransferAttributes: Attributes,
   leaseholdTransferList: LeaseholdTransferList,
   leaseholdTransferMethods: MethodsType,
@@ -256,7 +256,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     const {
       deleteLeaseholdTransferAndUpdateList,
       isFetching,
-      isFetchingCommonAttributes,
+      isFetchingLeaseholdTransferAttributes,
       leaseholdTransferMethods,
     } = this.props;
     const {
@@ -269,7 +269,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
       sortOrder,
     } = this.state;
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingLeaseholdTransferAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!leaseholdTransferMethods) return null;
 
@@ -409,7 +409,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withLeaseholdTransferAttributes,
   withRouter,
   connect(
     (state) => {

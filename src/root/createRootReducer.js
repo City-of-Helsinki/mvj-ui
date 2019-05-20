@@ -15,7 +15,6 @@ import collectionNoteReducer from '../collectionNote/reducer';
 import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
 import contractFileReducer from '$src/contractFile/reducer';
-import copyAreasToContractReducer from '$src/copyAreasToContract/reducer';
 import createCollectionLetterReducer from '$src/createCollectionLetter/reducer';
 import districtsReducer from '../district/reducer';
 import indexReducer from '$src/index/reducer';
@@ -59,7 +58,6 @@ export default (history: Object): Reducer<RootState> =>
     comment: commentsReducer,
     contact: contactsReducer,
     contractFile: contractFileReducer,
-    copyAreasToContract: copyAreasToContractReducer,
     createCollectionLetter: createCollectionLetterReducer,
     district: districtsReducer,
     form: formReducer,

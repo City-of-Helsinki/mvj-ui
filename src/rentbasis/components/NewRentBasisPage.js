@@ -28,7 +28,7 @@ import {formatRentBasisForDb} from '$src/rentbasis/helpers';
 import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValid, getIsSaveClicked, getIsSaving} from '$src/rentbasis/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withRentBasisAttributes} from '$components/attributes/RentBasisAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Methods as MethodsType} from '$src/types';
@@ -39,7 +39,7 @@ type Props = {
   editedRentBasis: Object,
   hideEditMode: Function,
   history: Object,
-  isFetchingCommonAttributes: boolean,
+  isFetchingRentBasisAttributes: boolean,
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
@@ -120,13 +120,13 @@ class NewRentBasisPage extends Component<Props> {
   render() {
     const {
       isFormValid,
-      isFetchingCommonAttributes,
+      isFetchingRentBasisAttributes,
       isSaveClicked,
       isSaving,
       rentBasisMethods,
     } = this.props;
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingRentBasisAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!rentBasisMethods) return null;
 
@@ -182,7 +182,7 @@ const mapStateToProps = (state: RootState) => {
 };
 
 export default flowRight(
-  withCommonAttributes,
+  withRentBasisAttributes,
   withUiDataList,
   withRouter,
   connect(

@@ -55,6 +55,7 @@ import {
   getCurrentLease,
 } from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {withContactAttributes} from '$components/attributes/ContactAttributes';
 
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
@@ -87,6 +88,7 @@ const TenantWarnings = ({
 type TenantsProps = {
   archived: boolean,
   fields: any,
+  isFetchingContactAttributes: boolean,
   leaseAttributes: Attributes,
   tenants: Array<Object>,
   usersPermissions: UsersPermissionsType,
@@ -95,6 +97,7 @@ type TenantsProps = {
 const renderTenants = ({
   archived,
   fields,
+  isFetchingContactAttributes,
   leaseAttributes,
   tenants,
   usersPermissions,
@@ -102,6 +105,8 @@ const renderTenants = ({
   const handleAdd = () => {
     fields.push({});
   };
+
+  if(isFetchingContactAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
   return (
     <AppConsumer>
@@ -370,6 +375,7 @@ class TenantsEdit extends PureComponent<Props, State> {
 const formName = FormNames.LEASE_TENANTS;
 
 export default flowRight(
+  withContactAttributes,
   connect(
     (state) => {
       return {

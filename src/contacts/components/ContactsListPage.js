@@ -41,7 +41,7 @@ import {
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getContactList, getIsFetching} from '../selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withContactAttributes} from '$components/attributes/ContactAttributes';
 
 import type {ContactList} from '../types';
 import type {Attributes, Methods as MethodsType} from '$src/types';
@@ -50,13 +50,13 @@ import type {RootState} from '$src/root/types';
 type Props = {
   contactAttributes: Attributes,
   contactList: ContactList,
-  contactMethods: MethodsType, // get via withCommonAttributes HOC
+  contactMethods: MethodsType,
   fetchContacts: Function,
   history: Object,
   initializeContactForm: Function,
   initialize: Function,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
+  isFetchingContactAttributes: boolean,
   location: Object,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -305,7 +305,7 @@ class ContactListPage extends Component<Props, State> {
   }
 
   render() {
-    const {contactMethods, isFetching, isFetchingCommonAttributes} = this.props;
+    const {contactMethods, isFetching, isFetchingContactAttributes} = this.props;
     const {
       activePage,
       contacts,
@@ -317,7 +317,7 @@ class ContactListPage extends Component<Props, State> {
     } = this.state;
     const columns = this.getColumns();
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingContactAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!contactMethods) return null;
 
@@ -379,7 +379,7 @@ class ContactListPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withContactAttributes,
   withRouter,
   connect(
     (state: RootState) => {
