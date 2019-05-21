@@ -5,10 +5,6 @@ import createUrlWithoutVersionSuffix from '../api/createUrlWithoutVersionSuffix'
 
 import type {ContractId} from './types';
 
-export const fetchAttributes = (): Generator<any, any, any> => {
-  return callApi(new Request(createUrlWithoutVersionSuffix(`contract_file/0/`), {method: 'OPTIONS'}));
-};
-
 export const fetchContractFiles = (id: ContractId): Generator<any, any, any> => {
   return callApi(new Request(createUrlWithoutVersionSuffix(`contract_file/${id}/`)));
 };

@@ -10,7 +10,6 @@ import type {CollectionNoteState} from '$src/collectionNote/types';
 import type {CommentState} from '$src/comments/types';
 import type {ContractFileState} from '$src/contractFile/types';
 import type {ContactState} from '$src/contacts/types';
-import type {CopyAreasToContractState} from '$src/copyAreasToContract/types';
 import type {CreateCollectionLetterState} from '$src/createCollectionLetter/types';
 import type {DistrictState} from '$src/district/types';
 import type {IndexState} from '$src/index/types';
@@ -49,7 +48,6 @@ export type RootState = {
   comment: CommentState,
   contact: ContactState,
   contractFile: ContractFileState,
-  copyAreasToContract: CopyAreasToContractState,
   createCollectionLetter: CreateCollectionLetterState,
   district: DistrictState,
   form: Object,

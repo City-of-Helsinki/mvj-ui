@@ -24,7 +24,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, Methods, ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   DeleteModalLabels,
@@ -46,9 +46,7 @@ import {
   getLabelOfOption,
   hasPermissions,
   isFieldAllowedToRead,
-  isMethodAllowed,
 } from '$util/helpers';
-import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {
   getAttributes,
   getCollapseStateByKey,
@@ -58,7 +56,7 @@ import {
 } from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -365,7 +363,6 @@ type Props = {
   collateralsCollapseState: boolean,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
-  contractFileMethods: MethodsType,
   contractId: number,
   currentLease: Lease,
   decisionOptions: Array<Object>,
@@ -384,7 +381,6 @@ const ContractItemEdit = ({
   collateralsCollapseState,
   contractCollapseState,
   contractChangesCollapseState,
-  contractFileMethods,
   contractId,
   currentLease,
   decisionOptions,
@@ -441,12 +437,7 @@ const ContractItemEdit = ({
     };
 
     return <FormText>{value
-      ? <Authorization
-        allow={isMethodAllowed(contractFileMethods, Methods.GET)}
-        errorComponent={value}
-      >
-        <a onClick={handleShowContractFileModal}>{value}</a>
-      </Authorization>
+      ? <a onClick={handleShowContractFileModal}>{value}</a>
       : '-'}</FormText>;
   };
 
@@ -680,7 +671,6 @@ export default connect(
     const id = selector(state, `${props.field}.id`);
     const newState: any = {
       attributes: getAttributes(state),
-      contractFileMethods: getContractFileMethods(state),
       contractId: id,
       currentLease: getCurrentLease(state),
       errors: getErrorsByFormName(state, formName),

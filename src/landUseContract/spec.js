@@ -2,7 +2,8 @@
 import {expect} from 'chai';
 
 import {
-  receiveLandUseContractAttributes,
+  fetchAttributes,
+  receiveAttributes,
   fetchLandUseContractList,
   receiveLandUseContractList,
   fetchSingleLandUseContract,
@@ -27,6 +28,7 @@ const baseState: LandUseContractState = {
   current: {},
   isEditMode: false,
   isFetching: false,
+  isFetchingAttributes: false,
   isFormValidById: {
     'land-use-contract-basic-info-form': true,
     'land-use-contract-compensations-form': true,
@@ -49,6 +51,13 @@ describe('Land use contract', () => {
     describe('landUseContractReducer', () => {
 
       // $FlowFixMe
+      it('should update isFetchingAttributes flag to true', () => {
+        const newState = {...baseState, isFetchingAttributes: true};
+
+        const state = landUseContractReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update attributes', () => {
         const dummyAttributes = {
           id: 1,
@@ -56,10 +65,9 @@ describe('Land use contract', () => {
           name: 'Bar',
         };
 
-        const newState = {...baseState};
-        newState.attributes = dummyAttributes;
+        const newState = {...baseState, attributes: dummyAttributes, isFetchingAttributes: false};
 
-        const state = landUseContractReducer({}, receiveLandUseContractAttributes(dummyAttributes));
+        const state = landUseContractReducer({}, receiveAttributes(dummyAttributes));
         expect(state).to.deep.equal(newState);
       });
 

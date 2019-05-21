@@ -7,28 +7,32 @@ import isEmpty from 'lodash/isEmpty';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import RentBasisLayer from './RentBasisLayer';
+import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {mapColors} from '$src/constants';
-import {Methods} from '$src/enums';
 import {RentBasisFieldPaths} from '$src/rentbasis/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRentBasisGeoJson} from '$src/rentbasis/helpers';
 import {
   getFieldOptions,
+  hasPermissions,
   isFieldAllowedToRead,
-  isMethodAllowed,
 } from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} from '$util/map';
-import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
+import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getRentBasisAttributes, getRentBasis} from '$src/rentbasis/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, LeafletGeoJson, Methods as MethodsType} from '$src/types';
+import type {Attributes, LeafletGeoJson} from '$src/types';
 import type {RentBasis} from '$src/rentbasis/types';
 import type {AreaNoteList} from '$src/areaNote/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
-  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
+  fetchAreaNoteList: Function,
   rentBasis: RentBasis,
   rentBasisAttributes: Attributes,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -60,6 +64,14 @@ class SingleRentBasisMap extends Component<Props, State> {
     rentBasisAttributes: null,
   }
 
+  componentDidMount() {
+    const {fetchAreaNoteList, usersPermissions} = this.props;
+
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
+      fetchAreaNoteList({});
+    }
+  }
+
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
@@ -85,7 +97,7 @@ class SingleRentBasisMap extends Component<Props, State> {
 
   getOverlayLayers = () => {
     const {financingOptions, geoJSON, indexOptions, managementOptions, plotTypeOptions} = this.state;
-    const {areaNoteMethods, areaNotes, rentBasisAttributes} = this.props;
+    const {areaNotes, rentBasisAttributes, usersPermissions} = this.props;
     const layers = [];
 
     if(isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)) {
@@ -102,7 +114,7 @@ class SingleRentBasisMap extends Component<Props, State> {
         name: 'Vuokrausperiaatteet',
       });
     }
-    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
+    {hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer
@@ -139,11 +151,14 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        areaNoteMethods: getAreaNoteMethods(state),
         areaNotes: getAreaNoteList(state),
         rentBasis: getRentBasis(state),
         rentBasisAttributes: getRentBasisAttributes(state),
+        usersPermissions: getUsersPermissions(state),
       };
+    },
+    {
+      fetchAreaNoteList,
     }
   )
 )(SingleRentBasisMap);

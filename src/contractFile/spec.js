@@ -2,9 +2,6 @@
 import {expect} from 'chai';
 
 import {
-  fetchAttributes,
-  attributesNotFound,
-  receiveMethods,
   fetchContractFilesById,
   receiveContractFilesById,
   notFoundById,
@@ -14,9 +11,7 @@ import contractFileReducer from './reducer';
 import type {ContractFileState} from './types';
 const defaultState: ContractFileState = {
   byId: {},
-  isFetchingAttributes: false,
   isFetchingById: {},
-  methods: {},
 };
 
 // $FlowFixMe
@@ -29,29 +24,6 @@ describe('contractFile', () => {
     describe('contractFileReducer', () => {
 
       // $FlowFixMe
-      it('should update isFetchingAttributes flag to true when fetching attributes', () => {
-        const newState = {...defaultState, isFetchingAttributes: true};
-
-        const state = contractFileReducer({}, fetchAttributes());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
-        const newState = {...defaultState, isFetchingAttributes: false};
-
-        let state: Object = contractFileReducer({}, fetchAttributes());
-        state = contractFileReducer(state, attributesNotFound());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update methods', () => {
-        const dummyMethods = {foo: 'bar'};
-        const newState = {...defaultState, methods: dummyMethods};
-
-        const state = contractFileReducer({}, receiveMethods(dummyMethods));
-        expect(state).to.deep.equal(newState);
-      });
-
       it('should update isFetchingById flags when fetching contract files', () => {
         const dummyId = 1;
         const newState = {...defaultState, isFetchingById: {[dummyId]: true}};

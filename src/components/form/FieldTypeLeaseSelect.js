@@ -22,6 +22,7 @@ type Props = {
 
 type State = {
   inputValue: string,
+  menuOpened: boolean,
 }
 
 class FieldTypeLeaseSelect extends Component<Props, State> {
@@ -34,6 +35,7 @@ class FieldTypeLeaseSelect extends Component<Props, State> {
 
   state = {
     inputValue: '',
+    menuOpened: false,
   }
 
   handleBlur = () => {
@@ -58,12 +60,26 @@ class FieldTypeLeaseSelect extends Component<Props, State> {
   }
 
   handleMenuOpen = () => {
-    const {inputValue} = this.state;
+    const {inputValue, menuOpened} = this.state;
 
-    if(this.select.state.inputValue !== inputValue) {
-      this.select.select.onInputChange(inputValue, {action: 'input-change'});
+    if(!menuOpened) {
+      this.setState({menuOpened: true}, () => {
+        this.select.setState({isLoading: true});
+
+        this.loadOptions('', (options) => {
+          this.select.setState({
+            defaultOptions: options,
+            isLoading: false,
+          });
+        });
+      });
+    } else {
+      if(this.select.state.inputValue !== inputValue) {
+        this.select.select.onInputChange(inputValue, {action: 'input-change'});
+      }
     }
   }
+
 
   getLeases = debounce(async(inputValue: string, callback: Function) => {
     const leases = await fetchLeases({
@@ -75,7 +91,13 @@ class FieldTypeLeaseSelect extends Component<Props, State> {
   }, 500);
 
   loadOptions = (inputValue: string, callback: Function) => {
-    this.getLeases(inputValue, callback);
+    const {menuOpened} = this.state;
+
+    if(menuOpened) {
+      this.getLeases(inputValue, callback);
+    } else {
+      callback([]);
+    }
   };
 
   render() {

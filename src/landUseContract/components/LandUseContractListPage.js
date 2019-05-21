@@ -7,7 +7,6 @@ import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
-import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import CreateLandUseContractModal from './createLandUseContract/CreateLandUseContractModal';
@@ -20,7 +19,7 @@ import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
+import {createLandUseContract, fetchLandUseContractList} from '$src/landUseContract/actions';
 import {FormNames} from '$src/enums';
 import {getContentLandUseContractList} from '$src/landUseContract/helpers';
 import {
@@ -31,7 +30,8 @@ import {
   setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
+import {getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
+import {withLandUseContractAttributes} from '$components/attributes/LandUseContractAttributes';
 
 import type {Attributes} from '$src/types';
 import type {LandUseContract, LandUseContractList} from '$src/landUseContract/types';
@@ -39,13 +39,13 @@ import type {LandUseContract, LandUseContractList} from '$src/landUseContract/ty
 const PAGE_SIZE = 25;
 
 type Props = {
-  attributes: Attributes,
   createLandUseContract: Function,
-  fetchLandUseContractAttributes: Function,
   fetchLandUseContractList: Function,
   history: Object,
   initialize: Function,
   isFetching: boolean,
+  isFetchingLandUseContractAttributes: boolean,
+  landUseContractAttributes: Attributes,
   landUseContractListData: LandUseContractList,
   location: Object,
   receiveTopNavigationSettings: Function,
@@ -76,8 +76,6 @@ class LandUseContractListPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      attributes,
-      fetchLandUseContractAttributes,
       receiveTopNavigationSettings,
     } = this.props;
 
@@ -88,10 +86,6 @@ class LandUseContractListPage extends Component<Props, State> {
       pageTitle: 'Maankäyttösopimukset',
       showSearch: false,
     });
-
-    if(isEmpty(attributes)) {
-      fetchLandUseContractAttributes();
-    }
 
     this.search();
 
@@ -272,13 +266,15 @@ class LandUseContractListPage extends Component<Props, State> {
   }
 
   render() {
-    const {attributes, isFetching} = this.props;
+    const {isFetching, isFetchingLandUseContractAttributes, landUseContractAttributes} = this.props;
     const {activePage, isModalOpen, isSearchInitialized, landUseContracts, maxPage, selectedStates} = this.state;
-    const stateOptions = getFieldOptions(attributes, 'state', false);
+    const stateOptions = getFieldOptions(landUseContractAttributes, 'state', false);
     const filteredLandUseContracts = selectedStates.length
       ? (landUseContracts.filter((contract) => selectedStates.indexOf(contract.state)  !== -1))
       : landUseContracts;
     const count = filteredLandUseContracts.length;
+
+    if(isFetchingLandUseContractAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     return (
       <PageContainer>
@@ -351,17 +347,16 @@ class LandUseContractListPage extends Component<Props, State> {
 export default flowRight(
   // $FlowFixMe
   withRouter,
+  withLandUseContractAttributes,
   connect(
     (state) => {
       return {
-        attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         landUseContractListData: getLandUseContractList(state),
       };
     },
     {
       createLandUseContract,
-      fetchLandUseContractAttributes,
       fetchLandUseContractList,
       initialize,
       receiveTopNavigationSettings,

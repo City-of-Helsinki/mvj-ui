@@ -11,6 +11,7 @@ import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
 import {getFieldAttributes, isFieldAllowedToRead} from '$util/helpers';
+import {getAttributes as getCollectionNoteAttributes} from '$src/collectionNote/selectors';
 
 import type {Attributes} from '$src/types';
 
@@ -74,6 +75,7 @@ const selector = formValueSelector(formName);
 export default connect(
   (state, props) => {
     return {
+      collectionNoteAttributes: getCollectionNoteAttributes(state),
       note: selector(state, `${props.field}.note`),
     };
   }

@@ -10,23 +10,27 @@ import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
 import {fetchIndexList} from '$src/index/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {PermissionMissingTexts} from '$src/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentYearlyIndexes} from '$src/index/helpers';
-import {isMethodAllowed, setPageTitle} from '$util/helpers';
+import {hasPermissions, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIndexList, getIsFetching} from '$src/index/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from '$src/usersPermissions/selectors';
 
-import type {Methods as MethodsType} from '$src/types';
 import type {IndexList} from '$src/index/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   fetchIndexList: Function,
   indexList: IndexList,
-  indexMethods: MethodsType, // Via withCommonAttributes HOC
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // Via withCommonAttributes HOC
+  isFetchingUsersPermissions: boolean,
   receiveTopNavigationSettings: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -71,17 +75,17 @@ class IndexListPage extends PureComponent<Props, State> {
   render() {
     const {
       indexList,
-      indexMethods,
       isFetching,
-      isFetchingCommonAttributes,
+      isFetchingUsersPermissions,
+      usersPermissions,
     } = this.props;
     const {yearlyIndexes} = this.state;
 
-    if(isFetching || isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetching || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!indexMethods) return null;
+    if(isEmpty(UsersPermissions)) return null;
 
-    if(!isMethodAllowed(indexMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INDEX} /></PageContainer>;
+    if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INDEX} /></PageContainer>;
 
     getContentYearlyIndexes(indexList);
     return(
@@ -95,12 +99,13 @@ class IndexListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
   connect(
     (state) => {
       return {
         indexList: getIndexList(state),
         isFetching: getIsFetching(state),
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

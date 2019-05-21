@@ -30,7 +30,7 @@ import {isEmptyValue, isMethodAllowed, setPageTitle} from '$util/helpers';
 import {contactExists} from '$src/contacts/requestsAsync';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withContactAttributes} from '$components/attributes/ContactAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Methods as MethodsType} from '$src/types';
@@ -39,13 +39,13 @@ import type {Contact} from '../types';
 
 type Props = {
   contactFormValues: Contact,
-  contactMethods: MethodsType, // get via withCommonAttributes HOC
+  contactMethods: MethodsType, // get via withContactAttributes HOC
   createContact: Function,
   hideEditMode: Function,
   history: Object,
   isContactFormDirty: boolean,
   isContactFormValid: boolean,
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes
+  isFetchingContactAttributes: boolean, // get via withContactAttributes HOC
   isSaveClicked: boolean,
   location: Object,
   receiveIsSaveClicked: Function,
@@ -118,11 +118,11 @@ class NewContactPage extends Component<Props> {
     const {
       contactMethods,
       isContactFormValid,
-      isFetchingCommonAttributes,
+      isFetchingContactAttributes,
       isSaveClicked,
     } = this.props;
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingContactAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!contactMethods) return null;
 
@@ -213,7 +213,7 @@ const mapStateToProps = (state: RootState) => {
 };
 
 export default flowRight(
-  withCommonAttributes,
+  withContactAttributes,
   withUiDataList,
   withRouter,
   connect(

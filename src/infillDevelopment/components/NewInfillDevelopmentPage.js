@@ -28,7 +28,7 @@ import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
 import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValidById, getIsSaveClicked, getIsSaving} from '$src/infillDevelopment/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withInfillDevelopmentPageAttributes} from '$components/attributes/InfillDevelopmentPageAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Methods as MethodsType} from '$src/types';
@@ -40,8 +40,8 @@ type Props = {
   formValues: Object,
   hideEditMode: Function,
   history: Object,
-  infillDevelopmentMethods: MethodsType, // get via withCommonAttributes HOC
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
+  infillDevelopmentMethods: MethodsType, // get via withInfillDevelopmentPageAttributes HOC
+  isFetchingInfillDevelopmentPageAttributes: boolean, // get via withInfillDevelopmentPageAttributes HOC
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
@@ -123,13 +123,13 @@ class NewInfillDevelopmentPage extends Component<Props> {
   render() {
     const {
       infillDevelopmentMethods,
-      isFetchingCommonAttributes,
+      isFetchingInfillDevelopmentPageAttributes,
       isFormValid,
       isSaveClicked,
       isSaving,
     } = this.props;
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingInfillDevelopmentPageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!infillDevelopmentMethods) return null;
 
@@ -183,7 +183,7 @@ const mapStateToProps = (state: RootState) => {
 };
 
 export default flowRight(
-  withCommonAttributes,
+  withInfillDevelopmentPageAttributes,
   withUiDataList,
   withRouter,
   connect(

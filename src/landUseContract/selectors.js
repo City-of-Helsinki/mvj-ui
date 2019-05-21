@@ -18,6 +18,9 @@ export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolea
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.landUseContract.isFetching;
 
+export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.landUseContract.isFetchingAttributes;
+
 export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boolean =>
   state.landUseContract.isSaveClicked;
 

@@ -12,6 +12,7 @@ import Divider from '$components/content/Divider';
 import PlanUnitsLayer from './PlanUnitsLayer';
 import PlotsLayer from './PlotsLayer';
 import Title from '$components/content/Title';
+import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {mapColors} from '$src/constants';
 import {
   LeaseAreasFieldPaths,
@@ -20,7 +21,7 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
-import {Methods} from '$src/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getContentAreasGeoJson,
   getContentPlanUnitsGeoJson,
@@ -31,24 +32,27 @@ import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldOptions,
   getUrlParams,
+  hasPermissions,
   isFieldAllowedToRead,
-  isMethodAllowed,
 } from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
-import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
+import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease, getIsEditMode} from '$src/leases/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, LeafletGeoJson, Methods as MethodsType} from '$src/types';
+import type {Attributes, LeafletGeoJson} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {AreaNoteList} from '$src/areaNote/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
-  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   currentLease: Lease,
+  fetchAreaNoteList: Function,
   isEditMode: boolean,
   leaseAttributes: Attributes,
   location: Object,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -105,6 +109,14 @@ class SingleLeaseMap extends PureComponent<Props, State> {
     plotTypeOptions: [],
   }
 
+  componentDidMount() {
+    const {fetchAreaNoteList, usersPermissions} = this.props;
+
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
+      fetchAreaNoteList({});
+    }
+  }
+
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
@@ -137,10 +149,10 @@ class SingleLeaseMap extends PureComponent<Props, State> {
   getOverlayLayers = () => {
     const layers = [];
     const {
-      areaNoteMethods,
       areaNotes,
       leaseAttributes,
       location: {search},
+      usersPermissions,
     } = this.props;
     const {
       areasGeoJson,
@@ -228,7 +240,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         name: 'Vuokrakohteet',
       });
     }
-    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
+    {hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer
@@ -272,12 +284,15 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        areaNoteMethods: getAreaNoteMethods(state),
         areaNotes: getAreaNoteList(state),
+        currentLease: getCurrentLease(state),
         isEditMode: getIsEditMode(state),
         leaseAttributes: getLeaseAttributes(state),
-        currentLease: getCurrentLease(state),
+        usersPermissions: getUsersPermissions(state),
       };
+    },
+    {
+      fetchAreaNoteList,
     }
   ),
 )(SingleLeaseMap);

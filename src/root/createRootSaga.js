@@ -10,7 +10,6 @@ import collectionNoteSaga from '../collectionNote/saga';
 import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
 import contractFileSaga from '$src/contractFile/saga';
-import copyAreasToContractSaga from '$src/copyAreasToContract/saga';
 import createCollectionLetterSaga from '$src/createCollectionLetter/saga';
 import districtSaga from '../district/saga';
 import indexSaga from '$src/index/saga';
@@ -54,7 +53,6 @@ export default () =>
       fork(commentSaga),
       fork(contactSaga),
       fork(contractFileSaga),
-      fork(copyAreasToContractSaga),
       fork(createCollectionLetterSaga),
       fork(districtSaga),
       fork(indexSaga),

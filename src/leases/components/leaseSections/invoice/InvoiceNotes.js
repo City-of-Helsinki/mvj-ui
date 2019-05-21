@@ -245,9 +245,11 @@ class InvoiceNotes extends PureComponent<Props> {
   handleSave = () => {
     const {currentLease, editedInvoiceNotes, patchLeaseInvoiceNotes} = this.props;
 
+    const invoiceNotes = editedInvoiceNotes.map((note) => ({...note, lease: currentLease.id}));
+
     patchLeaseInvoiceNotes({
       id: currentLease.id,
-      invoice_notes: editedInvoiceNotes,
+      invoice_notes: invoiceNotes,
     });
   }
 

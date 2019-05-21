@@ -26,7 +26,6 @@ import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import Title from '$components/content/Title';
-import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
   clearFormValidFlags,
   editInfillDevelopment,
@@ -60,7 +59,6 @@ import {
   setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
   getCurrentInfillDevelopment,
   getIsEditMode,
@@ -69,37 +67,35 @@ import {
   getIsSaveClicked,
   getIsSaving,
 } from '$src/infillDevelopment/selectors';
+import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {
   getSessionStorageItem,
   removeSessionStorageItem,
   setSessionStorageItem,
 } from '$util/storage';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import {withInfillDevelopmentPageAttributes} from '$components/attributes/InfillDevelopmentPageAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
-import type {AreaNoteList} from '$src/areaNote/types';
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
+import type {UsersPermissions} from '$src/usersPermissions/types';
 
 type Props = {
-  areaNotes: AreaNoteList,
   change: Function,
   clearFormValidFlags: Function,
   currentInfillDevelopment: InfillDevelopment,
   destroy: Function,
   editInfillDevelopment: Function,
-  fetchAreaNoteList: Function,
   fetchSingleInfillDevelopment: Function,
   hideEditMode: Function,
   history: Object,
-  infillDevelopmentAttributes: Attributes, // get via withCommonAttributes HOC
+  infillDevelopmentAttributes: Attributes, // get via withInfillDevelopmentPageAttributes HOC
   infillDevelopmentFormValues: Object,
-  infillDevelopmentMethods: MethodsType, // get via withCommonAttributes HOC
+  infillDevelopmentMethods: MethodsType, // get via withInfillDevelopmentPageAttributes HOC
   isEditMode: boolean,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
-  isFetchingInfillDevelopmentPageAttributes: boolean, // get via withInfillDevelopmentPageAttributes
+  isFetchingInfillDevelopmentPageAttributes: boolean, // get via withInfillDevelopmentPageAttributes HOC
+  isFetchingUsersPermissions: boolean,
   isFormValid: boolean,
   isInfillDevelopmentFormDirty: boolean,
   isSaveClicked: boolean,
@@ -113,6 +109,7 @@ type Props = {
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
+  usersPermissions: UsersPermissions,
 }
 
 type State = {
@@ -138,8 +135,6 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      areaNotes,
-      fetchAreaNoteList,
       fetchSingleInfillDevelopment,
       hideEditMode,
       location: {search},
@@ -167,10 +162,6 @@ class InfillDevelopmentPage extends Component<Props, State> {
     receiveIsSaveClicked(false);
 
     fetchSingleInfillDevelopment(infillDevelopmentId);
-
-    if(isEmpty(areaNotes)) {
-      fetchAreaNoteList({});
-    }
 
     hideEditMode();
 
@@ -429,20 +420,21 @@ class InfillDevelopmentPage extends Component<Props, State> {
       infillDevelopmentMethods,
       isEditMode,
       isFetching,
-      isFetchingCommonAttributes,
       isFetchingInfillDevelopmentPageAttributes,
+      isFetchingUsersPermissions,
       isFormValid,
       isInfillDevelopmentFormDirty,
       isSaveClicked,
       isSaving,
+      usersPermissions,
     } = this.props;
     const {activeTab} = this.state;
 
     const {formatedInfillDevelopment, isRestoreModalOpen} = this.state;
 
-    if(isFetching || isFetchingCommonAttributes || isFetchingInfillDevelopmentPageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetching || isFetchingInfillDevelopmentPageAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!infillDevelopmentMethods) return null;
+    if(!infillDevelopmentMethods || isEmpty(usersPermissions)) return null;
 
     if(!isMethodAllowed(infillDevelopmentMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
 
@@ -552,21 +544,21 @@ class InfillDevelopmentPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
   withUiDataList,
   withInfillDevelopmentPageAttributes,
   connect(
     (state) => {
       return {
-        areaNotes: getAreaNoteList(state),
         currentInfillDevelopment: getCurrentInfillDevelopment(state),
         infillDevelopmentFormValues: getFormValues(FormNames.INFILL_DEVELOPMENT)(state),
         isEditMode: getIsEditMode(state),
         isFetching: getIsFetching(state),
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         isFormValid: getIsFormValidById(state, FormNames.INFILL_DEVELOPMENT),
         isInfillDevelopmentFormDirty: isDirty(FormNames.INFILL_DEVELOPMENT)(state),
         isSaveClicked: getIsSaveClicked(state),
         isSaving: getIsSaving(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {
@@ -574,7 +566,6 @@ export default flowRight(
       clearFormValidFlags,
       destroy,
       editInfillDevelopment,
-      fetchAreaNoteList,
       fetchSingleInfillDevelopment,
       hideEditMode,
       receiveFormInitialValues,
