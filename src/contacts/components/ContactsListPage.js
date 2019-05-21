@@ -25,7 +25,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/contacts/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
-import {ContactFieldPaths} from '$src/contacts/enums';
+import {ContactFieldPaths, ContactFieldTitles} from '$src/contacts/enums';
 import {getContactFullName, mapContactSearchFilters} from '$src/contacts/helpers';
 import {
   getApiResponseCount,
@@ -265,9 +265,8 @@ class ContactListPage extends Component<Props, State> {
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.TYPE)) {
       columns.push({
         key: 'type',
-        text: 'Asiakastyyppi',
+        text: ContactFieldTitles.TYPE,
         renderer: (val) => getLabelOfOption(typeOptions, val),
-        sortable: false,
       });
     }
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.FIRST_NAME) ||
@@ -282,7 +281,14 @@ class ContactListPage extends Component<Props, State> {
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.BUSINESS_ID)) {
       columns.push({
         key: 'business_id',
-        text: 'Y-tunnus',
+        text: ContactFieldTitles.BUSINESS_ID,
+      });
+    }
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.ID)) {
+      columns.push({
+        key: 'id',
+        text: ContactFieldTitles.ID,
+        sortable: false,
       });
     }
 
