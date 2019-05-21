@@ -289,46 +289,20 @@ export const getContentSummary = (lease: Object) => {
   };
 };
 
+/**
+  * Helper function to get related lease content by path
+  * @param {Object} content
+  * @param {string} path
+  * @returns {Object}
+  */
 export const getContentRelatedLease = (content: Object, path: string = 'from_lease') =>
   get(content, path, {});
 
-const compareRelatedLeases = (a, b) => {
-  const endDateA = get(a, 'lease.end_date'),
-    endDateB = get(b, 'lease.end_date'),
-    startDateA = get(a, 'lease.start_date'),
-    startDateB = get(b, 'lease.start_date');
-
-  if(endDateA !== endDateB) {
-    if(!endDateA) {
-      return -1;
-    }
-    if(!endDateB) {
-      return 1;
-    }
-    if(endDateA > endDateB) {
-      return -1;
-    }
-    if(endDateA < endDateB) {
-      return 1;
-    }
-  }
-  if(startDateA !== startDateB) {
-    if(!startDateA) {
-      return -1;
-    }
-    if(!startDateB) {
-      return 1;
-    }
-    if(startDateA > startDateB) {
-      return -1;
-    }
-    if(startDateA < startDateB) {
-      return 1;
-    }
-  }
-  return 0;
-};
-
+/**
+  * Get content related leases realted from list sorted by start and end date
+  * @param {Object} lease
+  * @returns {Object[]}
+  */
 export const getContentRelatedLeasesFrom = (lease: Object) =>
   get(lease, 'related_leases.related_from', [])
     .map((relatedLease) => {
@@ -337,8 +311,13 @@ export const getContentRelatedLeasesFrom = (lease: Object) =>
         lease: getContentRelatedLease(relatedLease, 'from_lease'),
       };
     })
-    .sort(compareRelatedLeases);
+    .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));
 
+/**
+  * Get content related leases realted to list sorted by start and end date
+  * @param {Object} lease
+  * @returns {Object[]}
+  */
 export const getContentRelatedLeasesTo = (lease: Object) =>
   get(lease, 'related_leases.related_to', [])
     .map((relatedLease) => {
@@ -347,7 +326,7 @@ export const getContentRelatedLeasesTo = (lease: Object) =>
         lease: getContentRelatedLease(relatedLease, 'to_lease'),
       };
     })
-    .sort(compareRelatedLeases);
+    .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));
 
 export const getContentLeaseAreaAddresses = (area: Object): Array<Object> => {
   return get(area, 'addresses', []).map((address) => {
