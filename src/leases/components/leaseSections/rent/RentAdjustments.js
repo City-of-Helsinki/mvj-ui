@@ -7,20 +7,34 @@ import Authorization from '$components/authorization/Authorization';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import DecisionLink from '$components/links/DecisionLink';
+import Divider from '$components/content/Divider';
+import GreenBox from '$components/content/GreenBox';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
+import SubTitle from '$components/content/SubTitle';
 import {
   LeaseRentAdjustmentsFieldPaths,
   LeaseRentAdjustmentsFieldTitles,
+  RentAdjustmentManagementSubventionsFieldPaths,
+  RentAdjustmentManagementSubventionsFieldTitles,
   RentAdjustmentAmountTypes,
+  SubventionTypes,
+  RentAdjustmentTemporarySubventionsFieldPaths,
+  RentAdjustmentTemporarySubventionsFieldTitles,
 } from '$src/leases/enums';
-import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
+import {
+  calculateReLeaseDiscountPercent,
+  calculateRentAdjustmentSubventionAmount,
+  getDecisionById,
+  getDecisionOptions,
+} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
   formatNumber,
   getFieldOptions,
   getLabelOfOption,
+  isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -38,7 +52,10 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
   const decisionOptions = getDecisionOptions(currentLease),
     typeOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE),
     intendedUseOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE),
-    amountTypeOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE);
+    amountTypeOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE),
+    subventionTypeOptions = getFieldOptions(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_TYPE),
+    managementTypeOptions = getFieldOptions(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT);
+
 
   const getFullAmountText = (adjustment: Object) => {
     if(!adjustment.full_amount) return null;
@@ -52,7 +69,24 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
 
       {rentAdjustments && !!rentAdjustments.length &&
         rentAdjustments.map((adjustment, index) => {
+          const getReLeaseDiscountPercent = () => {
+            return calculateReLeaseDiscountPercent(
+              adjustment.subvention_base_percent,
+              adjustment.subvention_graduated_percent);
+          };
+
+          const getSubventionAmount = () => {
+            return calculateRentAdjustmentSubventionAmount(
+              adjustment.subvention_type,
+              adjustment.subvention_base_percent,
+              adjustment.subvention_graduated_percent,
+              adjustment.management_subventions,
+              adjustment.temporary_subventions);
+          };
+
           const decision = getDecisionById(currentLease, adjustment.decision);
+          const managementSubventions = adjustment.management_subventions;
+          const temporarySubventions = adjustment.temporary_subventions;
 
           return (
             <BoxItem className='no-border-on-first-child no-border-on-last-child' key={index}>
@@ -140,6 +174,152 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                   </Column>
                 </Row>
               </Authorization>
+
+              {adjustment.subvention_type &&
+                <GreenBox className='with-bottom-margin'>
+                  <Row>
+                    <Column small={6} medium={4} large={2}>
+                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_TYPE)}>
+                        <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_TYPE)}>
+                          {LeaseRentAdjustmentsFieldTitles.SUBVENTION_TYPE}
+                        </FormTextTitle>
+                        <FormText>{getLabelOfOption(subventionTypeOptions, adjustment.subvention_type) || '-'}</FormText>
+                      </Authorization>
+                    </Column>
+                  </Row>
+                  {adjustment.subvention_type === SubventionTypes.X_DISCOUNT &&
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>
+                      <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>{RentAdjustmentManagementSubventionsFieldTitles.MANAGEMENT_SUBVENTIONS}</SubTitle>
+                      {!managementSubventions || !managementSubventions.length &&
+                        <FormText>Ei hallintamuotoja</FormText>
+                      }
+                      {managementSubventions && managementSubventions.length &&
+                        <Fragment>
+                          <Row>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT)}>
+                                <FormTextTitle uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT)}>
+                                  {RentAdjustmentManagementSubventionsFieldTitles.MANAGEMENT}
+                                </FormTextTitle>
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                                <FormTextTitle uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                                  {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}
+                                </FormTextTitle>
+                              </Authorization>
+                            </Column>
+                          </Row>
+
+                          {managementSubventions.map((subvention) =>
+                            <Row key={subvention.id}>
+                              <Column small={6} medium={4} large={2}>
+                                <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT)}>
+                                  <FormText>{getLabelOfOption(managementTypeOptions, subvention.management) || '-'}</FormText>
+                                </Authorization>
+                              </Column>
+                              <Column small={6} medium={4} large={2}>
+                                <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                                  <FormText>{!isEmptyValue(subvention.subvention_percent) ? `${formatNumber(subvention.subvention_percent)} %` : '-'}</FormText>
+                                </Authorization>
+                              </Column>
+                            </Row>
+                          )}
+                        </Fragment>
+                      }
+
+                    </Authorization>
+                  }
+                  {adjustment.subvention_type === SubventionTypes.RE_LEASE_DISCOUNT &&
+                    <Row>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
+                          <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
+                            {LeaseRentAdjustmentsFieldTitles.SUBVENTION_BASE_PERCENT}
+                          </FormTextTitle>
+                          <FormText>{!isEmptyValue(adjustment.subvention_base_percent) ? `${formatNumber(adjustment.subvention_base_percent)} %` : '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_GRADUATED_PERCENT)}>
+                          <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_GRADUATED_PERCENT)}>
+                            {LeaseRentAdjustmentsFieldTitles.SUBVENTION_GRADUATED_PERCENT}
+                          </FormTextTitle>
+                          <FormText>{!isEmptyValue(adjustment.subvention_graduated_percent) ? `${formatNumber(adjustment.subvention_graduated_percent)} %` : '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT) ||
+                          isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
+                          <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT)}>
+                            {LeaseRentAdjustmentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT}
+                          </FormTextTitle>
+                          <FormText>{formatNumber(getReLeaseDiscountPercent())} %</FormText>
+                        </Authorization>
+                      </Column>
+                    </Row>
+                  }
+
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS)}>
+                    <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(RentAdjustmentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS)}>
+                      {RentAdjustmentTemporarySubventionsFieldTitles.TEMPORARY_SUBVENTIONS}
+                    </SubTitle>
+                    {!temporarySubventions || !temporarySubventions.length &&
+                      <FormText>Ei tilapäisalennuksia</FormText>
+                    }
+                    {temporarySubventions && temporarySubventions.length &&
+                      <Fragment>
+                        <Row>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentTemporarySubventionsFieldPaths.DESCRIPTION)}>
+                              <FormTextTitle uiDataKey={getUiDataLeaseKey(RentAdjustmentTemporarySubventionsFieldPaths.DESCRIPTION)}>
+                                {RentAdjustmentTemporarySubventionsFieldTitles.DESCRIPTION}
+                              </FormTextTitle>
+                            </Authorization>
+                          </Column>
+                          <Column small={6} medium={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                              <FormTextTitle uiDataKey={getUiDataLeaseKey(RentAdjustmentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                                {RentAdjustmentTemporarySubventionsFieldTitles.SUBVENTION_PERCENT}
+                              </FormTextTitle>
+                            </Authorization>
+                          </Column>
+                        </Row>
+
+                        {temporarySubventions.map((subvention) =>
+                          <Row key={subvention.id}>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentTemporarySubventionsFieldPaths.DESCRIPTION)}>
+                                <FormText>{subvention.description}</FormText>
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentTemporarySubventionsFieldPaths.DESCRIPTION)}>
+                                <FormText>{!isEmptyValue(subvention.subvention_percent) ? `${formatNumber(subvention.subvention_percent)} %` : '-'}</FormText>
+                              </Authorization>
+                            </Column>
+                          </Row>
+                        )}
+                      </Fragment>
+                    }
+                  </Authorization>
+
+                  <Row>
+                    <Column small={12} large={6}>
+                      <Divider />
+                    </Column>
+                  </Row>
+                  <Row>
+                    <Column small={6} medium={4} large={2}>
+                      <FormText className='semibold'>Yhteensä</FormText>
+                    </Column>
+                    <Column small={6} medium={4} large={2}>
+                      <FormText className='semibold'>{formatNumber(getSubventionAmount())} %</FormText>
+                    </Column>
+                  </Row>
+                </GreenBox>
+              }
             </BoxItem>
           );
         })

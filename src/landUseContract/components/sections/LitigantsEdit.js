@@ -36,6 +36,7 @@ import {
   getIsFetching as getIsFetchingContact,
 } from '$src/contacts/selectors';
 import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
+import {withContactAttributes} from '$components/attributes/ContactAttributes';
 
 import type {ContactModalSettings} from '$src/contacts/types';
 import type {LandUseContract} from '$src/landUseContract/types';
@@ -117,6 +118,7 @@ type Props = {
   isContactFormValid: boolean,
   isContactModalOpen: boolean,
   isFetchingContact: boolean,
+  isFetchingContactAttributes: boolean,
   receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
@@ -202,9 +204,12 @@ class TenantsEdit extends PureComponent<Props, State> {
       contactModalSettings,
       isContactModalOpen,
       isFetchingContact,
+      isFetchingContactAttributes,
     } = this.props;
 
     const {litigants} = this.state;
+
+    if(isFetchingContactAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
     return (
       <AppConsumer>
@@ -294,6 +299,7 @@ class TenantsEdit extends PureComponent<Props, State> {
 const formName = FormNames.LAND_USE_CONTRACT_LITIGANTS;
 
 export default flowRight(
+  withContactAttributes,
   connect(
     (state) => {
       return {

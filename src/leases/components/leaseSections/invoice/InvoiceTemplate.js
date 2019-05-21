@@ -124,14 +124,6 @@ const InvoiceTemplate = ({
             <FormText>{(invoice && formatDate(invoice.sent_to_sap_at)) || '-'}</FormText>
           </Authorization>
         </Column>
-        <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.SAP_ID)}>
-            <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.SAP_ID)}>
-              {InvoiceFieldTitles.SAP_ID}
-            </FormTextTitle>
-            <FormText>{(invoice && invoice.sap_id) || '-'}</FormText>
-          </Authorization>
-        </Column>
       </Row>
       <Row>
         <Column small={4}>

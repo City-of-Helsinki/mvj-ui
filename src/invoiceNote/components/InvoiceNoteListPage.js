@@ -43,7 +43,7 @@ import {
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getInvoiceNoteList, getIsCreateModalOpen, getIsFetching} from '$src/invoiceNote/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withInvoiceNoteAttributes} from '$components/attributes/InvoiceNoteAttributes';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {InvoiceNoteList} from '$src/invoiceNote/types';
@@ -102,7 +102,7 @@ type Props = {
   invoiceNoteMethods: MethodsType,
   isCreateModalOpen: boolean,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean,
+  isFetchingInvoiceNoteAttributes: boolean,
   location: Object,
   receiveInvoiceNoteList: Function,
   receiveTopNavigationSettings: Function,
@@ -241,11 +241,10 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
 
   render() {
     const {
-      invoiceNoteList,
       invoiceNoteMethods,
       isCreateModalOpen,
       isFetching,
-      isFetchingCommonAttributes,
+      isFetchingInvoiceNoteAttributes,
     } = this.props;
     const {
       activePage,
@@ -255,7 +254,7 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
       maxPage,
     } = this.state;
 
-    if(isFetchingCommonAttributes || isFetching && isEmpty(invoiceNoteList)) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingInvoiceNoteAttributes || isFetching) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!invoiceNoteMethods) return null;
 
@@ -315,7 +314,7 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withInvoiceNoteAttributes,
   withRouter,
   connect(
     (state) => {

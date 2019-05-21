@@ -2,9 +2,11 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import classNames from 'classnames';
 import get from 'lodash/get';
 
 import FormText from '$components/form/FormText';
+import {RentSubItemSubjectType} from '$components/enums';
 import {formatDateRange, formatNumber} from '$util/helpers';
 import {getRentSubItemAmount, getRentSubItemDescription} from '../helpers';
 import {getAttributes} from '$src/leases/selectors';
@@ -18,6 +20,7 @@ type Props = {
 }
 
 const RentCalculatorSubItem = ({attributes, level = 1, subItem}: Props) => {
+  const subjectType = get(subItem, 'subject.subject_type');
   const description = getRentSubItemDescription(subItem, attributes);
   const dates = get(subItem, 'date_ranges');
   const amount = getRentSubItemAmount(subItem);
@@ -27,7 +30,12 @@ const RentCalculatorSubItem = ({attributes, level = 1, subItem}: Props) => {
     <Fragment>
       <Row className='rent-calculator__sub-item'>
         <Column small={6}>
-          <FormText style={{paddingLeft: (level * 15)}}>
+          <FormText
+            style={{paddingLeft: (level * 15)}}
+            className={classNames({
+              'alert': subjectType === RentSubItemSubjectType.NOTICE,
+            })}
+          >
             {description || '-'}
           </FormText>
         </Column>
@@ -44,7 +52,7 @@ const RentCalculatorSubItem = ({attributes, level = 1, subItem}: Props) => {
         </Column>
         <Column small={3}>
           <FormText className='rent-calculator__sub-item_amount'>
-            {amount !== null ? `${formatNumber(amount)} €` : '-'}
+            {amount !== null ? `${formatNumber(amount)} €` : ''}
           </FormText>
         </Column>
       </Row>

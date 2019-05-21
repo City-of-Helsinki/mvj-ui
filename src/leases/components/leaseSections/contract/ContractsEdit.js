@@ -19,15 +19,14 @@ import {
   DeleteModalTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {FormNames, Methods} from '$src/enums';
+import {FormNames} from '$src/enums';
 import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts, getDecisionOptions} from '$src/leases/helpers';
-import {hasPermissions, isMethodAllowed} from '$util/helpers';
-import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
+import {hasPermissions} from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -104,7 +103,6 @@ const renderContracts = ({
 
 type Props = {
   attributes: Attributes,
-  contractFileMethods: MethodsType,
   currentLease: Lease,
   receiveFormValidFlags: Function,
   usersPermissions: UsersPermissionsType,
@@ -165,18 +163,16 @@ class ContractsEdit extends PureComponent<Props, State> {
   }
 
   render() {
-    const {contractFileMethods, usersPermissions} = this.props;
+    const {usersPermissions} = this.props;
     const {contractId, decisionOptions, savedContracts, showContractModal} = this.state;
 
     return (
       <form>
-        <Authorization allow={isMethodAllowed(contractFileMethods, Methods.GET)}>
-          <ContractFileModal
-            contractId={contractId}
-            onClose={this.handleCloseContractFileModal}
-            open={showContractModal}
-          />
-        </Authorization>
+        <ContractFileModal
+          contractId={contractId}
+          onClose={this.handleCloseContractFileModal}
+          open={showContractModal}
+        />
 
         <FieldArray
           component={renderContracts}
@@ -197,7 +193,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        contractFileMethods: getContractFileMethods(state),
         currentLease: getCurrentLease(state),
         usersPermissions: getUsersPermissions(state),
       };

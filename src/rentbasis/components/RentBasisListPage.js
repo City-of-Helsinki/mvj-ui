@@ -45,7 +45,7 @@ import {
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withRentBasisAttributes} from '$components/attributes/RentBasisAttributes';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {RentBasisList} from '$src/rentbasis/types';
@@ -56,11 +56,11 @@ type Props = {
   initialize: Function,
   initializeRentBasis: Function,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // get vie withCommonAttributes HOC
+  isFetchingRentBasisAttributes: boolean, // get via withRentBasisAttributes HOC
   location: Object,
   receiveTopNavigationSettings: Function,
-  rentBasisAttributes: Attributes, // get vie withCommonAttributes HOC
-  rentBasisMethods: MethodsType, // get vie withCommonAttributes HOC
+  rentBasisAttributes: Attributes, // get via withRentBasisAttributes HOC
+  rentBasisMethods: MethodsType, // get via withRentBasisAttributes HOC
   rentBasisListData: RentBasisList,
 }
 
@@ -72,6 +72,8 @@ type State = {
 }
 
 class RentBasisListPage extends Component<Props, State> {
+  _isMounted: boolean
+
   state = {
     activePage: 1,
     isSearchInitialized: false,
@@ -95,6 +97,7 @@ class RentBasisListPage extends Component<Props, State> {
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
@@ -116,6 +119,7 @@ class RentBasisListPage extends Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -147,7 +151,10 @@ class RentBasisListPage extends Component<Props, State> {
       sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 
@@ -289,7 +296,7 @@ class RentBasisListPage extends Component<Props, State> {
   render() {
     const {
       isFetching,
-      isFetchingCommonAttributes,
+      isFetchingRentBasisAttributes,
       rentBasisListData,
       rentBasisMethods,
     } = this.props;
@@ -299,7 +306,7 @@ class RentBasisListPage extends Component<Props, State> {
     const maxPage = getApiResponseMaxPage(rentBasisListData, LIST_TABLE_PAGE_SIZE);
     const columns = this.getColumns();
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingRentBasisAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!rentBasisMethods) return null;
 
@@ -361,7 +368,7 @@ class RentBasisListPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withRentBasisAttributes,
   withRouter,
   connect(
     (state) => {

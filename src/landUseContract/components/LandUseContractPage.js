@@ -6,8 +6,6 @@ import {change, destroy, getFormValues, initialize, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
-import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import BasicInformation from './sections/BasicInformation';
 import BasicInformationEdit from './sections/BasicInformationEdit';
 import Compensations from './sections/Compensations';
@@ -24,20 +22,19 @@ import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import Invoices from './sections/Invoices';
 import InvoicesEdit from './sections/InvoicesEdit';
+import LandUseContractMap from './sections/LandUseContractMap';
 import Litigants from './sections/Litigants';
 import LitigantsEdit from './sections/LitigantsEdit';
+import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
 import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {fetchAreaNoteList} from '$src/areaNote/actions';
-import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {
   clearFormValidFlags,
   editLandUseContract,
-  fetchLandUseContractAttributes,
   fetchSingleLandUseContract,
   hideEditMode,
   receiveFormValidFlags,
@@ -45,7 +42,7 @@ import {
   receiveSingleLandUseContract,
   showEditMode,
 } from '$src/landUseContract/actions';
-import {FormNames, Methods} from '$src/enums';
+import {FormNames} from '$src/enums';
 import {
   addLitigantsDataToPayload,
   clearUnsavedChanges,
@@ -58,41 +55,33 @@ import {
   getContentLitigants,
   isLitigantArchived,
 } from '$src/landUseContract/helpers';
-import {getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle} from '$util/helpers';
+import {getSearchQuery, getUrlParams, scrollToTopPage, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
-import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {
-  getAttributes,
   getCurrentLandUseContract,
   getIsEditMode,
   getIsFormValidById,
   getIsFormValidFlags,
   getIsSaveClicked,
 } from '$src/landUseContract/selectors';
+import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
+import {withLandUseContractAttributes} from '$components/attributes/LandUseContractAttributes';
 
-import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {LandUseContract} from '$src/landUseContract/types';
-import type {AreaNoteList} from '$src/areaNote/types';
+import type {UsersPermissions} from '$src/usersPermissions/types';
 
 type Props = {
-  areaNoteMethods: MethodsType,
-  areaNotes: AreaNoteList,
-  attributes: Attributes,
   basicInformationFormValues: Object,
   change: Function,
   clearFormValidFlags: Function,
   compensationsFormValues: Object,
-  contactAttributes: Attributes,
   contractsFormValues: Object,
   currentLandUseContract: LandUseContract,
   decisionsFormValues: Object,
   destroy: Function,
   editLandUseContract: Function,
-  fetchAreaNoteList: Function,
-  fetchContactAttributes: Function,
-  fetchLandUseContractAttributes: Function,
   fetchSingleLandUseContract: Function,
   hideEditMode: Function,
   history: Object,
@@ -106,13 +95,16 @@ type Props = {
   isContractsFormValid: boolean,
   isDecisionsFormDirty: boolean,
   isDecisionsFormValid: boolean,
+  isEditMode: boolean,
+  isFetchingLandUseContractAttributes: boolean,
+  isFetchingUsersPermissions: boolean,
+  isFormValidFlags: boolean,
   isInvoicesFormDirty: boolean,
   isInvoicesFormValid: boolean,
-  isEditMode: boolean,
-  isFormValidFlags: boolean,
   isLitigantsFormDirty: boolean,
   isLitigantsFormValid: boolean,
   isSaveClicked: boolean,
+  landUseContractAttributes: Attributes,
   litigantsFormValues: Object,
   location: Object,
   match: {
@@ -124,6 +116,7 @@ type Props = {
   receiveTopNavigationSettings: Function,
   router: Object,
   showEditMode: Function,
+  usersPermissions: UsersPermissions,
 }
 
 type State = {
@@ -141,12 +134,7 @@ class LandUseContractPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      attributes,
       clearFormValidFlags,
-      contactAttributes,
-      fetchAreaNoteList,
-      fetchContactAttributes,
-      fetchLandUseContractAttributes,
       fetchSingleLandUseContract,
       hideEditMode,
       location: {search},
@@ -164,34 +152,31 @@ class LandUseContractPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    fetchAreaNoteList({});
-
     fetchSingleLandUseContract(landUseContractId);
 
     if (query.tab) {
       this.setState({activeTab: query.tab});
     }
 
-    if(isEmpty(attributes)) {
-      fetchLandUseContractAttributes();
-    }
-
-    if(isEmpty(contactAttributes)) {
-      fetchContactAttributes();
-    }
-
     clearFormValidFlags();
     receiveIsSaveClicked(false);
     hideEditMode();
+
     window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener('popstate', this.handlePopState);
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const {
       currentLandUseContract,
       isEditMode,
       match: {params: {landUseContractId}},
     } = this.props;
+    const {activeTab} = this.state;
+
+    if(prevState.activeTab !== activeTab) {
+      scrollToTopPage();
+    }
 
     if(prevProps.currentLandUseContract !== currentLandUseContract) {
       this.setPageTitle();
@@ -229,6 +214,16 @@ class LandUseContractPage extends Component<Props, State> {
 
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+    const tab = query.tab ? Number(query.tab) : 0;
+
+    // Set correct active tab on back/forward button press
+    this.setState({activeTab: tab});
   }
 
   setPageTitle = () => {
@@ -584,28 +579,6 @@ class LandUseContractPage extends Component<Props, State> {
     destroy(FormNames.LAND_USE_CONTRACT_LITIGANTS);
   }
 
-  getOverlayLayers = () => {
-    const layers = [];
-    const {
-      areaNoteMethods,
-      areaNotes,
-    } = this.props;
-
-    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
-      layers.push({
-        checked: false,
-        component: <AreaNotesLayer
-          key='area_notes'
-          allowToEdit={false}
-          areaNotes={areaNotes}
-        />,
-        name: 'Muistettavat ehdot',
-      });
-    }
-
-    return layers;
-  }
-
   render() {
     const {activeTab} = this.state;
     const {
@@ -618,17 +591,24 @@ class LandUseContractPage extends Component<Props, State> {
       isContractsFormValid,
       isDecisionsFormDirty,
       isDecisionsFormValid,
+      isFetchingLandUseContractAttributes,
+      isFetchingUsersPermissions,
       isInvoicesFormDirty,
       isInvoicesFormValid,
       isEditMode,
       isLitigantsFormDirty,
       isLitigantsFormValid,
       isSaveClicked,
+      landUseContractAttributes,
+      usersPermissions,
     } = this.props;
     const {isRestoreModalOpen} = this.state;
     const identifier = getContentLandUseContractIdentifier(currentLandUseContract);
     const areFormsValid = this.getAreFormsValid();
-    const overlayLayers = this.getOverlayLayers();
+
+    if(isFetchingLandUseContractAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!landUseContractAttributes || isEmpty(usersPermissions)) return null;
 
     return (
       <FullWidthContainer>
@@ -737,10 +717,7 @@ class LandUseContractPage extends Component<Props, State> {
 
             <TabPane>
               <ContentContainer>
-                <AreaNotesEditMap
-                  allowToEdit={false}
-                  overlayLayers={overlayLayers}
-                />
+                <LandUseContractMap />
               </ContentContainer>
             </TabPane>
           </TabContent>
@@ -753,15 +730,12 @@ class LandUseContractPage extends Component<Props, State> {
 export default flowRight(
   // $FlowFixMe
   withRouter,
+  withLandUseContractAttributes,
   connect(
     (state) => {
       return {
-        areaNoteMethods: getAreaNoteMethods(state),
-        areaNotes: getAreaNoteList(state),
-        attributes: getAttributes(state),
         basicInformationFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION)(state),
         compensationsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_COMPENSATIONS)(state),
-        contactAttributes: getContactAttributes(state),
         contractsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_CONTRACTS)(state),
         currentLandUseContract: getCurrentLandUseContract(state),
         decisionsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_DECISIONS)(state),
@@ -774,14 +748,16 @@ export default flowRight(
         isContractsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_CONTRACTS),
         isDecisionsFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_DECISIONS)(state),
         isDecisionsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_DECISIONS),
+        isEditMode: getIsEditMode(state),
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        isFormValidFlags: getIsFormValidFlags(state),
         isInvoicesFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_INVOICES)(state),
         isInvoicesFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_INVOICES),
         isLitigantsFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_LITIGANTS)(state),
         isLitigantsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_LITIGANTS),
-        isEditMode: getIsEditMode(state),
-        isFormValidFlags: getIsFormValidFlags(state),
         isSaveClicked: getIsSaveClicked(state),
         litigantsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_LITIGANTS)(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {
@@ -789,9 +765,6 @@ export default flowRight(
       clearFormValidFlags,
       destroy,
       editLandUseContract,
-      fetchAreaNoteList,
-      fetchContactAttributes,
-      fetchLandUseContractAttributes,
       fetchSingleLandUseContract,
       hideEditMode,
       initialize,

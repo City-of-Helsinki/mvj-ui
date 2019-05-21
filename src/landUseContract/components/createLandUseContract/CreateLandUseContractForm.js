@@ -81,7 +81,7 @@ class CreateLandUseContractForm extends Component<Props> {
     return (
       <form>
         <Row>
-          <Column small={4} medium={3}>
+          <Column small={4}>
             <FormField
               setRefForField={this.setRefForFirstField}
               fieldAttributes={get(attributes, 'municipality')}
@@ -91,7 +91,7 @@ class CreateLandUseContractForm extends Component<Props> {
               }}
             />
           </Column>
-          <Column small={4} medium={3}>
+          <Column small={4}>
             <FormField
               fieldAttributes={get(attributes, 'district')}
               name='district'

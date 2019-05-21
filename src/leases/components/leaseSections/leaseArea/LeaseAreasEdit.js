@@ -12,8 +12,8 @@ import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
 import LeaseAreaWithArchiveInfoEdit from './LeaseAreaWithArchiveInfoEdit';
-import RightSubtitle from '$components/content/RightSubtitle';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
 import {copyAreasToContract, receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
@@ -24,7 +24,6 @@ import {
   LeaseAreasFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {Methods} from '$src/enums';
 import {getAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
@@ -32,9 +31,7 @@ import {
   hasPermissions,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
-  isMethodAllowed,
 } from '$util/helpers';
-import {getMethods as getCopyAreasToContractMethods} from '$src/copyAreasToContract/selectors';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
@@ -42,7 +39,7 @@ import {
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {store} from '$src/root/startApp';
 
-import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -134,7 +131,6 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
 type Props = {
   change: Function,
   copyAreasToContract: Function,
-  copyAreasToContractMethods: MethodsType,
   currentLease: Lease,
   editedActiveAreas: Array<Object>,
   editedArchivedAreas: Array<Object>,
@@ -286,7 +282,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       decisionOptions,
       showArchiveAreaModal,
     } = this.state;
-    const {copyAreasToContractMethods, leaseAttributes, usersPermissions} = this.props;
+    const {leaseAttributes, usersPermissions} = this.props;
 
     return (
       <AppConsumer>
@@ -334,9 +330,11 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}>
                 Vuokra-alue
               </Title>
-              <RightSubtitle
+              <WarningContainer
+                alignCenter
+                hideIcon
                 buttonComponent={
-                  <Authorization allow={isMethodAllowed(copyAreasToContractMethods, Methods.POST)}>
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEAREA)}>
                     <Button
                       className={ButtonColors.NEUTRAL}
                       onClick={handleCopyAreasToContract}
@@ -344,12 +342,11 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                     />
                   </Authorization>
                 }
-                text={
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.AREA)}>
-                    <span>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></span>
-                  </Authorization>
-                }
-              />
+              >
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.AREA)}>
+                  Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup>
+                </Authorization>
+              </WarningContainer>
               <Divider />
 
               <FieldArray
@@ -393,7 +390,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        copyAreasToContractMethods: getCopyAreasToContractMethods(state),
         currentLease: getCurrentLease(state),
         editedActiveAreas: selector(state, 'lease_areas_active'),
         editedArchivedAreas: selector(state, 'lease_areas_archived'),

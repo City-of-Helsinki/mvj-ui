@@ -6,6 +6,7 @@ export type LandUseContractState = {
   current: LandUseContract,
   isEditMode: boolean,
   isFetching: boolean,
+  isFetchingAttributes: boolean,
   isFormValidById: Object,
   isSaveClicked: boolean,
   list: LandUseContractList,

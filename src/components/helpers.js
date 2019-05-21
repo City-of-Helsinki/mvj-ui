@@ -80,6 +80,8 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
   switch(subjectType) {
     case RentSubItemSubjectType.INDEX:
       return `Indeksitarkistus (vertailuluku ${subjectNumber})`;
+    case RentSubItemSubjectType.NOTICE:
+      return description || '-' ;
     case RentSubItemSubjectType.RATIO:
       return description || '-' ;
     case RentSubItemSubjectType.NEW_BASE_RENT:

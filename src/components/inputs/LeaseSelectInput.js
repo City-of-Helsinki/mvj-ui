@@ -1,68 +1,32 @@
 // @flow
-import React, {Component} from 'react';
-// $FlowFixMe
-import {Async} from 'react-select';
+import React from 'react';
 import debounce from 'lodash/debounce';
 
-import DropdownIndicator from '$components/inputs/DropdownIndicator';
-import LoadingIndicator from '$components/inputs/SelectLoadingIndicator';
+import AsyncSelect from '$components/form/AsyncSelect';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {fetchLeases} from '$src/leases/requestsAsync';
 
 type Props = {
   disabled?: boolean,
   name: string,
+  onBlur?: Function,
   onChange: Function,
   placeholder?: string,
   relatedLeases: Array<Object>,
   value?: Object,
 }
 
-type State = {
-  inputValue: string,
-}
-
-class LeaseSelectInput extends Component<Props, State> {
-  select: any
-
-  static defaultProps = {
-    disabled: false,
-    value: '',
-  };
-
-  state = {
-    inputValue: '',
-  }
-
-  handleChange = (value: Object) => {
-    const {onChange} = this.props;
-
-    onChange(value);
-  }
-
-  handleInputChange = (value: string, meta: Object) => {
-    const {action} = meta;
-
-    switch (action) {
-      case 'set-value':
-      case 'input-change':
-        this.setState({inputValue: value});
-        break;
-    }
-  }
-
-  handleMenuOpen = () => {
-    const {inputValue} = this.state;
-
-    if(this.select.state.inputValue !== inputValue) {
-      this.select.select.onInputChange(inputValue, {action: 'input-change'});
-    }
-  }
-
-  getOptions = (leases: Array<Object>): Array<Object> => {
-    const {relatedLeases} = this.props;
-
-    return leases
+const LeaseSelectInput = ({
+  disabled,
+  name,
+  onBlur,
+  onChange,
+  placeholder,
+  relatedLeases,
+  value,
+}: Props) => {
+  const getLeaseOptions = (leases: Array<Object>): Array<Object> =>
+    leases
       .filter((lease) => relatedLeases.find((relatedLease) => lease.id === relatedLease.lease.id) ? false : true)
       .map((lease) => {
         return {
@@ -70,53 +34,34 @@ class LeaseSelectInput extends Component<Props, State> {
           label: getContentLeaseIdentifier(lease),
         };
       });
-  }
 
-  getLeases = debounce(async(inputValue: string, callback: Function) => {
+  const getLeases = debounce(async(inputValue: string, callback: Function) => {
     const leases = await fetchLeases({
       succinct: true,
       identifier: inputValue,
+      limit: 10,
     });
 
-    callback(this.getOptions(leases));
+    callback(getLeaseOptions(leases));
   }, 500);
 
-  loadOptions = (inputValue: string, callback: Function) => {
-    this.getLeases(inputValue, callback);
+  const input = {
+    name,
+    onBlur,
+    onChange,
+    value,
   };
 
-  render() {
-    const {
-      disabled,
-      name,
-      placeholder,
-      value,
-    } = this.props;
-
-    return(
-      <Async
-        ref={(ref) => this.select = ref}
-        className='select-input'
-        classNamePrefix='select-input'
-        components={{
-          DropdownIndicator,
-          IndicatorSeparator: null,
-          LoadingIndicator,
-        }}
-        disabled={disabled}
-        id={name}
-        loadingMessage={() => 'Ladataan...'}
-        loadOptions={this.loadOptions}
-        noOptionsMessage={() => 'Ei tuloksia'}
-        onChange={this.handleChange}
-        onInputChange={this.handleInputChange}
-        onMenuOpen={this.handleMenuOpen}
-        options={[]}
-        placeholder={placeholder || 'Valitse...'}
-        value={value}
-      />
-    );
-  }
-}
+  return(
+    <AsyncSelect
+      disabled={disabled}
+      displayError={false}
+      getOptions={getLeases}
+      input={input}
+      isDirty={false}
+      placeholder={placeholder}
+    />
+  );
+};
 
 export default LeaseSelectInput;

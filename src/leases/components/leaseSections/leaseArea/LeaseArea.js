@@ -255,10 +255,11 @@ const LeaseArea = ({
               onToggle={handlePlotsCurrentCollapseToggle}
               uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS)}
             >
-              {!area.plots_current || !area.plots_current.length &&
-                <FormText>Ei kiinteistöjä/määräaloja nykyhetkellä</FormText>
-              }
               <BoxItemContainer>
+                {!area.plots_current || !area.plots_current.length &&
+                  <FormText>Ei kiinteistöjä/määräaloja nykyhetkellä</FormText>
+                }
+
                 {area.plots_current && !!area.plots_current.length && area.plots_current.map((item, index) =>
                   <PlotItem
                     key={index}

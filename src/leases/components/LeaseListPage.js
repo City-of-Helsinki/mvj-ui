@@ -47,6 +47,7 @@ import {
   LeaseFieldTitles,
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentLeases, mapLeaseSearchFilters} from '$src/leases/helpers';
 import {
   formatDate,
@@ -54,6 +55,7 @@ import {
   getLabelOfOption,
   getSearchQuery,
   getUrlParams,
+  hasPermissions,
   isFieldAllowedToRead,
   isMethodAllowed,
   setPageTitle,
@@ -61,12 +63,16 @@ import {
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 import {getIsFetching, getLeasesList} from '$src/leases/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {getLessorList} from '$src/lessor/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {withLeaseListPageAttributes} from '$components/attributes/LeaseListPageAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
-import type {LeaseList} from '$src/leases/types';
 import type {AreaNoteList} from '$src/areaNote/types';
+import type {LeaseList} from '$src/leases/types';
+import type {LessorList} from '$src/lessor/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const visualizationTypeOptions = [
   {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
@@ -74,7 +80,6 @@ const visualizationTypeOptions = [
 ];
 
 type Props = {
-  areaNoteMethods: MethodsType,
   areaNotes: AreaNoteList,
   createLease: Function,
   fetchAreaNoteList: Function,
@@ -83,13 +88,14 @@ type Props = {
   history: Object,
   initialize: Function,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean,
+  isFetchingLeaseAttributes: boolean,
   leaseAttributes: Attributes,
   leaseMethods: MethodsType,
   leases: LeaseList,
-  lessors: Array<Object>,
+  lessors: LessorList,
   location: Object,
   receiveTopNavigationSettings: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -103,6 +109,8 @@ type State = {
 }
 
 class LeaseListPage extends PureComponent<Props, State> {
+  _isMounted: boolean
+
   firstLeaseModalField: any
 
   state = {
@@ -120,7 +128,12 @@ class LeaseListPage extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    const {fetchAreaNoteList, fetchLessors, receiveTopNavigationSettings} = this.props;
+    const {
+      fetchAreaNoteList,
+      fetchLessors,
+      lessors,
+      receiveTopNavigationSettings,
+    } = this.props;
 
     setPageTitle('Vuokraukset');
 
@@ -132,13 +145,16 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     fetchAreaNoteList({});
 
-    fetchLessors({limit: 10000});
+    if(isEmpty(lessors)) {
+      fetchLessors({limit: 10000});
+    }
 
     this.search();
 
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
@@ -154,6 +170,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -196,7 +213,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       delete initialValues.lease_state;
       delete initialValues.sort_key;
       delete initialValues.sort_order;
-      await initialize(FormNames.LEASE_SEARCH, initialValues);
+      initialize(FormNames.LEASE_SEARCH, initialValues);
     };
 
     this.setState({
@@ -207,7 +224,10 @@ class LeaseListPage extends PureComponent<Props, State> {
       sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 
@@ -399,11 +419,11 @@ class LeaseListPage extends PureComponent<Props, State> {
   getOverlayLayers = () => {
     const layers = [];
     const {
-      areaNoteMethods,
       areaNotes,
+      usersPermissions,
     } = this.props;
 
-    {isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) &&
+    {hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && !isEmpty(areaNotes) &&
       layers.push({
         checked: false,
         component: <AreaNotesLayer
@@ -445,7 +465,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     } = this.state;
     const {
       createLease,
-      isFetchingCommonAttributes,
+      isFetchingLeaseAttributes,
       leaseAttributes,
       leaseMethods,
       leases: content,
@@ -458,7 +478,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     const columns = this.getColumns();
     const overlayLayers = this.getOverlayLayers();
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingLeaseAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!leaseMethods) return null;
 
@@ -553,7 +573,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withLeaseListPageAttributes,
   withUiDataList,
   connect(
     (state) => {
@@ -562,6 +582,8 @@ export default flowRight(
         areaNotes: getAreaNoteList(state),
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),
+        lessors: getLessorList(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

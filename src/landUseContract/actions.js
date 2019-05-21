@@ -23,10 +23,10 @@ import type {
   ReceiveCollapseStatesAction,
 } from './types';
 
-export const fetchLandUseContractAttributes = (): FetchAttributesAction =>
+export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/landUseContract/FETCH_ATTRIBUTES')();
 
-export const receiveLandUseContractAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
   createAction('mvj/landUseContract/RECEIVE_ATTRIBUTES')(attributes);
 
 export const fetchLandUseContractList = (search: string): FetchLandUseContractListAction =>

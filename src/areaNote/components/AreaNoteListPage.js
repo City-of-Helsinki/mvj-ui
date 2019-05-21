@@ -25,7 +25,7 @@ import {getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle} from '$util
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withAreaNoteAttributes} from '$components/attributes/AreaNoteAttributes';
 
 import type {Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
@@ -76,6 +76,8 @@ const getOverlayLayers = (areaNoteMethods: MethodsType, areaNotes: AreaNoteList,
 };
 
 class AreaNoteListPage extends PureComponent<Props, State> {
+  _isMounted: boolean
+
   state = {
     areaNoteMethods: null,
     areaNotes: [],
@@ -101,6 +103,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -146,6 +149,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     hideEditMode();
 
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -169,7 +173,9 @@ class AreaNoteListPage extends PureComponent<Props, State> {
       isSearchInitialized: false,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 
@@ -250,7 +256,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withAreaNoteAttributes,
   withRouter,
   connect(
     (state) => {

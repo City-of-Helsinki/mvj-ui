@@ -2,10 +2,6 @@
 import {expect} from 'chai';
 
 import {
-  fetchAttributes,
-  receiveAttributes,
-  receiveMethods,
-  attributesNotFound,
   fetchIndexList,
   receiveIndexList,
   notFound,
@@ -15,11 +11,8 @@ import indexReducer from './reducer';
 import type {IndexState} from './types';
 
 const defaultState: IndexState = {
-  attributes: null,
-  isFetchingAttributes: false,
   isFetching: false,
   list: [],
-  methods: null,
 };
 
 // $FlowFixMe
@@ -32,37 +25,6 @@ describe('Index', () => {
     describe('indexReducer', () => {
 
       // $FlowFixMe
-      it('should set isFetchingAttributes flag to true when fetching attributes', () => {
-        const newState = {...defaultState, isFetchingAttributes: true};
-
-        const state = indexReducer({}, fetchAttributes());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update attributes', () => {
-        const dummyAttributes = {foo: 'bar'};
-        const newState = {...defaultState, attributes: dummyAttributes};
-
-        const state = indexReducer({}, receiveAttributes(dummyAttributes));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update methods', () => {
-        const dummyMethods = {foo: 'bar'};
-        const newState = {...defaultState, methods: dummyMethods};
-
-        const state = indexReducer({}, receiveMethods(dummyMethods));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should set isFetchingAttributes flag to false by attributesNotFound', () => {
-        const newState = {...defaultState, isFetchingAttributes: false};
-
-        let state = indexReducer({}, fetchAttributes());
-        state = indexReducer(state, attributesNotFound());
-        expect(state).to.deep.equal(newState);
-      });
-
       it('should set isFetching flag to true when fetching index list', () => {
         const newState = {...defaultState, isFetching: true};
 

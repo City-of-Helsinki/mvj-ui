@@ -15,7 +15,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, Methods, ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {
   LeaseContractChangesFieldPaths,
   LeaseContractChangesFieldTitles,
@@ -31,12 +31,10 @@ import {
   getFieldOptions,
   getLabelOfOption,
   isFieldAllowedToRead,
-  isMethodAllowed,
 } from '$util/helpers';
-import {getMethods as getContractFileMethods} from '$src/contractFile/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 const formName = FormNames.LEASE_CONTRACTS;
@@ -47,7 +45,6 @@ type Props = {
   contract: Object,
   contractCollapseState: boolean,
   contractChangesCollapseState: boolean,
-  contractFileMethods: MethodsType,
   currentLease: Lease,
   onShowContractFileModal: Function,
   receiveCollapseStates: Function,
@@ -60,7 +57,6 @@ const ContractItem = ({
   contract,
   contractCollapseState,
   contractChangesCollapseState,
-  contractFileMethods,
   currentLease,
   onShowContractFileModal,
   receiveCollapseStates,
@@ -131,12 +127,7 @@ const ContractItem = ({
               {LeaseContractsFieldTitles.CONTRACT_NUMBER}
             </FormTextTitle>
             <FormText>{contract.contract_number
-              ? <Authorization
-                allow={isMethodAllowed(contractFileMethods, Methods.GET)}
-                errorComponent={contract.contract_number}
-              >
-                <a onClick={handleShowContractFileModal}>{contract.contract_number}</a>
-              </Authorization>
+              ? <a onClick={handleShowContractFileModal}>{contract.contract_number}</a>
               : '-'}</FormText>
           </Authorization>
         </Column>
@@ -362,7 +353,6 @@ export default connect(
       collateralsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.collaterals`),
       contractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.contract`),
       contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.contract_changes`),
-      contractFileMethods: getContractFileMethods(state),
       currentLease: getCurrentLease(state),
     };
   },

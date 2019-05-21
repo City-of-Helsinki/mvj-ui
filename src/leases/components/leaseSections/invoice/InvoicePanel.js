@@ -78,13 +78,13 @@ class InvoicePanel extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keydown', this.handleKeyDown);
     this.component.addEventListener('transitionend', this.transitionEnds);
     this._isMounted = false;
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keydown', this.handleKeyDown);
     this.component.removeEventListener('transitionend', this.transitionEnds);
     this._isMounted = true;
   }
@@ -241,8 +241,8 @@ class InvoicePanel extends PureComponent<Props, State> {
             />
           </div>
 
-          <div className={classNames('invoice-panel__body', {'with-footer': (isMethodAllowed(invoiceMethods, Methods.PATCH) && invoice && !invoice.sap_id)})}>
-            {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id)
+          <div className={classNames('invoice-panel__body', {'with-footer': (isMethodAllowed(invoiceMethods, Methods.PATCH) && invoice && !invoice.sent_to_sap_at)})}>
+            {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sent_to_sap_at)
               ? <EditInvoiceForm
                 creditedInvoice={creditedInvoice}
                 interestInvoiceFor={interestInvoiceFor}
@@ -262,7 +262,7 @@ class InvoicePanel extends PureComponent<Props, State> {
           </div>
 
           <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
-            {invoice && !invoice.sap_id &&
+            {invoice && !invoice.sent_to_sap_at &&
               <div className='invoice-panel__footer'>
                 <Button
                   className={ButtonColors.SECONDARY}

@@ -291,6 +291,16 @@ export const RentCycles = {
 };
 
 /**
+ * Subvention type enumerable.
+ *
+ * @type {{}}
+ */
+export const SubventionTypes = {
+  RE_LEASE_DISCOUNT: 're_lease_discount',
+  X_DISCOUNT: 'x_discount',
+};
+
+/**
  * Credit invoiceset options
  * @type {[*]}
  */
@@ -384,6 +394,7 @@ export const LeaseFieldPaths = {
   AUDIT_LOG: 'audit_log',
   BUILDING_SELLING_PRICE: 'building_selling_price',
   CLASSIFICATION: 'classification',
+  CONTRACT_NUMBERS: 'contract_numbers',
   CONVEYANCE_NUMBER: 'conveyance_number',
   DISTRICT: 'district',
   END_DATE: 'end_date',
@@ -433,6 +444,7 @@ export const LeaseFieldTitles = {
   AUDIT_LOG: 'Muutoshistoria',
   BUILDING_SELLING_PRICE: 'Rakennuksen kauppahinta',
   CLASSIFICATION: 'Julkisuusluokka',
+  CONTRACT_NUMBERS: 'Sopimusnumero',
   CONVEYANCE_NUMBER: 'Luovutusnumero',
   DISTRICT: 'Kaupunginosa',
   END_DATE: 'Loppupvm',
@@ -954,6 +966,10 @@ export const LeaseRentAdjustmentsFieldPaths = {
   INTENDED_USE: 'rents.child.children.rent_adjustments.child.children.intended_use',
   NOTE: 'rents.child.children.rent_adjustments.child.children.note',
   START_DATE: 'rents.child.children.rent_adjustments.child.children.start_date',
+  SUBVENTION_BASE_PERCENT: 'rents.child.children.rent_adjustments.child.children.subvention_base_percent',
+  SUBVENTION_GRADUATED_PERCENT: 'rents.child.children.rent_adjustments.child.children.subvention_graduated_percent',
+  SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'rents.child.children.rent_adjustments.child.children.subvention_re_lease_discount_precent',
+  SUBVENTION_TYPE: 'rents.child.children.rent_adjustments.child.children.subvention_type',
   TYPE: 'rents.child.children.rent_adjustments.child.children.type',
 };
 
@@ -972,7 +988,55 @@ export const LeaseRentAdjustmentsFieldTitles = {
   INTENDED_USE: 'Käyttötarkoitus',
   NOTE: 'Huomautus',
   START_DATE: 'Alkupvm',
+  SUBVENTION_BASE_PERCENT: 'Perusalennus markkinavuokrasta',
+  SUBVENTION_GRADUATED_PERCENT: 'Porrastettu alennus',
+  SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_TYPE: 'Subvention tyyppi',
   TYPE: 'Tyyppi',
+};
+
+/**
+ * Rent adjustment management subventions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentManagementSubventionsFieldPaths = {
+  MANAGEMENT_SUBVENTIONS: 'rents.child.children.rent_adjustments.child.children.management_subventions',
+  MANAGEMENT: 'rents.child.children.rent_adjustments.child.children.management_subventions.child.children.management',
+  SUBVENTION_PERCENT: 'rents.child.children.rent_adjustments.child.children.management_subventions.child.children.subvention_percent',
+};
+
+/**
+ * Rent adjustment management subventions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentManagementSubventionsFieldTitles = {
+  MANAGEMENT_SUBVENTIONS: 'Hallintamuodot',
+  MANAGEMENT: 'Hallintamuodon tyyppi',
+  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
+};
+
+/**
+ * Rent adjustment temporary subventions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentTemporarySubventionsFieldPaths = {
+  TEMPORARY_SUBVENTIONS: 'rents.child.children.rent_adjustments.child.children.temporary_subventions',
+  DESCRIPTION: 'rents.child.children.rent_adjustments.child.children.temporary_subventions.child.children.description',
+  SUBVENTION_PERCENT: 'rents.child.children.rent_adjustments.child.children.temporary_subventions.child.children.subvention_percent',
+};
+
+/**
+ * Rent adjustment temporary subventions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentTemporarySubventionsFieldTitles = {
+  TEMPORARY_SUBVENTIONS: 'Tilapäisalennukset',
+  DESCRIPTION: 'Tilapäisalennuksen tyyppi',
+  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
 };
 
 /**
@@ -1052,6 +1116,10 @@ export const LeaseBasisOfRentsFieldPaths = {
   LOCKED_AT: 'basis_of_rents.child.children.locked_at',
   PLANS_INSPECTED_AT: 'basis_of_rents.child.children.plans_inspected_at',
   PROFIT_MARGIN_PERCENTAGE: 'basis_of_rents.child.children.profit_margin_percentage',
+  SUBVENTION_BASE_PERCENT: 'basis_of_rents.child.children.subvention_base_percent',
+  SUBVENTION_GRADUATED_PERCENT: 'basis_of_rents.child.children.subvention_graduated_percent',
+  SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'basis_of_rents.child.children.subvention_re_lease_discount_precent',
+  SUBVENTION_TYPE: 'basis_of_rents.child.children.subvention_type',
   UNIT_PRICE: 'basis_of_rents.child.children.unit_price',
 };
 
@@ -1076,7 +1144,55 @@ export const LeaseBasisOfRentsFieldTitles = {
   LOCKED_AT: 'Laskelma lukittu',
   PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
+  SUBVENTION_BASE_PERCENT: 'Perusalennus markkinavuokrasta',
+  SUBVENTION_GRADUATED_PERCENT: 'Porrastettu alennus',
+  SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_TYPE: 'Subvention tyyppi',
   UNIT_PRICE: 'Yksikköhinta (ind)',
+};
+
+/**
+ * Basis of rent management subventions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const BasisOfRentManagementSubventionsFieldPaths = {
+  MANAGEMENT_SUBVENTIONS: 'basis_of_rents.child.children.management_subventions',
+  MANAGEMENT: 'basis_of_rents.child.children.management_subventions.child.children.management',
+  SUBVENTION_PERCENT: 'basis_of_rents.child.children.management_subventions.child.children.subvention_percent',
+};
+
+/**
+ * Basis of rent management subventions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const BasisOfRentManagementSubventionsFieldTitles = {
+  MANAGEMENT_SUBVENTIONS: 'Hallintamuodot',
+  MANAGEMENT: 'Hallintamuodon tyyppi',
+  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
+};
+
+/**
+ * Basis of rent temporary subventions field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const BasisOfRentTemporarySubventionsFieldPaths = {
+  TEMPORARY_SUBVENTIONS: 'basis_of_rents.child.children.temporary_subventions',
+  DESCRIPTION: 'basis_of_rents.child.children.temporary_subventions.child.children.description',
+  SUBVENTION_PERCENT: 'basis_of_rents.child.children.temporary_subventions.child.children.subvention_percent',
+};
+
+/**
+ * Basis of rent temporary subventions field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const BasisOfRentTemporarySubventionsFieldTitles = {
+  TEMPORARY_SUBVENTIONS: 'Tilapäisalennukset',
+  DESCRIPTION: 'Tilapäisalennuksen tyyppi',
+  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
 };
 
 /**
@@ -1275,6 +1391,30 @@ export const LeaseInspectionsFieldTitles = {
   INSPECTOR: 'Tarkastaja',
   SUPERVISED_DATE: 'Valvottu pvm',
   SUPERVISION_DATE: 'Valvontapvm',
+};
+
+/**
+ * Lease area attachments field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInspectionAttachmentsFieldPaths = {
+  ATTACHMENTS: 'inspections.child.children.attachments',
+  FILE: 'inspections.child.children.attachments.child.children.file',
+  UPLOADED_AT: 'inspections.child.children.attachments.child.children.uploaded_at',
+  UPLOADER: 'inspections.child.children.attachments.child.children.uploader',
+};
+
+/**
+ * Lease area attachments field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseInspectionAttachmentsFieldTitles = {
+  ATTACHMENTS: 'Tiedostot',
+  FILE: 'Nimi',
+  UPLOADED_AT: 'Pvm',
+  UPLOADER: 'Lataaja',
 };
 
 /**

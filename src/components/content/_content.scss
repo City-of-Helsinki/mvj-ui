@@ -51,11 +51,11 @@
     }
 
     &.with-bottom-margin {
-      margin-bottom: rem-calc(15px);
+      margin-bottom: rem-calc(10px);
     }
 
     &.with-top-margin {
-      margin-top: rem-calc(15px);
+      margin-top: rem-calc(10px);
     }
 
     .map-link {
@@ -217,9 +217,19 @@
       flex: 1 1 0%;
     }
 
-    &_wrapper {
+    &_button-wrapper {
+      margin-right: 10px;
+    }
 
-      .form-field__warning-field{
+    &_wrapper {
+      font-weight: $semibold;
+      font-size: rem-calc(16px);
+      line-height: rem-calc(20px);
+      margin-bottom: 0;
+      color: $black;
+
+      .form-field__warning-field,
+      .form-field__success-field{
         font-weight: $semibold;
         font-size: rem-calc(16px);
         line-height: rem-calc(20px);
@@ -234,6 +244,23 @@
       background-image: url(../assets/icons/icon-alert.svg);
       display: inline-block;
       margin-left: 0.4rem;
+    }
+
+    &--align-center {
+      .content__warning-container_wrapper {
+        display: flex;
+        align-items: center;
+      }
+
+      i {
+        align-self: center;
+      }
+    }
+
+    &--success {
+      i {
+        background-image: url(../assets/icons/icon_checked.svg);
+      }
     }
   }
 
@@ -372,57 +399,6 @@
 
   h2:first-of-type {
     margin-top: 0;
-  }
-
-
-
-  .right-subtitle {
-    position: absolute;
-    top: rem-calc(15px);
-    right: rem-calc(15px);
-    display: block;
-    line-height: rem-calc(24px);
-    font-weight: $semibold;
-    margin-bottom: 0;
-
-    .alert {
-      display: inline-block;
-      color: $red !important;
-      text-align: right;
-      font-weight: $semibold;
-      line-height: rem-calc(33px);
-
-      i {
-        height: rem-calc(20px);
-        width: rem-calc(20px);
-        vertical-align: text-bottom;
-        background-image: url(../assets/icons/icon-alert.svg);
-        display: inline-block;
-        margin-left: 0.4rem;
-      }
-    }
-
-    .success {
-      display: inline-block;
-      color: $dark-green !important;
-      text-align: right;
-      font-weight: $semibold;
-      line-height: rem-calc(33px);
-
-      i {
-        height: rem-calc(20px);
-        width: rem-calc(20px);
-        vertical-align: text-bottom;
-        background-image: url(../assets/icons/icon_checked.svg);
-        display: inline-block;
-        margin-left: 0.4rem;
-      }
-    }
-
-    &__button-component {
-      display: inline-block;
-      margin-right: 10px;
-    }
   }
 
   .content-item {

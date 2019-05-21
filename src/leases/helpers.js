@@ -25,6 +25,7 @@ import {
   RentCycles,
   RentDueDateTypes,
   RentTypes,
+  SubventionTypes,
   TenantContactType,
 } from './enums';
 import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
@@ -46,7 +47,75 @@ import {getIsEditMode} from './selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
+import type {CommentList} from '$src/comments/types';
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
+
+/**
+  * Test is lease empty
+  * @param {Object} lease
+  * @return {boolean}
+  */
+export const isLeaseEmpty = (lease: Lease) => {
+  let empty = true;
+  const skipFields = [
+    'id',
+    'type',
+    'municipality',
+    'district',
+    'identifier',
+    'state',
+    'preparer',
+    'note',
+    'created_at',
+    'modified_at',
+  ];
+
+  forEach(Object.keys(lease), (key) => {
+    if(skipFields.indexOf(key) === -1) {
+      if(isArray(lease[key])) {
+        if(lease[key].length) {
+          empty = false;
+          return false;
+        }
+      } else {
+        if(key === 'related_leases') {
+          if(lease[key].related_to && lease[key].related_to.length || lease[key].related_from && lease[key].related_from.length) {
+            empty = false;
+            return false;
+          }
+        } else if(typeof lease[key] === 'boolean' && lease[key] || typeof lease[key] !== 'boolean' && !isEmptyValue(lease[key])) {
+          empty = false;
+          return false;
+        }
+      }
+    }
+  });
+
+  return empty;
+};
+
+/**
+  * Test is lease created by user
+  * @param {Object} lease
+  * @param {Object} user
+  * @return {boolean}
+  */
+export const isLeaseCreatedByUser = (lease: Lease, user: Object) => {
+  const preparerUsername = get(lease, 'preparer.username');
+  const userEmail = get(user, 'profile.email');
+
+  return !!preparerUsername && !!userEmail && preparerUsername === userEmail;
+};
+
+/**
+  * Test is user allowed to delete lease
+  * @param {Object} lease
+  * @param {Object[]} comments
+  * @param {Object} user
+  * @return {boolean}
+  */
+export const isUserAllowedToDeleteEmptyLease = (lease: Lease, comments: CommentList, user: Object) =>
+  isLeaseEmpty(lease) && comments && !comments.length && isLeaseCreatedByUser(lease, user);
 
 export const getContentLeaseIdentifier = (item:Object) =>
   !isEmpty(item)
@@ -183,6 +252,10 @@ export const getContentSummary = (lease: Object) => {
     area_notes: get(lease, 'area_notes', []),
     // Set arrangement decision to true if there is any contract where is_readjustment_decision == true
     arrangement_decision: get(lease, 'contracts', []).find((contract) => contract.is_readjustment_decision) ? true : false,
+    contract_numbers: get(lease, 'contracts', [])
+      .filter((contract) => contract.contract_number)
+      .map((contract) => contract.contract_number)
+      .join(', '),
     building_selling_price: lease.building_selling_price,
     classification: lease.classification,
     constructability_areas: getContentConstructability(lease),
@@ -216,46 +289,20 @@ export const getContentSummary = (lease: Object) => {
   };
 };
 
+/**
+  * Helper function to get related lease content by path
+  * @param {Object} content
+  * @param {string} path
+  * @returns {Object}
+  */
 export const getContentRelatedLease = (content: Object, path: string = 'from_lease') =>
   get(content, path, {});
 
-const compareRelatedLeases = (a, b) => {
-  const endDateA = get(a, 'lease.end_date'),
-    endDateB = get(b, 'lease.end_date'),
-    startDateA = get(a, 'lease.start_date'),
-    startDateB = get(b, 'lease.start_date');
-
-  if(endDateA !== endDateB) {
-    if(!endDateA) {
-      return -1;
-    }
-    if(!endDateB) {
-      return 1;
-    }
-    if(endDateA > endDateB) {
-      return -1;
-    }
-    if(endDateA < endDateB) {
-      return 1;
-    }
-  }
-  if(startDateA !== startDateB) {
-    if(!startDateA) {
-      return -1;
-    }
-    if(!startDateB) {
-      return 1;
-    }
-    if(startDateA > startDateB) {
-      return -1;
-    }
-    if(startDateA < startDateB) {
-      return 1;
-    }
-  }
-  return 0;
-};
-
+/**
+  * Get content related leases realted from list sorted by start and end date
+  * @param {Object} lease
+  * @returns {Object[]}
+  */
 export const getContentRelatedLeasesFrom = (lease: Object) =>
   get(lease, 'related_leases.related_from', [])
     .map((relatedLease) => {
@@ -264,8 +311,13 @@ export const getContentRelatedLeasesFrom = (lease: Object) =>
         lease: getContentRelatedLease(relatedLease, 'from_lease'),
       };
     })
-    .sort(compareRelatedLeases);
+    .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));
 
+/**
+  * Get content related leases realted to list sorted by start and end date
+  * @param {Object} lease
+  * @returns {Object[]}
+  */
 export const getContentRelatedLeasesTo = (lease: Object) =>
   get(lease, 'related_leases.related_to', [])
     .map((relatedLease) => {
@@ -274,7 +326,7 @@ export const getContentRelatedLeasesTo = (lease: Object) =>
         lease: getContentRelatedLease(relatedLease, 'to_lease'),
       };
     })
-    .sort(compareRelatedLeases);
+    .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));
 
 export const getContentLeaseAreaAddresses = (area: Object): Array<Object> => {
   return get(area, 'addresses', []).map((address) => {
@@ -406,7 +458,7 @@ export const getContentDecision = (decision: Object) => {
  * @returns {}
  */
 export const getContentDecisions = (lease: Object) =>
-  get(lease, 'decisions', []).map((decision) => getContentDecision(decision));
+  get(lease, 'decisions', []).map((decision) => getContentDecision(decision)).sort((a, b) => sortStringByKeyDesc(a, b, 'decision_date'));
 
 /**
  * Get decision options from lease data
@@ -497,6 +549,7 @@ export const getContentInspectionItem = (inspection: Object) => {
     supervision_date: inspection.supervision_date,
     supervised_date: inspection.supervised_date,
     description: inspection.description,
+    attachments: get(inspection, 'attachments', []),
   };
 };
 
@@ -535,6 +588,37 @@ export const getContentConstructabilityDescriptions = (area: Object, type: strin
       };
     });
 };
+
+/**
+  * Get constructability email content
+  * @param {Object} lease
+  * @param {Object} user
+  * @param {Object} text
+  * @returns {string}
+  */
+
+export const getContentConstructabilityEmail = (lease: Object, user: Object, text: ?string) => {
+  let emailContent = `Vuokratunnus: ${getContentLeaseIdentifier(lease) || '-'}\n`;
+  const leaseAreas = get(lease, 'lease_areas', []);
+
+  leaseAreas.forEach((area) => {
+    const addresses = getContentLeaseAreaAddresses(area).filter((address) => address.address).map((address) => getFullAddress(address));
+
+    emailContent += `\nVuokra-alue: ${area.identifier}`;
+    if(addresses.length) {
+      emailContent += `\nOsoite: ${addresses.join(' - ')}\n`;
+    }
+  });
+
+  if(text) {
+    emailContent += `\nViesti: ${text}\n`;
+  }
+
+  emailContent += `\nLähettäjä: ${get(user, 'profile.name')}`;
+
+  return emailContent;
+};
+
 
 export const getContentConstructability = (lease: Object) =>
   get(lease, 'lease_areas', []).map((area) => {
@@ -647,6 +731,8 @@ export const getTenantShareWarnings = (tenants: Array<Object>): Array<string> =>
 
     if(totalShare > 1) {
       warnings.push(`Hallintaosuus välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on yli 100%`);
+    } else if(totalShare < 1) {
+      warnings.push(`Hallintaosuus välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on alle 100%`);
     }
   });
 
@@ -688,6 +774,80 @@ export const getContentEqualizedRents = (rent: Object) =>
       };
     });
 
+/**
+  * Calculate re-lease discount percent for rent adjustment subvention
+  * @param {string} subventionBasePercent
+  * @param {string} subventionGraduatedPercent
+  * @return {number}
+  */
+export const calculateReLeaseDiscountPercent = (subventionBasePercent: ?string, subventionGraduatedPercent: ?string) => {
+  return parseFloat(((1 - ((1 - Number(convertStrToDecimalNumber(subventionBasePercent) || 0)/100) * (1 - Number(convertStrToDecimalNumber(subventionGraduatedPercent) || 0)/100))) * 100).toFixed(2));
+};
+
+/**
+  * Calculate rent adjustment subvention amount
+  * @param {string} subventionType
+  * @param {string} subventionBasePercent
+  * @param {string} subventionGraduatedPercent
+  * @param {Object[]} managementSubventions
+  * @param {Object[]} temporarySubventions
+  * @param {string} subventionGraduatedPercent
+  * @return {number}
+  */
+export const calculateRentAdjustmentSubventionAmount = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+  let discount = 0;
+
+  if(subventionType === SubventionTypes.RE_LEASE_DISCOUNT) {
+    discount += calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
+  }
+
+  if(subventionType === SubventionTypes.X_DISCOUNT) {
+    if(managementSubventions) {
+      managementSubventions.forEach((subvention) => {
+        discount += Number(convertStrToDecimalNumber(subvention.subvention_percent) || 0);
+      });
+    }
+  }
+
+  if(temporarySubventions) {
+    temporarySubventions.forEach((subvention) => {
+      discount += Number(convertStrToDecimalNumber(subvention.subvention_percent) || 0);
+    });
+  }
+
+  return discount;
+};
+
+/**
+  * Get content of management subventions from rent adjustment
+  * @param {Object} rentAdjustment
+  * @return {Object}
+  */
+export const getContentManagementSubventions = (rentAdjustment: Object) =>
+  get(rentAdjustment, 'management_subventions', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        management: get(item, 'management.id') || item.management,
+        subvention_percent: item.subvention_percent,
+      };
+    });
+
+/**
+  * Get content of temporary subventions from rent adjustment
+  * @param {Object} rentAdjustment
+  * @return {Object}
+  */
+export const getContentTemporarySubventions = (rentAdjustment: Object) =>
+  get(rentAdjustment, 'temporary_subventions', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        description: item.description,
+        subvention_percent: item.subvention_percent,
+      };
+    });
+
 export const getContentRentAdjustments = (rent: Object) =>
   get(rent, 'rent_adjustments', [])
     .map((item) => {
@@ -702,6 +862,11 @@ export const getContentRentAdjustments = (rent: Object) =>
         amount_left: item.amount_left,
         decision: get(item, 'decision.id') || get(item, 'decision'),
         note: item.note,
+        subvention_type: get(item, 'subvention_type.id') || item.subvention_type,
+        subvention_base_percent: item.subvention_base_percent,
+        subvention_graduated_percent: item.subvention_graduated_percent,
+        management_subventions: getContentManagementSubventions(item),
+        temporary_subventions: getContentTemporarySubventions(item),
       };
     })
     .sort(sortByStartAndEndDateDesc);
@@ -756,6 +921,26 @@ export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates')
     month: date.month,
   }));
 
+/**
+  * Get warnings if amount of fixed initial year rents is different than contract rents
+  * @param {Object[]} rents
+  * @returns {string[]}
+  */
+export const getRentWarnings = (rents: Array<Object>): Array<string> => {
+  const warnings = [];
+  rents.forEach((rent) => {
+    if(rent.type !== RentTypes.INDEX && rent.type !== RentTypes.MANUAL) return;
+
+    const fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []);
+    const contractRents = get(rent, 'contract_rents', []);
+
+    if(fixedInitialYearRents.length !== contractRents.length) {
+      warnings.push(`Vuokralla ${formatDateRange(rent.start_date, rent.end_date)} on eri määrä kiinteitä alkuvuosivuokria ja sopimusvuokria`);
+    }
+  });
+
+  return warnings;
+};
 
 export const getContentRents = (lease: Object) =>
   get(lease, 'rents', [])
@@ -806,7 +991,7 @@ export const getContentRentsFormData = (lease: Object) => {
   };
 };
 
-export const getContentBasisOfRents = (lease: Object, archived: boolean = true) =>
+export const getContentBasisOfRents = (lease: Object) =>
   get(lease, 'basis_of_rents', [])
     .map((item) => {
       return {
@@ -823,14 +1008,18 @@ export const getContentBasisOfRents = (lease: Object, archived: boolean = true) 
         locked_at: item.locked_at,
         locked_by: item.locked_by,
         archived_at: item.archived_at,
+        subvention_type: get(item, 'subvention_type.id') || item.subvention_type,
+        subvention_base_percent: item.subvention_base_percent,
+        subvention_graduated_percent: item.subvention_graduated_percent,
+        management_subventions: getContentManagementSubventions(item),
+        temporary_subventions: getContentTemporarySubventions(item),
       };
-    })
-    .filter((item) => !!item.archived_at === archived);
+    });
 
 export const getFullAddress = (item: Object) => {
   if(isEmpty(item)) return null;
 
-  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''} ${item.postal_code || ''} ${item.city || ''}`;
+  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}${item.postal_code ? item.postal_code + ' ' : ''}${item.city || ''}`;
 };
 
 export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTenants: boolean) =>{
@@ -1388,6 +1577,36 @@ export const addTenantsFormValues = (payload: Object, values: Object) => {
 };
 
 /**
+  * Get content of management subventions from rent adjustment for payload
+  * @param {Object} rentAdjustment
+  * @return {Object}
+  */
+export const getPayloadManagementSubventions = (rentAdjustment: Object) =>
+  get(rentAdjustment, 'management_subventions', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        management: item.management,
+        subvention_percent: convertStrToDecimalNumber(item.subvention_percent),
+      };
+    });
+
+/**
+  * Get content of temporary subventions from rent adjustment for payload
+  * @param {Object} rentAdjustment
+  * @return {Object}
+  */
+export const getPayloadTemporarySubventions = (rentAdjustment: Object) =>
+  get(rentAdjustment, 'temporary_subventions', [])
+    .map((item) => {
+      return {
+        id: item.id,
+        description: item.description,
+        subvention_percent: convertStrToDecimalNumber(item.subvention_percent),
+      };
+    });
+
+/**
   * Get payload of rent adjustments for API PATCH request
   *
   */
@@ -1404,6 +1623,11 @@ export const getPayloadRentAdjustments = (rent: Object) =>
       amount_left: convertStrToDecimalNumber(item.amount_left),
       decision: item.decision,
       note: item.note,
+      subvention_type: item.subvention_type,
+      subvention_base_percent: convertStrToDecimalNumber(item.subvention_base_percent),
+      subvention_graduated_percent: convertStrToDecimalNumber(item.subvention_graduated_percent),
+      management_subventions: getPayloadManagementSubventions(item),
+      temporary_subventions: getPayloadTemporarySubventions(item),
     };
   });
 
@@ -1462,12 +1686,11 @@ export const getContentRentDueDatesForDb = (rent: Object) => {
 };
 
 
-export const getSavedBasisOfRent = (lease: Lease, id: ?number) => {
-  const basisOfRentsActive = getContentBasisOfRents(lease, false);
-  const basisOfRentsArchived = getContentBasisOfRents(lease, true);
-  const basisOfRents = [...basisOfRentsActive, ...basisOfRentsArchived];
+export const getBasisOfRentById = (lease: Lease, id: ?number) => {
+  const basisOfRents = getContentBasisOfRents(lease);
 
-  if(basisOfRents.length && isEmptyValue(id)) return null;
+  if(isEmptyValue(id)) return null;
+
   return basisOfRents.find((rent) => rent.id === id);
 };
 
@@ -1475,8 +1698,9 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
   payload.is_rent_info_complete = values.is_rent_info_complete ? true : false;
 
   const basisOfRents = [...get(values, 'basis_of_rents', []), ...get(values, 'basis_of_rents_archived', [])];
+
   payload.basis_of_rents = basisOfRents.map((item) => {
-    const savedBasisOfRent = getSavedBasisOfRent(currentLease, item.id);
+    const savedBasisOfRent = getBasisOfRentById(currentLease, item.id);
 
     if(savedBasisOfRent && savedBasisOfRent.locked_at) {
       return {
@@ -1484,7 +1708,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
         locked_at: item.locked_at,
       };
     } else {
-      const basisOfRentData: any = {
+      return {
         id: item.id || undefined,
         intended_use: item.intended_use,
         area: convertStrToDecimalNumber(item.area),
@@ -1496,9 +1720,12 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
         plans_inspected_at: item.plans_inspected_at,
         locked_at: item.locked_at,
         archived_at: item.archived_at,
+        subvention_type: item.subvention_type,
+        subvention_base_percent: convertStrToDecimalNumber(item.subvention_base_percent),
+        subvention_graduated_percent: convertStrToDecimalNumber(item.subvention_graduated_percent),
+        management_subventions: getPayloadManagementSubventions(item),
+        temporary_subventions: getPayloadTemporarySubventions(item),
       };
-
-      return basisOfRentData;
     }
   });
 

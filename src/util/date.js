@@ -17,13 +17,15 @@ export  const getCurrentYear = () => new Date().getFullYear().toString();
  * Sort to ascending order by start and end date
  * @param {Object} a
  * @param {Object} b
+ * @param {string} startDatePath
+ * @param {string} endDatePath
  * @returns {number}
  */
-export const sortByStartAndEndDateAsc = (a: Object, b: Object) => {
-  const startA = a.start_date || '0000-01-01',
-    endA = a.end_date || '9999-31-12',
-    startB = b.start_date || '0000-01-01',
-    endB = b.end_date || '9999-31-12';
+export const sortByStartAndEndDateAsc = (a: Object, b: Object, startDatePath?: string = 'start_date', endDatePath?: string = 'end_date') => {
+  const startA = get(a, startDatePath, '0000-01-01'),
+    endA = get(a, endDatePath, '9999-31-12'),
+    startB = get(b, startDatePath, '0000-01-01'),
+    endB = get(b, endDatePath, '9999-31-12');
 
   if(startA > startB) return 1;
   if(startA < startB) return -1;
@@ -36,14 +38,17 @@ export const sortByStartAndEndDateAsc = (a: Object, b: Object) => {
  * Sort to descending order by start and end date
  * @param {Object} a
  * @param {Object} b
+ * @param {string} startDatePath
+ * @param {string} endDatePath
  * @returns {number}
  */
-export const sortByStartAndEndDateDesc = (a: Object, b: Object) => {
-  const startA = a.start_date || '0000-01-01',
-    endA = a.end_date || '9999-31-12',
-    startB = b.start_date || '0000-01-01',
-    endB = b.end_date || '9999-31-12';
+export const sortByStartAndEndDateDesc = (a: Object, b: Object, startDatePath?: string = 'start_date', endDatePath?: string = 'end_date') => {
+  const startA = get(a, startDatePath, '0000-01-01'),
+    endA = get(a, endDatePath, '9999-31-12'),
+    startB = get(b, startDatePath, '0000-01-01'),
+    endB = get(b, endDatePath, '9999-31-12');
 
+  console.log(a, b);
   if(startA > startB) return -1;
   if(startA < startB) return 1;
   if(endA > endB) return -1;

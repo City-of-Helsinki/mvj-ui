@@ -56,7 +56,7 @@ type Props = {
   usersPermissions: UsersPermissionsType,
 }
 
-const ContractRent = ({
+const ContractRentEdit = ({
   contractRent,
   field,
   isSaveClicked,
@@ -68,7 +68,7 @@ const ContractRent = ({
   usersPermissions,
 }: Props) => {
   const getAmountText = () => {
-    if(isEmptyValue(contractRent.amount)) return null;
+    if(!contractRent || isEmptyValue(contractRent.amount)) return null;
 
     const amountPeriodOptions = getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD);
 
@@ -76,7 +76,7 @@ const ContractRent = ({
   };
 
   const getBaseAmountText = () => {
-    if(isEmptyValue(contractRent.base_amount)) return null;
+    if(!contractRent || isEmptyValue(contractRent.base_amount)) return null;
 
     const baseAmountPeriodOptions = getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
 
@@ -447,4 +447,4 @@ export default flowRight(
       };
     },
   ),
-)(ContractRent);
+)(ContractRentEdit);

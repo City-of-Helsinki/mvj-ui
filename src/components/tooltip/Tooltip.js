@@ -81,7 +81,7 @@ class Tooltip extends PureComponent<Props, State> {
     const {uiDataKey} = this.props;
 
     if(uiDataKey) {
-      document.addEventListener('click', this.onDocumentClick);
+      window.addEventListener('click', this.onDocumentClick);
     }
   }
 
@@ -120,7 +120,11 @@ class Tooltip extends PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.onDocumentClick);
+    const {uiDataKey} = this.props;
+
+    if(uiDataKey) {
+      window.removeEventListener('click', this.onDocumentClick);
+    }
   }
 
   onDocumentClick = (event: any) => {

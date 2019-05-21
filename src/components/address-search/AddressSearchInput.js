@@ -87,8 +87,8 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   componentDidMount() {
-    document.addEventListener('click', this.onDocumentClick);
-    document.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('click', this.onDocumentClick);
+    window.addEventListener('keydown', this.onKeyDown);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -109,8 +109,8 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.onDocumentClick);
-    document.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('click', this.onDocumentClick);
+    window.removeEventListener('keydown', this.onKeyDown);
   }
 
   scrollToFocusedItem = () => {

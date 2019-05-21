@@ -3,83 +3,48 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
-import {fetchAttributes as fetchCollectionCourtDecisionAttributes} from '$src/collectionCourtDecision/actions';
-import {fetchAttributes as fetchCollectionLetterAttributes} from '$src/collectionLetter/actions';
-import {fetchAttributes as fetchCollectionNoteAttributes} from '$src/collectionNote/actions';
 import {fetchAttributes as fetchCommentAttributes} from '$src/comments/actions';
-import {fetchAttributes as fetchContractFileAttributes} from '$src/contractFile/actions';
-import {fetchAttributes as fetchCopyAreasToContractAttributes} from '$src/copyAreasToContract/actions';
-import {fetchAttributes as fetchCreateCollectionLetterAttributes} from '$src/createCollectionLetter/actions';
-import {fetchAttributes as fetchLeaseCreateChargeAttributes} from '$src/leaseCreateCharge/actions';
-import {
-  getAttributes as getCollectionCourtDecisionAttributes,
-  getIsFetchingAttributes as getIsFetchingCollectionCourtDecisionAttributes,
-  getMethods as getCollectionCourtDecisionMethods,
-} from '$src/collectionCourtDecision/selectors';
-import {
-  getAttributes as getCollectionLetterAttributes,
-  getIsFetchingAttributes as getIsFetchignCollectionLetterAttributes,
-  getMethods as getCollectionLetterMethods,
-} from '$src/collectionLetter/selectors';
-import {
-  getAttributes as getCollectionNoteAttributes,
-  getIsFetchingAttributes as getIsFetchingCollectionNoteAttributes,
-  getMethods as getCollectionNoteMethods,
-} from '$src/collectionNote/selectors';
+import {fetchAttributes as fetchInvoiceAttributes} from '$src/invoices/actions';
+import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
 import {
   getAttributes as getCommentAttributes,
   getIsFetchingAttributes as getIsFetchingCommentAttributes,
   getMethods as getCommentMethods,
 } from '$src/comments/selectors';
 import {
-  getIsFetchingAttributes as getIsFetchingContractFileAttributes,
-  getMethods as getContractFileMethods,
-} from '$src/contractFile/selectors';
+  getAttributes as getInvoiceAttributes,
+  getIsFetchingAttributes as getIsFetchingInvoiceAttributes,
+  getMethods as getInvoiceMethods,
+} from '$src/invoices/selectors';
 import {
-  getIsFetchingAttributes as getIsFetchingCopyAreasToContractAttributes,
-  getMethods as getCopyAreasToContractMethods,
-} from '$src/copyAreasToContract/selectors';
+  getAttributes as getLeaseAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseAttributes,
+  getMethods as getLeaseMethods,
+} from '$src/leases/selectors';
 import {
-  getAttributes as getCreateCollectionLetterAttributes,
-  getIsFetchingAttributes as getIsFetchignCreateCollectionLetterAttributes,
-} from '$src/createCollectionLetter/selectors';
-import {
-  getAttributes as getLeaseCreateChargeAttributes,
-  getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes,
-} from '$src/leaseCreateCharge/selectors';
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods} from '$src/types';
+import type {UsersPermissions} from '$src/usersPermissions/types';
 
 function LeasePageAttributes(WrappedComponent: any) {
   type Props = {
-    collectionCourtDecisionAttributes: Attributes,
-    collectionCourtDecisionMethods: Methods,
-    collectionLetterAttributes: Attributes,
-    collectionLetterMethods: Methods,
-    collectionNoteAttributes: Attributes,
-    collectionNoteMethods: Methods,
     commentAttributes: Attributes,
     commentMethods: Methods,
-    contractFileMethods: Methods,
-    copyAreasToContractMethods: Methods,
-    createCollectionLetterAttributes: Attributes,
-    fetchCollectionCourtDecisionAttributes: Function,
-    fetchCollectionLetterAttributes: Function,
-    fetchCollectionNoteAttributes: Function,
     fetchCommentAttributes: Function,
-    fetchContractFileAttributes: Function,
-    fetchCopyAreasToContractAttributes: Function,
-    fetchCreateCollectionLetterAttributes: Function,
-    fetchLeaseCreateChargeAttributes: Function,
-    isFetchingCollectionCourtDecisionAttributes: boolean,
-    isFetchingCollectionLetterAttributes: boolean,
-    isFetchingCollectionNoteAttributes: boolean,
+    fetchInvoiceAttributes: Function,
+    fetchLeaseAttributes: Function,
+    invoiceAttributes: Attributes,
+    invoiceMethods: Methods,
     isFetchingCommentAttributes: boolean,
-    isFetchingContractFileAttributes: boolean,
-    isFetchingCopyAreasToContractAttributes: boolean,
-    isFetchingCreateCollectionLetterAttributes: boolean,
-    isFetchingLeaseCreateChargeAttributes: boolean,
-    leaseCreateChargeAttributes: Attributes,
+    isFetchingInvoiceAttributes: boolean,
+    isFetchingLeaseAttributes: boolean,
+    isFetchingUsersPermissions: boolean,
+    leaseAttributes: Attributes,
+    leaseMethods: Methods,
+    usersPermissions: UsersPermissions,
   }
 
   type State = {
@@ -93,97 +58,53 @@ function LeasePageAttributes(WrappedComponent: any) {
 
     componentDidMount() {
       const {
-        collectionCourtDecisionMethods,
-        collectionLetterMethods,
-        collectionNoteMethods,
+        commentAttributes,
         commentMethods,
-        contractFileMethods,
-        copyAreasToContractMethods,
-        createCollectionLetterAttributes,
-        fetchCollectionCourtDecisionAttributes,
-        fetchCollectionLetterAttributes,
-        fetchCollectionNoteAttributes,
         fetchCommentAttributes,
-        fetchContractFileAttributes,
-        fetchCopyAreasToContractAttributes,
-        fetchCreateCollectionLetterAttributes,
-        fetchLeaseCreateChargeAttributes,
-        isFetchingCollectionCourtDecisionAttributes,
-        isFetchingCollectionLetterAttributes,
-        isFetchingCollectionNoteAttributes,
+        fetchInvoiceAttributes,
+        fetchLeaseAttributes,
+        invoiceAttributes,
+        invoiceMethods,
         isFetchingCommentAttributes,
-        isFetchingContractFileAttributes,
-        isFetchingCopyAreasToContractAttributes,
-        isFetchingCreateCollectionLetterAttributes,
-        isFetchingLeaseCreateChargeAttributes,
-        leaseCreateChargeAttributes,
+        isFetchingInvoiceAttributes,
+        isFetchingLeaseAttributes,
+        leaseAttributes,
+        leaseMethods,
       } = this.props;
 
-      if(!collectionCourtDecisionMethods && !isFetchingCollectionCourtDecisionAttributes) {
-        fetchCollectionCourtDecisionAttributes();
-      }
-
-      if(!collectionLetterMethods && !isFetchingCollectionLetterAttributes) {
-        fetchCollectionLetterAttributes();
-      }
-
-      if(!collectionNoteMethods && !isFetchingCollectionNoteAttributes) {
-        fetchCollectionNoteAttributes();
-      }
-
-      if(!commentMethods && !isFetchingCommentAttributes) {
+      if(!isFetchingCommentAttributes && !commentAttributes && !commentMethods) {
         fetchCommentAttributes();
       }
 
-      if(!contractFileMethods && !isFetchingContractFileAttributes) {
-        fetchContractFileAttributes();
+      if(!isFetchingInvoiceAttributes && !invoiceAttributes && !invoiceMethods) {
+        fetchInvoiceAttributes();
       }
 
-      if(!copyAreasToContractMethods && !isFetchingCopyAreasToContractAttributes) {
-        fetchCopyAreasToContractAttributes();
-      }
-
-      if(!createCollectionLetterAttributes && !isFetchingCreateCollectionLetterAttributes) {
-        fetchCreateCollectionLetterAttributes();
-      }
-
-      if(!leaseCreateChargeAttributes && !isFetchingLeaseCreateChargeAttributes) {
-        fetchLeaseCreateChargeAttributes();
+      if(!isFetchingLeaseAttributes && !leaseAttributes && !leaseMethods) {
+        fetchLeaseAttributes();
       }
     }
 
     componentDidUpdate(prevProps: Props) {
-      if(this.props.isFetchingCollectionCourtDecisionAttributes !== prevProps.isFetchingCollectionCourtDecisionAttributes ||
-        this.props.isFetchingCollectionLetterAttributes !== prevProps.isFetchingCollectionLetterAttributes ||
-        this.props.isFetchingCollectionNoteAttributes !== prevProps.isFetchingCollectionNoteAttributes ||
-        this.props.isFetchingCommentAttributes !== prevProps.isFetchingCommentAttributes ||
-        this.props.isFetchingContractFileAttributes !== prevProps.isFetchingContractFileAttributes ||
-        this.props.isFetchingCopyAreasToContractAttributes !== prevProps.isFetchingCopyAreasToContractAttributes ||
-        this.props.isFetchingCreateCollectionLetterAttributes !== prevProps.isFetchingCreateCollectionLetterAttributes ||
-        this.props.isFetchingLeaseCreateChargeAttributes !== prevProps.isFetchingLeaseCreateChargeAttributes) {
+      if(this.props.isFetchingCommentAttributes !== prevProps.isFetchingCommentAttributes ||
+        this.props.isFetchingInvoiceAttributes !== prevProps.isFetchingInvoiceAttributes ||
+        this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes ||
+        this.props.isFetchingUsersPermissions !== prevProps.isFetchingUsersPermissions) {
         this.setIsFetchingCommonAttributes();
       }
     }
 
     setIsFetchingCommonAttributes = () => {
       const {
-        isFetchingCollectionCourtDecisionAttributes,
-        isFetchingCollectionLetterAttributes,
-        isFetchingCollectionNoteAttributes,
         isFetchingCommentAttributes,
-        isFetchingContractFileAttributes,
-        isFetchingCopyAreasToContractAttributes,
-        isFetchingCreateCollectionLetterAttributes,
-        isFetchingLeaseCreateChargeAttributes,
+        isFetchingInvoiceAttributes,
+        isFetchingLeaseAttributes,
+        isFetchingUsersPermissions,
       } = this.props;
-      const isFetching = isFetchingCollectionCourtDecisionAttributes ||
-        isFetchingCollectionLetterAttributes ||
-        isFetchingCollectionNoteAttributes ||
-        isFetchingCommentAttributes ||
-        isFetchingContractFileAttributes ||
-        isFetchingCopyAreasToContractAttributes ||
-        isFetchingCreateCollectionLetterAttributes ||
-        isFetchingLeaseCreateChargeAttributes;
+      const isFetching = isFetchingCommentAttributes ||
+        isFetchingInvoiceAttributes ||
+        isFetchingLeaseAttributes ||
+        isFetchingUsersPermissions;
 
       this.setState({isFetchingLeasePageAttributes: isFetching});
     }
@@ -199,38 +120,24 @@ const withLeasePageAttributes = flowRight(
   connect(
     (state) => {
       return{
-        collectionCourtDecisionAttributes: getCollectionCourtDecisionAttributes(state),
-        collectionCourtDecisionMethods: getCollectionCourtDecisionMethods(state),
-        collectionLetterAttributes: getCollectionLetterAttributes(state),
-        collectionLetterMethods: getCollectionLetterMethods(state),
-        collectionNoteAttributes: getCollectionNoteAttributes(state),
-        collectionNoteMethods: getCollectionNoteMethods(state),
         commentAttributes: getCommentAttributes(state),
         commentMethods: getCommentMethods(state),
-        contractFileMethods: getContractFileMethods(state),
-        copyAreasToContractMethods: getCopyAreasToContractMethods(state),
-        createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
-        isFetchingCollectionCourtDecisionAttributes: getIsFetchingCollectionCourtDecisionAttributes(state),
-        isFetchingCollectionLetterAttributes: getIsFetchignCollectionLetterAttributes(state),
-        isFetchingCollectionNoteAttributes: getIsFetchingCollectionNoteAttributes(state),
+        invoiceAttributes: getInvoiceAttributes(state),
+        invoiceMethods: getInvoiceMethods(state),
         isFetchingCommentAttributes: getIsFetchingCommentAttributes(state),
-        isFetchingContractFileAttributes: getIsFetchingContractFileAttributes(state),
-        isFetchingCopyAreasToContractAttributes: getIsFetchingCopyAreasToContractAttributes(state),
-        isFetchingCreateCollectionLetterAttributes: getIsFetchignCreateCollectionLetterAttributes(state),
-        isFetchingLeaseCreateChargeAttributes: getIsFetchingLeaseCreateChargeAttributes(state),
-        leaseCreateChargeAttributes: getLeaseCreateChargeAttributes(state),
+        isFetchingInvoiceAttributes: getIsFetchingInvoiceAttributes(state),
+        isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        leaseAttributes: getLeaseAttributes(state),
+        leaseMethods: getLeaseMethods(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {
-      fetchCollectionCourtDecisionAttributes,
-      fetchCollectionLetterAttributes,
-      fetchCollectionNoteAttributes,
       fetchCommentAttributes,
-      fetchContractFileAttributes,
-      fetchCopyAreasToContractAttributes,
-      fetchCreateCollectionLetterAttributes,
-      fetchLeaseCreateChargeAttributes,
-    }
+      fetchInvoiceAttributes,
+      fetchLeaseAttributes,
+    },
   ),
   LeasePageAttributes,
 );

@@ -13,9 +13,10 @@ import {sendEmail} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
 import {SendEmailTypes} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getContentEmailLogs} from '$src/leases/helpers';
+import {getContentConstructabilityEmail, getContentEmailLogs} from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {formatDate, hasPermissions} from '$util/helpers';
+import {getLoggedInUser} from '$src/auth/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
@@ -24,6 +25,7 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 
 type Props = {
   currentLease: Lease,
+  loggedUser: Object,
   sendEmail: Function,
   usersPermissions: UsersPermissionsType,
 }
@@ -65,9 +67,10 @@ class SendEmail extends PureComponent<Props, State> {
   }
 
   handleSend = (values: Object) => {
-    const {currentLease, sendEmail} = this.props;
+    const {currentLease, loggedUser, sendEmail} = this.props;
     const payload = {
       ...values,
+      text: getContentConstructabilityEmail(currentLease, loggedUser, values.text),
       type: SendEmailTypes.CONSTRUCTABILITY,
       lease: currentLease.id,
     };
@@ -151,6 +154,7 @@ export default connect(
   (state) => {
     return {
       currentLease: getCurrentLease(state),
+      loggedUser: getLoggedInUser(state),
       usersPermissions: getUsersPermissions(state),
     };
   },

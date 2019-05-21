@@ -38,12 +38,7 @@ import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
-import {fetchAreaNoteList} from '$src/areaNote/actions';
-import {fetchCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/actions';
-import {fetchCollectionLettersByLease} from '$src/collectionLetter/actions';
-import {fetchCollectionNotesByLease} from '$src/collectionNote/actions';
 import {fetchInvoicesByLease} from '$src/invoices/actions';
-import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {
   clearFormValidFlags,
   deleteLease,
@@ -73,7 +68,26 @@ import {
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges, getContentLeaseIdentifier} from '$src/leases/helpers';
-import * as contentHelpers from '$src/leases/helpers';
+import {
+  addAreasFormValues,
+  addConstructabilityFormValues,
+  addContractsFormValues,
+  addDecisionsFormValues,
+  addInspectionsFormValues,
+  addRentsFormValues,
+  addSummaryFormValues,
+  addTenantsFormValues,
+  getContentBasisOfRents,
+  getContentContracts,
+  getContentConstructability,
+  getContentDecisions,
+  getContentInspections,
+  getContentLeaseAreas,
+  getContentRentsFormData,
+  getContentSummary,
+  getContentTenantsFormData,
+  isUserAllowedToDeleteEmptyLease,
+} from '$src/leases/helpers';
 import {
   getSearchQuery,
   getUrlParams,
@@ -84,6 +98,7 @@ import {
   setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
+import {getLoggedInUser} from '$src/auth/selectors';
 import {getCommentsByLease} from '$src/comments/selectors';
 import {getInvoicesByLease} from '$src/invoices/selectors';
 import {
@@ -98,7 +113,6 @@ import {
 import {getLeaseTypeList} from '$src/leaseType/selectors';
 import {getVats} from '$src/vat/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
@@ -115,9 +129,6 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   clearPreviewInvoices: Function,
-  collectionCourtDecisionMethods: MethodsType, // Get via withLeasePageAttributes
-  collectionLetterMethods: MethodsType, // Get via withLeasePageAttributes
-  collectionNoteMethods: MethodsType, // Get via withLeasePageAttributes
   comments: CommentList,
   commentMethods: MethodsType, // get via withLeasePageAttributes HOC
   contractsFormValues: Object,
@@ -126,12 +137,7 @@ type Props = {
   decisionsFormValues: Object,
   deleteLease: Function,
   destroy: Function,
-  fetchAreaNoteList: Function,
-  fetchCollectionCourtDecisionsByLease: Function,
-  fetchCollectionLettersByLease: Function,
-  fetchCollectionNotesByLease: Function,
   fetchInvoicesByLease: Function,
-  fetchInvoiceSetsByLease: Function,
   fetchLeaseTypes: Function,
   fetchSingleLease: Function,
   fetchVats: Function,
@@ -142,7 +148,6 @@ type Props = {
   invoices: InvoiceList,
   isEditMode: boolean,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   isFetchingLeasePageAttributes: boolean, // get via withLeasePageAttributes HOC
   isFormValidFlags: Object,
   isConstructabilityFormDirty: boolean,
@@ -163,10 +168,11 @@ type Props = {
   isTenantsFormDirty: boolean,
   isTenantsFormValid: boolean,
   isSaveClicked: boolean,
-  leaseAttributes: Attributes, // get via withCommonAttributes HOC
-  leaseMethods: MethodsType, // get via withCommonAttributes HOC
+  leaseAttributes: Attributes,
+  leaseMethods: MethodsType,
   leaseTypeList: LeaseTypeList,
   location: Object,
+  loggedUser: Object,
   match: {
     params: Object,
   },
@@ -179,21 +185,29 @@ type Props = {
   showEditMode: Function,
   summaryFormValues: Object,
   tenantsFormValues: Object,
-  usersPermissions: UsersPermissionsType, // Get via withCommonAttributes HOC
+  usersPermissions: UsersPermissionsType,
   vats: VatList,
 }
 
 type State = {
   activeTab: number,
+  allowToDeleteEmptyLease: boolean,
+  comments: CommentList,
+  currentLease: Lease,
   isCommentPanelOpen: boolean,
   isRestoreModalOpen: boolean,
+  loggedUser: Object,
 };
 
 class LeasePage extends Component<Props, State> {
   state = {
     activeTab: 0,
+    allowToDeleteEmptyLease: false,
+    comments: [],
+    currentLease: {},
     isCommentPanelOpen: false,
     isRestoreModalOpen: false,
+    loggedUser: Object,
   }
 
   timerAutoSave: any
@@ -202,68 +216,20 @@ class LeasePage extends Component<Props, State> {
     router: PropTypes.object,
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const {
-      collectionCourtDecisionMethods,
-      collectionLetterMethods,
-      collectionNoteMethods,
-      fetchAreaNoteList,
-      fetchCollectionLettersByLease,
-      fetchCollectionCourtDecisionsByLease,
-      fetchCollectionNotesByLease,
       fetchInvoicesByLease,
-      fetchInvoiceSetsByLease,
       fetchLeaseTypes,
       fetchSingleLease,
       fetchVats,
       hideEditMode,
+      invoices,
       leaseTypeList,
+      location: {search},
       match: {params: {leaseId}},
+      receiveTopNavigationSettings,
       usersPermissions,
       vats,
-    } = this.props;
-
-    fetchSingleLease(leaseId);
-
-    // Fetch invoices if user has permissions
-    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
-      fetchInvoicesByLease(leaseId);
-    }
-
-    // Fetch invoice sets if user has permissions
-    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICESET)) {
-      fetchInvoiceSetsByLease(leaseId);
-    }
-    // Fetch collection court decisions if GET is allowed
-    if(isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)) {
-      fetchCollectionCourtDecisionsByLease(leaseId);
-    }
-    // Fetch collection letters if GET is allowed
-    if(isMethodAllowed(collectionLetterMethods, Methods.GET)) {
-      fetchCollectionLettersByLease(leaseId);
-    }
-    // Fetch collection notes if GET is allowed
-    if(isMethodAllowed(collectionNoteMethods, Methods.GET)) {
-      fetchCollectionNotesByLease(leaseId);
-    }
-
-    if(isEmpty(leaseTypeList)) {
-      fetchLeaseTypes();
-    }
-
-    if(isEmpty(vats)) {
-      fetchVats();
-    }
-
-    fetchAreaNoteList({});
-
-    hideEditMode();
-  }
-
-  componentDidMount() {
-    const {
-      location: {search},
-      receiveTopNavigationSettings,
     } = this.props;
     const query = getUrlParams(search);
 
@@ -279,54 +245,53 @@ class LeasePage extends Component<Props, State> {
       this.setState({activeTab: query.tab});
     }
 
+    fetchSingleLease(leaseId);
+
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
+      fetchInvoicesByLease(leaseId);
+    }
+
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
+      fetchLeaseTypes();
+    }
+
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
+      fetchVats();
+    }
+
+    hideEditMode();
+
     window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener('popstate', this.handlePopState);
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.comments !== state.comments || props.currentLease !== state.currentLease || props.loggedUser !== state.loggedUser) {
+      newState.currentLease = props.currentLease;
+      newState.loggedUser = props.loggedUser;
+      newState.comments = props.comments;
+      newState.allowToDeleteEmptyLease = isUserAllowedToDeleteEmptyLease(props.currentLease, props.comments, props.loggedUser);
+    }
+
+    return !isEmpty(newState) ? newState : null;
   }
 
   componentDidUpdate(prevProps:Props, prevState: State) {
     const {
-      collectionCourtDecisionMethods,
-      collectionLetterMethods,
-      collectionNoteMethods,
       currentLease,
-      fetchCollectionCourtDecisionsByLease,
-      fetchCollectionLettersByLease,
-      fetchCollectionNotesByLease,
       fetchInvoicesByLease,
-      fetchInvoiceSetsByLease,
+      fetchLeaseTypes,
+      fetchVats,
+      invoices,
       isEditMode,
-      location,
-      location: {search},
+      leaseTypeList,
       match: {params: {leaseId}},
       usersPermissions,
+      vats,
     } = this.props;
     const {activeTab} = this.state;
-    const query = getUrlParams(search);
-
-    if(prevProps.usersPermissions !== usersPermissions) {
-      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
-        fetchInvoicesByLease(leaseId);
-      }
-
-      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICESET)) {
-        fetchInvoiceSetsByLease(leaseId);
-      }
-    }
-    // Fetch collection court decisions when getting new collection court decision methods and GET is allowed
-    if(prevProps.collectionCourtDecisionMethods !== collectionCourtDecisionMethods && isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)) {
-      fetchCollectionCourtDecisionsByLease(leaseId);
-    }
-    // Fetch collection letters when getting new collection letter methods and GET is allowed
-    if(prevProps.collectionLetterMethods !== collectionLetterMethods && isMethodAllowed(collectionLetterMethods, Methods.GET)) {
-      fetchCollectionLettersByLease(leaseId);
-    }
-    // Fetch collection notes when getting new collection note methods and GET is allowed
-    if(prevProps.collectionNoteMethods !== collectionNoteMethods && isMethodAllowed(collectionNoteMethods, Methods.GET)) {
-      fetchCollectionNotesByLease(leaseId);
-    }
-
-    if (prevProps.location !== location) {
-      this.setState({activeTab: query.tab});
-    }
 
     if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
@@ -337,6 +302,20 @@ class LeasePage extends Component<Props, State> {
 
       if(Number(leaseId) === storedLeaseId) {
         this.setState({isRestoreModalOpen: true});
+      }
+    }
+
+    if(usersPermissions !== prevProps.usersPermissions) {
+      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
+        fetchInvoicesByLease(leaseId);
+      }
+
+      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
+        fetchLeaseTypes();
+      }
+
+      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
+        fetchVats();
       }
     }
 
@@ -374,7 +353,18 @@ class LeasePage extends Component<Props, State> {
     destroy(FormNames.INVOICE_SIMULATOR);
     destroy(FormNames.RENT_CALCULATOR);
     hideEditMode();
+
     window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+    const tab = query.tab ? Number(query.tab) : 0;
+
+    // Set correct active tab on back/forward button press
+    this.setState({activeTab: tab});
   }
 
   setPageTitle = () => {
@@ -458,24 +448,24 @@ class LeasePage extends Component<Props, State> {
 
   initializeForms = (lease: Lease) => {
     const {initialize} = this.props,
-      areas = contentHelpers.getContentLeaseAreas(lease);
+      areas = getContentLeaseAreas(lease);
 
-    initialize(FormNames.LEASE_CONSTRUCTABILITY, {lease_areas: contentHelpers.getContentConstructability(lease)});
-    initialize(FormNames.LEASE_CONTRACTS, {contracts: contentHelpers.getContentContracts(lease)});
-    initialize(FormNames.LEASE_DECISIONS, {decisions: contentHelpers.getContentDecisions(lease)});
-    initialize(FormNames.LEASE_INSPECTIONS, {inspections: contentHelpers.getContentInspections(lease)});
+    initialize(FormNames.LEASE_CONSTRUCTABILITY, {lease_areas: getContentConstructability(lease)});
+    initialize(FormNames.LEASE_CONTRACTS, {contracts: getContentContracts(lease)});
+    initialize(FormNames.LEASE_DECISIONS, {decisions: getContentDecisions(lease)});
+    initialize(FormNames.LEASE_INSPECTIONS, {inspections: getContentInspections(lease)});
     initialize(FormNames.LEASE_AREAS, {
       lease_areas_active: areas.filter((area) => !area.archived_at),
       lease_areas_archived: areas.filter((area) => area.archived_at),
     });
     initialize(FormNames.LEASE_RENTS, {
-      basis_of_rents: contentHelpers.getContentBasisOfRents(lease, false),
-      basis_of_rents_archived: contentHelpers.getContentBasisOfRents(lease, true),
+      basis_of_rents: getContentBasisOfRents(lease).filter((item) => !item.archived_at),
+      basis_of_rents_archived: getContentBasisOfRents(lease).filter((item) => item.archived_at),
       is_rent_info_complete: lease.is_rent_info_complete,
-      ...contentHelpers.getContentRentsFormData(lease),
+      ...getContentRentsFormData(lease),
     });
-    initialize(FormNames.LEASE_SUMMARY, contentHelpers.getContentSummary(lease));
-    initialize(FormNames.LEASE_TENANTS, {...contentHelpers.getContentTenantsFormData(lease)});
+    initialize(FormNames.LEASE_SUMMARY, getContentSummary(lease));
+    initialize(FormNames.LEASE_TENANTS, {...getContentTenantsFormData(lease)});
   }
 
   cancelRestoreUnsavedChanges = () => {
@@ -675,28 +665,28 @@ class LeasePage extends Component<Props, State> {
       let payload: Object = {id: currentLease.id};
 
       if(isConstructabilityFormDirty) {
-        payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
+        payload = addConstructabilityFormValues(payload, constructabilityFormValues);
       }
       if(isContractsFormDirty) {
-        payload = contentHelpers.addContractsFormValues(payload, contractsFormValues);
+        payload = addContractsFormValues(payload, contractsFormValues);
       }
       if(isDecisionsFormDirty) {
-        payload = contentHelpers.addDecisionsFormValues(payload, decisionsFormValues);
+        payload = addDecisionsFormValues(payload, decisionsFormValues);
       }
       if(isInspectionsFormDirty) {
-        payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
+        payload = addInspectionsFormValues(payload, inspectionsFormValues);
       }
       if(isLeaseAreasFormDirty) {
-        payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
+        payload = addAreasFormValues(payload, areasFormValues);
       }
       if(isRentsFormDirty) {
-        payload = contentHelpers.addRentsFormValues(payload, rentsFormValues, currentLease);
+        payload = addRentsFormValues(payload, rentsFormValues, currentLease);
       }
       if(isSummaryFormDirty) {
-        payload = contentHelpers.addSummaryFormValues(payload, summaryFormValues);
+        payload = addSummaryFormValues(payload, summaryFormValues);
       }
       if(isTenantsFormDirty) {
-        payload = contentHelpers.addTenantsFormValues(payload, tenantsFormValues);
+        payload = addTenantsFormValues(payload, tenantsFormValues);
       }
 
       patchLease(payload);
@@ -789,52 +779,6 @@ class LeasePage extends Component<Props, State> {
     );
   }
 
-  getIsFetchingAttributes = () => {
-    const {isFetchingLeasePageAttributes, isFetchingCommonAttributes} = this.props;
-
-    return isFetchingLeasePageAttributes || isFetchingCommonAttributes;
-  }
-
-  shouldShowDelete = () => {
-    const {comments, currentLease, invoices} = this.props;
-
-    if(!comments || isEmpty(currentLease) || !invoices) return false;
-
-    const {
-      basis_of_rents,
-      collection_court_decisions,
-      collection_letters,
-      collection_notes,
-      contracts,
-      decisions,
-      infill_development_compensations,
-      inspections,
-      lease_areas,
-      related_leases: {related_to, related_from},
-      rents,
-      tenants,
-    } = currentLease;
-    if(basis_of_rents.length ||
-      collection_court_decisions.length ||
-      collection_letters.length ||
-      collection_notes.length ||
-      comments.length ||
-      contracts.length ||
-      decisions.length ||
-      infill_development_compensations.length ||
-      inspections.length ||
-      invoices.length ||
-      lease_areas.length ||
-      related_to.length ||
-      related_from.length ||
-      rents.length ||
-      tenants.length) {
-      return false;
-    }
-
-    return true;
-  }
-
   handleDelete = () => {
     const {
       deleteLease,
@@ -847,6 +791,7 @@ class LeasePage extends Component<Props, State> {
   render() {
     const {
       activeTab,
+      allowToDeleteEmptyLease,
       isCommentPanelOpen,
       isRestoreModalOpen,
     } = this.state;
@@ -854,14 +799,15 @@ class LeasePage extends Component<Props, State> {
       commentMethods,
       comments,
       currentLease,
-      isEditMode,
-      isFetching,
       isConstructabilityFormDirty,
       isConstructabilityFormValid,
       isContractsFormDirty,
       isContractsFormValid,
       isDecisionsFormDirty,
       isDecisionsFormValid,
+      isEditMode,
+      isFetching,
+      isFetchingLeasePageAttributes,
       isInspectionsFormDirty,
       isInspectionsFormValid,
       isLeaseAreasFormDirty,
@@ -879,11 +825,9 @@ class LeasePage extends Component<Props, State> {
       match: {params: {leaseId}},
       usersPermissions,
     } = this.props;
-    const showDelete = this.shouldShowDelete();
     const areFormsValid = this.validateForms();
-    const isFetchingAttributes = this.getIsFetchingAttributes();
 
-    if(isFetching || isFetchingAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetching || isFetchingLeasePageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!leaseMethods) return null;
 
@@ -898,7 +842,7 @@ class LeasePage extends Component<Props, State> {
             buttonComponent={
               <ControlButtons
                 allowComments={isMethodAllowed(commentMethods, Methods.GET)}
-                allowDelete={isMethodAllowed(leaseMethods, Methods.DELETE)}
+                allowDelete={isMethodAllowed(leaseMethods, Methods.DELETE) && (allowToDeleteEmptyLease || hasPermissions(usersPermissions, UsersPermissions.DELETE_NONEMPTY_LEASE))}
                 allowEdit={isMethodAllowed(leaseMethods, Methods.PATCH)}
                 commentAmount={comments ? comments.length : 0}
                 deleteModalTexts={{
@@ -913,7 +857,7 @@ class LeasePage extends Component<Props, State> {
                 isSaveDisabled={activeTab == 6 || (isSaveClicked && !areFormsValid)}
                 onCancel={this.cancelChanges}
                 onComment={this.toggleCommentPanel}
-                onDelete={showDelete ? this.handleDelete : null}
+                onDelete={this.handleDelete}
                 onEdit={this.openEditMode}
                 onSave={this.saveChanges}
               />
@@ -1138,7 +1082,6 @@ class LeasePage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
   withLeasePageAttributes,
   withUiDataList,
   withRouter,
@@ -1147,7 +1090,7 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
-        comments: getCommentsByLease(state, currentLease.id),
+        comments: getCommentsByLease(state, props.match.params.leaseId),
         constructabilityFormValues: getFormValues(FormNames.LEASE_CONSTRUCTABILITY)(state),
         contractsFormValues: getFormValues(FormNames.LEASE_CONTRACTS)(state),
         currentLease: currentLease,
@@ -1176,6 +1119,7 @@ export default flowRight(
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
         leaseTypeList: getLeaseTypeList(state),
+        loggedUser: getLoggedInUser(state),
         rentsFormValues: getFormValues(FormNames.LEASE_RENTS)(state),
         summaryFormValues: getFormValues(FormNames.LEASE_SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.LEASE_TENANTS)(state),
@@ -1188,12 +1132,7 @@ export default flowRight(
       clearPreviewInvoices,
       deleteLease,
       destroy,
-      fetchAreaNoteList,
-      fetchCollectionCourtDecisionsByLease,
-      fetchCollectionLettersByLease,
-      fetchCollectionNotesByLease,
       fetchInvoicesByLease,
-      fetchInvoiceSetsByLease,
       fetchLeaseTypes,
       fetchSingleLease,
       fetchVats,

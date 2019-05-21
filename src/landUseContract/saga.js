@@ -4,7 +4,7 @@ import {push} from 'react-router-redux';
 
 import {
   hideEditMode,
-  receiveLandUseContractAttributes,
+  receiveAttributes,
   receiveLandUseContractList,
   receiveSingleLandUseContract,
 } from './actions';
@@ -15,7 +15,7 @@ import mockData from './mock-data.json';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   const attributes = attributesMockData.fields;
-  yield put(receiveLandUseContractAttributes(attributes));
+  yield put(receiveAttributes(attributes));
 }
 
 function* fetchLandUseContractsSaga({payload: search}): Generator<any, any, any> {

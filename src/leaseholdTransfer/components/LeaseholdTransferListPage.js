@@ -47,7 +47,7 @@ import {
 } from '$src/util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getLeaseholdTransferList} from '$src/leaseholdTransfer/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withLeaseholdTransferAttributes} from '$components/attributes/LeaseholdTransferAttributes';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {LeaseholdTransferList} from '$src/leaseholdTransfer/types';
@@ -58,7 +58,7 @@ type Props = {
   history: Object,
   initialize: Function,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean,
+  isFetchingLeaseholdTransferAttributes: boolean,
   leaseholdTransferAttributes: Attributes,
   leaseholdTransferList: LeaseholdTransferList,
   leaseholdTransferMethods: MethodsType,
@@ -78,6 +78,8 @@ type State = {
 }
 
 class LeaseholdTransferListPage extends PureComponent<Props, State> {
+  _isMounted: boolean
+
   state = {
     activePage: 1,
     count: 0,
@@ -105,6 +107,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -139,6 +142,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -170,7 +174,10 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
       sortOrder: searchQuery.sort_order || DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 
@@ -249,7 +256,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     const {
       deleteLeaseholdTransferAndUpdateList,
       isFetching,
-      isFetchingCommonAttributes,
+      isFetchingLeaseholdTransferAttributes,
       leaseholdTransferMethods,
     } = this.props;
     const {
@@ -262,7 +269,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
       sortOrder,
     } = this.state;
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingLeaseholdTransferAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!leaseholdTransferMethods) return null;
 
@@ -326,6 +333,14 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
                 key: 'acquirers',
                 text: LeaseholdTransferFieldTitles.ACQUIRERS,
                 renderer: (val) => val.name,
+                sortable: false,
+              });
+            }
+            if(isFieldAllowedToRead(leaseholdTransferAttributes, LeaseholdTransferFieldPaths.DELETED)) {
+              columns.push({
+                key: 'deleted',
+                text: LeaseholdTransferFieldTitles.DELETED,
+                renderer: (val) => formatDate(val),
                 sortable: false,
               });
             }
@@ -394,7 +409,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withLeaseholdTransferAttributes,
   withRouter,
   connect(
     (state) => {

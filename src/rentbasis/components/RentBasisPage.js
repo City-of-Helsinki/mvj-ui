@@ -27,7 +27,6 @@ import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import Title from '$components/content/Title';
-import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
   editRentBasis,
   fetchSingleRentBasis,
@@ -56,7 +55,6 @@ import {
 } from '$src/rentbasis/helpers';
 import {getUiDataRentBasisKey} from '$src/uiData/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
   getIsEditMode,
   getIsFetching,
@@ -65,28 +63,28 @@ import {
   getIsSaving,
   getRentBasis,
 } from '$src/rentbasis/selectors';
+import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withRentBasisAttributes} from '$components/attributes/RentBasisAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
-import type {AreaNoteList} from '$src/areaNote/types';
 import type {RentBasis} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
+import type {UsersPermissions} from '$src/usersPermissions/types';
 
 type Props = {
-  areaNotes: AreaNoteList,
   change: Function,
   editedRentBasis: Object,
   editRentBasis: Function,
-  fetchAreaNoteList: Function,
   fetchSingleRentBasis: Function,
   hideEditMode: Function,
   history: Object,
   initializeRentBasis: Function,
   isEditMode: boolean,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // Get via withCommonAttributes HOC
+  isFetchingRentBasisAttributes: boolean, // Get via withRentBasisAttributes HOC
+  isFetchingUsersPermissions: boolean,
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
@@ -97,11 +95,12 @@ type Props = {
   },
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
-  rentBasisAttributes: Attributes, // Get via withCommonAttributes HOC
-  rentBasisMethods: MethodsType, // Get via withCommonAttributes HOC
+  rentBasisAttributes: Attributes, // Get via withRentBasisAttributes HOC
+  rentBasisMethods: MethodsType, // Get via withRentBasisAttributes HOC
   rentBasisData: RentBasis,
   router: Object,
   showEditMode: Function,
+  usersPermissions: UsersPermissions,
 }
 
 type State = {
@@ -125,8 +124,6 @@ class RentBasisPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      areaNotes,
-      fetchAreaNoteList,
       fetchSingleRentBasis,
       hideEditMode,
       location: {search},
@@ -154,21 +151,14 @@ class RentBasisPage extends Component<Props, State> {
 
     fetchSingleRentBasis(rentBasisId);
 
-    if(isEmpty(areaNotes)) {
-      fetchAreaNoteList({});
-    }
-
     hideEditMode();
+
     window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const {
-      fetchSingleRentBasis,
-      location,
-      location: {search},
-      match: {params: {rentBasisId}},
-    } = this.props;
+    const {match: {params: {rentBasisId}}} = this.props;
 
     if(isEmpty(prevProps.rentBasisData) && !isEmpty(this.props.rentBasisData)) {
       const storedContactId = getSessionStorageItem('rentBasisId');
@@ -177,21 +167,8 @@ class RentBasisPage extends Component<Props, State> {
       }
     }
 
-    if (prevProps.location !== location) {
-      const query = getUrlParams(search);
-
-      this.setState({
-        activeTab: query.tab,
-      });
-    }
-
     if(prevState.activeTab !== this.state.activeTab) {
       scrollToTopPage();
-    }
-
-    // Fetch rent basis when getting new comment methods and user is authorisized to read content
-    if(prevProps.rentBasisMethods !== this.props.rentBasisMethods && isMethodAllowed(this.props.rentBasisMethods, Methods.GET)) {
-      fetchSingleRentBasis(rentBasisId);
     }
   }
 
@@ -209,6 +186,16 @@ class RentBasisPage extends Component<Props, State> {
     this.stopAutoSaveTimer();
 
     window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+    const tab = query.tab ? Number(query.tab) : 0;
+
+    // Set correct active tab on back/forward button press
+    this.setState({activeTab: tab});
   }
 
   handleLeavePage = (e) => {
@@ -354,7 +341,8 @@ class RentBasisPage extends Component<Props, State> {
     const {
       isEditMode,
       isFetching,
-      isFetchingCommonAttributes,
+      isFetchingRentBasisAttributes,
+      isFetchingUsersPermissions,
       isFormDirty,
       isFormValid,
       isSaveClicked,
@@ -362,13 +350,14 @@ class RentBasisPage extends Component<Props, State> {
       rentBasisData,
       rentBasisAttributes,
       rentBasisMethods,
+      usersPermissions,
     } = this.props;
     const {activeTab, isRestoreModalOpen} = this.state;
     const rentBasis = getContentRentBasis(rentBasisData);
 
-    if(isFetching || isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetching || isFetchingRentBasisAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(!rentBasisMethods) return null;
+    if(!rentBasisMethods || isEmpty(usersPermissions)) return null;
 
     if(!isMethodAllowed(rentBasisMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
 
@@ -477,20 +466,21 @@ class RentBasisPage extends Component<Props, State> {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    areaNotes: getAreaNoteList(state),
     editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
+    isFetchingUsersPermission: getIsFetchingUsersPermissions(state),
     isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
     isFormValid: getIsFormValid(state),
     isSaveClicked: getIsSaveClicked(state),
     isSaving: getIsSaving(state),
     rentBasisData: getRentBasis(state),
+    usersPermissions: getUsersPermissions(state),
   };
 };
 
 export default flowRight(
-  withCommonAttributes,
+  withRentBasisAttributes,
   withUiDataList,
   withRouter,
   connect(
@@ -498,7 +488,6 @@ export default flowRight(
     {
       change,
       editRentBasis,
-      fetchAreaNoteList,
       fetchSingleRentBasis,
       hideEditMode,
       initializeRentBasis,

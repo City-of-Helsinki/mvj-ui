@@ -89,7 +89,7 @@ class CreateLeaseForm extends Component<Props> {
     return (
       <div>
         <Row>
-          <Column small={4} medium={3}>
+          <Column small={4}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.STATE)}>
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.STATE)}
@@ -103,7 +103,7 @@ class CreateLeaseForm extends Component<Props> {
           </Column>
         </Row>
         <Row>
-          <Column small={4} medium={3}>
+          <Column small={4}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.TYPE)}>
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.TYPE)}
@@ -114,7 +114,7 @@ class CreateLeaseForm extends Component<Props> {
               />
             </Authorization>
           </Column>
-          <Column small={4} medium={3}>
+          <Column small={4}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.MUNICIPALITY)}>
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.MUNICIPALITY)}
@@ -125,7 +125,7 @@ class CreateLeaseForm extends Component<Props> {
               />
             </Authorization>
           </Column>
-          <Column small={4} medium={3}>
+          <Column small={4}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.DISTRICT)}>
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.DISTRICT)}
@@ -142,7 +142,7 @@ class CreateLeaseForm extends Component<Props> {
           </Column>
         </Row>
         <Row>
-          <Column small={4} medium={3}>
+          <Column small={4}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.REFERENCE_NUMBER)}>
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.REFERENCE_NUMBER)}
@@ -154,12 +154,15 @@ class CreateLeaseForm extends Component<Props> {
               />
             </Authorization>
           </Column>
-          <Column small={8} medium={6}>
+          <Column small={8}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.NOTE)}>
               <FormField
                 fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.NOTE)}
                 name='note'
-                overrideValues={{label: LeaseFieldTitles.NOTE}}
+                overrideValues={{
+                  label: LeaseFieldTitles.NOTE,
+                  fieldType: FieldTypes.TEXTAREA,
+                }}
                 enableUiDataEdit
                 uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTE)}
               />
@@ -168,7 +171,7 @@ class CreateLeaseForm extends Component<Props> {
         </Row>
         {allowToChangeRelateTo &&
           <Row>
-            <Column small={4} medium={3}>
+            <Column small={4}>
               <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.RELATE_TO)}>
                 <FormField
                   fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.RELATE_TO)}

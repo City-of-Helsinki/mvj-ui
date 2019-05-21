@@ -25,7 +25,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/contacts/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
-import {ContactFieldPaths} from '$src/contacts/enums';
+import {ContactFieldPaths, ContactFieldTitles} from '$src/contacts/enums';
 import {getContactFullName, mapContactSearchFilters} from '$src/contacts/helpers';
 import {
   getApiResponseCount,
@@ -41,7 +41,7 @@ import {
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getContactList, getIsFetching} from '../selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withContactAttributes} from '$components/attributes/ContactAttributes';
 
 import type {ContactList} from '../types';
 import type {Attributes, Methods as MethodsType} from '$src/types';
@@ -50,13 +50,13 @@ import type {RootState} from '$src/root/types';
 type Props = {
   contactAttributes: Attributes,
   contactList: ContactList,
-  contactMethods: MethodsType, // get via withCommonAttributes HOC
+  contactMethods: MethodsType,
   fetchContacts: Function,
   history: Object,
   initializeContactForm: Function,
   initialize: Function,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
+  isFetchingContactAttributes: boolean,
   location: Object,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -76,6 +76,8 @@ type State = {
 }
 
 class ContactListPage extends Component<Props, State> {
+  _isMounted: boolean
+
   state = {
     activePage: 1,
     contactAttributes: null,
@@ -125,6 +127,7 @@ class ContactListPage extends Component<Props, State> {
     this.search();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
@@ -146,6 +149,7 @@ class ContactListPage extends Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -176,7 +180,10 @@ class ContactListPage extends Component<Props, State> {
       sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 
@@ -258,9 +265,8 @@ class ContactListPage extends Component<Props, State> {
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.TYPE)) {
       columns.push({
         key: 'type',
-        text: 'Asiakastyyppi',
+        text: ContactFieldTitles.TYPE,
         renderer: (val) => getLabelOfOption(typeOptions, val),
-        sortable: false,
       });
     }
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.FIRST_NAME) ||
@@ -275,7 +281,14 @@ class ContactListPage extends Component<Props, State> {
     if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.BUSINESS_ID)) {
       columns.push({
         key: 'business_id',
-        text: 'Y-tunnus',
+        text: ContactFieldTitles.BUSINESS_ID,
+      });
+    }
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.ID)) {
+      columns.push({
+        key: 'id',
+        text: ContactFieldTitles.ID,
+        sortable: false,
       });
     }
 
@@ -298,7 +311,7 @@ class ContactListPage extends Component<Props, State> {
   }
 
   render() {
-    const {contactMethods, isFetching, isFetchingCommonAttributes} = this.props;
+    const {contactMethods, isFetching, isFetchingContactAttributes} = this.props;
     const {
       activePage,
       contacts,
@@ -310,7 +323,7 @@ class ContactListPage extends Component<Props, State> {
     } = this.state;
     const columns = this.getColumns();
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingContactAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!contactMethods) return null;
 
@@ -372,7 +385,7 @@ class ContactListPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withContactAttributes,
   withRouter,
   connect(
     (state: RootState) => {

@@ -27,11 +27,12 @@ import SubTitle from '$components/content/SubTitle';
 import {deleteCollectionCourtDecision, hideCollectionCourtDecisionPanel, showCollectionCourtDecisionPanel, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
 import {deleteCollectionLetter, uploadCollectionLetter} from '$src/collectionLetter/actions';
 import {createCollectionNote, deleteCollectionNote} from '$src/collectionNote/actions';
-import {FormNames, Methods} from '$src/enums';
+import {FormNames} from '$src/enums';
 import {CollectionCourtDecisionFieldPaths, CollectionCourtDecisionFieldTitles} from '$src/collectionCourtDecision/enums';
 import {CollectionLetterFieldPaths, CollectionLetterFieldTitles} from '$src/collectionLetter/enums';
 import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
 import {ButtonColors} from '$components/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   DeleteModalLabels,
   DeleteModalTitles,
@@ -48,37 +49,44 @@ import {
 } from '$src/uiData/helpers';
 import {
   formatDate,
+  hasPermissions,
   isFieldAllowedToRead,
   isFieldRequired,
-  isMethodAllowed,
   sortStringByKeyAsc,
 } from '$util/helpers';
-import {getCollectionCourtDecisionsByLease, getIsCollectionCourtDecisionPanelOpen} from '$src/collectionCourtDecision/selectors';
-import {getCollectionLettersByLease} from '$src/collectionLetter/selectors';
+import {
+  getAttributes as getCollectionCourtDecisionAttributes,
+  getCollectionCourtDecisionsByLease,
+  getIsCollectionCourtDecisionPanelOpen,
+} from '$src/collectionCourtDecision/selectors';
+import {
+  getAttributes as getCollectionLetterAttributes,
+  getCollectionLettersByLease,
+} from '$src/collectionLetter/selectors';
+import {getAttributes as getCollectionNoteAttributes} from '$src/collectionNote/selectors';
 import {getCollectionNotesByLease} from '$src/collectionNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
-import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
-import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {CollectionCourtDecisionId} from '$src/collectionCourtDecision/types';
 import type {CollectionLetterId} from '$src/collectionLetter/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type NotesProps = {
-  collectionNoteAttributes: Attributes,
-  collectionNoteMethods: MethodsType,
   fields: any,
   onCreate: Function,
   saveCallback: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 const renderNotes = ({
-  collectionNoteAttributes,
-  collectionNoteMethods,
   fields,
   onCreate,
   saveCallback,
+  usersPermissions,
 }: NotesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -101,14 +109,13 @@ const renderNotes = ({
         return(
           <NewCollectionNote
             key={index}
-            collectionNoteAttributes={collectionNoteAttributes}
             field={field}
             onCancel={handleCancel}
             onSave={handleSave}
           />
         );
       })}
-      <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.POST)}>
+      <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONNOTE)}>
         {!!fields.length < 1 &&
           <AddButtonThird
             label='Lisää huomautus'
@@ -122,12 +129,9 @@ const renderNotes = ({
 
 type Props = {
   collectionCourtDecisions: Array<Object>,
-  collectionCourtDecisionAttributes: Attributes,  // get via withLeasePageAttributes HOC
-  collectionCourtDecisionMethods: MethodsType,    // get via withLeasePageAttributes HOC
-  collectionLetterAttributes: Attributes,         // get via withLeasePageAttributes HOC
-  collectionLetterMethods: MethodsType,           // get via withLeasePageAttributes HOC
-  collectionNoteAttributes: Attributes,           // get via withLeasePageAttributes HOC
-  collectionNoteMethods: MethodsType,             // get via withLeasePageAttributes HOC
+  collectionCourtDecisionAttributes: Attributes,
+  collectionLetterAttributes: Attributes,
+  collectionNoteAttributes: Attributes,
   collectionLetters: Array<Object>,
   collectionNotes: Array<Object>,
   createCollectionNote: Function,
@@ -143,6 +147,7 @@ type Props = {
   showCollectionCourtDecisionPanel: Function,
   uploadCollectionCourtDecision: Function,
   uploadCollectionLetter: Function,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -299,15 +304,13 @@ class DebtCollectionForm extends PureComponent<Props, State> {
   render() {
     const {
       collectionCourtDecisionAttributes,
-      collectionCourtDecisionMethods,
       collectionLetterAttributes,
-      collectionLetterMethods,
       collectionNoteAttributes,
-      collectionNoteMethods,
       handleSubmit,
       isCollectionCourtDecisionPanelOpen,
       largeScreen,
       leaseAttributes,
+      usersPermissions,
     } = this.props;
     const {
       debtCollectionDecisions,
@@ -322,7 +325,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
         {({dispatch}) => {
           return(
             <form onSubmit={handleSubmit}>
-              <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.GET)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONLETTER)}>
                 <Row>
                   <Column small={12}>
                     <SubTitle
@@ -332,7 +335,9 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       {CollectionLetterFieldTitles.COLLECTION_LETTERS}
                     </SubTitle>
 
-                    {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionLetters || !sortedCollectionLetters.length) && <FormText>Ei perintäkirjeitä</FormText>}
+                    {!hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER) && (!sortedCollectionLetters || !sortedCollectionLetters.length) &&
+                      <FormText>Ei perintäkirjeitä</FormText>
+                    }
                     {sortedCollectionLetters && !!sortedCollectionLetters.length &&
                       <Row>
                         <Column small={6} large={3}>
@@ -396,7 +401,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 <FormText className='full-width'>{getUserFullName(collectionLetter.uploader) || '-'}</FormText>
                               }
                               removeButton={
-                                <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.DELETE)}>
+                                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_COLLECTIONLETTER)}>
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
@@ -411,7 +416,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       );
                     })}
 
-                    <Authorization allow={isMethodAllowed(collectionLetterMethods, Methods.POST)}>
+                    <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)}>
                       <AddFileButton
                         label='Lisää perintäkirje'
                         name={'collectionLetterFileButtonId'}
@@ -422,7 +427,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                 </Row>
               </Authorization>
 
-              <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.GET)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONCOURTDECISION)}>
                 <Row>
                   <Column small={12}>
                     <SubTitle
@@ -432,7 +437,9 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       {CollectionCourtDecisionFieldTitles.COLLECTION_COURT_DECISIONS}
                     </SubTitle>
 
-                    {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionCourtDecisions || !sortedCollectionCourtDecisions.length) && <FormText>Ei käräjaoikeuden päätöksiä</FormText>}
+                    {!hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONCOURTDECISION) && (!sortedCollectionCourtDecisions || !sortedCollectionCourtDecisions.length) &&
+                      <FormText>Ei käräjaoikeuden päätöksiä</FormText>
+                    }
                     {largeScreen && ((sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length) || isCollectionCourtDecisionPanelOpen) &&
                       <Row>
                         <Column large={3}>
@@ -515,7 +522,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 <FormText className='full-width'>{collectionCourtDecision.note || '-'}</FormText>
                               }
                               removeButton={
-                                <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.DELETE)}>
+                                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_COLLECTIONCOURTDECISION)}>
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
@@ -548,7 +555,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
                           return (
                             <BoxItem key={index}>
-                              <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.DELETE)}>
+                              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_COLLECTIONCOURTDECISION)}>
                                 <ActionButtonWrapper>
                                   <RemoveButton
                                     onClick={handleRemove}
@@ -603,7 +610,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                         })}
                       </BoxItemContainer>
                     }
-                    <Authorization allow={isMethodAllowed(collectionCourtDecisionMethods, Methods.POST)}>
+                    <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONCOURTDECISION)}>
                       <Fragment>
                         <CollectionCourtDecisionPanel
                           isOpen={isCollectionCourtDecisionPanelOpen}
@@ -647,7 +654,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                 </Row>
               </Authorization>
 
-              <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.GET)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONNOTE)}>
                 <Row>
                   <Column small={12} large={6}>
                     <SubTitle
@@ -657,7 +664,9 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       {CollectionNoteFieldTitles.COLLECTION_NOTES}
                     </SubTitle>
 
-                    {!isMethodAllowed(collectionNoteMethods, Methods.POST) && (!sortedCollectionNotes || !sortedCollectionNotes.length) && <FormText>Ei huomautuksia</FormText>}
+                    {!hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONNOTE) && (!sortedCollectionNotes || !sortedCollectionNotes.length) &&
+                      <FormText>Ei huomautuksia</FormText>
+                    }
                     {sortedCollectionNotes && !!sortedCollectionNotes.length &&
                       <Row>
                         <Column small={6}>
@@ -722,7 +731,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 <FormText className='full-width'>{getUserFullName(note.user)}</FormText>
                               }
                               removeButton={
-                                <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.DELETE)}>
+                                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_COLLECTIONNOTE)}>
                                   <RemoveButton
                                     className='third-level'
                                     onClick={handleRemove}
@@ -737,14 +746,13 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                       );
                     })}
 
-                    <Authorization allow={isMethodAllowed(collectionNoteMethods, Methods.POST)}>
+                    <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONNOTE)}>
                       <FieldArray
                         component={renderNotes}
-                        collectionNoteAttributes={collectionNoteAttributes}
-                        collectionNoteMethods={collectionNoteMethods}
                         name='notes'
                         onCreate={this.handleCreateCollectionNote}
                         saveCallback={this.setSaveCollectionNoteCallback}
+                        usersPermissions={usersPermissions}
                       />
                     </Authorization>
                   </Column>
@@ -762,17 +770,20 @@ const formName = FormNames.LEASE_DEBT_COLLECTION;
 
 export default flowRight(
   withWindowResize,
-  withLeasePageAttributes,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
+        collectionCourtDecisionAttributes: getCollectionCourtDecisionAttributes(state),
         collectionCourtDecisions: getCollectionCourtDecisionsByLease(state, currentLease.id),
+        collectionLetterAttributes: getCollectionLetterAttributes(state),
         collectionLetters: getCollectionLettersByLease(state, currentLease.id),
+        collectionNoteAttributes: getCollectionNoteAttributes(state),
         collectionNotes: getCollectionNotesByLease(state, currentLease.id),
         currentLease: currentLease,
         isCollectionCourtDecisionPanelOpen: getIsCollectionCourtDecisionPanelOpen(state),
         leaseAttributes: getLeaseAttributes(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

@@ -2,7 +2,7 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
+import {Field, FieldArray, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -18,8 +18,10 @@ import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItemEdit from './RentItemEdit';
-import RightSubtitle from '$components/content/RightSubtitle';
+import SuccessField from '$components/form/SuccessField';
 import Title from '$components/content/Title';
+import WarningContainer from '$components/content/WarningContainer';
+import WarningField from '$components/form/WarningField';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
 import {FormNames} from '$src/enums';
 import {ButtonColors, RentCalculatorFieldPaths, RentCalculatorFieldTitles} from '$components/enums';
@@ -32,7 +34,7 @@ import {
   LeaseRentsFieldTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {validateRentForm} from '$src/leases/formValidators';
+import {validateRentForm, warnRentForm} from '$src/leases/formValidators';
 import {getContentRentsFormData} from '$src/leases/helpers';
 import {getUiDataLeaseKey, getUiDataRentCalculatorKey} from '$src/uiData/helpers';
 import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
@@ -47,6 +49,30 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+
+type WarningsProps = {
+  leaseAttributes: Attributes,
+  meta: Object,
+}
+
+const RentWarnings = ({
+  leaseAttributes,
+  meta: {warning},
+}: WarningsProps): Element<*> => {
+  return <Fragment>
+    {warning && !!warning.length &&
+      <WarningContainer style={{marginTop: isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE) ? 0 : null}}>
+        {warning.map((item, index) =>
+          <WarningField
+            key={index}
+            meta={{warning: item}}
+            showWarning={true}
+          />
+        )}
+      </WarningContainer>
+    }
+  </Fragment>;
+};
 
 type RentsProps = {
   archived: boolean,
@@ -262,29 +288,45 @@ class RentsEdit extends PureComponent<Props, State> {
                   {LeaseRentsFieldTitles.RENTS}
                 </Title>
 
-                <RightSubtitle
-                  buttonComponent={
-                    <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_IS_RENT_INFO_COMPLETE)}>
-                      {isRentInfoComplete
-                        ? <Button
-                          className={ButtonColors.NEUTRAL}
-                          onClick={handleSetRentInfoUncomplete}
-                          text='Merkitse keskeneräisiksi'
-                        />
-                        : <Button
-                          className={ButtonColors.NEUTRAL}
-                          onClick={handleSetRentInfoComplete}
-                          text='Merkitse valmiiksi'
-                        />
-                      }
-                    </Authorization>
-                  }
-                  text={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
-                    {isRentInfoComplete
-                      ? <span className="success">Tiedot kunnossa<i /></span>
-                      : <span className="alert">Tiedot keskeneräiset<i /></span>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
+                  <WarningContainer
+                    alignCenter
+                    buttonComponent={
+                      <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_IS_RENT_INFO_COMPLETE)}>
+                        {isRentInfoComplete
+                          ? <Button
+                            className={ButtonColors.NEUTRAL}
+                            onClick={handleSetRentInfoUncomplete}
+                            text='Merkitse keskeneräisiksi'
+                          />
+                          : <Button
+                            className={ButtonColors.NEUTRAL}
+                            onClick={handleSetRentInfoComplete}
+                            text='Merkitse valmiiksi'
+                          />
+                        }
+                      </Authorization>
                     }
-                  </Authorization>}
+                    success={isRentInfoComplete}
+                  >
+                    {isRentInfoComplete
+                      ? <SuccessField
+                        meta={{warning: 'Tiedot kunnossa'}}
+                        showWarning={true}
+                      />
+                      : <WarningField
+                        meta={{warning: 'Tiedot keskeneräiset'}}
+                        showWarning={true}
+                      />
+                    }
+                  </WarningContainer>
+                </Authorization>
+
+                <Field
+                  name='rentWarnings'
+                  component={RentWarnings}
+                  leaseAttributes={leaseAttributes}
+                  showWarning={true}
                 />
                 <Divider />
 
@@ -380,5 +422,6 @@ export default flowRight(
     form: formName,
     destroyOnUnmount: false,
     validate: validateRentForm,
+    warn: warnRentForm,
   }),
 )(RentsEdit);

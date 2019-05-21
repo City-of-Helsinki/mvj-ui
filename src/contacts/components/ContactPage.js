@@ -63,8 +63,9 @@ import {
   getIsSaving,
 } from '$src/contacts/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withContactAttributes} from '$components/attributes/ContactAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
@@ -75,7 +76,7 @@ type Props = {
   change: Function,
   contact: Contact,
   contactFormValues: Contact,
-  contactMethods: MethodsType, // get via withCommonAttributes HOC
+  contactMethods: MethodsType,
   editContact: Function,
   fetchSingleContact: Function,
   hideEditMode: Function,
@@ -85,7 +86,7 @@ type Props = {
   isContactFormValid: boolean,
   isEditMode: boolean,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
+  isFetchingContactAttributes: boolean,
   isSaveClicked: boolean,
   isSaving: boolean,
   location: Object,
@@ -96,7 +97,7 @@ type Props = {
   receiveSingleContact: Function,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
-  usersPermissions: UsersPermissionsType, // via withCommonAttributes HOC
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -141,6 +142,7 @@ class ContactPage extends Component<Props, State> {
 
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener('popstate', this.handlePopState);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -186,6 +188,7 @@ class ContactPage extends Component<Props, State> {
       receiveSingleContact,
     } = this.props;
 
+
     if(pathname !== `${getRouteById(Routes.CONTACTS)}/${contactId}`) {
       clearUnsavedChanges();
     }
@@ -196,6 +199,16 @@ class ContactPage extends Component<Props, State> {
 
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = () => {
+    const {location: {search}} = this.props;
+    const query = getUrlParams(search);
+    const tab = query.tab ? Number(query.tab) : 0;
+
+    // Set correct active tab on back/forward button press
+    this.setState({activeTab: tab});
   }
 
   startAutoSaveTimer = () => {
@@ -351,7 +364,7 @@ class ContactPage extends Component<Props, State> {
       isContactFormValid,
       isEditMode,
       isFetching,
-      isFetchingCommonAttributes,
+      isFetchingContactAttributes,
       isSaveClicked,
       isSaving,
       match: {params: {contactId}},
@@ -361,7 +374,7 @@ class ContactPage extends Component<Props, State> {
 
     const nameInfo = getContactFullName(contact);
 
-    if(isFetching || isFetchingCommonAttributes) {
+    if(isFetching || isFetchingContactAttributes) {
       return (
         <PageContainer><Loader isLoading={true} /></PageContainer>
       );
@@ -502,11 +515,12 @@ const mapStateToProps = (state: RootState) => {
     isFetching: getIsFetching(state),
     isSaveClicked: getIsSaveClicked(state),
     isSaving: getIsSaving(state),
+    usersPermissions: getUsersPermissions(state),
   };
 };
 
 export default flowRight(
-  withCommonAttributes,
+  withContactAttributes,
   withUiDataList,
   withRouter,
   connect(

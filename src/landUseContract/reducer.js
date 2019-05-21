@@ -38,6 +38,11 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/landUseContract/NOT_FOUND']: () => false,
 }, false);
 
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/landUseContract/FETCH_ATTRIBUTES']: () => true,
+  ['mvj/landUseContract/RECEIVE_ATTRIBUTES']: () => false,
+}, false);
+
 const landUseContractListReducer: Reducer<LandUseContractList> = handleActions({
   ['mvj/landUseContract/RECEIVE_ALL']: (state: LandUseContractList, {payload: list}: ReceiveLandUseContractListAction) => list,
 }, {});
@@ -90,6 +95,7 @@ export default combineReducers<Object, any>({
   current: currentLandUseContractReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
   isFormValidById: isFormValidByIdReducer,
   isSaveClicked: isSaveClickedReducer,
   list: landUseContractListReducer,

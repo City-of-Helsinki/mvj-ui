@@ -282,14 +282,6 @@ const EditInvoiceForm = ({
           </Authorization>
         </Column>
         <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.SAP_ID)}>
-            <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.SAP_ID)}>
-              {InvoiceFieldTitles.SAP_ID}
-            </FormTextTitle>
-            <FormText>{(invoice && invoice.sap_id) || '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={4}>
           {invoice && !invoice.sent_to_sap_at &&
             <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
               <SendupButton

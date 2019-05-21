@@ -40,7 +40,7 @@ import {
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
-import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withInfillDevelopmentListPageAttributes} from '$components/attributes/InfillDevelopmentListPageAttributes';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {InfillDevelopmentList} from '$src/infillDevelopment/types';
@@ -61,12 +61,12 @@ const getInfillDevelopmentMaxPage = (infillDevelopmentList: InfillDevelopmentLis
 type Props = {
   fetchInfillDevelopments: Function,
   history: Object,
-  infillDevelopmentAttributes: Attributes, // get via withCommonAttributes HOC
-  infillDevelopmentMethods: MethodsType, // get via withCommonAttributes HOC
+  infillDevelopmentAttributes: Attributes, // get via withInfillDevelopmentListPageAttributes HOC
+  infillDevelopmentMethods: MethodsType, // get via withInfillDevelopmentListPageAttributes HOC
   infillDevelopmentList: InfillDevelopmentList,
   initialize: Function,
   isFetching: boolean,
-  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
+  isFetchingInfillDevelopmentAttributes: boolean, // get via withInfillDevelopmentListPageAttributes HOC
   location: Object,
   receiveFormInitialValues: Function,
   receiveTopNavigationSettings: Function,
@@ -87,6 +87,8 @@ type State = {
 }
 
 class InfillDevelopmentListPage extends Component<Props, State> {
+  _isMounted: boolean
+
   state = {
     activePage: 1,
     count: 0,
@@ -117,6 +119,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -156,6 +159,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
   }
 
   handlePopState = () => {
@@ -192,7 +196,10 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
     }, async() => {
       await initializeSearchForm();
-      setSearchFormReady();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 
@@ -324,7 +331,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   }
 
   render() {
-    const {infillDevelopmentMethods, isFetching, isFetchingCommonAttributes} = this.props;
+    const {infillDevelopmentMethods, isFetching, isFetchingInfillDevelopmentAttributes} = this.props;
     const {
       activePage,
       count,
@@ -338,7 +345,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     } = this.state;
     const columns = this.getColumns();
 
-    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingInfillDevelopmentAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!infillDevelopmentMethods) return null;
 
@@ -403,7 +410,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withCommonAttributes,
+  withInfillDevelopmentListPageAttributes,
   withRouter,
   connect(
     (state) => {

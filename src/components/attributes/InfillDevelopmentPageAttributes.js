@@ -3,21 +3,41 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
+import {fetchAttributes as fetchInfillDevelopmentAttributes} from '$src/infillDevelopment/actions';
 import {fetchAttributes as fetchInfillDevelopmentAttachmentAttributes} from '$src/infillDevelopmentAttachment/actions';
+import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
+import {
+  getAttributes as getInfillDevelopmentAttributes,
+  getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttributes,
+  getMethods as getInfillDevelopmentMethods,
+} from '$src/infillDevelopment/selectors';
 import {
   getAttributes as getInfillDevelopmentAttachmentAttributes,
   getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttachmentAttributes,
   getMethods as getInfillDevelopmentAttachmentMethods,
 } from '$src/infillDevelopmentAttachment/selectors';
+import {
+  getAttributes as getLeaseAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseAttributes,
+  getMethods as getLeaseMethods,
+} from '$src/leases/selectors';
 
 import type {Attributes, Methods} from '$src/types';
 
 function InfillDevelopmentPageAttributes(WrappedComponent: any) {
   type Props = {
+    fetchInfillDevelopmentAttributes: Function,
+    fetchInfillDevelopmentAttachmentAttributes: Function,
+    fetchLeaseAttributes: Function,
+    infillDevelopmentAttributes: Attributes,
+    infillDevelopmentMethods: Methods,
     infillDevelopmentAttachmentAttributes: Attributes,
     infillDevelopmentAttachmentMethods: Methods,
-    fetchInfillDevelopmentAttachmentAttributes: Function,
+    isFetchingInfillDevelopmentAttributes: boolean,
     isFetchingInfillDevelopmentAttachmentAttributes: boolean,
+    isFetchingLeaseAttributes: boolean,
+    leaseAttributes: Attributes,
+    leaseMethods: Methods,
   }
 
   type State = {
@@ -31,25 +51,50 @@ function InfillDevelopmentPageAttributes(WrappedComponent: any) {
 
     componentDidMount() {
       const {
+        fetchInfillDevelopmentAttributes,
         fetchInfillDevelopmentAttachmentAttributes,
+        fetchLeaseAttributes,
+        infillDevelopmentAttributes,
+        infillDevelopmentMethods,
+        infillDevelopmentAttachmentAttributes,
         infillDevelopmentAttachmentMethods,
+        isFetchingInfillDevelopmentAttributes,
         isFetchingInfillDevelopmentAttachmentAttributes,
+        isFetchingLeaseAttributes,
+        leaseAttributes,
+        leaseMethods,
       } = this.props;
 
-      if(!infillDevelopmentAttachmentMethods && !isFetchingInfillDevelopmentAttachmentAttributes) {
+      if(!isFetchingInfillDevelopmentAttributes && !infillDevelopmentAttributes && !infillDevelopmentMethods) {
+        fetchInfillDevelopmentAttributes();
+      }
+
+      if(!isFetchingInfillDevelopmentAttachmentAttributes && !infillDevelopmentAttachmentAttributes && !infillDevelopmentAttachmentMethods) {
         fetchInfillDevelopmentAttachmentAttributes();
+      }
+
+      if(!isFetchingLeaseAttributes && !leaseAttributes && !leaseMethods) {
+        fetchLeaseAttributes();
       }
     }
 
     componentDidUpdate(prevProps: Props) {
-      if(this.props.isFetchingInfillDevelopmentAttachmentAttributes !== prevProps.isFetchingInfillDevelopmentAttachmentAttributes) {
-        this.setIsFetchingCommonAttributes();
+      if(this.props.isFetchingInfillDevelopmentAttributes !== prevProps.isFetchingInfillDevelopmentAttributes ||
+        this.props.isFetchingInfillDevelopmentAttachmentAttributes !== prevProps.isFetchingInfillDevelopmentAttachmentAttributes ||
+        this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes) {
+        this.setIsFetchingAttributes();
       }
     }
 
-    setIsFetchingCommonAttributes = () => {
-      const {isFetchingInfillDevelopmentAttachmentAttributes} = this.props;
-      const isFetching = isFetchingInfillDevelopmentAttachmentAttributes;
+    setIsFetchingAttributes = () => {
+      const {
+        isFetchingInfillDevelopmentAttributes,
+        isFetchingInfillDevelopmentAttachmentAttributes,
+        isFetchingLeaseAttributes,
+      } = this.props;
+      const isFetching = isFetchingInfillDevelopmentAttributes ||
+        isFetchingInfillDevelopmentAttachmentAttributes ||
+        isFetchingLeaseAttributes;
 
       this.setState({isFetchingInfillDevelopmentPageAttributes: isFetching});
     }
@@ -65,13 +110,21 @@ const withInfillDevelopmentPageAttributes = flowRight(
   connect(
     (state) => {
       return{
+        infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
+        infillDevelopmentMethods: getInfillDevelopmentMethods(state),
         infillDevelopmentAttahmentAttributes: getInfillDevelopmentAttachmentAttributes(state),
         infillDevelopmentAttahmentMethods: getInfillDevelopmentAttachmentMethods(state),
+        isFetchingInfillDevelopmentAttributes: getIsFetchingInfillDevelopmentAttributes(state),
         isFetchingInfillDevelopmentAttachmentAttributes: getIsFetchingInfillDevelopmentAttachmentAttributes(state),
+        isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
+        leaseAttributes: getLeaseAttributes(state),
+        leaseMethods: getLeaseMethods(state),
       };
     },
     {
+      fetchInfillDevelopmentAttributes,
       fetchInfillDevelopmentAttachmentAttributes,
+      fetchLeaseAttributes,
     }
   ),
   InfillDevelopmentPageAttributes,

@@ -9,7 +9,7 @@ import {
   RentDueDateTypes,
   RentTypes,
 } from './enums';
-import {getTenantShareWarnings} from '$src/leases/helpers';
+import {getRentWarnings, getTenantShareWarnings} from '$src/leases/helpers';
 import {dateGreaterOrEqual} from '$components/form/validations';
 
 export const validateSummaryForm = (values: Object) => {
@@ -240,6 +240,18 @@ export const validateRentForm = (values: Object) => {
   }
 
   return errors;
+};
+
+export const warnRentForm = (values: Object) => {
+  const warnings = {};
+  const {rents} = values;
+
+  const rentWarnings = getRentWarnings(rents);
+  if(rentWarnings.length) {
+    warnings.rentWarnings = rentWarnings;
+  }
+
+  return warnings;
 };
 
 const getContractErrors = (contract: Object) => {

@@ -25,6 +25,7 @@ import {getError} from '../api/selectors';
 import {getApiToken, getApiTokenExpires, getIsFetching, getLoggedInUser} from '../auth/selectors';
 import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
 import {getUserGroups} from '$src/usersPermissions/selectors';
+import {setRedirectUrlToSessionStorage} from '$util/storage';
 
 import type {ApiError} from '../api/types';
 import type {ApiToken} from '../auth/types';
@@ -52,11 +53,13 @@ type Props = {
 
 type State = {
   displaySideMenu: boolean,
+  loggedIn: boolean,
 };
 
 class App extends Component<Props, State> {
   state = {
     displaySideMenu: false,
+    loggedIn: false,
   }
 
   timerID: any
@@ -82,9 +85,11 @@ class App extends Component<Props, State> {
       apiToken,
       clearApiToken,
       fetchApiToken,
+      history,
       isApiTokenFetching,
       user,
     } = this.props;
+    const {loggedIn} = this.state;
 
     if(apiError) {
       return;
@@ -101,19 +106,39 @@ class App extends Component<Props, State> {
       return;
     }
 
+    if(apiToken && !prevProps.apiToken) {
+      this.setState({loggedIn: true});
+    }
+
     // Clear API token when user has logged out
     if(!user && !isEmpty(apiToken)) {
       clearApiToken();
       this.stopApiTokenTimer();
+
+      // If user has pressed logout button move to lease list page
+      if(!loggedIn) {
+        history.push(getRouteById(Routes.LEASES));
+      }
     }
   }
 
-  logOut = () => {
-    const {history} = this.props;
+  handleLogin = (event: any) => {
+    const {location: {pathname, search}} = this.props;
 
-    history.push('/');
-    userManager.removeUser();
-    sessionStorage.clear();
+    event.preventDefault();
+    userManager.signinRedirect();
+
+    setRedirectUrlToSessionStorage(`${pathname}${search}` || getRouteById(Routes.LEASES));
+  }
+
+  logOut = () => {
+    this.setState({
+      loggedIn: false,
+    }, () => {
+      userManager.removeUser();
+      sessionStorage.clear();
+    });
+
   }
 
   checkApiToken () {
@@ -169,7 +194,7 @@ class App extends Component<Props, State> {
             handleDismiss={this.handleDismissErrorModal}
           />
 
-          <LoginPage buttonDisabled={Boolean(isApiTokenFetching)}/>
+          <LoginPage buttonDisabled={Boolean(isApiTokenFetching)} onLoginClick={this.handleLogin}/>
           <Loader isLoading={Boolean(isApiTokenFetching)} />
 
           {location.pathname === getRouteById(Routes.CALLBACK) && children}
