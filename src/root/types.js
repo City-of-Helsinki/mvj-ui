@@ -3,7 +3,7 @@ import type {ApiState} from '$src/api/types';
 import type {AreaNoteState} from '$src/areaNote/types';
 import type {AuditLogState} from '$src/auditLog/types';
 import type {AuthState} from '$src/auth/types';
-import type {BatchJobsState} from '$src/batchJobs/types';
+import type {BatchRunState} from '$src/batchrun/types';
 import type {BillingPeriodState} from '$src/billingPeriods/types';
 import type {CollectionCourtDecisionState} from '$src/collectionCourtDecision/types';
 import type {CollectionLetterState} from '$src/collectionLetter/types';
@@ -42,7 +42,7 @@ export type RootState = {
   apiToken: AuthState,
   areaNote: AreaNoteState,
   auditLog: AuditLogState,
-  batchJobs: BatchJobsState,
+  batchrun: BatchRunState,
   billingPeriod: BillingPeriodState,
   collectionCourtDecision: CollectionCourtDecisionState,
   collectionLetter: CollectionLetterState,

@@ -216,7 +216,7 @@ class SideMenu extends Component<Props, State> {
                           allow: true,
                           onClick: handleClick,
                           text: 'Eräajot',
-                          to: getRouteById(Routes.BATCH_JOBS),
+                          to: getRouteById(Routes.BATCH_RUN),
                         },
                         {
                           allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE),

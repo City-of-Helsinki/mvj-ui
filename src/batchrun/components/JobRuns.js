@@ -3,15 +3,32 @@ import React, {PureComponent} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import ErrorIcon from '$components/icons/ErrorIcon';
 import GreenBox from '$components/content/GreenBox';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RunPanel from './RunPanel';
 import SortableTable from '$components/table/SortableTable';
 import SuccessIcon from '$components/icons/SuccessIcon';
 import TableAndPanelWrapper from '$components/table/TableAndPanelWrapper';
-import {fetchBatchRuns} from '$src/batchJobs/actions';
-import {formatDate, getUrlParams} from '$util/helpers';
+import {fetchBatchRuns} from '$src/batchrun/actions';
+import {PermissionMissingTexts} from '$src/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {
+  formatDate,
+  getUrlParams,
+  hasPermissions,
+} from '$util/helpers';
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from '$src/usersPermissions/selectors';
+import {withBatchrunJobRunTabAttributes} from '$components/attributes/BatchrunJobRunsTabAttributes';
+
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const data = [
   {
@@ -39,7 +56,10 @@ const data = [
 
 type Props = {
   fetchBatchRuns: Function,
+  isFetchingBatchrunJobRunsTabAttributes: boolean,
+  isFetchingUsersPermissions: boolean,
   location: Object,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -47,7 +67,7 @@ type State = {
   openedRow: ?Object,
 }
 
-class Runs extends PureComponent<Props, State> {
+class JobRuns extends PureComponent<Props, State> {
   state = {
     isPanelOpen: false,
     openedRow: null,
@@ -119,8 +139,19 @@ class Runs extends PureComponent<Props, State> {
   }
 
   render() {
+    const {
+      isFetchingBatchrunJobRunsTabAttributes,
+      isFetchingUsersPermissions,
+      usersPermissions,
+    } = this.props;
     const {isPanelOpen, openedRow} = this.state;
     const columns = this.getColumns();
+
+    if(isFetchingBatchrunJobRunsTabAttributes || isFetchingUsersPermissions) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
+
+    if(isEmpty(usersPermissions)) return null;
+
+    if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN)) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
 
     return (
       <GreenBox>
@@ -151,14 +182,16 @@ class Runs extends PureComponent<Props, State> {
 
 export default flowRight(
   withRouter,
+  withBatchrunJobRunTabAttributes,
   connect(
-    () => {
+    (state) => {
       return {
-
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {
       fetchBatchRuns,
     }
   ),
-)(Runs);
+)(JobRuns);
