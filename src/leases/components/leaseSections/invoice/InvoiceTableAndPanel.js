@@ -1,17 +1,18 @@
 // @flow
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, {PureComponent} from 'react';
 import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
-import ReactResizeDetector from 'react-resize-detector';
-import scrollToComponent from 'react-scroll-to-component';
+import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
 import InvoicePanel from './InvoicePanel';
+import SingleRadioInput from '$components/inputs/SingleRadioInput';
 import SortableTable from '$components/table/SortableTable';
+import TableAndPanelWrapper from '$components/table/TableAndPanelWrapper';
 import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
 import {FormNames, KeyCodes} from '$src/enums';
+import {TableSortOrder} from '$components/enums';
 import {
   InvoiceFieldPaths,
   InvoiceFieldTitles,
@@ -19,55 +20,51 @@ import {
   InvoiceRowsFieldTitles,
   InvoiceType,
 } from '$src/invoices/enums';
-import {TableSortOrder} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
   formatReceivableTypesString,
-  getContentInvoices,
   getContentIncoive,
+  getContentInvoices,
   getPayloadEditInvoice,
 } from '$src/invoices/helpers';
 import {
+  findReactById,
   formatDate,
   formatDateRange,
   formatNumber,
   getFieldOptions,
   getLabelOfOption,
-  getUrlParams,
   hasPermissions,
   isFieldAllowedToRead,
+  sortByOptionsAsc,
+  sortByOptionsDesc,
   sortNumberByKeyAsc,
   sortNumberByKeyDesc,
   sortStringAsc,
   sortStringDesc,
 } from '$util/helpers';
-import {getCurrentLease} from '$src/leases/selectors';
 import {
   getAttributes as getInvoiceAttributes,
   getInvoicesByLease,
-  getIsCreditInvoicePanelOpen,
   getPatchedInvoice,
 } from '$src/invoices/selectors';
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes} from '$src/types';
 import type {Invoice, InvoiceList} from '$src/invoices/types';
+import type {InvoiceSetList} from '$src/invoiceSets/types';
+import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-
-const TABLE_MIN_HEIGHT = 521;
-const PANEL_WIDTH = 607.5;
 
 type Props = {
   clearPatchedInvoice: Function,
-  destroy: Function,
   initialize: Function,
-  invoices: InvoiceList,
   invoiceAttributes: Attributes,
+  invoiceListData: ?InvoiceList,
+  invoiceSets: ?InvoiceSetList,
   invoiceToCredit: ?Object,
-  invoiceSets: Array<Object>,
-  location: Object,
   onInvoiceToCreditChange: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
@@ -76,333 +73,186 @@ type Props = {
 
 type State = {
   columns: Array<Object>,
-  defaultInvoiceDisplayed: boolean,
-  formatedInvoices: Array<Object>,
-  invoices: InvoiceList | null,
-  invoiceAttributes: Attributes,
-  invoiceSets: Array<Object>,
-  invoiceSetOptions: Array<Object>,
+  invoiceListData: ?InvoiceList,
+  invoices: Array<Object>,
+  invoiceToCreditRowId: ?string,
+  isPanelOpen: boolean,
   openedInvoice: ?Invoice,
-  receivableTypeOptions: Array<Object>,
-  stateOptions: Array<Object>,
-  tableHeight: ?number,
-  tableWidth: ?number,
-  typeOptions: Array<Object>,
 }
 
-const getInvoiceSetOptions = (invoiceSets) =>
-  invoiceSets ? invoiceSets.map((set) => {
-    return {
-      ...set,
-      invoiceset: set.id,
-    };
-  }) : [];
-
-class InvoiceTableAndPanel extends Component<Props, State> {
-  container: any
-  panel: any
-  table: any
+class InvoiceTableAndPanel extends PureComponent<Props, State> {
+  tableAndPanelWrapper: any
 
   state = {
     columns: [],
-    defaultInvoiceDisplayed: false,
-    formatedInvoices: [],
-    invoices: null,
-    invoiceAttributes: null,
-    invoiceSets: [],
-    invoiceSetOptions: [],
+    invoiceListData: null,
+    invoices: [],
+    invoiceToCreditRowId: null,
+    isPanelOpen: false,
     openedInvoice: null,
-    receivableTypeOptions: [],
-    stateOptions: [],
-    tableHeight: null,
-    tableWidth: null,
-    typeOptions: [],
-  }
-
-  setContainerRef = (el: any) => {
-    this.container = el;
-  }
-
-  setPanelRef = (el: any) => {
-    this.panel = el;
-  }
-
-  setTableRef = (el: any) => {
-    this.table = el;
-  }
-
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
-
-    if(props.invoices !== state.invoices) {
-      const formatedInvoices = getContentInvoices(props.invoices);
-      newState.invoices = props.invoices;
-      newState.formatedInvoices = formatedInvoices;
-
-      if(!state.defaultInvoiceDisplayed) {
-        const {location: {search}} = props;
-        const query = getUrlParams(search);
-
-        if(query.opened_invoice) {
-          const invoice = formatedInvoices
-            ? formatedInvoices.find((invoice) => invoice.id == query.opened_invoice)
-            : null;
-
-          if(invoice) {
-            newState.openedInvoice = invoice;
-            newState.defaultInvoiceDisplayed = true;
-          }
-        } else {
-          newState.defaultInvoiceDisplayed = true;
-        }
-      }
-    }
-    if(props.invoiceSets !== state.invoiceSets) {
-      newState.invoiceSets = props.invoiceSets;
-      newState.invoiceSetOptions = getInvoiceSetOptions(props.invoiceSets);
-    }
-    if(props.invoiceAttributes !== state.invoiceAttributes) {
-      newState.invoiceAttributes = props.invoiceAttributes;
-      newState.receivableTypeOptions = getFieldOptions(props.invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
-      newState.typeOptions = getFieldOptions(props.invoiceAttributes, InvoiceFieldPaths.TYPE);
-      newState.stateOptions = getFieldOptions(props.invoiceAttributes, InvoiceFieldPaths.STATE);
-    }
-
-    return newState;
   }
 
   componentDidMount() {
     const {clearPatchedInvoice} = this.props;
 
     clearPatchedInvoice();
-    this.calculateTableHeight();
-    this.calculateTableWidth();
 
-    this.setState({
-      columns: this.getColumns(),
-    });
+    this.setColumns();
+
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.invoiceListData !== state.invoiceListData) {
+      const invoices = getContentInvoices(props.invoiceListData || []);
+
+      newState.invoiceListData = props.invoiceListData;
+      newState.invoices = invoices;
+    }
+
+    return newState;
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if(prevState.invoiceAttributes !== this.state.invoiceAttributes
-      || prevState.invoiceSetOptions !== this.state.invoiceSetOptions
-    ) {
-      this.setState({
-        columns: this.getColumns(),
-      });
-    }
     if(prevState.openedInvoice !== this.state.openedInvoice) {
+      if(this.state.openedInvoice) {
+        this.tableAndPanelWrapper.scrollToPanel();
+      }
+
       this.scrollToOpenedRow();
-      this.calculateTableHeight();
-      this.calculateTableWidth();
-      this.scrolToPanel();
+      this.tableAndPanelWrapper.calculateTableHeight();
+      this.tableAndPanelWrapper.calculateTableWidth();
       this.initilizeEditInvoiceForm(this.state.openedInvoice);
     }
 
     if(this.props.patchedInvoice) {
       const {clearPatchedInvoice, patchedInvoice} = this.props;
+
       this.initilizeEditInvoiceForm(getContentIncoive(patchedInvoice));
       clearPatchedInvoice();
     }
-  }
 
-  handleResize = () => {
-    this.calculateTableHeight();
-    this.calculateTableWidth();
-  }
-
-  scrolToPanel = () => {
-    setTimeout(() => {
-      scrollToComponent(this.panel, {
-        offset: -240,
-        align: 'top',
-        duration: 450,
-      });
-    }, 50);
-  }
-
-  scrollToOpenedRow = () => {
-    if(this.table){
-      const selectedRows = this.table.scrollBodyWrapper.getElementsByClassName('selected');
-      if(selectedRows.length) {
-        if(selectedRows[0].scrollIntoViewIfNeeded) {
-          selectedRows[0].scrollIntoViewIfNeeded();
-        } else {
-          this.scrollIntoViewIfNeeded(selectedRows[0], selectedRows[0].parentNode.parentNode.parentNode);
-        }
-      }
+    if(this.props.invoiceAttributes !== prevProps.invoiceAttributes ||
+      this.props.invoiceSets !== prevProps.invoiceSets ||
+      this.props.usersPermissions !== prevProps.usersPermissions) {
+      this.setColumns();
     }
   }
 
-  scrollIntoViewIfNeeded = (element: any, parent: any) => {
-    const parentComputedStyle = window.getComputedStyle(parent, null),
-      parentBorderTopWidth = parseInt(parentComputedStyle.getPropertyValue('border-top-width')),
-      overTop = element.offsetTop - parent.offsetTop < parent.scrollTop,
-      overBottom = (element.offsetTop - parent.offsetTop + element.clientHeight - parentBorderTopWidth) > (parent.scrollTop + parent.clientHeight);
-
-    if ((overTop || overBottom)) {
-      parent.scrollTop = element.offsetTop - parent.offsetTop - parent.clientHeight / 2 - parentBorderTopWidth + element.clientHeight / 2;
-    }
-  }
-
-  calculateTableHeight = () => {
-    if(!this.table || !this.panel) return;
-
-    const {openedInvoice} = this.state,
-      {scrollHeight: panelHeight} = this.panel.container,
-      tableMinHeight = TABLE_MIN_HEIGHT,
-      borderHeight = 2;
-    let {scrollHeight: tableHeight} = this.table.scrollBodyTable;
-
-    if(openedInvoice) {
-      tableHeight = panelHeight > tableMinHeight ? panelHeight : tableMinHeight;
-    } else {
-      tableHeight = tableMinHeight - borderHeight;
-    }
+  setColumns = () => {
+    const {invoiceAttributes, invoiceSets, usersPermissions} = this.props;
 
     this.setState({
-      tableHeight: tableHeight,
+      columns: this.getColumns(invoiceAttributes, invoiceSets, usersPermissions),
     });
   }
 
-  calculateTableWidth = () => {
-    if(!this.container) return;
-
-    let {clientWidth} = this.container;
-    const {openedInvoice} = this.state;
-
-    if(openedInvoice) {
-      if(clientWidth - PANEL_WIDTH <= 0) {
-        clientWidth = 0;
-      }
-      else {
-        clientWidth = clientWidth - PANEL_WIDTH;
-      }
-    }
-    this.setState({
-      tableWidth: clientWidth,
-    });
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  handleDataUpdate = () => {
-    this.calculateTableHeight();
-    this.scrollToOpenedRow();
+  setTableAndPanelWrapperRef = (el: any) => {
+    this.tableAndPanelWrapper = el;
   }
 
-  handleKeyDown = (code: number) => {
-    switch(code) {
-      case KeyCodes.ARROW_LEFT:
-        this.handleKeyCodeLeft();
-        break;
-      case KeyCodes.ARROW_RIGHT:
-        this.handleKeyCodeRight();
-        break;
+  forceUpdateInvoiceToCreditRow = (rowId: ?string) => {
+    const el = findReactById(rowId);
+
+    if(el) {
+      el.forceUpdateHandler();
     }
   }
 
-  handleKeyCodeLeft = () => {
-    const {openedInvoice} = this.state;
-
-    if(openedInvoice) {
-      this.table.selectPrevious();
-    }
-  }
-
-  handleKeyCodeRight = () => {
-    const {openedInvoice} = this.state;
-
-    if(openedInvoice) {
-      this.table.selectNext();
-    }
-  }
-
-  openNextInvoice = (invoice: Object) => {
-    this.setState({
-      openedInvoice: invoice,
-    });
-    this.initilizeEditInvoiceForm(invoice);
-  }
-
-  openPreviousInvoice = (invoice: Object) => {
-    this.setState({
-      openedInvoice: invoice,
-    });
-
-    this.initilizeEditInvoiceForm(invoice);
-  }
-
-  initilizeEditInvoiceForm = (invoice: Object) => {
-    const {initialize} = this.props;
-    const formName = FormNames.LEASE_INVOICE_EDIT;
-
-    initialize(formName, invoice);
-  }
-
-  sortByRecipientNameAsc = (a, b) => {
-    const valA = getContactFullName(a.recipientFull) ? getContactFullName(a.recipientFull).toLowerCase() : '',
-      valB = getContactFullName(a.recipientFull) ? getContactFullName(b.recipientFull).toLowerCase() : '';
-
-    return sortStringAsc(valA, valB);
-  };
-
-  sortByRecipientNameDesc = (a, b) => {
-    const valA = getContactFullName(a.recipientFull) ? getContactFullName(a.recipientFull).toLowerCase() : '',
-      valB = getContactFullName(a.recipientFull) ? getContactFullName(b.recipientFull).toLowerCase() : '';
-
-    return sortStringDesc(valA, valB);
-  };
-
-  sortByReceivableTypesAsc = (a, b) => {
-    const {receivableTypeOptions} = this.state,
-      valA = formatReceivableTypesString(receivableTypeOptions, a.receivableTypes) || '',
-      valB = formatReceivableTypesString(receivableTypeOptions, b.receivableTypes) || '';
-
-    return sortStringAsc(valA, valB);
-  };
-
-  sortByReceivableTypesDesc = (a, b) => {
-    const {receivableTypeOptions} = this.state,
-      valA = formatReceivableTypesString(receivableTypeOptions, a.receivableTypes) || '',
-      valB = formatReceivableTypesString(receivableTypeOptions, b.receivableTypes) || '';
-
-    return sortStringDesc(valA, valB);
-  };
-
-  sortByTypeAsc = (a, b) => {
-    const {typeOptions} = this.state,
-      valA = getLabelOfOption(typeOptions, a.type) || '',
-      valB = getLabelOfOption(typeOptions, b.type) || '';
-
-    return sortStringAsc(valA, valB);
-  };
-
-  sortByTypeDesc = (a, b) => {
-    const {typeOptions} = this.state,
-      valA = getLabelOfOption(typeOptions, a.type) || '',
-      valB = getLabelOfOption(typeOptions, b.type) || '';
-
-    return sortStringDesc(valA, valB);
-  };
-
-  sortByStateAsc = (a, b) => {
-    const {stateOptions} = this.state,
-      valA = getLabelOfOption(stateOptions, a.state) || '',
-      valB = getLabelOfOption(stateOptions, b.state) || '';
-
-    return sortStringAsc(valA, valB);
-  };
-
-  sortByStateDesc = (a, b) => {
-    const {stateOptions} = this.state,
-      valA = getLabelOfOption(stateOptions, a.state) || '',
-      valB = getLabelOfOption(stateOptions, b.state) || '';
-
-    return sortStringDesc(valA, valB);
-  };
-
-  getColumns = () => {
-    const {invoiceAttributes, invoiceSetOptions, receivableTypeOptions, stateOptions, typeOptions} = this.state;
+  getColumns = (invoiceAttributes: Attributes, invoiceSets: ?InvoiceSetList, usersPermissions: UsersPermissionsType) => {
+    const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
+    const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
+    const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
+    const invoiceSetOptions = invoiceSets
+      ? invoiceSets.map((set) => ({
+        ...set,
+        invoiceset: set.id,
+      }))
+      : [];
     const columns = [];
+
+    const sortByRecipientNameAsc = (a, b) => {
+      const valA = getContactFullName(a.recipientFull) ? getContactFullName(a.recipientFull).toLowerCase() : '',
+        valB = getContactFullName(a.recipientFull) ? getContactFullName(b.recipientFull).toLowerCase() : '';
+
+      return sortStringAsc(valA, valB);
+    };
+
+    const sortByRecipientNameDesc = (a, b) => {
+      const valA = getContactFullName(a.recipientFull) ? getContactFullName(a.recipientFull).toLowerCase() : '',
+        valB = getContactFullName(a.recipientFull) ? getContactFullName(b.recipientFull).toLowerCase() : '';
+
+      return sortStringDesc(valA, valB);
+    };
+
+    const sortByReceivableTypesAsc = (a, b) => {
+      const valA = formatReceivableTypesString(receivableTypeOptions, a.receivableTypes) || '',
+        valB = formatReceivableTypesString(receivableTypeOptions, b.receivableTypes) || '';
+
+      return sortStringAsc(valA, valB);
+    };
+
+    const sortByReceivableTypesDesc = (a, b) => {
+      const valA = formatReceivableTypesString(receivableTypeOptions, a.receivableTypes) || '',
+        valB = formatReceivableTypesString(receivableTypeOptions, b.receivableTypes) || '';
+
+      return sortStringDesc(valA, valB);
+    };
+
+    const sortByTypeAsc = (a, b) => sortByOptionsAsc(a, b, 'type', typeOptions);
+
+    const sortByTypeDesc = (a, b) => sortByOptionsDesc(a, b, 'type', typeOptions);
+
+    const sortByStateAsc = (a, b) => sortByOptionsAsc(a, b, 'state', stateOptions);
+
+    const sortByStateDesc = (a, b) => sortByOptionsDesc(a, b, 'state', stateOptions);
+
+    if(hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)) {
+      columns.push({
+        disabled: true,
+        key: 'select',
+        text: '',
+        renderer: (val, row, component) => {
+          const {invoiceToCredit} = this.props;
+
+          const handleRadioChange = (checked: boolean) => {
+            const {onInvoiceToCreditChange} = this.props;
+            const {invoiceToCreditRowId} = this.state;
+
+            onInvoiceToCreditChange(checked ? row : null);
+
+            this.setState({
+              invoiceToCreditRowId: checked ? component.props.id : null,
+            }, () => {
+              component.forceUpdateHandler();
+
+              if(component.props.id !== invoiceToCreditRowId) {
+                this.forceUpdateInvoiceToCreditRow(invoiceToCreditRowId);
+              }
+            });
+          };
+
+          const isTableGroup = row.isTableGroup || false;
+          const disabled = this.isTableRadioButtonDisabled(row);
+
+          return <SingleRadioInput
+            checked={invoiceToCredit && invoiceToCredit.id === row.id ? true : false}
+            disabled={disabled}
+            invisibleLabel
+            label={isTableGroup ? `Laskuryhmä ${row.id}` : `Lasku ${row.id}`}
+            name={isTableGroup ? `invoice_group_${row.id}` : `invoice_${row.id}`}
+            onChange={handleRadioChange}
+          />;
+        },
+        sortable: false,
+      });
+    }
 
     if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INVOICESET)) {
       columns.push({
@@ -415,6 +265,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
           columnKeys: [
             'billing_period_start_date',
             'invoiceset',
+            'select',
           ],
           columnsToHide: [
             'invoiceset',
@@ -427,10 +278,11 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)) {
       columns.push({
         key: 'recipientFull',
-        ascSortFunction: this.sortByRecipientNameAsc,
-        descSortFunction: this.sortByRecipientNameDesc,
+        ascSortFunction: sortByRecipientNameAsc,
+        descSortFunction: sortByRecipientNameDesc,
         renderer: (val) => getContactFullName(val) || '-',
         text: InvoiceFieldTitles.RECIPIENT,
+        minWidth: 190,
       });
     }
 
@@ -458,7 +310,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
       ascSortFunction: sortNumberByKeyAsc,
       descSortFunction: sortNumberByKeyDesc,
       dataClassName: 'no-wrap',
-      renderer: (val) => val !== null ? `${formatNumber(val * 100)} %` : '-',
+      renderer: (val) => val != null  ? `${formatNumber(val * 100)} %` : '-',
       text: InvoiceFieldTitles.SHARE,
     });
 
@@ -472,6 +324,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
           columnKeys: [
             'billing_period_start_date',
             'invoiceset',
+            'select',
           ],
           columnsToHide: [
             'invoiceset',
@@ -485,8 +338,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     if(isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)) {
       columns.push({
         key: 'receivableTypes',
-        ascSortFunction: this.sortByReceivableTypesAsc,
-        descSortFunction: this.sortByReceivableTypesDesc,
+        ascSortFunction: sortByReceivableTypesAsc,
+        descSortFunction: sortByReceivableTypesDesc,
         arrayRenderer: (val) => formatReceivableTypesString(receivableTypeOptions, val) || '-',
         text: InvoiceRowsFieldTitles.RECEIVABLE_TYPE,
       });
@@ -495,8 +348,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TYPE)) {
       columns.push({
         key: 'type',
-        ascSortFunction: this.sortByTypeAsc,
-        descSortFunction: this.sortByTypeDesc,
+        ascSortFunction: sortByTypeAsc,
+        descSortFunction: sortByTypeDesc,
         renderer: (val) => getLabelOfOption(typeOptions, val) || '-',
         text: 'Tyyppi',
       });
@@ -505,8 +358,8 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.STATE)) {
       columns.push({
         key: 'state',
-        ascSortFunction: this.sortByStateAsc,
-        descSortFunction: this.sortByStateDesc,
+        ascSortFunction: sortByStateAsc,
+        descSortFunction: sortByStateDesc,
         renderer: (val) => getLabelOfOption(stateOptions, val) || '-',
         text: InvoiceFieldTitles.STATE,
       });
@@ -535,6 +388,91 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     }
 
     return columns;
+  };
+
+  handleDataUpdate = () => {
+    const {invoiceToCreditRowId} = this.state;
+
+    this.forceUpdateInvoiceToCreditRow(invoiceToCreditRowId);
+    this.tableAndPanelWrapper.calculateTableHeight();
+    this.scrollToOpenedRow();
+  }
+
+  handleKeyDown = (e: any) => {
+    const {isPanelOpen} = this.state;
+
+    if(!isPanelOpen) return false;
+
+    switch(e.keyCode) {
+      case KeyCodes.ARROW_LEFT:
+        e.preventDefault();
+        this.openPreviousInvoice();
+        break;
+      case KeyCodes.ARROW_RIGHT:
+        e.preventDefault();
+        this.openNextInvoice();
+        break;
+      default:
+        break;
+    }
+  }
+
+  openNextInvoice = () => {
+    const {openedInvoice} = this.state;
+
+    if(openedInvoice) {
+      this.tableAndPanelWrapper.table.selectNext();
+    }
+  }
+
+  openPreviousInvoice = () => {
+    const {openedInvoice} = this.state;
+
+    if(openedInvoice) {
+      this.tableAndPanelWrapper.table.selectPrevious();
+    }
+  }
+
+  selectOpenedInvoice = (invoice: Invoice) => {
+    this.setState({
+      openedInvoice: invoice,
+    });
+  }
+
+  handleRowClick = (id: number, row: Object) => {
+    this.setState({
+      isPanelOpen: true,
+      openedInvoice: row,
+    });
+  }
+
+  handlePanelClose = () => {
+    this.setState({
+      isPanelOpen: false,
+    });
+  }
+
+  handlePanelClosed = () => {
+    this.setState({
+      openedInvoice: null,
+    });
+  }
+
+  handleInvoiceLinkClick = (invoiceId: number) => {
+    const {invoices} = this.state,
+      selectedInvoice = invoices.find((invoice) => invoice.id === invoiceId);
+
+    if(selectedInvoice) {
+      this.setState({
+        openedInvoice: selectedInvoice,
+      });
+    }
+  }
+
+  handleSelectRow = (row: Object) => {
+    const {onInvoiceToCreditChange} = this.props;
+
+    onInvoiceToCreditChange(row);
   }
 
   isTableRadioButtonDisabled = (row: Object) => {
@@ -553,36 +491,29 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     return row.type === InvoiceType.CREDIT_NOTE;
   }
 
-  handleRowClick = (id: number, row: Object) => {
-    this.setState({
-      openedInvoice: row,
-    });
-  }
+  scrollToOpenedRow = () => {
+    const selectedRows = this.tableAndPanelWrapper.table.scrollBodyWrapper.getElementsByClassName('selected');
 
-  handleSelectRow = (row: Object) => {
-    const {onInvoiceToCreditChange} = this.props;
-    onInvoiceToCreditChange(row);
-  }
-
-  handleInvoicePanelClose = () => {
-    this.setState({
-      openedInvoice: null,
-    });
-  }
-
-  handlePanelResize = () => {
-    this.calculateTableHeight();
-  }
-
-  handleInvoiceLinkClick = (invoiceId: number) => {
-    const {formatedInvoices} = this.state,
-      selectedInvoice = formatedInvoices.find((invoice) => invoice.id === invoiceId);
-
-    if(selectedInvoice) {
-      this.setState({
-        openedInvoice: selectedInvoice,
-      });
+    if(selectedRows.length) {
+      this.scrollIntoViewIfNeeded(selectedRows[0], selectedRows[0].parentNode.parentNode.parentNode);
     }
+  }
+
+  scrollIntoViewIfNeeded = (element: any, parent: any) => {
+    const parentComputedStyle = window.getComputedStyle(parent, null),
+      parentBorderTopWidth = parseInt(parentComputedStyle.getPropertyValue('border-top-width')),
+      overTop = element.offsetTop - parent.offsetTop < parent.scrollTop,
+      overBottom = (element.offsetTop  + element.clientHeight - parentBorderTopWidth) > (parent.scrollTop + parent.clientHeight);
+
+    if (overTop || overBottom) {
+      parent.scrollTop = element.offsetTop - parent.clientHeight / 2 - parentBorderTopWidth + element.clientHeight / 2;
+    }
+  }
+
+  initilizeEditInvoiceForm = (invoice: Object) => {
+    const {initialize} = this.props;
+
+    initialize(FormNames.LEASE_INVOICE_EDIT, invoice);
   }
 
   editInvoice = (invoice: Object) => {
@@ -592,63 +523,44 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   }
 
   render() {
-    const {
-      invoiceToCredit,
-      usersPermissions,
-    } = this.props;
-    const {columns, formatedInvoices, openedInvoice, tableHeight, tableWidth} = this.state;
+    const {invoiceToCredit} = this.props;
+    const {columns, isPanelOpen, invoices, openedInvoice} = this.state;
 
-    return(
-      <div className='invoice__invoice-table' ref={this.setContainerRef}>
-        <ReactResizeDetector
-          handleWidth
-          onResize={this.handleResize}
-          refreshMode='debounce'
-          refreshRate={400}
-        />
-        <div
-          className='invoice__invoice-table_wrapper'
-          style={{minHeight: formatedInvoices.length ? tableHeight || null : null, maxWidth: tableWidth || null}}
-        >
+    return (
+      <TableAndPanelWrapper
+        ref={this.setTableAndPanelWrapperRef}
+        hasData={!!invoices.length}
+        isPanelOpen={isPanelOpen}
+        onPanelClosed={this.handlePanelClosed}
+        panelComponent={
+          <InvoicePanel
+            invoice={openedInvoice}
+            onClose={this.handlePanelClose}
+            onInvoiceLinkClick={this.handleInvoiceLinkClick}
+            onSave={this.editInvoice}
+          />
+        }
+        tableComponent={
           <SortableTable
-            ref={this.setTableRef}
-            clickedRow={openedInvoice}
             columns={columns}
-            data={formatedInvoices}
+            data={invoices}
             defaultSortKey='due_date'
             defaultSortOrder={TableSortOrder.DESCENDING}
             fixedHeader={true}
-            maxHeight={tableHeight}
-            noDataText='Ei laskuja'
+            invoiceToCredit={invoiceToCredit}
             onDataUpdate={this.handleDataUpdate}
             onRowClick={this.handleRowClick}
-            onSelectNext={this.openNextInvoice}
-            onSelectPrevious={this.openPreviousInvoice}
+            onSelectNext={this.selectOpenedInvoice}
+            onSelectPrevious={this.selectOpenedInvoice}
             onSelectRow={this.handleSelectRow}
-            radioButtonDisabledFunction={this.isTableRadioButtonDisabled}
-            selectedRow={invoiceToCredit}
-            showGroupRadioButton={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
-            showRadioButton={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+            selectedRow={openedInvoice}
             sortable={true}
           />
-        </div>
-
-        <InvoicePanel
-          ref={this.setPanelRef}
-          invoice={openedInvoice}
-          isOpen={!!openedInvoice}
-          minHeight={tableHeight}
-          onClose={this.handleInvoicePanelClose}
-          onInvoiceLinkClick={this.handleInvoiceLinkClick}
-          onKeyDown={this.handleKeyDown}
-          onResize={this.handlePanelResize}
-          onSave={this.editInvoice}
-        />
-      </div>
+        }
+      />
     );
   }
 }
-
 
 export default flowRight(
   withRouter,
@@ -657,10 +569,9 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
 
       return {
-        invoices: getInvoicesByLease(state, currentLease.id),
         invoiceAttributes: getInvoiceAttributes(state),
+        invoiceListData: getInvoicesByLease(state, currentLease.id),
         invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
-        isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
         patchedInvoice: getPatchedInvoice(state),
         usersPermissions: getUsersPermissions(state),
       };
@@ -669,6 +580,6 @@ export default flowRight(
       clearPatchedInvoice,
       initialize,
       patchInvoice,
-    },
-  )
+    }
+  ),
 )(InvoiceTableAndPanel);
