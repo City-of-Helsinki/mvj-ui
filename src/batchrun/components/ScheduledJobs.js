@@ -2,7 +2,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import GreenBox from '$components/content/GreenBox';
@@ -12,11 +11,8 @@ import SortableTable from '$components/table/SortableTable';
 import {PermissionMissingTexts} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasPermissions} from '$util/helpers';
-import {
-  getIsFetching as getIsFetchingUsersPermissions,
-  getUsersPermissions,
-} from '$src/usersPermissions/selectors';
-import {withBatchrunJobTabAttributes} from '$components/attributes/BatchrunJobsTabAttributes';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {withBatchrunScheduledJobTabAttributes} from '$components/attributes/BatchrunScheduledJobsTabAttributes';
 
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -54,12 +50,11 @@ const data = [
 ];
 
 type Props = {
-  isFetchingBatchrunJobAttributes: boolean,
-  isFetchingUsersPermissions: boolean,
+  isFetchingBatchrunScheduledJobAttributes: boolean,
   usersPermissions: UsersPermissionsType,
 }
 
-class Jobs extends PureComponent<Props> {
+class ScheduledJobs extends PureComponent<Props> {
   getColumns = () => {
     const columns = [];
 
@@ -108,15 +103,12 @@ class Jobs extends PureComponent<Props> {
   }
   render() {
     const {
-      isFetchingBatchrunJobAttributes,
-      isFetchingUsersPermissions,
+      isFetchingBatchrunScheduledJobAttributes,
       usersPermissions,
     } = this.props;
     const columns = this.getColumns();
 
-    if(isFetchingBatchrunJobAttributes || isFetchingUsersPermissions) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
-
-    if(isEmpty(usersPermissions)) return null;
+    if(isFetchingBatchrunScheduledJobAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
     if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOB)) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
 
@@ -133,13 +125,12 @@ class Jobs extends PureComponent<Props> {
 }
 
 export default flowRight(
-  withBatchrunJobTabAttributes,
+  withBatchrunScheduledJobTabAttributes,
   connect(
     (state) => {
       return {
-        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         usersPermissions: getUsersPermissions(state),
       };
     },
   ),
-)(Jobs);
+)(ScheduledJobs);

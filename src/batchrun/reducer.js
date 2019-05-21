@@ -4,8 +4,8 @@ import {handleActions} from 'redux-actions';
 
 import type {Attributes, Methods, Reducer} from '$src/types';
 import type {
-  ReceiveJobAttributesAction,
-  ReceiveJobMethodsAction,
+  ReceiveScheduledJobAttributesAction,
+  ReceiveScheduledJobMethodsAction,
   ReceiveJobRunAttributesAction,
   ReceiveJobRunMethodsAction,
   ReceiveJobRunLogEntryAttributesAction,
@@ -23,24 +23,6 @@ const isFetchingSchedulesReducer: Reducer<boolean> = handleActions({
   'mvj/batchrun/RECEIVE_BATCH_SCHEDULES': () => false,
   'mvj/batchrun/NOT_FOUND_BATCH_SCHEDULES': () => false,
 }, false);
-
-const isFetchingJobAttributesReducer: Reducer<boolean> = handleActions({
-  'mvj/batchrun/FETCH_JOB_ATTRIBUTES': () => true,
-  'mvj/batchrun/RECEIVE_JOB_METHODS': () => false,
-  'mvj/batchrun/NOT_FOUND_JOB_ATTRIBUTES': () => false,
-}, false);
-
-const jobAttributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/batchrun/RECEIVE_JOB_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveJobAttributesAction) => {
-    return attributes;
-  },
-}, null);
-
-const jobMethodsReducer: Reducer<Methods> = handleActions({
-  ['mvj/batchrun/RECEIVE_JOB_METHODS']: (state: Methods, {payload: methods}: ReceiveJobMethodsAction) => {
-    return methods;
-  },
-}, null);
 
 const isFetchingJobRunAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/batchrun/FETCH_JOB_RUN_ATTRIBUTES': () => true,
@@ -78,17 +60,34 @@ const jobRunLogEntryMethodsReducer: Reducer<Methods> = handleActions({
   },
 }, null);
 
+const isFetchingScheduledJobAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/batchrun/FETCH_SCHEDULED_JOB_ATTRIBUTES': () => true,
+  'mvj/batchrun/RECEIVE_SCHEDULED_JOB_METHODS': () => false,
+  'mvj/batchrun/NOT_FOUND_SCHEDULED_JOB_ATTRIBUTES': () => false,
+}, false);
+
+const scheduledJobAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/batchrun/RECEIVE_SCHEDULED_JOB_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveScheduledJobAttributesAction) => {
+    return attributes;
+  },
+}, null);
+
+const scheduledJobMethodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/batchrun/RECEIVE_SCHEDULED_JOB_METHODS']: (state: Methods, {payload: methods}: ReceiveScheduledJobMethodsAction) => {
+    return methods;
+  },
+}, null);
 
 export default combineReducers<Object, any>({
-  isFetchingJobAttributes: isFetchingJobAttributesReducer,
   isFetchingJobRunAttributes: isFetchingJobRunAttributesReducer,
   isFetchingJobRunLogEntryAttributes: isFetchingJobRunLogEntryAttributesReducer,
   isFetchingRuns: isFetchingRunsReducer,
+  isFetchingScheduledJobAttributes: isFetchingScheduledJobAttributesReducer,
   isFetchingSchedules: isFetchingSchedulesReducer,
-  jobAttributes: jobAttributesReducer,
-  jobMethods: jobMethodsReducer,
   jobRunAttributes: jobRunAttributesReducer,
   jobRunMethods: jobRunMethodsReducer,
   jobRunLogEntryAttributes: jobRunLogEntryAttributesReducer,
   jobRunLogEntryMethods: jobRunLogEntryMethodsReducer,
+  scheduledJobAttributes: scheduledJobAttributesReducer,
+  scheduledJobMethods: scheduledJobMethodsReducer,
 });

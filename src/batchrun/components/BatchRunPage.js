@@ -3,31 +3,44 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import PageContainer from '$components/content/PageContainer';
 import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import JobRuns from '$src/batchrun/components/JobRuns';
-import Jobs from '$src/batchrun/components/Jobs';
+import Loader from '$components/loader/Loader';
+import ScheduledJobs from '$src/batchrun/components/ScheduledJobs';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import Title from '$components/content/Title';
-
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {PermissionMissingTexts} from '$src/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getSearchQuery,
   getUrlParams,
+  hasPermissions,
   setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from '$src/usersPermissions/selectors';
+
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   history: Object,
+  isFetchingUsersPermissions: boolean,
   location: Object,
   receiveTopNavigationSettings: Function,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -90,7 +103,15 @@ class BatchJobsPage extends PureComponent<Props, State> {
   };
 
   render() {
+    const {isFetchingUsersPermissions, usersPermissions} = this.props;
     const {activeTab} = this.state;
+
+    if(isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(isEmpty(usersPermissions)) return null;
+
+    if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) && !hasPermissions(usersPermissions, UsersPermissions.VIEW_SCHEDULEDJOB))
+      return <PageContainer><AuthorizationError text={PermissionMissingTexts.BATCHRUN} /></PageContainer>;
 
     return(
       <FullWidthContainer>
@@ -127,7 +148,7 @@ class BatchJobsPage extends PureComponent<Props, State> {
                 <Title>Ajastukset</Title>
                 <Divider/>
 
-                <Jobs />
+                <ScheduledJobs />
               </ContentContainer>
             </TabPane>
           </TabContent>
@@ -141,8 +162,10 @@ class BatchJobsPage extends PureComponent<Props, State> {
 export default flowRight(
   withRouter,
   connect(
-    () => {
+    (state) => {
       return {
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {

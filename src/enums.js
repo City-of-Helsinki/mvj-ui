@@ -128,6 +128,7 @@ export const FormNames = {
  */
 export const PermissionMissingTexts = {
   AREA_NOTE: 'Ei oikeuksia muistettaviin ehtoihiin',
+  BATCHRUN: 'Ei oikeuksia eräajoihin',
   CONTACT: 'Ei oikeuksia asiakkaisiin',
   GENERAL: 'Ei oikeuksia sisältöön.',
   INDEX: 'Ei oikeksia elinkustannusindekseihin',

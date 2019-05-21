@@ -96,5 +96,6 @@ export const UsersPermissions = {
   VIEW_LEASE: 'view_lease',
   VIEW_LEASEHOLDTRANSFER: 'view_leaseholdtransfer',
   VIEW_LEASETYPE: 'view_leasetype',
+  VIEW_SCHEDULEDJOB: 'view_scheduledjob',
   VIEW_VAT: 'view_vat',
 };

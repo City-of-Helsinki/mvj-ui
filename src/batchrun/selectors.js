@@ -2,15 +2,6 @@
 import type {Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 
-export const getIsFetchingJobAttributes: Selector<boolean, void> = (state: RootState): boolean =>
-  state.batchrun.isFetchingJobAttributes;
-
-export const getJobAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
-  state.batchrun.jobAttributes;
-
-export const getJobMethods: Selector<Methods, void> = (state: RootState): Methods =>
-  state.batchrun.jobMethods;
-
 export const getIsFetchingJobRunAttributes: Selector<boolean, void> = (state: RootState): boolean =>
   state.batchrun.isFetchingJobRunAttributes;
 
@@ -28,6 +19,15 @@ export const getJobRunLogEntryAttributes: Selector<Attributes, void> = (state: R
 
 export const getJobRunLogEntryMethods: Selector<Methods, void> = (state: RootState): Methods =>
   state.batchrun.jobRunLogEntryMethods;
+
+export const getIsFetchingScheduledJobAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.batchrun.isFetchingScheduledJobAttributes;
+
+export const getScheduledJobAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.batchrun.scheduledJobAttributes;
+
+export const getScheduledJobMethods: Selector<Methods, void> = (state: RootState): Methods =>
+  state.batchrun.scheduledJobMethods;
 
 export const getIsFetchingRuns: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.batchrun.isFetchingRuns;

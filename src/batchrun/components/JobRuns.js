@@ -3,7 +3,6 @@ import React, {PureComponent} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import ErrorIcon from '$components/icons/ErrorIcon';
@@ -22,10 +21,7 @@ import {
   getUrlParams,
   hasPermissions,
 } from '$util/helpers';
-import {
-  getIsFetching as getIsFetchingUsersPermissions,
-  getUsersPermissions,
-} from '$src/usersPermissions/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withBatchrunJobRunTabAttributes} from '$components/attributes/BatchrunJobRunsTabAttributes';
 
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
@@ -57,7 +53,6 @@ const data = [
 type Props = {
   fetchBatchRuns: Function,
   isFetchingBatchrunJobRunsTabAttributes: boolean,
-  isFetchingUsersPermissions: boolean,
   location: Object,
   usersPermissions: UsersPermissionsType,
 }
@@ -141,15 +136,12 @@ class JobRuns extends PureComponent<Props, State> {
   render() {
     const {
       isFetchingBatchrunJobRunsTabAttributes,
-      isFetchingUsersPermissions,
       usersPermissions,
     } = this.props;
     const {isPanelOpen, openedRow} = this.state;
     const columns = this.getColumns();
 
-    if(isFetchingBatchrunJobRunsTabAttributes || isFetchingUsersPermissions) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
-
-    if(isEmpty(usersPermissions)) return null;
+    if(isFetchingBatchrunJobRunsTabAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
     if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN)) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
 
@@ -186,7 +178,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         usersPermissions: getUsersPermissions(state),
       };
     },
