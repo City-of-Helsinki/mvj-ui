@@ -40,6 +40,7 @@ class FieldTypeSelect extends PureComponent<Props, State> {
 
     if(val) {
       const {value} = val;
+
       if(autoBlur) {
         onBlur(value);
       } else {
@@ -50,6 +51,7 @@ class FieldTypeSelect extends PureComponent<Props, State> {
 
   handleInputChange = (value: string, meta: Object) => {
     const {action} = meta;
+
     switch (action) {
       case 'input-change':
         this.setState({inputValue: value});
