@@ -198,6 +198,8 @@ class SideMenu extends Component<Props, State> {
                   </Authorization>
 
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
+                    hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) ||
+                    hasPermissions(usersPermissions, UsersPermissions.VIEW_SCHEDULEDJOB) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICENOTE) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASEHOLDTRANSFER)}
@@ -211,6 +213,12 @@ class SideMenu extends Component<Props, State> {
                           onClick: handleClick,
                           text: 'Elinkustannusindeksit',
                           to: getRouteById(Routes.INDEX),
+                        },
+                        {
+                          allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) || hasPermissions(usersPermissions, UsersPermissions.VIEW_SCHEDULEDJOB),
+                          onClick: handleClick,
+                          text: 'Eräajot',
+                          to: getRouteById(Routes.BATCH_RUN),
                         },
                         {
                           allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE),

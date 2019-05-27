@@ -3,6 +3,7 @@ import {all, fork} from 'redux-saga/effects';
 import areaNoteSaga from '../areaNote/saga';
 import auditLogSaga from '$src/auditLog/saga';
 import authSaga from '../auth/saga';
+import batchrunSaga from '$src/batchrun/saga';
 import billingPeriodsSaga from '../billingPeriods/saga';
 import collectionCourtDecisionSaga from '../collectionCourtDecision/saga';
 import collectionLetterSaga from '../collectionLetter/saga';
@@ -46,6 +47,7 @@ export default () =>
       fork(areaNoteSaga),
       fork(auditLogSaga),
       fork(authSaga),
+      fork(batchrunSaga),
       fork(billingPeriodsSaga),
       fork(collectionCourtDecisionSaga),
       fork(collectionLetterSaga),

@@ -4,10 +4,21 @@
   vertical-align: sub;
   height: rem-calc(25px);
   width: rem-calc(25px);
+  overflow: visible !important;
 
   &.icons__add {
     fill: $dark-green;
     stroke: $dark-green;
+  }
+
+  &__error {
+    fill: $red;
+  }
+
+  &__success {
+    #Artboard {
+      fill: $dark-green;
+    }
   }
 
   &.icons__trash {

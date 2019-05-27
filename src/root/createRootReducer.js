@@ -8,6 +8,7 @@ import apiReducer from '../api/reducer';
 import areaNoteReducer from '../areaNote/reducer';
 import auditLogReducer from '$src/auditLog/reducer';
 import authReducer from '../auth/reducer';
+import batchrunReducer from '$src/batchrun/reducer';
 import billingPeriodReducer from '../billingPeriods/reducer';
 import collectionCourtDecisionReducer from '../collectionCourtDecision/reducer';
 import collectionLetterReducer from '../collectionLetter/reducer';
@@ -51,6 +52,7 @@ export default (history: Object): Reducer<RootState> =>
     areaNote: areaNoteReducer,
     auditLog: auditLogReducer,
     auth: authReducer,
+    batchrun: batchrunReducer,
     billingPeriod: billingPeriodReducer,
     collectionCourtDecision: collectionCourtDecisionReducer,
     collectionLetter: collectionLetterReducer,

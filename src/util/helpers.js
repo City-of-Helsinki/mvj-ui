@@ -13,7 +13,7 @@ import {PAIKKATIETOVIPUNEN_URL} from '$src/constants';
 import ToastrIcons from '$components/toastr/ToastrIcons';
 import {Breakpoints} from '$src/foundation/enums';
 
-import type {Attributes, Methods} from '$src/types';
+import type {ApiResponse, Attributes, Methods} from '$src/types';
 import type {UsersPermissions} from '$src/usersPermissions/types';
 
 /**
@@ -554,14 +554,14 @@ export const createPaikkatietovipunenUrl = (url: string) => `${PAIKKATIETOVIPUNE
 * @param {Object} query
 * @returns {number}
 */
-export const getApiResponseCount = (list: Object) => get(list, 'count', 0);
+export const getApiResponseCount = (list: ApiResponse) => get(list, 'count', 0);
 
 /**
 * Map api response list max page
 * @param {Object} query
 * @returns {number}
 */
-export const getApiResponseMaxPage = (list: Object, size: number) => {
+export const getApiResponseMaxPage = (list: ApiResponse, size: number) => {
   const count = getApiResponseCount(list);
 
   return Math.ceil(count/size);
@@ -572,4 +572,30 @@ export const getApiResponseMaxPage = (list: Object, size: number) => {
 * @param {Object} query
 * @returns {number}
 */
-export const getApiResponseResults = (list: Object) => get(list, 'results', []);
+export const  getApiResponseResults = (list: ApiResponse) => get(list, 'results', []);
+
+/**
+* Get React component by dom id
+* @param {string} id
+* @returns {Object}
+*/
+export const findReactById = (id: ?string): ?Object => {
+  if(!id) return null;
+
+  const dom = document.getElementById(id);
+
+  if(!dom) return null;
+
+  const key = Object.keys(dom).find(key=>key.startsWith('__reactInternalInstance$'));
+  // $FlowFixMe
+  const internalInstance = dom[key];
+  if (internalInstance == null) return null;
+
+  if (internalInstance.return) { // react 16+
+    return internalInstance._debugOwner
+      ? internalInstance._debugOwner.stateNode
+      : internalInstance.return.stateNode;
+  } else { // react <16
+    return internalInstance._currentElement._owner._instance;
+  }
+};

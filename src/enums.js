@@ -20,6 +20,7 @@ export const KeyCodes = {
   TAB: 9,
   ENTER: 13,
   ESC: 27,
+  SPACE: 32,
   ARROW_LEFT: 37,
   ARROW_UP: 38,
   ARROW_RIGHT: 39,
@@ -127,6 +128,7 @@ export const FormNames = {
  */
 export const PermissionMissingTexts = {
   AREA_NOTE: 'Ei oikeuksia muistettaviin ehtoihiin',
+  BATCHRUN: 'Ei oikeuksia eräajoihin',
   CONTACT: 'Ei oikeuksia asiakkaisiin',
   GENERAL: 'Ei oikeuksia sisältöön.',
   INDEX: 'Ei oikeksia elinkustannusindekseihin',

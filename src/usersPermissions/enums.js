@@ -90,9 +90,12 @@ export const UsersPermissions = {
   VIEW_INVOICE: 'view_invoice',
   VIEW_INVOICENOTE: 'view_invoicenote',
   VIEW_INVOICESET: 'view_invoiceset',
+  VIEW_JOB: 'view_job',
+  VIEW_JOBRUN: 'view_jobrun',
   VIEW_LEASE_LEASE_AREAS: 'view_lease_lease_areas',
   VIEW_LEASE: 'view_lease',
   VIEW_LEASEHOLDTRANSFER: 'view_leaseholdtransfer',
   VIEW_LEASETYPE: 'view_leasetype',
+  VIEW_SCHEDULEDJOB: 'view_scheduledjob',
   VIEW_VAT: 'view_vat',
 };

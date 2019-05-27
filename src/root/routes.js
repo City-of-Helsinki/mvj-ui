@@ -5,6 +5,7 @@ import {Redirect, Route, Switch} from 'react-router';
 import ErrorPage from '$src/errorPage/ErrorPage';
 import App from '$src/app/App';
 import AreaNoteListPage from '$src/areaNote/components/AreaNoteListPage';
+import BatchRunPage from '$src/batchrun/components/BatchRunPage';
 import CallbackPage from '$src/auth/components/CallbackPage';
 import ContactListPage from '$src/contacts/components/ContactsListPage';
 import ContactPage from '$src/contacts/components/ContactPage';
@@ -27,6 +28,7 @@ import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegister
 
 export const Routes = {
   AREA_NOTES: 'area_notes',
+  BATCH_RUN: 'batch_jobs',
   CALLBACK: 'callback',
   CONTACTS: 'contacts',
   CONTACT_NEW: 'contact_new',
@@ -47,6 +49,7 @@ export const Routes = {
 export const getRouteById = (id: string): string => {
   const routes = {
     [Routes.AREA_NOTES]: '/muistettavatehdot',
+    [Routes.BATCH_RUN]: '/eraajot',
     [Routes.CALLBACK]: '/callback',
     [Routes.CONTACTS]: '/asiakkaat',
     [Routes.CONTACT_NEW]: '/uusiasiakas',
@@ -90,6 +93,7 @@ export default
     <Route exact path={getRouteById(Routes.RENT_BASIS)} component={RentBasisListPage} />
     <Route exact path={`${getRouteById(Routes.RENT_BASIS)}/:rentBasisId`} component={RentBasisPage} />
     <Route exact path={getRouteById(Routes.RENT_BASIS_NEW)} component={NewRentBasisPage} />
+    <Route exact path={getRouteById(Routes.BATCH_RUN)} component={BatchRunPage} />
     <Route exact path={getRouteById(Routes.CALLBACK)} component={CallbackPage} />
     <Route component={ErrorPage} />
   </Switch>

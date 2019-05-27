@@ -1,7 +1,11 @@
 // @flow
-import React, {Fragment} from 'react';
+import React, {PureComponent} from 'react';
+import classNames from 'classnames';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 
+import AccordionIcon from '$components/icons/AccordionIcon';
+import MultiItemCollapse from './MultiItemCollapse';
 import SortableTableRow from './SortableTableRow';
 
 import type {Column} from './SortableTable';
@@ -10,117 +14,124 @@ const TableGroup = (props: Object) =>
   props.children.length ? props.children : null;
 
 type Props = {
-  clickedRow?: Object | null,
   columns: Array<Column>,
-  disabled: boolean,
+  id: string,
+  grouping: ?Object,
   onRowClick?: Function,
-  onSelectRow?: Function,
-  radioButtonDisabledFunction?: Function,
   row: Object,
   selectedRow?: Object | null,
   showCollapseArrowColumn?: boolean,
-  showGroupRadioButton?: boolean,
-  showRadioButton?: boolean,
 }
 
-const SortableTableGroup = ({
-  clickedRow,
-  disabled,
-  columns,
-  onRowClick,
-  onSelectRow,
-  radioButtonDisabledFunction,
-  row,
-  selectedRow,
-  showCollapseArrowColumn,
-  showGroupRadioButton,
-  showRadioButton,
-}: Props) => {
-  const isGroupSelected = Boolean(selectedRow && selectedRow.tableGroupName && (selectedRow.id === row.id));
+type State = {
+  collapse: boolean,
+}
 
-  const isRadioButtonDisabled = () => {
-    if(radioButtonDisabledFunction) {
-      return radioButtonDisabledFunction(row);
-    }
+class SortableTableGroup extends PureComponent<Props, State> {
+  state = {
+    collapse: false,
+  }
 
-    return false;
-  };
 
-  const handleClickRadioButton = () => {
-    if(isGroupSelected && onSelectRow) {
-      onSelectRow(null);
-    }
-  };
+  handleCollapseArrowIconClick = () => {
+    this.setState({
+      collapse: !this.state.collapse,
+    });
+  }
 
-  const handleKeyDownRadioButton = (e: any) => {
-    if(isGroupSelected && e.keyCode === 32) {
+  handleCollapseArrowIconKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
       e.preventDefault();
-      handleClickRadioButton();
+      this.handleCollapseArrowIconClick();
     }
   };
 
-  const handleSelectGroup = () => {
-    if(onSelectRow) {
-      onSelectRow(row);
-    }
-  };
+  shouldShowCollapseArrowIcon = () => {
+    const {columns, row} = this.props;
+    let showIcon = false;
 
-  return(
-    <TableGroup>
-      <tr className='group-row'>
-        {showCollapseArrowColumn && <td></td>}
-        {(showGroupRadioButton || showRadioButton) &&
-          <td>
-            {showGroupRadioButton &&
-              <Fragment>
-                <label className='form-field__label invisible' htmlFor={`group_${row.id}`}>Ryhmä {row.id}</label>
-                <input type='radio'
-                  checked={isGroupSelected}
-                  disabled={disabled}
-                  id={`group_${row.id}`}
-                  name={`group_${row.id}`}
-                  onChange={handleSelectGroup}
-                  onClick={handleClickRadioButton}
-                  onKeyDown={handleKeyDownRadioButton}
-                />
-              </Fragment>
-            }
-          </td>
-        }
-        {columns.map(({dataClassName, grouping, key, renderer}, columnIndex) => {
-          const show = grouping ? grouping.columnKeys.indexOf(key) : -1;
-          return show !== -1
-            ? <td key={columnIndex} className={dataClassName}>
-              {renderer
-                ? renderer(get(row, key), row)
-                : get(row, key) || ' - '
+    columns.forEach((column) => {
+      if(isArray(row[column.key]) && row[column.key].length > 1) {
+        showIcon = true;
+        return true;
+      }
+    });
+
+    return showIcon;
+  }
+
+  forceUpdateHandler = () => {
+    this.forceUpdate();
+  }
+
+  render() {
+    const {
+      columns,
+      id,
+      grouping,
+      onRowClick,
+      row,
+      selectedRow,
+      showCollapseArrowColumn,
+    } = this.props;
+    const {collapse} = this.state;
+
+
+    const showCollapseArrowIcon = this.shouldShowCollapseArrowIcon();
+    return(
+      <TableGroup>
+        <tr className='group-row' id={id}>
+          {showCollapseArrowColumn &&
+            <td className={classNames('collapse-arrow-column', {'no-icon': !showCollapseArrowIcon})}>
+              {showCollapseArrowIcon &&
+                <a
+                  className='sortable-table-row-collapse-link'
+                  onClick={this.handleCollapseArrowIconClick}
+                  onKeyDown={this.handleCollapseArrowIconKeyDown}
+                  tabIndex={0}
+                >
+                  <AccordionIcon className='sortable-table-row-collapse-icon'/>
+                </a>
               }
             </td>
-            : <td key={columnIndex}></td>;
-        })}
-      </tr>
-      {row.tableRows.map((row, rowIndex) => {
-        const isRadioDisabled = isRadioButtonDisabled();
-        const isClicked = Boolean(clickedRow && (clickedRow.id === row.id));
-        const isSelected = Boolean(selectedRow && (selectedRow.id === row.id));
+          }
+          {columns.map(({arrayRenderer, dataClassName, key, renderer}) => {
+            const show = grouping ? grouping.columnKeys.indexOf(key) !== -1 : false;
+            return show
+              ? <td key={key} className={dataClassName}>
+                {renderer
+                  ? isArray(get(row, key))
+                    ? <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => renderer(value, row, this) || '-'} open={collapse}/>
+                    : renderer(get(row, key), row, this) || '-'
+                  : isArray(get(row, key))
+                    ? arrayRenderer
+                      ? arrayRenderer(get(row, key), this)
+                      : <MultiItemCollapse items={get(row, key)} itemRenderer={(value) => value || '-'} open={collapse}/>
+                    : get(row, key) || '-'
+                }
+              </td>
+              : <td key={key}></td>;
+          })}
+        </tr>
+        {row.tableRows.map((row, rowIndex) => {
+          const isSelected = Boolean(selectedRow && (selectedRow.id === row.id));
 
-        return <SortableTableRow
-          key={rowIndex}
-          className='group-item-row'
-          columns={columns}
-          disabled={isRadioDisabled}
-          groupRow={true}
-          isClicked={isClicked}
-          isSelected={isSelected}
-          onRowClick={onRowClick}
-          onSelectRow={onSelectRow}
-          row={row}
-          showCollapseArrowColumn={showCollapseArrowColumn}
-          showRadioButton={showRadioButton || false}
-        />;
-      })}
-    </TableGroup>
-  );
-};
+          return <SortableTableRow
+            key={rowIndex}
+            className='group-item-row'
+            columns={columns}
+            id={`row_${row.id}`}
+            grouping={grouping}
+            groupRow={true}
+            isSelected={isSelected}
+            onRowClick={onRowClick}
+            row={row}
+            showCollapseArrowColumn={showCollapseArrowColumn}
+          />;
+        })}
+      </TableGroup>
+    );
+  }
+}
 
 export default SortableTableGroup;

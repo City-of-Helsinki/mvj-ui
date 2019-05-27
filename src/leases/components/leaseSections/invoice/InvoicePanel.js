@@ -1,20 +1,16 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import classNames from 'classnames';
 import {getFormValues, isValid} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 
 import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
-import CloseButton from '$components/button/CloseButton';
 import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
-import Loader from '$components/loader/Loader';
-import LoaderWrapper from '$components/loader/LoaderWrapper';
-import ReactResizeDetector from 'react-resize-detector';
+import TablePanelContainer from '$components/table/TablePanelContainer';
 import {receiveIsEditClicked} from '$src/invoices/actions';
-import {FormNames, KeyCodes, Methods} from '$src/enums';
+import {FormNames, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {isMethodAllowed} from '$util/helpers';
 import {
@@ -26,23 +22,18 @@ import {
 import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Methods as MethodsType} from '$src/types';
-import type {InvoiceList} from '$src/invoices/types';
+import type {Invoice, InvoiceList} from '$src/invoices/types';
 
 type Props = {
-  editedInvoice: Object,
-  invoice: ?Object,
-  invoiceMethods: MethodsType,
+  formValues: Object,
+  invoice: ?Invoice,
   invoices: InvoiceList,
+  invoiceMethods: MethodsType,
   isEditClicked: boolean,
-  isOpen: boolean,
-  isSavingInvoice: boolean,
-  minHeight: number,
   onClose: Function,
   onInvoiceLinkClick: Function,
-  onKeyDown?: Function,
-  onResize: Function,
-  receiveIsEditClicked: Function,
   onSave: Function,
+  receiveIsEditClicked: Function,
   valid: boolean,
 }
 
@@ -50,61 +41,19 @@ type State = {
   creditedInvoice: ?Object,
   interestInvoiceFor: ?Object,
   invoice: ?Object,
-  isClosing: boolean,
-  isOpening: boolean,
 }
 
 class InvoicePanel extends PureComponent<Props, State> {
-  closeButton: any
   component: any
-  container: any
-  invoiceFormFirstField: any
-  _isMounted: boolean
 
   state = {
     creditedInvoice: null,
     interestInvoiceFor: null,
     invoice: null,
-    isClosing: false,
-    isOpening: false,
   }
 
   setComponentRef = (el: any) => {
     this.component = el;
-  }
-
-  setContainerRef = (el: any) => {
-    this.container = el;
-  }
-
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-    this.component.addEventListener('transitionend', this.transitionEnds);
-    this._isMounted = false;
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-    this.component.removeEventListener('transitionend', this.transitionEnds);
-    this._isMounted = true;
-  }
-
-  handleKeyDown = (e: any) => {
-    const {isOpen, onKeyDown} = this.props;
-
-    if(!isOpen) return false;
-
-    switch(e.keyCode) {
-      case KeyCodes.ARROW_LEFT:
-      case KeyCodes.ARROW_RIGHT:
-        if(onKeyDown) {
-          e.preventDefault();
-          onKeyDown(e.keyCode);
-        }
-        break;
-      default:
-        break;
-    }
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -126,68 +75,13 @@ class InvoicePanel extends PureComponent<Props, State> {
     return !isEmpty(newState) ? newState : null;
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if(!prevProps.isOpen && this.props.isOpen) {
-      this.setState({
-        isOpening: true,
-      });
-    } else if(prevProps.isOpen && !this.props.isOpen) {
-      this.setState({
-        isClosing: true,
-      });
-    }
-  }
-
-  transitionEnds = (e: any) => {
-    if(!this._isMounted) return;
-
-    if(e.srcElement === this.component) {
-      const {isOpen} = this.props;
-
-      if(isOpen) {
-        this.setFocusOnPanel();
-      }
-
-      this.setState({
-        isClosing: false,
-        isOpening: false,
-      });
-    }
-  }
-
-  setFocusOnPanel = () => {
-    this.setFocusOnCloseButton();
-  }
-
-  setCloseButtonReference = (element: any) => {
-    this.closeButton = element;
-  }
-
-  setFocusOnCloseButton = () => {
-    if(this.closeButton) {
-      this.closeButton.focus();
-    }
-  }
-
-  handleResize = () => {
-    const {onResize} = this.props;
-    onResize();
-  }
-
-  handleClose = () => {
-    const {onClose, receiveIsEditClicked} = this.props;
-
-    receiveIsEditClicked(false);
-    onClose();
-  }
-
   handleSave = () => {
-    const {editedInvoice, onSave, receiveIsEditClicked, valid} = this.props;
+    const {formValues, onSave, receiveIsEditClicked, valid} = this.props;
 
     receiveIsEditClicked(true);
 
     if(valid) {
-      onSave(editedInvoice);
+      onSave(formValues);
     }
   }
 
@@ -196,9 +90,6 @@ class InvoicePanel extends PureComponent<Props, State> {
       invoice,
       invoiceMethods,
       isEditClicked,
-      isOpen,
-      isSavingInvoice,
-      minHeight,
       onClose,
       onInvoiceLinkClick,
       valid,
@@ -206,80 +97,48 @@ class InvoicePanel extends PureComponent<Props, State> {
     const {
       creditedInvoice,
       interestInvoiceFor,
-      isClosing,
-      isOpening,
     } = this.state;
 
     return(
-      <div
-        className={classNames('invoice-panel', {'is-open': isOpen})}
-        style={{minHeight: minHeight}}
-        ref={this.setComponentRef}
-      >
-        {isSavingInvoice &&
-          <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isSavingInvoice}/></LoaderWrapper>
-        }
-        <div
-          ref={this.setContainerRef}
-          className="invoice-panel__container"
-          hidden={!isOpen && !isClosing && !isOpening}
-        >
-          <ReactResizeDetector
-            handleHeight
-            onResize={this.handleResize}
-            refreshMode='debounce'
-            refreshRate={1}
-          />
-
-          <div className='invoice-panel__header'>
-            <h1>Laskun tiedot</h1>
-            <CloseButton
-              className='position-topright'
-              onClick={onClose}
-              setReference={this.setCloseButtonReference}
-              title='Sulje'
-            />
-          </div>
-
-          <div className={classNames('invoice-panel__body', {'with-footer': (isMethodAllowed(invoiceMethods, Methods.PATCH) && invoice && !invoice.sent_to_sap_at)})}>
-            {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sent_to_sap_at)
-              ? <EditInvoiceForm
-                creditedInvoice={creditedInvoice}
-                interestInvoiceFor={interestInvoiceFor}
-                invoice={invoice}
-                initialValues={{...invoice}}
-                onInvoiceLinkClick={onInvoiceLinkClick}
-                relativeTo={this.component}
-              />
-              : <InvoiceTemplate
-                creditedInvoice={creditedInvoice}
-                interestInvoiceFor={interestInvoiceFor}
-                invoice={invoice}
-                onInvoiceLinkClick={onInvoiceLinkClick}
-                relativeTo={this.component}
-              />
-            }
-          </div>
-
+      <TablePanelContainer
+        innerRef={this.setComponentRef}
+        footer={invoice && !invoice.sap_id &&
           <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
-            {invoice && !invoice.sent_to_sap_at &&
-              <div className='invoice-panel__footer'>
-                <Button
-                  className={ButtonColors.SECONDARY}
-                  onClick={onClose}
-                  text='Peruuta'
-                />
-                <Button
-                  className={ButtonColors.SUCCESS}
-                  disabled={isEditClicked && !valid}
-                  onClick={this.handleSave}
-                  text='Tallenna'
-                />
-              </div>
-            }
+            <Button
+              className={ButtonColors.SECONDARY}
+              onClick={onClose}
+              text='Peruuta'
+            />
+            <Button
+              className={ButtonColors.SUCCESS}
+              disabled={isEditClicked && !valid}
+              onClick={this.handleSave}
+              text='Tallenna'
+            />
           </Authorization>
-        </div>
-      </div>
+        }
+        onClose={onClose}
+        title='Laskun tiedot'
+      >
+        {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id)
+          ? <EditInvoiceForm
+            creditedInvoice={creditedInvoice}
+            interestInvoiceFor={interestInvoiceFor}
+            invoice={invoice}
+            initialValues={{...invoice}}
+            onInvoiceLinkClick={onInvoiceLinkClick}
+            relativeTo={this.component}
+          />
+          : <InvoiceTemplate
+            creditedInvoice={creditedInvoice}
+            interestInvoiceFor={interestInvoiceFor}
+            invoice={invoice}
+            onInvoiceLinkClick={onInvoiceLinkClick}
+            relativeTo={this.component}
+          />
+        }
+      </TablePanelContainer>
+
     );
   }
 }
@@ -290,7 +149,7 @@ export default connect(
     const currentLease = getCurrentLease(state);
 
     return {
-      editedInvoice: getFormValues(formName)(state),
+      formValues: getFormValues(formName)(state),
       invoiceMethods: getInvoiceMethods(state),
       invoices: getInvoicesByLease(state, currentLease.id),
       isEditClicked: getIsEditClicked(state),

@@ -15,7 +15,6 @@ type Props = {
   getRef?: Function,
   onColumnClick?: Function,
   showCollapseArrowColumn?: boolean,
-  showRadioButton?: boolean,
   sortable?: boolean,
   sortKey: ?string,
   sortOrder: ?string,
@@ -28,7 +27,6 @@ const SortableTableHeader = ({
   getRef,
   onColumnClick,
   showCollapseArrowColumn,
-  showRadioButton,
   sortable,
   sortKey,
   sortOrder,
@@ -59,7 +57,7 @@ const SortableTableHeader = ({
     <thead ref={setTheadRef}>
       <tr>
         {showCollapseArrowColumn && <th></th>}
-        {showRadioButton && <th></th>}
+
         {columns.map((column, index) => {
           const handleColumnClick = () => {
             if(isSortable && onColumnClick) {
@@ -76,15 +74,15 @@ const SortableTableHeader = ({
 
           const isSortable = (sortable && column.sortable !== false) ? true : false,
             sortIcon = getSortIcon(column, isSortable),
-            columnStyle = columnStyles && (columnStyles.length > (index + (showRadioButton ? 1 : 0)))
-              ? columnStyles[index + (showRadioButton ? 1 : 0)]
+            columnStyle = columnStyles && (columnStyles.length > (index))
+              ? columnStyles[index]
               : {};
 
           return(
             <th
               key={column.key}
               className={classNames(kebabCase(column.key), {'sortable': isSortable})}
-              style={{...columnStyle, minWidth: column.minWidth}}
+              style={{...column.style, ...columnStyle, minWidth: column.minWidth}}
               onClick={handleColumnClick}
             >
               <div

@@ -15,6 +15,13 @@ export type Attributes = ?Object;
 
 export type Methods = ?Object;
 
+export type ApiResponse = ?{
+  count: number,
+  next: ?string,
+  previous: ?string,
+  results: Array<Object>,
+} | null;
+
 type Coordinate = Array<number>;
 
 export type LeafletFeature = {

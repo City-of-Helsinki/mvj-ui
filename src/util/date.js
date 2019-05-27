@@ -48,7 +48,6 @@ export const sortByStartAndEndDateDesc = (a: Object, b: Object, startDatePath?: 
     startB = get(b, startDatePath, '0000-01-01'),
     endB = get(b, endDatePath, '9999-31-12');
 
-  console.log(a, b);
   if(startA > startB) return -1;
   if(startA < startB) return 1;
   if(endA > endB) return -1;
