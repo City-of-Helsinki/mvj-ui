@@ -14,10 +14,12 @@ import {
   notFoundScheduledJobAttributes,
   receiveScheduledJobAttributes,
   receiveScheduledJobMethods,
-  fetchBatchRuns,
-  notFoundBatchRuns,
-  fetchBatchSchedules,
-  notFoundBatchSchedules,
+  fetchJobRuns,
+  receiveJobRuns,
+  notFoundJobRuns,
+  fetchScheduledJobs,
+  receiveScheduledJobs,
+  notFoundScheduledJobs,
 } from './actions';
 import batchrunReducer from './reducer';
 
@@ -25,16 +27,20 @@ import type {BatchRunState} from './types';
 
 const defaultState: BatchRunState = {
   isFetchingJobRunAttributes: false,
+  isFetchingJobRuns: false,
   isFetchingJobRunLogEntryAttributes: false,
-  isFetchingRuns: false,
-  isFetchingSchedules: false,
+  isFetchingScheduledJobs: false,
   isFetchingScheduledJobAttributes: false,
+  isFetchingJobRunLogEntriesByRun: {},
   jobRunAttributes: null,
   jobRunMethods: null,
+  jobRuns: null,
   jobRunLogEntryAttributes: null,
   jobRunLogEntryMethods: null,
+  jobRunLogEntriesByRun: {},
   scheduledJobAttributes: null,
   scheduledJobMethods: null,
+  scheduledJobs: null,
 };
 
 // $FlowFixMe
@@ -137,7 +143,7 @@ describe('Infill development', () => {
       });
 
       it('should update isFetchingScheduledJobAttributes flag to false by notFoundScheduledJobAttributes', () => {
-        const newState = {...defaultState, isFetchingJobAttributes: false};
+        const newState = {...defaultState, isFetchingScheduledJobAttributes: false};
 
         let state: Object = batchrunReducer({}, fetchScheduledJobAttributes());
         state = batchrunReducer(state, notFoundScheduledJobAttributes());
@@ -170,33 +176,61 @@ describe('Infill development', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetchingRuns flag to true when fetching batch runs', () => {
-        const newState = {...defaultState, isFetchingRuns: true};
+      it('should update isFetchingJobRuns flag to true when fetching batch runs', () => {
+        const newState = {...defaultState, isFetchingJobRuns: true};
 
-        const state = batchrunReducer({}, fetchBatchRuns({}));
+        const state = batchrunReducer({}, fetchJobRuns({}));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetchingRuns flag to true by notFoundBatchRuns', () => {
-        const newState = {...defaultState, isFetchingRuns: false};
+      it('should update isFetchingJobRuns flag to true by notFoundJobRuns', () => {
+        const newState = {...defaultState, isFetchingJobRuns: false};
 
-        let state = batchrunReducer({}, fetchBatchRuns({}));
-        state = batchrunReducer(state, notFoundBatchRuns());
+        let state = batchrunReducer({}, fetchJobRuns({}));
+        state = batchrunReducer(state, notFoundJobRuns());
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetchingSchedules flag to true when fetching batch schedules', () => {
-        const newState = {...defaultState, isFetchingSchedules: true};
+      it('should update jobRuns', () => {
+        const dummyJobRuns = {
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        };
 
-        const state = batchrunReducer({}, fetchBatchSchedules({}));
+        const newState = {...defaultState, isFetchingJobRuns: false, jobRuns: dummyJobRuns};
+
+        const state = batchrunReducer({}, receiveJobRuns(dummyJobRuns));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetchingSchedules flag to true by notFoundBatchSchedules', () => {
-        const newState = {...defaultState, isFetchingSchedules: false};
+      it('should update isFetchingScheduledJobs flag to true when fetching batch schedules', () => {
+        const newState = {...defaultState, isFetchingScheduledJobs: true};
 
-        let state = batchrunReducer({}, fetchBatchSchedules({}));
-        state = batchrunReducer(state, notFoundBatchSchedules());
+        const state = batchrunReducer({}, fetchScheduledJobs({}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingScheduledJobs flag to true by notFoundScheduledJobs', () => {
+        const newState = {...defaultState, isFetchingScheduledJobs: false};
+
+        let state = batchrunReducer({}, fetchScheduledJobs({}));
+        state = batchrunReducer(state, notFoundScheduledJobs());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update scheduledJobs', () => {
+        const dummyScheduledJobs = {
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        };
+
+        const newState = {...defaultState, isFetchingScheduledJobs: false, scheduledJobs: dummyScheduledJobs};
+
+        const state = batchrunReducer({}, receiveScheduledJobs(dummyScheduledJobs));
         expect(state).to.deep.equal(newState);
       });
     });

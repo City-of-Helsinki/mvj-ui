@@ -3,22 +3,29 @@ import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {receiveError} from '$src/api/actions';
 import {
-  notFoundBatchRuns,
-  notFoundBatchSchedules,
+  notFoundJobRuns,
   notFoundJobRunAttributes,
   notFoundJobRunLogEntryAttributes,
+  notFoundJobRunLogEntriesByRun,
   notFoundScheduledJobAttributes,
+  notFoundScheduledJobs,
   receiveJobRunAttributes,
   receiveJobRunMethods,
+  receiveJobRuns,
   receiveJobRunLogEntryAttributes,
   receiveJobRunLogEntryMethods,
+  receiveJobRunLogEntriesByRun,
   receiveScheduledJobAttributes,
   receiveScheduledJobMethods,
+  receiveScheduledJobs,
 } from '$src/batchrun/actions';
 import {
   fetchJobRunAttributes,
+  fetchJobRuns,
   fetchJobRunLogEntryAttributes,
+  fetchJobRunLogEntries,
   fetchScheduledJobAttributes,
+  fetchScheduledJobs,
 } from '$src/batchrun/requests';
 
 function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
@@ -40,6 +47,26 @@ function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
   } catch (error) {
     console.error('Failed to fetch batchrun job run attributes with error "%s"', error);
     yield put(notFoundJobRunAttributes());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchJobRunsSaga({payload: query}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchJobRuns, query);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveJobRuns(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        yield put(notFoundJobRuns());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch job runs with error "%s"', error);
+    yield put(notFoundJobRuns());
     yield put(receiveError(error));
   }
 }
@@ -67,6 +94,26 @@ function* fetchJobRunLogEntryAttributesSaga(): Generator<any, any, any> {
   }
 }
 
+function* fetchJobRunLogEntriesByRunSaga({payload: run}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchJobRunLogEntries, {run: run, limit: 10000});
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveJobRunLogEntriesByRun({run: run, data: bodyAsJson}));
+        break;
+      case 404:
+      case 500:
+        yield put(notFoundJobRunLogEntriesByRun(run));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch job run log entries with error "%s"', error);
+    yield put(notFoundJobRunLogEntriesByRun(run));
+    yield put(receiveError(error));
+  }
+}
+
 function* fetchScheduledJobAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchScheduledJobAttributes);
@@ -90,22 +137,22 @@ function* fetchScheduledJobAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchBatchRunsSaga({payload: query}): Generator<any, any, any> {
+function* fetchScheduledJobsSaga({payload: query}): Generator<any, any, any> {
   try {
-    console.log(query);
-  } catch (error) {
-    console.error('Failed to fetch batch runs with error "%s"', error);
-    yield put(notFoundBatchRuns());
-    yield put(receiveError(error));
-  }
-}
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchScheduledJobs, query);
 
-function* fetchBatchSchedulesSaga({payload: query}): Generator<any, any, any> {
-  try {
-    console.log(query);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveScheduledJobs(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        yield put(notFoundScheduledJobs());
+        break;
+    }
   } catch (error) {
-    console.error('Failed to fetch batch schedules with error "%s"', error);
-    yield put(notFoundBatchSchedules());
+    console.error('Failed to fetch scheduled jobs with error "%s"', error);
+    yield put(notFoundScheduledJobs());
     yield put(receiveError(error));
   }
 }
@@ -116,8 +163,9 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/batchrun/FETCH_JOB_RUN_ATTRIBUTES', fetchJobRunAttributesSaga);
       yield takeLatest('mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRY_ATTRIBUTES', fetchJobRunLogEntryAttributesSaga);
       yield takeLatest('mvj/batchrun/FETCH_SCHEDULED_JOB_ATTRIBUTES', fetchScheduledJobAttributesSaga);
-      yield takeLatest('mvj/batchrun/FETCH_BATCH_RUNS', fetchBatchRunsSaga);
-      yield takeLatest('mvj/batchrun/FETCH_BATCH_SCHEDULES', fetchBatchSchedulesSaga);
+      yield takeLatest('mvj/batchrun/FETCH_JOB_RUNS', fetchJobRunsSaga);
+      yield takeLatest('mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRIES_BY_ID', fetchJobRunLogEntriesByRunSaga);
+      yield takeLatest('mvj/batchrun/FETCH_SCHEDULED_JOBS', fetchScheduledJobsSaga);
     }),
   ]);
 }

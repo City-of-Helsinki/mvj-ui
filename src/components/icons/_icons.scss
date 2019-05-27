@@ -4,6 +4,7 @@
   vertical-align: sub;
   height: rem-calc(25px);
   width: rem-calc(25px);
+  overflow: visible !important;
 
   &.icons__add {
     fill: $dark-green;

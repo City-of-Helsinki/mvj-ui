@@ -2,113 +2,148 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import GreenBox from '$components/content/GreenBox';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SortableTable from '$components/table/SortableTable';
+import {fetchScheduledJobs} from '$src/batchrun/actions';
 import {PermissionMissingTexts} from '$src/enums';
+import {ScheduledJobFieldPaths, ScheduledJobFieldTitles} from '$src/batchrun/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {hasPermissions} from '$util/helpers';
+import {
+  getApiResponseResults,
+  hasPermissions,
+  isFieldAllowedToRead,
+} from '$util/helpers';
+import {getIsFetchingScheduledJobs, getScheduledJobs} from '$src/batchrun/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withBatchrunScheduledJobTabAttributes} from '$components/attributes/BatchrunScheduledJobsTabAttributes';
 
+import type {Attributes} from '$src/types';
+import type {ScheduledJobs as ScheduledJobsType} from '$src/batchrun/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
-const data = [
-  {
-    id: 1,
-    status: 'Käytössä',
-    months: 'Kaikki',
-    days: '1-7',
-    week_day: 'su',
-    hours: 4,
-    minutes: 20,
-    text: 'Viitekorkojen päivitys',
-  },
-  {
-    id: 2,
-    status: 'Käytössä',
-    months: 'Kaikki',
-    days: '1-7',
-    week_day: 'su',
-    hours: 4,
-    minutes: 20,
-    text: 'Viitekorkojen päivitys',
-  },
-  {
-    id: 3,
-    status: 'Käytössä',
-    months: 'Kaikki',
-    days: '1-7',
-    week_day: 'su',
-    hours: 4,
-    minutes: 20,
-    text: 'Viitekorkojen päivitys',
-  },
-];
-
 type Props = {
+  batchrunScheduledJobAttributes: Attributes,
+  fetchScheduledJobs: Function,
   isFetchingBatchrunScheduledJobAttributes: boolean,
+  isFetchingScheduledJobs: boolean,
+  scheduledJobsData: ScheduledJobsType,
   usersPermissions: UsersPermissionsType,
 }
 
-class ScheduledJobs extends PureComponent<Props> {
+type State = {
+  scheduledJobs: Array<Object>,
+  scheduledJobsData: ScheduledJobsType,
+}
+
+class ScheduledJobs extends PureComponent<Props, State> {
+  state = {
+    scheduledJobs: [],
+    scheduledJobsData: null,
+  };
+
+  componentDidMount() {
+    const {fetchScheduledJobs} = this.props;
+
+    fetchScheduledJobs({limit: 10000});
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.scheduledJobsData !== state.scheduledJobsData) {
+      newState.scheduledJobsData = props.scheduledJobsData;
+      newState.scheduledJobs = getApiResponseResults(props.scheduledJobsData);
+    }
+
+    return !isEmpty(newState) ? newState : null;
+  }
+
   getColumns = () => {
+    const {batchrunScheduledJobAttributes} = this.props;
     const columns = [];
 
-    // TODO: Set correct columns when API is ready
-    columns.push({
-      key: 'id',
-      text: '',
-    });
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.ID)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.ID,
+        text: ScheduledJobFieldTitles.ID,
+      });
+    }
 
-    columns.push({
-      key: 'status',
-      text: 'Status',
-    });
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.ENABLED)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.ENABLED,
+        text: ScheduledJobFieldTitles.ENABLED,
+        renderer: (val) => val ? 'Käytössä' : 'Ei käytössä',
+      });
+    }
 
-    columns.push({
-      key: 'months',
-      text: 'Kuukaudet',
-    });
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.YEARS)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.YEARS,
+        text: ScheduledJobFieldTitles.YEARS,
+      });
+    }
 
-    columns.push({
-      key: 'days',
-      text: 'Päivät',
-    });
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.MONTHS)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.MONTHS,
+        text: ScheduledJobFieldTitles.MONTHS,
+      });
+    }
 
-    columns.push({
-      key: 'week_day',
-      text: 'Viikonpäivä',
-    });
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.DAYS_OF_MONTH)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.DAYS_OF_MONTH,
+        text: ScheduledJobFieldTitles.DAYS_OF_MONTH,
+      });
+    }
 
-    columns.push({
-      key: 'hours',
-      text: 'tunnit',
-    });
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.WEEKDAYS)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.WEEKDAYS,
+        text: ScheduledJobFieldTitles.WEEKDAYS,
+      });
+    }
 
-    columns.push({
-      key: 'minutes',
-      text: 'Minuutit',
-    });
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.HOURS)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.HOURS,
+        text: ScheduledJobFieldTitles.HOURS,
+      });
+    }
 
-    columns.push({
-      key: 'text',
-      text: 'Työ',
-    });
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.MINUTES)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.MINUTES,
+        text: ScheduledJobFieldTitles.MINUTES,
+      });
+    }
+
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobFieldPaths.COMMENT)) {
+      columns.push({
+        key: ScheduledJobFieldPaths.COMMENT,
+        text: ScheduledJobFieldTitles.COMMENT,
+      });
+    }
 
     return columns;
   }
+
   render() {
     const {
       isFetchingBatchrunScheduledJobAttributes,
+      isFetchingScheduledJobs,
       usersPermissions,
     } = this.props;
+    const {scheduledJobs} = this.state;
     const columns = this.getColumns();
 
-    if(isFetchingBatchrunScheduledJobAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
+    if(isFetchingBatchrunScheduledJobAttributes || isFetchingScheduledJobs) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
     if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOB)) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
 
@@ -116,7 +151,7 @@ class ScheduledJobs extends PureComponent<Props> {
       <GreenBox>
         <SortableTable
           columns={columns}
-          data={data}
+          data={scheduledJobs}
           style={{marginBottom: 10}}
         />
       </GreenBox>
@@ -129,8 +164,13 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        isFetchingScheduledJobs: getIsFetchingScheduledJobs(state),
+        scheduledJobsData: getScheduledJobs(state),
         usersPermissions: getUsersPermissions(state),
       };
+    },
+    {
+      fetchScheduledJobs,
     },
   ),
 )(ScheduledJobs);

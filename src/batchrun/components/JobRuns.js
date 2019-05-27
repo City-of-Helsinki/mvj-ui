@@ -3,113 +3,128 @@ import React, {PureComponent} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import ErrorIcon from '$components/icons/ErrorIcon';
 import GreenBox from '$components/content/GreenBox';
+import JobRunLogEntryPanel from './JobRunLogEntryPanel';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
-import RunPanel from './RunPanel';
+import Pagination from '$components/table/Pagination';
 import SortableTable from '$components/table/SortableTable';
 import SuccessIcon from '$components/icons/SuccessIcon';
 import TableAndPanelWrapper from '$components/table/TableAndPanelWrapper';
-import {fetchBatchRuns} from '$src/batchrun/actions';
+import {fetchJobRuns} from '$src/batchrun/actions';
+import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {PermissionMissingTexts} from '$src/enums';
+import {JobRunFieldPaths, JobRunFieldTitles} from '$src/batchrun/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   formatDate,
-  getUrlParams,
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getApiResponseResults,
   hasPermissions,
+  isFieldAllowedToRead,
 } from '$util/helpers';
+import {getIsFetchingJobRuns, getJobRunAttributes, getJobRuns} from '$src/batchrun/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withBatchrunJobRunTabAttributes} from '$components/attributes/BatchrunJobRunsTabAttributes';
 
+import type {Attributes} from '$src/types';
+import type {JobRuns as JobRunsType} from '$src/batchrun/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
-const data = [
-  {
-    id: 1,
-    succeeded: false,
-    start_time: '2019-04-04T15:16:46.379318+03:00',
-    end_time: '2019-04-04T15:16:46.379318+03:00',
-    text: 'Lorem ipsum 1',
-  },
-  {
-    id: 2,
-    succeeded: false,
-    start_time: '2019-04-04T15:16:46.379318+03:00',
-    end_time: '2019-04-04T15:16:46.379318+03:00',
-    text: 'Lorem ipsum 2',
-  },
-  {
-    id: 3,
-    succeeded: true,
-    start_time: '2019-04-04T15:16:46.379318+03:00',
-    end_time: '2019-04-04T15:16:46.379318+03:00',
-    text: 'Lorem ipsum 3',
-  },
-];
-
 type Props = {
-  fetchBatchRuns: Function,
+  fetchJobRuns: Function,
   isFetchingBatchrunJobRunsTabAttributes: boolean,
+  isFetchingJobRuns: boolean,
+  jobRunAttributes: Attributes,
+  jobRunsData: JobRunsType,
   location: Object,
   usersPermissions: UsersPermissionsType,
 }
 
 type State = {
+  activePage: number,
+  count: number,
   isPanelOpen: boolean,
+  jobRunsData: JobRunsType,
+  jobRuns: Array<Object>,
+  maxPage: number,
   openedRow: ?Object,
 }
 
 class JobRuns extends PureComponent<Props, State> {
   state = {
+    activePage: 1,
+    count: 0,
     isPanelOpen: false,
+    jobRunsData: null,
+    jobRuns: [],
+    maxPage: 1,
     openedRow: null,
   }
 
   componentDidMount() {
-    this.search();
+    const {fetchJobRuns} = this.props;
+
+    fetchJobRuns({
+      limit: LIST_TABLE_PAGE_SIZE,
+    });
   }
 
-  search = () => {
-    const {fetchBatchRuns, location: {search}} = this.props;
-    const query = getUrlParams(search);
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
 
-    delete query.tab;
+    if(props.jobRunsData !== state.jobRunsData) {
+      newState.jobRunsData = props.jobRunsData;
+      newState.count = getApiResponseCount(props.jobRunsData);
+      newState.maxPage = getApiResponseMaxPage(props.jobRunsData, LIST_TABLE_PAGE_SIZE);
+      newState.jobRuns = getApiResponseResults(props.jobRunsData);
+    }
 
-    fetchBatchRuns(query);
+    return !isEmpty(newState) ? newState : null;
   }
 
   getColumns = () => {
+    const {jobRunAttributes} = this.props;
     const columns = [];
 
-    // TODO: Set correct columns when API is ready
-    columns.push({
-      key: 'succeeded',
-      text: '',
-      renderer: (val) => val
-        ? <SuccessIcon className='icon-small'/>
-        : <ErrorIcon className='icon-small'/>,
-      style: {width: 32},
-    });
+    if(isFieldAllowedToRead(jobRunAttributes, JobRunFieldPaths.EXIT_CODE)) {
+      columns.push({
+        key: JobRunFieldPaths.EXIT_CODE,
+        text: JobRunFieldTitles.EXIT_CODE,
+        renderer: (val) => val
+          ? <ErrorIcon className='icon-small'/>
+          : <SuccessIcon className='icon-small'/>,
+        style: {width: 32},
+      });
+    }
 
-    columns.push({
-      key: 'start_time',
-      text: 'Aloitusaika',
-      renderer: (val) => formatDate(val, 'DD.MM.YYYY H:mm:ss'),
-    });
+    if(isFieldAllowedToRead(jobRunAttributes, JobRunFieldPaths.STARTED_AT)) {
+      columns.push({
+        key: JobRunFieldPaths.STARTED_AT,
+        text: JobRunFieldTitles.STARTED_AT,
+        renderer: (val) => formatDate(val, 'DD.MM.YYYY H:mm:ss'),
+      });
+    }
 
-    columns.push({
-      key: 'end_time',
-      text: 'Päättymisaika',
-      renderer: (val) => formatDate(val, 'DD.MM.YYYY H:mm:ss'),
-    });
+    if(isFieldAllowedToRead(jobRunAttributes, JobRunFieldPaths.STOPPED_AT)) {
+      columns.push({
+        key: JobRunFieldPaths.STOPPED_AT,
+        text: JobRunFieldTitles.STOPPED_AT,
+        renderer: (val) => formatDate(val, 'DD.MM.YYYY H:mm:ss'),
+      });
+    }
 
-    columns.push({
-      key: 'text',
-      text: 'Työ',
-    });
+    if(isFieldAllowedToRead(jobRunAttributes, JobRunFieldPaths.JOB_COMMENT)) {
+      columns.push({
+        key: JobRunFieldPaths.JOB_COMMENT,
+        text: JobRunFieldTitles.JOB_COMMENT,
+      });
+    }
 
     return columns;
   }
@@ -133,26 +148,47 @@ class JobRuns extends PureComponent<Props, State> {
     });
   }
 
+  handlePageClick = (page: number) => {
+    this.setState({activePage: page}, () => {
+      const {fetchJobRuns} = this.props;
+      const query: any = {limit: LIST_TABLE_PAGE_SIZE};
+
+      if(page > 1) {
+        query.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+      }
+
+      fetchJobRuns(query);
+    });
+  }
+
   render() {
     const {
       isFetchingBatchrunJobRunsTabAttributes,
+      isFetchingJobRuns,
+      jobRunsData,
       usersPermissions,
     } = this.props;
-    const {isPanelOpen, openedRow} = this.state;
+    const {
+      activePage,
+      isPanelOpen,
+      jobRuns,
+      maxPage,
+      openedRow,
+    } = this.state;
     const columns = this.getColumns();
 
-    if(isFetchingBatchrunJobRunsTabAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
+    if(isFetchingBatchrunJobRunsTabAttributes || (!jobRunsData && isFetchingJobRuns)) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
     if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN)) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
 
     return (
       <GreenBox>
         <TableAndPanelWrapper
-          hasData={!!data.length}
+          hasData={!!jobRuns.length}
           isPanelOpen={isPanelOpen}
           onPanelClosed={this.handlePanelClosed}
           panelComponent={
-            <RunPanel
+            <JobRunLogEntryPanel
               onClose={this.handlePanelClose}
               runId={openedRow ? openedRow.id : null}
             />
@@ -160,12 +196,16 @@ class JobRuns extends PureComponent<Props, State> {
           tableComponent={
             <SortableTable
               columns={columns}
-              data={data}
+              data={jobRuns}
               selectedRow={openedRow}
-              fixedHeader={true}
               onRowClick={this.handleRowClick}
             />
           }
+        />
+        <Pagination
+          activePage={activePage}
+          maxPage={maxPage}
+          onPageClick={(page) => this.handlePageClick(page)}
         />
       </GreenBox>
     );
@@ -178,11 +218,14 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        isFetchingJobRuns: getIsFetchingJobRuns(state),
+        jobRunAttributes: getJobRunAttributes(state),
+        jobRunsData: getJobRuns(state),
         usersPermissions: getUsersPermissions(state),
       };
     },
     {
-      fetchBatchRuns,
+      fetchJobRuns,
     }
   ),
 )(JobRuns);

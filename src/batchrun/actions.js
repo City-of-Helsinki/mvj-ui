@@ -14,12 +14,15 @@ import type {
   ReceiveScheduledJobAttributesAction,
   ReceiveScheduledJobMethodsAction,
   NotFoundScheduledJobAttributesAction,
-  FetchBatchRunsAction,
-  ReceiveBatchRunsAction,
-  NotFoundBatchRunsAction,
-  FetchBatchSchedulesAction,
-  ReceiveBatchSchedulesAction,
-  NotFoundBatchSchedulesAction,
+  FetchJobRunsAction,
+  ReceiveJobRunsAction,
+  NotFoundJobRunsAction,
+  FetchJobRunLogEntriesByRunAction,
+  ReceiveJobRunLogEntriesByRunAction,
+  NotFoundJobRunLogEntriesByRunAction,
+  FetchScheduledJobsAction,
+  ReceiveScheduledJobsAction,
+  NotFoundScheduledJobsAction,
 } from '$src/batchrun/types';
 
 export const fetchJobRunAttributes = (): FetchJobRunAttributesAction =>
@@ -58,20 +61,29 @@ export const receiveScheduledJobMethods = (methods: Methods): ReceiveScheduledJo
 export const notFoundScheduledJobAttributes = (): NotFoundScheduledJobAttributesAction =>
   createAction('mvj/batchrun/NOT_FOUND_SCHEDULED_JOB_ATTRIBUTES')();
 
-export const fetchBatchRuns = (query: Object): FetchBatchRunsAction =>
-  createAction('mvj/batchrun/FETCH_BATCH_RUNS')(query);
+export const fetchJobRuns = (query: Object): FetchJobRunsAction =>
+  createAction('mvj/batchrun/FETCH_JOB_RUNS')(query);
 
-export const receiveBatchRuns = (runs: Object): ReceiveBatchRunsAction =>
-  createAction('mvj/batchrun/RECEIVE_BATCH_RUNS')(runs);
+export const receiveJobRuns = (runs: Object): ReceiveJobRunsAction =>
+  createAction('mvj/batchrun/RECEIVE_JOB_RUNS')(runs);
 
-export const notFoundBatchRuns = (): NotFoundBatchRunsAction =>
-  createAction('mvj/batchrun/NOT_FOUND_BATCH_RUNS')();
+export const notFoundJobRuns = (): NotFoundJobRunsAction =>
+  createAction('mvj/batchrun/NOT_FOUND_JOB_RUNS')();
 
-export const fetchBatchSchedules = (query: Object): FetchBatchSchedulesAction =>
-  createAction('mvj/batchrun/FETCH_BATCH_SCHEDULES')(query);
+export const fetchJobRunLogEntriesByRun = (run: number): FetchJobRunLogEntriesByRunAction =>
+  createAction('mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRIES_BY_ID')(run);
 
-export const receiveBatchSchedules = (schedules: Object): ReceiveBatchSchedulesAction =>
-  createAction('mvj/batchrun/RECEIVE_BATCH_SCHEDULES')(schedules);
+export const receiveJobRunLogEntriesByRun = (data: Object): ReceiveJobRunLogEntriesByRunAction =>
+  createAction('mvj/batchrun/RECEIVE_JOB_RUN_LOG_ENTRIES_BY_ID')(data);
 
-export const notFoundBatchSchedules = (): NotFoundBatchSchedulesAction =>
-  createAction('mvj/batchrun/NOT_FOUND_BATCH_SCHEDULES')();
+export const notFoundJobRunLogEntriesByRun = (run: number): NotFoundJobRunLogEntriesByRunAction =>
+  createAction('mvj/batchrun/NOT_FOUND_JOB_RUN_LOG_ENTRIES_BY_ID')(run);
+
+export const fetchScheduledJobs = (query: Object): FetchScheduledJobsAction =>
+  createAction('mvj/batchrun/FETCH_SCHEDULED_JOBS')(query);
+
+export const receiveScheduledJobs = (schedules: Object): ReceiveScheduledJobsAction =>
+  createAction('mvj/batchrun/RECEIVE_SCHEDULED_JOBS')(schedules);
+
+export const notFoundScheduledJobs = (): NotFoundScheduledJobsAction =>
+  createAction('mvj/batchrun/NOT_FOUND_SCHEDULED_JOBS')();
