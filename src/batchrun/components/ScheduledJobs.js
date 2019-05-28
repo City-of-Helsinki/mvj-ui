@@ -2,16 +2,24 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
+import ErrorIcon from '$components/icons/ErrorIcon';
 import GreenBox from '$components/content/GreenBox';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SortableTable from '$components/table/SortableTable';
+import SuccessIcon from '$components/icons/SuccessIcon';
 import {fetchScheduledJobs} from '$src/batchrun/actions';
 import {PermissionMissingTexts} from '$src/enums';
-import {ScheduledJobFieldPaths, ScheduledJobFieldTitles} from '$src/batchrun/enums';
+import {
+  ScheduledJobFieldPaths,
+  ScheduledJobFieldTitles,
+  ScheduledJobJobFieldPaths,
+  ScheduledJobJobFieldTitles,
+} from '$src/batchrun/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   getApiResponseResults,
@@ -78,7 +86,10 @@ class ScheduledJobs extends PureComponent<Props, State> {
       columns.push({
         key: ScheduledJobFieldPaths.ENABLED,
         text: ScheduledJobFieldTitles.ENABLED,
-        renderer: (val) => val ? 'Käytössä' : 'Ei käytössä',
+        renderer: (val) => val
+          ? <SuccessIcon className='icon-small'/>
+          : <ErrorIcon className='icon-small'/>,
+        style: {width: 32},
       });
     }
 
@@ -121,6 +132,14 @@ class ScheduledJobs extends PureComponent<Props, State> {
       columns.push({
         key: ScheduledJobFieldPaths.MINUTES,
         text: ScheduledJobFieldTitles.MINUTES,
+      });
+    }
+
+    if(isFieldAllowedToRead(batchrunScheduledJobAttributes, ScheduledJobJobFieldPaths.NAME)) {
+      columns.push({
+        key: 'job.name',
+        text: ScheduledJobJobFieldTitles.NAME,
+        renderer: (val, row) => <abbr title={get(row, 'job.comment') || undefined}>{get(row, 'job.name', '-')}</abbr>,
       });
     }
 

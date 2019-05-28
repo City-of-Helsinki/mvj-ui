@@ -80,6 +80,16 @@ body {
   background-color: $body-background;
 }
 
+abbr {
+  border-bottom: none;
+  cursor: default;
+}
+
+abbr[title] {
+  text-decoration: none;
+  cursor: help;
+}
+
 #root {
   display: block;
   height: 100%;
