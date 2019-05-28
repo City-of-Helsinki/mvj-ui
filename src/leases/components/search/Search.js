@@ -42,6 +42,7 @@ type Props = {
   districts: Array<Object>,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
+  handleSubmit: Function,
   initialize: Function,
   isFetchingAttributes: boolean,
   isSearchInitialized: boolean,
@@ -132,6 +133,14 @@ class Search extends PureComponent<Props, State> {
     }
   }
 
+  handleSubmit = () => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const addOnlyActiveLeases = searchQuery.only_active_leases != undefined;
+
+    this.search(addOnlyActiveLeases);
+  }
+
   isSearchBasicMode = () => {
     const {location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
@@ -150,6 +159,10 @@ class Search extends PureComponent<Props, State> {
   }
 
   onSearchChange = debounce((addOnlyActiveLeases) => {
+    this.search(addOnlyActiveLeases);
+  }, 1000);
+
+  search = (addOnlyActiveLeases: boolean) => {
     if(!this._isMounted) return;
 
     const {formValues, onSearch} = this.props;
@@ -160,7 +173,7 @@ class Search extends PureComponent<Props, State> {
     }
 
     onSearch(newValues, true);
-  }, 500);
+  }
 
   toggleSearchType = () => {
     this.setState({isBasicSearch: !this.state.isBasicSearch});
@@ -176,6 +189,7 @@ class Search extends PureComponent<Props, State> {
   render () {
     const {
       districts,
+      handleSubmit,
       isFetchingAttributes,
     } = this.props;
     const {
@@ -189,7 +203,7 @@ class Search extends PureComponent<Props, State> {
     const districtOptions = getDistrictOptions(districts);
 
     return (
-      <SearchContainer>
+      <SearchContainer onSubmit={handleSubmit(this.handleSubmit)}>
         <Row>
           <Column small={12}>
             <FormField

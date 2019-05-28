@@ -15,6 +15,7 @@ import {FieldTypes} from '$components/enums';
 
 type Props = {
   formValues: Object,
+  handleSubmit: Function,
   initialize: Function,
   isSearchInitialized: boolean,
   onSearch: Function,
@@ -44,6 +45,10 @@ class Search extends PureComponent<Props> {
   onSearchChange = debounce(() => {
     if(!this._isMounted) return;
 
+    this.search();
+  }, 1000);
+
+  search = () => {
     const {formValues, onSearch, sortKey, sortOrder} = this.props;
     const newValues = {...formValues};
 
@@ -53,7 +58,7 @@ class Search extends PureComponent<Props> {
     }
 
     onSearch(newValues, true);
-  }, 500);
+  }
 
   handleClear = () => {
     const {onSearch, sortKey, sortOrder} = this.props;
@@ -68,8 +73,10 @@ class Search extends PureComponent<Props> {
   }
 
   render () {
+    const {handleSubmit} = this.props;
+
     return (
-      <SearchContainer>
+      <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
             <FormField
