@@ -47,6 +47,7 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
   const subjectType = get(explanation, 'subject.subject_type');
   const type = get(explanation, 'subject.type');
   const amount = get(explanation, 'subject.amount');
+  const description = get(explanation, 'subject.description');
   const period = get(explanation, 'subject.period');
   const baseAmount = get(explanation, 'subject.base_amount');
   const baseAmountPeriod = get(explanation, 'subject.base_amount_period');
@@ -63,7 +64,7 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
     case RentExplanationSubjectType.RENT:
       return `Perittävä vuokra (${getLabelOfOption(typeOptions, type)})`;
     default:
-      return null;
+      return description;
   }
 };
 
@@ -79,13 +80,7 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
 
   switch(subjectType) {
     case RentSubItemSubjectType.INDEX:
-      return `Indeksitarkistus (vertailuluku ${subjectNumber})`;
-    case RentSubItemSubjectType.NOTICE:
-      return description || '-' ;
-    case RentSubItemSubjectType.RATIO:
-      return description || '-' ;
-    case RentSubItemSubjectType.NEW_BASE_RENT:
-      return description || '-' ;
+      return `Indeksitarkistus (vertailuluku ${subjectNumber})`;    
     case RentSubItemSubjectType.RENT_ADJUSTMENT:
       switch (type) {
         case RentSubItemType.DISCOUNT:
@@ -94,8 +89,11 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
         default:
           return '-';
       }
+    case RentSubItemSubjectType.NOTICE:
+    case RentSubItemSubjectType.RATIO:
+    case RentSubItemSubjectType.NEW_BASE_RENT:
     default:
-      return '-';
+      return description || '-' ;
   }
 };
 
