@@ -18,7 +18,12 @@ import TableAndPanelWrapper from '$components/table/TableAndPanelWrapper';
 import {fetchJobRuns} from '$src/batchrun/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {PermissionMissingTexts} from '$src/enums';
-import {JobRunFieldPaths, JobRunFieldTitles} from '$src/batchrun/enums';
+import {
+  JobRunFieldPaths,
+  JobRunFieldTitles,
+  JobRunJobFieldPaths,
+  JobRunJobFieldTitles,
+} from '$src/batchrun/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   formatDate,
@@ -119,10 +124,17 @@ class JobRuns extends PureComponent<Props, State> {
       });
     }
 
-    if(isFieldAllowedToRead(jobRunAttributes, JobRunFieldPaths.JOB_COMMENT)) {
+    if(isFieldAllowedToRead(jobRunAttributes, JobRunJobFieldPaths.NAME)) {
       columns.push({
-        key: JobRunFieldPaths.JOB_COMMENT,
-        text: JobRunFieldTitles.JOB_COMMENT,
+        key: 'job.name',
+        text: JobRunJobFieldTitles.NAME,
+      });
+    }
+
+    if(isFieldAllowedToRead(jobRunAttributes, JobRunJobFieldPaths.COMMENT)) {
+      columns.push({
+        key: 'job.comment',
+        text: JobRunJobFieldTitles.COMMENT,
       });
     }
 

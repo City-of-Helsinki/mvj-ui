@@ -10,7 +10,6 @@ export const JobRunFieldPaths = {
   EXIT_CODE: 'exit_code',
   STARTED_AT: 'started_at',
   STOPPED_AT: 'stopped_at',
-  JOB_COMMENT: 'job.comment',
 };
 
 /**
@@ -23,7 +22,26 @@ export const JobRunFieldTitles = {
   EXIT_CODE: '',
   STARTED_AT: 'Aloitusaika',
   STOPPED_AT: 'Päättymisaika',
-  JOB_COMMENT: 'Työ',
+};
+
+/**
+ * Job run jobs field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const JobRunJobFieldPaths = {
+  COMMENT: 'job.children.comment',
+  NAME: 'job.children.name',
+};
+
+/**
+ * Job run jobs field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const JobRunJobFieldTitles = {
+  COMMENT: 'Työn kommentti',
+  NAME: 'Työ',
 };
 
 /**
@@ -32,7 +50,6 @@ export const JobRunFieldTitles = {
  * @type {{}}
  */
 export const JobRunLogEntryFieldPaths = {
-  ID: 'id',
   TEXT: 'text',
   TIME: 'time',
 };
@@ -43,7 +60,6 @@ export const JobRunLogEntryFieldPaths = {
  * @type {{}}
  */
 export const JobRunLogEntryFieldTitles = {
-  ID: '',
   TEXT: 'Tulos',
   TIME: 'Aika',
 };
@@ -72,12 +88,32 @@ export const ScheduledJobFieldPaths = {
  */
 export const ScheduledJobFieldTitles = {
   ID: '',
-  ENABLED: 'Status',
+  ENABLED: 'Käytössä',
   YEARS: 'Vuodet',
   MONTHS: 'Kuukaudet',
   DAYS_OF_MONTH: 'Päivät',
   WEEKDAYS: 'Viikonpäivä',
   HOURS: 'tunnit',
   MINUTES: 'Minuutit',
-  COMMENT: 'Työ',
+  COMMENT: 'Kommentti',
+};
+
+/**
+ * Scheduled job job field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const ScheduledJobJobFieldPaths = {
+  COMMENT: 'job.children.comment',
+  NAME: 'job.children.comment',
+};
+
+/**
+ * Scheduled job job field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const ScheduledJobJobFieldTitles = {
+  COMMENT: 'Työn kommentti',
+  NAME: 'Työ',
 };
