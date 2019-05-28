@@ -18,6 +18,7 @@ import {
   RentAdjustmentManagementSubventionsFieldPaths,
   RentAdjustmentManagementSubventionsFieldTitles,
   RentAdjustmentAmountTypes,
+  RentAdjustmentTypes,
   SubventionTypes,
   RentAdjustmentTemporarySubventionsFieldPaths,
   RentAdjustmentTemporarySubventionsFieldTitles,
@@ -175,7 +176,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                 </Row>
               </Authorization>
 
-              {adjustment.subvention_type &&
+              {adjustment.type === RentAdjustmentTypes.DISCOUNT && adjustment.subvention_type &&
                 <GreenBox className='with-bottom-margin'>
                   <Row>
                     <Column small={6} medium={4} large={2}>

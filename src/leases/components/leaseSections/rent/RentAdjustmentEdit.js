@@ -32,6 +32,7 @@ import {
   RentAdjustmentTemporarySubventionsFieldPaths,
   RentAdjustmentTemporarySubventionsFieldTitles,
   RentAdjustmentAmountTypes,
+  RentAdjustmentTypes,
   SubventionTypes,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
@@ -255,6 +256,7 @@ type Props = {
   subventionGraduatedPercent: ?string,
   subventionType: ?string,
   temporarySubventions: ?Array<Object>,
+  type: ?string,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -333,6 +335,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
       leaseAttributes,
       onRemove,
       subventionType,
+      type,
       usersPermissions,
     } = this.props;
     const {showSubventions} = this.state;
@@ -424,7 +427,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                     <Column small={6}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
                         <FormField
-                          disabled={showSubventions}
+                          disabled={type === RentAdjustmentTypes.DISCOUNT && showSubventions}
                           disableTouched={isSaveClicked}
                           fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
                           invisibleLabel
@@ -497,7 +500,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
             </Column>
           </Row>
 
-          {!showSubventions &&
+          {type === RentAdjustmentTypes.DISCOUNT && !showSubventions &&
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_TYPE)}>
               <Row>
                 <Column>
@@ -509,7 +512,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
               </Row>
             </Authorization>
           }
-          {showSubventions &&
+          {type === RentAdjustmentTypes.DISCOUNT && showSubventions &&
             <AppConsumer>
               {({dispatch}) => {
                 const handleRemoveSubventions = () => {
@@ -649,6 +652,7 @@ export default connect(
       subventionGraduatedPercent: selector(state, `${props.field}.subvention_graduated_percent`),
       subventionType: selector(state, `${props.field}.subvention_type`),
       temporarySubventions: selector(state, `${props.field}.temporary_subventions`),
+      type: selector(state, `${props.field}.type`),
       usersPermissions: getUsersPermissions(state),
     };
   },

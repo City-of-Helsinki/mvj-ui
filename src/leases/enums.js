@@ -52,6 +52,15 @@ export const RelationTypes = {
 };
 
 /**
+ * Lease rent adjustemnt type enumerable.
+ *
+ * @type {{}}
+ */
+export const RentAdjustmentTypes = {
+  DISCOUNT: 'discount',
+  INCREASE: 'increase',
+};
+/**
  * Lease rent adjustemnt amount type enumerable.
  *
  * @type {{}}
