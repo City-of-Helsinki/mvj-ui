@@ -117,16 +117,17 @@ class Search extends PureComponent<Props, State> {
   componentDidUpdate(prevProps: Props) {
     const {change, fetchDistrictsByMunicipality, isSearchInitialized} = this.props;
 
-    if(Number(prevProps.municipality) !== Number(this.props.municipality)) {
+    if(prevProps.municipality != this.props.municipality) {
       if(this.props.municipality) {
         fetchDistrictsByMunicipality(this.props.municipality);
       }
       change('district', '');
     }
+
     if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       const {location: {search}} = this.props;
       const searchQuery = getUrlParams(search);
-      const addOnlyActiveLeases = searchQuery.only_active_leases != undefined ||
+      const addOnlyActiveLeases = searchQuery.hasOwnProperty('only_active_leases') ||
         prevProps.formValues.only_active_leases !== this.props.formValues.only_active_leases;
 
       this.onSearchChange(addOnlyActiveLeases);
@@ -136,7 +137,7 @@ class Search extends PureComponent<Props, State> {
   handleSubmit = () => {
     const {location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
-    const addOnlyActiveLeases = searchQuery.only_active_leases != undefined;
+    const addOnlyActiveLeases = searchQuery.hasOwnProperty('only_active_leases');
 
     this.search(addOnlyActiveLeases);
   }
@@ -145,13 +146,18 @@ class Search extends PureComponent<Props, State> {
     const {location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
 
+    // Ignore these fields when testing is search query length
     delete searchQuery.page;
     delete searchQuery.sort_key;
     delete searchQuery.sort_order;
+    delete searchQuery.lease_state;
+    delete searchQuery.in_bbox;
+    delete searchQuery.visualization;
+    delete searchQuery.zoom;
 
-    if(!Object.keys(searchQuery).length ||
-      Object.keys(searchQuery).length === 1 && (searchQuery.search || searchQuery.lease_state) ||
-      Object.keys(searchQuery).length === 2 && (searchQuery.search && searchQuery.lease_state)) {
+    const keys = Object.keys(searchQuery);
+
+    if(!keys.length || (keys.length === 1 && searchQuery.hasOwnProperty('search'))) {
       return true;
     }
 

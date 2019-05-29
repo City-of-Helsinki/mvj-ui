@@ -8,7 +8,6 @@ import isEmpty from 'lodash/isEmpty';
 import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import LeaseListLayer from './LeaseListLayer';
-import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {defaultZoom, mapColors} from '$src/constants';
 import {MAX_ZOOM_LEVEL_TO_FETCH_LEASES} from '$src/leases/constants';
 import {LeaseFieldPaths} from '$src/leases/enums';
@@ -32,7 +31,6 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 
 type Props = {
   areaNotes: AreaNoteList,
-  fetchAreaNoteList: Function,
   isLoading: boolean,
   leaseAttributes: Attributes,
   leasesData: LeaseList,
@@ -64,13 +62,7 @@ class LeaseListMap extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const {fetchAreaNoteList, usersPermissions} = this.props;
-
     this.setState({bounds: this.getMapBounds()});
-
-    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
-      fetchAreaNoteList({});
-    }
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -171,8 +163,5 @@ export default flowRight(
         usersPermissions: getUsersPermissions(state),
       };
     },
-    {
-      fetchAreaNoteList,
-    }
   ),
 )(LeaseListMap);

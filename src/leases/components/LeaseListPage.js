@@ -28,6 +28,7 @@ import TableIcon from '$components/icons/TableIcon';
 import TableFilterWrapper from '$components/table/TableFilterWrapper';
 import TableWrapper from '$components/table/TableWrapper';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
+import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLease, fetchLeases, fetchLeasesByBBox} from '$src/leases/actions';
 import {fetchLessors} from '$src/lessor/actions';
@@ -90,6 +91,7 @@ const visualizationTypeOptions = [
 type Props = {
   areaNotes: AreaNoteList,
   createLease: Function,
+  fetchAreaNoteList: Function,
   fetchLeases: Function,
   fetchLeasesByBBox: Function,
   fetchLessors: Function,
@@ -138,6 +140,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
   componentDidMount() {
     const {
+      fetchAreaNoteList,
       fetchLessors,
       lessors,
       location: {search},
@@ -160,11 +163,11 @@ class LeaseListPage extends PureComponent<Props, State> {
       this.search();
     }
 
+    fetchAreaNoteList({limit: 10000});
+
     if(isEmpty(lessors)) {
       fetchLessors({limit: 10000});
     }
-
-    this.search();
 
     this.setSearchFormValues();
 
@@ -201,15 +204,25 @@ class LeaseListPage extends PureComponent<Props, State> {
     this.setSearchFormValues();
   }
 
+  getLeaseStates = (query: Object) => {
+    return isArray(query.lease_state)
+      ? query.lease_state
+      : query.lease_state
+        ? [query.lease_state]
+        : query.search || query.hasOwnProperty('lease_state') ? [] : DEFAULT_LEASE_STATES;
+  }
+
+  getOnlyActiveLeasesValue = (query: Object) => {
+    return query.only_active_leases != undefined
+      ? query.only_active_leases
+      : query.search ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
+  }
+
   setSearchFormValues = () => {
     const {location: {search}, initialize} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
-    const states = isArray(searchQuery.lease_state)
-      ? searchQuery.lease_state
-      : searchQuery.lease_state
-        ? [searchQuery.lease_state]
-        : searchQuery.search ? [] : DEFAULT_LEASE_STATES;
+    const states = this.getLeaseStates(searchQuery);
 
     const setSearchFormReady = () => {
       this.setState({isSearchInitialized: true});
@@ -217,9 +230,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     const initializeSearchForm = async() => {
       const initialValues = {...searchQuery};
-      const onlyActiveLeases = searchQuery.only_active_leases != undefined
-        ? searchQuery.only_active_leases
-        : searchQuery.search ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
+      const onlyActiveLeases = this.getOnlyActiveLeasesValue(searchQuery);
       const tenantContactTypes = isArray(searchQuery.tenantcontact_type)
         ? searchQuery.tenantcontact_type
         : searchQuery.tenantcontact_type ? [searchQuery.tenantcontact_type] : [];
@@ -236,6 +247,10 @@ class LeaseListPage extends PureComponent<Props, State> {
       delete initialValues.lease_state;
       delete initialValues.sort_key;
       delete initialValues.sort_order;
+      delete initialValues.in_bbox;
+      delete initialValues.visualization;
+      delete initialValues.zoom;
+
       initialize(FormNames.LEASE_SEARCH, initialValues);
     };
 
@@ -266,23 +281,12 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {fetchLeases, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
-    const leaseStates = isArray(searchQuery.lease_state)
-      ? searchQuery.lease_state
-      : searchQuery.lease_state
-        ? [searchQuery.lease_state]
-        : searchQuery.search ? [] : DEFAULT_LEASE_STATES;
-    const onlyActiveLeases = searchQuery.only_active_leases != undefined
-      ? searchQuery.only_active_leases
-      : searchQuery.search ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
+    const leaseStates = this.getLeaseStates(searchQuery);
+    const onlyActiveLeases = this.getOnlyActiveLeasesValue(searchQuery);
 
     if(page > 1) {
       searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
-
-    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    delete searchQuery.page;
-    delete searchQuery.in_bbox;
-    delete searchQuery.zoom;
 
     if(onlyActiveLeases != undefined) {
       searchQuery.only_active_leases = onlyActiveLeases;
@@ -295,27 +299,22 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
     searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
+    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
+    delete searchQuery.page;
+    delete searchQuery.in_bbox;
+    delete searchQuery.visualization;
+    delete searchQuery.zoom;
+
     fetchLeases(mapLeaseSearchFilters(searchQuery));
   }
 
   searchByBBox = () => {
     const {fetchLeasesByBBox, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
-    const leaseStates = isArray(searchQuery.lease_state)
-      ? searchQuery.lease_state
-      : searchQuery.lease_state
-        ? [searchQuery.lease_state]
-        : searchQuery.search ? [] : DEFAULT_LEASE_STATES;
-    const onlyActiveLeases = searchQuery.only_active_leases != undefined
-      ? searchQuery.only_active_leases
-      : searchQuery.search ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
+    const leaseStates = this.getLeaseStates(searchQuery);
+    const onlyActiveLeases = this.getOnlyActiveLeasesValue(searchQuery);
 
     if(!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) return;
-
-    searchQuery.limit = 10000;
-    delete searchQuery.page;
-    delete searchQuery.zoom;
-
 
     if(onlyActiveLeases != undefined) {
       searchQuery.only_active_leases = onlyActiveLeases;
@@ -324,6 +323,13 @@ class LeaseListPage extends PureComponent<Props, State> {
     if(leaseStates.length) {
       searchQuery.lease_state = leaseStates;
     }
+
+    searchQuery.limit = 10000;
+    delete searchQuery.page;
+    delete searchQuery.visualization;
+    delete searchQuery.zoom;
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
 
     fetchLeasesByBBox(mapLeaseSearchFilters(searchQuery));
   }
@@ -343,6 +349,18 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     if(query.sort_order) {
       searchQuery.sort_order = query.sort_order;
+    }
+
+    if(query.in_bbox) {
+      searchQuery.in_bbox = query.in_bbox;
+    }
+
+    if(query.zoom) {
+      searchQuery.zoom = query.zoom;
+    }
+
+    if(query.visualization) {
+      searchQuery.visualization = query.visualization;
     }
 
     if(resetActivePage) {
@@ -462,7 +480,6 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.lease_state = values;
 
     this.setState({leaseStates: values});
-
     this.handleSearchChange(searchQuery, true);
   }
 
@@ -649,6 +666,7 @@ export default flowRight(
     },
     {
       createLease,
+      fetchAreaNoteList,
       fetchLeases,
       fetchLeasesByBBox,
       fetchLessors,
