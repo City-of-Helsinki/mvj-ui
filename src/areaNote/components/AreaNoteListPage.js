@@ -22,7 +22,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {getAreaNoteById, getAreaNoteCoordinates} from '$src/areaNote/helpers';
 import {getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle} from '$util/helpers';
-import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
+import {getBoundsFromCoordinates, getCenterFromCoordinates} from '$util/map';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
 import {withAreaNoteAttributes} from '$components/attributes/AreaNoteAttributes';
@@ -121,8 +121,8 @@ class AreaNoteListPage extends PureComponent<Props, State> {
         const areaNote = getAreaNoteById(props.areaNotes, Number(areaNoteId));
         const coordinates = getAreaNoteCoordinates(areaNote);
 
-        newState.bounds = coordinates.length ? getCoordinatesBounds(coordinates) : undefined;
-        newState.center = coordinates.length ? getCoordinatesCenter(coordinates) : undefined;
+        newState.bounds = coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined;
+        newState.center = coordinates.length ? getCenterFromCoordinates(coordinates) : undefined;
       }
     }
 

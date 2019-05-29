@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
+import ZoomLevelWarning from './ZoomLevelWarning';
 import {createAreaNote, deleteAreaNote, editAreaNote, hideEditMode} from '$src/areaNote/actions';
 import {defaultCoordinates, defaultZoom} from '$src/constants';
 import {convertFeatureCollectionToFeature} from '$src/areaNote/helpers';
@@ -31,8 +32,13 @@ type Props = {
   hideEditMode: Function,
   initialValues: Object,
   isEditMode: boolean;
+  isLoading?: boolean,
   onHideEdit?: Function,
+  onMapDidMount?: Function,
+  onViewportChanged?: Function,
   overlayLayers?: Array<Object>,
+  showZoomLevelWarning?: boolean,
+  zoomLevelWarningText?: string,
 }
 
 type State = {
@@ -152,7 +158,18 @@ class AreaNotesEditMap extends Component<Props, State> {
   }
 
   render() {
-    const {allowToEdit, bounds, center, isEditMode, overlayLayers} = this.props;
+    const {
+      allowToEdit,
+      bounds,
+      center,
+      isEditMode,
+      isLoading,
+      onMapDidMount,
+      onViewportChanged,
+      overlayLayers,
+      showZoomLevelWarning,
+      zoomLevelWarningText,
+    } = this.props;
     const {isNew, isValid} = this.state;
 
     return (
@@ -160,6 +177,9 @@ class AreaNotesEditMap extends Component<Props, State> {
         <MapContainer
           bounds={bounds}
           center={(center && center.length > 1) ? center : defaultCoordinates}
+          isLoading={isLoading}
+          onMapDidMount={onMapDidMount}
+          onViewportChanged={onViewportChanged}
           overlayLayers={overlayLayers}
           zoom={defaultZoom}
         >
@@ -209,6 +229,13 @@ class AreaNotesEditMap extends Component<Props, State> {
               onDelete={this.deleteAreaNote}
               onEdit={this.handleEdit}
               show={isEditMode}
+            />
+          }
+
+          {zoomLevelWarningText &&
+            <ZoomLevelWarning
+              isOpen={showZoomLevelWarning}
+              text={zoomLevelWarningText}
             />
           }
         </MapContainer>

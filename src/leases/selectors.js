@@ -22,6 +22,9 @@ export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolea
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.lease.isFetching;
 
+export const getIsFetchingByBBox: Selector<boolean, void> = (state: RootState): boolean =>
+  state.lease.isFetchingByBBox;
+
 export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean =>
   state.lease.isSaving;
 
@@ -51,6 +54,9 @@ export const getMethods: Selector<Methods, void> = (state: RootState): Methods =
 
 export const getLeasesList: Selector<LeaseList, void> = (state: RootState): LeaseList =>
   state.lease.list;
+
+export const getLeasesByBBox: Selector<LeaseList, void> = (state: RootState): LeaseList =>
+  state.lease.listByBBox;
 
 export const getCurrentLease: Selector<Lease, void> = (state: RootState): Lease =>
   state.lease.current;

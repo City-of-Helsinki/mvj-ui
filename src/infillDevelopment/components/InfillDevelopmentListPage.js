@@ -318,7 +318,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     if(isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)) {
       columns.push({
         key: 'leaseIdentifiers',
-        text: 'Vuokratunnus',
+        text: 'Vuokraustunnus',
         sortable: false,
       });
     }

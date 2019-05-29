@@ -468,11 +468,20 @@
   line-height: 1.4;
 }
 .leaflet-popup-content p {
+  font-size: 13px;
   margin: 3px 0;
+  line-height: 16px;
 
   &.title {
     font-size: 16px;
     margin: 3px 0;
+  }
+
+  a {
+    font-size: 13px;
+    color: $dark-green;
+    margin: 0;
+    vertical-align: text-top;
   }
 }
 .leaflet-popup-tip-container {

@@ -15,6 +15,8 @@ import 'proj4';
 import 'proj4leaflet';
 
 import GeoSearch from '$components/map/GeoSearch';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import ZoomBox from '$components/map/ZoomBox';
 import {minZoom, maxZoom} from '$src/constants';
 
@@ -30,20 +32,54 @@ type Props = {
   bounds?: Object,
   center: Object,
   children: Object,
+  isLoading?: boolean,
+  onMapDidMount?: Function,
+  onViewportChanged?: Function,
   overlayLayers?: Array<Object>,
   zoom: Number,
 };
 
 class MapContainer extends Component<Props> {
+  map: any
+
   static contextTypes = {
     router: PropTypes.object,
   };
 
+  setMapRef = (el: any) => {
+    this.map = el;
+  }
+
+  componentDidMount = () => {
+    const {onMapDidMount} = this.props;
+
+    if(this.map && onMapDidMount) {
+      onMapDidMount(this.getMapValues());
+    }
+  }
+
+  handleViewportChanged = () => {
+    const {onViewportChanged} = this.props;
+
+    if(this.map && onViewportChanged) {
+      onViewportChanged(this.getMapValues());
+    }
+  }
+
+  getMapValues = () => {
+    return {
+      bBox: this.map.leafletElement.getBounds().toBBoxString(),
+      zoom: this.map.leafletElement.getZoom(),
+    };
+  }
+
   render() {
-    const {bounds, center, children, overlayLayers, zoom} = this.props;
+    const {bounds, center, children, isLoading, overlayLayers, zoom} = this.props;
 
     return (
       <Map
+        ref={this.setMapRef}
+        attributionControl={false}
         center={center ? center : undefined}
         bounds={bounds ? bounds : undefined}
         minZoom={minZoom}
@@ -52,7 +88,11 @@ class MapContainer extends Component<Props> {
         zoomControl={false}
         crs={CRS}
         boxZoom={false}
+        onViewportChanged={this.handleViewportChanged}
       >
+        {isLoading &&
+          <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
+        }
         <LayersControl position='topright'>
           <BaseLayer checked name="Karttasarja">
             <WMSTileLayer

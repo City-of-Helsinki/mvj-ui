@@ -5,17 +5,17 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
-import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
-import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
 import IconRadioButtons from '$components/button/IconRadioButtons';
+import LeaseListMap from '$src/leases/components/leaseSections/map/LeaseListMap';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MapIcon from '$components/icons/MapIcon';
@@ -29,8 +29,7 @@ import TableFilterWrapper from '$components/table/TableFilterWrapper';
 import TableWrapper from '$components/table/TableWrapper';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {fetchAreaNoteList} from '$src/areaNote/actions';
-import {createLease, fetchLeases} from '$src/leases/actions';
+import {createLease, fetchLeases, fetchLeasesByBBox} from '$src/leases/actions';
 import {fetchLessors} from '$src/lessor/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {
@@ -38,7 +37,9 @@ import {
   DEFAULT_ONLY_ACTIVE_LEASES,
   DEFAULT_SORT_KEY,
   DEFAULT_SORT_ORDER,
-  leaseStateFilterOptions} from '$src/leases/constants';
+  MAX_ZOOM_LEVEL_TO_FETCH_LEASES,
+  leaseStateFilterOptions,
+} from '$src/leases/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
   LeaseAreasFieldPaths,
@@ -47,7 +48,6 @@ import {
   LeaseFieldTitles,
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
-import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentLeases, mapLeaseSearchFilters} from '$src/leases/helpers';
 import {
   formatDate,
@@ -55,14 +55,17 @@ import {
   getLabelOfOption,
   getSearchQuery,
   getUrlParams,
-  hasPermissions,
   isFieldAllowedToRead,
   isMethodAllowed,
   setPageTitle,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getAreaNoteList, getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
-import {getIsFetching, getLeasesList} from '$src/leases/selectors';
+import {
+  getIsFetching,
+  getIsFetchingByBBox,
+  getLeasesList,
+} from '$src/leases/selectors';
 import {getLessorList} from '$src/lessor/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withLeaseListPageAttributes} from '$components/attributes/LeaseListPageAttributes';
@@ -74,20 +77,26 @@ import type {LeaseList} from '$src/leases/types';
 import type {LessorList} from '$src/lessor/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
+const VisualizationTypes = {
+  MAP: 'map',
+  TABLE: 'table',
+};
+
 const visualizationTypeOptions = [
-  {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
-  {value: 'map', label: 'Kartta', icon: <MapIcon className='icon-medium' />},
+  {value: VisualizationTypes.TABLE, label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
+  {value: VisualizationTypes.MAP, label: 'Kartta', icon: <MapIcon className='icon-medium' />},
 ];
 
 type Props = {
   areaNotes: AreaNoteList,
   createLease: Function,
-  fetchAreaNoteList: Function,
   fetchLeases: Function,
+  fetchLeasesByBBox: Function,
   fetchLessors: Function,
   history: Object,
   initialize: Function,
   isFetching: boolean,
+  isFetchingByBBox: boolean,
   isFetchingLeaseAttributes: boolean,
   leaseAttributes: Attributes,
   leaseMethods: MethodsType,
@@ -120,7 +129,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     isSearchInitialized: false,
     sortKey: DEFAULT_SORT_KEY,
     sortOrder: DEFAULT_SORT_ORDER,
-    visualizationType: 'table',
+    visualizationType: VisualizationTypes.TABLE,
   }
 
   static contextTypes = {
@@ -129,11 +138,12 @@ class LeaseListPage extends PureComponent<Props, State> {
 
   componentDidMount() {
     const {
-      fetchAreaNoteList,
       fetchLessors,
       lessors,
+      location: {search},
       receiveTopNavigationSettings,
     } = this.props;
+    const searchQuery = getUrlParams(search);
 
     setPageTitle('Vuokraukset');
 
@@ -143,7 +153,12 @@ class LeaseListPage extends PureComponent<Props, State> {
       showSearch: false,
     });
 
-    fetchAreaNoteList({});
+    if(searchQuery.visualization === VisualizationTypes.MAP) {
+      this.setState({visualizationType: VisualizationTypes.MAP});
+      this.searchByBBox();
+    } else {
+      this.search();
+    }
 
     if(isEmpty(lessors)) {
       fetchLessors({limit: 10000});
@@ -159,10 +174,18 @@ class LeaseListPage extends PureComponent<Props, State> {
 
   componentDidUpdate(prevProps) {
     const {location: {search: currentSearch}} = this.props;
+    const {visualizationType} = this.state;
     const {location: {search: prevSearch}} = prevProps;
 
     if(currentSearch !== prevSearch) {
-      this.search();
+      switch(visualizationType) {
+        case VisualizationTypes.MAP:
+          this.searchByBBox();
+          break;
+        case VisualizationTypes.TABLE:
+          this.search();
+          break;
+      }
 
       this.setSearchFormValues();
     }
@@ -170,6 +193,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+
     this._isMounted = false;
   }
 
@@ -181,12 +205,11 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {location: {search}, initialize} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
-    const identifier = searchQuery.identifier;
     const states = isArray(searchQuery.lease_state)
       ? searchQuery.lease_state
       : searchQuery.lease_state
         ? [searchQuery.lease_state]
-        : identifier ? [] : DEFAULT_LEASE_STATES;
+        : searchQuery.search ? [] : DEFAULT_LEASE_STATES;
 
     const setSearchFormReady = () => {
       this.setState({isSearchInitialized: true});
@@ -196,7 +219,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       const initialValues = {...searchQuery};
       const onlyActiveLeases = searchQuery.only_active_leases != undefined
         ? searchQuery.only_active_leases
-        : identifier ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
+        : searchQuery.search ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
       const tenantContactTypes = isArray(searchQuery.tenantcontact_type)
         ? searchQuery.tenantcontact_type
         : searchQuery.tenantcontact_type ? [searchQuery.tenantcontact_type] : [];
@@ -243,15 +266,14 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {fetchLeases, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
-    const identifier = searchQuery.identifier;
     const leaseStates = isArray(searchQuery.lease_state)
       ? searchQuery.lease_state
       : searchQuery.lease_state
         ? [searchQuery.lease_state]
-        : identifier ? [] : DEFAULT_LEASE_STATES;
+        : searchQuery.search ? [] : DEFAULT_LEASE_STATES;
     const onlyActiveLeases = searchQuery.only_active_leases != undefined
       ? searchQuery.only_active_leases
-      : identifier ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
+      : searchQuery.search ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
 
     if(page > 1) {
       searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
@@ -259,6 +281,8 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
+    delete searchQuery.in_bbox;
+    delete searchQuery.zoom;
 
     if(onlyActiveLeases != undefined) {
       searchQuery.only_active_leases = onlyActiveLeases;
@@ -272,6 +296,36 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
     fetchLeases(mapLeaseSearchFilters(searchQuery));
+  }
+
+  searchByBBox = () => {
+    const {fetchLeasesByBBox, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const leaseStates = isArray(searchQuery.lease_state)
+      ? searchQuery.lease_state
+      : searchQuery.lease_state
+        ? [searchQuery.lease_state]
+        : searchQuery.search ? [] : DEFAULT_LEASE_STATES;
+    const onlyActiveLeases = searchQuery.only_active_leases != undefined
+      ? searchQuery.only_active_leases
+      : searchQuery.search ? undefined : DEFAULT_ONLY_ACTIVE_LEASES;
+
+    if(!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) return;
+
+    searchQuery.limit = 10000;
+    delete searchQuery.page;
+    delete searchQuery.zoom;
+
+
+    if(onlyActiveLeases != undefined) {
+      searchQuery.only_active_leases = onlyActiveLeases;
+    }
+
+    if(leaseStates.length) {
+      searchQuery.lease_state = leaseStates;
+    }
+
+    fetchLeasesByBBox(mapLeaseSearchFilters(searchQuery));
   }
 
   handleSearchChange = (formValues: Object, resetActivePage?: boolean = false, resetFilters?: boolean = false) => {
@@ -413,29 +467,21 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   handleVisualizationTypeChange = (value: string) => {
-    this.setState({visualizationType: value});
-  }
+    this.setState({visualizationType: value}, () => {
+      const {history, location: {search}} = this.props;
+      const searchQuery = getUrlParams(search);
 
-  getOverlayLayers = () => {
-    const layers = [];
-    const {
-      areaNotes,
-      usersPermissions,
-    } = this.props;
+      if(value === VisualizationTypes.MAP) {
+        searchQuery.visualization = VisualizationTypes.MAP;
+      } else {
+        delete searchQuery.visualization;
+      }
 
-    {hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && !isEmpty(areaNotes) &&
-      layers.push({
-        checked: false,
-        component: <AreaNotesLayer
-          key='area_notes'
-          allowToEdit={false}
-          areaNotes={areaNotes}
-        />,
-        name: 'Muistettavat ehdot',
+      return history.push({
+        pathname: getRouteById(Routes.LEASES),
+        search: getSearchQuery(searchQuery),
       });
-    }
-
-    return layers;
+    });
   }
 
   handleSortingChange = ({sortKey, sortOrder}) => {
@@ -453,6 +499,19 @@ class LeaseListPage extends PureComponent<Props, State> {
     this.handleSearchChange(searchQuery);
   }
 
+  handleMapViewportChanged = debounce((mapOptions: Object) => {
+    const {history, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    searchQuery.in_bbox = mapOptions.bBox;
+    searchQuery.zoom = mapOptions.zoom;
+
+    return history.push({
+      pathname: getRouteById(Routes.LEASES),
+      search: getSearchQuery(searchQuery),
+    });
+  }, 1000);
+
   render() {
     const {
       activePage,
@@ -465,18 +524,18 @@ class LeaseListPage extends PureComponent<Props, State> {
     } = this.state;
     const {
       createLease,
+      isFetching,
+      isFetchingByBBox,
       isFetchingLeaseAttributes,
       leaseAttributes,
       leaseMethods,
       leases: content,
       location: {query},
-      isFetching,
     } = this.props;
     const leases = getContentLeases(content, query);
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
     const columns = this.getColumns();
-    const overlayLayers = this.getOverlayLayers();
 
     if(isFetchingLeaseAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
@@ -536,7 +595,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
         <TableWrapper>
           {isFetching &&
-            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
+            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
           }
 
           {visualizationType === 'table' &&
@@ -561,9 +620,10 @@ class LeaseListPage extends PureComponent<Props, State> {
             </Fragment>
           }
           {visualizationType === 'map' &&
-            <AreaNotesEditMap
+            <LeaseListMap
               allowToEdit={false}
-              overlayLayers={overlayLayers}
+              isLoading={isFetchingByBBox}
+              onViewportChanged={this.handleMapViewportChanged}
             />
           }
         </TableWrapper>
@@ -581,6 +641,7 @@ export default flowRight(
         areaNoteMethods: getAreaNoteMethods(state),
         areaNotes: getAreaNoteList(state),
         isFetching: getIsFetching(state),
+        isFetchingByBBox: getIsFetchingByBBox(state),
         leases: getLeasesList(state),
         lessors: getLessorList(state),
         usersPermissions: getUsersPermissions(state),
@@ -588,8 +649,8 @@ export default flowRight(
     },
     {
       createLease,
-      fetchAreaNoteList,
       fetchLeases,
+      fetchLeasesByBBox,
       fetchLessors,
       initialize,
       receiveTopNavigationSettings,

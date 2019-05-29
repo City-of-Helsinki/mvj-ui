@@ -26,5 +26,5 @@ export const InvoiceNoteFieldTitles = {
   BILLING_PERIOD_START_DATE: 'Laskutuksen alkupvm',
   BILLING_PERIOD_END_DATE: 'Laskutuksen loppupvm',
   NOTES: 'Tiedote',
-  LEASE: 'Vuokratunnus',
+  LEASE: 'Vuokraustunnus',
 };

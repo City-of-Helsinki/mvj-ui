@@ -11,11 +11,13 @@ import {
   hideEditMode,
   attributesNotFound,
   notFound,
+  notFoundByBBox,
   notFoundById,
   receiveAttributes,
   receiveMethods,
   receiveIsSaveClicked,
   receiveLeases,
+  receiveLeasesByBBox,
   receiveSingleLease,
   receiveLeaseById,
 } from './actions';
@@ -80,6 +82,26 @@ function* fetchLeasesSaga({payload: query}): Generator<any, any, any> {
   } catch (error) {
     console.error('Failed to fetch leases with error "%s"', error);
     yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchLeasesByBBoxSaga({payload: query}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases, query);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLeasesByBBox(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        yield put(notFoundByBBox());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch leases with error "%s"', error);
+    yield put(notFoundByBBox());
     yield put(receiveError(error));
   }
 }
@@ -503,6 +525,7 @@ export default function*(): Generator<any, any, any> {
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
+      yield takeLatest('mvj/leases/FETCH_BY_BBOX', fetchLeasesByBBoxSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE_AFTER_EDIT', fetchSingleLeaseAfterEditSaga);
       yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);

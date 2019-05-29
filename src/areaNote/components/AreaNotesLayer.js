@@ -106,7 +106,7 @@ class AreaNotesLayer extends Component<Props, State> {
         key={JSON.stringify(areaNotesGeoJson)}
         data={areaNotesGeoJson}
         // Add this coodination convert function if want to to use EPSG:3879 projection
-        // coordsToLatLng={getCoordsToLatLng(areaNotesGeoJson)}
+        // coordsToLatLng={formatCoordsToLatLng(areaNotesGeoJson)}
         onEachFeature={(feature, layer) => {
           if (feature.properties) {
             const {

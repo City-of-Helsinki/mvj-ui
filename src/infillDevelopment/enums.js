@@ -88,7 +88,7 @@ export const InfillDevelopmentCompensationLeasesFieldTitles = {
   COMPENSATION_INVESTMENT_AMOUNT: 'Korvausinvestoinnit',
   DISCOUNT_IN_RENT: 'Vuokranalennus',
   INCREASE_IN_VALUE: 'Arvonnousu (alv 0%)',
-  LEASE: 'Vuokratunnus',
+  LEASE: 'Vuokraustunnus',
   MONETARY_COMPENSATION_AMOUNT: 'Rahakorvaus',
   NOTE: 'Huomautus',
   PAID_DATE: 'Maksettu',

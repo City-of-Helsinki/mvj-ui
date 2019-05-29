@@ -150,8 +150,8 @@ class Search extends PureComponent<Props, State> {
     delete searchQuery.sort_order;
 
     if(!Object.keys(searchQuery).length ||
-      Object.keys(searchQuery).length === 1 && (searchQuery.identifier || searchQuery.lease_state) ||
-      Object.keys(searchQuery).length === 2 && (searchQuery.identifier && searchQuery.lease_state)) {
+      Object.keys(searchQuery).length === 1 && (searchQuery.search || searchQuery.lease_state) ||
+      Object.keys(searchQuery).length === 2 && (searchQuery.search && searchQuery.lease_state)) {
       return true;
     }
 
@@ -215,7 +215,7 @@ class Search extends PureComponent<Props, State> {
                 read_only: false,
               }}
               invisibleLabel
-              name='identifier'
+              name='search'
             />
           </Column>
         </Row>
@@ -501,7 +501,7 @@ class Search extends PureComponent<Props, State> {
                 </SearchRow>
                 <SearchRow>
                   <SearchLabelColumn>
-                    <SearchLabel>Vuokratunnus</SearchLabel>
+                    <SearchLabel>Vuokraustunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
                     <Row>

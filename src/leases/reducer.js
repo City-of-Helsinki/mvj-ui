@@ -12,6 +12,7 @@ import type {
   ReceiveAttributesAction,
   ReceiveMethodsAction,
   ReceiveLeasesAction,
+  ReceiveLeasesByBBoxAction,
   ReceiveSingleLeaseAction,
   FetchLeaseByIdAction,
   ReceiveLeaseByIdAction,
@@ -43,6 +44,12 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/NOT_FOUND': () => false,
   'mvj/leases/RECEIVE_ALL': () => false,
   'mvj/leases/RECEIVE_SINGLE': () => false,
+}, false);
+
+const isFetchingByBBoxReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/FETCH_BY_BBOX': () => true,
+  'mvj/leases/NOT_FOUND_BY_BBOX': () => false,
+  'mvj/leases/RECEIVE_BY_BBOX': () => false,
 }, false);
 
 const isSavingReducer: Reducer<boolean> = handleActions({
@@ -104,7 +111,13 @@ const leasesListReducer: Reducer<LeaseList> = handleActions({
   ['mvj/leases/RECEIVE_ALL']: (state: LeaseList, {payload: leases}: ReceiveLeasesAction) => {
     return leases;
   },
-}, {});
+}, null);
+
+const listByBBoxReducer: Reducer<LeaseList> = handleActions({
+  ['mvj/leases/RECEIVE_BY_BBOX']: (state: LeaseList, {payload: leases}: ReceiveLeasesByBBoxAction) => {
+    return leases;
+  },
+}, null);
 
 const currentLeaseReducer: Reducer<Lease> = handleActions({
   ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
@@ -173,10 +186,12 @@ export default combineReducers<Object, any>({
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isFetchingByBBox: isFetchingByBBoxReducer,
   isFetchingById: isFetchingByIdReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
   isSaving: isSavingReducer,
   list: leasesListReducer,
+  listByBBox: listByBBoxReducer,
   methods: methodsReducer,
 });

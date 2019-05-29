@@ -4,48 +4,51 @@ import {createAction} from 'redux-actions';
 
 import type {Attributes, Methods} from '$src/types';
 import type {
-  FetchAttributesAction,
-  ReceiveAttributesAction,
-  ReceiveMethodsAction,
-  Lease,
-  LeaseId,
-  LeaseAttributesNotFoundAction,
-  LeaseNotFoundAction,
-  LeaseNotFoundByIdAction,
-  SendEmailAction,
-  SendEmailPayload,
-  LeaseList,
+  ClearFormValidFlagsAction,
+  CopyAreasToContractAction,
+  CopyDecisionToLeasesAction,
+  CreateChargeAction,
+  CreateChargePayload,
   CreateLeaseAction,
   CreateLeaseAndUpdateCurrentLeaseAction,
   DeleteLeaseAction,
-  PatchLeaseAction,
-  PatchLeaseInvoiceNotesAction,
+  FetchAttributesAction,
+  FetchLeaseByIdAction,
   FetchLeasesAction,
+  FetchLeasesByBBoxAction,
   FetchSingleLeaseAction,
   FetchSingleLeaseAfterEditAction,
   FetchSingleLeaseAfterEditPayload,
-  ReceiveLeasesAction,
-  ReceiveSingleLeaseAction,
-  FetchLeaseByIdAction,
+  HideAttachDecisionModalAction,
+  HideCreateModalAction,
+  HideEditModeAction,
+  Lease,
+  LeaseAttributesNotFoundAction,
+  LeaseId,
+  LeaseList,
+  LeaseNotFoundAction,
+  LeaseNotFoundByIdAction,
+  NotFoundByBBoxAction,
+  PatchLeaseAction,
+  PatchLeaseInvoiceNotesAction,
+  ReceiveAttributesAction,
+  ReceiveCollapseStatesAction,
+  ReceiveFormValidFlagsAction,
+  ReceiveIsSaveClickedAction,
   ReceiveLeaseByIdAction,
-  StartInvoicingAction,
-  StopInvoicingAction,
+  ReceiveLeasesAction,
+  ReceiveLeasesByBBoxAction,
+  ReceiveMethodsAction,
+  ReceiveSingleLeaseAction,
+  SendEmailAction,
+  SendEmailPayload,
   SetRentInfoCompleteAction,
   SetRentInfoUncompleteAction,
-  HideEditModeAction,
-  ShowEditModeAction,
-  CopyAreasToContractAction,
-  CopyDecisionToLeasesAction,
-  HideAttachDecisionModalAction,
   ShowAttachDecisionModalAction,
-  HideCreateModalAction,
   ShowCreateModalAction,
-  ReceiveFormValidFlagsAction,
-  ClearFormValidFlagsAction,
-  ReceiveIsSaveClickedAction,
-  ReceiveCollapseStatesAction,
-  CreateChargePayload,
-  CreateChargeAction,
+  ShowEditModeAction,
+  StartInvoicingAction,
+  StopInvoicingAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -60,8 +63,14 @@ export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
 export const fetchLeases = (params: Object): FetchLeasesAction =>
   createAction('mvj/leases/FETCH_ALL')(params);
 
+export const fetchLeasesByBBox = (params: Object): FetchLeasesByBBoxAction =>
+  createAction('mvj/leases/FETCH_BY_BBOX')(params);
+
 export const receiveLeases = (leases: LeaseList): ReceiveLeasesAction =>
   createAction('mvj/leases/RECEIVE_ALL')(leases);
+
+export const receiveLeasesByBBox = (leases: LeaseList): ReceiveLeasesByBBoxAction =>
+  createAction('mvj/leases/RECEIVE_BY_BBOX')(leases);
 
 export const fetchSingleLease = (id: LeaseId): FetchSingleLeaseAction =>
   createAction('mvj/leases/FETCH_SINGLE')(id);
@@ -113,6 +122,9 @@ export const sendEmail = (payload: SendEmailPayload):SendEmailAction =>
 
 export const notFound = (): LeaseNotFoundAction =>
   createAction('mvj/leases/NOT_FOUND')();
+
+export const notFoundByBBox = (): NotFoundByBBoxAction =>
+  createAction('mvj/leases/NOT_FOUND_BY_BBOX')();
 
 export const notFoundById = (id: LeaseId): LeaseNotFoundByIdAction =>
   createAction('mvj/leases/NOT_FOUND_BY_ID')(id);

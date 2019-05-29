@@ -84,7 +84,7 @@ const getColumns = (invoiceAttributes: Attributes) => {
   if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.LEASE)) {
     columns.push({
       key: 'lease',
-      text: 'Vuokratunnus',
+      text: 'Vuokraustunnus',
       renderer: (val) => getContentLeaseIdentifier(val),
       sortable: false,
     });

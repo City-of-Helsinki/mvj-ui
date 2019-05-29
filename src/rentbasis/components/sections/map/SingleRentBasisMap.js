@@ -17,7 +17,7 @@ import {
   hasPermissions,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} from '$util/map';
+import {getBoundsFromCoordinates, getCenterFromCoordinates, getCoordinatesOfGeometry} from '$util/map';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getRentBasisAttributes, getRentBasis} from '$src/rentbasis/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -79,8 +79,8 @@ class SingleRentBasisMap extends Component<Props, State> {
       const coordinates = getCoordinatesOfGeometry(props.rentBasis.geometry);
 
       newState.rentBasis = props.rentBasis;
-      newState.bounds = coordinates.length ? getCoordinatesBounds(coordinates) : undefined;
-      newState.center = coordinates.length ? getCoordinatesCenter(coordinates) : undefined;
+      newState.bounds = coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined;
+      newState.center = coordinates.length ? getCenterFromCoordinates(coordinates) : undefined;
       newState.geoJSON = getContentRentBasisGeoJson(props.rentBasis);
     }
 

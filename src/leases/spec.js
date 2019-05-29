@@ -1,39 +1,42 @@
 // @flow
 import {expect} from 'chai';
 import {
-  fetchAttributes,
-  receiveAttributes,
-  receiveMethods,
   attributesNotFound,
-  fetchLeases,
-  receiveLeases,
-  fetchSingleLease,
-  receiveSingleLease,
-  fetchLeaseById,
-  receiveLeaseById,
-  notFoundById,
+  clearFormValidFlags,
+  copyAreasToContract,
   createLease,
   createLeaseAndUpdateCurrentLease,
   deleteLease,
+  fetchAttributes,
+  fetchLeaseById,
+  fetchLeases,
+  fetchLeasesByBBox,
+  fetchSingleLease,
+  hideAttachDecisionModal,
+  hideCreateModal,
+  hideEditMode,
+  notFound,
+  notFoundByBBox,
+  notFoundById,
   patchLease,
   patchLeaseInvoiceNotes,
-  copyAreasToContract,
+  receiveAttributes,
+  receiveCollapseStates,
+  receiveFormValidFlags,
+  receiveIsSaveClicked,
+  receiveLeaseById,
+  receiveLeases,
+  receiveLeasesByBBox,
+  receiveMethods,
+  receiveSingleLease,
+  sendEmail,
   setRentInfoComplete,
   setRentInfoUncomplete,
+  showAttachDecisionModal,
+  showCreateModal,
+  showEditMode,
   startInvoicing,
   stopInvoicing,
-  sendEmail,
-  notFound,
-  showEditMode,
-  hideEditMode,
-  hideAttachDecisionModal,
-  showAttachDecisionModal,
-  hideCreateModal,
-  showCreateModal,
-  receiveFormValidFlags,
-  clearFormValidFlags,
-  receiveIsSaveClicked,
-  receiveCollapseStates,
 } from './actions';
 import leasesReducer from './reducer';
 
@@ -48,6 +51,7 @@ const defaultState: LeaseState = {
   isCreateModalOpen: false,
   isEditMode: false,
   isFetching: false,
+  isFetchingByBBox: false,
   isFetchingAttributes: false,
   isFetchingById: {},
   isFormValidById: {
@@ -62,7 +66,8 @@ const defaultState: LeaseState = {
   },
   isSaveClicked: false,
   isSaving: false,
-  list: {},
+  list: null,
+  listByBBox: null,
   methods: null,
 };
 
@@ -119,7 +124,10 @@ describe('Leases', () => {
 
       it('should update leaseList', () => {
         const dummyLeaseList = {
-          foo: 'bar',
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
         };
         const newState = {...defaultState};
         newState.list = dummyLeaseList;
@@ -128,10 +136,30 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update listByBBox', () => {
+        const dummyLeaseList = {
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        };
+        const newState = {...defaultState, listByBBox: dummyLeaseList};
+
+        const state = leasesReducer({}, receiveLeasesByBBox(dummyLeaseList));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFetching flag to true when fetching leases', () => {
         const newState = {...defaultState, isFetching: true};
 
         const state = leasesReducer({}, fetchLeases(''));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingByBBox flag to true when fetching leases by bbox', () => {
+        const newState = {...defaultState, isFetchingByBBox: true};
+
+        const state = leasesReducer({}, fetchLeasesByBBox(''));
         expect(state).to.deep.equal(newState);
       });
 
@@ -153,6 +181,14 @@ describe('Leases', () => {
 
         let state = leasesReducer({}, fetchLeases(''));
         state = leasesReducer({}, notFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingByBBox flag to false by notFoundByBBox', () => {
+        const newState = {...defaultState, isFetching: false};
+
+        let state = leasesReducer({}, fetchLeasesByBBox(''));
+        state = leasesReducer({}, notFoundByBBox());
         expect(state).to.deep.equal(newState);
       });
 
