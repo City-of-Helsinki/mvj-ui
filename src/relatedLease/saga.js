@@ -19,7 +19,7 @@ function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
         yield put(fetchSingleLeaseAfterEdit({
           leaseId: payload.from_lease,
           callbackFunctions: [
-            () => displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos luotu'}),
+            () => displayUIMessage({title: '', body: 'Vuokraustunnusten välinen liitos luotu'}),
           ],
         }));
         break;
@@ -42,7 +42,7 @@ function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
         yield put(fetchSingleLeaseAfterEdit({
           leaseId: payload.leaseId,
           callbackFunctions: [
-            () => displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos poistettu'}),
+            () => displayUIMessage({title: '', body: 'Vuokraustunnusten välinen liitos poistettu'}),
           ],
         }));
         break;

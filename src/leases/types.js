@@ -1,5 +1,5 @@
 // @flow
-import type {Action, Attributes, Methods} from '../types';
+import type {Action, ApiResponse, Attributes, Methods} from '../types';
 
 export type LeaseState = {
   attributes: Attributes,
@@ -11,16 +11,18 @@ export type LeaseState = {
   isFormValidById: Object,
   isEditMode: boolean,
   isFetching: boolean,
+  isFetchingByBBox: boolean,
   isFetchingById: {},
   isFetchingAttributes: boolean,
   isSaveClicked: boolean,
   isSaving: boolean,
   list: LeaseList,
+  listByBBox: LeaseList,
   methods: Methods,
 };
 
 export type Lease = Object;
-export type LeaseList = Object;
+export type LeaseList = ApiResponse;
 export type LeaseId = number;
 
 export type CreateChargePayload = {
@@ -44,7 +46,9 @@ export type FetchAttributesAction = Action<'mvj/leases/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', Attributes>;
 export type ReceiveMethodsAction = Action<'mvj/leases/RECEIVE_METHODS', Methods>;
 export type FetchLeasesAction = Action<'mvj/leases/FETCH_ALL', Object>;
+export type FetchLeasesByBBoxAction = Action<'mvj/leases/FETCH_BY_BBOX', Object>;
 export type ReceiveLeasesAction = Action<'mvj/leases/RECEIVE_ALL', LeaseList>;
+export type ReceiveLeasesByBBoxAction = Action<'mvj/leases/RECEIVE_BY_BBOX', LeaseList>;
 export type FetchSingleLeaseAction = Action<'mvj/leases/FETCH_SINGLE', LeaseId>;
 export type FetchSingleLeaseAfterEditAction = Action<'mvj/leases/FETCH_SINGLE_AFTER_EDIT', FetchSingleLeaseAfterEditPayload>;
 export type ReceiveSingleLeaseAction = Action<'mvj/leases/RECEIVE_SINGLE', Lease>;
@@ -61,6 +65,7 @@ export type SetRentInfoCompleteAction = Action<'mvj/leases/SET_RENT_INFO_COMPLET
 export type SetRentInfoUncompleteAction = Action<'mvj/leases/SET_RENT_INFO_UNCOMPLETE', LeaseId>;
 export type LeaseAttributesNotFoundAction = Action<'mvj/leases/ATTRIBUTES_NOT_FOUND', void>;
 export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
+export type NotFoundByBBoxAction = Action<'mvj/leases/NOT_FOUND_BY_BBOX', void>;
 export type LeaseNotFoundByIdAction = Action<'mvj/leases/NOT_FOUND_BY_ID', LeaseId>;
 
 export type SendEmailAction = Action<'mvj/leases/SEND_EMAIL', SendEmailPayload>;

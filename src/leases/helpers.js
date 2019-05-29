@@ -598,7 +598,7 @@ export const getContentConstructabilityDescriptions = (area: Object, type: strin
   */
 
 export const getContentConstructabilityEmail = (lease: Object, user: Object, text: ?string) => {
-  let emailContent = `Vuokratunnus: ${getContentLeaseIdentifier(lease) || '-'}\n`;
+  let emailContent = `Vuokraustunnus: ${getContentLeaseIdentifier(lease) || '-'}\n`;
   const leaseAreas = get(lease, 'lease_areas', []);
 
   leaseAreas.forEach((area) => {
@@ -1065,7 +1065,56 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
 export const getContentDebtCollectionDecisions = (lease: Object) =>
   get(lease, 'decisions', []).filter((decision) => get(decision, 'type.kind') === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
 
-// Helper functions to get lease map content
+/**
+  * Get content leases features for geojson data
+  * @param {Object[]} leases
+  * @returns {Object[]}
+  */
+export const getContentLeasesFeatures = (leases: Array<Object>): Array<LeafletFeature> => {
+  return leases.map((lease) => {
+    const coordinates = [];
+    const areas = get(lease, 'lease_areas', []);
+
+    areas.forEach((area) => {
+      const coords = get(area, 'geometry.coordinates', []);
+
+      if(coords.length) {
+        coordinates.push(coords[0]);
+      }
+    });
+
+    return {
+      type: 'Feature',
+      geometry: {
+        coordinates: coordinates,
+        type: 'MultiPolygon',
+      },
+      properties: {
+        id: lease.id,
+        feature_type: 'lease',
+        identifier: getContentLeaseIdentifier(lease),
+        start_date: lease.start_date,
+        end_date: lease.end_date,
+        state: get(lease, 'state.id') || lease.state,
+      },
+    };
+  });
+};
+
+/**
+  * Get content leases geojson data
+  * @param {Object[]} leases
+  * @returns {Object}
+  */
+export const getContentLeasesGeoJson = (leases: Array<Object>): LeafletGeoJson => {
+  const features = getContentLeasesFeatures(leases);
+
+  return {
+    type: 'FeatureCollection',
+    features: features,
+  };
+};
+
 export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<LeafletFeature>  => {
   return areas.map((area) => {
     return {

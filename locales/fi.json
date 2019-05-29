@@ -36,7 +36,7 @@
   "leases": {
     "title": "Vuokraukset",
     "single": "Vuokraus",
-    "identifier": "Vuokratunnus",
+    "identifier": "Vuokraustunnus",
     "real_property_unit": "Kiinteistötunnus",
     "type": "Tyyppi",
     "address": "Osoite",

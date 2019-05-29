@@ -460,7 +460,7 @@ export const LeaseFieldTitles = {
   FINANCING: 'Rahoitusmuoto',
   HISTORY: 'Historia',
   HITAS: 'Hitas',
-  IDENTIFIER: 'Vuokratunnus',
+  IDENTIFIER: 'Vuokraustunnus',
   INFILL_DEVELOPMENT_COMPENSATIONS: 'Täydennysrakentamiskorvaus',
   INTENDED_USE: 'Vuokrauksen käyttötarkoitus',
   INTENDED_USE_NOTE: 'Käyttötarkoituksen huomautus',

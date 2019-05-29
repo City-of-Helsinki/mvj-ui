@@ -63,3 +63,4 @@ export const DEFAULT_LEASE_STATES = ['lease'];
 export const DEFAULT_ONLY_ACTIVE_LEASES = true;
 export const DEFAULT_SORT_KEY = 'identifier';
 export const DEFAULT_SORT_ORDER = TableSortOrder.ASCENDING;
+export const MAX_ZOOM_LEVEL_TO_FETCH_LEASES = 7;

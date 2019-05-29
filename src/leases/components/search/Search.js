@@ -42,6 +42,7 @@ type Props = {
   districts: Array<Object>,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
+  handleSubmit: Function,
   initialize: Function,
   isFetchingAttributes: boolean,
   isSearchInitialized: boolean,
@@ -116,33 +117,47 @@ class Search extends PureComponent<Props, State> {
   componentDidUpdate(prevProps: Props) {
     const {change, fetchDistrictsByMunicipality, isSearchInitialized} = this.props;
 
-    if(Number(prevProps.municipality) !== Number(this.props.municipality)) {
+    if(prevProps.municipality != this.props.municipality) {
       if(this.props.municipality) {
         fetchDistrictsByMunicipality(this.props.municipality);
       }
       change('district', '');
     }
+
     if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       const {location: {search}} = this.props;
       const searchQuery = getUrlParams(search);
-      const addOnlyActiveLeases = searchQuery.only_active_leases != undefined ||
+      const addOnlyActiveLeases = searchQuery.hasOwnProperty('only_active_leases') ||
         prevProps.formValues.only_active_leases !== this.props.formValues.only_active_leases;
 
       this.onSearchChange(addOnlyActiveLeases);
     }
   }
 
+  handleSubmit = () => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const addOnlyActiveLeases = searchQuery.hasOwnProperty('only_active_leases');
+
+    this.search(addOnlyActiveLeases);
+  }
+
   isSearchBasicMode = () => {
     const {location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
 
+    // Ignore these fields when testing is search query length
     delete searchQuery.page;
     delete searchQuery.sort_key;
     delete searchQuery.sort_order;
+    delete searchQuery.lease_state;
+    delete searchQuery.in_bbox;
+    delete searchQuery.visualization;
+    delete searchQuery.zoom;
 
-    if(!Object.keys(searchQuery).length ||
-      Object.keys(searchQuery).length === 1 && (searchQuery.identifier || searchQuery.lease_state) ||
-      Object.keys(searchQuery).length === 2 && (searchQuery.identifier && searchQuery.lease_state)) {
+    const keys = Object.keys(searchQuery);
+
+    if(!keys.length || (keys.length === 1 && searchQuery.hasOwnProperty('search'))) {
       return true;
     }
 
@@ -150,6 +165,10 @@ class Search extends PureComponent<Props, State> {
   }
 
   onSearchChange = debounce((addOnlyActiveLeases) => {
+    this.search(addOnlyActiveLeases);
+  }, 1000);
+
+  search = (addOnlyActiveLeases: boolean) => {
     if(!this._isMounted) return;
 
     const {formValues, onSearch} = this.props;
@@ -160,7 +179,7 @@ class Search extends PureComponent<Props, State> {
     }
 
     onSearch(newValues, true);
-  }, 500);
+  }
 
   toggleSearchType = () => {
     this.setState({isBasicSearch: !this.state.isBasicSearch});
@@ -176,6 +195,7 @@ class Search extends PureComponent<Props, State> {
   render () {
     const {
       districts,
+      handleSubmit,
       isFetchingAttributes,
     } = this.props;
     const {
@@ -189,7 +209,7 @@ class Search extends PureComponent<Props, State> {
     const districtOptions = getDistrictOptions(districts);
 
     return (
-      <SearchContainer>
+      <SearchContainer onSubmit={handleSubmit(this.handleSubmit)}>
         <Row>
           <Column small={12}>
             <FormField
@@ -201,7 +221,7 @@ class Search extends PureComponent<Props, State> {
                 read_only: false,
               }}
               invisibleLabel
-              name='identifier'
+              name='search'
             />
           </Column>
         </Row>
@@ -487,7 +507,7 @@ class Search extends PureComponent<Props, State> {
                 </SearchRow>
                 <SearchRow>
                   <SearchLabelColumn>
-                    <SearchLabel>Vuokratunnus</SearchLabel>
+                    <SearchLabel>Vuokraustunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
                     <Row>

@@ -35,7 +35,7 @@ import {
   hasPermissions,
   isFieldAllowedToRead,
 } from '$util/helpers';
-import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
+import {getBoundsFromCoordinates, getCenterFromCoordinates} from '$util/map';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getLeaseAttributes, getCurrentLease, getIsEditMode} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -123,8 +123,8 @@ class SingleLeaseMap extends PureComponent<Props, State> {
     if(props.currentLease !== state.currentLease) {
       const coordinates = getLeaseCoordinates(props.currentLease);
 
-      newState.bounds = coordinates.length ? getCoordinatesBounds(coordinates) : undefined;
-      newState.center = coordinates.length ? getCoordinatesCenter(coordinates) : undefined;
+      newState.bounds = coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined;
+      newState.center = coordinates.length ? getCenterFromCoordinates(coordinates) : undefined;
       newState.currentLease = props.currentLease;
       newState.areasGeoJson = getContentAreasGeoJson(props.currentLease);
       newState.planUnitsGeoJson = getContentPlanUnitsGeoJson(props.currentLease, false);

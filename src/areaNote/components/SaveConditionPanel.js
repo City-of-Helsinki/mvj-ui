@@ -96,8 +96,8 @@ class SaveConditionPanel extends Component<Props, State> {
           };
 
           return(
-            <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
-              <div className='save-condition-panel__container'>
+            <div className={classNames('area-note-map__save-condition-panel', {'area-note-map__save-condition-panel--is-open': show})}>
+              <div className='area-note-map__save-condition-panel_container'>
                 <h2>{isNew ? 'Luo muistettava ehto' : 'Muokkaa muistettavaa ehtoa'}</h2>
 
                 <Row>
@@ -114,7 +114,7 @@ class SaveConditionPanel extends Component<Props, State> {
                     />
                   </Column>
                 </Row>
-                <div className='save-condition-panel__buttons-wrapper'>
+                <div className='area-note-map__save-condition-panel_buttons-wrapper'>
                   <Row>
                     <Column>
                       <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.DELETE)}>

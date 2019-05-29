@@ -27,6 +27,7 @@ import type {Attributes} from '$src/types';
 
 type Props = {
   formValues: Object,
+  handleSubmit: Function,
   initialize: Function,
   isSearchInitialized: boolean,
   location: Object,
@@ -97,6 +98,10 @@ class Search extends PureComponent<Props, State> {
   onSearchChange = debounce(() => {
     if(!this._isMounted) return;
 
+    this.search();
+  }, 1000);
+
+  search = () => {
     const {formValues, onSearch, sortKey, sortOrder} = this.props;
     const newValues = {...formValues};
 
@@ -106,7 +111,7 @@ class Search extends PureComponent<Props, State> {
     }
 
     onSearch(newValues, true);
-  }, 500);
+  }
 
   toggleSearchType = () => {
     this.setState({isBasicSearch: !this.state.isBasicSearch});
@@ -126,10 +131,11 @@ class Search extends PureComponent<Props, State> {
   }
 
   render () {
+    const {handleSubmit} = this.props;
     const {decisionMakerOptions, isBasicSearch} = this.state;
 
     return (
-      <SearchContainer>
+      <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column small={12}>
             <FormField

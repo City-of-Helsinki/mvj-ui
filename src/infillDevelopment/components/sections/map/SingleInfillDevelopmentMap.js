@@ -19,7 +19,7 @@ import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentLeaseIdentifier, getLeaseCoordinates} from '$src/leases/helpers';
 import {getContentInfillDevelopmentLeaseGeoJson} from '$src/infillDevelopment/helpers';
 import {getFieldOptions, getUrlParams, hasPermissions} from '$util/helpers';
-import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
+import {getBoundsFromCoordinates, getCenterFromCoordinates} from '$util/map';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getCurrentInfillDevelopment} from '$src/infillDevelopment/selectors';
 import {
@@ -165,8 +165,8 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
     });
 
     this.setState({
-      bounds: coordinates.length ? getCoordinatesBounds(coordinates) : undefined,
-      center: coordinates.length ? getCoordinatesCenter(coordinates) : undefined,
+      bounds: coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined,
+      center: coordinates.length ? getCenterFromCoordinates(coordinates) : undefined,
     });
   }
 
