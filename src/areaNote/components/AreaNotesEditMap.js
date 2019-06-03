@@ -38,6 +38,7 @@ type Props = {
   onViewportChanged?: Function,
   overlayLayers?: Array<Object>,
   showZoomLevelWarning?: boolean,
+  zoom?: number,
   zoomLevelWarningText?: string,
 }
 
@@ -168,6 +169,7 @@ class AreaNotesEditMap extends Component<Props, State> {
       onViewportChanged,
       overlayLayers,
       showZoomLevelWarning,
+      zoom,
       zoomLevelWarningText,
     } = this.props;
     const {isNew, isValid} = this.state;
@@ -176,12 +178,12 @@ class AreaNotesEditMap extends Component<Props, State> {
       <div className='map'>
         <MapContainer
           bounds={bounds}
-          center={(center && center.length > 1) ? center : defaultCoordinates}
+          center={center ? center : defaultCoordinates}
           isLoading={isLoading}
           onMapDidMount={onMapDidMount}
           onViewportChanged={onViewportChanged}
           overlayLayers={overlayLayers}
-          zoom={defaultZoom}
+          zoom={zoom || defaultZoom}
         >
           <FeatureGroup ref={this.setFeatureGroupRef}>
             {allowToEdit && isEditMode &&

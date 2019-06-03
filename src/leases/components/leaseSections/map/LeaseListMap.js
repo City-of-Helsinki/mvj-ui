@@ -41,6 +41,7 @@ type Props = {
 
 type State = {
   bounds: ?Object,
+  center: ?Object,
   leaseAttributes: Attributes,
   leasesData: LeaseList,
   leasesGeoJson: LeafletGeoJson,
@@ -51,6 +52,7 @@ type State = {
 class LeaseListMap extends PureComponent<Props, State> {
   state = {
     bounds: null,
+    center: null,
     leaseAttributes: null,
     leasesData: null,
     leasesGeoJson: {
@@ -62,7 +64,13 @@ class LeaseListMap extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    this.setState({bounds: this.getMapBounds()});
+    const bounds = this.getMapBounds();
+    const center = bounds ? bounds.getCenter() : null;
+   
+    this.setState({
+      bounds,
+      center,
+    });
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -123,7 +131,6 @@ class LeaseListMap extends PureComponent<Props, State> {
 
   handleViewportChanged = (mapOptions: Object) => {
     const {onViewportChanged} = this.props;
-
     this.setState({zoom: mapOptions.zoom});
 
     onViewportChanged(mapOptions);
@@ -132,7 +139,7 @@ class LeaseListMap extends PureComponent<Props, State> {
 
   render() {
     const {isLoading} = this.props;
-    const {bounds, zoom} = this.state;
+    const {bounds, center, zoom} = this.state;
     const overlayLayers = this.getOverlayLayers();
 
     return(
@@ -140,10 +147,12 @@ class LeaseListMap extends PureComponent<Props, State> {
         <AreaNotesEditMap
           allowToEdit={false}
           bounds={bounds}
+          center={center}
           isLoading={isLoading}
           onViewportChanged={this.handleViewportChanged}
           overlayLayers={overlayLayers}
           showZoomLevelWarning={zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES}
+          zoom={zoom}
           zoomLevelWarningText='Tarkenna lähemmäksi kartalla hakeaksesi vuokraukset'
         />
       </Fragment>
@@ -152,7 +161,6 @@ class LeaseListMap extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     (state) => {

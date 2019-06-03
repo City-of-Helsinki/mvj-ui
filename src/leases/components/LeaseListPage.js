@@ -520,7 +520,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {history, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
 
-    searchQuery.in_bbox = mapOptions.bBox;
+    searchQuery.in_bbox = mapOptions.bBox.split(',');
     searchQuery.zoom = mapOptions.zoom;
 
     return history.push({
