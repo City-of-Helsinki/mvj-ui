@@ -167,9 +167,9 @@ const BasisOfRent = ({
               <UnarchiveButton onClick={onUnarchive}/>
             </Authorization>
           }
-          {onRemove &&
+          {onRemove && !basisOfRent.locked_at &&
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
-              <RemoveButton onClick={onRemove} title="Poista vuokranperuste" />
+              <RemoveButton onClick={onRemove} title="Poista vuokralaskuri" />
             </Authorization>
           }
         </ActionButtonWrapper>

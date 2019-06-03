@@ -79,6 +79,13 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
     fields.push({});
   }
 
+  removeBasisOfRent = (index: number) => {
+    const {fields} = this.props;
+
+    fields.remove(index);
+  }
+
+
   render() {
     const {
       archived,

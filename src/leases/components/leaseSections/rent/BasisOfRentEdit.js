@@ -411,7 +411,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   handleCopyToClipboard = () => {
     const tableContent = this.getTableContentForClipBoard(),
       el = document.createElement('table');
-
+    
+    el.className = 'sortable-table__clipboard-table';
     el.innerHTML = tableContent;
     if(copyElementContentsToClipboard(el)) {
       displayUIMessage({title: '', body: 'Vuokralaskuri on kopioitu leikepöydälle.'});
@@ -444,8 +445,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const currentAmountPerArea = this.getCurrentAmountPerArea();
     const currentAmountPerAreaText = this.getAmountPerAreaText(currentAmountPerArea);
     const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
-    const lockedAtText = this.getLockedText();
-    const plansInspectedAtText = this.getPlansInspectedText();
     const basicAnnualRent = this.getBasicAnnualRent();
     const initialYearRent = this.getInitialYearRent();
     const discountedInitialYearRent = this.getDiscountedInitialYearRent();
@@ -459,14 +458,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
         ? `<th>${LeaseBasisOfRentsFieldTitles.AREA}</th>`
-        : ''
-      }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)
-        ? `<th>${LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</th>`
-        : ''
-      }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)
-        ? `<th>${LeaseBasisOfRentsFieldTitles.LOCKED_AT}</th>`
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
@@ -520,14 +511,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
         ? `<td>${areaText}</td>`
-        : ''
-      }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)
-        ? `<td>${plansInspectedAtText}</td>`
-        : ''
-      }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)
-        ? `<td>${lockedAtText}</td>`
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
