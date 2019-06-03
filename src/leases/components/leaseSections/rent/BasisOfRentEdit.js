@@ -657,12 +657,14 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 <ArchiveButton onClick={this.handleArchive}/>
               }
             </Authorization>
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEBASISOFRENT)}>
-              <RemoveButton
-                onClick={onRemove}
-                title="Poista vuokranperuste"
-              />
-            </Authorization>
+            {!savedBasisOfRent || !savedBasisOfRent.locked_at &&
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEBASISOFRENT)}>
+                <RemoveButton
+                  onClick={onRemove}
+                  title="Poista vuokralaskuri"
+                />
+              </Authorization>
+            }
           </ActionButtonWrapper>
 
           <Row>
