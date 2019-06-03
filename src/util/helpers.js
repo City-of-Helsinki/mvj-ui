@@ -599,3 +599,20 @@ export const findReactById = (id: ?string): ?Object => {
     return internalInstance._currentElement._owner._instance;
   }
 };
+
+/**
+  * Test is item active
+  * @param {Object} item
+  * @returns {boolean}
+  */
+export const isItemActive = (item: ?Object) => {
+  const now = moment();
+  const startDate = get(item, 'start_date', '0000-01-01');
+  const endDate = get(item, 'end_date', '9999-12-31');
+
+  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
+    return false;
+  }
+
+  return true;
+};

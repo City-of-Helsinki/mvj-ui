@@ -6,7 +6,6 @@ import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import {isDirty} from 'redux-form';
 
-import {} from '$util/date';
 import {
   getSplittedDateRangesWithItems,
   sortByStartAndEndDateDesc,
@@ -39,6 +38,7 @@ import {
   formatDate,
   formatDateRange,
   isEmptyValue,
+  isItemActive,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
@@ -928,13 +928,27 @@ export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates')
   */
 export const getRentWarnings = (rents: Array<Object>): Array<string> => {
   const warnings = [];
+
   rents.forEach((rent) => {
     if(rent.type !== RentTypes.INDEX && rent.type !== RentTypes.MANUAL) return;
 
-    const fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []);
-    const contractRents = get(rent, 'contract_rents', []);
+    let showWarning = false;
+    const fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []).filter((rent) => isItemActive(rent));
+    const contractRents = get(rent, 'contract_rents', []).filter((rent) => isItemActive(rent));
 
-    if(fixedInitialYearRents.length !== contractRents.length) {
+    forEach(fixedInitialYearRents, (rent) => {
+      if(rent.intended_use) {
+        const filteredFixedInitialYearRents = fixedInitialYearRents.filter((item) => item.intended_use === rent.intended_use);
+        const filteredContractRents = contractRents.filter((item) => item.intended_use === rent.intended_use);
+        
+        if(filteredFixedInitialYearRents.length !== filteredContractRents.length) {
+          showWarning = true;
+          return false;
+        }
+      }
+    });
+
+    if(showWarning) {
       warnings.push(`Vuokralla ${formatDateRange(rent.start_date, rent.end_date)} on eri määrä kiinteitä alkuvuosivuokria ja sopimusvuokria`);
     }
   });
