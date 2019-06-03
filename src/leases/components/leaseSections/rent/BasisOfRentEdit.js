@@ -294,14 +294,23 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if(this.props.subventionType !== prevProps.subventionType ||
+    if(this.state.showSubventions &&
+      (this.props.subventionType !== prevProps.subventionType ||
       this.props.subventionBasePercent !== prevProps.subventionBasePercent ||
       this.props.subventionGraduatedPercent !== prevProps.subventionGraduatedPercent ||
       this.props.managementSubventions !== prevProps.managementSubventions ||
-      this.props.temporarySubventions !== prevProps.temporarySubventions) {
-      const {change, field} = this.props;
+      this.props.temporarySubventions !== prevProps.temporarySubventions)) {
+      const {change, field, subventionType, subventionBasePercent, subventionGraduatedPercent, managementSubventions, temporarySubventions} = this.props;
 
-      change(formName, `${field}.discount_percentage`, formatNumber(this.calculateSubventionAmount()));
+      // Don't change discount_percent automatically if basis of rent is deleted
+      if(subventionType !== undefined && 
+        subventionBasePercent !== undefined && 
+        subventionGraduatedPercent !== undefined &&
+        managementSubventions !== undefined &&
+        temporarySubventions !== undefined) {
+        change(formName, `${field}.discount_percentage`, formatNumber(this.calculateSubventionAmount()));
+      }
+      
     }
   }
 
