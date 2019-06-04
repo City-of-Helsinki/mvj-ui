@@ -243,6 +243,8 @@ class RentsEdit extends PureComponent<Props, State> {
 
   render() {
     const {
+      editedActiveBasisOfRents,
+      editedArchivedBasisOfRents,
       isRentInfoComplete,
       isSaveClicked,
       leaseAttributes,
@@ -366,6 +368,7 @@ class RentsEdit extends PureComponent<Props, State> {
                 <FieldArray
                   ref={this.setActiveBasisOfRentsRef}
                   archived={false}
+                  basisOfRents={editedActiveBasisOfRents}
                   component={BasisOfRentsEdit}
                   isSaveClicked={isSaveClicked}
                   name="basis_of_rents"
@@ -376,6 +379,7 @@ class RentsEdit extends PureComponent<Props, State> {
                 <FieldArray
                   ref={this.setArchivedBasisOfRentsRef}
                   archived={true}
+                  basisOfRents={editedArchivedBasisOfRents}
                   component={BasisOfRentsEdit}
                   isSaveClicked={isSaveClicked}
                   name="basis_of_rents_archived"
@@ -395,7 +399,6 @@ const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     (state) => {

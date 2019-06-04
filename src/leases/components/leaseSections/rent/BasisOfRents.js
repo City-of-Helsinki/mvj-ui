@@ -8,7 +8,10 @@ import FormText from '$components/form/FormText';
 import GrayBox from '$components/content/GrayBox';
 import GreenBox from '$components/content/GreenBox';
 import {BasisOfRentManagementSubventionsFieldPaths, LeaseBasisOfRentsFieldPaths} from '$src/leases/enums';
-import {getContentBasisOfRents} from '$src/leases/helpers';
+import {
+  calculateBasisOfRentTotalDiscountedInitialYearRent,
+  getContentBasisOfRents,
+} from '$src/leases/helpers';
 import {getFieldOptions, isEmptyValue} from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -76,29 +79,34 @@ class BasisOfRents extends PureComponent<Props, State> {
       subventionTypeOptions,
     } = this.state;
 
-    if(!basisOfRents || !basisOfRents.length) {
-      return <FormText className='no-margin'>Ei vuokralaskureita</FormText>;
-    }
+    const totalDiscountedInitialYearRent = calculateBasisOfRentTotalDiscountedInitialYearRent(basisOfRents, indexOptions);
+    const totalDiscountedInitialYearRentArchived = calculateBasisOfRentTotalDiscountedInitialYearRent(basisOfRentsArchived, indexOptions);
 
     return (
       <Fragment>
-        <GreenBox>
-          <BoxItemContainer>
-            {(basisOfRents && !!basisOfRents.length) && basisOfRents.map((basisOfRent, index) => {
-              return(
-                <BasisOfRent
-                  key={index}
-                  areaUnitOptions={areaUnitOptions}
-                  basisOfRent={basisOfRent}
-                  indexOptions={indexOptions}
-                  intendedUseOptions={intendedUseOptions}
-                  managementTypeOptions={managementTypeOptions}
-                  subventionTypeOptions={subventionTypeOptions}
-                />
-              );
-            })}
-          </BoxItemContainer>
-        </GreenBox>
+        {!basisOfRents || !basisOfRents.length && <FormText className='no-margin'>Ei vuokralaskureita</FormText>}
+        {basisOfRents && !!basisOfRents.length &&
+          <GreenBox>
+            <BoxItemContainer>
+              {basisOfRents.map((basisOfRent, index) => {
+                return(
+                  <BasisOfRent
+                    key={index}
+                    areaUnitOptions={areaUnitOptions}
+                    basisOfRent={basisOfRent}
+                    indexOptions={indexOptions}
+                    intendedUseOptions={intendedUseOptions}
+                    managementTypeOptions={managementTypeOptions}
+                    showTotal={basisOfRents.length > 1 && basisOfRents.length === index + 1}
+                    subventionTypeOptions={subventionTypeOptions}
+                    totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
+                  />
+                );
+              })}
+            </BoxItemContainer>
+          </GreenBox>
+        }
+        
         {basisOfRentsArchived && !!basisOfRentsArchived.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
         {(basisOfRentsArchived && !!basisOfRentsArchived.length) &&
           <GrayBox>
@@ -111,6 +119,10 @@ class BasisOfRents extends PureComponent<Props, State> {
                     basisOfRent={basisOfRent}
                     indexOptions={indexOptions}
                     intendedUseOptions={intendedUseOptions}
+                    managementTypeOptions={managementTypeOptions}
+                    showTotal={basisOfRentsArchived.length > 1 && basisOfRentsArchived.length === index + 1}
+                    subventionTypeOptions={subventionTypeOptions}
+                    totalDiscountedInitialYearRent={totalDiscountedInitialYearRentArchived}
                   />
                 );
               })}

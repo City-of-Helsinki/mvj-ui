@@ -23,15 +23,21 @@ import {
   LeaseBasisOfRentsFieldTitles,
   SubventionTypes,
 } from '$src/leases/enums';
-import {calculateReLeaseDiscountPercent, calculateRentAdjustmentSubventionAmount} from '$src/leases/helpers';
+import {
+  calculateBasisOfRentAmountPerArea,
+  calculateBasisOfRentBasicAnnualRent,
+  calculateBasisOfRentDiscountedInitialYearRent,
+  calculateBasisOfRentInitialYearRent,
+  calculateReLeaseDiscountPercent, 
+  calculateRentAdjustmentSubventionAmount,
+  getBasisOfRentIndexValue,
+} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
-  convertStrToDecimalNumber,
   formatDate,
   formatNumber,
   getLabelOfOption,
-  isDecimalNumberStr,
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
@@ -49,7 +55,9 @@ type Props = {
   managementTypeOptions: Array<Object>,
   onRemove?: Function,
   onUnarchive?: Function,
+  showTotal: boolean,
   subventionTypeOptions: Array<Object>,
+  totalDiscountedInitialYearRent: number,
 }
 
 const BasisOfRent = ({
@@ -61,28 +69,10 @@ const BasisOfRent = ({
   managementTypeOptions,
   onRemove,
   onUnarchive,
+  showTotal,
   subventionTypeOptions,
+  totalDiscountedInitialYearRent,
 }: Props) => {
-  const getIndexValue = () => {
-    if(!basisOfRent.index || !indexOptions.length) return null;
-    const indexObj = indexOptions.find((item) => item.value === basisOfRent.index);
-
-    if(indexObj) {
-      const indexValue = indexObj.label.match(/=(.*)/)[1];
-      return indexValue;
-    }
-    return null;
-  };
-
-  const getCurrentAmountPerArea = () => {
-    const indexValue = getIndexValue();
-
-    if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(basisOfRent.amount_per_area)) return null;
-
-    return Number(convertStrToDecimalNumber(indexValue))/100
-      * Number(convertStrToDecimalNumber(basisOfRent.amount_per_area));
-  };
-
   const getAreaText = (amount: ?number) => {
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
@@ -107,30 +97,6 @@ const BasisOfRent = ({
     return `${formatDate(basisOfRent.locked_at) || ''} ${getUserFullName(basisOfRent.locked_by)}`;
   };
 
-  const getBasicAnnualRent = () => {
-    if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return null;
-    return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
-      * Number(convertStrToDecimalNumber(basisOfRent.area))
-      * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
-  };
-
-  const getInitialYearRent = () => {
-    const currentAmountPerArea = getCurrentAmountPerArea();
-
-    if(!isDecimalNumberStr(currentAmountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return null;
-    return Number(convertStrToDecimalNumber(currentAmountPerArea))
-      * Number(convertStrToDecimalNumber(basisOfRent.area))
-      * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
-  };
-
-  const getDiscountedInitialYearRent = () => {
-    const initialYearRent = getInitialYearRent();
-
-    if(!isDecimalNumberStr(initialYearRent)) return null;
-    return Number(convertStrToDecimalNumber(initialYearRent))
-      * Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - Number(convertStrToDecimalNumber(basisOfRent.discount_percentage)))/100 : 1);
-  };
-
   const getReLeaseDiscountPercent = () => {
     return calculateReLeaseDiscountPercent(
       basisOfRent.subvention_base_percent,
@@ -146,17 +112,22 @@ const BasisOfRent = ({
       basisOfRent.temporary_subventions);
   };
 
+  const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
   const areaText = getAreaText(basisOfRent.area);
   const amountPerAreaText = getAmountPerAreaText(basisOfRent.amount_per_area);
   const plansInspectedText = getPlansInspectedText();
   const lockedText = getLockedText();
-  const currentAmountPerArea = getCurrentAmountPerArea();
+  const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
   const currentAmountPerAreaText = getAmountPerAreaText(currentAmountPerArea);
-  const basicAnnualRent = getBasicAnnualRent();
-  const initialYearRent = getInitialYearRent();
-  const discountedInitialYearRent = getDiscountedInitialYearRent();
+  const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+  const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+  const discountedInitialYearRent = calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
   const managementSubventions = basisOfRent.management_subventions;
   const temporarySubventions = basisOfRent.temporary_subventions;
+  const rentPerMonth = discountedInitialYearRent != null ? discountedInitialYearRent/12 : null;
+  const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent/6 : null;
+  const rentPerMonthTotal = totalDiscountedInitialYearRent/12;
+  const rentPer2MonthsTotal = totalDiscountedInitialYearRent/6;
 
   return(
     <BoxItem className='no-border-on-first-child no-border-on-last-child'>
@@ -288,6 +259,66 @@ const BasisOfRent = ({
               <FormText>{!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</FormText>
             </Authorization>
           </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+            }>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH)}>
+                {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH}
+              </FormTextTitle>
+              <FormText>{!isEmptyValue(rentPerMonth) ? `${formatNumber(rentPerMonth)} €` : '-'}</FormText>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+            }>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS)}>
+                {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS}
+              </FormTextTitle>
+              <FormText>{!isEmptyValue(rentPer2Months) ? `${formatNumber(rentPer2Months)} €` : '-'}</FormText>
+            </Authorization>
+          </Column>
+          {showTotal &&
+            <Fragment>
+              <Column small={6} medium={4} large={2}>
+                <Authorization allow={
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+                }>
+                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL)}>
+                    {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL}
+                  </FormTextTitle>
+                  <FormText>{!isEmptyValue(rentPerMonthTotal) ? `${formatNumber(rentPerMonthTotal)} €` : '-'}</FormText>
+                </Authorization>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <Authorization allow={
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+                }>
+                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL)}>
+                    {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL}
+                  </FormTextTitle>
+                  <FormText>{!isEmptyValue(rentPer2MonthsTotal) ? `${formatNumber(rentPer2MonthsTotal)} €` : '-'}</FormText>
+                </Authorization>
+              </Column>
+            </Fragment>
+          }
         </Row>
 
         {basisOfRent.subvention_type &&

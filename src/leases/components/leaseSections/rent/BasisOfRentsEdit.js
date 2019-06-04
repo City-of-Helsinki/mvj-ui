@@ -15,12 +15,14 @@ import GreenBox from '$components/content/GreenBox';
 import {ButtonColors} from '$components/enums';
 import {
   ArchiveBasisOfRentsText,
+  BasisOfRentManagementSubventionsFieldPaths,
   DeleteModalLabels,
   DeleteModalTitles,
   LeaseBasisOfRentsFieldPaths,
   UnarchiveBasisOfRentsText,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
+import {calculateBasisOfRentTotalDiscountedInitialYearRent} from '$src/leases/helpers';
 import {
   getFieldOptions,
   hasPermissions,
@@ -34,6 +36,7 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 
 type Props = {
   archived: boolean,
+  basisOfRents: Array<Object>,
   change: Function,
   fields: any,
   isSaveClicked: boolean,
@@ -48,6 +51,8 @@ type State = {
   indexOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
   leaseAttributes: Attributes,
+  managementTypeOptions: Array<Object>,
+  subventionTypeOptions: Array<Object>,
 }
 
 class BasisOfRentsEdit extends PureComponent<Props, State> {
@@ -56,6 +61,8 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
     indexOptions: [],
     intendedUseOptions: [],
     leaseAttributes: null,
+    managementTypeOptions: [],
+    subventionTypeOptions: [],
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -68,6 +75,8 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
       );
       newState.indexOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX, true);
       newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE);
+      newState.managementTypeOptions = getFieldOptions(props.leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT);
+      newState.subventionTypeOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE);
     }
 
     return newState;
@@ -89,13 +98,21 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
   render() {
     const {
       archived,
+      basisOfRents,
       fields,
       isSaveClicked,
       onArchive,
       onUnarchive,
       usersPermissions,
     } = this.props;
-    const {areaUnitOptions, indexOptions, intendedUseOptions} = this.state;
+    const {
+      areaUnitOptions, 
+      indexOptions, 
+      intendedUseOptions,
+      managementTypeOptions,
+      subventionTypeOptions,
+    } = this.state;
+    const totalDiscountedInitialYearRent = calculateBasisOfRentTotalDiscountedInitialYearRent(basisOfRents, indexOptions);
 
     if(!archived && (!fields || !fields.length)) {
       return(
@@ -164,8 +181,12 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                         indexOptions={indexOptions}
                         intendedUseOptions={intendedUseOptions}
                         isSaveClicked={isSaveClicked}
+                        managementTypeOptions={managementTypeOptions}
                         onRemove={handleRemove}
                         onUnarchive={handleUnarchive}
+                        showTotal={fields.length > 1 && fields.length === index + 1}
+                        subventionTypeOptions={subventionTypeOptions}
+                        totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
                       />;
                     })}
                   </BoxItemContainer>
@@ -213,8 +234,12 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                       indexOptions={indexOptions}
                       intendedUseOptions={intendedUseOptions}
                       isSaveClicked={isSaveClicked}
+                      managementTypeOptions={managementTypeOptions}
                       onArchive={handleArchive}
                       onRemove={handleRemove}
+                      showTotal={fields.length > 1 && fields.length === index + 1}
+                      subventionTypeOptions={subventionTypeOptions}
+                      totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
                     />;
                   })}
                 </BoxItemContainer>

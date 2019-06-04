@@ -37,6 +37,7 @@ import {
   fixedLengthNumber,
   formatDate,
   formatDateRange,
+  isDecimalNumberStr,
   isEmptyValue,
   isItemActive,
   sortStringByKeyAsc,
@@ -782,6 +783,94 @@ export const getContentEqualizedRents = (rent: Object) =>
   */
 export const calculateReLeaseDiscountPercent = (subventionBasePercent: ?string, subventionGraduatedPercent: ?string) => {
   return parseFloat(((1 - ((1 - Number(convertStrToDecimalNumber(subventionBasePercent) || 0)/100) * (1 - Number(convertStrToDecimalNumber(subventionGraduatedPercent) || 0)/100))) * 100).toFixed(2));
+};
+
+/**
+  * Get basis of rent index value
+  * @param {Object} basisOfRent
+  * @param {Object[]} indexOptions
+  * @return {string}
+  */
+export const getBasisOfRentIndexValue = (basisOfRent: Object, indexOptions: Array<Object>): ?string => {
+  if(!basisOfRent.index || !indexOptions.length) return null;
+  const indexObj = indexOptions.find((item) => item.value === basisOfRent.index);
+
+  if(indexObj) {
+    const indexValue = indexObj.label.match(/=(.*)/)[1];
+    return indexValue;
+  }
+  return null;
+};
+
+/**
+  * Calculate basis of rent basuc annual rent
+  * @param {Object} basisOfRent
+  * @return {number}
+  */
+export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): ?number => {
+  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return null;
+  
+  return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
+    * Number(convertStrToDecimalNumber(basisOfRent.area))
+    * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
+};
+
+/**
+  * Calculate basis of rent amount per area
+  * @param {Object} basisOfRent
+  * @param {string} indexValue
+  * @return {number}
+  */
+export const calculateBasisOfRentAmountPerArea = (basisOfRent: Object, indexValue: ?string): ?number => {
+  if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(basisOfRent.amount_per_area)) return null;
+
+  return Number(convertStrToDecimalNumber(indexValue))/100
+    * Number(convertStrToDecimalNumber(basisOfRent.amount_per_area));
+};
+
+/**
+  * Calculate basis of rent initial year rent
+  * @param {Object} basisOfRent
+  * @param {string} indexValue
+  * @return {number}
+  */
+export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string): ?number => {
+  const amountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
+
+  if(!isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return null;
+  
+  return Number(convertStrToDecimalNumber(amountPerArea))
+    * Number(convertStrToDecimalNumber(basisOfRent.area))
+    * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
+};
+
+/**
+  * Calculate basis of rent discounted initial year rent
+  * @param {Object} basisOfRent
+  * @param {string} indexValue
+  * @return {number}
+  */
+export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Object, indexValue: ?string): ?number => {
+  const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+
+  if(!isDecimalNumberStr(initialYearRent)) return null;
+
+  return Number(convertStrToDecimalNumber(initialYearRent))
+    * Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - Number(convertStrToDecimalNumber(basisOfRent.discount_percentage)))/100 : 1);
+};
+
+/**
+  * Calculate basis of rent total discounted initial year rent
+  * @param {Object[]} basisOfRent<
+  * @param {Object[]} indexOptions
+  * @return {number}
+  */
+export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents: Array<Object>, indexOptions: Array<Object>): ?number => {
+  return basisOfRents.reduce((total, basisOfRent) => {
+    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+    
+    return  calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue) + total;
+  }, 0);
 };
 
 /**
