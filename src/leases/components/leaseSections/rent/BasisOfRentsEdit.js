@@ -85,6 +85,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
     fields.remove(index);
   }
 
+
   render() {
     const {
       archived,

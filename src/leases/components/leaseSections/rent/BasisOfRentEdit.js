@@ -294,14 +294,23 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if(this.props.subventionType !== prevProps.subventionType ||
+    if(this.state.showSubventions &&
+      (this.props.subventionType !== prevProps.subventionType ||
       this.props.subventionBasePercent !== prevProps.subventionBasePercent ||
       this.props.subventionGraduatedPercent !== prevProps.subventionGraduatedPercent ||
       this.props.managementSubventions !== prevProps.managementSubventions ||
-      this.props.temporarySubventions !== prevProps.temporarySubventions) {
-      const {change, field} = this.props;
+      this.props.temporarySubventions !== prevProps.temporarySubventions)) {
+      const {change, field, subventionType, subventionBasePercent, subventionGraduatedPercent, managementSubventions, temporarySubventions} = this.props;
 
-      change(formName, `${field}.discount_percentage`, formatNumber(this.calculateSubventionAmount()));
+      // Don't change discount_percent automatically if basis of rent is deleted
+      if(subventionType !== undefined && 
+        subventionBasePercent !== undefined && 
+        subventionGraduatedPercent !== undefined &&
+        managementSubventions !== undefined &&
+        temporarySubventions !== undefined) {
+        change(formName, `${field}.discount_percentage`, formatNumber(this.calculateSubventionAmount()));
+      }
+      
     }
   }
 
@@ -402,7 +411,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   handleCopyToClipboard = () => {
     const tableContent = this.getTableContentForClipBoard(),
       el = document.createElement('table');
-
+    
+    el.className = 'sortable-table__clipboard-table';
     el.innerHTML = tableContent;
     if(copyElementContentsToClipboard(el)) {
       displayUIMessage({title: '', body: 'Vuokralaskuri on kopioitu leikepöydälle.'});
@@ -435,8 +445,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const currentAmountPerArea = this.getCurrentAmountPerArea();
     const currentAmountPerAreaText = this.getAmountPerAreaText(currentAmountPerArea);
     const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
-    const lockedAtText = this.getLockedText();
-    const plansInspectedAtText = this.getPlansInspectedText();
     const basicAnnualRent = this.getBasicAnnualRent();
     const initialYearRent = this.getInitialYearRent();
     const discountedInitialYearRent = this.getDiscountedInitialYearRent();
@@ -450,14 +458,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
         ? `<th>${LeaseBasisOfRentsFieldTitles.AREA}</th>`
-        : ''
-      }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)
-        ? `<th>${LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</th>`
-        : ''
-      }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)
-        ? `<th>${LeaseBasisOfRentsFieldTitles.LOCKED_AT}</th>`
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
@@ -511,14 +511,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
         ? `<td>${areaText}</td>`
-        : ''
-      }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)
-        ? `<td>${plansInspectedAtText}</td>`
-        : ''
-      }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)
-        ? `<td>${lockedAtText}</td>`
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
@@ -648,12 +640,14 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 <ArchiveButton onClick={this.handleArchive}/>
               }
             </Authorization>
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEBASISOFRENT)}>
-              <RemoveButton
-                onClick={onRemove}
-                title="Poista vuokranperuste"
-              />
-            </Authorization>
+            {!savedBasisOfRent || !savedBasisOfRent.locked_at &&
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEBASISOFRENT)}>
+                <RemoveButton
+                  onClick={onRemove}
+                  title="Poista vuokralaskuri"
+                />
+              </Authorization>
+            }
           </ActionButtonWrapper>
 
           <Row>
