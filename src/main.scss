@@ -1,10 +1,11 @@
 @import "./styles/fonts";
 @import "./styles/variables";
 @import "~foundation-sites/scss/foundation";
+@include foundation-everything(true);
+@include foundation-flex-grid;
+
 @import '~react-leaflet-fullscreen/dist/styles.css';
 @import "styles/mixins";
-
-@include foundation-everything(true);
 
 // Vendor
 @import "~react-redux-toastr/src/styles/index";

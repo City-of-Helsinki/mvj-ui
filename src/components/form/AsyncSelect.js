@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 // $FlowFixMe
-import {Async} from 'react-select';
+import Async from 'react-select/async';
 import classNames from 'classnames';
 
 import DropdownIndicator from '$components/inputs/DropdownIndicator';

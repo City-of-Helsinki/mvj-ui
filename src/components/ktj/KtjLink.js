@@ -1,7 +1,7 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {saveAs} from 'file-saver/FileSaver';
+import {saveAs} from 'file-saver';
 
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
