@@ -458,7 +458,7 @@ export const LeaseFieldTitles = {
   DISTRICT: 'Kaupunginosa',
   END_DATE: 'Loppupvm',
   FINANCING: 'Rahoitusmuoto',
-  HISTORY: 'Historia',
+  HISTORY: 'Historiapuu',
   HITAS: 'Hitas',
   IDENTIFIER: 'Vuokraustunnus',
   INFILL_DEVELOPMENT_COMPENSATIONS: 'Täydennysrakentamiskorvaus',
