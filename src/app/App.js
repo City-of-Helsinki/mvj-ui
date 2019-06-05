@@ -307,7 +307,6 @@ const mapStateToProps = (state: RootState) => {
 };
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     mapStateToProps,

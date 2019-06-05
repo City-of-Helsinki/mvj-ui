@@ -189,6 +189,8 @@ function* createLeaseSaga({payload: lease}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`));
+        yield put(receiveIsSaveClicked(false));
+        yield put(hideEditMode());
         displayUIMessage({title: '', body: 'Vuokraus luotu'});
         break;
       case 400:

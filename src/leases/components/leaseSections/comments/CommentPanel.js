@@ -17,7 +17,6 @@ import NewCommentForm from './NewCommentForm';
 import {
   clearEditFlags,
   createComment,
-  fetchCommentsByLease,
   receiveIsSaveClicked,
 } from '$src/comments/actions';
 import {FormNames, Methods} from '$src/enums';
@@ -50,14 +49,10 @@ type Props = {
   createComment: Function,
   currentLease: Lease,
   editModeFlags: Object,
-  fetchCommentsByLease: Function,
   initialize: Function,
   isNewCommentFormDirty: boolean,
   isOpen: boolean,
   onClose: Function,
-  match: {
-    params: Object,
-  },
   receiveIsSaveClicked: Function,
 }
 
@@ -118,16 +113,8 @@ class CommentPanel extends PureComponent<Props, State> {
 
   componentDidMount() {
     const {
-      commentList,
-      commentMethods,
-      fetchCommentsByLease,
-      match: {params: {leaseId}},
       receiveIsSaveClicked,
     } = this.props;
-
-    if(isEmpty(commentList) && isMethodAllowed(commentMethods, Methods.GET)) {
-      fetchCommentsByLease(leaseId);
-    }
 
     receiveIsSaveClicked(false);
 
@@ -326,7 +313,6 @@ class CommentPanel extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     (state) => {
@@ -344,7 +330,6 @@ export default flowRight(
     {
       clearEditFlags,
       createComment,
-      fetchCommentsByLease,
       initialize,
       receiveIsSaveClicked,
     },

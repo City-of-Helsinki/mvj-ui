@@ -12,7 +12,7 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubMenu from './SubMenu';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import {CancelChangesModalTexts} from '$src/enums';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
@@ -151,9 +151,9 @@ class SideMenu extends Component<Props, State> {
                   onLinkClick();
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
-                confirmationModalLabel: CancelChangesModalTexts.LABEL,
-                confirmationModalTitle: CancelChangesModalTexts.TITLE,
+                confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+                confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+                confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
               });
             } else {
               onLinkClick();

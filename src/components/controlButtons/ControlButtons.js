@@ -5,7 +5,7 @@ import Button from '../button/Button';
 import Authorization from '$components/authorization/Authorization';
 import CommentButton from './CommentButton';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import {CancelChangesModalTexts} from '$src/enums';
+import {ConfirmationModalTexts} from '$src/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 import {ButtonColors} from '$components/enums';
 
@@ -74,9 +74,9 @@ const ControlButtons = ({
                 if(onCancel) onCancel();
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
-              confirmationModalLabel: CancelChangesModalTexts.LABEL,
-              confirmationModalTitle: CancelChangesModalTexts.TITLE,
+              confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
             });
           } else {
             if(onCancel) onCancel();
@@ -93,9 +93,9 @@ const ControlButtons = ({
                 if(onCopy) onCopy();
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
-              confirmationModalLabel: CancelChangesModalTexts.LABEL,
-              confirmationModalTitle: CancelChangesModalTexts.TITLE,
+              confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
             });
           } else {
             if(onCopy) onCopy();

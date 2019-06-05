@@ -4,6 +4,7 @@ import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
 import CreateLeaseModal from '$src/leases/components/createLease/CreateLeaseModal';
@@ -11,13 +12,14 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
 import RelatedLeaseItem from './RelatedLeaseItem';
 import TitleH3 from '$components/content/TitleH3';
-import {createLeaseAndUpdateCurrentLease, hideCreateModal, showCreateModal} from '$src/leases/actions';
+import {createLease, hideCreateModal, showCreateModal} from '$src/leases/actions';
 import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
-import {FormNames, Methods} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, Methods} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {LeaseFieldPaths, LeaseFieldTitles, RelationTypes} from '$src/leases/enums';
 import {RelatedLeasePaths} from '$src/relatedLease/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
+import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, isAnyLeaseFormDirty} from '$src/leases/helpers';
 import {getUiDataLeaseKey, getUiDataRelatedLeaseKey} from '$src/uiData/helpers';
 import {getFieldOptions, hasPermissions, isMethodAllowed} from '$src/util/helpers';
 import {
@@ -33,10 +35,11 @@ import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
-  createLeaseAndUpdateCurrentLease: Function,
+  createLease: Function,
   createReleatedLease: Function,
   currentLease: Lease,
   deleteReleatedLease: Function,
+  hasAnyDirtyForms: boolean,
   hideCreateModal: Function,
   initialize: Function,
   isCreateModalOpen: boolean,
@@ -134,9 +137,9 @@ class RelatedLeasesEdit extends Component<Props, State> {
   }
 
   handleCreateLease = (payload: Object) => {
-    const {createLeaseAndUpdateCurrentLease, currentLease} = this.props;
+    const {createLease, currentLease} = this.props;
 
-    createLeaseAndUpdateCurrentLease({
+    createLease({
       ...payload,
       relate_to: currentLease.id,
       relation_type: RelationTypes.TRANSFER,
@@ -146,6 +149,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
   render() {
     const {
       currentLease,
+      hasAnyDirtyForms,
       isCreateModalOpen,
       leaseMethods,
       usersPermissions,
@@ -159,83 +163,106 @@ class RelatedLeasesEdit extends Component<Props, State> {
     } = this.state;
 
     return (
-      <div className="summary__related-leases">
-        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-          <CreateLeaseModal
-            allowToChangeRelateTo={false}
-            isOpen={isCreateModalOpen}
-            onClose={this.hideCreateLeaseModal}
-            onSubmit={this.handleCreateLease}
-          />
-        </Authorization>
-        <TitleH3 enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}>
-          {LeaseFieldTitles.HISTORY }
-        </TitleH3>
+      <AppConsumer>
+        {({dispatch}) => {
+          const handleCreate = (payload: Object) => {
+            if(hasAnyDirtyForms) {
+              dispatch({
+                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                confirmationFunction: () => {
+                  this.handleCreateLease(payload);
+                },
+                confirmationModalButtonClassName: ButtonColors.ALERT,
+                confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+                confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+                confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
+              });
+            } else {
+              this.handleCreateLease(payload);
+            }
+          };
 
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RELATEDLEASE)}>
-          <div className="summary__related-leases_input-wrapper">
-            <FormFieldLabel
-              htmlFor='related-lease'
-              enableUiDataEdit
-              uiDataKey={getUiDataRelatedLeaseKey(RelatedLeasePaths.TO_LEASE)}
-            >Liitä vuokratunnukseen</FormFieldLabel>
-            <Row>
-              <Column>
-                <LeaseSelectInput
-                  disabled={!!newLease}
-                  name='related-lease'
-                  onChange={this.handleCreate}
-                  relatedLeases={relatedLeasesAll}
-                  value={newLease}
+          return (
+            <div className="summary__related-leases">
+              <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+                <CreateLeaseModal
+                  allowToChangeRelateTo={false}
+                  isOpen={isCreateModalOpen}
+                  onClose={this.hideCreateLeaseModal}
+                  onSubmit={handleCreate}
                 />
-              </Column>
-            </Row>
-          </div>
-        </Authorization>
-        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-          <AddButtonSecondary
-            className='no-top-margin'
-            label='Luo vuokratunnus'
-            onClick={this.showCreateLeaseModal}
-          />
-        </Authorization>
+              </Authorization>
+              <TitleH3 enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}>
+                {LeaseFieldTitles.HISTORY }
+              </TitleH3>
 
-        <div className="summary__related-leases_items">
-          <div className="summary__related-leases_items_border-left" />
-          {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {
-            return (
-              <RelatedLeaseItem
-                key={index}
-                active={false}
-                id={lease.id}
-                indented
-                onDelete={this.handleDelete}
-                lease={lease.lease}
-                stateOptions={stateOptions}
-              />
-            );
-          })}
-          {!!currentLease &&
-            <RelatedLeaseItem
-              active={true}
-              lease={currentLease}
-              stateOptions={stateOptions}
-            />
-          }
-          {!!relatedLeasesFrom && !!relatedLeasesFrom.length && relatedLeasesFrom.map((lease, index) => {
-            return (
-              <RelatedLeaseItem
-                key={index}
-                active={false}
-                id={lease.id}
-                onDelete={this.handleDelete}
-                lease={lease.lease}
-                stateOptions={stateOptions}
-              />
-            );
-          })}
-        </div>
-      </div>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RELATEDLEASE)}>
+                <div className="summary__related-leases_input-wrapper">
+                  <FormFieldLabel
+                    htmlFor='related-lease'
+                    enableUiDataEdit
+                    uiDataKey={getUiDataRelatedLeaseKey(RelatedLeasePaths.TO_LEASE)}
+                  >Liitä vuokratunnukseen</FormFieldLabel>
+                  <Row>
+                    <Column>
+                      <LeaseSelectInput
+                        disabled={!!newLease}
+                        name='related-lease'
+                        onChange={this.handleCreate}
+                        relatedLeases={relatedLeasesAll}
+                        value={newLease}
+                      />
+                    </Column>
+                  </Row>
+                </div>
+              </Authorization>
+              <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+                <AddButtonSecondary
+                  className='no-top-margin'
+                  label='Luo vuokratunnus'
+                  onClick={this.showCreateLeaseModal}
+                />
+              </Authorization>
+
+              <div className="summary__related-leases_items">
+                <div className="summary__related-leases_items_border-left" />
+                {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {
+                  return (
+                    <RelatedLeaseItem
+                      key={index}
+                      active={false}
+                      id={lease.id}
+                      indented
+                      onDelete={this.handleDelete}
+                      lease={lease.lease}
+                      stateOptions={stateOptions}
+                    />
+                  );
+                })}
+                {!!currentLease &&
+                  <RelatedLeaseItem
+                    active={true}
+                    lease={currentLease}
+                    stateOptions={stateOptions}
+                  />
+                }
+                {!!relatedLeasesFrom && !!relatedLeasesFrom.length && relatedLeasesFrom.map((lease, index) => {
+                  return (
+                    <RelatedLeaseItem
+                      key={index}
+                      active={false}
+                      id={lease.id}
+                      onDelete={this.handleDelete}
+                      lease={lease.lease}
+                      stateOptions={stateOptions}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }
@@ -245,13 +272,14 @@ export default connect(
     return {
       currentLease: getCurrentLease(state),
       isCreateModalOpen: getIsCreateModalOpen(state),
+      hasAnyDirtyForms: isAnyLeaseFormDirty(state),
       leaseAttributes: getLeaseAttributes(state),
       leaseMethods: getLeaseMethods(state),
       usersPermissions: getUsersPermissions(state),
     };
   },
   {
-    createLeaseAndUpdateCurrentLease,
+    createLease,
     createReleatedLease,
     deleteReleatedLease,
     hideCreateModal,

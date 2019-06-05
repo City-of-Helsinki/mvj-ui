@@ -3,7 +3,7 @@ import React from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import BackButton from '$components/button/BackButton';
-import {CancelChangesModalTexts} from '$src/enums';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 
@@ -27,9 +27,9 @@ const ControlButtonBar = ({buttonComponent, infoComponent, onBack}: Props) =>
               onBack();
             },
             confirmationModalButtonClassName: ButtonColors.ALERT,
-            confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
-            confirmationModalLabel: CancelChangesModalTexts.LABEL,
-            confirmationModalTitle: CancelChangesModalTexts.TITLE,
+            confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+            confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+            confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
           });
         } else {
           onBack();

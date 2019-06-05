@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import MainMenuIcon from '../icons/MainMenuIcon';
 import SearchInput from '../inputs/SearchInput';
-import {CancelChangesModalTexts} from '$src/enums';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 import {getSearchQuery, getUrlParams} from '$util/helpers';
@@ -106,9 +106,9 @@ class TopNavigation extends Component<Props, State> {
                   history.push(relativeUrl);
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
-                confirmationModalLabel: CancelChangesModalTexts.LABEL,
-                confirmationModalTitle: CancelChangesModalTexts.TITLE,
+                confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+                confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+                confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
               });
             }
           };
@@ -123,9 +123,9 @@ class TopNavigation extends Component<Props, State> {
                   this.moveSearchPage();
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
-                confirmationModalLabel: CancelChangesModalTexts.LABEL,
-                confirmationModalTitle: CancelChangesModalTexts.TITLE,
+                confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+                confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+                confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
               });
             } else {
               this.moveSearchPage();
@@ -149,9 +149,9 @@ class TopNavigation extends Component<Props, State> {
                   onLogout();
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
-                confirmationModalLabel: CancelChangesModalTexts.LABEL,
-                confirmationModalTitle: CancelChangesModalTexts.TITLE,
+                confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+                confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+                confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
               });
             } else {
               onLogout();
@@ -200,5 +200,4 @@ class TopNavigation extends Component<Props, State> {
   }
 }
 
-// $FlowFixMe
 export default withRouter(TopNavigation);

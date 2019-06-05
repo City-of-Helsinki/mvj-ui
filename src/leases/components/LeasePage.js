@@ -38,6 +38,7 @@ import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
+import {fetchCommentsByLease} from '$src/comments/actions';
 import {fetchInvoicesByLease} from '$src/invoices/actions';
 import {
   clearFormValidFlags,
@@ -137,6 +138,7 @@ type Props = {
   decisionsFormValues: Object,
   deleteLease: Function,
   destroy: Function,
+  fetchCommentsByLease: Function,
   fetchInvoicesByLease: Function,
   fetchLeaseTypes: Function,
   fetchSingleLease: Function,
@@ -218,18 +220,9 @@ class LeasePage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      fetchInvoicesByLease,
-      fetchLeaseTypes,
-      fetchSingleLease,
-      fetchVats,
       hideEditMode,
-      invoices,
-      leaseTypeList,
       location: {search},
-      match: {params: {leaseId}},
       receiveTopNavigationSettings,
-      usersPermissions,
-      vats,
     } = this.props;
     const query = getUrlParams(search);
 
@@ -245,19 +238,8 @@ class LeasePage extends Component<Props, State> {
       this.setState({activeTab: query.tab});
     }
 
-    fetchSingleLease(leaseId);
-
-    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
-      fetchInvoicesByLease(leaseId);
-    }
-
-    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
-      fetchLeaseTypes();
-    }
-
-    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
-      fetchVats();
-    }
+    this.fetchCurrentLeaseData();
+    this.fetchLeaseRelatedData();
 
     hideEditMode();
 
@@ -281,18 +263,18 @@ class LeasePage extends Component<Props, State> {
   componentDidUpdate(prevProps:Props, prevState: State) {
     const {
       currentLease,
-      fetchInvoicesByLease,
-      fetchLeaseTypes,
-      fetchVats,
-      invoices,
       isEditMode,
-      leaseTypeList,
       match: {params: {leaseId}},
       usersPermissions,
-      vats,
     } = this.props;
     const {activeTab} = this.state;
 
+    // Fetch new current lease and related data if leaseId changes
+    if(leaseId !== prevProps.match.params.leaseId) {
+      this.fetchCurrentLeaseData();
+      this.fetchLeaseRelatedData();
+    }
+    
     if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
@@ -306,17 +288,7 @@ class LeasePage extends Component<Props, State> {
     }
 
     if(usersPermissions !== prevProps.usersPermissions) {
-      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
-        fetchInvoicesByLease(leaseId);
-      }
-
-      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
-        fetchLeaseTypes();
-      }
-
-      if(hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
-        fetchVats();
-      }
+      this.fetchLeaseRelatedData();
     }
 
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes
@@ -356,6 +328,46 @@ class LeasePage extends Component<Props, State> {
 
     window.removeEventListener('beforeunload', this.handleLeavePage);
     window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  fetchCurrentLeaseData = () => {
+    const {
+      fetchSingleLease,
+      match: {params: {leaseId}},
+    } = this.props;
+    
+    fetchSingleLease(leaseId);
+  }
+
+  fetchLeaseRelatedData = () => {
+    const {
+      comments,
+      fetchCommentsByLease,
+      fetchInvoicesByLease,
+      fetchLeaseTypes,
+      fetchVats,
+      invoices,
+      leaseTypeList,
+      match: {params: {leaseId}},
+      usersPermissions,
+      vats,
+    } = this.props;
+    
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_COMMENT) && !comments) {
+      fetchCommentsByLease(leaseId);
+    }
+
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
+      fetchInvoicesByLease(leaseId);
+    }
+
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
+      fetchLeaseTypes();
+    }
+
+    if(hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
+      fetchVats();
+    }
   }
 
   handlePopState = () => {
@@ -1132,6 +1144,7 @@ export default flowRight(
       clearPreviewInvoices,
       deleteLease,
       destroy,
+      fetchCommentsByLease,
       fetchInvoicesByLease,
       fetchLeaseTypes,
       fetchSingleLease,

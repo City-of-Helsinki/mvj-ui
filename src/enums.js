@@ -39,13 +39,15 @@ export const Methods = {
 };
 
 /**
- * Cancel changes modal texts enumerable.
- * @type {{}}
- */
-export const CancelChangesModalTexts = {
-  BUTTON: 'Poistu tallentamatta',
-  LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>,
-  TITLE: 'Poistu tallentamatta',
+  * Confirmation modal texts
+  * @type {{}}
+  */
+export const ConfirmationModalTexts = {
+  CANCEL_CHANGES: {
+    BUTTON: 'Poistu tallentamatta',
+    LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>,
+    TITLE: 'Poistu tallentamatta',
+  },
 };
 
 /**

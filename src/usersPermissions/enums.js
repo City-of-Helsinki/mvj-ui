@@ -83,6 +83,7 @@ export const UsersPermissions = {
   VIEW_COLLECTIONCOURTDECISION: 'view_collectioncourtdecision',
   VIEW_COLLECTIONLETTER: 'view_collectionletter',
   VIEW_COLLECTIONNOTE: 'view_collectionnote',
+  VIEW_COMMENT: 'view_comment',
   VIEW_CONTACT: 'view_contact',
   VIEW_EMAILLOG: 'view_emaillog',
   VIEW_INFILLDEVELOPMENTCOMPENSATION: 'view_infilldevelopmentcompensation',
