@@ -1,15 +1,13 @@
 // @flow
-import get from 'lodash/get';
+import {addEmptyOption} from '$util/helpers';
 
 export const getDistrictOptions = (districts: Array<Object>) => {
-  if(!districts || !districts.length) {
-    return [];
-  }
-
-  return [{value: '', label: ''}, ...districts.map((choice) => {
+  const items = districts || [];
+  
+  return addEmptyOption(items.map((choice) => {
     return {
-      value: get(choice, 'id'),
-      label: `${get(choice, 'name')} (${get(choice, 'identifier')})`,
+      value: choice.id,
+      label: `${choice.name} (${choice.identifier})`,
     };
-  })];
+  }));
 };
