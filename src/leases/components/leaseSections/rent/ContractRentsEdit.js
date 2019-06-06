@@ -10,10 +10,9 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import ContractRentEdit from './ContractRentEdit';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseRentContractRentsFieldPaths,
   LeaseRentContractRentsFieldTitles,
   RentTypes,
@@ -153,9 +152,9 @@ const ContractRentsEdit = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.CONTRACT_RENT,
-                      confirmationModalTitle: DeleteModalTitles.CONTRACT_RENT,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONTRACT_RENT.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_CONTRACT_RENT.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_CONTRACT_RENT.TITLE,
                     });
                   };
 

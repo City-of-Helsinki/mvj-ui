@@ -55,9 +55,8 @@ import {fetchLeaseTypes} from '$src/leaseType/actions';
 import {clearPreviewInvoices} from '$src/previewInvoices/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchVats} from '$src/vat/actions';
-import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
-  DeleteLeaseTexts,
   LeaseAreasFieldPaths,
   LeaseBasisOfRentsFieldPaths,
   LeaseContractsFieldPaths,
@@ -859,9 +858,9 @@ class LeasePage extends Component<Props, State> {
                 commentAmount={comments ? comments.length : 0}
                 deleteModalTexts={{
                   buttonClassName: ButtonColors.ALERT,
-                  buttonText: DeleteLeaseTexts.BUTTON,
-                  label: DeleteLeaseTexts.LABEL,
-                  title: DeleteLeaseTexts.TITLE,
+                  buttonText: ConfirmationModalTexts.DELETE_LEASE.BUTTON,
+                  label: ConfirmationModalTexts.DELETE_LEASE.LABEL,
+                  title: ConfirmationModalTexts.DELETE_LEASE.TITLE,
                 }}
                 isCancelDisabled={activeTab == 6}
                 isEditDisabled={activeTab == 6}
@@ -947,13 +946,13 @@ class LeasePage extends Component<Props, State> {
 
           <Authorization allow={isMethodAllowed(leaseMethods, Methods.PATCH)}>
             <ConfirmationModal
-              confirmButtonLabel='Palauta muutokset'
+              confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
               isOpen={isRestoreModalOpen}
-              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
               onCancel={this.cancelRestoreUnsavedChanges}
               onClose={this.cancelRestoreUnsavedChanges}
               onSave={this.restoreUnsavedChanges}
-              title='Palauta tallentamattomat muutokset'
+              title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
             />
           </Authorization>
 

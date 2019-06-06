@@ -15,11 +15,10 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {Breakpoints} from '$src/foundation/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseRentFixedInitialYearRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldTitles,
 } from '$src/leases/enums';
@@ -125,9 +124,9 @@ const FixedInitialYearRentsEdit = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
-                      confirmationModalTitle: DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_FIXED_INITIAL_YEAR_RENT.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_FIXED_INITIAL_YEAR_RENT.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_FIXED_INITIAL_YEAR_RENT.TITLE,
                     });
                   };
 

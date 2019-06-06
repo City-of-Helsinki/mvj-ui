@@ -29,7 +29,7 @@ import {fetchCollectionNotesByLease} from '$src/collectionNote/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
-import {PermissionMissingTexts, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, PermissionMissingTexts, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   LeaseInvoiceNotesFieldPaths,
@@ -221,9 +221,9 @@ class Invoices extends PureComponent<Props, State> {
                 this.startInvoicing();
               },
               confirmationModalButtonClassName: ButtonColors.SUCCESS,
-              confirmationModalButtonText: 'Käynnistä laskutus',
-              confirmationModalLabel: 'Haluatko varmasti käynnistää laskutuksen?',
-              confirmationModalTitle: 'Käynnistä laskutus',
+              confirmationModalButtonText: ConfirmationModalTexts.START_INVOICING.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.START_INVOICING.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.START_INVOICING.TITLE,
             });
           };
 
@@ -234,9 +234,9 @@ class Invoices extends PureComponent<Props, State> {
                 this.stopInvoicing();
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: 'Keskeytä laskutus',
-              confirmationModalLabel: 'Haluatko varmasti keskeyttää laskutuksen?',
-              confirmationModalTitle: 'Keskeytä laskutus',
+              confirmationModalButtonText: ConfirmationModalTexts.STOP_INVOICING.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.STOP_INVOICING.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.STOP_INVOICING.TITLE,
             });
           };
 

@@ -10,9 +10,8 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import DecisionItemEdit from './DecisionItemEdit';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getContentDecisions} from '$src/landUseContract/helpers';
 import {getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
@@ -46,9 +45,9 @@ const renderDecisions = ({attributes, decisionsData, errors, fields, isSaveClick
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.DECISION,
-                  confirmationModalTitle: DeleteModalTitles.DECISION,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_DECISION.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_DECISION.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE,
                 });
               };
 

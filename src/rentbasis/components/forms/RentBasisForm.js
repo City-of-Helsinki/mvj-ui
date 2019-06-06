@@ -16,11 +16,9 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValid} from '$src/rentbasis/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   RentBasisFieldPaths,
   RentBasisFieldTitles,
   RentBasisDecisionsFieldPaths,
@@ -92,9 +90,9 @@ const renderPropertyIdentifiers = ({fields, isSaveClicked, rentBasisAttributes, 
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.IDENTIFIER,
-                  confirmationModalTitle: DeleteModalTitles.IDENTIFIER,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_PROPERTY_IDENTIFIER.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_PROPERTY_IDENTIFIER.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_PROPERTY_IDENTIFIER.TITLE,
                 });
               };
 
@@ -230,9 +228,9 @@ const renderDecisions = ({fields, isSaveClicked, rentBasisAttributes, usersPermi
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.DECISION,
-                  confirmationModalTitle: DeleteModalTitles.DECISION,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_DECISION.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_DECISION.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE,
                 });
               };
 
@@ -395,9 +393,9 @@ const renderRentRates = ({areaUnitOptions, fields, isSaveClicked, rentBasisAttri
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.RENT_RATE,
-                      confirmationModalTitle: DeleteModalTitles.RENT_RATE,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_RENT_RATE.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_RENT_RATE.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_RENT_RATE.TITLE,
                     });
                   };
 

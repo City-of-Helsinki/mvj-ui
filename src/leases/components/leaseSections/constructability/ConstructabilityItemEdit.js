@@ -24,11 +24,9 @@ import StatusIndicator from './StatusIndicator';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {createLeaseAreaAttachment, deleteLeaseAreaAttachment} from '$src/leaseAreaAttachment/actions';
-import {FormNames, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseAreaAddressesFieldPaths,
   LeaseAreaAttachmentsFieldPaths,
   LeaseAreaAttachmentsFieldTitles,
@@ -189,9 +187,9 @@ const renderComments = connect(
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.CONSTRUCTABILITY,
-                      confirmationModalTitle: DeleteModalTitles.CONSTRUCTABILITY,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_NOTE.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_NOTE.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_NOTE.TITLE,
                     });
                   };
 
@@ -661,9 +659,9 @@ const ConstructabilityItemEdit = ({
                               handleDeleteLeaseAreaAttachment(file.id);
                             },
                             confirmationModalButtonClassName: ButtonColors.ALERT,
-                            confirmationModalButtonText: 'Poista',
-                            confirmationModalLabel: DeleteModalLabels.LEASE_AREA_ATTACHMENT,
-                            confirmationModalTitle: DeleteModalTitles.LEASE_AREA_ATTACHMENT,
+                            confirmationModalButtonText: ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
+                            confirmationModalLabel: ConfirmationModalTexts.DELETE_ATTACHMENT.LABEL,
+                            confirmationModalTitle: ConfirmationModalTexts.DELETE_ATTACHMENT.TITLE,
                           });
                         };
 
@@ -837,9 +835,9 @@ const ConstructabilityItemEdit = ({
                               handleDeleteLeaseAreaAttachment(file.id);
                             },
                             confirmationModalButtonClassName: ButtonColors.ALERT,
-                            confirmationModalButtonText: 'Poista',
-                            confirmationModalLabel: DeleteModalLabels.LEASE_AREA_ATTACHMENT,
-                            confirmationModalTitle: DeleteModalTitles.LEASE_AREA_ATTACHMENT,
+                            confirmationModalButtonText: ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
+                            confirmationModalLabel: ConfirmationModalTexts.DELETE_ATTACHMENT.LABEL,
+                            confirmationModalTitle: ConfirmationModalTexts.DELETE_ATTACHMENT.TITLE,
                           });
                         };
 

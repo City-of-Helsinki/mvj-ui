@@ -11,11 +11,9 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import DecisionLink from '$components/links/DecisionLink';
 import FormText from '$components/form/FormText';
 import RentAdjustmentEdit from './RentAdjustmentEdit';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseRentAdjustmentsFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
@@ -113,9 +111,9 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                           fields.remove(index);
                         },
                         confirmationModalButtonClassName: ButtonColors.ALERT,
-                        confirmationModalButtonText: 'Poista',
-                        confirmationModalLabel: DeleteModalLabels.RENT_ADJUSTMENT,
-                        confirmationModalTitle: DeleteModalTitles.RENT_ADJUSTMENT,
+                        confirmationModalButtonText: ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.BUTTON,
+                        confirmationModalLabel: ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.LABEL,
+                        confirmationModalTitle: ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.TITLE,
                       });
                     };
 

@@ -9,9 +9,8 @@ import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import TextAreaInput from '$components/inputs/TextAreaInput';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/areaNote/enums';
+import {ConfirmationModalTexts, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {Methods} from '$src/enums';
 import {isMethodAllowed} from '$util/helpers';
 import {getMethods as getAreaNoteMethods} from '$src/areaNote/selectors';
 
@@ -89,9 +88,9 @@ class SaveConditionPanel extends Component<Props, State> {
                 onDelete();
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: 'Poista',
-              confirmationModalLabel: DeleteModalLabels.AREA_NOTE,
-              confirmationModalTitle: DeleteModalTitles.AREA_NOTE,
+              confirmationModalButtonText: ConfirmationModalTexts.DELETE_AREA_NOTE.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.DELETE_AREA_NOTE.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.DELETE_AREA_NOTE.TITLE,
             });
           };
 

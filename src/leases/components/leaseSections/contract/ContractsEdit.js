@@ -13,13 +13,9 @@ import ContractFileModal from './ContractFileModal';
 import ContractItemEdit from './ContractItemEdit';
 import FormText from '$components/form/FormText';
 import {receiveFormValidFlags} from '$src/leases/actions';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {
-  DeleteModalLabels,
-  DeleteModalTitles,
-} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {FormNames} from '$src/enums';
 import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts, getDecisionOptions} from '$src/leases/helpers';
 import {hasPermissions} from '$util/helpers';
@@ -67,9 +63,9 @@ const renderContracts = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.CONTRACT,
-                  confirmationModalTitle: DeleteModalTitles.CONTRACT,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONTRACT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_CONTRACT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_CONTRACT.TITLE,
                 });
               };
 

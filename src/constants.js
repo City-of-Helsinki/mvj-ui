@@ -80,7 +80,7 @@ export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen:10058';
 /**
  * Delete modal button text
  */
-export const DeleteModalButtonText = 'Poista';
+export const DELETE_MODAL_BUTTON_TEXT = 'Poista';
 
 /**
  * Maximum number of results per page on list tables

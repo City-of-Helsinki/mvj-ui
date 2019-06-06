@@ -10,7 +10,7 @@ import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
 import {ButtonColors} from '$components/enums';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -71,11 +71,11 @@ class ArchiveAreaModal extends Component<Props> {
       <div>
         <Modal
           className='modal-small modal-autoheight modal-center'
-          title='Arkistoi kohde'
+          title={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.TITLE}
           isOpen={open}
           onClose={onClose}
         >
-          <FormText>Haluatko varmasti arkistoida kohteen?</FormText>
+          <FormText>{ConfirmationModalTexts.ARCHIVE_LEASE_AREA.LABEL}</FormText>
           <Row>
             <Column>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}>
@@ -116,7 +116,7 @@ class ArchiveAreaModal extends Component<Props> {
               className={ButtonColors.SUCCESS}
               disabled={!valid}
               onClick={this.handleArchive}
-              text='Arkistoi'
+              text={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.BUTTON}
             />
           </div>
         </Modal>

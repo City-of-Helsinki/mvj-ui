@@ -15,8 +15,8 @@ import InfoIcon from '$components/icons/InfoIcon';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {createUiData, deleteUiData, editUiData} from '$src/uiData/actions';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteUiDataModalTexts} from '$src/uiData/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getFieldAttributes, hasPermissions} from '$util/helpers';
 import {getUiDataByKey} from '$src/uiData/helpers';
@@ -287,9 +287,9 @@ class Tooltip extends PureComponent<Props, State> {
                 this.handleDelete();
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: DeleteUiDataModalTexts.BUTTON,
-              confirmationModalLabel: DeleteUiDataModalTexts.LABEL,
-              confirmationModalTitle: DeleteUiDataModalTexts.TITLE,
+              confirmationModalButtonText: ConfirmationModalTexts.DELETE_UI_DATA.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.DELETE_UI_DATA.BUTTON,
+              confirmationModalTitle: ConfirmationModalTexts.DELETE_UI_DATA.TITLE,
             });
           };
 

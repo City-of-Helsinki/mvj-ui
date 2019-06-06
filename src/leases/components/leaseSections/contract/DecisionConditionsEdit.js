@@ -19,10 +19,9 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseDecisionConditionsFieldPaths,
   LeaseDecisionConditionsFieldTitles,
 } from '$src/leases/enums';
@@ -150,9 +149,9 @@ const DecisionConditionsEdit = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.CONDITION,
-                      confirmationModalTitle: DeleteModalTitles.CONDITION,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONDITION.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_CONDITION.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_CONDITION.TITLE,
                     });
                   };
 

@@ -23,7 +23,7 @@ import {
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {ContactTypes} from '$src/contacts/enums';
 import {isEmptyValue, isMethodAllowed, setPageTitle} from '$util/helpers';
@@ -153,9 +153,9 @@ class NewContactPage extends Component<Props> {
                     this.createContact();
                   },
                   confirmationModalButtonClassName: ButtonColors.SUCCESS,
-                  confirmationModalButtonText: 'Luo asiakas',
-                  confirmationModalLabel: <span>{`Tunnuksella ${contactIdentifier} on jo olemassa asiakas.`}<br />Haluatko luoda asiakkaan?</span>,
-                  confirmationModalTitle: 'Luo asiakas',
+                  confirmationModalButtonText: ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.CREATE_CONTACT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.CREATE_CONTACT.TITLE,
                 });
 
               } else {

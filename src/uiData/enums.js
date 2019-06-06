@@ -25,11 +25,3 @@ export const UiDataPrefixes = {
   TRADE_REGISTER_COMPANY_REPRESENT: 'trade_register_company_represent',
 };
 
-/*
-* Delete Ui data modal texts enumerable
-*/
-export const DeleteUiDataModalTexts = {
-  BUTTON: 'Poista',
-  LABEL: 'Haluatko varmasti poistaa ohjetekstin',
-  TITLE: 'Poista ohjeteksti',
-};

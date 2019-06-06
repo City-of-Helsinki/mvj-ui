@@ -26,11 +26,9 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/infillDevelopment/actions';
 import {createInfillDevelopmentAttachment, deleteInfillDevelopmentAttachment} from '$src/infillDevelopmentAttachment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
-import {FormNames, Methods, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, Methods, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   InfillDevelopmentCompensationLeasesFieldPaths,
   InfillDevelopmentCompensationLeasesFieldTitles,
   InfillDevelopmentCompensationLeaseDecisionsFieldPaths,
@@ -175,9 +173,9 @@ const renderDecisions = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.DECISION,
-                      confirmationModalTitle: DeleteModalTitles.DECISION,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_DECISION.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_DECISION.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE,
                     });
                   };
 
@@ -334,9 +332,9 @@ const renderIntendedUses = ({fields, infillDevelopmentAttributes, isSaveClicked,
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.INTENDED_USE,
-                      confirmationModalTitle: DeleteModalTitles.INTENDED_USE,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_INTENDED_USE.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_INTENDED_USE.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_INTENDED_USE.TITLE,
                     });
                   };
 
@@ -846,9 +844,9 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                                   this.handleDeleteInfillDevelopmentFile(file.id);
                                 },
                                 confirmationModalButtonClassName: ButtonColors.ALERT,
-                                confirmationModalButtonText: 'Poista',
-                                confirmationModalLabel: DeleteModalLabels.ATTACHMENT,
-                                confirmationModalTitle: DeleteModalTitles.ATTACHMENT,
+                                confirmationModalButtonText: ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
+                                confirmationModalLabel: ConfirmationModalTexts.DELETE_ATTACHMENT.LABEL,
+                                confirmationModalTitle: ConfirmationModalTexts.DELETE_ATTACHMENT.TITLE,
                               });
                             };
 

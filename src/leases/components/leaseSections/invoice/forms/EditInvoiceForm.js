@@ -19,7 +19,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SendupButton from '$components/button/SendupButton';
 import SubTitle from '$components/content/SubTitle';
 import {exportInvoiceToLaskeAndUpdateList} from '$src/invoices/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   InvoiceCreditInvoicesFieldPaths,
@@ -33,7 +33,6 @@ import {
   InvoiceRowsFieldPaths,
   InvoiceType,
 } from '$src/invoices/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -110,9 +109,9 @@ const renderPayments = ({attributes, fields, isEditClicked, relativeTo}: Payment
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.INVOICE_PAYMENT,
-                  confirmationModalTitle: DeleteModalTitles.INVOICE_PAYMENT,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_INVOICE_PAYMENT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_INVOICE_PAYMENT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_INVOICE_PAYMENT.TITLE,
                 });
               };
 

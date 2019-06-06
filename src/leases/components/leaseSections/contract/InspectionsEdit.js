@@ -13,9 +13,9 @@ import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
 import InspectionItemEdit from './InspectionItemEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, LeaseInspectionsFieldPaths} from '$src/leases/enums';
+import {LeaseInspectionsFieldPaths} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   hasPermissions,
@@ -77,9 +77,9 @@ const renderInspections = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.INSPECTION,
-                      confirmationModalTitle: DeleteModalTitles.INSPECTION,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_INSPECTION.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_INSPECTION.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_INSPECTION.TITLE,
                     });
                   };
 

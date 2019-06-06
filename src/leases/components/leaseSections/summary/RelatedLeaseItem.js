@@ -9,8 +9,8 @@ import Authorization from '$components/authorization/Authorization';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import RemoveButton from '$components/form/RemoveButton';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {formatDate, getLabelOfOption, hasPermissions} from '$util/helpers';
@@ -53,9 +53,9 @@ const RelatedLeaseItem = ({
               }
             },
             confirmationModalButtonClassName: ButtonColors.ALERT,
-            confirmationModalButtonText: 'Poista',
-            confirmationModalLabel: DeleteModalLabels.RELATED_LEASE,
-            confirmationModalTitle: DeleteModalTitles.RELATED_LEASE,
+            confirmationModalButtonText: ConfirmationModalTexts.DELETE_RELATED_LEASE.BUTTON,
+            confirmationModalLabel: ConfirmationModalTexts.DELETE_RELATED_LEASE.LABEL,
+            confirmationModalTitle: ConfirmationModalTexts.DELETE_RELATED_LEASE.TITLE,
           });
         };
 

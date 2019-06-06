@@ -12,14 +12,11 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormText from '$components/form/FormText';
 import GrayBox from '$components/content/GrayBox';
 import GreenBox from '$components/content/GreenBox';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
-  ArchiveBasisOfRentsText,
   BasisOfRentManagementSubventionsFieldPaths,
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseBasisOfRentsFieldPaths,
-  UnarchiveBasisOfRentsText,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {calculateBasisOfRentTotalDiscountedInitialYearRent} from '$src/leases/helpers';
@@ -152,9 +149,9 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                             fields.remove(index);
                           },
                           confirmationModalButtonClassName: ButtonColors.ALERT,
-                          confirmationModalButtonText: 'Poista',
-                          confirmationModalLabel: DeleteModalLabels.BASIS_OF_RENT,
-                          confirmationModalTitle: DeleteModalTitles.BASIS_OF_RENT,
+                          confirmationModalButtonText: ConfirmationModalTexts.DELETE_LEASE_BASIS_OF_RENT.BUTTON,
+                          confirmationModalLabel: ConfirmationModalTexts.DELETE_LEASE_BASIS_OF_RENT.LABEL,
+                          confirmationModalTitle: ConfirmationModalTexts.DELETE_LEASE_BASIS_OF_RENT.TITLE,
                         });
                       };
 
@@ -167,9 +164,9 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                             }
                           },
                           confirmationModalButtonClassName: ButtonColors.ALERT,
-                          confirmationModalButtonText: UnarchiveBasisOfRentsText.BUTTON,
-                          confirmationModalLabel: UnarchiveBasisOfRentsText.LABEL,
-                          confirmationModalTitle: UnarchiveBasisOfRentsText.TITLE,
+                          confirmationModalButtonText: ConfirmationModalTexts.UNARCHIVE_LEASE_BASIS_OF_RENT.BUTTON,
+                          confirmationModalLabel: ConfirmationModalTexts.UNARCHIVE_LEASE_BASIS_OF_RENT.LABEL,
+                          confirmationModalTitle: ConfirmationModalTexts.UNARCHIVE_LEASE_BASIS_OF_RENT.TITLE,
                         });
                       };
 
@@ -205,9 +202,9 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                           fields.remove(index);
                         },
                         confirmationModalButtonClassName: ButtonColors.ALERT,
-                        confirmationModalButtonText: 'Poista',
-                        confirmationModalLabel: DeleteModalLabels.BASIS_OF_RENT,
-                        confirmationModalTitle: DeleteModalTitles.BASIS_OF_RENT,
+                        confirmationModalButtonText: ConfirmationModalTexts.DELETE_LEASE_BASIS_OF_RENT.BUTTON,
+                        confirmationModalLabel: ConfirmationModalTexts.DELETE_LEASE_BASIS_OF_RENT.LABEL,
+                        confirmationModalTitle: ConfirmationModalTexts.DELETE_LEASE_BASIS_OF_RENT.TITLE,
                       });
                     };
 
@@ -220,9 +217,9 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                           }
                         },
                         confirmationModalButtonClassName: ButtonColors.SUCCESS,
-                        confirmationModalButtonText: ArchiveBasisOfRentsText.BUTTON,
-                        confirmationModalLabel: ArchiveBasisOfRentsText.LABEL,
-                        confirmationModalTitle: ArchiveBasisOfRentsText.TITLE,
+                        confirmationModalButtonText: ConfirmationModalTexts.ARCHIVE_LEASE_BASIS_OF_RENT.BUTTON,
+                        confirmationModalLabel: ConfirmationModalTexts.ARCHIVE_LEASE_BASIS_OF_RENT.LABEL,
+                        confirmationModalTitle: ConfirmationModalTexts.ARCHIVE_LEASE_BASIS_OF_RENT.TITLE,
                       });
                     };
 

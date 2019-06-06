@@ -18,9 +18,8 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
 
@@ -60,9 +59,9 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.COMPENSATION,
-                      confirmationModalTitle: DeleteModalTitles.COMPENSATION,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_COMPENSATION.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_COMPENSATION.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_COMPENSATION.TITLE,
                     });
                   };
 

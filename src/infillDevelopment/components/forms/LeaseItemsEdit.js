@@ -9,11 +9,8 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
 import FormText from '$src/components/form/FormText';
 import LeaseItemEdit from './LeaseItemEdit';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {
-  DeleteModalLabels,
-  DeleteModalTitles,
-} from '$src/infillDevelopment/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasPermissions} from '$util/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -55,9 +52,9 @@ const LeaseItemsEdit = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.LEASE,
-                  confirmationModalTitle: DeleteModalTitles.LEASE,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.TITLE,
                 });
               };
 

@@ -18,11 +18,11 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreateClicked} from '$src/invoices/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {LeaseCreateChargeFieldPaths, LeaseCreateChargeRowsFieldPaths} from '$src/leaseCreateCharge/enums';
-import {DeleteModalLabels, DeleteModalTitles, RecipientOptions} from '$src/leases/enums';
+import {RecipientOptions} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
@@ -115,9 +115,9 @@ const InvoiceRows = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.INVOICE_ROW,
-                      confirmationModalTitle: DeleteModalTitles.INVOICE_ROW,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_INVOICE_ROW.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_INVOICE_ROW.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_INVOICE_ROW.TITLE,
                     });
                   };
 

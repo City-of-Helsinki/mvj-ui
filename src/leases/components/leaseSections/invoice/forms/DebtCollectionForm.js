@@ -27,15 +27,13 @@ import SubTitle from '$components/content/SubTitle';
 import {deleteCollectionCourtDecision, hideCollectionCourtDecisionPanel, showCollectionCourtDecisionPanel, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
 import {deleteCollectionLetter, uploadCollectionLetter} from '$src/collectionLetter/actions';
 import {createCollectionNote, deleteCollectionNote} from '$src/collectionNote/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {CollectionCourtDecisionFieldPaths, CollectionCourtDecisionFieldTitles} from '$src/collectionCourtDecision/enums';
 import {CollectionLetterFieldPaths, CollectionLetterFieldTitles} from '$src/collectionLetter/enums';
 import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseDecisionsFieldPaths,
   LeaseDecisionsFieldTitles,
 } from '$src/leases/enums';
@@ -374,9 +372,9 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                             this.handleDeleteCollectionLetter(collectionLetter.id);
                           },
                           confirmationModalButtonClassName: ButtonColors.ALERT,
-                          confirmationModalButtonText: 'Poista',
-                          confirmationModalLabel: DeleteModalLabels.COLLECTION_LETTER,
-                          confirmationModalTitle: DeleteModalTitles.COLLECTION_LETTER,
+                          confirmationModalButtonText: ConfirmationModalTexts.DELETE_COLLECTION_LETTER.BUTTON,
+                          confirmationModalLabel: ConfirmationModalTexts.DELETE_COLLECTION_LETTER.LABEL,
+                          confirmationModalTitle: ConfirmationModalTexts.DELETE_COLLECTION_LETTER.TITLE,
                         });
                       };
 
@@ -489,9 +487,9 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                             this.handleDeleteCollectionCourtDecision(collectionCourtDecision.id);
                           },
                           confirmationModalButtonClassName: ButtonColors.ALERT,
-                          confirmationModalButtonText: 'Poista',
-                          confirmationModalLabel: DeleteModalLabels.COLLECTION_COURT_DECISION,
-                          confirmationModalTitle: DeleteModalTitles.COLLECTION_COURT_DECISION,
+                          confirmationModalButtonText: ConfirmationModalTexts.DELETE_COLLECTION_COURT_DECISIONS.BUTTON,
+                          confirmationModalLabel: ConfirmationModalTexts.DELETE_COLLECTION_COURT_DECISIONS.LABEL,
+                          confirmationModalTitle: ConfirmationModalTexts.DELETE_COLLECTION_COURT_DECISIONS.TITLE,
                         });
                       };
 
@@ -547,9 +545,9 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 this.handleDeleteCollectionCourtDecision(collectionCourtDecision.id);
                               },
                               confirmationModalButtonClassName: ButtonColors.ALERT,
-                              confirmationModalButtonText: 'Poista',
-                              confirmationModalLabel: DeleteModalLabels.COLLECTION_COURT_DECISION,
-                              confirmationModalTitle: DeleteModalTitles.COLLECTION_COURT_DECISION,
+                              confirmationModalButtonText: ConfirmationModalTexts.DELETE_COLLECTION_COURT_DECISIONS.BUTTON,
+                              confirmationModalLabel: ConfirmationModalTexts.DELETE_COLLECTION_COURT_DECISIONS.LABEL,
+                              confirmationModalTitle: ConfirmationModalTexts.DELETE_COLLECTION_COURT_DECISIONS.TITLE,
                             });
                           };
 
@@ -706,9 +704,9 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                             this.handleDeleteCollectionNote(note.id);
                           },
                           confirmationModalButtonClassName: ButtonColors.ALERT,
-                          confirmationModalButtonText: 'Poista',
-                          confirmationModalLabel: DeleteModalLabels.COLLECTION_NOTE,
-                          confirmationModalTitle: DeleteModalTitles.COLLECTION_NOTE,
+                          confirmationModalButtonText: ConfirmationModalTexts.DELETE_NOTE.BUTTON,
+                          confirmationModalLabel: ConfirmationModalTexts.DELETE_NOTE.LABEL,
+                          confirmationModalTitle: ConfirmationModalTexts.DELETE_NOTE.TITLE,
                         });
                       };
 

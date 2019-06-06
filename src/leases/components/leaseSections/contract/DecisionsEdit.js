@@ -18,9 +18,8 @@ import {
   receiveFormValidFlags,
   showAttachDecisionModal,
 } from '$src/leases/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasPermissions} from '$util/helpers';
 import {getCurrentLease, getIsAttachDecisionModalOpen} from '$src/leases/selectors';
@@ -61,9 +60,9 @@ const renderDecisions = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.DECISION,
-                  confirmationModalTitle: DeleteModalTitles.DECISION,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_DECISION.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_DECISION.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE,
                 });
               };
 

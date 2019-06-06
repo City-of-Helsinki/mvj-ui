@@ -20,9 +20,8 @@ import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {FormNames, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getFieldAttributes, getFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
@@ -104,9 +103,9 @@ const renderDecisionConditions = ({
                       fields.remove(index);
                     },
                     confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText: 'Poista',
-                    confirmationModalLabel: DeleteModalLabels.CONDITION,
-                    confirmationModalTitle: DeleteModalTitles.CONDITION,
+                    confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONDITION.BUTTON,
+                    confirmationModalLabel: ConfirmationModalTexts.DELETE_CONDITION.LABEL,
+                    confirmationModalTitle: ConfirmationModalTexts.DELETE_CONDITION.TITLE,
                   });
                 };
                 if(largeScreen) {

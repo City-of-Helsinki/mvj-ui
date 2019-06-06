@@ -18,9 +18,8 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
-import {FormNames, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -51,9 +50,9 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.AREA,
-                  confirmationModalTitle: DeleteModalTitles.AREA,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_LEASE_AREA.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_LEASE_AREA.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_LEASE_AREA.TITLE,
                 });
               };
 
