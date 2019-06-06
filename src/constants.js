@@ -1,9 +1,8 @@
-import L from 'leaflet';
-
+// @flow
 /**
- * KTJ-links & datasets
- * @type {[*]}
- */
+  * KTJ-links & datasets
+  * @type {[*]}
+  */
 export const ktjDataSets = [
   {key: 'karttaote', label: 'Kiinteistörekisterin karttaote'},
   {key: 'kiinteistorekisteriote', label: 'Kiinteistörekisteriote'},
@@ -17,44 +16,35 @@ export const ktjDataSets = [
 ];
 
 /**
- * TileLayer
- * @type {string}
- */
-// export const tileLayer = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
-// export const tileLayer = 'https://geoserver.hel.fi/mapproxy/wmts/osm-lite-hq/etrs_tm35fin_hq/{z}/{x}/{y}.png';
-// export const tileLayer = 'https://kartta.hel.fi/ws/geoserver/avoindata/wms?helsinki/{z}/{x}/{y}.png';
-export const tileLayer = L.tileLayer.wms('http://kartta.hel.fi/ws/geoserver/helsinki/wms?helsinki', {layers: 'helsinki:Kaupunkikartta'});
-
-/**
- * Default coordinates for Map (helsinki centrum)
- * @type {{lat: number, lng: number}}
- */
+  * Default coordinates for Map (helsinki centrum)
+  * @type {{lat: number, lng: number}}
+  */
 export const defaultCoordinates = {
   lat: 60.1699,
   lng: 24.9384,
 };
 
 /**
- * Default zoom
- * @type {number}
- */
+  * Default zoom
+  * @type {number}
+  */
 export const defaultZoom = 5;
 
 /**
- * Min zoom
- * @type {number}
- */
+  * Min zoom
+  * @type {number}
+  */
 export const minZoom = 2;
 
 /**
- * Max zoom
- * @type {number}
- */
+  * Max zoom
+  * @type {number}
+  */
 export const maxZoom = 12;
 
 /**
- * Map color palette
- */
+  * Map color palette
+  */
 export const mapColors = [
   '#388E3C',
   '#FF9800',
@@ -73,16 +63,16 @@ export const mapColors = [
 ];
 
 /**
- * Url of the paikkatietovipunen
- */
+  * Url of the paikkatietovipunen
+  */
 export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen:10058';
 
 /**
- * Delete modal button text
- */
+  * Delete modal button text
+  */
 export const DELETE_MODAL_BUTTON_TEXT = 'Poista';
 
 /**
- * Maximum number of results per page on list tables
- */
+  * Maximum number of results per page on list tables
+  */
 export const LIST_TABLE_PAGE_SIZE = 25;

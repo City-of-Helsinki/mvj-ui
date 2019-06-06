@@ -716,7 +716,6 @@ const formName = FormNames.LEASE_SEARCH;
 const selector = formValueSelector(formName);
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     state => {

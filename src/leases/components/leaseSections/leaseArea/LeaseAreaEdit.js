@@ -126,8 +126,8 @@ const renderPlanUnits = ({
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: ConfirmationModalTexts.DELETE_PLAN_UNIT.BUTTON,
-                      confirmationModalLabel: ConfirmationModalTexts.DELETE_PLAN_UNIT.BUTTON.LABEL,
-                      confirmationModalTitle: ConfirmationModalTexts.DELETE_PLAN_UNIT.BUTTON.TITLE,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_PLAN_UNIT.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_PLAN_UNIT.TITLE,
                     });
                   };
 
