@@ -8,10 +8,13 @@ type Props = {
   style?: Object,
 }
 
-const FormText = ({
-  children,
-  className,
-  style,
-}: Props) => <p  className={classNames('form__text', className)} style={style}>{children}</p>;
+const FormText = (props: Props) => {
+  const {
+    children,
+    className,
+    style,
+  } = props;
+  return <p {...props} className={classNames('form__text', className)} style={style}>{children}</p>;
+};
 
 export default FormText;

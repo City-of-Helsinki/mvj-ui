@@ -6,12 +6,11 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
-import ErrorIcon from '$components/icons/ErrorIcon';
+import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SortableTable from '$components/table/SortableTable';
-import SuccessIcon from '$components/icons/SuccessIcon';
 import {fetchScheduledJobs} from '$src/batchrun/actions';
 import {PermissionMissingTexts} from '$src/enums';
 import {
@@ -87,8 +86,8 @@ class ScheduledJobs extends PureComponent<Props, State> {
         key: ScheduledJobFieldPaths.ENABLED,
         text: ScheduledJobFieldTitles.ENABLED,
         renderer: (val) => val
-          ? <SuccessIcon className='icon-small'/>
-          : <ErrorIcon className='icon-small'/>,
+          ? <FormText className='success no-margin' style={{whiteSpace: 'nowrap'}}>Käytössä</FormText>
+          : <FormText className='alert no-margin' style={{whiteSpace: 'nowrap'}}>Ei käytössä</FormText>,
         style: {width: 32},
       });
     }

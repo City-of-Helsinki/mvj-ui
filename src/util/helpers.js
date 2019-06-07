@@ -387,6 +387,11 @@ const selectElementContents = (el) => {
   }
 };
 
+/**
+ * Copy element content to clipboard
+ * @param el
+ * @returns {boolean}
+ */
 export const copyElementContentsToClipboard = (el: any) => {
   const selection = document.getSelection(),
     selected = selection && selection.rangeCount > 0
