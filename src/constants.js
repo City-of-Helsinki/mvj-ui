@@ -1,51 +1,37 @@
 // @flow
-/**
-  * KTJ-links & datasets
-  * @type {[*]}
-  */
-export const ktjDataSets = [
-  {key: 'karttaote', label: 'Kiinteistörekisterin karttaote'},
-  {key: 'kiinteistorekisteriote', label: 'Kiinteistörekisteriote'},
-  {key: 'lainhuutotodistus', label: 'Lainhuutotodistus'},
-  {key: 'muodostajarekisteriyksikot_ajankohtana', label: 'Muodostajarekisteriyksiköt ajankohtana'},
-  {key: 'muodostajaselvitys', label: 'Muodostajaselvitys'},
-  {key: 'muodostumisketju_taaksepain', label: 'Muodostumisketju taaksepäin'},
-  {key: 'yhteystiedot', label: 'Omistajien yhteystiedot'},
-  {key: 'rasitustodistus', label: 'Rasitustodistus'},
-  {key: 'voimassa_olevat_muodostuneet', label: 'Voimassa olevat muodostuneet'},
-];
 
 /**
-  * Default coordinates for Map (helsinki centrum)
-  * @type {{lat: number, lng: number}}
-  */
-export const defaultCoordinates = {
+ * Default coordinates for Map (helsinki centrum)
+ * @type {{lat: number, lng: number}}
+ */
+export const DEFAULT_CENTER = {
   lat: 60.1699,
   lng: 24.9384,
 };
 
 /**
-  * Default zoom
-  * @type {number}
-  */
-export const defaultZoom = 5;
+ * Default zoom level
+ * @const {number}
+ */
+export const DEFAULT_ZOOM = 5;
 
 /**
-  * Min zoom
-  * @type {number}
-  */
-export const minZoom = 2;
+ * Minimum zoom
+ * @const {number}
+ */
+export const MIN_ZOOM = 2;
 
 /**
-  * Max zoom
-  * @type {number}
-  */
-export const maxZoom = 12;
+ * Maximum zoom
+ * @const {number}
+ */
+export const MAX_ZOOM = 12;
 
 /**
-  * Map color palette
-  */
-export const mapColors = [
+ * Map color palette
+ * @const {string[]}
+ */
+export const MAP_COLORS = [
   '#388E3C',
   '#FF9800',
   '#1976D2',
@@ -63,16 +49,19 @@ export const mapColors = [
 ];
 
 /**
-  * Url of the paikkatietovipunen
-  */
+ * Url of the paikkatietovipunen
+ * const {string}
+ */
 export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen:10058';
 
 /**
-  * Delete modal button text
-  */
+ * Delete modal button text
+ * const {string}
+ */
 export const DELETE_MODAL_BUTTON_TEXT = 'Poista';
 
 /**
-  * Maximum number of results per page on list tables
-  */
+ * Maximum number of results per page on list tables
+ * const {number}
+ */
 export const LIST_TABLE_PAGE_SIZE = 25;

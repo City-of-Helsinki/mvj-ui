@@ -11,7 +11,7 @@ import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 import ZoomLevelWarning from './ZoomLevelWarning';
 import {createAreaNote, deleteAreaNote, editAreaNote, hideEditMode} from '$src/areaNote/actions';
-import {defaultCoordinates, defaultZoom} from '$src/constants';
+import {DEFAULT_CENTER, DEFAULT_ZOOM} from '$src/constants';
 import {convertFeatureCollectionToFeature} from '$src/areaNote/helpers';
 import {localizeMap} from '$util/map';
 import {getInitialAreaNote, getIsEditMode} from '$src/areaNote/selectors';
@@ -178,12 +178,12 @@ class AreaNotesEditMap extends Component<Props, State> {
       <div className='map'>
         <MapContainer
           bounds={bounds}
-          center={center ? center : defaultCoordinates}
+          center={center ? center : DEFAULT_CENTER}
           isLoading={isLoading}
           onMapDidMount={onMapDidMount}
           onViewportChanged={onViewportChanged}
           overlayLayers={overlayLayers}
-          zoom={zoom || defaultZoom}
+          zoom={zoom || DEFAULT_ZOOM}
         >
           <FeatureGroup ref={this.setFeatureGroupRef}>
             {allowToEdit && isEditMode &&

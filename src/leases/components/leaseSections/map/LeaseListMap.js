@@ -8,7 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import LeaseListLayer from './LeaseListLayer';
-import {defaultZoom, mapColors} from '$src/constants';
+import {DEFAULT_ZOOM, MAP_COLORS} from '$src/constants';
 import {MAX_ZOOM_LEVEL_TO_FETCH_LEASES} from '$src/leases/constants';
 import {LeaseFieldPaths} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
@@ -28,6 +28,26 @@ import type {Attributes, LeafletGeoJson} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {LeaseList} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+
+const getMapBounds = () => {
+  const {search} = location;
+  const searchQuery = getUrlParams(search);
+
+  return getBoundsFromBBox(searchQuery.in_bbox);
+};
+
+const getMapCenter = () => {
+  const bounds = getMapBounds();
+
+  return bounds ? bounds.getCenter() : null;
+};
+
+const getMapZoom = () => {
+  const {search} = location;
+  const searchQuery = getUrlParams(search);
+
+  return searchQuery.zoom || DEFAULT_ZOOM;
+};
 
 type Props = {
   areaNotes: AreaNoteList,
@@ -51,8 +71,8 @@ type State = {
 
 class LeaseListMap extends PureComponent<Props, State> {
   state = {
-    bounds: null,
-    center: null,
+    bounds: getMapBounds(),
+    center: getMapCenter(),
     leaseAttributes: null,
     leasesData: null,
     leasesGeoJson: {
@@ -60,17 +80,7 @@ class LeaseListMap extends PureComponent<Props, State> {
       type: 'FeatureCollection',
     },
     stateOptions: [],
-    zoom: defaultZoom,
-  }
-
-  componentDidMount() {
-    const bounds = this.getMapBounds();
-    const center = bounds ? bounds.getCenter() : null;
-   
-    this.setState({
-      bounds,
-      center,
-    });
+    zoom: getMapZoom(),
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -86,13 +96,6 @@ class LeaseListMap extends PureComponent<Props, State> {
     }
 
     return !isEmpty(newState) ? newState : null;
-  }
-
-  getMapBounds = () => {
-    const {location: {search}} = this.props;
-    const searchQuery = getUrlParams(search);
-
-    return getBoundsFromBBox(searchQuery.in_bbox);
   }
 
   getOverlayLayers = () => {
@@ -119,7 +122,7 @@ class LeaseListMap extends PureComponent<Props, State> {
       checked: true,
       component: <LeaseListLayer
         key='leases'
-        color={mapColors[0 % mapColors.length]}
+        color={MAP_COLORS[0 % MAP_COLORS.length]}
         leasesGeoJson={leasesGeoJson}
         stateOptions={stateOptions}
       />,
@@ -132,7 +135,7 @@ class LeaseListMap extends PureComponent<Props, State> {
   handleViewportChanged = (mapOptions: Object) => {
     const {onViewportChanged} = this.props;
     this.setState({zoom: mapOptions.zoom});
-
+    console.log('test', this.state, mapOptions);
     onViewportChanged(mapOptions);
   }
 

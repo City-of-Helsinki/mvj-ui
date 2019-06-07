@@ -13,7 +13,7 @@ import PlanUnitsLayer from './PlanUnitsLayer';
 import PlotsLayer from './PlotsLayer';
 import Title from '$components/content/Title';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
-import {mapColors} from '$src/constants';
+import {MAP_COLORS} from '$src/constants';
 import {
   LeaseAreasFieldPaths,
   LeaseFieldPaths,
@@ -175,7 +175,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         checked: true,
         component: <PlanUnitsLayer
           key='plan_units'
-          color={mapColors[0 % mapColors.length]}
+          color={MAP_COLORS[0 % MAP_COLORS.length]}
           defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
           planUnitsGeoJson={planUnitsGeoJson}
           planUnitIntendedUseOptions={planUnitIntendedUseOptions}
@@ -190,7 +190,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         checked: false,
         component: <PlanUnitsLayer
           key='plan_units'
-          color={mapColors[1 % mapColors.length]}
+          color={MAP_COLORS[1 % MAP_COLORS.length]}
           defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
           planUnitsGeoJson={planUnitsContractGeoJson}
           planUnitIntendedUseOptions={planUnitIntendedUseOptions}
@@ -207,7 +207,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         checked: true,
         component: <PlotsLayer
           key='plots'
-          color={mapColors[2 % mapColors.length]}
+          color={MAP_COLORS[2 % MAP_COLORS.length]}
           defaultPlot={query.plot ? Number(query.plot) : undefined}
           plotsGeoJson={plotsGeoJson}
           typeOptions={plotTypeOptions}/>,
@@ -218,7 +218,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         checked: false,
         component: <PlotsLayer
           key='plots'
-          color={mapColors[3 % mapColors.length]}
+          color={MAP_COLORS[3 % MAP_COLORS.length]}
           defaultPlot={query.plot ? Number(query.plot) : undefined}
           plotsGeoJson={plotsContractGeoJson}
           typeOptions={plotTypeOptions}/>,
@@ -232,7 +232,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         component: <AreasLayer
           key='areas'
           areasGeoJson={areasGeoJson}
-          color={mapColors[4 % mapColors.length]}
+          color={MAP_COLORS[4 % MAP_COLORS.length]}
           defaultArea={query.lease_area ? Number(query.lease_area) : undefined}
           locationOptions={areaLocationOptions}
           typeOptions={areaTypeOptions}
@@ -279,7 +279,6 @@ class SingleLeaseMap extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     (state) => {
