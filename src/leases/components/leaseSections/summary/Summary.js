@@ -18,8 +18,9 @@ import SummaryLeaseInfo from './SummaryLeaseInfo';
 import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, Methods, ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -29,27 +30,26 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
+  hasPermissions,
   isEmptyValue,
   isFieldAllowedToRead,
-  isMethodAllowed,
 } from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getMethods as getInfillDevelopmentMethods} from '$src/infillDevelopment/selectors';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
-import {getMethods as getRentBasisMethods} from '$src/rentbasis/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
-import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
   collapseStateBasic: boolean,
   collapseStateStatistical: boolean,
   currentLease: Lease,
-  infillDevelopmentMethods: MethodsType,
   receiveCollapseStates: Function,
-  rentBasisMethods: MethodsType,
+  usersPermissions: UsersPermissionsType,
 }
 
 type State = {
@@ -62,6 +62,7 @@ type State = {
   managementOptions: Array<Object>,
   noticePeriodOptions: Array<Object>,
   regulationOptions: Array<Object>,
+  reservationProcedureOptions: Array<Object>,
   specialProjectOptions: Array<Object>,
   stateOptions: Array<Object>,
   statisticalUseOptions: Array<Object>,
@@ -81,6 +82,7 @@ class Summary extends PureComponent<Props, State> {
     managementOptions: [],
     noticePeriodOptions: [],
     regulationOptions: [],
+    reservationProcedureOptions: [],
     specialProjectOptions: [],
     stateOptions: [],
     statisticalUseOptions: [],
@@ -100,6 +102,7 @@ class Summary extends PureComponent<Props, State> {
       newState.managementOptions = getFieldOptions(props.attributes, LeaseFieldPaths.MANAGEMENT);
       newState.noticePeriodOptions = getFieldOptions(props.attributes, LeaseFieldPaths.NOTICE_PERIOD);
       newState.regulationOptions = getFieldOptions(props.attributes, LeaseFieldPaths.REGULATION);
+      newState.reservationProcedureOptions = getFieldOptions(props.attributes, LeaseFieldPaths.RESERVATION_PROCEDURE);
       newState.specialProjectOptions = getFieldOptions(props.attributes, LeaseFieldPaths.SPECIAL_PROJECT);
       newState.stateOptions = getFieldOptions(props.attributes, LeaseFieldPaths.STATE);
       newState.statisticalUseOptions = getFieldOptions(props.attributes, LeaseFieldPaths.STATISTICAL_USE);
@@ -143,6 +146,7 @@ class Summary extends PureComponent<Props, State> {
       managementOptions,
       noticePeriodOptions,
       regulationOptions,
+      reservationProcedureOptions,
       specialProjectOptions,
       stateOptions,
       statisticalUseOptions,
@@ -153,8 +157,7 @@ class Summary extends PureComponent<Props, State> {
       attributes,
       collapseStateBasic,
       collapseStateStatistical,
-      infillDevelopmentMethods,
-      rentBasisMethods,
+      usersPermissions,
     } = this.props;
     const infillDevelopmentCompensations = summary.infill_development_compensations;
     const matchingBasisOfRents = summary.matching_basis_of_rents;
@@ -285,7 +288,15 @@ class Summary extends PureComponent<Props, State> {
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RESERVATION_PROCEDURE)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RESERVATION_PROCEDURE)}>
+                      {LeaseFieldTitles.RESERVATION_PROCEDURE}
+                    </FormTextTitle>
+                    <FormText>{getLabelOfOption(reservationProcedureOptions, summary.reservation_procedure) || '-'}</FormText>
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_BASISOFRENT)}>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MATCHING_BASIS_OF_RENTS)}>
                       {LeaseFieldTitles.MATCHING_BASIS_OF_RENTS}
                     </FormTextTitle>
@@ -308,7 +319,7 @@ class Summary extends PureComponent<Props, State> {
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INFILLDEVELOPMENTCOMPENSATION)}>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
                       {LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}
                     </FormTextTitle>
@@ -497,8 +508,7 @@ export default connect(
       collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_SUMMARY}.basic`),
       collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_SUMMARY}.statistical`),
       currentLease: getCurrentLease(state),
-      infillDevelopmentMethods: getInfillDevelopmentMethods(state),
-      rentBasisMethods: getRentBasisMethods(state),
+      usersPermissions: getUsersPermissions(state),
     };
   },
   {

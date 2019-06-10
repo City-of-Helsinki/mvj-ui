@@ -21,9 +21,10 @@ import SummaryLeaseInfo from './SummaryLeaseInfo';
 import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames, Methods, ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import {FieldTypes} from '$components/enums';
 import {LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
 import {getContentSummary} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -32,11 +33,10 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
+  hasPermissions,
   isFieldAllowedToRead,
-  isMethodAllowed,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {getMethods as getInfillDevelopmentMethods} from '$src/infillDevelopment/selectors';
 import {
   getAttributes,
   getCollapseStateByKey,
@@ -44,11 +44,12 @@ import {
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
-import {getMethods as getRentBasisMethods} from '$src/rentbasis/selectors';
+import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
@@ -61,8 +62,8 @@ type Props = {
   isSaveClicked: boolean,
   receiveCollapseStates: Function,
   receiveFormValidFlags: Function,
-  rentBasisMethods: MethodsType,
   startDate: ?string,
+  usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
 
@@ -145,9 +146,8 @@ class SummaryEdit extends PureComponent<Props, State> {
       collapseStateStatistical,
       errors,
       handleSubmit,
-      infillDevelopmentMethods,
       isSaveClicked,
-      rentBasisMethods,
+      usersPermissions,
     } = this.props;
     const {classificationOptions, summary} = this.state;
     const infillDevelopmentCompensations = summary.infill_development_compensations;
@@ -335,7 +335,19 @@ class SummaryEdit extends PureComponent<Props, State> {
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.GET)}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RESERVATION_PROCEDURE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.RESERVATION_PROCEDURE)}
+                      name='reservation_procedure'
+                      overrideValues={{label: LeaseFieldTitles.RESERVATION_PROCEDURE}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RESERVATION_PROCEDURE)}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_BASISOFRENT)}>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MATCHING_BASIS_OF_RENTS)}>
                       {LeaseFieldTitles.MATCHING_BASIS_OF_RENTS}
                     </FormTextTitle>
@@ -358,7 +370,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.GET)}>
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INFILLDEVELOPMENTCOMPENSATION)}>
                     <FormTextTitle
                       enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}
@@ -612,10 +624,9 @@ export default flowRight(
         collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.statistical`),
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
-        infillDevelopmentMethods: getInfillDevelopmentMethods(state),
         isSaveClicked: getIsSaveClicked(state),
-        rentBasisMethods: getRentBasisMethods(state),
         startDate: selector(state, 'start_date'),
+        usersPermissions: getUsersPermissions(state),
       };
     },
     {
