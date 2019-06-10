@@ -409,7 +409,8 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
                 <FormTextTitle
-                  required={isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
+                  required={isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT) ||
+                    isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}
                   enableUiDataEdit
                   uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
                 >

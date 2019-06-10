@@ -354,6 +354,7 @@ export const FormNames = {
   LEASE_REFUND: 'refund-form',
   LEASE_RENTS: 'rents-form',
   LEASE_SEARCH: 'lease-search-form',
+  LEASE_STEPPED_DISCOUNT: 'lease-stepped-discount-form',
   LEASE_SUMMARY: 'summary-form',
   LEASE_TENANTS: 'tenants-form',
   LEASEHOLD_TRANSFER_SEARCH: 'leasehold-transfer-search-form',

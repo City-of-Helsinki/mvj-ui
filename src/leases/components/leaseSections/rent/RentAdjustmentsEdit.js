@@ -1,7 +1,7 @@
 // @flow
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {formValueSelector} from 'redux-form';
+import {formValueSelector, initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -11,6 +11,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import DecisionLink from '$components/links/DecisionLink';
 import FormText from '$components/form/FormText';
 import RentAdjustmentEdit from './RentAdjustmentEdit';
+import SteppedDiscountModal from './SteppedDiscountModal';
 import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
@@ -36,6 +37,7 @@ type Props = {
   adjustments: Array<Object>,
   currentLease:Lease,
   fields: any,
+  initialize: Function,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
   usersPermissions: UsersPermissionsType,
@@ -45,6 +47,7 @@ type State = {
   amountTypeOptions: Array<Object>,
   currentLease: Lease,
   decisionOptions: Array<Object>,
+  isSteppedDiscountModalOpen: boolean,
   leaseAttributes: Attributes,
 }
 
@@ -53,6 +56,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     amountTypeOptions: [],
     currentLease: {},
     decisionOptions: [],
+    isSteppedDiscountModal: false,
     leaseAttributes: null,
   }
 
@@ -87,9 +91,24 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     fields.push({});
   };
 
+  handleCloseSteppedDiscountModal = () => {
+    this.setState({isSteppedDiscountModalOpen: false});
+  }
+
+  handleOpenSteppedDiscountModal = () => {
+    const {initialize} = this.props;
+    
+    this.setState({isSteppedDiscountModalOpen: true});
+    initialize(FormNames.LEASE_STEPPED_DISCOUNT, {});
+  }
+
   render() {
     const {fields, isSaveClicked, usersPermissions} = this.props;
-    const {amountTypeOptions, decisionOptions} = this.state;
+    const {
+      amountTypeOptions, 
+      decisionOptions,
+      isSteppedDiscountModalOpen,
+    } = this.state;
 
     if(!hasPermissions(usersPermissions, UsersPermissions.ADD_RENTADJUSTMENT) &&
       (!fields || !fields.length)) {
@@ -101,6 +120,11 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
         {({dispatch}) => {
           return(
             <Fragment>
+              <SteppedDiscountModal
+                decisionOptions={decisionOptions}
+                isOpen={isSteppedDiscountModalOpen}
+                onClose={this.handleCloseSteppedDiscountModal}
+              />
               {fields && !!fields.length &&
                 <BoxItemContainer>
                   {fields.map((field, index) => {
@@ -142,6 +166,16 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                   </Column>
                 </Row>
               </Authorization>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RENTADJUSTMENT)}>
+                <Row>
+                  <Column>
+                    <AddButtonSecondary
+                      label='Lisää porrastettu alennus'
+                      onClick={this.handleOpenSteppedDiscountModal}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
             </Fragment>
           );
         }}
@@ -161,5 +195,8 @@ export default connect(
       leaseAttributes: getLeaseAttributes(state),
       usersPermissions: getUsersPermissions(state),
     };
+  },
+  {
+    initialize,
   },
 )(RentAdjustmentsEdit);
