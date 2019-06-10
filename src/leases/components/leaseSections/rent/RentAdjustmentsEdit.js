@@ -56,7 +56,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     amountTypeOptions: [],
     currentLease: {},
     decisionOptions: [],
-    isSteppedDiscountModal: false,
+    isSteppedDiscountModalOpen: false,
     leaseAttributes: null,
   }
 
@@ -102,6 +102,12 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     initialize(FormNames.LEASE_STEPPED_DISCOUNT, {});
   }
 
+  handleSaveSteppedDiscount = (formValues: Object) => {
+    console.log(formValues);
+
+    this.handleCloseSteppedDiscountModal();
+  }
+
   render() {
     const {fields, isSaveClicked, usersPermissions} = this.props;
     const {
@@ -124,6 +130,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                 decisionOptions={decisionOptions}
                 isOpen={isSteppedDiscountModalOpen}
                 onClose={this.handleCloseSteppedDiscountModal}
+                onSave={this.handleSaveSteppedDiscount}
               />
               {fields && !!fields.length &&
                 <BoxItemContainer>
