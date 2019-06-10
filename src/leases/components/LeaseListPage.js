@@ -69,7 +69,7 @@ import {
 } from '$src/leases/selectors';
 import {getLessorList} from '$src/lessor/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
-import {withLeaseListPageAttributes} from '$components/attributes/LeaseListPageAttributes';
+import {withLeaseAttributes} from '$components/attributes/LeaseAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
@@ -650,7 +650,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withLeaseListPageAttributes,
+  withLeaseAttributes,
   withUiDataList,
   connect(
     (state) => {

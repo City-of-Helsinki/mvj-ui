@@ -3,6 +3,7 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {change} from 'redux-form';
+import classNames from 'classnames';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -32,14 +33,18 @@ import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
+  addButtonClass?: string,
   archived: boolean,
   basisOfRents: Array<Object>,
   change: Function,
   fields: any,
+  formName: string,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
   onArchive?: Function,
   onUnarchive?: Function,
+  showLockedAt?: boolean,
+  showPlansInspectedAt?: boolean,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -94,12 +99,16 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
 
   render() {
     const {
+      addButtonClass,
       archived,
       basisOfRents,
       fields,
+      formName,
       isSaveClicked,
       onArchive,
       onUnarchive,
+      showLockedAt,
+      showPlansInspectedAt,
       usersPermissions,
     } = this.props;
     const {
@@ -120,7 +129,10 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
           <Row>
             <Column>
               <AddButtonSecondary
-                className={(!fields || !fields.length) ? 'no-top-margin' : ''}
+                className={classNames(
+                  addButtonClass, 
+                  {'no-top-margin': (!fields || !fields.length)})
+                }
                 label='Lisää vuokralaskuri'
                 onClick={this.handleAdd}
               />
@@ -175,12 +187,15 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                         archived={true}
                         areaUnitOptions={areaUnitOptions}
                         field={field}
+                        formName={formName}
                         indexOptions={indexOptions}
                         intendedUseOptions={intendedUseOptions}
                         isSaveClicked={isSaveClicked}
                         managementTypeOptions={managementTypeOptions}
                         onRemove={handleRemove}
                         onUnarchive={handleUnarchive}
+                        showLockedAt={showLockedAt}
+                        showPlansInspectedAt={showPlansInspectedAt}
                         showTotal={fields.length > 1 && fields.length === index + 1}
                         subventionTypeOptions={subventionTypeOptions}
                         totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
@@ -228,12 +243,15 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                       archived={false}
                       areaUnitOptions={areaUnitOptions}
                       field={field}
+                      formName={formName}
                       indexOptions={indexOptions}
                       intendedUseOptions={intendedUseOptions}
                       isSaveClicked={isSaveClicked}
                       managementTypeOptions={managementTypeOptions}
                       onArchive={handleArchive}
                       onRemove={handleRemove}
+                      showLockedAt={showLockedAt}
+                      showPlansInspectedAt={showPlansInspectedAt}
                       showTotal={fields.length > 1 && fields.length === index + 1}
                       subventionTypeOptions={subventionTypeOptions}
                       totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
@@ -245,7 +263,9 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                   <Row>
                     <Column>
                       <AddButtonSecondary
-                        className={(!fields || !fields.length) ? 'no-top-margin' : ''}
+                        className={classNames(
+                          {'no-top-margin': (!fields || !fields.length)})
+                        }
                         label='Lisää vuokralaskuri'
                         onClick={this.handleAdd}
                       />

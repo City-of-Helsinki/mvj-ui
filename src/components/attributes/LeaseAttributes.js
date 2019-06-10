@@ -12,7 +12,7 @@ import {
 
 import type {Attributes, Methods} from '$src/types';
 
-function LeaseListPageAttributes(WrappedComponent: any) {
+function LeaseAttributes(WrappedComponent: any) {
   type Props = {
     fetchLeaseAttributes: Function,
     isFetchingLeaseAttributes: boolean,
@@ -20,7 +20,7 @@ function LeaseListPageAttributes(WrappedComponent: any) {
     leaseMethods: Methods,
   }
 
-  return class CommonAttributes extends PureComponent<Props> {
+  return class LeaseAttributes extends PureComponent<Props> {
     componentDidMount() {
       const {
         fetchLeaseAttributes,
@@ -40,8 +40,7 @@ function LeaseListPageAttributes(WrappedComponent: any) {
   };
 }
 
-// $FlowFixMe
-const withLeaseListPageAttributes = flowRight(
+const withLeaseAttributes = flowRight(
   connect(
     (state) => {
       return{
@@ -54,7 +53,7 @@ const withLeaseListPageAttributes = flowRight(
       fetchLeaseAttributes,
     }
   ),
-  LeaseListPageAttributes,
+  LeaseAttributes,
 );
 
-export {withLeaseListPageAttributes};
+export {withLeaseAttributes};

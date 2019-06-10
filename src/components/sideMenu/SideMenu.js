@@ -197,7 +197,8 @@ class SideMenu extends Component<Props, State> {
                     <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperiaatteet</Link></li>
                   </Authorization>
 
-                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT) ||
+                    hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_SCHEDULEDJOB) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) ||
@@ -237,6 +238,12 @@ class SideMenu extends Component<Props, State> {
                           onClick: handleClick,
                           text: 'SAP laskut',
                           to: getRouteById(Routes.SAP_INVOICES),
+                        },
+                        {
+                          allow: hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT),
+                          onClick: handleClick,
+                          text: 'Vuokralaskuri',
+                          to: getRouteById(Routes.BASIS_OF_RENT_CALCULATOR),
                         },
                         {
                           allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASEHOLDTRANSFER),

@@ -23,7 +23,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
-import {ConfirmationModalTexts, FormNames} from '$src/enums';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   BasisOfRentManagementSubventionsFieldPaths,
@@ -267,6 +267,7 @@ type Props = {
   currentLease: Lease,
   discountPercentage: ?string,
   field: string,
+  formName: string,
   id: ?number,
   index: number,
   indexOptions: Array<Object>,
@@ -282,10 +283,12 @@ type Props = {
   onUnarchive?: Function,
   plansInspectedAt: ?string,
   profitMarginPercentage: ?string,
+  showLockedAt?: boolean,
+  showPlansInspectedAt?: boolean,
+  showTotal: boolean,
   subventionBasePercent: ?string,
   subventionGraduatedPercent: ?string,
   subventionType: ?string,
-  showTotal: boolean,
   subventionTypeOptions: Array<Object>,
   temporarySubventions: ?Array<Object>,
   totalDiscountedInitialYearRent: number,
@@ -297,6 +300,11 @@ type State = {
 }
 
 class BasisOfRentEdit extends PureComponent<Props, State> {
+  static defaultProps = {
+    showLockedAt: true,
+    showPlansInspectedAt: true,
+  }
+
   state = {
     showSubventions: this.props.subventionType ? true : false,
   }
@@ -316,7 +324,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         subventionGraduatedPercent !== undefined ||
         managementSubventions !== undefined ||
         temporarySubventions !== undefined) {
-        change(formName, `${field}.discount_percentage`, formatNumber(this.calculateSubventionAmount()));
+        change(this.props.formName, `${field}.discount_percentage`, formatNumber(this.calculateSubventionAmount()));
       }
     }
   }
@@ -522,7 +530,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   }
 
   handleRemoveSubventions = () => {
-    const {change, field} = this.props;
+    const {change, field, formName} = this.props;
 
     change(formName, `${field}.subvention_type`, null);
     this.setState({showSubventions: false});
@@ -562,6 +570,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       managementTypeOptions,
       onArchive,
       onRemove,
+      showLockedAt,
+      showPlansInspectedAt,
       showTotal,
       subventionType,
       subventionTypeOptions,
@@ -612,7 +622,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 <ArchiveButton onClick={this.handleArchive}/>
               }
             </Authorization>
-            {!savedBasisOfRent || !savedBasisOfRent.locked_at &&
+            {(!savedBasisOfRent || !savedBasisOfRent.locked_at) &&
               <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASEBASISOFRENT)}>
                 <RemoveButton
                   onClick={onRemove}
@@ -693,53 +703,58 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 </Row>
               </Authorization>
             </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}
-                errorComponent={
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
-                    <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</FormTextTitle>
-                    <FormText>{plansInspectedAtText}</FormText>
-                  </Authorization>
-                }
-              >
-                <FormField
-                  className='with-top-padding'
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
-                    ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), required: false, type: 'checkbox-date-time'}
-                    : {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), type: 'checkbox-date-time'}
+            {showPlansInspectedAt &&
+              <Column small={6} medium={4} large={2}>
+                <Authorization
+                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}
+                  errorComponent={
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
+                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</FormTextTitle>
+                      <FormText>{plansInspectedAtText}</FormText>
+                    </Authorization>
                   }
-                  disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
-                  invisibleLabel
-                  name={`${field}.plans_inspected_at`}
-                  overrideValues={{label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}
-                errorComponent={
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
-                    <FormTextTitle>{LeaseBasisOfRentsFieldTitles.LOCKED_AT}</FormTextTitle>
-                    <FormText>{lockedAtText}</FormText>
-                  </Authorization>
-                }
-              >
-                <FormField
-                  className='with-top-padding'
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={{
-                    ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT),
-                    type: 'checkbox-date-time',
-                  }}
-                  invisibleLabel
-                  name={`${field}.locked_at`}
-                  overrideValues={{label: LeaseBasisOfRentsFieldTitles.LOCKED_AT}}
-                />
-              </Authorization>
-            </Column>
+                >
+                  <FormField
+                    className='with-top-padding'
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
+                      ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), required: false, type: 'checkbox-date-time'}
+                      : {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), type: 'checkbox-date-time'}
+                    }
+                    disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                    invisibleLabel
+                    name={`${field}.plans_inspected_at`}
+                    overrideValues={{label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}}
+                  />
+                </Authorization>
+              </Column>
+            }
+            
+            {showLockedAt &&
+              <Column small={6} medium={4} large={2}>
+                <Authorization
+                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}
+                  errorComponent={
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
+                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.LOCKED_AT}</FormTextTitle>
+                      <FormText>{lockedAtText}</FormText>
+                    </Authorization>
+                  }
+                >
+                  <FormField
+                    className='with-top-padding'
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={{
+                      ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT),
+                      type: 'checkbox-date-time',
+                    }}
+                    invisibleLabel
+                    name={`${field}.locked_at`}
+                    overrideValues={{label: LeaseBasisOfRentsFieldTitles.LOCKED_AT}}
+                  />
+                </Authorization>
+              </Column>
+            }
           </Row>
           <Row>
             <Column small={6} medium={4} large={2}>
@@ -1110,11 +1125,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.LEASE_RENTS;
-const selector = formValueSelector(formName);
-
 export default connect(
   (state, props) => {
+    const formName = props.formName;
+    const selector = formValueSelector(formName);
+
     return {
       amountPerArea: selector(state, `${props.field}.amount_per_area`),
       area: selector(state, `${props.field}.area`),

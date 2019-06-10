@@ -322,6 +322,7 @@ export const ConfirmationModalTexts = {
  */
 export const FormNames = {
   AREA_NOTE_SEARCH: 'area-note-search-form',
+  BASIS_OF_RENT_CALCULATOR: 'basis-of-rent-calculator-form',
   CONTACT: 'contact-form',
   CONTACT_SEARCH: 'contact-search-form',
   INFILL_DEVELOPMENT: 'infill-development-form',
@@ -370,6 +371,7 @@ export const FormNames = {
  */
 export const PermissionMissingTexts = {
   AREA_NOTE: 'Ei oikeuksia muistettaviin ehtoihiin',
+  BASIS_OF_RENT_CALCULATOR: 'Ei oikeuksia vuokralaskuriin',
   BATCHRUN: 'Ei oikeuksia eräajoihin',
   CONTACT: 'Ei oikeuksia asiakkaisiin',
   GENERAL: 'Ei oikeuksia sisältöön.',

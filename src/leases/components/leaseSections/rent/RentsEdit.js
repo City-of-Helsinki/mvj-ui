@@ -368,6 +368,7 @@ class RentsEdit extends PureComponent<Props, State> {
                   archived={false}
                   basisOfRents={editedActiveBasisOfRents}
                   component={BasisOfRentsEdit}
+                  formName={formName}
                   isSaveClicked={isSaveClicked}
                   name="basis_of_rents"
                   onArchive={this.handleArchive}
@@ -379,6 +380,7 @@ class RentsEdit extends PureComponent<Props, State> {
                   archived={true}
                   basisOfRents={editedArchivedBasisOfRents}
                   component={BasisOfRentsEdit}
+                  formName={formName}
                   isSaveClicked={isSaveClicked}
                   name="basis_of_rents_archived"
                   onUnarchive={this.handleUnarchive}
