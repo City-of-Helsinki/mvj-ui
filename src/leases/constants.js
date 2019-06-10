@@ -1,9 +1,10 @@
 // @flow
 import {TableSortOrder} from '$components/enums';
 import {CreditInvoiceOptionsEnum, RentDueDateTypes} from './enums';
+
 /**
  * Credit invoice options
- * @type {[*]}
+ * @const {[*]}
  */
 export const CreditInvoiceOptions = [
   {value: CreditInvoiceOptionsEnum.FULL, label: 'Koko lasku'},
@@ -13,7 +14,7 @@ export const CreditInvoiceOptions = [
 
 /**
  * Credit invoiceset options
- * @type {[*]}
+ * @const {[*]}
  */
 export const CreditInvoiceSetOptions = [
   {value: CreditInvoiceOptionsEnum.FULL, label: 'Koko laskuryhmä'},
@@ -23,7 +24,7 @@ export const CreditInvoiceSetOptions = [
 
 /**
  * One time rent due date type options
- * @type {[*]}
+ * @const {[*]}
  */
 export const oneTimeRentDueDateTypeOptions = [
   {value: '', label: ''},
@@ -32,7 +33,7 @@ export const oneTimeRentDueDateTypeOptions = [
 
 /**
  * Lease state options for lease list table filter
- * @type {[*]}
+ * @const {[*]}
  */
 export const leaseStateFilterOptions = [
   {value: 'lease', label: 'Vuokraus'},
@@ -46,7 +47,7 @@ export const leaseStateFilterOptions = [
 
 /**
  * Rent custom date options
- * @type {[*]}
+ * @const {[*]}
  */
 export const rentCustomDateOptions = [
   {value: '', label: ''},
@@ -57,10 +58,31 @@ export const rentCustomDateOptions = [
 ];
 
 /**
- * Lease list page default values
+ * Default lease states value for lease list search
+ * @const {string[]}
  */
-export const DEFAULT_LEASE_STATES = ['lease'];
+export const DEFAULT_LEASE_STATES = [];
+
+/**
+ * Default only_active_leases value for lease list search
+ * @const {boolean}
+ */
 export const DEFAULT_ONLY_ACTIVE_LEASES = true;
+
+/**
+ * Default sort key for lease list table
+ * @const {string}
+ */
 export const DEFAULT_SORT_KEY = 'identifier';
+
+/**
+ * Default sort order for lease list table
+ * @const {string}
+ */
 export const DEFAULT_SORT_ORDER = TableSortOrder.ASCENDING;
+
+/**
+ * Max zoom level to fetch leases for map
+ * @const {number}
+ */
 export const MAX_ZOOM_LEVEL_TO_FETCH_LEASES = 7;

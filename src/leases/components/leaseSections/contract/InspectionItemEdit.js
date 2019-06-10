@@ -16,7 +16,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {createLeaseInspectionAttachment, deleteLeaseInspectionAttachment} from '$src/leaseInspectionAttachment/actions';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
   LeaseInspectionAttachmentsFieldPaths,
@@ -200,9 +200,9 @@ const InspectionItemEdit = ({
                             handleDeleteInspectionAttachment(file.id);
                           },
                           confirmationModalButtonClassName: ButtonColors.ALERT,
-                          confirmationModalButtonText: 'Poista',
-                          confirmationModalLabel: DeleteModalLabels.LEASE_INSPECTION_ATTACHMENT,
-                          confirmationModalTitle: DeleteModalTitles.LEASE_INSPECTION_ATTACHMENT,
+                          confirmationModalButtonText: ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
+                          confirmationModalLabel: ConfirmationModalTexts.DELETE_ATTACHMENT.LABEL,
+                          confirmationModalTitle: ConfirmationModalTexts.DELETE_ATTACHMENT.TITLE,
                         });
                       };
 

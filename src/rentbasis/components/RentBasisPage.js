@@ -36,7 +36,7 @@ import {
   showEditMode,
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {ConfirmationModalTexts, Methods, PermissionMissingTexts} from '$src/enums';
 import {
   getSearchQuery,
   getUrlParams,
@@ -411,13 +411,13 @@ class RentBasisPage extends Component<Props, State> {
 
           <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.PATCH)}>
             <ConfirmationModal
-              confirmButtonLabel='Palauta muutokset'
+              confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
               isOpen={isRestoreModalOpen}
-              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
               onCancel={this.cancelRestoreUnsavedChanges}
               onClose={this.restoreUnsavedChanges}
               onSave={this.restoreUnsavedChanges}
-              title='Palauta tallentamattomat muutokset'
+              title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
             />
           </Authorization>
 

@@ -13,9 +13,9 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getUiDataInvoiceKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -54,9 +54,9 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, 
                           fields.remove(index);
                         },
                         confirmationModalButtonClassName: ButtonColors.ALERT,
-                        confirmationModalButtonText: 'Poista',
-                        confirmationModalLabel: DeleteModalLabels.INVOICE_ROW,
-                        confirmationModalTitle: DeleteModalTitles.INVOICE_ROW,
+                        confirmationModalButtonText: ConfirmationModalTexts.DELETE_INVOICE_ROW.BUTTON,
+                        confirmationModalLabel: ConfirmationModalTexts.DELETE_INVOICE_ROW.LABEL,
+                        confirmationModalTitle: ConfirmationModalTexts.DELETE_INVOICE_ROW.TITLE,
                       });
                     };
 

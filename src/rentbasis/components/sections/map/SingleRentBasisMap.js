@@ -8,7 +8,7 @@ import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import RentBasisLayer from './RentBasisLayer';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
-import {mapColors} from '$src/constants';
+import {MAP_COLORS} from '$src/constants';
 import {RentBasisFieldPaths} from '$src/rentbasis/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRentBasisGeoJson} from '$src/rentbasis/helpers';
@@ -104,7 +104,7 @@ class SingleRentBasisMap extends Component<Props, State> {
       layers.push({
         checked: true,
         component: <RentBasisLayer
-          color={mapColors[0]}
+          color={MAP_COLORS[0]}
           financingOptions={financingOptions}
           geoJSON={geoJSON}
           indexOptions={indexOptions}

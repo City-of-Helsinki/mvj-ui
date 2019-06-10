@@ -23,7 +23,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   BasisOfRentManagementSubventionsFieldPaths,
@@ -128,9 +128,9 @@ const renderManagementSubventions = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.LEASE_MANAGEMENT_SUBVENTION,
-                  confirmationModalTitle: DeleteModalTitles.LEASE_MANAGEMENT_SUBVENTION,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_MANAGEMENT_SUBVENTION.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_MANAGEMENT_SUBVENTION.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_MANAGEMENT_SUBVENTION.TITLE,
                 });
               };
 
@@ -222,9 +222,9 @@ const renderTemporarySubventions = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.LEASE_TEMPORARY_SUBVENTION,
-                  confirmationModalTitle: DeleteModalTitles.LEASE_TEMPORARY_SUBVENTION,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_TEMPORARY_SUBVENTION.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_TEMPORARY_SUBVENTION.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_TEMPORARY_SUBVENTION.TITLE,
                 });
               };
 
@@ -988,9 +988,9 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       this.handleRemoveSubventions();
                     },
                     confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText: 'Poista',
-                    confirmationModalLabel: DeleteModalLabels.LEASE_SUBVENTIONS,
-                    confirmationModalTitle: DeleteModalTitles.LEASE_SUBVENTIONS,
+                    confirmationModalButtonText: ConfirmationModalTexts.DELETE_SUBVENTION.BUTTON,
+                    confirmationModalLabel: ConfirmationModalTexts.DELETE_SUBVENTION.LABEL,
+                    confirmationModalTitle: ConfirmationModalTexts.DELETE_SUBVENTION.TITLE,
                   });
                 };
 

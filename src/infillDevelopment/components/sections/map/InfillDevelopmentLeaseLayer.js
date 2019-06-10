@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react';
 import {GeoJSON} from 'react-leaflet';
 
-import {mapColors} from '$src/constants';
+import {MAP_COLORS} from '$src/constants';
 import {
   LeaseAreasFieldTitles,
   LeasePlanUnitsFieldTitles,
@@ -33,7 +33,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
   component: any
 
   static defaultProps = {
-    color: mapColors[0],
+    color: MAP_COLORS[0],
   }
 
   componentDidMount() {

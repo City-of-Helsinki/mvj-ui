@@ -12,8 +12,17 @@ type Props = {
   type?: string,
 }
 
-const CopyToClipboardButton = ({className, disabled, onClick, title, type = 'button'}: Props) =>
-  <button
+const CopyToClipboardButton = (props: Props) => {
+  const {
+    className, 
+    disabled,
+    onClick, 
+    title, 
+    type = 'button',
+  } = props;
+
+  return <button
+    {...props}
     className={classNames('form__copy-to-clipboard-button', className)}
     disabled={disabled}
     type={type}
@@ -21,5 +30,6 @@ const CopyToClipboardButton = ({className, disabled, onClick, title, type = 'but
     onClick={onClick}>
     <CopyToClipboardIcon className='icon-medium'/>
   </button>;
+};
 
 export default CopyToClipboardButton;

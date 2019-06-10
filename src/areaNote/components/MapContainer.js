@@ -18,7 +18,7 @@ import GeoSearch from '$components/map/GeoSearch';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import ZoomBox from '$components/map/ZoomBox';
-import {minZoom, maxZoom} from '$src/constants';
+import {MIN_ZOOM, MAX_ZOOM} from '$src/constants';
 
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 const CRS = new L.Proj.CRS(
@@ -75,15 +75,16 @@ class MapContainer extends Component<Props> {
 
   render() {
     const {bounds, center, children, isLoading, overlayLayers, zoom} = this.props;
-
+    
     return (
       <Map
         ref={this.setMapRef}
         attributionControl={false}
         center={center ? center : undefined}
         bounds={bounds ? bounds : undefined}
-        minZoom={minZoom}
-        maxZoom={maxZoom}
+        maxBoundsViscosity={0}
+        minZoom={MIN_ZOOM}
+        maxZoom={MAX_ZOOM}
         zoom={zoom}
         zoomControl={false}
         crs={CRS}

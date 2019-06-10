@@ -24,9 +24,8 @@ import LitigantBillingPersonEdit from './LitigantBillingPersonEdit';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {FormNames, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
 import {
@@ -65,9 +64,9 @@ const renderBillingPersons = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.BILLING_PERSON,
-                  confirmationModalTitle: DeleteModalTitles.BILLING_PERSON,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_BILLING_PERSON.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_BILLING_PERSON.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_BILLING_PERSON.TITLE,
                 });
               };
               return (

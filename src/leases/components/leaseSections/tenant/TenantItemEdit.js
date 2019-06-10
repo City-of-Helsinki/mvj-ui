@@ -26,11 +26,9 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, Methods, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, Methods, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseTenantContactSetFieldPaths,
   LeaseTenantContactSetFieldTitles,
   LeaseTenantsFieldPaths,
@@ -91,9 +89,9 @@ const renderOtherTenants = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.OTHER_TENANT,
-                  confirmationModalTitle: DeleteModalTitles.OTHER_TENANT,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_OTHER_TENANT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_OTHER_TENANT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_OTHER_TENANT.TITLE,
                 });
               };
 

@@ -509,6 +509,10 @@
       color: $red;
     }
 
+    &.success {
+      color: $dark-green;
+    }
+
     &.semibold {
       font-weight: $semibold;
     }

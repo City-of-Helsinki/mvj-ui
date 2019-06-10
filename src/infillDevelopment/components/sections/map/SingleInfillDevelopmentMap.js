@@ -13,7 +13,7 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {fetchLeaseById} from '$src/leases/actions';
-import {mapColors} from '$src/constants';
+import {MAP_COLORS} from '$src/constants';
 import {LeaseAreasFieldPaths, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentLeaseIdentifier, getLeaseCoordinates} from '$src/leases/helpers';
@@ -199,7 +199,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
         component: <InfillDevelopmentLeaseLayer
           areaLocationOptions={areaLocationOptions}
           areaTypeOptions={areaTypeOptions}
-          color={mapColors[index % mapColors.length]}
+          color={MAP_COLORS[index % MAP_COLORS.length]}
           geoJSONData={getContentInfillDevelopmentLeaseGeoJson(leaseData)}
           highlighted={Boolean(query.lease && Number(query.lease) === leaseId)}
           leaseIdentifier={identifier}
@@ -257,7 +257,6 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     (state) => {

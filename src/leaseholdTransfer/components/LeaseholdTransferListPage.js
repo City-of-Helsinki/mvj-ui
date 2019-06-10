@@ -20,11 +20,10 @@ import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
 import {deleteLeaseholdTransferAndUpdateList, fetchLeaseholdTransferList} from '$src/leaseholdTransfer/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {DeleteModalButtonText, LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/leaseholdTransfer/constants';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
+  ConfirmationModalTexts,
   FormNames,
   Methods,
   PermissionMissingTexts,
@@ -290,9 +289,9 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
                 });
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: DeleteModalButtonText,
-              confirmationModalLabel: DeleteModalLabels.LEASEHOLD_TRANSFER,
-              confirmationModalTitle: DeleteModalTitles.LEASEHOLD_TRANSFER,
+              confirmationModalButtonText: ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.TITLE,
             });
           };
 

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-
+import {DELETE_MODAL_BUTTON_TEXT} from '$src/constants';
 /**
  * View modes enumerable.
  *
@@ -43,36 +43,276 @@ export const Methods = {
   * @type {{}}
   */
 export const ConfirmationModalTexts = {
+  ARCHIVE_LEASE_AREA: {
+    BUTTON: 'Arkistoi',
+    LABEL: 'Haluatko varmasti arkistoida kohteen?',
+    TITLE: 'Arkistoi kohde',
+  },
+  ARCHIVE_LEASE_BASIS_OF_RENT: {
+    BUTTON: 'Arkistoi',
+    LABEL: 'Haluatko varmasti arkistoida vuokralaskurin?',
+    TITLE: 'Arkistoi vuokralaskuri',
+  },
   CANCEL_CHANGES: {
     BUTTON: 'Poistu tallentamatta',
     LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>,
     TITLE: 'Poistu tallentamatta',
   },
-};
-
-/**
- * Delete modal label text enumerable.
- * @type {{}}
- */
-export const DeleteModalLabels = {
-  LEASE_INSPECTION_ATTACHMENT: 'Haluatko varmasti poistaa tiedoston?',
-  LEASE_MANAGEMENT_SUBVENTION: 'Haluatko varmasti poistaa hallintamuodon?',
-  LEASE_SUBVENTIONS: 'Haluatko varmasti poistaa subvention?',
-  LEASE_TEMPORARY_SUBVENTION: 'Haluatko varmasti poistaa tilapäisalennuksen?',
-  LEASEHOLD_TRANSFER: 'Haluatko varmasti poistaa vuokraoikeuden siirron?',
-};
-
-/**
- * Delete modal title text enumerable.
- * @type {{}}
- */
-export const DeleteModalTitles = {
-  LEASE_INSPECTION_ATTACHMENT: 'Poista tiedosto',
-  LEASE_MANAGEMENT_SUBVENTION: 'Poista hallintamuoto',
-  LEASE_SUBVENTIONS: 'Poista subventio',
-  LEASE_TEMPORARY_SUBVENTION: 'Poista tilapäisalennus',
-  LEASEHOLD_TRANSFER: 'Poista vuokraoikeuden siirto',
-
+  CLOSE_COMMENT_PANEL: {
+    BUTTON: 'Sulje kommentointi',
+    LABEL: <span>Kaikkia muutoksia ei ole tallennettu.<br /> Haluatko varmasti sulkea kommentoinnin?</span>,
+    TITLE: 'Sulje kommentointi',
+  },
+  COPY_AREAS_TO_CONTRACT: {
+    BUTTON: 'Kopioi sopimukseen',
+    LABEL: 'Haluatko varmasti kopioda nykyhetken kiinteistöt, määräalat ja kaavayksiköt sopimukseen?',
+    TITLE: 'Kopioi sopimukseen',
+  },
+  CREATE_CONTACT: {
+    BUTTON: 'Luo asiakas',
+    LABEL: <span>`Tunnuksella on jo olemassa asiakas.`<br />Haluatko luoda asiakkaan?</span>,
+    TITLE: 'Luo asiakas',
+  },
+  DELETE_ADDRESS: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa osoitteen?',
+    TITLE: 'Poista osoite',
+  },
+  DELETE_AREA_NOTE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa muistettavan ehdon?',
+    TITLE: 'Poista muistettava ehto',
+  },
+  DELETE_ATTACHMENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa tiedoston?',
+    TITLE: 'Poista tiedosto',
+  },
+  DELETE_BILLING_PERSON: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa laskunsaajan?',
+    TITLE: 'Poista laskunsaaja',
+  },
+  DELETE_COLLATERAL: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vakuuden?',
+    TITLE: 'Poista vakuus',
+  },
+  DELETE_COLLECTION_COURT_DECISIONS: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa käräjäoikeuden päätöksen?',
+    TITLE: 'Poista käräjäoikeuden päätös',
+  },
+  DELETE_COLLECTION_LETTER: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa perintäkirjeen?',
+    TITLE: 'Poista perintäkirje',
+  },
+  DELETE_COMPENSATION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa korvauksen?',
+    TITLE: 'Poista korvaus',
+  },
+  DELETE_CONDITION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa ehdon?',
+    TITLE: 'Poista ehto',
+  },
+  DELETE_CONTRACT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa sopimuksen?',
+    TITLE: 'Poista sopimus',
+  },
+  DELETE_CONTRACT_CHANGE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa sopimuksen muutoksen?',
+    TITLE: 'Poista sopimuksen muutos',
+  },
+  DELETE_CONTRACT_RENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa sopimusvuokran',
+    TITLE: 'Poista sopimusvuokra',
+  },
+  DELETE_DECISION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa päätöksen?',
+    TITLE: 'Poista päätös',
+  },
+  DELETE_FIXED_INITIAL_YEAR_RENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kiinteän alkuvuosivuokran?',
+    TITLE: 'Poista kiinteä alkuvuosivuokra',
+  },
+  DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vuokrauksen täydennysrakentamiskorvauksesta?',
+    TITLE: 'Poista vuokraus täydennysrakentamiskorvauksesta',
+  },
+  DELETE_INSPECTION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa tarkastuksen?',
+    TITLE: 'Poista tarkastus',
+  },
+  DELETE_INTENDED_USE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa käyttötarkoituksen?',
+    TITLE: 'Poista käyttötarkoitus',
+  },
+  DELETE_INVOICE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa laskun?',
+    TITLE: 'Poista lasku',
+  },
+  DELETE_INVOICE_NOTE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa maksun?',
+    TITLE: 'Poista maksu',
+  },
+  DELETE_INVOICE_PAYMENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa laskun?',
+    TITLE: 'Poista lasku',
+  },
+  DELETE_INVOICE_ROW: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa laskurivin?',
+    TITLE: 'Poista laskurivi',
+  },
+  DELETE_LEASE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vuokraustunnuksen?',
+    TITLE: 'Poista vuokraustunnus',
+  },
+  DELETE_LEASE_AREA: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kohteen?',
+    TITLE: 'Poista kohde',
+  },
+  DELETE_LEASE_BASIS_OF_RENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vuokralaskurin?',
+    TITLE: 'Poista vuokralaskuri',
+  },
+  DELETE_LEASEHOLD_TRASFER: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vuokraoikeuden siirron?',
+    TITLE: 'Poista vuokraoikeuden siirto',
+  },
+  DELETE_LITIGANT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa osapuolen?',
+    TITLE: 'Poista osapuoli',
+  },
+  DELETE_MANAGEMENT_SUBVENTION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa hallintamuodon?',
+    TITLE: 'Poista hallintamuoto',
+  },
+  DELETE_NOTE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa huomautuksen?',
+    TITLE: 'Poista huomautus',
+  },
+  DELETE_OTHER_TENANT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa laskunsaajan/yhteyshenkilön?',
+    TITLE: 'Poista laskunsaaja/yhteyshenkilö',
+  },
+  DELETE_PLAN_UNIT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kaavayksikön?',
+    TITLE: 'Poista kaavayksikkö',
+  },
+  DELETE_PLOT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kiinteistön/määräalan?',
+    TITLE: 'Poista kiinteistö/määräala',
+  },
+  DELETE_PROPERTY_IDENTIFIER: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kiinteisötunnuksen?',
+    TITLE: 'Poista kiinteistötunnus',
+  },
+  DELETE_RELATED_LEASE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vuokratunnusten välisen liitoksen?',
+    TITLE: 'Poista liitos',
+  },
+  DELETE_RENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vuokran?',
+    TITLE: 'Poista vuokra',
+  },
+  DELETE_RENT_ADJUSTMENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa alennuksen/korotuksen?',
+    TITLE: 'Poista alennus/korotus',
+  },
+  DELETE_RENT_FOR_PERIOD: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vuokralaskelman',
+    TITLE: 'Poista vuokralaskelma',
+  },
+  DELETE_RENT_RATE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa hinnan?',
+    TITLE: 'Poista hinta',
+  },
+  DELETE_SUBVENTION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa subvention?',
+    TITLE: 'Poista subvention',
+  },
+  DELETE_TEMPORARY_SUBVENTION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa tilapäisalennuksen?',
+    TITLE: 'Poista tilapäisalennus',
+  },
+  DELETE_TENANT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa vuokralaisen?',
+    TITLE: 'Poista vuokralainen',
+  },
+  DELETE_UI_DATA: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa ohjetekstin',
+    TITLE: 'Poista ohjeteksti',
+  },
+  RESTORE_CHANGES: {
+    BUTTON: 'Palauta muutokset',
+    LABEL: 'Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?',
+    TITLE: 'Palauta tallentamattomat muutokset',
+  },
+  SET_RENT_INFO_COMPLETE: {
+    BUTTON: 'Merkitse valmiiksi',
+    LABEL: 'Haluatko varmasti merkitä vuokratiedot valmiiksi?',
+    TITLE: 'Merkitse vuokratiedot valmiiksi',
+  },
+  SET_RENT_INFO_UNCOMPLETE: {
+    BUTTON: 'Merkitse keskeneräisiksi',
+    LABEL: 'Haluatko varmasti merkitä vuokratiedot keskeneräisiksi?',
+    TITLE: 'Merkitse vuokratiedot keskeneräisiksi',
+  },
+  START_INVOICING: {
+    BUTTON: 'Käynnistä laskutus',
+    LABEL: 'Haluatko varmasti käynnistää laskutuksen?',
+    TITLE: 'Käynnistä laskutus',
+  },
+  STOP_INVOICING: {
+    BUTTON: 'Keskeytä laskutus',
+    LABEL: 'Haluatko varmasti keskeyttää laskutuksen?',
+    TITLE: 'Keskeytä laskutus',
+  },
+  UNARCHIVE_LEASE_AREA: {
+    BUTTON: 'Siirrä arkistosta',
+    LABEL: 'Haluatko varmasti siirtää kohteen pois arkistosta?',
+    TITLE: 'Siirrä arkistosta',
+  },
+  UNARCHIVE_LEASE_BASIS_OF_RENT: {
+    BUTTON: 'Siirrä arkistosta',
+    LABEL: 'Haluatko varmasti siirtää vuokralaskurin pois arkistosta?',
+    TITLE: 'Siirrä arkistosta',
+  },
 };
 
 /**

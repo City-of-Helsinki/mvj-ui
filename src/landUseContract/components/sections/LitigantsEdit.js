@@ -20,10 +20,9 @@ import {
   receiveIsSaveClicked,
 } from '$src/contacts/actions';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ContactTypes} from '$src/contacts/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/landUseContract/enums';
 import {validateLitigantForm} from '$src/landUseContract/formValidators';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentLitigants} from '$src/landUseContract/helpers';
@@ -73,9 +72,9 @@ const renderLitigants = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.LITIGANT,
-                  confirmationModalTitle: DeleteModalTitles.LITIGANT,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_LITIGANT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_LITIGANT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_LITIGANT.TITLE,
                 });
               };
 
@@ -241,9 +240,9 @@ class TenantsEdit extends PureComponent<Props, State> {
                     this.createOrEditContact();
                   },
                   confirmationModalButtonClassName: ButtonColors.SUCCESS,
-                  confirmationModalButtonText: 'Luo asiakas',
-                  confirmationModalLabel: <span>{`Tunnuksella ${contactIdentifier} on jo olemassa asiakas.`}<br />Haluatko luoda asiakkaan?</span>,
-                  confirmationModalTitle: 'Luo asiakas',
+                  confirmationModalButtonText: ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.CREATE_CONTACT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.CREATE_CONTACT.TITLE,
                 });
 
               } else {

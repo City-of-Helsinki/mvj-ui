@@ -15,12 +15,10 @@ import LeaseAreaWithArchiveInfoEdit from './LeaseAreaWithArchiveInfoEdit';
 import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
 import {copyAreasToContract, receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   AreaLocation,
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseAreasFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
@@ -91,9 +89,9 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
                       fields.remove(index);
                     },
                     confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText: 'Poista',
-                    confirmationModalLabel: DeleteModalLabels.LEASE_AREA,
-                    confirmationModalTitle: DeleteModalTitles.LEASE_AREA,
+                    confirmationModalButtonText: ConfirmationModalTexts.DELETE_LEASE_AREA.BUTTON,
+                    confirmationModalLabel: ConfirmationModalTexts.DELETE_LEASE_AREA.LABEL,
+                    confirmationModalTitle: ConfirmationModalTexts.DELETE_LEASE_AREA.TITLE,
                   });
                 };
 
@@ -296,9 +294,9 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                 copyAreasToContract(currentLease.id);
               },
               confirmationModalButtonClassName: ButtonColors.SUCCESS,
-              confirmationModalButtonText: 'Kopioi sopimukseen',
-              confirmationModalLabel: 'Haluatko varmasti kopioda nykyhetken kiinteistöt, määräalat ja kaavayksiköt sopimukseen?',
-              confirmationModalTitle: 'Kopioi sopimukseen',
+              confirmationModalButtonText: ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.TITLE,
             });
           };
 
@@ -309,9 +307,9 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                 this.handleUnarchive(index, area);
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: 'Siirrä arkistosta',
-              confirmationModalLabel: 'Haluatko varmasti siirtää kohteen pois arkistosta?',
-              confirmationModalTitle: 'Siirrä arkistosta',
+              confirmationModalButtonText: ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.TITLE,
             });
           };
 

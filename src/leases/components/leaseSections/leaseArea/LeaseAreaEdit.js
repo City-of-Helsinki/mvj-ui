@@ -26,11 +26,9 @@ import PlotItemEdit from './PlotItemEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseAreaAddressesFieldPaths,
   LeaseAreaAddressesFieldTitles,
   LeaseAreasFieldPaths,
@@ -127,9 +125,9 @@ const renderPlanUnits = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.PLAN_UNIT,
-                      confirmationModalTitle: DeleteModalTitles.PLAN_UNIT,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_PLAN_UNIT.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_PLAN_UNIT.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_PLAN_UNIT.TITLE,
                     });
                   };
 
@@ -232,9 +230,9 @@ const renderPlots = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.PLOT,
-                      confirmationModalTitle: DeleteModalTitles.PLOT,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_PLOT.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_PLOT.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_PLOT.TITLE,
                     });
                   };
 
@@ -430,9 +428,9 @@ const AddressItems = ({attributes, change, fields, isSaveClicked, usersPermissio
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.ADDRESS,
-                  confirmationModalTitle: DeleteModalTitles.ADDRESS,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_ADDRESS.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_ADDRESS.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_ADDRESS.TITLE,
                 });
               };
 
@@ -707,7 +705,6 @@ const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     (state, props) => {

@@ -28,10 +28,8 @@ import {
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {ContactTypes} from '$src/contacts/enums';
 import {ButtonColors} from '$components/enums';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseTenantsFieldPaths,
   LeaseTenantsFieldTitles,
 } from '$src/leases/enums';
@@ -129,9 +127,9 @@ const renderTenants = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.TENANT,
-                  confirmationModalTitle: DeleteModalTitles.TENANT,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_TENANT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_TENANT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_TENANT.TITLE,
                 });
               };
 
@@ -303,9 +301,9 @@ class TenantsEdit extends PureComponent<Props, State> {
                     this.createOrEditContact();
                   },
                   confirmationModalButtonClassName: ButtonColors.SUCCESS,
-                  confirmationModalButtonText: 'Luo asiakas',
-                  confirmationModalLabel: <span>{`Tunnuksella ${contactIdentifier} on jo olemassa asiakas.`}<br />Haluatko luoda asiakkaan?</span>,
-                  confirmationModalTitle: 'Luo asiakas',
+                  confirmationModalButtonText: ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.CREATE_CONTACT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.CREATE_CONTACT.TITLE,
                 });
 
               } else {

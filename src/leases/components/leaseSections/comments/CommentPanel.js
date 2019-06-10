@@ -19,8 +19,8 @@ import {
   createComment,
   receiveIsSaveClicked,
 } from '$src/comments/actions';
-import {FormNames, Methods} from '$src/enums';
-import {ButtonColors, CloseCommentPanelTexts} from '$components/enums';
+import {ConfirmationModalTexts, FormNames, Methods} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {CommentFieldPaths} from '$src/comments/enums';
 import {
   getFieldOptions,
@@ -238,9 +238,9 @@ class CommentPanel extends PureComponent<Props, State> {
                           receiveIsSaveClicked(false);
                         },
                         confirmationModalButtonClassName: ButtonColors.ALERT,
-                        confirmationModalButtonText: CloseCommentPanelTexts.BUTTON,
-                        confirmationModalLabel: CloseCommentPanelTexts.LABEL,
-                        confirmationModalTitle: CloseCommentPanelTexts.TITLE,
+                        confirmationModalButtonText: ConfirmationModalTexts.CLOSE_COMMENT_PANEL.BUTTON,
+                        confirmationModalLabel: ConfirmationModalTexts.CLOSE_COMMENT_PANEL.LABEL,
+                        confirmationModalTitle: ConfirmationModalTexts.CLOSE_COMMENT_PANEL.TITLE,
                       });
                     } else {
                       onClose();

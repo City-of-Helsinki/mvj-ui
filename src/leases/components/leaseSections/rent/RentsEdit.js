@@ -23,11 +23,9 @@ import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
 import WarningField from '$components/form/WarningField';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors, RentCalculatorFieldPaths, RentCalculatorFieldTitles} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseBasisOfRentsFieldPaths,
   LeaseBasisOfRentsFieldTitles,
   LeaseRentsFieldPaths,
@@ -114,9 +112,9 @@ const renderRents = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.RENT,
-                  confirmationModalTitle: DeleteModalTitles.RENT,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_RENT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_RENT.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_RENT.TITLE,
                 });
               };
 
@@ -264,9 +262,9 @@ class RentsEdit extends PureComponent<Props, State> {
                 this.setRentInfoComplete();
               },
               confirmationModalButtonClassName: ButtonColors.SUCCESS,
-              confirmationModalButtonText: 'Merkitse valmiiksi',
-              confirmationModalLabel: 'Haluatko varmasti merkitä vuokratiedot valmiiksi?',
-              confirmationModalTitle: 'Merkitse vuokratiedot valmiiksi',
+              confirmationModalButtonText: ConfirmationModalTexts.SET_RENT_INFO_COMPLETE.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.SET_RENT_INFO_COMPLETE.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.SET_RENT_INFO_COMPLETE.TITLE,
             });
           };
 
@@ -277,9 +275,9 @@ class RentsEdit extends PureComponent<Props, State> {
                 this.setRentInfoUncomplete();
               },
               confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: 'Merkitse keskeneräisiksi',
-              confirmationModalLabel: 'Haluatko varmasti merkitä vuokratiedot keskeneräisiksi?',
-              confirmationModalTitle: 'Merkitse vuokratiedot keskeneräisiksi',
+              confirmationModalButtonText: ConfirmationModalTexts.SET_RENT_INFO_UNCOMPLETE.BUTTON,
+              confirmationModalLabel: ConfirmationModalTexts.SET_RENT_INFO_UNCOMPLETE.LABEL,
+              confirmationModalTitle: ConfirmationModalTexts.SET_RENT_INFO_UNCOMPLETE.TITLE,
             });
           };
 

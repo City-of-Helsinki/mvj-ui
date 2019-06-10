@@ -24,11 +24,9 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, ViewModes} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
-  DeleteModalLabels,
-  DeleteModalTitles,
   LeaseContractChangesFieldPaths,
   LeaseContractChangesFieldTitles,
   LeaseContractCollateralsFieldPaths,
@@ -130,9 +128,9 @@ const renderContractChanges = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.CONTRACT_CHANGE,
-                      confirmationModalTitle: DeleteModalTitles.CONTRACT_CHANGE,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONTRACT_CHANGE.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_CONTRACT_CHANGE.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_CONTRACT_CHANGE.TITLE,
                     });
                   };
 
@@ -323,9 +321,9 @@ const renderCollaterals = ({
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.COLLATERAL,
-                      confirmationModalTitle: DeleteModalTitles.COLLATERAL,
+                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_COLLATERAL.BUTTON,
+                      confirmationModalLabel: ConfirmationModalTexts.DELETE_COLLATERAL.LABEL,
+                      confirmationModalTitle: ConfirmationModalTexts.DELETE_COLLATERAL.TITLE,
                     });
                   };
 

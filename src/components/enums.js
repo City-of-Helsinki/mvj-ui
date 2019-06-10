@@ -1,5 +1,4 @@
 // @flow
-import React from 'react';
 
 /**
  * Button color enumerable.
@@ -125,28 +124,6 @@ export const RentSubItemType = {
 export const TableSortOrder = {
   ASCENDING: 'asc',
   DESCENDING: 'desc',
-};
-
-/**
- * Close comment panel text enumerable.
- *
- * @type {{BUTTON: string, LABEL: string, TITLE: string}}
- */
-export const CloseCommentPanelTexts = {
-  BUTTON: 'Sulje kommentointi',
-  LABEL: <span>Kaikkia muutoksia ei ole tallennettu.<br /> Haluatko varmasti sulkea kommentoinnin?</span>,
-  TITLE: 'Sulje kommentointi',
-};
-
-/**
- * Close comment panel text enumerable.
- *
- * @type {{BUTTON: string, LABEL: string, TITLE: string}}
- */
-export const DeleteRentForPeriodTexts = {
-  BUTTON: 'Poista vuokralaskelma',
-  LABEL: 'Haluatko varmasti poistaa vuokralaskelman',
-  TITLE: 'Poista vuokralaskelma',
 };
 
 /**

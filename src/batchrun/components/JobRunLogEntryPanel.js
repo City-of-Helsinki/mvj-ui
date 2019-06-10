@@ -1,8 +1,9 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 
+import CopyToClipboardButton from '$components/form/CopyToClipboardButton';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SortableTable from '$components/table/SortableTable';
@@ -10,7 +11,13 @@ import TablePanel from '$components/table/TablePanel';
 import {fetchJobRunLogEntriesByRun} from '$src/batchrun/actions';
 import {TableSortOrder} from '$components/enums';
 import {JobRunLogEntryFieldPaths, JobRunLogEntryFieldTitles} from '$src/batchrun/enums';
-import {formatDate, getApiResponseResults, isFieldAllowedToRead} from '$util/helpers';
+import {
+  copyElementContentsToClipboard,
+  displayUIMessage,
+  formatDate, 
+  getApiResponseResults, 
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getIsFetchingJobRunLogEntriesByRun, getJobRunLogEntryAttributes, getJobRunLogEntriesByRun} from '$src/batchrun/selectors';
 
 import type {ApiResponse, Attributes} from '$src/types';
@@ -81,6 +88,60 @@ class JobRunLogEntryPanel extends PureComponent<Props, State> {
     return columns;
   }
 
+  handleCopyToClipboard = () => {
+    const tableContent = this.getTableContentForClipboard(),
+      el = document.createElement('table');
+    
+    el.className = 'sortable-table__clipboard-table';
+    el.innerHTML = tableContent;
+    if(copyElementContentsToClipboard(el)) {
+      displayUIMessage({title: '', body: 'Ajon tiedot on kopioitu leikepöydälle.'});
+    }
+  };
+
+  getTableContentForClipboard = () => {
+    const {jobRunLogEntryAttributes} = this.props;
+    
+    return(
+      `<thead>
+        <tr>
+          ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TIME)
+        ? `<th>${JobRunLogEntryFieldTitles.TIME}</th>`
+        : ''
+      }
+          ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TEXT)
+        ? `<th>${JobRunLogEntryFieldTitles.TEXT}</th>`
+        : ''
+      }
+        </tr>
+      </thead>
+      <tbody>
+        ${this.getTableBodyContent()}
+      </tbody>`
+    );
+  };
+
+  getTableBodyContent = (): string => {
+    const {jobRunLogEntryAttributes} = this.props;
+    const {jobRunLogEntries} = this.state;
+    let bodyHtml = '';
+    
+    jobRunLogEntries.forEach((entry) => {
+      bodyHtml += `<tr>
+        ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TIME)
+        ? `<td>${formatDate(entry.time, 'DD.MM.YYYY H:mm:ss') || '-'}</td>`
+        : ''
+        }
+        ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TEXT)
+          ? `<td>${entry.text || '-'}</td>`
+          : ''
+        }
+      </tr>`;
+    });
+
+    return bodyHtml;
+  }
+
   render() {
     const {isFetcingJobLogEntries, onClose} = this.props;
     const {jobRunLogEntries} = this.state;
@@ -90,13 +151,23 @@ class JobRunLogEntryPanel extends PureComponent<Props, State> {
       <TablePanel onClose={onClose}>
         {isFetcingJobLogEntries && <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>}
         {!isFetcingJobLogEntries &&
-          <SortableTable
-            columns={columns}
-            data={jobRunLogEntries}
-            sortable
-            defaultSortKey={JobRunLogEntryFieldPaths.TIME}
-            defaultSortOrder={TableSortOrder.DESCENDING}
-          />
+          <Fragment>
+            <CopyToClipboardButton 
+              onClick={this.handleCopyToClipboard} 
+              style={{
+                position: 'absolute',
+                right: 28,
+                top: 6,
+              }}
+            />
+            <SortableTable
+              columns={columns}
+              data={jobRunLogEntries}
+              sortable
+              defaultSortKey={JobRunLogEntryFieldPaths.TIME}
+              defaultSortOrder={TableSortOrder.DESCENDING}
+            />
+          </Fragment>
         }
       </TablePanel>
     );

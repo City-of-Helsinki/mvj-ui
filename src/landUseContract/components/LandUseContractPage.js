@@ -42,7 +42,7 @@ import {
   receiveSingleLandUseContract,
   showEditMode,
 } from '$src/landUseContract/actions';
-import {FormNames} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {
   addLitigantsDataToPayload,
   clearUnsavedChanges,
@@ -648,13 +648,13 @@ class LandUseContractPage extends Component<Props, State> {
 
         <PageContainer className='with-small-control-bar-and-tabs' hasTabs>
           <ConfirmationModal
-            confirmButtonLabel='Palauta muutokset'
+            confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
             isOpen={isRestoreModalOpen}
-            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+            label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
             onCancel={this.cancelRestoreUnsavedChanges}
             onClose={this.cancelRestoreUnsavedChanges}
             onSave={this.restoreUnsavedChanges}
-            title='Palauta tallentamattomat muutokset'
+            title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
           />
 
 
@@ -728,7 +728,6 @@ class LandUseContractPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   withLandUseContractAttributes,
   connect(

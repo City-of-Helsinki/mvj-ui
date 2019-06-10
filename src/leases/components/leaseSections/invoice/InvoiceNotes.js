@@ -18,10 +18,9 @@ import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import {patchLeaseInvoiceNotes} from '$src/leases/actions';
-import {FormNames, Methods} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, Methods} from '$src/enums';
 import {ButtonColors, FieldTypes} from '$components/enums';
 import {InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {
   formatDate,
   getFieldAttributes,
@@ -36,12 +35,6 @@ import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
-
-export const CancelChangesModalTexts = {
-  BUTTON: 'Peruuta muutokset',
-  LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti peruuttaa muutokset?</span>,
-  TITLE: 'Peruuta muutokset',
-};
 
 type ReadOnlyProps = {
   invoiceNoteAttributes: Attributes,
@@ -147,9 +140,9 @@ const InvoiceNotesEdit = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.INVOICE_NOTE,
-                  confirmationModalTitle: DeleteModalTitles.INVOICE_NOTE,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_INVOICE_NOTE.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_INVOICE_NOTE.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_INVOICE_NOTE.TITLE,
                 });
               };
 
@@ -281,9 +274,9 @@ class InvoiceNotes extends PureComponent<Props> {
                       this.handleCancel();
                     },
                     confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
-                    confirmationModalLabel: CancelChangesModalTexts.LABEL,
-                    confirmationModalTitle: CancelChangesModalTexts.TITLE,
+                    confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+                    confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+                    confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
                   });
                 } else {
                   this.handleCancel();

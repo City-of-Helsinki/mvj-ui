@@ -37,7 +37,7 @@ import {
   showEditMode,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {
   InfillDevelopmentCompensationFieldPaths,
   InfillDevelopmentCompensationFieldTitles,
@@ -491,13 +491,13 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
           <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}>
             <ConfirmationModal
-              confirmButtonLabel='Palauta muutokset'
+              confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
               isOpen={isRestoreModalOpen}
-              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
               onCancel={this.cancelRestoreUnsavedChanges}
               onClose={this.cancelRestoreUnsavedChanges}
               onSave={this.restoreUnsavedChanges}
-              title='Palauta tallentamattomat muutokset'
+              title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
             />
           </Authorization>
 
