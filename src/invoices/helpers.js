@@ -2,7 +2,7 @@
 import moment from 'moment';
 import get from 'lodash/get';
 
-import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
+import {CreditInvoiceOptions} from '$src/leases/enums';
 import {InvoiceState, InvoiceType} from './enums';
 import {convertStrToDecimalNumber, getLabelOfOption, sortStringAsc} from '$util/helpers';
 
@@ -250,11 +250,11 @@ export const getPayloadCreditInvoice = (invoice: Object) => {
   if(!invoice) return undefined;
 
   const payload = {};
-  if(invoice.type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {
+  if(invoice.type === CreditInvoiceOptions.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {
     payload.amount = convertStrToDecimalNumber(invoice.amount);
   }
 
-  if(invoice.type !== CreditInvoiceOptionsEnum.FULL && invoice.receivable_type) {
+  if(invoice.type !== CreditInvoiceOptions.FULL && invoice.receivable_type) {
     payload.receivable_type = invoice.receivable_type;
   }
 

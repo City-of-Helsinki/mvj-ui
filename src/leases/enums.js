@@ -111,10 +111,20 @@ export const Classification = {
  *
  * @type {{FULL: string, RECEIVABLE_TYPE: string, RECEIVABLE_TYPE_AMOUNT: string,}}
  */
-export const CreditInvoiceOptionsEnum = {
+export const CreditInvoiceOptions = {
   FULL: 'full',
   RECEIVABLE_TYPE: 'receivable_type',
   RECEIVABLE_TYPE_AMOUNT: 'receivable_type_amount',
+};
+
+/**
+ * Stepped discount amount types enumerate.
+ * @type {{}}
+ */
+export const SteppedDiscountAmountTypes = {
+  PERCENTAGE_PER_YEAR: 'percentage_per_year',
+  PERCENTAGE_PER_6_MONTHS: 'percentage_per_6_months',
+  PERCENTAGE_PER_MONTH: 'percentage_per_month',
 };
 
 /**

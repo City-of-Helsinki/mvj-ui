@@ -1,5 +1,5 @@
 // @flow
-import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
+import {CreditInvoiceOptions} from '$src/leases/enums';
 import {convertStrToDecimalNumber} from '$util/helpers';
 
 /**
@@ -11,11 +11,11 @@ export const getCreditInvoiceSetPayload = (invoiceSet: Object) => {
   if(!invoiceSet) return undefined;
 
   const payload = {};
-  if(invoiceSet.type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && invoiceSet.amount) {
+  if(invoiceSet.type === CreditInvoiceOptions.RECEIVABLE_TYPE_AMOUNT && invoiceSet.amount) {
     payload.amount = convertStrToDecimalNumber(invoiceSet.amount);
   }
 
-  if(invoiceSet.type !== CreditInvoiceOptionsEnum.FULL && invoiceSet.receivable_type) {
+  if(invoiceSet.type !== CreditInvoiceOptions.FULL && invoiceSet.receivable_type) {
     payload.receivable_type = invoiceSet.receivable_type;
   }
 

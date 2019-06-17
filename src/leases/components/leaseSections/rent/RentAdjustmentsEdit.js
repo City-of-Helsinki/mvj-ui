@@ -3,6 +3,7 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector, initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import moment from 'moment';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -16,10 +17,15 @@ import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   LeaseRentAdjustmentsFieldPaths,
+  RentAdjustmentAmountTypes,
+  RentAdjustmentTypes,
+  SteppedDiscountAmountTypes,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
 import {
+  convertStrToDecimalNumber,
+  formatNumber,
   getFieldOptions,
   hasPermissions,
 } from '$util/helpers';
@@ -102,8 +108,56 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     initialize(FormNames.LEASE_STEPPED_DISCOUNT, {});
   }
 
-  handleSaveSteppedDiscount = (formValues: Object) => {
-    console.log(formValues);
+  getSteppedDiscounts = (formValues: Object): Array<Object> => {
+    const ranges = [];
+    let months = 12;
+    let current = formValues.start_date;
+
+    switch (formValues.stepped_discount_amount_type) {
+      case SteppedDiscountAmountTypes.PERCENTAGE_PER_MONTH:
+        months = 1;
+        break;
+      case SteppedDiscountAmountTypes.PERCENTAGE_PER_6_MONTHS:
+        months = 6;
+        break;
+    }
+
+    while(!moment(current).isAfter(formValues.end_date, 'day')) {
+      const next = moment(current).add(months, 'months').format('YYYY-MM-DD');
+      const endDate = moment(next).isAfter(formValues.end_date)
+        ? formValues.end_date
+        : moment(next).subtract(1, 'days').format('YYYY-MM-DD');
+      
+      ranges.push({
+        start_date: current,
+        end_date: endDate,
+      });
+
+      current = next;
+    } 
+
+    const step = (convertStrToDecimalNumber(formValues.full_amount) || 0) / ranges.length;
+
+    return ranges.map((range, index) => {
+      return {
+        ...range,
+        type: RentAdjustmentTypes.DISCOUNT,
+        intended_use: formValues.intended_use,
+        full_amount: formatNumber((convertStrToDecimalNumber(formValues.full_amount) || 0) - index * step),
+        amount_type: RentAdjustmentAmountTypes.PERCENT_PER_YEAR,
+        decision: formValues.decision,
+        note: formValues.note,
+      };
+    });
+  }
+
+  handleSaveSteppedDiscount = (formValues: Object) => { 
+    const {fields} = this.props;
+    const discounts = this.getSteppedDiscounts(formValues);
+
+    discounts.forEach((discount) => {
+      fields.push(discount);
+    });
 
     this.handleCloseSteppedDiscountModal();
   }

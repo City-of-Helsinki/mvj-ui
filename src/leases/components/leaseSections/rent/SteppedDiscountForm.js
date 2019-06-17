@@ -8,11 +8,13 @@ import {Row, Column} from 'react-foundation';
 import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
+import {SteppedDiscountAmountTypeOptions} from '$src/leases/constants';
 import {FormNames} from '$src/enums';
 import {
   LeaseRentAdjustmentsFieldPaths,
   LeaseRentAdjustmentsFieldTitles,
 } from '$src/leases/enums';
+import {validateSteppedDiscountForm} from '$src/leases/formValidators';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
@@ -46,10 +48,13 @@ const SteppedDiscountForm = ({
             />
           </Authorization>
         </Column>
-        <Column small={6} medium={4} large={4}>
+        <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}>
             <FormField
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}
+              fieldAttributes={{
+                ...getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE),
+                required: true,
+              }}
               name='start_date'
               overrideValues={{label: LeaseRentAdjustmentsFieldTitles.START_DATE}}
               enableUiDataEdit
@@ -57,6 +62,22 @@ const SteppedDiscountForm = ({
             />
           </Authorization>
         </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}>
+            <FormField
+              fieldAttributes={{
+                ...getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE),
+                required: true,
+              }}
+              name='end_date'
+              overrideValues={{label: LeaseRentAdjustmentsFieldTitles.END_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.END_DATE)}
+            />
+          </Authorization>
+        </Column>
+      </Row>
+      <Row>
         <Column small={6} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
             <FormTextTitle
@@ -84,8 +105,11 @@ const SteppedDiscountForm = ({
                   <FormField
                     fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}
                     invisibleLabel
-                    name='amount_type'
-                    overrideValues={{label: LeaseRentAdjustmentsFieldTitles.AMOUNT_TYPE}}
+                    name='stepped_discount_amount_type'
+                    overrideValues={{
+                      label: LeaseRentAdjustmentsFieldTitles.AMOUNT_TYPE,
+                      options: SteppedDiscountAmountTypeOptions,
+                    }}
                   />
                 </Authorization>
               </Column>
@@ -108,6 +132,19 @@ const SteppedDiscountForm = ({
           </Authorization>
         </Column>
       </Row>
+      <Row>
+        <Column small={12}>
+          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.NOTE)}>
+            <FormField
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.NOTE)}
+              name='note'
+              overrideValues={{label: LeaseRentAdjustmentsFieldTitles.NOTE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.DECISION)}
+            />
+          </Authorization>
+        </Column>
+      </Row>
     </div>
   );
 };
@@ -122,5 +159,6 @@ export default flowRight(
   ),
   reduxForm({
     form: FormNames.LEASE_STEPPED_DISCOUNT,
+    validate: validateSteppedDiscountForm,
   })
 )(SteppedDiscountForm);
