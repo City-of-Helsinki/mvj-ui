@@ -289,3 +289,20 @@ export const validateInvoiceForm = (values: Object) => {
 
   return errors;
 };
+
+/**
+ * Validate stepped discount form
+ * @param {Object} values
+ * @returns {Object}
+ */
+
+export const validateSteppedDiscountForm = (values: Object) => {
+  const errors = {};
+  const endDateError =  dateGreaterOrEqual(values.end_date, values.start_date);
+
+  if (endDateError) {
+    errors.end_date = endDateError;
+  }
+
+  return errors;
+};

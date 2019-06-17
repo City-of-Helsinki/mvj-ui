@@ -21,7 +21,7 @@ import {
   InvoiceRowsFieldPaths,
   InvoiceRowsFieldTitles,
 } from '$src/invoices/enums';
-import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
+import {CreditInvoiceOptions as CreditInvoiceOptionsEnum} from '$src/leases/enums';
 import {getUiDataCreditInvoiceKey} from '$src/uiData/helpers';
 import {
   addEmptyOption,

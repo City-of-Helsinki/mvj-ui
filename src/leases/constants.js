@@ -1,6 +1,10 @@
 // @flow
 import {TableSortOrder} from '$components/enums';
-import {CreditInvoiceOptionsEnum, RentDueDateTypes} from './enums';
+import {
+  CreditInvoiceOptions as CreditInvoiceOptionsEnum, 
+  RentDueDateTypes,
+  SteppedDiscountAmountTypes,
+} from './enums';
 
 /**
  * Credit invoice options
@@ -20,6 +24,16 @@ export const CreditInvoiceSetOptions = [
   {value: CreditInvoiceOptionsEnum.FULL, label: 'Koko laskuryhmä'},
   {value: CreditInvoiceOptionsEnum.RECEIVABLE_TYPE, label: 'Koko saamislaji'},
   {value: CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT, label: 'Summa saamislajista'},
+];
+
+/**
+ * Stepped discount amount type options
+ * @const {[*]}
+ */
+export const SteppedDiscountAmountTypeOptions = [
+  {value: SteppedDiscountAmountTypes.PERCENTAGE_PER_YEAR, label: '% per vuosi'},
+  {value: SteppedDiscountAmountTypes.PERCENTAGE_PER_6_MONTHS, label: '% per 6 kk'},
+  {value: SteppedDiscountAmountTypes.PERCENTAGE_PER_MONTH, label: '% per kuukausi'},
 ];
 
 /**
