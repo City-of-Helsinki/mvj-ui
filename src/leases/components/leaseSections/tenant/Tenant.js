@@ -57,7 +57,7 @@ const Tenant = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENIMONATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
               <CollapseHeaderSubtitle>
                 <span>{LeaseTenantsFieldTitles.SHARE_FRACTION}:</span>
                 {tenant.share_numerator || ''} / {tenant.share_denominator || ''}

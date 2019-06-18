@@ -3,13 +3,19 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
+import {store} from '$src/root/startApp';
 import {
   RentAdjustmentAmountTypes,
   RentCycles,
   RentDueDateTypes,
   RentTypes,
 } from './enums';
-import {getRentWarnings, getTenantShareWarnings} from '$src/leases/helpers';
+import {
+  getRentWarnings, 
+  getTenantRentShareWarnings,
+  getTenantShareWarnings,
+} from '$src/leases/helpers';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {dateGreaterOrEqual} from '$components/form/validations';
 
 export const validateSummaryForm = (values: Object) => {
@@ -94,9 +100,12 @@ export const validateTenantForm = (values: Object) => {
 
 export const warnTenantForm = (values: Object) => {
   const warnings = {};
+  const leaseAttributes = getLeaseAttributes(store.getState());
   const {tenants} = values;
 
   const tenantWarnings = getTenantShareWarnings(tenants);
+  tenantWarnings.push(...getTenantRentShareWarnings(tenants, leaseAttributes));
+  
   if(tenantWarnings.length) {
     warnings.tenantWarnings = tenantWarnings;
   }

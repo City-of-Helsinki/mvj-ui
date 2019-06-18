@@ -258,6 +258,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa hinnan?',
     TITLE: 'Poista hinta',
   },
+  DELETE_RENT_SHARE: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa laskutusosuuden?',
+    TITLE: 'Poista laskutusosuus',
+  },
   DELETE_SUBVENTION: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa subvention?',

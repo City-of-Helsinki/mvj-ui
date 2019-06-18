@@ -76,7 +76,7 @@ import {
   addInspectionsFormValues,
   addRentsFormValues,
   addSummaryFormValues,
-  addTenantsFormValues,
+  addTenantsFormValuesToPayload,
   getContentBasisOfRents,
   getContentContracts,
   getContentConstructability,
@@ -697,7 +697,7 @@ class LeasePage extends Component<Props, State> {
         payload = addSummaryFormValues(payload, summaryFormValues);
       }
       if(isTenantsFormDirty) {
-        payload = addTenantsFormValues(payload, tenantsFormValues);
+        payload = addTenantsFormValuesToPayload(payload, tenantsFormValues);
       }
 
       patchLease(payload);

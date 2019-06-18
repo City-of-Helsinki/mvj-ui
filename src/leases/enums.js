@@ -644,7 +644,7 @@ export const LeaseConstructabilityDescriptionsFieldTitles = {
 export const LeaseTenantsFieldPaths = {
   TENANTS: 'tenants',
   REFERENCE: 'tenants.child.children.reference',
-  SHARE_DENIMONATOR: 'tenants.child.children.share_denominator',
+  SHARE_DENOMINATOR: 'tenants.child.children.share_denominator',
   SHARE_FRACTION: 'tenants.child.children.share_fraction',
   SHARE_NUMERATOR: 'tenants.child.children.share_numerator',
   SHARE_PERCENTAGE: 'tenants.child.children.share_percentage',
@@ -658,10 +658,36 @@ export const LeaseTenantsFieldPaths = {
 export const LeaseTenantsFieldTitles = {
   TENANTS: 'Vuokralaiset',
   REFERENCE: 'Viite',
-  SHARE_DENIMONATOR: 'Jakaja',
+  SHARE_DENOMINATOR: 'Jakaja',
   SHARE_FRACTION: 'Hallintaosuus',
   SHARE_NUMERATOR: 'Jaettava',
   SHARE_PERCENTAGE: 'Laskun hallintaosuus',
+};
+
+/**
+ * Lease tenants field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseTenantRentSharesFieldPaths = {
+  RENT_SHARES: 'tenants.child.children.rent_shares',
+  INTENDED_USE: 'tenants.child.children.rent_shares.child.children.intended_use',
+  SHARE_DENOMINATOR: 'tenants.child.children.rent_shares.child.children.share_denominator',
+  SHARE_FRACTION: 'tenants.child.children.rent_shares.child.children.share_fraction',
+  SHARE_NUMERATOR: 'tenants.child.children.rent_shares.child.children.share_numerator',
+};
+
+/**
+ * Lease tenants field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseTenantRentSharesFieldTitles = {
+  RENT_SHARES: 'Laskutusosuudet',
+  INTENDED_USE: 'Käyttötarkoitus',
+  SHARE_DENOMINATOR: 'Jakaja',
+  SHARE_FRACTION: 'Laskutusosuus',
+  SHARE_NUMERATOR: 'Jaettava',
 };
 
 /**
