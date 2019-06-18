@@ -44,19 +44,22 @@ class AuditLogTableItem extends PureComponent<Props, State> {
         oldValue: item.changes[key][0] !== 'None' ? item.changes[key][0] : null,
       };
     });
+    const showCollapseIcon = !!changes.length;
 
     return (
       <Fragment>
         <tr className={classNames({'collapsed': collapse})}>
           <td className='collapse-arrow-column'>
-            <a
-              className='sortable-table-row-collapse-link'
-              onClick={this.handleCollapseArrowIconClick}
-              onKeyDown={this.handleCollapseArrowIconKeyDown}
-              tabIndex={0}
-            >
-              <AccordionIcon className='sortable-table-row-collapse-icon'/>
-            </a>
+            {showCollapseIcon &&
+              <a
+                className='sortable-table-row-collapse-link'
+                onClick={this.handleCollapseArrowIconClick}
+                onKeyDown={this.handleCollapseArrowIconKeyDown}
+                tabIndex={0}
+              >
+                <AccordionIcon className='sortable-table-row-collapse-icon'/>
+              </a>
+            }
           </td>
           <td>{formatDate(item.timestamp) || '-'}</td>
           <td>{getUserFullName(item.actor) || '-'}</td>
