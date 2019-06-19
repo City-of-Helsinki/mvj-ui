@@ -766,10 +766,12 @@
     }
 
     &.third-level {
+      vertical-align: top;
       top: rem-calc(-1px);
       height: rem-calc(20px);
 
       .icons {
+        vertical-align: middle;
         height: rem-calc(15px);
         width: rem-calc(15px);
       }

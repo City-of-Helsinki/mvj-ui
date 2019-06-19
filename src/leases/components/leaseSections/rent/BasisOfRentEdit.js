@@ -40,8 +40,9 @@ import {
   calculateBasisOfRentBasicAnnualRent,
   calculateBasisOfRentDiscountedInitialYearRent,
   calculateBasisOfRentInitialYearRent,
+  calculateBasisOfRentSubventionAmount,
   calculateReLeaseDiscountPercent,
-  calculateRentAdjustmentSubventionAmount,
+  calculateRentAdjustmentSubventionPercent,
   getBasisOfRentIndexValue,
   getBasisOfRentById,
 } from '$src/leases/helpers';
@@ -70,6 +71,8 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 type ManagementSubventionsProps = {
   disabled: boolean,
   fields: any,
+  formName: string,
+  initialYearRent: number,
   leaseAttributes: Attributes,
   usersPermissions: UsersPermissionsType,
 }
@@ -77,13 +80,14 @@ type ManagementSubventionsProps = {
 const renderManagementSubventions = ({
   disabled,
   fields,
+  formName,
+  initialYearRent,
   leaseAttributes,
   usersPermissions,
 }: ManagementSubventionsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
-
   return (
     <AppConsumer>
       {({dispatch}) => {
@@ -95,7 +99,7 @@ const renderManagementSubventions = ({
 
             {fields && !!fields.length &&
               <Row>
-                <Column small={6} medium={4} large={2}>
+                <Column small={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}>
                     <FormTextTitle
                       required={isFieldRequired(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}
@@ -106,7 +110,7 @@ const renderManagementSubventions = ({
                     </FormTextTitle>
                   </Authorization>
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
                     <FormTextTitle
                       required={isFieldRequired(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}
@@ -114,6 +118,16 @@ const renderManagementSubventions = ({
                       uiDataKey={getUiDataLeaseKey(BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}
                     >
                       {BasisOfRentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                    <FormTextTitle
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
+                    >
+                      {BasisOfRentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
@@ -138,6 +152,8 @@ const renderManagementSubventions = ({
                 key={index}
                 disabled={disabled}
                 field={field}
+                formName={formName}
+                initialYearRent={initialYearRent}
                 onRemove={handleRemove}
               />;
             })}
@@ -164,6 +180,8 @@ const renderManagementSubventions = ({
 type TemporarySubventionsProps = {
   disabled: boolean,
   fields: any,
+  formName: string,
+  initialYearRent: number,
   leaseAttributes: Attributes,
   usersPermissions: UsersPermissionsType,
 }
@@ -171,6 +189,8 @@ type TemporarySubventionsProps = {
 const renderTemporarySubventions = ({
   disabled,
   fields,
+  formName, 
+  initialYearRent,
   leaseAttributes,
   usersPermissions,
 }: TemporarySubventionsProps): Element<*> => {
@@ -189,7 +209,7 @@ const renderTemporarySubventions = ({
 
             {fields && !!fields.length &&
               <Row>
-                <Column small={6} medium={4} large={2}>
+                <Column small={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}>
                     <FormTextTitle
                       required={isFieldRequired(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}
@@ -200,7 +220,7 @@ const renderTemporarySubventions = ({
                     </FormTextTitle>
                   </Authorization>
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}>
                     <FormTextTitle
                       required={isFieldRequired(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}
@@ -208,6 +228,17 @@ const renderTemporarySubventions = ({
                       uiDataKey={getUiDataLeaseKey(BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}
                     >
                       {BasisOfRentTemporarySubventionsFieldTitles.SUBVENTION_PERCENT}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                    <FormTextTitle
+                      required={isFieldRequired(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_AMOUNT)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_AMOUNT)}
+                    >
+                      {BasisOfRentTemporarySubventionsFieldTitles.SUBVENTION_AMOUNT}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
@@ -232,6 +263,8 @@ const renderTemporarySubventions = ({
                 key={index}
                 disabled={disabled}
                 field={field}
+                formName={formName}
+                initialYearRent={initialYearRent}
                 onRemove={handleRemove}
               />;
             })}
@@ -324,7 +357,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         subventionGraduatedPercent !== undefined ||
         managementSubventions !== undefined ||
         temporarySubventions !== undefined) {
-        change(this.props.formName, `${field}.discount_percentage`, formatNumber(this.calculateSubventionAmount()));
+        change(this.props.formName, `${field}.discount_percentage`, formatNumber(this.calculateTotalSubventionPercent()));
       }
     }
   }
@@ -576,10 +609,10 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     return calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
   }
 
-  calculateSubventionAmount = () => {
+  calculateTotalSubventionPercent = () => {
     const {subventionType, subventionBasePercent, subventionGraduatedPercent, managementSubventions, temporarySubventions} = this.props;
 
-    return calculateRentAdjustmentSubventionAmount(
+    return calculateRentAdjustmentSubventionPercent(
       subventionType,
       subventionBasePercent,
       subventionGraduatedPercent,
@@ -596,6 +629,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       basisOfRent,
       currentLease,
       field,
+      formName,
       id,
       indexOptions,
       intendedUseOptions,
@@ -629,6 +663,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent/6 : null;
     const rentPerMonthTotal = totalDiscountedInitialYearRent/12;
     const rentPer2MonthsTotal = totalDiscountedInitialYearRent/6;
+    const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
+    const releaseDiscountAmount = calculateBasisOfRentSubventionAmount(initialYearRent, releaseDiscountPercent.toString());
+    const totalSubventionPercent = this.calculateTotalSubventionPercent();
+    const totalSubventionAmount = calculateBasisOfRentSubventionAmount(initialYearRent, totalSubventionPercent.toString());
+    
 
     if(archived && savedBasisOfRent) {
       return <BasisOfRent
@@ -642,7 +681,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         showTotal={showTotal}
         subventionTypeOptions={subventionTypeOptions}
         totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
-        
       />;
     }
 
@@ -1074,6 +1112,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         <FieldArray
                           component={renderManagementSubventions}
                           disabled={(!!savedBasisOfRent && !!savedBasisOfRent.locked_at)}
+                          formName={formName}
+                          initialYearRent={initialYearRent}
                           leaseAttributes={leaseAttributes}
                           name={`${field}.management_subventions`}
                           usersPermissions={usersPermissions}
@@ -1082,7 +1122,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     }
                     {subventionType === SubventionTypes.RE_LEASE_DISCOUNT &&
                       <Row>
-                        <Column small={6} medium={4} large={2}>
+                        <Column small={4} large={2}>
                           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
                             <FormField
                               disableTouched={isSaveClicked}
@@ -1096,7 +1136,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             />
                           </Authorization>
                         </Column>
-                        <Column small={6} medium={4} large={2}>
+                        <Column small={4} large={2}>
                           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
                             <FormField
                               disableTouched={isSaveClicked}
@@ -1110,13 +1150,22 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             />
                           </Authorization>
                         </Column>
-                        <Column small={6} medium={4} large={2}>
+                        <Column small={4} large={2}>
                           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT) ||
                             isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
                             <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT)}>
                               {LeaseBasisOfRentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT}
                             </FormTextTitle>
-                            <FormText>{this.calculateReLeaseDiscountPercent() || '-'} %</FormText>
+                            <FormText>{formatNumber(releaseDiscountPercent)} %</FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT) ||
+                            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
+                            <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT)}>
+                              {LeaseBasisOfRentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT}
+                            </FormTextTitle>
+                            <FormText>{formatNumber(releaseDiscountAmount)} €</FormText>
                           </Authorization>
                         </Column>
                       </Row>
@@ -1130,6 +1179,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         component={renderTemporarySubventions}
                         leaseAttributes={leaseAttributes}
                         disabled={(!!savedBasisOfRent && !!savedBasisOfRent.locked_at)}
+                        formName={formName}
+                        initialYearRent={initialYearRent}
                         name={`${field}.temporary_subventions`}
                         usersPermissions={usersPermissions}
                       />
@@ -1141,11 +1192,14 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       </Column>
                     </Row>
                     <Row>
-                      <Column small={6} medium={4} large={2}>
+                      <Column small={4} large={2}>
                         <FormText className='semibold'>Yhteensä</FormText>
                       </Column>
-                      <Column small={6} medium={4} large={2}>
-                        <FormText className='semibold'>{formatNumber(this.calculateSubventionAmount())} %</FormText>
+                      <Column small={4} large={2}>
+                        <FormText className='semibold'>{formatNumber(totalSubventionPercent)} %</FormText>
+                      </Column>
+                      <Column small={4} large={2}>
+                        <FormText className='semibold'>{formatNumber(totalSubventionAmount)} €</FormText>
                       </Column>
                     </Row>
                   </WhiteBox>

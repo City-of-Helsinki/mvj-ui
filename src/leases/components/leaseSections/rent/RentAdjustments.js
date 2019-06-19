@@ -25,7 +25,7 @@ import {
 } from '$src/leases/enums';
 import {
   calculateReLeaseDiscountPercent,
-  calculateRentAdjustmentSubventionAmount,
+  calculateRentAdjustmentSubventionPercent,
   getDecisionById,
   getDecisionOptions,
 } from '$src/leases/helpers';
@@ -76,8 +76,8 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
               adjustment.subvention_graduated_percent);
           };
 
-          const getSubventionAmount = () => {
-            return calculateRentAdjustmentSubventionAmount(
+          const getTotalSubventionPercent = () => {
+            return calculateRentAdjustmentSubventionPercent(
               adjustment.subvention_type,
               adjustment.subvention_base_percent,
               adjustment.subvention_graduated_percent,
@@ -88,6 +88,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
           const decision = getDecisionById(currentLease, adjustment.decision);
           const managementSubventions = adjustment.management_subventions;
           const temporarySubventions = adjustment.temporary_subventions;
+          const totalSubventionPercent = getTotalSubventionPercent();
 
           return (
             <BoxItem className='no-border-on-first-child no-border-on-last-child' key={index}>
@@ -316,7 +317,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                       <FormText className='semibold'>Yhteensä</FormText>
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <FormText className='semibold'>{formatNumber(getSubventionAmount())} %</FormText>
+                      <FormText className='semibold'>{formatNumber(totalSubventionPercent)} %</FormText>
                     </Column>
                   </Row>
                 </GreenBox>

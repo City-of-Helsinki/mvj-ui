@@ -783,7 +783,7 @@ export const getContentEqualizedRents = (rent: Object) =>
   * @return {number}
   */
 export const calculateReLeaseDiscountPercent = (subventionBasePercent: ?string, subventionGraduatedPercent: ?string) => {
-  return parseFloat(((1 - ((1 - Number(convertStrToDecimalNumber(subventionBasePercent) || 0)/100) * (1 - Number(convertStrToDecimalNumber(subventionGraduatedPercent) || 0)/100))) * 100).toFixed(2));
+  return ((1 - ((1 - Number(convertStrToDecimalNumber(subventionBasePercent) || 0)/100) * (1 - Number(convertStrToDecimalNumber(subventionGraduatedPercent) || 0)/100))) * 100);
 };
 
 /**
@@ -804,12 +804,12 @@ export const getBasisOfRentIndexValue = (basisOfRent: Object, indexOptions: Arra
 };
 
 /**
-  * Calculate basis of rent basuc annual rent
+  * Calculate basis of rent basis annual rent
   * @param {Object} basisOfRent
   * @return {number}
   */
-export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): ?number => {
-  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return null;
+export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): number => {
+  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return 0;
   
   return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
     * Number(convertStrToDecimalNumber(basisOfRent.area))
@@ -822,8 +822,8 @@ export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): ?numbe
   * @param {string} indexValue
   * @return {number}
   */
-export const calculateBasisOfRentAmountPerArea = (basisOfRent: Object, indexValue: ?string): ?number => {
-  if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(basisOfRent.amount_per_area)) return null;
+export const calculateBasisOfRentAmountPerArea = (basisOfRent: Object, indexValue: ?string): number => {
+  if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(basisOfRent.amount_per_area)) return 0;
 
   return Number(convertStrToDecimalNumber(indexValue))/100
     * Number(convertStrToDecimalNumber(basisOfRent.amount_per_area));
@@ -835,10 +835,10 @@ export const calculateBasisOfRentAmountPerArea = (basisOfRent: Object, indexValu
   * @param {string} indexValue
   * @return {number}
   */
-export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string): ?number => {
+export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string): number => {
   const amountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
 
-  if(!isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return null;
+  if(!isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return 0;
   
   return Number(convertStrToDecimalNumber(amountPerArea))
     * Number(convertStrToDecimalNumber(basisOfRent.area))
@@ -851,10 +851,10 @@ export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexVa
   * @param {string} indexValue
   * @return {number}
   */
-export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Object, indexValue: ?string): ?number => {
+export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Object, indexValue: ?string): number => {
   const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
 
-  if(!isDecimalNumberStr(initialYearRent)) return null;
+  if(!isDecimalNumberStr(initialYearRent)) return 0;
 
   return Number(convertStrToDecimalNumber(initialYearRent))
     * Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - Number(convertStrToDecimalNumber(basisOfRent.discount_percentage)))/100 : 1);
@@ -875,7 +875,20 @@ export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents:
 };
 
 /**
-  * Calculate rent adjustment subvention amount
+  * Calculate basis of rent basis subvention amount
+  * @param {number} initialYearRent
+  * @param {string} subventionPercent
+  * @return {number}
+  */
+export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, subventionPercent: string | number): number => {
+  if(!isDecimalNumberStr(subventionPercent)) return 0;
+
+  return  (Number(convertStrToDecimalNumber(subventionPercent)) / 100)
+    * initialYearRent;
+};
+
+/**
+  * Calculate rent adjustment subvention percent
   * @param {string} subventionType
   * @param {string} subventionBasePercent
   * @param {string} subventionGraduatedPercent
@@ -884,7 +897,7 @@ export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents:
   * @param {string} subventionGraduatedPercent
   * @return {number}
   */
-export const calculateRentAdjustmentSubventionAmount = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+export const calculateRentAdjustmentSubventionPercent = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
   let discount = 0;
 
   if(subventionType === SubventionTypes.RE_LEASE_DISCOUNT) {
