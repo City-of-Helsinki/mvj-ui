@@ -502,7 +502,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   handleSortingChange = ({sortKey, sortOrder}) => {
-    const {location: {search}} = this.props;
+    const {history, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
 
     searchQuery.sort_key = sortKey;
@@ -513,7 +513,10 @@ class LeaseListPage extends PureComponent<Props, State> {
       sortOrder,
     });
 
-    this.handleSearchChange(searchQuery);
+    return history.push({
+      pathname: getRouteById(Routes.LEASES),
+      search: getSearchQuery(searchQuery),
+    });
   }
 
   handleMapViewportChanged = debounce((mapOptions: Object) => {
