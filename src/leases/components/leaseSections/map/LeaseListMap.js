@@ -135,7 +135,7 @@ class LeaseListMap extends PureComponent<Props, State> {
   handleViewportChanged = (mapOptions: Object) => {
     const {onViewportChanged} = this.props;
     this.setState({zoom: mapOptions.zoom});
-    console.log('test', this.state, mapOptions);
+
     onViewportChanged(mapOptions);
   }
 

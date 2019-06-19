@@ -9,8 +9,9 @@ import {
   RentDueDateTypes,
   RentTypes,
 } from './enums';
+import {isInvoiceBillingPeriodRequired} from '$src/invoices/helpers';
 import {getRentWarnings, getTenantShareWarnings} from '$src/leases/helpers';
-import {dateGreaterOrEqual} from '$components/form/validations';
+import {dateGreaterOrEqual, required} from '$components/form/validations';
 
 export const validateSummaryForm = (values: Object) => {
   const errors = {};
@@ -281,11 +282,13 @@ export const validateContractForm = (values: Object) => {
 
 export const validateInvoiceForm = (values: Object) => {
   const errors = {};
-  const endDateError =  dateGreaterOrEqual(values.billing_period_end_date, values.billing_period_start_date);
+  const billingPeriodRequired = isInvoiceBillingPeriodRequired(values.rows);
+  const startDateError =  billingPeriodRequired ? required(values.billing_period_start_date) : undefined;
+  const endDateError =  (billingPeriodRequired ? required(values.billing_period_end_date) : undefined) ||
+    dateGreaterOrEqual(values.billing_period_end_date, values.billing_period_start_date);
 
-  if (endDateError) {
-    errors.billing_period_end_date = endDateError;
-  }
+  errors.billing_period_start_date = startDateError;
+  errors.billing_period_end_date = endDateError;
 
   return errors;
 };

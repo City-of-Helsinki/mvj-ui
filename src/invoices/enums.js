@@ -1,8 +1,7 @@
 // @flow
 /**
  * Invoice state enumerable.
- *
- * @type {{OPEN: string, PAID: string, REFUNDED: string,}}
+ * @type {{}}
  */
 export const InvoiceState = {
   OPEN: 'open',
@@ -12,12 +11,21 @@ export const InvoiceState = {
 
 /**
  * Invoice type enumerable.
- *
- * @type {{CHARGE: string, CREDIT_NOTE: string,}}
+ * @type {{}}
  */
 export const InvoiceType = {
   CHARGE: 'charge',
   CREDIT_NOTE: 'credit_note',
+};
+
+/** 
+ * Receivable type enumerable
+ * @type {{}}
+ */
+export const ReceivableTypes = {
+  INTEREST: 2,
+  OTHER: 3,
+  RENTAL: 1,
 };
 
 /**

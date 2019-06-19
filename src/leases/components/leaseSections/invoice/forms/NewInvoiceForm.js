@@ -25,6 +25,7 @@ import {LeaseCreateChargeFieldPaths, LeaseCreateChargeRowsFieldPaths} from '$src
 import {RecipientOptions} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
+import {isInvoiceBillingPeriodRequired} from '$src/invoices/helpers';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
 import {getUiDataCreateChargeKey} from '$src/uiData/helpers';
 import {
@@ -82,7 +83,9 @@ const InvoiceRows = ({
                       : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
                     >
                       <FormTextTitle
-                        required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
+                        required={useLeaseCreateChargeEndpoint
+                          ? isFieldRequired(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)
+                          : isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
                         enableUiDataEdit
                         uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)}
                       >
@@ -96,7 +99,9 @@ const InvoiceRows = ({
                       : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
                     >
                       <FormTextTitle
-                        required={isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
+                        required={useLeaseCreateChargeEndpoint
+                          ? isFieldRequired(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.AMOUNT)
+                          : isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
                         enableUiDataEdit
                         tooltipStyle={{right: 12}}
                         uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.AMOUNT)}
@@ -210,6 +215,7 @@ type Props = {
   onSave: Function,
   receiveIsCreateClicked: Function,
   recipient: string,
+  rows: Array<Object>,
   setRefForFirstField?: Function,
   usersPermissions: UsersPermissionsType,
   valid: boolean,
@@ -226,6 +232,7 @@ const NewInvoiceForm = ({
   onSave,
   receiveIsCreateClicked,
   recipient,
+  rows,
   setRefForFirstField,
   usersPermissions,
   valid,
@@ -244,6 +251,7 @@ const NewInvoiceForm = ({
     hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
   );
   const useLeaseCreateChargeEndpoint = recipient === RecipientOptions.ALL;
+  const billingPeriodRequired = isInvoiceBillingPeriodRequired(rows);
 
   return (
     <form onSubmit={handleSubmit} className='invoice__new-invoice_form'>
@@ -292,6 +300,13 @@ const NewInvoiceForm = ({
                 ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE)
                 : isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}
               >
+                <FormTextTitle
+                  required={billingPeriodRequired}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE)}
+                >
+                  {InvoiceFieldTitles.BILLING_PERIOD_START_DATE}
+                </FormTextTitle>
                 <FormField
                   disableTouched={isCreateClicked}
                   fieldAttributes={useLeaseCreateChargeEndpoint
@@ -299,9 +314,8 @@ const NewInvoiceForm = ({
                     : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)
                   }
                   name='billing_period_start_date'
+                  invisibleLabel
                   overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE}}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE)}
                 />
               </Authorization>
             </Column>
@@ -310,6 +324,13 @@ const NewInvoiceForm = ({
                 ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE)
                 : isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}
               >
+                <FormTextTitle
+                  required={billingPeriodRequired}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE)}
+                >
+                  {InvoiceFieldTitles.BILLING_PERIOD_END_DATE}
+                </FormTextTitle>
                 <FormField
                   disableTouched={isCreateClicked}
                   fieldAttributes={useLeaseCreateChargeEndpoint
@@ -317,9 +338,8 @@ const NewInvoiceForm = ({
                     : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)
                   }
                   name='billing_period_end_date'
+                  invisibleLabel
                   overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE}}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE)}
                 />
               </Authorization>
             </Column>
@@ -395,6 +415,7 @@ export default flowRight(
         lease: getCurrentLease(state),
         leaseCreateChargeAttributes: getLeaseCreateCrargeAttributes(state),
         recipient: selector(state, 'recipient'),
+        rows: selector(state, 'rows'),
         usersPermissions: getUsersPermissions(state),
       };
     },

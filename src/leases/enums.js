@@ -1,5 +1,5 @@
 // @flow
-import {getDayMonth} from '../util/date';
+import {getDayMonth} from '$util/date';
 
 /**
  * Area location enumerable.

@@ -1,9 +1,10 @@
 // @flow
 import moment from 'moment';
+import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 
 import {CreditInvoiceOptions} from '$src/leases/enums';
-import {InvoiceState, InvoiceType} from './enums';
+import {InvoiceState, InvoiceType, ReceivableTypes} from './enums';
 import {convertStrToDecimalNumber, getLabelOfOption, sortStringAsc} from '$util/helpers';
 
 /**
@@ -261,6 +262,26 @@ export const getPayloadCreditInvoice = (invoice: Object) => {
   payload.notes = invoice.notes || '';
 
   return payload;
+};
+
+/**
+  * Test is invoice billing period fields required
+  * @param {Object[]} rows
+  * @return {boolean}
+  */
+export const isInvoiceBillingPeriodRequired = (rows: Array<Object>): boolean => {
+  let required = false;
+
+  if(!rows) return required;
+
+  forEach(rows, (row) => {
+    if(row.receivable_type == ReceivableTypes.RENTAL) {
+      required = true;
+      return false;
+    }
+  });
+
+  return required;
 };
 
 /**
