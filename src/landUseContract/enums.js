@@ -1,9 +1,9 @@
 // @flow
 
 /**
- * Contact type enumerable.
- *
- * @type {{LITIGANT: string, BILLING: string}}
+ * Litigant type enumerable.
+ * @readonly
+ * @enum {string}
  */
 export const LitigantContactType = {
   LITIGANT: 'litigant',

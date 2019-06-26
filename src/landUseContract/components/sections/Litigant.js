@@ -11,8 +11,7 @@ import LitigantItem from './LitigantItem';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {FormNames, ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
-import {formatDateRange} from '$util/helpers';
+import {formatDateRange, isActive, isArchived} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 
 type Props = {
@@ -39,8 +38,8 @@ const Litigant = ({
   };
 
   const contact = get(litigant, 'litigant.contact');
-  const active = isLitigantActive(litigant.litigant);
-  const archived = isLitigantArchived(litigant.litigant);
+  const active = isActive(litigant.litigant);
+  const archived = isArchived(litigant.litigant);
 
   return (
     <Collapse
