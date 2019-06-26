@@ -10,7 +10,11 @@ import Pagination from '$components/table/Pagination';
 import TableWrapper from '$components/table/TableWrapper';
 import {fetchAuditLogByContact} from '$src/auditLog/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {getAuditLogCount, getAuditLogItems, getAuditLogMaxPage} from '$src/auditLog/helpers';
+import {
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getApiResponseResults,
+} from '$util/helpers';
 import {getAuditLogByContact, getIsFetchingByContact} from '$src/auditLog/selectors';
 
 import type {AuditLogList} from '$src/auditLog/types';
@@ -52,9 +56,9 @@ class ContactAuditLog extends PureComponent<Props, State> {
 
     if(props.auditLogList !== state.auditLogList) {
       newState.auditLogList = props.auditLogList;
-      newState.auditLogItems = getAuditLogItems(props.auditLogList);
-      newState.count = getAuditLogCount(props.auditLogList);
-      newState.maxPage = getAuditLogMaxPage(props.auditLogList, LIST_TABLE_PAGE_SIZE);
+      newState.auditLogItems = getApiResponseResults(props.auditLogList);
+      newState.count = getApiResponseCount(props.auditLogList);
+      newState.maxPage = getApiResponseMaxPage(props.auditLogList, LIST_TABLE_PAGE_SIZE);
     }
 
     return !isEmpty(newState) ? newState : null;
