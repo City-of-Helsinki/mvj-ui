@@ -74,8 +74,6 @@ class AreaNotesEditMap extends Component<Props, State> {
       // Initialize select features for editing
       const geoJSON = {...initialValues.geoJSON};
       if(!isEmpty(geoJSON)) {
-        // Add this coodination convert function if want to to use EPSG:3879 projection
-        // geoJSON.features = convertFeaturesToAreaNoteList(geoJSON.features);
 
         const featuresGeoJSON = new L.GeoJSON(geoJSON);
         featuresGeoJSON.eachLayer( (layer) => {
