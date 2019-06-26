@@ -24,7 +24,7 @@ import {
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
-import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
+import {getPayloadInfillDevelopment} from '$src/infillDevelopment/helpers';
 import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValidById, getIsSaveClicked, getIsSaving} from '$src/infillDevelopment/selectors';
@@ -115,8 +115,9 @@ class NewInfillDevelopmentPage extends Component<Props> {
     const {formValues, createInfillDevelopment, isFormValid, receiveIsSaveClicked} = this.props;
 
     receiveIsSaveClicked(true);
+    
     if(isFormValid) {
-      createInfillDevelopment(getContentInfillDevelopmentForDb(formValues));
+      createInfillDevelopment(getPayloadInfillDevelopment(formValues));
     }
   }
 

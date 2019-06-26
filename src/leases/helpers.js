@@ -214,7 +214,7 @@ export const getContentLeaseListLease = (lease: Object, query: Object = {}): Obj
 };
 
 /**
- * Get content lease list results
+ * Get lease list results
  * @param {Object} apiResponse
  * @param {Object} query
  * @returns {Object[]}
@@ -2382,7 +2382,7 @@ export const formatDueDates = (dates: Array<Object>): string => {
 
 /**
  * Test is any lease page form dirty
- * @param {Object} states
+ * @param {Object} state
  * @returns {boolean}
  */
 export const isAnyLeaseFormDirty = (state: RootState): boolean => {

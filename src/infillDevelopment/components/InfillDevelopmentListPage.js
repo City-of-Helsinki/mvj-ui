@@ -5,7 +5,6 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -28,8 +27,10 @@ import {
   InfillDevelopmentCompensationFieldPaths,
   InfillDevelopmentCompensationLeasesFieldPaths,
 } from '$src/infillDevelopment/enums';
-import {getContentInfillDevelopmentList, mapInfillDevelopmentSearchFilters} from '$src/infillDevelopment/helpers';
+import {getContentInfillDevelopmentListResults, mapInfillDevelopmentSearchFilters} from '$src/infillDevelopment/helpers';
 import {
+  getApiResponseCount,
+  getApiResponseMaxPage,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -44,19 +45,6 @@ import {withInfillDevelopmentListPageAttributes} from '$components/attributes/In
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {InfillDevelopmentList} from '$src/infillDevelopment/types';
-
-const getInfillDevelopmentCount = (infillDevelopmentList: InfillDevelopmentList) => {
-  return get(infillDevelopmentList, 'count', 0);
-};
-
-const getInfillDevelopmentMaxPage = (infillDevelopmentList: InfillDevelopmentList) => {
-  const count = getInfillDevelopmentCount(infillDevelopmentList);
-
-  if(!count) {
-    return 0;
-  }
-  return Math.ceil(count/LIST_TABLE_PAGE_SIZE);
-};
 
 type Props = {
   fetchInfillDevelopments: Function,
@@ -132,9 +120,9 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     if(props.infillDevelopmentList !== state.infillDevelopmentList) {
       newState.infillDevelopmentList = props.infillDevelopmentList;
-      newState.count = getInfillDevelopmentCount(props.infillDevelopmentList);
-      newState.infillDevelopments = getContentInfillDevelopmentList(props.infillDevelopmentList);
-      newState.maxPage = getInfillDevelopmentMaxPage(props.infillDevelopmentList);
+      newState.count = getApiResponseCount(props.infillDevelopmentList);
+      newState.infillDevelopments = getContentInfillDevelopmentListResults(props.infillDevelopmentList);
+      newState.maxPage = getApiResponseMaxPage(props.infillDevelopmentList, LIST_TABLE_PAGE_SIZE);
     }
 
     return newState;

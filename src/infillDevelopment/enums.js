@@ -2,8 +2,8 @@
 
 /**
  * Infill development compensation field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationFieldPaths = {
   BASIC_INFO: 'basic_info',
@@ -19,8 +19,8 @@ export const InfillDevelopmentCompensationFieldPaths = {
 
 /**
  * Infill development compensation field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationFieldTitles = {
   BASIC_INFO: 'Perustiedot',
@@ -36,8 +36,8 @@ export const InfillDevelopmentCompensationFieldTitles = {
 
 /**
  * Infill development compensation leases field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationLeasesFieldPaths = {
   INFILL_DEVELOPMENT_COMPENSATION_LEASES: 'infill_development_compensation_leases',
@@ -56,8 +56,8 @@ export const InfillDevelopmentCompensationLeasesFieldPaths = {
 
 /**
  * Infill development compensation leases field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationLeasesFieldTitles = {
   INFILL_DEVELOPMENT_COMPENSATION_LEASES: 'Vuokraukset',
@@ -76,8 +76,8 @@ export const InfillDevelopmentCompensationLeasesFieldTitles = {
 
 /**
  * Infill development compensation lease decisions field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationLeaseDecisionsFieldPaths = {
   DECISIONS: 'infill_development_compensation_leases.child.children.decisions',
@@ -89,8 +89,8 @@ export const InfillDevelopmentCompensationLeaseDecisionsFieldPaths = {
 
 /**
  * Infill development compensation lease decisions field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationLeaseDecisionsFieldTitles = {
   DECISIONS: 'Korvauksen päätös',
@@ -102,8 +102,8 @@ export const InfillDevelopmentCompensationLeaseDecisionsFieldTitles = {
 
 /**
  * Infill development compensation lease intended uses field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths = {
   INTENDED_USES: 'infill_development_compensation_leases.child.children.intended_uses',
@@ -114,8 +114,8 @@ export const InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths = {
 
 /**
  * Infill development compensation lease intended uses field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles = {
   INTENDED_USES: 'Käyttötarkoitus',

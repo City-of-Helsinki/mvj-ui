@@ -2,7 +2,15 @@
 import {TableSortOrder} from '$src/enums';
 
 /**
- * Contact list page default values
+ * Default sort key of infill development compensation list page
+ * @readonly
+ * @const {string}
  */
 export const DEFAULT_SORT_KEY = 'name';
+
+/**
+ * Default sort order of infill development compensation list page
+ * @readonly
+ * @const {string}
+ */
 export const DEFAULT_SORT_ORDER = TableSortOrder.ASCENDING;
