@@ -26,8 +26,8 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/infillDevelopment/actions';
 import {createInfillDevelopmentAttachment, deleteInfillDevelopmentAttachment} from '$src/infillDevelopmentAttachment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
-import {ConfirmationModalTexts, FormNames, Methods, ViewModes} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames, Methods, ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {
   InfillDevelopmentCompensationLeasesFieldPaths,
   InfillDevelopmentCompensationLeasesFieldTitles,

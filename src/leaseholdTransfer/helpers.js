@@ -1,9 +1,8 @@
 // @flow
 import get from 'lodash/get';
-import {TableSortOrder} from '$components/enums';
 
 import {LeaseholdTransferPartyTypes} from '$src/leaseholdTransfer/enums';
-
+import {TableSortOrder} from '$src/enums';
 import type {LeaseholdTransferList} from '$src/leaseholdTransfer/types';
 
 /**

@@ -26,8 +26,8 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ConfirmationModalTexts, FormNames, Methods, ViewModes} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ButtonColors} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames, Methods, ViewModes} from '$src/enums';
 import {
   LeaseTenantContactSetFieldPaths,
   LeaseTenantContactSetFieldTitles,

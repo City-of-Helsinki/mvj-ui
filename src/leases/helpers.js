@@ -10,8 +10,7 @@ import {
   getSplittedDateRangesWithItems,
   sortByStartAndEndDateDesc,
 } from '$util/date';
-import {TableSortOrder} from '$components/enums';
-import {FormNames} from '$src/enums';
+import {FormNames, TableSortOrder} from '$src/enums';
 import {
   CollateralTypes,
   ConstructabilityType,

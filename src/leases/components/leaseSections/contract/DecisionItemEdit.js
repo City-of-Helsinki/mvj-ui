@@ -12,8 +12,7 @@ import Collapse from '$components/collapse/Collapse';
 import DecisionConditionsEdit from './DecisionConditionsEdit';
 import FormField from '$components/form/FormField';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, ViewModes} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {
   LeaseDecisionConditionsFieldPaths,
   LeaseDecisionsFieldPaths,

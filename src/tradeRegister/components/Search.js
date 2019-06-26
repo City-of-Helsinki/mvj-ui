@@ -11,8 +11,8 @@ import SearchInputColumn from '$components/search/SearchInputColumn';
 import SearchLabel from '$components/search/SearchLabel';
 import SearchLabelColumn from '$components/search/SearchLabelColumn';
 import SearchRow from '$components/search/SearchRow';
-import {FormNames} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 
 type Props = {
   formValues: Object,

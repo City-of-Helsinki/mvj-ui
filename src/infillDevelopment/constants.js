@@ -1,5 +1,5 @@
 // @flow
-import {TableSortOrder} from '$components/enums';
+import {TableSortOrder} from '$src/enums';
 
 /**
  * Contact list page default values

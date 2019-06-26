@@ -17,8 +17,7 @@ import FileDownloadButton from '$components/file/FileDownloadButton';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import SubTitle from '$components/content/SubTitle';
-import {FormNames} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames} from '$src/enums';
 import {
   CreateCollectionLetterFieldPaths,
   CreateCollectionLetterFieldTitles,

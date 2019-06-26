@@ -19,8 +19,7 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {FormNames, ViewModes} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
 import {
   findItemById,

@@ -2,8 +2,7 @@
 import get from 'lodash/get';
 import {isDirty} from 'redux-form';
 
-import {FormNames} from '$src/enums';
-import {TableSortOrder} from '$components/enums';
+import {FormNames, TableSortOrder} from '$src/enums';
 import {getContentLeaseIdentifier, getContentLeaseOption} from '$src/leases/helpers';
 import {getContentUser} from '$src/users/helpers';
 import {convertStrToDecimalNumber} from '$util/helpers';

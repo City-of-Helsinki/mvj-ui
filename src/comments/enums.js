@@ -1,8 +1,9 @@
 // @flow
+
 /**
- * Commecnt field paths enumerable.
- *
- * @type {{}}
+ * Comment field paths enumerable.
+ * @readonly
+ * @enum {string}
  */
 export const CommentFieldPaths = {
   TEXT: 'text',
@@ -10,9 +11,9 @@ export const CommentFieldPaths = {
 };
 
 /**
- * Commecnt field titles enumerable.
- *
- * @type {{}}
+ * Comment field titles enumerable.
+ * @readonly
+ * @enum {string}
  */
 export const CommentFieldTitles = {
   TEXT: 'Kommentti',

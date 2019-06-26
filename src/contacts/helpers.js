@@ -1,9 +1,8 @@
 // @flow
 import {isDirty} from 'redux-form';
 
-import {FormNames} from '$src/enums';
+import {FormNames, TableSortOrder} from '$src/enums';
 import {ContactTypes} from './enums';
-import {TableSortOrder} from '$components/enums';
 import {getIsEditMode} from '$src/contacts/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 

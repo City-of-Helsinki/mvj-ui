@@ -16,8 +16,8 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {createLeaseInspectionAttachment, deleteLeaseInspectionAttachment} from '$src/leaseInspectionAttachment/actions';
-import {ConfirmationModalTexts, FormNames} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {
   LeaseInspectionAttachmentsFieldPaths,
   LeaseInspectionAttachmentsFieldTitles,

@@ -9,9 +9,9 @@ import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import Modal from '$components/modal/Modal';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
-import {FormNames} from '$src/enums';
+import {FieldTypes, FormNames} from '$src/enums';
 import {InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ButtonColors} from '$components/enums';
 import {getFieldAttributes} from '$util/helpers';
 import {getAttributes} from '$src/invoiceNote/selectors';
 

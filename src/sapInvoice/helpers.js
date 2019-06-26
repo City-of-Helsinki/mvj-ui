@@ -2,7 +2,7 @@
 import get from 'lodash/get';
 import moment from 'moment';
 
-import {TableSortOrder} from '$components/enums';
+import {TableSortOrder} from '$src/enums';
 import {getContentInvoiceReceivableTypes} from '$src/invoices/helpers';
 
 import type {SapInvoiceList} from '$src/sapInvoice/types';

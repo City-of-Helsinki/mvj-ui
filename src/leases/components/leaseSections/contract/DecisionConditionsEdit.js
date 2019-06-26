@@ -19,8 +19,8 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
-import {ConfirmationModalTexts} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {
   LeaseDecisionConditionsFieldPaths,
   LeaseDecisionConditionsFieldTitles,

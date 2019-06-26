@@ -3,6 +3,16 @@ import React from 'react';
 import {DELETE_MODAL_BUTTON_TEXT} from '$src/constants';
 
 /**
+ * Table sort order enumerable.
+ * @readonly
+ * @enum {string}
+ */
+export const TableSortOrder = {
+  ASCENDING: 'asc',
+  DESCENDING: 'desc',
+};
+
+/**
  * View modes enumerable.
  * @readonly
  * @enum {string}
@@ -316,6 +326,33 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti siirtää vuokralaskurin pois arkistosta?',
     TITLE: 'Siirrä arkistosta',
   },
+};
+
+/**
+ * Redux form field type enumerable.
+ * @readonly
+ * @enum {string}
+ */
+export const FieldTypes = {
+  ADDRESS: 'address',
+  BOOLEAN: 'boolean',
+  CHOICE: 'choice',
+  CHECKBOX: 'checkbox',
+  CHECKBOX_DATE_TIME: 'checkbox-date-time',
+  CONTACT: 'contact',
+  DATE: 'date',
+  DECIMAL: 'decimal',
+  FIELD: 'field',
+  INTEGER: 'integer',
+  LEASE: 'lease',
+  LESSOR: 'lessor',
+  MULTISELECT: 'multiselect',
+  RADIO_WITH_FIELD: 'radio-with-field',
+  REFERENCE_NUMBER: 'reference_number',
+  SEARCH: 'search',
+  STRING: 'string',
+  TEXTAREA: 'textarea',
+  USER: 'user',
 };
 
 /**

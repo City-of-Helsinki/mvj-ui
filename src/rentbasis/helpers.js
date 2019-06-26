@@ -3,8 +3,7 @@ import get from 'lodash/get';
 import {isDirty} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 
-import {FormNames} from '$src/enums';
-import {TableSortOrder} from '$components/enums';
+import {FormNames, TableSortOrder} from '$src/enums';
 import {convertStrToDecimalNumber} from '$util/helpers';
 import {getIsEditMode} from '$src/rentbasis/selectors';
 import {removeSessionStorageItem} from '$util/storage';

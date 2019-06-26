@@ -2,8 +2,8 @@
 
 /**
  * Collection letter field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const CollectionLetterFieldPaths = {
   COLLECTION_LETTERS: 'collection_letters',
@@ -14,8 +14,8 @@ export const CollectionLetterFieldPaths = {
 
 /**
  * Collection letter field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const CollectionLetterFieldTitles = {
   COLLECTION_LETTERS: 'Perintäkirjeet',
