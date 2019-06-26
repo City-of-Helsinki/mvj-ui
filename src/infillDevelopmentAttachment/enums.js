@@ -1,8 +1,8 @@
 // @flow
 /**
  * Infill development compensation attachment field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationAttachmentFieldPaths = {
   ATTACHMENTS: 'attachments',
@@ -13,8 +13,8 @@ export const InfillDevelopmentCompensationAttachmentFieldPaths = {
 
 /**
  * Infill development compensation attachment field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InfillDevelopmentCompensationAttachmentFieldTitles = {
   ATTACHMENTS: 'Liitetiedostot',
