@@ -9,7 +9,7 @@ import LeaseAreaWithArchiceInfo from './LeaseAreaWithArchiceInfo';
 import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
 import {LeaseAreasFieldPaths} from '$src/leases/enums';
-import {getAreasSum, getContentLeaseAreas, getDecisionOptions} from '$src/leases/helpers';
+import {calculateAreasSum, getContentLeaseAreas, getDecisionOptions} from '$src/leases/helpers';
 import {formatNumber, isFieldAllowedToRead}  from '$util/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -26,7 +26,7 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
   const areas = getContentLeaseAreas(currentLease);
   const activeAreas = areas.filter((area) => !area.archived_at);
   const archivedAreas = areas.filter((area) => area.archived_at);
-  const areasSum = getAreasSum(activeAreas);
+  const areasSum = calculateAreasSum(activeAreas);
   const decisionOptions = getDecisionOptions(currentLease);
 
   return (

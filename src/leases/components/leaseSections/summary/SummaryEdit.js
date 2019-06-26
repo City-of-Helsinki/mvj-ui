@@ -26,7 +26,7 @@ import {FieldTypes} from '$components/enums';
 import {LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
-import {getContentSummary} from '$src/leases/helpers';
+import {getContentLeaseSummary} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
@@ -92,7 +92,7 @@ class SummaryEdit extends PureComponent<Props, State> {
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.summary = getContentSummary(props.currentLease);
+      newState.summary = getContentLeaseSummary(props.currentLease);
     }
 
     return !isEmpty(newState) ? newState : null;

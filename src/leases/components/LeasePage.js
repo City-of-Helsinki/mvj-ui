@@ -69,29 +69,30 @@ import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {clearUnsavedChanges, getContentLeaseIdentifier} from '$src/leases/helpers';
 import {
-  addAreasFormValues,
-  addConstructabilityFormValues,
-  addContractsFormValues,
-  addDecisionsFormValues,
-  addInspectionsFormValues,
-  addRentsFormValues,
-  addSummaryFormValues,
-  addTenantsFormValues,
+  addAreasFormValuesToPayload,
+  addConstructabilityFormValuesToPayload,
+  addContractsFormValuesToPayload,
+  addDecisionsFormValuesToPayload,
+  addInspectionsFormValuesToPayload,
+  addRentsFormValuesToPayload,
+  addSummaryFormValuesToPayload,
+  addTenantsFormValuesToPayload,
   getContentBasisOfRents,
   getContentContracts,
-  getContentConstructability,
+  getContentConstructabilityAreas,
   getContentDecisions,
   getContentInspections,
   getContentLeaseAreas,
-  getContentRentsFormData,
-  getContentSummary,
-  getContentTenantsFormData,
+  getContentRents,
+  getContentLeaseSummary,
+  getContentTenants,
   isUserAllowedToDeleteEmptyLease,
 } from '$src/leases/helpers';
 import {
   getSearchQuery,
   getUrlParams,
   hasPermissions,
+  isArchived,
   isFieldAllowedToRead,
   isMethodAllowed,
   scrollToTopPage,
@@ -459,9 +460,11 @@ class LeasePage extends Component<Props, State> {
 
   initializeForms = (lease: Lease) => {
     const {initialize} = this.props,
-      areas = getContentLeaseAreas(lease);
+      areas = getContentLeaseAreas(lease),
+      rents = getContentRents(lease),
+      tenants = getContentTenants(lease);
 
-    initialize(FormNames.LEASE_CONSTRUCTABILITY, {lease_areas: getContentConstructability(lease)});
+    initialize(FormNames.LEASE_CONSTRUCTABILITY, {lease_areas: getContentConstructabilityAreas(lease)});
     initialize(FormNames.LEASE_CONTRACTS, {contracts: getContentContracts(lease)});
     initialize(FormNames.LEASE_DECISIONS, {decisions: getContentDecisions(lease)});
     initialize(FormNames.LEASE_INSPECTIONS, {inspections: getContentInspections(lease)});
@@ -473,10 +476,14 @@ class LeasePage extends Component<Props, State> {
       basis_of_rents: getContentBasisOfRents(lease).filter((item) => !item.archived_at),
       basis_of_rents_archived: getContentBasisOfRents(lease).filter((item) => item.archived_at),
       is_rent_info_complete: lease.is_rent_info_complete,
-      ...getContentRentsFormData(lease),
+      rents: rents.filter((rent) => !isArchived(rent)),
+      rentsArchived: rents.filter((rent) => isArchived(rent)),
     });
-    initialize(FormNames.LEASE_SUMMARY, getContentSummary(lease));
-    initialize(FormNames.LEASE_TENANTS, {...getContentTenantsFormData(lease)});
+    initialize(FormNames.LEASE_SUMMARY, getContentLeaseSummary(lease));
+    initialize(FormNames.LEASE_TENANTS, {
+      tenants: tenants.filter((tenant) => !isArchived(tenant.tenant)),
+      tenantsArchived: tenants.filter((tenant) => isArchived(tenant.tenant)),
+    });
   }
 
   cancelRestoreUnsavedChanges = () => {
@@ -676,28 +683,28 @@ class LeasePage extends Component<Props, State> {
       let payload: Object = {id: currentLease.id};
 
       if(isConstructabilityFormDirty) {
-        payload = addConstructabilityFormValues(payload, constructabilityFormValues);
+        payload = addConstructabilityFormValuesToPayload(payload, constructabilityFormValues);
       }
       if(isContractsFormDirty) {
-        payload = addContractsFormValues(payload, contractsFormValues);
+        payload = addContractsFormValuesToPayload(payload, contractsFormValues);
       }
       if(isDecisionsFormDirty) {
-        payload = addDecisionsFormValues(payload, decisionsFormValues);
+        payload = addDecisionsFormValuesToPayload(payload, decisionsFormValues);
       }
       if(isInspectionsFormDirty) {
-        payload = addInspectionsFormValues(payload, inspectionsFormValues);
+        payload = addInspectionsFormValuesToPayload(payload, inspectionsFormValues);
       }
       if(isLeaseAreasFormDirty) {
-        payload = addAreasFormValues(payload, areasFormValues);
+        payload = addAreasFormValuesToPayload(payload, areasFormValues);
       }
       if(isRentsFormDirty) {
-        payload = addRentsFormValues(payload, rentsFormValues, currentLease);
+        payload = addRentsFormValuesToPayload(payload, rentsFormValues, currentLease);
       }
       if(isSummaryFormDirty) {
-        payload = addSummaryFormValues(payload, summaryFormValues);
+        payload = addSummaryFormValuesToPayload(payload, summaryFormValues);
       }
       if(isTenantsFormDirty) {
-        payload = addTenantsFormValues(payload, tenantsFormValues);
+        payload = addTenantsFormValuesToPayload(payload, tenantsFormValues);
       }
 
       patchLease(payload);

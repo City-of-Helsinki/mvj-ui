@@ -9,7 +9,7 @@ import ShowMore from '$components/showMore/ShowMore';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {editComment, hideEditModeById, showEditModeById} from '$src/comments/actions';
 import {ButtonColors} from '$components/enums';
-import {getCommentPatchPayload} from '$src/comments/helpers';
+import {getPayloadComment} from '$src/comments/helpers';
 import {formatDate} from '$util/helpers';
 import {getIsEditModeById} from '$src/comments/selectors';
 
@@ -55,7 +55,7 @@ class Comment extends PureComponent<Props, State> {
     const {comment, editComment} = this.props;
     const {editedText} = this.state;
 
-    editComment(getCommentPatchPayload({...comment, text: editedText}));
+    editComment(getPayloadComment({...comment, text: editedText}));
   }
 
   render() {

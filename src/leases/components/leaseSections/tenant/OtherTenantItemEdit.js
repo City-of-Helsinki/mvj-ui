@@ -29,11 +29,12 @@ import {
   TenantContactType,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   hasPermissions,
+  isActive,
+  isArchived,
   isFieldAllowedToRead,
   isMethodAllowed,
 } from '$util/helpers';
@@ -129,8 +130,8 @@ const OtherTenantItemEdit = ({
   };
 
   const savedTenant = getOtherTenantById(tenantId),
-    active = isTenantActive(savedTenant),
-    archived = isTenantArchived(savedTenant),
+    active = isActive(savedTenant),
+    archived = isArchived(savedTenant),
     tenantErrors = get(errors, field);
 
   return (

@@ -1,10 +1,9 @@
 // @flow
 import React from 'react';
-// $FlowFixMe
 import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
-import {getContentLessor} from '$src/leases/helpers';
+import {getContentLessor} from '$src/lessor/helpers';
 import {addEmptyOption, sortByLabelAsc} from '$util/helpers';
 import {fetchContacts} from '$src/contacts/requestsAsync';
 

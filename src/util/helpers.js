@@ -18,8 +18,8 @@ import type {UsersPermissions} from '$src/usersPermissions/types';
 
 /**
  * Compose page title
- * @param [string] title
- * @param [boolean] presend
+ * @param {string} title
+ * @param {boolean} presend
  */
 export const composePageTitle = (title: string = '', prepend?: boolean = true) => {
   return prepend ? `${title ? `${title} | ` : ''}Maanvuokrausjärjestelmä | Helsingin Kaupunki` : title;
@@ -88,7 +88,6 @@ export const isLargeScreen = () => {
 
 /**
  * Scroll to the top of the page
- * @returns {boolean}
  */
 export const scrollToTopPage = () => {
   const body = document.getElementsByTagName('body');
@@ -160,6 +159,7 @@ export const getUrlParams = (search: string = ''): Object => {
 export const displayUIMessage = (message: Object, opts?: Object = {type: 'success'}) => {
   const {title, body} = message;
   const icon = <ToastrIcons name={opts.type} />;
+
   return toastr[opts.type](title, body, {...opts, icon: icon});
 };
 
@@ -606,11 +606,11 @@ export const findReactById = (id: ?string): ?Object => {
 };
 
 /**
-  * Test is item active
-  * @param {Object} item
-  * @returns {boolean}
-  */
-export const isItemActive = (item: ?Object) => {
+ * Test is item active
+ * @param {Object} item
+ * @returns {boolean}
+ */
+export const isActive = (item: ?Object): boolean => {
   const now = moment();
   const startDate = get(item, 'start_date', '0000-01-01');
   const endDate = get(item, 'end_date', '9999-12-31');
@@ -620,4 +620,20 @@ export const isItemActive = (item: ?Object) => {
   }
 
   return true;
+};
+
+/**
+ * Test is item archived
+ * @param {Object} item
+ * @returns {boolean}
+ */
+export const isArchived = (item: ?Object): boolean => {
+  const now = moment();
+  const endDate = get(item, 'end_date', '9999-12-31');
+
+  if(now.isAfter(endDate, 'day')) {
+    return true;
+  }
+
+  return false;
 };

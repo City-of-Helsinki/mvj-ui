@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import Authorization from '$components/authorization/Authorization';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
-import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
+import {getContentLeaseInfo} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -61,7 +61,7 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
         <Column>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.START_DATE) && isFieldAllowedToRead(attributes, LeaseFieldPaths.END_DATE)}>
             <FormTextTitle>{LeaseFieldTitles.STATUS}</FormTextTitle>
-            <p className='lease-info__text'>{getContentLeaseStatus(currentLease) || '-'}</p>
+            <p className='lease-info__text'>{leaseInfo.status || '-'}</p>
           </Authorization>
         </Column>
       </Row>

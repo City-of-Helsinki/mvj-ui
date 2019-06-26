@@ -8,7 +8,7 @@ import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import Title from '$components/content/Title';
 import {LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
-import {getContentConstructability} from '$src/leases/helpers';
+import {getContentConstructabilityAreas} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getFieldOptions} from '$src/util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -58,7 +58,7 @@ class Constructability extends PureComponent<Props, State> {
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.areas = getContentConstructability(props.currentLease);
+      newState.areas = getContentConstructabilityAreas(props.currentLease);
     }
 
     return newState;

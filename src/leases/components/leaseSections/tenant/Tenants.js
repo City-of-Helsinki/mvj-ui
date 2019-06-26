@@ -12,7 +12,8 @@ import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
 import WarningField from '$components/form/WarningField';
 import {LeaseTenantsFieldPaths, LeaseTenantsFieldTitles} from '$src/leases/enums';
-import {getContentTenantsFormData, getTenantShareWarnings} from '$src/leases/helpers';
+import {getContentTenants, getTenantShareWarnings} from '$src/leases/helpers';
+import {isArchived} from '$util/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {withContactAttributes} from '$components/attributes/ContactAttributes';
@@ -28,9 +29,9 @@ const Tenants = ({
   currentLease,
   isFetchingContactAttributes,
 }: Props) => {
-  const tenantsData = getContentTenantsFormData(currentLease);
-  const tenants = tenantsData.tenants;
-  const tenantsArchived = tenantsData.tenantsArchived;
+  const tenantsAll = getContentTenants(currentLease);
+  const tenants = tenantsAll.filter((tenant) => !isArchived(tenant.tenant));
+  const tenantsArchived = tenantsAll.filter((tenant) => isArchived(tenant.tenant));
   const warnings = getTenantShareWarnings(tenants);
 
   if(isFetchingContactAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;

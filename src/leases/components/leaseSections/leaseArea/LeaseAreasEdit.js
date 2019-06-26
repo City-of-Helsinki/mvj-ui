@@ -22,7 +22,7 @@ import {
   LeaseAreasFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById} from '$src/leases/helpers';
+import {calculateAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatNumber,
@@ -177,7 +177,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
         activeAreas = areas.filter((area) => !area.archived_at);
 
       newState.areas = areas;
-      newState.areasSum = getAreasSum(activeAreas);
+      newState.areasSum = calculateAreasSum(activeAreas);
       newState.currentLease = props.currentLease;
       newState.decisionOptions = getDecisionOptions(props.currentLease);
     }

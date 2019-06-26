@@ -22,13 +22,14 @@ import {
   LeaseTenantContactSetFieldTitles,
 } from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
   formatDateRange,
   getFieldOptions,
   getLabelOfOption,
+  isActive,
+  isArchived,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -63,8 +64,8 @@ const OtherTenantItem = ({
 
   const tenantTypeOptions = getFieldOptions(attributes, LeaseTenantContactSetFieldPaths.TYPE);
   const contact = get(tenant, 'contact');
-  const active = isTenantActive(tenant);
-  const archived = isTenantArchived(tenant);
+  const active = isActive(tenant);
+  const archived = isArchived(tenant);
   const collapseDefault = collapseState !== undefined ? collapseState : active;
 
   return (

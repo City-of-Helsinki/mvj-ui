@@ -38,7 +38,6 @@ import {
   getContentLeaseAreas,
   getContentLeaseIdentifier,
   getContentTenants,
-  isTenantActive,
 } from '$src/leases/helpers';
 import {getUiDataInfillDevelopmentKey, getUiDataInfillDevelopmentAttachmentKey} from '$src/uiData/helpers';
 import {getUserFullName} from '$src/users/helpers';
@@ -48,6 +47,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
+  isActive,
   isEmptyValue,
   isFieldAllowedToRead,
   isMethodAllowed,
@@ -133,7 +133,7 @@ class LeaseItem extends PureComponent<Props, State> {
       newState.identifier = getContentLeaseIdentifier(props.lease);
       newState.planUnits = planUnits;
       newState.plots = plots;
-      newState.tenants = getContentTenants(props.lease).filter((tenant) => isTenantActive(get(tenant, 'tenant')));
+      newState.tenants = getContentTenants(props.lease).filter((tenant) => isActive(get(tenant, 'tenant')));
     }
 
     return newState;

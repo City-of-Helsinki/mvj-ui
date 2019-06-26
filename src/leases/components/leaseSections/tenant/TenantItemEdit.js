@@ -37,13 +37,14 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   formatNumber,
   getFieldAttributes,
   hasPermissions,
+  isActive,
+  isArchived,
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
@@ -214,8 +215,8 @@ const TenantItemEdit = ({
 
   const share = getInvoiceManagementShare();
   const savedTenant = getTenantById(tenantId);
-  const active = isTenantActive(savedTenant && savedTenant.tenant);
-  const archived = isTenantArchived(savedTenant && savedTenant.tenant);
+  const active = isActive(savedTenant && savedTenant.tenant);
+  const archived = isArchived(savedTenant && savedTenant.tenant);
   const tenantErrors = get(errors, field);
 
   return (
