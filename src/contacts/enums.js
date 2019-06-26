@@ -1,8 +1,9 @@
 // @flow
+
 /**
  * Contact type enumerable.
- *
- * @type {{PERSON: string, BUSINESS: string, UNIT: string, ASSOCIATION: string, OTHER: string,}}
+ * @readonly
+ * @enum {string}
  */
 export const ContactTypes = {
   PERSON: 'person',
@@ -14,8 +15,8 @@ export const ContactTypes = {
 
 /**
  * Contact field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const ContactFieldPaths = {
   ADDRESS: 'address',
@@ -46,8 +47,8 @@ export const ContactFieldPaths = {
 
 /**
  * Contact field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const ContactFieldTitles = {
   ADDRESS: 'Katuosoite',

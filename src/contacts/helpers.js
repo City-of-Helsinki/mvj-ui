@@ -1,5 +1,4 @@
 // @flow
-import get from 'lodash/get';
 import {isDirty} from 'redux-form';
 
 import {FormNames} from '$src/enums';
@@ -8,7 +7,12 @@ import {TableSortOrder} from '$components/enums';
 import {getIsEditMode} from '$src/contacts/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
-export const getContactFullName = (contact: ?Object) => {
+/**
+ * Get full name of contact
+ * @param {Object} contact
+ * @returns {string}
+ */
+export const getContactFullName = (contact: ?Object): string => {
   if(!contact || !contact.type) return '';
 
   return contact.type === ContactTypes.PERSON
@@ -16,38 +20,43 @@ export const getContactFullName = (contact: ?Object) => {
     : contact.name;
 };
 
-export const getContentContact = (contact: Object) => {
+/**
+ * Get contact content
+ * @param {Object} contact
+ * @returns {Object}
+ */
+export const getContentContact = (contact: Object): Object => {
   return {
-    id: get(contact, 'id'),
-    value: get(contact, 'id'),
+    id: contact.id,
+    value: contact.id,
     label: `${getContactFullName(contact)}${contact.care_of ? ` c/o ${contact.care_of}` : ''}`,
-    type: get(contact, 'type'),
-    first_name: get(contact, 'first_name'),
-    last_name: get(contact, 'last_name'),
-    name: get(contact, 'name'),
-    business_id: get(contact, 'business_id'),
-    address: get(contact, 'address'),
-    postal_code: get(contact, 'postal_code'),
-    city: get(contact, 'city'),
+    type: contact.type,
+    first_name: contact.first_name,
+    last_name: contact.last_name,
+    name: contact.name,
+    business_id: contact.business_id,
+    address: contact.address,
+    postal_code: contact.postal_code,
+    city: contact.city,
     care_of: contact.care_of,
-    email: get(contact, 'email'),
-    phone: get(contact, 'phone'),
-    language: get(contact, 'language'),
-    national_identification_number: get(contact, 'national_identification_number'),
-    address_protection: get(contact, 'address_protection'),
-    customer_number: get(contact, 'customer_number'),
-    sap_customer_number: get(contact, 'sap_customer_number'),
-    electronic_billing_address: get(contact, 'electronic_billing_address'),
-    partner_code: get(contact, 'partner_code'),
-    is_lessor: get(contact, 'is_lessor'),
+    email: contact.email,
+    phone: contact.phone,
+    language: contact.language,
+    national_identification_number: contact.national_identification_number,
+    address_protection: contact.address_protection,
+    customer_number: contact.customer_number,
+    sap_customer_number: contact.sap_customer_number,
+    electronic_billing_address: contact.electronic_billing_address,
+    partner_code: contact.partner_code,
+    is_lessor: contact.is_lessor,
   };
 };
 
 /**
-* Get contact options from contact list
-* @param {Object[]} contacts
-* @returns {Object[]}
-*/
+ * Get contact options from contact list
+ * @param {Object[]} contacts
+ * @returns {Object[]}
+ */
 export const getContactOptions = (contacts: Array<Object>): Array<Object> =>
   contacts && contacts.length
     ? contacts.map((contact) => ({
@@ -56,18 +65,12 @@ export const getContactOptions = (contacts: Array<Object>): Array<Object> =>
     }))
     : [];
 
-export const isContactFormDirty = (state: any) => {
-  const isEditMode = getIsEditMode(state);
-
-  return isEditMode && isDirty(FormNames.CONTACT)(state);
-};
-
 /**
-* Map contact search filters for API
-* @param {Object} query
-* @returns {Object}
-*/
-export const mapContactSearchFilters = (query: Object) => {
+ * Map contact search filters for API
+ * @param {Object} query
+ * @returns {Object}
+ */
+export const mapContactSearchFilters = (query: Object): Object => {
   const searchQuery = {...query};
 
   if(searchQuery.sort_key) {
@@ -91,6 +94,20 @@ export const mapContactSearchFilters = (query: Object) => {
   return searchQuery;
 };
 
+/**
+ * Test is contact form dirty
+ * @param {Object} state
+ * @returns {boolean}
+ */
+export const isContactFormDirty = (state: any): boolean => {
+  const isEditMode = getIsEditMode(state);
+
+  return isEditMode && isDirty(FormNames.CONTACT)(state);
+};
+
+/**
+ * Clear all unsaved changes from local storage
+ */
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.CONTACT);
   removeSessionStorageItem('contactId');

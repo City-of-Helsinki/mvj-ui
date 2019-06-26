@@ -2,7 +2,8 @@
 
 /**
  * Default coordinates for Map (helsinki centrum)
- * @type {{lat: number, lng: number}}
+ * @readonly
+ * @const {{lat: number, lng: number}}
  */
 export const DEFAULT_CENTER = {
   lat: 60.1699,
@@ -11,24 +12,28 @@ export const DEFAULT_CENTER = {
 
 /**
  * Default zoom level
+ * @readonly
  * @const {number}
  */
 export const DEFAULT_ZOOM = 5;
 
 /**
  * Minimum zoom
+ * @readonly
  * @const {number}
  */
 export const MIN_ZOOM = 2;
 
 /**
  * Maximum zoom
+ * @readonly
  * @const {number}
  */
 export const MAX_ZOOM = 12;
 
 /**
  * Map color palette
+ * @readonly
  * @const {string[]}
  */
 export const MAP_COLORS = [
@@ -50,18 +55,21 @@ export const MAP_COLORS = [
 
 /**
  * Url of the paikkatietovipunen
- * const {string}
+ * @readonly
+ * @const {string}
  */
 export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen:10058';
 
 /**
  * Delete modal button text
- * const {string}
+ * @readonly
+ * @const {string}
  */
 export const DELETE_MODAL_BUTTON_TEXT = 'Poista';
 
 /**
  * Maximum number of results per page on list tables
- * const {number}
+ * @readonly
+ * @const {number}
  */
 export const LIST_TABLE_PAGE_SIZE = 25;
