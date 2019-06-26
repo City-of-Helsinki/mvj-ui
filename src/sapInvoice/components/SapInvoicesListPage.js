@@ -25,14 +25,14 @@ import {getContactFullName} from '$src/contacts/helpers';
 import {formatReceivableTypesString} from '$src/invoices/helpers';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {
-  getSapInvoiceListCount,
-  getSapInvoiceListMaxPage,
   getSapInvoices,
   mapSapInvoiceSearchFilters,
 } from '$src/sapInvoice/helpers';
 import {
   formatDate,
   formatNumber,
+  getApiResponseCount,
+  getApiResponseMaxPage,
   getFieldOptions,
   getSearchQuery,
   getUrlParams,
@@ -171,9 +171,9 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     }
     if(props.sapInvoiceList !== state.sapInvoiceList) {
       newState.sapInvoiceList = props.sapInvoiceList;
-      newState.count = getSapInvoiceListCount(props.sapInvoiceList);
+      newState.count = getApiResponseCount(props.sapInvoiceList);
       newState.sapInvoices = getSapInvoices(props.sapInvoiceList);
-      newState.maxPage = getSapInvoiceListMaxPage(props.sapInvoiceList, LIST_TABLE_PAGE_SIZE);
+      newState.maxPage = getApiResponseMaxPage(props.sapInvoiceList, LIST_TABLE_PAGE_SIZE);
     }
 
     return !isEmpty(newState) ? newState : null;

@@ -24,7 +24,7 @@ import {
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
-import {formatRentBasisForDb} from '$src/rentbasis/helpers';
+import {getPayloadRentBasis} from '$src/rentbasis/helpers';
 import {isMethodAllowed, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFormValid, getIsSaveClicked, getIsSaving} from '$src/rentbasis/selectors';
@@ -113,7 +113,7 @@ class NewRentBasisPage extends Component<Props> {
 
     receiveIsSaveClicked(true);
     if(isFormValid) {
-      createRentBasis(formatRentBasisForDb(editedRentBasis));
+      createRentBasis(getPayloadRentBasis(editedRentBasis));
     }
   }
 

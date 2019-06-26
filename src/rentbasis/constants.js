@@ -2,7 +2,15 @@
 import {TableSortOrder} from '$src/enums';
 
 /**
- * Contact list page default values
+ * Default sort key of basis of rent list page
+ * @readonly
+ * @const {string}
  */
 export const DEFAULT_SORT_KEY = 'start_date';
+
+/**
+ * Default sort order of basis of rent list page
+ * @readonly
+ * @const {string}
+ */
 export const DEFAULT_SORT_ORDER = TableSortOrder.DESCENDING;

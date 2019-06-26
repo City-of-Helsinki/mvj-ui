@@ -1,16 +1,20 @@
 // @flow
 
-/*
-* Company states enumerable
-*/
+/**
+ * Company states enumerable
+ * @readonly
+ * @enum {string}
+ */
 export const CompanyStates = {
   L: 'Lakannut',
   R: 'Rekisterissä',
 };
 
-/*
-* Collapse state paths enumerable
-*/
+/**
+ * Collapse state paths enumerable
+ * @readonly
+ * @enum {string}
+ */
 export const CollapseStatePaths = {
   COMPANY_EXTENDED: 'company_extended',
   COMPANY_NOTICE: 'company_notice',
@@ -19,8 +23,10 @@ export const CollapseStatePaths = {
 };
 
 /**
-  * Company extended field paths
-  */
+ * Company extended field paths
+ * @readonly
+ * @enum {string}
+ */
 export const CompanyExtendedFieldPaths = {
   AUXILIARY_COMPANY_NAMES: 'auxiliaryCompanyName',
   AUXILIARY_COMPANY_NAMES_NAME: 'auxiliaryCompanyName.name',
@@ -84,8 +90,10 @@ export const CompanyExtendedFieldPaths = {
 };
 
 /**
-  * Company extended field paths
-  */
+ * Company extended field paths
+ * @readonly
+ * @enum {string}
+ */
 export const CompanyExtendedFieldTitles = {
   AUXILIARY_COMPANY_NAMES: 'Aputoiminimet',
   AUXILIARY_COMPANY_NAMES_NAME: 'Yrityksen nimi',
@@ -149,8 +157,10 @@ export const CompanyExtendedFieldTitles = {
 };
 
 /**
-  * Company notice field paths
-  */
+ * Company notice field paths
+ * @readonly
+ * @enum {string}
+ */
 export const CompanyNoticeFieldPaths = {
   NOTICE: 'notice',
   NOTICE_ARRIVAL_DATE: 'notice.arrivalDate',
@@ -161,8 +171,10 @@ export const CompanyNoticeFieldPaths = {
 };
 
 /**
-  * Company notice field paths
-  */
+ * Company notice field paths
+ * @readonly
+ * @enum {string}
+ */
 export const CompanyNoticeFieldTitles = {
   NOTICE: 'Vireillä olevat ilmoitukset',
   NOTICE_ARRIVAL_DATE: 'Saapumispvm',
@@ -173,8 +185,10 @@ export const CompanyNoticeFieldTitles = {
 };
 
 /**
-  * Company represent field paths
-  */
+ * Company represent field paths
+ * @readonly
+ * @enum {string}
+ */
 export const CompanyRepresentFieldPaths = {
   BODY: 'body',
   BODY_TYPE: 'body.type',
@@ -203,8 +217,10 @@ export const CompanyRepresentFieldPaths = {
 };
 
 /**
-  * Company represent field paths
-  */
+ * Company represent field paths
+ * @readonly
+ * @enum {string}
+ */
 export const CompanyRepresentFieldTitles = {
   BODY: 'Päättäjätiedot',
   BODY_TYPE: 'Tyyppi',

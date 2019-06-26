@@ -1,7 +1,12 @@
 // @flow
 import {dateGreaterOrEqual} from '$components/form/validations';
 
-export const validateRentBasisForm = (values: Object) => {
+/** 
+ * Validate basis of rent form
+ * @param {Object} values
+ * @returns {Object}
+ */
+export const validateRentBasisForm = (values: Object): Object => {
   const errors = {};
   const endDateError =  dateGreaterOrEqual(values.end_date, values.start_date);
 

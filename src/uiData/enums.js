@@ -1,8 +1,10 @@
 // @flow
 
-/*
-* Ui Data prefix enumerable
-*/
+/**
+ * Ui Data prefix enumerable
+ * @readonly
+ * @enum {string}
+ */
 export const UiDataPrefixes = {
   COLLECTION_COURT_DECISION: 'collection_court_decision',
   COLLECTION_LETTER: 'collection_letter',
