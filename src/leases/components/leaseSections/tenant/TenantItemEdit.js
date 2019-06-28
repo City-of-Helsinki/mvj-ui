@@ -26,8 +26,8 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {ConfirmationModalTexts, FormNames, Methods, ViewModes} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ButtonColors} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames, Methods, ViewModes} from '$src/enums';
 import {
   LeaseTenantContactSetFieldPaths,
   LeaseTenantContactSetFieldTitles,
@@ -37,13 +37,14 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   formatNumber,
   getFieldAttributes,
   hasPermissions,
+  isActive,
+  isArchived,
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
@@ -214,8 +215,8 @@ const TenantItemEdit = ({
 
   const share = getInvoiceManagementShare();
   const savedTenant = getTenantById(tenantId);
-  const active = isTenantActive(savedTenant && savedTenant.tenant);
-  const archived = isTenantArchived(savedTenant && savedTenant.tenant);
+  const active = isActive(savedTenant && savedTenant.tenant);
+  const archived = isArchived(savedTenant && savedTenant.tenant);
   const tenantErrors = get(errors, field);
 
   return (

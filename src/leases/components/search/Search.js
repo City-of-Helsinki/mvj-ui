@@ -18,8 +18,7 @@ import SearchLabel from '$components/search/SearchLabel';
 import SearchLabelColumn from '$components/search/SearchLabelColumn';
 import SearchRow from '$components/search/SearchRow';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
-import {FieldTypes} from '$components/enums';
-import {FormNames} from '$src/enums';
+import {FieldTypes, FormNames} from '$src/enums';
 import {
   LeaseDecisionsFieldPaths,
   LeaseFieldPaths,

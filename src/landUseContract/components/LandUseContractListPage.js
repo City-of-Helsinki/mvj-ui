@@ -5,7 +5,6 @@ import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -20,9 +19,12 @@ import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLandUseContract, fetchLandUseContractList} from '$src/landUseContract/actions';
+import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {FormNames} from '$src/enums';
-import {getContentLandUseContractList} from '$src/landUseContract/helpers';
+import {getContentLandUseContractListResults} from '$src/landUseContract/helpers';
 import {
+  getApiResponseCount,
+  getApiResponseMaxPage,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -35,8 +37,6 @@ import {withLandUseContractAttributes} from '$components/attributes/LandUseContr
 
 import type {Attributes} from '$src/types';
 import type {LandUseContract, LandUseContractList} from '$src/landUseContract/types';
-
-const PAGE_SIZE = 25;
 
 type Props = {
   createLandUseContract: Function,
@@ -196,10 +196,10 @@ class LandUseContractListPage extends Component<Props, State> {
     delete searchQuery.page;
 
     if(page > 1) {
-      searchQuery.offset = (page - 1) * PAGE_SIZE;
+      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
-    searchQuery.limit = PAGE_SIZE;
+    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
 
     fetchLandUseContractList(getSearchQuery(searchQuery));
   }
@@ -233,24 +233,10 @@ class LandUseContractListPage extends Component<Props, State> {
     const {landUseContractListData} = this.props;
 
     this.setState({
-      count: this.getLandUseContractListCount(landUseContractListData),
-      landUseContracts: getContentLandUseContractList(landUseContractListData),
-      maxPage: this.getLandUseContractListMaxPage(landUseContractListData),
+      count: getApiResponseCount(landUseContractListData),
+      landUseContracts: getContentLandUseContractListResults(landUseContractListData),
+      maxPage: getApiResponseMaxPage(landUseContractListData, LIST_TABLE_PAGE_SIZE),
     });
-  }
-
-  getLandUseContractListCount = (landUseContractListData: LandUseContractList) => {
-    return get(landUseContractListData, 'count', 0);
-  }
-
-  getLandUseContractListMaxPage = (landUseContractListData: LandUseContractList) => {
-    const count = this.getLandUseContractListCount(landUseContractListData);
-
-    if(!count) {
-      return 0;
-    }
-
-    return Math.ceil(count/PAGE_SIZE);
   }
 
   handleSelectedStatesChange = (states: Array<string>) => {
@@ -345,7 +331,6 @@ class LandUseContractListPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   withLandUseContractAttributes,
   connect(

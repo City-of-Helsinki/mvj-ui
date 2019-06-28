@@ -1,7 +1,12 @@
 // @flow
 import {addEmptyOption} from '$util/helpers';
 
-export const getDistrictOptions = (districts: Array<Object>) => {
+/**
+ * Get district options
+ * @param {Object[]} districts
+ * @returns {Object[]}
+ */
+export const getDistrictOptions = (districts: Array<Object>): Array<Object> => {
   const items = districts || [];
   
   return addEmptyOption(items.map((choice) => {

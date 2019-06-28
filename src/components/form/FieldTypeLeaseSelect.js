@@ -5,7 +5,7 @@ import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
 import {getContentLeaseOption} from '$src/leases/helpers';
-import {addEmptyOption, sortByLabelAsc} from '$util/helpers';
+import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchLeases} from '$src/leases/requestsAsync';
 
 type Props = {
@@ -32,7 +32,7 @@ const FieldTypeLeaseSelect = ({
       limit: 15,
     });
 
-    callback(addEmptyOption(leases.map((lease) => getContentLeaseOption(lease)).sort(sortByLabelAsc)));
+    callback(addEmptyOption(leases.map((lease) => getContentLeaseOption(lease)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
   }, 500);
 
   return(

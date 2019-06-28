@@ -3,21 +3,24 @@ import get from 'lodash/get';
 import {isDirty} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 
-import {FormNames} from '$src/enums';
-import {TableSortOrder} from '$components/enums';
+import {FormNames, TableSortOrder} from '$src/enums';
 import {convertStrToDecimalNumber} from '$util/helpers';
 import {getIsEditMode} from '$src/rentbasis/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {LeafletGeoJson} from '$src/types';
 import type {RentBasis} from './types';
+import type {RootState} from '$src/root/types';
 
-const getContentRentRates = (rentBasis: Object) => {
-  const items = get(rentBasis, 'rent_rates', []);
-
-  return items.map((item) => {
+/**
+ * Get basis of rent rent rates
+ * @param {Object} rentBasis
+ * @returns {Object[]} 
+ */
+const getContentRentRates = (rentBasis: Object): Array<Object> => {
+  return get(rentBasis, 'rent_rates', []).map((item) => {
     return {
-      id: item.id || undefined,
+      id: item.id,
       build_permission_type: get(item, 'build_permission_type.id') || item.build_permission_type,
       amount: item.amount,
       area_unit: item.area_unit,
@@ -26,27 +29,28 @@ const getContentRentRates = (rentBasis: Object) => {
 };
 
 /**
-  * Get basis of rent property identifiers
-  * @param rentBasis
-  * @returns {Object[]}
-  */
-export const getContentPropertyIdentifiers = (rentBasis: Object) => {
-  const items = get(rentBasis, 'property_identifiers', []);
-
-  return items.map((item) => {
+ * Get basis of rent property identifiers
+ * @param {Object} rentBasis
+ * @returns {Object[]} 
+ */
+export const getContentPropertyIdentifiers = (rentBasis: Object): Array<Object> => {
+  return get(rentBasis, 'property_identifiers', []).map((item) => {
     return {
-      id: item.id || undefined,
+      id: item.id,
       identifier: item.identifier,
     };
   });
 };
 
-const getContentDecisions = (rentBasis: Object) => {
-  const items = get(rentBasis, 'decisions', []);
-
-  return items.map((item) => {
+/**
+ * Get basis of rent decisions
+ * @param {Object} rentBasis
+ * @returns {Object[]} 
+ */
+const getContentDecisions = (rentBasis: Object): Array<Object> => {
+  return get(rentBasis, 'decisions', []).map((item) => {
     return {
-      id: item.id || undefined,
+      id: item.id,
       reference_number: item.reference_number,
       decision_maker: get(item, 'decision_maker.id'),
       decision_date: item.decision_date,
@@ -55,9 +59,14 @@ const getContentDecisions = (rentBasis: Object) => {
   });
 };
 
-export const getContentRentBasis = (content: Object) => {
+/**
+ * Get basis of rent content
+ * @param {Object} rentBasis
+ * @returns {Object} 
+ */
+export const getContentRentBasis = (content: Object): Object => {
   return {
-    id: content.id || undefined,
+    id: content.id,
     plot_type: get(content, 'plot_type.id') || content.plot_type,
     start_date: content.start_date,
     end_date: content.end_date,
@@ -73,10 +82,13 @@ export const getContentRentBasis = (content: Object) => {
   };
 };
 
-const getContentCopiedRentRates = (rentBasis: Object) => {
-  const items = get(rentBasis, 'rent_rates', []);
-
-  return items.map((item) => {
+/**
+ * Get copy of basis of rent rent rates
+ * @param {Object} rentBasis
+ * @returns {Object[]}
+ */
+const getContentCopiedRentRates = (rentBasis: Object): Array<Object> => {
+  return get(rentBasis, 'rent_rates', []).map((item) => {
     return {
       build_permission_type: get(item, 'build_permission_type.id') || item.build_permission_type,
       amount: item.amount,
@@ -85,20 +97,26 @@ const getContentCopiedRentRates = (rentBasis: Object) => {
   });
 };
 
-const getContentCopiedPropertyIdentifiers = (rentBasis: Object) => {
-  const items = get(rentBasis, 'property_identifiers', []);
-
-  return items.map((item) => {
+/**
+ * Get copy of basis of rent property identifiers
+ * @param {Object} rentBasis
+ * @returns {Object[]}
+ */
+const getCopyOfPropertyIdentifiers = (rentBasis: Object): Array<Object> => {
+  return get(rentBasis, 'property_identifiers', []).map((item) => {
     return {
       identifier: item.identifier,
     };
   });
 };
 
-const getContentCopiedDecisions = (rentBasis: Object) => {
-  const items = get(rentBasis, 'decisions', []);
-
-  return items.map((item) => {
+/**
+ * Get copy of basis of rent decisions
+ * @param {Object} rentBasis
+ * @returns {Object[]}
+ */
+const getCopyOfDecisions = (rentBasis: Object): Array<Object> => {
+  return get(rentBasis, 'decisions', []).map((item) => {
     return {
       reference_number: item.reference_number,
       decision_maker: get(item, 'decision_maker.id'),
@@ -108,36 +126,51 @@ const getContentCopiedDecisions = (rentBasis: Object) => {
   });
 };
 
-export const getContentCopiedRentBasis = (content: Object) => {
+/**
+ * Get copy of basis of rent
+ * @param {Object} rentBasis
+ * @returns {Object}
+ */
+export const getCopyOfRentBasis = (rentBasis: Object): Object => {
   return {
-    plot_type: get(content, 'plot_type.id') || content.plot_type,
-    start_date: content.start_date,
-    end_date: content.end_date,
-    detailed_plan_identifier: content.detailed_plan_identifier,
-    management: content.management,
-    financing: content.financing,
-    lease_rights_end_date: content.lease_rights_end_date,
-    index: content.index,
-    note: content.note,
-    rent_rates: getContentCopiedRentRates(content),
-    property_identifiers: getContentCopiedPropertyIdentifiers(content),
-    decisions: getContentCopiedDecisions(content),
+    plot_type: get(rentBasis, 'plot_type.id') || rentBasis.plot_type,
+    start_date: rentBasis.start_date,
+    end_date: rentBasis.end_date,
+    detailed_plan_identifier: rentBasis.detailed_plan_identifier,
+    management: rentBasis.management,
+    financing: rentBasis.financing,
+    lease_rights_end_date: rentBasis.lease_rights_end_date,
+    index: rentBasis.index,
+    note: rentBasis.note,
+    rent_rates: getContentCopiedRentRates(rentBasis),
+    property_identifiers: getCopyOfPropertyIdentifiers(rentBasis),
+    decisions: getCopyOfDecisions(rentBasis),
   };
 };
 
-const formatPropertyIdentifiersForDb = (rentBasis: Object) => {
+/**
+ * Get basis of rent property identifiers payload
+ * @param {Object} rentBasis
+ * @returns {Object[]}
+ */
+const getPayloadPropertyIdentifiers = (rentBasis: Object): Array<Object> => {
   return get(rentBasis, 'property_identifiers', []).map((item) => {
     return {
-      id: item.id || undefined,
+      id: item.id,
       identifier: item.identifier,
     };
   });
 };
 
-const formatDecisionsForDb = (rentBasis: Object) => {
+/**
+ * Get basis of rent decisions payload
+ * @param {Object} rentBasis
+ * @returns {Object[]}
+ */
+const getPayloadDecisions = (rentBasis: Object): Array<Object> => {
   return get(rentBasis, 'decisions', []).map((item) => {
     return {
-      id: item.id || undefined,
+      id: item.id,
       reference_number: item.reference_number,
       decision_maker: item.decision_maker,
       decision_date: item.decision_date,
@@ -146,10 +179,15 @@ const formatDecisionsForDb = (rentBasis: Object) => {
   });
 };
 
-const formatRentRatesForDb = (rentBasis: Object) => {
+/**
+ * Get rent rates payload
+ * @param {Object} rentBasis
+ * @returns {Object[]}
+ */
+const getPayloadRentRates = (rentBasis: Object): Array<Object> => {
   return get(rentBasis, 'rent_rates', []).map((item) => {
     return {
-      id: item.id || undefined,
+      id: item.id,
       build_permission_type: item.build_permission_type,
       amount: convertStrToDecimalNumber(item.amount),
       area_unit: item.area_unit,
@@ -157,25 +195,34 @@ const formatRentRatesForDb = (rentBasis: Object) => {
   });
 };
 
-export const formatRentBasisForDb = (rentBasis: Object) => {
+/**
+ * Get basis of rent payload
+ * @param {Object} rentBasis
+ * @returns {Object}
+ */
+export const getPayloadRentBasis = (rentBasis: Object): Object => {
   return {
-    id: rentBasis.id || undefined,
+    id: rentBasis.id,
     plot_type: rentBasis.plot_type,
     start_date: rentBasis.start_date,
     end_date: rentBasis.end_date,
-    property_identifiers: formatPropertyIdentifiersForDb(rentBasis),
+    property_identifiers: getPayloadPropertyIdentifiers(rentBasis),
     detailed_plan_identifier: rentBasis.detailed_plan_identifier,
     management: rentBasis.management,
     financing: rentBasis.financing,
     lease_rights_end_date: rentBasis.lease_rights_end_date,
     index: rentBasis.index,
     note: rentBasis.note,
-    decisions: formatDecisionsForDb(rentBasis),
-    rent_rates: formatRentRatesForDb(rentBasis),
+    decisions: getPayloadDecisions(rentBasis),
+    rent_rates: getPayloadRentRates(rentBasis),
   };
 };
 
-// Functions to get infill development compensation lease areas GeoJSON
+/**
+ * Get basis of rent geojson
+ * @param {Object} rentBasis
+ * @returns {Object}
+ */
 export const getContentRentBasisGeoJson = (rentBasis: RentBasis): LeafletGeoJson => {
   const features = [];
   const geometry = rentBasis.geometry;
@@ -209,7 +256,7 @@ export const getContentRentBasisGeoJson = (rentBasis: RentBasis): LeafletGeoJson
 * @param {Object} query
 * @returns {Object}
 */
-export const mapRentBasisSearchFilters = (query: Object) => {
+export const mapRentBasisSearchFilters = (query: Object): Object => {
   const searchQuery = {...query};
 
   if(searchQuery.sort_key) {
@@ -238,12 +285,20 @@ export const mapRentBasisSearchFilters = (query: Object) => {
   return searchQuery;
 };
 
-export const isRentBasisFormDirty = (state: any) => {
+/**
+ * Test is basis of rent form dirty
+ * @param {Object} state
+ * @returns {boolean}
+ */
+export const isRentBasisFormDirty = (state: RootState): boolean => {
   const isEditMode = getIsEditMode(state);
 
   return isEditMode && isDirty(FormNames.RENT_BASIS)(state);
 };
 
+/**
+ * Clear all unsaved changes from local storage
+ */
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.RENT_BASIS);
   removeSessionStorageItem('rentBasisId');

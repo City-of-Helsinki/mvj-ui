@@ -4,10 +4,10 @@ import {convertStrToDecimalNumber} from '$util/helpers';
 
 /**
  * Get credit invoice set payload for API
- * @param invoiceSet
- * @returns {object}
+ * @param {Object} invoiceSet
+ * @returns {Object}
  */
-export const getCreditInvoiceSetPayload = (invoiceSet: Object) => {
+export const getCreditInvoiceSetPayload = (invoiceSet: Object): Object => {
   if(!invoiceSet) return undefined;
 
   const payload = {};

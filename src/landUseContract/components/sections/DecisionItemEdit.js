@@ -20,9 +20,9 @@ import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
-import {getFieldAttributes, getFieldOptions, getLabelOfOption} from '$util/helpers';
+import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
+import {getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldRequired} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
@@ -72,25 +72,25 @@ const renderDecisionConditions = ({
                   <Column large={2}>
                     <FormTextTitle
                       title='Ehtotyyppi'
-                      required={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.type.required')}
+                      required={isFieldRequired(attributes, 'decisions.child.children.conditions.child.children.type')}
                     />
                   </Column>
                   <Column large={2}>
                     <FormTextTitle
                       title='Valvontapvm'
-                      required={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervision_date.required')}
+                      required={isFieldRequired(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
                     />
                   </Column>
                   <Column large={2}>
                     <FormTextTitle
                       title='Valvottu pvm'
-                      required={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervised_date.required')}
+                      required={isFieldRequired(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
                     />
                   </Column>
                   <Column large={6}>
                     <FormTextTitle
                       title='Huomautus'
-                      required={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.description.required')}
+                      required={isFieldRequired(attributes, 'decisions.child.children.conditions.child.children.description')}
                     />
                   </Column>
                 </Row>

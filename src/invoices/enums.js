@@ -1,7 +1,8 @@
 // @flow
 /**
  * Invoice state enumerable.
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceState = {
   OPEN: 'open',
@@ -11,7 +12,8 @@ export const InvoiceState = {
 
 /**
  * Invoice type enumerable.
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceType = {
   CHARGE: 'charge',
@@ -20,7 +22,8 @@ export const InvoiceType = {
 
 /** 
  * Receivable type enumerable
- * @type {{}}
+ * @readonly
+ * @enum {number}
  */
 export const ReceivableTypes = {
   INTEREST: 2,
@@ -30,8 +33,8 @@ export const ReceivableTypes = {
 
 /**
  * Invoice field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceFieldPaths = {
   ADJUSTED_DUE_DATE: 'adjusted_due_date',
@@ -65,8 +68,8 @@ export const InvoiceFieldPaths = {
 
 /**
  * Invoice field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceFieldTitles = {
   ADJUSTED_DUE_DATE: 'Muutettu eräpäivä',
@@ -100,8 +103,8 @@ export const InvoiceFieldTitles = {
 
 /**
  * Invoice credit invoices field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceCreditInvoicesFieldPaths = {
   CREDIT_INVOICES: 'credit_invoices',
@@ -112,8 +115,8 @@ export const InvoiceCreditInvoicesFieldPaths = {
 
 /**
  * Invoice credit invoices field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceCreditInvoicesFieldTitles = {
   CREDIT_INVOICES: 'Hyvityslaskut',
@@ -124,8 +127,8 @@ export const InvoiceCreditInvoicesFieldTitles = {
 
 /**
  * Invoice interest invoices field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceInterestInvoicesFieldPaths = {
   INTEREST_INVOICES: 'interest_invoices',
@@ -136,8 +139,8 @@ export const InvoiceInterestInvoicesFieldPaths = {
 
 /**
  * Invoice interest invoices field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceInterestInvoicesFieldTitles = {
   INTEREST_INVOICES: 'Korkolaskut',
@@ -148,8 +151,8 @@ export const InvoiceInterestInvoicesFieldTitles = {
 
 /**
  * Invoice payments field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoicePaymentsFieldPaths = {
   PAYMENTS: 'payments',
@@ -159,8 +162,8 @@ export const InvoicePaymentsFieldPaths = {
 
 /**
  * Invoice payments field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoicePaymentsFieldTitles = {
   PAYMENTS: 'Maksut',
@@ -170,8 +173,8 @@ export const InvoicePaymentsFieldTitles = {
 
 /**
  * Invoice rows field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceRowsFieldPaths = {
   ROWS: 'rows',
@@ -185,8 +188,8 @@ export const InvoiceRowsFieldPaths = {
 
 /**
  * Invoice rows field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceRowsFieldTitles = {
   ROWS: 'Erittely',

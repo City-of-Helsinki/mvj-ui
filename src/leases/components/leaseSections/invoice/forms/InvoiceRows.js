@@ -12,7 +12,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import SubTitle from '$components/content/SubTitle';
 import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getContentTenantItem} from '$src/leases/helpers';
+import {getContentTenant} from '$src/leases/helpers';
 import {getUiDataInvoiceKey} from '$src/uiData/helpers';
 import {formatDate, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 
@@ -43,7 +43,7 @@ const InvoiceRows = ({
         {!!rows.length &&
           <BoxItemContainer>
             {rows.map((row) => {
-              const contact = get(getContentTenantItem(row.tenantFull), 'contact');
+              const contact = get(getContentTenant(row.tenantFull), 'contact');
 
               return (
                 <BoxItem key={row.id} className='no-border-on-first-child no-border-on-last-child'>

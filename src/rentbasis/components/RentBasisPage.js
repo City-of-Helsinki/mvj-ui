@@ -49,8 +49,8 @@ import {FormNames} from '$src/enums';
 import {RentBasisFieldPaths, RentBasisFieldTitles} from '$src/rentbasis/enums';
 import {
   clearUnsavedChanges,
-  formatRentBasisForDb,
-  getContentCopiedRentBasis,
+  getPayloadRentBasis,
+  getCopyOfRentBasis,
   getContentRentBasis,
 } from '$src/rentbasis/helpers';
 import {getUiDataRentBasisKey} from '$src/uiData/helpers';
@@ -274,7 +274,7 @@ class RentBasisPage extends Component<Props, State> {
       location: {search},
       rentBasisData,
     } = this.props;
-    const rentBasis = getContentCopiedRentBasis(rentBasisData);
+    const rentBasis = getCopyOfRentBasis(rentBasisData);
 
     initializeRentBasis(rentBasis);
 
@@ -289,7 +289,7 @@ class RentBasisPage extends Component<Props, State> {
 
     receiveIsSaveClicked(true);
     if(isFormValid) {
-      editRentBasis(formatRentBasisForDb(editedRentBasis));
+      editRentBasis(getPayloadRentBasis(editedRentBasis));
     }
   }
 

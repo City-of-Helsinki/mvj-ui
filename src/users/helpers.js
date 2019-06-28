@@ -1,14 +1,14 @@
 // @flow
-import {sortByLabelAsc} from '$src/util/helpers';
+import {sortStringByKeyAsc} from '$src/util/helpers';
 
 import type {UserList} from './types';
 
 /**
-* Get user full name as string
-* @param {Object} user
-* @returns {string}
-*/
-export const getUserFullName = (user: Object) => {
+ * Get user full name as string
+ * @param {Object} user
+ * @returns {string}
+ */
+export const getUserFullName = (user: Object): string=> {
   if(!user) return '';
 
   return user.last_name || user.first_name
@@ -17,11 +17,11 @@ export const getUserFullName = (user: Object) => {
 };
 
 /**
-* Get content user
-* @param {Object} user
-* @returns {Object}
-*/
-export const getContentUser = (user: ?Object) => {
+ * Get content user
+ * @param {Object} user
+ * @returns {Object}
+ */
+export const getContentUser = (user: ?Object): ?Object => {
   if(!user) return null;
 
   return {
@@ -34,15 +34,15 @@ export const getContentUser = (user: ?Object) => {
 };
 
 /**
-* Get user options to show on dropdowns
-* @param {Object[]} users
-* @returns {Object[]}
-*/
+ * Get user options to show on dropdowns
+ * @param {Object[]} users
+ * @returns {Object[]}
+ */
 export const getUserOptions = (users: UserList): Array<Object> => {
   return users.map((user) => {
     return {
       value: user.id ? user.id.toString() : null,
       label: getUserFullName(user),
     };
-  }).sort(sortByLabelAsc);
+  }).sort((a, b) => sortStringByKeyAsc(a, b, 'label'));
 };

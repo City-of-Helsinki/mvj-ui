@@ -1,8 +1,10 @@
 // @flow
 
-/*
-* Penalty interest field paths enumerable
-*/
+/** 
+ * Penalty interest field paths enumerable
+ * @readonly 
+ * @enum {string}
+ */
 export const PenaltyInterestFieldPaths = {
   COLLECTION_CHARGE: 'collection_charge',
   INVOICE: 'invoice',
@@ -11,9 +13,11 @@ export const PenaltyInterestFieldPaths = {
   TOTAL_INTEREST_AMOUNT: 'total_interest_amount',
 };
 
-/*
-* Penalty interest field titles enumerable
-*/
+/**
+ * Penalty interest field titles enumerable
+ * @readonly 
+ * @enum {string}
+ */
 export const PenaltyInterestFieldTitles = {
   COLLECTION_CHARGE: 'Perimispalkkio',
   INVOICE: 'Perittävä lasku',

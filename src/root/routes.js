@@ -27,6 +27,10 @@ import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
 import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage';
 import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegisterSearchPage';
 
+/** 
+ * Routes enumerate
+ * @enum {string}
+ */
 export const Routes = {
   AREA_NOTES: 'area_notes',
   BASIS_OF_RENT_CALCULATOR: 'basis_of_rent_calculator',
@@ -48,6 +52,11 @@ export const Routes = {
   TRADE_REGISTER: 'trade_register',
 };
 
+/** 
+ * Get route by id
+ * @param {string} string
+ * @returns {string}
+ */
 export const getRouteById = (id: string): string => {
   const routes = {
     [Routes.AREA_NOTES]: '/muistettavatehdot',

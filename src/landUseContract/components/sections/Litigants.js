@@ -7,7 +7,8 @@ import FormText from '$components/form/FormText';
 import Litigant from './Litigant';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
-import {getContentLitigants, isLitigantArchived} from '$src/landUseContract/helpers';
+import {isArchived} from '$util/helpers';
+import {getContentLitigants} from '$src/landUseContract/helpers';
 import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
 import {withContactAttributes} from '$components/attributes/ContactAttributes';
 
@@ -38,8 +39,8 @@ class Litigants extends PureComponent<Props, State> {
       const litigants = getContentLitigants(props.currentLandUseContract);
 
       return {
-        activeLitigants: litigants.filter((litigant) => !isLitigantArchived(litigant.litigant)),
-        archivedLitigants: litigants.filter((litigant) => isLitigantArchived(litigant.litigant)),
+        activeLitigants: litigants.filter((litigant) => !isArchived(litigant.litigant)),
+        archivedLitigants: litigants.filter((litigant) => isArchived(litigant.litigant)),
         currentLandUseContract: props.currentLandUseContract,
         litigants: litigants,
       };

@@ -4,6 +4,9 @@ import get from 'lodash/get';
 
 /**
  * Get day and month object
+ * @param {number} day
+ * @param {number} month
+ * @returns {Object}
  */
 export const getDayMonth = (day: number, month: number) => ({day, month});
 
@@ -57,7 +60,7 @@ export const sortByStartAndEndDateDesc = (a: Object, b: Object, startDatePath?: 
 
 
 /**
- * Test is date ranges collapsing
+ * Test are date ranges collapsing
  * @param {Object} a
  * @param {Object} b
  * @returns {boolean}

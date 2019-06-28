@@ -2,8 +2,8 @@
 
 /**
  * Users permissions enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const UsersPermissions = {
   ADD_BASISOFRENTDECISION: 'add_basisofrentdecision',

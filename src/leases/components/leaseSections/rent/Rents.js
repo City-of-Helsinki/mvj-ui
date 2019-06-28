@@ -3,7 +3,6 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
 import BasisOfRents from './BasisOfRents';
@@ -24,8 +23,8 @@ import {
   LeaseRentsFieldTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getContentRentsFormData, getRentWarnings} from '$src/leases/helpers';
-import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
+import {getContentRents, getRentWarnings} from '$src/leases/helpers';
+import {hasPermissions, isArchived,  isFieldAllowedToRead} from '$util/helpers';
 import {getUiDataLeaseKey, getUiDataRentCalculatorKey} from '$src/uiData/helpers';
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -46,10 +45,11 @@ const Rents = ({
   leaseAttributes,
   usersPermissions,
 }: Props) => {
-  const rentsData = getContentRentsFormData(currentLease);
-  const rents = get(rentsData, 'rents', []);
-  const rentsArchived = get(rentsData, 'rentsArchived', []);
+  const rentsAll = getContentRents(currentLease);
+  const rents = rentsAll.filter((rent) => !isArchived(rent));
+  const rentsArchived = rentsAll.filter((rent) => isArchived(rent));
   const warnings = getRentWarnings(rents);
+
   return (
     <Fragment>
       <Title uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}>

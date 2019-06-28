@@ -15,8 +15,7 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {FormNames, ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
-import {formatDate, formatDateRange} from '$util/helpers';
+import {formatDate, formatDateRange, isActive, isArchived} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 
@@ -44,8 +43,8 @@ const LitigantBillingPerson = ({
   };
 
   const contact = billingPerson.contact;
-  const active = isLitigantActive(billingPerson);
-  const archived = isLitigantArchived(billingPerson);
+  const active = isActive(billingPerson);
+  const archived = isArchived(billingPerson);
   const collapseDefault = collapseState !== undefined ? collapseState : active;
 
   return (

@@ -1,82 +1,16 @@
 // @flow
-import proj4 from 'proj4';
 import get from 'lodash/get';
 
 import {getCoordinatesOfGeometry} from '$util/map';
 
 import type {AreaNote} from './types';
 
-proj4.defs('EPSG:3879', '+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
-proj4.defs('WGS84', '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees');
-
-const convertCoordinatesToWSG84 = (coordinates: Array<number>): Array<number> =>
-  coordinates.map((coordinate) =>
-    proj4('EPSG:3879', 'WGS84', coordinate)
-  );
-
-
-export const convertFeatureGeometryToWSG84 = (feature: Object) => {
-  let coordinates = [];
-  switch (feature.type) {
-    case 'Polygon':
-      coordinates = get(feature, 'coordinates[0]', []);
-      break;
-    case 'LineString':
-      coordinates = get(feature, 'coordinates', []);
-      break;
-    default:
-  }
-
-  return {
-    type: feature.type,
-    coordinates: [convertCoordinatesToWSG84(coordinates)],
-  };
-};
-
-export const convertFeaturesToAreaNoteList = (features: Array<Object>): Array<Object> => {
-  return features.map((feature) => {
-    return {
-      type: feature.type,
-      geometry: convertFeatureGeometryToWSG84(feature.geometry),
-      properties: feature.properties,
-    };
-  });
-};
-
-const convertCoordinatesTo3879 = (coordinates: Array<number>): Array<number> =>
-  coordinates.map((coordinate) =>
-    proj4('WGS84', 'EPSG:3879', coordinate)
-  );
-
-const convertFeatureGeometryTo3879 = (feature: Object) => {
-  let coordinates = [];
-  switch (feature.type) {
-    case 'Polygon':
-      coordinates = get(feature, 'coordinates[0]', []);
-      break;
-    case 'LineString':
-      coordinates = get(feature, 'coordinates', []);
-      break;
-    default:
-  }
-
-  return {
-    type: feature.type,
-    coordinates: convertCoordinatesTo3879(coordinates),
-  };
-};
-
-export const convertAreaNoteListToFeatures = (features: Array<Object>): Array<Object> => {
-  return features.map((feature) => {
-    return {
-      type: feature.type,
-      geometry: convertFeatureGeometryTo3879(feature.geometry),
-      properties: feature.properties,
-    };
-  });
-};
-
-export const convertAreaNoteListToGeoJson = (areaNotes: Array<Object>) => {
+/**
+ * Convert area note list to geojson
+ * @param {Object[]} areaNotes
+ * @returns {Object}
+ */
+export const convertAreaNoteListToGeoJson = (areaNotes: Array<Object>): Object => {
   const features: Array<Object> = areaNotes.map((areaNote) => ({
     type: 'Feature',
     geometry: areaNote.geometry,
@@ -94,7 +28,12 @@ export const convertAreaNoteListToGeoJson = (areaNotes: Array<Object>) => {
   };
 };
 
-export const convertFeatureToFeatureCollection = (feature: Object) => {
+/**
+ * Convert single feature to feature collection
+ * @param {Object} feature
+ * @returns {Object}
+ */
+export const convertFeatureToFeatureCollection = (feature: Object): Object => {
   const polygons = get(feature, 'geometry.coordinates', []);
 
   return {
@@ -110,7 +49,12 @@ export const convertFeatureToFeatureCollection = (feature: Object) => {
   };
 };
 
-export const convertFeatureCollectionToFeature = (polygons: Array<Object>) => {
+/**
+ * Convert feature collection to a single feature
+ * @param {Object[]} polygons
+ * @returns {Object}
+ */
+export const convertFeatureCollectionToFeature = (polygons: Array<Object>): Object => {
   const coordinates: Array<Object> = polygons.map((polygon: Object) => get(polygon.geometry, 'coordinates'));
 
   return {
@@ -122,16 +66,22 @@ export const convertFeatureCollectionToFeature = (polygons: Array<Object>) => {
 };
 
 /**
-* Find area note by id
-* @param {Object[]} araNotes
-* @param {number} id
-* @returns {Object}
-*/
-export const getAreaNoteById =(areaNotes: Array<AreaNote>, id: ?number) => id ? areaNotes.find((areaNote) => areaNote.id === id) : null;
+ * Find area note by id
+ * @param {Object[]} araNotes
+ * @param {number} id
+ * @returns {Object}
+ */
+export const getAreaNoteById =(areaNotes: Array<AreaNote>, id: ?number) => 
+  id 
+    ? areaNotes.find((areaNote) => areaNote.id === id) 
+    : null;
 
 /**
-* Find area note by id
-* @param {Object} araNotes
-* @returns {Array[]}
-*/
-export const getAreaNoteCoordinates = (areaNote: ?AreaNote) => areaNote ? getCoordinatesOfGeometry(areaNote.geometry) : [];
+ * Get coordinates of area note
+ * @param {Object} areaNote
+ * @returns {Object[]}
+ */
+export const getAreaNoteCoordinates = (areaNote: ?AreaNote): Array<Object> => 
+  areaNote 
+    ? getCoordinatesOfGeometry(areaNote.geometry) 
+    : [];

@@ -2,8 +2,8 @@
 
 /**
  * Lease create charge field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const LeaseCreateChargeFieldPaths = {
   BILLING_PERIOD_END_DATE: 'billing_period_end_date',
@@ -15,8 +15,8 @@ export const LeaseCreateChargeFieldPaths = {
 
 /**
  * Lease create charge rows field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const LeaseCreateChargeRowsFieldPaths = {
   ROWS: 'rows',

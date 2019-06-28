@@ -2,8 +2,8 @@
 
 /**
  * Collection court decision field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const CollectionCourtDecisionFieldPaths = {
   COLLECTION_COURT_DECISIONS: 'collection_court_decisions',
@@ -16,8 +16,8 @@ export const CollectionCourtDecisionFieldPaths = {
 
 /**
  * Collection collection court decision field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const CollectionCourtDecisionFieldTitles = {
   COLLECTION_COURT_DECISIONS: 'Käräjäoikeuden päätökset',

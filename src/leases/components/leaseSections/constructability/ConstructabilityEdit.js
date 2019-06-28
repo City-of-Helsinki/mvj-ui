@@ -13,7 +13,7 @@ import Title from '$components/content/Title';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames}from '$src/enums';
 import {LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
-import {getContentConstructability} from '$src/leases/helpers';
+import {getContentConstructabilityAreas} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
@@ -116,7 +116,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.savedAreas = getContentConstructability(props.currentLease);
+      newState.savedAreas = getContentConstructabilityAreas(props.currentLease);
     }
 
     return newState;

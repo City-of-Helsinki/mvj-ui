@@ -11,7 +11,7 @@ import TextAreaInput from '$components/inputs/TextAreaInput';
 import {fetchUsers} from '$src/users/requestsAsync';
 import {ButtonColors} from '$components/enums';
 import {getUserOptions} from '$src/users/helpers';
-import {sortByLabelAsc} from '$util/helpers';
+import {sortStringByKeyAsc} from '$util/helpers';
 
 type FilterProps = {
   available: string,
@@ -73,7 +73,7 @@ class SendEmailModal extends PureComponent<Props, State> {
     // Both selected and available arrays on DualListBox use options for filtering. So add selectedUsers to search results and remove duplicates
     const uniqueUsers = [...getUserOptions(users), ...selectedUsers]
       .filter((a, index, array) => array.findIndex((b) => a.value === b.value) === index)
-      .sort(sortByLabelAsc);
+      .sort((a, b) => sortStringByKeyAsc(a, b, 'label'));
 
     this.setState({userOptions: uniqueUsers});
   };

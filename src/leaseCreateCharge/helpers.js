@@ -5,10 +5,10 @@ import {convertStrToDecimalNumber} from '$util/helpers';
 
 /**
  * Get lease create charge rows payload data for API
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object[]}
  */
-const getPayloadLeaseCreateChargeRows = (invoice: Object) => {
+const getPayloadLeaseCreateChargeRows = (invoice: Object): Array<Object> => {
   return get(invoice, 'rows', []).map((row) => ({
     receivable_type: row.receivable_type,
     amount: convertStrToDecimalNumber(row.amount),
@@ -17,10 +17,10 @@ const getPayloadLeaseCreateChargeRows = (invoice: Object) => {
 
 /**
  * Get lease create charge endpoint payload for API
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object}
  */
-export const getPayloadLeaseCreateCharge = (invoice: Object) => {
+export const getPayloadLeaseCreateCharge = (invoice: Object): Object => {
   return {
     lease: invoice.lease,
     type: invoice.type,

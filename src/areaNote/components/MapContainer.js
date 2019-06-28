@@ -11,7 +11,7 @@ import {
 } from 'react-leaflet';
 const {BaseLayer, Overlay} = LayersControl;
 import FullscreenControl from 'react-leaflet-fullscreen';
-import 'proj4';
+import proj4 from 'proj4';
 import 'proj4leaflet';
 
 import GeoSearch from '$components/map/GeoSearch';
@@ -27,6 +27,8 @@ const CRS = new L.Proj.CRS(
     resolutions: [256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125],
     bounds,
   });
+proj4.defs('EPSG:3879', '+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+proj4.defs('WGS84', '+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees');
 
 type Props = {
   bounds?: Object,

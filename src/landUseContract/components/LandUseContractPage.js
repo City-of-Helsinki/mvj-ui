@@ -44,7 +44,7 @@ import {
 } from '$src/landUseContract/actions';
 import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {
-  addLitigantsDataToPayload,
+  addLitigantsFormValuesToPayload,
   clearUnsavedChanges,
   getContentLandUseContractIdentifier,
   getContentBasicInformation,
@@ -53,9 +53,8 @@ import {
   getContentDecisions,
   getContentInvoices,
   getContentLitigants,
-  isLitigantArchived,
 } from '$src/landUseContract/helpers';
-import {getSearchQuery, getUrlParams, scrollToTopPage, setPageTitle} from '$util/helpers';
+import {getSearchQuery, getUrlParams, isArchived, scrollToTopPage, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   getCurrentLandUseContract,
@@ -440,8 +439,8 @@ class LandUseContractPage extends Component<Props, State> {
 
     initialize(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION, getContentBasicInformation(landUseContract));
     initialize(FormNames.LAND_USE_CONTRACT_LITIGANTS, {
-      activeLitigants: litigants.filter((litigant) => !isLitigantArchived(litigant.litigant)),
-      archivedLitigants: litigants.filter((litigant) => isLitigantArchived(litigant.litigant)),
+      activeLitigants: litigants.filter((litigant) => !isArchived(litigant.litigant)),
+      archivedLitigants: litigants.filter((litigant) => isArchived(litigant.litigant)),
     });
     initialize(FormNames.LAND_USE_CONTRACT_DECISIONS, {decisions: getContentDecisions(landUseContract)});
     initialize(FormNames.LAND_USE_CONTRACT_CONTRACTS, {contracts: getContentContracts(landUseContract)});
@@ -504,7 +503,7 @@ class LandUseContractPage extends Component<Props, State> {
       }
 
       if(isLitigantsFormDirty) {
-        payload = addLitigantsDataToPayload(payload, litigantsFormValues);
+        payload = addLitigantsFormValuesToPayload(payload, litigantsFormValues);
       }
 
       payload.identifier = currentLandUseContract.identifier;

@@ -13,8 +13,12 @@ import {receiveCollapseStates} from '$src/leases/actions';
 import {LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths} from '$src/leases/enums';
 import {FormNames, ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
-import {formatDateRange, isFieldAllowedToRead} from '$util/helpers';
+import {
+  formatDateRange, 
+  isActive,
+  isArchived,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -45,8 +49,8 @@ const Tenant = ({
   };
 
   const contact = get(tenant, 'tenant.contact');
-  const active = isTenantActive(tenant.tenant);
-  const archived = isTenantArchived(tenant.tenant);
+  const active = isActive(tenant.tenant);
+  const archived = isArchived(tenant.tenant);
   const billingPersons = tenant.billing_persons;
   const contactPersons = tenant.contact_persons;
 

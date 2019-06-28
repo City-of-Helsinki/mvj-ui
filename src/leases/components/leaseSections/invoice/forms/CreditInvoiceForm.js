@@ -29,7 +29,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   isFieldAllowedToEdit,
-  sortByLabelAsc,
+  sortStringByKeyAsc,
 } from '$util/helpers';
 import {getAttributes as getInvoiceAttributes, getIsCreditClicked} from '$src/invoices/selectors';
 
@@ -96,7 +96,7 @@ const CreditInvoiceForm = ({
       addInvoiceReceivableTypes(invoiceToCredit);
     }
 
-    return addEmptyOption(receivableTypes.sort(sortByLabelAsc));
+    return addEmptyOption(receivableTypes.sort((a, b) => sortStringByKeyAsc(a, b, 'label')));
   };
 
   const receivableTypeOptions = getReceivableTypeOptions();

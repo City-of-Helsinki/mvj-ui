@@ -17,8 +17,7 @@ import SearchLabel from '$components/search/SearchLabel';
 import SearchLabelColumn from '$components/search/SearchLabelColumn';
 import SearchInputColumn from '$components/search/SearchInputColumn';
 import SearchRow from '$components/search/SearchRow';
-import {FormNames} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames} from '$src/enums';
 import {InfillDevelopmentCompensationLeaseDecisionsFieldPaths} from '$src/infillDevelopment/enums';
 import {getFieldOptions, getUrlParams} from '$util/helpers';
 import {getAttributes as getInfillDevelopmentAttributes} from '$src/infillDevelopment/selectors';
@@ -249,7 +248,6 @@ class Search extends PureComponent<Props, State> {
 const formName = FormNames.INFILL_DEVELOPMENT_SEARCH;
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     state => {

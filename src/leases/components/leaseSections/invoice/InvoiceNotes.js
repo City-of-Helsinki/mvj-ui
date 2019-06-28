@@ -18,8 +18,8 @@ import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import {patchLeaseInvoiceNotes} from '$src/leases/actions';
-import {ConfirmationModalTexts, FormNames, Methods} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames, Methods} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/enums';
 import {
   formatDate,

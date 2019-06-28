@@ -1,16 +1,21 @@
 // @flow
-/*
-* Leasehold transfer field paths enumerable
-*/
+
+/** 
+ * Leasehold transfer field paths enumerable
+ * @readonly
+ * @enum {string}
+ */
 export const LeaseholdTransferPartyTypes = {
   ACQUIRER: 'acquirer',
   CONVEYOR: 'conveyor',
   LESSOR: 'lessor',
 };
 
-/*
-* Leasehold transfer field paths enumerable
-*/
+/**
+ * Leasehold transfer field paths enumerable
+ * @readonly
+ * @enum {string}
+ */
 export const LeaseholdTransferFieldPaths = {
   ACQUIRERS: 'acquirers',
   CONVEYORS: 'conveyors',

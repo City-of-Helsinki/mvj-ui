@@ -19,8 +19,8 @@ import RemoveButton from '$components/form/RemoveButton';
 import SendupButton from '$components/button/SendupButton';
 import SubTitle from '$components/content/SubTitle';
 import {exportInvoiceToLaskeAndUpdateList} from '$src/invoices/actions';
-import {ConfirmationModalTexts, FormNames} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {
   InvoiceCreditInvoicesFieldPaths,
   InvoiceCreditInvoicesFieldTitles,

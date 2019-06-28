@@ -34,13 +34,12 @@ import {
 import {getFieldAttributes} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
-import type {AuditLogList} from './types';
 
-/*
-* Get auditlog action type in Finnish
-* @param {string} action
-* @returns {string}
-*/
+/** 
+ * Get auditlog action type in Finnish
+ * @param {string} action
+ * @returns {string}
+ */
 export const getAuditLogActionTypeInFinnish = (action: string) => {
   switch(action) {
     case 'create':
@@ -54,11 +53,11 @@ export const getAuditLogActionTypeInFinnish = (action: string) => {
   }
 };
 
-/*
-* Get general auditlog content label
-* @param {string} key
-* @returns {string}
-*/
+/** 
+ * Get general auditlog content label
+ * @param {string} key
+ * @returns {string}
+ */
 const getGeneralAuditLogContentLabel = (key: string) => {
   switch(key) {
     case 'contract':
@@ -100,17 +99,17 @@ const getGeneralAuditLogContentLabel = (key: string) => {
   return key;
 };
 
-/*
-* Get auditlog content label
-* @param {Object} leaseAttributes
-* @param {Object} commentAttributes
-* @param {Object} contactAttributes
-* @param {Object} invoiceAttributes
-* @param {Object} infillDevelopmentCompensationAttributes
-* @param {string} contentType
-* @param {string} key
-* @returns {string}
-*/
+/** 
+ * Get auditlog content label
+ * @param {Object} leaseAttributes
+ * @param {Object} commentAttributes
+ * @param {Object} contactAttributes
+ * @param {Object} invoiceAttributes
+ * @param {Object} infillDevelopmentCompensationAttributes
+ * @param {string} contentType
+ * @param {string} key
+ * @returns {string}
+ */
 export const getAuditLogContentLabel = (
   leaseAttributes: Attributes,
   commentAttributes: Attributes,
@@ -239,29 +238,3 @@ export const getAuditLogContentLabel = (
 
   return get(fieldAttributes, 'label') || getGeneralAuditLogContentLabel(key);
 };
-
-/*
-* Map auditlog list count from API response
-* @param {Object} list
-* @returns {number}
-*/
-export const getAuditLogCount = (auditLogList: AuditLogList) => get(auditLogList, 'count', 0);
-
-/*
-* Map auditlog list max page from API response
-* @param {Object} list
-* @param {number} size
-* @returns {number}
-*/
-export const getAuditLogMaxPage = (auditLogList: AuditLogList, size: number) => {
-  const count = getAuditLogCount(auditLogList);
-
-  return Math.ceil(count/size);
-};
-
-/*
-* Map auditlog list items from API response
-* @param {Object} list
-* @returns {Object[]}
-*/
-export const getAuditLogItems = (auditLogList: AuditLogList) => get(auditLogList, 'results', []);

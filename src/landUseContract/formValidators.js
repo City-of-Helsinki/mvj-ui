@@ -4,12 +4,23 @@ import isEmpty from 'lodash/isEmpty';
 
 import {dateGreaterOrEqual} from '$components/form/validations';
 
-const getLitigantError = (litigant: Object) => {
+/** 
+ * Get litigant errors
+ * @param {Object} litigant
+ * @return {Object} 
+ */
+const getLitigantError = (litigant: Object): ?Object => {
   const endDateError =  dateGreaterOrEqual(litigant.end_date, litigant.start_date);
+  
   return endDateError ? {end_date: endDateError} : undefined;
 };
 
-const getLitigantArrayErrors = (litigants: Array<Object>) => {
+/** 
+ * Get litigants errors
+ * @param {Object[]} litigants
+ * @return {Object} 
+ */
+const getLitigantsErrors = (litigants: Array<Object>): Array<Object> => {
   const errorArray = [];
 
   litigants.forEach((litigant, litigantIndex) => {
@@ -42,16 +53,21 @@ const getLitigantArrayErrors = (litigants: Array<Object>) => {
   return errorArray;
 };
 
-export const validateLitigantForm = (values: Object) => {
+/** 
+ * Validate litigants form
+ * @param {Object} values
+ * @return {Object} 
+ */
+export const validateLitigantForm = (values: Object): Object => {
   const errors = {};
   const {activeLitigants, archivedLitigants} = values;
 
-  const activeLitigantArrayErrors = getLitigantArrayErrors(activeLitigants);
+  const activeLitigantArrayErrors = getLitigantsErrors(activeLitigants);
   if(activeLitigantArrayErrors.length) {
     errors.activeLitigants = activeLitigantArrayErrors;
   }
 
-  const archivedLitigantArrayErrors = getLitigantArrayErrors(archivedLitigants);
+  const archivedLitigantArrayErrors = getLitigantsErrors(archivedLitigants);
   if(archivedLitigantArrayErrors.length) {
     errors.archivedLitigants = archivedLitigantArrayErrors;
   }

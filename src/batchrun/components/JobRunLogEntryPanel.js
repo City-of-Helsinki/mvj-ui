@@ -9,7 +9,6 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SortableTable from '$components/table/SortableTable';
 import TablePanel from '$components/table/TablePanel';
 import {fetchJobRunLogEntriesByRun} from '$src/batchrun/actions';
-import {TableSortOrder} from '$components/enums';
 import {JobRunLogEntryFieldPaths, JobRunLogEntryFieldTitles} from '$src/batchrun/enums';
 import {
   copyElementContentsToClipboard,
@@ -18,6 +17,7 @@ import {
   getApiResponseResults, 
   isFieldAllowedToRead,
 } from '$util/helpers';
+import {TableSortOrder} from '$src/enums';
 import {getIsFetchingJobRunLogEntriesByRun, getJobRunLogEntryAttributes, getJobRunLogEntriesByRun} from '$src/batchrun/selectors';
 
 import type {ApiResponse, Attributes} from '$src/types';

@@ -10,8 +10,7 @@ import isEqual from 'lodash/isEqual';
 import FormField from '$components/form/FormField';
 import SearchClearLink from '$components/search/SearchClearLink';
 import SearchContainer from '$components/search/SearchContainer';
-import {FormNames} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames} from '$src/enums';
 
 type Props = {
   formValues: Object,

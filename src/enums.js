@@ -1,10 +1,21 @@
 // @flow
 import React from 'react';
 import {DELETE_MODAL_BUTTON_TEXT} from '$src/constants';
+
+/**
+ * Table sort order enumerable.
+ * @readonly
+ * @enum {string}
+ */
+export const TableSortOrder = {
+  ASCENDING: 'asc',
+  DESCENDING: 'desc',
+};
+
 /**
  * View modes enumerable.
- *
- * @type {{EDIT: string, READONLY: string,}}
+ * @readonly
+ * @enum {string}
  */
 export const ViewModes = {
   EDIT: 'edit',
@@ -13,8 +24,8 @@ export const ViewModes = {
 
 /**
  * Key code enumerable.
- *
- * @type {{TAB: string, ENTER: string, ESC: string, ARROW_LEFT: string, ARROW_UP: string, ARROW_RIGHT: string, ARROW_DOWN: string}}
+ * @readonly
+ * @enum {number}
  */
 export const KeyCodes = {
   TAB: 9,
@@ -29,7 +40,8 @@ export const KeyCodes = {
 
 /**
  * Methods enumerable.
- * @type {{DELETE: string, GET: string, PATCH: string, POST: string,}}
+ * @readonly
+ * @enum {string}
  */
 export const Methods = {
   DELETE: 'DELETE',
@@ -39,9 +51,10 @@ export const Methods = {
 };
 
 /**
-  * Confirmation modal texts
-  * @type {{}}
-  */
+ * Confirmation modal texts
+ * @readonly
+ * @enum {Object}
+ */
 export const ConfirmationModalTexts = {
   ARCHIVE_LEASE_AREA: {
     BUTTON: 'Arkistoi',
@@ -316,9 +329,36 @@ export const ConfirmationModalTexts = {
 };
 
 /**
+ * Redux form field type enumerable.
+ * @readonly
+ * @enum {string}
+ */
+export const FieldTypes = {
+  ADDRESS: 'address',
+  BOOLEAN: 'boolean',
+  CHOICE: 'choice',
+  CHECKBOX: 'checkbox',
+  CHECKBOX_DATE_TIME: 'checkbox-date-time',
+  CONTACT: 'contact',
+  DATE: 'date',
+  DECIMAL: 'decimal',
+  FIELD: 'field',
+  INTEGER: 'integer',
+  LEASE: 'lease',
+  LESSOR: 'lessor',
+  MULTISELECT: 'multiselect',
+  RADIO_WITH_FIELD: 'radio-with-field',
+  REFERENCE_NUMBER: 'reference_number',
+  SEARCH: 'search',
+  STRING: 'string',
+  TEXTAREA: 'textarea',
+  USER: 'user',
+};
+
+/**
  * Lease form names enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const FormNames = {
   AREA_NOTE_SEARCH: 'area-note-search-form',
@@ -367,8 +407,8 @@ export const FormNames = {
 
 /**
  * Permission missing texts enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const PermissionMissingTexts = {
   AREA_NOTE: 'Ei oikeuksia muistettaviin ehtoihiin',

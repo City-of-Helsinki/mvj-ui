@@ -2,8 +2,8 @@
 
 /**
  * Collection note field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const CollectionNoteFieldPaths = {
   COLLECTION_NOTES: 'collection_notes',
@@ -15,8 +15,8 @@ export const CollectionNoteFieldPaths = {
 
 /**
  * Collection note field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const CollectionNoteFieldTitles = {
   COLLECTION_NOTES: 'Huomautukset',
