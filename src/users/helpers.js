@@ -1,5 +1,5 @@
 // @flow
-import {sortByLabelAsc} from '$src/util/helpers';
+import {sortStringByKeyAsc} from '$src/util/helpers';
 
 import type {UserList} from './types';
 
@@ -44,5 +44,5 @@ export const getUserOptions = (users: UserList): Array<Object> => {
       value: user.id ? user.id.toString() : null,
       label: getUserFullName(user),
     };
-  }).sort(sortByLabelAsc);
+  }).sort((a, b) => sortStringByKeyAsc(a, b, 'label'));
 };
