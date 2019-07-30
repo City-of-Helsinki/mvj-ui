@@ -1,7 +1,8 @@
 // @flow
-import moment from 'moment';
+import isBefore from 'date-fns/isBefore';
 import isArray from 'lodash/isArray';
 
+import {isValidDate} from '$util/date';
 import {isEmptyValue} from '$util/helpers';
 
 const decimalPlaces = (n) => {
@@ -22,7 +23,7 @@ export const required = (value: any, error?: string) => {
 
 export const integer = (value: any, error?: string) => (isEmptyValue(value) || (Number.isInteger(Number(value))) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
 
-export const isDate = (value: any, error?: string) => (isEmptyValue(value) || moment(value).isValid() ? undefined : (error ? error : 'Arvon tulee olla päivämäärä'));
+export const isDate = (value: any, error?: string) => (isEmptyValue(value) || isValidDate(new Date(value)) ? undefined : (error ? error : 'Arvon tulee olla päivämäärä'));
 
 export const decimalNumber = (value: any, error?: string) => (isEmptyValue(value) || !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
 
@@ -41,7 +42,7 @@ export const dateGreaterOrEqual = (date: ?string, otherDate: ?string, error?: st
     return undefined;
   }
 
-  return moment(date).isBefore(moment(otherDate), 'day')
+  return date && otherDate && isBefore(new Date(date), new Date(otherDate))
     ? error ? error : 'Loppupvm ei voi olla ennen alkupvm:ää'
     : undefined;
 };

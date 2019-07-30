@@ -1,9 +1,10 @@
 // @flow
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
+import isFuture from 'date-fns/isFuture';
+import isPast from 'date-fns/isPast';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
-import moment from 'moment';
 import {isDirty} from 'redux-form';
 
 import {
@@ -228,15 +229,14 @@ export const getContentLeaseListResults = (apiResponse: Object, query: Object): 
  * @returns {string}
  */
 const getContentLeaseStatus = (lease: Object): string => {
-  const now = moment(),
-    startDate = lease.start_date,
+  const startDate = lease.start_date,
     endDate = lease.end_date;
 
-  if(endDate && now.isAfter(endDate, 'day')) {
+  if(endDate && isPast(new Date(endDate))) {
     return LeaseStatus.FINISHED;
   }
 
-  if((!endDate && !startDate) || moment(startDate).isAfter(now, 'day')) {
+  if((!endDate && !startDate) || isFuture(new Date(startDate))) {
     return LeaseStatus.PREPARATION;
   }
 

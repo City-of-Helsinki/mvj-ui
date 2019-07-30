@@ -74,7 +74,7 @@ class JobRunLogEntryPanel extends PureComponent<Props, State> {
       columns.push({
         key: JobRunLogEntryFieldPaths.TIME,
         text: JobRunLogEntryFieldTitles.TIME,
-        renderer: (val) => formatDate(val, 'DD.MM.YYYY H:mm:ss'),
+        renderer: (val) => formatDate(val, 'dd.MM.yyyy H:mm:ss'),
       });
     }
 
@@ -129,7 +129,7 @@ class JobRunLogEntryPanel extends PureComponent<Props, State> {
     jobRunLogEntries.forEach((entry) => {
       bodyHtml += `<tr>
         ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TIME)
-        ? `<td>${formatDate(entry.time, 'DD.MM.YYYY H:mm:ss') || '-'}</td>`
+        ? `<td>${formatDate(entry.time, 'dd.MM.yyyy H:mm:ss') || '-'}</td>`
         : ''
         }
         ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TEXT)

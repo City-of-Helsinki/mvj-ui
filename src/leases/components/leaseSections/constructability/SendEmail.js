@@ -129,7 +129,7 @@ class SendEmail extends PureComponent<Props, State> {
                     return (
                       <Row key={index}>
                         <Column small={4} medium={3} large={2}>
-                          <ListItem>{formatDate(email.created_at, 'DD.MM.YYYY HH:mm') || '-'}</ListItem>
+                          <ListItem>{formatDate(email.created_at, 'dd.MM.yyyy HH:mm') || '-'}</ListItem>
                         </Column>
                         <Column small={4} medium={3} large={2}>
                           <ListItem>{getUserFullName(email.user) || '-'}</ListItem>

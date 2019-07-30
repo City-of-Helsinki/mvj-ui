@@ -112,7 +112,7 @@ class JobRuns extends PureComponent<Props, State> {
       columns.push({
         key: JobRunFieldPaths.STARTED_AT,
         text: JobRunFieldTitles.STARTED_AT,
-        renderer: (val) => formatDate(val, 'DD.MM.YYYY H:mm:ss'),
+        renderer: (val) => formatDate(val, 'dd.MM.yyyy H:mm:ss'),
       });
     }
 
@@ -120,7 +120,7 @@ class JobRuns extends PureComponent<Props, State> {
       columns.push({
         key: JobRunFieldPaths.STOPPED_AT,
         text: JobRunFieldTitles.STOPPED_AT,
-        renderer: (val) => formatDate(val, 'DD.MM.YYYY H:mm:ss'),
+        renderer: (val) => formatDate(val, 'dd.MM.yyyy H:mm:ss'),
       });
     }
 

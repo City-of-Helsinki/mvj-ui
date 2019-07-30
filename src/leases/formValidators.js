@@ -1,7 +1,7 @@
 // @flow
+import format from 'date-fns/format';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import moment from 'moment';
 
 import {
   RentAdjustmentAmountTypes,
@@ -147,14 +147,14 @@ const getFixedInitialYearRentsErrors = (rent: Object, fixedInitialYearRents: Arr
       switch(rent.cycle) {
         case RentCycles.JANUARY_TO_DECEMBER:
           endDateError = item.end_date
-            ? moment(item.end_date).format('DD.MM') !== '31.12'
+            ? format(new Date(item.end_date), 'dd.MM') !== '31.12'
               ? 'Loppupvm tulee olla 31.12.'
               : null
             : null;
           break;
         case RentCycles.APRIL_TO_MARCH:
           endDateError = item.end_date
-            ? moment(item.end_date).format('DD.MM') !== '31.03'
+            ? format(new Date(item.end_date), 'dd.MM') !== '31.03'
               ? 'Loppupvm tulee olla 31.3.'
               : null
             : null;

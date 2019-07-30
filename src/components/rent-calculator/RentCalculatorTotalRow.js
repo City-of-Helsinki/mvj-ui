@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import moment from 'moment';
+import isAfter from 'date-fns/isAfter';
 import get from 'lodash/get';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
@@ -22,12 +22,12 @@ const RentCalculatorTotalRow = ({rents}: Props) => {
         let rentEndDate = null;
 
         get(explanation, 'date_ranges', []).forEach((dateRange) => {
-          if(dateRange.end_date && (!rentEndDate || moment(dateRange.end_date).isAfter(moment(rentEndDate), 'day'))) {
+          if(dateRange.end_date && (!rentEndDate || isAfter(new Date(rentEndDate), new Date(dateRange.end_date)))) {
             rentEndDate = dateRange.end_date;
           }
         });
 
-        if(rentEndDate && (!endDate || moment(rentEndDate).isAfter(moment(endDate), 'day'))) {
+        if(rentEndDate && (!endDate || isAfter(new Date(endDate), new Date(rentEndDate)))) {
           endDate = rentEndDate;
         }
       });

@@ -1,6 +1,18 @@
 // @flow
-import moment from 'moment';
 import get from 'lodash/get';
+import addDays from 'date-fns/addDays';
+import format from 'date-fns/format';
+import isAfter from 'date-fns/isAfter';
+import isValid from 'date-fns/isValid';
+import subDays from 'date-fns/subDays';
+
+/**
+ * Test is date valid
+ * @param {number} date
+ * @returns {boolean}
+ */
+export const isValidDate = (date: any): boolean => 
+  isValid(date) && isAfter(date, new Date('1000-01-01'));
 
 /**
  * Get day and month object
@@ -14,7 +26,7 @@ export const getDayMonth = (day: number, month: number) => ({day, month});
  * Get current year as string
  * @returns {string}
  */
-export  const getCurrentYear = () => new Date().getFullYear().toString();
+export const getCurrentYear = () => new Date().getFullYear().toString();
 
 /**
  * Sort to ascending order by start and end date
@@ -25,10 +37,10 @@ export  const getCurrentYear = () => new Date().getFullYear().toString();
  * @returns {number}
  */
 export const sortByStartAndEndDateAsc = (a: Object, b: Object, startDatePath?: string = 'start_date', endDatePath?: string = 'end_date') => {
-  const startA = get(a, startDatePath, '0000-01-01'),
-    endA = get(a, endDatePath, '9999-31-12'),
-    startB = get(b, startDatePath, '0000-01-01'),
-    endB = get(b, endDatePath, '9999-31-12');
+  const startA = get(a, startDatePath) || '0000-01-01',
+    endA = get(a, endDatePath) || '9999-31-12',
+    startB = get(b, startDatePath) || '0000-01-01',
+    endB = get(b, endDatePath) || '9999-31-12';
 
   if(startA > startB) return 1;
   if(startA < startB) return -1;
@@ -46,10 +58,10 @@ export const sortByStartAndEndDateAsc = (a: Object, b: Object, startDatePath?: s
  * @returns {number}
  */
 export const sortByStartAndEndDateDesc = (a: Object, b: Object, startDatePath?: string = 'start_date', endDatePath?: string = 'end_date') => {
-  const startA = get(a, startDatePath, '0000-01-01'),
-    endA = get(a, endDatePath, '9999-31-12'),
-    startB = get(b, startDatePath, '0000-01-01'),
-    endB = get(b, endDatePath, '9999-31-12');
+  const startA = get(a, startDatePath) || '0000-01-01',
+    endA = get(a, endDatePath) || '9999-31-12',
+    startB = get(b, startDatePath) || '0000-01-01',
+    endB = get(b, endDatePath) || '9999-31-12';
 
   if(startA > startB) return -1;
   if(startA < startB) return 1;
@@ -99,7 +111,7 @@ export  const splitDateRanges = (a: Object, b: Object): Array<Object> => {
         end_date: item0.end_date,
       });
       dateRanges.push({
-        start_date: moment(item0.end_date).add(1, 'days').format('YYYY-MM-DD'),
+        start_date: format(addDays(new Date(item0.end_date), 1), 'yyyy-MM-dd'),
         end_date: item1.end_date,
       });
     } else {
@@ -109,7 +121,7 @@ export  const splitDateRanges = (a: Object, b: Object): Array<Object> => {
       });
     }
 
-  } else if(start0 < start1) {
+  } else {
     if(end0 < start1) {
       dateRanges.push({
         start_date: item0.start_date,
@@ -119,20 +131,36 @@ export  const splitDateRanges = (a: Object, b: Object): Array<Object> => {
         start_date: item1.start_date,
         end_date: item1.end_date,
       });
-    } else if(end0 >= start1) {
+    } else {
       dateRanges.push({
         start_date: item0.start_date,
-        end_date: moment(item1.start_date).subtract(1, 'days').format('YYYY-MM-DD'),
+        end_date: format(subDays(new Date(item1.start_date), 1), 'yyyy-MM-dd'),
       });
-      dateRanges.push({
-        start_date: item1.start_date,
-        end_date: item0.end_date,
-      });
-
+      
       if(end0 < end1) {
         dateRanges.push({
-          start_date: moment(item0.end_date).add(1, 'days').format('YYYY-MM-DD'),
+          start_date: item1.start_date,
+          end_date: item0.end_date,
+        });
+
+        dateRanges.push({
+          start_date: format(addDays(new Date(item0.end_date), 1), 'yyyy-MM-dd'),
           end_date: item1.end_date,
+        });
+      } else if(end0 > end1) {
+        dateRanges.push({
+          start_date: item1.start_date,
+          end_date: format(subDays(new Date(item1.end_date), 1), 'yyyy-MM-dd'),
+        });
+
+        dateRanges.push({
+          start_date: item1.end_date,
+          end_date: item0.end_date,
+        });
+      } else {
+        dateRanges.push({
+          start_date: item1.start_date,
+          end_date: item0.end_date,
         });
       }
     }

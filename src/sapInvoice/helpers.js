@@ -1,5 +1,6 @@
 // @flow
-import moment from 'moment';
+import format from 'date-fns/format';
+import subMonths from 'date-fns/subMonths';
 
 import {TableSortOrder} from '$src/enums';
 import {getContentInvoiceReceivableTypes} from '$src/invoices/helpers';
@@ -17,7 +18,7 @@ export const getSapInvoices = (list: SapInvoiceList) =>
     .map((item) => {
       return {
         id: item.id,
-        send_to_sap_date: item.due_date ? moment(item.due_date).subtract(1, 'months').format('YYYY-MM-DD') : null,
+        send_to_sap_date: item.due_date ? format(subMonths(new Date(item.due_date), 1), 'yyyy-MM-dd') : null,
         recipient: item.recipient,
         due_date: item.due_date,
         billed_amount: item.billed_amount,
