@@ -1,12 +1,14 @@
 // @flow
 import React from 'react';
+import formatDateStr from 'date-fns/format';
+import isFuture from 'date-fns/isFuture';
+import isPast from 'date-fns/isPast';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 import {toastr} from 'react-redux-toastr';
-import moment from 'moment';
 
 import ToastrIcons from '$components/toastr/ToastrIcons';
 import {PAIKKATIETOVIPUNEN_URL} from '$src/constants';
@@ -252,11 +254,11 @@ export const convertStrToDecimalNumber = (x: any): ?number =>
 * @param {string} format
 * @returns {string}
 */
-export const formatDate = (date: any, format?: string = 'DD.MM.YYYY'): ?string => {
+export const formatDate = (date: any, format?: string = 'dd.MM.yyyy'): ?string => {
   if (!date) return null;
 
-  const d = isNumber(date) ? moment.unix(Number(date)) : moment(date);
-  return d.format(format);
+  const d = isNumber(date) ? date : new Date(date);
+  return formatDateStr(d, format);
 };
 
 /**
@@ -268,7 +270,7 @@ export const formatDate = (date: any, format?: string = 'DD.MM.YYYY'): ?string =
 export const formatDateRange = (startDate: any, endDate: any): string => {
   if (!startDate && !endDate) return '';
 
-  const dateFormat = 'DD.MM.YYYY';
+  const dateFormat = 'dd.MM.yyyy';
 
   if(!startDate) return `–${formatDate(endDate, dateFormat) || ''}`;
   if(!endDate) return `${formatDate(startDate, dateFormat) || ''}–`;
@@ -371,8 +373,8 @@ export const sortStringAsc = (a: string, b: string): number => {
  * @returns {number}
  */
 export const sortStringByKeyAsc = (a: Object, b: Object, key: string): number => {
-  const valA = get(a, key, '').toLowerCase();
-  const valB = get(b, key, '').toLowerCase();
+  const valA = (get(a, key) || '').toLowerCase();
+  const valB = (get(b, key) || '').toLowerCase();
 
   return sortStringAsc(valA, valB);
 };
@@ -397,8 +399,8 @@ export const sortStringDesc = (a: string, b: string): number => {
  * @returns {number}
  */
 export const sortStringByKeyDesc = (a: Object, b: Object, key: string): number => {
-  const valA = get(a, key, '').toLowerCase();
-  const valB = get(b, key, '').toLowerCase();
+  const valA = (get(a, key) || '').toLowerCase();
+  const valB = (get(b, key) || '').toLowerCase();
 
   return sortStringDesc(valA, valB);
 };
@@ -710,11 +712,10 @@ export const findReactById = (id: ?string): ?Object => {
  * @returns {boolean}
  */
 export const isActive = (item: ?Object): boolean => {
-  const now = moment();
   const startDate = get(item, 'start_date', '0000-01-01');
   const endDate = get(item, 'end_date', '9999-12-31');
 
-  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
+  if((startDate && isFuture(new Date(startDate))) || (endDate && isPast(new Date(endDate)))) {
     return false;
   }
 
@@ -727,10 +728,9 @@ export const isActive = (item: ?Object): boolean => {
  * @returns {boolean}
  */
 export const isArchived = (item: ?Object): boolean => {
-  const now = moment();
   const endDate = get(item, 'end_date', '9999-12-31');
 
-  if(now.isAfter(endDate, 'day')) {
+  if(isPast(new Date(endDate))) {
     return true;
   }
 

@@ -1,5 +1,5 @@
 // @flow
-import moment from 'moment';
+import isPast from 'date-fns/isPast';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 
@@ -163,7 +163,7 @@ export const getContentInvoices = (invoices: Array<Object>): Array<Object> => {
  */
 export const getContentOverdueInvoices = (invoices: Array<Object>): Array<Object> => {
   return invoices && invoices.length ? invoices
-    .filter((invoice) => invoice.state === InvoiceState.OPEN && invoice.due_date && moment(invoice.due_date).isBefore(new Date(), 'day'))
+    .filter((invoice) => invoice.state === InvoiceState.OPEN && invoice.due_date && isPast(new Date(invoice.due_date)))
     .map((invoice) => getContentIncoive(invoice)) : [];
 };
 

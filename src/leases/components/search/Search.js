@@ -126,7 +126,7 @@ class Search extends PureComponent<Props, State> {
     if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       const {location: {search}} = this.props;
       const searchQuery = getUrlParams(search);
-      const addOnlyActiveLeases = searchQuery.hasOwnProperty('only_active_leases') ||
+      const addOnlyActiveLeases = Object.prototype.hasOwnProperty.call(searchQuery, 'only_active_leases') ||
         prevProps.formValues.only_active_leases !== this.props.formValues.only_active_leases;
 
       this.onSearchChange(addOnlyActiveLeases);
@@ -136,7 +136,7 @@ class Search extends PureComponent<Props, State> {
   handleSubmit = () => {
     const {location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
-    const addOnlyActiveLeases = searchQuery.hasOwnProperty('only_active_leases');
+    const addOnlyActiveLeases = Object.prototype.hasOwnProperty.call(searchQuery, 'only_active_leases');
 
     this.search(addOnlyActiveLeases);
   }
@@ -156,7 +156,7 @@ class Search extends PureComponent<Props, State> {
 
     const keys = Object.keys(searchQuery);
 
-    if(!keys.length || (keys.length === 1 && searchQuery.hasOwnProperty('search'))) {
+    if(!keys.length || (keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search'))) {
       return true;
     }
 

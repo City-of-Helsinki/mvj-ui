@@ -110,7 +110,7 @@ class Comment extends PureComponent<Props, State> {
           }
           <div className='comment-panel__comment_content-wrapper'>
             <p className='comment-panel__comment_info'>
-              <span className='comment-panel__comment_info_date'>{formatDate(comment.modified_at, 'DD.MM.YYYY HH:mm')}</span>
+              <span className='comment-panel__comment_info_date'>{formatDate(comment.modified_at, 'dd.MM.yyyy HH:mm')}</span>
               &nbsp;
               <span>{user.last_name} {user.first_name}</span>
             </p>
