@@ -85,7 +85,7 @@ export function objectValues(object) {
   const values = [];
 
   for (const property in object) {
-    if (object.hasOwnProperty(property)) {
+    if (Object.prototype.hasOwnProperty.call(object, property)) {
       values.push(object[property]);
     }
   }
@@ -105,7 +105,7 @@ export function removeProps(object, remove) {
   const result = {};
 
   for (const property in object) {
-    if (object.hasOwnProperty(property) && remove.indexOf(property) === -1) {
+    if (Object.prototype.hasOwnProperty.call(object, property) && remove.indexOf(property) === -1) {
       result[property] = object[property];
     }
   }

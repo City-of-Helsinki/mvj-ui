@@ -210,7 +210,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       ? query.lease_state
       : query.lease_state
         ? [query.lease_state]
-        : query.search || query.hasOwnProperty('lease_state') ? [] : DEFAULT_LEASE_STATES;
+        : query.search || Object.prototype.hasOwnProperty.call(query, 'lease_state') ? [] : DEFAULT_LEASE_STATES;
   }
 
   getOnlyActiveLeasesValue = (query: Object) => {
