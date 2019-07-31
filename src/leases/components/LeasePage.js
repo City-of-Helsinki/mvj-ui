@@ -264,15 +264,22 @@ class LeasePage extends Component<Props, State> {
     const {
       currentLease,
       isEditMode,
+      location: {search},
       match: {params: {leaseId}},
       usersPermissions,
     } = this.props;
     const {activeTab} = this.state;
+    const query = getUrlParams(search);
+    const tab = query.tab ? Number(query.tab) : 0;
 
     // Fetch new current lease and related data if leaseId changes
     if(leaseId !== prevProps.match.params.leaseId) {
       this.fetchCurrentLeaseData();
       this.fetchLeaseRelatedData();
+    }
+
+    if(tab != activeTab) {
+      this.setState({activeTab: tab});
     }
     
     if(prevState.activeTab !== activeTab) {
