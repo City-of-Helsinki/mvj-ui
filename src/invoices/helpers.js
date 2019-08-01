@@ -290,7 +290,7 @@ export const isInvoiceBillingPeriodRequired = (rows: Array<Object>): boolean => 
  * @returns {string}
  */
 export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>): string => {
-  return receivableTypes.map((receivableType) => getLabelOfOption(receivableTypeOptions, receivableType))
+  return receivableTypes.map((receivableType) => getLabelOfOption(receivableTypeOptions, receivableType) || '')
     .sort(sortStringAsc)
     .join(', ');
 };

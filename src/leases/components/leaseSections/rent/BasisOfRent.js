@@ -77,13 +77,13 @@ const BasisOfRent = ({
   const getAreaText = (amount: ?number) => {
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
-    return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit)}`;
+    return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit) || ''}`;
   };
 
   const getAmountPerAreaText = (amount: ?number) => {
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
-    return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit)}`;
+    return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit) || ''}`;
   };
 
   const getPlansInspectedText = () => {

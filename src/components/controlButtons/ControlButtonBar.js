@@ -5,7 +5,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import BackButton from '$components/button/BackButton';
 import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {hasAnyPageDirtyForms} from '$util/helpers';
+import {hasAnyPageDirtyForms} from '$util/forms';
 
 
 type Props = {

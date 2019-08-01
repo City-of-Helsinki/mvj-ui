@@ -13,12 +13,6 @@ import {toastr} from 'react-redux-toastr';
 import ToastrIcons from '$components/toastr/ToastrIcons';
 import {PAIKKATIETOVIPUNEN_URL} from '$src/constants';
 import {Breakpoints} from '$src/foundation/enums';
-import {isContactFormDirty} from '$src/contacts/helpers';
-import {isInfillDevelopmentFormDirty} from '$src/infillDevelopment/helpers';
-import {isAnyLandUseContractFormDirty} from '$src/landUseContract/helpers';
-import {isAnyLeaseFormDirty} from '$src/leases/helpers';
-import {isRentBasisFormDirty} from '$src/rentbasis/helpers';
-import {store} from '$src/root/startApp';
 
 import type {ApiResponse, Attributes, Methods} from '$src/types';
 import type {UsersPermissions} from '$src/usersPermissions/types';
@@ -30,7 +24,9 @@ import type {UsersPermissions} from '$src/usersPermissions/types';
  * @returns {string}
  */
 export const composePageTitle = (title: string = '', prepend?: boolean = true): string => {
-  return prepend ? `${title ? `${title} | ` : ''}Maanvuokrausjärjestelmä | Helsingin Kaupunki` : title;
+  return prepend 
+    ? `${title ? `${title} | ` : ''}Maanvuokrausjärjestelmä | Helsingin Kaupunki` 
+    : title;
 };
 
 /**
@@ -157,7 +153,7 @@ export const getUrlParams = (search: string = ''): Object => {
 
     if(query[key]) {
       if(isArray(query[key])) {
-        query[key].push(values);
+        query[key].push(...values);
       } else {
         query[key] = [query[key], ...values];
       }
@@ -221,8 +217,23 @@ export const isEmptyValue = (value: any): boolean => (value == null || value ===
  * @param {string} separator
  * @returns {string}
  */
-export const formatNumberWithThousandSeparator = (x: any, separator?: string = ' '): string => 
-  !isEmptyValue(x) ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator) : '';
+export const formatNumberWithThousandSeparator = (x: any, separator?: string = ' '): string =>  {
+  if(isEmptyValue(x)) return '';
+
+  const isDecimalNumber = x.toString().includes('.') || x.toString().includes(',');
+
+  if(isDecimalNumber) {
+    const decimalSeparator = x.toString().includes('.') ? '.' : ',';
+    const parts = x.toString().split(decimalSeparator);
+    
+    return parts[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator) +
+      decimalSeparator +
+      parts[1];
+  }
+
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+};
+  
 
 /**
  * Format decimal number
@@ -230,7 +241,9 @@ export const formatNumberWithThousandSeparator = (x: any, separator?: string = '
  * @returns {string}
  */
 export const formatDecimalNumber = (x: ?number): ?string => 
-  !isEmptyValue(x) ? parseFloat(x).toFixed(2).toString().replace('.', ',') : null;
+  !isEmptyValue(x) 
+    ? parseFloat(x).toFixed(2).toString().replace('.', ',') 
+    : null;
 
 /**
  * Format number to show on UI
@@ -238,7 +251,17 @@ export const formatDecimalNumber = (x: ?number): ?string =>
  * @returns {string}
  */
 export const formatNumber = (x: any): string => 
-  !isEmptyValue(x) ? formatNumberWithThousandSeparator(formatDecimalNumber(x)) : '';
+  !isEmptyValue(x) 
+    ? formatNumberWithThousandSeparator(formatDecimalNumber(x)) 
+    : '';
+
+/**
+ * Test is is possible to convert string to a decimal number
+ * @param {*} value
+ * @returns {boolean}
+ */
+export const isDecimalNumberStr = (value: any): boolean => 
+  (!isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')));
 
 /**
  * Convert string to a decimal number
@@ -246,7 +269,9 @@ export const formatNumber = (x: any): string =>
  * @returns {number}
  */
 export const convertStrToDecimalNumber = (x: any): ?number => 
-  isEmptyValue(x) ? null : Number(x.toString().replace(',', '.').replace(/\s+/g, ''));
+  isDecimalNumberStr(x) 
+    ? Number(x.toString().replace(',', '.').replace(/\s+/g, ''))
+    : null;
 
 /**
 * Format date string
@@ -254,8 +279,8 @@ export const convertStrToDecimalNumber = (x: any): ?number =>
 * @param {string} format
 * @returns {string}
 */
-export const formatDate = (date: any, format?: string = 'dd.MM.yyyy'): ?string => {
-  if (!date) return null;
+export const formatDate = (date: any, format?: string = 'dd.MM.yyyy'): string => {
+  if (!date) return '';
 
   const d = isNumber(date) ? date : new Date(date);
   return formatDateStr(d, format);
@@ -272,19 +297,11 @@ export const formatDateRange = (startDate: any, endDate: any): string => {
 
   const dateFormat = 'dd.MM.yyyy';
 
-  if(!startDate) return `–${formatDate(endDate, dateFormat) || ''}`;
-  if(!endDate) return `${formatDate(startDate, dateFormat) || ''}–`;
+  if(!startDate) return `–${formatDate(endDate, dateFormat)}`;
+  if(!endDate) return `${formatDate(startDate, dateFormat)}–`;
 
-  return `${formatDate(startDate, dateFormat) || ''}–${formatDate(endDate, dateFormat) || ''}`;
+  return `${formatDate(startDate, dateFormat)}–${formatDate(endDate, dateFormat)}`;
 };
-
-/**
- * Test is is possible to convert string to a decimal number
- * @param {*} value
- * @returns {boolean}
- */
-export const isDecimalNumberStr = (value: any): boolean => 
-  (!isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')));
 
 /**
  * get API-url without version suffix
@@ -312,7 +329,7 @@ export const getReferenceNumberLink = (referenceNumber: ?string): ?string => {
  * @returns {Object}
  */
 export const findItemById = (collection: Array<Object>, id: number): ?Object => 
-  collection.find((item) => item.id === id);
+  collection.find((item) => item.id == id);
 
 /**
  * Get label of an option
@@ -320,10 +337,10 @@ export const findItemById = (collection: Array<Object>, id: number): ?Object =>
  * @param {*} value
  * @returns {string}
  */
-export const getLabelOfOption = (options: Array<Object>, value: any): string => 
-  (options || value != null)
-    ? get(options.find(x => x.value == value), 'label', '')
-    : '';
+export const getLabelOfOption = (options: Array<Object>, value: any): ?string => 
+  (options && value != null)
+    ? get(options.find(x => x.value == value), 'label', null)
+    : null;
 
 /**
  * Sort objects in ascending numerical order by key
@@ -359,10 +376,8 @@ export const sortNumberByKeyDesc = (a: Object, b: Object, key: string): number =
  * @param {string} b
  * @returns {number}
  */
-export const sortStringAsc = (a: string, b: string): number => {
-  if(a > b) return 1;
-  if(a < b) return -1;
-  return 0;
+export const sortStringAsc = (a: ?string, b: ?string): number => {
+  return (a || '') > (b || '') ? 1 : -1;
 };
 
 /**
@@ -385,10 +400,8 @@ export const sortStringByKeyAsc = (a: Object, b: Object, key: string): number =>
  * @param {string} b
  * @returns {number}
  */
-export const sortStringDesc = (a: string, b: string): number => {
-  if(a > b) return -1;
-  if(a < b) return 1;
-  return 0;
+export const sortStringDesc = (a: ?string, b: ?string): number => {
+  return (a || '') > (b || '') ? -1 : 1;
 };
 
 /**
@@ -414,8 +427,8 @@ export const sortStringByKeyDesc = (a: Object, b: Object, key: string): number =
  * @returns {number}
  */
 export const sortByOptionsAsc = (a: Object, b: Object, key: string, options: Array<Object>): number => {
-  const valA = a[key] ? getLabelOfOption(options, a[key]) : '',
-    valB = b[key] ? getLabelOfOption(options, b[key]) : '';
+  const valA = a[key] ? getLabelOfOption(options, a[key]) || '' : '',
+    valB = b[key] ? getLabelOfOption(options, b[key]) || '' : '';
 
   return sortStringAsc(valA, valB);
 };
@@ -429,10 +442,10 @@ export const sortByOptionsAsc = (a: Object, b: Object, key: string, options: Arr
  * @returns {number}
  */
 export const sortByOptionsDesc = (a: Object, b: Object, key: string, options: Array<Object>) => {
-  const valA = a[key] ? getLabelOfOption(options, a[key]) : '',
-    valB = b[key] ? getLabelOfOption(options, b[key]) : '';
+  const valA = a[key] ? getLabelOfOption(options, a[key]) || '' : '',
+    valB = b[key] ? getLabelOfOption(options, b[key]) || '' : '';
 
-  return sortStringAsc(valA, valB);
+  return sortStringDesc(valA, valB);
 };
 
 /**
@@ -712,8 +725,8 @@ export const findReactById = (id: ?string): ?Object => {
  * @returns {boolean}
  */
 export const isActive = (item: ?Object): boolean => {
-  const startDate = get(item, 'start_date', '0000-01-01');
-  const endDate = get(item, 'end_date', '9999-12-31');
+  const startDate = get(item, 'start_date') || '0000-01-01';
+  const endDate = get(item, 'end_date') || '9999-12-31';
 
   if((startDate && isFuture(new Date(startDate))) || (endDate && isPast(new Date(endDate)))) {
     return false;
@@ -728,30 +741,11 @@ export const isActive = (item: ?Object): boolean => {
  * @returns {boolean}
  */
 export const isArchived = (item: ?Object): boolean => {
-  const endDate = get(item, 'end_date', '9999-12-31');
+  const endDate = get(item, 'end_date') || '9999-12-31';
 
   if(isPast(new Date(endDate))) {
     return true;
   }
 
   return false;
-};
-
-/**
- * Test has any page dirty forms
- * @enum {boolean}
- */
-export const hasAnyPageDirtyForms = (): boolean => {
-  const state = store.getState(),
-    isContactDirty = isContactFormDirty(state),
-    isInfillDevelopmentDirty = isInfillDevelopmentFormDirty(state),
-    isLandUseContractDirty = isAnyLandUseContractFormDirty(state),
-    isLeaseDirty = isAnyLeaseFormDirty(state),
-    isRentBasisDirty = isRentBasisFormDirty(state);
-
-  return isContactDirty ||
-    isInfillDevelopmentDirty ||
-    isLandUseContractDirty ||
-    isLeaseDirty ||
-    isRentBasisDirty;
 };

@@ -9,7 +9,8 @@ import MainMenuIcon from '../icons/MainMenuIcon';
 import SearchInput from '../inputs/SearchInput';
 import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {hasAnyPageDirtyForms, getSearchQuery, getUrlParams} from '$util/helpers';
+import {hasAnyPageDirtyForms} from '$util/forms';
+import {getSearchQuery, getUrlParams} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 
 import type {UserGroups} from '$src/usersPermissions/types';

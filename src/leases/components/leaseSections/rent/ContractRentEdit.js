@@ -72,7 +72,7 @@ const ContractRentEdit = ({
 
     const amountPeriodOptions = getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD);
 
-    return `${formatNumber(contractRent.amount)} € ${getLabelOfOption(amountPeriodOptions, contractRent.period)}`;
+    return `${formatNumber(contractRent.amount)} € ${getLabelOfOption(amountPeriodOptions, contractRent.period) || ''}`;
   };
 
   const getBaseAmountText = () => {
@@ -80,7 +80,7 @@ const ContractRentEdit = ({
 
     const baseAmountPeriodOptions = getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
 
-    return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period)}`;
+    return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period) || ''}`;
   };
 
   const getContractRentPeriodOptions = () => {

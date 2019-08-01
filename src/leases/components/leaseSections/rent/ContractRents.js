@@ -138,13 +138,13 @@ class ContractRents extends PureComponent<Props, State> {
             const getAmountText = () => {
               if(isEmptyValue(contractRent.amount)) return null;
 
-              return `${formatNumber(contractRent.amount)} € ${getLabelOfOption(amountPeriodOptions, contractRent.period)}`;
+              return `${formatNumber(contractRent.amount)} € ${getLabelOfOption(amountPeriodOptions, contractRent.period) || ''}`;
             };
 
             const getBaseAmount = () => {
               if(isEmptyValue(contractRent.base_amount)) return null;
 
-              return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period)}`;
+              return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period) || ''}`;
             };
 
             const amountText = getAmountText();
