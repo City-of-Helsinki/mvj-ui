@@ -1087,7 +1087,7 @@ describe('utils', () => {
       expect(items.sort((a, b) => sortStringByKeyDesc(a, b, 'value'))).to.deep.equal(sortedItems);
     });
 
-    it('should sort object by an option label in descending order', () => {
+    it('should sort object by an option label in ascending order', () => {
       const options = [
         {value: 1, label: 'test1'},
         {value: 2, label: 'test2'},
@@ -1098,21 +1098,13 @@ describe('utils', () => {
         {id: 2, value: 1},
         {id: 3, value: 3},
         {id: 4, value: 2},
-        {id: 5, value: 1},
         {id: 6, value: null},
-        {id: 7, value: 4},
-        {id: 8, value: 3},
-        {id: 9, value: 4},
       ];
 
       const sortedItems = [
-        {id: 9, value: 4},
-        {id: 7, value: 4},
         {id: 6, value: null},
-        {id: 5, value: 1},
         {id: 2, value: 1},
         {id: 4, value: 2},
-        {id: 8, value: 3},
         {id: 3, value: 3},
       ];
 
@@ -1127,25 +1119,17 @@ describe('utils', () => {
       ];
 
       const items = [
-        {id: 2, value: 1},
-        {id: 3, value: 3},
         {id: 4, value: 2},
         {id: 5, value: 1},
         {id: 6, value: null},
-        {id: 7, value: 4},
         {id: 8, value: 3},
-        {id: 9, value: 4},
       ];
 
       const sortedItems = [
-        {id: 3, value: 3},
         {id: 8, value: 3},
         {id: 4, value: 2},
-        {id: 2, value: 1},
         {id: 5, value: 1},
         {id: 6, value: null},
-        {id: 7, value: 4},
-        {id: 9, value: 4},
       ];
 
       expect(items.sort((a, b) => sortByOptionsDesc(a, b, 'value', options))).to.deep.equal(sortedItems);

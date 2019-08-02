@@ -15,7 +15,7 @@ describe('components', () => {
     it('should return ErrorIcon', () => {
       const errorIcon: any = new ErrorIcon({className: 'error'});
 
-      expect(errorIcon.props.className).to.deep.equal('error');
+      expect(errorIcon.props.className).to.deep.equal('icons icons__error error');
     });
   });
 
@@ -26,7 +26,7 @@ describe('components', () => {
     it('should return SuccessIcon', () => {
       const successIcon: any = new SuccessIcon({className: 'success'});
 
-      expect(successIcon.props.className).to.deep.equal('success');
+      expect(successIcon.props.className).to.deep.equal('icons icons__success success');
     });
   });
 
