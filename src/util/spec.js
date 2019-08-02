@@ -839,7 +839,7 @@ describe('utils', () => {
     });
 
     it('should format date to a custom form', () => {
-      expect(formatDate('2019-05-09T15:26:54.889853+03:00', 'dd.MM.yyyy H.mm')).to.deep.equal('09.05.2019 15.26');
+      expect(formatDate('2019-05-09T15:26:54.889853', 'dd.MM.yyyy H.mm')).to.deep.equal('09.05.2019 15.26');
     });
 
     it('should format date unix time stamp to a date string', () => {
