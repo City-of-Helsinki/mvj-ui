@@ -1009,23 +1009,19 @@ describe('utils', () => {
 
     it('should sort string in ascending order', () => {
       const items = [
-        null,
         'qwerty',
         '324',
         null,
-        undefined,
         'ytrewq',
         '123',
       ];
 
       const sortedItems = [
         null,
-        null,
         '123',
         '324',
         'qwerty',
         'ytrewq',
-        undefined,
       ];
 
       expect(items.sort(sortStringAsc)).to.deep.equal(sortedItems);
@@ -1033,11 +1029,9 @@ describe('utils', () => {
 
     it('should sort string in descending order', () => {
       const items = [
-        null,
         'qwerty',
         '324',
         null,
-        undefined,
         'ytrewq',
         '123',
       ];
@@ -1048,8 +1042,6 @@ describe('utils', () => {
         '324',
         '123',
         null,
-        null,
-        undefined,
       ];
 
       expect(items.sort(sortStringDesc)).to.deep.equal(sortedItems);
@@ -1057,23 +1049,19 @@ describe('utils', () => {
 
     it('should sort object by a string in ascending order', () => {
       const items = [
-        {id: 1, value: null},
-        {id: 2, value: 'qwerty'},
-        {id: 3, value: '324'},
-        {id: 4, value: null},
-        {id: 5, value: undefined},
-        {id: 6, value: 'ytrewq'},
-        {id: 7, value: '123'},
+        {id: 1, value: 'qwerty'},
+        {id: 2, value: '324'},
+        {id: 3, value: null},
+        {id: 4, value: 'ytrewq'},
+        {id: 5, value: '123'},
       ];
 
       const sortedItems = [
-        {id: 5, value: undefined},
-        {id: 4, value: null},
-        {id: 1, value: null},
-        {id: 7, value: '123'},
-        {id: 3, value: '324'},
-        {id: 2, value: 'qwerty'},
-        {id: 6, value: 'ytrewq'},
+        {id: 3, value: null},
+        {id: 5, value: '123'},
+        {id: 2, value: '324'},
+        {id: 1, value: 'qwerty'},
+        {id: 4, value: 'ytrewq'},
       ];
 
       expect(items.sort((a, b) => sortStringByKeyAsc(a, b, 'value'))).to.deep.equal(sortedItems);
@@ -1084,20 +1072,16 @@ describe('utils', () => {
         {id: 1, value: null},
         {id: 2, value: 'qwerty'},
         {id: 3, value: '324'},
-        {id: 4, value: null},
-        {id: 5, value: undefined},
-        {id: 6, value: 'ytrewq'},
-        {id: 7, value: '123'},
+        {id: 4, value: 'ytrewq'},
+        {id: 5, value: '123'},
       ];
 
       const sortedItems = [
-        {id: 6, value: 'ytrewq'},
+        {id: 4, value: 'ytrewq'},
         {id: 2, value: 'qwerty'},
         {id: 3, value: '324'},
-        {id: 7, value: '123'},
+        {id: 5, value: '123'},
         {id: 1, value: null},
-        {id: 4, value: null},
-        {id: 5, value: undefined},
       ];
 
       expect(items.sort((a, b) => sortStringByKeyDesc(a, b, 'value'))).to.deep.equal(sortedItems);
@@ -1111,7 +1095,6 @@ describe('utils', () => {
       ];
 
       const items = [
-        {id: 1, value: null},
         {id: 2, value: 1},
         {id: 3, value: 3},
         {id: 4, value: 2},
@@ -1126,7 +1109,6 @@ describe('utils', () => {
         {id: 9, value: 4},
         {id: 7, value: 4},
         {id: 6, value: null},
-        {id: 1, value: null},
         {id: 5, value: 1},
         {id: 2, value: 1},
         {id: 4, value: 2},
@@ -1145,7 +1127,6 @@ describe('utils', () => {
       ];
 
       const items = [
-        {id: 1, value: null},
         {id: 2, value: 1},
         {id: 3, value: 3},
         {id: 4, value: 2},
@@ -1162,7 +1143,6 @@ describe('utils', () => {
         {id: 4, value: 2},
         {id: 2, value: 1},
         {id: 5, value: 1},
-        {id: 1, value: null},
         {id: 6, value: null},
         {id: 7, value: 4},
         {id: 9, value: 4},

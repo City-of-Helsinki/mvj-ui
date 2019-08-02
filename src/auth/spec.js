@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import {
+  clearApiToken,
   fetchApiToken,
   receiveApiToken,
   tokenNotFound,
@@ -39,8 +40,21 @@ describe('Auth', () => {
           isFetching: false,
         };
 
+        const state = authReducer(state, receiveApiToken(dummyApiToken));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should clear apiToken', () => {
+        const dummyApiToken = {'foo': 'Lorem ipsum'};
+        const newState = {
+          apiToken: {},
+          isFetching: false,
+        };
+
         let state = authReducer({}, fetchApiToken());
         state = authReducer(state, receiveApiToken(dummyApiToken));
+        state = authReducer(state, clearApiToken());
+
         expect(state).to.deep.equal(newState);
       });
     });

@@ -9,6 +9,8 @@ import {
   fetchCollectionNotesByLease,
   receiveCollectionNotesByLease,
   notFoundByLease,
+  createCollectionNote,
+  deleteCollectionNote,
 } from './actions';
 import collectionNoteReducer from './reducer';
 
@@ -97,6 +99,24 @@ describe('collectionNote', () => {
 
         const state = collectionNoteReducer({}, notFoundByLease(lease));
         expect(state).to.deep.equal(newState);
+      });
+
+      it('createCollectionNote should not change state', () => {
+        const state = collectionNoteReducer({}, createCollectionNote({
+          lease: 1,
+          note: 'foo',
+        }));
+
+        expect(state).to.deep.equal(defaultState);
+      });
+
+      it('deleteCollectionNote should not change state', () => {
+        const state = collectionNoteReducer({}, deleteCollectionNote({
+          id: 1,
+          lease: 1,
+        }));
+
+        expect(state).to.deep.equal(defaultState);
       });
     });
   });

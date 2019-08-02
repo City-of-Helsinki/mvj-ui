@@ -4,6 +4,8 @@ import {
   attributesNotFound,
   clearFormValidFlags,
   copyAreasToContract,
+  copyDecisionToLeases,
+  createCharge,
   createLease,
   createLeaseAndUpdateCurrentLease,
   deleteLease,
@@ -12,6 +14,7 @@ import {
   fetchLeases,
   fetchLeasesByBBox,
   fetchSingleLease,
+  fetchSingleLeaseAfterEdit,
   hideAttachDecisionModal,
   hideCreateModal,
   hideEditMode,
@@ -209,6 +212,11 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('fetchSingleLeaseAfterEdit function should not change isFetcihng flag', () => {
+        const state = leasesReducer({}, fetchSingleLeaseAfterEdit({leaseId: 1}));
+        expect(state).to.deep.equal(defaultState);
+      });
+
       it('should update isFetching flag to true when creating new lease', () => {
         const dummyLease = {
           foo: 'bar',
@@ -263,6 +271,13 @@ describe('Leases', () => {
         const newState = {...defaultState, isSaving: true};
 
         const state = leasesReducer({}, copyAreasToContract(1));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true by copyDecisionToLeases', () => {
+        const newState = {...defaultState, isSaving: true};
+
+        const state = leasesReducer({}, copyDecisionToLeases(1));
         expect(state).to.deep.equal(newState);
       });
 
@@ -410,11 +425,19 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('createCharge should not change state', () => {
+        const newState = {...defaultState};
+        const state = leasesReducer({}, createCharge({data: {}, leaseId: 1}));
+
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update collapseStates', () => {
         const newState = {...defaultState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
 
         let state = leasesReducer({}, receiveCollapseStates({foo: 'bar'}));
         state = leasesReducer(state, receiveCollapseStates({foo2: 'bar2'}));
+
         expect(state).to.deep.equal(newState);
       });
     });

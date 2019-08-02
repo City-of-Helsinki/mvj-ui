@@ -9,6 +9,8 @@ import {
   fetchCollectionLettersByLease,
   receiveCollectionLettersByLease,
   notFoundByLease,
+  uploadCollectionLetter,
+  deleteCollectionLetter,
 } from './actions';
 import collectionLetterReducer from './reducer';
 
@@ -92,6 +94,26 @@ describe('collectionLetter', () => {
 
         const state = collectionLetterReducer({}, notFoundByLease(lease));
         expect(state).to.deep.equal(newState);
+      });
+
+      it('uploadCollectionLetter should not change state', () => {
+        const state = collectionLetterReducer({}, uploadCollectionLetter({
+          data: {
+            lease: 1,
+          },
+          file: {},
+        }));
+
+        expect(state).to.deep.equal(defaultState);
+      });
+
+      it('deleteCollectionLetter should not change state', () => {
+        const state = collectionLetterReducer({}, deleteCollectionLetter({
+          id: 1,
+          lease: 1,
+        }));
+
+        expect(state).to.deep.equal(defaultState);
       });
     });
   });

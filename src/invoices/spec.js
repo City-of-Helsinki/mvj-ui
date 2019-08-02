@@ -20,6 +20,7 @@ import {
   clearPatchedInvoice,
   notFound,
   receiveInvoiceToCredit,
+  creditInvoice,
 } from './actions';
 import invoiceReducer from './reducer';
 
@@ -202,6 +203,12 @@ describe('Invoices', () => {
 
         const state = invoiceReducer({}, receiveInvoiceToCredit('foo'));
         expect(state).to.deep.equal(newState);
+      });
+
+      it('creditInvoice should not change state', () => {
+        const state = invoiceReducer({}, creditInvoice({}));
+        
+        expect(state).to.deep.equal(defaultState);
       });
     });
   });
