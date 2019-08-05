@@ -55,6 +55,10 @@ import {
   isActive,
   isArchived,
 } from './helpers';
+import {
+  getCoordinatesOfGeometry,
+  getCenterFromCoordinates,
+} from './map';
 
 // $FlowFixMe
 describe('utils', () => {
@@ -1516,6 +1520,44 @@ describe('utils', () => {
       
       expect(isArchived(item1)).to.deep.equal(false);
       expect(isArchived(item2)).to.deep.equal(false);
+    });
+  });
+
+  describe('map.js', () => {
+
+    // $FlowFixMe
+    it('Should return coordinates of a geometry', () => {
+      const coordinates = [
+        [24.945222, 60.176976],
+        [24.945222, 60.179629],
+        [24.957479, 60.179629],
+        [24.957479, 60.176976],
+        [24.945222, 60.176976],
+      ];
+      const geometry = {
+        coordinates: coordinates,
+        type: 'MultiPolygon',
+      };
+      
+      expect(getCoordinatesOfGeometry(null)).to.deep.equal([]);
+      expect(getCoordinatesOfGeometry(geometry)).to.deep.equal(coordinates);
+    });
+
+    const center = [
+      60.1783025,
+      24.9513505,
+    ];
+
+    it('Should get center from coordinates', () => {
+      const coordinates = [
+        [24.945222, 60.176976],
+        [24.945222, 60.179629],
+        [24.957479, 60.179629],
+        [24.957479, 60.176976],
+        [24.945222, 60.176976],
+      ];
+
+      expect(getCenterFromCoordinates(coordinates)).to.deep.equal(center);
     });
   });
 });

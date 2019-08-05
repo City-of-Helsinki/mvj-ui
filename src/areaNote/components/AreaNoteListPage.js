@@ -121,6 +121,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
         const areaNote = getAreaNoteById(props.areaNotes, Number(areaNoteId));
         const coordinates = getAreaNoteCoordinates(areaNote);
 
+        console.log('tets', coordinates);
         newState.bounds = coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined;
         newState.center = coordinates.length ? getCenterFromCoordinates(coordinates) : undefined;
       }
