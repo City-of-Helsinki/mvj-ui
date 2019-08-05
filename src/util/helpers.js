@@ -34,6 +34,7 @@ export const composePageTitle = (title: string = '', prepend?: boolean = true): 
  * @param [string] title
  * @param [boolean] presend
  */
+/* istanbul ignore next */
 export const setPageTitle = (title: string, prepend?: boolean) => {
   document.title = composePageTitle(title, prepend);
 };
@@ -42,6 +43,7 @@ export const setPageTitle = (title: string, prepend?: boolean) => {
  * Get width of the document
  * @returns {number}
  */
+/* istanbul ignore next */
 export const getDocumentWidth = (): number => {
   return Math.max(
     // $FlowFixMe
@@ -61,6 +63,7 @@ export const getDocumentWidth = (): number => {
  * Get foundation breakpoint
  * @returns {string}
  */
+/* istanbul ignore next */
 export const getFoundationBreakpoint = (): string => {
   const width = getDocumentWidth();
   if (width < 640)
@@ -78,6 +81,7 @@ export const getFoundationBreakpoint = (): string => {
  * Test is the screen size large
  * @returns {boolean}
  */
+/* istanbul ignore next */
 export const isLargeScreen = (): boolean => {
   const breakpoint = getFoundationBreakpoint();
 
@@ -93,6 +97,7 @@ export const isLargeScreen = (): boolean => {
 /**
  * Scroll to the top of the page
  */
+/* istanbul ignore next */
 export const scrollToTopPage = () => {
   const body = document.getElementsByTagName('body');
   const html = document.getElementsByTagName('html');
@@ -170,6 +175,7 @@ export const getUrlParams = (search: string = ''): Object => {
  * @param {Object} message - Title and the body of the message
  * @param {Object} opts - Options
  */
+/* istanbul ignore next */
 export const displayUIMessage = (message: Object, opts?: Object = {type: 'success'}) => {
   const {title, body} = message;
   const icon = <ToastrIcons name={opts.type} />;
@@ -307,6 +313,7 @@ export const formatDateRange = (startDate: any, endDate: any): string => {
  * get API-url without version suffix
  * @returns {string}
  */
+/* istanbul ignore next */
 export const getApiUrlWithOutVersionSuffix = () => {
   return process.env.API_URL ? process.env.API_URL.split('/v1')[0] : '';
 };
@@ -453,6 +460,7 @@ export const sortByOptionsDesc = (a: Object, b: Object, key: string, options: Ar
  * @param {*} contentDisposition
  * @returns {string | null}
  */
+/* istanbul ignore next */
 const getFilenameFromContentDisposition = (contentDisposition: any): ?string => {
   const regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
   const matches = regex.exec(contentDisposition);
@@ -470,6 +478,7 @@ const getFilenameFromContentDisposition = (contentDisposition: any): ?string => 
  * @param {*} response
  * @returns {string | null}
  */
+/* istanbul ignore next */
 export const getFileNameFromResponse = (response: any) => 
   getFilenameFromContentDisposition(response.headers.get('content-disposition'));
 
@@ -477,6 +486,7 @@ export const getFileNameFromResponse = (response: any) =>
  * Select contents of an element
  * @param {*} el
  */
+/* istanbul ignore next */
 const selectElementContents = (el) => {
   if (document.createRange && window.getSelection) {
     const range = document.createRange();
@@ -498,6 +508,7 @@ const selectElementContents = (el) => {
  * @param {*} el
  * @returns {boolean}
  */
+/* istanbul ignore next */
 export const copyElementContentsToClipboard = (el: any) => {
   const selection = document.getSelection(),
     selected = selection && selection.rangeCount > 0
@@ -698,6 +709,7 @@ export const  getApiResponseResults = (response: ApiResponse) =>
  * @param {string} id
  * @returns {Object}
  */
+/* istanbul ignore next */
 export const findReactById = (id: ?string): ?Object => {
   if(!id) return null;
 
