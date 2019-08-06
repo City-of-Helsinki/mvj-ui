@@ -475,12 +475,14 @@ class SummaryEdit extends PureComponent<Props, State> {
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
-                    <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}>
-                      {LeaseFieldTitles.ARRANGEMENT_DECISION}
-                    </FormTextTitle>
-                    <FormText>{summary.arrangement_decision ? 'Kyllä' : 'Ei'}</FormText>
-                  </Authorization>
+                  {summary.arrangement_decision &&
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+                      <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}>
+                        {LeaseFieldTitles.ARRANGEMENT_DECISION}
+                      </FormTextTitle>
+                      <FormText>{summary.arrangement_decision ? 'Kyllä' : 'Ei'}</FormText>
+                    </Authorization>
+                  }
                 </Column>
               </Row>
 
