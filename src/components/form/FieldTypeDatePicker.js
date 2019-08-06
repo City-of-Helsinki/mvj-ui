@@ -20,7 +20,7 @@ type Props = {
 const FieldTypeDatePicker = ({
   disabled = false,
   displayError = false,
-  input: {name, onBlur, onChange, value},
+  input: {name, onChange, value},
   isDirty = false,
   placeholder,
   setRefForField,
@@ -40,23 +40,6 @@ const FieldTypeDatePicker = ({
   ].join('.');
 
   const getParsedDate = (value: string) => parse(value, 'dd.MM.yyyy', new Date(), {locale: fi});
-
-  const handleBlur = (e: any) => {
-    const value = e.target.value;
-    let parsedDate = getParsedDate(value);
-
-    if(isValidDate(parsedDate)) {
-      onBlur(parsedDate);
-    } else if (isShortDateStr(value)) {
-      const dateStr = getDateStr(value);
-      
-      parsedDate = getParsedDate(dateStr);
-
-      if(isValidDate(parsedDate)) {
-        onBlur(parsedDate);
-      }
-    }
-  };
 
   const handleSelect = (val: any) => {
     onChange(val);
@@ -90,7 +73,6 @@ const FieldTypeDatePicker = ({
         dateFormat='dd.MM.yyyy'
         showYearDropdown
         dropdownMode="select"
-        onBlur={handleBlur}
         onChangeRaw={handleChange}
         onSelect={handleSelect}
         placeholderText={placeholder}

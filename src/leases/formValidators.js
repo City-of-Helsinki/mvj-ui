@@ -317,14 +317,39 @@ export const warnRentForm = (values: Object): Object => {
   return warnings;
 };
 
+
+/** 
+ * Get contract collateral errors
+ * @param {Object[]} collatarals
+ * @returns {Object[]}
+ */
+const getContractCollateralErrors = (collaterals: Array<Object>): Array<Object> => {
+  const errorArray = [];
+
+  collaterals.forEach((collateral, collateralIndex) => {
+    const endDateError =  dateGreaterOrEqual(collateral.end_date, collateral.start_date);
+
+    if(endDateError) {
+      errorArray[collateralIndex] = endDateError ? {end_date: endDateError} : undefined;
+    }
+  });
+
+  return errorArray;
+};
 /**
  * Get contract errors
  * @param {Object} contract
  * @returns {Object}
  */
 const getContractErrors = (contract: Object): ?Object => {
-  const endDateError =  dateGreaterOrEqual(contract.collateral_end_date, contract.collateral_start_date);
-  return endDateError ? {collateral_end_date: endDateError} : undefined;
+  const errors = {};
+  const collateralErrors = getContractCollateralErrors(get(contract, 'collaterals', []));
+
+  if(collateralErrors.length) {
+    errors.collaterals = collateralErrors;
+  }
+  
+  return errors;
 };
 
 /**
