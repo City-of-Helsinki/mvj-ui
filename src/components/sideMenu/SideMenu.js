@@ -206,7 +206,7 @@ class SideMenu extends Component<Props, State> {
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASEHOLDTRANSFER)}
                   >
                     <SubMenu
-                      header='Työkalut'
+                      header='Lisää'
                       isOpen={subMenuKey === 'tools'}
                       items={[
                         {
