@@ -1802,6 +1802,8 @@ const getPayloadCollaterals = (contract: Object): Array<Object> => {
           type: collateral.type,
           number: collateral.number,
           deed_date: collateral.deed_date,
+          start_date: collateral.start_date,
+          end_date: collateral.end_date,
           total_amount: convertStrToDecimalNumber(collateral.total_amount),
           note: collateral.note,
         };
