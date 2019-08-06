@@ -2,7 +2,7 @@
 import React from 'react';
 
 type Props = {
-  children: any,
+  children?: any,
 }
 
 const SearchLabel = ({children}: Props) => <span className='search__label'>{children}</span>;
