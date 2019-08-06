@@ -1,7 +1,6 @@
 // @flow
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
-import isFuture from 'date-fns/isFuture';
 import isPast from 'date-fns/isPast';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
@@ -236,7 +235,7 @@ const getContentLeaseStatus = (lease: Object): string => {
     return LeaseStatus.FINISHED;
   }
 
-  if((!endDate && !startDate) || isFuture(new Date(startDate))) {
+  if((!endDate && !startDate)) {
     return LeaseStatus.PREPARATION;
   }
 
