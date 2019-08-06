@@ -367,7 +367,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
 
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(areaUnit)) return `${formatNumber(amount)} €`;
-    return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, areaUnit)}`;
+    return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, areaUnit) || ''}`;
   };
 
   getAmountPerAreaText = (amount: ?number) => {
@@ -375,7 +375,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
 
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(areaUnit)) return `${formatNumber(amount)} €`;
-    return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, areaUnit)}`;
+    return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, areaUnit) || ''}`;
   };
 
   getPlansInspectedText = () => {

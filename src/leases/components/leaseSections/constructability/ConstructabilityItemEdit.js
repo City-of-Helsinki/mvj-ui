@@ -405,7 +405,7 @@ const ConstructabilityItemEdit = ({
           </Column>
           <Column>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
-              <CollapseHeaderSubtitle>{!isEmptyValue(savedArea.area) ? `${formatNumber(savedArea.area)} m²` : '-'}{savedArea.location ? ` / ${getLabelOfOption(locationOptions, savedArea.location)}` : ''}</CollapseHeaderSubtitle>
+              <CollapseHeaderSubtitle>{!isEmptyValue(savedArea.area) ? `${formatNumber(savedArea.area)} m²` : '-'}{savedArea.location ? ` / ${getLabelOfOption(locationOptions, savedArea.location) || ''}` : ''}</CollapseHeaderSubtitle>
             </Authorization>
           </Column>
         </Fragment>

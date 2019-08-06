@@ -5,6 +5,7 @@ import {
   receiveInvoiceSetsByLease,
   fetchInvoiceSetsByLease,
   notFound,
+  creditInvoiceSet,
 } from './actions';
 import invoiceSetsReducer from './reducer';
 
@@ -52,6 +53,12 @@ describe('Invoice sets', () => {
         let state = invoiceSetsReducer({}, fetchInvoiceSetsByLease(1));
         state = invoiceSetsReducer(state, notFound());
         expect(state).to.deep.equal(newState);
+      });
+
+      it('creditInvoiceSet should not change state', () => {
+        const state = invoiceSetsReducer({}, creditInvoiceSet({}));
+
+        expect(state).to.deep.equal(defaultState);
       });
     });
   });

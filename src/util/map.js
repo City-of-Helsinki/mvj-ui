@@ -1,11 +1,13 @@
 // @flow
-import L from 'leaflet';
 import isArray from 'lodash/isArray';
 
 /**
  * Translate leaflet draw literals in Finnish
  */
+/* istanbul ignore next */
 export const localizeMap = () => {
+  const L = require('leaflet');
+ 
   L.drawLocal.draw.handlers.circle.tooltip.start = 'Klikkaa ja raahaa piirtääksesi ympyrän';
   L.drawLocal.draw.handlers.circle.radius = 'Säde';
   L.drawLocal.draw.handlers.polygon.tooltip.start = 'Aloita alueen piirtäminen klikkaamalla.';
@@ -74,11 +76,14 @@ export const getCoordinatesOfGeometry = (geometry: any) => {
 };
 
 /**
-  * Format geojson coordinates to leaflet understandable format
-  * @param  {Object} geojson
-  * @returns {Object}
-  */
+ * Format geojson coordinates to leaflet understandable format
+ * @param  {Object} geojson
+ * @returns {Object}
+ */
+/* istanbul ignore next */
 export const formatCoordsToLatLng = (geojson: ?Object) => {
+  const L = require('leaflet');
+
   let crs;
 
   if (geojson) {
@@ -98,11 +103,14 @@ export const formatCoordsToLatLng = (geojson: ?Object) => {
 };
 
 /**
-  * Get bounds for leaflet from bbox array
-  * @param {Object[]} bbox
-  * @returns {Object}
-  */
+ * Get bounds for leaflet from bbox array
+ * @param {Object[]} bbox
+ * @returns {Object}
+ */
+/* istanbul ignore next */
 export const getBoundsFromBBox = (bbox: Array<Object>) => {
+  const L = require('leaflet'); 
+
   if(!bbox || !isArray(bbox) || bbox.length < 4) return null;
 
   const
@@ -113,11 +121,14 @@ export const getBoundsFromBBox = (bbox: Array<Object>) => {
 };
 
 /**
-  * Get bounds for leaflet from coordinates
-  * @param {Object[]} coordinates
-  * @returns Object
-  */
+ * Get bounds for leaflet from coordinates
+ * @param {Object[]} coordinates
+ * @returns Object
+ */
+/* istanbul ignore next */
 export const getBoundsFromCoordinates = (coordinates: Array<any>) => {
+  const L = require('leaflet');
+
   const lats = [],
     lons = [];
 
@@ -137,10 +148,10 @@ export const getBoundsFromCoordinates = (coordinates: Array<any>) => {
 };
 
 /**
-  * Get center for leaflet from coordinates
-  * @param {Object[]} coordinates
-  * @returns Object
-  */
+ * Get center for leaflet from coordinates
+ * @param {Object[]} coordinates
+ * @returns Object
+ */
 export const getCenterFromCoordinates = (coordinates: Array<any>) => {
   const lats = [],
     lons = [];

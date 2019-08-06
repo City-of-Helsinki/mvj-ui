@@ -30,27 +30,43 @@ describe('Rent for period', () => {
       // $FlowFixMe
       it('should update rent for period list', () => {
         const leaseId = 1;
-        const dummyRentForPeriod = {
+        const dummyRentForPeriod1 = {
           id: 1,
           label: 'Foo',
         };
-        const newState = {...defaultState, byLease: {[leaseId]: [dummyRentForPeriod]}};
+        const dummyRentForPeriod2 = {
+          id: 1,
+          label: 'Foo',
+        };
+        const newState1 = {...defaultState, byLease: {[leaseId]: [dummyRentForPeriod1]}};
+        const newState2 = {...defaultState, byLease: {[leaseId]: [dummyRentForPeriod1, dummyRentForPeriod2]}};
 
-        const state = rentForPeriodReducer({}, receiveRentForPeriodByLease({leaseId: leaseId, rent: dummyRentForPeriod}));
-        expect(state).to.deep.equal(newState);
+        let state = rentForPeriodReducer({}, receiveRentForPeriodByLease({leaseId: leaseId, rent: dummyRentForPeriod1}));
+        expect(state).to.deep.equal(newState1);
+
+        state = rentForPeriodReducer(state, receiveRentForPeriodByLease({leaseId: leaseId, rent: dummyRentForPeriod2}));
+        expect(state).to.deep.equal(newState2);
       });
 
       it('should delete rent for period', () => {
-        const leaseId = 1;
+        const leaseId1 = 1;
+        const leaseId2 = 2;
+        const rentId1 = 11;
+        const rentId2 = 12;
         const dummyRentForPeriod = {
-          id: 1,
+          id: rentId1,
           label: 'Foo',
         };
-        const newState = {...defaultState, byLease: {[leaseId]: []}};
+        const newState1 = {...defaultState, byLease: {[leaseId1]: []}};
+        const newState2 = {...defaultState, byLease: {[leaseId1]: [], [leaseId2]: []}};
 
-        let state = rentForPeriodReducer({}, receiveRentForPeriodByLease({leaseId: leaseId, rent: dummyRentForPeriod}));
-        state = rentForPeriodReducer(state, deleteRentForPeriodByLease({leaseId: leaseId, id: 1}));
-        expect(state).to.deep.equal(newState);
+        let state = rentForPeriodReducer({}, receiveRentForPeriodByLease({leaseId: leaseId1, rent: dummyRentForPeriod}));
+
+        state = rentForPeriodReducer(state, deleteRentForPeriodByLease({leaseId: leaseId1, id: rentId1}));
+        expect(state).to.deep.equal(newState1);
+
+        state = rentForPeriodReducer(state, deleteRentForPeriodByLease({leaseId: leaseId2, id: rentId2}));
+        expect(state).to.deep.equal(newState2);
       });
 
       it('should update isFetching flag to true when fetching rent for period', () => {

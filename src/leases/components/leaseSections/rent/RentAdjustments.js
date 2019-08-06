@@ -61,7 +61,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
   const getFullAmountText = (adjustment: Object) => {
     if(!adjustment.full_amount) return null;
 
-    return `${formatNumber(adjustment.full_amount)} ${getLabelOfOption(amountTypeOptions, adjustment.amount_type)}`;
+    return `${formatNumber(adjustment.full_amount)} ${getLabelOfOption(amountTypeOptions, adjustment.amount_type) || ''}`;
   };
 
   return (

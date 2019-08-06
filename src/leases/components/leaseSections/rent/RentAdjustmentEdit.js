@@ -295,7 +295,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
 
     if(!fullAmount) return null;
 
-    return `${formatNumber(fullAmount)} ${getLabelOfOption(amountTypeOptions, amountType)}`;
+    return `${formatNumber(fullAmount)} ${getLabelOfOption(amountTypeOptions, amountType) || ''}`;
   };
 
   handleAddSubventions = () => {

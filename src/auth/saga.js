@@ -35,15 +35,10 @@ function* fetchApiTokenSaga({payload: token}): Generator<any, any, any> {
   }
 }
 
-function* clearApiTokenSaga(): Generator<any, any, any> {
-  yield put(receiveApiToken({}));
-}
-
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/auth/FETCH_API_TOKEN', fetchApiTokenSaga);
-      yield takeLatest('mvj/auth/CLEAR_API_TOKEN', clearApiTokenSaga);
     }),
   ]);
 }

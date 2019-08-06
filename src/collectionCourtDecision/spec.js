@@ -9,6 +9,8 @@ import {
   fetchCollectionCourtDecisionsByLease,
   receiveCollectionCourtDecisionsByLease,
   notFoundByLease,
+  uploadCollectionCourtDecision,
+  deleteCollectionCourtDecision,
   hideCollectionCourtDecisionPanel,
   showCollectionCourtDecisionPanel,
 } from './actions';
@@ -104,6 +106,28 @@ describe('collectionCourtDecision', () => {
         let state = collectionCourtDecisionReducer({}, showCollectionCourtDecisionPanel());
         state = collectionCourtDecisionReducer(state, hideCollectionCourtDecisionPanel());
         expect(state).to.deep.equal(newState);
+      });
+
+      it('uploadCollectionCourtDecision should not change state', () => {
+        const state = collectionCourtDecisionReducer({}, uploadCollectionCourtDecision({
+          data: {
+            decision_date: 'foo',
+            note: 'foo',
+            lease: 1,
+          },
+          file: {},
+        }));
+
+        expect(state).to.deep.equal(defaultState);
+      });
+
+      it('deleteCollectionCourtDecision should not change state', () => {
+        const state = collectionCourtDecisionReducer({}, deleteCollectionCourtDecision({
+          id: 1,
+          lease: 1,
+        }));
+
+        expect(state).to.deep.equal(defaultState);
       });
 
       it('should update isPanelOpen flag to true', () => {
