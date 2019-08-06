@@ -285,7 +285,7 @@ class TenantsEdit extends PureComponent<Props, State> {
 
             if(!isContactFormValid) return;
 
-            if(!contactModalSettings ||contactModalSettings.isNew) {
+            if(!contactModalSettings || !contactModalSettings.isNew) {
               this.createOrEditContact();
               return;
             }

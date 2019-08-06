@@ -196,7 +196,6 @@ const PlanUnitItem = ({
 };
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     (state) => {

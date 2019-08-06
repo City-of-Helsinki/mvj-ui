@@ -83,7 +83,7 @@ export const ConfirmationModalTexts = {
   },
   CREATE_CONTACT: {
     BUTTON: 'Luo asiakas',
-    LABEL: <span>`Tunnuksella on jo olemassa asiakas.`<br />Haluatko luoda asiakkaan?</span>,
+    LABEL: <span>Tunnuksella on jo olemassa asiakas.<br />Haluatko luoda asiakkaan?</span>,
     TITLE: 'Luo asiakas',
   },
   DELETE_ADDRESS: {
