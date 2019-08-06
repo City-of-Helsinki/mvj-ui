@@ -25,16 +25,37 @@ const FieldTypeDatePicker = ({
   placeholder,
   setRefForField,
 }: Props) => {
-
-
   const handleSetReference = (element: any) => {
     if(setRefForField) {
       setRefForField(element);
     }
   };
 
-  const handleBlur = () => {
-    onBlur(value);
+  const isShortDateStr = (value: string) => value.length == 8 && /^[0-9.]+$/.test(value);
+
+  const getDateStr = (value: string) => [
+    value.substring(0, 2),
+    value.substring(2, 4),
+    value.substring(4, 9),
+  ].join('.');
+
+  const getParsedDate = (value: string) => parse(value, 'dd.MM.yyyy', new Date(), {locale: fi});
+
+  const handleBlur = (e: any) => {
+    const value = e.target.value;
+    let parsedDate = getParsedDate(value);
+
+    if(isValidDate(parsedDate)) {
+      onBlur(parsedDate);
+    } else if (isShortDateStr(value)) {
+      const dateStr = getDateStr(value);
+      
+      parsedDate = getParsedDate(dateStr);
+
+      if(isValidDate(parsedDate)) {
+        onBlur(parsedDate);
+      }
+    }
   };
 
   const handleSelect = (val: any) => {
@@ -43,18 +64,14 @@ const FieldTypeDatePicker = ({
 
   const handleChange = (e: any) => {
     const value = e.target.value;
-    let parsedDate = parse(value, 'dd.MM.yyyy', new Date(), {locale: fi});
+    let parsedDate = getParsedDate(value);
 
     if(isValidDate(parsedDate)) {
       onChange(parsedDate);
-    } else if (value.length == 8 && /^[0-9.]+$/.test(value)) {
-      const dateStr = [
-        value.substring(0, 2),
-        value.substring(2, 4),
-        value.substring(4, 9),
-      ].join('.');
+    } else if (isShortDateStr(value)) {
+      const dateStr = getDateStr(value);
       
-      parsedDate = parse(dateStr, 'dd.MM.yyyy', new Date(), {locale: fi});
+      parsedDate = getParsedDate(dateStr);
 
       if(isValidDate(parsedDate)) {
         onChange(parsedDate);
