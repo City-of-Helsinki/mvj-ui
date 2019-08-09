@@ -70,7 +70,7 @@ class ArchiveAreaModal extends Component<Props> {
     return (
       <div>
         <Modal
-          className='modal-small modal-autoheight modal-center'
+          className='modal-small modal-autoheight'
           title={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.TITLE}
           isOpen={open}
           onClose={onClose}

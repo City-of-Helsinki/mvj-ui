@@ -136,7 +136,7 @@ class AttachDecisionModal extends PureComponent<Props, State> {
 
     return (
       <Modal
-        className='modal-autoheight modal-center'
+        className='modal-autoheight'
         title='Liitä vuokrauksiin'
         isOpen={isOpen}
         onClose={onClose}

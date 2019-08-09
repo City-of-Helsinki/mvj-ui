@@ -123,7 +123,7 @@ class SendEmailModal extends PureComponent<Props, State> {
 
     return (
       <Modal
-        className='modal-autoheight modal-center'
+        className='modal-autoheight'
         title='Lähetä sähköposti'
         isOpen={isOpen}
         onClose={onClose}

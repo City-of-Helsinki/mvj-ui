@@ -33,7 +33,6 @@ class CreateLandUseContractModal extends Component<Props> {
 
     return (
       <Modal
-        className='modal-center'
         isOpen={isOpen}
         onClose={onClose}
         title='Luo uusi maankäyttösopimustunnus'

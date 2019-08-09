@@ -5,15 +5,12 @@
     width: rem-calc(800px);
     max-width: 100%;
     position: fixed;
-    top: -1000px;
+    top: -50%;
     left: 50%;
-    transform: translateX(-50%) translateY(50%);
+    transform: translateX(-50%) translateY(-50%);
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
 
     @include transition(0.5s, top, ease);
-    @include breakpoint(small only){
-      left: 0;
-    }
   }
 
   &__header {
@@ -54,7 +51,7 @@
 
   &.modal-open {
     .modal__wrapper {
-      top: 0;
+      top: 50%;
     }
 
     .modal__overlay {
@@ -72,15 +69,6 @@
   &.modal-large {
     .modal__wrapper {
       width: rem-calc($content-max-width);
-    }
-  }
-
-  &.modal-center {
-    &.modal-open {
-      .modal__wrapper {
-        top: 50%;
-        transform: translateX(-50%) translateY(-50%);
-      }
     }
   }
 
