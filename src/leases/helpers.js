@@ -16,6 +16,7 @@ import {
   ConstructabilityType,
   DecisionTypeKinds,
   LeaseState,
+  LeaseTenantRentSharesFieldPaths,
   LeaseStatus,
   RecipientOptions,
   RelationTypes,
@@ -38,6 +39,8 @@ import {
   formatDate,
   formatDateRange,
   getApiResponseResults,
+  getFieldOptions,
+  getLabelOfOption,
   isDecimalNumberStr,
   isEmptyValue,
   isActive,
@@ -52,7 +55,7 @@ import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
 import type {CommentList} from '$src/comments/types';
-import type {LeafletFeature, LeafletGeoJson} from '$src/types';
+import type {Attributes, LeafletFeature, LeafletGeoJson} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 /**
@@ -785,6 +788,22 @@ export const getContentInvoiceNotes = (lease: Lease): Array<Object> =>
   get(lease, 'invoice_notes', []).map((note) => getContentInvoiceNote(note));
 
 /**
+ * Get content rent shares of a tenant
+ * @param {Object} tenant
+ * @returns {Object[]}
+ */
+export const getContentTenantRentShares = (tenant: Object) => {
+  const rentShares = get(tenant, 'rent_shares', []);
+
+  return rentShares.map((rentShare) => ({
+    id: rentShare.id,
+    intended_use: get(rentShare, 'intended_use.id') || rentShare.intended_use,
+    share_numerator: rentShare.share_numerator,
+    share_denominator: rentShare.share_denominator,
+  }));
+};
+
+/**
  * Get details of tenantcontact_set contact
  * @param {Object} contact
  * @returns {Object}
@@ -811,7 +830,7 @@ export const getContentTenant = (tenant: Object): Object => {
 };
 
 /**
- * Get tenant billing persons contact
+ * Get tenant billing persons
  * @param {Object} tenant
  * @returns {Object[]}
  */
@@ -822,7 +841,7 @@ export const getContentTenantBillingPersons = (tenant: Object): Array<Object> =>
     .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
 
 /**
- * Get tenant contact persons contact
+ * Get tenant contact persons
  * @param {Object} tenant
  * @returns {Object[]}
  */
@@ -843,6 +862,7 @@ export const getContentTenants = (lease: Object): Array<Object> =>
       id: tenant.id,
       share_numerator: tenant.share_numerator,
       share_denominator: tenant.share_denominator,
+      rent_shares: getContentTenantRentShares(tenant),
       reference: tenant.reference,
       tenant: getContentTenant(tenant),
       billing_persons: getContentTenantBillingPersons(tenant),
@@ -871,6 +891,57 @@ export const getTenantShareWarnings = (tenants: Array<Object>): Array<string> =>
     } else if(totalShare < 1) {
       warnings.push(`Hallintaosuus välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on alle 100%`);
     }
+  });
+
+  return warnings;
+};
+
+/**
+  * Get warnings if sum of rent shares per intended use per date range is not 100%
+  * @param {Object[]} tenants
+  * @returns {string[]}
+  */
+export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttributes: Attributes): Array<string> => {
+  const dateRanges = getSplittedDateRangesWithItems(tenants, 'tenant.start_date', 'tenant.end_date');
+  const warnings = [];
+  const intendedUseOptions = getFieldOptions(leaseAttributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE);
+
+  dateRanges.forEach((dateRange) => {
+    const tenants = dateRange.items;
+    const rentShares = [];
+    const sharesByIntendedUse = {};
+    
+    tenants.forEach((tenant) => {
+      if(tenant.rent_shares && tenant.rent_shares.length) {
+        rentShares.push(...tenant.rent_shares);
+      }
+    });
+
+    rentShares.forEach((rentShare) => {
+      if(rentShare.intended_use != null) {
+        
+        if(Object.prototype.hasOwnProperty.call(sharesByIntendedUse, rentShare.intended_use)) {
+          sharesByIntendedUse[rentShare.intended_use].push(rentShare);
+        } else {
+          sharesByIntendedUse[rentShare.intended_use] = [rentShare];
+        }
+      }
+    });
+
+    Object.keys(sharesByIntendedUse).forEach((key) => {
+      const items = sharesByIntendedUse[key];
+
+      const totalShare = items.reduce((sum, cur) => {
+        const share = cur.share_numerator && cur.share_denominator ? Number(cur.share_numerator)/Number(cur.share_denominator) : 0;
+        return sum + share;
+      }, 0);
+
+      if(totalShare > 1) {
+        warnings.push(`Laskutusosuus (${getLabelOfOption(intendedUseOptions, key.toString()) || '-'}) välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on yli 100%`);
+      } else if(totalShare < 1) {
+        warnings.push(`Laskutusosuus (${getLabelOfOption(intendedUseOptions, key.toString()) || '-'}) välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on alle 100%`);
+      }
+    });
   });
 
   return warnings;
@@ -2000,6 +2071,22 @@ export const getPayloadTenantContactDetails = (tenant: Object, contactType: 'ten
 );
 
 /**
+ * Get payload rent shares of a tenant
+ * @param {Object} tenant
+ * @returns {Object[]}
+ */
+export const getPayloadTenantRentShares = (tenant: Object) => {
+  const rentShares = get(tenant, 'rent_shares', []);
+
+  return rentShares.map((rentShare) => ({
+    id: rentShare.id,
+    intended_use: rentShare.intended_use,
+    share_numerator: rentShare.share_numerator,
+    share_denominator: rentShare.share_denominator,
+  }));
+};
+
+/**
  * Get tenant contact set payload
  * @param {Object} tenant
  * @returns {Object[]}
@@ -2038,6 +2125,7 @@ export const addTenantsFormValuesToPayload = (payload: Object, formValues: Objec
       share_numerator: tenant.share_numerator,
       share_denominator: tenant.share_denominator,
       reference: tenant.reference,
+      rent_shares: getPayloadTenantRentShares(tenant),
       tenantcontact_set: getPayloadTenantContactSet(tenant),
     };
   });

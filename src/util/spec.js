@@ -683,19 +683,13 @@ describe('utils', () => {
   describe('helpers.js', () => {
 
     // $FlowFixMe
-    it('Should return correct title (1.)', () => {
+    it('Should return correct title', () => {
       expect(composePageTitle('foo')).to.deep.equal('foo | Maanvuokrausjärjestelmä | Helsingin Kaupunki');
-    });
-
-    it('Should return correct title (2.)', () => {
       expect(composePageTitle()).to.deep.equal('Maanvuokrausjärjestelmä | Helsingin Kaupunki');
-    });
-
-    it('Should return correct title (3.)', () => {
       expect(composePageTitle('foo', false)).to.deep.equal('foo');
     });
 
-    it('Should return search query as string from an object (1.)', () => {
+    it('Should return search query as string from an object', () => {
       expect(getSearchQuery({
         foo1: undefined,
         foo2: null,
@@ -704,15 +698,9 @@ describe('utils', () => {
         foo5: 'test',
         foo6: ['1', '2'],
       })).to.deep.equal('?foo3=123&foo4=false&foo5=test&foo6=1,2');
-    });
-
-    it('Should return search query as string from an object (2.)', () => {
       expect(getSearchQuery({
         page: 1,
       })).to.deep.equal('');
-    });
-
-    it('Should return search params object from a string', () => {
       expect(getUrlParams('?foo3=123&foo4=false&foo5=test&foo6=1,2&foo6=3,4&foo6=5&foo7=test1&foo7=test2')).to.deep.equal({
         foo3: '123', 
         foo4: 'false', 
@@ -726,19 +714,10 @@ describe('utils', () => {
       expect(getUrlParams()).to.deep.equal({});
     });
 
-    it('Should return fixed length number (1.)', () => {
+    it('Should return fixed length number', () => {
       expect(fixedLengthNumber(1)).to.deep.equal('01');
-    });
-
-    it('Should return fixed length number (2.)', () => {
       expect(fixedLengthNumber(123)).to.deep.equal('123');
-    });
-
-    it('Should return fixed length number for null', () => {
       expect(fixedLengthNumber(null)).to.deep.equal('');
-    });
-
-    it('Should return fixed length number with custom amount of numbers', () => {
       expect(fixedLengthNumber(1, 4)).to.deep.equal('0001');
     });
 
@@ -746,100 +725,59 @@ describe('utils', () => {
       expect(getEpochTime()).to.be.a('number');
     });
 
-    it('undefined should be empty value', () => {
+    it('should be empty value', () => {
       expect(isEmptyValue(undefined)).to.deep.equal(true);
-    });
-
-    it('null should be empty value', () => {
       expect(isEmptyValue(null)).to.deep.equal(true);
-    });
-
-    it('empty string should be empty value', () => {
       expect(isEmptyValue('')).to.deep.equal(true);
     });
 
-    it('0 should be empty value', () => {
+    it('should not be empty value', () => {
       expect(isEmptyValue(0)).to.deep.equal(false);
-    });
-
-    it('foo should be empty value', () => {
       expect(isEmptyValue('foo')).to.deep.equal(false);
     });
 
-    it('should return value with thousand separator (1.)', () => {
+    it('should return value with thousand separator', () => {
       expect(formatNumberWithThousandSeparator('10000000.1234')).to.deep.equal('10 000 000.1234');
-    });
-
-    it('should return value with thousand separator (2.)', () => {
       expect(formatNumberWithThousandSeparator('10000000')).to.deep.equal('10 000 000');
-    });
-
-    it('should return value with thousand separator (3.)', () => {
       expect(formatNumberWithThousandSeparator(null)).to.deep.equal('');
-    });
-
-    it('should return value with custom thousand separator', () => {
       expect(formatNumberWithThousandSeparator('10000000,1234', '.')).to.deep.equal('10.000.000,1234');
     });
 
-    it('should format decimal number (1.)', () => {
+    it('should format decimal number', () => {
       expect(formatDecimalNumber(10000000.1234)).to.deep.equal('10000000,12');
-    });
-
-    it('should format decimal number (2.)', () => {
       expect(formatDecimalNumber(10000000)).to.deep.equal('10000000,00');
-    });
-
-    it('should format decimal number (3.)', () => {
       expect(formatDecimalNumber(null)).to.deep.equal(null);
     });
 
-    it('should format number (1.)', () => {
+    it('should format number', () => {
       expect(formatNumber(10000000.1234)).to.deep.equal('10 000 000,12');
-    });
-
-    it('should format number (2.)', () => {
       expect(formatNumber(10000000)).to.deep.equal('10 000 000,00');
-    });
-
-    it('should format number (3.)', () => {
       expect(formatNumber(null)).to.deep.equal('');
     });
 
-    it('123 should be decimal number string', () => {
+    it('should be decimal number string', () => {
       expect(isDecimalNumberStr('123')).to.deep.equal(true);
-    });
-
-    it('123 456,123 should be decimal number string', () => {
       expect(isDecimalNumberStr('123 456,123')).to.deep.equal(true);
     });
 
-    it('123qwe should not be decimal number string', () => {
+    it('should not be decimal number string', () => {
       expect(isDecimalNumberStr('123qwe')).to.deep.equal(false);
-    });
-
-    it('null should not be decimal number string', () => {
+      expect(isDecimalNumberStr('123.12.12')).to.deep.equal(false);
       expect(isDecimalNumberStr(null)).to.deep.equal(false);
     });
 
-    it('should covert 123 to a number', () => {
+    it('should covert string to a decimal number', () => {
       expect(convertStrToDecimalNumber('123')).to.deep.equal(123);
-    });
-
-    it('should covert 123 456,123 to a number', () => {
       expect(convertStrToDecimalNumber('123 456,123')).to.deep.equal(123456.123);
     });
 
-    it('should return null when trying to convert 123qwe to a number', () => {
+    it('should return null when trying to convert invalid string to decimal number', () => {
       expect(convertStrToDecimalNumber('123qwe')).to.deep.equal(null);
-    });
-
-    it('should return null when trying to convert null to a number', () => {
       expect(convertStrToDecimalNumber(null)).to.deep.equal(null);
     });
 
     it('should format date  to a default form', () => {
-      expect(formatDate('2019-05-09T15:26:54.889853+03:00')).to.deep.equal('09.05.2019');
+      expect(formatDate('2019-05-09T15:26:54.889853')).to.deep.equal('09.05.2019');
     });
 
     it('should format date to a custom form', () => {
@@ -854,31 +792,16 @@ describe('utils', () => {
       expect(formatDate(null)).to.deep.equal('');
     });
 
-    it('should format date range (1.)', () => {
-      expect(formatDateRange(32345678912, '2019-05-09T15:26:54.889853+03:00')).to.deep.equal('10.01.1971–09.05.2019');
-    });
-
-    it('should format date range (2.)', () => {
-      expect(formatDateRange(null, '2019-05-09T15:26:54.889853+03:00')).to.deep.equal('–09.05.2019');
-    });
-
-    it('should format date range (3.)', () => {
+    it('should format date range', () => {
+      expect(formatDateRange(32345678912, '2019-05-09T15:26:54.889853')).to.deep.equal('10.01.1971–09.05.2019');
+      expect(formatDateRange(null, '2019-05-09T15:26:54.889853')).to.deep.equal('–09.05.2019');
       expect(formatDateRange(32345678912, null)).to.deep.equal('10.01.1971–');
-    });
-
-    it('should format date range (4.)', () => {
       expect(formatDateRange(null, null)).to.deep.equal('');
     });
 
-    it('should get reference number link (1.)', () => {
+    it('should get reference number link', () => {
       expect(getReferenceNumberLink('123')).to.deep.equal('https://dev.hel.fi/paatokset/asia/123');
-    });
-
-    it('should get reference number link (2.)', () => {
       expect(getReferenceNumberLink('123 456')).to.deep.equal('https://dev.hel.fi/paatokset/asia/123-456');
-    });
-
-    it('should get reference number link (3.)', () => {
       expect(getReferenceNumberLink(null)).to.deep.equal(null);
     });
 

@@ -3,15 +3,22 @@ import format from 'date-fns/format';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
+import {store} from '$src/root/startApp';
 import {
   RentAdjustmentAmountTypes,
   RentCycles,
   RentDueDateTypes,
   RentTypes,
 } from './enums';
+import {
+  getRentWarnings, 
+  getTenantRentShareWarnings,
+  getTenantShareWarnings,
+} from '$src/leases/helpers';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
+import {dateGreaterOrEqual} from '$components/form/validations';
 import {isInvoiceBillingPeriodRequired} from '$src/invoices/helpers';
-import {getRentWarnings, getTenantShareWarnings} from '$src/leases/helpers';
-import {dateGreaterOrEqual, required} from '$components/form/validations';
+import {required} from '$components/form/validations';
 
 /** 
  * Validate summary form
@@ -121,9 +128,12 @@ export const validateTenantForm = (values: Object): Object => {
  */
 export const warnTenantForm = (values: Object): Object => {
   const warnings = {};
+  const leaseAttributes = getLeaseAttributes(store.getState());
   const {tenants} = values;
 
   const tenantWarnings = getTenantShareWarnings(tenants);
+  tenantWarnings.push(...getTenantRentShareWarnings(tenants, leaseAttributes));
+  
   if(tenantWarnings.length) {
     warnings.tenantWarnings = tenantWarnings;
   }
