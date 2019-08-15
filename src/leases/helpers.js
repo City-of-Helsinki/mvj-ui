@@ -947,15 +947,6 @@ export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttribut
   return warnings;
 };
 
-export const getContentTenantsFormData = (lease: Object) => {
-  const tenants: any = getContentTenants(lease);
-
-  return {
-    tenants: tenants.filter((tenant) => !isArchived(tenant.tenant)),
-    tenantsArchived: tenants.filter((tenant) => isArchived(tenant.tenant)),
-  };
-};
-
 /**
  * Get payable rents content
  * @param {Object} rent
