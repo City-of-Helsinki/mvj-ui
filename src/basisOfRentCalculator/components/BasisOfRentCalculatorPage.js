@@ -56,7 +56,7 @@ class BasisOfRentCalculatorPage extends PureComponent<Props> {
     return(
       <PageContainer hasTabs>
         <ContentContainer>
-          <BasisOfRentCalculatorForm/>
+          <BasisOfRentCalculatorForm initialValues={{basis_of_rents: [{}]}} />
         </ContentContainer>
       </PageContainer>
     );
