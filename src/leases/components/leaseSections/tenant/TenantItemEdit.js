@@ -172,7 +172,7 @@ const renderRentShares = ({
                             </Row>
                           }
                           removeButton={
-                            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RENTSHARE)}>
+                            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_TENANTRENTSHARE)}>
                               <RemoveButton
                                 className='third-level'
                                 onClick={handleRemove}
@@ -188,7 +188,7 @@ const renderRentShares = ({
               </Fragment>
             }
             {!archived &&
-              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RENTSHARE)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_TENANTRENTSHARE)}>
                 <Row>
                   <Column>
                     <AddButtonThird
