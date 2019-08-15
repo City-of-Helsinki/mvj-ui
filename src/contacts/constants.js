@@ -1,8 +1,16 @@
 // @flow
-import {TableSortOrder} from '$components/enums';
+import {TableSortOrder} from '$src/enums';
 
 /**
- * Contact list page default values
+ * Default sort key of contact list page
+ * @readonly
+ * @const {string}
  */
 export const DEFAULT_SORT_KEY = 'names';
+
+/**
+ * Default sort order of contact list page
+ * @readonly
+ * @const {string}
+ */
 export const DEFAULT_SORT_ORDER = TableSortOrder.ASCENDING;

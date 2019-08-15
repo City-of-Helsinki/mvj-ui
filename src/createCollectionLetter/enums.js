@@ -2,8 +2,8 @@
 
 /**
  * Create collection letter field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const CreateCollectionLetterFieldPaths = {
   COLLECTION_CHARGE: 'collection_charge',
@@ -16,8 +16,8 @@ export const CreateCollectionLetterFieldPaths = {
 
 /**
  * Create collection letter field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const CreateCollectionLetterFieldTitles = {
   COLLECTION_CHARGE: 'Perimispalkkio',

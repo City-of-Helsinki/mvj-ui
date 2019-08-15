@@ -24,13 +24,14 @@ import LitigantBillingPersonEdit from './LitigantBillingPersonEdit';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
 import {
   formatDateRange,
   findItemById,
+  isActive, 
+  isArchived,
 } from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
@@ -167,8 +168,8 @@ const LitigantItemEdit = ({
   };
 
   const savedLitigant = litigantId ? findItemById(litigants, litigantId) : {};
-  const active = isLitigantActive(savedLitigant && savedLitigant.litigant);
-  const archived = isLitigantArchived(savedLitigant && savedLitigant.litigant);
+  const active = isActive(savedLitigant && savedLitigant.litigant);
+  const archived = isArchived(savedLitigant && savedLitigant.litigant);
   const litigantErrors = get(errors, field);
 
   return (

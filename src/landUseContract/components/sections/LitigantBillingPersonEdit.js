@@ -19,13 +19,13 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
-import {FormNames, ViewModes} from '$src/enums';
-import {FieldTypes} from '$components/enums';
-import {isLitigantActive, isLitigantArchived} from '$src/landUseContract/helpers';
+import {FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {
   findItemById,
   formatDateRange,
   getFieldAttributes,
+  isActive,
+  isArchived,
 } from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
@@ -102,8 +102,8 @@ const LitigantBillingPersonEdit = ({
 
   const litigantContactSet = get(savedLitigant, 'litigantcontact_set', []),
     savedBillingPerson = findItemById(litigantContactSet, billingPersonId),
-    active = isLitigantActive(savedBillingPerson),
-    archived = isLitigantArchived(savedBillingPerson),
+    active = isActive(savedBillingPerson),
+    archived = isArchived(savedBillingPerson),
     litigantErrors = get(errors, field);
 
   return (

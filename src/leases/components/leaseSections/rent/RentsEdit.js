@@ -5,7 +5,6 @@ import {withRouter} from 'react-router';
 import {Field, FieldArray, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -33,9 +32,9 @@ import {
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateRentForm, warnRentForm} from '$src/leases/formValidators';
-import {getContentRentsFormData} from '$src/leases/helpers';
+import {getContentRents} from '$src/leases/helpers';
 import {getUiDataLeaseKey, getUiDataRentCalculatorKey} from '$src/uiData/helpers';
-import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
+import {hasPermissions, isArchived, isFieldAllowedToRead} from '$util/helpers';
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
@@ -163,7 +162,8 @@ type Props = {
 
 type State = {
   lease: Lease,
-  rentsData: Object,
+  rents: Array<Object>,
+  rentsArchived: Array<Object>,
 };
 
 class RentsEdit extends PureComponent<Props, State> {
@@ -172,15 +172,19 @@ class RentsEdit extends PureComponent<Props, State> {
 
   state = {
     lease: {},
-    rentsData: {},
+    rents: [],
+    rentsArchived: [],
   }
 
   static getDerivedStateFromProps(props, state) {
     const newState = {};
 
     if(props.currentLease !== state.lease) {
+      const rents = getContentRents(props.currentLease);
+
       newState.lease = props.currentLease;
-      newState.rentsData = getContentRentsFormData(props.currentLease);
+      newState.rents = rents.filter((rent) => !isArchived(rent));
+      newState.rentsArchived = rents.filter((rent) => isArchived(rent));
     }
     return newState;
   }
@@ -248,9 +252,7 @@ class RentsEdit extends PureComponent<Props, State> {
       leaseAttributes,
       usersPermissions,
     } = this.props;
-    const {rentsData} = this.state;
-    const rents = get(rentsData, 'rents', []),
-      rentsArchived = get(rentsData, 'rentsArchived', []);
+    const {rents, rentsArchived} = this.state;
 
     return (
       <AppConsumer>

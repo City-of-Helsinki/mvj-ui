@@ -115,12 +115,16 @@ describe('AreaNoteList', () => {
           id: 1,
           foo: 'bar',
         };
-        const newState = {...defaultState};
-        newState.isFetching = false;
-        newState.list = [dummyAreaNote];
-
+        const editedAreaNote = {
+          id: 1,
+          foo: 'barEdited',
+        };
+        const newState = {...defaultState, isFetching: false, list: [editedAreaNote]};
+        
         let state = areaNotesReducer({}, createAreaNote(dummyAreaNote));
         state = areaNotesReducer(state, receiveEditedAreaNote(dummyAreaNote));
+        state = areaNotesReducer(state, receiveEditedAreaNote(editedAreaNote));
+
         expect(state).to.deep.equal(newState);
       });
 

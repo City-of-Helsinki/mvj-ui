@@ -14,6 +14,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const apiTokenReducer: Reducer<Object> = handleActions({
+  ['mvj/auth/CLEAR_API_TOKEN']: () => {},
   ['mvj/auth/RECEIVE_API_TOKEN']: (state: Object, {payload}: ReceiveApiTokenAction) => payload,
 }, {});
 

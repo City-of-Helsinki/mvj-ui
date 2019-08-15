@@ -151,6 +151,22 @@ const CollateralMortgageDocument = ({
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.START_DATE)}>
+              {LeaseContractCollateralsFieldTitles.START_DATE}
+            </FormTextTitle>
+            <FormText>{formatDate(collateral.start_date) || '-'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.END_DATE)}>
+              {LeaseContractCollateralsFieldTitles.END_DATE}
+            </FormTextTitle>
+            <FormText>{formatDate(collateral.end_date) || '-'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
               {LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}

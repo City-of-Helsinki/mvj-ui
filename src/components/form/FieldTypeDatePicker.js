@@ -1,9 +1,12 @@
 // @flow
 import React from 'react';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import 'moment/locale/fi';
+import DatePicker, {registerLocale} from 'react-datepicker';
+import {isValidDate} from '$util/date';
+import parse from 'date-fns/parse';
+import fi from 'date-fns/locale/fi';
 import classNames from 'classnames';
+
+registerLocale('fi', fi);
 
 type Props = {
   disabled: boolean,
@@ -17,66 +20,62 @@ type Props = {
 const FieldTypeDatePicker = ({
   disabled = false,
   displayError = false,
-  input: {name, onBlur, onChange, value},
+  input: {name, onChange, value},
   isDirty = false,
   placeholder,
   setRefForField,
 }: Props) => {
-  let datePicker;
-
   const handleSetReference = (element: any) => {
-    datePicker = element;
     if(setRefForField) {
       setRefForField(element);
     }
   };
 
-  const handleBlur = (e: any) => {
-    if(e && e.target.value) {
-      const date = moment(e.target.value, ['DDMMYYYY', 'DD.MM.YYYY']);
+  const isShortDateStr = (value: string) => value.length == 8 && /^[0-9.]+$/.test(value);
 
-      if(datePicker) {
-        datePicker.setSelected(date.toISOString() || value);
-      }
-      if(date.toISOString()) {
-        return onBlur(date.toISOString());
-      }
-      return onBlur(value);
-    } else {
-      onBlur(null);
-    }
-  };
+  const getDateStr = (value: string) => [
+    value.substring(0, 2),
+    value.substring(2, 4),
+    value.substring(4, 9),
+  ].join('.');
 
-  const handleSelect = (val: any, e: any) => {
-    if(e && e.target.value) {
-      const date = moment(e.target.value, ['DDMMYYYY', 'DD.MM.YYYY']);
-      if(date.toISOString()) {
-        return onChange(date.toISOString());
-      }
-      return onChange(value && moment(value).toISOString() || null);
-    }
+  const getParsedDate = (value: string) => parse(value, 'dd.MM.yyyy', new Date(), {locale: fi});
+
+  const handleSelect = (val: any) => {
+    onChange(val);
   };
 
   const handleChange = (e: any) => {
-    onChange(e);
+    const value = e.target.value;
+    let parsedDate = getParsedDate(value);
+
+    if(isValidDate(parsedDate)) {
+      onChange(parsedDate);
+    } else if (isShortDateStr(value)) {
+      const dateStr = getDateStr(value);
+      
+      parsedDate = getParsedDate(dateStr);
+
+      if(isValidDate(parsedDate)) {
+        onChange(parsedDate);
+      }
+    }
   };
 
   return (
     <div className={classNames('form-field__datepicker', {'has-error': displayError}, {'is-dirty': isDirty})}>
       <DatePicker
+        ref={handleSetReference}
         disabled={disabled}
         id={name}
         locale='fi'
-        placeholderText={placeholder}
-        onBlur={handleBlur}
-        onChange={handleChange}
-        onSelect={handleSelect}
-        // $FlowFixMe
-        selected={value ? moment(value) : undefined}
-        dateFormat='DD.MM.YYYY'
+        selected={value ? new Date(value) : null}
+        dateFormat='dd.MM.yyyy'
         showYearDropdown
         dropdownMode="select"
-        ref={handleSetReference}
+        onChangeRaw={handleChange}
+        onSelect={handleSelect}
+        placeholderText={placeholder}
       />
     </div>
   );

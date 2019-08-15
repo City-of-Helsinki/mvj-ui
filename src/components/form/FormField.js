@@ -25,7 +25,7 @@ import FieldTypeUserSelect from './FieldTypeUserSelect';
 import FormFieldLabel from './FormFieldLabel';
 import FormText from './FormText';
 import FormTextTitle from './FormTextTitle';
-import {FieldTypes as FieldTypeOptions} from '$components/enums';
+import {FieldTypes as FieldTypeOptions} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
   formatDate,
@@ -70,8 +70,12 @@ const Types = {
   [FieldTypeOptions.TEXTAREA]: 'text',
 };
 
-const resolveFieldType = (type: string): Object => FieldTypes.hasOwnProperty(type) ? FieldTypes[type] : FieldTypeBasic;
-const resolveType = (type: string): ?string => Types.hasOwnProperty(type) ? Types[type] : null;
+const resolveFieldType = (type: string): Object => Object.prototype.hasOwnProperty.call(FieldTypes, type)
+  ? FieldTypes[type] 
+  : FieldTypeBasic;
+const resolveType = (type: string): ?string => Object.prototype.hasOwnProperty.call(Types, type)
+  ? Types[type] 
+  : null;
 
 type InputProps = {
   allowEdit: boolean,

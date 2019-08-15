@@ -6,7 +6,7 @@ import Authorization from '$components/authorization/Authorization';
 import CommentButton from './CommentButton';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {ConfirmationModalTexts} from '$src/enums';
-import {hasAnyPageDirtyForms} from '$src/helpers';
+import {hasAnyPageDirtyForms} from '$util/forms';
 import {ButtonColors} from '$components/enums';
 
 type Props = {

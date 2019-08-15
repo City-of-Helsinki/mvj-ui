@@ -1,7 +1,10 @@
 // @flow
 import {expect} from 'chai';
 
-import {receiveLessors} from './actions';
+import {
+  fetchLessors,
+  receiveLessors,
+} from './actions';
 import lessorReducer from './reducer';
 
 import type {LessorState} from './types';
@@ -20,6 +23,12 @@ describe('Lessors', () => {
     describe('lessorReducer', () => {
 
       // $FlowFixMe
+      it('fetchLessors should not change state', () => {
+        const state = lessorReducer({}, fetchLessors());
+
+        expect(state).to.deep.equal(defaultState);
+      });
+
       it('receive lessor list', () => {
         const dummyLessors = [{
           foo: 'bar',

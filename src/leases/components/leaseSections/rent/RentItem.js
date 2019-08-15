@@ -32,12 +32,13 @@ import {
   LeaseEqualizedRentsFieldTitles,
   RentTypes,
 } from '$src/leases/enums';
-import {isRentActive, isRentArchived} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   getFieldOptions,
   getLabelOfOption,
+  isActive,
+  isArchived,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getCollapseStateByKey} from '$src/leases/selectors';
@@ -113,8 +114,8 @@ const RentItem = ({
     handleCollapseToggle('equalized_rents', val);
   };
 
-  const active = isRentActive(rent),
-    archived = isRentArchived(rent),
+  const active = isActive(rent),
+    archived = isArchived(rent),
     rentType = get(rent, 'type'),
     fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []),
     contractRents = get(rent, 'contract_rents', []),

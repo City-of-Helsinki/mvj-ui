@@ -200,10 +200,9 @@ describe('Infill development', () => {
 
       it('should clear isFormValidById value', () => {
         const dummyFlags = {
-          'infill-development-form': true,
+          'infill-development-form': false,
         };
         const newState = {...defaultState};
-
 
         let state: Object = infillDevelopmentReducer({}, receiveFormValidFlags(dummyFlags));
         state = infillDevelopmentReducer(state, clearFormValidFlags());

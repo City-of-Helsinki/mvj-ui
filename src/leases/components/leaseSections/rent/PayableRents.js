@@ -4,8 +4,8 @@ import {connect} from 'react-redux';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
 import SortableTable from '$components/table/SortableTable';
-import {TableSortOrder} from '$components/enums';
 import {LeasePayableRentsFieldPaths, LeasePayableRentsFieldTitles} from '$src/leases/enums';
+import {TableSortOrder} from '$src/enums';
 import {
   formatDate,
   formatNumber,

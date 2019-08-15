@@ -29,7 +29,7 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentOverdueInvoices} from '$src/invoices/helpers';
-import {getContentSummary, getFullAddress, getTenantShareWarnings} from '$src/leases/helpers';
+import {getContentLeaseSummary, getFullAddress, getTenantShareWarnings} from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
   formatDate,
@@ -190,7 +190,7 @@ const SummaryLeaseInfo = ({
   usersPermissions,
 }: Props) => {
   const constructabilityStateOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE),
-    summary = getContentSummary(currentLease),
+    summary = getContentLeaseSummary(currentLease),
     tenants = summary.tenants,
     tenantWarnings = getTenantShareWarnings(summary.tenants),
     leaseAreas = summary.lease_areas,

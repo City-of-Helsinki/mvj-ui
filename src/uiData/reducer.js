@@ -18,13 +18,13 @@ const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   'mvj/uiData/RECEIVE_ATTRIBUTES': (state: Attributes, {payload}: ReceiveAttributesAction) => {
-    return payload || null;
+    return payload;
   },
 }, null);
 
 const methodsReducer: Reducer<Methods> = handleActions({
   'mvj/uiData/RECEIVE_METHODS': (state: Methods, {payload}: ReceiveMethodsAction) => {
-    return payload || null;
+    return payload;
   },
 }, null);
 

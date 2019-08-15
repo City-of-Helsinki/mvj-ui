@@ -2,8 +2,8 @@
 
 /**
  * Button color enumerable.
- *
- * @type {{SUCCESS: string: ALERT: string, NEUTRAL: string, SECONDARY: string,}}
+ * @readonly
+ * @enum {string}
  */
 export const ButtonColors = {
   SUCCESS: 'success',
@@ -13,36 +13,9 @@ export const ButtonColors = {
 };
 
 /**
- * Redux form field type enumerable.
- *
- * @type {{}}
- */
-export const FieldTypes = {
-  ADDRESS: 'address',
-  BOOLEAN: 'boolean',
-  CHOICE: 'choice',
-  CHECKBOX: 'checkbox',
-  CHECKBOX_DATE_TIME: 'checkbox-date-time',
-  CONTACT: 'contact',
-  DATE: 'date',
-  DECIMAL: 'decimal',
-  FIELD: 'field',
-  INTEGER: 'integer',
-  LEASE: 'lease',
-  LESSOR: 'lessor',
-  MULTISELECT: 'multiselect',
-  RADIO_WITH_FIELD: 'radio-with-field',
-  REFERENCE_NUMBER: 'reference_number',
-  SEARCH: 'search',
-  STRING: 'string',
-  TEXTAREA: 'textarea',
-  USER: 'user',
-};
-
-/**
  * Rent calculator type enumerable.
- *
- * @type {{YEAR: string, RANGE: string, BILLING_PERIOD: string,}}
+ * @readonly
+ * @enum {string}
  */
 export const RentCalculatorTypes = {
   YEAR: 'year',
@@ -52,8 +25,8 @@ export const RentCalculatorTypes = {
 
 /**
  * Rent calculator field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentCalculatorFieldPaths = {
   RENT_CALCULATOR: 'rent-calculator',
@@ -62,8 +35,8 @@ export const RentCalculatorFieldPaths = {
 
 /**
  * Rent calculator field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentCalculatorFieldTitles = {
   RENT_CALCULATOR: 'Vuokralaskelma',
@@ -72,8 +45,8 @@ export const RentCalculatorFieldTitles = {
 
 /**
  * Rent explanation subject type enumerable.
- *
- * @type {{CONTRACT_RENT: string, FIXED_INITIAL_YEAR_RENT: string, RENT: string,}}
+ * @readonly
+ * @enum {string}
  */
 export const RentExplanationSubjectType = {
   CONTRACT_RENT: 'contractrent',
@@ -82,9 +55,9 @@ export const RentExplanationSubjectType = {
 };
 
 /**
- * Rent explanation  type enumerable.
- *
- * @type {{FIXED: string, FREE: string, INDEX: string, ONE_TIME: string,}}
+ * Rent explanation type enumerable.
+ * @readonly
+ * @enum {string}
  */
 export const RentExplanationType = {
   FIXED: 'fixed',
@@ -95,8 +68,8 @@ export const RentExplanationType = {
 
 /**
  * Rent sub item subject type enumerable.
- *
- * @type {{INDEX: string, NEW_BASE_RENT: string, RATIO: string, RENT_ADJUSTMENT: string,}}
+ * @readonly
+ * @enum {string}
  */
 export const RentSubItemSubjectType = {
   INDEX: 'index',
@@ -108,8 +81,8 @@ export const RentSubItemSubjectType = {
 
 /**
  * Rent sub item type enumerable.
- *
- * @type {{DISCOUNT: string, INCREASE: string,}}
+ * @readonly
+ * @enum {string}
  */
 export const RentSubItemType = {
   DISCOUNT: 'discount',
@@ -117,19 +90,9 @@ export const RentSubItemType = {
 };
 
 /**
- * Table sort order enumerable.
- *
- * @type {{ASCENDING: string, DESCENDING: string,}}
- */
-export const TableSortOrder = {
-  ASCENDING: 'asc',
-  DESCENDING: 'desc',
-};
-
-/**
  * Municipalities enum for address search input
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const AddressFieldMunicipalities = {
   HELSINKI: 'helsinki',

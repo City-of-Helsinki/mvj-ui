@@ -21,12 +21,11 @@ import SummaryLeaseInfo from './SummaryLeaseInfo';
 import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames, ViewModes} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
-import {getContentSummary} from '$src/leases/helpers';
+import {getContentLeaseSummary} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
@@ -92,7 +91,7 @@ class SummaryEdit extends PureComponent<Props, State> {
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.summary = getContentSummary(props.currentLease);
+      newState.summary = getContentLeaseSummary(props.currentLease);
     }
 
     return !isEmpty(newState) ? newState : null;
@@ -476,12 +475,14 @@ class SummaryEdit extends PureComponent<Props, State> {
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
-                    <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}>
-                      {LeaseFieldTitles.ARRANGEMENT_DECISION}
-                    </FormTextTitle>
-                    <FormText>{summary.arrangement_decision ? 'Kyllä' : 'Ei'}</FormText>
-                  </Authorization>
+                  {summary.arrangement_decision &&
+                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+                      <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}>
+                        {LeaseFieldTitles.ARRANGEMENT_DECISION}
+                      </FormTextTitle>
+                      <FormText>{summary.arrangement_decision ? 'Kyllä' : 'Ei'}</FormText>
+                    </Authorization>
+                  }
                 </Column>
               </Row>
 

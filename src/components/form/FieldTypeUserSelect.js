@@ -5,7 +5,7 @@ import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
 import {getContentUser} from '$src/users/helpers';
-import {addEmptyOption, sortByLabelAsc} from '$util/helpers';
+import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchUsers} from '$src/users/requestsAsync';
 
 type Props = {
@@ -30,7 +30,7 @@ const FieldTypeUserSelect = ({
       search: inputValue,
     });
 
-    callback(addEmptyOption(contacts.map((lessor) => getContentUser(lessor)).sort(sortByLabelAsc)));
+    callback(addEmptyOption(contacts.map((lessor) => getContentUser(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
   }, 500);
 
   return(

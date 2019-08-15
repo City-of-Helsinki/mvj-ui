@@ -28,7 +28,7 @@ import {
   isMethodAllowed,
   sortStringByKeyDesc,
 } from '$util/helpers';
-import {getContentComments} from '$src/leases/helpers';
+import {getContentComments} from '$src/comments/helpers';
 import {
   getAttributes as getCommentAttributes,
   getCommentsByLease,

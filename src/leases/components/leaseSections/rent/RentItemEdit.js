@@ -38,13 +38,14 @@ import {
   RentTypes,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {isRentActive, isRentArchived} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   getFieldOptions,
   getLabelOfOption,
   hasPermissions,
+  isActive, 
+  isArchived,
   isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -148,8 +149,8 @@ class RentItemEdit extends PureComponent<Props, State> {
 
       newState.rentId = props.rentId;
       newState.savedRent = savedRent;
-      newState.active = isRentActive(savedRent);
-      newState.archived = isRentArchived(savedRent);
+      newState.active = isActive(savedRent);
+      newState.archived = isArchived(savedRent);
       newState.indexAdjustedRents = get(savedRent, 'index_adjusted_rents', []);
       newState.payableRents = get(savedRent, 'payable_rents', []);
       newState.equalizedRents = get(savedRent, 'equalized_rents', []);

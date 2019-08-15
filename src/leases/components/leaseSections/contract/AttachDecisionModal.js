@@ -11,7 +11,7 @@ import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchLeases} from '$src/leases/requestsAsync';
 import {ButtonColors} from '$components/enums';
 import {getContentLeaseOption} from '$src/leases/helpers';
-import {sortByLabelAsc} from '$util/helpers';
+import {sortStringByKeyAsc} from '$util/helpers';
 
 type FilterProps = {
   available: string,
@@ -79,7 +79,7 @@ class AttachDecisionModal extends PureComponent<Props, State> {
     // Both selected and available arrays on DualListBox use options for filtering. So add selectedUsers to search results and remove duplicates
     const uniqueLeases = [...leases.map((lease) => getContentLeaseOption(lease)), ...selectedLeases]
       .filter((a, index, array) => currentLeaseId != a.value && array.findIndex((b) => a.value === b.value) === index)
-      .sort(sortByLabelAsc);
+      .sort((a, b) => sortStringByKeyAsc(a, b, 'label'));
 
     this.setState({leaseOptions: uniqueLeases});
   };
@@ -136,7 +136,7 @@ class AttachDecisionModal extends PureComponent<Props, State> {
 
     return (
       <Modal
-        className='modal-autoheight modal-center'
+        className='modal-autoheight'
         title='Liitä vuokrauksiin'
         isOpen={isOpen}
         onClose={onClose}

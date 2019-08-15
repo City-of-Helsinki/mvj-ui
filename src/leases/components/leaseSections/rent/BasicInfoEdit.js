@@ -15,8 +15,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/constants';
-import {FormNames} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames} from '$src/enums';
 import {
   DueDatesPositions,
   FixedDueDates,

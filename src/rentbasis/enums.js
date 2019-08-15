@@ -2,8 +2,8 @@
 
 /**
  * Rent basis field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentBasisFieldPaths = {
   ID: 'id',
@@ -23,8 +23,8 @@ export const RentBasisFieldPaths = {
 
 /**
  * Rent basis field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentBasisFieldTitles = {
   IDENTIFIER: 'Vuokrausperiaatetunnus',
@@ -44,8 +44,8 @@ export const RentBasisFieldTitles = {
 
 /**
  * Rent basis property identifiers field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentBasisPropertyIdentifiersFieldPaths = {
   PROPERTY_IDENTIFIERS: 'property_identifiers',
@@ -54,8 +54,8 @@ export const RentBasisPropertyIdentifiersFieldPaths = {
 
 /**
  * Rent basis property identifiers field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentBasisPropertyIdentifiersFieldTitles = {
   PROPERTY_IDENTIFIERS: 'Kiinteistötunnukset',
@@ -64,8 +64,8 @@ export const RentBasisPropertyIdentifiersFieldTitles = {
 
 /**
  * Rent basis decisions field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentBasisDecisionsFieldPaths = {
   DECISIONS: 'decisions',
@@ -77,8 +77,8 @@ export const RentBasisDecisionsFieldPaths = {
 
 /**
  * Rent basis decisions field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentBasisDecisionsFieldTitles = {
   DECISIONS: 'Päätökset',
@@ -90,8 +90,8 @@ export const RentBasisDecisionsFieldTitles = {
 
 /**
  * Rent basis rent rates field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentBasisRentRatesFieldPaths = {
   RENT_RATES: 'rent_rates',
@@ -102,8 +102,8 @@ export const RentBasisRentRatesFieldPaths = {
 
 /**
  * Rent basis rent rates field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const RentBasisRentRatesFieldTitles = {
   RENT_RATES: 'Hinnat',

@@ -88,7 +88,7 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
       ...valid,
     };
   },
-  ['mvj/leases/CLEAR_FORM_VALID_FLAGS']: () => {
+  ['mvj/infillDevelopment/CLEAR_FORM_VALID_FLAGS']: () => {
     return {
       [FormNames.INFILL_DEVELOPMENT]: true,
     };

@@ -1,9 +1,9 @@
 // @flow
 import get from 'lodash/get';
-import {TableSortOrder} from '$components/enums';
 
 import {LeaseholdTransferPartyTypes} from '$src/leaseholdTransfer/enums';
-
+import {TableSortOrder} from '$src/enums';
+import {getApiResponseResults} from '$util/helpers';
 import type {LeaseholdTransferList} from '$src/leaseholdTransfer/types';
 
 /**
@@ -11,7 +11,7 @@ import type {LeaseholdTransferList} from '$src/leaseholdTransfer/types';
 * @param {Object} query
 * @returns {Object}
 */
-export const mapLeaseholdTransferSearchFilters = (query: Object) => {
+export const mapLeaseholdTransferSearchFilters = (query: Object): Object => {
   const searchQuery = {...query};
 
   if(searchQuery.sort_key) {
@@ -33,19 +33,12 @@ export const mapLeaseholdTransferSearchFilters = (query: Object) => {
 };
 
 /**
-* Map leashold transfer list count from API response
-* @param {Object} query
-* @returns {number}
-*/
-export const getLeaseholdTransferListCount = (list: LeaseholdTransferList) => get(list, 'count', 0);
-
-/**
-* Map leashold transfers from API response
-* @param {Object} query
-* @returns {number}
-*/
-export const getContentLeaseholdTransfers = (list: LeaseholdTransferList) =>
-  get(list, 'results', [])
+ * Get leashold transfers from api response
+ * @param {Object} query
+ * @returns {Object[]}
+ */
+export const getContentLeaseholdTransfers = (list: LeaseholdTransferList): Array<Object> =>
+  getApiResponseResults(list)
     .map((item) => {
       return {
         id: item.id,
@@ -57,14 +50,3 @@ export const getContentLeaseholdTransfers = (list: LeaseholdTransferList) =>
         deleted: item.deleted,
       };
     });
-
-/**
-* Map leashold transfer max page  from API response
-* @param {Object} query
-* @returns {number}
-*/
-export const getLeaseholdTransferListMaxPage = (list: LeaseholdTransferList, size: number) => {
-  const count = getLeaseholdTransferListCount(list);
-
-  return Math.ceil(count/size);
-};

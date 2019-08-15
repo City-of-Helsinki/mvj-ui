@@ -3,7 +3,10 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector, initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import moment from 'moment';
+import addMonths from 'date-fns/addMonths';
+import format from 'date-fns/format';
+import isAfter from 'date-fns/isAfter';
+import subDays from 'date-fns/subDays';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -122,11 +125,11 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
         break;
     }
 
-    while(!moment(current).isAfter(formValues.end_date, 'day')) {
-      const next = moment(current).add(months, 'months').format('YYYY-MM-DD');
-      const endDate = moment(next).isAfter(formValues.end_date)
+    while(!isAfter(new Date(formValues.end_date), new Date(current))) {
+      const next = format(addMonths(new Date(current), months), 'yyyy-MM-dd');
+      const endDate = isAfter(new Date(formValues.end_date), new Date(next))
         ? formValues.end_date
-        : moment(next).subtract(1, 'days').format('YYYY-MM-DD');
+        : format(subDays(new Date(next), 1), 'yyyy-MM-dd');
       
       ranges.push({
         start_date: current,

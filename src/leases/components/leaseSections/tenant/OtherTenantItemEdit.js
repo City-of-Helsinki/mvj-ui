@@ -21,19 +21,19 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
-import {FormNames, Methods, ViewModes} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames, Methods, ViewModes} from '$src/enums';
 import {
   LeaseTenantContactSetFieldPaths,
   LeaseTenantContactSetFieldTitles,
   TenantContactType,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {isTenantActive, isTenantArchived} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDateRange,
   hasPermissions,
+  isActive,
+  isArchived,
   isFieldAllowedToRead,
   isMethodAllowed,
 } from '$util/helpers';
@@ -129,8 +129,8 @@ const OtherTenantItemEdit = ({
   };
 
   const savedTenant = getOtherTenantById(tenantId),
-    active = isTenantActive(savedTenant),
-    archived = isTenantArchived(savedTenant),
+    active = isActive(savedTenant),
+    archived = isArchived(savedTenant),
     tenantErrors = get(errors, field);
 
   return (

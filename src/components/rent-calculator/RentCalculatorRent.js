@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import moment from 'moment';
+import isAfter from 'date-fns/isAfter';
 import get from 'lodash/get';
 
 import RentCalculatorExplanation from './RentCalculatorExplanation';
@@ -12,12 +12,13 @@ type Props = {
 const Rent = ({rent}: Props) => {
   const getEndDate = (explanations: Array<Object>) => {
     let endDate = null;
+
     explanations.forEach((explanation) => {
       get(explanation, 'date_ranges', []).forEach((dateRange) => {
         if(dateRange.end_date) {
           if(!endDate) {
             endDate = dateRange.end_date;
-          } else if(moment(dateRange.end_date).isAfter(moment(endDate), 'day')) {
+          } else if(isAfter(new Date(endDate), new Date(dateRange.end_date))) {
             endDate = dateRange.end_date;
           }
         }

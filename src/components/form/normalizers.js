@@ -1,9 +1,9 @@
 // @flow
-import moment from 'moment';
+import format from 'date-fns/format';
 
-import {FieldTypes} from '$components/enums';
+import {FieldTypes} from '$src/enums';
 
-export const normalizeDate = (date: any) => (date && moment(date).format('YYYY-MM-DD')) || null;
+export const normalizeDate = (date: any) => (date && format(new Date(date), 'yyyy-MM-dd')) || null;
 
 export const normalizeInteger = (value: any) => (value && Number.isInteger(Number(value))) ? Number(value) : value;
 

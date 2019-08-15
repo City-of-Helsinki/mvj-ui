@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
-import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
@@ -49,9 +48,11 @@ import {
   LeaseFieldTitles,
   LeaseTenantsFieldPaths,
 } from '$src/leases/enums';
-import {getContentLeases, mapLeaseSearchFilters} from '$src/leases/helpers';
+import {getContentLeaseListResults, mapLeaseSearchFilters} from '$src/leases/helpers';
 import {
   formatDate,
+  getApiResponseCount,
+  getApiResponseMaxPage,
   getFieldOptions,
   getLabelOfOption,
   getSearchQuery,
@@ -209,7 +210,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       ? query.lease_state
       : query.lease_state
         ? [query.lease_state]
-        : query.search || query.hasOwnProperty('lease_state') ? [] : DEFAULT_LEASE_STATES;
+        : query.search || Object.prototype.hasOwnProperty.call(query, 'lease_state') ? [] : DEFAULT_LEASE_STATES;
   }
 
   getOnlyActiveLeasesValue = (query: Object) => {
@@ -458,20 +459,6 @@ class LeaseListPage extends PureComponent<Props, State> {
     return columns;
   }
 
-  getLeasesCount = (leases: LeaseList) => {
-    return get(leases, 'count', 0);
-  }
-
-  getLeasesMaxPage = (leases: LeaseList) => {
-    const count = this.getLeasesCount(leases);
-    if(!count) {
-      return 0;
-    }
-    else {
-      return Math.ceil(count/LIST_TABLE_PAGE_SIZE);
-    }
-  }
-
   handleLeaseStatesChange = (values: Array<string>) => {
     const {location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
@@ -502,7 +489,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   handleSortingChange = ({sortKey, sortOrder}) => {
-    const {location: {search}} = this.props;
+    const {history, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
 
     searchQuery.sort_key = sortKey;
@@ -513,7 +500,10 @@ class LeaseListPage extends PureComponent<Props, State> {
       sortOrder,
     });
 
-    this.handleSearchChange(searchQuery);
+    return history.push({
+      pathname: getRouteById(Routes.LEASES),
+      search: getSearchQuery(searchQuery),
+    });
   }
 
   handleMapViewportChanged = debounce((mapOptions: Object) => {
@@ -549,9 +539,9 @@ class LeaseListPage extends PureComponent<Props, State> {
       leases: content,
       location: {query},
     } = this.props;
-    const leases = getContentLeases(content, query);
-    const count = this.getLeasesCount(content);
-    const maxPage = this.getLeasesMaxPage(content);
+    const leases = getContentLeaseListResults(content, query);
+    const count = getApiResponseCount(content);
+    const maxPage = getApiResponseMaxPage(content, LIST_TABLE_PAGE_SIZE);
     const columns = this.getColumns();
 
     if(isFetchingLeaseAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;

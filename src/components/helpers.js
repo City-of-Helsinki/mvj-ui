@@ -56,13 +56,13 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
   switch(subjectType) {
     case RentExplanationSubjectType.CONTRACT_RENT:
       if(baseAmount !== null) {
-        return `Sopimusvuokra - ${intendedUseName} (${formatNumber(baseAmount)} € ${getLabelOfOption(baseAmountPeriodOptions, baseAmountPeriod)})`;
+        return `Sopimusvuokra - ${intendedUseName} (${formatNumber(baseAmount)} € ${getLabelOfOption(baseAmountPeriodOptions, baseAmountPeriod) || ''})`;
       }
-      return `Sopimusvuokra - ${intendedUseName} (${formatNumber(amount)} € ${getLabelOfOption(periodOptions, period)})`;
+      return `Sopimusvuokra - ${intendedUseName} (${formatNumber(amount)} € ${getLabelOfOption(periodOptions, period) || ''})`;
     case RentExplanationSubjectType.FIXED_INITIAL_YEAR_RENT:
       return `Kiinteä alkuvuosivuokra - ${intendedUseName} (${formatNumber(amount)} € / vuosi)`;
     case RentExplanationSubjectType.RENT:
-      return `Perittävä vuokra (${getLabelOfOption(typeOptions, type)})`;
+      return `Perittävä vuokra (${getLabelOfOption(typeOptions, type) || ''})`;
     default:
       return description;
   }
@@ -85,7 +85,7 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
       switch (type) {
         case RentSubItemType.DISCOUNT:
         case RentSubItemType.INCREASE:
-          return `${getLabelOfOption(rentAdjustementTypeOptions, type)} (${formatNumber(fullAmount)} ${getLabelOfOption(amountTypeOptions, amountType)})`;
+          return `${getLabelOfOption(rentAdjustementTypeOptions, type) || ''} (${formatNumber(fullAmount)} ${getLabelOfOption(amountTypeOptions, amountType) || ''})`;
         default:
           return '-';
       }

@@ -1,17 +1,16 @@
 // @flow
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
+import isPast from 'date-fns/isPast';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
-import moment from 'moment';
 import {isDirty} from 'redux-form';
 
 import {
   getSplittedDateRangesWithItems,
   sortByStartAndEndDateDesc,
 } from '$util/date';
-import {TableSortOrder} from '$components/enums';
-import {FormNames} from '$src/enums';
+import {FormNames, TableSortOrder} from '$src/enums';
 import {
   CollateralTypes,
   ConstructabilityType,
@@ -30,6 +29,7 @@ import {
 } from './enums';
 import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
+import {getContentLessor} from '$src/lessor/helpers';
 import {getContentPropertyIdentifiers} from '$src/rentbasis/helpers';
 import {getContentUser} from '$src/users/helpers';
 import {
@@ -38,11 +38,14 @@ import {
   fixedLengthNumber,
   formatDate,
   formatDateRange,
+  getApiResponseResults,
   getFieldOptions,
   getLabelOfOption,
   isDecimalNumberStr,
   isEmptyValue,
-  isItemActive,
+  isActive,
+  isArchived,
+  sortStringAsc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
@@ -53,13 +56,14 @@ import {removeSessionStorageItem} from '$util/storage';
 import type {Lease} from './types';
 import type {CommentList} from '$src/comments/types';
 import type {Attributes, LeafletFeature, LeafletGeoJson} from '$src/types';
+import type {RootState} from '$src/root/types';
 
 /**
-  * Test is lease empty
-  * @param {Object} lease
-  * @return {boolean}
-  */
-export const isLeaseEmpty = (lease: Lease) => {
+ * Test is lease empty
+ * @param {Object} lease
+ * @return {boolean}
+ */
+export const isLeaseEmpty = (lease: Lease): boolean => {
   let empty = true;
   const skipFields = [
     'id',
@@ -99,12 +103,12 @@ export const isLeaseEmpty = (lease: Lease) => {
 };
 
 /**
-  * Test is lease created by user
-  * @param {Object} lease
-  * @param {Object} user
-  * @return {boolean}
-  */
-export const isLeaseCreatedByUser = (lease: Lease, user: Object) => {
+ * Test is lease created by user
+ * @param {Object} lease
+ * @param {Object} user
+ * @return {boolean}
+ */
+export const isLeaseCreatedByUser = (lease: Lease, user: Object): boolean => {
   const preparerUsername = get(lease, 'preparer.username');
   const userEmail = get(user, 'profile.email');
 
@@ -112,42 +116,76 @@ export const isLeaseCreatedByUser = (lease: Lease, user: Object) => {
 };
 
 /**
-  * Test is user allowed to delete lease
-  * @param {Object} lease
-  * @param {Object[]} comments
-  * @param {Object} user
-  * @return {boolean}
-  */
-export const isUserAllowedToDeleteEmptyLease = (lease: Lease, comments: CommentList, user: Object) =>
+ * Test is user allowed to delete lease
+ * @param {Object} lease
+ * @param {Object[]} comments
+ * @param {Object} user
+ * @return {boolean}
+ */
+export const isUserAllowedToDeleteEmptyLease = (lease: Lease, comments: CommentList, user: Object): boolean =>
   isLeaseEmpty(lease) && comments && !comments.length && isLeaseCreatedByUser(lease, user);
 
-export const getContentLeaseIdentifier = (item:Object) =>
-  !isEmpty(item)
-    ? `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`
+/**
+ * Get content option to be used on dropdowns
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const getContentLeaseOption = (lease: Lease): Object => ({
+  value: lease.id ? lease.id.toString() : null,
+  label: getContentLeaseIdentifier(lease),
+});
+
+/**
+ * Get full address of an item as string
+ * @param {Object} item
+ * @returns {string}
+ */
+export const getFullAddress = (item: Object): ?string => {
+  if(isEmpty(item)) return null;
+
+  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}${item.postal_code ? item.postal_code + ' ' : ''}${item.city || ''}`;
+};
+
+/**
+ * Get content lease identifiers
+ * @param {Object} lease
+ * @returns {string}
+ */
+export const getContentLeaseIdentifier = (lease: Object): ?string =>
+  !isEmpty(lease)
+    ? `${get(lease, 'identifier.type.identifier')}${get(lease, 'identifier.municipality.identifier')}${fixedLengthNumber(get(lease, 'identifier.district.identifier'), 2)}-${get(lease, 'identifier.sequence')}`
     : null;
 
-
-export const getContentLeaseTenants = (lease: Object, query: Object = {}) => {
-  return get(lease, 'tenants', [])
+/**
+ * Get content lease list area identifiers
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentLeaseListTenants = (lease: Object, query: Object = {}): Array<Object> => 
+  get(lease, 'tenants', [])
     .map((item) => get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT))
-    .filter((tenant) => query.only_past_tenants === 'true' ? isTenantArchived(tenant) : !isTenantArchived(tenant))
-    .map((tenant) => tenant ? getContactFullName(tenant.contact) : null);
-};
+    .filter((tenant) => query.only_past_tenants === 'true' ? isArchived(tenant) : !isArchived(tenant))
+    .map((tenant) => tenant ? getContactFullName(tenant.contact) : null)
+    .filter((name) => name)
+    .sort(sortStringAsc);
 
-export const getContentLeaseOption = (lease: Lease) => {
-  return {
-    value: lease.id ? lease.id.toString() : null,
-    label: getContentLeaseIdentifier(lease),
-  };
-};
-
-export const getContentLeaseAreaIdentifiers = (lease: Object) => {
-  return get(lease, 'lease_areas', [])
+/**
+ * Get content lease list area identifiers
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentLeaseListAreaIdentifiers = (lease: Object): Array<Object> => 
+  get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)
-    .map((area) => area.identifier);
-};
+    .map((area) => area.identifier)
+    .sort(sortStringAsc);
 
-export const getContentLeaseAddresses = (lease: Object) => {
+/**
+ * Get content lease list lease addresses
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentLeaseListLeaseAddresses = (lease: Object): Array<Object> => {
   const addresses = [];
 
   get(lease, 'lease_areas', [])
@@ -159,76 +197,83 @@ export const getContentLeaseAddresses = (lease: Object) => {
         });
     });
 
-  return addresses;
+  const sortedAddresses = addresses
+    .filter((address, index, self) =>  self.indexOf(address) == index)
+    .sort(sortStringAsc);
+  
+  return sortedAddresses;
 };
 
-export const getContentLeaseItem = (lease: Object, query: Object = {}) => {
+/**
+ * Get content lease list lease
+ * @param {Object} lease
+ * @param {Object} query
+ * @returns {Object}
+ */
+export const getContentLeaseListLease = (lease: Object, query: Object = {}): Object => {
   return {
     id: lease.id,
     identifier: getContentLeaseIdentifier(lease),
-    lease_area_identifiers: getContentLeaseAreaIdentifiers(lease),
-    tenants: getContentLeaseTenants(lease, query),
+    lease_area_identifiers: getContentLeaseListAreaIdentifiers(lease),
+    tenants: getContentLeaseListTenants(lease, query),
     lessor: getContactFullName(lease.lessor),
-    addresses: getContentLeaseAddresses(lease),
+    addresses: getContentLeaseListLeaseAddresses(lease),
     state: lease.state,
     start_date: lease.start_date,
     end_date: lease.end_date,
   };
 };
 
-export const getContentLeases = (content: Object, query: Object) =>
-  get(content, 'results', []).map((item) => getContentLeaseItem(item, query));
+/**
+ * Get lease list results
+ * @param {Object} apiResponse
+ * @param {Object} query
+ * @returns {Object[]}
+ */
+export const getContentLeaseListResults = (apiResponse: Object, query: Object): Array<Object> =>
+  getApiResponseResults(apiResponse).map((item) => getContentLeaseListLease(item, query));
 
-export const getContentLeaseInfo = (lease: Object) => {
-  return {
-    identifier: getContentLeaseIdentifier(lease),
-    end_date: lease.end_date,
-    start_date: lease.start_date,
-    state: lease.state,
-  };
-};
-
-export const getContentLeaseStatus = (lease: Object) => {
-  const now = moment(),
-    startDate = lease.start_date,
+/**
+ * Get content lease status
+ * @param {Object} lease
+ * @returns {string}
+ */
+const getContentLeaseStatus = (lease: Object): string => {
+  const startDate = lease.start_date,
     endDate = lease.end_date;
 
-  if(endDate && now.isAfter(endDate, 'day')) {
+  if(endDate && isPast(new Date(endDate))) {
     return LeaseStatus.FINISHED;
   }
-  if((!endDate && !startDate) || moment(startDate).isAfter(now, 'day')) {
+
+  if((!endDate && !startDate)) {
     return LeaseStatus.PREPARATION;
   }
 
   return LeaseStatus.IN_EFFECT;
 };
 
-export const getContentHistory = (lease: Object) =>
-  get(lease, 'history', []).map((item) => {
-    return {
-      active: item.active,
-      end_date: item.end_date,
-      identifier: item.identifier,
-      start_date: item.start_date,
-      type: item.type,
-    };
-  });
-
-export const getContentLessor = (lessor: ?Object) => {
-  if(!lessor) return {};
-
+/**
+ * Get lease info section content
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const getContentLeaseInfo = (lease: Object): Object => {
   return {
-    id: lessor.id,
-    value: lessor.id,
-    label: getContactFullName(lessor),
-    type: lessor.type,
-    first_name: lessor.first_name,
-    last_name: lessor.last_name,
-    name: lessor.name,
+    identifier: getContentLeaseIdentifier(lease),
+    end_date: lease.end_date,
+    start_date: lease.start_date,
+    state: lease.state,
+    status: getContentLeaseStatus(lease),
   };
 };
 
-const getContentInfillDevelopmentCompensations = (lease: Lease) =>
+/**
+ * Get lease infill development compensations content
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+const getContentLeaseInfillDevelopmentCompensations = (lease: Lease): Array<Object> =>
   get(lease, 'infill_development_compensations', []).map((item) => {
     return {
       id: item.id,
@@ -237,11 +282,11 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
   });
 
 /**
-  * Get global basis of rents
-  * @param {Object} lease
-  * @returns {Object[]}
-  */
-export const getContentMatchingBasisOfRents = (lease: Object) =>
+ * Get matching basis of rents content
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentLeaseMatchingBasisOfRents = (lease: Object): Array<Object> =>
   get(lease, 'matching_basis_of_rents', [])
     .map((item) => {
       return {
@@ -250,8 +295,12 @@ export const getContentMatchingBasisOfRents = (lease: Object) =>
       };
     });
 
-
-export const getContentSummary = (lease: Object) => {
+/**
+ * Get lease summary tab content
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentLeaseSummary = (lease: Object): Object => {
   return {
     area_notes: get(lease, 'area_notes', []),
     // Set arrangement decision to true if there is any contract where is_readjustment_decision == true
@@ -262,19 +311,19 @@ export const getContentSummary = (lease: Object) => {
       .join(', '),
     building_selling_price: lease.building_selling_price,
     classification: lease.classification,
-    constructability_areas: getContentConstructability(lease),
+    constructability_areas: getContentConstructabilityAreas(lease),
     conveyance_number: lease.conveyance_number,
     end_date: lease.end_date,
     financing: lease.financing,
     hitas: lease.hitas,
-    infill_development_compensations: getContentInfillDevelopmentCompensations(lease),
+    infill_development_compensations: getContentLeaseInfillDevelopmentCompensations(lease),
     intended_use: lease.intended_use,
     intended_use_note: lease.intended_use_note,
     is_subject_to_vat: lease.is_subject_to_vat,
     lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
     lessor: getContentLessor(lease.lessor),
     management: lease.management,
-    matching_basis_of_rents: getContentMatchingBasisOfRents(lease),
+    matching_basis_of_rents: getContentLeaseMatchingBasisOfRents(lease),
     note: lease.note,
     notice_note: lease.notice_note,
     notice_period: lease.notice_period,
@@ -289,13 +338,13 @@ export const getContentSummary = (lease: Object) => {
     start_date: lease.start_date,
     statistical_use: lease.statistical_use,
     supportive_housing: lease.supportive_housing,
-    tenants: getContentTenants(lease).filter((tenant) => !isTenantArchived(tenant.tenant)),
+    tenants: getContentTenants(lease).filter((tenant) => !isArchived(tenant.tenant)),
     transferable: lease.transferable,
   };
 };
 
 /**
-  * Helper function to get related lease content by path
+  * Get related lease content by path
   * @param {Object} content
   * @param {string} path
   * @returns {Object}
@@ -304,26 +353,25 @@ export const getContentRelatedLease = (content: Object, path: string = 'from_lea
   get(content, path, {});
 
 /**
-  * Get content related leases realted from list sorted by start and end date
-  * @param {Object} lease
-  * @returns {Object[]}
-  */
-export const getContentRelatedLeasesFrom = (lease: Object) =>
+ * Get content related leases from list sorted by start and end date
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentRelatedLeasesFrom = (lease: Object): Array<Object> =>
   get(lease, 'related_leases.related_from', [])
     .map((relatedLease) => {
       return {
         id: relatedLease.id,
         lease: getContentRelatedLease(relatedLease, 'from_lease'),
       };
-    })
-    .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));
+    });
 
 /**
-  * Get content related leases realted to list sorted by start and end date
-  * @param {Object} lease
-  * @returns {Object[]}
-  */
-export const getContentRelatedLeasesTo = (lease: Object) =>
+ * Get content related leases to list sorted by start and end date
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentRelatedLeasesTo = (lease: Object): Array<Object> =>
   get(lease, 'related_leases.related_to', [])
     .map((relatedLease) => {
       return {
@@ -333,6 +381,11 @@ export const getContentRelatedLeasesTo = (lease: Object) =>
     })
     .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));
 
+/**
+ * Get lease area addresses content
+ * @param {Object} area
+ * @returns {Object[]}
+ */
 export const getContentLeaseAreaAddresses = (area: Object): Array<Object> => {
   return get(area, 'addresses', []).map((address) => {
     return {
@@ -345,10 +398,13 @@ export const getContentLeaseAreaAddresses = (area: Object): Array<Object> => {
   });
 };
 
-export const getContentPlots = (plots: Array<Object>, inContract: boolean): Array<Object> => {
-  if(!plots || !plots.length) {return [];}
-
-  return plots.filter((plot) => plot.in_contract === inContract).map((plot) => {
+/**
+ * Get content plots
+ * @param {Object} area
+ * @returns {Object[]}
+ */
+export const getContentPlots = (area: Object): Array<Object> => 
+  get(area, 'plots', []).map((plot) => {
     return {
       id: plot.id,
       identifier: plot.identifier,
@@ -361,12 +417,14 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean): Arra
       in_contract: plot.in_contract,
     };
   });
-};
 
-export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolean): Array<Object> => {
-  if(!planunits || !planunits.length) {return [];}
-
-  return planunits.filter((planunit) => planunit.in_contract === inContract).map((planunit) => {
+/**
+ * Get content plan units
+ * @param {Object} area
+ * @returns {Object[]}
+ */
+export const getContentPlanUnits = (area: Object): Array<Object> => 
+  get(area, 'plan_units', []).map((planunit) => {
     return {
       id: planunit.id,
       identifier: planunit.identifier,
@@ -376,18 +434,25 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
       in_contract: planunit.in_contract,
       plot_division_identifier: planunit.plot_division_identifier,
       plot_division_effective_date: planunit.plot_division_effective_date,
-      plot_division_state: get(planunit, 'plot_division_state.id') || get(planunit, 'plot_division_state'),
+      plot_division_state: get(planunit, 'plot_division_state.id') || planunit.plot_division_state,
       detailed_plan_identifier: planunit.detailed_plan_identifier,
       detailed_plan_latest_processing_date: planunit.detailed_plan_latest_processing_date,
       detailed_plan_latest_processing_date_note: planunit.detailed_plan_latest_processing_date_note,
-      plan_unit_type: get(planunit, 'plan_unit_type.id') || get(planunit, 'plan_unit_type'),
-      plan_unit_state: get(planunit, 'plan_unit_state.id') || get(planunit, 'plan_unit_state'),
-      plan_unit_intended_use: get(planunit, 'plan_unit_intended_use.id') || get(planunit, 'plan_unit_intended_use'),
+      plan_unit_type: get(planunit, 'plan_unit_type.id') || planunit.plan_unit_type,
+      plan_unit_state: get(planunit, 'plan_unit_state.id') || planunit.plan_unit_state,
+      plan_unit_intended_use: get(planunit, 'plan_unit_intended_use.id') || planunit.plan_unit_intended_use,
     };
   });
-};
 
-export const getContentLeaseAreaItem = (area: Object) => {
+/**
+ * Get single lease area content
+ * @param {Object} area
+ * @returns {Object}
+ */
+export const getContentLeaseArea = (area: Object): Object => {
+  const plots: any = getContentPlots(area);
+  const planUnits: any = getContentPlanUnits(area);
+
   return {
     id: area.id,
     identifier: area.identifier,
@@ -399,78 +464,83 @@ export const getContentLeaseAreaItem = (area: Object) => {
     city: area.city,
     type: area.type,
     location: area.location,
-    plots_current: getContentPlots(get(area, 'plots', []), false),
-    plots_contract: getContentPlots(get(area, 'plots', []), true),
-    plan_units_current: getContentPlanUnits(get(area, 'plan_units', []), false),
-    plan_units_contract: getContentPlanUnits(get(area, 'plan_units', []), true),
+    plots_current: plots.filter((plot) => !plot.in_contract),
+    plots_contract: plots.filter((plot) => plot.in_contract),
+    plan_units_current: planUnits.filter((plot) => !plot.in_contract),
+    plan_units_contract: planUnits.filter((plot) => plot.in_contract),
     archived_at: area.archived_at,
     archived_note: area.archived_note,
     archived_decision: get(area, 'archived_decision.id') || get(area, 'archived_decision'),
   };
 };
 
-export const getContentLeaseAreas = (lease: Object) =>
-  get(lease, 'lease_areas', []).map((area) => getContentLeaseAreaItem(area));
+/**
+ * Get lease areas content
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentLeaseAreas = (lease: Object): Array<Object> =>
+  get(lease, 'lease_areas', []).map((area) => getContentLeaseArea(area));
 
+/**
+ * Get lease area by id
+ * @param {Object} lease
+ * @param {number} id
+ * @returns {Object}
+ */
+export const getLeaseAreaById = (lease: Lease, id: ?number): ?Object =>
+  id 
+    ? getContentLeaseAreas(lease).find((area) => area.id === id) 
+    : null;
 
-export const getLeaseAreaById = (lease: Lease, id: ?number) =>
-  id ? getContentLeaseAreas(lease).find((area) => area.id === id) : null;
-
-export const getContentComments = (content: Array<Object>): Array<Object> => {
-  if(!content || !content.length) {return [];}
-
-  return content.map((comment) => {
-    return {
-      id: comment.id,
-      created_at: comment.created_at,
-      modified_at: comment.modified_at,
-      is_archived: comment.is_archived,
-      text: comment.text,
-      topic: get(comment, 'topic.id') || get(comment, 'topic'),
-      user: getContentUser(comment.user),
-      lease: comment.lease,
-    };
-  });
-};
-
-export const getContentDecisionConditions = (decision: Object) =>
+/**
+ * Get lease decision conditions content
+ * @param {Object} decisions
+ * @returns {Object[]}
+ */
+export const getContentDecisionConditions = (decision: Object): Array<Object> =>
   get(decision, 'conditions', []).map((condition) => {
     return {
       id: condition.id,
-      type: get(condition, 'type.id') || get(condition, 'type'),
+      type: get(condition, 'type.id') || condition.type,
       supervision_date: condition.supervision_date,
       supervised_date: condition.supervised_date,
       description: condition.description,
     };
   });
 
-export const getContentDecision = (decision: Object) => {
+/**
+ * Get lease decision content
+ * @param {Object} decision
+ * @returns {Object}
+ */
+export const getContentDecision = (decision: Object): Object => {
   return {
     id: decision.id,
     reference_number: decision.reference_number,
-    decision_maker: get(decision, 'decision_maker.id') || get(decision, 'decision_maker'),
+    decision_maker: get(decision, 'decision_maker.id') || decision.decision_maker,
     decision_date: decision.decision_date,
     section: decision.section,
-    type: get(decision, 'type.id') || get(decision, 'type'),
+    type: get(decision, 'type.id') || decision.type,
     description: decision.description,
     conditions: getContentDecisionConditions(decision),
   };
 };
 
 /**
- * Get all decision from lease data
- * @param lease
- * @returns {}
+ * Get lease decisions content
+ * @param {Object} lease
+ * @returns {Object[]}
  */
-export const getContentDecisions = (lease: Object) =>
+export const getContentDecisions = (lease: Object): Array<Object> =>
   get(lease, 'decisions', []).map((decision) => getContentDecision(decision)).sort((a, b) => sortStringByKeyDesc(a, b, 'decision_date'));
 
 /**
  * Get decision options from lease data
- * @param lease
- * @return {[]};
+ * @param {Object} lease
+ * @return {Object[]};
  */
-export const getDecisionOptions = (lease: Lease) => {
+export const getDecisionOptions = (lease: Lease): Array<Object> => {
   const decisions = getContentDecisions(lease);
   const decisionOptions = decisions.map((item) => {
     return {
@@ -485,15 +555,20 @@ export const getDecisionOptions = (lease: Lease) => {
 };
 
 /**
- * Get decision by id from lease data
- * @param decisions
- * @param decisionId
- * @returns {{}}
+ * Get decision by id
+ * @param {Object} lease
+ * @param {number} id
+ * @returns {Object}
  */
-export const getDecisionById = (lease: Lease, id: ?number) =>
+export const getDecisionById = (lease: Lease, id: ?number): ?Object =>
   getContentDecisions(lease).find((decision) => decision.id === id);
 
-export const getContentContractChanges = (contract: Object) =>
+/**
+ * Get contract changes content
+ * @param {Object} contract
+ * @returns {Object[]}
+ */
+export const getContentContractChanges = (contract: Object): Array<Object> =>
   get(contract, 'contract_changes', []).map((change) => {
     return ({
       id: change.id,
@@ -503,15 +578,20 @@ export const getContentContractChanges = (contract: Object) =>
       second_call_sent: change.second_call_sent,
       third_call_sent: change.third_call_sent,
       description: change.description,
-      decision: get(change, 'decision.id') || get(change, 'decision'),
+      decision: get(change, 'decision.id') || change.decision,
     });
   });
 
-export const getContentContractCollaterals = (contract: Object) =>
+/**
+ * Get contract collaterals content
+ * @param {Object} contract
+ * @returns {Object[]}
+ */
+export const getContentContractCollaterals = (contract: Object): Array<Object> =>
   get(contract, 'collaterals', []).map((collateral) => {
     return ({
       id: collateral.id,
-      type: get(collateral, 'type.id') || get(collateral, 'type'),
+      type: get(collateral, 'type.id') || collateral.type,
       other_type: collateral.other_type,
       number: collateral.number,
       deed_date: collateral.deed_date,
@@ -524,10 +604,15 @@ export const getContentContractCollaterals = (contract: Object) =>
     });
   });
 
-export const getContentContractItem = (contract: Object) => {
+/**
+ * Get single contract content
+ * @param {Object} contract
+ * @returns {Object}
+ */
+export const getContentContract = (contract: Object): Object => {
   return {
     id: contract.id,
-    type: get(contract, 'type.id') || get(contract, 'type'),
+    type: get(contract, 'type.id') || contract.type,
     contract_number: contract.contract_number,
     signing_date: contract.signing_date,
     signing_note: contract.signing_note,
@@ -536,7 +621,7 @@ export const getContentContractItem = (contract: Object) => {
     second_call_sent: contract.second_call_sent,
     third_call_sent: contract.third_call_sent,
     is_readjustment_decision: contract.is_readjustment_decision,
-    decision: get(contract, 'decision.id') || get(contract, 'decision'),
+    decision: get(contract, 'decision.id') || contract.decision,
     ktj_link: contract.ktj_link,
     institution_identifier: contract.institution_identifier,
     contract_changes: getContentContractChanges(contract),
@@ -544,10 +629,20 @@ export const getContentContractItem = (contract: Object) => {
   };
 };
 
-export const getContentContracts = (lease: Object) =>
-  get(lease, 'contracts', []).map((contract) => getContentContractItem(contract));
+/**
+ * Get contracts content
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentContracts = (lease: Object): Array<Object> =>
+  get(lease, 'contracts', []).map((contract) => getContentContract(contract));
 
-export const getContentInspectionItem = (inspection: Object) => {
+/**
+ * Get single inspection content
+ * @param {Object} contract
+ * @returns {Object}
+ */
+export const getContentInspection = (inspection: Object) => {
   return {
     id: inspection.id,
     inspector: inspection.inspector,
@@ -558,50 +653,21 @@ export const getContentInspectionItem = (inspection: Object) => {
   };
 };
 
+/**
+ * Get inspections content
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
 export const getContentInspections = (lease: Object) =>
-  get(lease, 'inspections', []).map((inspection) => getContentInspectionItem(inspection));
+  get(lease, 'inspections', []).map((inspection) => getContentInspection(inspection));
 
 /**
-* Get content email logs
-* @param {Object} lease
-* @returns {Object[]}
-*/
-export const getContentEmailLogs = (lease: Lease): Array<Object> => {
-  return get(lease, 'email_logs', []).map((email) => {
-    return {
-      id: email.id,
-      created_at: email.created_at,
-      recipients: email.recipients.map((recipient) => getContentUser(recipient)),
-      text: email.text,
-      user: getContentUser(email.user),
-    };
-  });
-};
-
-export const getContentConstructabilityDescriptions = (area: Object, type: string) => {
-  return get(area, 'constructability_descriptions', [])
-    .filter((description) => description.type === type)
-    .map((description) => {
-      return {
-        id: description.id,
-        type: description.type,
-        user: getContentUser(description.user),
-        text: description.text,
-        is_static: description.is_static,
-        ahjo_reference_number: description.ahjo_reference_number,
-        modified_at: description.modified_at,
-      };
-    });
-};
-
-/**
-  * Get constructability email content
-  * @param {Object} lease
-  * @param {Object} user
-  * @param {Object} text
-  * @returns {string}
-  */
-
+ * Get constructability email content
+ * @param {Object} lease
+ * @param {Object} user
+ * @param {Object} text
+ * @returns {string}
+ */
 export const getContentConstructabilityEmail = (lease: Object, user: Object, text: ?string) => {
   let emailContent = `Vuokraustunnus: ${getContentLeaseIdentifier(lease) || '-'}\n`;
   const leaseAreas = get(lease, 'lease_areas', []);
@@ -624,8 +690,51 @@ export const getContentConstructabilityEmail = (lease: Object, user: Object, tex
   return emailContent;
 };
 
+/**
+ * Get content email logs
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentEmailLogs = (lease: Lease): Array<Object> => {
+  return get(lease, 'email_logs', []).map((email) => {
+    return {
+      id: email.id,
+      created_at: email.created_at,
+      recipients: email.recipients.map((recipient) => getContentUser(recipient)),
+      text: email.text,
+      user: getContentUser(email.user),
+    };
+  });
+};
 
-export const getContentConstructability = (lease: Object) =>
+/**
+ * Get constructability descriptions content
+ * @param {Object} area
+ * @param {string} type
+ * @returns {Object[]}
+ */
+export const getContentConstructabilityDescriptions = (area: Object, type: string): Array<Object> => {
+  return get(area, 'constructability_descriptions', [])
+    .filter((description) => description.type === type)
+    .map((description) => {
+      return {
+        id: description.id,
+        type: description.type,
+        user: getContentUser(description.user),
+        text: description.text,
+        is_static: description.is_static,
+        ahjo_reference_number: description.ahjo_reference_number,
+        modified_at: description.modified_at,
+      };
+    });
+};
+
+/**
+ * Get constructability areas content
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentConstructabilityAreas = (lease: Object): Array<Object> =>
   get(lease, 'lease_areas', []).map((area) => {
     return {
       id: area.id,
@@ -659,11 +768,11 @@ export const getContentConstructability = (lease: Object) =>
   });
 
 /**
-* Get single invoice note fields
-* @param {Object} invoiceNote
-* @returns {Object}
-*/
-export const getContentInvoiceNote = (invoiceNote: Object) => ({
+ * Get single invoice note content
+ * @param {Object} invoiceNote
+ * @returns {Object}
+ */
+export const getContentInvoiceNote = (invoiceNote: Object): Object => ({
   id: invoiceNote.id,
   billing_period_start_date: invoiceNote.billing_period_start_date,
   billing_period_end_date: invoiceNote.billing_period_end_date,
@@ -671,11 +780,12 @@ export const getContentInvoiceNote = (invoiceNote: Object) => ({
 });
 
 /**
-* Get invoice notes of a lease
-* @param {Object} lease
-* @returns {Object[]}
-*/
-export const getContentInvoiceNotes = (lease: Lease) => get(lease, 'invoice_notes', []).map((note) => getContentInvoiceNote(note));
+ * Get invoice notes content
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getContentInvoiceNotes = (lease: Lease): Array<Object> => 
+  get(lease, 'invoice_notes', []).map((note) => getContentInvoiceNote(note));
 
 /**
  * Get content rent shares of a tenant
@@ -693,7 +803,12 @@ export const getContentTenantRentShares = (tenant: Object) => {
   }));
 };
 
-export const getContentContactDetails = (contact: Object) => {
+/**
+ * Get details of tenantcontact_set contact
+ * @param {Object} contact
+ * @returns {Object}
+ */
+export const getContentContactDetails = (contact: Object): Object => {
   return {
     id: contact.id,
     type: contact.type,
@@ -704,44 +819,44 @@ export const getContentContactDetails = (contact: Object) => {
 };
 
 /**
- * Get content tenant from tenantcontact_set
+ * Get tenant content
  * @param {Object} tenant
  * @returns {Object}
  */
-export const getContentTenantItem = (tenant: Object) => {
+export const getContentTenant = (tenant: Object): Object => {
   const contact = get(tenant, 'tenantcontact_set', []).find(x => x.type === TenantContactType.TENANT);
 
   return contact ? getContentContactDetails(contact) : {};
 };
 
 /**
- * Get content tenant billing persons from tenantcontact_set
+ * Get tenant billing persons
  * @param {Object} tenant
  * @returns {Object[]}
  */
-export const getContentTenantBillingPersons = (tenant: Object) =>
+export const getContentTenantBillingPersons = (tenant: Object): Array<Object> =>
   get(tenant, 'tenantcontact_set', [])
     .filter((x) => x.type === TenantContactType.BILLING)
     .map((contact) => contact ? getContentContactDetails(contact) : {})
     .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
 
 /**
- * Get content tenant contact persons from tenantcontact_set
+ * Get tenant contact persons
  * @param {Object} tenant
  * @returns {Object[]}
  */
-export const getContentTenantContactPersons = (tenant: Object) =>
+export const getContentTenantContactPersons = (tenant: Object): Array<Object> =>
   get(tenant, 'tenantcontact_set', [])
     .filter((x) => x.type === TenantContactType.CONTACT)
     .map((contact) => contact ? getContentContactDetails(contact) : {})
     .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
 
 /**
- * Get content tenants
+ * Get tenants content
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentTenants = (lease: Object) =>
+export const getContentTenants = (lease: Object): Array<Object> =>
   get(lease, 'tenants', []).map((tenant) => {
     return {
       id: tenant.id,
@@ -749,17 +864,17 @@ export const getContentTenants = (lease: Object) =>
       share_denominator: tenant.share_denominator,
       rent_shares: getContentTenantRentShares(tenant),
       reference: tenant.reference,
-      tenant: getContentTenantItem(tenant),
+      tenant: getContentTenant(tenant),
       billing_persons: getContentTenantBillingPersons(tenant),
       contact_persons: getContentTenantContactPersons(tenant),
     };
   }).sort((a, b) => sortStringByKeyDesc(a, b, 'tenant.start_date'));
 
 /**
-  * Get warnings if sum of shares per date range is not 100%
-  * @param {Object[]} tenants
-  * @returns {string[]}
-  */
+ * Get warnings if share on date range is greater than 100%
+ * @param {Object[]} tenants
+ * @returns {string[]}
+ */
 export const getTenantShareWarnings = (tenants: Array<Object>): Array<string> => {
   const dateRanges = getSplittedDateRangesWithItems(tenants, 'tenant.start_date', 'tenant.end_date');
   const warnings = [];
@@ -804,7 +919,8 @@ export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttribut
 
     rentShares.forEach((rentShare) => {
       if(rentShare.intended_use != null) {
-        if(sharesByIntendedUse.hasOwnProperty(rentShare.intended_use)) {
+        
+        if(Object.prototype.hasOwnProperty.call(sharesByIntendedUse, rentShare.intended_use)) {
           sharesByIntendedUse[rentShare.intended_use].push(rentShare);
         } else {
           sharesByIntendedUse[rentShare.intended_use] = [rentShare];
@@ -821,9 +937,9 @@ export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttribut
       }, 0);
 
       if(totalShare > 1) {
-        warnings.push(`Laskutusosuus (${getLabelOfOption(intendedUseOptions, key.toString())}) välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on yli 100%`);
+        warnings.push(`Laskutusosuus (${getLabelOfOption(intendedUseOptions, key.toString()) || '-'}) välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on yli 100%`);
       } else if(totalShare < 1) {
-        warnings.push(`Laskutusosuus (${getLabelOfOption(intendedUseOptions, key.toString())}) välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on alle 100%`);
+        warnings.push(`Laskutusosuus (${getLabelOfOption(intendedUseOptions, key.toString()) || '-'}) välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on alle 100%`);
       }
     });
   });
@@ -832,19 +948,24 @@ export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttribut
 };
 
 export const getContentTenantsFormData = (lease: Object) => {
-  const tenants = getContentTenants(lease);
+  const tenants: any = getContentTenants(lease);
 
   return {
-    tenants: tenants.filter((tenant) => !isTenantArchived(tenant.tenant)),
-    tenantsArchived: tenants.filter((tenant) => isTenantArchived(tenant.tenant)),
+    tenants: tenants.filter((tenant) => !isArchived(tenant.tenant)),
+    tenantsArchived: tenants.filter((tenant) => isArchived(tenant.tenant)),
   };
 };
 
-export const getContentPayableRents = (rent: Object) =>
+/**
+ * Get payable rents content
+ * @param {Object} rent
+ * @returns {Object[]}
+ */
+export const getContentPayableRents = (rent: Object): Array<Object> =>
   get(rent, 'payable_rents', [])
     .map((item) => {
       return {
-        id: item.id || undefined,
+        id: item.id,
         amount: item.amount,
         start_date: item.start_date,
         end_date: item.end_date,
@@ -853,6 +974,11 @@ export const getContentPayableRents = (rent: Object) =>
       };
     });
 
+/**
+ * Get equalized rents content
+ * @param {Object} rent
+ * @returns {Object[]}
+ */
 export const getContentEqualizedRents = (rent: Object) =>
   get(rent, 'equalized_rents', [])
     .map((item) => {
@@ -867,21 +993,21 @@ export const getContentEqualizedRents = (rent: Object) =>
     });
 
 /**
-  * Calculate re-lease discount percent for rent adjustment subvention
-  * @param {string} subventionBasePercent
-  * @param {string} subventionGraduatedPercent
-  * @return {number}
-  */
-export const calculateReLeaseDiscountPercent = (subventionBasePercent: ?string, subventionGraduatedPercent: ?string) => {
-  return parseFloat(((1 - ((1 - Number(convertStrToDecimalNumber(subventionBasePercent) || 0)/100) * (1 - Number(convertStrToDecimalNumber(subventionGraduatedPercent) || 0)/100))) * 100).toFixed(2));
+ * Calculate re-lease discount percent for rent adjustment subvention
+ * @param {string} subventionBasePercent
+ * @param {string} subventionGraduatedPercent
+ * @return {number}
+ */
+export const calculateReLeaseDiscountPercent = (subventionBasePercent: ?string, subventionGraduatedPercent: ?string): number => {
+  return ((1 - ((1 - Number(convertStrToDecimalNumber(subventionBasePercent) || 0)/100) * (1 - Number(convertStrToDecimalNumber(subventionGraduatedPercent) || 0)/100))) * 100);
 };
 
 /**
-  * Get basis of rent index value
-  * @param {Object} basisOfRent
-  * @param {Object[]} indexOptions
-  * @return {string}
-  */
+ * Get basis of rent index value
+ * @param {Object} basisOfRent
+ * @param {Object[]} indexOptions
+ * @return {string}
+ */
 export const getBasisOfRentIndexValue = (basisOfRent: Object, indexOptions: Array<Object>): ?string => {
   if(!basisOfRent.index || !indexOptions.length) return null;
   const indexObj = indexOptions.find((item) => item.value === basisOfRent.index);
@@ -894,12 +1020,12 @@ export const getBasisOfRentIndexValue = (basisOfRent: Object, indexOptions: Arra
 };
 
 /**
-  * Calculate basis of rent basuc annual rent
-  * @param {Object} basisOfRent
-  * @return {number}
-  */
-export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): ?number => {
-  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return null;
+ * Calculate basis of rent basis annual rent
+ * @param {Object} basisOfRent
+ * @return {number}
+ */
+export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): number => {
+  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return 0;
   
   return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
     * Number(convertStrToDecimalNumber(basisOfRent.area))
@@ -907,28 +1033,28 @@ export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): ?numbe
 };
 
 /**
-  * Calculate basis of rent amount per area
-  * @param {Object} basisOfRent
-  * @param {string} indexValue
-  * @return {number}
-  */
-export const calculateBasisOfRentAmountPerArea = (basisOfRent: Object, indexValue: ?string): ?number => {
-  if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(basisOfRent.amount_per_area)) return null;
+ * Calculate basis of rent amount per area
+ * @param {Object} basisOfRent
+ * @param {string} indexValue
+ * @return {number}
+ */
+export const calculateBasisOfRentAmountPerArea = (basisOfRent: Object, indexValue: ?string): number => {
+  if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(basisOfRent.amount_per_area)) return 0;
 
   return Number(convertStrToDecimalNumber(indexValue))/100
     * Number(convertStrToDecimalNumber(basisOfRent.amount_per_area));
 };
 
 /**
-  * Calculate basis of rent initial year rent
-  * @param {Object} basisOfRent
-  * @param {string} indexValue
-  * @return {number}
-  */
-export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string): ?number => {
+ * Calculate basis of rent initial year rent
+ * @param {Object} basisOfRent
+ * @param {string} indexValue
+ * @return {number}
+ */
+export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string): number => {
   const amountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
 
-  if(!isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return null;
+  if(!isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return 0;
   
   return Number(convertStrToDecimalNumber(amountPerArea))
     * Number(convertStrToDecimalNumber(basisOfRent.area))
@@ -936,26 +1062,26 @@ export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexVa
 };
 
 /**
-  * Calculate basis of rent discounted initial year rent
-  * @param {Object} basisOfRent
-  * @param {string} indexValue
-  * @return {number}
-  */
-export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Object, indexValue: ?string): ?number => {
+ * Calculate basis of rent discounted initial year rent
+ * @param {Object} basisOfRent
+ * @param {string} indexValue
+ * @return {number}
+ */
+export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Object, indexValue: ?string): number => {
   const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
 
-  if(!isDecimalNumberStr(initialYearRent)) return null;
+  if(!isDecimalNumberStr(initialYearRent)) return 0;
 
   return Number(convertStrToDecimalNumber(initialYearRent))
     * Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - Number(convertStrToDecimalNumber(basisOfRent.discount_percentage)))/100 : 1);
 };
 
 /**
-  * Calculate basis of rent total discounted initial year rent
-  * @param {Object[]} basisOfRent<
-  * @param {Object[]} indexOptions
-  * @return {number}
-  */
+ * Calculate basis of rent total discounted initial year rent
+ * @param {Object[]} basisOfRent<
+ * @param {Object[]} indexOptions
+ * @return {number}
+ */
 export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents: Array<Object>, indexOptions: Array<Object>): ?number => {
   return basisOfRents.reduce((total, basisOfRent) => {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
@@ -965,16 +1091,29 @@ export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents:
 };
 
 /**
-  * Calculate rent adjustment subvention amount
-  * @param {string} subventionType
-  * @param {string} subventionBasePercent
-  * @param {string} subventionGraduatedPercent
-  * @param {Object[]} managementSubventions
-  * @param {Object[]} temporarySubventions
-  * @param {string} subventionGraduatedPercent
-  * @return {number}
-  */
-export const calculateRentAdjustmentSubventionAmount = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+ * Calculate basis of rent basis subvention amount
+ * @param {number} initialYearRent
+ * @param {string} subventionPercent
+ * @return {number}
+ */
+export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, subventionPercent: string | number): number => {
+  if(!isDecimalNumberStr(subventionPercent)) return 0;
+
+  return  (Number(convertStrToDecimalNumber(subventionPercent)) / 100)
+    * initialYearRent;
+};
+
+/**
+ * Calculate rent adjustment subvention percent
+ * @param {string} subventionType
+ * @param {string} subventionBasePercent
+ * @param {string} subventionGraduatedPercent
+ * @param {Object[]} managementSubventions
+ * @param {Object[]} temporarySubventions
+ * @param {string} subventionGraduatedPercent
+ * @return {number}
+ */
+export const calculateRentAdjustmentSubventionPercent = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
   let discount = 0;
 
   if(subventionType === SubventionTypes.RE_LEASE_DISCOUNT) {
@@ -999,11 +1138,11 @@ export const calculateRentAdjustmentSubventionAmount = (subventionType: ?string,
 };
 
 /**
-  * Get content of management subventions from rent adjustment
-  * @param {Object} rentAdjustment
-  * @return {Object}
-  */
-export const getContentManagementSubventions = (rentAdjustment: Object) =>
+ * Get content of management subventions from rent adjustment
+ * @param {Object} rentAdjustment
+ * @return {Object[]}
+ */
+export const getContentManagementSubventions = (rentAdjustment: Object): Array<Object> =>
   get(rentAdjustment, 'management_subventions', [])
     .map((item) => {
       return {
@@ -1014,11 +1153,11 @@ export const getContentManagementSubventions = (rentAdjustment: Object) =>
     });
 
 /**
-  * Get content of temporary subventions from rent adjustment
-  * @param {Object} rentAdjustment
-  * @return {Object}
-  */
-export const getContentTemporarySubventions = (rentAdjustment: Object) =>
+ * Get content of temporary subventions from rent adjustment
+ * @param {Object} rentAdjustment
+ * @return {Object[]}
+ */
+export const getContentTemporarySubventions = (rentAdjustment: Object): Array<Object> =>
   get(rentAdjustment, 'temporary_subventions', [])
     .map((item) => {
       return {
@@ -1028,19 +1167,24 @@ export const getContentTemporarySubventions = (rentAdjustment: Object) =>
       };
     });
 
-export const getContentRentAdjustments = (rent: Object) =>
+/**
+ * Get rent adjustments content
+ * @param {Object} rent
+ * @return {Object[]}
+ */
+export const getContentRentAdjustments = (rent: Object): Array<Object> =>
   get(rent, 'rent_adjustments', [])
     .map((item) => {
       return {
-        id: item.id || undefined,
+        id: item.id,
         type: item.type,
-        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        intended_use: get(item, 'intended_use.id') || item.intended_use,
         start_date: item.start_date,
         end_date: item.end_date,
         full_amount: item.full_amount,
-        amount_type: get(item, 'amount_type.id') || get(item, 'amount_type'),
+        amount_type: get(item, 'amount_type.id') || item.amount_type,
         amount_left: item.amount_left,
-        decision: get(item, 'decision.id') || get(item, 'decision'),
+        decision: get(item, 'decision.id') || item.decision,
         note: item.note,
         subvention_type: get(item, 'subvention_type.id') || item.subvention_type,
         subvention_base_percent: item.subvention_base_percent,
@@ -1051,27 +1195,36 @@ export const getContentRentAdjustments = (rent: Object) =>
     })
     .sort(sortByStartAndEndDateDesc);
 
-export const getContentIndexAdjustedRents = (rent: Object) =>
-  get(rent, 'index_adjusted_rents', [])
-    .map((item) => {
-      return {
-        item: item.id || undefined,
-        amount: item.amount,
-        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-        start_date: item.start_date,
-        end_date: item.end_date,
-        factor: item.factor,
-      };
-    });
+/**
+ * Get index adjusted rents content
+ * @param {Object} rent
+ * @return {Object[]}
+ */
+export const getContentIndexAdjustedRents = (rent: Object): Array<Object> =>
+  get(rent, 'index_adjusted_rents', []).map((item) => {
+    return {
+      item: item.id,
+      amount: item.amount,
+      intended_use: get(item, 'intended_use.id') || item.intended_use,
+      start_date: item.start_date,
+      end_date: item.end_date,
+      factor: item.factor,
+    };
+  });
 
-export const getContentContractRents = (rent: Object) =>
+/**
+ * Get contract rents content
+ * @param {Object} rent
+ * @return {Object[]}
+ */
+export const getContentContractRents = (rent: Object): Array<Object> =>
   get(rent, 'contract_rents', [])
     .map((item) => {
       return {
-        id: item.id || undefined,
+        id: item.id,
         amount: item.amount,
         period: item.period,
-        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        intended_use: get(item, 'intended_use.id') || item.intended_use,
         base_amount: item.base_amount,
         base_amount_period: item.base_amount_period,
         base_year_rent: item.base_year_rent,
@@ -1081,12 +1234,17 @@ export const getContentContractRents = (rent: Object) =>
     })
     .sort(sortByStartAndEndDateDesc);
 
-export const getContentFixedInitialYearRents = (rent: Object) =>
+/**
+ * Get fixed initial year rents content
+ * @param {Object} rent
+ * @return {Object[]}
+ */
+export const getContentFixedInitialYearRents = (rent: Object): Array<Object> =>
   get(rent, 'fixed_initial_year_rents', [])
     .map((item) => {
       return {
-        id: item.id || undefined,
-        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        id: item.id,
+        intended_use: get(item, 'intended_use.id') || item.intended_use,
         amount: item.amount,
         start_date: item.start_date,
         end_date: item.end_date,
@@ -1094,53 +1252,28 @@ export const getContentFixedInitialYearRents = (rent: Object) =>
     })
     .sort(sortByStartAndEndDateDesc);
 
-export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates') =>
+/**
+ * Get due dates of rent
+ * @param {Object} rent
+ * @return {Object[]}
+ */
+export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates'): Array<Object> =>
   get(rent, path, []).map((date) => ({
-    id: date.id || undefined,
+    id: date.id,
     day: date.day,
     month: date.month,
   }));
 
 /**
-  * Get warnings if amount of fixed initial year rents is different than contract rents
-  * @param {Object[]} rents
-  * @returns {string[]}
-  */
-export const getRentWarnings = (rents: Array<Object>): Array<string> => {
-  const warnings = [];
-
-  rents.forEach((rent) => {
-    if(rent.type !== RentTypes.INDEX && rent.type !== RentTypes.MANUAL) return;
-
-    let showWarning = false;
-    const fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []).filter((rent) => isItemActive(rent));
-    const contractRents = get(rent, 'contract_rents', []).filter((rent) => isItemActive(rent));
-
-    forEach(fixedInitialYearRents, (rent) => {
-      if(rent.intended_use) {
-        const filteredFixedInitialYearRents = fixedInitialYearRents.filter((item) => item.intended_use === rent.intended_use);
-        const filteredContractRents = contractRents.filter((item) => item.intended_use === rent.intended_use);
-        
-        if(filteredFixedInitialYearRents.length !== filteredContractRents.length) {
-          showWarning = true;
-          return false;
-        }
-      }
-    });
-
-    if(showWarning) {
-      warnings.push(`Vuokralla ${formatDateRange(rent.start_date, rent.end_date)} on eri määrä kiinteitä alkuvuosivuokria ja sopimusvuokria`);
-    }
-  });
-
-  return warnings;
-};
-
-export const getContentRents = (lease: Object) =>
+ * Get rents content
+ * @param {Object} lease
+ * @return {Object[]}
+ */
+export const getContentRents = (lease: Object): Array<Object> =>
   get(lease, 'rents', [])
     .map((rent) => {
       return {
-        id: rent.id || undefined,
+        id: rent.id,
         type: rent.type,
         start_date: rent.start_date,
         end_date: rent.end_date,
@@ -1176,47 +1309,78 @@ export const getContentRents = (lease: Object) =>
     })
     .sort(sortByStartAndEndDateDesc);
 
-export const getContentRentsFormData = (lease: Object) => {
-  const rents = getContentRents(lease);
+/**
+ * Get warnings if amount of fixed initial year rents is different than contract rents
+ * @param {Object[]} rents
+ * @returns {string[]}
+ */
+export const getRentWarnings = (rents: Array<Object>): Array<string> => {
+  const warnings = [];
 
-  return {
-    rents: rents.filter((rent) => !isRentArchived(rent)),
-    rentsArchived: rents.filter((rent) => isRentArchived(rent)),
-  };
-};
+  rents.forEach((rent) => {
+    if(rent.type !== RentTypes.INDEX && rent.type !== RentTypes.MANUAL) return;
 
-export const getContentBasisOfRents = (lease: Object) =>
-  get(lease, 'basis_of_rents', [])
-    .map((item) => {
-      return {
-        id: item.id || undefined,
-        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-        area: item.area,
-        area_unit: item.area_unit,
-        amount_per_area: item.amount_per_area,
-        index: get(item, 'index.id') || get(item, 'index'),
-        profit_margin_percentage: item.profit_margin_percentage,
-        discount_percentage: item.discount_percentage,
-        plans_inspected_at: item.plans_inspected_at,
-        plans_inspected_by: item.plans_inspected_by,
-        locked_at: item.locked_at,
-        locked_by: item.locked_by,
-        archived_at: item.archived_at,
-        subvention_type: get(item, 'subvention_type.id') || item.subvention_type,
-        subvention_base_percent: item.subvention_base_percent,
-        subvention_graduated_percent: item.subvention_graduated_percent,
-        management_subventions: getContentManagementSubventions(item),
-        temporary_subventions: getContentTemporarySubventions(item),
-      };
+    let showWarning = false;
+    const fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []).filter((rent) => isActive(rent));
+    const contractRents = get(rent, 'contract_rents', []).filter((rent) => isActive(rent));
+
+    forEach(fixedInitialYearRents, (rent) => {
+      if(rent.intended_use) {
+        const filteredFixedInitialYearRents = fixedInitialYearRents.filter((item) => item.intended_use === rent.intended_use);
+        const filteredContractRents = contractRents.filter((item) => item.intended_use === rent.intended_use);
+        
+        if(filteredFixedInitialYearRents.length !== filteredContractRents.length) {
+          showWarning = true;
+          return false;
+        }
+      }
     });
 
-export const getFullAddress = (item: Object) => {
-  if(isEmpty(item)) return null;
+    if(showWarning) {
+      warnings.push(`Vuokralla ${formatDateRange(rent.start_date, rent.end_date)} on eri määrä kiinteitä alkuvuosivuokria ja sopimusvuokria`);
+    }
+  });
 
-  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}${item.postal_code ? item.postal_code + ' ' : ''}${item.city || ''}`;
+  return warnings;
 };
 
-export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTenants: boolean) =>{
+/**
+ * Get lease basis of rents content
+ * @param {Object} lease
+ * @return {Object[]}
+ */
+export const getContentBasisOfRents = (lease: Object): Array<Object> =>
+  get(lease, 'basis_of_rents', []).map((item) => {
+    return {
+      id: item.id || undefined,
+      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      area: item.area,
+      area_unit: item.area_unit,
+      amount_per_area: item.amount_per_area,
+      index: get(item, 'index.id') || get(item, 'index'),
+      profit_margin_percentage: item.profit_margin_percentage,
+      discount_percentage: item.discount_percentage,
+      plans_inspected_at: item.plans_inspected_at,
+      plans_inspected_by: item.plans_inspected_by,
+      locked_at: item.locked_at,
+      locked_by: item.locked_by,
+      archived_at: item.archived_at,
+      subvention_type: get(item, 'subvention_type.id') || item.subvention_type,
+      subvention_base_percent: item.subvention_base_percent,
+      subvention_graduated_percent: item.subvention_graduated_percent,
+      management_subventions: getContentManagementSubventions(item),
+      temporary_subventions: getContentTemporarySubventions(item),
+    };
+  });
+
+/**
+ * Get invoice recipient options
+ * @param {Object} lease
+ * @param {boolean} addAll
+ * @param {boolean} addTenants
+ * @return {Object[]}
+ */
+export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTenants: boolean): Array<Object> =>{
   const items = getContentTenants(lease);
   const recipients = [];
 
@@ -1226,7 +1390,7 @@ export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTe
 
   if(addTenants) {
     recipients.push(...items
-      .filter((item) => isTenantActive(item.tenant))
+      .filter((item) => isActive(item.tenant))
       .map((item) => {
         return {
           value: get(item, 'tenant.contact.id'),
@@ -1240,8 +1404,13 @@ export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTe
 
 };
 
-export const getInvoiceTenantOptions = (lease: Object) =>{
-  const items = getContentTenants(lease);
+/**
+ * Get invoice tenant options
+ * @param {Object} lease
+ * @return {Object[]}
+ */
+export const getInvoiceTenantOptions = (lease: Object): Array<Object> =>{
+  const items: any = getContentTenants(lease);
 
   return items.map((item) => {
     return {
@@ -1260,10 +1429,10 @@ export const getContentDebtCollectionDecisions = (lease: Object) =>
   get(lease, 'decisions', []).filter((decision) => get(decision, 'type.kind') === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
 
 /**
-  * Get content leases features for geojson data
-  * @param {Object[]} leases
-  * @returns {Object[]}
-  */
+ * Get content leases features for geojson data
+ * @param {Object[]} leases
+ * @returns {Object[]}
+ */
 export const getContentLeasesFeatures = (leases: Array<Object>): Array<LeafletFeature> => {
   return leases.map((lease) => {
     const coordinates = [];
@@ -1296,10 +1465,10 @@ export const getContentLeasesFeatures = (leases: Array<Object>): Array<LeafletFe
 };
 
 /**
-  * Get content leases geojson data
-  * @param {Object[]} leases
-  * @returns {Object}
-  */
+ * Get content leases geojson data
+ * @param {Object[]} leases
+ * @returns {Object}
+ */
 export const getContentLeasesGeoJson = (leases: Array<Object>): LeafletGeoJson => {
   const features = getContentLeasesFeatures(leases);
 
@@ -1309,6 +1478,11 @@ export const getContentLeasesGeoJson = (leases: Array<Object>): LeafletGeoJson =
   };
 };
 
+/**
+ * Get content lease areas features for geojson data
+ * @param {Object[]} areas
+ * @returns {Object[]}
+ */
 export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<LeafletFeature>  => {
   return areas.map((area) => {
     return {
@@ -1326,6 +1500,11 @@ export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<Leafle
   });
 };
 
+/**
+ * Get content lease areas geojson data
+ * @param {Object} lease
+ * @returns {Object}
+ */
 export const getContentAreasGeoJson = (lease: Lease): LeafletGeoJson => {
   const areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
 
@@ -1337,6 +1516,11 @@ export const getContentAreasGeoJson = (lease: Lease): LeafletGeoJson => {
   };
 };
 
+/**
+ * Get content lease plots features for geojson data
+ * @param {Object[]} plots
+ * @returns {Object[]}
+ */
 export const getContentLeasePlotsFeatures = (plots: Array<Object>): Array<LeafletFeature> => {
   return plots.map((plot) => {
     return {
@@ -1356,6 +1540,12 @@ export const getContentLeasePlotsFeatures = (plots: Array<Object>): Array<Leafle
   });
 };
 
+/**
+ * Get content lease plots geojson data
+ * @param {Object} lease
+ * @param {boolean} inContract
+ * @returns {Object}
+ */
 export const getContentPlotsGeoJson = (lease: Lease, inContract: boolean = false): LeafletGeoJson => {
   const plots = [];
   get(lease, 'lease_areas', [])
@@ -1375,6 +1565,11 @@ export const getContentPlotsGeoJson = (lease: Lease, inContract: boolean = false
   };
 };
 
+/**
+ * Get content lease plan units features for geojson data
+ * @param {Object[]} plots
+ * @returns {Object[]}
+ */
 export const getContentPlanUnitFeatures = (planUnits: Array<Object>): Array<LeafletFeature> => {
   return planUnits.map((planUnit) => {
     return {
@@ -1400,6 +1595,12 @@ export const getContentPlanUnitFeatures = (planUnits: Array<Object>): Array<Leaf
   });
 };
 
+/**
+ * Get content lease plan units geojson data
+ * @param {Object} lease
+ * @param {boolean} inContract
+ * @returns {Object}
+ */
 export const getContentPlanUnitsGeoJson = (lease: Lease, inContract: boolean = false): LeafletGeoJson => {
   const planUnits = [];
   get(lease, 'lease_areas', [])
@@ -1419,16 +1620,28 @@ export const getContentPlanUnitsGeoJson = (lease: Lease, inContract: boolean = f
   };
 };
 
-export const getLeaseCoordinates = (lease: Lease) => {
+/**
+ * Get coordinates of lease
+ * @param {Object} lease
+ * @returns {Object[]}
+ */
+export const getLeaseCoordinates = (lease: Lease): Array<Object> => {
   const areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
   let coordinates = [];
+
   areas.forEach((area) => {
-    coordinates = [...coordinates, ...getCoordinatesOfGeometry(area.geometry)];
+    coordinates.push(...getCoordinatesOfGeometry(area.geometry));
   });
+
   return coordinates;
 };
 
-export const getPayloadCreateLease = (lease: Object) => {
+/**
+ * Get payload for lease POST request
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const getPayloadCreateLease = (lease: Object): Object => {
   const relateTo = !isEmpty(lease.relate_to)
     ? !isEmptyValue(lease.relate_to.value)
       ? lease.relate_to.value
@@ -1447,42 +1660,53 @@ export const getPayloadCreateLease = (lease: Object) => {
   };
 };
 
-export const addSummaryFormValues = (payload: Object, summary: Object) => {
+/**
+ * Add summary form values to payload
+ * @param {Object} payload
+ * @param {Object} formValues
+ * @returns {Object}
+ */
+export const addSummaryFormValuesToPayload = (payload: Object, formValues: Object): Object => {
   return {
     ...payload,
-    building_selling_price: convertStrToDecimalNumber(summary.building_selling_price),
-    classification: summary.classification,
-    conveyance_number: summary.conveyance_number,
-    end_date: summary.end_date,
-    financing: summary.financing,
-    hitas: summary.hitas,
-    intended_use: summary.intended_use,
-    intended_use_note: summary.intended_use_note,
-    is_subject_to_vat: summary.is_subject_to_vat,
-    lessor: get(summary, 'lessor.value'),
-    notice_note: summary.notice_note,
-    notice_period: summary.notice_period,
-    management: summary.management,
-    note: summary.note,
-    preparer: get(summary, 'preparer.value'),
-    reference_number: summary.reference_number,
-    real_estate_developer: summary.real_estate_developer,
-    regulated: summary.regulated,
-    regulation: summary.regulation,
-    reservation_procedure: summary.reservation_procedure,
-    special_project: summary.special_project,
-    start_date: summary.start_date,
-    state: summary.state,
-    statistical_use: summary.statistical_use,
-    supportive_housing: summary.supportive_housing,
-    transferable: summary.transferable,
+    building_selling_price: convertStrToDecimalNumber(formValues.building_selling_price),
+    classification: formValues.classification,
+    conveyance_number: formValues.conveyance_number,
+    end_date: formValues.end_date,
+    financing: formValues.financing,
+    hitas: formValues.hitas,
+    intended_use: formValues.intended_use,
+    intended_use_note: formValues.intended_use_note,
+    is_subject_to_vat: formValues.is_subject_to_vat,
+    lessor: get(formValues, 'lessor.value'),
+    notice_note: formValues.notice_note,
+    notice_period: formValues.notice_period,
+    management: formValues.management,
+    note: formValues.note,
+    preparer: get(formValues, 'preparer.value'),
+    reference_number: formValues.reference_number,
+    real_estate_developer: formValues.real_estate_developer,
+    regulated: formValues.regulated,
+    regulation: formValues.regulation,
+    reservation_procedure: formValues.reservation_procedure,
+    special_project: formValues.special_project,
+    start_date: formValues.start_date,
+    state: formValues.state,
+    statistical_use: formValues.statistical_use,
+    supportive_housing: formValues.supportive_housing,
+    transferable: formValues.transferable,
   };
 };
 
+/**
+ * Get lease area addresses payload
+ * @param {Object} area
+ * @returns {Object[]}
+ */
 const getPayloadLeaseAreaAddresses = (area: Object) =>
   get(area, 'addresses', []).map((address) => {
     return {
-      id: address.id || undefined,
+      id: address.id,
       address: address.address,
       postal_code: address.postal_code,
       city: address.city,
@@ -1490,7 +1714,12 @@ const getPayloadLeaseAreaAddresses = (area: Object) =>
     };
   });
 
-const getPayloadPlots = (area: Object) => {
+/**
+ * Get lease plots payload
+ * @param {Object} area
+ * @returns {Object[]}
+ */
+const getPayloadPlots = (area: Object): Array<Object> => {
   const currentPlots = get(area, 'plots_current', []).map((plot) => {
     return {...plot, 'in_contract': false};
   });
@@ -1501,7 +1730,7 @@ const getPayloadPlots = (area: Object) => {
 
   return plots.map((plot) => {
     return {
-      id: plot.id || undefined,
+      id: plot.id,
       identifier: plot.identifier,
       area: convertStrToDecimalNumber(plot.area),
       section_area: convertStrToDecimalNumber(plot.section_area),
@@ -1514,7 +1743,12 @@ const getPayloadPlots = (area: Object) => {
   });
 };
 
-const getPayloadPlanUnits = (area: Object) => {
+/**
+ * Get lease plan units payload
+ * @param {Object} area
+ * @returns {Object[]}
+ */
+const getPayloadPlanUnits = (area: Object): Array<Object> => {
   const currentPlanUnits = get(area, 'plan_units_current', []).map((planunit) => {
     return {...planunit, 'in_contract': false};
   });
@@ -1525,7 +1759,7 @@ const getPayloadPlanUnits = (area: Object) => {
   const planUnits = currentPlanUnits.concat(contractPlanUnits);
   return planUnits.map((planunit) => {
     return {
-      id: planunit.id || undefined,
+      id: planunit.id,
       identifier: planunit.identifier,
       area: convertStrToDecimalNumber(planunit.area),
       section_area: convertStrToDecimalNumber(planunit.section_area),
@@ -1543,12 +1777,18 @@ const getPayloadPlanUnits = (area: Object) => {
   });
 };
 
-export const addAreasFormValues = (payload: Object, values: Object) => {
+/**
+ * Add areas form values to payload
+ * @param {Object} payload
+ * @param {Object} formValues
+ * @returns {Object}
+ */
+export const addAreasFormValuesToPayload = (payload: Object, values: Object): Object => {
   const areas = [...get(values, 'lease_areas_active', []), ...get(values, 'lease_areas_archived', [])];
 
   payload.lease_areas = areas.map((area) => {
     return {
-      id: area.id || undefined,
+      id: area.id,
       identifier: area.identifier,
       area: convertStrToDecimalNumber(area.area),
       section_area: convertStrToDecimalNumber(area.area),
@@ -1566,10 +1806,15 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-const getDecisionConditionsForDb = (decision: Object) => {
+/**
+ * Get decision conditions payload
+ * @param {Object} decision
+ * @returns {Object[]}
+ */
+const getPayloadDecisionConditions = (decision: Object) => {
   return get(decision, 'conditions', []).map((condition) => {
     return {
-      id: condition.id || undefined,
+      id: condition.id,
       type: condition.type,
       supervision_date: condition.supervision_date,
       supervised_date: condition.supervised_date,
@@ -1578,24 +1823,35 @@ const getDecisionConditionsForDb = (decision: Object) => {
   });
 };
 
-export const addDecisionsFormValues = (payload: Object, values: Object) => {
-  payload.decisions = get(values, 'decisions', []).map((decision) => {
+/**
+ * Add decisions form values to payload
+ * @param {Object} payload
+ * @param {Object} formValues
+ * @returns {Object}
+ */
+export const addDecisionsFormValuesToPayload = (payload: Object, formValues: Object): Object => {
+  payload.decisions = get(formValues, 'decisions', []).map((decision) => {
     return {
-      id: decision.id || undefined,
+      id: decision.id,
       reference_number: decision.reference_number,
       decision_maker: decision.decision_maker,
       decision_date: decision.decision_date,
       section: decision.section,
       type: decision.type,
       description: decision.description,
-      conditions: getDecisionConditionsForDb(decision),
+      conditions: getPayloadDecisionConditions(decision),
     };
   });
 
   return payload;
 };
 
-const getContractChangesForDb = (contract: Object) => {
+/**
+ * Get contract changes payload
+ * @param {Object} contract
+ * @returns {Object[]}
+ */
+const getPayloadContractChanges = (contract: Object): Array<Object> => {
   return get(contract, 'contract_changes', []).map((change) => {
     return {
       id: change.id || undefined,
@@ -1611,10 +1867,11 @@ const getContractChangesForDb = (contract: Object) => {
 };
 
 /**
-  * Get payload of contract collateral for API PATCH request
-  *
-  */
-const getPayloadCollaterals = (contract: Object) => {
+ * Get contract collaterals payload
+ * @param {Object} contract
+ * @returns {Object[]}
+ */
+const getPayloadCollaterals = (contract: Object): Array<Object> => {
   return get(contract, 'collaterals', []).map((collateral) => {
     switch(collateral.type) {
       case CollateralTypes.FINANCIAL_GUARANTEE:
@@ -1632,6 +1889,8 @@ const getPayloadCollaterals = (contract: Object) => {
           type: collateral.type,
           number: collateral.number,
           deed_date: collateral.deed_date,
+          start_date: collateral.start_date,
+          end_date: collateral.end_date,
           total_amount: convertStrToDecimalNumber(collateral.total_amount),
           note: collateral.note,
         };
@@ -1653,10 +1912,16 @@ const getPayloadCollaterals = (contract: Object) => {
   });
 };
 
-export const addContractsFormValues = (payload: Object, values: Object) => {
-  payload.contracts = get(values, 'contracts', []).map((contract) => {
+/**
+ * Add contracts form values to payload
+ * @param {Object} payload
+ * @param {Object} formValues
+ * @returns {Object}
+ */
+export const addContractsFormValuesToPayload = (payload: Object, formValues: Object): Object => {
+  payload.contracts = get(formValues, 'contracts', []).map((contract) => {
     return {
-      id: contract.id || undefined,
+      id: contract.id,
       type: contract.type,
       contract_number: contract.contract_number,
       signing_date: contract.signing_date,
@@ -1669,7 +1934,7 @@ export const addContractsFormValues = (payload: Object, values: Object) => {
       decision: contract.decision,
       ktj_link: contract.ktj_link,
       institution_identifier: contract.institution_identifier,
-      contract_changes: getContractChangesForDb(contract),
+      contract_changes: getPayloadContractChanges(contract),
       collaterals: getPayloadCollaterals(contract),
     };
   });
@@ -1677,10 +1942,16 @@ export const addContractsFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-export const addInspectionsFormValues = (payload: Object, values: Object) => {
-  payload.inspections = get(values, 'inspections', []).map((inspection) => {
+/**
+ * Add inspections form values to payload
+ * @param {Object} payload
+ * @param {Object} formValues
+ * @returns {Object}
+ */
+export const addInspectionsFormValuesToPayload = (payload: Object, formValues: Object): Object => {
+  payload.inspections = get(formValues, 'inspections', []).map((inspection) => {
     return {
-      id: inspection.id || undefined,
+      id: inspection.id,
       inspector: inspection.inspector,
       supervision_date: inspection.supervision_date,
       supervised_date: inspection.supervised_date,
@@ -1691,7 +1962,12 @@ export const addInspectionsFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-export const getPayloadConstructabilityDescriptions = (area: Object) => {
+/**
+ * Get constructability descriptions payload
+ * @param {Object} area
+ * @returns {Object[]}
+ */
+export const getPayloadConstructabilityDescriptions = (area: Object): Array<Object> => {
   const descriptionsPreconstruction = get(area, 'descriptionsPreconstruction', []).map((description) => {
     return {...description, 'type': ConstructabilityType.PRECONSTRUCTION};
   });
@@ -1717,7 +1993,7 @@ export const getPayloadConstructabilityDescriptions = (area: Object) => {
 
   return descriptions.map((description) => {
     return {
-      id: description.id || undefined,
+      id: description.id,
       is_static: description.is_static,
       type: description.type,
       text: description.text,
@@ -1726,6 +2002,12 @@ export const getPayloadConstructabilityDescriptions = (area: Object) => {
   });
 };
 
+/**
+ * Get constructability area payload
+ * @param {Object} area
+ * @param {Object} values
+ * @returns {Object[]}
+ */
 export const getPayloadConstructabilityArea = (area: Object, values: Object) => {
   return {
     ...area,
@@ -1747,9 +2029,15 @@ export const getPayloadConstructabilityArea = (area: Object, values: Object) => 
   };
 };
 
-export const addConstructabilityFormValues = (payload: Object, values: Object) => {
+/**
+ * Add constructability form values to payload
+ * @param {Object} payload
+ * @param {Object} formValues
+ * @returns {Object}
+ */
+export const addConstructabilityFormValuesToPayload = (payload: Object, formValues: Object): Object => {
   const areas = payload.lease_areas;
-  const constAreas = get(values, 'lease_areas', []);
+  const constAreas = get(formValues, 'lease_areas', []);
 
   if(areas && !!areas.length) {
     payload.lease_areas = areas.map((area) => {
@@ -1775,9 +2063,15 @@ export const addConstructabilityFormValues = (payload: Object, values: Object) =
   return payload;
 };
 
-export const getTenantContactDetailsForDb = (tenant: Object, contactType: 'tenant' | 'billing' | 'contact') => (
+/**
+ * Get tenant contact details payload
+ * @param {Object} tenant
+ * @param {string} contactType
+ * @returns {Object}
+ */
+export const getPayloadTenantContactDetails = (tenant: Object, contactType: 'tenant' | 'billing' | 'contact'): Object => (
   {
-    id: tenant.id || undefined,
+    id: tenant.id,
     type: contactType,
     contact: tenant.contact,
     start_date: tenant.start_date,
@@ -1802,22 +2096,22 @@ export const getPayloadTenantRentShares = (tenant: Object) => {
 };
 
 /**
- * Get payload tenant contact set
+ * Get tenant contact set payload
  * @param {Object} tenant
  * @returns {Object[]}
  */
-export const getPayloadTenantContactSet = (tenant: Object) => {
+export const getPayloadTenantContactSet = (tenant: Object): Array<Object> => {
   const contacts = [];
   const tenantData = tenant.tenant;
-  contacts.push(getTenantContactDetailsForDb(tenantData, TenantContactType.TENANT));
+  contacts.push(getPayloadTenantContactDetails(tenantData, TenantContactType.TENANT));
 
   const billingPersons = get(tenant, 'billing_persons', []);
   billingPersons.forEach((billingPerson) => {
-    contacts.push(getTenantContactDetailsForDb(billingPerson, TenantContactType.BILLING));
+    contacts.push(getPayloadTenantContactDetails(billingPerson, TenantContactType.BILLING));
   });
   const contactPersons = get(tenant, 'contact_persons', []);
   contactPersons.forEach((contactPerson) => {
-    contacts.push(getTenantContactDetailsForDb(contactPerson, TenantContactType.CONTACT));
+    contacts.push(getPayloadTenantContactDetails(contactPerson, TenantContactType.CONTACT));
   });
 
   return contacts;
@@ -1826,17 +2120,17 @@ export const getPayloadTenantContactSet = (tenant: Object) => {
 /**
  * Add tenants form values to payload
  * @param {Object} payload
- * @param {Object} values
+ * @param {Object} formValues
  * @returns {Object}
  */
-export const addTenantsFormValuesToPayload = (payload: Object, values: Object) => {
-  const tenantsCurrent = get(values, 'tenants', []);
-  const tenantsArchived = get(values, 'tenantsArchived', []);
+export const addTenantsFormValuesToPayload = (payload: Object, formValues: Object): Object => {
+  const tenantsCurrent = get(formValues, 'tenants', []);
+  const tenantsArchived = get(formValues, 'tenantsArchived', []);
   const tenants = [...tenantsCurrent, ...tenantsArchived];
 
   payload.tenants = tenants.map((tenant) => {
     return {
-      id: tenant.id || undefined,
+      id: tenant.id,
       share_numerator: tenant.share_numerator,
       share_denominator: tenant.share_denominator,
       reference: tenant.reference,
@@ -1849,11 +2143,11 @@ export const addTenantsFormValuesToPayload = (payload: Object, values: Object) =
 };
 
 /**
-  * Get content of management subventions from rent adjustment for payload
-  * @param {Object} rentAdjustment
-  * @return {Object}
-  */
-export const getPayloadManagementSubventions = (rentAdjustment: Object) =>
+ * Get management subventions payload
+ * @param {Object} rentAdjustment
+ * @return {Object[]}
+ */
+export const getPayloadManagementSubventions = (rentAdjustment: Object): Array<Object> =>
   get(rentAdjustment, 'management_subventions', [])
     .map((item) => {
       return {
@@ -1864,11 +2158,11 @@ export const getPayloadManagementSubventions = (rentAdjustment: Object) =>
     });
 
 /**
-  * Get content of temporary subventions from rent adjustment for payload
-  * @param {Object} rentAdjustment
-  * @return {Object}
-  */
-export const getPayloadTemporarySubventions = (rentAdjustment: Object) =>
+ * Get temporary subventions payload
+ * @param {Object} rentAdjustment
+ * @return {Object[]}
+ */
+export const getPayloadTemporarySubventions = (rentAdjustment: Object): Array<Object> =>
   get(rentAdjustment, 'temporary_subventions', [])
     .map((item) => {
       return {
@@ -1879,13 +2173,14 @@ export const getPayloadTemporarySubventions = (rentAdjustment: Object) =>
     });
 
 /**
-  * Get payload of rent adjustments for API PATCH request
-  *
-  */
-export const getPayloadRentAdjustments = (rent: Object) =>
+ * Get rent adjustments payload
+ * @param {Object} rent
+ * @returns {Object[]}
+ */
+export const getPayloadRentAdjustments = (rent: Object): Array<Object> =>
   get(rent, 'rent_adjustments', []).map((item) => {
     return {
-      id: item.id || undefined,
+      id: item.id,
       type: item.type,
       intended_use: item.intended_use,
       start_date: item.start_date,
@@ -1903,13 +2198,19 @@ export const getPayloadRentAdjustments = (rent: Object) =>
     };
   });
 
-export const getContentContractRentsForDb = (rent: Object, rentType: string) =>
+/**
+ * Get contract rents payload
+ * @param {Object} rent
+ * @param {string} rentType
+ * @returns {Object[]}
+ */
+export const getPayloadContractRents = (rent: Object, rentType: string): Array<Object> =>
   get(rent, 'contract_rents', []).map((item) => {
     const contractRentData: any = {
-      id: item.id || undefined,
+      id: item.id,
       amount: convertStrToDecimalNumber(item.amount),
       period: item.period,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      intended_use: get(item, 'intended_use.id') || item.intended_use,
       start_date: item.start_date,
       end_date: item.end_date,
     };
@@ -1924,10 +2225,15 @@ export const getContentContractRentsForDb = (rent: Object, rentType: string) =>
     return contractRentData;
   });
 
-export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
+/**
+ * Get fixed initial year rents payload
+ * @param {Object} rent
+ * @returns {Object[]}
+ */
+export const getPayloadFixedInitialYearRents = (rent: Object): Array<Object> =>
   get(rent, 'fixed_initial_year_rents', []).map((item) => {
     return {
-      id: item.id || undefined,
+      id: item.id,
       intended_use: item.intended_use,
       amount: convertStrToDecimalNumber(item.amount),
       start_date: item.start_date,
@@ -1935,14 +2241,19 @@ export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
     };
   });
 
-export const getContentRentDueDatesForDb = (rent: Object) => {
+/**
+ * Get rent due dates payload
+ * @param {Object} rent
+ * @returns {Object[]}
+ */
+export const getPayloadRentDueDates = (rent: Object): Array<Object> => {
   const type = rent.type;
   const dueDates = get(rent, 'due_dates', []);
 
   if(type === RentTypes.ONE_TIME) {
     return dueDates.length
       ? [{
-        id: dueDates[0].id || undefined,
+        id: dueDates[0].id,
         day: dueDates[0].day,
         month: dueDates[0].month,
       }]
@@ -1950,26 +2261,41 @@ export const getContentRentDueDatesForDb = (rent: Object) => {
   }
   return dueDates.map((date) => {
     return {
-      id: date.id || undefined,
+      id: date.id,
       day: date.day,
       month: date.month,
     };
   });
 };
 
+/**
+ * Find basis of rent by id
+ * @param {Object} lease
+ * @param {number} id
+ * @returns {Object}
+ */
+export const getBasisOfRentById = (lease: Lease, id: ?number): ?Object => {
+  if(!id) return null;
 
-export const getBasisOfRentById = (lease: Lease, id: ?number) => {
   const basisOfRents = getContentBasisOfRents(lease);
-
-  if(isEmptyValue(id)) return null;
 
   return basisOfRents.find((rent) => rent.id === id);
 };
 
-export const addRentsFormValues = (payload: Object, values: Object, currentLease: Lease) => {
-  payload.is_rent_info_complete = values.is_rent_info_complete ? true : false;
+/**
+ * Add rents form values to payload
+ * @param {Object} payload
+ * @param {Object} formValues
+ * @param {Object} currentLease
+ * @returns {Object}
+ */
+export const addRentsFormValuesToPayload = (payload: Object, formValues: Object, currentLease: Lease): Object => {
+  payload.is_rent_info_complete = formValues.is_rent_info_complete ? true : false;
 
-  const basisOfRents = [...get(values, 'basis_of_rents', []), ...get(values, 'basis_of_rents_archived', [])];
+  const basisOfRents = [
+    ...get(formValues, 'basis_of_rents', []), 
+    ...get(formValues, 'basis_of_rents_archived', []),
+  ];
 
   payload.basis_of_rents = basisOfRents.map((item) => {
     const savedBasisOfRent = getBasisOfRentById(currentLease, item.id);
@@ -1981,7 +2307,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       };
     } else {
       return {
-        id: item.id || undefined,
+        id: item.id,
         intended_use: item.intended_use,
         area: convertStrToDecimalNumber(item.area),
         area_unit: item.area_unit,
@@ -2001,13 +2327,14 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
     }
   });
 
-  const rentsCurrent = get(values, 'rents', []);
-  const rentsArchived = get(values, 'rentsArchived', []);
-  const rents = [...rentsCurrent, ...rentsArchived];
+  const rents = [
+    ...get(formValues, 'rents', []), 
+    ...get(formValues, 'rentsArchived', []),
+  ];
 
   payload.rents = rents.map((rent) => {
     const rentData: any = {
-      id: rent.id || undefined,
+      id: rent.id,
       type: rent.type,
       start_date: rent.start_date,
       end_date: rent.end_date,
@@ -2024,7 +2351,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       rentData.due_dates_type = rent.due_dates_type;
 
       if(rent.due_dates_type === RentDueDateTypes.CUSTOM) {
-        rentData.due_dates = getContentRentDueDatesForDb(rent);
+        rentData.due_dates = getPayloadRentDueDates(rent);
       } else if (rent.due_dates_type === RentDueDateTypes.FIXED) {
         rentData.due_dates_per_year = rent.due_dates_per_year;
       }
@@ -2034,7 +2361,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
     if(rent.type === RentTypes.INDEX || rent.type === RentTypes.MANUAL) {
       rentData.cycle = rent.cycle;
       rentData.index_type = rent.index_type;
-      rentData.fixed_initial_year_rents = getContentFixedInitialYearRentsForDb(rent);
+      rentData.fixed_initial_year_rents = getPayloadFixedInitialYearRents(rent);
     }
 
     if(rent.type === RentTypes.MANUAL) {
@@ -2055,7 +2382,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       rentData.seasonal_start_month = rent.seasonal_start_month || null;
       rentData.seasonal_end_day = rent.seasonal_end_day || null;
       rentData.seasonal_end_month = rent.seasonal_end_month || null;
-      rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
+      rentData.contract_rents = getPayloadContractRents(rent, rent.type);
       rentData.rent_adjustments = getPayloadRentAdjustments(rent);
     }
 
@@ -2065,10 +2392,15 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
   return payload;
 };
 
-export const getAreasSum = (areas: Array<Object>) => {
+/**
+ * Calculate sum of areas
+ * @param {Object[]} areas
+ * @returns {number}
+ */
+export const calculateAreasSum = (areas: Array<Object>): number => {
   let areasSum = 0;
 
-  if(areas && !!areas.length) {
+  if(areas) {
     forEach(areas, (area) => {
       areasSum += area.area;
     });
@@ -2076,53 +2408,12 @@ export const getAreasSum = (areas: Array<Object>) => {
   return areasSum;
 };
 
-export const isRentActive = (rent: ?Object) => {
-  const now = moment();
-  const startDate = get(rent, 'start_date');
-  const endDate = get(rent, 'end_date');
-
-  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
-    return false;
-  }
-
-  return true;
-};
-
-export const isRentArchived = (rent: ?Object) => {
-  const now = moment();
-  const endDate = get(rent, 'end_date');
-
-  if(endDate && now.isAfter(endDate, 'day')) {
-    return true;
-  }
-
-  return false;
-};
-
-export const isTenantActive = (tenant: ?Object) => {
-  const now = moment();
-  const startDate = get(tenant, 'start_date');
-  const endDate = get(tenant, 'end_date');
-
-  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
-    return false;
-  }
-
-  return true;
-};
-
-export const isTenantArchived = (tenant: ?Object) => {
-  const now = moment();
-  const endDate = get(tenant, 'end_date');
-
-  if(endDate && now.isAfter(endDate, 'day')) {
-    return true;
-  }
-
-  return false;
-};
-
-export const mapLeaseSearchFilters = (query: Object) => {
+/**
+ * Map lease page search filters for API 
+ * @param {Object} query
+ * @returns {Object}
+ */
+export const mapLeaseSearchFilters = (query: Object): Object => {
   const searchQuery = {...query};
 
   searchQuery.lease_state = isArray(searchQuery.lease_state)
@@ -2152,6 +2443,7 @@ export const mapLeaseSearchFilters = (query: Object) => {
   if(searchQuery.has_not_geometry === 'true') {
     searchQuery.has_geometry = false;
   }
+
   delete searchQuery.has_not_geometry;
 
   searchQuery.lease_state.forEach((state) => {
@@ -2166,11 +2458,11 @@ export const mapLeaseSearchFilters = (query: Object) => {
 
 /**
  * Format seasonal date as string
- * @param [string] day
- * @param [string] month
- * @returns [string]
+ * @param {string} day
+ * @param {string} month
+ * @returns {string}
  */
-export const formatSeasonalDate = (day: ?string, month: ?string) => {
+export const formatSeasonalDate = (day: ?string, month: ?string): ?string => {
   if(!day || !month) return null;
 
   return `${day}.${month}.`;
@@ -2178,23 +2470,28 @@ export const formatSeasonalDate = (day: ?string, month: ?string) => {
 
 /**
  * Format single due date as string
- * @param [Object] dates
- * @returns [string]
+ * @param {Object} date
+ * @returns {string}
  */
-const formatDueDate = (date: Object) => {
+const formatDueDate = (date: Object): string => {
   return `${date.day}.${date.month}.`;
 };
 
 /**
  * Format due dates as string
- * @param [Object[]] dates
- * @returns [string]
+ * @param {Object[]} dates
+ * @returns {string}
  */
-export const formatDueDates = (dates: Array<Object>) => {
+export const formatDueDates = (dates: Array<Object>): string => {
   return dates.map((date) => formatDueDate(date)).join(', ');
 };
 
-export const isAnyLeaseFormDirty = (state: any) => {
+/**
+ * Test is any lease page form dirty
+ * @param {Object} state
+ * @returns {boolean}
+ */
+export const isAnyLeaseFormDirty = (state: RootState): boolean => {
   const isEditMode = getIsEditMode(state);
 
   return isEditMode && (
@@ -2208,6 +2505,9 @@ export const isAnyLeaseFormDirty = (state: any) => {
     isDirty(FormNames.LEASE_TENANTS)(state));
 };
 
+/**
+ * Clear all unsaved changes from local storage
+ */
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.LEASE_CONSTRUCTABILITY);
   removeSessionStorageItem(FormNames.LEASE_CONTRACTS);

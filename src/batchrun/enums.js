@@ -2,8 +2,8 @@
 
 /**
  * Job run field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const JobRunFieldPaths = {
   ID: 'id',
@@ -14,8 +14,8 @@ export const JobRunFieldPaths = {
 
 /**
  * Job run field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const JobRunFieldTitles = {
   ID: '',
@@ -26,8 +26,8 @@ export const JobRunFieldTitles = {
 
 /**
  * Job run jobs field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const JobRunJobFieldPaths = {
   COMMENT: 'job.children.comment',
@@ -36,8 +36,8 @@ export const JobRunJobFieldPaths = {
 
 /**
  * Job run jobs field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const JobRunJobFieldTitles = {
   COMMENT: 'Työn kommentti',
@@ -46,8 +46,8 @@ export const JobRunJobFieldTitles = {
 
 /**
  * Job run log entry field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const JobRunLogEntryFieldPaths = {
   TEXT: 'text',
@@ -56,8 +56,8 @@ export const JobRunLogEntryFieldPaths = {
 
 /**
  * Job run log entry field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const JobRunLogEntryFieldTitles = {
   TEXT: 'Tulos',
@@ -66,8 +66,8 @@ export const JobRunLogEntryFieldTitles = {
 
 /**
  * Scheduled job field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const ScheduledJobFieldPaths = {
   ID: 'id',
@@ -83,8 +83,8 @@ export const ScheduledJobFieldPaths = {
 
 /**
  * Scheduled job field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const ScheduledJobFieldTitles = {
   ID: '',
@@ -100,8 +100,8 @@ export const ScheduledJobFieldTitles = {
 
 /**
  * Scheduled job job field paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const ScheduledJobJobFieldPaths = {
   COMMENT: 'job.children.comment',
@@ -110,8 +110,8 @@ export const ScheduledJobJobFieldPaths = {
 
 /**
  * Scheduled job job field titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const ScheduledJobJobFieldTitles = {
   COMMENT: 'Työn kommentti',

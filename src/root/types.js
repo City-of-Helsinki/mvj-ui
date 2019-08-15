@@ -25,7 +25,6 @@ import type {LeaseCreateChargeState} from '$src/leaseCreateCharge/types';
 import type {LeaseholdTransferState} from '$src/leaseholdTransfer/types';
 import type {LeaseTypeState} from '$src/leaseType/types';
 import type {LessorState} from '$src/lessor/types';
-import type {MapDataState} from '$src/mapData/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
 import type {RentBasisState} from '$src/rentbasis/types';
@@ -65,7 +64,6 @@ export type RootState = {
   leaseholdTransfer: LeaseholdTransferState,
   leaseType: LeaseTypeState,
   lessor: LessorState,
-  mapData: MapDataState,
   penaltyInterest: PenaltyInterestState,
   previewInvoices: PreviewInvoicesState,
   rentBasis: RentBasisState,

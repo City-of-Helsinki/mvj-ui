@@ -15,7 +15,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {hasAnyPageDirtyForms} from '$src/helpers';
+import {hasAnyPageDirtyForms} from '$util/forms';
 import {hasPermissions} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {withUsersPermissions} from '$components/attributes/UsersPermissions';
@@ -206,7 +206,7 @@ class SideMenu extends Component<Props, State> {
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASEHOLDTRANSFER)}
                   >
                     <SubMenu
-                      header='Työkalut'
+                      header='Lisää'
                       isOpen={subMenuKey === 'tools'}
                       items={[
                         {

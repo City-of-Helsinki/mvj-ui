@@ -1,5 +1,5 @@
 // @flow
-import {TableSortOrder} from '$components/enums';
+import {TableSortOrder} from '$src/enums';
 import {
   CreditInvoiceOptions as CreditInvoiceOptionsEnum, 
   RentDueDateTypes,
@@ -81,7 +81,7 @@ export const DEFAULT_LEASE_STATES = [];
  * Default only_active_leases value for lease list search
  * @const {boolean}
  */
-export const DEFAULT_ONLY_ACTIVE_LEASES = true;
+export const DEFAULT_ONLY_ACTIVE_LEASES = false;
 
 /**
  * Default sort key for lease list table

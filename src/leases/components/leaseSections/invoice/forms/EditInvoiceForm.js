@@ -2,7 +2,7 @@
 import React, {Fragment} from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import {FieldArray, reduxForm} from 'redux-form';
+import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import type {Element} from 'react';
 
@@ -19,8 +19,8 @@ import RemoveButton from '$components/form/RemoveButton';
 import SendupButton from '$components/button/SendupButton';
 import SubTitle from '$components/content/SubTitle';
 import {exportInvoiceToLaskeAndUpdateList} from '$src/invoices/actions';
-import {ConfirmationModalTexts, FormNames} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {
   InvoiceCreditInvoicesFieldPaths,
   InvoiceCreditInvoicesFieldTitles,
@@ -36,6 +36,7 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getContactFullName} from '$src/contacts/helpers';
+import {isInvoiceBillingPeriodRequired} from '$src/invoices/helpers';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {getUiDataInvoiceKey} from '$src/uiData/helpers';
 import {
@@ -185,6 +186,7 @@ type Props = {
   isEditClicked: boolean,
   onInvoiceLinkClick: Function,
   relativeTo: any,
+  rows: Array<Object>,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -199,6 +201,7 @@ const EditInvoiceForm = ({
   isEditClicked,
   onInvoiceLinkClick,
   relativeTo,
+  rows, 
   usersPermissions,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
@@ -250,6 +253,7 @@ const EditInvoiceForm = ({
   const creditInvoices = invoice ? invoice.credit_invoices : [];
   const interestInvoices = invoice ? invoice.interest_invoices : [];
   const showOldInvoiceInfo = shouldShowOldInvoiceInfo();
+  const billingPeriodRequired = isInvoiceBillingPeriodRequired(rows);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -346,7 +350,7 @@ const EditInvoiceForm = ({
           <Row>
             <Column>
               <FormTextTitle
-                required={isFieldRequired(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE) || isFieldRequired(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}
+                required={billingPeriodRequired}
                 enableUiDataEdit
                 relativeTo={relativeTo}
                 uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.BILLING_PERIOD)}
@@ -709,6 +713,7 @@ const EditInvoiceForm = ({
 };
 
 const formName = FormNames.LEASE_INVOICE_EDIT;
+const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
@@ -717,6 +722,7 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         invoiceAttributes: getInvoiceAttributes(state),
         isEditClicked: getIsEditClicked(state),
+        rows: selector(state, 'rows'),
         usersPermissions: getUsersPermissions(state),
       };
     },

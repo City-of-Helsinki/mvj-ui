@@ -46,8 +46,8 @@ import {
 import {
   clearUnsavedChanges,
   getContentInfillDevelopment,
-  getContentInfillDevelopmentCopy,
-  getContentInfillDevelopmentForDb,
+  getCopyOfInfillDevelopment,
+  getPayloadInfillDevelopment,
 } from '$src/infillDevelopment/helpers';
 import {getUiDataInfillDevelopmentKey} from '$src/uiData/helpers';
 import {
@@ -334,7 +334,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const infillDevelopment = {...currentInfillDevelopment};
 
     infillDevelopment.id = undefined;
-    receiveFormInitialValues(getContentInfillDevelopmentCopy(infillDevelopment));
+    receiveFormInitialValues(getCopyOfInfillDevelopment(infillDevelopment));
     hideEditMode();
     clearUnsavedChanges();
 
@@ -387,7 +387,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
     if(isFormValid) {
       const {currentInfillDevelopment, infillDevelopmentFormValues, editInfillDevelopment} = this.props;
-      const editedInfillDevelopment = getContentInfillDevelopmentForDb(infillDevelopmentFormValues);
+      const editedInfillDevelopment = getPayloadInfillDevelopment(infillDevelopmentFormValues);
 
       editedInfillDevelopment.id = currentInfillDevelopment.id;
       editInfillDevelopment(editedInfillDevelopment);

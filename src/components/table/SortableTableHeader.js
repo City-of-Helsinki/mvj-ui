@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import kebabCase from 'lodash/kebabCase';
 
 import {SortIconBoth, SortIconDesc, SortIconAsc} from '$components/table/Icons';
-import {TableSortOrder} from '$components/enums';
+import {TableSortOrder} from '$src/enums';
 
 import type {Column} from './SortableTable';
 

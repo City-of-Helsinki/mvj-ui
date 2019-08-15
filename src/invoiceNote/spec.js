@@ -8,6 +8,7 @@ import {
   receiveMethods,
   fetchInvoiceNoteList,
   receiveInvoiceNoteList,
+  createInvoiceNoteAndFetchList,
   notFound,
   hideCreateInvoiceNoteModal,
   showCreateInvoiceNoteModal,
@@ -70,6 +71,13 @@ describe('Invoice Note', () => {
         const newState = {...defaultState, isFetching: true};
 
         const state = invoiceNoteReducer({}, fetchInvoiceNoteList({}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when creting and fetching invoice notes', () => {
+        const newState = {...defaultState, isFetching: true};
+
+        const state = invoiceNoteReducer({}, createInvoiceNoteAndFetchList({data: {}, query: {}}));
         expect(state).to.deep.equal(newState);
       });
 

@@ -3,8 +3,9 @@ import get from 'lodash/get';
 import isString from 'lodash/isString';
 
 /**
- *
+ * Get item from the local storage
  * @param {string} key
+ * @returns {*}
  */
 export const getStorageItem = (key: string) => {
   const [root, ...rest] = key.split('.');
@@ -14,7 +15,7 @@ export const getStorageItem = (key: string) => {
 };
 
 /**
- *
+ * Add item to the local storage
  * @param {string} key
  * @param {*} value
  * @param callback
@@ -34,7 +35,7 @@ export const setStorageItem = (key: string, value: any, callback: ?Function = nu
 };
 
 /**
- *
+ * Remove item from the local storage
  * @param {string} key
  * @param callback
  */
@@ -46,8 +47,9 @@ export const removeStorageItem = (key: string, callback: ?Function = null) => {
 };
 
 /**
- *
+ * Get item from the session storage
  * @param {string} key
+ * @returns {*}
  */
 export const getSessionStorageItem = (key: string): any => {
   const item = sessionStorage.getItem(key) || '';
@@ -56,7 +58,7 @@ export const getSessionStorageItem = (key: string): any => {
 };
 
 /**
- *
+ * Add item to the session storage
  * @param {string} key
  * @param {*} value
  * @param callback
@@ -76,7 +78,7 @@ export const setSessionStorageItem = (key: string, value: any, callback: ?Functi
 };
 
 /**
- *
+ * Remove item from the session storage
  * @param {string} key
  * @param callback
  */
@@ -88,7 +90,7 @@ export const removeSessionStorageItem = (key: string, callback: ?Function = null
 };
 
 /**
- *
+ * Add storage prefix to a key
  * @param {string} key
  * @returns {string}
  */
@@ -97,7 +99,7 @@ const buildStorageKey = (key: string) => {
 };
 
 /**
- *
+ * Test is value possible to parse to JSON
  * @param {*} value
  * @returns {boolean}
  */
@@ -121,7 +123,6 @@ export const getRedirectUrlFromSessionStorage = () => {
 /**
  * Set redirect address to session storage
  * @param {string} url
- * @returns {string}
  */
 export const setRedirectUrlToSessionStorage = (url: string) => {
   setSessionStorageItem('redirectURL', url);

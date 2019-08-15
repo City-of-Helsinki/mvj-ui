@@ -36,9 +36,9 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {Methods} from '$src/enums';
 import {validateTenantForm, warnTenantForm} from '$src/leases/formValidators';
-import {hasPermissions, isEmptyValue, isFieldAllowedToEdit, isMethodAllowed} from '$util/helpers';
+import {hasPermissions, isArchived, isEmptyValue, isFieldAllowedToEdit, isMethodAllowed} from '$util/helpers';
 import {getContentContact} from '$src/contacts/helpers';
-import {getContentTenantsFormData} from '$src/leases/helpers';
+import {getContentTenants} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {contactExists} from '$src/contacts/requestsAsync';
 import {
@@ -186,13 +186,15 @@ type Props = {
 
 type State = {
   currentLease: Lease,
-  savedTenants: Object,
+  savedTenants: Array<Object>,
+  savedTenantsArchived: Array<Object>,
 }
 
 class TenantsEdit extends PureComponent<Props, State> {
   state = {
     currentLease: {},
-    savedTenants: {},
+    savedTenants: [],
+    savedTenantsArchived: [],
   }
 
   componentDidMount() {
@@ -202,9 +204,12 @@ class TenantsEdit extends PureComponent<Props, State> {
 
   static getDerivedStateFromProps(props, state) {
     if(props.currentLease !== state.lease) {
+      const tenants = getContentTenants(props.currentLease);
+
       return {
         currentLease: props.currentLease,
-        savedTenants: getContentTenantsFormData(props.currentLease),
+        savedTenants: tenants.filter((tenant) => !isArchived(tenant.tenant)),
+        savedTenantsArchived: tenants.filter((tenant) => isArchived(tenant.tenant)),
       };
     }
 
@@ -267,9 +272,7 @@ class TenantsEdit extends PureComponent<Props, State> {
       usersPermissions,
     } = this.props;
 
-    const {savedTenants} = this.state;
-    const tenants = savedTenants.tenants,
-      tenantsArchived = savedTenants.tenantsArchived;
+    const {savedTenants, savedTenantsArchived} = this.state;
 
     return (
       <AppConsumer>
@@ -282,7 +285,7 @@ class TenantsEdit extends PureComponent<Props, State> {
 
             if(!isContactFormValid) return;
 
-            if(!contactModalSettings ||contactModalSettings.isNew) {
+            if(!contactModalSettings || !contactModalSettings.isNew) {
               this.createOrEditContact();
               return;
             }
@@ -349,7 +352,7 @@ class TenantsEdit extends PureComponent<Props, State> {
                   component={renderTenants}
                   leaseAttributes={leaseAttributes}
                   name='tenants'
-                  tenants={tenants}
+                  tenants={savedTenants}
                   usersPermissions={usersPermissions}
                 />
 
@@ -358,7 +361,7 @@ class TenantsEdit extends PureComponent<Props, State> {
                   leaseAttributes={leaseAttributes}
                   name='tenantsArchived'
                   archived
-                  tenants={tenantsArchived}
+                  tenants={savedTenantsArchived}
                   usersPermissions={usersPermissions}
                 />
               </form>

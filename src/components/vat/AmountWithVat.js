@@ -1,7 +1,8 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import moment from 'moment';
+import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
 
 import {formatNumber} from '$src/util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -23,8 +24,8 @@ class AmountWithVat extends PureComponent<Props> {
     const {date, vats} = this.props;
 
     const vat = vats.find((vat) => {
-      return ((!vat.end_date || moment(vat.end_date).isSameOrAfter(date, 'day')) &&
-        (!vat.start_date || moment(vat.start_date).isSameOrBefore(date, 'day'))
+      return ((!vat.end_date || !isAfter(new Date(date), new Date(vat.end_date))) &&
+        (!vat.start_date || !isBefore(new Date(date), new Date(vat.start_date)))
       );
     });
 

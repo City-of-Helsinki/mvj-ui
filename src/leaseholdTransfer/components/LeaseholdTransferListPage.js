@@ -31,13 +31,13 @@ import {
 import {ButtonColors} from '$components/enums';
 import {LeaseholdTransferFieldPaths, LeaseholdTransferFieldTitles} from '$src/leaseholdTransfer/enums';
 import {
-  getLeaseholdTransferListCount,
-  getLeaseholdTransferListMaxPage,
   getContentLeaseholdTransfers,
   mapLeaseholdTransferSearchFilters,
 } from '$src/leaseholdTransfer/helpers';
 import {
   formatDate,
+  getApiResponseCount,
+  getApiResponseMaxPage,
   getSearchQuery,
   getUrlParams,
   isFieldAllowedToRead,
@@ -114,9 +114,9 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
 
     if(props.leaseholdTransferList !== state.leaseholdTransferList) {
       newState.leaseholdTransferList = props.leaseholdTransferList;
-      newState.count = getLeaseholdTransferListCount(props.leaseholdTransferList);
+      newState.count = getApiResponseCount(props.leaseholdTransferList);
       newState.leaseholdTransfers = getContentLeaseholdTransfers(props.leaseholdTransferList);
-      newState.maxPage = getLeaseholdTransferListMaxPage(props.leaseholdTransferList, LIST_TABLE_PAGE_SIZE);
+      newState.maxPage = getApiResponseMaxPage(props.leaseholdTransferList, LIST_TABLE_PAGE_SIZE);
     }
 
     return !isEmpty(newState) ? newState : null;

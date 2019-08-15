@@ -11,8 +11,7 @@ import SingleRadioInput from '$components/inputs/SingleRadioInput';
 import SortableTable from '$components/table/SortableTable';
 import TableAndPanelWrapper from '$components/table/TableAndPanelWrapper';
 import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
-import {FormNames, KeyCodes} from '$src/enums';
-import {TableSortOrder} from '$components/enums';
+import {FormNames, KeyCodes, TableSortOrder} from '$src/enums';
 import {
   InvoiceFieldPaths,
   InvoiceFieldTitles,

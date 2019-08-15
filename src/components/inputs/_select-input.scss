@@ -39,7 +39,8 @@
     &__single-value {
       padding-right: rem-calc(15px);
       height: 100%;
-      margin-top: 1px;
+      margin-top: 0;
+      line-height: 18px;
       overflow: hidden;
     }
 
@@ -50,6 +51,7 @@
         height: rem-calc(14px);
         padding: rem-calc(2px) !important;
         margin-bottom: 0;
+        line-height: 1;
         box-shadow: none;
       }
     }

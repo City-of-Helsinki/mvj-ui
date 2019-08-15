@@ -38,7 +38,7 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   calculateReLeaseDiscountPercent,
-  calculateRentAdjustmentSubventionAmount,
+  calculateRentAdjustmentSubventionPercent,
   getDecisionById,
 } from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -277,7 +277,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
       this.props.temporarySubventions !== prevProps.temporarySubventions) {
       const {change, field} = this.props;
 
-      change(formName, `${field}.full_amount`, formatNumber(this.calculateSubventionAmount()));
+      change(formName, `${field}.full_amount`, formatNumber(this.calculateTotalSubventionPercent()));
     }
   }
 
@@ -295,7 +295,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
 
     if(!fullAmount) return null;
 
-    return `${formatNumber(fullAmount)} ${getLabelOfOption(amountTypeOptions, amountType)}`;
+    return `${formatNumber(fullAmount)} ${getLabelOfOption(amountTypeOptions, amountType) || ''}`;
   };
 
   handleAddSubventions = () => {
@@ -315,10 +315,10 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     return calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
   }
 
-  calculateSubventionAmount = () => {
+  calculateTotalSubventionPercent = () => {
     const {subventionType, subventionBasePercent, subventionGraduatedPercent, managementSubventions, temporarySubventions} = this.props;
 
-    return calculateRentAdjustmentSubventionAmount(
+    return calculateRentAdjustmentSubventionPercent(
       subventionType,
       subventionBasePercent,
       subventionGraduatedPercent,
@@ -339,6 +339,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
       usersPermissions,
     } = this.props;
     const {showSubventions} = this.state;
+    const totalSubventionPercent = this.calculateTotalSubventionPercent();
 
     return (
       <BoxItem>
@@ -624,7 +625,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                         <FormText className='semibold'>Yhteensä</FormText>
                       </Column>
                       <Column small={6} medium={4} large={2}>
-                        <FormText className='semibold'>{formatNumber(this.calculateSubventionAmount())} %</FormText>
+                        <FormText className='semibold'>{formatNumber(totalSubventionPercent)} %</FormText>
                       </Column>
                     </Row>
                   </GreenBox>

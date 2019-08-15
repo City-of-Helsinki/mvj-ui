@@ -198,6 +198,30 @@ const CollateralMortgageDocument = ({
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.START_DATE)}
+              name={`${field}.start_date`}
+              overrideValues={{label: LeaseContractCollateralsFieldTitles.START_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.START_DATE)}
+            />
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(attributes, LeaseContractCollateralsFieldPaths.END_DATE)}
+              name={`${field}.end_date`}
+              overrideValues={{label: LeaseContractCollateralsFieldTitles.END_DATE}}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.END_DATE)}
+            />
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
             <FormField
               disableTouched={isSaveClicked}

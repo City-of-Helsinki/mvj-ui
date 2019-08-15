@@ -1,8 +1,9 @@
 // @flow
+
 /**
  * Invoice note paths enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceNoteFieldPaths = {
   ID: 'id',
@@ -16,8 +17,8 @@ export const InvoiceNoteFieldPaths = {
 
 /**
  * Invoice note titles enumerable.
- *
- * @type {{}}
+ * @readonly
+ * @enum {string}
  */
 export const InvoiceNoteFieldTitles = {
   ID: 'Id',

@@ -48,7 +48,7 @@ const ContactModal = ({
   return(
     <div className='contact-modal'>
       <Modal
-        className='modal-center modal-large'
+        className='modal-large'
         isOpen={isOpen}
         onClose={onClose}
         title={title || 'Uusi asiakas'}

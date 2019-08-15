@@ -11,8 +11,7 @@ import GreenBox from '$components/content/GreenBox';
 import LeaseItemsEdit from './LeaseItemsEdit';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValidFlags} from '$src/infillDevelopment/actions';
-import {FormNames} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames} from '$src/enums';
 import {
   InfillDevelopmentCompensationFieldPaths,
   InfillDevelopmentCompensationFieldTitles,

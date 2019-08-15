@@ -24,8 +24,8 @@ import StatusIndicator from './StatusIndicator';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {createLeaseAreaAttachment, deleteLeaseAreaAttachment} from '$src/leaseAreaAttachment/actions';
-import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
-import {ButtonColors, FieldTypes} from '$components/enums';
+import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {
   LeaseAreaAddressesFieldPaths,
   LeaseAreaAttachmentsFieldPaths,
@@ -405,7 +405,7 @@ const ConstructabilityItemEdit = ({
           </Column>
           <Column>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
-              <CollapseHeaderSubtitle>{!isEmptyValue(savedArea.area) ? `${formatNumber(savedArea.area)} m²` : '-'}{savedArea.location ? ` / ${getLabelOfOption(locationOptions, savedArea.location)}` : ''}</CollapseHeaderSubtitle>
+              <CollapseHeaderSubtitle>{!isEmptyValue(savedArea.area) ? `${formatNumber(savedArea.area)} m²` : '-'}{savedArea.location ? ` / ${getLabelOfOption(locationOptions, savedArea.location) || ''}` : ''}</CollapseHeaderSubtitle>
             </Authorization>
           </Column>
         </Fragment>

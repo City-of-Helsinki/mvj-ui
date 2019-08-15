@@ -46,7 +46,7 @@ class ConfirmationModal extends Component<Props> {
     return (
       <div className='confirmation-modal'>
         <Modal
-          className='modal-small modal-autoheight modal-center'
+          className='modal-small modal-autoheight'
           title={title}
           isOpen={isOpen}
           onClose={onClose}

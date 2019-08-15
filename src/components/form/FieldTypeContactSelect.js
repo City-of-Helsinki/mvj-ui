@@ -5,7 +5,7 @@ import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
 import {getContentContact} from '../../contacts/helpers';
-import {addEmptyOption, sortByLabelAsc} from '$util/helpers';
+import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchContacts} from '$src/contacts/requestsAsync';
 
 type Props = {
@@ -31,7 +31,7 @@ const FieldTypeContactSelect = ({
       limit: 20,
     });
 
-    callback(addEmptyOption(contacts.map((lessor) => getContentContact(lessor)).sort(sortByLabelAsc)));
+    callback(addEmptyOption(contacts.map((lessor) => getContentContact(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
   }, 500);
 
   return(

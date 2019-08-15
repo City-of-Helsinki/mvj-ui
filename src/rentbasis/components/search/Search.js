@@ -17,8 +17,7 @@ import SearchInputColumn from '$components/search/SearchInputColumn';
 import SearchLabel from '$components/search/SearchLabel';
 import SearchLabelColumn from '$components/search/SearchLabelColumn';
 import SearchRow from '$components/search/SearchRow';
-import {FormNames} from '$src/enums';
-import {FieldTypes} from '$components/enums';
+import {FieldTypes, FormNames} from '$src/enums';
 import {RentBasisDecisionsFieldPaths} from '$src/rentbasis/enums';
 import {getFieldOptions, getUrlParams} from '$util/helpers';
 import {getAttributes as getRentBasisAttributes} from '$src/rentbasis/selectors';
@@ -245,7 +244,6 @@ class Search extends PureComponent<Props, State> {
 const formName = FormNames.RENT_BASIS_SEARCH;
 
 export default flowRight(
-  // $FlowFixMe
   withRouter,
   connect(
     state => {

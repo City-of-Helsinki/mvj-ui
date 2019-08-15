@@ -6,6 +6,8 @@ import {
   attributesNotFound,
   receiveAttributes,
   receiveMethods,
+  createInfillDevelopmentAttachment,
+  deleteInfillDevelopmentAttachment,
 } from './actions';
 import infillDevelopmentAttachmentReducer from './reducer';
 
@@ -66,6 +68,25 @@ describe('Infill development attachment', () => {
 
         const state = infillDevelopmentAttachmentReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
+      });
+
+      it('createInfillDevelopmentAttachment should not change state', () => {
+        const state = infillDevelopmentAttachmentReducer({}, createInfillDevelopmentAttachment({
+          id: 1,
+          data: {},
+          file: {},
+        }));
+
+        expect(state).to.deep.equal(defaultState);
+      });
+
+      it('deleteInfillDevelopmentAttachment should not change state', () => {
+        const state = infillDevelopmentAttachmentReducer({}, deleteInfillDevelopmentAttachment({
+          id: 1,
+          fileId: 1,
+        }));
+
+        expect(state).to.deep.equal(defaultState);
       });
     });
   });

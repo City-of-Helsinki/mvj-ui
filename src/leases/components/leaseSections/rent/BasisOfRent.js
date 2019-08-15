@@ -28,8 +28,9 @@ import {
   calculateBasisOfRentBasicAnnualRent,
   calculateBasisOfRentDiscountedInitialYearRent,
   calculateBasisOfRentInitialYearRent,
+  calculateBasisOfRentSubventionAmount,
   calculateReLeaseDiscountPercent, 
-  calculateRentAdjustmentSubventionAmount,
+  calculateRentAdjustmentSubventionPercent,
   getBasisOfRentIndexValue,
 } from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -76,13 +77,13 @@ const BasisOfRent = ({
   const getAreaText = (amount: ?number) => {
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
-    return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit)}`;
+    return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit) || ''}`;
   };
 
   const getAmountPerAreaText = (amount: ?number) => {
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
-    return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit)}`;
+    return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit) || ''}`;
   };
 
   const getPlansInspectedText = () => {
@@ -103,8 +104,8 @@ const BasisOfRent = ({
       basisOfRent.subvention_graduated_percent);
   };
 
-  const getSubventionAmount = () => {
-    return calculateRentAdjustmentSubventionAmount(
+  const getTotalSubventionPercent = () => {
+    return calculateRentAdjustmentSubventionPercent(
       basisOfRent.subvention_type,
       basisOfRent.subvention_base_percent,
       basisOfRent.subvention_graduated_percent,
@@ -128,6 +129,10 @@ const BasisOfRent = ({
   const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent/6 : null;
   const rentPerMonthTotal = totalDiscountedInitialYearRent/12;
   const rentPer2MonthsTotal = totalDiscountedInitialYearRent/6;
+  const reLeaseDiscountPercent = getReLeaseDiscountPercent();
+  const reLeaseDiscountAmount = calculateBasisOfRentSubventionAmount(initialYearRent, reLeaseDiscountPercent);
+  const totalSubventionPercent = getTotalSubventionPercent();
+  const totalSubventionAmount = calculateBasisOfRentSubventionAmount(initialYearRent, totalSubventionPercent);
 
   return(
     <BoxItem className='no-border-on-first-child no-border-on-last-child'>
@@ -342,44 +347,59 @@ const BasisOfRent = ({
                 {managementSubventions && managementSubventions.length &&
                   <Fragment>
                     <Row>
-                      <Column small={6} medium={4} large={2}>
+                      <Column small={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}>
                             {BasisOfRentManagementSubventionsFieldTitles.MANAGEMENT}
                           </FormTextTitle>
                         </Authorization>
                       </Column>
-                      <Column small={6} medium={4} large={2}>
+                      <Column small={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
                             {BasisOfRentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}
                           </FormTextTitle>
                         </Authorization>
                       </Column>
+                      <Column small={4} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                          <FormTextTitle uiDataKey={getUiDataLeaseKey(BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+                            {BasisOfRentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}
+                          </FormTextTitle>
+                        </Authorization>
+                      </Column>
                     </Row>
 
-                    {managementSubventions.map((subvention) =>
-                      <Row key={subvention.id}>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}>
-                            <FormText>{getLabelOfOption(managementTypeOptions, subvention.management) || '-'}</FormText>
-                          </Authorization>
-                        </Column>
-                        <Column small={6} medium={4} large={2}>
-                          <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
-                            <FormText>{!isEmptyValue(subvention.subvention_percent) ? `${formatNumber(subvention.subvention_percent)} %` : '-'}</FormText>
-                          </Authorization>
-                        </Column>
-                      </Row>
-                    )}
+                    {managementSubventions.map((subvention) => {
+                      const subventionAmount = calculateBasisOfRentSubventionAmount(initialYearRent, subvention.subvention_percent);
+
+                      return(
+                        <Row key={subvention.id}>
+                          <Column small={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}>
+                              <FormText>{getLabelOfOption(managementTypeOptions, subvention.management) || '-'}</FormText>
+                            </Authorization>
+                          </Column>
+                          <Column small={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                              <FormText>{!isEmptyValue(subvention.subvention_percent) ? `${formatNumber(subvention.subvention_percent)} %` : '-'}</FormText>
+                            </Authorization>
+                          </Column>
+                          <Column small={4} large={2}>
+                            <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                              <FormText>{formatNumber(subventionAmount)} €</FormText>
+                            </Authorization>
+                          </Column>
+                        </Row>
+                      );
+                    })}
                   </Fragment>
                 }
-
               </Authorization>
             }
             {basisOfRent.subvention_type === SubventionTypes.RE_LEASE_DISCOUNT &&
               <Row>
-                <Column small={6} medium={4} large={2}>
+                <Column small={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
                     <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
                       {LeaseBasisOfRentsFieldTitles.SUBVENTION_BASE_PERCENT}
@@ -387,7 +407,7 @@ const BasisOfRent = ({
                     <FormText>{!isEmptyValue(basisOfRent.subvention_base_percent) ? `${formatNumber(basisOfRent.subvention_base_percent)} %` : '-'}</FormText>
                   </Authorization>
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_GRADUATED_PERCENT)}>
                     <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.SUBVENTION_GRADUATED_PERCENT)}>
                       {LeaseBasisOfRentsFieldTitles.SUBVENTION_GRADUATED_PERCENT}
@@ -395,13 +415,22 @@ const BasisOfRent = ({
                     <FormText>{!isEmptyValue(basisOfRent.subvention_graduated_percent) ? `${formatNumber(basisOfRent.subvention_graduated_percent)} %` : '-'}</FormText>
                   </Authorization>
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT) ||
                     isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
                     <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT)}>
                       {LeaseBasisOfRentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT}
                     </FormTextTitle>
-                    <FormText>{formatNumber(getReLeaseDiscountPercent())} %</FormText>
+                    <FormText>{formatNumber(reLeaseDiscountPercent)} %</FormText>
+                  </Authorization>
+                </Column>
+                <Column small={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT) ||
+                    isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
+                    <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT)}>
+                      {LeaseBasisOfRentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT}
+                    </FormTextTitle>
+                    <FormText>{formatNumber(reLeaseDiscountAmount)} €</FormText>
                   </Authorization>
                 </Column>
               </Row>
@@ -417,36 +446,52 @@ const BasisOfRent = ({
               {temporarySubventions && temporarySubventions.length &&
                 <Fragment>
                   <Row>
-                    <Column small={6} medium={4} large={2}>
+                    <Column small={4} large={2}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}>
                         <FormTextTitle uiDataKey={getUiDataLeaseKey(BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}>
                           {BasisOfRentTemporarySubventionsFieldTitles.DESCRIPTION}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
-                    <Column small={6} medium={4} large={2}>
+                    <Column small={4} large={2}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}>
                         <FormTextTitle uiDataKey={getUiDataLeaseKey(BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}>
                           {BasisOfRentTemporarySubventionsFieldTitles.SUBVENTION_PERCENT}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
+                    <Column small={4} large={2}>
+                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                        <FormTextTitle uiDataKey={getUiDataLeaseKey(BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+                          {BasisOfRentTemporarySubventionsFieldTitles.SUBVENTION_AMOUNT}
+                        </FormTextTitle>
+                      </Authorization>
+                    </Column>
                   </Row>
 
-                  {temporarySubventions.map((subvention) =>
-                    <Row key={subvention.id}>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}>
-                          <FormText>{subvention.description}</FormText>
-                        </Authorization>
-                      </Column>
-                      <Column small={6} medium={4} large={2}>
-                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}>
-                          <FormText>{!isEmptyValue(subvention.subvention_percent) ? `${formatNumber(subvention.subvention_percent)} %` : '-'}</FormText>
-                        </Authorization>
-                      </Column>
-                    </Row>
-                  )}
+                  {temporarySubventions.map((subvention) => {
+                    const subventionAmount = calculateBasisOfRentSubventionAmount(initialYearRent, subvention.subvention_percent);
+                    
+                    return(
+                      <Row key={subvention.id}>
+                        <Column small={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}>
+                            <FormText>{subvention.description}</FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}>
+                            <FormText>{!isEmptyValue(subvention.subvention_percent) ? `${formatNumber(subvention.subvention_percent)} %` : '-'}</FormText>
+                          </Authorization>
+                        </Column>
+                        <Column small={4} large={2}>
+                          <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION)}>
+                            <FormText>{formatNumber(subventionAmount)} €</FormText>
+                          </Authorization>
+                        </Column>
+                      </Row>
+                    );
+                  })}
                 </Fragment>
               }
             </Authorization>
@@ -457,11 +502,14 @@ const BasisOfRent = ({
               </Column>
             </Row>
             <Row>
-              <Column small={6} medium={4} large={2}>
+              <Column small={4} large={2}>
                 <FormText className='semibold'>Yhteensä</FormText>
               </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormText className='semibold'>{formatNumber(getSubventionAmount())} %</FormText>
+              <Column small={4} large={2}>
+                <FormText className='semibold'>{formatNumber(totalSubventionPercent)} %</FormText>
+              </Column>
+              <Column small={4} large={2}>
+                <FormText className='semibold'>{formatNumber(totalSubventionAmount)} €</FormText>
               </Column>
             </Row>
           </WhiteBox>

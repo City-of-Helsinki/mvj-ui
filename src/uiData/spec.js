@@ -8,6 +8,7 @@ import {
   receiveMethods,
   fetchUiDataList,
   createUiData,
+  deleteUiData,
   editUiData,
   receiveUiDataList,
   notFound,
@@ -102,6 +103,13 @@ describe('Ui data', () => {
         const newState = {...defaultState, isFetching: true};
 
         const state = uiDataReducer({}, createUiData(dummyPaload));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when deleting ui data', () => {
+        const newState = {...defaultState, isFetching: true};
+
+        const state = uiDataReducer({}, deleteUiData(1));
         expect(state).to.deep.equal(newState);
       });
 

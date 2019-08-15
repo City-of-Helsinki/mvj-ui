@@ -1,11 +1,11 @@
 // @flow
 import {sortNumberByKeyDesc} from '$util/helpers';
 
-/*
-* Get content yearly indexes to display on index table
-* @param {Object[]} indexList
-* @returns {Object[]}
-*/
+/** 
+ * Get content yearly indexes to display on index table
+ * @param {Object[]} indexList
+ * @returns {Object[]}
+ */
 export const getContentYearlyIndexes = (indexList: Array<Object>): Array<Object> => {
   const yearlyIndexes = [];
 

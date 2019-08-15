@@ -1,20 +1,19 @@
 // @flow
-import moment from 'moment';
+import isPast from 'date-fns/isPast';
+import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 
 import {CreditInvoiceOptions} from '$src/leases/enums';
-import {InvoiceState, InvoiceType} from './enums';
+import {InvoiceState, InvoiceType, ReceivableTypes} from './enums';
 import {convertStrToDecimalNumber, getLabelOfOption, sortStringAsc} from '$util/helpers';
 
 /**
  * Get payments of single invoice to show on UI
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object[]}
  */
-const getContentInvoicePayments = (invoice: Object) => {
-  const payments = get(invoice, 'payments', []);
-
-  return payments.map((payment) => ({
+const getContentInvoicePayments = (invoice: Object): Array<Object> => {
+  return get(invoice, 'payments', []).map((payment) => ({
     id: payment.id,
     paid_amount: payment.paid_amount,
     paid_date: payment.paid_date,
@@ -23,10 +22,10 @@ const getContentInvoicePayments = (invoice: Object) => {
 
 /**
  * Get rows of single invoice to show on UI
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object[]}
  */
-const getContentIncoiceRows = (invoice: Object) => {
+const getContentIncoiceRows = (invoice: Object): Array<Object> => {
   const rows = get(invoice, 'rows', []);
 
   return rows.map((row) => ({
@@ -35,7 +34,7 @@ const getContentIncoiceRows = (invoice: Object) => {
     tenantFull: row.tenant,
     description: row.description,
     amount: row.amount,
-    receivable_type: get(row, 'receivable_type.id') || get(row, 'receivable_type'),
+    receivable_type: get(row, 'receivable_type.id') || row.receivable_type,
     billing_period_end_date: row.billing_period_end_date,
     billing_period_start_date: row.billing_period_start_date,
   }));
@@ -43,10 +42,10 @@ const getContentIncoiceRows = (invoice: Object) => {
 
 /**
  * Get receivable types of single invoice to show on UI
- * @param rows
- * @returns {object}
+ * @param {Object[]} rows
+ * @returns {Array<Object>}
  */
-export const getContentInvoiceReceivableTypes = (rows: Array<Object>) => {
+export const getContentInvoiceReceivableTypes = (rows: Array<Object>): Array<Object> => {
   const receivableTypes = [];
 
   rows.forEach((row) => {
@@ -61,10 +60,10 @@ export const getContentInvoiceReceivableTypes = (rows: Array<Object>) => {
 
 /**
  * Get total share percentage of single invoice to show on UI
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {number}
  */
-const getContentInvoiceTotalSharePercentage = (invoice: Object) => {
+const getContentInvoiceTotalSharePercentage = (invoice: Object): ?number => {
   if(invoice.total_amount === null ||
     Number(invoice.total_amount) === 0 ||
     invoice.billed_amount === null ||
@@ -75,10 +74,10 @@ const getContentInvoiceTotalSharePercentage = (invoice: Object) => {
 
 /**
  * Get credit or interest invoice content to show on UI
- * @param invoice - Credit or interest invoice
- * @returns {object}
+ * @param {Object} invoice - Credit or interest invoice
+ * @returns {Object}
  */
-const getContentCreditOrInterestInvoice = (invoice: Object) => ({
+const getContentCreditOrInterestInvoice = (invoice: Object): Object => ({
   id: invoice.id,
   number: invoice.number,
   due_date: invoice.due_date,
@@ -87,27 +86,28 @@ const getContentCreditOrInterestInvoice = (invoice: Object) => ({
 
 /**
  * Get credit invoices of single invoice to show on UI
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object[]}
  */
-const getContentCreditInvoices = (invoice: Object) =>
+const getContentCreditInvoices = (invoice: Object): Array<Object> =>
   get(invoice, 'credit_invoices', []).map((item) => getContentCreditOrInterestInvoice(item));
 
 /**
  * Get interest invoices of single invoice to show on UI
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object[]}
  */
-const getContentInterestInvoices = (invoice: Object) =>
+const getContentInterestInvoices = (invoice: Object): Array<Object> =>
   get(invoice, 'interest_invoices', []).map((item) => getContentCreditOrInterestInvoice(item));
 
 /**
  * Get single invoice content to show on UI
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object}
  */
-export const getContentIncoive = (invoice: Object) => {
+export const getContentIncoive = (invoice: Object): Object => {
   const rows = getContentIncoiceRows(invoice);
+  
   return {
     id: invoice.id,
     number: invoice.number,
@@ -147,33 +147,33 @@ export const getContentIncoive = (invoice: Object) => {
 
 /**
  * Get invoices content to show on UI
- * @param invoices
- * @returns {object}
+ * @param {Object[]} invoices
+ * @returns {Object[]}
  */
 export const getContentInvoices = (invoices: Array<Object>): Array<Object> => {
-  return invoices && invoices.length ? invoices.map((invoice) => getContentIncoive(invoice)) : [];
+  return invoices 
+    ? invoices.map((invoice) => getContentIncoive(invoice)) 
+    : [];
 };
 
 /**
  * Get overdue invoices content to show on UI
- * @param invoices
- * @returns {object}
+ * @param {Object[]} invoices
+ * @returns {Object[]}
  */
 export const getContentOverdueInvoices = (invoices: Array<Object>): Array<Object> => {
   return invoices && invoices.length ? invoices
-    .filter((invoice) => invoice.state === InvoiceState.OPEN && invoice.due_date && moment(invoice.due_date).isBefore(new Date(), 'day'))
+    .filter((invoice) => invoice.state === InvoiceState.OPEN && invoice.due_date && isPast(new Date(invoice.due_date)))
     .map((invoice) => getContentIncoive(invoice)) : [];
 };
 
 /**
  * Get payments for invoice payload for API
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object[]}
  */
-const getPayloadInvoicePayments = (invoice: Object) => {
-  const payments = get(invoice, 'payments', []);
-
-  return payments.map((payment) => ({
+const getPayloadInvoicePayments = (invoice: Object): Array<Object> => {
+  return get(invoice, 'payments', []).map((payment) => ({
     id: invoice.id,
     paid_amount: convertStrToDecimalNumber(payment.paid_amount),
     paid_date: payment.paid_date,
@@ -183,9 +183,9 @@ const getPayloadInvoicePayments = (invoice: Object) => {
 /**
  * Get rows for invoice payload for API
  * @param {Object} invoice
- * @returns {object}
+ * @returns {Object[]}
  */
-const getPayloadInvoiceRows = (invoice: Object) => {
+const getPayloadInvoiceRows = (invoice: Object): Array<Object> => {
   return get(invoice, 'rows', []).map((row) => {
     return {
       tenant: row.tenant,
@@ -200,10 +200,10 @@ const getPayloadInvoiceRows = (invoice: Object) => {
 
 /**
  * Get edit invoice payload for API
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object}
  */
-export const getPayloadEditInvoice = (invoice: Object) => {
+export const getPayloadEditInvoice = (invoice: Object): Object => {
   return {
     id: invoice.id,
     due_date: invoice.type !== InvoiceType.CREDIT_NOTE
@@ -225,10 +225,10 @@ export const getPayloadEditInvoice = (invoice: Object) => {
 
 /**
  * Get create invoice payload for API
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object}
  */
-export const getPayloadCreateInvoice = (invoice: Object) => {
+export const getPayloadCreateInvoice = (invoice: Object): Object => {
   return {
     lease: invoice.lease,
     recipient: invoice.recipient,
@@ -243,10 +243,10 @@ export const getPayloadCreateInvoice = (invoice: Object) => {
 
 /**
  * Get credit invoice payload for API
- * @param invoice
- * @returns {object}
+ * @param {Object} invoice
+ * @returns {Object}
  */
-export const getPayloadCreditInvoice = (invoice: Object) => {
+export const getPayloadCreditInvoice = (invoice: Object): Object => {
   if(!invoice) return undefined;
 
   const payload = {};
@@ -264,13 +264,33 @@ export const getPayloadCreditInvoice = (invoice: Object) => {
 };
 
 /**
+  * Test is invoice billing period fields required
+  * @param {Object[]} rows
+  * @return {boolean}
+  */
+export const isInvoiceBillingPeriodRequired = (rows: Array<Object>): boolean => {
+  let required = false;
+
+  if(!rows) return required;
+
+  forEach(rows, (row) => {
+    if(row.receivable_type == ReceivableTypes.RENTAL) {
+      required = true;
+      return false;
+    }
+  });
+
+  return required;
+};
+
+/**
  * Get receivable type string from receivable type values
  * @param receivableTypeOptions
  * @param receivableTypes
  * @returns {string}
  */
-export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>) => {
-  return receivableTypes.map((receivableType) => getLabelOfOption(receivableTypeOptions, receivableType))
+export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>): string => {
+  return receivableTypes.map((receivableType) => getLabelOfOption(receivableTypeOptions, receivableType) || '')
     .sort(sortStringAsc)
     .join(', ');
 };

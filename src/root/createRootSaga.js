@@ -27,7 +27,6 @@ import leaseCreateChargeSaga from '../leaseCreateCharge/saga';
 import leaseholdTransferSaga from '$src/leaseholdTransfer/saga';
 import leaseTypeSaga from '../leaseType/saga';
 import lessorSaga from '$src/lessor/saga';
-import mapDataSaga from '../mapData/saga';
 import penaltyInterestSaga from '../penaltyInterest/saga';
 import previewInvoicesSaga from '../previewInvoices/saga';
 import relatedLeaseSaga from '../relatedLease/saga';
@@ -71,7 +70,6 @@ export default () =>
       fork(leaseInspectionAttachmentSaga),
       fork(leaseTypeSaga),
       fork(lessorSaga),
-      fork(mapDataSaga),
       fork(penaltyInterestSaga),
       fork(previewInvoicesSaga),
       fork(relatedLeaseSaga),

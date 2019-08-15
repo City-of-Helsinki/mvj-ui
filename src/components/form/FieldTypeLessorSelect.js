@@ -1,11 +1,10 @@
 // @flow
 import React from 'react';
-// $FlowFixMe
 import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
-import {getContentLessor} from '$src/leases/helpers';
-import {addEmptyOption, sortByLabelAsc} from '$util/helpers';
+import {getContentLessor} from '$src/lessor/helpers';
+import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchContacts} from '$src/contacts/requestsAsync';
 
 type Props = {
@@ -31,7 +30,7 @@ const FieldTypeLessorSelect = ({
       search: inputValue,
     });
 
-    callback(addEmptyOption(lessors.map((lessor) => getContentLessor(lessor)).sort(sortByLabelAsc)));
+    callback(addEmptyOption(lessors.map((lessor) => getContentLessor(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
   }, 500);
 
   return(
