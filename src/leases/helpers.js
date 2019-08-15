@@ -42,6 +42,7 @@ import {
   isEmptyValue,
   isActive,
   isArchived,
+  sortStringAsc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
@@ -161,7 +162,9 @@ export const getContentLeaseListTenants = (lease: Object, query: Object = {}): A
   get(lease, 'tenants', [])
     .map((item) => get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT))
     .filter((tenant) => query.only_past_tenants === 'true' ? isArchived(tenant) : !isArchived(tenant))
-    .map((tenant) => tenant ? getContactFullName(tenant.contact) : null);
+    .map((tenant) => tenant ? getContactFullName(tenant.contact) : null)
+    .filter((name) => name)
+    .sort(sortStringAsc);
 
 /**
  * Get content lease list area identifiers
@@ -171,7 +174,8 @@ export const getContentLeaseListTenants = (lease: Object, query: Object = {}): A
 export const getContentLeaseListAreaIdentifiers = (lease: Object): Array<Object> => 
   get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)
-    .map((area) => area.identifier);
+    .map((area) => area.identifier)
+    .sort(sortStringAsc);
 
 /**
  * Get content lease list lease addresses
@@ -190,7 +194,11 @@ export const getContentLeaseListLeaseAddresses = (lease: Object): Array<Object> 
         });
     });
 
-  return addresses;
+  const sortedAddresses = addresses
+    .filter((address, index, self) =>  self.indexOf(address) == index)
+    .sort(sortStringAsc);
+  
+  return sortedAddresses;
 };
 
 /**

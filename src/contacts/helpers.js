@@ -15,7 +15,7 @@ export const getContactFullName = (contact: ?Object): string => {
   if(!contact || !contact.type) return '';
 
   return contact.type === ContactTypes.PERSON
-    ? `${contact.last_name ? `${contact.last_name} ` : ''} ${contact.first_name || ''}`
+    ? `${contact.last_name ? `${contact.last_name} ` : ''} ${contact.first_name || ''}`.trim()
     : contact.name;
 };
 
