@@ -163,7 +163,7 @@ export const getContentInvoices = (invoices: Array<Object>): Array<Object> => {
  */
 export const getContentOverdueInvoices = (invoices: Array<Object>): Array<Object> => {
   return invoices && invoices.length ? invoices
-    .filter((invoice) => invoice.state === InvoiceState.OPEN && invoice.due_date && isPast(new Date(invoice.due_date)))
+    .filter((invoice) => isInvoiceOverdue(invoice))
     .map((invoice) => getContentIncoive(invoice)) : [];
 };
 
@@ -281,6 +281,15 @@ export const isInvoiceBillingPeriodRequired = (rows: Array<Object>): boolean => 
   });
 
   return required;
+};
+
+/**
+  * Test is invoice overdue
+  * @param {Object} invoice
+  * @return {boolean}
+  */
+export const isInvoiceOverdue = (invoice: Object): boolean => {
+  return invoice.state === InvoiceState.OPEN && invoice.due_date && isPast(new Date(invoice.due_date));
 };
 
 /**

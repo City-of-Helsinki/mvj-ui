@@ -1,11 +1,13 @@
 // @flow
+import classNames from 'classnames';
+import flowRight from 'lodash/flowRight';
 import React, {PureComponent} from 'react';
+import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
-import {connect} from 'react-redux';
-import flowRight from 'lodash/flowRight';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
+import FormText from '$components/form/FormText';
 import InvoicePanel from './InvoicePanel';
 import SingleRadioInput from '$components/inputs/SingleRadioInput';
 import SortableTable from '$components/table/SortableTable';
@@ -26,6 +28,7 @@ import {
   getContentIncoive,
   getContentInvoices,
   getPayloadEditInvoice,
+  isInvoiceOverdue,
 } from '$src/invoices/helpers';
 import {
   findReactById,
@@ -289,7 +292,10 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
       columns.push({
         key: 'due_date',
         dataClassName: 'no-wrap',
-        renderer: (val) => formatDate(val),
+        renderer: (val, invoice) => 
+          <FormText className={classNames('no-margin', {'alert': isInvoiceOverdue(invoice)})}>
+            {formatDate(val)}
+          </FormText>,
         text: InvoiceFieldTitles.DUE_DATE,
       });
     }
@@ -359,7 +365,10 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
         key: 'state',
         ascSortFunction: sortByStateAsc,
         descSortFunction: sortByStateDesc,
-        renderer: (val) => getLabelOfOption(stateOptions, val) || '-',
+        renderer: (val, invoice) => 
+          <FormText className={classNames('no-margin', {'alert': isInvoiceOverdue(invoice)})}>
+            {getLabelOfOption(stateOptions, val) || '-'}
+          </FormText>,
         text: InvoiceFieldTitles.STATE,
       });
     }
