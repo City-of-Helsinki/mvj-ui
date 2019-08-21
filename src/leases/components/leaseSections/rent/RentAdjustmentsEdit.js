@@ -125,7 +125,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
         break;
     }
 
-    while(!isAfter(new Date(formValues.end_date), new Date(current))) {
+    while(!isAfter(new Date(current), new Date(formValues.end_date))) {
       const next = format(addMonths(new Date(current), months), 'yyyy-MM-dd');
       const endDate = isAfter(new Date(formValues.end_date), new Date(next))
         ? formValues.end_date
