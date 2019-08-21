@@ -26,6 +26,7 @@ import type {
   ReceiveIsCreateClickedAction,
   ReceiveIsCreditClickedAction,
   ReceiveIsEditClickedAction,
+  DeleteInvoiceAction,
 } from './types';
 import type {LeaseId} from '$src/leases/types';
 
@@ -55,6 +56,9 @@ export const creditInvoice = (invoice: Object): CreditInvoiceAction =>
 
 export const patchInvoice = (invoice: Invoice): PatchInvoiceAction =>
   createAction('mvj/invoices/PATCH')(invoice);
+
+export const deleteInvoice = (invoice: Invoice): DeleteInvoiceAction =>
+  createAction('mvj/invoices/DELETE')(invoice);
 
 export const exportInvoiceToLaskeAndUpdateList = (payload: ExportInvoiceToLaskeAndUpdateListPayload): ExportInvoiceToLaskeAndUpdateListAction =>
   createAction('mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE')(payload);

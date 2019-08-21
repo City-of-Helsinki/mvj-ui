@@ -24,6 +24,7 @@ import {
   createInvoice,
   creditInvoice,
   patchInvoice,
+  deleteInvoice,
 } from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -166,6 +167,24 @@ function* exportInvoiceToLaskeAndUpdateListSaga({payload: {id, lease}}): Generat
   }
 }
 
+function* deleteInvoiceSaga({payload: invoice}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(deleteInvoice, invoice.id);
+
+    if(statusCode === 204) {
+      yield put(fetchInvoicesByLease(invoice.lease));
+      displayUIMessage({title: '', body: 'Lasku poistettu'});
+    } else {
+      yield put(notFound());
+      yield put(receiveError(new SubmissionError({...bodyAsJson})));
+    }
+  } catch (error) {
+    console.error('Failed to delete invoice "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -175,6 +194,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/invoices/CREDIT_INVOICE', creditInvoiceSaga);
       yield takeLatest('mvj/invoices/PATCH', patchInvoiceSaga);
       yield takeLatest('mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE', exportInvoiceToLaskeAndUpdateListSaga);
+      yield takeLatest('mvj/invoices/DELETE', deleteInvoiceSaga);
     }),
   ]);
 }

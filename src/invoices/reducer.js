@@ -30,6 +30,7 @@ const isSavingReducer: Reducer<boolean> = handleActions({
   'mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE': () => true,
   'mvj/invoices/NOT_FOUND': () => false,
   'mvj/invoices/RECEIVE_BY_LEASE': () => false,
+  'mvj/invoices/DELETE': () => true,
 }, false);
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({

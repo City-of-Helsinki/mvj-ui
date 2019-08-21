@@ -14,6 +14,7 @@ import {createCharge} from '$src/leases/actions';
 import {
   createInvoice,
   creditInvoice,
+  deleteInvoice,
   receiveIsCreateClicked,
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditClicked,
@@ -30,6 +31,8 @@ import {hasPermissions} from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen} from '$src/invoices/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {AppConsumer, ActionTypes} from '$src/app/AppContext';
+import {ConfirmationModalTexts} from '$src/enums';
 
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
@@ -40,6 +43,7 @@ type Props = {
   creditInvoice: Function,
   creditInvoiceSet: Function,
   currentLease: Lease,
+  deleteInvoice: Function,
   invoiceToCredit: ?Object,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
@@ -129,6 +133,11 @@ class CreateAndCreditInvoice extends Component <Props> {
     }, 50);
   }
 
+  handleDeleteInvoicePanelButtonClick = () => {
+    const {invoiceToCredit, deleteInvoice, currentLease} = this.props;
+    deleteInvoice({...invoiceToCredit, lease: currentLease.id});
+  }
+
   handleSetRefForCreditPanelFirstField = (element: any) => {
     this.creditPanelFirstField = element;
   }
@@ -192,6 +201,34 @@ class CreateAndCreditInvoice extends Component <Props> {
             text='Hyvitä lasku'
           />
         </Authorization>
+
+        <AppConsumer>
+          {({dispatch}) => {
+            const handleDelete = () => {
+              dispatch({
+                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                confirmationFunction: () => {
+                  this.handleDeleteInvoicePanelButtonClick();
+                },
+                confirmationModalButtonClassName: ButtonColors.ALERT,
+                confirmationModalButtonText: ConfirmationModalTexts.DELETE_INVOICE.BUTTON,
+                confirmationModalLabel: ConfirmationModalTexts.DELETE_INVOICE.LABEL,
+                confirmationModalTitle: ConfirmationModalTexts.DELETE_INVOICE.TITLE,
+              });
+            };
+
+            return(
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_INVOICE)}>
+                <Button
+                  className={ButtonColors.ALERT}
+                  disabled={!invoiceToCredit || isCreditInvoicePanelOpen || invoiceToCredit.number}
+                  onClick={handleDelete}
+                  text='Poista lasku'
+                />
+              </Authorization>
+            );
+          }}
+        </AppConsumer>
 
         <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
           <div ref={this.setCreditPanelRef}>
@@ -261,6 +298,7 @@ export default flowRight(
       receiveIsCreateClicked,
       receiveIsCreditClicked,
       receiveIsCreditInvoicePanelOpen,
+      deleteInvoice,
     },
   ),
 )(CreateAndCreditInvoice);

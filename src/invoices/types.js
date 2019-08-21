@@ -39,6 +39,7 @@ export type PatchInvoiceAction = Action<'mvj/invoices/PATCH', Invoice>;
 export type ExportInvoiceToLaskeAndUpdateListAction = Action<'mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE', ExportInvoiceToLaskeAndUpdateListPayload>;
 export type ReceivePatchedInvoiceAction = Action<'mvj/invoices/RECEIVE_PATCHED', Invoice>;
 export type ClearPatchedInvoiceAction = Action<'mvj/invoices/CLEAR_PATCHED', void>;
+export type DeleteInvoiceAction = Action<'mvj/invoices/DELETE', Invoice>;
 
 export type InvoiceNotFoundAction = Action<'mvj/invoices/NOT_FOUND', void>;
 
