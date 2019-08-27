@@ -2009,7 +2009,7 @@ export const getPayloadConstructabilityArea = (area: Object, values: Object) => 
     polluted_land_state: values.polluted_land_state,
     polluted_land_rent_condition_state: values.polluted_land_rent_condition_state,
     polluted_land_rent_condition_date: values.polluted_land_rent_condition_date,
-    polluted_land_planner: values.polluted_land_planner.value,
+    polluted_land_planner: get(values, 'polluted_land_planner.value'),
     polluted_land_projectwise_number: values.polluted_land_projectwise_number,
     constructability_report_state: values.constructability_report_state,
     constructability_report_investigation_state: values.constructability_report_investigation_state,
@@ -2039,7 +2039,7 @@ export const addConstructabilityFormValuesToPayload = (payload: Object, formValu
       }
       return area;
     });
-  } else if(constAreas && !!constAreas.length) {
+  } else if(Array.isArray(constAreas)) {
     payload.lease_areas = constAreas.map((area) => {
       return getPayloadConstructabilityArea({
         id: area.id,
