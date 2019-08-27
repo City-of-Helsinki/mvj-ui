@@ -48,3 +48,9 @@ export const exportInvoiceToLaske = (id: InvoiceId): Generator<any, any, any> =>
     method: 'POST',
   }));
 };
+
+export const deleteInvoice = (id: InvoiceId): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`invoice/${id}/`), {
+    method: 'DELETE',
+  })); 
+};

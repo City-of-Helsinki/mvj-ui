@@ -84,7 +84,7 @@ export const reveal = ({name}) => (WrappedComponent) => {
       const {className, size} = this.props;
       const {revealContext: {getRevealState, closeReveal}} = this.context;
       const revealState = getRevealState(name);
-      const style = {display: revealState.isOpen ? 'block' : 'none'};
+      const style = {display: revealState.isOpen ? 'block' : 'none', zIndex: '1500'};
 
       return (
         <div className={className || 'reveal-overlay'} style={style}>

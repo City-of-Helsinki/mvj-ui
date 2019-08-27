@@ -64,6 +64,7 @@ export const UsersPermissions = {
   DELETE_INFILLDEVELOPMENTCOMPENSATIONLEASE: 'delete_infilldevelopmentcompensationlease',
   DELETE_INSPECTION: 'delete_inspection',
   DELETE_INSPECTIONATTACHMENT: 'delete_inspectionattachment',
+  DELETE_INVOICE: 'delete_invoice',
   DELETE_LEASEAREA: 'delete_leasearea',
   DELETE_LEASEAREAADDRESS: 'delete_leaseareaaddress',
   DELETE_LEASEAREAATTACHMENT: 'delete_leaseareaattachment',

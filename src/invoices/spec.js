@@ -21,6 +21,7 @@ import {
   notFound,
   receiveInvoiceToCredit,
   creditInvoice,
+  deleteInvoice,
 } from './actions';
 import invoiceReducer from './reducer';
 
@@ -167,6 +168,13 @@ describe('Invoices', () => {
         const newState = {...defaultState, isSaving: true};
 
         const state = invoiceReducer({}, exportInvoiceToLaskeAndUpdateList({id: 1, lease: 1}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should delete isSaving flag to true when deleting invoice', () => {
+        const newState = {...defaultState, isSaving: true};
+
+        const state = invoiceReducer({}, deleteInvoice({invoice: 'Invoice'}));
         expect(state).to.deep.equal(newState);
       });
 
