@@ -77,7 +77,7 @@ function* fetchInvoicesByLeaseSaga({payload: leaseId}): Generator<any, any, any>
 
 function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson, response} = yield call(createInvoice, invoice);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createInvoice, invoice);
 
     switch (statusCode) {
       case 201:
@@ -90,9 +90,8 @@ function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
       case 500:
-        let res = yield response.json();
         yield put(notFound());
-        yield put(receiveError({...bodyAsJson, detail: res.detail}));
+        yield put(receiveError(bodyAsJson));
         break;
     }
   } catch (error) {
