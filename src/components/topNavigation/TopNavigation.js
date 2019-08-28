@@ -29,12 +29,12 @@ type Props = {
 }
 
 type State = {
-  identifier: string,
+  search: string,
 }
 
 class TopNavigation extends Component<Props, State> {
   state = {
-    identifier: '',
+    search: '',
   }
 
   componentDidMount() {
@@ -53,19 +53,19 @@ class TopNavigation extends Component<Props, State> {
     const {location: {search}} = this.props;
     const query = getUrlParams(search);
 
-    this.setState({identifier: query.identifier || ''});
+    this.setState({search: query.search || ''});
   }
 
   handleSearchChange = (e: any) => {
-    this.setState({identifier: e.target.value});
+    this.setState({search: e.target.value});
   }
 
   moveSearchPage = () => {
     const {history} = this.props;
-    const {identifier} = this.state;
+    const {search} = this.state;
 
-    if(identifier) {
-      const query = {identifier: identifier};
+    if(search) {
+      const query = {search: search};
 
       return history.push({
         pathname: getRouteById(Routes.LEASES),
@@ -84,7 +84,7 @@ class TopNavigation extends Component<Props, State> {
       userGroups,
       username,
     } = this.props;
-    const {identifier} = this.state;
+    const {search} = this.state;
 
     return (
       <AppConsumer>
@@ -182,7 +182,7 @@ class TopNavigation extends Component<Props, State> {
                       onChange={this.handleSearchChange}
                       onKeyUp={handleSearchKeyUp}
                       onSubmit={handleSearch}
-                      value={identifier}
+                      value={search}
                     />
                   </div>
                 }
