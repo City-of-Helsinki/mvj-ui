@@ -215,6 +215,9 @@ export const getPayloadEditInvoice = (invoice: Object): Object => {
     billing_period_end_date: invoice.type !== InvoiceType.CREDIT_NOTE
       ? invoice.billing_period_end_date
       : undefined,
+    postpone_date: invoice.type !== InvoiceType.CREDIT_NOTE
+      ? invoice.postpone_date
+      : undefined,
     notes: invoice.notes,
     payments: invoice.type !== InvoiceType.CREDIT_NOTE
       ? getPayloadInvoicePayments(invoice)
