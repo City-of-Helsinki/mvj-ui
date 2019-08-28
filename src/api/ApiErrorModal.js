@@ -56,7 +56,6 @@ const ApiErrorContent = ({data}) => {
   return <div className="api-error-modal__content">
     <h2 className="api-error-modal__title">Server error <small>{data.exception}</small></h2>
     <div className="api-error-modal__message">{data.message}</div>
-    <div className="api-error-modal__message">{data.detail}</div>
     <div className="api-error-modal__source">{data.source}</div>
     {data.errors ? <ApiErrorList errors={data.errors}/> : null}
     {data.trace ? <ApiErrorStackTrace trace={data.trace}/> : null}
