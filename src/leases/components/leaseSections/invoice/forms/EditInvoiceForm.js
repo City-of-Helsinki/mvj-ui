@@ -399,12 +399,24 @@ const EditInvoiceForm = ({
           </Row>
         </Column>
         <Column small={4}>
-          <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.POSTPONE_DATE)}>
-            <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.POSTPONE_DATE)}>
-              {InvoiceFieldTitles.POSTPONE_DATE}
-            </FormTextTitle>
-            <FormText>{(invoice && formatDate(invoice.postpone_date)) || '-'}</FormText>
-          </Authorization>
+          {invoice && invoice.type !== InvoiceType.CREDIT_NOTE &&
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.POSTPONE_DATE)}>
+              <FormField
+                disableTouched={isEditClicked}
+                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.POSTPONE_DATE)}
+                name='postpone_date'
+                overrideValues={{label: InvoiceFieldTitles.POSTPONE_DATE}}
+              />
+            </Authorization>
+          }
+          {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
+            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.POSTPONE_DATE)}>
+              <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.POSTPONE_DATE)}>
+                {InvoiceFieldTitles.POSTPONE_DATE}
+              </FormTextTitle>
+              <FormText>{(invoice && formatDate(invoice.postpone_date)) || '-'}</FormText>
+            </Authorization>
+          }
         </Column>
       </Row>
       <Row>
