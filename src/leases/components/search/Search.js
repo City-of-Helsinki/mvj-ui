@@ -317,14 +317,42 @@ class Search extends PureComponent<Props, State> {
                       autoBlur
                       disableDirty
                       fieldAttributes={{
-                        label: 'Vain entiset asiakkaat',
-                        type: FieldTypes.CHECKBOX,
+                        label: 'Kaikki',
+                        type: FieldTypes.RADIO_WITH_FIELD,
                         read_only: false,
                       }}
                       invisibleLabel
-                      name='only_past_tenants'
+                      name='tenant_activity'
                       overrideValues={{
-                        options: [{value: true, label: 'Vain entiset asiakkaat'}],
+                        options: [{value: '', label: 'Kaikki'}],
+                      }}
+                    />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vain entiset asiakkaat',
+                        type: FieldTypes.RADIO_WITH_FIELD,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='tenant_activity'
+                      overrideValues={{
+                        options: [{value: 'past', label: 'Vain entiset asiakkaat'}],
+                      }}
+                    />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vain nykyiset asiakkaat',
+                        type: FieldTypes.RADIO_WITH_FIELD,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='tenant_activity'
+                      overrideValues={{
+                        options: [{value: 'active', label: 'Vain nykyiset asiakkaat'}],
                       }}
                     />
                   </SearchInputColumn>

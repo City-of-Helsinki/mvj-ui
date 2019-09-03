@@ -36,6 +36,7 @@ import {
   LeaseInvoiceNotesFieldTitles,
   LeaseInvoicingFieldPaths,
   LeaseInvoicingFieldTitles,
+  LeaseRentsFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentInvoiceNotes} from '$src/leases/helpers';
@@ -194,6 +195,7 @@ class Invoices extends PureComponent<Props, State> {
 
   render() {
     const {
+      currentLease,
       invoiceNotesCollapseState,
       invoicesCollapseState,
       invoiceToCredit,
@@ -251,22 +253,27 @@ class Invoices extends PureComponent<Props, State> {
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_IS_INVOICING_ENABLED)}>
                     {isInvoicingEnabled
                       ? <Button className={ButtonColors.NEUTRAL} onClick={handleStopInvoicing} text='Keskeytä laskutus' />
-                      : <Button className={ButtonColors.NEUTRAL} onClick={handleStartInvoicing} text='Käynnistä laskutus' />
+                      : <Button disabled={!currentLease.is_rent_info_complete} className={ButtonColors.NEUTRAL} onClick={handleStartInvoicing} text='Käynnistä laskutus' />
                     }
                   </Authorization>
                 }
                 success={isInvoicingEnabled}
               >
-                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED)}>
-                  {isInvoicingEnabled
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED) && isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
+                  {isInvoicingEnabled && currentLease.is_rent_info_complete
                     ? <SuccessField
                       meta={{warning: LeaseInvoicingFieldTitles.INVOICING_ENABLED}}
                       showWarning={true}
                     />
-                    : <WarningField
-                      meta={{warning: LeaseInvoicingFieldTitles.INVOICING_DISABLED}}
-                      showWarning={true}
-                    />
+                    : currentLease.is_rent_info_complete ?
+                      <WarningField
+                        meta={{warning: LeaseInvoicingFieldTitles.INVOICING_DISABLED}}
+                        showWarning={true}
+                      />
+                      : <WarningField
+                        meta={{warning: 'Tiedot keskeneräiset'}}
+                        showWarning={true}
+                      />
                   }
                 </Authorization>
               </WarningContainer>
