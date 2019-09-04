@@ -68,7 +68,7 @@ type State = {
   statisticalUseOptions: Array<Object>,
   summary: Object,
   supportiveHousingOptions: Array<Object>,
-  collapseBasisOfRents: Boolean,
+  collapseBasisOfRents: boolean,
 }
 
 class Summary extends PureComponent<Props, State> {
