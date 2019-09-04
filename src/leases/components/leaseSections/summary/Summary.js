@@ -68,6 +68,7 @@ type State = {
   statisticalUseOptions: Array<Object>,
   summary: Object,
   supportiveHousingOptions: Array<Object>,
+  collapseBasisOfRents: Boolean,
 }
 
 class Summary extends PureComponent<Props, State> {
@@ -88,6 +89,7 @@ class Summary extends PureComponent<Props, State> {
     statisticalUseOptions: [],
     summary: {},
     supportiveHousingOptions: [],
+    collapseBasisOfRents: true,
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -137,6 +139,19 @@ class Summary extends PureComponent<Props, State> {
     this.handleCollapseToggle('statistical', val);
   }
 
+  handleCollapseBasisOfRentsClick = () => {
+    this.setState({
+      collapseBasisOfRents: !this.state.collapseBasisOfRents,
+    });
+  }
+
+  handleCollapseBasisOfRentsKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      this.handleCollapseBasisOfRentsClick();
+    }
+  };
+
   render() {
     const {
       classificationOptions,
@@ -152,6 +167,7 @@ class Summary extends PureComponent<Props, State> {
       statisticalUseOptions,
       summary,
       supportiveHousingOptions,
+      collapseBasisOfRents,
     } = this.state;
     const {
       attributes,
@@ -302,19 +318,41 @@ class Summary extends PureComponent<Props, State> {
                     </FormTextTitle>
                     {!matchingBasisOfRents || !matchingBasisOfRents.length
                       ? <FormText>-</FormText>
-                      : <ListItems>
-                        {matchingBasisOfRents.map((item, index1) => {
-                          return get(item, 'property_identifiers', []).map((property, index2) =>
-                            <ListItem key={`${index1}_${index2}`}>
-                              <ExternalLink
-                                className='no-margin'
-                                href={`${getRouteById(Routes.RENT_BASIS)}/${item.id}`}
-                                text={property.identifier}
-                              />
-                            </ListItem>
-                          );
-                        })}
-                      </ListItems>
+                      : collapseBasisOfRents
+                        ?<ListItems>
+                          {matchingBasisOfRents.map((item, index) => {
+                            const property = get(item, 'property_identifiers', [])[0];
+                            return (
+                              <ListItem key={`${index}`}>
+                                <ExternalLink
+                                  className='no-margin'
+                                  href={`${getRouteById(Routes.RENT_BASIS)}/${item.id}`}
+                                  text={property.identifier}
+                                />
+                              </ListItem>
+                            );
+                          })}
+                          <a
+                            onClick={this.handleCollapseBasisOfRentsClick}
+                            onKeyDown={this.handleCollapseBasisOfRentsKeyDown}
+                            tabIndex={0}
+                          >
+                            ...
+                          </a>
+                        </ListItems>
+                        : <ListItems>
+                          {matchingBasisOfRents.map((item, index1) => {
+                            return get(item, 'property_identifiers', []).map((property, index2) =>
+                              <ListItem key={`${index1}_${index2}`}>
+                                <ExternalLink
+                                  className='no-margin'
+                                  href={`${getRouteById(Routes.RENT_BASIS)}/${item.id}`}
+                                  text={property.identifier}
+                                />
+                              </ListItem>
+                            );
+                          })}
+                        </ListItems>
                     }
                   </Authorization>
                 </Column>

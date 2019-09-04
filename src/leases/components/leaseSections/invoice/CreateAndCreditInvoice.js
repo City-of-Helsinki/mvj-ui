@@ -47,6 +47,7 @@ type Props = {
   invoiceToCredit: ?Object,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
+  isInvoicingEnabled: boolean,
   receiveIsCreateClicked: Function,
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditClicked: Function,
@@ -187,6 +188,7 @@ class CreateAndCreditInvoice extends Component <Props> {
       invoiceToCredit,
       isCreateInvoicePanelOpen,
       isCreditInvoicePanelOpen,
+      isInvoicingEnabled,
       usersPermissions,
     } = this.props;
     const isInvoiceSet = this.isInvoiceSet();
@@ -248,7 +250,7 @@ class CreateAndCreditInvoice extends Component <Props> {
           <Row>
             <Column>
               <AddButton
-                disabled={isCreateInvoicePanelOpen}
+                disabled={isCreateInvoicePanelOpen || !isInvoicingEnabled}
                 label='Luo lasku'
                 onClick={this.handleOpenCreateInvoicePanelButtonClick}
                 style={{marginTop: 15}}
@@ -282,10 +284,12 @@ class CreateAndCreditInvoice extends Component <Props> {
 export default flowRight(
   connect(
     (state) => {
+      const currentLease = getCurrentLease(state);
       return {
-        currentLease: getCurrentLease(state),
+        currentLease: currentLease,
         isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
         isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
+        isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
         usersPermissions: getUsersPermissions(state),
       };
     },

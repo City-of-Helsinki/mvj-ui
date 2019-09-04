@@ -91,6 +91,7 @@ export const LeaseState = {
   RESERVE: 'reserve',
   FREE: 'free',
   PERMISSION: 'permission',
+  RYA: 'rya',
   APPLICATION: 'application',
   TRANSFERRED: 'transferred',
 };

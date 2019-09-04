@@ -131,7 +131,7 @@ class Collapse extends PureComponent<Props, State> {
   handleKeyDown = (e: any) => {
     if(e.keyCode === 13) {
       e.preventDefault();
-      this.handleToggle();
+      this.handleToggle(e);
     }
   };
 

@@ -54,7 +54,7 @@ export const leaseStateFilterOptions = [
   {value: 'short_term_lease', label: 'Lyhytaikainen vuokraus'},
   {value: 'long_term_lease', label: 'Pitkäaikainen vuokraus'},
   {value: 'reservation', label: 'Varaus'},
-  {value: 'reserve', label: 'Varanto ja vapaa'},
+  {value: 'rya', label: 'RYA'},
   {value: 'permission', label: 'Lupa'},
   {value: 'application', label: 'Hakemus'},
 ];
