@@ -113,7 +113,7 @@
     }
 
     .option-label {
-      color: $black;
+      color: $neutral-color;
       display: inline-block;
       font-size: rem-calc(14px);
       line-height: rem-calc(20px);
@@ -223,6 +223,7 @@
 
     &_option-text {
       margin-right: rem-calc(10px);
+      color: $neutral-color;
     }
 
     &_option-field {

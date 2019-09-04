@@ -25,10 +25,8 @@ import {getContactFullName} from '$src/contacts/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
-  formatNumber,
   getFieldOptions,
   getLabelOfOption,
-  isEmptyValue,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -105,13 +103,6 @@ const TenantItem = ({
   contact,
   tenant,
 }: Props) => {
-  const getInvoiceManagementShare = () => {
-    if(!Number(tenant.share_numerator) || !Number(tenant.share_denominator)) return null;
-
-    return (Number(tenant.share_numerator)*100/Number(tenant.share_denominator));
-  };
-
-  const share = getInvoiceManagementShare();
   const rentShares = tenant.rent_shares;
   const intendedUseOptions = getFieldOptions(attributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE);
 
@@ -154,22 +145,6 @@ const TenantItem = ({
         </FormWrapperLeft>
         <FormWrapperRight>
           <Row>
-            <Column small={12} medium={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}>
-                  {LeaseTenantsFieldTitles.SHARE_FRACTION}
-                </FormTextTitle>
-                <FormText>{tenant.share_numerator || ''} / {tenant.share_denominator || ''}</FormText>
-              </Authorization>
-            </Column>
-            <Column small={12} medium={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_PERCENTAGE)}>
-                  {LeaseTenantsFieldTitles.SHARE_PERCENTAGE}
-                </FormTextTitle>
-                <FormText>{!isEmptyValue(share) ? `${formatNumber(share)} %` : '-'}</FormText>
-              </Authorization>
-            </Column>
             <Column small={6} medium={3} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}>

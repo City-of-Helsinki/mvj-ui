@@ -167,6 +167,7 @@ class Summary extends PureComponent<Props, State> {
       statisticalUseOptions,
       summary,
       supportiveHousingOptions,
+      collapseBasisOfRents,
     } = this.state;
     const {
       attributes,
@@ -317,7 +318,7 @@ class Summary extends PureComponent<Props, State> {
                     </FormTextTitle>
                     {!matchingBasisOfRents || !matchingBasisOfRents.length
                       ? <FormText>-</FormText>
-                      : this.state.collapseBasisOfRents
+                      : collapseBasisOfRents
                         ?<ListItems>
                           {matchingBasisOfRents.map((item, index) => {
                             const property = get(item, 'property_identifiers', [])[0];
