@@ -240,32 +240,34 @@ const BasicInfoIndex = ({leaseAttributes, rent}: Props) => {
               <FormText>{rent.y_value || '-'}</FormText>
             </Authorization>
           </Column>
-          <Column small={4} medium={2} large={1}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.Y_VALUE_START)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.Y_VALUE_START)}>
-                {LeaseRentsFieldTitles.Y_VALUE_START}
-              </FormTextTitle>
-              <FormText>{rent.y_value_start || '-'}</FormText>
-            </Authorization>
-          </Column>
+          {rent.y_value_start &&
+            <Column small={4} medium={2} large={1}>
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.Y_VALUE_START)}>
+                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.Y_VALUE_START)}>
+                  {LeaseRentsFieldTitles.Y_VALUE_START}
+                </FormTextTitle>
+                <FormText>{rent.y_value_start}</FormText>
+              </Authorization>
+            </Column>
+          }
           <Column small={12} medium={4} large={2}>
             <Row>
-              <Column small={6}>
+              {rent.equalization_start_date && <Column small={6}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.EQUALIZATION_START_DATE)}>
                   <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.EQUALIZATION_START_DATE)}>
                     {LeaseRentsFieldTitles.EQUALIZATION_START_DATE}
                   </FormTextTitle>
-                  <FormText>{formatDate(rent.equalization_start_date) || '-'}</FormText>
+                  <FormText>{formatDate(rent.equalization_start_date)}</FormText>
                 </Authorization>
-              </Column>
-              <Column small={6}>
+              </Column>}
+              {rent.equalization_end_date && <Column small={6}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.EQUALIZATION_END_DATE)}>
                   <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.EQUALIZATION_END_DATE)}>
                     {LeaseRentsFieldTitles.EQUALIZATION_END_DATE}
                   </FormTextTitle>
-                  <FormText>{formatDate(rent.equalization_end_date) || '-'}</FormText>
+                  <FormText>{formatDate(rent.equalization_end_date)}</FormText>
                 </Authorization>
-              </Column>
+              </Column>}
             </Row>
           </Column>
         </Row>
