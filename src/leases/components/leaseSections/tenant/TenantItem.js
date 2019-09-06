@@ -145,6 +145,14 @@ const TenantItem = ({
         </FormWrapperLeft>
         <FormWrapperRight>
           <Row>
+            <Column small={12} medium={6} large={4}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}>
+                  {LeaseTenantsFieldTitles.SHARE_FRACTION}
+                </FormTextTitle>
+                <FormText>{tenant.share_numerator || ''} / {tenant.share_denominator || ''}</FormText>
+              </Authorization>
+            </Column>
             <Column small={6} medium={3} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}>

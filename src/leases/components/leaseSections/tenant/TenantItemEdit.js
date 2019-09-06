@@ -18,6 +18,7 @@ import ContactTemplate from '$src/contacts/components/templates/ContactTemplate'
 import EditButton from '$components/form/EditButton';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
@@ -47,6 +48,7 @@ import {
   hasPermissions,
   isActive,
   isArchived,
+  isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
   isMethodAllowed,
@@ -304,6 +306,8 @@ const TenantItemEdit = ({
   receiveCollapseStates,
   receiveContactModalSettings,
   receiveIsSaveClicked,
+  shareDenominator,
+  shareNumerator,
   showContactModal,
   tenantId,
   tenants,
@@ -435,6 +439,50 @@ const TenantItemEdit = ({
           </FormWrapperLeft>
           <FormWrapperRight>
             <Row>
+              <Column small={12} medium={6} large={4}>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                  <FormTextTitle
+                    required={isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) || isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}
+                  >
+                    {LeaseTenantsFieldTitles.SHARE_FRACTION}
+                  </FormTextTitle>
+                  <Authorization
+                    allow={
+                      isFieldAllowedToEdit(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) ||
+                      isFieldAllowedToEdit(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)
+                    }
+                    errorComponent={<FormText>{shareNumerator || ''} / {shareDenominator || ''}</FormText>}
+                  >
+                    <Row>
+                      <Column small={6}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}
+                            invisibleLabel
+                            name={`${field}.share_numerator`}
+                            overrideValues={{label: LeaseTenantsFieldTitles.SHARE_NUMERATOR}}
+                          />
+                        </Authorization>
+                      </Column>
+                      <Column small={6}>
+                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            className='with-slash'
+                            fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)}
+                            invisibleLabel
+                            name={`${field}.share_denominator`}
+                            overrideValues={{label: LeaseTenantsFieldTitles.SHARE_DENOMINATOR}}
+                          />
+                        </Authorization>
+                      </Column>
+                    </Row>
+                  </Authorization>
+                </Authorization>
+              </Column>
               <Column small={6} medium={3} large={2}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
                   <FormField
