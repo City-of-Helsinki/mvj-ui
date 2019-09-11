@@ -193,7 +193,9 @@ class Search extends PureComponent<Props, State> {
 
   formHasNoName = () => {
     const {formValues} = this.props;
-    return (formValues.tenant_name)?false:true;
+    return (formValues)?
+      (formValues.tenant_name)?false:true:
+      true;
   }
 
   render () {
