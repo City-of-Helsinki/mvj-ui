@@ -22,7 +22,6 @@ import {
   LeaseRentAdjustmentsFieldPaths,
   RentAdjustmentAmountTypes,
   RentAdjustmentTypes,
-  SteppedDiscountAmountTypes,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getDecisionById, getDecisionOptions} from '$src/leases/helpers';
@@ -115,21 +114,13 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     const ranges = [];
     let months = 12;
     let current = formValues.start_date;
+    
+    const totalMonths = (convertStrToDecimalNumber(formValues.number_of_years) || 0) * months;
+    const final = addMonths(new Date(current), totalMonths);
 
-    switch (formValues.stepped_discount_amount_type) {
-      case SteppedDiscountAmountTypes.PERCENTAGE_PER_MONTH:
-        months = 1;
-        break;
-      case SteppedDiscountAmountTypes.PERCENTAGE_PER_6_MONTHS:
-        months = 6;
-        break;
-    }
-
-    while(!isAfter(new Date(current), new Date(formValues.end_date))) {
+    while(!isAfter(new Date(current), final)) {
       const next = format(addMonths(new Date(current), months), 'yyyy-MM-dd');
-      const endDate = isAfter(new Date(formValues.end_date), new Date(next))
-        ? formValues.end_date
-        : format(subDays(new Date(next), 1), 'yyyy-MM-dd');
+      const endDate = format(subDays(new Date(next), 1), 'yyyy-MM-dd');
       
       ranges.push({
         start_date: current,
@@ -137,16 +128,16 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
       });
 
       current = next;
-    } 
-
-    const step = (convertStrToDecimalNumber(formValues.full_amount) || 0) / ranges.length;
+    }
+    
+    const step = ((convertStrToDecimalNumber(formValues.percantage_beginning) || 0) - (convertStrToDecimalNumber(formValues.percantage_final) || 0)) / (convertStrToDecimalNumber(formValues.number_of_years) || 1);
 
     return ranges.map((range, index) => {
       return {
         ...range,
         type: RentAdjustmentTypes.DISCOUNT,
         intended_use: formValues.intended_use,
-        full_amount: formatNumber((convertStrToDecimalNumber(formValues.full_amount) || 0) - index * step),
+        full_amount: formatNumber((convertStrToDecimalNumber(formValues.percantage_beginning) || 0) - index * step),
         amount_type: RentAdjustmentAmountTypes.PERCENT_PER_YEAR,
         decision: formValues.decision,
         note: formValues.note,
