@@ -372,6 +372,7 @@ type Props = {
   receiveCollapseStates: Function,
   savedContracts: Array<Object>,
   usersPermissions: UsersPermissionsType,
+  contract: Object
 }
 
 const ContractItemEdit = ({
@@ -390,6 +391,7 @@ const ContractItemEdit = ({
   receiveCollapseStates,
   savedContracts,
   usersPermissions,
+  contract,
 }: Props) => {
   const getContractById = (id: number) => id ? savedContracts.find((decision) => decision.id === id) : {};
 
@@ -555,7 +557,7 @@ const ContractItemEdit = ({
           </Column>
         </Row>
         <Row>
-          <Column small={6} medium={4} large={2}>
+          {contract?(contract.is_readjustment_decision && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
               <FormField
                 disableTouched={isSaveClicked}
@@ -566,7 +568,7 @@ const ContractItemEdit = ({
                 uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}
               />
             </Authorization>
-          </Column>
+          </Column>):null}
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER)}>
               <FormField
