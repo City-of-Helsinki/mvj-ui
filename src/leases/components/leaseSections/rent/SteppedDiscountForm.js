@@ -7,8 +7,6 @@ import {Row, Column} from 'react-foundation';
 
 import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
-import FormTextTitle from '$components/form/FormTextTitle';
-import {SteppedDiscountAmountTypeOptions} from '$src/leases/constants';
 import {FormNames} from '$src/enums';
 import {
   LeaseRentAdjustmentsFieldPaths,
@@ -19,7 +17,6 @@ import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
   isFieldAllowedToEdit,
-  isFieldRequired,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 
@@ -62,60 +59,48 @@ const SteppedDiscountForm = ({
             />
           </Authorization>
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE)}>
-            <FormField
-              fieldAttributes={{
-                ...getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.END_DATE),
-                required: true,
-              }}
-              name='end_date'
-              overrideValues={{label: LeaseRentAdjustmentsFieldTitles.END_DATE}}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.END_DATE)}
-            />
-          </Authorization>
-        </Column>
       </Row>
       <Row>
-        <Column small={6} medium={4} large={4}>
-          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
-            <FormTextTitle
-              required={isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT) ||
-                isFieldRequired(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
-            >
-              {LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}
-            </FormTextTitle>
-
-            <Row>
-              <Column small={6}>
-                <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
-                  <FormField
-                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}
-                    invisibleLabel
-                    name='full_amount'
-                    overrideValues={{label: LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}}
-                  />
-                </Authorization>
-              </Column>
-              <Column small={6}>
-                <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}>
-                  <FormField
-                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE)}
-                    invisibleLabel
-                    name='stepped_discount_amount_type'
-                    overrideValues={{
-                      label: LeaseRentAdjustmentsFieldTitles.AMOUNT_TYPE,
-                      options: SteppedDiscountAmountTypeOptions,
-                    }}
-                  />
-                </Authorization>
-              </Column>
-            </Row>
-          </Authorization>
-        </Column>
+        <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
+          <Column small={6} medium={4} large={4}>
+            <FormField
+              fieldAttributes={{
+                max_digits: 10,
+                read_only: false,
+                required: true,
+                type: 'decimal',
+              }}
+              name='percantage_beginning'
+              overrideValues={{label: LeaseRentAdjustmentsFieldTitles.PERCANTAGE_BEGINNING}}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              fieldAttributes={{
+                max_digits: 3,
+                read_only: false,
+                required: true,
+                type: 'number',
+              }}
+              name='number_of_years'
+              overrideValues={{label: LeaseRentAdjustmentsFieldTitles.NUMBER_OF_YEARS}}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              fieldAttributes={{
+                max_digits: 10,
+                read_only: false,
+                required: true,
+                type: 'decimal',
+              }}
+              name='percantage_final'
+              overrideValues={{label: LeaseRentAdjustmentsFieldTitles.PERCANTAGE_FINAL}}
+            />
+          </Column>
+        </Authorization>
+      </Row>
+      <Row>
         <Column small={6} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}>
             <FormField

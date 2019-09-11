@@ -938,6 +938,9 @@ export const LeaseRentAdjustmentsFieldTitles = {
   SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'Alennus markkinavuokrasta',
   SUBVENTION_TYPE: 'Subvention tyyppi',
   TYPE: 'Tyyppi',
+  PERCANTAGE_BEGINNING: 'Ensimmäisen vuoden alennus',
+  NUMBER_OF_YEARS: 'Vuosien lukumäärä',
+  PERCANTAGE_FINAL: 'Viimeisen vuoden alennus',
 };
 
 /**
