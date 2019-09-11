@@ -191,6 +191,11 @@ class Search extends PureComponent<Props, State> {
     onSearch(query, true, true);
   }
 
+  formHasNoName = () => {
+    const {formValues} = this.props;
+    return (formValues.tenant_name)?false:true;
+  }
+
   render () {
     const {
       districts,
@@ -206,6 +211,7 @@ class Search extends PureComponent<Props, State> {
       typeOptions,
     } = this.state;
     const districtOptions = getDistrictOptions(districts);
+    const radioButtonsDisabled = this.formHasNoName();
 
     return (
       <SearchContainer onSubmit={handleSubmit(this.handleSubmit)}>
@@ -244,6 +250,58 @@ class Search extends PureComponent<Props, State> {
                       }}
                       invisibleLabel
                       name='tenant_name'
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+
+                <SearchRow>
+                  <SearchLabelColumn>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disabled={radioButtonsDisabled}
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Kaikki',
+                        type: FieldTypes.RADIO_WITH_FIELD,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='tenant_activity'
+                      overrideValues={{
+                        options: [{value: '', label: 'Kaikki'}],
+                      }}
+                    />
+                    <FormField
+                      autoBlur
+                      disabled={radioButtonsDisabled}
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vain entiset asiakkaat',
+                        type: FieldTypes.RADIO_WITH_FIELD,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='tenant_activity'
+                      overrideValues={{
+                        options: [{value: 'past', label: 'Vain entiset asiakkaat'}],
+                      }}
+                    />
+                    <FormField
+                      autoBlur
+                      disabled={radioButtonsDisabled}
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vain nykyiset asiakkaat',
+                        type: FieldTypes.RADIO_WITH_FIELD,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='tenant_activity'
+                      overrideValues={{
+                        options: [{value: 'active', label: 'Vain nykyiset asiakkaat'}],
+                      }}
                     />
                   </SearchInputColumn>
                 </SearchRow>
@@ -305,55 +363,6 @@ class Search extends PureComponent<Props, State> {
                       }}
                       invisibleLabel
                       name='national_identification_number'
-                    />
-                  </SearchInputColumn>
-                </SearchRow>
-
-                <SearchRow>
-                  <SearchLabelColumn>
-                  </SearchLabelColumn>
-                  <SearchInputColumn>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Kaikki',
-                        type: FieldTypes.RADIO_WITH_FIELD,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='tenant_activity'
-                      overrideValues={{
-                        options: [{value: '', label: 'Kaikki'}],
-                      }}
-                    />
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Vain entiset asiakkaat',
-                        type: FieldTypes.RADIO_WITH_FIELD,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='tenant_activity'
-                      overrideValues={{
-                        options: [{value: 'past', label: 'Vain entiset asiakkaat'}],
-                      }}
-                    />
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Vain nykyiset asiakkaat',
-                        type: FieldTypes.RADIO_WITH_FIELD,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='tenant_activity'
-                      overrideValues={{
-                        options: [{value: 'active', label: 'Vain nykyiset asiakkaat'}],
-                      }}
                     />
                   </SearchInputColumn>
                 </SearchRow>
