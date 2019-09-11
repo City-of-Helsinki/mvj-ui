@@ -183,14 +183,15 @@ const ContractItem = ({
         </Column>
       </Row>
       <Row>
-        <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
-              {LeaseContractsFieldTitles.IS_READJUSTMENT_DECISION}
-            </FormTextTitle>
-            <FormText>{contract.is_readjustment_decision ? 'Kyllä' : 'Ei'}</FormText>
-          </Authorization>
-        </Column>
+        {contract.is_readjustment_decision && 
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
+                {LeaseContractsFieldTitles.IS_READJUSTMENT_DECISION}
+              </FormTextTitle>
+              <FormText>{'Kyllä'}</FormText>
+            </Authorization>
+          </Column>}
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER)}>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER)}>

@@ -32,6 +32,7 @@ type ContractsProps = {
   onShowContractFileModal: Function,
   savedContracts: Array<Object>,
   usersPermissions: UsersPermissionsType,
+  contracts: Array<Object>,
 }
 
 const renderContracts = ({
@@ -40,6 +41,7 @@ const renderContracts = ({
   onShowContractFileModal,
   savedContracts,
   usersPermissions,
+  contracts,
 }: ContractsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -77,6 +79,7 @@ const renderContracts = ({
                 onRemove={handleRemove}
                 onShowContractFileModal={onShowContractFileModal}
                 savedContracts={savedContracts}
+                contract={contracts[index]}
               />;
             })}
 
@@ -159,7 +162,7 @@ class ContractsEdit extends PureComponent<Props, State> {
   }
 
   render() {
-    const {usersPermissions} = this.props;
+    const {usersPermissions, currentLease} = this.props;
     const {contractId, decisionOptions, savedContracts, showContractModal} = this.state;
 
     return (
@@ -177,6 +180,7 @@ class ContractsEdit extends PureComponent<Props, State> {
           onShowContractFileModal={this.handleShowContractFileModal}
           savedContracts={savedContracts}
           usersPermissions={usersPermissions}
+          contracts={currentLease.contracts}
         />
       </form>
     );
