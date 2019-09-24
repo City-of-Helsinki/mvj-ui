@@ -26,7 +26,7 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 
 type Props = {
   field: any,
-  collectionCharge: number,
+  collectionCharge: string,
   disableDirty?: boolean,
   fetchPenaltyInterestByInvoice: Function,
   invoice: ?number,
@@ -45,7 +45,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
       const {fetchPenaltyInterestByInvoice, invoice, usersPermissions} = this.props;
 
       if(hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)) {
-        fetchPenaltyInterestByInvoice(invoice);
+        fetchPenaltyInterestByInvoice(invoice.invoice);
       }
     }
   }
@@ -61,7 +61,6 @@ class CollectionLetterInvoiceRow extends Component<Props> {
 
   render() {
     const {
-      collectionCharge,
       disableDirty,
       field,
       invoiceOptions,
@@ -71,9 +70,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
       selectedInvoices,
       showDeleteButton,
     } = this.props;
-    const formatedCollectionCharge = convertStrToDecimalNumber(collectionCharge),
-      filteredInvoiceOptions = invoiceOptions.filter((invoice) => selectedInvoices.indexOf(invoice.value) === -1);
-
+    const filteredInvoiceOptions = invoiceOptions.filter((invoice) => selectedInvoices.indexOf(invoice.value) === -1);
     return(
       <Row>
         <Column small={4}>
@@ -86,7 +83,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
               read_only: false,
             }}
             invisibleLabel
-            name={field}
+            name={`${field}.invoice`}
             overrideValues={{options: filteredInvoiceOptions}}
           />
         </Column>
@@ -100,7 +97,20 @@ class CollectionLetterInvoiceRow extends Component<Props> {
           <FormText>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'total_interest_amount'))} €` : '-'}</FormText>
         </Column>
         <Column small={2}>
-          <FormText>{!isEmpty(penaltyInterest) ? `${formatNumber((formatedCollectionCharge && !isNaN(formatedCollectionCharge)) ? formatedCollectionCharge : 0)} €` : '-'}</FormText>
+          <FormField
+            disableDirty={disableDirty}
+            fieldAttributes={{
+              type: 'decimal',
+              required: true,
+              read_only: false,
+              label: 'Perimispalkkio',
+              decimal_places: 2,
+              max_digits: 12,
+            }}
+            invisibleLabel
+            name={`${field}.collection_charge`}
+            overrideValues={{options: filteredInvoiceOptions}}
+          />
         </Column>
         <Column small={2}>
           <FieldAndRemoveButtonWrapper
@@ -138,6 +148,7 @@ export default connect(
     });
 
     return {
+      collectionCharge: selector(state, `${props.field}.collection_charge`),
       isFetching: getIsFetchingByInvoice(state, invoice),
       invoice: invoice,
       penaltyInterest: getPenaltyInterestByInvoice(state, invoice),

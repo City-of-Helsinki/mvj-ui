@@ -6,7 +6,7 @@ import {saveAs} from 'file-saver';
 
 import Button from '$components/button/Button';
 import {ButtonColors} from '$components/enums';
-import {displayUIMessage, getFileNameFromResponse} from '$util/helpers';
+import {convertStrToDecimalNumber, displayUIMessage, getFileNameFromResponse} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
 type Props = {
@@ -26,7 +26,8 @@ const FileDownloadButton = ({
 }: Props) => {
 
   const fetchFile = async() => {
-    const body = JSON.stringify(payload);
+    const formatedCollectionCharge = {...payload, invoices: payload.invoices.map(invoice=>({...invoice, collection_charge: convertStrToDecimalNumber(invoice.collection_charge)}))};
+    const body = JSON.stringify(formatedCollectionCharge);
     const request = new Request(url, {
       method: 'POST',
       body,

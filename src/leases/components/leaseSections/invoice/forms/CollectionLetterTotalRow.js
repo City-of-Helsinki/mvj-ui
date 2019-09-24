@@ -11,13 +11,13 @@ import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
 
 type Props = {
-  collectionCharge: number,
   fields: any,
+  invoiceIds: Array<Object>,
   penaltyInterestArray: Array<Object>,
 }
 
 const CollectionLetterTotalRow = ({
-  collectionCharge,
+  invoiceIds,
   penaltyInterestArray,
 }: Props) => {
   const getTotalOutstandingAmount = () => {
@@ -38,11 +38,10 @@ const CollectionLetterTotalRow = ({
 
   const getTotalCollectionCharge = () => {
     let total = 0;
-    const formatedCollectionCharge = convertStrToDecimalNumber(collectionCharge);
-
-    if(collectionCharge && !isNaN(formatedCollectionCharge)) {
-      penaltyInterestArray.forEach(() => {
-        total += formatedCollectionCharge;
+    if(invoiceIds) {
+      invoiceIds.forEach(invoice=>{
+        if(invoice.collection_charge)
+          total+=convertStrToDecimalNumber(invoice.collection_charge);
       });
     }
     return total;
