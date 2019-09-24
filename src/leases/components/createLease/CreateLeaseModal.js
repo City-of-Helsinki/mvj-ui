@@ -41,7 +41,7 @@ class CreateLease extends Component<Props> {
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title='Luo vuokratunnus'
+        title='Luo vuokraustunnus'
       >
         <CreateLeaseForm
           ref={this.setRefForForm}

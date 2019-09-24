@@ -219,7 +219,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
               <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
                 <AddButtonSecondary
                   className='no-top-margin'
-                  label='Luo vuokratunnus'
+                  label='Luo vuokraustunnus'
                   onClick={this.showCreateLeaseModal}
                 />
               </Authorization>
