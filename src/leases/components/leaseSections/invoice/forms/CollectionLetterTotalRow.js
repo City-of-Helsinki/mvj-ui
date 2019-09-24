@@ -81,7 +81,7 @@ export default connect(
     const penaltyInterestArray = [];
     props.fields.forEach((field) => {
       const invoice = selector(state, field),
-        penaltyInterest = getPenaltyInterestByInvoice(state, invoice);
+        penaltyInterest = getPenaltyInterestByInvoice(state, invoice.invoice);
       if(!isEmpty(penaltyInterest)) {
         penaltyInterestArray.push(penaltyInterest);
       }

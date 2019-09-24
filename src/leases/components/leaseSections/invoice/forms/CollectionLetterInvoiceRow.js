@@ -41,7 +41,7 @@ type Props = {
 
 class CollectionLetterInvoiceRow extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
-    if(prevProps.invoice !== this.props.invoice && isEmpty(this.props.penaltyInterest)) {
+    if(prevProps.invoice.invoice !== this.props.invoice.invoice && isEmpty(this.props.penaltyInterest)) {
       const {fetchPenaltyInterestByInvoice, invoice, usersPermissions} = this.props;
 
       if(hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)) {
@@ -151,7 +151,7 @@ export default connect(
       collectionCharge: selector(state, `${props.field}.collection_charge`),
       isFetching: getIsFetchingByInvoice(state, invoice),
       invoice: invoice,
-      penaltyInterest: getPenaltyInterestByInvoice(state, invoice),
+      penaltyInterest: getPenaltyInterestByInvoice(state, invoice.invoice),
       selectedInvoices: selectedInvoices,
       usersPermissions: getUsersPermissions(state),
     };
