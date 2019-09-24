@@ -214,7 +214,7 @@ type Props = {
   onClose: Function,
   onSave: Function,
   receiveIsCreateClicked: Function,
-  recipient: string,
+  tenant: string,
   rows: Array<Object>,
   setRefForFirstField?: Function,
   usersPermissions: UsersPermissionsType,
@@ -231,7 +231,7 @@ const NewInvoiceForm = ({
   onClose,
   onSave,
   receiveIsCreateClicked,
-  recipient,
+  tenant,
   rows,
   setRefForFirstField,
   usersPermissions,
@@ -250,9 +250,8 @@ const NewInvoiceForm = ({
     hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
     hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
   );
-  const useLeaseCreateChargeEndpoint = recipient === RecipientOptions.ALL;
+  const useLeaseCreateChargeEndpoint = tenant === RecipientOptions.ALL;
   const billingPeriodRequired = isInvoiceBillingPeriodRequired(rows);
-
   return (
     <form onSubmit={handleSubmit} className='invoice__new-invoice_form'>
       <WhiteBox>
@@ -266,7 +265,7 @@ const NewInvoiceForm = ({
                 <FormField
                   disableTouched={isCreateClicked}
                   fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}
-                  name='recipient'
+                  name='tenant'
                   setRefForField={setRefForFirstField}
                   overrideValues={{
                     label: 'Vuokralainen',
@@ -352,7 +351,7 @@ const NewInvoiceForm = ({
               >
                 <FormField
                   disableTouched={isCreateClicked}
-                  fieldAttributes={recipient === RecipientOptions.ALL
+                  fieldAttributes={tenant === RecipientOptions.ALL
                     ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.NOTES)
                     : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.NOTES)
                   }
@@ -414,7 +413,7 @@ export default flowRight(
         isCreateClicked: getIsCreateClicked(state),
         lease: getCurrentLease(state),
         leaseCreateChargeAttributes: getLeaseCreateCrargeAttributes(state),
-        recipient: selector(state, 'recipient'),
+        tenant: selector(state, 'tenant'),
         rows: selector(state, 'rows'),
         usersPermissions: getUsersPermissions(state),
       };
