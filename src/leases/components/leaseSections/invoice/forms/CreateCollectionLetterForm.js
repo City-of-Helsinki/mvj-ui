@@ -27,7 +27,6 @@ import {PenaltyInterestFieldPaths, PenaltyInterestFieldTitles} from '$src/penalt
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {getUiDataCreateCollectionLetterKey, getUiDataPenaltyInterestKey} from '$src/uiData/helpers';
 import {
-  convertStrToDecimalNumber,
   formatDate,
   formatDateRange,
   getFieldAttributes,
@@ -44,16 +43,16 @@ import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type InvoicesProps = {
-  collectionCharge: number,
   disableDirty?: boolean,
   fields: any,
+  invoiceIds: Array<Object>,
   invoiceOptions: Array<Object>,
 }
 
 const renderInvoices = ({
-  collectionCharge,
   disableDirty = false,
   fields,
+  invoiceIds,
   invoiceOptions,
 }: InvoicesProps): Element<*> => {
   const handleAdd = () => {
@@ -103,7 +102,6 @@ const renderInvoices = ({
         const handleRemove = () => fields.remove(index);
         return (
           <CollectionLetterInvoiceRow
-            collectionCharge={collectionCharge}
             disableDirty={disableDirty}
             key={index}
             field={invoice}
@@ -127,13 +125,12 @@ const renderInvoices = ({
           <Divider className='invoice-divider' />
         </Column>
       </Row>
-      <CollectionLetterTotalRow collectionCharge={collectionCharge} fields={fields} />
+      <CollectionLetterTotalRow fields={fields} invoiceIds={invoiceIds}/>
     </Fragment>
   );
 };
 
 type Props = {
-  collectionCharge: number,
   createCollectionLetterAttributes: Attributes,
   invoices: Array<Object>,
   invoiceIds: Array<number>,
@@ -187,7 +184,6 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
 
   render() {
     const {
-      collectionCharge,
       createCollectionLetterAttributes,
       invoiceIds,
       lease,
@@ -235,20 +231,6 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                   />
                 </Authorization>
               </Column>
-              <Column small={12} medium={4}>
-                <Authorization allow={isFieldAllowedToEdit(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.COLLECTION_CHARGE)}>
-                  <FormField
-                    disableDirty
-                    fieldAttributes={getFieldAttributes(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.COLLECTION_CHARGE)}
-                    name='collection_charge'
-                    unit='€'
-                    overrideValues={{label: CreateCollectionLetterFieldTitles.COLLECTION_CHARGE}}
-                    enableUiDataEdit
-                    tooltipStyle={{right: 12}}
-                    uiDataKey={getUiDataCreateCollectionLetterKey(CreateCollectionLetterFieldPaths.COLLECTION_CHARGE)}
-                  />
-                </Authorization>
-              </Column>
             </Row>
           </Column>
         </Row>
@@ -263,11 +245,11 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                 {CreateCollectionLetterFieldTitles.INVOICES}
               </SubTitle>
               <FieldArray
+                invoiceIds={invoiceIds}
                 disableDirty
-                collectionCharge={collectionCharge}
                 component={renderInvoices}
                 invoiceOptions={invoiceOptions}
-                name='invoice_ids'
+                name='invoice'
               />
             </Authorization>
           </Column>
@@ -278,7 +260,6 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
               payload={{
                 lease: lease.id,
                 template: template,
-                collection_charge: convertStrToDecimalNumber(collectionCharge),
                 tenants: tenants,
                 invoices: invoiceIds,
               }}
@@ -300,10 +281,9 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
 
       return {
-        collectionCharge: selector(state, 'collection_charge'),
         createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
         invoices: getInvoicesByLease(state, currentLease.id),
-        invoiceIds: selector(state, 'invoice_ids'),
+        invoiceIds: selector(state, 'invoice'),
         lease: getCurrentLease(state),
         template: selector(state, 'template'),
         tenants: selector(state, 'tenants'),
