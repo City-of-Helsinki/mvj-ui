@@ -235,6 +235,7 @@ export const getPayloadCreateInvoice = (invoice: Object): Object => {
   return {
     lease: invoice.lease,
     recipient: invoice.recipient,
+    tenant: invoice.tenant,
     type: invoice.type,
     due_date: invoice.due_date,
     billing_period_end_date: invoice.billing_period_end_date,

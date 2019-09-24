@@ -1384,7 +1384,7 @@ export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTe
       .filter((item) => isActive(item.tenant))
       .map((item) => {
         return {
-          value: get(item, 'tenant.contact.id'),
+          value: get(item, 'id'),
           label: getContactFullName(get(item, 'tenant.contact')),
         };
       })

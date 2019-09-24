@@ -108,14 +108,15 @@ class CreateAndCreditInvoice extends Component <Props> {
     } = this.props;
 
     invoice.lease = currentLease.id;
-
-    if(invoice.recipient === RecipientOptions.ALL) {
+    if(invoice.tenant === RecipientOptions.ALL) {
       createCharge({
         leaseId: currentLease.id,
         data: getPayloadLeaseCreateCharge(invoice),
       });
     } else {
-      createInvoice(getPayloadCreateInvoice(invoice));
+      // eslint-disable-next-line 
+      const {recipient, ...getInvoiceTenant} = invoice; 
+      createInvoice(getPayloadCreateInvoice(getInvoiceTenant));
     }
   }
 
