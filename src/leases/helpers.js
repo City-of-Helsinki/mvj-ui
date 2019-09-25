@@ -364,7 +364,8 @@ export const getContentRelatedLeasesFrom = (lease: Object): Array<Object> =>
         id: relatedLease.id,
         lease: getContentRelatedLease(relatedLease, 'from_lease'),
       };
-    });
+    })
+    .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));
 
 /**
  * Get content related leases to list sorted by start and end date
