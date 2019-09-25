@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import RelatedLeaseItem from './RelatedLeaseItem';
 import TitleH3 from '$components/content/TitleH3';
 import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
-import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
+import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom} from '$src/leases/helpers';
 import {getFieldOptions} from '$src/util/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
@@ -48,7 +48,7 @@ class RelatedLeases extends PureComponent<Props, State> {
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.relatedLeasesFrom = getContentRelatedLeasesFrom(props.currentLease);
+      newState.relatedLeasesFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
       newState.relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
     }
 
