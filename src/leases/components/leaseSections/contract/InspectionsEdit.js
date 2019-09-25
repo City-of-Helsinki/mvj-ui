@@ -4,10 +4,10 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {FieldArray, reduxForm} from 'redux-form';
-
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
+import {getLoggedInUser} from '$src/auth/selectors';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
@@ -23,6 +23,7 @@ import {
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import get from 'lodash/get';
 
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
@@ -32,15 +33,17 @@ type InspectionsProps = {
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
   usersPermissions: UsersPermissionsType,
+  username: String,
 }
 
 const renderInspections = ({
   fields,
   leaseAttributes,
+  username,
   usersPermissions,
 }: InspectionsProps): Element<*> => {
   const handleAdd = () => {
-    fields.push({});
+    fields.push({inspector: username});
   };
 
   if(!fields || !fields.length) {
@@ -115,6 +118,7 @@ type Props = {
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
   receiveFormValidFlags: Function,
+  user: Object,
   usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
@@ -134,6 +138,7 @@ class InspectionsEdit extends PureComponent<Props> {
     const {
       leaseAttributes,
       usersPermissions,
+      user,
     } = this.props;
 
     return (
@@ -144,6 +149,7 @@ class InspectionsEdit extends PureComponent<Props> {
             leaseAttributes={leaseAttributes}
             name="inspections"
             usersPermissions={usersPermissions}
+            username={get(user, 'profile.name')}
           />
         </GreenBox>
       </form>
@@ -156,9 +162,17 @@ const formName = FormNames.LEASE_INSPECTIONS;
 export default flowRight(
   connect(
     (state) => {
+      const user = getLoggedInUser(state);
+
+      if (!user || user.expired) {
+        return {
+          user: null,
+        };
+      }
       return {
         leaseAttributes: getLeaseAttributes(state),
         usersPermissions: getUsersPermissions(state),
+        user,
       };
     },
     {
