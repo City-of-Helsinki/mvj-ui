@@ -19,7 +19,7 @@ import {ButtonColors} from '$components/enums';
 import {LeaseFieldPaths, LeaseFieldTitles, RelationTypes} from '$src/leases/enums';
 import {RelatedLeasePaths} from '$src/relatedLease/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, isAnyLeaseFormDirty} from '$src/leases/helpers';
+import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, isAnyLeaseFormDirty, sortRelatedLeasesFrom} from '$src/leases/helpers';
 import {getUiDataLeaseKey, getUiDataRelatedLeaseKey} from '$src/uiData/helpers';
 import {getFieldOptions, hasPermissions, isMethodAllowed} from '$src/util/helpers';
 import {
@@ -79,7 +79,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
     }
 
     if(props.currentLease !== state.currentLease) {
-      const relatedLeasesFrom = getContentRelatedLeasesFrom(props.currentLease);
+      const relatedLeasesFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
       const relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
       const relatedLeasesAll = [...relatedLeasesFrom, {lease: props.currentLease}, ...relatedLeasesTo];
 
