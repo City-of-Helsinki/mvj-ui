@@ -16,6 +16,7 @@ import {
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
+  formatNumber,
   getLabelOfOption,
   isEmptyValue,
   isFieldAllowedToRead,
@@ -78,15 +79,7 @@ const CollateralFinancialGuarantee = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
               {LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}
             </FormTextTitle>
-            <FormText>{!isEmptyValue(collateral.total_amount) ? `${collateral.total_amount} €` : '-'}</FormText>
-          </Authorization>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
-              {LeaseContractCollateralsFieldTitles.RETURNED_DATE}
-            </FormTextTitle>
-            <FormText>{formatDate(collateral.returned_date) || '–'}</FormText>
+            <FormText>{!isEmptyValue(collateral.total_amount) ? `${formatNumber(collateral.total_amount)} €` : '-'}</FormText>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -95,6 +88,14 @@ const CollateralFinancialGuarantee = ({
               {LeaseContractCollateralsFieldTitles.PAID_DATE}
             </FormTextTitle>
             <FormText>{formatDate(collateral.paid_date) || '–'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.RETURNED_DATE)}>
+              {LeaseContractCollateralsFieldTitles.RETURNED_DATE}
+            </FormTextTitle>
+            <FormText>{formatDate(collateral.returned_date) || '–'}</FormText>
           </Authorization>
         </Column>
       </Row>
@@ -171,7 +172,7 @@ const CollateralMortgageDocument = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
               {LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}
             </FormTextTitle>
-            <FormText>{!isEmptyValue(collateral.total_amount) ? `${collateral.total_amount} €` : '-'}</FormText>
+            <FormText>{!isEmptyValue(collateral.total_amount) ? `${formatNumber(collateral.total_amount)} €` : '-'}</FormText>
           </Authorization>
         </Column>
       </Row>
@@ -248,7 +249,7 @@ const CollateralOther = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT)}>
               {LeaseContractCollateralsFieldTitles.TOTAL_AMOUNT}
             </FormTextTitle>
-            <FormText>{!isEmptyValue(collateral.total_amount) ? `${collateral.total_amount} €` : '-'}</FormText>
+            <FormText>{!isEmptyValue(collateral.total_amount) ? `${formatNumber(collateral.total_amount)} €` : '-'}</FormText>
           </Authorization>
         </Column>
       </Row>
