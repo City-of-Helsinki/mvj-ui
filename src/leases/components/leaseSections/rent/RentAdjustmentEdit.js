@@ -99,13 +99,13 @@ const renderManagementSubventions = ({
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
                     <FormTextTitle
-                      required={isFieldRequired(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}
+                      required={isFieldRequired(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
                       enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}
+                      uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
                     >
-                      {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}
+                      {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}
                     </FormTextTitle>
                   </Authorization>
                 </Column>
@@ -552,7 +552,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                         </Authorization>
                       </Column>
                     </Row>
-                    {subventionType === SubventionTypes.X_DISCOUNT &&
+                    {subventionType === SubventionTypes.FORM_OF_MANAGEMENT &&
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>
                         <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>{RentAdjustmentManagementSubventionsFieldTitles.MANAGEMENT_SUBVENTIONS}</SubTitle>
                         <FieldArray
@@ -563,7 +563,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                         />
                       </Authorization>
                     }
-                    {subventionType === SubventionTypes.RE_LEASE_DISCOUNT &&
+                    {subventionType === SubventionTypes.RE_LEASE &&
                       <Row>
                         <Column small={6} medium={4} large={2}>
                           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
@@ -597,7 +597,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
                             <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT)}>
                               {LeaseRentAdjustmentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT}
                             </FormTextTitle>
-                            <FormText>{this.calculateReLeaseDiscountPercent() || '-'} %</FormText>
+                            <FormText>{formatNumber(this.calculateReLeaseDiscountPercent()) || '-'} %</FormText>
                           </Authorization>
                         </Column>
                       </Row>

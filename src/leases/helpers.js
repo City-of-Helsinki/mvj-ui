@@ -379,7 +379,7 @@ export const getContentRelatedLeasesFrom = (lease: Object): Array<Object> =>
  * @param {Object[]} leases
  * @returns {Object[]}
  */
-export const sortRelatedLeasesFrom = (leases: Array): Array<Object> => {
+export const sortRelatedLeasesFrom = (leases: Object[]): Array<Object> => {
   let current;
   let relatedLeasesFromSorted = [];
   leases.forEach(lease=>{
@@ -1087,6 +1087,33 @@ export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexVa
 };
 
 /**
+ * Calculate basis of rent discounted initial year rents total
+ * @param {Object[]} basisOfRents
+ * @param {Object[]} indexOptions
+ * @return {number}
+ */
+export const calculateBasisOfRentDiscountedInitialYearRentsTotal = (basisOfRents: Object[], indexOptions: Object[]): number => {
+  if(basisOfRents)
+    return Number(basisOfRents.map(basisOfRent => 
+      calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, getBasisOfRentIndexValue(basisOfRent, indexOptions))).reduce((sum, cur) => sum + cur));
+  else
+    return 0;
+};
+/**
+ * Calculate basis of rent initial year rents total
+ * @param {Object[]} basisOfRents
+ * @param {Object[]} indexOptions
+ * @return {number}
+ */
+export const calculateInitialYearRentsTotal = (basisOfRents: Object[], indexOptions: Object[]): number => {
+  if(basisOfRents)
+    return Number(basisOfRents.map(basisOfRent => 
+      calculateBasisOfRentInitialYearRent(basisOfRent, getBasisOfRentIndexValue(basisOfRent, indexOptions))).reduce((sum, cur) => sum + cur));
+  else
+    return 0;
+};
+
+/**
  * Calculate basis of rent discounted initial year rent
  * @param {Object} basisOfRent
  * @param {string} indexValue
@@ -1129,6 +1156,18 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
 };
 
 /**
+ * Calculate basis of rent basis subvention percantage
+ * @param {string} subventionAmount
+ * @param {number} currentAmountPerArea
+ * @return {number}
+ */
+export const calculateBasisOfRentSubventionPercantage = (subventionAmount: string | number, currentAmountPerArea: number | number): number => {
+  if(!isDecimalNumberStr(subventionAmount)) return 0;
+
+  return  (1 - (Number(convertStrToDecimalNumber(subventionAmount)) / currentAmountPerArea)) * 100;
+};
+
+/**
  * Calculate rent adjustment subvention percent
  * @param {string} subventionType
  * @param {string} subventionBasePercent
@@ -1141,11 +1180,11 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
 export const calculateRentAdjustmentSubventionPercent = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
   let discount = 0;
 
-  if(subventionType === SubventionTypes.RE_LEASE_DISCOUNT) {
+  if(subventionType === SubventionTypes.RE_LEASE) {
     discount += calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
   }
 
-  if(subventionType === SubventionTypes.X_DISCOUNT) {
+  if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
     if(managementSubventions) {
       managementSubventions.forEach((subvention) => {
         discount += Number(convertStrToDecimalNumber(subvention.subvention_percent) || 0);
@@ -1163,6 +1202,42 @@ export const calculateRentAdjustmentSubventionPercent = (subventionType: ?string
 };
 
 /**
+ * Calculate basis of rent subvention percent
+ * @param {number} currentAmountPerArea
+ * @param {string} subventionType
+ * @param {string} subventionBasePercent
+ * @param {string} subventionGraduatedPercent
+ * @param {Object[]} managementSubventions
+ * @param {Object[]} temporarySubventions
+ * @param {string} subventionGraduatedPercent
+ * @return {number}
+ */
+export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: number, subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+  let discount = 0;
+
+  if(subventionType === SubventionTypes.RE_LEASE) {
+    discount += calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
+  }
+
+  if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
+    if(managementSubventions) {
+      managementSubventions.forEach((subvention) => {
+        discount += Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercantage(subvention.subvention_amount, currentAmountPerArea)) || 0);
+      });
+    }
+  }
+
+  if(temporarySubventions) {
+    temporarySubventions.forEach((subvention) => {
+      discount += Number(convertStrToDecimalNumber(subvention.subvention_percent) || 0);
+    });
+  }
+
+  return discount;
+};
+
+
+/**
  * Get content of management subventions from rent adjustment
  * @param {Object} rentAdjustment
  * @return {Object[]}
@@ -1173,7 +1248,7 @@ export const getContentManagementSubventions = (rentAdjustment: Object): Array<O
       return {
         id: item.id,
         management: get(item, 'management.id') || item.management,
-        subvention_percent: item.subvention_percent,
+        subvention_amount: item.subvention_amount,
       };
     });
 
@@ -2178,7 +2253,7 @@ export const getPayloadManagementSubventions = (rentAdjustment: Object): Array<O
       return {
         id: item.id,
         management: item.management,
-        subvention_percent: convertStrToDecimalNumber(item.subvention_percent),
+        subvention_amount: convertStrToDecimalNumber(item.subvention_amount),
       };
     });
 

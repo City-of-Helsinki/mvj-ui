@@ -213,8 +213,8 @@ export const RentCycles = {
  * @type {{}}
  */
 export const SubventionTypes = {
-  RE_LEASE_DISCOUNT: 're_lease_discount',
-  X_DISCOUNT: 'x_discount',
+  RE_LEASE: 're_lease',
+  FORM_OF_MANAGEMENT: 'form_of_management',
 };
 
 /**
@@ -951,7 +951,7 @@ export const LeaseRentAdjustmentsFieldTitles = {
 export const RentAdjustmentManagementSubventionsFieldPaths = {
   MANAGEMENT_SUBVENTIONS: 'rents.child.children.rent_adjustments.child.children.management_subventions',
   MANAGEMENT: 'rents.child.children.rent_adjustments.child.children.management_subventions.child.children.management',
-  SUBVENTION_PERCENT: 'rents.child.children.rent_adjustments.child.children.management_subventions.child.children.subvention_percent',
+  SUBVENTION_AMOUNT: 'rents.child.children.rent_adjustments.child.children.management_subventions.child.children.subvention_amount',
 };
 
 /**
@@ -962,7 +962,7 @@ export const RentAdjustmentManagementSubventionsFieldPaths = {
 export const RentAdjustmentManagementSubventionsFieldTitles = {
   MANAGEMENT_SUBVENTIONS: 'Hallintamuodot',
   MANAGEMENT: 'Hallintamuodon tyyppi',
-  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_AMOUNT: 'Subventoitu yksikköhinta',
 };
 
 /**
@@ -1091,20 +1091,22 @@ export const LeaseBasisOfRentsFieldTitles = {
   BASE_YEAR_RENT: 'Perusvuosivuokra (ind 100)',
   DISCOUNT_PERCENTAGE: 'Alennusprosentti',
   DISCOUNTED_INITIAL_YEAR_RENT: 'Alennettu alkuvuosivuokra (ind)',
+  DISCOUNTED_INITIAL_YEAR_RENT_TOTAL: 'Alennettu alkuvuosivuokra (ind) yhteensä',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH: '1 kk vuokra',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL: '1 kk vuokra yhteensä',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS: '2 kk vuokra',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL: '2 kk vuokra yhteensä',
   INDEX: 'Indeksi',
   INITIAL_YEAR_RENT: 'Alkuvuosivuokra (ind)',
+  INITIAL_YEAR_RENT_TOTAL: 'Alkuvuosivuokra (ind) yhteensä',
   INTENDED_USE: 'Käyttötarkoitus',
   LOCKED_AT: 'Laskelma lukittu',
   PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
-  SUBVENTION_BASE_PERCENT: 'Perusalennus markkinavuokrasta',
-  SUBVENTION_GRADUATED_PERCENT: 'Porrastettu alennus',
-  SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT: 'Alennus euroina',
-  SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_BASE_PERCENT: 'Markkinavuokran subventio',
+  SUBVENTION_GRADUATED_PERCENT: 'Siirtymäajan subventio',
+  SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT: 'Subventio euroa/vuosi',
+  SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'Subventio prosentteina',
   SUBVENTION_TYPE: 'Subvention tyyppi',
   UNIT_PRICE: 'Yksikköhinta (ind)',
 };
@@ -1118,7 +1120,6 @@ export const BasisOfRentManagementSubventionsFieldPaths = {
   MANAGEMENT_SUBVENTIONS: 'basis_of_rents.child.children.management_subventions',
   MANAGEMENT: 'basis_of_rents.child.children.management_subventions.child.children.management',
   SUBVENTION_AMOUNT: 'basis_of_rents.child.children.management_subventions.child.children.subvention_amount',
-  SUBVENTION_PERCENT: 'basis_of_rents.child.children.management_subventions.child.children.subvention_percent',
 };
 
 /**
@@ -1129,8 +1130,9 @@ export const BasisOfRentManagementSubventionsFieldPaths = {
 export const BasisOfRentManagementSubventionsFieldTitles = {
   MANAGEMENT_SUBVENTIONS: 'Hallintamuodot',
   MANAGEMENT: 'Hallintamuodon tyyppi',
-  SUBVENTION_AMOUNT: 'Alennus euroina',
-  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_AMOUNT: 'Subventoitu yksikköhinta',
+  SUBVENTION_PERCENT: 'Subventio prosentteina',
+  SUBVENTION_AMOUNT_YEAR: 'Subventio euroina/vuosi',
 };
 
 /**
@@ -1153,7 +1155,7 @@ export const BasisOfRentTemporarySubventionsFieldPaths = {
 export const BasisOfRentTemporarySubventionsFieldTitles = {
   TEMPORARY_SUBVENTIONS: 'Tilapäisalennukset',
   DESCRIPTION: 'Tilapäisalennuksen tyyppi',
-  SUBVENTION_AMOUNT: 'Alennus euroina',
+  SUBVENTION_AMOUNT: 'Alennus euroa/vuosi',
   SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
 };
 

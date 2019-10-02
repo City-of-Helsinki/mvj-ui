@@ -189,7 +189,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                       </Authorization>
                     </Column>
                   </Row>
-                  {adjustment.subvention_type === SubventionTypes.X_DISCOUNT &&
+                  {adjustment.subvention_type === SubventionTypes.FORM_OF_MANAGEMENT &&
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>
                       <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>{RentAdjustmentManagementSubventionsFieldTitles.MANAGEMENT_SUBVENTIONS}</SubTitle>
                       {!managementSubventions || !managementSubventions.length &&
@@ -206,9 +206,9 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                               </Authorization>
                             </Column>
                             <Column small={6} medium={4} large={2}>
-                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
-                                <FormTextTitle uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
-                                  {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}
+                              <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+                                <FormTextTitle uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+                                  {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}
                                 </FormTextTitle>
                               </Authorization>
                             </Column>
@@ -222,8 +222,8 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                                 </Authorization>
                               </Column>
                               <Column small={6} medium={4} large={2}>
-                                <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
-                                  <FormText>{!isEmptyValue(subvention.subvention_percent) ? `${formatNumber(subvention.subvention_percent)} %` : '-'}</FormText>
+                                <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+                                  <FormText>{!isEmptyValue(subvention.subvention_amount) ? `${formatNumber(subvention.subvention_amount)} €` : '-'}</FormText>
                                 </Authorization>
                               </Column>
                             </Row>
@@ -233,7 +233,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
 
                     </Authorization>
                   }
-                  {adjustment.subvention_type === SubventionTypes.RE_LEASE_DISCOUNT &&
+                  {adjustment.subvention_type === SubventionTypes.RE_LEASE &&
                     <Row>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT)}>

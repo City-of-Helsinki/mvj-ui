@@ -29,7 +29,7 @@ type Props = {
   collectionCharge: string,
   disableDirty?: boolean,
   fetchPenaltyInterestByInvoice: Function,
-  invoice: ?number,
+  invoice: ?Object,
   invoiceOptions: Array<Object>,
   isFetching: boolean,
   onRemove: Function,
@@ -41,11 +41,13 @@ type Props = {
 
 class CollectionLetterInvoiceRow extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
-    if(prevProps.invoice.invoice !== this.props.invoice.invoice && isEmpty(this.props.penaltyInterest)) {
-      const {fetchPenaltyInterestByInvoice, invoice, usersPermissions} = this.props;
+    if(prevProps.invoice && this.props.invoice){
+      if(prevProps.invoice.invoice !== this.props.invoice.invoice && isEmpty(this.props.penaltyInterest)) {
+        const {fetchPenaltyInterestByInvoice, invoice, usersPermissions} = this.props;
 
-      if(hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)) {
-        fetchPenaltyInterestByInvoice(invoice.invoice);
+        if(hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)) {
+          fetchPenaltyInterestByInvoice(invoice.invoice);
+        }
       }
     }
   }
@@ -70,6 +72,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
       selectedInvoices,
       showDeleteButton,
     } = this.props;
+
     const filteredInvoiceOptions = invoiceOptions.filter((invoice) => selectedInvoices.indexOf(invoice.value) === -1);
     return(
       <Row>
