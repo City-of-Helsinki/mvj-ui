@@ -3,6 +3,7 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 
 import BasisOfRent from './BasisOfRent';
+import CalculateRentTotal from './CalculateRentTotal';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormText from '$components/form/FormText';
 import GrayBox from '$components/content/GrayBox';
@@ -103,6 +104,10 @@ class BasisOfRents extends PureComponent<Props, State> {
                   />
                 );
               })}
+              {basisOfRents.length > 1 && <CalculateRentTotal 
+                basisOfRents={basisOfRents}
+                indexOptions={indexOptions}
+              />}
             </BoxItemContainer>
           </GreenBox>
         }

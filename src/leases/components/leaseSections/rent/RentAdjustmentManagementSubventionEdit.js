@@ -47,16 +47,16 @@ const RentAdjustmentManagementSubventionEdit = ({
         </Authorization>
       </Column>
       <Column small={4} medium={4} large={2}>
-        <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+        <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={getFieldAttributes(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}
-            name={`${field}.subvention_percent`}
-            overrideValues={{label: RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}}
-            unit='%'
+            fieldAttributes={getFieldAttributes(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
+            name={`${field}.subvention_amount`}
+            overrideValues={{label: RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}}
+            unit='€'
             invisibleLabel
             enableUiDataEdit
-            uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}
+            uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
           />
         </Authorization>
       </Column>

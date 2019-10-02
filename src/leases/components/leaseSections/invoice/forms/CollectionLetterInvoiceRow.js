@@ -70,6 +70,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
       selectedInvoices,
       showDeleteButton,
     } = this.props;
+    console.log(invoiceOptions);
     const filteredInvoiceOptions = invoiceOptions.filter((invoice) => selectedInvoices.indexOf(invoice.value) === -1);
     return(
       <Row>

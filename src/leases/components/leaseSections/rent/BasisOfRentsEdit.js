@@ -9,6 +9,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
 import BasisOfRentEdit from './BasisOfRentEdit';
+import CalculateRentTotal from './CalculateRentTotal';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormText from '$components/form/FormText';
 import GrayBox from '$components/content/GrayBox';
@@ -275,6 +276,11 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                     </Column>
                   </Row>
                 </Authorization>
+
+                {basisOfRents.length > 1 && <CalculateRentTotal 
+                  basisOfRents={basisOfRents}
+                  indexOptions={indexOptions}
+                />}
               </GreenBox>
             );
           }

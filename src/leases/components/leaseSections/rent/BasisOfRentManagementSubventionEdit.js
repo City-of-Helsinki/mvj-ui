@@ -11,7 +11,7 @@ import FormText from '$components/form/FormText';
 import RemoveButton from '$components/form/RemoveButton';
 import {BasisOfRentManagementSubventionsFieldPaths, BasisOfRentManagementSubventionsFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {calculateBasisOfRentSubventionAmount} from '$src/leases/helpers';
+import {calculateBasisOfRentSubventionAmount, calculateBasisOfRentSubventionPercantage} from '$src/leases/helpers';
 import {formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes} from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getIsSaveClicked} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -20,6 +20,7 @@ import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
+  currentAmountPerArea: number,
   disabled: boolean,
   field: any,
   formName: string,
@@ -27,22 +28,28 @@ type Props = {
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
   onRemove: Function,
-  subventionPercent: string,
+  subventionAmount: string,
   usersPermissions: UsersPermissionsType,
 }
 
 const BasisOfRentManagementSubventionEdit = ({
+  currentAmountPerArea,
   disabled,
   field,
   initialYearRent,
   isSaveClicked,
   leaseAttributes,
   onRemove,
-  subventionPercent,
+  subventionAmount,
   usersPermissions,
 }: Props) => {
-  const subventionAmount = calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
-  
+
+  /* Use current amount per area to calculate percantage */
+  const subventionPercent = calculateBasisOfRentSubventionPercantage(subventionAmount, currentAmountPerArea);
+
+  /* Use initial year rent to calculate subvention total */
+  const subventionTotal = calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
+
   return (
     <Row>
       <Column small={4} large={2}>
@@ -59,23 +66,28 @@ const BasisOfRentManagementSubventionEdit = ({
         </Authorization>
       </Column>
       <Column small={4} large={2}>
-        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
+        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={getFieldAttributes(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}
-            name={`${field}.subvention_percent`}
+            fieldAttributes={getFieldAttributes(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
+            name={`${field}.subvention_amount`}
             disabled={disabled}
-            overrideValues={{label: BasisOfRentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}}
-            unit='%'
+            overrideValues={{label: BasisOfRentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}}
+            unit='€'
             invisibleLabel
           />
         </Authorization>
       </Column>
       <Column small={4} large={2}>
+        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+          <FormText className='full-width'>{formatNumber(subventionPercent)} %</FormText>
+        </Authorization>
+      </Column>
+      <Column small={4} large={2}>
         <FieldAndRemoveButtonWrapper
           field={
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_PERCENT)}>
-              <FormText className='full-width'>{formatNumber(subventionAmount)} €</FormText>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+              <FormText className='full-width'>{formatNumber(subventionTotal)} €</FormText>
             </Authorization>
           }
           removeButton={
@@ -104,7 +116,7 @@ export default connect(
     return {
       isSaveClicked: getIsSaveClicked(state),
       leaseAttributes: getLeaseAttributes(state),
-      subventionPercent: selector(state, `${props.field}.subvention_percent`),
+      subventionAmount: selector(state, `${props.field}.subvention_amount`),
       usersPermissions: getUsersPermissions(state),
     };
   },
