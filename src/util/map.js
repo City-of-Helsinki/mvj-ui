@@ -148,6 +148,38 @@ export const getBoundsFromCoordinates = (coordinates: Array<any>) => {
 };
 
 /**
+ * Get bounds for leaflet from features object
+ * @param {Object[]} leasesGeoJson
+ * @returns Object
+ */
+export const getBoundsFromFeatures = (leasesGeoJson: Object) => {
+  const L = require('leaflet');
+
+  const lats = [],
+    lons = [];
+  
+  if(leasesGeoJson && leasesGeoJson.features)
+    leasesGeoJson.features.forEach(feature => {
+      if(feature.geometry && feature.geometry.coordinates)
+        feature.geometry.coordinates.forEach(points => points.forEach(point => point.forEach(coordinate => {
+          lats.push(coordinate[0]);
+          lons.push(coordinate[1]);
+        })));
+    });
+  
+  if(lats.length < 1 || lons.length < 1) return null;
+
+  const minLat = Math.min(...lats),
+    maxLat = Math.max(...lats),
+    minLon = Math.min(...lons),
+    maxLon = Math.max(...lons),
+    maxBoundsSouthWest = new L.LatLng(minLon, minLat),
+    maxBoundsNorthEast = new L.LatLng(maxLon, maxLat);
+
+  return new L.LatLngBounds(maxBoundsSouthWest, maxBoundsNorthEast);
+};
+
+/**
  * Get center for leaflet from coordinates
  * @param {Object[]} coordinates
  * @returns Object
