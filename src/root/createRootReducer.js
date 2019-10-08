@@ -17,6 +17,7 @@ import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
 import contractFileReducer from '$src/contractFile/reducer';
 import createCollectionLetterReducer from '$src/createCollectionLetter/reducer';
+import leaseStatisticReportReducer from '$src/leaseStatisticReport/reducer';
 import districtsReducer from '../district/reducer';
 import indexReducer from '$src/index/reducer';
 import infillDevelopmentReducer from '$src/infillDevelopment/reducer';
@@ -72,6 +73,7 @@ export default (history: Object): Reducer<RootState> =>
     lease: leaseReducer,
     leaseCreateCharge: leaseCreateChargeReducer,
     leaseholdTransfer: leaseholdTransferReducer,
+    leaseStatisticReport: leaseStatisticReportReducer,
     leaseType: leaseTypeReducer,
     lessor: lessorReducer,
     oidc,

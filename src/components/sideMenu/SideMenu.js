@@ -197,6 +197,10 @@ class SideMenu extends Component<Props, State> {
                     <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperiaatteet</Link></li>
                   </Authorization>
 
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_BASISOFRENT)}>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.LEASE_STATISTIC_REPORT)}>Tilastot ja raportit</Link></li>
+                  </Authorization>
+
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) ||
