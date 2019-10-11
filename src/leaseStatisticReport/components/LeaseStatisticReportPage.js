@@ -17,6 +17,7 @@ import {hasPermissions, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 
 import LeaseStatisticReportForm from './LeaseStatisticReportForm';
+import LeaseInvoicingConfirmationReport from './LeaseInvoicingConfirmationReport';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import GreenBox from '$components/content/GreenBox';
@@ -73,6 +74,13 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
             </SubTitle>
             <LeaseStatisticReportForm/>
           </GreenBox>
+          <GreenBox className='with-top-margin'>
+            <SubTitle style={{textTransform: 'uppercase'}} >
+              Vuokrauksen laskutustietojen tarkastusraportti
+            </SubTitle>
+            <LeaseInvoicingConfirmationReport/>
+          </GreenBox>
+
         </ContentContainer>
       </PageContainer>
     );

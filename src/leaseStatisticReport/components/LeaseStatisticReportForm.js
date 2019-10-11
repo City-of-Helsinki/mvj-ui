@@ -9,21 +9,24 @@ import createUrl from '$src/api/createUrl';
 import FileDownloadButton from '$components/file/FileDownloadButton';
 import FormField from '$components/form/FormField';
 import {FieldTypes, FormNames} from '$src/enums';
-/* import {
-  getFieldAttributes,
-} from '$util/helpers'; */
+import {withLeaseStatisticReportAttributes} from '$components/attributes/LeaseStatisticReportAttributes';
+import Authorization from '$components/authorization/Authorization';
 import {
-  // LeaseStatisticReportPaths,
+  getFieldAttributes,
+  isFieldAllowedToEdit,
+} from '$util/helpers';
+import {
+  LeaseStatisticReportPaths,
   LeaseStatisticReportTitles,
 } from '$src/leaseStatisticReport/enums';
-/* import {
+import {
   getAttributes as getLeaseStatisticReportAttributes,
-} from '$src/leaseStatisticReport/selectors'; */
+} from '$src/leaseStatisticReport/selectors';
 import type {Attributes} from '$src/types';
 
 type Props = {
   leaseStatisticReportAttributes: Attributes,
-  valid: boolean,
+  // valid: boolean,
   startDate: string,
   endDate: string,
   leaseState: string,
@@ -43,8 +46,8 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
 
   render() {
     const {
-      // leaseStatisticReportAttributes,
-      valid,
+      leaseStatisticReportAttributes,
+      // valid,
       startDate,
       endDate,
       leaseState,
@@ -52,7 +55,6 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
     } = this.props;
 
     const options = [{value: 1, label: 'one'}, {value: 2, label: 'two'}];
-    // console.log(leaseStatisticReportAttributes);
 
     return(
       <form>
@@ -60,78 +62,62 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
           <Column small={12} large={12}>
             <Row>
               <Column small={12} medium={1}>
-                <FormField
-                  // fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}
-                  fieldAttributes={{
-                    label: 'Lease',
-                    read_only: false,
-                    required: true,
-                    type: 'field',
-                  }}
-                  disableDirty
-                  name='start_date'
-                  overrideValues={{
-                    fieldType: FieldTypes.DATE,
-                    label: LeaseStatisticReportTitles.START_DATE,
-                  }}
-                  enableUiDataEdit
-                />
+                <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
+                  <FormField
+                    fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}
+                    disableDirty
+                    name='start_date'
+                    overrideValues={{
+                      fieldType: FieldTypes.DATE,
+                      label: LeaseStatisticReportTitles.START_DATE,
+                    }}
+                    enableUiDataEdit
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={1}>
-                <FormField
-                  // fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.END_DATE)}
-                  fieldAttributes={{
-                    label: 'Lease',
-                    read_only: false,
-                    required: true,
-                    type: 'field',
-                  }}
-                  disableDirty
-                  overrideValues={{
-                    fieldType: FieldTypes.DATE,
-                    label: LeaseStatisticReportTitles.END_DATE,
-                  }}
-                  name='end_date'
-                  enableUiDataEdit
-                />
+                <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
+                  <FormField
+                    fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.END_DATE)}
+                    disableDirty
+                    overrideValues={{
+                      fieldType: FieldTypes.DATE,
+                      label: LeaseStatisticReportTitles.END_DATE,
+                    }}
+                    name='end_date'
+                    enableUiDataEdit
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={2}>
-                <FormField
-                  // fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.LEASE_STATE)}
-                  fieldAttributes={{
-                    label: 'Lease',
-                    read_only: false,
-                    required: true,
-                    type: 'field',
-                  }}
-                  disableDirty
-                  overrideValues={{
-                    fieldType: FieldTypes.CHOICE,
-                    label: LeaseStatisticReportTitles.LEASE_STATE,
-                    options: options,
-                  }}
-                  name='lease_state'
-                  enableUiDataEdit
-                />
+                <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
+                  <FormField
+                    fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.LEASE_STATE)}
+                    disableDirty
+                    overrideValues={{
+                      fieldType: FieldTypes.CHOICE,
+                      label: LeaseStatisticReportTitles.LEASE_STATE,
+                      options: options,
+                    }}
+                    name='lease_state'
+                    enableUiDataEdit
+                  />
+                </Authorization>
               </Column>
               <Column small={12} medium={2}>
-                <FormField
-                  // fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.ONLY_ACTIVE_LEASES)}
-                  fieldAttributes={{
-                    label: 'Lease',
-                    read_only: false,
-                    required: true,
-                    type: 'field',
-                  }}
-                  disableDirty
-                  overrideValues={{
-                    fieldType: FieldTypes.CHOICE,
-                    label: LeaseStatisticReportTitles.ONLY_ACTIVE_LEASES,
-                    options: options,
-                  }}
-                  name='only_active_leases'
-                  enableUiDataEdit
-                />
+                <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
+                  <FormField
+                    fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.ONLY_ACTIVE_LEASES)}
+                    disableDirty
+                    overrideValues={{
+                      fieldType: FieldTypes.CHOICE,
+                      label: LeaseStatisticReportTitles.ONLY_ACTIVE_LEASES,
+                      options: options,
+                    }}
+                    name='only_active_leases'
+                    enableUiDataEdit
+                  />
+                </Authorization>
               </Column>
               <Column small={3} style={{margin: '10px 0'}}>
                 <FileDownloadButton
@@ -159,10 +145,11 @@ const formName = FormNames.LEASE_STATISTIC_REPORT;
 const selector = formValueSelector(formName);
 
 export default flowRight(
+  withLeaseStatisticReportAttributes,
   connect(
     (state) => {
       return {
-        // leaseStatisticReportAttributes: getLeaseStatisticReportAttributes(state),
+        leaseStatisticReportAttributes: getLeaseStatisticReportAttributes(state),
         startDate: selector(state, 'start_date'),
         endDate: selector(state, 'end_date'),
         leaseState: selector(state, 'lease_state'),
