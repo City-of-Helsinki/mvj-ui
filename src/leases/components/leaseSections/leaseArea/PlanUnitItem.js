@@ -107,7 +107,7 @@ const PlanUnitItem = ({
             </FormTextTitle>
             {planUnit.detailed_plan_identifier
               ? <ExternalLink
-                href={createPaikkatietovipunenUrl(`helreport/planpdfloader.asp?id=${planUnit.detailed_plan_identifier}.pdf`)}
+                href={createPaikkatietovipunenUrl(`kaavapdf/${planUnit.detailed_plan_identifier}.pdf`)}
                 text={planUnit.detailed_plan_identifier}
               />
               : <FormText>-</FormText>
