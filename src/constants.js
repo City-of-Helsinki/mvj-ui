@@ -58,7 +58,7 @@ export const MAP_COLORS = [
  * @readonly
  * @const {string}
  */
-export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen:10058';
+export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen.hel.fi:10058';
 
 /**
  * Delete modal button text
