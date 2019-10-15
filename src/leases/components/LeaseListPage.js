@@ -38,6 +38,7 @@ import {
   DEFAULT_SORT_KEY,
   DEFAULT_SORT_ORDER,
   MAX_ZOOM_LEVEL_TO_FETCH_LEASES,
+  BOUNDING_BOX_FOR_SEARCH_QUERY,
   leaseStateFilterOptions,
 } from '$src/leases/constants';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
@@ -315,7 +316,9 @@ class LeaseListPage extends PureComponent<Props, State> {
     const leaseStates = this.getLeaseStates(searchQuery);
     const onlyActiveLeases = this.getOnlyActiveLeasesValue(searchQuery);
 
-    if(!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) return;
+    if(searchQuery && searchQuery.search && searchQuery.search.length>6){
+      searchQuery.in_bbox = BOUNDING_BOX_FOR_SEARCH_QUERY;
+    } else if(!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) return;
 
     if(onlyActiveLeases != undefined) {
       searchQuery.only_active_leases = onlyActiveLeases;

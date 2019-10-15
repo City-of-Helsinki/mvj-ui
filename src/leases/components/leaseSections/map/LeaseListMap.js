@@ -19,7 +19,7 @@ import {
   getUrlParams,
   hasPermissions,
 } from '$util/helpers';
-import {getBoundsFromBBox} from '$util/map';
+import {getBoundsFromBBox, getBoundsFromFeatures} from '$util/map';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getLeaseAttributes, getLeasesByBBox} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -132,6 +132,17 @@ class LeaseListMap extends PureComponent<Props, State> {
     return layers;
   }
 
+  getBounds(){
+    const {bounds, leasesGeoJson} = this.state;
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    if(searchQuery && searchQuery.search && searchQuery.search.length>6)
+      return getBoundsFromFeatures(leasesGeoJson);
+    else
+      return bounds;
+  }
+
   handleViewportChanged = (mapOptions: Object) => {
     const {onViewportChanged} = this.props;
     this.setState({zoom: mapOptions.zoom});
@@ -142,8 +153,9 @@ class LeaseListMap extends PureComponent<Props, State> {
 
   render() {
     const {isLoading} = this.props;
-    const {bounds, center, zoom} = this.state;
+    const {center, zoom} = this.state;
     const overlayLayers = this.getOverlayLayers();
+    const bounds = this.getBounds();
 
     return(
       <Fragment>

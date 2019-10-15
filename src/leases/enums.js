@@ -984,7 +984,7 @@ export const RentAdjustmentTemporarySubventionsFieldPaths = {
 export const RentAdjustmentTemporarySubventionsFieldTitles = {
   TEMPORARY_SUBVENTIONS: 'Tilapäisalennukset',
   DESCRIPTION: 'Tilapäisalennuksen tyyppi',
-  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_PERCENT: 'subventio markkinavuokrasta',
 };
 
 /**
