@@ -1359,7 +1359,7 @@ describe('utils', () => {
     });
 
     it('should return paikkatietovipunen url', () => {
-      expect(createPaikkatietovipunenUrl('123')).to.deep.equal('http://paikkatietovipunen:10058/123');
+      expect(createPaikkatietovipunenUrl('123')).to.deep.equal('http://paikkatietovipunen.hel.fi:10058/123');
     });
 
     it('should return api response count', () => {
