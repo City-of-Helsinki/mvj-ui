@@ -132,6 +132,17 @@ class LeaseListMap extends PureComponent<Props, State> {
     return layers;
   }
 
+  getBounds(){
+    const {bounds, leasesGeoJson} = this.state;
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    if(searchQuery && searchQuery.search && searchQuery.search.length>6)
+      return getBoundsFromFeatures(leasesGeoJson);
+    else
+      return bounds;
+  }
+
   handleViewportChanged = (mapOptions: Object) => {
     const {onViewportChanged} = this.props;
     this.setState({zoom: mapOptions.zoom});
@@ -142,15 +153,15 @@ class LeaseListMap extends PureComponent<Props, State> {
 
   render() {
     const {isLoading} = this.props;
-    const {center, leasesGeoJson, zoom} = this.state;
+    const {center, zoom} = this.state;
     const overlayLayers = this.getOverlayLayers();
-    const boundsFromFeatures = getBoundsFromFeatures(leasesGeoJson);
+    const bounds = this.getBounds();
 
     return(
       <Fragment>
         <AreaNotesEditMap
           allowToEdit={false}
-          bounds={boundsFromFeatures}
+          bounds={bounds}
           center={center}
           isLoading={isLoading}
           onViewportChanged={this.handleViewportChanged}
