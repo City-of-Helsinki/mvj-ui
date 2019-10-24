@@ -14,7 +14,7 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
-import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/constants';
+import {rentCustomDateOptions} from '$src/leases/constants';
 import {FieldTypes, FormNames} from '$src/enums';
 import {
   DueDatesPositions,
@@ -268,81 +268,6 @@ const renderDueDates = ({
   );
 };
 
-const renderDueDatesOneTime = ({dueDates, fields, isSaveClicked, leaseAttributes, usersPermissions}: DueDatesProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-
-  return (
-    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
-      <Row>
-        <Column>
-          <FormTextTitle
-            required={isFieldRequired(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}
-            enableUiDataEdit
-            uiDataKey={getUiDataLeaseKey(LeaseRentDueDatesFieldPaths.DUE_DATES)}
-          >
-            {LeaseRentDueDatesFieldTitles.DUE_DATES}
-          </FormTextTitle>
-        </Column>
-      </Row>
-      <Authorization
-        allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY) ||
-          isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
-        errorComponent={<FormText>{formatDueDates(dueDates) || '-'}</FormText>}
-      >
-        {fields && !!fields.length && fields.map((due_date, index) => {
-          if(index) return null;
-
-          return (
-            <Row key={index}>
-              <Column small={12}>
-                <Row>
-                  <Column small={6}>
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY)}
-                        invisibleLabel
-                        name={`${due_date}.day`}
-                        overrideValues={{label: LeaseRentDueDatesFieldTitles.DAY}}
-                      />
-                    </Authorization>
-                  </Column>
-                  <Column small={6}>
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}>
-                      <FormField
-                        className='with-dot'
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)}
-                        invisibleLabel
-                        name={`${due_date}.month`}
-                        overrideValues={{label: LeaseRentDueDatesFieldTitles.MONTH}}
-                      />
-                    </Authorization>
-                  </Column>
-                </Row>
-              </Column>
-            </Row>
-          );
-        })}
-      </Authorization>
-      {(!fields || !fields.length) &&
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_RENT_DUE_DATES)}>
-          <Row>
-            <Column>
-              <AddButtonThird
-                label='Lisää eräpäivä'
-                onClick={handleAdd}
-              />
-            </Column>
-          </Row>
-        </Authorization>
-      }
-    </Authorization>
-  );
-};
-
 type BasicInfoEmptyProps = {
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
@@ -582,11 +507,8 @@ type BasicInfoOneTimeProps = {
 }
 
 const BasicInfoOneTime = ({
-  dueDates,
-  dueDatesType,
   isSaveClicked,
   leaseAttributes,
-  usersPermissions,
 }: BasicInfoOneTimeProps) => {
   return (
     <Fragment>
@@ -640,35 +562,6 @@ const BasicInfoOneTime = ({
             />
           </Authorization>
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}
-              name='due_dates_type'
-              overrideValues={{
-                label: LeaseRentsFieldTitles.DUE_DATES_TYPE,
-                options: oneTimeRentDueDateTypeOptions,
-              }}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.DUE_DATES_TYPE)}
-            />
-          </Authorization>
-        </Column>
-
-        {dueDatesType === RentDueDateTypes.CUSTOM &&
-          <Column small={6} medium={4} large={1}>
-            {/* Authorization is done on renderDueDatesOneTime component */}
-            <FieldArray
-              component={renderDueDatesOneTime}
-              dueDates={dueDates}
-              isSaveClicked={isSaveClicked}
-              leaseAttributes={leaseAttributes}
-              name="due_dates"
-              usersPermissions={usersPermissions}
-            />
-          </Column>
-        }
       </Row>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
