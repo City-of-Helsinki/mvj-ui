@@ -1236,6 +1236,17 @@ export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: numb
   return discount;
 };
 
+/**
+ * Get content of management subventions from rent adjustment
+ * @param {number} price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateTemporaryRent = (price: ?number, area: ?number): number => {
+  if (price && area)
+    return Number(price*area);
+  return 0;
+};
 
 /**
  * Get content of management subventions from rent adjustment
