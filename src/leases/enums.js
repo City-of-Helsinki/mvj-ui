@@ -1096,7 +1096,7 @@ export const LeaseBasisOfRentsFieldPaths = {
  */
 export const LeaseBasisOfRentsFieldTitles = {
   BASIS_OF_RENTS: 'Vuokralaskuri',
-  AREA_HIGHT: 'ala/korkeus',
+  AREA_HEIGHT: 'ala/korkeus',
   AMOUNT_PER_AREA: 'Yksikköhinta (ind 100)',
   ARCHIVED_AT: 'Arkistoitu',
   ARCHIVED_NOTE: 'Arkitoinnin huomautus',
