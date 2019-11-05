@@ -920,14 +920,24 @@ export const getTenantShareWarnings = (tenants: Array<Object>): Array<string> =>
       return sum + share;
     }, 0);
 
-    if(totalShare > 1) {
+    if(roundToFixed(totalShare, 8) > 1) {
       warnings.push(`Hallintaosuus välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on yli 100%`);
-    } else if(totalShare < 1) {
+    } else if(roundToFixed(totalShare, 8) < 1) {
       warnings.push(`Hallintaosuus välillä ${formatDateRange(dateRange.start_date, dateRange.end_date)} on alle 100%`);
     }
   });
 
   return warnings;
+};
+
+/**
+  * Round decimal to fixed
+  * @param {number} number
+  * @param {number} numberOfDecimals
+  * @returns {number}
+  */
+export const roundToFixed = (number: number, numberOfDecimals: number): number => {
+  return Number(number.toFixed(numberOfDecimals));
 };
 
 /**
