@@ -47,7 +47,7 @@ const ContractRentsEdit = ({
   usersPermissions,
 }: Props) => {
   const handleAdd = () => {
-    fields.push({});
+    fields.push({period: 'per_year'});
   };
 
   if(!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTRENT) &&
