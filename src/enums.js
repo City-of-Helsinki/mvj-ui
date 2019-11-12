@@ -241,6 +241,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa kiinteistön/määräalan?',
     TITLE: 'Poista kiinteistö/määräala',
   },
+  DELETE_PROPERTY: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa tonttihaun?',
+    TITLE: 'Poista tonttihaku',
+  },
   DELETE_PROPERTY_IDENTIFIER: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa kiinteisötunnuksen?',
@@ -404,6 +409,7 @@ export const FormNames = {
   LEASE_SUMMARY: 'summary-form',
   LEASE_TENANTS: 'tenants-form',
   LEASEHOLD_TRANSFER_SEARCH: 'leasehold-transfer-search-form',
+  PROPERTY_SUMMARY: 'property-form',
   RENT_BASIS: 'rent-basis-form',
   RENT_BASIS_SEARCH: 'rent-basis-search-form',
   RENT_CALCULATOR: 'rent-calculator-form',

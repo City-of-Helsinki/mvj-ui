@@ -26,6 +26,7 @@ import invoiceNoteReducer from '$src/invoiceNote/reducer';
 import invoiceSetReducer from '$src/invoiceSets/reducer';
 import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
+import propertyReducer from '../property/reducer';
 import leaseCreateChargeReducer from '../leaseCreateCharge/reducer';
 import leaseholdTransferReducer from '$src/leaseholdTransfer/reducer';
 import leaseTypeReducer from '../leaseType/reducer';
@@ -70,6 +71,7 @@ export default (history: Object): Reducer<RootState> =>
     invoiceSet: invoiceSetReducer,
     landUseContract: landUseContractReducer,
     lease: leaseReducer,
+    property: propertyReducer,
     leaseCreateCharge: leaseCreateChargeReducer,
     leaseholdTransfer: leaseholdTransferReducer,
     leaseType: leaseTypeReducer,

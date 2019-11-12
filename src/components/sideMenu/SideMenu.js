@@ -179,6 +179,8 @@ class SideMenu extends Component<Props, State> {
                     <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.LEASES)}>Vuokraukset</Link></li>
                   </Authorization>
 
+                  <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.PROPERTY)}>Tonttihaut</Link></li>
+
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_CONTACT)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.CONTACTS)}>Asiakkaat</Link></li>
                   </Authorization>

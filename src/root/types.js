@@ -27,6 +27,7 @@ import type {LeaseTypeState} from '$src/leaseType/types';
 import type {LessorState} from '$src/lessor/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
+import type {PropertyState} from '$src/property/types';
 import type {RentBasisState} from '$src/rentbasis/types';
 import type {RentForPeriodState} from '$src/rentForPeriod/types';
 import type {SapInvoicesState} from '$src/sapInvoice/types';
@@ -65,6 +66,7 @@ export type RootState = {
   leaseType: LeaseTypeState,
   lessor: LessorState,
   penaltyInterest: PenaltyInterestState,
+  property: PropertyState,
   previewInvoices: PreviewInvoicesState,
   rentBasis: RentBasisState,
   rentForPeriod: RentForPeriodState,

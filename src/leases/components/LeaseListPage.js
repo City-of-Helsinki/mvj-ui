@@ -607,7 +607,6 @@ class LeaseListPage extends PureComponent<Props, State> {
           {isFetching &&
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
           }
-
           {visualizationType === 'table' &&
             <Fragment>
               <SortableTable
