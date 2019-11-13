@@ -939,10 +939,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
-                    ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}
-                    : {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}
-                  }
+                  fieldAttributes={{...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}}
                   onChange={this.onChangeIndexOptions}
                   disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                   name={`${field}.index`}
