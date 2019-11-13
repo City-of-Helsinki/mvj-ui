@@ -1076,8 +1076,21 @@ export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): number
 export const calculateBasisOfRentAmountPerArea = (basisOfRent: Object, indexValue: ?string): number => {
   if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(basisOfRent.amount_per_area)) return 0;
 
-  return Number(convertStrToDecimalNumber(indexValue))/100
-    * Number(convertStrToDecimalNumber(basisOfRent.amount_per_area));
+  return roundToFixed(Number(convertStrToDecimalNumber(indexValue))/100
+    * Number(convertStrToDecimalNumber(basisOfRent.amount_per_area)), 2);
+};
+
+/**
+ * Calculate amount per area from value
+ * @param {string} value
+ * @param {string} indexValue
+ * @return {number}
+ */
+export const calculateAmountFromValue = (value: string, indexValue: ?string): number => {
+  if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(value)) return 0;
+
+  return roundToFixed((Number(convertStrToDecimalNumber(value))/
+    Number(convertStrToDecimalNumber(indexValue)))*100, 2);
 };
 
 /**
