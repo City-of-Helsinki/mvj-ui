@@ -266,6 +266,7 @@ type Props = {
   isLoading?: boolean,
   language?: string,
   name: string,
+  onChange?: Function,
   optionLabel?: string,
   overrideValues?: Object,
   placeholder?: string,
@@ -309,6 +310,7 @@ class FormField extends PureComponent<Props, State> {
     fieldAttributes: null,
     invisibleLabel: false,
     isLoading: false,
+    onChange: () => {},
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -357,6 +359,7 @@ class FormField extends PureComponent<Props, State> {
       isLoading,
       language,
       name,
+      onChange,
       optionLabel,
       overrideValues,
       placeholder,
@@ -399,6 +402,7 @@ class FormField extends PureComponent<Props, State> {
         language={language}
         name={name}
         normalize={this.handleGenericNormalize}
+        onChange={onChange}
         optionLabel={optionLabel}
         options={options}
         placeholder={placeholder}
