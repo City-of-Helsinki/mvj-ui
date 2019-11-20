@@ -5,19 +5,21 @@ import {Row, Column} from 'react-foundation';
 
 import {getUiDataPropertyKey} from '$src/uiData/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
-import {FormNames, FieldTypes, ViewModes} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 
-import FormField from '$components/form/FormField';
+import WhiteBox from '$components/content/WhiteBox';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
+import SubTitle from '$components/content/SubTitle';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {getCollapseStateByKey} from '$src/property/selectors';
 import {receiveCollapseStates} from '$src/property/actions';
 import {PropertyFieldTitles, PropertyFieldPaths} from '$src/property/enums';
+import PropertySite from './PropertySite';
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -162,20 +164,22 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.DECISION_TO_LIST)}>
                     {PropertyFieldTitles.DECISION_TO_LIST}
                   </FormTextTitle>
-                  {/* <FormField
-                    className='no-margin'
-                    fieldAttributes={{
-                      label: 'Laskelman tyyppi',
-                      type: FieldTypes.RADIO_WITH_FIELD,
-                      required: true,
-                      read_only: false,
-                    }}
-                    name='type'
-                    invisibleLabel
-                    disableDirty
-                  /> */}
                 </Column>
               </Row>
+              <WhiteBox> {/* TODO  : make light green */}
+                <SubTitle>
+                  {'HAETTAVAT KOHTEET'}
+                </SubTitle>
+                {[1, 2].map((propertySite, index) => {
+                  return(
+                    <Row key={index}>
+                      <PropertySite
+                        index={index}
+                      />
+                    </Row>
+                  );
+                })}
+              </WhiteBox>
             </Collapse>
           </Column>
         </Row>

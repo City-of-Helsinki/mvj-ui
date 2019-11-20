@@ -227,6 +227,10 @@
     }
   }
 
+  &.greenCollapse {
+    background-color: $green !important;
+  }
+
   &.collapse__secondary {
     background-color: $light-green;
     margin: rem-calc(5px) 0 rem-calc(15px);

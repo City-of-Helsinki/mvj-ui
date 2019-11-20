@@ -36,6 +36,6 @@ export const PropertyFieldTitles = {
   END_DATE: 'Loppupvm',
   APPLICATIONS_UPDATED_DATE: 'Hakemukset päivitetty',
   DECISION: 'Päätös',
-  DECISION_TO_LIST: 'Päätöshakulistaan',
+  DECISION_TO_LIST: 'Päätös hakutuloslistaan',
   STEP: 'Haun vaihe',
 };
