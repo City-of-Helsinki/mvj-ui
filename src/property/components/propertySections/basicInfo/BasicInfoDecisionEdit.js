@@ -50,7 +50,7 @@ const BasicInfoDecisionEdit = ({
           }} // TODO
           name={`${field}.type`}
           overrideValues={{
-            fieldType: 'decision',
+            fieldType: 'choice',
             label: PropertyFieldTitles.DECISION,
             options: [{value: 1, label: 'Kiinteistölautakunta 15.12.2016 503 § Varausajan jatkaminen HEL 2018-123456'}],
           }}

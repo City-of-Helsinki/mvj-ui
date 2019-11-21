@@ -5,21 +5,22 @@ import {Row, Column} from 'react-foundation';
 import {formValueSelector, FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
-import {ButtonColors} from '$components/enums';
-import AddButtonThird from '$components/form/AddButtonThird';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import FormText from '$components/form/FormText';
-import FormTextTitle from '$components/form/FormTextTitle';
+import AddButtonThird from '$components/form/AddButtonThird';
+import BasicInfoDecisionEdit from './BasicInfoDecisionEdit';
+import {ButtonColors} from '$components/enums';
+import {ConfirmationModalTexts} from '$src/enums';
 import Collapse from '$components/collapse/Collapse';
+import FormTextTitle from '$components/form/FormTextTitle';
 import Divider from '$components/content/Divider';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {PropertyFieldTitles, PropertyFieldPaths} from '$src/property/enums';
-import {ConfirmationModalTexts} from '$src/enums';
+import WhiteBox from '$components/content/WhiteBox';
+import SubTitle from '$components/content/SubTitle';
 import Title from '$components/content/Title';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {FormNames, ViewModes} from '$src/enums';
-import BasicInfoDecisionEdit from './BasicInfoDecisionEdit';
 import FormField from '$components/form/FormField';
 import {
   receiveCollapseStates,
@@ -27,6 +28,7 @@ import {
 import {
   getCollapseStateByKey,
 } from '$src/property/selectors';
+import PropertySiteEdit from './PropertySiteEdit';
 
 type DecisionsProps = {
   disabled: boolean,
@@ -115,6 +117,69 @@ const renderDecisions = ({
   );
 };
 
+type PropertySitesProps = {
+  disabled: boolean,
+  fields: any,
+  formName: string,
+  // leaseAttrobites
+  usersPermissions: UsersPermissionsType,
+}
+
+const renderPropertySites = ({
+  disabled,
+  fields,
+  formName,
+  // usersPermissions,
+}: PropertySitesProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+  return (
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <Fragment>
+            {!!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    fields.remove(index);
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_DECISION.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_DECISION.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE,
+                });
+              };
+
+              return <PropertySiteEdit
+                key={index}
+                disabled={disabled}
+                field={field}
+                formName={formName}
+                onRemove={handleRemove}
+              />;
+            })}
+            <Column small={12} large={6}>
+              {!disabled &&
+                <Row>
+                  <Column>
+                    <AddButtonThird
+                      label='Lisää kohde'
+                      onClick={handleAdd}
+                    />
+                  </Column>
+                </Row>
+              }
+            </Column>
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
+};
+
 type Props = {
   collapseStateBasic: boolean,
   receiveCollapseStates: Function,
@@ -160,7 +225,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
           {PropertyFieldTitles.BASIC_INFO}
         </Title>
         <Divider />
-        <Row className='summary__content-wrapper'>
+        <Row className='summary__content-wrapper'> {/* TODO wrap columns around authorization */}
           <Column small={12}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
@@ -332,6 +397,19 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   />
                 </Column>
               </Row>
+              <WhiteBox> {/* TODO  : make light green */}
+                <SubTitle>
+                  {'HAETTAVAT KOHTEET'}
+                </SubTitle>
+                <FieldArray
+                  component={renderPropertySites}
+                  // attributes
+                  disabled={false}
+                  formName={FormNames.PROPERTY_SUMMARY}
+                  name={'property_sites'}
+                  usersPermissions={usersPermissions}
+                />
+              </WhiteBox>
             </Collapse>
           </Column>
         </Row>
