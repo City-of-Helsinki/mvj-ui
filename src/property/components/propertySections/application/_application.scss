@@ -1,0 +1,12 @@
+.application{
+  &__white-stripes{
+    background: repeating-linear-gradient(
+      135deg,
+      #acacac66,
+      #acacac66 1px,
+      #efefef66 1px,
+      #efefef66 5px
+    );
+    background-color: #fff;
+  }
+}

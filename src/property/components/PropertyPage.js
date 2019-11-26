@@ -37,6 +37,8 @@ import {
 import PropertyInfo from './propertySections/propertyInfo/PropertyInfo';
 import BasicInfo from './propertySections/basicInfo/BasicInfo';
 import BasicInfoEdit from './propertySections/basicInfo/BasicInfoEdit';
+// import Application from './propertySections/application/Application';
+import ApplicationEdit from './propertySections/application/ApplicationEdit';
 
 type Props = {
   hideEditMode: Function,
@@ -216,6 +218,15 @@ class PropertyPage extends Component<Props, State> {
                 {isEditMode
                   ? <BasicInfoEdit />
                   : <BasicInfo />
+                }
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                {isEditMode
+                  ? <ApplicationEdit />
+                  : null // <Application />
                 }
               </ContentContainer>
             </TabPane>
