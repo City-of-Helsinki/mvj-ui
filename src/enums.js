@@ -151,6 +151,16 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa päätöksen?',
     TITLE: 'Poista päätös',
   },
+  DELETE_APPLICANT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa asiakkaan?',
+    TITLE: 'Poista asiakas',
+  },
+  DELETE_TARGET: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kohteen?',
+    TITLE: 'Poista kohde',
+  },
   DELETE_FIXED_INITIAL_YEAR_RENT: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa kiinteän alkuvuosivuokran?',

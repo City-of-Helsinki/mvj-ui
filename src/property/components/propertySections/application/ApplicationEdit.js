@@ -1,10 +1,15 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent, type Element} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import AddButtonThird from '$components/form/AddButtonThird';
+import {ButtonColors} from '$components/enums';
+import {ConfirmationModalTexts} from '$src/enums';
+import SubTitle from '$components/content/SubTitle';
 import TitleH3 from '$components/content/TitleH3';
 import WhiteBox from '$components/content/WhiteBox';
 import FileDownloadButton from '$components/file/FileDownloadButton';
@@ -23,6 +28,132 @@ import {
 import {
   getCollapseStateByKey,
 } from '$src/property/selectors';
+import ApplicantEdit from './ApplicantEdit';
+import TargetEdit from './TargetEdit';
+
+type ApplicantProps = {
+  disabled: boolean,
+  fields: any,
+  formName: string,
+  // leaseAttrobites
+  // usersPermissions: UsersPermissionsType,
+}
+
+const renderApplicant = ({
+  disabled,
+  fields,
+  formName,
+  // usersPermissions,
+}: ApplicantProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+  return (
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <Fragment>
+            {!!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    fields.remove(index);
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT, 
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_APPLICANT.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_APPLICANT.LABEL, 
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_APPLICANT.TITLE, // TODO jatka tästä: Haluatko varmasti poistaa päätöksen
+                });
+              };
+
+              return <ApplicantEdit
+                key={index}
+                disabled={disabled}
+                field={field}
+                formName={formName}
+                onRemove={handleRemove}
+              />;
+            })}
+
+            {!disabled &&
+              <Row>
+                <Column>
+                  <AddButtonThird
+                    label='Lisää hakija'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            }
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
+};
+
+type TargetProps = {
+  disabled: boolean,
+  fields: any,
+  formName: string,
+  // leaseAttrobites
+  // usersPermissions: UsersPermissionsType,
+}
+
+const renderTarget = ({
+  disabled,
+  fields,
+  formName,
+  // usersPermissions,
+}: TargetProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+  return (
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <Fragment>
+            {!!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    fields.remove(index);
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT, 
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_TARGET.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_TARGET.LABEL, 
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_TARGET.TITLE, // TODO Poista kohde
+                });
+              };
+
+              return <TargetEdit
+                key={index}
+                disabled={disabled}
+                field={field}
+                formName={formName}
+                onRemove={handleRemove}
+              />;
+            })}
+
+            {!disabled &&
+              <Row>
+                <Column>
+                  <AddButtonThird
+                    label='Lisää kohde'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            }
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
+};
 
 type Props = {
   collapseStateBasic: boolean,
@@ -77,7 +208,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
               uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION_BASE)}
             >
               <Row>
-                <Column large={2}>
+                <Column large={3}>
                   <FormField
                     disableTouched={false} // isSaveClicked} // TODO
                     fieldAttributes={{
@@ -90,8 +221,10 @@ class ApplicationEdit extends PureComponent<Props, State> {
                     overrideValues={{
                       fieldType: 'checkbox',
                       label: ApplicationFieldTitles.APPLICATION_DEFAULT,
+                      options: [{value: 1, label: 'Hakytyypin oletuslomake'}],
                     }}
                     enableUiDataEdit
+                    invisibleLabel
                   />
                 </Column>
                 <Column large={4}>
@@ -114,7 +247,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
                 </Column>
               </Row>
               <Row>
-                <Column large={2}>
+                <Column large={3}>
                   <FormField
                     disableTouched={false} // isSaveClicked} // TODO
                     fieldAttributes={{
@@ -127,8 +260,10 @@ class ApplicationEdit extends PureComponent<Props, State> {
                     overrideValues={{
                       fieldType: 'checkbox',
                       label: ApplicationFieldTitles.APPLICATION_PREVIOUS,
+                      options: [{value: 1, label: 'Aiemmin luotu lomake'}],
                     }}
                     enableUiDataEdit
+                    invisibleLabel
                   />
                 </Column>
                 <Column large={4}>
@@ -152,7 +287,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
               </Row>
               <Column className={''} style={{margin: '0 0 10px 0'}}>
                 <FileDownloadButton
-                  disabled={false}
+                  disabled={true}
                   label='ESIKATSELE'
                   payload={{
                   }}
@@ -163,8 +298,23 @@ class ApplicationEdit extends PureComponent<Props, State> {
                 <TitleH3>
                   {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
                 </TitleH3>
+                <FieldArray
+                  component={renderApplicant}
+                  // attributes
+                  disabled={false}
+                  formName={'applicant'} // TODO formname from form FormNames 
+                  name={'applicant'}
+                  // usersPermissions={usersPermissions}
+                />
+                <FieldArray
+                  component={renderTarget}
+                  // attributes
+                  disabled={false}
+                  formName={'target'} // TODO formname from form FormNames 
+                  name={'target'}
+                  // usersPermissions={usersPermissions}
+                />
               </WhiteBox>
-              
             </Collapse>
           </Column>
         </Row>

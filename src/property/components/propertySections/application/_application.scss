@@ -2,11 +2,16 @@
   &__white-stripes{
     background: repeating-linear-gradient(
       135deg,
-      #acacac66,
-      #acacac66 1px,
-      #efefef66 1px,
-      #efefef66 5px
+      #acacac46,
+      #acacac46 1.41px,
+      #efefef46 1px,
+      #efefef46 6px
     );
     background-color: #fff;
+  }
+  &__input{
+    input{
+      background-color: #ffffff88;
+    }
   }
 }
