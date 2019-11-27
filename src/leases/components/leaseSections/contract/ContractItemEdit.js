@@ -617,11 +617,11 @@ const ContractItemEdit = ({
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
               <FormTextTitle>{LeaseContractsFieldTitles.ENCUMBRANCE}</FormTextTitle>
-              {contract.institution_identifier
+              {savedContract.institution_identifier
                 ? <KtjLink
                   fileKey='rasitustodistus'
                   fileName='rasitustodistus'
-                  identifier={contract.institution_identifier}
+                  identifier={savedContract.institution_identifier}
                   idKey='kohdetunnus'
                   label='Rasitustodistus'
                 />
