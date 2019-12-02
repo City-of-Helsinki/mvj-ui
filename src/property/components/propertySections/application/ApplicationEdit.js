@@ -9,7 +9,6 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import {ButtonColors} from '$components/enums';
 import {ConfirmationModalTexts} from '$src/enums';
-import SubTitle from '$components/content/SubTitle';
 import TitleH3 from '$components/content/TitleH3';
 import WhiteBox from '$components/content/WhiteBox';
 import FileDownloadButton from '$components/file/FileDownloadButton';

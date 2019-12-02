@@ -12,6 +12,15 @@
   &__input{
     input{
       background-color: #ffffff88;
+    };
+    textarea{
+      background-color: #ffffff88;
+    };
+    .select-input__control{
+      background-color: #ffffff88;
+    };
+    .option-label{
+      width: 100%;
     }
   }
 }

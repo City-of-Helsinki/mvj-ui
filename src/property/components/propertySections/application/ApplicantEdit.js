@@ -7,7 +7,6 @@ import {Row, Column} from 'react-foundation';
 import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {PropertyFieldTitles} from '$src/property/enums';
 // import {UsersPermissions} from '$src/usersPermissions/enums';
 // import {formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes} from '$util/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
