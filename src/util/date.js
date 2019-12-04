@@ -202,6 +202,7 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
 
   // Filter out all collapsing date ranges until all date ranges are separate
   let valid = false;
+  let dataRangesLength = Object.assign(0, dateRanges.length);
   while(!valid) {
     valid = true;
 
@@ -216,6 +217,10 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
           dateRanges.sort(sortByStartAndEndDateAsc);
           valid = false;
         }
+      }
+      if(dataRangesLength < dateRanges.length){
+        valid = true;
+        break;
       }
     }
   }
