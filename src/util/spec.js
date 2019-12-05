@@ -607,6 +607,76 @@ describe('utils', () => {
       ]);
     });
 
+    it('should exit loop if stuck', () => {
+      const items = [
+        {
+          id: 1,
+          start_date: '2009-09-02',
+          end_date: '1111-01-01',
+        },
+        {
+          id: 2,
+          start_date: '2009-09-02',
+          end_date: null,
+        },
+      ];
+      
+      expect(getSplittedDateRanges(items)).to.deep.equal([
+        {
+          'start_date': '1110-12-27',
+          'end_date': '1110-12-27',
+        },
+        {
+          'start_date': '1110-12-28',
+          'end_date': '1110-12-28',
+        },
+        {
+          'start_date': '1110-12-29',
+          'end_date': '1110-12-29',
+        },
+        {
+          'start_date': '1110-12-29',
+          'end_date': '2009-09-01',
+        },
+        {
+          'start_date': '1110-12-30',
+          'end_date': '1110-12-30',
+        },
+        {
+          'start_date': '1110-12-31',
+          'end_date': '1110-12-31',
+        },
+        {
+          'start_date': '1111-01-01',
+          'end_date': '1111-01-01',
+        },
+        {
+          'start_date': '1111-01-02',
+          'end_date': '2009-08-31',
+        },
+        {
+          'start_date': '2009-09-01',
+          'end_date': '2009-08-31',
+        },
+        {
+          'start_date': '2009-09-01',
+          'end_date': '2009-08-31',
+        },
+        {
+          'start_date': '2009-09-01',
+          'end_date': '2009-09-01',
+        },
+        {
+          'start_date': '2009-09-01',
+          'end_date': null,
+        },
+        {
+          'start_date': '2009-09-02',
+          'end_date': '1110-12-26',
+        },
+      ]);
+    });
+
     it('should get splitted date ranges with items from items', () => {
       const item1 = {
         id: 1,

@@ -217,7 +217,7 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
           valid = false;
           loopCount++;
         }
-        if(loopCount>100){
+        if(loopCount>25){
           valid = true;
           break;
         }
