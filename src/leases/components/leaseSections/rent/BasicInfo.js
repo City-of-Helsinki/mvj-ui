@@ -277,7 +277,6 @@ const BasicInfoIndex = ({leaseAttributes, rent}: Props) => {
 };
 
 const BasicInfoOneTime = ({leaseAttributes, rent}: Props) => {
-  const dueDatesTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE);
   const typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
 
   return (
@@ -315,48 +314,6 @@ const BasicInfoOneTime = ({leaseAttributes, rent}: Props) => {
             <FormText>{!isEmptyValue(rent.amount) ? `${formatNumber(rent.amount)} €` : '-'}</FormText>
           </Authorization>
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
-              {LeaseRentsFieldTitles.DUE_DATES_TYPE}
-            </FormTextTitle>
-            <FormText>{getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}</FormText>
-          </Authorization>
-        </Column>
-        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
-          <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentDueDatesFieldPaths.DUE_DATES)}>
-                {LeaseRentDueDatesFieldTitles.DUE_DATES}
-              </FormTextTitle>
-              <FormText>{rent.due_dates && !!rent.due_dates.length
-                ? formatDueDates(rent.due_dates)
-                : 'Ei eräpäiviä'}</FormText>
-            </Authorization>
-          </Column>
-        }
-        {rent.due_dates_type === RentDueDateTypes.FIXED &&
-          <Column small={6} medium={4} large={1}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
-                {LeaseRentsFieldTitles.DUE_DATES_PER_YEAR}
-              </FormTextTitle>
-              <FormText>{rent.due_dates_per_year || '-'}</FormText>
-            </Authorization>
-          </Column>
-        }
-        {rent.due_dates_type === RentDueDateTypes.FIXED &&
-          <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
-                {LeaseRentsFieldTitles.YEARLY_DUE_DATES}
-              </FormTextTitle>
-              <FormText>{rent.yearly_due_dates && !!rent.yearly_due_dates.length
-                ? formatDueDates(rent.yearly_due_dates)
-                : 'Ei eräpäiviä'}</FormText>
-            </Authorization>
-          </Column>
-        }
       </Row>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>

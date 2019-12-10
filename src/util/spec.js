@@ -607,6 +607,28 @@ describe('utils', () => {
       ]);
     });
 
+    it('should exit loop if stuck', () => {
+      const items = [
+        {
+          id: 1,
+          start_date: '2009-09-02',
+          end_date: '1111-01-01',
+        },
+        {
+          id: 2,
+          start_date: '2009-09-02',
+          end_date: null,
+        },
+      ];
+      
+      expect(getSplittedDateRanges(items)).to.deep.equal([
+        {
+          'start_date': '1110-12-27',
+          'end_date': '1110-12-27',
+        },
+      ]);
+    });
+
     it('should get splitted date ranges with items from items', () => {
       const item1 = {
         id: 1,

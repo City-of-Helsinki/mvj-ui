@@ -183,8 +183,8 @@ export const ConfirmationModalTexts = {
   },
   DELETE_INVOICE_PAYMENT: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
-    LABEL: 'Haluatko varmasti poistaa laskun?',
-    TITLE: 'Poista lasku',
+    LABEL: 'Haluatko varmasti poistaa maksun?',
+    TITLE: 'Poista maksu',
   },
   DELETE_INVOICE_ROW: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
