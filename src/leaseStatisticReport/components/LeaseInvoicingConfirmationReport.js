@@ -17,7 +17,6 @@ import {
   formatDate,
   getReferenceNumberLink,
   hasPermissions,
-  // isFieldAllowedToRead,
 } from '$util/helpers';
 import {
   LeaseInvoicingReportPaths,
@@ -72,7 +71,6 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
   }
 
   getColumns = () => {
-    // const {leaseInvoicingConfirmationReportAttributes} = this.props;
     const columns = [];
 
     columns.push({
@@ -84,7 +82,7 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
       key: LeaseInvoicingReportPaths.LEASE_ID,
       text: LeaseInvoicingReportTitles.LEASE_ID,
       renderer: (id) => id 
-        ? <ExternalLink href={getReferenceNumberLink(id)} text={id}/>
+        ? <ExternalLink href={''} text={id}/>
         : null,
     });
 
@@ -134,7 +132,7 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
         <Row>
           <Column className={''} style={{margin: '0 0 10px 0'}}>
             <FileDownloadButton
-              disabled={false}
+              disabled={true}
               label='Luo raportti'
               payload={{
               }}

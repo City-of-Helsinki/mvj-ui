@@ -106,7 +106,7 @@ describe('Lease statistic', () => {
           results: [],
         };
 
-        const newState = {...defaultState, isFetchingJobRuns: false, leaseInvoicingConfirmationReport: dummyLeaseInvoicingConfirmationReport};
+        const newState = {...defaultState, isFetchingLeaseInvoicingConfirmationReport: false, leaseInvoicingConfirmationReport: dummyLeaseInvoicingConfirmationReport};
 
         const state = leaseStatisticReport({}, receiveLeaseInvoicingConfrimationReports(dummyLeaseInvoicingConfirmationReport));
         expect(state).to.deep.equal(newState);

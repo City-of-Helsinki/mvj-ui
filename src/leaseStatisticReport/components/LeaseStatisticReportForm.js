@@ -26,7 +26,6 @@ import type {Attributes} from '$src/types';
 
 type Props = {
   leaseStatisticReportAttributes: Attributes,
-  // valid: boolean,
   startDate: string,
   endDate: string,
   leaseState: string,
@@ -47,7 +46,6 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
   render() {
     const {
       leaseStatisticReportAttributes,
-      // valid,
       startDate,
       endDate,
       leaseState,
@@ -121,7 +119,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
               </Column>
               <Column small={3} style={{margin: '10px 0'}}>
                 <FileDownloadButton
-                  disabled={false} // !valid
+                  disabled={true}
                   label='Luo raportti'
                   payload={{
                     start_date: startDate,
@@ -130,7 +128,6 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
                     only_active_leases: onlyActiveLeases,
                   }}
                   url={createUrl(`lease_statistic_report/`)} 
-                  // /v1/lease_statistic_report?start_date=2010-01-01&end_date=2011-01-01&state=lease&only_active_leases=true
                 />
               </Column>
             </Row>
