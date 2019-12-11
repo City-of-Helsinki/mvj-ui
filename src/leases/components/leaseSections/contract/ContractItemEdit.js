@@ -597,7 +597,7 @@ const ContractItemEdit = ({
               />
             </Authorization>
           </Column>
-          <Column small={6} medium={12} large={6}>
+          <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER)}>
               <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.KTJ_LINK)}>
                 {LeaseContractsFieldTitles.KTJ_LINK}
@@ -609,6 +609,21 @@ const ContractItemEdit = ({
                   identifier={savedContract.institution_identifier}
                   idKey='kohdetunnus'
                   label='Vuokraoikeustodistus'
+                />
+                : <FormText>-</FormText>
+              }
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
+              <FormTextTitle>{LeaseContractsFieldTitles.ENCUMBRANCE}</FormTextTitle>
+              {savedContract.institution_identifier
+                ? <KtjLink
+                  fileKey='rasitustodistus'
+                  fileName='rasitustodistus'
+                  identifier={savedContract.institution_identifier}
+                  idKey='kohdetunnus'
+                  label='Rasitustodistus'
                 />
                 : <FormText>-</FormText>
               }

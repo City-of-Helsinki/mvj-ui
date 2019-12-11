@@ -27,6 +27,7 @@ import PropertyPage from '$src/property/components/PropertyPage';
 import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
 import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
 import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage';
+import LeaseStatisticReport from '$src/leaseStatisticReport/components/LeaseStatisticReportPage';
 import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegisterSearchPage';
 
 /** 
@@ -52,6 +53,7 @@ export const Routes = {
   RENT_BASIS: 'rent_basis',
   RENT_BASIS_NEW: 'rent_basis_new',
   SAP_INVOICES: 'sap_invoices',
+  LEASE_STATISTIC_REPORT: 'lease_statistic_report',
   TRADE_REGISTER: 'trade_register',
 };
 
@@ -80,6 +82,7 @@ export const getRouteById = (id: string): string => {
     [Routes.RENT_BASIS]: '/vuokrausperusteet',
     [Routes.RENT_BASIS_NEW]: '/uusivuokrausperuste',
     [Routes.SAP_INVOICES]: '/saplaskut',
+    [Routes.LEASE_STATISTIC_REPORT]: '/tilastoraportti',
     [Routes.TRADE_REGISTER]: '/kaupparekisteri',
   };
 
@@ -105,6 +108,7 @@ export default
     <Route exact path={getRouteById(Routes.INFILL_DEVELOPMENT_NEW)} component={NewInfillDevelopmentPage} />
     <Route exact path={getRouteById(Routes.TRADE_REGISTER)} component={TradeRegisterSearchPage} />
     <Route exact path={getRouteById(Routes.SAP_INVOICES)} component={SapInvoicesListPage} />
+    <Route exact path={getRouteById(Routes.LEASE_STATISTIC_REPORT)} component={LeaseStatisticReport} />
     <Route exact path={getRouteById(Routes.LEASEHOLD_TRANSFER)} component={LeaseholdTransferListPage} />
     <Route exact path={getRouteById(Routes.RENT_BASIS)} component={RentBasisListPage} />
     <Route exact path={`${getRouteById(Routes.RENT_BASIS)}/:rentBasisId`} component={RentBasisPage} />

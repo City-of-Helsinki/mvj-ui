@@ -1251,6 +1251,7 @@ export const LeaseContractsFieldTitles = {
   INSTITUTION_IDENTIFIER: 'Laitostunnus',
   IS_READJUSTMENT_DECISION: 'Järjestelypäätös',
   KTJ_LINK: 'Ktj dokumentti',
+  ENCUMBRANCE: 'Rasitustodistus',
   SECOND_CALL_SENT: '2. kutsu lähetetty',
   SIGN_BY_DATE: 'Allekirjoitettava mennessä',
   SIGNING_DATE: 'Allekirjoituspvm',

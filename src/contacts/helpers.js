@@ -48,6 +48,7 @@ export const getContentContact = (contact: Object): Object => {
     electronic_billing_address: contact.electronic_billing_address,
     partner_code: contact.partner_code,
     is_lessor: contact.is_lessor,
+    note: contact.note,
   };
 };
 

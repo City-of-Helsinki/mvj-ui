@@ -1,0 +1,23 @@
+.excel {
+  &__excel-link {
+    span {
+      margin-right: rem-calc(5px);
+    }
+
+    .icons__excel-icon {
+      fill: $dark-green;
+      height: rem-calc(2px);
+      width: rem-calc(3px);
+      vertical-align: middle;
+    }
+
+    &:hover {
+      text-decoration: underline;
+      color: $dark-green-hover;
+
+      .icons__excel-icon {
+        fill: $dark-green-hover;
+      }
+    }
+  }
+}

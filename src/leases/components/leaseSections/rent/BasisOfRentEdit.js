@@ -37,6 +37,7 @@ import {
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {
   calculateBasisOfRentAmountPerArea,
+  calculateAmountFromValue,
   calculateBasisOfRentBasicAnnualRent,
   calculateBasisOfRentDiscountedInitialYearRent,
   calculateBasisOfRentInitialYearRent,
@@ -308,6 +309,7 @@ type Props = {
   archived: boolean,
   area: ?number,
   areaUnit: ?string,
+  currentAmountPerArea: ?number,
   areaUnitOptions: Array<Object>,
   basisOfRent: Object,
   change: Function,
@@ -354,6 +356,13 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
 
   state = {
     showSubventions: this.props.subventionType ? true : false,
+  }
+
+  componentDidMount(){
+    const {basisOfRent, change, field, indexOptions} = this.props;
+    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+    const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
+    change(this.props.formName, `${field}.current_amount_per_area`, currentAmountPerArea);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -636,6 +645,27 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       temporarySubventions);
   }
 
+  onChangeAmountPerArea = (value: any) => {
+    const {basisOfRent, change, field, indexOptions} = this.props;
+    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+    const currentAmountPerArea = calculateBasisOfRentAmountPerArea({amount_per_area: value}, indexValue);
+    change(this.props.formName, `${field}.current_amount_per_area`, currentAmountPerArea);
+  }
+  
+  onChangeCurrentAmountPerArea = (value: any) => {
+    const {basisOfRent, change, field, indexOptions} = this.props;
+    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+    const amountPerArea = calculateAmountFromValue(value, indexValue);
+    change(this.props.formName, `${field}.amount_per_area`, amountPerArea);
+  }
+
+  onChangeIndexOptions = (value: any) => {
+    const {basisOfRent, change, field, indexOptions} = this.props;
+    const indexValue = getBasisOfRentIndexValue({index: value}, indexOptions);
+    const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
+    change(this.props.formName, `${field}.current_amount_per_area`, currentAmountPerArea);
+  }
+
   render() {
     const {
       amountPerArea,
@@ -667,7 +697,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const savedBasisOfRent = getBasisOfRentById(currentLease, id);
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
-    const currentAmountPerAreaText = this.getAmountPerAreaText(currentAmountPerArea);
     const areaText = this.getAreaText(area);
     const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
     const lockedAtText = this.getLockedText();
@@ -870,6 +899,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                   <Column small={6}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
                       <FormField
+                        onChange={this.onChangeAmountPerArea}
                         disableTouched={isSaveClicked}
                         fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
                           ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA), required: false}
@@ -909,10 +939,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
-                    ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}
-                    : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)
-                  }
+                  fieldAttributes={{...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}}
+                  onChange={this.onChangeIndexOptions}
                   disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                   name={`${field}.index`}
                   overrideValues={{
@@ -929,7 +957,23 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 <FormTextTitle  enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.UNIT_PRICE)}>
                   {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
                 </FormTextTitle>
-                <FormText>{currentAmountPerAreaText}</FormText>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  onChange={this.onChangeCurrentAmountPerArea}
+                  fieldAttributes={{
+                    decimal_places: 2,
+                    label: 'Yksikköhinta',
+                    max_digits: 10,
+                    read_only: false,
+                    required: false,
+                    type: 'decimal',
+                  }}
+                  disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                  name={`${field}.current_amount_per_area`}
+                  unit='€'
+                  invisibleLabel
+                  overrideValues={{label: LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}}
+                />
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
@@ -1237,6 +1281,7 @@ export default connect(
 
     return {
       amountPerArea: selector(state, `${props.field}.amount_per_area`),
+      currentAmountPerArea: selector(state, `${props.field}.current_amount_per_area`),
       area: selector(state, `${props.field}.area`),
       areaUnit: selector(state, `${props.field}.area_unit`),
       basisOfRent: selector(state, `${props.field}`) || {},

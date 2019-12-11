@@ -211,7 +211,7 @@ const ContractItem = ({
             />
           </Authorization>
         </Column>
-        <Column small={6} medium={12} large={6}>
+        <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
             <FormTextTitle>{LeaseContractsFieldTitles.KTJ_LINK}</FormTextTitle>
             {contract.institution_identifier
@@ -221,6 +221,21 @@ const ContractItem = ({
                 identifier={contract.institution_identifier}
                 idKey='kohdetunnus'
                 label='Vuokraoikeustodistus'
+              />
+              : <FormText>-</FormText>
+            }
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
+            <FormTextTitle>{LeaseContractsFieldTitles.ENCUMBRANCE}</FormTextTitle>
+            {contract.institution_identifier
+              ? <KtjLink
+                fileKey='rasitustodistus'
+                fileName='rasitustodistus'
+                identifier={contract.institution_identifier}
+                idKey='kohdetunnus'
+                label='Rasitustodistus'
               />
               : <FormText>-</FormText>
             }
