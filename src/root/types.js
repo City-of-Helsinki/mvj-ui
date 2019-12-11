@@ -30,6 +30,7 @@ import type {PreviewInvoicesState} from '$src/previewInvoices/types';
 import type {RentBasisState} from '$src/rentbasis/types';
 import type {RentForPeriodState} from '$src/rentForPeriod/types';
 import type {SapInvoicesState} from '$src/sapInvoice/types';
+import type {LeaseStatisticReportState} from '$src/leaseStatisticReport/types';
 import type {TradeRegisterState} from '$src/tradeRegister/types';
 import type {UiDataState} from '$src/uiData/types';
 import type {UserState} from '../users/types';
@@ -69,6 +70,7 @@ export type RootState = {
   rentBasis: RentBasisState,
   rentForPeriod: RentForPeriodState,
   sapInvoice: SapInvoicesState,
+  leaseStatisticReport: LeaseStatisticReportState,
   tradeRegister: TradeRegisterState,
   uiData: UiDataState,
   user: UserState,

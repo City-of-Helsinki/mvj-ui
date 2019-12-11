@@ -402,6 +402,7 @@ export const FormNames = {
   LEASE_SEARCH: 'lease-search-form',
   LEASE_STEPPED_DISCOUNT: 'lease-stepped-discount-form',
   LEASE_SUMMARY: 'summary-form',
+  LEASE_STATISTIC_REPORT: 'lease-statistic-report-form',
   LEASE_TENANTS: 'tenants-form',
   LEASEHOLD_TRANSFER_SEARCH: 'leasehold-transfer-search-form',
   RENT_BASIS: 'rent-basis-form',
@@ -429,5 +430,6 @@ export const PermissionMissingTexts = {
   LEASEHOLD_TRANSFER: 'Ei oikeuksia vuokraoikeuden siirtoihin',
   LEASE_TENANTS_EDIT: 'Ei oikeuksia muokata vuokralaisia',
   RENT_BASIS: 'Ei oikeuksia vuokrausperusteisiin.',
+  STATISTICS_AND_REPORTS: 'Ei oikeuksia tilastoihin ja raportteihin',
   TRADE_REGISTER: 'Ei oikeuksia kaupparekisteriotteisiin',
 };
