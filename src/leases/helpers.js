@@ -260,6 +260,8 @@ const getContentLeaseStatus = (lease: Object): string => {
  */
 export const getContentLeaseInfo = (lease: Object): Object => {
   return {
+    address: getContentLeaseAddress(lease),
+    area_identifier: getContentLeaseAreaIdentifier(lease),
     identifier: getContentLeaseIdentifier(lease),
     end_date: lease.end_date,
     start_date: lease.start_date,
@@ -267,6 +269,26 @@ export const getContentLeaseInfo = (lease: Object): Object => {
     status: getContentLeaseStatus(lease),
   };
 };
+
+/**
+ * Get content lease address
+ * @param {Object} lease
+ * @returns {string}
+ */
+export const getContentLeaseAddress = (lease: Object): ?string =>
+  !isEmpty(lease)
+    ? `${get(lease, 'lease_areas[0].addresses[0].address')}`
+    : null;
+
+/**
+ * Get content lease area identifiers
+ * @param {Object} lease
+ * @returns {string}
+ */
+export const getContentLeaseAreaIdentifier = (lease: Object): ?string =>
+  !isEmpty(lease)
+    ? `${get(lease, 'lease_areas[0].identifier')}`
+    : null;
 
 /**
  * Get lease infill development compensations content
