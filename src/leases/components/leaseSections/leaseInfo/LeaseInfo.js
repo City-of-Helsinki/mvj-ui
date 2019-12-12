@@ -28,7 +28,7 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
   return (
     <div className='lease-info'>
       <Row>
-        <Column>
+        <Column large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.IDENTIFIER)}>
             <FormTextTitle>{LeaseFieldTitles.IDENTIFIER}</FormTextTitle>
             <h1 className='lease-info__identifier'>{leaseInfo.identifier || '-'}</h1>
