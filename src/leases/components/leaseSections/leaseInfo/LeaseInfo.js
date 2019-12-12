@@ -64,6 +64,18 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
             <p className='lease-info__text'>{leaseInfo.status || '-'}</p>
           </Authorization>
         </Column>
+        <Column large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.AREA_IDENTIFIER)}>
+            <FormTextTitle>{LeaseFieldTitles.AREA_IDENTIFIER}</FormTextTitle>
+            <p className='lease-info__text'>{leaseInfo.area_identifier || '-'}</p>
+          </Authorization>
+        </Column>
+        <Column large={3}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.ADDRESS)}>
+            <FormTextTitle>{LeaseFieldTitles.ADDRESS}</FormTextTitle>
+            <p className='lease-info__text'>{leaseInfo.address || '-'}</p>
+          </Authorization>
+        </Column>
       </Row>
     </div>
   );

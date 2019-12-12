@@ -307,6 +307,8 @@ export const TenantContactType = {
  * @type {{}}
  */
 export const LeaseFieldPaths = {
+  ADDRESS: 'lease_areas.child.children.addresses',
+  AREA_IDENTIFIER: 'lease_areas.child.children.identifier',
   ARRANGEMENT_DECISION: 'arrangement_decision',
   AUDIT_LOG: 'audit_log',
   BUILDING_SELLING_PRICE: 'building_selling_price',
@@ -358,6 +360,8 @@ export const LeaseFieldPaths = {
  * @type {{}}
  */
 export const LeaseFieldTitles = {
+  ADDRESS: 'Osoite',
+  AREA_IDENTIFIER: 'Kohteen tunnus',
   ARRANGEMENT_DECISION: 'Järjestelypäätös',
   AUDIT_LOG: 'Muutoshistoria',
   BUILDING_SELLING_PRICE: 'Rakennuksen kauppahinta',
