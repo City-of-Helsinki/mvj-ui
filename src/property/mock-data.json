@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "identifier": {
+      "search_name": "Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu",
+      "preparer": "Virve Virkailija",
+      "applications": [{
+        "id": 1234,
+        "name": "Hakemus"
+      }],
+      "type": {
+        "id": 0,
+        "name": "Asuntorakentaminen"
+      },
+      "subtype": {
+        "id": 0,
+        "name": "Hinta- ja laatukilpailu"
+      },
+      "start_date": "2019-09-02",
+      "start_time": "12:00",
+      "end_date": "2029-09-02",
+      "end_time": "12:00",
+      "last_update": "Kiinteistölautakunta 15.12.2016 505 § Varausajan jatkaminen"
+    }
+  }
+]

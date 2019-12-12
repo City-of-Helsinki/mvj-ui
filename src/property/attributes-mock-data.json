@@ -1,0 +1,78 @@
+{
+  "name": "Property list",
+  "description": "",
+  "fields": {
+    "search_name": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Haun nimi"
+    },
+    "preparer": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Valmistelija"
+    },
+    "applications": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Hakemukset"
+    },
+    "search_type": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Haun tyyppi",
+      "choices": [
+        {
+            "display_name": "Asuntorakentaminen",
+            "value": 0
+        }
+      ]
+    },
+    "sub_type": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Haun tyyppi",
+      "choices": [
+        {
+            "display_name": "Hinta- ja laatukilpailu",
+            "value": 0
+        }
+      ]
+    },
+    "start_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Alkupvm"
+    },
+    "start_time": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "klo"
+    },
+    "end_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Loppupvm"
+    },
+    "end_time": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "klo"
+    },
+    "last_update": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Hakemukset päivitetty"
+    }
+  }
+}

@@ -1,12 +1,43 @@
 // @flow
-
 import {createAction} from 'redux-actions';
 
+import type {Attributes} from '$src/types';
 import type {
+  FetchAttributesAction,
+  ReceiveAttributesAction,
+  FetchPropertyListAction,
+  ReceivePropertyListAction,
+  FetchSinglePropertyAction,
+  ReceiveSinglePropertyAction,
+
+  Property,
+  PropertyList,
+  PropertyId,
+
   HideEditModeAction,
   ShowEditModeAction,
   ReceiveCollapseStatesAction,
 } from './types';
+
+export const fetchAttributes = (): FetchAttributesAction =>
+  createAction('mvj/property/FETCH_ATTRIBUTES')();
+
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/property/RECEIVE_ATTRIBUTES')(attributes);
+
+export const fetchPropertyList = (search: string): FetchPropertyListAction =>
+  createAction('mvj/property/FETCH_ALL')(search);
+
+export const receivePropertyList = (list: PropertyList): ReceivePropertyListAction =>
+  createAction('mvj/property/RECEIVE_ALL')(list);
+
+export const fetchSingleProperty = (id: PropertyId): FetchSinglePropertyAction =>
+  createAction('mvj/property/FETCH_SINGLE')(id);
+
+export const receiveSingleProperty = (property: Property): ReceiveSinglePropertyAction =>
+  createAction('mvj/property/RECEIVE_SINGLE')(property);
+
+// Edit Create
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/property/HIDE_EDIT')();
