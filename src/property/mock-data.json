@@ -1,13 +1,16 @@
 [
   {
     "id": 1,
-    "identifier": {
-      "search_name": "Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu",
-      "preparer": "Virve Virkailija",
-      "applications": [{
-        "id": 1234,
+    "search_name": "Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu",
+    "preparer": "Virve Virkailija",
+    "applications": [{
+      "id": 1234,
+      "name": "Hakemus"
+      },{
+        "id": 2345,
         "name": "Hakemus"
-      }],
+      }
+    ],
       "type": {
         "id": 0,
         "name": "Asuntorakentaminen"
@@ -20,7 +23,14 @@
       "start_time": "12:00",
       "end_date": "2029-09-02",
       "end_time": "12:00",
-      "last_update": "Kiinteistölautakunta 15.12.2016 505 § Varausajan jatkaminen"
+      "last_update": "Kiinteistölautakunta 15.12.2016 505 § Varausajan jatkaminen",
+      "identifier": {
+        "property_id": "10658/1",
+        "rent_id": "TY1234-5",
+        "hitas": "Hitas 1",
+        "address": "Verkkosaarenranta",
+        "step": "Suunniteltu",
+        "handling": ""   
     }
   }
 ]

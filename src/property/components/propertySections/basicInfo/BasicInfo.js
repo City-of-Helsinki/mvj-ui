@@ -16,15 +16,21 @@ import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
 import SubTitle from '$components/content/SubTitle';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import {getCollapseStateByKey} from '$src/property/selectors';
+import {getAttributes, getCollapseStateByKey, getCurrentProperty} from '$src/property/selectors';
 import {receiveCollapseStates} from '$src/property/actions';
 import {PropertyFieldTitles, PropertyFieldPaths} from '$src/property/enums';
 import PropertySite from './PropertySite';
+import {getContentBasicInformation} from '$src/property/helpers';
+
+import type {Attributes} from '$src/types';
+import type {Property} from '$src/property/types';
 
 type Props = {
   usersPermissions: UsersPermissionsType,
   collapseStateBasic: Boolean,
   receiveCollapseStates: Function,
+  attributes: Attributes,
+  currentProperty: Property,
 }
 
 type State = {
@@ -55,7 +61,14 @@ class BasicInfo extends PureComponent<Props, State> {
     const {
       // usersPermissions,
       collapseStateBasic,
+      attributes,
+      currentProperty,
     } = this.props;
+
+    console.log('BASICIFNO ATTRIBUTES:', attributes);
+
+    const property = getContentBasicInformation(currentProperty);
+
     return (
       <Fragment>
         <Title uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.BASIC_INFO)}>
@@ -75,25 +88,27 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.NAME)}>
                     {PropertyFieldTitles.NAME}
                   </FormTextTitle>
-                  <FormText>{'Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu'}</FormText>
+                  <FormText>{property.search_name}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={2}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.PREPARER)}>
                     {PropertyFieldTitles.PREPARER}
                   </FormTextTitle>
-                  <FormText>{'Virve Virkailija'}</FormText>
+                  <FormText>{property.preparer}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={2}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.APPLICATIONS)}>
                     {PropertyFieldTitles.APPLICATIONS}
                   </FormTextTitle>
-                  <FormText>
-                    <ExternalLink
-                      className='no-margin'
-                      href={`/`}
-                      text={'Hakemukset (1)'}
-                    />
-                  </FormText>
+                  {property.applications && property.applications.map((application, index) => 
+                    <FormText key={index}>
+                      <ExternalLink
+                        className='no-margin'
+                        href={`${application.id}`}
+                        text={application.name}
+                      />
+                    </FormText>
+                  )}
                 </Column>
               </Row>
               <Row>
@@ -193,6 +208,8 @@ export default connect(
     return {
       usersPermissions: getUsersPermissions(state),
       collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PROPERTY_SUMMARY}.basic`),
+      attributes: getAttributes(state),
+      currentProperty: getCurrentProperty(state),
     };
   },
   {

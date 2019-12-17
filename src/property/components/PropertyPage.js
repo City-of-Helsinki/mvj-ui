@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
+import Loader from '$components/loader/Loader';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
@@ -16,7 +18,7 @@ import TabPane from '$components/tabs/TabPane';
 import Tabs from '$components/tabs/Tabs';
 import {ButtonColors} from '$components/enums';
 import {getRouteById, Routes} from '$src/root/routes';
-// import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {ConfirmationModalTexts} from '$src/enums';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
@@ -26,6 +28,7 @@ import {
 import {
   hideEditMode,
   showEditMode,
+  fetchSingleProperty,
 } from '$src/property/actions';
 
 import {
@@ -34,11 +37,14 @@ import {
   setPageTitle,
 } from '$util/helpers';
 
+import type {Attributes} from '$src/types';
+
 import PropertyInfo from './propertySections/propertyInfo/PropertyInfo';
 import BasicInfo from './propertySections/basicInfo/BasicInfo';
 import BasicInfoEdit from './propertySections/basicInfo/BasicInfoEdit';
 // import Application from './propertySections/application/Application';
 import ApplicationEdit from './propertySections/application/ApplicationEdit';
+import {withPropertyAttributes} from '$components/attributes/PropertyAttributes';
 
 type Props = {
   hideEditMode: Function,
@@ -47,7 +53,14 @@ type Props = {
   history: Object,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
+  fetchSingleProperty: Function,
   usersPermissions: UsersPermissionsType,
+  isFetchingPropertyAttributes: boolean,
+  isFetchingUsersPermissions: boolean,
+  propertyAttributes: Attributes,
+  match: {
+    params: Object,
+  },
 }
 
 type State = {
@@ -66,6 +79,8 @@ class PropertyPage extends Component<Props, State> {
   componentDidMount() {
     const {
       receiveTopNavigationSettings,
+      fetchSingleProperty,
+      match: {params: {propertyId}},
     } = this.props;
     
     setPageTitle('Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu');
@@ -75,6 +90,8 @@ class PropertyPage extends Component<Props, State> {
       pageTitle: 'Tonttihaut',
       showSearch: true,
     });
+
+    fetchSingleProperty(propertyId);
 
     // hideEditMode(); create action
   }
@@ -149,8 +166,15 @@ class PropertyPage extends Component<Props, State> {
     } = this.state;
     const {
       isEditMode,
-      // usersPermissions, TODO: GET USERPERMISSIONS IN ATTRIBUTES WRAPPER COMPONENT
+      propertyAttributes,
+      isFetchingPropertyAttributes,
+      usersPermissions,
+      isFetchingUsersPermissions,
     } = this.props;
+
+    if(isFetchingPropertyAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!propertyAttributes || isEmpty(usersPermissions)) return null;
 
     return(
       <FullWidthContainer>
@@ -252,16 +276,20 @@ class PropertyPage extends Component<Props, State> {
 
 export default flowRight(
   withRouter,
+  withPropertyAttributes,
   connect(
     (state) => {
       return {
         isEditMode: getIsEditMode(state),
+        usersPermissions: getUsersPermissions(state),
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
       };
     },
     {
       hideEditMode,
       receiveTopNavigationSettings,
       showEditMode,
+      fetchSingleProperty,
     }
   ),
 )(PropertyPage);
