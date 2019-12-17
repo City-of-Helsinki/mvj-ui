@@ -22,6 +22,10 @@ import TableWrapper from '$components/table/TableWrapper';
 import TableIcon from '$components/icons/TableIcon';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
+import {
+  createProperty, 
+  /* fetchPropertyList TODO */
+} from '$src/property/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   formatDate,
@@ -35,6 +39,7 @@ import {
   DEFAULT_PROPERTY_STATES,
   propertyStateFilterOptions,
 } from '$src/property/constants';
+import type {Property} from '$src/property/types';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 
@@ -51,6 +56,7 @@ const visualizationTypeOptions = [
 ];
 
 type Props = {
+  createProperty: Function,
   usersPermissions: UsersPermissionsType,
   receiveTopNavigationSettings: Function,
 }
@@ -222,6 +228,11 @@ class PropertyListPage extends PureComponent<Props, State> {
     console.log(page);
   }
 
+  handleCreateProperty = (property: Property) => {
+    const {createProperty} = this.props;
+    createProperty(property);
+  }
+
   // AUTHORIZE
 
   render() {
@@ -245,7 +256,7 @@ class PropertyListPage extends PureComponent<Props, State> {
             <AddButtonSecondary
               className='no-top-margin'
               label='Luo tonttihaku'
-              onClick={this.showCreateLeaseModal}
+              onClick={this.handleCreateProperty}
             />
           </Column>
           <Column small={12} large={8}>
@@ -319,6 +330,7 @@ export default flowRight(
     },
     {
       receiveTopNavigationSettings,
+      createProperty,
     },
   ),
 )(PropertyListPage);

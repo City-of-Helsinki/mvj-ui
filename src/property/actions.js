@@ -3,13 +3,15 @@ import {createAction} from 'redux-actions';
 
 import type {Attributes} from '$src/types';
 import type {
+  CreatePropertyAction,
+  EditPropertyAction,
   FetchAttributesAction,
   ReceiveAttributesAction,
   FetchPropertyListAction,
   ReceivePropertyListAction,
   FetchSinglePropertyAction,
   ReceiveSinglePropertyAction,
-
+  ReceiveIsSaveClickedAction,
   Property,
   PropertyList,
   PropertyId,
@@ -37,7 +39,11 @@ export const fetchSingleProperty = (id: PropertyId): FetchSinglePropertyAction =
 export const receiveSingleProperty = (property: Property): ReceiveSinglePropertyAction =>
   createAction('mvj/property/RECEIVE_SINGLE')(property);
 
-// Edit Create
+export const editLandUseContract = (property: Property): EditPropertyAction =>
+  createAction('mvj/property/EDIT')(property);
+
+export const createProperty = (property: Property): CreatePropertyAction =>
+  createAction('mvj/property/CREATE')(property);
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/property/HIDE_EDIT')();
@@ -47,3 +53,6 @@ export const showEditMode = (): ShowEditModeAction =>
 
 export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesAction =>
   createAction('mvj/property/RECEIVE_COLLAPSE_STATES')(status);
+
+export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
+  createAction('mvj/property/RECEIVE_SAVE_CLICKED')(isClicked);

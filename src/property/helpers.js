@@ -18,8 +18,7 @@ export const getContentBasicInformation = (property: Property): Object => {
     end_date: property.end_date,
     end_time: property.end_time,
     last_update: property.last_update,
-    search_properties: [{
-      
-    }],
+    search_properties: property.search_properties,
+    decisions: property.decisions,
   };
 };

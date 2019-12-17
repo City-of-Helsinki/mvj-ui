@@ -9,6 +9,7 @@ export type PropertyState = {
   isFetchingAttributes: boolean,
   list: PropertyList,
   collapseStates: Object,
+  isSaveClicked: boolean,
 };
 
 export type PropertyId = number;
@@ -17,6 +18,12 @@ export type PropertyList = Object;
 
 export type FetchAttributesAction = Action<'mvj/property/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/property/RECEIVE_ATTRIBUTES', Attributes>;
+
+export type CreatePropertyAction = Action<'mvj/property/CREATE', Property>;
+export type EditPropertyAction = Action<'mvj/property/EDIT', Property>;
+// TODO NOT FOUND
+
+export type ReceiveIsSaveClickedAction = Action<'mvj/property/RECEIVE_SAVE_CLICKED', boolean>;
 
 export type FetchPropertyListAction = Action<'mvj/property/FETCH_ALL', string>;
 export type ReceivePropertyListAction = Action<'mvj/property/RECEIVE_ALL', PropertyList>;

@@ -16,7 +16,7 @@ export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolea
   state.property.isEditMode;
 
 export const getCollapseStateByKey: Selector<?Object, string> = (state: RootState, key: string): ?Object => {
-  return get(state.lease.collapseStates, key);
+  return get(state.property.collapseStates, key);
 };
 
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>

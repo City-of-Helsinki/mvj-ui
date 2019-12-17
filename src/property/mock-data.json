@@ -11,26 +11,57 @@
         "name": "Hakemus"
       }
     ],
-      "type": {
-        "id": 0,
-        "name": "Asuntorakentaminen"
-      },
-      "subtype": {
-        "id": 0,
-        "name": "Hinta- ja laatukilpailu"
-      },
-      "start_date": "2019-09-02",
-      "start_time": "12:00",
-      "end_date": "2029-09-02",
-      "end_time": "12:00",
-      "last_update": "Kiinteistölautakunta 15.12.2016 505 § Varausajan jatkaminen",
-      "identifier": {
-        "property_id": "10658/1",
-        "rent_id": "TY1234-5",
-        "hitas": "Hitas 1",
-        "address": "Verkkosaarenranta",
-        "step": "Suunniteltu",
-        "handling": ""   
-    }
+    "type": {
+      "id": 0,
+      "name": "Asuntorakentaminen"
+    },
+    "subtype": {
+      "id": 0,
+      "name": "Hinta- ja laatukilpailu"
+    },
+    "start_date": "2019-09-02",
+    "start_time": "12:00",
+    "end_date": "2029-09-02",
+    "end_time": "12:00",
+    "last_update": "14.09.2019 klo 00:00",
+    "decisions": [{
+      "id": "1234",
+      "name": "Kiinteistölautakunta 15.12.2016 503 § Varausajan jatkaminen HEL 2018-123456"
+    },
+    {
+      "id": "2345",
+      "name": "Kiinteistölautakunta 15.12.2016 503 § Lorem ipsum HEL 2018-123456"
+    }],
+    "identifier": {
+    },
+    "search_properties": [{
+      "id": 12345,
+      "target_identifier": "10658/1",
+      "lease_id": "TY1234-5",
+      "hitas": "Hitas 1",
+      "address": "Verkkosaarenranta",
+      "step": "Suunniteltu",
+      "handling": [{
+        "id": "12375"
+      }],
+      "applications": [{
+        "name": "Hakemukset(25)"
+      }],
+      "use": "AK",
+      "build_law": "12/2022",
+      "funding": "Vapaarahoitteinen",
+      "management": "Omistus",
+      "suggested": [
+        {
+          "name": "Oy Firma Ab",
+          "share": "1/1"
+        },{
+          "name": "As. Oy Asuntosunto",
+          "share": "1/1"
+        },{
+          "name": "Puuha Pete",
+          "share": "1/1"
+        }]
+    }]
   }
 ]

@@ -3,13 +3,18 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import {receiveCollapseStates} from '$src/property/actions';
+import {FormNames, ViewModes} from '$src/enums';
 import Collapse from '$components/collapse/Collapse';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ExternalLink from '$components/links/ExternalLink';
+import {getCollapseStateByKey} from '$src/property/selectors';
 
 type Props = {
-
+  propertySite: Object,
+  receiveCollapseStates: Function,
+  collapseState: Boolean,
 }
 
 type State = {
@@ -20,19 +25,34 @@ class PropertySite extends PureComponent<Props, State> {
   state = {
   }
 
+  handleCollapseToggle = (val: boolean) => {
+    const {receiveCollapseStates, propertySite} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.PROPERTY_BASIC_INFORMATION]: {
+          property_site: {
+            [propertySite.id]: val,
+          },
+        },
+      },
+    });
+  };
+
   render (){
-    /* 
+    
     const {
-      // usersPermissions,
-      collapseStateBasic,
+      collapseState,
+      propertySite,
     } = this.props;
-    */
+
     return (
       <Column large={12}>
         <Collapse
           className='collapse__secondary greenCollapse'
-          defaultOpen={true}
-          headerTitle={'10658/1'}
+          defaultOpen={collapseState !== undefined ? collapseState : true}
+          headerTitle={propertySite.target_identifier}
+          onToggle={this.handleCollapseToggle}
         >
           <Row> {/* TODO wrap columns around authorization */}
             <Column small={6} medium={4} large={2}>
@@ -43,7 +63,7 @@ class PropertySite extends PureComponent<Props, State> {
                 <ExternalLink
                   className='no-margin'
                   href={`/`}
-                  text={'10658/1'}
+                  text={propertySite.target_identifier}
                 />
               </FormText>
             </Column>
@@ -55,7 +75,7 @@ class PropertySite extends PureComponent<Props, State> {
                 <ExternalLink
                   className='no-margin'
                   href={`/`}
-                  text={'TY1234-5'}
+                  text={propertySite.lease_id}
                 />
               </FormText>
             </Column>
@@ -63,17 +83,17 @@ class PropertySite extends PureComponent<Props, State> {
               <FormTextTitle uiDataKey={''}>
                 {'Hitas'}
               </FormTextTitle>
-              <FormText>{'Hitas 1'}</FormText>
+              <FormText>{propertySite.hitas}</FormText>
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={''}>
-                {'Osoite'}
+                {propertySite.address}
               </FormTextTitle>
               <FormText>{'Verkkosaarenranta'}</FormText>
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={''}>
-                {'Kaavayksikön vaihe'}
+                {propertySite.step}
               </FormTextTitle>
               <FormText>{'Suunniteltu'}</FormText>
             </Column>
@@ -81,71 +101,75 @@ class PropertySite extends PureComponent<Props, State> {
               <FormTextTitle uiDataKey={''}>
                 {'Asemakaavan ja käsittelyvaihe'}
               </FormTextTitle>
-              <FormText>
-                <ExternalLink
-                  className='no-margin'
-                  href={`/`}
-                  text={'12375'}
-                />
-              </FormText>
+              {!!propertySite.handling.length && propertySite.handling.map((handling, index) =>
+                <FormText key={index}>
+                  <ExternalLink
+                    className='no-margin'
+                    href={`/`}
+                    text={handling.id}
+                  />
+                </FormText>
+              )}  
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={''}>
                 {'Hakemukset'}
               </FormTextTitle>
-              <FormText>
-                <ExternalLink
-                  className='no-margin'
-                  href={`/`}
-                  text={'Hakemukset (25)'}
-                />
-              </FormText>
+              {!!propertySite.applications.length && propertySite.applications.map((application, index) => 
+                <FormText key={index}>
+                  <ExternalLink
+                    className='no-margin'
+                    href={`/`}
+                    text={application.name}
+                  />
+                </FormText>
+              )}
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={''}>
                 {'Käyttötarkoitus'}
               </FormTextTitle>
-              <FormText>{'AK'}</FormText>
+              <FormText>{propertySite.use}</FormText>
             </Column>
             <Column small={3} medium={2} large={1}>
               <FormTextTitle uiDataKey={''}>
                 {'Rak. oikeus'}
               </FormTextTitle>
-              <FormText>{'3500 k-m2'}</FormText>
+              <FormText>{propertySite.build_law}</FormText>
             </Column>
             <Column small={3} medium={2} large={1}>
               <FormTextTitle uiDataKey={''}>
                 {'Rak. oikeus'}
               </FormTextTitle>
-              <FormText>{'12/2022'}</FormText>
+              <FormText>{'-'}</FormText>
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={''}>
                 {'Rahoitusmuoto'}
               </FormTextTitle>
-              <FormText>{'Vapaarahoitteinen'}</FormText>
+              <FormText>{propertySite.funding}</FormText>
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={''}>
                 {'Hallintamuoto'}
               </FormTextTitle>
-              <FormText>{'Omistus'}</FormText>
+              <FormText>{propertySite.management}</FormText>
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={''}>
                 {'Ehdotettu varauksensaaja'}
               </FormTextTitle>
-              <FormText>{'Oy Firma Ab'}</FormText>
-              <FormText>{'As. Oy Asuntosunto'}</FormText>
-              <FormText>{'Puuha Pete'}</FormText>
+              {!!propertySite.suggested.length && propertySite.suggested.map((suggested, index)=>
+                <FormText key={index}>{suggested.name}</FormText>
+              )}
             </Column>
             <Column small={3} medium={2} large={1}>
               <FormTextTitle uiDataKey={''}>
                 {'Osuus'}
               </FormTextTitle>
-              <FormText>{'1/1'}</FormText>
-              <FormText>{'1/1'}</FormText>
-              <FormText>{'1/1'}</FormText>
+              {!!propertySite.suggested.length && propertySite.suggested.map((suggested, index)=>
+                <FormText key={index}>{suggested.share}</FormText>
+              )}
             </Column>
           </Row>
         </Collapse>
@@ -155,13 +179,13 @@ class PropertySite extends PureComponent<Props, State> {
 }
 
 export default connect(
-  (state) => {
+  (state, props) => {
+    const id = props.propertySite.id;
     return {
-      // usersPermissions: getUsersPermissions(state),
-      // collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PROPERTY_SUMMARY}.${field}.basic`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PROPERTY_BASIC_INFORMATION}.property_site.${id}`),
     };
   },
   {
-    // receiveCollapseStates,
+    receiveCollapseStates,
   }
 )(PropertySite);

@@ -7,6 +7,7 @@ import {handleActions} from 'redux-actions';
 import type {Attributes, Reducer} from '$src/types';
 
 import type {
+  ReceiveIsSaveClickedAction,
   Property,
   PropertyList,
   ReceiveAttributesAction,
@@ -31,8 +32,8 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/property/RECEIVE_ALL']: () => false,
   ['mvj/property/FETCH_SINGLE']: () => true,
   ['mvj/property/RECEIVE_SINGLE']: () => false,
-  /* ['mvj/property/CREATE']: () => true,
-  ['mvj/property/EDIT']: () => true, */
+  ['mvj/property/CREATE']: () => true,
+  ['mvj/property/EDIT']: () => true,
   ['mvj/property/NOT_FOUND']: () => false,
 }, false);
 
@@ -56,6 +57,12 @@ const collapseStatesReducer: Reducer<Object> = handleActions({
   },
 }, {});
 
+const isSaveClickedReducer: Reducer<boolean> = handleActions({
+  ['mvj/property/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
+    return isClicked;
+  },
+}, false);
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
@@ -63,6 +70,7 @@ export default combineReducers<Object, any>({
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
+  isSaveClicked: isSaveClickedReducer,
   list: propertyListReducer,
 });
 

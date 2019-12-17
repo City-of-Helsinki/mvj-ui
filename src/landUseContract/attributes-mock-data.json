@@ -631,14 +631,6 @@
             "decimal_places": 2,
             "max_digits": 10
           },
-          "cash_compensation": {
-            "type": "decimal",
-            "required": false,
-            "read_only": false,
-            "label": "Vakuus",
-            "decimal_places": 2,
-            "max_digits": 10
-          },
           "land_compensation": {
             "type": "decimal",
             "required": false,

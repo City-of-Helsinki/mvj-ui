@@ -160,6 +160,10 @@ class PropertyPage extends Component<Props, State> {
     });
   }
 
+  saveChanges = () => {
+    
+  }
+
   render() {
     const {
       activeTab,

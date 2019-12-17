@@ -425,6 +425,7 @@ export const FormNames = {
   RENT_BASIS_SEARCH: 'rent-basis-search-form',
   RENT_CALCULATOR: 'rent-calculator-form',
   TRADE_REGISTER_SEARCH: 'trade-register-search-form',
+  PROPERTY_BASIC_INFORMATION: 'property-basic-information-form',
 };
 
 /**

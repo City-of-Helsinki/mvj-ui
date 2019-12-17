@@ -27,7 +27,7 @@ import type {Property} from '$src/property/types';
 
 type Props = {
   usersPermissions: UsersPermissionsType,
-  collapseStateBasic: Boolean,
+  basicInformationCollapseState: Boolean,
   receiveCollapseStates: Function,
   attributes: Attributes,
   currentProperty: Property,
@@ -41,31 +41,27 @@ class BasicInfo extends PureComponent<Props, State> {
   state = {
   }
 
-  handleCollapseToggle = (key: string, val: boolean) => {
+  handleBasicInfoCollapseToggle = (val: boolean) => {
     const {receiveCollapseStates} = this.props;
 
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.LEASE_SUMMARY]: {
-          [key]: val,
+        [FormNames.PROPERTY_BASIC_INFORMATION]: {
+          basic_information: val,
         },
       },
     });
   }
 
-  handleBasicInfoCollapseToggle = (val: boolean) => {
-    this.handleCollapseToggle('basic', val);
-  }
-
   render (){
     const {
       // usersPermissions,
-      collapseStateBasic,
-      attributes,
+      basicInformationCollapseState,
+      // attributes,
       currentProperty,
     } = this.props;
 
-    console.log('BASICIFNO ATTRIBUTES:', attributes);
+    console.log('collapse:', basicInformationCollapseState);
 
     const property = getContentBasicInformation(currentProperty);
 
@@ -78,7 +74,7 @@ class BasicInfo extends PureComponent<Props, State> {
         <Row className='summary__content-wrapper'>
           <Column small={12}>
             <Collapse
-              defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
+              defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}
               headerTitle={PropertyFieldTitles.BASIC_INFO}
               onToggle={this.handleBasicInfoCollapseToggle}
               uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.BASIC_INFO)}
@@ -116,43 +112,43 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.TYPE)}>
                     {PropertyFieldTitles.TYPE}
                   </FormTextTitle>
-                  <FormText>{'Asuntorakentaminen'}</FormText>
+                  <FormText>{property.type.name}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={3}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.SUBTYPE)}>
                     {PropertyFieldTitles.SUBTYPE}
                   </FormTextTitle>
-                  <FormText>{'Hinta- ja laatukilpailu'}</FormText>
+                  <FormText>{property.subtype.name}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.START_DATE)}>
                     {PropertyFieldTitles.START_DATE}
                   </FormTextTitle>
-                  <FormText>{'01.01.2019'}</FormText>
+                  <FormText>{property.start_date}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.CLOCK)}>
                     {PropertyFieldTitles.CLOCK}
                   </FormTextTitle>
-                  <FormText>{'12:00'}</FormText>
+                  <FormText>{property.start_time}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.END_DATE)}>
                     {PropertyFieldTitles.END_DATE}
                   </FormTextTitle>
-                  <FormText>{'01.01.2019'}</FormText>
+                  <FormText>{property.end_date}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.CLOCK)}>
                     {PropertyFieldTitles.CLOCK}
                   </FormTextTitle>
-                  <FormText>{'12:00'}</FormText>
+                  <FormText>{property.end_time}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={2}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.APPLICATIONS_UPDATED_DATE)}>
                     {PropertyFieldTitles.APPLICATIONS_UPDATED_DATE}
                   </FormTextTitle>
-                  <FormText>{'14.09.2019 klo 00:00'}</FormText>
+                  <FormText>{property.last_update}</FormText>
                 </Column>
               </Row>
               <Row>
@@ -160,20 +156,15 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.DECISION)}>
                     {PropertyFieldTitles.DECISION}
                   </FormTextTitle>
-                  <FormText>
-                    <ExternalLink
-                      className='no-margin'
-                      href={`/`}
-                      text={'Kiinteistölautakunta 15.12.2016 503 § Varausajan jatkaminen HEL 2018-123456'}
-                    />
-                  </FormText>
-                  <FormText>
-                    <ExternalLink
-                      className='no-margin'
-                      href={`/`}
-                      text={'Kiinteistölautakunta 15.12.2016 503 § Lorem ipsum HEL 2018-123456'}
-                    />
-                  </FormText>
+                  {!!property.decisions.length && property.decisions.map((decision, index) => 
+                    <FormText key={index}>
+                      <ExternalLink
+                        className='no-margin'
+                        href={`${decision.id}`}
+                        text={decision.name}
+                      />
+                    </FormText>
+                  )}
                 </Column>
                 <Column small={12} medium={6} large={6}>
                   <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.DECISION_TO_LIST)}>
@@ -185,10 +176,12 @@ class BasicInfo extends PureComponent<Props, State> {
                 <SubTitle>
                   {'HAETTAVAT KOHTEET'}
                 </SubTitle>
-                {[1, 2].map((propertySite, index) => {
+
+                {!!property.search_properties && property.search_properties.map((propertySite, index) => {
                   return(
                     <Row key={index}>
                       <PropertySite
+                        propertySite={propertySite}
                         index={index}
                       />
                     </Row>
@@ -207,7 +200,7 @@ export default connect(
   (state) => {
     return {
       usersPermissions: getUsersPermissions(state),
-      collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PROPERTY_SUMMARY}.basic`),
+      basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PROPERTY_BASIC_INFORMATION}.basic_information`),
       attributes: getAttributes(state),
       currentProperty: getCurrentProperty(state),
     };
