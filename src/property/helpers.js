@@ -1,4 +1,6 @@
 import type {Property} from './types';
+import {removeSessionStorageItem} from '$util/storage';
+import {FormNames} from '$src/enums';
 
 /** 
  * Get property basic information content
@@ -18,7 +20,26 @@ export const getContentBasicInformation = (property: Property): Object => {
     end_date: property.end_date,
     end_time: property.end_time,
     last_update: property.last_update,
-    search_properties: property.search_properties,
+    search_properties: getContentSearchProperties(property.search_properties),
     decisions: property.decisions,
   };
+};
+
+/** 
+ * Get search properties
+ * @param {Object} searchProperties
+ * @return {Object}
+ */
+export const getContentSearchProperties = (searchProperties: Object): Object => {
+  return searchProperties; // TODO
+};
+
+
+/**
+ * Clear all unsaved changes from local storage
+ */
+export const clearUnsavedChanges = () => {
+  removeSessionStorageItem(FormNames.PROPERTY_BASIC_INFORMATION);
+  removeSessionStorageItem('propertyId');
+  removeSessionStorageItem('propertyValidity');
 };

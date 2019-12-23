@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {formValueSelector, FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -26,15 +27,24 @@ import {
   receiveCollapseStates,
 } from '$src/property/actions';
 import {
+  getAttributes,
   getCollapseStateByKey,
+  getIsSaveClicked,
 } from '$src/property/selectors';
+import {
+  getFieldOptions,
+} from '$util/helpers';
+
 import PropertySiteEdit from './PropertySiteEdit';
 
+import type {Attributes} from '$src/types';
+
 type DecisionsProps = {
+  attributes: Attributes,
   disabled: boolean,
   fields: any,
   formName: string,
-  // leaseAttrobites
+  isSaveClicked: Boolean,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -42,6 +52,8 @@ const renderDecisions = ({
   disabled,
   fields,
   formName,
+  attributes,
+  isSaveClicked,
   // usersPermissions,
 }: DecisionsProps): Element<*> => {
   const handleAdd = () => {
@@ -58,7 +70,6 @@ const renderDecisions = ({
                   <Column small={4} large={8}>
                     <FormTextTitle
                       required={false}
-                      enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.DECISION)}
                     >
                       {PropertyFieldTitles.DECISION}
@@ -67,7 +78,6 @@ const renderDecisions = ({
                   <Column large={3}>
                     <FormTextTitle
                       required={false}
-                      enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.DECISION_TO_LIST)}
                     >
                       {PropertyFieldTitles.DECISION_TO_LIST}
@@ -96,6 +106,8 @@ const renderDecisions = ({
                   field={field}
                   formName={formName}
                   onRemove={handleRemove}
+                  attributes={attributes}
+                  isSaveClicked={isSaveClicked}
                 />;
               })}
 
@@ -134,6 +146,7 @@ const renderPropertySites = ({
   const handleAdd = () => {
     fields.push({});
   };
+
   return (
     <AppConsumer>
       {({dispatch}) => {
@@ -181,12 +194,13 @@ const renderPropertySites = ({
 };
 
 type Props = {
+  attributes: Attributes,
   collapseStateBasic: boolean,
   receiveCollapseStates: Function,
   usersPermissions: UsersPermissionsType,
   preparer: ?string,
-    formName: string,
-
+  formName: string,
+  isSaveClicked: boolean,
 }
 
 type State = {
@@ -194,6 +208,16 @@ type State = {
 }
 
 class BasicInfoEdit extends PureComponent<Props, State> {
+/*   componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [formName]: this.props.valid,
+      });
+    }
+  } */ // TODO 
+
   state = {
   }
 
@@ -217,11 +241,17 @@ class BasicInfoEdit extends PureComponent<Props, State> {
     const {
       collapseStateBasic,
       usersPermissions,
+      isSaveClicked,
+      attributes,
     } = this.props;
   
+    const preparerOptions = getFieldOptions(attributes, 'preparer');
+    const typeOptions = getFieldOptions(attributes, 'type');
+    const subtypeOptions = getFieldOptions(attributes, 'subtype');
+
     return (
       <form>
-        <Title uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.BASIC_INFO)}>
+        <Title>
           {PropertyFieldTitles.BASIC_INFO}
         </Title>
         <Divider />
@@ -232,154 +262,96 @@ class BasicInfoEdit extends PureComponent<Props, State> {
               hasErrors={false} // {isSaveClicked && !isEmpty(errors)} // TODO
               headerTitle={PropertyFieldTitles.BASIC_INFO}
               onToggle={this.handleBasicInfoCollapseToggle}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.BASIC_INFO)}
             >
               <Row>
                 <Column small={12} large={8}>
-                  {/* // TODO HOW TO GET DATA TO FIELDS */}
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Haun nimi',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
-                    name='property_search'
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'search_name')}
+                    name='search_name'
                     overrideValues={{label: PropertyFieldTitles.NAME}}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.NAME)}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Valmistelija',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'preparer')}
                     name='preparer'
                     overrideValues={{
                       fieldType: 'choice',
                       label: PropertyFieldTitles.PREPARER,
-                      options: [{value: 1, label: 'Virve Virkailija'}, {value: 2, label: 'Teuvo Kuusela'}, {value: 3, label: 'Jussi Mannisto'}],
+                      options: preparerOptions,
                     }}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.PREPARER)}
                   />
                 </Column>
                 <Column small={12} medium={6} large={2}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Hakutyyppi',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'type')}
                     name='type'
                     overrideValues={{
                       fieldType: 'choice',
                       label: PropertyFieldTitles.TYPE,
-                      options: [{value: 1, label: 'Asuntorakentaminen'}],
+                      options: typeOptions,
                     }}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.TYPE)}
                   />
                 </Column>
                 <Column small={12} medium={6} large={2}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Haun alatyyppi',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'subtype')}
                     name='subtype'
                     overrideValues={{
                       fieldType: 'choice',
                       label: PropertyFieldTitles.SUBTYPE,
-                      options: [{value: 1, label: 'Hinta- ja laatukilpailu'}],
+                      options: subtypeOptions,
                     }}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.SUBTYPE)}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Alkupvm',
-                      read_only: false,
-                      required: false,
-                      type: 'date',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'start_date')}
                     name='start_date'
                     overrideValues={{label: PropertyFieldTitles.START_DATE}}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.START_DATE)}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Alkupvm',
-                      read_only: false,
-                      required: false,
-                      type: 'time',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'start_time')}
                     name='start_time'
                     overrideValues={{label: PropertyFieldTitles.CLOCK}}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.CLOCK)}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Alkupvm',
-                      read_only: false,
-                      required: false,
-                      type: 'date',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'end_date')}
                     name='end_date'
                     overrideValues={{label: PropertyFieldTitles.END_DATE}}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.END_DATE)}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Alkupvm',
-                      read_only: false,
-                      required: false,
-                      type: 'time',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'end_time')}
                     name='end_time'
                     overrideValues={{label: PropertyFieldTitles.CLOCK}}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.CLOCK)}
                   />
                 </Column>
                 <FieldArray
                   component={renderDecisions}
-                  // attributes
+                  attributes={attributes}
                   disabled={false}
                   formName={FormNames.PROPERTY_SUMMARY}
                   name={'decisions'}
+                  isSaveClicked={isSaveClicked}
                   usersPermissions={usersPermissions}
                 />
                 <Column small={12} medium={6} large={2}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
+                    disableTouched={isSaveClicked}
                     fieldAttributes={{
                       label: 'Haun vaihe',
                       read_only: false,
@@ -392,8 +364,6 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       label: PropertyFieldTitles.STEP,
                       options: [{value: 1, label: 'Valmisteilla'}],
                     }}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(PropertyFieldPaths.STEP)}
                   />
                 </Column>
               </Row>
@@ -403,10 +373,11 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 </SubTitle>
                 <FieldArray
                   component={renderPropertySites}
-                  // attributes
+                  attributes={attributes}
+                  isClicked={isSaveClicked}
                   disabled={false}
-                  formName={FormNames.PROPERTY_SUMMARY}
-                  name={'property_sites'}
+                  formName={FormNames.PROPERTY_BASIC_INFORMATION}
+                  name={'search_properties'}
                   usersPermissions={usersPermissions}
                 />
               </WhiteBox>
@@ -418,16 +389,18 @@ class BasicInfoEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.PROPERTY_SUMMARY;
+const formName = FormNames.PROPERTY_BASIC_INFORMATION;
 const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
         usersPermissions: getUsersPermissions(state),
-        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PROPERTY_SUMMARY}.basic`),
+        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PROPERTY_BASIC_INFORMATION}.basic`),
         preparer: selector(state, 'preparer'),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {
@@ -436,5 +409,6 @@ export default flowRight(
   ),
   reduxForm({
     form: formName,
+    destroyOnUnmount: false,
   }),
 )(BasicInfoEdit);

@@ -15,10 +15,11 @@ import type {
   Property,
   PropertyList,
   PropertyId,
-
+  ReceiveFormValidFlagsAction,
   HideEditModeAction,
   ShowEditModeAction,
   ReceiveCollapseStatesAction,
+  ClearFormValidFlagsAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -39,7 +40,7 @@ export const fetchSingleProperty = (id: PropertyId): FetchSinglePropertyAction =
 export const receiveSingleProperty = (property: Property): ReceiveSinglePropertyAction =>
   createAction('mvj/property/RECEIVE_SINGLE')(property);
 
-export const editLandUseContract = (property: Property): EditPropertyAction =>
+export const editProperty = (property: Property): EditPropertyAction =>
   createAction('mvj/property/EDIT')(property);
 
 export const createProperty = (property: Property): CreatePropertyAction =>
@@ -56,3 +57,10 @@ export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesActi
 
 export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
   createAction('mvj/property/RECEIVE_SAVE_CLICKED')(isClicked);
+
+export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
+  createAction('mvj/property/RECEIVE_FORM_VALID_FLAGS')(valid);
+
+export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
+  createAction('mvj/property/CLEAR_FORM_VALID_FLAGS')();
+

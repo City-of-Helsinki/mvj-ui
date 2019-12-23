@@ -3,8 +3,8 @@ import merge from 'lodash/merge';
 
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
-
 import type {Attributes, Reducer} from '$src/types';
+import {FormNames} from '$src/enums';
 
 import type {
   ReceiveIsSaveClickedAction,
@@ -14,6 +14,7 @@ import type {
   ReceiveCollapseStatesAction,
   ReceivePropertyListAction,
   ReceiveSinglePropertyAction,
+  ReceiveFormValidFlagsAction,
 } from '$src/property/types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -63,6 +64,22 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
+const isFormValidByIdReducer: Reducer<Object> = handleActions({
+  ['mvj/property/RECEIVE_FORM_VALID_FLAGS']: (state: Object, {payload: valid}: ReceiveFormValidFlagsAction) => {
+    return {
+      ...state,
+      ...valid,
+    };
+  },
+  ['mvj/property/CLEAR_FORM_VALID_FLAGS']: () => {
+    return {
+      [FormNames.PROPERTY_BASIC_INFORMATION]: true,
+    };
+  },
+}, {
+  [FormNames.PROPERTY_BASIC_INFORMATION]: true,
+});
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
@@ -70,6 +87,7 @@ export default combineReducers<Object, any>({
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
+  isFormValidById: isFormValidByIdReducer,
   isSaveClicked: isSaveClickedReducer,
   list: propertyListReducer,
 });

@@ -19,6 +19,15 @@ export const getCollapseStateByKey: Selector<?Object, string> = (state: RootStat
   return get(state.property.collapseStates, key);
 };
 
+export const getIsFormValidById: Selector<boolean, string> = (state: RootState, id: string): boolean =>
+  state.property.isFormValidById[id];
+
+export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boolean =>
+  state.property.isSaveClicked;
+
+export const getIsFormValidFlags: Selector<Object, void> = (state: RootState): Object =>
+  state.property.isFormValidById;
+
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.property.isFetching;
 

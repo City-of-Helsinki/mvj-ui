@@ -3,10 +3,9 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {getUiDataPropertyKey} from '$src/uiData/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {FormNames, ViewModes} from '$src/enums';
-
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import WhiteBox from '$components/content/WhiteBox';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
@@ -18,12 +17,17 @@ import SubTitle from '$components/content/SubTitle';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {getAttributes, getCollapseStateByKey, getCurrentProperty} from '$src/property/selectors';
 import {receiveCollapseStates} from '$src/property/actions';
-import {PropertyFieldTitles, PropertyFieldPaths} from '$src/property/enums';
+import {PropertyFieldTitles} from '$src/property/enums';
 import PropertySite from './PropertySite';
 import {getContentBasicInformation} from '$src/property/helpers';
+import {
+  getFieldOptions,
+  getLabelOfOption,
+} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
 import type {Property} from '$src/property/types';
+import SingleRadioInput from '$components/inputs/SingleRadioInput';
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -57,17 +61,19 @@ class BasicInfo extends PureComponent<Props, State> {
     const {
       // usersPermissions,
       basicInformationCollapseState,
-      // attributes,
+      attributes,
       currentProperty,
     } = this.props;
 
-    console.log('collapse:', basicInformationCollapseState);
-
     const property = getContentBasicInformation(currentProperty);
+    const preparerOptions = getFieldOptions(attributes, 'preparer');
+    const typeOptions = getFieldOptions(attributes, 'type');
+    const subtypeOptions = getFieldOptions(attributes, 'subtype');
+    const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
 
     return (
       <Fragment>
-        <Title uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.BASIC_INFO)}>
+        <Title>
           {PropertyFieldTitles.BASIC_INFO}
         </Title>
         <Divider />
@@ -77,23 +83,22 @@ class BasicInfo extends PureComponent<Props, State> {
               defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}
               headerTitle={PropertyFieldTitles.BASIC_INFO}
               onToggle={this.handleBasicInfoCollapseToggle}
-              uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.BASIC_INFO)}
             >
               <Row>
                 <Column small={12} large={8}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.NAME)}>
+                  <FormTextTitle>
                     {PropertyFieldTitles.NAME}
                   </FormTextTitle>
                   <FormText>{property.search_name}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={2}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.PREPARER)}>
-                    {PropertyFieldTitles.PREPARER}
-                  </FormTextTitle>
-                  <FormText>{property.preparer}</FormText>
+                  <FormTitleAndText
+                    title={PropertyFieldTitles.PREPARER}
+                    text={getLabelOfOption(preparerOptions, property.preparer) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={2}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.APPLICATIONS)}>
+                  <FormTextTitle>
                     {PropertyFieldTitles.APPLICATIONS}
                   </FormTextTitle>
                   {property.applications && property.applications.map((application, index) => 
@@ -109,43 +114,43 @@ class BasicInfo extends PureComponent<Props, State> {
               </Row>
               <Row>
                 <Column small={12} medium={6} large={3}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.TYPE)}>
-                    {PropertyFieldTitles.TYPE}
-                  </FormTextTitle>
-                  <FormText>{property.type.name}</FormText>
+                  <FormTitleAndText
+                    title={PropertyFieldTitles.TYPE}
+                    text={getLabelOfOption(typeOptions, property.type) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={3}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.SUBTYPE)}>
-                    {PropertyFieldTitles.SUBTYPE}
-                  </FormTextTitle>
-                  <FormText>{property.subtype.name}</FormText>
+                  <FormTitleAndText
+                    title={PropertyFieldTitles.SUBTYPE}
+                    text={getLabelOfOption(subtypeOptions, property.subtype) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={1}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.START_DATE)}>
+                  <FormTextTitle >
                     {PropertyFieldTitles.START_DATE}
                   </FormTextTitle>
                   <FormText>{property.start_date}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.CLOCK)}>
+                  <FormTextTitle>
                     {PropertyFieldTitles.CLOCK}
                   </FormTextTitle>
                   <FormText>{property.start_time}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.END_DATE)}>
+                  <FormTextTitle>
                     {PropertyFieldTitles.END_DATE}
                   </FormTextTitle>
                   <FormText>{property.end_date}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.CLOCK)}>
+                  <FormTextTitle>
                     {PropertyFieldTitles.CLOCK}
                   </FormTextTitle>
                   <FormText>{property.end_time}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={2}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.APPLICATIONS_UPDATED_DATE)}>
+                  <FormTextTitle>
                     {PropertyFieldTitles.APPLICATIONS_UPDATED_DATE}
                   </FormTextTitle>
                   <FormText>{property.last_update}</FormText>
@@ -153,7 +158,7 @@ class BasicInfo extends PureComponent<Props, State> {
               </Row>
               <Row>
                 <Column small={12} medium={6} large={6}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.DECISION)}>
+                  <FormTextTitle>
                     {PropertyFieldTitles.DECISION}
                   </FormTextTitle>
                   {!!property.decisions.length && property.decisions.map((decision, index) => 
@@ -161,16 +166,29 @@ class BasicInfo extends PureComponent<Props, State> {
                       <ExternalLink
                         className='no-margin'
                         href={`${decision.id}`}
-                        text={decision.name}
+                        text={getLabelOfOption(decisionOptions, decision.type) || '-'}
                       />
                     </FormText>
                   )}
                 </Column>
                 <Column small={12} medium={6} large={6}>
-                  <FormTextTitle uiDataKey={getUiDataPropertyKey(PropertyFieldPaths.DECISION_TO_LIST)}>
+                  <FormTextTitle>
                     {PropertyFieldTitles.DECISION_TO_LIST}
                   </FormTextTitle>
+                  {!!property.decisions.length && property.decisions.map((decision, index) => 
+                    <Row key={index}>
+                      <Column>
+                        <SingleRadioInput 
+                          checked={!!decision.decision_to_list}
+                          onChange={()=>{}}
+                          onClick={()=>{}}
+                          onKeyDown={()=>{}}
+                        />
+                      </Column>
+                    </Row>
+                  )}
                 </Column>
+                
               </Row>
               <WhiteBox> {/* TODO  : make light green */}
                 <SubTitle>

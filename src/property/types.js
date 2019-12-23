@@ -10,6 +10,7 @@ export type PropertyState = {
   list: PropertyList,
   collapseStates: Object,
   isSaveClicked: boolean,
+  isFormValidById: Object,
 };
 
 export type PropertyId = number;
@@ -24,6 +25,8 @@ export type EditPropertyAction = Action<'mvj/property/EDIT', Property>;
 // TODO NOT FOUND
 
 export type ReceiveIsSaveClickedAction = Action<'mvj/property/RECEIVE_SAVE_CLICKED', boolean>;
+export type ReceiveFormValidFlagsAction = Action<'mvj/property/RECEIVE_FORM_VALID_FLAGS', Object>;
+export type ClearFormValidFlagsAction = Action<'mvj/landUseContract/CLEAR_FORM_VALID_FLAGS', void>;
 
 export type FetchPropertyListAction = Action<'mvj/property/FETCH_ALL', string>;
 export type ReceivePropertyListAction = Action<'mvj/property/RECEIVE_ALL', PropertyList>;

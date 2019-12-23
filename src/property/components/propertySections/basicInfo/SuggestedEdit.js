@@ -8,7 +8,6 @@ import get from 'lodash/get';
 import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {PropertyFieldTitles} from '$src/property/enums';
 import {
   getFieldOptions,
 } from '$util/helpers';
@@ -33,7 +32,7 @@ type Props = {
   usersPermissions: UsersPermissionsType,
 }
 
-const BasicInfoDecisionEdit = ({
+const SuggestedEdit = ({
   disabled,
   field,
   isSaveClicked,
@@ -41,32 +40,36 @@ const BasicInfoDecisionEdit = ({
   onRemove,
 }: Props) => {
 
-  const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
+  const suggestedOptions = getFieldOptions(attributes, 'property_sites.child.children.suggested.child.children.name');
 
   return (
     <Row>
-      <Column large={8}>
+      <Column large={7}>
         <FormField
           disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'decision.child.children.type')}
-          name={`${field}.type`}
+          fieldAttributes={get(attributes, 'property_sites.child.children.suggested.child.children.name')}
+          name={`${field}.name`}
           overrideValues={{
-            fieldType: 'choice',
-            label: PropertyFieldTitles.DECISION,
-            options: decisionOptions,
+            label: 'Ehdotettu varauksensaaja',
+            options: suggestedOptions,
           }}
           invisibleLabel
         />
       </Column>
-      <Column large={3}>
+      <Column large={1.5}> 
         <FormField
           disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'decision.child.children.decision_to_list')}
-          name={`${field}.decision_to_list`}
-          overrideValues={{
-            fieldType: 'checkbox',
-            label: PropertyFieldTitles.DECISION_TO_LIST,
-          }}
+          fieldAttributes={get(attributes, 'property_sites.child.children.suggested.child.children.share_numerator')}
+          name={`${field}.share_numerator`}
+          invisibleLabel
+        />
+      </Column>
+      {'/'}
+      <Column large={1.5}>
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={get(attributes, 'property_sites.child.children.suggested.child.children.share_denominator')}
+          name={`${field}.share_denominator`}
           invisibleLabel
         />
       </Column>
@@ -99,4 +102,4 @@ export default connect(
       usersPermissions: getUsersPermissions(state),
     };
   },
-)(BasicInfoDecisionEdit);
+)(SuggestedEdit);

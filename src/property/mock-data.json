@@ -2,7 +2,7 @@
   {
     "id": 1,
     "search_name": "Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu",
-    "preparer": "Virve Virkailija",
+    "preparer": 1,
     "applications": [{
       "id": 1234,
       "name": "Hakemus"
@@ -11,56 +11,56 @@
         "name": "Hakemus"
       }
     ],
-    "type": {
-      "id": 0,
-      "name": "Asuntorakentaminen"
-    },
-    "subtype": {
-      "id": 0,
-      "name": "Hinta- ja laatukilpailu"
-    },
+    "type": 1,
+    "subtype": 1,
     "start_date": "2019-09-02",
     "start_time": "12:00",
     "end_date": "2029-09-02",
     "end_time": "12:00",
     "last_update": "14.09.2019 klo 00:00",
     "decisions": [{
-      "id": "1234",
-      "name": "Kiinteistölautakunta 15.12.2016 503 § Varausajan jatkaminen HEL 2018-123456"
+      "decision_to_list": true,
+      "type": 1,
+      "id": 123
     },
     {
-      "id": "2345",
-      "name": "Kiinteistölautakunta 15.12.2016 503 § Lorem ipsum HEL 2018-123456"
+      "decision_to_list": true,
+      "type": 2,
+      "id": 124
     }],
     "identifier": {
     },
+    "step": 3,
     "search_properties": [{
+      "identifier": 1,
       "id": 12345,
-      "target_identifier": "10658/1",
-      "lease_id": "TY1234-5",
+      "target_identifier": 1,
+      "lease_id": 1,
       "hitas": "Hitas 1",
       "address": "Verkkosaarenranta",
-      "step": "Suunniteltu",
-      "handling": [{
-        "id": "12375"
-      }],
+      "step": 1,
+      "handling": 1,
       "applications": [{
         "name": "Hakemukset(25)"
       }],
-      "use": "AK",
-      "build_law": "12/2022",
-      "funding": "Vapaarahoitteinen",
-      "management": "Omistus",
+      "use": 1,
+      "build_right": "3500",
+      "build_ready_in": "12/2022",
+      "funding": 1,
+      "ownership": 1,
       "suggested": [
         {
-          "name": "Oy Firma Ab",
-          "share": "1/1"
+          "name": 1,
+          "share_numerator": "1",
+          "share_denominator": "3"
         },{
-          "name": "As. Oy Asuntosunto",
-          "share": "1/1"
+          "name": 2,
+          "share_numerator": "1",
+          "share_denominator": "3"
         },{
-          "name": "Puuha Pete",
-          "share": "1/1"
+          "name": 3,
+          "share_numerator": "1",
+          "share_denominator": "3"
         }]
     }]
   }
