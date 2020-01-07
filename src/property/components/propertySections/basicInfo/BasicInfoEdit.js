@@ -165,7 +165,8 @@ const renderPropertySites = ({
                   confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE,
                 });
               };
-
+              console.log(field);
+              console.log(formName);
               return <PropertySiteEdit
                 key={index}
                 disabled={disabled}
@@ -377,7 +378,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   isClicked={isSaveClicked}
                   disabled={false}
                   formName={FormNames.PROPERTY_BASIC_INFORMATION}
-                  name={'search_properties'}
+                  name={'property_sites'}
                   usersPermissions={usersPermissions}
                 />
               </WhiteBox>

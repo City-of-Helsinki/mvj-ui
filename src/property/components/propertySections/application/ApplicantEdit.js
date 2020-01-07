@@ -3,10 +3,14 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import {reduxForm} from 'redux-form';
+
 
 import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
+import {FormNames} from '$src/enums';
+
 // import {UsersPermissions} from '$src/usersPermissions/enums';
 // import {formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes} from '$util/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -71,7 +75,6 @@ const ApplicantEdit = ({
               label: 'Asiakastyyppi',
               options: [{value: '1', label: 'Yritys'}, {value: '2', label: 'Henkilö'}],
             }}
-            enableUiDataEdit
           />
         </Column>
       </Row>
@@ -89,11 +92,10 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_organization`}
+            name={`${field}.company_organization`}
             overrideValues={{
               label: 'Organisaatio',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -110,7 +112,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Y-tunnus',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -127,7 +128,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Hakijayrityksen perustmisvuosi',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -144,7 +144,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Liikevaihto (edellinen vuosi)',
             }}
-            enableUiDataEdit
           />
         </Column>
       </Row>
@@ -163,7 +162,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Katuosoite',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -180,7 +178,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Postinumero',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -197,7 +194,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Kaupunki',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -214,7 +210,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Sähköposti',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -231,7 +226,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Puhelinnumero',
             }}
-            enableUiDataEdit
           />
         </Column>
       </Row>
@@ -253,7 +247,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Nimi',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -270,7 +263,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Katuosoite',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -287,7 +279,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Postinumero',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -304,7 +295,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Kaupunki',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -321,7 +311,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Puhelinnumero',
             }}
-            enableUiDataEdit
           />
         </Column>
       </Row>
@@ -343,7 +332,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Nimi',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -360,7 +348,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Hetu',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -377,7 +364,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Sähköposti',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -394,7 +380,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Puhelinnumero',
             }}
-            enableUiDataEdit
           />
         </Column>
       </Row>
@@ -413,7 +398,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Puhelinnumero',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -430,7 +414,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Puhelinnumero',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -447,7 +430,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Puhelinnumero',
             }}
-            enableUiDataEdit
           />
         </Column>
       </Row>
@@ -469,7 +451,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Katuosoite',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -486,7 +467,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Postinumero',
             }}
-            enableUiDataEdit
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -503,7 +483,6 @@ const ApplicantEdit = ({
             overrideValues={{
               label: 'Kaupunki',
             }}
-            enableUiDataEdit
           />
         </Column>
       </Row>
@@ -511,16 +490,24 @@ const ApplicantEdit = ({
   );
 };
 
+const formName = FormNames.PROPERTY_APPLICATION;
+
 export default connect(
   (state, props: Props) => {
     const formName = props.formName;
     const selector = formValueSelector(formName);
 
     return {
-      // isSaveClicked: getIsSaveClicked(state),
-      // leaseAttributes: getLeaseAttributes(state),
       name: selector(state, `${props.field}.name`),
       usersPermissions: getUsersPermissions(state),
+    /*  attributes: getAttributes(state),
+      currentLandUseContract: getCurrentLandUseContract(state),
+      errors: getErrorsByFormName(state, formName),
+      isSaveClicked: getIsSaveClicked(state), */
     };
   },
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+  }),
 )(ApplicantEdit);

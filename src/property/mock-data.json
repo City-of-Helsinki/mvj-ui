@@ -31,7 +31,7 @@
     "identifier": {
     },
     "step": 3,
-    "search_properties": [{
+    "property_sites": [{
       "identifier": 1,
       "id": 12345,
       "target_identifier": 1,
@@ -62,6 +62,19 @@
           "share_numerator": "1",
           "share_denominator": "3"
         }]
-    }]
+    }],
+    "application_base": {
+      "default": true,
+      "extra": 1,
+      "previous": true,
+      "created": 1,
+      "applicants": [{
+        "client_type": 1,
+        "company_organization": "Yritys Oy"
+      }],
+      "targets": [{
+
+      }]
+    }
   }
 ]

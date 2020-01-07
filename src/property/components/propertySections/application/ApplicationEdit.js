@@ -301,16 +301,16 @@ class ApplicationEdit extends PureComponent<Props, State> {
                   component={renderApplicant}
                   // attributes
                   disabled={false}
-                  formName={'applicant'} // TODO formname from form FormNames 
-                  name={'applicant'}
+                  formName={FormNames.PROPERTY_APPLICATION} // TODO formname from form FormNames 
+                  name={'applicants'}
                   // usersPermissions={usersPermissions}
                 />
                 <FieldArray
                   component={renderTarget}
                   // attributes
                   disabled={false}
-                  formName={'target'} // TODO formname from form FormNames 
-                  name={'target'}
+                  formName={FormNames.PROPERTY_APPLICATION} // TODO formname from form FormNames 
+                  name={'targets'}
                   // usersPermissions={usersPermissions}
                 />
               </WhiteBox>
@@ -322,7 +322,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.PROPERTY_SUMMARY;
+const formName = FormNames.PROPERTY_APPLICATION;
 // const selector = formValueSelector(formName);
 
 export default flowRight(
@@ -330,7 +330,7 @@ export default flowRight(
     (state) => {
       return {
         usersPermissions: getUsersPermissions(state),
-        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PROPERTY_SUMMARY}.basic`),
+        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PROPERTY_APPLICATION}.basic`),
       };
     },
     {

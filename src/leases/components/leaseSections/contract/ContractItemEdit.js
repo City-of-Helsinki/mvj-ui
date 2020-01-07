@@ -617,7 +617,7 @@ const ContractItemEdit = ({
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
               <FormTextTitle>{LeaseContractsFieldTitles.ENCUMBRANCE}</FormTextTitle>
-              {savedContract.institution_identifier
+              {savedContract && savedContract.institution_identifier
                 ? <KtjLink
                   fileKey='rasitustodistus'
                   fileName='rasitustodistus'

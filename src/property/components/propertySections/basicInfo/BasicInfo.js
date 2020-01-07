@@ -161,7 +161,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle>
                     {PropertyFieldTitles.DECISION}
                   </FormTextTitle>
-                  {!!property.decisions.length && property.decisions.map((decision, index) => 
+                  {!!property.decisions && property.decisions.map((decision, index) => 
                     <FormText key={index}>
                       <ExternalLink
                         className='no-margin'
@@ -178,7 +178,9 @@ class BasicInfo extends PureComponent<Props, State> {
                   {!!property.decisions.length && property.decisions.map((decision, index) => 
                     <Row key={index}>
                       <Column>
-                        <SingleRadioInput 
+                        <SingleRadioInput
+                          name={''}
+                          label={''}
                           checked={!!decision.decision_to_list}
                           onChange={()=>{}}
                           onClick={()=>{}}
@@ -195,7 +197,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   {'HAETTAVAT KOHTEET'}
                 </SubTitle>
 
-                {!!property.search_properties && property.search_properties.map((propertySite, index) => {
+                {!!property.property_sites && property.property_sites.map((propertySite, index) => {
                   return(
                     <Row key={index}>
                       <PropertySite

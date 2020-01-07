@@ -310,6 +310,84 @@
           }
         }
       }
+    },
+    "application_base": {
+      "child": {
+        "children": {
+          "default": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Hakytyypin oletuslomake"
+          },
+          "extra": {
+            "type": "field",
+            "read_only": false,
+            "required": false,
+            "label": "Lomakkeen lisäosat",
+            "choices": [
+              {
+                "display_name": "one",
+                "value": 1
+              },
+              {
+                "display_name": "two",
+                "value": 2
+              }
+            ]
+          },
+          "previous": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Aiemmin luotu lomake"
+          },
+          "created": {
+            "type": "field",
+            "read_only": false,
+            "required": false,
+            "label": "Luodut hakulomakkeet",
+            "choices": [
+              {
+                "display_name": "one",
+                "value": 1
+              },
+              {
+                "display_name": "two",
+                "value": 2
+              }
+            ]
+          },
+          "applicants": {
+            "child": {
+              "children": {
+                "client_type": {
+                  "type": "field",
+                  "read_only": false,
+                  "required": false,
+                  "label": "Asiakastyyppi",
+                  "choices": [
+                    {
+                      "display_name": "Yritys",
+                      "value": 1
+                    },
+                    {
+                      "display_name": "Henkilö",
+                      "value": 2
+                    }
+                  ]
+                },
+                "company_organization": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Organisaatio"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

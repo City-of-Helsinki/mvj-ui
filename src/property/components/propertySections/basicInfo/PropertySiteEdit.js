@@ -302,5 +302,6 @@ export default connect(
   },
   reduxForm({
     form: formName,
+    destroyOnUnmount: false,
   }),
 )(PropertySiteEdit);

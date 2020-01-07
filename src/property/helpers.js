@@ -20,8 +20,23 @@ export const getContentBasicInformation = (property: Property): Object => {
     end_date: property.end_date,
     end_time: property.end_time,
     last_update: property.last_update,
-    search_properties: getContentSearchProperties(property.search_properties),
+    property_sites: getContentSearchProperties(property.property_sites),
     decisions: property.decisions,
+  };
+};
+
+/** 
+ * Get property application content
+ * @param {Object} property
+ * @return {Object}
+ */
+export const getContentApplication = (property: Property): Object => {
+  return {
+    default: property.application_base.default,
+    extra: property.application_base.extra,
+    previous: property.application_base.previous,
+    created: property.application_base.created,
+    applicants: property.application_base.applicants,
   };
 };
 

@@ -74,10 +74,12 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   ['mvj/property/CLEAR_FORM_VALID_FLAGS']: () => {
     return {
       [FormNames.PROPERTY_BASIC_INFORMATION]: true,
+      [FormNames.PROPERTY_APPLICATION]: true,
     };
   },
 }, {
   [FormNames.PROPERTY_BASIC_INFORMATION]: true,
+  [FormNames.PROPERTY_APPLICATION]: true,
 });
 
 export default combineReducers<Object, any>({

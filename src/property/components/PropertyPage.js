@@ -18,7 +18,6 @@ import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import Tabs from '$components/tabs/Tabs';
-import {ButtonColors} from '$components/enums';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
@@ -54,17 +53,19 @@ import type {Attributes} from '$src/types';
 import type {Property} from '$src/property/types';
 import {
   getContentBasicInformation,
+  getContentApplication,
   clearUnsavedChanges,
 } from '$src/property/helpers';
 
 import PropertyInfo from './propertySections/propertyInfo/PropertyInfo';
 import BasicInfo from './propertySections/basicInfo/BasicInfo';
 import BasicInfoEdit from './propertySections/basicInfo/BasicInfoEdit';
-// import Application from './propertySections/application/Application';
+import Application from './propertySections/application/Application';
 import ApplicationEdit from './propertySections/application/ApplicationEdit';
 import {withPropertyAttributes} from '$components/attributes/PropertyAttributes';
 
 type Props = {
+  applicationFormValues: Object,
   basicInformationFormValues: Object,
   currentProperty: Property,
   clearFormValidFlags: Function,
@@ -77,6 +78,8 @@ type Props = {
   initialize: Function,
   isBasicInformationFormDirty: boolean,
   isBasicInformationFormValid: boolean,
+  isApplicationFormDirty: boolean,
+  isApplicationFormValid: boolean,
   isEditMode: boolean,
   isFetchingPropertyAttributes: boolean,
   isSaveClicked: boolean,
@@ -268,12 +271,14 @@ class PropertyPage extends Component<Props, State> {
     const {initialize} = this.props;
 
     initialize(FormNames.PROPERTY_BASIC_INFORMATION, getContentBasicInformation(property));
+    initialize(FormNames.PROPERTY_APPLICATION, getContentApplication(property));
   }
 
   destroyAllForms = () => {
     const {destroy} = this.props;
 
     destroy(FormNames.PROPERTY_BASIC_INFORMATION);
+    destroy(FormNames.PROPERTY_APPLICATION);
   }
 
   handleTabClick = (tabId) => {
@@ -316,10 +321,12 @@ class PropertyPage extends Component<Props, State> {
 
     if(areFormsValid) {
       const {
+        applicationFormValues,
         basicInformationFormValues,
         currentProperty,
         editProperty,
         isBasicInformationFormDirty,
+        isApplicationFormDirty,
       } = this.props;
     
       //TODO: Add helper functions to save land use contract to DB when API is ready
@@ -327,6 +334,12 @@ class PropertyPage extends Component<Props, State> {
 
       if(isBasicInformationFormDirty) {
         payload = {...payload, ...basicInformationFormValues};
+      }
+      
+      console.log('Is application form dirty: ', isApplicationFormDirty, applicationFormValues);
+
+      if(isApplicationFormDirty) {
+        payload = {...payload, application_base: {...applicationFormValues}};
       }
 
       payload.identifier = currentProperty.identifier;
@@ -352,8 +365,10 @@ class PropertyPage extends Component<Props, State> {
 
   saveUnsavedChanges = () => {
     const {
+      applicationFormValues,
       basicInformationFormValues,
       isBasicInformationFormDirty,
+      isApplicationFormDirty,
       isFormValidFlags,
       match: {params: {propertyId}},
     } = this.props;
@@ -365,6 +380,13 @@ class PropertyPage extends Component<Props, State> {
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.PROPERTY_BASIC_INFORMATION);
+    }
+
+    if(isApplicationFormDirty) {
+      setSessionStorageItem(FormNames.PROPERTY_APPLICATION, applicationFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.PROPERTY_APPLICATION);
     }
 
     if(isDirty) {
@@ -400,6 +422,11 @@ class PropertyPage extends Component<Props, State> {
       this.bulkChange(FormNames.PROPERTY_BASIC_INFORMATION, storedBasicInformationFormValues);
     }
 
+    const storedApplicationFormValues = getSessionStorageItem(FormNames.PROPERTY_APPLICATION);
+    if(storedBasicInformationFormValues) {
+      this.bulkChange(FormNames.PROPERTY_APPLICATION, storedApplicationFormValues);
+    }
+
     const storedFormValidity = getSessionStorageItem('propertyValidity');
     if(storedFormValidity) {
       receiveFormValidFlags(storedFormValidity);
@@ -421,10 +448,12 @@ class PropertyPage extends Component<Props, State> {
   getAreFormsValid = () => {
     const {
       isBasicInformationFormValid,
+      isApplicationFormValid,
     } = this.props;
 
     return (
-      isBasicInformationFormValid
+      isBasicInformationFormValid && 
+      isApplicationFormValid
     );
   }
 
@@ -440,9 +469,13 @@ class PropertyPage extends Component<Props, State> {
       usersPermissions,
       isFetchingUsersPermissions,
       isBasicInformationFormDirty,
-      isSaveClicked,
       isBasicInformationFormValid,
+      isApplicationFormDirty,
+      isApplicationFormValid,
+      isSaveClicked,
     } = this.props;
+
+    const areFormsValid = this.getAreFormsValid();
 
     if(isFetchingPropertyAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
@@ -454,25 +487,17 @@ class PropertyPage extends Component<Props, State> {
           <ControlButtonBar
             buttonComponent={
               <ControlButtons
-                allowComments={true} // TODO
-                allowDelete={true}  // TODO
-                allowEdit={true}  // TODO
-                commentAmount={0} // TODO
-                deleteModalTexts={{
-                  buttonClassName: ButtonColors.ALERT,
-                  buttonText: ConfirmationModalTexts.DELETE_PROPERTY.BUTTON,
-                  label: ConfirmationModalTexts.DELETE_PROPERTY.LABEL,
-                  title: ConfirmationModalTexts.DELETE_PROPERTY.TITLE,
-                }}
-                isCancelDisabled={activeTab == 6}
-                isEditDisabled={activeTab == 6}
+                allowEdit={true}
+                isCancelDisabled={false}
+                isCopyDisabled={true}
+                isEditDisabled={false}
                 isEditMode={isEditMode}
-                isSaveDisabled={false}
+                isSaveDisabled={isSaveClicked && !areFormsValid}
                 onCancel={this.cancelChanges}
-                onComment={this.toggleCommentPanel}
-                onDelete={this.handleDelete}
                 onEdit={this.handleShowEditMode}
                 onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={false}
               />
             }
             infoComponent={<PropertyInfo/>}
@@ -485,15 +510,15 @@ class PropertyPage extends Component<Props, State> {
             tabs={[
               {
                 label: 'Perustiedot',
-                allow: true,
+                allow: true, // TODO
                 isDirty: isBasicInformationFormDirty,
                 hasError: isSaveClicked && !isBasicInformationFormValid,
               },
               {
                 label: 'Hakemuslomake',
                 allow: true, // TODO
-                /* isDirty: isLeaseAreasFormDirty, // TODO */
-                /* hasError: isSaveClicked && !isLeaseAreasFormValid, */
+                isDirty: isApplicationFormDirty,
+                hasError: isSaveClicked && !isApplicationFormValid,
               },
               {
                 label: 'Kartta',
@@ -531,7 +556,7 @@ class PropertyPage extends Component<Props, State> {
               <ContentContainer>
                 {isEditMode
                   ? <ApplicationEdit />
-                  : null // <Application />
+                  : <Application />
                 }
               </ContentContainer>
             </TabPane>
@@ -562,9 +587,12 @@ export default flowRight(
     (state) => {
       return {
         basicInformationFormValues: getFormValues(FormNames.PROPERTY_BASIC_INFORMATION)(state),
-        currentProperty: getCurrentProperty(state),
         isBasicInformationFormDirty: isDirty(FormNames.PROPERTY_BASIC_INFORMATION)(state),
         isBasicInformationFormValid: getIsFormValidById(state, FormNames.PROPERTY_BASIC_INFORMATION),
+        applicationFormValues: getFormValues(FormNames.PROPERTY_APPLICATION)(state),
+        isApplicationFormDirty: isDirty(FormNames.PROPERTY_APPLICATION)(state),
+        isApplicationFormValid: getIsFormValidById(state, FormNames.PROPERTY_APPLICATION),
+        currentProperty: getCurrentProperty(state),
         isEditMode: getIsEditMode(state),
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         isSaveClicked: getIsSaveClicked(state),
