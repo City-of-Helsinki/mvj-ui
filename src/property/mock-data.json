@@ -69,7 +69,7 @@
       "previous": true,
       "created": 1,
       "applicants": [{
-        "client_type": 1,
+        "client_type": "1",
         "company_organization": "Yritys Oy"
       }],
       "targets": [{

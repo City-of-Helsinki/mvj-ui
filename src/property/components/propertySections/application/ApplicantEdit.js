@@ -64,14 +64,13 @@ const ApplicantEdit = ({
           <FormField
             disableTouched={false} // isSaveClicked} // TODO
             fieldAttributes={{
-              label: 'Hakutyyppi',
+              label: 'Asiakastyyppi',
               read_only: false,
               required: false,
-              type: 'string',
+              type: 'radio-with-field',
             }} // TODO
             name={`${field}.client_type`}
             overrideValues={{
-              fieldType: 'radio-with-field',
               label: 'Asiakastyyppi',
               options: [{value: '1', label: 'Yritys'}, {value: '2', label: 'Henkilö'}],
             }}

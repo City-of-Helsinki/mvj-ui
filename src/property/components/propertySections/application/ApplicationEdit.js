@@ -293,7 +293,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
                   url={''} 
                 />
               </Column>
-              <WhiteBox className='application__white-stripes'> {/* TODO  : make stripes */}
+              <WhiteBox className='application__white-stripes'>
                 <TitleH3>
                   {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
                 </TitleH3>

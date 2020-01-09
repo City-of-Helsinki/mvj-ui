@@ -7,6 +7,8 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {FormNames, ViewModes} from '$src/enums';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import FileDownloadButton from '$components/file/FileDownloadButton';
+import TitleH3 from '$components/content/TitleH3';
+import WhiteBox from '$components/content/WhiteBox';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
@@ -24,6 +26,7 @@ import {
 
 import type {Attributes} from '$src/types';
 import type {Property} from '$src/property/types';
+import Applicant from './Applicant';
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -118,6 +121,16 @@ class Application extends PureComponent<Props, State> {
                   url={''} 
                 />
               </Column>
+              <WhiteBox className='application__white-stripes'>
+                <TitleH3>
+                  {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
+                </TitleH3>
+                {application.applicants.map((applicant, index)=>
+                  <Applicant
+                    applicant={applicant}
+                    key={index}
+                  />)}
+              </WhiteBox>
             </Collapse>
           </Column>
         </Row>

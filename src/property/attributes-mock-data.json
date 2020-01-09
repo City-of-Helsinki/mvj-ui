@@ -362,18 +362,18 @@
             "child": {
               "children": {
                 "client_type": {
-                  "type": "field",
+                  "label": "Asiakastyyppi",
                   "read_only": false,
                   "required": false,
-                  "label": "Asiakastyyppi",
+                  "type": "radio-with-field",
                   "choices": [
                     {
                       "display_name": "Yritys",
-                      "value": 1
+                      "value": "1"
                     },
                     {
                       "display_name": "Henkilö",
-                      "value": 2
+                      "value": "2"
                     }
                   ]
                 },
