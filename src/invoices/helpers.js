@@ -174,7 +174,7 @@ export const getContentOverdueInvoices = (invoices: Array<Object>): Array<Object
  */
 const getPayloadInvoicePayments = (invoice: Object): Array<Object> => {
   return get(invoice, 'payments', []).map((payment) => ({
-    id: invoice.id,
+    id: payment.id, 
     paid_amount: convertStrToDecimalNumber(payment.paid_amount),
     paid_date: payment.paid_date,
   }));
