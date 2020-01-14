@@ -174,7 +174,7 @@ const renderManagementSubventions = ({
             })}
 
             <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_MANAGEMENTSUBVENTION)}>
-              {!disabled &&
+              {(!disabled && fields.length < 1) &&
                 <Row>
                   <Column>
                     <AddButtonThird
@@ -210,7 +210,9 @@ const renderTemporarySubventions = ({
   usersPermissions,
 }: TemporarySubventionsProps): Element<*> => {
   const handleAdd = () => {
-    fields.push({});
+    fields.push({
+      subvention_percent: '3',
+    });
   };
 
   return (
@@ -359,10 +361,14 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   }
 
   componentDidMount(){
-    const {basisOfRent, change, field, indexOptions} = this.props;
+    const {basisOfRent, change, field, indexOptions, managementSubventions} = this.props;
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
     change(this.props.formName, `${field}.current_amount_per_area`, currentAmountPerArea);
+    if(managementSubventions !== undefined && managementSubventions.length > 0){
+      // change(this.props.formName, `${field}.subvention_discount_percentage`, formatNumber(managementSubventions[0]));
+      // change(this.props.formName, `${field}.subvention_discount_percentage`, '3');
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -381,8 +387,28 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         managementSubventions !== undefined ||
         temporarySubventions !== undefined) {
         change(this.props.formName, `${field}.discount_percentage`, formatNumber(this.calculateTotalSubventionPercent()));
+        if(managementSubventions[0]){
+          change(this.props.formName, `${field}.subvention_discount_percentage`, managementSubventions[0].subvention_percent);
+        }
+        
+        this.calculateTotalTemporarySubventionPercent();
       }
     }
+  }
+
+  calculateTotalTemporarySubventionPercent = () => {
+    const {change, field, managementSubventions, temporarySubventions} = this.props;
+
+    let base = 1;
+
+    if(managementSubventions[0].subvention_percent)
+      base = base * ((100 - (parseFloat(managementSubventions[0].subvention_percent.replace('.', ',')))) / 100);
+
+    temporarySubventions.forEach((temporarySubvention) => {
+      base = base * ((100 - (parseFloat(temporarySubvention.subvention_percent.replace('.', ',')))) / 100);
+    });
+
+    change(this.props.formName, `${field}.temporary_subvention_discount_percentage`, formatNumber((1 - base) * 100));
   }
 
   getAreaText = (amount: ?number) => {
@@ -1018,6 +1044,40 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 <FormText>{!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}</FormText>
               </Authorization>
             </Column>
+            {showSubventions && <Column small={6} medium={4} large={2}>
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
+                    ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE), required: false}
+                    : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+                  }
+                  disabled={(savedBasisOfRent && !!savedBasisOfRent.locked_at) || showSubventions}
+                  name={`${field}.subvention_discount_percentage`}
+                  unit='%'
+                  overrideValues={{label: 'Subventioprosentti'}}
+                  enableUiDataEdit
+                  tooltipStyle={{right: 17}}
+                />
+              </Authorization>
+            </Column>}
+            {showSubventions && <Column small={6} medium={4} large={2}> {/* TODO: show when has temporary subvention */}
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
+                    ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE), required: false}
+                    : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+                  }
+                  disabled={(savedBasisOfRent && !!savedBasisOfRent.locked_at) || showSubventions}
+                  name={`${field}.temporary_subvention_discount_percentage`}
+                  unit='%'
+                  overrideValues={{label: 'Tilapäisalennuksen prosentti'}}
+                  enableUiDataEdit
+                  tooltipStyle={{right: 17}}
+                />
+              </Authorization>
+            </Column>}
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
                 <FormField

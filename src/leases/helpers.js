@@ -1208,8 +1208,21 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
  */
 export const calculateBasisOfRentSubventionPercantage = (subventionAmount: string | number, currentAmountPerArea: number | number): number => {
   if(!isDecimalNumberStr(subventionAmount)) return 0;
+  if(!currentAmountPerArea) return 0;
 
   return  (1 - (Number(convertStrToDecimalNumber(subventionAmount)) / currentAmountPerArea)) * 100;
+};
+
+/**
+ * Calculate basis of rent basis subvention amount
+ * @param {string} subventionPercantage
+ * @param {number} currentAmountPerArea
+ * @return {number}
+ */
+export const calculateSubventionAmountFromPercantage = (subventionPercantage: string | number, currentAmountPerArea: number | number): number => {
+  if(!isDecimalNumberStr(subventionPercantage)) return 0;
+  if(!currentAmountPerArea) return 0;
+  return  (1 - (Number(convertStrToDecimalNumber(subventionPercantage)) / 100)) * currentAmountPerArea;
 };
 
 /**

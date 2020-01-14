@@ -1094,7 +1094,7 @@ export const LeaseBasisOfRentsFieldTitles = {
   AREA_UNIT: 'Pinta-alan yksikkö',
   BASE_YEAR_RENT: 'Perusvuosivuokra (ind 100)',
   DISCOUNT_PERCENTAGE: 'Alennusprosentti',
-  DISCOUNTED_INITIAL_YEAR_RENT: 'Alennettu alkuvuosivuokra (ind)',
+  DISCOUNTED_INITIAL_YEAR_RENT: 'Subventoitu alkuvuosivuokra (ind)',
   DISCOUNTED_INITIAL_YEAR_RENT_TOTAL: 'Alennettu alkuvuosivuokra (ind) yhteensä',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH: '1 kk vuokra',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL: '1 kk vuokra yhteensä',

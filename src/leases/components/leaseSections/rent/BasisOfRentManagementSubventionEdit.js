@@ -1,7 +1,7 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {formValueSelector} from 'redux-form';
+import {change, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import Authorization from '$components/authorization/Authorization';
@@ -11,7 +11,7 @@ import FormText from '$components/form/FormText';
 import RemoveButton from '$components/form/RemoveButton';
 import {BasisOfRentManagementSubventionsFieldPaths, BasisOfRentManagementSubventionsFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {calculateBasisOfRentSubventionAmount, calculateBasisOfRentSubventionPercantage} from '$src/leases/helpers';
+import {calculateBasisOfRentSubventionAmount, calculateBasisOfRentSubventionPercantage, calculateSubventionAmountFromPercantage} from '$src/leases/helpers';
 import {formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes} from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getIsSaveClicked} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -21,6 +21,7 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 
 type Props = {
   currentAmountPerArea: number,
+  change: Function,
   disabled: boolean,
   field: any,
   formName: string,
@@ -32,81 +33,122 @@ type Props = {
   usersPermissions: UsersPermissionsType,
 }
 
-const BasisOfRentManagementSubventionEdit = ({
-  currentAmountPerArea,
-  disabled,
-  field,
-  initialYearRent,
-  isSaveClicked,
-  leaseAttributes,
-  onRemove,
-  subventionAmount,
-  usersPermissions,
-}: Props) => {
+type State = {
+}
 
-  /* Use current amount per area to calculate percantage */
-  const subventionPercent = calculateBasisOfRentSubventionPercantage(subventionAmount, currentAmountPerArea);
+class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
 
-  /* Use initial year rent to calculate subvention total */
-  const subventionTotal = calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
+  componentDidMount() {
+    const {change, currentAmountPerArea, formName, field, subventionAmount} = this.props;
+    const subventionPercent = calculateBasisOfRentSubventionPercantage(subventionAmount, currentAmountPerArea).toFixed(2);
+    change(formName, `${field}.subvention_percent`, subventionPercent);
+  }
 
-  return (
-    <Row>
-      <Column small={4} large={2}>
-        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={getFieldAttributes(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}
-            name={`${field}.management`}
-            disabled={disabled}
-            overrideValues={{label: BasisOfRentManagementSubventionsFieldTitles.MANAGEMENT}}
-            enableUiDataEdit
-            invisibleLabel
+  onChangeCurrentSubventionAmount = (value: any) => {
+    const {change, currentAmountPerArea, formName, field} = this.props;
+    const subventionAmount = calculateSubventionAmountFromPercantage(value, currentAmountPerArea).toFixed(2);
+    change(formName, `${field}.subvention_amount`, subventionAmount);
+  };
+
+  onChangeCurrentSubventionPercent = (value: any) => {
+    const {change, currentAmountPerArea, formName, field} = this.props;
+    const subventionPercent = calculateBasisOfRentSubventionPercantage(value, currentAmountPerArea).toFixed(2);
+    change(formName, `${field}.subvention_percent`, subventionPercent);
+  };
+
+  render(){
+    const {
+      currentAmountPerArea,
+      disabled,
+      field,
+      initialYearRent,
+      isSaveClicked,
+      leaseAttributes,
+      onRemove,
+      subventionAmount,
+      usersPermissions,
+    } = this.props;
+
+    /* Use current amount per area to calculate percantage */
+    const subventionPercent = calculateBasisOfRentSubventionPercantage(subventionAmount, currentAmountPerArea);
+
+    /* Use initial year rent to calculate subvention total */
+    const subventionTotal = calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
+
+    return(
+      <Row>
+        <Column small={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT)}
+              name={`${field}.management`}
+              disabled={disabled}
+              overrideValues={{label: BasisOfRentManagementSubventionsFieldTitles.MANAGEMENT}}
+              enableUiDataEdit
+              invisibleLabel
+            />
+          </Authorization>
+        </Column>
+        <Column small={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              onChange={this.onChangeCurrentSubventionPercent}
+              fieldAttributes={getFieldAttributes(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
+              name={`${field}.subvention_amount`}
+              disabled={disabled}
+              overrideValues={{label: BasisOfRentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}}
+              unit='€'
+              invisibleLabel
+            />
+          </Authorization>
+        </Column>
+        <Column small={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+            <FormField
+              disableTouched={isSaveClicked}
+              onChange={this.onChangeCurrentSubventionAmount}
+              fieldAttributes={{
+                decimal_places: 2,
+                label: 'Subventio prosentteina',
+                max_digits: 2,
+                read_only: false,
+                required: false,
+                type: 'decimal',
+              }}
+              name={`${field}.subvention_percent`}
+              disabled={disabled}
+              unit='%'
+              invisibleLabel
+            />
+          </Authorization>
+        </Column>
+        <Column small={4} large={2}>
+          <FieldAndRemoveButtonWrapper
+            field={
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
+                <FormText className='full-width'>{formatNumber(subventionTotal)} €</FormText>
+              </Authorization>
+            }
+            removeButton={
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_MANAGEMENTSUBVENTION)}>
+                {!disabled &&
+                  <RemoveButton
+                    className='third-level'
+                    onClick={onRemove}
+                    style={{height: 'unset'}}
+                    title='Poista hallintamuoto'
+                  />
+                }
+              </Authorization>
+            }
           />
-        </Authorization>
-      </Column>
-      <Column small={4} large={2}>
-        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={getFieldAttributes(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
-            name={`${field}.subvention_amount`}
-            disabled={disabled}
-            overrideValues={{label: BasisOfRentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}}
-            unit='€'
-            invisibleLabel
-          />
-        </Authorization>
-      </Column>
-      <Column small={4} large={2}>
-        <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
-          <FormText className='full-width'>{formatNumber(subventionPercent)} %</FormText>
-        </Authorization>
-      </Column>
-      <Column small={4} large={2}>
-        <FieldAndRemoveButtonWrapper
-          field={
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
-              <FormText className='full-width'>{formatNumber(subventionTotal)} €</FormText>
-            </Authorization>
-          }
-          removeButton={
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_MANAGEMENTSUBVENTION)}>
-              {!disabled &&
-                <RemoveButton
-                  className='third-level'
-                  onClick={onRemove}
-                  style={{height: 'unset'}}
-                  title='Poista hallintamuoto'
-                />
-              }
-            </Authorization>
-          }
-        />
-      </Column>
-    </Row>
-  );
-};
+        </Column>
+      </Row>
+    );
+  }
+}
 
 export default connect(
   (state, props: Props) => {
@@ -119,5 +161,8 @@ export default connect(
       subventionAmount: selector(state, `${props.field}.subvention_amount`),
       usersPermissions: getUsersPermissions(state),
     };
+  },
+  {
+    change,
   },
 )(BasisOfRentManagementSubventionEdit);
