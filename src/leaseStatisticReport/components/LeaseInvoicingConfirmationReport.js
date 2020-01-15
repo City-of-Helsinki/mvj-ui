@@ -15,7 +15,6 @@ import ExcelLink from '$components/excel/ExcelLink';
 import {
   getApiResponseResults,
   formatDate,
-  getReferenceNumberLink,
   hasPermissions,
 } from '$util/helpers';
 import {
