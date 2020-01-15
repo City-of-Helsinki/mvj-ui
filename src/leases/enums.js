@@ -1093,7 +1093,7 @@ export const LeaseBasisOfRentsFieldTitles = {
   AREA: 'Pinta-ala',
   AREA_UNIT: 'Pinta-alan yksikkö',
   BASE_YEAR_RENT: 'Perusvuosivuokra (ind 100)',
-  DISCOUNT_PERCENTAGE: 'Alennusprosentti',
+  DISCOUNT_PERCENTAGE: 'Subventoitu ja alennettu alkuvuosivuokra (ind)',
   DISCOUNTED_INITIAL_YEAR_RENT: 'Subventoitu alkuvuosivuokra (ind)',
   DISCOUNTED_INITIAL_YEAR_RENT_TOTAL: 'Alennettu alkuvuosivuokra (ind) yhteensä',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH: '1 kk vuokra',
@@ -1160,7 +1160,7 @@ export const BasisOfRentTemporarySubventionsFieldTitles = {
   TEMPORARY_SUBVENTIONS: 'Tilapäisalennukset',
   DESCRIPTION: 'Tilapäisalennuksen tyyppi',
   SUBVENTION_AMOUNT: 'Alennus euroa/vuosi',
-  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_PERCENT: 'Alennus subventoidusta alkuvuosivuokrasta',
 };
 
 /**
