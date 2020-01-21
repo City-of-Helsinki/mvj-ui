@@ -382,6 +382,144 @@
                   "required": false,
                   "read_only": false,
                   "label": "Organisaatio"
+                },
+                "company_y_identifier": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Y-tunnus"
+                },
+                "company_founding_year": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hakijayrityksen perustmisvuosi"
+                },
+                "company_revenue": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Liikevaihto (edellinen vuosi)"
+                },
+                "company_address": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Katuosoite"
+                },
+                "company_postal_code": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Postinumero"
+                },
+                "company_city": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kaupunki"
+                },
+                "company_email": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Sähköposti"
+                },
+                "company_phonenumber": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Puhelinnumero"
+                },
+                "contact_name": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Nimi"
+                },
+                "contact_address": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Katuosoite"
+                },
+                "contact_postalcode": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Postinumero"
+                },
+                "contact_city": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kaupunki"
+                },
+                "contact_phonenumber": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Puhelinnumero"
+                },
+                "person_name": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Nimi"
+                },
+                "person_hetu": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hetu"
+                },
+                "person_email": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Sähköposti"
+                },
+                "person_phonenumber": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Puhelinnumero"
+                },
+                "person_address": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Katuosoite"
+                },
+                "person_postalcode": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Postinumero"
+                },
+                "person_city": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kaupunki"
+                },
+                "transcript_address": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Katuosoite"
+                },
+                "transcript_postalcode": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Postinumero"
+                },
+                "transcript_city": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kaupunki"
                 }
               }
             }

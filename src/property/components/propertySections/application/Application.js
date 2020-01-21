@@ -130,6 +130,11 @@ class Application extends PureComponent<Props, State> {
                     applicant={applicant}
                     key={index}
                   />)}
+                {/* application.targets.map((target, index)=>
+                  <Target
+                    target={target}
+                    key={index}
+                  />) */} {/* // TOOD */}
               </WhiteBox>
             </Collapse>
           </Column>

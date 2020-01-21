@@ -70,7 +70,30 @@
       "created": 1,
       "applicants": [{
         "client_type": "1",
-        "company_organization": "Yritys Oy"
+        "company_organization": "Yritys Oy",
+        "company_y_identifier": "y-10234",
+        "company_founding_year": "1988",
+        "company_revenue": "10M",
+        "company_address": "Pasilankatu 12",
+        "company_postal_code": "00100",
+        "company_city": "Helsinki",
+        "company_email": "yritys@email.fi",
+        "company_phonenumber": "0401233456",
+        "contact_name": "Teppo Tiiroinen",
+        "contact_address": "Esplanadi 11",
+        "contact_postalcode": "00900",
+        "contact_city": "Helsinki",
+        "contact_phonenumber": "0100 12345678",
+        "person_name": "Tarmo Turunen",
+        "person_hetu": "01011988-123A",
+        "person_email": "tarmo@email.fi",
+        "person_phonenumber": "0100 1234321",
+        "person_address": "Tikkurilantie",
+        "person_postalcode": "00300",
+        "person_city": "Vantaa",
+        "transcript_address": "Lammila",
+        "transcript_postalcode": "00110",
+        "transcript_city": "Kotka"
       }],
       "targets": [{
 

@@ -107,7 +107,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_y-value`}
+            name={`${field}.company_y_identifier`}
             overrideValues={{
               label: 'Y-tunnus',
             }}
@@ -123,7 +123,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_founding_year`}
+            name={`${field}.company_founding_year`}
             overrideValues={{
               label: 'Hakijayrityksen perustmisvuosi',
             }}
@@ -139,7 +139,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_revenue_last_year`}
+            name={`${field}.company_revenue`}
             overrideValues={{
               label: 'Liikevaihto (edellinen vuosi)',
             }}
@@ -157,7 +157,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_address`}
+            name={`${field}.company_address`}
             overrideValues={{
               label: 'Katuosoite',
             }}
@@ -173,7 +173,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_postal_code`}
+            name={`${field}.company_postal_code`}
             overrideValues={{
               label: 'Postinumero',
             }}
@@ -189,7 +189,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_city`}
+            name={`${field}.company_city`}
             overrideValues={{
               label: 'Kaupunki',
             }}
@@ -205,7 +205,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_email`}
+            name={`${field}.company_email`}
             overrideValues={{
               label: 'Sähköposti',
             }}
@@ -221,7 +221,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.comppany_phonenumber`}
+            name={`${field}.company_phonenumber`}
             overrideValues={{
               label: 'Puhelinnumero',
             }}
@@ -242,7 +242,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.contact_phonenumber`}
+            name={`${field}.contact_name`}
             overrideValues={{
               label: 'Nimi',
             }}
@@ -258,7 +258,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.contact_street_address`}
+            name={`${field}.contact_address`}
             overrideValues={{
               label: 'Katuosoite',
             }}
@@ -343,7 +343,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.person_social_security_number`}
+            name={`${field}.person_hetu`}
             overrideValues={{
               label: 'Hetu',
             }}
@@ -393,7 +393,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.contact_phonenumber`}
+            name={`${field}.person_phonenumber`}
             overrideValues={{
               label: 'Puhelinnumero',
             }}
@@ -404,14 +404,14 @@ const ApplicantEdit = ({
             className={'application__input'}
             disableTouched={false} // isSaveClicked} // TODO
             fieldAttributes={{
-              label: 'Puhelinnumero',
+              label: 'Katuosoite',
               read_only: false,
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.contact_phonenumber`}
+            name={`${field}.person_address`}
             overrideValues={{
-              label: 'Puhelinnumero',
+              label: 'Katuosoite',
             }}
           />
         </Column>
@@ -420,14 +420,30 @@ const ApplicantEdit = ({
             className={'application__input'}
             disableTouched={false} // isSaveClicked} // TODO
             fieldAttributes={{
-              label: 'Puhelinnumero',
+              label: 'Postinumero',
               read_only: false,
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.contact_phonenumber`}
+            name={`${field}.person_postalcode`}
             overrideValues={{
-              label: 'Puhelinnumero',
+              label: 'Postinumero',
+            }}
+          />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <FormField
+            className={'application__input'}
+            disableTouched={false} // isSaveClicked} // TODO
+            fieldAttributes={{
+              label: 'Kaupunki',
+              read_only: false,
+              required: false,
+              type: 'string',
+            }} // TODO
+            name={`${field}.person_city`}
+            overrideValues={{
+              label: 'Kaupunki',
             }}
           />
         </Column>
@@ -446,7 +462,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.transcript_phonenumber`}
+            name={`${field}.transcript_address`}
             overrideValues={{
               label: 'Katuosoite',
             }}
@@ -462,7 +478,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.transcript_phonenumber`}
+            name={`${field}.transcript_postalcode`}
             overrideValues={{
               label: 'Postinumero',
             }}
@@ -478,7 +494,7 @@ const ApplicantEdit = ({
               required: false,
               type: 'string',
             }} // TODO
-            name={`${field}.transcript_phonenumber`}
+            name={`${field}.transcript_city`}
             overrideValues={{
               label: 'Kaupunki',
             }}
