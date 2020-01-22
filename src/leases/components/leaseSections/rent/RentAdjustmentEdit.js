@@ -306,6 +306,9 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
     const {change, field} = this.props;
 
     change(formName, `${field}.subvention_type`, null);
+    change(formName, `${field}.management_subventions`, []);
+    change(formName, `${field}.temporary_subventions`, []);
+    
     this.setState({showSubventions: false});
   }
 
