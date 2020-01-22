@@ -1343,6 +1343,29 @@ export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: numb
   return (1 - discount) * 100;
 };
 
+/**
+ * Calculate subvention discount total
+ * @param {number} initialYearRent
+ * @param {Object[]} managementSubventions
+ * @param {number} currentAmountPerArea
+ * @return {number}
+ */
+export const calculateSubventionDiscountTotal = (initialYearRent: number, managementSubventions: ?Array<Object>, currentAmountPerArea: number) => {
+  if(managementSubventions && managementSubventions[0] && managementSubventions[0].subvention_amount !== null){
+    return Number(initialYearRent * (1 - ((currentAmountPerArea - Number(convertStrToDecimalNumber(managementSubventions[0].subvention_amount))) / currentAmountPerArea)));
+  }
+  return Number(initialYearRent);
+};
+
+/**
+ * Calculate basis of rent subvention percent
+ * @param {number} initialYearRent
+ * @param {number} reLeaseDiscountPercent
+ * @return {number}
+ */
+export const calculateSubventionDiscountTotalFromReLease = (initialYearRent: number, reLeaseDiscountPercent: number) => {
+  return Number(initialYearRent * (1 - reLeaseDiscountPercent / 100));
+};
 
 /**
  * Get content of management subventions from rent adjustment

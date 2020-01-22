@@ -44,6 +44,8 @@ import {
   calculateBasisOfRentSubventionAmount,
   calculateReLeaseDiscountPercent,
   calculateBasisOfRentSubventionPercent,
+  calculateSubventionDiscountTotal,
+  calculateSubventionDiscountTotalFromReLease,
   calculateTemporarySubventionDiscountPercentage,
   getBasisOfRentIndexValue,
   getBasisOfRentById,
@@ -371,6 +373,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
     change(this.props.formName, `${field}.current_amount_per_area`, currentAmountPerArea);
+    this.changeDiscounts();
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -380,7 +383,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       this.props.subventionGraduatedPercent !== prevProps.subventionGraduatedPercent ||
       this.props.managementSubventions !== prevProps.managementSubventions ||
       this.props.temporarySubventions !== prevProps.temporarySubventions)) {
-      const {change, field, subventionType, subventionBasePercent, subventionGraduatedPercent, managementSubventions, temporarySubventions} = this.props;
+      const {subventionType, subventionBasePercent, subventionGraduatedPercent, managementSubventions, temporarySubventions} = this.props;
 
       // Don't change discount_percent automatically if basis of rent is deleted
       if(subventionType !== undefined ||  
@@ -388,24 +391,26 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         subventionGraduatedPercent !== undefined ||
         managementSubventions !== undefined ||
         temporarySubventions !== undefined) {
-        
-        const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
-        
-        change(this.props.formName, `${field}.discount_percentage`, formatNumber(this.calculateTotalSubventionPercent()));
-        
-        if(subventionType === SubventionTypes.RE_LEASE){
-          change(this.props.formName, `${field}.subvention_discount_percentage`, releaseDiscountPercent);
-        }
-        if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT){
-          if(managementSubventions && managementSubventions[0]){
-            change(this.props.formName, `${field}.subvention_discount_percentage`, managementSubventions[0].subvention_percent);
-          }
-        }
-
-        this.calculateTotalTemporarySubventionPercent();
-        
+        this.changeDiscounts();
       }
     }
+  }
+
+  changeDiscounts(){
+    const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
+    const {change, field, subventionType, managementSubventions} = this.props;
+    
+    if(subventionType === SubventionTypes.RE_LEASE){
+      change(this.props.formName, `${field}.discount_percentage`, formatNumber(this.calculateTotalSubventionPercent()));
+      change(this.props.formName, `${field}.subvention_discount_percentage`, releaseDiscountPercent.toFixed(2));
+    }
+    if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT){
+      change(this.props.formName, `${field}.discount_percentage`, formatNumber(this.calculateTotalSubventionPercent()));
+      if(managementSubventions && managementSubventions[0]){
+        change(this.props.formName, `${field}.subvention_discount_percentage`, managementSubventions[0].subvention_percent);
+      }
+    }
+    this.calculateTotalTemporarySubventionPercent();
   }
 
   calculateTotalTemporarySubventionPercent = () => {
@@ -697,6 +702,20 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     change(this.props.formName, `${field}.current_amount_per_area`, currentAmountPerArea);
   }
 
+  getSubventionDiscountedInitial = () => {
+    const {subventionType, managementSubventions, basisOfRent, indexOptions} = this.props;
+    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+    const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
+
+    if(subventionType === SubventionTypes.RE_LEASE)
+      return calculateSubventionDiscountTotalFromReLease(initialYearRent, releaseDiscountPercent);
+    if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT)
+      return calculateSubventionDiscountTotal(initialYearRent, managementSubventions, currentAmountPerArea);
+    return 0;
+  }
+
   render() {
     const {
       amountPerArea,
@@ -745,7 +764,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const releaseDiscountAmount = calculateBasisOfRentSubventionAmount(initialYearRent, releaseDiscountPercent.toString());
     const totalSubventionPercent = this.calculateTotalSubventionPercent();
     const totalSubventionAmount = calculateBasisOfRentSubventionAmount(initialYearRent, totalSubventionPercent.toString());
-    
+    const subventionDiscountedInitial = this.getSubventionDiscountedInitial();
 
     if(archived && savedBasisOfRent) {
       return <BasisOfRent
@@ -1069,12 +1088,18 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                   />
                 </Authorization>
               </Column>
-              <Column small={6} medium={8} large={10}>
-                {/* Silence is  golden */}
+              <Column small={5} medium={4} large={3}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
+                  <FormTextTitle>
+                    {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL}
+                  </FormTextTitle>
+                  <FormText>{!isEmptyValue(subventionDiscountedInitial) ? `${formatNumber(subventionDiscountedInitial)} €/v` : '-'}</FormText>
+                </Authorization>
               </Column>
+              <Column small={0} medium={3} large={6}></Column>
             </Fragment>
             }
-              
+
             {showSubventions && <Fragment>
               <Column small={6} medium={4} large={2}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
@@ -1093,9 +1118,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                   />
                 </Authorization>
               </Column>
-              <Column small={6} medium={8} large={10}>
-                {/* Silence is  golden */}
-              </Column>
+              <Column small={6} medium={8} large={10}></Column>
             </Fragment>
             }
             <Column small={6} medium={4} large={2}>
@@ -1116,9 +1139,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 />
               </Authorization>
             </Column>
-            <Column small={6} medium={4} large={1}>
-              {/* Silence is golden */}
-            </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={
                 isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
@@ -1133,9 +1153,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 <FormText>{!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</FormText>
               </Authorization>
             </Column>
-            <Column small={6} medium={4} large={1}>
-              {/* Silence is golden */}
-            </Column>
+            <Column small={6} medium={4} large={1}></Column>
             <Column small={6} medium={4} large={1}>
               <Authorization allow={
                 isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
