@@ -27,6 +27,7 @@ import {
 import type {Attributes} from '$src/types';
 import type {Property} from '$src/property/types';
 import Applicant from './Applicant';
+import Target from './Target';
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -49,8 +50,8 @@ class Application extends PureComponent<Props, State> {
 
     receiveCollapseStates({
       [ViewModes.READONLY]: {
-        [FormNames.PROPERTY_BASIC_INFORMATION]: {
-          basic_information: val,
+        [FormNames.PROPERTY_APPLICATION]: {
+          application: val,
         },
       },
     });
@@ -68,7 +69,6 @@ class Application extends PureComponent<Props, State> {
     const extraOptions = getFieldOptions(attributes, 'application_base.child.children.extra');
     const createdOptions = getFieldOptions(attributes, 'application_base.child.children.created');
 
-    console.log(application);
     return (
       <Fragment>
         <Title>
@@ -79,17 +79,15 @@ class Application extends PureComponent<Props, State> {
           <Column small={12}>
             <Collapse
               defaultOpen={applicationCollapseState !== undefined ? applicationCollapseState : true}
-              hasErrors={false} // {isSaveClicked && !isEmpty(errors)} // TODO
               headerTitle={ApplicationFieldTitles.APPLICATION_BASE}
               onToggle={this.handleBasicInfoCollapseToggle}
-              enableUiDataEdit
             >
               <Row>
                 <Column large={3}>
                   <FormTextTitle >
                     {ApplicationFieldTitles.APPLICATION_DEFAULT}
                   </FormTextTitle>
-                  <FormText>{+application.default}</FormText>
+                  <FormText>{application.default?'Hakytyypin oletuslomake':'-'}</FormText>
                 </Column>
                 <Column large={4}>
                   <FormTitleAndText
@@ -103,7 +101,7 @@ class Application extends PureComponent<Props, State> {
                   <FormTextTitle >
                     {ApplicationFieldTitles.APPLICATION_PREVIOUS}
                   </FormTextTitle>
-                  <FormText>{+application.previous}</FormText>
+                  <FormText>{application.previous?'Aiemmin luotu lomake':'-'}</FormText>
                 </Column>
                 <Column large={4}>
                   <FormTitleAndText
@@ -130,11 +128,11 @@ class Application extends PureComponent<Props, State> {
                     applicant={applicant}
                     key={index}
                   />)}
-                {/* application.targets.map((target, index)=>
+                {application.targets.map((target, index)=>
                   <Target
                     target={target}
                     key={index}
-                  />) */} {/* // TOOD */}
+                  />)}
               </WhiteBox>
             </Collapse>
           </Column>

@@ -4,6 +4,8 @@ import {connect} from 'react-redux';
 import {reduxForm, FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import flowRight from 'lodash/flowRight';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -11,11 +13,15 @@ import {ButtonColors} from '$components/enums';
 import {ConfirmationModalTexts} from '$src/enums';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
-import {FormNames} from '$src/enums';
+import {FormNames, ViewModes} from '$src/enums';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {
+  receiveCollapseStates,
+  receiveIsSaveClicked,
+} from '$src/property/actions';
 import {
   getFieldOptions,
   getLabelOfOption,
@@ -23,8 +29,9 @@ import {
 import {
   getAttributes,
   getIsSaveClicked,
+  getCollapseStateByKey, 
+  getErrorsByFormName, 
 } from '$src/property/selectors';
-
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import SuggestedEdit from './SuggestedEdit';
@@ -115,21 +122,41 @@ type Props = {
   field: any,
   formName: string,
   initialYearRent: number,
+  errors: ?Object,
+  propertySiteId: number,
+  receiveCollapseStates: Function,
   isSaveClicked: boolean,
   attributes: Attributes,
   onRemove: Function,
   usersPermissions: UsersPermissionsType,
   targetIdentifier: string,
+  collapseState: boolean,
 }
 
 const PropertySiteEdit = ({
   field,
   isSaveClicked,
+  propertySiteId,
+  collapseState,
+  errors,
   attributes,
   onRemove,
   targetIdentifier,
-  //  usersPermissions,
+  receiveCollapseStates,
 }: Props) => {
+
+  const handleCollapseToggle = (val: boolean) => {
+
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        [FormNames.PROPERTY_BASIC_INFORMATION]: {
+          property_site: {
+            [propertySiteId]: val,
+          },
+        },
+      },
+    });
+  };
 
   const identifierOptions = getFieldOptions(attributes, 'property_sites.child.children.target_identifier');
   const leaseIdOptions = getFieldOptions(attributes, 'property_sites.child.children.lease_id');
@@ -138,13 +165,16 @@ const PropertySiteEdit = ({
   const useOptions = getFieldOptions(attributes, 'property_sites.child.children.use');
   const fundingOptions = getFieldOptions(attributes, 'property_sites.child.children.funding');
   const ownershipOptions = getFieldOptions(attributes, 'property_sites.child.children.ownership');
+  const propertySiteErrors = get(errors, field);
 
   return (
     <Collapse
       className='collapse__secondary greenCollapse'
-      defaultOpen={true}
+      defaultOpen={collapseState !== undefined ? collapseState : true}
       headerTitle={getLabelOfOption(identifierOptions, targetIdentifier) || '-'}
       onRemove={onRemove}
+      hasErrors={isSaveClicked && !isEmpty(propertySiteErrors)}
+      onToggle={handleCollapseToggle}
     >
       <Row>
         <Column small={6} medium={4} large={2}>
@@ -285,21 +315,29 @@ const PropertySiteEdit = ({
 
 const formName = FormNames.PROPERTY_BASIC_INFORMATION;
 
-export default connect(
-  (state, props: Props) => {
-    const formName = props.formName;
-    const selector = formValueSelector(formName);
-
-    return {
-      attributes: getAttributes(state),
-      isSaveClicked: getIsSaveClicked(state),
-      // GetCollapseStates TODO: 
-      type: selector(state, `${props.field}.type`),
-      targetIdentifier: selector(state, `${props.field}.target_identifier`),
-      decisionToList: selector(state, `${props.field}.decision_to_list`),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
+export default flowRight(
+  connect(
+    (state, props: Props) => {
+      const formName = props.formName;
+      const selector = formValueSelector(formName);
+      const id = selector(state, `${props.field}.id`);
+      return {
+        attributes: getAttributes(state),
+        isSaveClicked: getIsSaveClicked(state),
+        collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PROPERTY_BASIC_INFORMATION}.property_site.${id}`),
+        type: selector(state, `${props.field}.type`),
+        targetIdentifier: selector(state, `${props.field}.target_identifier`),
+        decisionToList: selector(state, `${props.field}.decision_to_list`),
+        usersPermissions: getUsersPermissions(state),
+        errors: getErrorsByFormName(state, formName),
+        propertySiteId: id,
+      };
+    },
+    {
+      receiveCollapseStates,
+      receiveIsSaveClicked,
+    }
+  ),
   reduxForm({
     form: formName,
     destroyOnUnmount: false,

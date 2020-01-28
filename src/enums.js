@@ -426,6 +426,7 @@ export const FormNames = {
   LEASE_TENANTS: 'tenants-form',
   LEASEHOLD_TRANSFER_SEARCH: 'leasehold-transfer-search-form',
   PROPERTY_SUMMARY: 'property-form',
+  PROPERTY_SEARCH: 'property-search',
   RENT_BASIS: 'rent-basis-form',
   RENT_BASIS_SEARCH: 'rent-basis-search-form',
   RENT_CALCULATOR: 'rent-calculator-form',

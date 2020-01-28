@@ -327,11 +327,11 @@
             "label": "Lomakkeen lisäosat",
             "choices": [
               {
-                "display_name": "one",
+                "display_name": "extra",
                 "value": 1
               },
               {
-                "display_name": "two",
+                "display_name": "liite",
                 "value": 2
               }
             ]
@@ -349,11 +349,11 @@
             "label": "Luodut hakulomakkeet",
             "choices": [
               {
-                "display_name": "one",
+                "display_name": "extra",
                 "value": 1
               },
               {
-                "display_name": "two",
+                "display_name": "liite",
                 "value": 2
               }
             ]
@@ -520,6 +520,171 @@
                   "required": false,
                   "read_only": false,
                   "label": "Kaupunki"
+                }
+              }
+            }
+          },
+          "target": {
+            "child": {
+              "children": {
+                "target_property": {
+                  "label": "Tontti, jota hakemus koskee",
+                  "read_only": false,
+                  "required": false,
+                  "type": "radio-with-field",
+                  "choices": [
+                    {
+                      "display_name": "Mäntylä",
+                      "value": "1"
+                    },
+                    {
+                      "display_name": "Kuusamo",
+                      "value": "2"
+                    }
+                  ]
+                },
+                "percentage" : {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "%-perusteinen"
+                },
+                "head_planner": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hankkeen pääsuunnittelija"
+                },
+                "estimated_schedule": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hannkeen arvioitu aikataulu"
+                },
+                "desired_size": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hankkeen toivottu laajuus (rakennusoikeus ja asuntojen lkm)"
+                },
+                "funding": {
+                  "label": "Rahoitus- ja hallintamuoto",
+                  "read_only": false,
+                  "required": false,
+                  "type": "checkbox",
+                  "choices": [
+                    {
+                      "display_name": "Sääntelemätön omistus",
+                      "value": 1
+                    },
+                    {
+                      "display_name": "Hitas omistus",
+                      "value": 2
+                    },
+                    {
+                      "display_name": "Hintakontrolloitu omistus",
+                      "value": 3
+                    },
+                    {
+                      "display_name": "Asumisoikeus",
+                      "value": 4
+                    },
+                    {
+                      "display_name": "Sääntelemätön vuokra",
+                      "value": 5
+                    },
+                    {
+                      "display_name": "Valtion tukema vuokra 10v",
+                      "value": 6
+                    },
+                    {
+                      "display_name": "Valtion tukema vuokra pitkä",
+                      "value": 7
+                    },
+                    {
+                      "display_name": "Valtion tukema takauslaina",
+                      "value": 8
+                    },
+                    {
+                      "display_name": "Muu:",
+                      "value": 9
+                    }
+                  ]},
+                "special": {
+                  "label": "Erityisryhmät",
+                  "read_only": false,
+                  "required": false,
+                  "type": "checkbox",
+                  "choices": [
+                    {
+                      "display_name": "Opiskelijat",
+                      "value": 1
+                    },
+                    {
+                      "display_name": "Nuoret/nuoret aikuiset",
+                      "value": 2
+                    },
+                    {
+                      "display_name": "Seniorit",
+                      "value": 3
+                    },
+                    {
+                      "display_name": "Muut erityisryhmät, mitä:",
+                      "value": 4
+                    }
+                  ]},
+                "other": {
+                  "label": "Muut hankkeen mahdolliset kehitysteemat",
+                  "read_only": false,
+                  "required": false,
+                  "type": "checkbox",
+                  "choices": [
+                    {
+                      "display_name": "Luontoa säästävät energiaratkaisut",
+                      "value": 1
+                    },
+                    {
+                      "display_name": "Hiilineutraali Helsinki 2035",
+                      "value": 2
+                    },
+                    {
+                      "display_name": "Asuntojen muunneltavuus",
+                      "value": 3
+                    },
+                    {
+                      "display_name": "Yhteisöllisyys",
+                      "value": 4
+                    },
+                    {
+                      "display_name": "Kohtuuhintainen asuminen",
+                      "value": 5
+                    },
+                    {
+                      "display_name": "Kehittyvä kerrostalo -hanke",
+                      "value": 6
+                    },
+                    {
+                      "display_name": "Muu:",
+                      "value": 7
+                    }
+                  ]},
+                "overal_picture": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hankkeen yleiskuvaus"
+                },
+                "peculiarities": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hankkeen mahdolliset eristyispiirteet ja mahdolliset kehittämisteemat"
+                },
+                "descriptions" : {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Lyhyt kuvaus hankkeen suunnilusta ja toteutustavasta ja -organisaatiosta sekä hajikjan käytössä olevista taloudellisista ja muista resursseista"
                 }
               }
             }

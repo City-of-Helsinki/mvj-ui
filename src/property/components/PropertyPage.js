@@ -252,8 +252,6 @@ class PropertyPage extends Component<Props, State> {
     receiveIsSaveClicked(false);
     clearFormValidFlags();
 
-    console.log('INITIALIZE FORMS!!!');
-
     showEditMode();
     this.destroyAllForms();
     this.initializeForms(currentProperty);
@@ -269,7 +267,6 @@ class PropertyPage extends Component<Props, State> {
 
   initializeForms = (property: Property) => {
     const {initialize} = this.props;
-
     initialize(FormNames.PROPERTY_BASIC_INFORMATION, getContentBasicInformation(property));
     initialize(FormNames.PROPERTY_APPLICATION, getContentApplication(property));
   }
@@ -336,8 +333,6 @@ class PropertyPage extends Component<Props, State> {
         payload = {...payload, ...basicInformationFormValues};
       }
       
-      console.log('Is application form dirty: ', isApplicationFormDirty, applicationFormValues);
-
       if(isApplicationFormDirty) {
         payload = {...payload, application_base: {...applicationFormValues}};
       }
@@ -423,7 +418,7 @@ class PropertyPage extends Component<Props, State> {
     }
 
     const storedApplicationFormValues = getSessionStorageItem(FormNames.PROPERTY_APPLICATION);
-    if(storedBasicInformationFormValues) {
+    if(storedApplicationFormValues) {
       this.bulkChange(FormNames.PROPERTY_APPLICATION, storedApplicationFormValues);
     }
 

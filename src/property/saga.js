@@ -30,7 +30,6 @@ function* fetchPropertySaga({payload: search}): Generator<any, any, any> {
 function* fetchSinglePropertySaga({payload: propertyId}): Generator<any, any, any> {
   console.log(propertyId);
   const bodyAsJson = mockData[0];
-  console.log(bodyAsJson);
   yield put(receiveSingleProperty(bodyAsJson));
 }
 
@@ -41,7 +40,6 @@ function* createPropertySaga({payload: property}): Generator<any, any, any> {
 }
 
 function* editPropertySaga({payload: property}): Generator<any, any, any> {
-  console.log(property);
   yield put(receiveSingleProperty(property));
   yield put(hideEditMode());
   displayUIMessage({title: '', body: 'Tonttihaku tallennettu'});

@@ -96,7 +96,17 @@
         "transcript_city": "Kotka"
       }],
       "targets": [{
-
+        "target_property": "1",
+        "percentage": 10,
+        "head_planner": "Teuvo Tarmola",
+        "estimated_schedule": "2020-2022",
+        "desired_size": "12",
+        "funding": [1, 2, 4],
+        "special": [2],
+        "other": [3, 6],
+        "overal_picture": "Test",
+        "peculiarities": "Test",
+        "descriptions" : "Test"
       }]
     }
   }

@@ -175,7 +175,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle>
                     {PropertyFieldTitles.DECISION_TO_LIST}
                   </FormTextTitle>
-                  {!!property.decisions.length && property.decisions.map((decision, index) => 
+                  {!!property.decisions && property.decisions.map((decision, index) => 
                     <Row key={index}>
                       <Column>
                         <SingleRadioInput

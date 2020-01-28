@@ -32,6 +32,7 @@ import {
   getReferenceNumberLink,
   getLabelOfOption,
   setPageTitle,
+  getSearchQuery,
 } from '$util/helpers';
 import {
   DEFAULT_SORT_KEY,
@@ -56,12 +57,15 @@ const visualizationTypeOptions = [
 ];
 
 type Props = {
+  history: Object,
+  location: Object,
   createProperty: Function,
   usersPermissions: UsersPermissionsType,
   receiveTopNavigationSettings: Function,
 }
 
 type State = {
+  activePage: number,
   visualizationType: string,
   propertyStates: Array<string>,
   sortKey: string,
@@ -75,6 +79,7 @@ class PropertyListPage extends PureComponent<Props, State> {
     propertyStates: DEFAULT_PROPERTY_STATES,
     sortKey: DEFAULT_SORT_KEY,
     sortOrder: DEFAULT_SORT_ORDER,
+    activePage: 1,
   }
 
   static contextTypes = {
@@ -217,7 +222,12 @@ class PropertyListPage extends PureComponent<Props, State> {
   }
 
   handleRowClick = () => {
-    // TODO 
+    const {history, location: {search}} = this.props;
+
+    return history.push({
+      pathname: `${getRouteById(Routes.PROPERTY)}/1`,
+      search: search,
+    });
   }
 
   handleSortingChange = () => {
@@ -233,7 +243,17 @@ class PropertyListPage extends PureComponent<Props, State> {
     createProperty(property);
   }
 
-  // AUTHORIZE
+  handleSearchChange = (query: Object) => {
+    const {history} = this.props;
+
+    this.setState({activePage: 1});
+    delete query.page;
+
+    return history.push({
+      pathname: getRouteById(Routes.PROPERTY),
+      search: getSearchQuery(query),
+    });
+  }
 
   render() {
     const {
@@ -249,8 +269,6 @@ class PropertyListPage extends PureComponent<Props, State> {
 
     return (
       <PageContainer>
-
-        {/* AUTHORIZE */}
         <Row>
           <Column small={12} large={4}>
             <AddButtonSecondary
@@ -261,6 +279,7 @@ class PropertyListPage extends PureComponent<Props, State> {
           </Column>
           <Column small={12} large={8}>
             <Search
+              onSearch={this.handleSearchChange}
             />
           </Column>
         </Row>
@@ -315,7 +334,6 @@ class PropertyListPage extends PureComponent<Props, State> {
             </Fragment>
           }
         </TableWrapper>
-
       </PageContainer>
     );
   }

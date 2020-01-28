@@ -37,6 +37,7 @@ export const getContentApplication = (property: Property): Object => {
     previous: property.application_base.previous,
     created: property.application_base.created,
     applicants: property.application_base.applicants,
+    targets: property.application_base.targets,
   };
 };
 
@@ -55,6 +56,7 @@ export const getContentSearchProperties = (searchProperties: Object): Object => 
  */
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.PROPERTY_BASIC_INFORMATION);
+  removeSessionStorageItem(FormNames.PROPERTY_APPLICATION);
   removeSessionStorageItem('propertyId');
   removeSessionStorageItem('propertyValidity');
 };

@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -25,17 +26,21 @@ import {
   receiveCollapseStates,
 } from '$src/property/actions';
 import {
+  getAttributes,
   getCollapseStateByKey,
+  getIsSaveClicked,
 } from '$src/property/selectors';
 import ApplicantEdit from './ApplicantEdit';
 import TargetEdit from './TargetEdit';
+import type {Attributes} from '$src/types';
 
 type ApplicantProps = {
   disabled: boolean,
   fields: any,
   formName: string,
-  // leaseAttrobites
-  // usersPermissions: UsersPermissionsType,
+  isSaveClicked: Boolean,
+  usersPermissions: UsersPermissionsType,
+  attributes: Attributes,
 }
 
 const renderApplicant = ({
@@ -96,8 +101,9 @@ type TargetProps = {
   disabled: boolean,
   fields: any,
   formName: string,
-  // leaseAttrobites
-  // usersPermissions: UsersPermissionsType,
+  isSaveClicked: Boolean,
+  usersPermissions: UsersPermissionsType,
+  attributes: Attributes,
 }
 
 const renderTarget = ({
@@ -159,6 +165,8 @@ type Props = {
   receiveCollapseStates: Function,
   usersPermissions: UsersPermissionsType,
   formName: string,
+  isSaveClicked: boolean,
+  attributes: Attributes,
 }
 
 type State = {
@@ -188,8 +196,9 @@ class ApplicationEdit extends PureComponent<Props, State> {
   render (){
     const {
       collapseStateBasic,
+      isSaveClicked,
+      attributes,
     } = this.props;
-  
     return (
       <form>
         <Title uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}>
@@ -200,7 +209,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
           <Column small={12}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              hasErrors={false} // {isSaveClicked && !isEmpty(errors)} // TODO
+              hasErrors={isSaveClicked} // {isSaveClicked && !isEmpty(errors)} // TODO
               headerTitle={ApplicationFieldTitles.APPLICATION_BASE}
               onToggle={this.handleBasicInfoCollapseToggle}
               enableUiDataEdit
@@ -209,13 +218,8 @@ class ApplicationEdit extends PureComponent<Props, State> {
               <Row>
                 <Column large={3}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Hakutyyppi',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'application_base.child.children.default')}
                     name={`default`}
                     overrideValues={{
                       fieldType: 'checkbox',
@@ -228,18 +232,11 @@ class ApplicationEdit extends PureComponent<Props, State> {
                 </Column>
                 <Column large={4}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Lomakkeen lisäosat',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'application_base.child.children.extra')}
                     name={`extra`}
                     overrideValues={{
-                      fieldType: 'choice',
                       label: ApplicationFieldTitles.APPLICATION_EXTRA,
-                      options: [{value: 1, label: 'one'}, {value: 2, label: 'two'}],
                     }}
                     enableUiDataEdit
                   />
@@ -248,18 +245,11 @@ class ApplicationEdit extends PureComponent<Props, State> {
               <Row>
                 <Column large={3}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Aiemmin luotu lomake',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'application_base.child.children.previous')}
                     name={`previous`}
                     overrideValues={{
-                      fieldType: 'checkbox',
                       label: ApplicationFieldTitles.APPLICATION_PREVIOUS,
-                      options: [{value: 1, label: 'Aiemmin luotu lomake'}],
                     }}
                     enableUiDataEdit
                     invisibleLabel
@@ -267,18 +257,11 @@ class ApplicationEdit extends PureComponent<Props, State> {
                 </Column>
                 <Column large={4}>
                   <FormField
-                    disableTouched={false} // isSaveClicked} // TODO
-                    fieldAttributes={{
-                      label: 'Lomakkeen lisäosat',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'application_base.child.children.created')}
                     name={`created`}
                     overrideValues={{
-                      fieldType: 'choice',
                       label: ApplicationFieldTitles.APPLICATION_CREATED,
-                      options: [{value: 1, label: 'one'}, {value: 2, label: 'two'}],
                     }}
                     enableUiDataEdit
                   />
@@ -299,19 +282,15 @@ class ApplicationEdit extends PureComponent<Props, State> {
                 </TitleH3>
                 <FieldArray
                   component={renderApplicant}
-                  // attributes
                   disabled={false}
-                  formName={FormNames.PROPERTY_APPLICATION} // TODO formname from form FormNames 
+                  formName={FormNames.PROPERTY_APPLICATION}
                   name={'applicants'}
-                  // usersPermissions={usersPermissions}
                 />
                 <FieldArray
                   component={renderTarget}
-                  // attributes
                   disabled={false}
-                  formName={FormNames.PROPERTY_APPLICATION} // TODO formname from form FormNames 
+                  formName={FormNames.PROPERTY_APPLICATION}
                   name={'targets'}
-                  // usersPermissions={usersPermissions}
                 />
               </WhiteBox>
             </Collapse>
@@ -323,14 +302,15 @@ class ApplicationEdit extends PureComponent<Props, State> {
 }
 
 const formName = FormNames.PROPERTY_APPLICATION;
-// const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
         usersPermissions: getUsersPermissions(state),
         collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PROPERTY_APPLICATION}.basic`),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

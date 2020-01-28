@@ -1,5 +1,6 @@
 // @flow
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import type {Attributes, Selector} from '../types';
 import type {RootState} from '$src/root/types';
@@ -39,3 +40,11 @@ export const getCurrentProperty: Selector<Property, void> = (state: RootState): 
 
 export const getPropertyList: Selector<PropertyList, void> = (state: RootState): PropertyList =>
   state.property.list;
+
+export const getErrorsByFormName: Selector<?Object, string> = (state: RootState, formName: string): ?Object => {
+  const form = state.form[formName];
+  if(!isEmpty(form)) {
+    return form.syncErrors;
+  }
+  return null;
+};

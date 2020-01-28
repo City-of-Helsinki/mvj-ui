@@ -3,6 +3,7 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
@@ -10,10 +11,15 @@ import FormText from '$components/form/FormText';
 import RemoveButton from '$components/form/RemoveButton';
 // import {UsersPermissions} from '$src/usersPermissions/enums';
 // import {formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes} from '$util/helpers';
+import {
+  getAttributes,
+  getIsSaveClicked,
+} from '$src/property/selectors';
+
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import SubTitle from '$components/content/SubTitle';
 
-// import type {Attributes} from '$src/types';
+import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
@@ -21,7 +27,7 @@ type Props = {
   field: any,
   formName: string,
   isSaveClicked: boolean,
-  // leaseAttributes: Attributes,
+  attributes: Attributes,
   onRemove: Function,
   usersPermissions: UsersPermissionsType,
 }
@@ -29,8 +35,8 @@ type Props = {
 const TargetEdit = ({
   disabled,
   field,
-  //  isSaveClicked, // TODO:
-  //  leaseAttributes,
+  isSaveClicked,
+  attributes,
   onRemove,
   //  usersPermissions,
 }: Props) => {
@@ -68,18 +74,11 @@ const TargetEdit = ({
         <Column large={3}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Tontti, jota hakemus koskee',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.target_property')}
             name={`${field}.target_property`}
             overrideValues={{
-              fieldType: 'choice',
               label: 'Tontti, jota hakemus koskee',
-              options: [{value: '1', label: 'Mäntylä'}, {value: '2', label: 'Kuusamo'}],
             }}
             enableUiDataEdit
           />
@@ -87,13 +86,8 @@ const TargetEdit = ({
         <Column large={1}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: '%-perusteinen',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.percentage')}
             name={`${field}.percentage`}
             overrideValues={{
               label: '%-perusteinen',
@@ -107,13 +101,8 @@ const TargetEdit = ({
         <Column large={4} small={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Hankkeen pääsuunnittelija',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.head_planner')}
             name={`${field}.head_planner`}
             overrideValues={{
               label: 'Hankkeen pääsuunnittelija',
@@ -124,14 +113,9 @@ const TargetEdit = ({
         <Column large={4} small={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Hannkeen arvioitu aikataulu',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
-            name={`${field}.head_planner`}
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.estimated_schedule')}
+            name={`${field}.estimated_schedule`}
             overrideValues={{
               label: 'Hannkeen arvioitu aikataulu',
             }}
@@ -141,14 +125,9 @@ const TargetEdit = ({
         <Column large={4} small={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Hankkeen toivottu laajuus (rakennusoikeus ja asuntojen lkm)',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
-            name={`${field}.head_planner`}
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.desired_size')}
+            name={`${field}.desired_size`}
             overrideValues={{
               label: 'Hankkeen toivottu laajuus (rakennusoikeus ja asuntojen lkm)',
             }}
@@ -160,28 +139,12 @@ const TargetEdit = ({
         <Column large={4} small={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Rahoitus- ja hallintamuoto',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.funding')}
             name={`${field}.funding`}
             overrideValues={{
               fieldType: 'checkbox',
               label: 'Rahoitus- ja hallintamuoto',
-              options: [
-                {value: 1, label: 'Sääntelemätön omistus'}, 
-                {value: 2, label: 'Hitas omistus'},
-                {value: 3, label: 'Hintakontrolloitu omistus'},
-                {value: 4, label: 'Asumisoikeus'},
-                {value: 5, label: 'Sääntelemätön vuokra'},
-                {value: 6, label: 'Valtion tukema vuokra 10v'},
-                {value: 7, label: 'Valtion tukema vuokra pitkä'},
-                {value: 8, label: 'Valtion tukema takauslaina'},
-                {value: 9, label: 'Muu:'},
-              ],
             }}
             enableUiDataEdit
           />
@@ -189,23 +152,12 @@ const TargetEdit = ({
         <Column large={4} small={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Erityisryhmät',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.special')}
             name={`${field}.special`}
             overrideValues={{
               fieldType: 'checkbox',
               label: 'Erityisryhmät',
-              options: [
-                {value: 1, label: 'Opiskelijat'}, 
-                {value: 2, label: 'Nuoret/nuoret aikuiset'},
-                {value: 3, label: 'Seniorit'},
-                {value: 4, label: 'Muut erityisryhmät, mitä:'},
-              ],
             }}
             enableUiDataEdit
           />
@@ -213,26 +165,12 @@ const TargetEdit = ({
         <Column large={4} small={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Muut hankkeen mahdolliset kehitysteemat',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.other')}
             name={`${field}.other`}
             overrideValues={{
               fieldType: 'checkbox',
               label: 'Muut hankkeen mahdolliset kehitysteemat',
-              options: [
-                {value: 1, label: 'Luontoa säästävät energiaratkaisut'}, 
-                {value: 2, label: 'Hiilineutraali Helsinki 2035'},
-                {value: 3, label: 'Asuntojen muunneltavuus'},
-                {value: 4, label: 'Kohtuuhintainen asuminen'},
-                {value: 4, label: 'Yhteisöllisyys'},
-                {value: 5, label: 'Kohtuuhintainen asuminen'},
-                {value: 6, label: 'Kehittyvä kerrostalo -hanke'},
-              ],
             }}
             enableUiDataEdit
           />
@@ -242,13 +180,8 @@ const TargetEdit = ({
         <Column large={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Hankkeen yleiskuvaus',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.overal_picture')}
             name={`${field}.overal_picture`}
             overrideValues={{
               fieldType: 'textarea',
@@ -260,13 +193,8 @@ const TargetEdit = ({
         <Column large={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Hankkeen mahdolliset eristyispiirteet ja mahdolliset kehittämisteemat',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.peculiarities')}
             name={`${field}.peculiarities`}
             overrideValues={{
               fieldType: 'textarea',
@@ -278,13 +206,8 @@ const TargetEdit = ({
         <Column large={12}>
           <FormField
             className={'application__input'}
-            disableTouched={false} // isSaveClicked} // TODO
-            fieldAttributes={{
-              label: 'Lyhyt kuvaus hankkeen suunnilusta ja toteutustavasta ja -organisaatiosta sekä hajikjan käytössä olevista taloudellisista ja muista resursseista',
-              read_only: false,
-              required: false,
-              type: 'string',
-            }} // TODO
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'application_base.child.children.target.child.children.descriptions')}
             name={`${field}.descriptions`}
             overrideValues={{
               fieldType: 'textarea',
@@ -307,8 +230,8 @@ export default connect(
     const selector = formValueSelector(formName);
 
     return {
-      // isSaveClicked: getIsSaveClicked(state),
-      // leaseAttributes: getLeaseAttributes(state),
+      attributes: getAttributes(state),
+      isSaveClicked: getIsSaveClicked(state),
       name: selector(state, `${props.field}.name`),
       usersPermissions: getUsersPermissions(state),
     };

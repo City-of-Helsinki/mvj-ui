@@ -25,11 +25,13 @@ import {FormNames, ViewModes} from '$src/enums';
 import FormField from '$components/form/FormField';
 import {
   receiveCollapseStates,
+  receiveIsSaveClicked,
 } from '$src/property/actions';
 import {
   getAttributes,
   getCollapseStateByKey,
   getIsSaveClicked,
+  getErrorsByFormName,
 } from '$src/property/selectors';
 import {
   getFieldOptions,
@@ -59,6 +61,7 @@ const renderDecisions = ({
   const handleAdd = () => {
     fields.push({});
   };
+
   return (
     <AppConsumer>
       {({dispatch}) => {
@@ -165,8 +168,6 @@ const renderPropertySites = ({
                   confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE,
                 });
               };
-              console.log(field);
-              console.log(formName);
               return <PropertySiteEdit
                 key={index}
                 disabled={disabled}
@@ -209,16 +210,6 @@ type State = {
 }
 
 class BasicInfoEdit extends PureComponent<Props, State> {
-/*   componentDidUpdate(prevProps) {
-    const {receiveFormValidFlags} = this.props;
-
-    if(prevProps.valid !== this.props.valid) {
-      receiveFormValidFlags({
-        [formName]: this.props.valid,
-      });
-    }
-  } */ // TODO 
-
   state = {
   }
 
@@ -260,7 +251,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
           <Column small={12}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              hasErrors={false} // {isSaveClicked && !isEmpty(errors)} // TODO
+              hasErrors={isSaveClicked} // {isSaveClicked && !isEmpty(errors)} // TODO
               headerTitle={PropertyFieldTitles.BASIC_INFO}
               onToggle={this.handleBasicInfoCollapseToggle}
             >
@@ -402,10 +393,12 @@ export default flowRight(
         collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PROPERTY_BASIC_INFORMATION}.basic`),
         preparer: selector(state, 'preparer'),
         isSaveClicked: getIsSaveClicked(state),
+        errors: getErrorsByFormName(state, formName),
       };
     },
     {
       receiveCollapseStates,
+      receiveIsSaveClicked,
     }
   ),
   reduxForm({
