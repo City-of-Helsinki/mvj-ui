@@ -70,7 +70,8 @@ class BasicInfo extends PureComponent<Props, State> {
     const typeOptions = getFieldOptions(attributes, 'type');
     const subtypeOptions = getFieldOptions(attributes, 'subtype');
     const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
-
+    const stepOptions = getFieldOptions(attributes, 'step');
+    
     return (
       <Fragment>
         <Title>
@@ -171,7 +172,7 @@ class BasicInfo extends PureComponent<Props, State> {
                     </FormText>
                   )}
                 </Column>
-                <Column small={12} medium={6} large={6}>
+                <Column small={6} medium={4} large={4}>
                   <FormTextTitle>
                     {PropertyFieldTitles.DECISION_TO_LIST}
                   </FormTextTitle>
@@ -190,7 +191,12 @@ class BasicInfo extends PureComponent<Props, State> {
                     </Row>
                   )}
                 </Column>
-                
+                <Column small={6} medium={2} large={2}>
+                  <FormTitleAndText
+                    title={PropertyFieldTitles.STEP}
+                    text={getLabelOfOption(stepOptions, property.step) || '-'}
+                  />
+                </Column>
               </Row>
               <WhiteBox> {/* TODO  : make light green */}
                 <SubTitle>

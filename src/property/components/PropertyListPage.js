@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import {initialize} from 'redux-form';
+import isArray from 'lodash/isArray';
+import {withRouter} from 'react-router';
 
 import ExternalLink from '$components/links/ExternalLink';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -15,6 +18,7 @@ import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import Search from './search/Search';
+import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableFilterWrapper from '$components/table/TableFilterWrapper';
@@ -24,27 +28,37 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {
   createProperty, 
-  /* fetchPropertyList TODO */
+  fetchPropertyList,
 } from '$src/property/actions';
+import {
+  getIsFetching,
+  getPropertyList,
+} from '$src/property/selectors';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   formatDate,
-  getReferenceNumberLink,
   getLabelOfOption,
   setPageTitle,
+  getFieldOptions,
   getSearchQuery,
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getUrlParams,
 } from '$util/helpers';
 import {
   DEFAULT_SORT_KEY,
   DEFAULT_SORT_ORDER,
   DEFAULT_PROPERTY_STATES,
-  propertyStateFilterOptions,
 } from '$src/property/constants';
-import type {Property} from '$src/property/types';
-
+import {
+  getContentPropertyListResults,
+} from '$src/property/helpers';
+import type {Property, PropertyList} from '$src/property/types';
+import {FormNames} from '$src/enums';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import {withPropertyAttributes} from '$components/attributes/PropertyAttributes';
 
-import properties from './dummyProperties';
+import type {Attributes} from '$src/types';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -62,24 +76,42 @@ type Props = {
   createProperty: Function,
   usersPermissions: UsersPermissionsType,
   receiveTopNavigationSettings: Function,
+
+  propertyAttributes: Attributes,
+  isFetchingPropertyAttributes: boolean,
+  isFetching: boolean,
+  propertyListData: PropertyList,
+  initialize: Function,
+  fetchPropertyList: Function,
 }
 
 type State = {
+  properties: Array<Object>,
   activePage: number,
   visualizationType: string,
   propertyStates: Array<string>,
+  isSearchInitialized: boolean,
+  count: number,
   sortKey: string,
   sortOrder: string,
+  maxPage: number,
+  selectedStates: Array<string>,
 }
 
 class PropertyListPage extends PureComponent<Props, State> {
+  _isMounted: boolean
 
   state = {
+    properties: [],
     visualizationType: VisualizationTypes.TABLE,
     propertyStates: DEFAULT_PROPERTY_STATES,
     sortKey: DEFAULT_SORT_KEY,
     sortOrder: DEFAULT_SORT_ORDER,
     activePage: 1,
+    count: 0,
+    isSearchInitialized: false,
+    maxPage: 0,
+    selectedStates: [],
   }
 
   static contextTypes = {
@@ -97,6 +129,13 @@ class PropertyListPage extends PureComponent<Props, State> {
       pageTitle: 'Tonttihaut',
       showSearch: false,
     });
+
+    this.search();
+
+    this.setSearchFormValues();
+
+    window.addEventListener('popstate', this.handlePopState);
+    this._isMounted = true;
   }
 
   handleVisualizationTypeChange = () => {
@@ -116,51 +155,14 @@ class PropertyListPage extends PureComponent<Props, State> {
   }
 
   getColumns = () => {
-    
+    const {propertyAttributes} = this.props;    
     const columns = [];
-    const typeOptions =  [
-      {
-        'value': 'construction',
-        'label': 'Asuntorakentaminen',
-      },
-      {
-        'value': 'company_property',
-        'label': 'Yritystontit',
-      },
-      {
-        'value': 'small_housing',
-        'label': 'Pientalotontit',
-      },
-    ];
-
-    const subTypeOptions =  [
-      {
-        'value': 'price_n_quality',
-        'label': 'Hinta- ja laatukilpailu',
-      },
-      {
-        'value': 'price',
-        'label': 'Hintakilpailu',
-      },
-      {
-        'value': 'general',
-        'label': 'Yleinen asuntotonttien varauskierros',
-      },
-      {
-        'value': 'consecutive',
-        'label': 'Jatkuva haku',
-      },
-    ];
-
-    const stepOptions =  [
-      {
-        'value': 'in_handling',
-        'label': 'käsittelyssä',
-      },
-    ];
+    const typeOptions = getFieldOptions(propertyAttributes, 'type');
+    const subtypeOptions = getFieldOptions(propertyAttributes, 'subtype');
+    const stepOptions = getFieldOptions(propertyAttributes, 'step');
 
     columns.push({
-      key: 'property_search',
+      key: 'search_name',
       text: 'Haku',
       sortable: false,
     });
@@ -176,7 +178,7 @@ class PropertyListPage extends PureComponent<Props, State> {
       key: 'subtype',
       text: 'Haun alatyyppi',
       sortable: false,
-      renderer: (val) => getLabelOfOption(subTypeOptions, val),
+      renderer: (val) => getLabelOfOption(subtypeOptions, val),
     });
 
     columns.push({
@@ -205,7 +207,7 @@ class PropertyListPage extends PureComponent<Props, State> {
       text: 'Viimeisin päätös', 
       sortable: false,
       renderer: (id) => id 
-        ? <ExternalLink href={getReferenceNumberLink(id)} text={id}/>
+        ? <ExternalLink href={'/'} text={id}/> // getReferenceNumberLink(id)
         : null,
     });
     
@@ -214,11 +216,27 @@ class PropertyListPage extends PureComponent<Props, State> {
       text: 'Kohteen tunnus', 
       sortable: false,
       renderer: (id) => id 
-        ? <ExternalLink href={getReferenceNumberLink(id)} text={id}/>
+        ? <ExternalLink href={'/'} text={id}/> // getReferenceNumberLink(id)
         : null,
     });
 
     return columns;
+  }
+
+  search = () => {
+    const {fetchPropertyList, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    delete searchQuery.page;
+
+    if(page > 1) {
+      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+    }
+
+    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
+
+    fetchPropertyList(getSearchQuery(searchQuery));
   }
 
   handleRowClick = () => {
@@ -238,6 +256,16 @@ class PropertyListPage extends PureComponent<Props, State> {
     console.log(page);
   }
 
+  updateTableData = () => {
+    const {propertyListData} = this.props;
+
+    this.setState({
+      count: getApiResponseCount(propertyListData),
+      properties: getContentPropertyListResults(propertyListData),
+      maxPage: getApiResponseMaxPage(propertyListData, LIST_TABLE_PAGE_SIZE),
+    });
+  }
+
   handleCreateProperty = (property: Property) => {
     const {createProperty} = this.props;
     createProperty(property);
@@ -255,6 +283,70 @@ class PropertyListPage extends PureComponent<Props, State> {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    const {location: {search: currentSearch}} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+    const searchQuery = getUrlParams(currentSearch);
+
+    if(currentSearch !== prevSearch) {
+      this.search();
+
+      delete searchQuery.sort_key;
+      delete searchQuery.sort_order;
+
+      if(!Object.keys(searchQuery).length) {
+        this.setSearchFormValues();
+      }
+    }
+
+    if(prevProps.propertyListData !== this.props.propertyListData) {
+      this.updateTableData();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
+  }
+
+  handlePopState = () => {
+    this.setSearchFormValues();
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+    const states = isArray(searchQuery.state)
+      ? searchQuery.state
+      : searchQuery.state ? [searchQuery.lease_state] : [];
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      const initialValues = {...searchQuery};
+      delete initialValues.page;
+      delete initialValues.state;
+      delete initialValues.sort_key;
+      delete initialValues.sort_order;
+      await initialize(FormNames.PROPERTY_SEARCH, initialValues);
+    };
+
+    this.setState({
+      activePage: page,
+      isSearchInitialized: false,
+      selectedStates: states,
+    }, async() => {
+      await initializeSearchForm();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
+    });
+  }
+
   render() {
     const {
       visualizationType,
@@ -263,9 +355,17 @@ class PropertyListPage extends PureComponent<Props, State> {
       sortOrder,
     } = this.state;
 
-    const isFetching = false;
-
     const columns = this.getColumns();
+
+    const {isFetching, isFetchingPropertyAttributes, propertyAttributes} = this.props;
+    const {activePage, isSearchInitialized, properties, maxPage, selectedStates} = this.state;
+    const propertyStateFilterOptions = getFieldOptions(propertyAttributes, 'state', false);
+    const filteredProperties = selectedStates.length
+      ? (properties.filter((contract) => selectedStates.indexOf(contract.state)  !== -1))
+      : properties;
+    const count = filteredProperties.length;
+
+    if(isFetchingPropertyAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     return (
       <PageContainer>
@@ -279,7 +379,9 @@ class PropertyListPage extends PureComponent<Props, State> {
           </Column>
           <Column small={12} large={8}>
             <Search
+              isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
+              states={selectedStates}
             />
           </Column>
         </Row>
@@ -287,7 +389,7 @@ class PropertyListPage extends PureComponent<Props, State> {
         <TableFilterWrapper
           filterComponent={
             <TableFilters
-              amountText={`Löytyi 7 kpl`}
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
               filterOptions={propertyStateFilterOptions}
               filterValue={propertyStates}
               onFilterChange={this.handleLeaseStatesChange}
@@ -316,7 +418,7 @@ class PropertyListPage extends PureComponent<Props, State> {
             <Fragment>
               <SortableTable
                 columns={columns}
-                data={properties}
+                data={filteredProperties}
                 listTable
                 onRowClick={this.handleRowClick}
                 onSortingChange={this.handleSortingChange}
@@ -327,8 +429,8 @@ class PropertyListPage extends PureComponent<Props, State> {
                 sortOrder={sortOrder}
               />
               <Pagination
-                activePage={1}
-                maxPage={2}
+                activePage={activePage}
+                maxPage={maxPage}
                 onPageClick={(page) => this.handlePageClick(page)}
               />
             </Fragment>
@@ -340,15 +442,21 @@ class PropertyListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
+  withRouter,
+  withPropertyAttributes,
   connect(
     (state) => {
       return {
         usersPermissions: getUsersPermissions(state),
+        isFetching: getIsFetching(state),
+        propertyListData: getPropertyList(state),
       };
     },
     {
       receiveTopNavigationSettings,
       createProperty,
+      initialize,
+      fetchPropertyList,
     },
   ),
 )(PropertyListPage);

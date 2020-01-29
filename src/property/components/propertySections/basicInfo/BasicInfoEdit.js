@@ -33,9 +33,6 @@ import {
   getIsSaveClicked,
   getErrorsByFormName,
 } from '$src/property/selectors';
-import {
-  getFieldOptions,
-} from '$util/helpers';
 
 import PropertySiteEdit from './PropertySiteEdit';
 
@@ -237,10 +234,6 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       attributes,
     } = this.props;
   
-    const preparerOptions = getFieldOptions(attributes, 'preparer');
-    const typeOptions = getFieldOptions(attributes, 'type');
-    const subtypeOptions = getFieldOptions(attributes, 'subtype');
-
     return (
       <form>
         <Title>
@@ -272,7 +265,6 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     overrideValues={{
                       fieldType: 'choice',
                       label: PropertyFieldTitles.PREPARER,
-                      options: preparerOptions,
                     }}
                   />
                 </Column>
@@ -284,7 +276,6 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     overrideValues={{
                       fieldType: 'choice',
                       label: PropertyFieldTitles.TYPE,
-                      options: typeOptions,
                     }}
                   />
                 </Column>
@@ -296,7 +287,6 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     overrideValues={{
                       fieldType: 'choice',
                       label: PropertyFieldTitles.SUBTYPE,
-                      options: subtypeOptions,
                     }}
                   />
                 </Column>
@@ -344,17 +334,10 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <Column small={12} medium={6} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={{
-                      label: 'Haun vaihe',
-                      read_only: false,
-                      required: false,
-                      type: 'string',
-                    }} // TODO
+                    fieldAttributes={get(attributes, 'step')}
                     name='step'
                     overrideValues={{
-                      fieldType: 'choice',
                       label: PropertyFieldTitles.STEP,
-                      options: [{value: 1, label: 'Valmisteilla'}],
                     }}
                   />
                 </Column>

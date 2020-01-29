@@ -22,7 +22,7 @@ export type ReceiveAttributesAction = Action<'mvj/property/RECEIVE_ATTRIBUTES', 
 
 export type CreatePropertyAction = Action<'mvj/property/CREATE', Property>;
 export type EditPropertyAction = Action<'mvj/property/EDIT', Property>;
-// TODO NOT FOUND
+export type PropertyNotFoundAction = Action<'mvj/property/NOT_FOUND', void>;
 
 export type ReceiveIsSaveClickedAction = Action<'mvj/property/RECEIVE_SAVE_CLICKED', boolean>;
 export type ReceiveFormValidFlagsAction = Action<'mvj/property/RECEIVE_FORM_VALID_FLAGS', Object>;

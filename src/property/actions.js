@@ -20,6 +20,7 @@ import type {
   ShowEditModeAction,
   ReceiveCollapseStatesAction,
   ClearFormValidFlagsAction,
+  PropertyNotFoundAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -64,3 +65,5 @@ export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsActio
 export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
   createAction('mvj/property/CLEAR_FORM_VALID_FLAGS')();
 
+export const notFound = (): PropertyNotFoundAction =>
+  createAction('mvj/property/NOT_FOUND')();

@@ -1,6 +1,9 @@
 import type {Property} from './types';
 import {removeSessionStorageItem} from '$util/storage';
 import {FormNames} from '$src/enums';
+import {
+  getApiResponseResults, 
+} from '$util/helpers';
 
 /** 
  * Get property basic information content
@@ -14,6 +17,7 @@ export const getContentBasicInformation = (property: Property): Object => {
     preparer: property.preparer,
     applications: property.applications,
     type: property.type,
+    step: property.step,
     subtype: property.subtype,
     start_date: property.start_date,
     start_time: property.start_time,
@@ -49,6 +53,28 @@ export const getContentApplication = (property: Property): Object => {
 export const getContentSearchProperties = (searchProperties: Object): Object => {
   return searchProperties; // TODO
 };
+
+/** 
+ * Get property list item
+ * @param {Object} contract
+ * @return {Object}
+ */
+export const getContentPropertyListItem = (property: Property): Object => {
+  return {
+    id: property.id,
+    basicInformation: getContentBasicInformation(property),
+    application: getContentApplication(property),
+    ...getContentBasicInformation(property),
+  };
+};
+
+/** 
+ * Get property list results
+ * @param {Object} property
+ * @return {Object[]}
+ */
+export const getContentPropertyListResults = (content: Object): Array<Object> =>
+  getApiResponseResults(content).map((property) => getContentPropertyListItem(property));
 
 
 /**
