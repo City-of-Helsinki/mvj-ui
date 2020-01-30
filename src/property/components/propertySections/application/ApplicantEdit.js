@@ -15,13 +15,9 @@ import {
   getIsSaveClicked,
 } from '$src/property/selectors';
 
-// import {UsersPermissions} from '$src/usersPermissions/enums';
-// import {formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes} from '$util/helpers';
-import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import SubTitle from '$components/content/SubTitle';
 
 import type {Attributes} from '$src/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   disabled: boolean,
@@ -30,7 +26,6 @@ type Props = {
   isSaveClicked: boolean,
   attributes: Attributes,
   onRemove: Function,
-  usersPermissions: UsersPermissionsType,
 }
 
 const ApplicantEdit = ({
@@ -39,7 +34,6 @@ const ApplicantEdit = ({
   isSaveClicked,
   attributes,
   onRemove,
-  //  usersPermissions,
 }: Props) => {
   return (
     <Fragment>
@@ -66,7 +60,7 @@ const ApplicantEdit = ({
         <Column large={3}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'application_base.child.children.applicants.child.children.client_type')} // TODO: remove empty bullet
+            fieldAttributes={get(attributes, 'application_base.child.children.applicants.child.children.client_type')}
             name={`${field}.client_type`}
             overrideValues={{
               label: 'Asiakastyyppi',
@@ -375,9 +369,7 @@ export default connect(
 
     return {
       name: selector(state, `${props.field}.name`),
-      usersPermissions: getUsersPermissions(state),
       attributes: getAttributes(state),
-      // errors: getErrorsByFormName(state, formName), // TODO TODO:
       isSaveClicked: getIsSaveClicked(state),
     };
   },

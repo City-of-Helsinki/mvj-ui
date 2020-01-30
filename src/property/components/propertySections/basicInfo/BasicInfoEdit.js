@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {formValueSelector, FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -197,6 +198,7 @@ type Props = {
   collapseStateBasic: boolean,
   receiveCollapseStates: Function,
   usersPermissions: UsersPermissionsType,
+  errors: ?Object,
   preparer: ?string,
   formName: string,
   isSaveClicked: boolean,
@@ -232,19 +234,20 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       usersPermissions,
       isSaveClicked,
       attributes,
+      errors,
     } = this.props;
-  
+
     return (
       <form>
         <Title>
           {PropertyFieldTitles.BASIC_INFO}
         </Title>
         <Divider />
-        <Row className='summary__content-wrapper'> {/* TODO wrap columns around authorization */}
+        <Row className='summary__content-wrapper'>
           <Column small={12}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              hasErrors={isSaveClicked} // {isSaveClicked && !isEmpty(errors)} // TODO
+              hasErrors={isSaveClicked && !isEmpty(errors)}
               headerTitle={PropertyFieldTitles.BASIC_INFO}
               onToggle={this.handleBasicInfoCollapseToggle}
             >
@@ -342,7 +345,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   />
                 </Column>
               </Row>
-              <WhiteBox> {/* TODO  : make light green */}
+              <WhiteBox>
                 <SubTitle>
                   {'HAETTAVAT KOHTEET'}
                 </SubTitle>

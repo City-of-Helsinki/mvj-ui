@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -29,6 +30,7 @@ import {
   getAttributes,
   getCollapseStateByKey,
   getIsSaveClicked,
+  getErrorsByFormName,
 } from '$src/property/selectors';
 import ApplicantEdit from './ApplicantEdit';
 import TargetEdit from './TargetEdit';
@@ -67,7 +69,7 @@ const renderApplicant = ({
                   confirmationModalButtonClassName: ButtonColors.ALERT, 
                   confirmationModalButtonText: ConfirmationModalTexts.DELETE_APPLICANT.BUTTON,
                   confirmationModalLabel: ConfirmationModalTexts.DELETE_APPLICANT.LABEL, 
-                  confirmationModalTitle: ConfirmationModalTexts.DELETE_APPLICANT.TITLE, // TODO jatka tästä: Haluatko varmasti poistaa päätöksen
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_APPLICANT.TITLE,
                 });
               };
 
@@ -130,7 +132,7 @@ const renderTarget = ({
                   confirmationModalButtonClassName: ButtonColors.ALERT, 
                   confirmationModalButtonText: ConfirmationModalTexts.DELETE_TARGET.BUTTON,
                   confirmationModalLabel: ConfirmationModalTexts.DELETE_TARGET.LABEL, 
-                  confirmationModalTitle: ConfirmationModalTexts.DELETE_TARGET.TITLE, // TODO Poista kohde
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_TARGET.TITLE,
                 });
               };
 
@@ -166,6 +168,7 @@ type Props = {
   usersPermissions: UsersPermissionsType,
   formName: string,
   isSaveClicked: boolean,
+  errors: ?Object,
   attributes: Attributes,
 }
 
@@ -198,6 +201,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
       collapseStateBasic,
       isSaveClicked,
       attributes,
+      errors,
     } = this.props;
     return (
       <form>
@@ -205,11 +209,11 @@ class ApplicationEdit extends PureComponent<Props, State> {
           {ApplicationFieldTitles.APPLICATION}
         </Title>
         <Divider />
-        <Row className='summary__content-wrapper'> {/* TODO wrap columns around authorization */}
+        <Row className='summary__content-wrapper'>
           <Column small={12}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              hasErrors={isSaveClicked} // {isSaveClicked && !isEmpty(errors)} // TODO
+              hasErrors={isSaveClicked && !isEmpty(errors)}
               headerTitle={ApplicationFieldTitles.APPLICATION_BASE}
               onToggle={this.handleBasicInfoCollapseToggle}
               enableUiDataEdit
@@ -311,6 +315,7 @@ export default flowRight(
         usersPermissions: getUsersPermissions(state),
         collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PROPERTY_APPLICATION}.basic`),
         isSaveClicked: getIsSaveClicked(state),
+        errors: getErrorsByFormName(state, formName),
       };
     },
     {

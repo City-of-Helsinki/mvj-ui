@@ -51,7 +51,7 @@ export const getContentApplication = (property: Property): Object => {
  * @return {Object}
  */
 export const getContentSearchProperties = (searchProperties: Object): Object => {
-  return searchProperties; // TODO
+  return searchProperties;
 };
 
 /** 

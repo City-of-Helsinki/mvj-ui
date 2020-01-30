@@ -75,7 +75,7 @@ class Application extends PureComponent<Props, State> {
           {ApplicationFieldTitles.APPLICATION}
         </Title>
         <Divider />
-        <Row className='summary__content-wrapper'> {/* TODO wrap columns around authorization */}
+        <Row className='summary__content-wrapper'>
           <Column small={12}>
             <Collapse
               defaultOpen={applicationCollapseState !== undefined ? applicationCollapseState : true}
@@ -146,7 +146,7 @@ export default connect(
   (state) => {
     return {
       usersPermissions: getUsersPermissions(state),
-      applicationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PROPERTY_APPLICATION}.application`), // TODO
+      applicationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PROPERTY_APPLICATION}.application`),
       attributes: getAttributes(state),
       currentProperty: getCurrentProperty(state),
     };

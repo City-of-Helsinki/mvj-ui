@@ -198,7 +198,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   />
                 </Column>
               </Row>
-              <WhiteBox> {/* TODO  : make light green */}
+              <WhiteBox>
                 <SubTitle>
                   {'HAETTAVAT KOHTEET'}
                 </SubTitle>

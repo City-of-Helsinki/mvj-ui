@@ -327,12 +327,20 @@
             "label": "Lomakkeen lisäosat",
             "choices": [
               {
-                "display_name": "extra",
+                "display_name": "Valitse kaikki",
+                "value": 0
+              },
+              {
+                "display_name": "Lisätieto 1",
                 "value": 1
               },
               {
-                "display_name": "liite",
+                "display_name": "Lisätieto 2",
                 "value": 2
+              },
+              {
+                "display_name": "Lisätieto 3",
+                "value": 3
               }
             ]
           },
@@ -349,12 +357,20 @@
             "label": "Luodut hakulomakkeet",
             "choices": [
               {
-                "display_name": "extra",
+                "display_name": "Valitse kaikki",
+                "value": 0
+              },
+              {
+                "display_name": "Lisätieto 1",
                 "value": 1
               },
               {
-                "display_name": "liite",
+                "display_name": "Lisätieto 2",
                 "value": 2
+              },
+              {
+                "display_name": "Lisätieto 3",
+                "value": 3
               }
             ]
           },

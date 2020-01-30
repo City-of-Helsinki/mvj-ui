@@ -195,7 +195,7 @@ class PropertyPage extends Component<Props, State> {
     } = this.props;
 
     if(pathname !== `${getRouteById(Routes.PROPERTY)}/${propertyId}`) {
-      // clearUnsavedChanges(); // TODO:
+      clearUnsavedChanges();
     }
 
     // Clear current
@@ -326,7 +326,7 @@ class PropertyPage extends Component<Props, State> {
         isApplicationFormDirty,
       } = this.props;
     
-      //TODO: Add helper functions to save land use contract to DB when API is ready
+      //TODO: Add helper functions to save property to DB when API is ready
       let payload: Object = {...currentProperty};
 
       if(isBasicInformationFormDirty) {
@@ -505,23 +505,23 @@ class PropertyPage extends Component<Props, State> {
             tabs={[
               {
                 label: 'Perustiedot',
-                allow: true, // TODO
+                allow: true,
                 isDirty: isBasicInformationFormDirty,
                 hasError: isSaveClicked && !isBasicInformationFormValid,
               },
               {
                 label: 'Hakemuslomake',
-                allow: true, // TODO
+                allow: true,
                 isDirty: isApplicationFormDirty,
                 hasError: isSaveClicked && !isApplicationFormValid,
               },
               {
                 label: 'Kartta',
-                allow: true, // TODO
+                allow: true,
               },
               {
                 label: 'Muutoshistoria',
-                allow: true, // TODO
+                allow: true,
               },
             ]}
             onTabClick={this.handleTabClick}
