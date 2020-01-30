@@ -62,6 +62,7 @@ import BasicInfo from './propertySections/basicInfo/BasicInfo';
 import BasicInfoEdit from './propertySections/basicInfo/BasicInfoEdit';
 import Application from './propertySections/application/Application';
 import ApplicationEdit from './propertySections/application/ApplicationEdit';
+import ApplicationMap from './propertySections/map/ApplicationMap';
 import {withPropertyAttributes} from '$components/attributes/PropertyAttributes';
 
 type Props = {
@@ -558,7 +559,7 @@ class PropertyPage extends Component<Props, State> {
 
             <TabPane>
               <ContentContainer>
-                {/* <SingleLeaseMap /> */}
+                <ApplicationMap />
               </ContentContainer>
             </TabPane>
 
