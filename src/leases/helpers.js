@@ -260,6 +260,8 @@ const getContentLeaseStatus = (lease: Object): string => {
  */
 export const getContentLeaseInfo = (lease: Object): Object => {
   return {
+    address: getContentLeaseAddress(lease),
+    area_identifier: getContentLeaseAreaIdentifier(lease),
     identifier: getContentLeaseIdentifier(lease),
     end_date: lease.end_date,
     start_date: lease.start_date,
@@ -267,6 +269,26 @@ export const getContentLeaseInfo = (lease: Object): Object => {
     status: getContentLeaseStatus(lease),
   };
 };
+
+/**
+ * Get content lease address
+ * @param {Object} lease
+ * @returns {string}
+ */
+export const getContentLeaseAddress = (lease: Object): ?string =>
+  !isEmpty(lease)
+    ? `${get(lease, 'lease_areas[0].addresses[0].address')}`
+    : null;
+
+/**
+ * Get content lease area identifiers
+ * @param {Object} lease
+ * @returns {string}
+ */
+export const getContentLeaseAreaIdentifier = (lease: Object): ?string =>
+  !isEmpty(lease)
+    ? `${get(lease, 'lease_areas[0].identifier')}`
+    : null;
 
 /**
  * Get lease infill development compensations content
@@ -1178,6 +1200,55 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
     * initialYearRent;
 };
 
+/** 
+ * Calculate basis of rent temporary rent cumulative
+ * @param {number} initialYearRent
+ * @param {any} subventionPercent
+ * @param {Array} managementSubventions
+ * @param {Array} temporarySubventions
+ * @param {number} index
+ * @param {string} view
+ * @return {number}
+ */
+export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: number, subventionPercent: string | number, managementSubventions: Array<Object>, temporarySubventions: Array<Object>, index: number, view: string): number => {
+  if(!isDecimalNumberStr(subventionPercent)) return 0;
+
+  let discounted = initialYearRent;
+  let discount = 0;
+
+  managementSubventions.forEach(managementSubvention => {
+    if(view === 'EDIT')
+      discounted = discounted * ((100 - Number(convertStrToDecimalNumber(managementSubvention.subvention_percent))) / 100);
+    else
+      discounted = discounted - calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
+  });
+
+  for(let i = 0; i <= index; i++){
+    let lastTotal = discounted;
+    discounted = discounted * ((100 - Number(convertStrToDecimalNumber(temporarySubventions[index].subvention_percent))) / 100);
+    discount = lastTotal - discounted;
+  }
+
+  return  Number(discount);
+};
+
+/**
+ * Calculate temporary subvention discount percantage for cumulative discounts
+ * @param {Object} temporarySubventions
+ * @return {number}
+ */
+export const calculateTemporarySubventionDiscountPercentage = (temporarySubventions: Object) => {
+
+  let base = 1;
+
+  temporarySubventions && temporarySubventions.forEach(temporarySubvention => {
+    if(temporarySubvention.subvention_percent)
+      base = base * ((100 - (parseFloat(temporarySubvention.subvention_percent.replace(',', '.')))) / 100);
+  });
+
+  return Number((1 - base)*100).toFixed(2);
+};
+
 /**
  * Calculate basis of rent basis subvention percantage
  * @param {string} subventionAmount
@@ -1186,8 +1257,21 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
  */
 export const calculateBasisOfRentSubventionPercantage = (subventionAmount: string | number, currentAmountPerArea: number | number): number => {
   if(!isDecimalNumberStr(subventionAmount)) return 0;
+  if(!currentAmountPerArea) return 0;
 
   return  (1 - (Number(convertStrToDecimalNumber(subventionAmount)) / currentAmountPerArea)) * 100;
+};
+
+/**
+ * Calculate basis of rent basis subvention amount
+ * @param {string} subventionPercantage
+ * @param {number} currentAmountPerArea
+ * @return {number}
+ */
+export const calculateSubventionAmountFromPercantage = (subventionPercantage: string | number, currentAmountPerArea: number | number): number => {
+  if(!isDecimalNumberStr(subventionPercantage)) return 0;
+  if(!currentAmountPerArea) return 0;
+  return  (1 - (Number(convertStrToDecimalNumber(subventionPercantage)) / 100)) * currentAmountPerArea;
 };
 
 /**
@@ -1236,29 +1320,52 @@ export const calculateRentAdjustmentSubventionPercent = (subventionType: ?string
  * @return {number}
  */
 export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: number, subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
-  let discount = 0;
+  let discount = 1;
 
   if(subventionType === SubventionTypes.RE_LEASE) {
-    discount += calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
+    discount = discount * ((100 - calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent)) / 100);
   }
-
+  
   if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
     if(managementSubventions) {
       managementSubventions.forEach((subvention) => {
-        discount += Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercantage(subvention.subvention_amount, currentAmountPerArea)) || 0);
+        discount = discount * Number(((100 - Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercantage(subvention.subvention_amount, currentAmountPerArea)))) / 100) || 1);
       });
     }
   }
-
+  
   if(temporarySubventions) {
     temporarySubventions.forEach((subvention) => {
-      discount += Number(convertStrToDecimalNumber(subvention.subvention_percent) || 0);
+      discount = discount * (Number((100 - Number(convertStrToDecimalNumber(subvention.subvention_percent))) / 100) || 1);
     });
   }
-
-  return discount;
+  
+  return (1 - discount) * 100;
 };
 
+/**
+ * Calculate subvention discount total
+ * @param {number} initialYearRent
+ * @param {Object[]} managementSubventions
+ * @param {number} currentAmountPerArea
+ * @return {number}
+ */
+export const calculateSubventionDiscountTotal = (initialYearRent: number, managementSubventions: ?Array<Object>, currentAmountPerArea: number) => {
+  if(managementSubventions && managementSubventions[0] && managementSubventions[0].subvention_amount !== null){
+    return Number(initialYearRent * (1 - ((currentAmountPerArea - Number(convertStrToDecimalNumber(managementSubventions[0].subvention_amount))) / currentAmountPerArea)));
+  }
+  return Number(initialYearRent);
+};
+
+/**
+ * Calculate basis of rent subvention percent
+ * @param {number} initialYearRent
+ * @param {number} reLeaseDiscountPercent
+ * @return {number}
+ */
+export const calculateSubventionDiscountTotalFromReLease = (initialYearRent: number, reLeaseDiscountPercent: number) => {
+  return Number(initialYearRent * (1 - reLeaseDiscountPercent / 100));
+};
 
 /**
  * Get content of management subventions from rent adjustment

@@ -307,6 +307,8 @@ export const TenantContactType = {
  * @type {{}}
  */
 export const LeaseFieldPaths = {
+  ADDRESS: 'lease_areas.child.children.addresses',
+  AREA_IDENTIFIER: 'lease_areas.child.children.identifier',
   ARRANGEMENT_DECISION: 'arrangement_decision',
   AUDIT_LOG: 'audit_log',
   BUILDING_SELLING_PRICE: 'building_selling_price',
@@ -358,6 +360,8 @@ export const LeaseFieldPaths = {
  * @type {{}}
  */
 export const LeaseFieldTitles = {
+  ADDRESS: 'Osoite',
+  AREA_IDENTIFIER: 'Kohteen tunnus',
   ARRANGEMENT_DECISION: 'Järjestelypäätös',
   AUDIT_LOG: 'Muutoshistoria',
   BUILDING_SELLING_PRICE: 'Rakennuksen kauppahinta',
@@ -1089,8 +1093,11 @@ export const LeaseBasisOfRentsFieldTitles = {
   AREA: 'Pinta-ala',
   AREA_UNIT: 'Pinta-alan yksikkö',
   BASE_YEAR_RENT: 'Perusvuosivuokra (ind 100)',
-  DISCOUNT_PERCENTAGE: 'Alennusprosentti',
-  DISCOUNTED_INITIAL_YEAR_RENT: 'Alennettu alkuvuosivuokra (ind)',
+  DISCOUNT_PERCENTAGE: 'Lopullinen alennusprosentti',
+  DISCOUNTED_INITIAL: 'Subventoitu alkuvuosivuokra (ind)',
+  SUBVENTION_DISCOUNT_PERCENTAGE: 'Subventioprosentti',
+  TEMPORARY_DISCOUNT_PERCENTAGE: 'Tilapäisalennuksen prosentti',
+  DISCOUNTED_INITIAL_YEAR_RENT: 'Subventoitu ja alennettu alkuvuosivuokra (ind)',
   DISCOUNTED_INITIAL_YEAR_RENT_TOTAL: 'Alennettu alkuvuosivuokra (ind) yhteensä',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH: '1 kk vuokra',
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL: '1 kk vuokra yhteensä',
@@ -1156,7 +1163,7 @@ export const BasisOfRentTemporarySubventionsFieldTitles = {
   TEMPORARY_SUBVENTIONS: 'Tilapäisalennukset',
   DESCRIPTION: 'Tilapäisalennuksen tyyppi',
   SUBVENTION_AMOUNT: 'Alennus euroa/vuosi',
-  SUBVENTION_PERCENT: 'Alennus markkinavuokrasta',
+  SUBVENTION_PERCENT: 'Alennus subventoidusta alkuvuosivuokrasta',
 };
 
 /**
