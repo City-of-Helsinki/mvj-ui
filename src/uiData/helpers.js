@@ -96,6 +96,13 @@ export const getUiDataInvoiceKey = (key: string): string => getKeyWithPrefix(UiD
 export const getUiDataLeaseKey = (key: string): string => getKeyWithPrefix(UiDataPrefixes.LEASE, key);
 
 /**
+ * Get key for ui data on property page
+ * @param {string} key
+ * @return {string}
+ */
+export const getUiDataPropertyKey = (key: string): string => getKeyWithPrefix(UiDataPrefixes.PROPERTY, key);
+
+/**
  * Get key for ui data on lease page
  * @param {string} key
  * @return {string}

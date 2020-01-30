@@ -148,8 +148,23 @@ export const ConfirmationModalTexts = {
   },
   DELETE_DECISION: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
-    LABEL: 'Haluatko varmasti poistaa päätöksen?',
-    TITLE: 'Poista päätös',
+    LABEL: 'Haluatko varmasti poistaa kohteen?',
+    TITLE: 'Poista kohde',
+  },
+  DELETE_SUGGESTION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa ehdotuksen?',
+    TITLE: 'Poista ehdotus',
+  },
+  DELETE_APPLICANT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa hakijan?',
+    TITLE: 'Poista hakija',
+  },
+  DELETE_TARGET: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kohteen?',
+    TITLE: 'Poista kohde',
   },
   DELETE_FIXED_INITIAL_YEAR_RENT: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
@@ -240,6 +255,11 @@ export const ConfirmationModalTexts = {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa kiinteistön/määräalan?',
     TITLE: 'Poista kiinteistö/määräala',
+  },
+  DELETE_PROPERTY: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa tonttihaun?',
+    TITLE: 'Poista tonttihaku',
   },
   DELETE_PROPERTY_IDENTIFIER: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
@@ -405,10 +425,14 @@ export const FormNames = {
   LEASE_STATISTIC_REPORT: 'lease-statistic-report-form',
   LEASE_TENANTS: 'tenants-form',
   LEASEHOLD_TRANSFER_SEARCH: 'leasehold-transfer-search-form',
+  PROPERTY_SUMMARY: 'property-form',
+  PROPERTY_SEARCH: 'property-search',
   RENT_BASIS: 'rent-basis-form',
   RENT_BASIS_SEARCH: 'rent-basis-search-form',
   RENT_CALCULATOR: 'rent-calculator-form',
   TRADE_REGISTER_SEARCH: 'trade-register-search-form',
+  PROPERTY_BASIC_INFORMATION: 'property-basic-information-form',
+  PROPERTY_APPLICATION: 'property-application-form',
 };
 
 /**

@@ -19,6 +19,7 @@ export const UiDataPrefixes = {
   INVOICE: 'invoice',
   LEASE: 'lease',
   PENALTY_INTEREST: 'penalty_interest',
+  PROPERTY: 'property',
   RELATED_LEASE: 'related_lease',
   RENT_BASIS: 'rent_basis',
   RENT_CALCULATOR: 'rent_calculator',

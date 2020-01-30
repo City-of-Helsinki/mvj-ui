@@ -1,0 +1,712 @@
+{
+  "name": "Property list",
+  "description": "",
+  "fields": {
+    "search_name": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Haun nimi"
+    },
+    "preparer": {
+      "choices": [{"value": 1, "display_name": "Virve Virkailija"}, {"value": 2, "display_name": "Teuvo Kuusela"}, {"value": 3, "display_name": "Jussi Mannisto"}],
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Valmistelija"
+    },
+    "applications": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Hakemukset"
+    },
+    "type": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Haun tyyppi",
+      "choices": [
+        {
+          "value": 1,
+          "display_name": "Asuntorakentaminen"
+        },
+        {
+          "value": 2,
+          "display_name": "Tonttirakentaminen"
+        }
+      ]
+    },
+    "subtype": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Haun alatyyppi",
+      "choices": [
+        {
+            "display_name": "Hinta- ja laatukilpailu",
+            "value": 1
+        },
+        {
+            "display_name": "Tontti- ja korkeus",
+            "value": 2
+        }
+      ]
+    },
+    "start_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Alkupvm"
+    },
+    "start_time": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "klo"
+    },
+    "end_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Loppupvm"
+    },
+    "end_time": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "klo"
+    },
+    "last_update": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Hakemukset päivitetty"
+    },
+    "step": {
+      "choices": [
+        {
+          "display_name": "Valmisteilla",
+          "value": 1
+        },
+        {
+          "display_name": "Käsittelyssä",
+          "value": 2
+        },
+        {
+          "display_name": "Valmis",
+          "value": 3
+        }
+      ],
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Haun vaihe"
+    },
+    "decision": {
+      "child": {
+        "children": {
+          "type": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Haun alatyyppi",
+            "choices": [
+              {
+                "display_name": "Kiinteistölautakunta 15.12.2016 503 § Varausajan jatkaminen HEL 2018-123456",
+                "value": 1
+              },
+              {
+                "display_name": "Kiinteistölautakunta 15.12.2016 503 § Lorem ipsum HEL 2018-123456",
+                "value": 2
+              }
+            ]
+          },
+          "decision_to_list": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Päätöshakulistaan"
+          }
+        }
+      }
+    },
+    "property_sites": {
+      "child": {
+        "children": {
+          "target_identifier": {
+            "label": "Kohteen tunnus",
+            "read_only": false,
+            "required": false,
+            "type": "field",
+            "choices": [
+              {
+                "display_name": "10658/1",
+                "value": 1
+              },
+              {
+                "display_name": "10658/2",
+                "value": 2
+              },
+              {
+                "display_name": "10658/3",
+                "value": 3
+              }
+            ]
+          },
+          "lease_id": {
+            "label": "Vuokraustunnus",
+            "read_only": false,
+            "required": false,
+            "type": "field",
+            "choices": [
+              {
+                "display_name": "TY1234-5",
+                "value": 1
+              },
+              {
+                "display_name": "TY1234-6",
+                "value": 2
+              },
+              {
+                "display_name": "TY1234-7",
+                "value": 3
+              }
+            ]
+          },
+          "address": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Osoite"
+          },
+          "hitas": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Hitas"
+          },
+          "step": {
+            "label": "Kaavayksikön vaihe",
+            "read_only": false,
+            "required": false,
+            "type": "field",
+            "choices": [
+              {
+                "display_name": "Suunniteltu",
+                "value": 1
+              },
+              {
+                "display_name": "Suunnitteilla",
+                "value": 2
+              }
+            ]
+          },
+          "handling": {
+            "label": "Asemakaavan ja käsittelyvaihe",
+            "read_only": false,
+            "required": false,
+            "type": "field",
+            "choices": [
+              {
+                "display_name": "123456",
+                "value": 1
+              },
+              {
+                "display_name": "234567",
+                "value": 2
+              }
+            ]
+          },
+          "use": {
+            "label": "Käyttötarkoitus",
+            "read_only": false,
+            "required": false,
+            "type": "field",
+            "choices": [
+              {
+                "display_name": "AK",
+                "value": 1
+              }
+            ]
+          },
+          "build_right": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Rak. oikeus"
+          },
+          "build_ready_in": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Rak. valmius"
+          },
+          "funding": {
+            "label": "Rahoitusmuoto",
+            "read_only": false,
+            "required": false,
+            "type": "field",
+            "choices": [
+              {
+                "display_name": "Vapaarahoitteinen",
+                "value": 1
+              }
+            ]
+          },
+          "ownership": {
+            "label": "Hallintomuoto",
+            "read_only": false,
+            "required": false,
+            "type": "field",
+            "choices": [
+              {
+                "display_name": "Omistus",
+                "value": 1
+              }
+            ]
+          },
+          "suggested": {
+            "child": {
+              "children": {
+                "name": {
+                  "label": "Ehdotettu varauksensaaja",
+                  "read_only": false,
+                  "required": false,
+                  "type": "field",
+                  "choices": [
+                    {
+                      "display_name": "Oy Firma Ab",
+                      "value": 1
+                    },
+                    {
+                      "display_name": "As. Oy Asuntosunto",
+                      "value": 2
+                    },
+                    {
+                      "display_name": "Puuha Pete",
+                      "value": 3
+                    }
+                  ]
+                },
+                "share_numerator": {
+                  "type": "integer",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Jaettava",
+                  "min_value": 0,
+                  "max_value": 2147483647
+                },
+                "share_denominator": {
+                  "type": "integer",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Jakaja",
+                  "min_value": 0,
+                  "max_value": 2147483647
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "application_base": {
+      "child": {
+        "children": {
+          "default": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Hakytyypin oletuslomake"
+          },
+          "extra": {
+            "type": "field",
+            "read_only": false,
+            "required": false,
+            "label": "Lomakkeen lisäosat",
+            "choices": [
+              {
+                "display_name": "Valitse kaikki",
+                "value": 0
+              },
+              {
+                "display_name": "Lisätieto 1",
+                "value": 1
+              },
+              {
+                "display_name": "Lisätieto 2",
+                "value": 2
+              },
+              {
+                "display_name": "Lisätieto 3",
+                "value": 3
+              }
+            ]
+          },
+          "previous": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Aiemmin luotu lomake"
+          },
+          "created": {
+            "type": "field",
+            "read_only": false,
+            "required": false,
+            "label": "Luodut hakulomakkeet",
+            "choices": [
+              {
+                "display_name": "Valitse kaikki",
+                "value": 0
+              },
+              {
+                "display_name": "Lisätieto 1",
+                "value": 1
+              },
+              {
+                "display_name": "Lisätieto 2",
+                "value": 2
+              },
+              {
+                "display_name": "Lisätieto 3",
+                "value": 3
+              }
+            ]
+          },
+          "applicants": {
+            "child": {
+              "children": {
+                "client_type": {
+                  "label": "Asiakastyyppi",
+                  "read_only": false,
+                  "required": false,
+                  "type": "radio-with-field",
+                  "choices": [
+                    {
+                      "display_name": "Yritys",
+                      "value": "1"
+                    },
+                    {
+                      "display_name": "Henkilö",
+                      "value": "2"
+                    }
+                  ]
+                },
+                "company_organization": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Organisaatio"
+                },
+                "company_y_identifier": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Y-tunnus"
+                },
+                "company_founding_year": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hakijayrityksen perustmisvuosi"
+                },
+                "company_revenue": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Liikevaihto (edellinen vuosi)"
+                },
+                "company_address": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Katuosoite"
+                },
+                "company_postal_code": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Postinumero"
+                },
+                "company_city": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kaupunki"
+                },
+                "company_email": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Sähköposti"
+                },
+                "company_phonenumber": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Puhelinnumero"
+                },
+                "contact_name": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Nimi"
+                },
+                "contact_address": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Katuosoite"
+                },
+                "contact_postalcode": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Postinumero"
+                },
+                "contact_city": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kaupunki"
+                },
+                "contact_phonenumber": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Puhelinnumero"
+                },
+                "person_name": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Nimi"
+                },
+                "person_hetu": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hetu"
+                },
+                "person_email": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Sähköposti"
+                },
+                "person_phonenumber": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Puhelinnumero"
+                },
+                "person_address": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Katuosoite"
+                },
+                "person_postalcode": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Postinumero"
+                },
+                "person_city": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kaupunki"
+                },
+                "transcript_address": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Katuosoite"
+                },
+                "transcript_postalcode": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Postinumero"
+                },
+                "transcript_city": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kaupunki"
+                }
+              }
+            }
+          },
+          "target": {
+            "child": {
+              "children": {
+                "target_property": {
+                  "label": "Tontti, jota hakemus koskee",
+                  "read_only": false,
+                  "required": false,
+                  "type": "radio-with-field",
+                  "choices": [
+                    {
+                      "display_name": "Mäntylä",
+                      "value": "1"
+                    },
+                    {
+                      "display_name": "Kuusamo",
+                      "value": "2"
+                    }
+                  ]
+                },
+                "percentage" : {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "%-perusteinen"
+                },
+                "head_planner": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hankkeen pääsuunnittelija"
+                },
+                "estimated_schedule": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hannkeen arvioitu aikataulu"
+                },
+                "desired_size": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hankkeen toivottu laajuus (rakennusoikeus ja asuntojen lkm)"
+                },
+                "funding": {
+                  "label": "Rahoitus- ja hallintamuoto",
+                  "read_only": false,
+                  "required": false,
+                  "type": "checkbox",
+                  "choices": [
+                    {
+                      "display_name": "Sääntelemätön omistus",
+                      "value": 1
+                    },
+                    {
+                      "display_name": "Hitas omistus",
+                      "value": 2
+                    },
+                    {
+                      "display_name": "Hintakontrolloitu omistus",
+                      "value": 3
+                    },
+                    {
+                      "display_name": "Asumisoikeus",
+                      "value": 4
+                    },
+                    {
+                      "display_name": "Sääntelemätön vuokra",
+                      "value": 5
+                    },
+                    {
+                      "display_name": "Valtion tukema vuokra 10v",
+                      "value": 6
+                    },
+                    {
+                      "display_name": "Valtion tukema vuokra pitkä",
+                      "value": 7
+                    },
+                    {
+                      "display_name": "Valtion tukema takauslaina",
+                      "value": 8
+                    },
+                    {
+                      "display_name": "Muu:",
+                      "value": 9
+                    }
+                  ]},
+                "special": {
+                  "label": "Erityisryhmät",
+                  "read_only": false,
+                  "required": false,
+                  "type": "checkbox",
+                  "choices": [
+                    {
+                      "display_name": "Opiskelijat",
+                      "value": 1
+                    },
+                    {
+                      "display_name": "Nuoret/nuoret aikuiset",
+                      "value": 2
+                    },
+                    {
+                      "display_name": "Seniorit",
+                      "value": 3
+                    },
+                    {
+                      "display_name": "Muut erityisryhmät, mitä:",
+                      "value": 4
+                    }
+                  ]},
+                "other": {
+                  "label": "Muut hankkeen mahdolliset kehitysteemat",
+                  "read_only": false,
+                  "required": false,
+                  "type": "checkbox",
+                  "choices": [
+                    {
+                      "display_name": "Luontoa säästävät energiaratkaisut",
+                      "value": 1
+                    },
+                    {
+                      "display_name": "Hiilineutraali Helsinki 2035",
+                      "value": 2
+                    },
+                    {
+                      "display_name": "Asuntojen muunneltavuus",
+                      "value": 3
+                    },
+                    {
+                      "display_name": "Yhteisöllisyys",
+                      "value": 4
+                    },
+                    {
+                      "display_name": "Kohtuuhintainen asuminen",
+                      "value": 5
+                    },
+                    {
+                      "display_name": "Kehittyvä kerrostalo -hanke",
+                      "value": 6
+                    },
+                    {
+                      "display_name": "Muu:",
+                      "value": 7
+                    }
+                  ]},
+                "overal_picture": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hankkeen yleiskuvaus"
+                },
+                "peculiarities": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hankkeen mahdolliset eristyispiirteet ja mahdolliset kehittämisteemat"
+                },
+                "descriptions" : {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Lyhyt kuvaus hankkeen suunnilusta ja toteutustavasta ja -organisaatiosta sekä hajikjan käytössä olevista taloudellisista ja muista resursseista"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
