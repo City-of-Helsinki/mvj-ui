@@ -26,18 +26,18 @@ const FileDownloadButton = ({
 }: Props) => {
 
   const fetchFile = async() => {
-    const formatedCollectionCharge = {...payload, invoices: payload.invoices.map(invoice=>({...invoice, collection_charge: convertStrToDecimalNumber(invoice.collection_charge)}))};
-    const body = JSON.stringify(formatedCollectionCharge);
-    const request = new Request(url, {
-      method: 'POST',
-      body,
-    });
-    if (apiToken) {
-      request.headers.set('Authorization', `Bearer ${apiToken}`);
-    }
-    request.headers.set('Content-Type', 'application/json');
-
     try {
+      const formatedCollectionCharge = {...payload, invoices: payload.invoices.map(invoice=>({...invoice, collection_charge: convertStrToDecimalNumber(invoice.collection_charge)}))};
+      const body = JSON.stringify(formatedCollectionCharge);
+      const request = new Request(url, {
+        method: 'POST',
+        body,
+      });
+      if (apiToken) {
+        request.headers.set('Authorization', `Bearer ${apiToken}`);
+      }
+      request.headers.set('Content-Type', 'application/json');
+
       const response = await fetch(request);
       switch(response.status) {
         case 200:
