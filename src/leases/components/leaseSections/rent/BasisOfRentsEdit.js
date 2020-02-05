@@ -123,6 +123,17 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
       subventionTypeOptions,
     } = this.state;
     const totalDiscountedInitialYearRent = calculateBasisOfRentTotalDiscountedInitialYearRent(basisOfRents, indexOptions);
+    const calculatorTypeOptions = [
+      {value: 'lease', label: 'Vuokra'},
+      {value: 'temporary', label: 'Tilapäiset'},
+      {value: 'extra', label: 'Lisäpihat'},
+      {value: 'fields', label: 'Pellot'},
+      {value: 'poles', label: 'Mastot'}];
+    const zoneOptions = [
+      {value: 100, label: 'A'},
+      {value: 90, label: 'B'},
+      {value: 80, label: 'C'},
+      {value: 70, label: 'D'}];
 
     if(!archived && (!fields || !fields.length)) {
       return(
@@ -190,6 +201,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                         key={index}
                         archived={true}
                         areaUnitOptions={areaUnitOptions}
+                        calculatorTypeOptions={calculatorTypeOptions}
                         field={field}
                         formName={formName}
                         indexOptions={indexOptions}
@@ -203,6 +215,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                         showTotal={fields.length > 1 && fields.length === index + 1}
                         subventionTypeOptions={subventionTypeOptions}
                         totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
+                        zoneOptions={zoneOptions}
                       />;
                     })}
                   </BoxItemContainer>
@@ -246,6 +259,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                       key={index}
                       archived={false}
                       areaUnitOptions={areaUnitOptions}
+                      calculatorTypeOptions={calculatorTypeOptions}
                       field={field}
                       formName={formName}
                       indexOptions={indexOptions}
@@ -259,6 +273,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                       showTotal={fields.length > 1 && fields.length === index + 1}
                       subventionTypeOptions={subventionTypeOptions}
                       totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
+                      zoneOptions={zoneOptions}
                     />;
                   })}
                 </BoxItemContainer>

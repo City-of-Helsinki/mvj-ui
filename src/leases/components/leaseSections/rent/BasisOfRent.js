@@ -55,6 +55,7 @@ import type {Attributes} from '$src/types';
 type Props = {
   areaUnitOptions: Array<Object>,
   basisOfRent: Object,
+  calculatorTypeOptions: Array<Object>,
   indexOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
   leaseAttributes: Attributes,
@@ -191,6 +192,14 @@ const BasisOfRent = ({
       }
       <BoxContentWrapper>
         <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
+                Laskurin tyyppi
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(intendedUseOptions, basisOfRent.intended_use) || '-'}</FormText>
+            </Authorization>
+          </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>

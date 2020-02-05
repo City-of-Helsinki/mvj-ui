@@ -12,6 +12,19 @@ export const AreaLocation = {
 };
 
 /**
+ * Calculator types enumerable.
+ *
+ * @type {{}}
+ */
+export const CalculatorTypes = {
+  LEASE: 'lease',
+  TEMPORARY: 'temporary',
+  EXTRA: 'extra',
+  FIELDS: 'fields',
+  POLES: 'poles',
+};
+
+/**
  * Collateral types enumerable.
  *
  * @type {{}}
@@ -1087,6 +1100,7 @@ export const LeaseBasisOfRentsFieldPaths = {
  */
 export const LeaseBasisOfRentsFieldTitles = {
   BASIS_OF_RENTS: 'Vuokralaskuri',
+  AREA_HEIGHT: 'ala/korkeus',
   AMOUNT_PER_AREA: 'Yksikköhinta (ind 100)',
   ARCHIVED_AT: 'Arkistoitu',
   ARCHIVED_NOTE: 'Arkitoinnin huomautus',
@@ -1109,13 +1123,16 @@ export const LeaseBasisOfRentsFieldTitles = {
   INTENDED_USE: 'Käyttötarkoitus',
   LOCKED_AT: 'Laskelma lukittu',
   PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
+  PRICE: 'Hinta',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
+  RENT: 'Vuokra',
   SUBVENTION_BASE_PERCENT: 'Markkinavuokran subventio',
   SUBVENTION_GRADUATED_PERCENT: 'Siirtymäajan subventio',
   SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT: 'Subventio euroa/vuosi',
   SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'Subventio prosentteina',
   SUBVENTION_TYPE: 'Subvention tyyppi',
   UNIT_PRICE: 'Yksikköhinta (ind)',
+  ZONE: 'Vyöhyke',
 };
 
 /**
