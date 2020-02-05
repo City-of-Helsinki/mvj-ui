@@ -107,7 +107,7 @@ const PlanUnitItem = ({
             </FormTextTitle>
             {planUnit.detailed_plan_identifier
               ? <ExternalLink
-                href={createPaikkatietovipunenUrl(`kaavapdf/${planUnit.detailed_plan_identifier}.pdf`)}
+                href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${planUnit.detailed_plan_identifier}`)}
                 text={planUnit.detailed_plan_identifier}
               />
               : <FormText>-</FormText>
@@ -141,7 +141,7 @@ const PlanUnitItem = ({
             </FormTextTitle>
             {planUnit.plot_division_identifier
               ? <ExternalLink
-                href={createPaikkatietovipunenUrl(`tonttijaot/Tonttijaot_PDF/tj${planUnit.plot_division_identifier}.pdf`)}
+                href={createPaikkatietovipunenUrl(`helreport/plotdivision/?id=${planUnit.plot_division_identifier}`)}
                 text={planUnit.plot_division_identifier}
               />
               : <FormText>-</FormText>
