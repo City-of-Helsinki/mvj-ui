@@ -19,18 +19,21 @@ import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums
 import {getUiDataInvoiceKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
-
+import {getReceivableTypes} from '$src/leaseCreateCharge/selectors';
 import type {Attributes} from '$src/types';
+import {receivableTypesFromAttributes} from '$src/leaseCreateCharge/helpers';
+
 
 type Props = {
   fields: any,
   invoiceAttributes: Attributes,
   isEditClicked: boolean,
   relativeTo: any,
+  receivableTypes: Object,
   tenantOptions: Array<Object>,
 }
 
-const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, tenantOptions}: Props): Element<*> => {
+const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, receivableTypes, tenantOptions}: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -88,7 +91,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, 
                             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
                               <FormField
                                 disableTouched={isEditClicked}
-                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
+                                fieldAttributes={receivableTypesFromAttributes(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)}
                                 name={`${row}.receivable_type`}
                                 overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
                               />
@@ -164,6 +167,7 @@ export default connect(
   (state) => {
     return {
       invoiceAttributes: getInvoiceAttributes(state),
+      receivableTypes: getReceivableTypes(state),
     };
   }
 )(InvoiceRowsEdit);

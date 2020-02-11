@@ -31,3 +31,16 @@ export const getPayloadLeaseCreateCharge = (invoice: Object): Object => {
     rows: getPayloadLeaseCreateChargeRows(invoice),
   };
 };
+
+/**
+ * Get fieldAttributes with filtered choices from reveivable types
+ * @param {Object} fieldAttributes
+ * @param {Object} receivableTypes
+ * @returns {Object}
+ */
+export const receivableTypesFromAttributes = (fieldAttributes: Object, receivableTypes: Object): Object => {
+  // Filter choices where choices receivable_type.is_active === true
+  const newChoices = fieldAttributes.choices.filter(choice => receivableTypes.find(type => type.id === choice.value).is_active);
+  const newFieldAttributes = {...fieldAttributes, choices: newChoices};
+  return newFieldAttributes;
+};

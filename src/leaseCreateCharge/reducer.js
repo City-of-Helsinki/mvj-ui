@@ -5,6 +5,7 @@ import {handleActions} from 'redux-actions';
 import type {Attributes, Reducer} from '$src/types';
 import type {
   ReceiveAttributesAction,
+  ReceiveReceivableTypesAction,
 } from '$src/leaseCreateCharge/types';
 
 
@@ -20,7 +21,21 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   },
 }, null);
 
+const isFetchingReceivableTypesReducer: Reducer<boolean> = handleActions({
+  'mvj/leaseCreateCharge/FETCH_RECEIVABLE_TYPES': () => true,
+  'mvj/leaseCreateCharge/RECEIVE_RECEIVABLE_TYPES': () => false,
+  'mvj/leaseCreateCharge/RECEIVABLE_TYPES_NOT_FOUND': () => false,
+}, false);
+
+const ReceivableTypesReducer: Reducer<Object> = handleActions({
+  ['mvj/leaseCreateCharge/RECEIVE_RECEIVABLE_TYPES']: (state: Object, {payload: receivableTypes}: ReceiveReceivableTypesAction) => {
+    return receivableTypes;
+  },
+}, null);
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
+  receivableTypes: ReceivableTypesReducer,
+  isFetchingReceivableTypes: isFetchingReceivableTypesReducer,
 });

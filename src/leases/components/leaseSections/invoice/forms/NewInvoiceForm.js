@@ -23,6 +23,7 @@ import {ButtonColors} from '$components/enums';
 import {InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {LeaseCreateChargeFieldPaths, LeaseCreateChargeRowsFieldPaths} from '$src/leaseCreateCharge/enums';
 import {RecipientOptions} from '$src/leases/enums';
+import {receivableTypesFromAttributes} from '$src/leaseCreateCharge/helpers';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {isInvoiceBillingPeriodRequired} from '$src/invoices/helpers';
@@ -39,7 +40,10 @@ import {
   getIsCreateClicked,
 } from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
-import {getAttributes as getLeaseCreateCrargeAttributes} from '$src/leaseCreateCharge/selectors';
+import {
+  getAttributes as getLeaseCreateCrargeAttributes,
+  getReceivableTypes,
+} from '$src/leaseCreateCharge/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
@@ -51,6 +55,7 @@ type InvoiceRowsProps = {
   invoiceAttributes: Attributes,
   isCreateClicked: boolean,
   leaseCreateChargeAttributes: Attributes,
+  receivableTypes: Object,
   useLeaseCreateChargeEndpoint: boolean,
 }
 
@@ -59,6 +64,7 @@ const InvoiceRows = ({
   invoiceAttributes,
   isCreateClicked,
   leaseCreateChargeAttributes,
+  receivableTypes,
   useLeaseCreateChargeEndpoint,
 }: InvoiceRowsProps): Element<*> => {
   const handleAdd = () => {
@@ -136,8 +142,8 @@ const InvoiceRows = ({
                           <FormField
                             disableTouched={isCreateClicked}
                             fieldAttributes={useLeaseCreateChargeEndpoint
-                              ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)
-                              : getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)
+                              ? receivableTypesFromAttributes(getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)
+                              : receivableTypesFromAttributes(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)
                             }
                             invisibleLabel
                             name={`${row}.receivable_type`}
@@ -216,6 +222,7 @@ type Props = {
   receiveIsCreateClicked: Function,
   tenant: string,
   rows: Array<Object>,
+  receivableTypes: Object,
   setRefForFirstField?: Function,
   usersPermissions: UsersPermissionsType,
   valid: boolean,
@@ -233,6 +240,7 @@ const NewInvoiceForm = ({
   receiveIsCreateClicked,
   tenant,
   rows,
+  receivableTypes,
   setRefForFirstField,
   usersPermissions,
   valid,
@@ -370,6 +378,7 @@ const NewInvoiceForm = ({
           >
             <FieldArray
               component={InvoiceRows}
+              receivableTypes={receivableTypes}
               invoiceAttributes={invoiceAttributes}
               isCreateClicked={isCreateClicked}
               leaseCreateChargeAttributes={leaseCreateChargeAttributes}
@@ -413,6 +422,7 @@ export default flowRight(
         isCreateClicked: getIsCreateClicked(state),
         lease: getCurrentLease(state),
         leaseCreateChargeAttributes: getLeaseCreateCrargeAttributes(state),
+        receivableTypes: getReceivableTypes(state),
         tenant: selector(state, 'tenant'),
         rows: selector(state, 'rows'),
         usersPermissions: getUsersPermissions(state),

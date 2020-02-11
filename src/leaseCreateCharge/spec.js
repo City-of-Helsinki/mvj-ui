@@ -5,6 +5,9 @@ import {
   fetchAttributes,
   attributesNotFound,
   receiveAttributes,
+  fetchReceivableTypes,
+  receivableTypesNotFound,
+  receiveReceivableTypes,
 } from './actions';
 import leaseCreateChargeReducer from './reducer';
 
@@ -13,6 +16,8 @@ import type {LeaseCreateChargeState} from './types';
 const defaultState: LeaseCreateChargeState = {
   attributes: null,
   isFetchingAttributes: false,
+  receivableTypes: null,
+  isFetchingReceivableTypes: false,
 };
 
 // $FlowFixMe
@@ -46,6 +51,30 @@ describe('Lease create charge', () => {
         const newState = {...defaultState, attributes: dummyAttributes};
 
         const state = leaseCreateChargeReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingReceivableTypes flag to true by fetchReceivableTypes', () => {
+        const newState = {...defaultState, isFetchingReceivableTypes: true};
+
+        const state = leaseCreateChargeReducer({}, fetchReceivableTypes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingReceivableTypes flag to true by receivableTypesNotFound', () => {
+        const newState = {...defaultState, isFetchingReceivableTypes: false};
+
+        let state = leaseCreateChargeReducer({}, fetchReceivableTypes());
+        state = leaseCreateChargeReducer(state, receivableTypesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update receivableTypes', () => {
+        const dummyReceivableTypes = {foo: 'bar'};
+
+        const newState = {...defaultState, receivableTypes: dummyReceivableTypes};
+
+        const state = leaseCreateChargeReducer({}, receiveReceivableTypes(dummyReceivableTypes));
         expect(state).to.deep.equal(newState);
       });
     });
