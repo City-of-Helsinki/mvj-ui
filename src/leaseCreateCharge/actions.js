@@ -6,6 +6,9 @@ import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
   AttributesNotFoundAction,
+  FetchReceivableTypesAction,
+  ReceiveReceivableTypesAction,
+  ReceivableTypesNotFoundAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -16,3 +19,12 @@ export const receiveAttributes = (attributes: Attributes): ReceiveAttributesActi
 
 export const attributesNotFound = (): AttributesNotFoundAction =>
   createAction('mvj/leaseCreateCharge/ATTRIBUTES_NOT_FOUND')();
+
+export const fetchReceivableTypes = (): FetchReceivableTypesAction =>
+  createAction('mvj/leaseCreateCharge/FETCH_RECEIVABLE_TYPES')();
+
+export const receiveReceivableTypes = (receivableTypes: Object): ReceiveReceivableTypesAction =>
+  createAction('mvj/leaseCreateCharge/RECEIVE_RECEIVABLE_TYPES')(receivableTypes);
+
+export const receivableTypesNotFound = (): ReceivableTypesNotFoundAction =>
+  createAction('mvj/leaseCreateCharge/RECEIVABLE_TYPES_NOT_FOUND')();

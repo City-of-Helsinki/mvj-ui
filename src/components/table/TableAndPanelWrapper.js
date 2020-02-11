@@ -49,6 +49,7 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     if(prevProps.isPanelOpen !== this.props.isPanelOpen) {
+      this.setHidden(this.props.isPanelOpen);
       this.calculateTableHeight();
       this.calculateTableWidth();
     }
@@ -56,6 +57,15 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
 
   componentWillUnmount() {
     this.panelWrapper.removeEventListener('transitionend', this.transitionEnds);
+  }
+
+  setHidden = (isPanelOpen: boolean) => {
+    let wrapper = document.querySelector('.table__table-and-panel-wrapper');
+    wrapper ? 
+      isPanelOpen ?
+        wrapper.style.overflow = 'visible':
+        wrapper.style.overflow = 'hidden'
+      : null;
   }
 
   setContainerRef = (el: any) => {
