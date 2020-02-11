@@ -2,6 +2,7 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import {formValueSelector} from 'redux-form';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -13,7 +14,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {ConfirmationModalTexts} from '$src/enums';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {getUiDataInvoiceKey} from '$src/uiData/helpers';
@@ -21,7 +22,7 @@ import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead} from '$u
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {getReceivableTypes} from '$src/leaseCreateCharge/selectors';
 import type {Attributes} from '$src/types';
-import {receivableTypesFromAttributes} from '$src/leaseCreateCharge/helpers';
+import {receivableTypesFromAttributes, receivableTypeFromRows} from '$src/leaseCreateCharge/helpers';
 
 
 type Props = {
@@ -30,13 +31,16 @@ type Props = {
   isEditClicked: boolean,
   relativeTo: any,
   receivableTypes: Object,
+  rows: Object,
   tenantOptions: Array<Object>,
 }
 
-const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, receivableTypes, tenantOptions}: Props): Element<*> => {
+const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, receivableTypes, tenantOptions, rows}: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
+
+  const receivableType = receivableTypeFromRows(rows);
 
   return (
     <AppConsumer>
@@ -91,7 +95,10 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, 
                             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
                               <FormField
                                 disableTouched={isEditClicked}
-                                fieldAttributes={receivableTypesFromAttributes(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)}
+                                fieldAttributes={
+                                  receivableType === 2 ?
+                                    getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE):
+                                    receivableTypesFromAttributes(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)}
                                 name={`${row}.receivable_type`}
                                 overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
                               />
@@ -163,11 +170,14 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, 
   );
 };
 
+const selector = formValueSelector(FormNames.LEASE_INVOICE_EDIT);
+
 export default connect(
   (state) => {
     return {
       invoiceAttributes: getInvoiceAttributes(state),
       receivableTypes: getReceivableTypes(state),
+      rows: selector(state, `rows`),
     };
   }
 )(InvoiceRowsEdit);

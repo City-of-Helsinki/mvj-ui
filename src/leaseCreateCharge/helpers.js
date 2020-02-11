@@ -44,3 +44,12 @@ export const receivableTypesFromAttributes = (fieldAttributes: Object, receivabl
   const newFieldAttributes = {...fieldAttributes, choices: newChoices};
   return newFieldAttributes;
 };
+
+/**
+ * Get receivable type from rows data
+ * @param {Array<Object>} rows
+ * @returns {Number}
+ */
+export const receivableTypeFromRows = (rows: Array<Object>): ?Number => {
+  return rows ? rows[0].receivable_type : null;
+};
