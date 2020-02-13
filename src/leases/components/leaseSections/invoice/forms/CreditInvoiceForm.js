@@ -191,7 +191,7 @@ const CreditInvoiceForm = ({
                 />
                 <Button
                   className={ButtonColors.SUCCESS}
-                  disabled={isCreditClicked && !valid}
+                  disabled={isCreditClicked || !valid}
                   onClick={handleSave}
                   text='Tallenna'
                 />
