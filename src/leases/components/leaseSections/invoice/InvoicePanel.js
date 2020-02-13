@@ -16,7 +16,6 @@ import {isMethodAllowed} from '$util/helpers';
 import {
   getInvoicesByLease,
   getIsEditClicked,
-  getIsSaving as getIsSavingInvoice,
   getMethods as getInvoiceMethods,
 } from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -35,7 +34,6 @@ type Props = {
   onSave: Function,
   receiveIsEditClicked: Function,
   valid: boolean,
-  isSavingInvoice: boolean,
 }
 
 type State = {
@@ -94,7 +92,6 @@ class InvoicePanel extends PureComponent<Props, State> {
       onClose,
       onInvoiceLinkClick,
       valid,
-      isSavingInvoice,
     } = this.props;
     const {
       creditedInvoice,
@@ -113,7 +110,7 @@ class InvoicePanel extends PureComponent<Props, State> {
             />
             <Button
               className={ButtonColors.SUCCESS}
-              disabled={isEditClicked && !valid || isSavingInvoice}
+              disabled={isEditClicked || !valid}
               onClick={this.handleSave}
               text='Tallenna'
             />
@@ -155,7 +152,6 @@ export default connect(
       invoiceMethods: getInvoiceMethods(state),
       invoices: getInvoicesByLease(state, currentLease.id),
       isEditClicked: getIsEditClicked(state),
-      isSavingInvoice: getIsSavingInvoice(state),
       valid: isValid(formName)(state),
     };
   },
