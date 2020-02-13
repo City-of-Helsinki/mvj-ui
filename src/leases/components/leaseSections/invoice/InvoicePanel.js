@@ -35,6 +35,7 @@ type Props = {
   onSave: Function,
   receiveIsEditClicked: Function,
   valid: boolean,
+  isSavingInvoice: boolean,
 }
 
 type State = {
@@ -93,6 +94,7 @@ class InvoicePanel extends PureComponent<Props, State> {
       onClose,
       onInvoiceLinkClick,
       valid,
+      isSavingInvoice,
     } = this.props;
     const {
       creditedInvoice,
@@ -111,7 +113,7 @@ class InvoicePanel extends PureComponent<Props, State> {
             />
             <Button
               className={ButtonColors.SUCCESS}
-              disabled={isEditClicked && !valid}
+              disabled={isEditClicked && !valid || isSavingInvoice}
               onClick={this.handleSave}
               text='Tallenna'
             />

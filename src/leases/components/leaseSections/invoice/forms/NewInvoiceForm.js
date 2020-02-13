@@ -38,6 +38,7 @@ import {
 import {
   getAttributes as getInvoiceAttributes,
   getIsCreateClicked,
+  getIsFetching,
 } from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 import {
@@ -226,6 +227,7 @@ type Props = {
   setRefForFirstField?: Function,
   usersPermissions: UsersPermissionsType,
   valid: boolean,
+  isFetching: boolean,
 }
 
 const NewInvoiceForm = ({
@@ -244,6 +246,7 @@ const NewInvoiceForm = ({
   setRefForFirstField,
   usersPermissions,
   valid,
+  isFetching,
 }: Props) => {
   const handleSave = () => {
     receiveIsCreateClicked(true);
@@ -397,7 +400,7 @@ const NewInvoiceForm = ({
                 />
                 <Button
                   className={ButtonColors.SUCCESS}
-                  disabled={isCreateClicked && !valid}
+                  disabled={isCreateClicked && !valid || isFetching}
                   onClick={handleSave}
                   text='Tallenna'
                 />
@@ -426,6 +429,7 @@ export default flowRight(
         tenant: selector(state, 'tenant'),
         rows: selector(state, 'rows'),
         usersPermissions: getUsersPermissions(state),
+        isFetching: getIsFetching(state),
       };
     },
     {
