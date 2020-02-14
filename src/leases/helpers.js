@@ -1368,6 +1368,68 @@ export const calculateSubventionDiscountTotalFromReLease = (initialYearRent: num
 };
 
 /**
+ * Calculate Temporary rent
+ * @param {number} price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateTemporaryRent = (price: ?number, area: ?number): number => {
+  if(!price || !area)
+    return 0;
+  const areaDecimal = Number(convertStrToDecimalNumber(area));
+  if(areaDecimal>2000)
+    return Number(price*2000+price*0.5*(areaDecimal)-2000);
+  else
+    return Number(price*areaDecimal);
+};
+
+/**
+ * Calculate Extra rent
+ * @param {string} price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateExtraRent = (price: ?string, area: ?number): number => {
+  if(!price || !area)
+    return 0;
+  return Number(1.5*Number(convertStrToDecimalNumber(price))*Number(convertStrToDecimalNumber(area))*0.05);
+};
+
+/**
+ * Calculate Extra rent
+ * @param {string} price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateFieldsRent = (price: ?string, area: ?number): number => {
+  if(!price || !area)
+    return 0;
+  return Number(Number(convertStrToDecimalNumber(price))*Number(convertStrToDecimalNumber(area)));
+};
+
+/**
+ * Calculate Rack price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateRackPrice = (numberOfRacks: ?number): number => {
+  if(!numberOfRacks)
+    return 0;
+  return Number(1000*numberOfRacks);
+};
+
+/**
+ * Calculate Rack price
+ * @param {number} area
+ * @return {number}
+ */
+export const calcluateHightPrice = (height: ?number): number => {
+  if(!height)
+    return 0;
+  return Number(600*height);
+};
+
+/**
  * Get content of management subventions from rent adjustment
  * @param {Object} rentAdjustment
  * @return {Object[]}
