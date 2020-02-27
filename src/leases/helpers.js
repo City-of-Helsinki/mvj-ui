@@ -1216,7 +1216,7 @@ export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: 
   let discounted = initialYearRent;
   let discount = 0;
 
-  managementSubventions.forEach(managementSubvention => {
+  managementSubventions && managementSubventions.forEach(managementSubvention => {
     if(view === 'EDIT')
       discounted = discounted * ((100 - Number(convertStrToDecimalNumber(managementSubvention.subvention_percent))) / 100);
     else
@@ -1384,6 +1384,18 @@ export const calculateTemporaryRent = (price: ?number, area: ?number): number =>
 };
 
 /**
+ * Calculate Basic Annual Rent Indexed
+ * @param {number} rent
+ * @param {string} indexValue
+ * @return {number}
+ */
+export const calculateBasicAnnualRentIndexed = (rent: ?number, indexValue: ?string): number => {
+  if(!rent || !indexValue)
+    return 0;
+  return Number(rent * (1 + Number(convertStrToDecimalNumber(indexValue)) / 10000));
+};
+
+/**
  * Calculate Extra rent
  * @param {string} price
  * @param {number} area
@@ -1427,6 +1439,20 @@ export const calcluateHightPrice = (height: ?number): number => {
   if(!height)
     return 0;
   return Number(600*height);
+};
+
+/**
+ * Calculate Rack and height price
+ * @param {Object} children
+ * @return {number}
+ */
+export const calculateRackAndHeightPrice = (children: ?Object): number => {
+  let total = 0;
+  if(children && children[0] && children[0].area)
+    total = total + calculateRackPrice(Number(convertStrToDecimalNumber(children[0].area)));
+  if(children && children[1] && children[1].area)
+    total = total + calcluateHightPrice(Number(convertStrToDecimalNumber(children[1].area)));
+  return total;
 };
 
 /**
@@ -1483,6 +1509,7 @@ export const getContentRentAdjustments = (rent: Object): Array<Object> =>
         subvention_graduated_percent: item.subvention_graduated_percent,
         management_subventions: getContentManagementSubventions(item),
         temporary_subventions: getContentTemporarySubventions(item),
+        zone: item.zone,
       };
     })
     .sort(sortByStartAndEndDateDesc);
@@ -1641,8 +1668,9 @@ export const getRentWarnings = (rents: Array<Object>): Array<string> => {
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getContentBasisOfRents = (lease: Object): Array<Object> =>
-  get(lease, 'basis_of_rents', []).map((item) => {
+export const getContentBasisOfRents = (lease: Object): Array<Object> => {
+  const allChildren = get(lease, 'basis_of_rents', []).flatMap(item => item.children);
+  return get(lease, 'basis_of_rents', []).filter(item => !allChildren.includes(item.id)).map((item) => {
     return {
       id: item.id || undefined,
       intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
@@ -1651,6 +1679,8 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> =>
       amount_per_area: item.amount_per_area,
       index: get(item, 'index.id') || get(item, 'index'),
       profit_margin_percentage: item.profit_margin_percentage,
+      children: get(lease, 'basis_of_rents', []).filter(filterItem => item.children.includes(filterItem.id)),
+      type: item.type,
       discount_percentage: item.discount_percentage,
       plans_inspected_at: item.plans_inspected_at,
       plans_inspected_by: item.plans_inspected_by,
@@ -1662,8 +1692,10 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> =>
       subvention_graduated_percent: item.subvention_graduated_percent,
       management_subventions: getContentManagementSubventions(item),
       temporary_subventions: getContentTemporarySubventions(item),
+      zone: item.zone,
     };
   });
+};
 
 /**
  * Get invoice recipient options
@@ -2465,6 +2497,21 @@ export const getPayloadTemporarySubventions = (rentAdjustment: Object): Array<Ob
     });
 
 /**
+ * Get children payload
+ * @param {Object} rentAdjustment
+ * @return {Object[]}
+ */
+export const getPayloadChildren = (rentAdjustment: Object): Array<Object> =>
+  get(rentAdjustment, 'children', [])
+    .map((item) => {
+      return {
+        intended_use: 7,
+        area_unit: 'm2',
+        area: convertStrToDecimalNumber(item.area),
+      };
+    });
+
+/**
  * Get rent adjustments payload
  * @param {Object} rent
  * @returns {Object[]}
@@ -2487,6 +2534,7 @@ export const getPayloadRentAdjustments = (rent: Object): Array<Object> =>
       subvention_graduated_percent: convertStrToDecimalNumber(item.subvention_graduated_percent),
       management_subventions: getPayloadManagementSubventions(item),
       temporary_subventions: getPayloadTemporarySubventions(item),
+      zone: item.zone,
     };
   });
 
@@ -2600,13 +2648,15 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
     } else {
       return {
         id: item.id,
-        intended_use: item.intended_use,
+        intended_use: (item.type === 'lease')?item.intended_use:7, 
         area: convertStrToDecimalNumber(item.area),
-        area_unit: item.area_unit,
+        area_unit: (item.type === 'lease')?item.area_unit:'m2',
+        type: item.type,
         amount_per_area: convertStrToDecimalNumber(item.amount_per_area),
         index: item.index,
         profit_margin_percentage: convertStrToDecimalNumber(item.profit_margin_percentage),
         discount_percentage: convertStrToDecimalNumber(item.discount_percentage),
+        children: getPayloadChildren(item),
         plans_inspected_at: item.plans_inspected_at,
         locked_at: item.locked_at,
         archived_at: item.archived_at,
@@ -2615,6 +2665,7 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
         subvention_graduated_percent: convertStrToDecimalNumber(item.subvention_graduated_percent),
         management_subventions: getPayloadManagementSubventions(item),
         temporary_subventions: getPayloadTemporarySubventions(item),
+        zone: item.zone,
       };
     }
   });
@@ -2746,6 +2797,23 @@ export const mapLeaseSearchFilters = (query: Object): Object => {
   });
 
   return searchQuery;
+};
+
+/**
+ * calculate mast rent
+ * @param {number} index
+ * @param {number} area
+ * @param {string} amountPerArea
+ * @returns {number}
+ */
+export const mastCalculatorRent = (index: number, area: number): number => {
+  if(isEmpty(area))
+    return 0;
+  if(index === 0 && area)
+    return Number(1000 * Number(convertStrToDecimalNumber(area)));
+  if(index === 1 && area)
+    return Number(600 * Number(convertStrToDecimalNumber(area)));
+  return 0;
 };
 
 /**

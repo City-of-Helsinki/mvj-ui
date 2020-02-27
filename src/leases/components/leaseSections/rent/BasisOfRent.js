@@ -22,6 +22,8 @@ import {
   LeaseBasisOfRentsFieldPaths,
   LeaseBasisOfRentsFieldTitles,
   SubventionTypes,
+  CalculatorTypes,
+  calculatorTypeOptions,
 } from '$src/leases/enums';
 import {
   calculateBasisOfRentAmountPerArea,
@@ -37,6 +39,12 @@ import {
   calculateSubventionDiscountTotalFromReLease,
   calculateTemporarySubventionDiscountPercentage,
   getBasisOfRentIndexValue,
+  calculateExtraRent,
+  calculateFieldsRent,
+  calculateTemporaryRent,
+  calculateBasicAnnualRentIndexed,
+  mastCalculatorRent,
+  calculateRackAndHeightPrice,
 } from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getUserFullName} from '$src/users/helpers';
@@ -55,7 +63,6 @@ import type {Attributes} from '$src/types';
 type Props = {
   areaUnitOptions: Array<Object>,
   basisOfRent: Object,
-  calculatorTypeOptions: Array<Object>,
   indexOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
   leaseAttributes: Attributes,
@@ -149,7 +156,7 @@ const BasisOfRent = ({
         getReLeaseDiscountPercent(),
       );
   };
-
+  const calculatorType = basisOfRent.type;
   const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
   const areaText = getAreaText(basisOfRent.area);
   const amountPerAreaText = getAmountPerAreaText(basisOfRent.amount_per_area);
@@ -173,6 +180,20 @@ const BasisOfRent = ({
   const discountPercentage = getDiscountPercentage();
   const temporarySubventionDiscountPercentage = calculateTemporarySubventionDiscountPercentage(temporarySubventions);
   const subventionDiscountedInitial = getSubventionDiscountedInitial();
+  const zonePrice = 100;
+  const deviceCabinetPrice = 1000;
+  const rent = calculateTemporaryRent(zonePrice, basisOfRent.area);
+  const deviceCabinetRent = calculateTemporaryRent(deviceCabinetPrice, basisOfRent.area);
+  const basicAnnualRentIndexed = calculateBasicAnnualRentIndexed(rent, indexValue);
+  const deviceCabinetRentIndexed = calculateBasicAnnualRentIndexed(deviceCabinetRent, indexValue);
+  const rentExtra = calculateExtraRent(basisOfRent.amount_per_area, basisOfRent.area);
+  const rentExtraIndexed = calculateBasicAnnualRentIndexed(rentExtra, indexValue);
+  const fieldsRent = calculateFieldsRent(basisOfRent.amount_per_area, basisOfRent.area);
+  const basicAnnualFieldRentIndexed = calculateBasicAnnualRentIndexed(fieldsRent, indexValue);
+  const mastAreaRent = 1.5 * calculateFieldsRent(basisOfRent.amount_per_area, basisOfRent.area);
+  const rackAndHeightPrice = calculateRackAndHeightPrice(basisOfRent.children);
+  const mastTotal = (mastAreaRent + rackAndHeightPrice) * 0.05;
+  const mastTotalIndexed = calculateBasicAnnualRentIndexed(mastTotal, indexValue);
 
   return(
     <BoxItem className='no-border-on-first-child no-border-on-last-child'>
@@ -193,80 +214,291 @@ const BasisOfRent = ({
       <BoxContentWrapper>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.TYPE)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.TYPE)}>
                 Laskurin tyyppi
               </FormTextTitle>
-              <FormText>{getLabelOfOption(intendedUseOptions, basisOfRent.intended_use) || '-'}</FormText>
+              <FormText>{getLabelOfOption(calculatorTypeOptions, calculatorType) || '-'}</FormText>
             </Authorization>
           </Column>
-          <Column small={6} medium={4} large={2}>
+
+          {calculatorType === CalculatorTypes.MAST && <Column large={5} medium={9} small={12}>
+            <Row>
+              <Column small={6} medium={4} large={2}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                  <FormTextTitle>{'Laskuri'}</FormTextTitle>
+                  <FormText>{`Alue`}</FormText>
+                </Authorization>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                  <FormTextTitle>{'Hinta'}</FormTextTitle>
+                  <FormText>{!isEmptyValue(basisOfRent.amount_per_area) ? `${formatNumber(basisOfRent.amount_per_area)} €` : '-'}</FormText>
+                </Authorization>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                  <FormTextTitle>{'Kerroin'}</FormTextTitle>
+                  <FormText>{`*1,5`}</FormText>
+                </Authorization>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+                  <FormTextTitle>{'Ala/korkeus'}</FormTextTitle>
+                  <FormText>{!isEmptyValue(basisOfRent.area) ? `${formatNumber(basisOfRent.area)} €` : '-'}</FormText>
+                </Authorization>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                  <FormTextTitle>{'Yksikkö'}</FormTextTitle>
+                  <FormText>{`m2`}</FormText>
+                </Authorization>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                  <FormTextTitle>{'Vuokra'}</FormTextTitle>
+                  <FormText>{!isEmptyValue(mastAreaRent) ? `${formatNumber(mastAreaRent)} €` : '-'}</FormText>
+                </Authorization>
+              </Column>
+            </Row>
+            {basisOfRent.children.map((child, index) => {
+              const rent = mastCalculatorRent(index, child.area);
+
+              return <Row key={index}>
+                <Column small={6} medium={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>            
+                    {(index === 0) && <FormText>{`Laitekaappi`}</FormText>}
+                    {(index === 1) && <FormText>{`Masto`}</FormText>}
+                  </Authorization>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                    {(index === 0) && <FormText>{`1000 €`}</FormText>}
+                    {(index === 1) && <FormText>{`600 €`}</FormText>}
+                  </Authorization>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                  </Authorization>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+                    <FormText>{!isEmptyValue(child.area) ? `${formatNumber(child.area)} €` : '-'}</FormText>
+                  </Authorization>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                    {(index === 0) && <FormText>{`k-m2`}</FormText>}
+                    {(index === 1) && <FormText>{`m`}</FormText>}
+                  </Authorization>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                    <FormText>{!isEmptyValue(rent) ? `${formatNumber(rent)} €` : '-'}</FormText>
+                  </Authorization>
+                </Column>
+              </Row>;
+            })}
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
                 {LeaseBasisOfRentsFieldTitles.INTENDED_USE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(intendedUseOptions, basisOfRent.intended_use) || '-'}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
+          </Column>}
+          {calculatorType === CalculatorTypes.TEMPORARY && <Column small={3} medium={2} large={1}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.ZONE)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.ZONE)}>
+                {LeaseBasisOfRentsFieldTitles.ZONE}
+              </FormTextTitle>
+              <FormText>{basisOfRent.zone || '-'}</FormText>
+            </Authorization>
+          </Column>}
+          {calculatorType === CalculatorTypes.TEMPORARY && <Column small={3} medium={2} large={1}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.ZONE)}>
+              <FormTextTitle>
+                {LeaseBasisOfRentsFieldTitles.PRICE}
+              </FormTextTitle>
+              <FormText>{'100 €'}</FormText>
+            </Authorization>
+          </Column>}
+          {calculatorType === CalculatorTypes.DEVICE_CABINET && <Column small={3} medium={2} large={1}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.ZONE)}>
+              <FormTextTitle>
+                {LeaseBasisOfRentsFieldTitles.PRICE}
+              </FormTextTitle>
+              <FormText>{'1000 €'}</FormText>
+            </Authorization>
+          </Column>}
+          {(calculatorType === CalculatorTypes.ADDITIONAL_YARD ||
+            calculatorType === CalculatorTypes.FIELD) && <Column small={3} medium={2} large={1}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+              <FormTextTitle>
+                {'Hinta'}
+              </FormTextTitle>
+              <FormText>{!isEmptyValue(basisOfRent.amount_per_area) ? `${formatNumber(basisOfRent.amount_per_area)} €` : '-'}</FormText>
+            </Authorization>
+          </Column>}
+          {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <Column small={3} medium={2} large={1}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+              <FormTextTitle>
+                {'Kerroin'}
+              </FormTextTitle>
+              <FormText>{'* 1,5'}</FormText>
+            </Authorization>
+          </Column>}
+          {calculatorType !== CalculatorTypes.MAST &&<Column small={3} medium={2} large={1}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AREA)}>
                 {LeaseBasisOfRentsFieldTitles.AREA}
               </FormTextTitle>
               <FormText>{areaText}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
                 {LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}
               </FormTextTitle>
               <FormText>{plansInspectedText}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
                 {LeaseBasisOfRentsFieldTitles.LOCKED_AT}
               </FormTextTitle>
               <FormText>{lockedText}</FormText>
             </Authorization>
-          </Column>
-        </Row>
-        <Row>
-          <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-                {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
+          </Column>}
+          {calculatorType !== CalculatorTypes.MAST && <Column small={6} medium={4} large={2}>
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+            }>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                {LeaseBasisOfRentsFieldTitles.RENT}
               </FormTextTitle>
-              <FormText>{amountPerAreaText}</FormText>
+              {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(rent) ? `${formatNumber(rent)} €` : '-'}</FormText>}
+              {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtra) ? `${formatNumber(rentExtra)} €` : '-'}</FormText>}
+              {calculatorType === CalculatorTypes.FIELD && <FormText>{!isEmptyValue(fieldsRent) ? `${formatNumber(fieldsRent)} €` : '-'}</FormText>}
+              {calculatorType === CalculatorTypes.DEVICE_CABINET && <FormText>{!isEmptyValue(deviceCabinetRent) ? `${formatNumber(deviceCabinetRent)} €` : '-'}</FormText>}
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
+          </Column>}
+          {(calculatorType !== CalculatorTypes.LEASE && calculatorType !== CalculatorTypes.MAST) && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INDEX)}>
                 {LeaseBasisOfRentsFieldTitles.INDEX}
               </FormTextTitle>
               <FormText>{getLabelOfOption(indexOptions, basisOfRent.index) || '-'}</FormText>
             </Authorization>
+          </Column>}
+          {calculatorType !== CalculatorTypes.MAST && <Column small={6} medium={4} large={2}>
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+            }>
+              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
+              </FormTextTitle>
+              {calculatorType === CalculatorTypes.LEASE && <FormText>{!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</FormText>}
+              {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(basicAnnualRentIndexed) ? `${formatNumber(basicAnnualRentIndexed)} €/v` : '-'}</FormText>}
+              {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtraIndexed) ? `${formatNumber(rentExtraIndexed)} €/v` : '-'}</FormText>}
+              {calculatorType === CalculatorTypes.FIELD && <FormText>{!isEmptyValue(basicAnnualFieldRentIndexed) ? `${formatNumber(basicAnnualFieldRentIndexed)} €/v` : '-'}</FormText>}
+              {calculatorType === CalculatorTypes.DEVICE_CABINET && <FormText>{!isEmptyValue(deviceCabinetRentIndexed) ? `${formatNumber(deviceCabinetRentIndexed)} €/v` : '-'}
+              </FormText>}
+            </Authorization>
+          </Column>}
+        </Row>
+        {calculatorType === CalculatorTypes.MAST && <Row>
+          <Column large={2} medium={4} small={6}>
           </Column>
-          <Column small={6} medium={4} large={2}>
+          <Column>
+            <Row>
+              <Column large={6} medium={9} small={12}>
+                <Divider />
+              </Column>
+            </Row>
+          </Column>
+        </Row>}
+        {calculatorType === CalculatorTypes.MAST && <Row>
+          <Column large={2} medium={4} small={6}>
+          </Column>
+          <Column>
+            <Row>
+              <Column large={6} medium={9} small={12}>
+                <Row>
+                  <Column small={6} medium={4} large={2}>
+                    <FormText className='semibold'>{'Yhteensä'}</FormText>
+                  </Column>
+                  <Column small={6}>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <FormText>{'*5%'}</FormText>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <FormText className='semibold'>{`${formatNumber(mastTotal)} €`}</FormText>
+                  </Column>
+                </Row>
+              </Column>
+              <Column small={6} medium={4} large={2} style={{marginTop: -15}}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
+                  <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INDEX)}>
+                    {LeaseBasisOfRentsFieldTitles.INDEX}
+                  </FormTextTitle>
+                  <FormText>{getLabelOfOption(indexOptions, basisOfRent.index) || '-'}</FormText>
+                </Authorization>
+              </Column>
+              <Column small={6} medium={4} large={2} style={{marginTop: -15}}>
+                <Authorization allow={
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+                }>
+                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                    {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
+                  </FormTextTitle>
+                  <FormText>{!isEmptyValue(mastTotalIndexed) ? `${formatNumber(mastTotalIndexed)} €/v` : '-'}</FormText>
+                </Authorization>
+              </Column>
+            </Row>
+          </Column>
+        </Row>}
+        <Row>
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
+              </FormTextTitle>
+              <FormText>{amountPerAreaText}</FormText>
+            </Authorization>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INDEX)}>
+                {LeaseBasisOfRentsFieldTitles.INDEX}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(indexOptions, basisOfRent.index) || '-'}</FormText>
+            </Authorization>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.UNIT_PRICE)}>
                 {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
               </FormTextTitle>
               <FormText>{currentAmountPerAreaText}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)}>
                 {LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE}
               </FormTextTitle>
               <FormText>{!isEmptyValue(basisOfRent.profit_margin_percentage) ? `${formatNumber(basisOfRent.profit_margin_percentage)} %` : '-'}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
@@ -276,8 +508,8 @@ const BasisOfRent = ({
               </FormTextTitle>
               <FormText>{!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
@@ -289,9 +521,9 @@ const BasisOfRent = ({
               </FormTextTitle>
               <FormText>{!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}</FormText>
             </Authorization>
-          </Column>
-          {(basisOfRent.subvention_type === SubventionTypes.FORM_OF_MANAGEMENT ||
-            basisOfRent.subvention_type === SubventionTypes.RE_LEASE) && <Fragment>
+          </Column>}
+          {((basisOfRent.subvention_type === SubventionTypes.FORM_OF_MANAGEMENT ||
+            basisOfRent.subvention_type === SubventionTypes.RE_LEASE) && calculatorType === CalculatorTypes.LEASE) && <Fragment>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
                 <FormTextTitle>
@@ -319,15 +551,15 @@ const BasisOfRent = ({
             </Column>
           </Fragment>}
             
-          <Column small={6} medium={4} large={2}>
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
                 {LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE}
               </FormTextTitle>
               <FormText>{!isEmptyValue(basisOfRent.discount_percentage) ? `${formatNumber(basisOfRent.discount_percentage)} %` : '-'}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={3}>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={3}>
             <Authorization allow={
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
@@ -340,8 +572,8 @@ const BasisOfRent = ({
               </FormTextTitle>
               <FormText>{!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={1}>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={1}>
             <Authorization allow={
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
@@ -354,8 +586,8 @@ const BasisOfRent = ({
               </FormTextTitle>
               <FormText>{!isEmptyValue(rentPerMonth) ? `${formatNumber(rentPerMonth)} €` : '-'}</FormText>
             </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={1}>
+          </Column>}
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={1}>
             <Authorization allow={
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
@@ -368,8 +600,8 @@ const BasisOfRent = ({
               </FormTextTitle>
               <FormText>{!isEmptyValue(rentPer2Months) ? `${formatNumber(rentPer2Months)} €` : '-'}</FormText>
             </Authorization>
-          </Column>
-          {showTotal &&
+          </Column>}
+          {(showTotal && calculatorType === CalculatorTypes.LEASE) &&
             <Fragment>
               <Column small={6} medium={4} large={2}>
                 <Authorization allow={
@@ -403,7 +635,7 @@ const BasisOfRent = ({
           }
         </Row>
 
-        {basisOfRent.subvention_type &&
+        {(basisOfRent.subvention_type && calculatorType === CalculatorTypes.LEASE) &&
           <WhiteBox>
             <Row>
               <Column small={6} medium={4} large={2}>

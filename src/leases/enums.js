@@ -19,9 +19,10 @@ export const AreaLocation = {
 export const CalculatorTypes = {
   LEASE: 'lease',
   TEMPORARY: 'temporary',
-  EXTRA: 'extra',
-  FIELDS: 'fields',
-  POLES: 'poles',
+  ADDITIONAL_YARD: 'additional_yard',
+  FIELD: 'field',
+  MAST: 'mast',
+  DEVICE_CABINET: 'device cabinet',
 };
 
 /**
@@ -1091,6 +1092,8 @@ export const LeaseBasisOfRentsFieldPaths = {
   SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'basis_of_rents.child.children.subvention_re_lease_discount_precent',
   SUBVENTION_TYPE: 'basis_of_rents.child.children.subvention_type',
   UNIT_PRICE: 'basis_of_rents.child.children.unit_price',
+  TYPE: 'basis_of_rents.child.children.type',
+  ZONE: 'basis_of_rents.child.children.zone',
 };
 
 /**
@@ -1450,3 +1453,17 @@ export const LeaseInvoiceNotesFieldPaths = {
 export const LeaseInvoiceNotesFieldTitles = {
   INVOICE_NOTES: 'Laskujen tiedotteet',
 };
+
+/**
+ * calculator type options
+ *
+ * @type {{}}
+ */
+export const calculatorTypeOptions = [
+  {value: 'lease', label: 'Vuokra'},
+  {value: 'temporary', label: 'Tilapäiset'},
+  {value: 'additional_yard', label: 'Lisäpihat'},
+  {value: 'field', label: 'Pelto'},
+  {value: 'mast', label: 'Mastot'},
+  {value: 'device cabinet', label: 'Laitekaappi'},
+];
