@@ -349,7 +349,15 @@ const BasisOfRent = ({
               <FormText>{'* 1,5'}</FormText>
             </Authorization>
           </Column>}
-          {calculatorType !== CalculatorTypes.MAST &&<Column small={3} medium={2} large={1}>
+          {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AREA)}>
+                {LeaseBasisOfRentsFieldTitles.AREA}
+              </FormTextTitle>
+              <FormText>{areaText}</FormText>
+            </Authorization>
+          </Column>}
+          {(calculatorType !== CalculatorTypes.MAST && calculatorType !== CalculatorTypes.LEASE) && <Column small={3} medium={2} large={1}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AREA)}>
                 {LeaseBasisOfRentsFieldTitles.AREA}
@@ -373,7 +381,7 @@ const BasisOfRent = ({
               <FormText>{lockedText}</FormText>
             </Authorization>
           </Column>}
-          {calculatorType !== CalculatorTypes.MAST && <Column small={6} medium={4} large={2}>
+          {(calculatorType !== CalculatorTypes.MAST && calculatorType !== CalculatorTypes.LEASE) && <Column small={6} medium={4} large={2}>
             <Authorization allow={
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
