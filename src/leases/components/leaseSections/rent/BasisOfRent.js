@@ -90,7 +90,7 @@ const BasisOfRent = ({
   const getAreaText = (amount: ?number) => {
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
-    return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit) || ''}`;
+    return `${formatNumber(amount)} ${basisOfRent.type === CalculatorTypes.FIELD ? 'ha' : getLabelOfOption(areaUnitOptions, basisOfRent.area_unit) || ''}`;
   };
 
   const getAmountPerAreaText = (amount: ?number) => {
@@ -251,7 +251,7 @@ const BasisOfRent = ({
               <Column small={6} medium={4} large={2}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
                   <FormTextTitle>{'Yksikkö'}</FormTextTitle>
-                  <FormText>{`m2`}</FormText>
+                  <FormText>{`m${String.fromCharCode(178)}`}</FormText>
                 </Authorization>
               </Column>
               <Column small={6} medium={4} large={2}>
@@ -288,7 +288,7 @@ const BasisOfRent = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-                    {(index === 0) && <FormText>{`k-m2`}</FormText>}
+                    {(index === 0) && <FormText>{`k-m${String.fromCharCode(178)}`}</FormText>}
                     {(index === 1) && <FormText>{`m`}</FormText>}
                   </Authorization>
                 </Column>

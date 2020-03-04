@@ -71,7 +71,7 @@ const MastChildrenEdit = ({
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-            {(index === 0) && <FormText>{`k-m2`}</FormText>}
+            {(index === 0) && <FormText>{`k-m${String.fromCharCode(178)}`}</FormText>}
             {(index === 1) && <FormText>{`m`}</FormText>}
           </Authorization>
         </Column>

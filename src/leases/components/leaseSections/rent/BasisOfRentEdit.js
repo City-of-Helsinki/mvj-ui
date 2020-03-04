@@ -1077,7 +1077,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         <Column small={6} medium={4} large={2}>
                           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
                             <FormTextTitle>{'Yksikkö'}</FormTextTitle>
-                            <FormText>{`m2`}</FormText>
+                            <FormText>{`m${String.fromCharCode(178)}`}</FormText>
                           </Authorization>
                         </Column>
                         <Column small={6} medium={4} large={2}>
@@ -1122,7 +1122,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                         name={`${field}.area`}
                         invisibleLabel
-                        unit={calculatorType === 'fields' ? 'ha' : 'm2'}
+                        unit={calculatorType === CalculatorTypes.FIELD ? 'ha' : `m${String.fromCharCode(178)}`}
                         overrideValues={{label: LeaseBasisOfRentsFieldTitles.AREA}}
                       />
                     </Authorization>

@@ -27,6 +27,9 @@ import {
   SubventionTypes,
   TenantContactType,
 } from './enums';
+import {
+  CalculatorTypes,
+} from '$src/leases/enums';
 import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
 import {getContentLessor} from '$src/lessor/helpers';
@@ -1377,8 +1380,8 @@ export const calculateTemporaryRent = (price: ?number, area: ?number): number =>
   if(!price || !area)
     return 0;
   const areaDecimal = Number(convertStrToDecimalNumber(area));
-  if(areaDecimal>2000)
-    return Number(price*2000+price*0.5*(areaDecimal)-2000);
+  if(areaDecimal > 2000)
+    return Number(price * 2000 + price * 0.5 * areaDecimal - 2000);
   else
     return Number(price*areaDecimal);
 };
@@ -1392,7 +1395,7 @@ export const calculateTemporaryRent = (price: ?number, area: ?number): number =>
 export const calculateBasicAnnualRentIndexed = (rent: ?number, indexValue: ?string): number => {
   if(!rent || !indexValue)
     return 0;
-  return Number(rent * (1 + Number(convertStrToDecimalNumber(indexValue)) / 10000));
+  return Number(rent / (Number(convertStrToDecimalNumber(indexValue)) / 100));
 };
 
 /**
@@ -1404,7 +1407,7 @@ export const calculateBasicAnnualRentIndexed = (rent: ?number, indexValue: ?stri
 export const calculateExtraRent = (price: ?string, area: ?number): number => {
   if(!price || !area)
     return 0;
-  return Number(1.5*Number(convertStrToDecimalNumber(price))*Number(convertStrToDecimalNumber(area))*0.05);
+  return Number(1.5 * Number(convertStrToDecimalNumber(price)) * Number(convertStrToDecimalNumber(area)) * 0.05);
 };
 
 /**
@@ -1416,7 +1419,7 @@ export const calculateExtraRent = (price: ?string, area: ?number): number => {
 export const calculateFieldsRent = (price: ?string, area: ?number): number => {
   if(!price || !area)
     return 0;
-  return Number(Number(convertStrToDecimalNumber(price))*Number(convertStrToDecimalNumber(area)));
+  return Number(Number(convertStrToDecimalNumber(price)) * Number(convertStrToDecimalNumber(area)));
 };
 
 /**
@@ -1427,7 +1430,7 @@ export const calculateFieldsRent = (price: ?string, area: ?number): number => {
 export const calculateRackPrice = (numberOfRacks: ?number): number => {
   if(!numberOfRacks)
     return 0;
-  return Number(1000*numberOfRacks);
+  return Number(1000 * numberOfRacks);
 };
 
 /**
@@ -1438,7 +1441,7 @@ export const calculateRackPrice = (numberOfRacks: ?number): number => {
 export const calcluateHightPrice = (height: ?number): number => {
   if(!height)
     return 0;
-  return Number(600*height);
+  return Number(600 * height);
 };
 
 /**
@@ -2609,6 +2612,28 @@ export const getPayloadRentDueDates = (rent: Object): Array<Object> => {
 };
 
 /**
+ * Return area unit by calculator type
+ * @param {Object} item
+ * @returns {string}
+ */
+export const areaUnit = (item: Object): string => {
+  if(item.type === CalculatorTypes.LEASE)
+    return item.area_unit;
+  return 'm2';
+};
+
+/**
+ * Return intended use by calculator type
+ * @param {Object} item
+ * @returns {number}
+ */
+export const intendedUse = (item: Object): number => {
+  if(item.type === CalculatorTypes.LEASE)
+    return item.intended_use;
+  return 7;
+};
+
+/**
  * Find basis of rent by id
  * @param {Object} lease
  * @param {number} id
@@ -2648,9 +2673,9 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
     } else {
       return {
         id: item.id,
-        intended_use: (item.type === 'lease')?item.intended_use:7, 
+        intended_use: intendedUse(item), 
         area: convertStrToDecimalNumber(item.area),
-        area_unit: (item.type === 'lease')?item.area_unit:'m2',
+        area_unit: areaUnit(item),
         type: item.type,
         amount_per_area: convertStrToDecimalNumber(item.amount_per_area),
         index: item.index,
