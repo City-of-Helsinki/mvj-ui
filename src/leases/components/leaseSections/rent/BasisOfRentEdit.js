@@ -1007,11 +1007,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     </Authorization>
                   </Column>}
                   {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <Column small={4} medium={2} large={1}>
-                    <FormTextTitle
-                      required={false}
-                      enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.AREA)}
-                    >
+                    <FormTextTitle>
                       {'Kerroin'}
                     </FormTextTitle>
                     <FormText>{'* 1,5'}</FormText>
@@ -1139,6 +1135,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtra) ? `${formatNumber(rentExtra)} €` : '-'}</FormText>}
                       {calculatorType === CalculatorTypes.FIELD && <FormText>{!isEmptyValue(fieldsRent) ? `${formatNumber(fieldsRent)} €` : '-'}</FormText>}
                       {calculatorType === CalculatorTypes.DEVICE_CABINET && <FormText>{!isEmptyValue(deviceCabinetRent) ? `${formatNumber(deviceCabinetRent)} €` : '-'}</FormText>}
+                    </Authorization>
+                  </Column>}
+                  {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <Column small={3} medium={2} large={1} style={{marginTop: 15}}>
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+                      <FormText>{'*5%'}</FormText>
                     </Authorization>
                   </Column>}
                   {calculatorType !== CalculatorTypes.MAST && <Column small={6} medium={4} large={2}>

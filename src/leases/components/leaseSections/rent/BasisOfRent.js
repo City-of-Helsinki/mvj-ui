@@ -395,6 +395,11 @@ const BasisOfRent = ({
               {calculatorType === CalculatorTypes.DEVICE_CABINET && <FormText>{!isEmptyValue(deviceCabinetRent) ? `${formatNumber(deviceCabinetRent)} €` : '-'}</FormText>}
             </Authorization>
           </Column>}
+          {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <Column small={3} medium={2} large={1} style={{marginTop: 15}}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+              <FormText>{'*5%'}</FormText>
+            </Authorization>
+          </Column>}
           {(calculatorType !== CalculatorTypes.LEASE && calculatorType !== CalculatorTypes.MAST) && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INDEX)}>
@@ -826,20 +831,26 @@ const BasisOfRent = ({
                 </Fragment>
               }
             </Authorization>
-
-            <Row>
-              <Column small={12} large={8}>
-                <Divider />
-              </Column>
-            </Row>
-            <Row>
-              <Column small={4} large={6}>
-                <FormText className='semibold'>Yhteensä</FormText>
-              </Column>
-              <Column small={4} large={2}>
-                <FormText className='semibold'>{formatNumber(totalSubventionAmount)} €</FormText>
-              </Column>
-            </Row>
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
+            }>
+              <Row>
+                <Column small={12} large={8}>
+                  <Divider />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={4} large={6}>
+                  <FormText className='semibold'>Yhteensä</FormText>
+                </Column>
+                <Column small={4} large={2}>
+                  <FormText className='semibold'>{formatNumber(totalSubventionAmount)} €</FormText>
+                </Column>
+              </Row>
+            </Authorization>
           </WhiteBox>
         }
       </BoxContentWrapper>
