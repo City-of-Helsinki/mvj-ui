@@ -55,6 +55,7 @@ import {
   calculateTemporaryRent,
   getBasisOfRentIndexValue,
   getBasisOfRentById,
+  getZonePriceFromValue,
 } from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getUserFullName} from '$src/users/helpers';
@@ -399,6 +400,7 @@ type Props = {
   subventionType: ?string,
   subventionTypeOptions: Array<Object>,
   price: ?string,
+  zone: ?string,
   temporarySubventions: ?Array<Object>,
   totalDiscountedInitialYearRent: number,
   usersPermissions: UsersPermissionsType,
@@ -800,6 +802,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       typeOptions,
       calculatorTypeOptions,
       calculatorType,
+      zone,
     } = this.props;
     const {showSubventions} = this.state;
 
@@ -822,7 +825,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const totalSubventionPercent = this.calculateTotalSubventionPercent();
     const totalSubventionAmount = calculateBasisOfRentSubventionAmount(initialYearRent, totalSubventionPercent.toString());
     const subventionDiscountedInitial = this.getSubventionDiscountedInitial();
-    const zonePrice = 100;
+    const zonePrice = getZonePriceFromValue(zone); 
     const deviceCabinetPrice = 1000;
     const rent = calculateTemporaryRent(zonePrice, area);
     const deviceCabinetRent = calculateTemporaryRent(deviceCabinetPrice, area);
@@ -970,7 +973,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     </Authorization>
                   }
                 >
-                  {calculatorType === CalculatorTypes.TEMPORARY && <Column small={4} medium={2} large={1}>
+                  {calculatorType === CalculatorTypes.TEMPORARY && <Column small={6} medium={4} large={2}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
                       <FormField
                         disableTouched={isSaveClicked}
@@ -1020,7 +1023,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       <FormTextTitle>
                         {'Hinta'}
                       </FormTextTitle>
-                      <FormText>{`${zonePrice} €`}</FormText>
+                      <FormText>{!isEmptyValue(zonePrice) ? `${formatNumber(zonePrice)} €` : '-'}</FormText>
                     </Authorization>
                   </Column>}
                   {calculatorType === CalculatorTypes.DEVICE_CABINET && <Column small={4} medium={2} large={1}>
@@ -1756,6 +1759,7 @@ export default connect(
       amountPerArea: selector(state, `${props.field}.amount_per_area`),
       currentAmountPerArea: selector(state, `${props.field}.current_amount_per_area`),
       area: selector(state, `${props.field}.area`),
+      zone: selector(state, `${props.field}.zone`),
       areaUnit: selector(state, `${props.field}.area_unit`),
       calculatorType: selector(state, `${props.field}.type`),
       basisOfRent: selector(state, `${props.field}`) || {},

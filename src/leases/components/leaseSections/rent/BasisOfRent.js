@@ -45,6 +45,7 @@ import {
   calculateBasicAnnualRentIndexed,
   mastCalculatorRent,
   calculateRackAndHeightPrice,
+  getZonePriceFromValue,
 } from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getUserFullName} from '$src/users/helpers';
@@ -55,6 +56,7 @@ import {
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
+  getFieldOptions,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 
@@ -180,7 +182,7 @@ const BasisOfRent = ({
   const discountPercentage = getDiscountPercentage();
   const temporarySubventionDiscountPercentage = calculateTemporarySubventionDiscountPercentage(temporarySubventions);
   const subventionDiscountedInitial = getSubventionDiscountedInitial();
-  const zonePrice = 100;
+  const zonePrice = getZonePriceFromValue(basisOfRent.zone);
   const deviceCabinetPrice = 1000;
   const rent = calculateTemporaryRent(zonePrice, basisOfRent.area);
   const deviceCabinetRent = calculateTemporaryRent(deviceCabinetPrice, basisOfRent.area);
@@ -194,6 +196,7 @@ const BasisOfRent = ({
   const rackAndHeightPrice = calculateRackAndHeightPrice(basisOfRent.children);
   const mastTotal = (mastAreaRent + rackAndHeightPrice) * 0.05;
   const mastTotalIndexed = calculateBasicAnnualRentIndexed(mastTotal, indexValue);
+  const zoneOptions = getFieldOptions(leaseAttributes, LeaseBasisOfRentsFieldPaths.ZONE);
 
   return(
     <BoxItem className='no-border-on-first-child no-border-on-last-child'>
@@ -308,12 +311,12 @@ const BasisOfRent = ({
               <FormText>{getLabelOfOption(intendedUseOptions, basisOfRent.intended_use) || '-'}</FormText>
             </Authorization>
           </Column>}
-          {calculatorType === CalculatorTypes.TEMPORARY && <Column small={3} medium={2} large={1}>
+          {calculatorType === CalculatorTypes.TEMPORARY && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.ZONE)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.ZONE)}>
                 {LeaseBasisOfRentsFieldTitles.ZONE}
               </FormTextTitle>
-              <FormText>{basisOfRent.zone || '-'}</FormText>
+              <FormText>{getLabelOfOption(zoneOptions, basisOfRent.zone) || '-'}</FormText>
             </Authorization>
           </Column>}
           {calculatorType === CalculatorTypes.TEMPORARY && <Column small={3} medium={2} large={1}>
@@ -321,7 +324,7 @@ const BasisOfRent = ({
               <FormTextTitle>
                 {LeaseBasisOfRentsFieldTitles.PRICE}
               </FormTextTitle>
-              <FormText>{'100 €'}</FormText>
+              <FormText>{!isEmptyValue(zonePrice) ? `${formatNumber(zonePrice)} €` : '-'}</FormText>
             </Authorization>
           </Column>}
           {calculatorType === CalculatorTypes.DEVICE_CABINET && <Column small={3} medium={2} large={1}>

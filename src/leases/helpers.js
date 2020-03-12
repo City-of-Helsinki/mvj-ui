@@ -2777,6 +2777,33 @@ export const calculateAreasSum = (areas: Array<Object>): number => {
 };
 
 /**
+ * Get zone price from value
+ * @param {string} zone
+ * @returns {number}
+ */
+export const getZonePriceFromValue = (zone: ?string): number => {
+  let sum = 0;
+
+  if(zone) {
+    switch (zone) {
+      case 'zone_1':
+        sum = 0.85;
+        break;
+      case 'zone_2':
+        sum = 0.85;
+        break;
+      case 'zone_3':
+        sum = 0.65;
+        break;
+      default:
+        sum = 0;
+        break;
+    }
+  }
+  return sum;
+};
+
+/**
  * Map lease page search filters for API 
  * @param {Object} query
  * @returns {Object}
