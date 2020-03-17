@@ -1381,7 +1381,7 @@ export const calculateTemporaryRent = (price: ?number, area: ?number): number =>
     return 0;
   const areaDecimal = Number(convertStrToDecimalNumber(area));
   if(areaDecimal > 2000)
-    return Number(price * 2000 + price * 0.5 * areaDecimal - 2000);
+    return Number(price * 2000 + price * 0.5 * (areaDecimal - 2000));
   else
     return Number(price*areaDecimal);
 };

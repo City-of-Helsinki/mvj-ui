@@ -50,8 +50,8 @@ const MastChildrenEdit = ({
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-            {(index === 0) && <FormText>{`1000 €`}</FormText>}
-            {(index === 1) && <FormText>{`600 €`}</FormText>}
+            {(index === 0) && <FormText>{`1000,00 €`}</FormText>}
+            {(index === 1) && <FormText>{`600,00 €`}</FormText>}
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
