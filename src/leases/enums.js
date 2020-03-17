@@ -12,6 +12,20 @@ export const AreaLocation = {
 };
 
 /**
+ * Calculator types enumerable.
+ *
+ * @type {{}}
+ */
+export const CalculatorTypes = {
+  LEASE: 'lease',
+  TEMPORARY: 'temporary',
+  ADDITIONAL_YARD: 'additional_yard',
+  FIELD: 'field',
+  MAST: 'mast',
+  DEVICE_CABINET: 'device cabinet',
+};
+
+/**
  * Collateral types enumerable.
  *
  * @type {{}}
@@ -1078,6 +1092,8 @@ export const LeaseBasisOfRentsFieldPaths = {
   SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'basis_of_rents.child.children.subvention_re_lease_discount_precent',
   SUBVENTION_TYPE: 'basis_of_rents.child.children.subvention_type',
   UNIT_PRICE: 'basis_of_rents.child.children.unit_price',
+  TYPE: 'basis_of_rents.child.children.type',
+  ZONE: 'basis_of_rents.child.children.zone',
 };
 
 /**
@@ -1087,6 +1103,7 @@ export const LeaseBasisOfRentsFieldPaths = {
  */
 export const LeaseBasisOfRentsFieldTitles = {
   BASIS_OF_RENTS: 'Vuokralaskuri',
+  AREA_HEIGHT: 'ala/korkeus',
   AMOUNT_PER_AREA: 'Yksikköhinta (ind 100)',
   ARCHIVED_AT: 'Arkistoitu',
   ARCHIVED_NOTE: 'Arkitoinnin huomautus',
@@ -1109,13 +1126,16 @@ export const LeaseBasisOfRentsFieldTitles = {
   INTENDED_USE: 'Käyttötarkoitus',
   LOCKED_AT: 'Laskelma lukittu',
   PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
+  PRICE: 'Hinta',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
+  RENT: 'Vuokra',
   SUBVENTION_BASE_PERCENT: 'Markkinavuokran subventio',
   SUBVENTION_GRADUATED_PERCENT: 'Siirtymäajan subventio',
   SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT: 'Subventio euroa/vuosi',
   SUBVENTION_RE_LEASE_DISCOUNT_PRECENT: 'Subventio prosentteina',
   SUBVENTION_TYPE: 'Subvention tyyppi',
   UNIT_PRICE: 'Yksikköhinta (ind)',
+  ZONE: 'Vyöhyke',
 };
 
 /**
@@ -1433,3 +1453,17 @@ export const LeaseInvoiceNotesFieldPaths = {
 export const LeaseInvoiceNotesFieldTitles = {
   INVOICE_NOTES: 'Laskujen tiedotteet',
 };
+
+/**
+ * calculator type options
+ *
+ * @type {{}}
+ */
+export const calculatorTypeOptions = [
+  {value: 'lease', label: 'Vuokra'},
+  {value: 'temporary', label: 'Tilapäiset'},
+  {value: 'additional_yard', label: 'Lisäpihat'},
+  {value: 'field', label: 'Pelto'},
+  {value: 'mast', label: 'Mastot'},
+  {value: 'device cabinet', label: 'Laitekaappi'},
+];

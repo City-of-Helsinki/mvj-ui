@@ -27,6 +27,9 @@ import {
   SubventionTypes,
   TenantContactType,
 } from './enums';
+import {
+  CalculatorTypes,
+} from '$src/leases/enums';
 import {LeaseAreaAttachmentTypes} from '$src/leaseAreaAttachment/enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
 import {getContentLessor} from '$src/lessor/helpers';
@@ -1216,7 +1219,7 @@ export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: 
   let discounted = initialYearRent;
   let discount = 0;
 
-  managementSubventions.forEach(managementSubvention => {
+  managementSubventions && managementSubventions.forEach(managementSubvention => {
     if(view === 'EDIT')
       discounted = discounted * ((100 - Number(convertStrToDecimalNumber(managementSubvention.subvention_percent))) / 100);
     else
@@ -1368,6 +1371,94 @@ export const calculateSubventionDiscountTotalFromReLease = (initialYearRent: num
 };
 
 /**
+ * Calculate Temporary rent
+ * @param {number} price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateTemporaryRent = (price: ?number, area: ?number): number => {
+  if(!price || !area)
+    return 0;
+  const areaDecimal = Number(convertStrToDecimalNumber(area));
+  if(areaDecimal > 2000)
+    return Number(price * 2000 + price * 0.5 * (areaDecimal - 2000));
+  else
+    return Number(price*areaDecimal);
+};
+
+/**
+ * Calculate Basic Annual Rent Indexed
+ * @param {number} rent
+ * @param {string} indexValue
+ * @return {number}
+ */
+export const calculateBasicAnnualRentIndexed = (rent: ?number, indexValue: ?string): number => {
+  if(!rent || !indexValue)
+    return 0;
+  return Number(rent / (Number(convertStrToDecimalNumber(indexValue)) / 100));
+};
+
+/**
+ * Calculate Extra rent
+ * @param {string} price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateExtraRent = (price: ?string, area: ?number): number => {
+  if(!price || !area)
+    return 0;
+  return Number(1.5 * Number(convertStrToDecimalNumber(price)) * Number(convertStrToDecimalNumber(area)) * 0.05);
+};
+
+/**
+ * Calculate Extra rent
+ * @param {string} price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateFieldsRent = (price: ?string, area: ?number): number => {
+  if(!price || !area)
+    return 0;
+  return Number(Number(convertStrToDecimalNumber(price)) * Number(convertStrToDecimalNumber(area)));
+};
+
+/**
+ * Calculate Rack price
+ * @param {number} area
+ * @return {number}
+ */
+export const calculateRackPrice = (numberOfRacks: ?number): number => {
+  if(!numberOfRacks)
+    return 0;
+  return Number(1000 * numberOfRacks);
+};
+
+/**
+ * Calculate Rack price
+ * @param {number} area
+ * @return {number}
+ */
+export const calcluateHightPrice = (height: ?number): number => {
+  if(!height)
+    return 0;
+  return Number(600 * height);
+};
+
+/**
+ * Calculate Rack and height price
+ * @param {Object} children
+ * @return {number}
+ */
+export const calculateRackAndHeightPrice = (children: ?Object): number => {
+  let total = 0;
+  if(children && children[0] && children[0].area)
+    total = total + calculateRackPrice(Number(convertStrToDecimalNumber(children[0].area)));
+  if(children && children[1] && children[1].area)
+    total = total + calcluateHightPrice(Number(convertStrToDecimalNumber(children[1].area)));
+  return total;
+};
+
+/**
  * Get content of management subventions from rent adjustment
  * @param {Object} rentAdjustment
  * @return {Object[]}
@@ -1421,6 +1512,7 @@ export const getContentRentAdjustments = (rent: Object): Array<Object> =>
         subvention_graduated_percent: item.subvention_graduated_percent,
         management_subventions: getContentManagementSubventions(item),
         temporary_subventions: getContentTemporarySubventions(item),
+        zone: item.zone,
       };
     })
     .sort(sortByStartAndEndDateDesc);
@@ -1579,8 +1671,9 @@ export const getRentWarnings = (rents: Array<Object>): Array<string> => {
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getContentBasisOfRents = (lease: Object): Array<Object> =>
-  get(lease, 'basis_of_rents', []).map((item) => {
+export const getContentBasisOfRents = (lease: Object): Array<Object> => {
+  const allChildren = get(lease, 'basis_of_rents', []).flatMap(item => item.children);
+  return get(lease, 'basis_of_rents', []).filter(item => !allChildren.includes(item.id)).map((item) => {
     return {
       id: item.id || undefined,
       intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
@@ -1589,6 +1682,8 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> =>
       amount_per_area: item.amount_per_area,
       index: get(item, 'index.id') || get(item, 'index'),
       profit_margin_percentage: item.profit_margin_percentage,
+      children: get(lease, 'basis_of_rents', []).filter(filterItem => item.children.includes(filterItem.id)),
+      type: item.type,
       discount_percentage: item.discount_percentage,
       plans_inspected_at: item.plans_inspected_at,
       plans_inspected_by: item.plans_inspected_by,
@@ -1600,8 +1695,10 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> =>
       subvention_graduated_percent: item.subvention_graduated_percent,
       management_subventions: getContentManagementSubventions(item),
       temporary_subventions: getContentTemporarySubventions(item),
+      zone: item.zone,
     };
   });
+};
 
 /**
  * Get invoice recipient options
@@ -2403,6 +2500,21 @@ export const getPayloadTemporarySubventions = (rentAdjustment: Object): Array<Ob
     });
 
 /**
+ * Get children payload
+ * @param {Object} rentAdjustment
+ * @return {Object[]}
+ */
+export const getPayloadChildren = (rentAdjustment: Object): Array<Object> =>
+  get(rentAdjustment, 'children', [])
+    .map((item) => {
+      return {
+        intended_use: 7,
+        area_unit: 'm2',
+        area: convertStrToDecimalNumber(item.area),
+      };
+    });
+
+/**
  * Get rent adjustments payload
  * @param {Object} rent
  * @returns {Object[]}
@@ -2425,6 +2537,7 @@ export const getPayloadRentAdjustments = (rent: Object): Array<Object> =>
       subvention_graduated_percent: convertStrToDecimalNumber(item.subvention_graduated_percent),
       management_subventions: getPayloadManagementSubventions(item),
       temporary_subventions: getPayloadTemporarySubventions(item),
+      zone: item.zone,
     };
   });
 
@@ -2499,6 +2612,28 @@ export const getPayloadRentDueDates = (rent: Object): Array<Object> => {
 };
 
 /**
+ * Return area unit by calculator type
+ * @param {Object} item
+ * @returns {string}
+ */
+export const areaUnit = (item: Object): string => {
+  if(item.type === CalculatorTypes.LEASE)
+    return item.area_unit;
+  return 'm2';
+};
+
+/**
+ * Return intended use by calculator type
+ * @param {Object} item
+ * @returns {number}
+ */
+export const intendedUse = (item: Object): number => {
+  if(item.type === CalculatorTypes.LEASE)
+    return item.intended_use;
+  return 7;
+};
+
+/**
  * Find basis of rent by id
  * @param {Object} lease
  * @param {number} id
@@ -2538,13 +2673,15 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
     } else {
       return {
         id: item.id,
-        intended_use: item.intended_use,
+        intended_use: intendedUse(item), 
         area: convertStrToDecimalNumber(item.area),
-        area_unit: item.area_unit,
+        area_unit: areaUnit(item),
+        type: item.type,
         amount_per_area: convertStrToDecimalNumber(item.amount_per_area),
         index: item.index,
         profit_margin_percentage: convertStrToDecimalNumber(item.profit_margin_percentage),
         discount_percentage: convertStrToDecimalNumber(item.discount_percentage),
+        children: getPayloadChildren(item),
         plans_inspected_at: item.plans_inspected_at,
         locked_at: item.locked_at,
         archived_at: item.archived_at,
@@ -2553,6 +2690,7 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
         subvention_graduated_percent: convertStrToDecimalNumber(item.subvention_graduated_percent),
         management_subventions: getPayloadManagementSubventions(item),
         temporary_subventions: getPayloadTemporarySubventions(item),
+        zone: item.zone,
       };
     }
   });
@@ -2639,6 +2777,33 @@ export const calculateAreasSum = (areas: Array<Object>): number => {
 };
 
 /**
+ * Get zone price from value
+ * @param {string} zone
+ * @returns {number}
+ */
+export const getZonePriceFromValue = (zone: ?string): number => {
+  let sum = 0;
+
+  if(zone) {
+    switch (zone) {
+      case 'zone_1':
+        sum = 0.85;
+        break;
+      case 'zone_2':
+        sum = 0.85;
+        break;
+      case 'zone_3':
+        sum = 0.65;
+        break;
+      default:
+        sum = 0;
+        break;
+    }
+  }
+  return sum;
+};
+
+/**
  * Map lease page search filters for API 
  * @param {Object} query
  * @returns {Object}
@@ -2684,6 +2849,23 @@ export const mapLeaseSearchFilters = (query: Object): Object => {
   });
 
   return searchQuery;
+};
+
+/**
+ * calculate mast rent
+ * @param {number} index
+ * @param {number} area
+ * @param {string} amountPerArea
+ * @returns {number}
+ */
+export const mastCalculatorRent = (index: number, area: number): number => {
+  if(isEmpty(area))
+    return 0;
+  if(index === 0 && area)
+    return Number(1000 * Number(convertStrToDecimalNumber(area)));
+  if(index === 1 && area)
+    return Number(600 * Number(convertStrToDecimalNumber(area)));
+  return 0;
 };
 
 /**

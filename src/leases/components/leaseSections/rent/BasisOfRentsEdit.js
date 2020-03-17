@@ -19,6 +19,7 @@ import {ButtonColors} from '$components/enums';
 import {
   BasisOfRentManagementSubventionsFieldPaths,
   LeaseBasisOfRentsFieldPaths,
+  calculatorTypeOptions,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {calculateBasisOfRentTotalDiscountedInitialYearRent} from '$src/leases/helpers';
@@ -56,6 +57,7 @@ type State = {
   leaseAttributes: Attributes,
   managementTypeOptions: Array<Object>,
   subventionTypeOptions: Array<Object>,
+  typeOptions: Array<Object>,
 }
 
 class BasisOfRentsEdit extends PureComponent<Props, State> {
@@ -66,6 +68,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
     leaseAttributes: null,
     managementTypeOptions: [],
     subventionTypeOptions: [],
+    typeOptions: [],
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -80,6 +83,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
       newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE);
       newState.managementTypeOptions = getFieldOptions(props.leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT);
       newState.subventionTypeOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE);
+      newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.TYPE);
     }
 
     return newState;
@@ -121,6 +125,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
       intendedUseOptions,
       managementTypeOptions,
       subventionTypeOptions,
+      typeOptions,
     } = this.state;
     const totalDiscountedInitialYearRent = calculateBasisOfRentTotalDiscountedInitialYearRent(basisOfRents, indexOptions);
 
@@ -203,6 +208,8 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                         showTotal={fields.length > 1 && fields.length === index + 1}
                         subventionTypeOptions={subventionTypeOptions}
                         totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
+                        typeOptions={typeOptions}
+                        calculatorTypeOptions={calculatorTypeOptions}
                       />;
                     })}
                   </BoxItemContainer>
@@ -259,6 +266,8 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                       showTotal={fields.length > 1 && fields.length === index + 1}
                       subventionTypeOptions={subventionTypeOptions}
                       totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
+                      typeOptions={typeOptions}
+                      calculatorTypeOptions={calculatorTypeOptions}
                     />;
                   })}
                 </BoxItemContainer>
