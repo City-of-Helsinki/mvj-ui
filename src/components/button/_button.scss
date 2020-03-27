@@ -42,11 +42,12 @@
   }
 
   &.neutral {
-    background-color: $blue;
-    color: $white;
+    background-color: $white;
+    color: $blue;
+    border: 1px solid $blue;
 
     &:hover {
-      background-color: $blue-hover;
+      background-color: $light-blue;
     }
   }
 
