@@ -5,7 +5,7 @@
     }
 
     .icons__excel-icon {
-      fill: $dark-green;
+      fill: $blue;
       height: rem-calc(2px);
       width: rem-calc(3px);
       vertical-align: middle;
@@ -13,10 +13,10 @@
 
     &:hover {
       text-decoration: underline;
-      color: $dark-green-hover;
+      color: $blue-hover;
 
       .icons__excel-icon {
-        fill: $dark-green-hover;
+        fill: $blue-hover;
       }
     }
   }

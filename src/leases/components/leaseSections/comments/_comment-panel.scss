@@ -1,5 +1,5 @@
 .comment-panel {
-  background-color: $light-yellow;
+  background-color: $light-gray;
   z-index: 1050;
   width: rem-calc(500px);
   height: 100vh;
@@ -15,7 +15,7 @@
   &__wrapper {
     width: 100%;
     padding: rem-calc(92px) rem-calc(20px) rem-calc(20px);
-    background-color: $light-yellow;
+    background-color: $light-gray;
     z-index: 1;
   }
 
