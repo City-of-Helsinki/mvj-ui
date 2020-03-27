@@ -1716,7 +1716,7 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> => {
       amount_per_area: item.amount_per_area,
       index: get(item, 'index.id') || get(item, 'index'),
       profit_margin_percentage: item.profit_margin_percentage,
-      children: get(lease, 'basis_of_rents', []).filter(filterItem => item.children.includes(filterItem.id)),
+      children: get(lease, 'basis_of_rents', []).filter(filterItem => get(item, 'children', []).includes(filterItem.id)),
       type: item.type,
       discount_percentage: item.discount_percentage,
       plans_inspected_at: item.plans_inspected_at,
