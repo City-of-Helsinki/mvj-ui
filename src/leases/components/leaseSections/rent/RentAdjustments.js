@@ -197,7 +197,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                             <Column small={6} medium={4} large={2}>
                               <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
                                 <FormTextTitle uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
-                                  {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}
+                                  {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}
                                 </FormTextTitle>
                               </Authorization>
                             </Column>
