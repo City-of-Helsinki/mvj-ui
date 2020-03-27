@@ -981,6 +981,7 @@ export const RentAdjustmentManagementSubventionsFieldTitles = {
   MANAGEMENT_SUBVENTIONS: 'Hallintamuodot',
   MANAGEMENT: 'Hallintamuodon tyyppi',
   SUBVENTION_AMOUNT: 'Subventoitu yksikköhinta',
+  SUBVENTION_PERCENT: 'Subventio prosentti',
 };
 
 /**
@@ -1002,7 +1003,7 @@ export const RentAdjustmentTemporarySubventionsFieldPaths = {
 export const RentAdjustmentTemporarySubventionsFieldTitles = {
   TEMPORARY_SUBVENTIONS: 'Tilapäisalennukset',
   DESCRIPTION: 'Tilapäisalennuksen tyyppi',
-  SUBVENTION_PERCENT: 'subventio markkinavuokrasta',
+  SUBVENTION_PERCENT: 'Tilapäisalennus %',
 };
 
 /**

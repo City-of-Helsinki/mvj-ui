@@ -1347,6 +1347,40 @@ export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: numb
 };
 
 /**
+ * Calculate rent adjustment subvention percent
+ * @param {string} subventionType
+ * @param {string} subventionBasePercent
+ * @param {string} subventionGraduatedPercent
+ * @param {Object[]} managementSubventions
+ * @param {Object[]} temporarySubventions
+ * @param {string} subventionGraduatedPercent
+ * @return {number}
+ */
+export const calculateRentAdjustmentSubventionPercentCumulative = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+  let discount = 1;
+
+  if(subventionType === SubventionTypes.RE_LEASE) {
+    discount = discount * ((100 - calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent)) / 100);
+  }
+  
+  if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
+    if(managementSubventions) {
+      managementSubventions.forEach((subvention) => {
+        discount = discount * (Number((100 - Number(convertStrToDecimalNumber(subvention.subvention_amount))) / 100) || 1);
+      });
+    }
+  }
+  
+  if(temporarySubventions) {
+    temporarySubventions.forEach((subvention) => {
+      discount = discount * (Number((100 - Number(convertStrToDecimalNumber(subvention.subvention_percent))) / 100) || 1);
+    });
+  }
+  
+  return (1 - discount) * 100;
+};
+
+/**
  * Calculate subvention discount total
  * @param {number} initialYearRent
  * @param {Object[]} managementSubventions
@@ -1682,7 +1716,7 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> => {
       amount_per_area: item.amount_per_area,
       index: get(item, 'index.id') || get(item, 'index'),
       profit_margin_percentage: item.profit_margin_percentage,
-      children: get(lease, 'basis_of_rents', []).filter(filterItem => item.children.includes(filterItem.id)),
+      children: get(lease, 'basis_of_rents', []).filter(filterItem => get(item, 'children', []).includes(filterItem.id)),
       type: item.type,
       discount_percentage: item.discount_percentage,
       plans_inspected_at: item.plans_inspected_at,

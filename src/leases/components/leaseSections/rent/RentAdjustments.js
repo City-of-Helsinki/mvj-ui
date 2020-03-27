@@ -25,7 +25,6 @@ import {
 } from '$src/leases/enums';
 import {
   calculateReLeaseDiscountPercent,
-  calculateRentAdjustmentSubventionPercent,
   getDecisionById,
   getDecisionOptions,
 } from '$src/leases/helpers';
@@ -76,19 +75,9 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
               adjustment.subvention_graduated_percent);
           };
 
-          const getTotalSubventionPercent = () => {
-            return calculateRentAdjustmentSubventionPercent(
-              adjustment.subvention_type,
-              adjustment.subvention_base_percent,
-              adjustment.subvention_graduated_percent,
-              adjustment.management_subventions,
-              adjustment.temporary_subventions);
-          };
-
           const decision = getDecisionById(currentLease, adjustment.decision);
           const managementSubventions = adjustment.management_subventions;
           const temporarySubventions = adjustment.temporary_subventions;
-          const totalSubventionPercent = getTotalSubventionPercent();
 
           return (
             <BoxItem className='no-border-on-first-child no-border-on-last-child' key={index}>
@@ -208,7 +197,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                             <Column small={6} medium={4} large={2}>
                               <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
                                 <FormTextTitle uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
-                                  {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}
+                                  {RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_PERCENT}
                                 </FormTextTitle>
                               </Authorization>
                             </Column>
@@ -223,7 +212,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                               </Column>
                               <Column small={6} medium={4} large={2}>
                                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
-                                  <FormText>{!isEmptyValue(subvention.subvention_amount) ? `${formatNumber(subvention.subvention_amount)} €` : '-'}</FormText>
+                                  <FormText>{!isEmptyValue(subvention.subvention_amount) ? `${formatNumber(subvention.subvention_amount)} %` : '-'}</FormText>
                                 </Authorization>
                               </Column>
                             </Row>
@@ -317,7 +306,7 @@ const RentAdjustments = ({currentLease, leaseAttributes, rentAdjustments}: Props
                       <FormText className='semibold'>Yhteensä</FormText>
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <FormText className='semibold'>{formatNumber(totalSubventionPercent)} %</FormText>
+                      <FormText className='semibold'>{formatNumber(adjustment.full_amount)} %</FormText>
                     </Column>
                   </Row>
                 </GreenBox>

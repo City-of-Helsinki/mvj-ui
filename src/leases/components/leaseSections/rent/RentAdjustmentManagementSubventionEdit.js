@@ -53,7 +53,7 @@ const RentAdjustmentManagementSubventionEdit = ({
             fieldAttributes={getFieldAttributes(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}
             name={`${field}.subvention_amount`}
             overrideValues={{label: RentAdjustmentManagementSubventionsFieldTitles.SUBVENTION_AMOUNT}}
-            unit='€'
+            unit='%'
             invisibleLabel
             enableUiDataEdit
             uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}

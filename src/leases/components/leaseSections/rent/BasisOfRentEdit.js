@@ -1588,7 +1588,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
               <Row>
                 <Column>
                   <AddButtonSecondary
-                    label='Laske subventio'
+                    label='Lisää subventio'
                     onClick={this.handleAddSubventions}
                   />
                 </Column>
