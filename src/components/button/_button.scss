@@ -2,8 +2,8 @@
   font-size: $font-small;
   font-family: $font-family-source;
   font-weight: 600;
-  color: $black;
-  background: $dark-yellow;
+  color: $white;
+  background: $blue;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
   height: rem-calc(30px);
   padding: 0 1rem;
@@ -13,7 +13,7 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: $dark-yellow-hover;
+    background-color: $blue-hover;
   }
 
   &:disabled {
@@ -42,11 +42,11 @@
   }
 
   &.neutral {
-    background-color: $dark-yellow;
-    color: $black;
+    background-color: $blue;
+    color: $white;
 
     &:hover {
-      background-color: $dark-yellow-hover;
+      background-color: $blue-hover;
     }
   }
 
