@@ -11,7 +11,7 @@
   }
 
   &__divider {
-    border-top: 1px dashed $dark-green;
+    border-top: 1px dashed $blue;
     margin: rem-calc(15px 0);
     height: 1px;
     width: 100%;
@@ -39,7 +39,7 @@
     display: inline-block;
     width: 100%;
     padding: rem-calc(10px 10px 0);
-    background-color: $green;
+    background-color: $blue;
     position: relative;
 
     &.full-height {
@@ -66,7 +66,7 @@
         vertical-align: text-top;
 
         &:hover {
-          fill: $dark-green;
+          fill: $blue;
         }
       }
     }
@@ -74,7 +74,7 @@
     h2 {
       font-size: $font-large;
       font-weight: $semibold;
-      color: $dark-green;
+      color: $blue;
       text-transform: uppercase;
       margin: 0;
     }
@@ -343,7 +343,7 @@
       font-size: rem-calc(14px);
       line-height: rem-calc(16px);
       font-weight: normal;
-      color: $dark-green;
+      color: $blue;
       margin-bottom: rem-calc(10px);
       vertical-align: top;
 
@@ -356,7 +356,7 @@
 
       &:hover {
         text-decoration: underline;
-        color: $dark-green-hover;
+        color: $blue-hover;
       }
     }
   }
@@ -404,7 +404,7 @@
   .content-item {
     border: none;
     display: block;
-    border-top: 1px dashed $dark-green;
+    border-top: 1px dashed $blue;
     padding: rem-calc(20px) 0 0;
     margin: rem-calc(20px) 0 0;
     position: relative;

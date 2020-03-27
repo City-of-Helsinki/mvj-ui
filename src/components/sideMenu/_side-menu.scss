@@ -1,6 +1,6 @@
 .side-menu {
   z-index: 1050;
-  background-color: $light-yellow;
+  background-color: $white;
   width: 268px;
   height: 100vh;
   position: fixed;
@@ -31,7 +31,7 @@
       width: 100%;
 
       &:focus {
-        outline-color: $dark-green;
+        outline-color: $blue;
         outline-offset: -2px;
         outline-width: 2px;
         outline-style: dotted;
@@ -39,7 +39,7 @@
 
       &:hover {
         color: $black;
-        background-color: $yellow;
+        background-color: $light-blue;
         outline: none;
       }
     }
@@ -75,7 +75,7 @@
     }
 
     &--is-open {
-      background-color: $yellow;
+      background-color: $blue;
 
       .side-menu__submenu_items {
         display: block;

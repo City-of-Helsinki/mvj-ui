@@ -7,8 +7,8 @@
   overflow: visible !important;
 
   &.icons__add {
-    fill: $dark-green;
-    stroke: $dark-green;
+    fill: $blue;
+    stroke: $blue;
   }
 
   &__error {
@@ -17,19 +17,19 @@
 
   &__success {
     #Artboard {
-      fill: $dark-green;
+      fill: $blue;
     }
   }
 
   &.icons__trash {
     #Artboard {
-      fill: $dark-green;
+      fill: $blue;
     }
   }
 
   &.icons__copy-to-clipboard {
     #Artboard {
-      fill: $dark-green;
+      fill: $blue;
     }
   }
 
@@ -54,7 +54,7 @@
   }
 
   &.icon-green {
-    fill: $dark-green;
-    stroke: $dark-green;
+    fill: $blue;
+    stroke: $blue;
   }
 }

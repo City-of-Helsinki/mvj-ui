@@ -23,8 +23,8 @@
       min-width: 100%;
       z-index: 1;
       overflow-y: auto;
-      box-shadow: 0 1px 0 1px $dark-green;
-      border: 1px solid $dark-green;
+      box-shadow: 0 1px 0 1px $blue;
+      border: 1px solid $blue;
       border-bottom: none;
       border-radius: 0;
       width: auto;
@@ -50,12 +50,12 @@
 
       &.is-expanded {
         outline: none;
-        border: 1px solid $dark-green;
-        box-shadow: 0 0 0 1px $dark-green;
+        border: 1px solid $blue;
+        box-shadow: 0 0 0 1px $blue;
       }
 
       &.is-focused {
-        outline: 2px dotted $dark-green;
+        outline: 2px dotted $blue;
         outline-offset: 0px;
       }
 

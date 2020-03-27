@@ -1,7 +1,7 @@
 .collapse {
   align-items: baseline;
   padding: 0;
-  background-color: $green;
+  background-color: $light-gray;
   margin-bottom: rem-calc(15px);
   display: block;
 
@@ -157,7 +157,7 @@
       }
 
       &--success {
-        color: $dark-green;
+        color: $blue;
 
         i {
           background-image: url(../assets/icons/icon_checked.svg);
@@ -232,7 +232,7 @@
   }
 
   &.collapse__secondary {
-    background-color: $light-green;
+    background-color: $white;
     margin: rem-calc(5px) 0 rem-calc(15px);
     padding: 0;
 

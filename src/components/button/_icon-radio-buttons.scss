@@ -39,7 +39,7 @@
   }
 
   .option-label {
-    color: $dark-green;
+    color: $blue;
     text-transform: uppercase;
     background-color: transparent;
     cursor: pointer;
@@ -51,7 +51,7 @@
   }
 
   .icons {
-    fill: $dark-green !important;
+    fill: $blue !important;
   }
 
   .radio:checked + .option-label {
