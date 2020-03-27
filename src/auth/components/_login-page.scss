@@ -4,7 +4,7 @@
   margin-top: 2rem;
   width: 600px;
   max-width: calc(100% - 1rem);
-  background-color: $yellow;
+  background-color: $light-blue;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
 
   &__content {
@@ -45,6 +45,6 @@
   .login-footer {
     height: rem-calc(40px);
     width: 100%;
-    background-color: $dark-yellow;
+    background-color: $blue;
   }
 }
