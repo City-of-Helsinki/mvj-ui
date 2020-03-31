@@ -49,7 +49,7 @@
         z-index: 1;
         color: $black;
         pointer-events: none;
-        background-color: $dark-green;
+        background-color: $blue;
         color: $white;
       }
     }
@@ -197,8 +197,8 @@
 
             &:hover {
               .sortable-table-row-collapse-icon {
-                fill: $dark-green;
-                stroke: $dark-green;
+                fill: $blue;
+                stroke: $blue;
               }
             }
           }
@@ -267,7 +267,7 @@
 
               > td {
                 cursor: pointer;
-                background-color: $green;
+                background-color: $light-blue;
 
                 &.disabled {
                   cursor: default;
@@ -276,7 +276,7 @@
             }
 
             &.selected > td {
-              background-color: $green !important;
+              background-color: $light-blue !important;
             }
           }
         }
@@ -284,7 +284,7 @@
 
       &.list-table {
         thead td, thead th {
-          background-color: $dark-green;
+          background-color: $blue;
           font-size: rem-calc(14px);
           color: $white;
 
@@ -301,7 +301,7 @@
 
     &.fixed-table-container {
       position: relative;
-      border: 1px solid $green;
+      border: 1px solid $blue;
       margin-bottom: rem-calc(10px);
 
       .scroll-head-wrapper {
@@ -505,7 +505,7 @@
       z-index: 2;
       border: none;
       overflow: visible;
-      border-left: rem-calc(10px) solid $green;
+      border-left: rem-calc(10px) solid $blue;
 
       @include transition(0.5s, right, ease-in-out);
 

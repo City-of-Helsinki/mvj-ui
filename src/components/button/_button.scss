@@ -2,8 +2,8 @@
   font-size: $font-small;
   font-family: $font-family-source;
   font-weight: 600;
-  color: $black;
-  background: $dark-yellow;
+  color: $white;
+  background: $blue;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
   height: rem-calc(30px);
   padding: 0 1rem;
@@ -13,7 +13,7 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: $dark-yellow-hover;
+    background-color: $blue-hover;
   }
 
   &:disabled {
@@ -24,11 +24,11 @@
   }
 
   &.success {
-    background-color: $dark-green;
+    background-color: $blue;
     color: $white;
 
     &:hover {
-      background-color: $dark-green-hover;
+      background-color: $blue-hover;
     }
   }
 
@@ -42,11 +42,12 @@
   }
 
   &.neutral {
-    background-color: $dark-yellow;
-    color: $black;
+    background-color: $white;
+    color: $blue;
+    border: 1px solid $blue;
 
     &:hover {
-      background-color: $dark-yellow-hover;
+      background-color: $light-blue;
     }
   }
 
@@ -88,8 +89,8 @@
 
   &:hover {
     .icons {
-      fill: $dark-green !important;
-      stroke: $dark-green !important;
+      fill: $blue !important;
+      stroke: $blue !important;
     }
   }
 
@@ -97,7 +98,7 @@
     cursor: not-allowed;
 
     .icons {
-      fill: $dark-gray !important;
+      fill: $blue !important;
     }
   }
 
@@ -109,7 +110,7 @@
 }
 
 .sendup-button {
-  color: $dark-green;
+  color: $blue;
   font-size: rem-calc(14px);
   font-weight: $semibold;
   font-family: $body-font-family;
@@ -118,16 +119,16 @@
   .icons__sendup {
     vertical-align: bottom;
     margin-left: rem-calc(5px);
-    fill: $dark-green;
-    stroke: $dark-green;
+    fill: $blue;
+    stroke: $blue;
   }
 
   &:hover {
-    color: $dark-green-hover;
+    color: $blue-hover;
 
     .icons__sendup {
-      fill: $dark-green-hover;
-      stroke: $dark-green-hover;
+      fill: $blue-hover;
+      stroke: $blue-hover;
     }
   }
 }

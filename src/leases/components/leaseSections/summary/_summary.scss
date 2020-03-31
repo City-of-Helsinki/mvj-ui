@@ -6,7 +6,7 @@
   }
 
   &__related-leases {
-    background-color: $green;
+    background-color: $light-gray;
     height: 100%;
     padding: rem-calc(15px);
 
@@ -61,7 +61,7 @@
 
         .connection-line {
           position: absolute;
-          border-top: 1px dashed $dark-green;
+          border-top: 1px dashed $blue;
           width: 20px;
           top: 17.5px;
           left: -26px;
@@ -148,7 +148,7 @@
         top: 0;
         bottom: 0;
         left: 9px;
-        border-left: 1px dashed $dark-green;
+        border-left: 1px dashed $blue;
       }
 
       .related-leases-item:nth-of-type(2) {
@@ -191,7 +191,7 @@
     }
 
     &--success {
-      color: $dark-green !important;
+      color: $blue !important;
     }
 
     &--enquiry-sent {

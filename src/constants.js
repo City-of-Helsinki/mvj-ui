@@ -37,7 +37,7 @@ export const MAX_ZOOM = 12;
  * @const {string[]}
  */
 export const MAP_COLORS = [
-  '#388E3C',
+  '#0078C0',
   '#FF9800',
   '#1976D2',
   '#D32F2F',

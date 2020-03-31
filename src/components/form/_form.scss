@@ -91,7 +91,7 @@
   }
 
   &__success-field {
-    color: $dark-green;
+    color: $blue;
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
@@ -511,7 +511,7 @@
     }
 
     &.success {
-      color: $dark-green;
+      color: $blue;
     }
 
     &.semibold {
@@ -557,7 +557,7 @@
     font-size: rem-calc(16px) !important;
     line-height: rem-calc(20px) !important;
     font-weight: $semibold !important;
-    color: $dark-green;
+    color: $blue;
     margin: 0;
     cursor: pointer;
     display: block;
@@ -566,17 +566,17 @@
 
     .icons {
       margin-right: rem-calc(5px);
-      fill: $dark-green;
+      fill: $blue;
       height: rem-calc(20px) !important;
       width: rem-calc(20px) !important;
     }
 
     &:hover {
       text-decoration: underline;
-      color: $dark-green-hover;
+      color: $blue-hover;
 
       .icons {
-        fill: $dark-green-hover;
+        fill: $blue-hover;
       }
     }
 
@@ -623,7 +623,7 @@
       font-size: rem-calc(14px) !important;
       line-height: rem-calc(20px) !important;
       font-weight: $semibold !important;
-      color: $dark-green !important;
+      color: $blue !important;
       margin: 0 !important;
       cursor: pointer;
 
@@ -635,15 +635,15 @@
         height: rem-calc(15px);
         width: rem-calc(15px);
         margin-right: rem-calc(5px);
-        fill: $dark-green;
+        fill: $blue;
       }
 
       &:hover {
         text-decoration: underline;
-        color: $dark-green-hover !important;
+        color: $blue-hover !important;
 
         .icons {
-          fill: $dark-green-hover;
+          fill: $blue-hover;
         }
       }
     }
@@ -665,7 +665,7 @@
 
     &:hover {
       .icons {
-        fill: $dark-green !important;
+        fill: $blue !important;
       }
     }
   }
@@ -685,7 +685,7 @@
     &:hover {
       .icons {
         #Artboard {
-          fill: $dark-green !important;
+          fill: $blue !important;
         }
       }
     }
@@ -706,7 +706,7 @@
     &:hover {
       .icons {
         #Artboard {
-          fill: $dark-green !important;
+          fill: $blue !important;
         }
       }
     }
@@ -724,7 +724,7 @@
 
     &:hover {
       .icons {
-        fill: $dark-green !important;
+        fill: $blue !important;
       }
     }
 
@@ -753,7 +753,7 @@
     &:hover {
       .icons {
         #Artboard {
-          fill: $dark-green !important;
+          fill: $blue !important;
         }
       }
     }
@@ -796,7 +796,7 @@
 
     &:hover {
       .icons {
-        fill: $dark-green !important;
+        fill: $blue !important;
       }
     }
   }
