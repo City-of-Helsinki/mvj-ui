@@ -133,7 +133,7 @@ const BasisOfRent = ({
   };
   const getDiscountPercentage = () => {
     if(basisOfRent.subvention_type === SubventionTypes.FORM_OF_MANAGEMENT){
-      if(basisOfRent.management_subventions && basisOfRent.management_subventions[0].subvention_amount)
+      if(basisOfRent.management_subventions && !!basisOfRent.management_subventions.length && basisOfRent.management_subventions[0].subvention_amount)
         return calculateBasisOfRentSubventionPercantage(basisOfRent.management_subventions[0].subvention_amount, currentAmountPerArea);
       return 0;
     }
