@@ -5,12 +5,14 @@ import {formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
-import createUrl from '$src/api/createUrl';
-import FileDownloadButton from '$components/file/FileDownloadButton';
+import Button from '$components/button/Button';
+import {ButtonColors} from '$components/enums';
 import FormField from '$components/form/FormField';
 import {FieldTypes, FormNames} from '$src/enums';
 import {withLeaseStatisticReportAttributes} from '$components/attributes/LeaseStatisticReportAttributes';
 import Authorization from '$components/authorization/Authorization';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {
   getFieldAttributes,
   isFieldAllowedToEdit,
@@ -18,18 +20,36 @@ import {
 import {
   LeaseStatisticReportPaths,
   LeaseStatisticReportTitles,
+  LeaseInvoicingReportTypes,
 } from '$src/leaseStatisticReport/enums';
+import {
+  getReportTypeOptions,
+  getReportUrl,
+  getPayload,
+} from '$src/leaseStatisticReport/helpers';
+import {fetchReportData, setReportType, sendReportToMail} from '$src/leaseStatisticReport/actions';
 import {
   getAttributes as getLeaseStatisticReportAttributes,
 } from '$src/leaseStatisticReport/selectors';
-import type {Attributes} from '$src/types';
+import type {Attributes, Reports} from '$src/types';
+import {leaseTypeOptions, invoiceStateOptions} from './options';
 
 type Props = {
   leaseStatisticReportAttributes: Attributes,
+  reportType: string,
   startDate: string,
   endDate: string,
-  leaseState: string,
-  onlyActiveLeases: boolean,
+  startYear: number,
+  endYear: number,
+  reports: Reports,
+  isFetchingReports: boolean,
+  isFetchingReportData: boolean,
+  isSendingMail: boolean,
+  fetchReportData: Function,
+  setReportType: Function,
+  sendReportToMail: Function,
+  leaseType: string,
+  invoiceState: string,
 }
 
 type State = {
@@ -43,93 +63,189 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
     tenantOptions: [],
   }
 
+  getReportData = () => {
+    const {
+      reportType,
+      startDate,
+      endDate,
+      reports,
+      fetchReportData,
+      setReportType,
+      leaseType,
+      invoiceState,
+    } = this.props;
+    const url = getReportUrl(reports, reportType);
+    const payload = getPayload(startDate, endDate, url, reportType, leaseType, invoiceState);
+    fetchReportData(payload);
+    setReportType(payload);
+  }
+
+  sendToMail = () => {
+    const {
+      reportType,
+      startYear,
+      endYear,
+      reports,
+      sendReportToMail,
+    } = this.props;
+    const url = getReportUrl(reports, reportType);
+    sendReportToMail({url: url, start_year: startYear, end_year: endYear});
+  }
+
   render() {
     const {
       leaseStatisticReportAttributes,
+      reports,
+      isFetchingReports,
+      isFetchingReportData,
+      reportType,
       startDate,
       endDate,
-      leaseState,
-      onlyActiveLeases,
+      isSendingMail,
     } = this.props;
 
-    const options = [{value: 1, label: 'one'}, {value: 2, label: 'two'}];
+    if(isFetchingReports) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
+
+    const reportTypeOptions = getReportTypeOptions(reports);
 
     return(
       <form>
         <Row>
           <Column small={12} large={12}>
             <Row>
-              <Column small={12} medium={1}>
+              <Column large={2} medium={3} small={4}>
                 <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
                   <FormField
                     fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}
                     disableDirty
-                    name='start_date'
+                    name='report_type'
                     overrideValues={{
-                      fieldType: FieldTypes.DATE,
-                      label: LeaseStatisticReportTitles.START_DATE,
+                      fieldType: FieldTypes.CHOICE,
+                      label: LeaseStatisticReportTitles.REPORT_TYPE,
+                      options: reportTypeOptions,
                     }}
                     enableUiDataEdit
                   />
                 </Authorization>
               </Column>
-              <Column small={12} medium={1}>
+              {(reportType !== LeaseInvoicingReportTypes.LEASE_COUNT && reportType !== LeaseInvoicingReportTypes.LEASE_INVOICING_DISABLED) && reportType !== LeaseInvoicingReportTypes.RENT_FORECAST &&
+                <Column large={2} medium={3} small={4}>
+                  <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
+                    <FormField
+                      fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}
+                      disableDirty
+                      name='start_date'
+                      overrideValues={{
+                        fieldType: FieldTypes.DATE,
+                        label: LeaseStatisticReportTitles.START_DATE,
+                      }}
+                      enableUiDataEdit
+                    />
+                  </Authorization>
+                </Column>}
+              {(reportType !== LeaseInvoicingReportTypes.LEASE_COUNT && reportType !== LeaseInvoicingReportTypes.LEASE_INVOICING_DISABLED) && reportType !== LeaseInvoicingReportTypes.RENT_FORECAST &&
+                <Column large={2} medium={3} small={4}>
+                  <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
+                    <FormField
+                      fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.END_DATE)}
+                      disableDirty
+                      overrideValues={{
+                        fieldType: FieldTypes.DATE,
+                        label: LeaseStatisticReportTitles.END_DATE,
+                      }}
+                      name='end_date'
+                      enableUiDataEdit
+                    />
+                  </Authorization>
+                </Column>}
+              {reportType === LeaseInvoicingReportTypes.INVOICES_IN_PERIOD && <Column large={2} medium={3} small={4}>
                 <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
                   <FormField
                     fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.END_DATE)}
                     disableDirty
                     overrideValues={{
-                      fieldType: FieldTypes.DATE,
-                      label: LeaseStatisticReportTitles.END_DATE,
+                      fieldType: FieldTypes.CHOICE,
+                      label: LeaseStatisticReportTitles.LEASE_TYPE,
+                      options: leaseTypeOptions,
+                      required: false,
                     }}
-                    name='end_date'
+                    name='lease_type'
                     enableUiDataEdit
                   />
                 </Authorization>
-              </Column>
-              <Column small={12} medium={2}>
+              </Column>}
+              {reportType === LeaseInvoicingReportTypes.INVOICES_IN_PERIOD && <Column large={1} medium={2} small={3}>
                 <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
                   <FormField
-                    fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.LEASE_STATE)}
+                    fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.END_DATE)}
                     disableDirty
                     overrideValues={{
                       fieldType: FieldTypes.CHOICE,
-                      label: LeaseStatisticReportTitles.LEASE_STATE,
-                      options: options,
+                      label: LeaseStatisticReportTitles.INVOICE_STATE,
+                      options: invoiceStateOptions,
+                      required: false,
                     }}
-                    name='lease_state'
+                    name='invoice_state'
                     enableUiDataEdit
                   />
                 </Authorization>
-              </Column>
-              <Column small={12} medium={2}>
-                <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
-                  <FormField
-                    fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.ONLY_ACTIVE_LEASES)}
-                    disableDirty
-                    overrideValues={{
-                      fieldType: FieldTypes.CHOICE,
-                      label: LeaseStatisticReportTitles.ONLY_ACTIVE_LEASES,
-                      options: options,
-                    }}
-                    name='only_active_leases'
-                    enableUiDataEdit
-                  />
-                </Authorization>
-              </Column>
+              </Column>}
+              {reportType === LeaseInvoicingReportTypes.RENT_FORECAST &&
+                <Column large={2} medium={3} small={4}>
+                  <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
+                    <FormField
+                      fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}
+                      disableDirty
+                      name='start_year'
+                      overrideValues={{
+                        fieldType: FieldTypes.INTEGER,
+                        label: LeaseStatisticReportTitles.START_YEAR,
+                      }}
+                      enableUiDataEdit
+                    />
+                  </Authorization>
+                </Column>}
+              {reportType === LeaseInvoicingReportTypes.RENT_FORECAST &&
+                <Column large={2} medium={3} small={4}>
+                  <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
+                    <FormField
+                      fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.END_DATE)}
+                      disableDirty
+                      overrideValues={{
+                        fieldType: FieldTypes.INTEGER,
+                        label: LeaseStatisticReportTitles.END_YEAR,
+                      }}
+                      name='end_year'
+                      enableUiDataEdit
+                    />
+                  </Authorization>
+                </Column>}
+              {(reportType !== LeaseInvoicingReportTypes.LEASE_COUNT && reportType !== LeaseInvoicingReportTypes.LEASE_INVOICING_DISABLED) && reportType !== LeaseInvoicingReportTypes.RENT_FORECAST &&
               <Column small={3} style={{margin: '10px 0'}}>
-                <FileDownloadButton
-                  disabled={true}
-                  label='Luo raportti'
-                  payload={{
-                    start_date: startDate,
-                    end_date: endDate,
-                    lease_state: leaseState,
-                    only_active_leases: onlyActiveLeases,
-                  }}
-                  url={createUrl(`lease_statistic_report/`)} 
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isFetchingReportData || !(startDate && endDate && reportType)}
+                  text='Luo raportti'
+                  onClick={this.getReportData}
                 />
-              </Column>
+              </Column>}
+              {(reportType === LeaseInvoicingReportTypes.LEASE_COUNT || reportType === LeaseInvoicingReportTypes.LEASE_INVOICING_DISABLED) &&
+              <Column small={3} style={{margin: '10px 0'}}>
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isFetchingReportData}
+                  text='Luo raportti'
+                  onClick={this.getReportData}
+                />
+              </Column>}
+              {reportType === LeaseInvoicingReportTypes.RENT_FORECAST && <Column small={3} style={{margin: '10px 0'}}>
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isSendingMail}
+                  text='Lähetä sähköpostiin'
+                  onClick={this.sendToMail}
+                />
+              </Column>}
             </Row>
           </Column>
         </Row>
@@ -147,11 +263,19 @@ export default flowRight(
     (state) => {
       return {
         leaseStatisticReportAttributes: getLeaseStatisticReportAttributes(state),
+        reportType: selector(state, 'report_type'),
         startDate: selector(state, 'start_date'),
         endDate: selector(state, 'end_date'),
-        leaseState: selector(state, 'lease_state'),
-        onlyActiveLeases: selector(state, 'only_active_leases'),
+        startYear: selector(state, 'start_year'),
+        endYear: selector(state, 'end_year'),
+        leaseType: selector(state, 'lease_type'),
+        invoiceState: selector(state, 'invoice_state'),
       };
+    },
+    {
+      fetchReportData,
+      setReportType,
+      sendReportToMail,
     }
   ),
   reduxForm({

@@ -23,13 +23,22 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 import GreenBox from '$components/content/GreenBox';
 import SubTitle from '$components/content/SubTitle';
 import {
+  getIsFetchingReportData,
+} from '$src/leaseStatisticReport/selectors';
+import {
   LeaseStatisticReportTitles,
 } from '$src/leaseStatisticReport/enums';
+import {
+  getReportData,
+} from '$src/leaseStatisticReport/selectors';
 
 type Props = {
   isFetchingUsersPermissions: boolean,
+  isFetchingReportData: boolean,
   receiveTopNavigationSettings: Function,
   usersPermissions: UsersPermissionsType,
+  reportData: Object,
+  reportType: String,
 };
 
 type State = {
@@ -55,7 +64,7 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
   }
 
   render() {
-    const {isFetchingUsersPermissions, usersPermissions} = this.props;
+    const {isFetchingUsersPermissions, usersPermissions, reportData, isFetchingReportData} = this.props;
 
     if(isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
@@ -74,12 +83,12 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
             </SubTitle>
             <LeaseStatisticReportForm/>
           </GreenBox>
-          <GreenBox className='with-top-margin'>
+          {(!!reportData || isFetchingReportData) && <GreenBox className='with-top-margin'>
             <SubTitle style={{textTransform: 'uppercase'}} >
               Vuokrauksen laskutustietojen tarkastusraportti
             </SubTitle>
             <LeaseInvoicingConfirmationReport/>
-          </GreenBox>
+          </GreenBox>}
 
         </ContentContainer>
       </PageContainer>
@@ -94,6 +103,8 @@ export default flowRight(
       return {
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         usersPermissions: getUsersPermissions(state),
+        reportData: getReportData(state),
+        isFetchingReportData: getIsFetchingReportData(state),
       };
     },
     {

@@ -13,3 +13,15 @@ export const fetchLeaseInvoicingConfirmationReportAttributes = (): Generator<any
 export const fetchLeaseInvoicingConfrimationReports = (params: ?Object): Generator<any, any, any> => {
   return callApi(new Request(createUrl('scheduled_job/', params)));
 };
+
+export const fetchReports = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('report/')));
+};
+
+export const fetchReportData = (payload: Object): Generator<any, any, any> => {
+  return callApi(new Request(`${payload.url}?${payload.query}`));
+};
+
+export const sendReportToMail = (payload: Object): Generator<any, any, any> => {
+  return callApi(new Request(`${payload.url}?start_year=${payload.start_year}&end_year=${payload.end_year}`));
+};

@@ -2,12 +2,15 @@
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
-import type {Attributes, Reducer, ApiResponse} from '../types';
+import type {Attributes, Reducer, ApiResponse, Reports} from '../types';
 
 import type {
   ReceiveAttributesAction,
   ReceiveLeaseInvoicingConfirmationReportAttributesAction,
   ReceiveLeaseInvoicingConfrimationReportsAction,
+  ReceiveReportsAction,
+  ReceiveReportDataAction,
+  setReportTypeAction,
 } from './types';
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
@@ -46,6 +49,42 @@ const leaseInvoicingConfirmationReportReducer: Reducer<Attributes> = handleActio
   },
 }, null);
 
+const isFetchingReportsReducer: Reducer<boolean> = handleActions({
+  'mvj/leaseStatisticReport/FETCH_REPORTS': () => true,
+  'mvj/leaseStatisticReport/RECEIVE_REPORTS': () => false,
+  'mvj/leaseStatisticReport/REPORTS_NOT_FOUND': () => false,
+}, false);
+
+const reportsReducer: Reducer<Attributes> = handleActions({
+  ['mvj/leaseStatisticReport/RECEIVE_REPORTS']: (state: Reports, {payload: reports}: ReceiveReportsAction) => {
+    return reports;
+  },
+}, null);
+
+const isFetchingReportDataReducer: Reducer<boolean> = handleActions({
+  'mvj/leaseStatisticReport/FETCH_REPORT_DATA': () => true,
+  'mvj/leaseStatisticReport/RECEIVE_REPORT_DATA': () => false,
+  'mvj/leaseStatisticReport/REPORT_DATA_NOT_FOUND': () => false,
+}, false);
+
+const reportDataReducer: Reducer<Object> = handleActions({
+  ['mvj/leaseStatisticReport/RECEIVE_REPORT_DATA']: (state: Reports, {payload: reportData}: ReceiveReportDataAction) => {
+    return reportData;
+  },
+}, null);
+
+const setReportTypeReducer: Reducer<Object> = handleActions({
+  ['mvj/leaseStatisticReport/SET_REPORT_TYPE']: (state: Object, {payload: reportType}: setReportTypeAction) => {
+    return reportType;
+  },
+}, null);
+
+const isSendingMailReducer: Reducer<boolean> = handleActions({
+  'mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL': () => true,
+  'mvj/leaseStatisticReport/NO_MAIL_SENT': () => false,
+  'mvj/leaseStatisticReport/MAIL_SENT': () => false,
+}, false);
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
@@ -53,4 +92,10 @@ export default combineReducers<Object, any>({
   isFetchingLeaseInvoicingConfirmationReportAttributes: isFetchingLeaseInvoicingConfirmationReportAttributesReducer,
   isFetchingLeaseInvoicingConfirmationReport: isFetchingLeaseInvoicingConfirmationReportReducer,
   leaseInvoicingConfirmationReport: leaseInvoicingConfirmationReportReducer,
+  reports: reportsReducer,
+  isFetchingReports: isFetchingReportsReducer,
+  reportData: reportDataReducer,
+  isFetchingReportData: isFetchingReportDataReducer,
+  reportType: setReportTypeReducer,
+  isSendingMail: isSendingMailReducer,
 });

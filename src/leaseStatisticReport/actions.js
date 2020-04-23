@@ -1,7 +1,7 @@
 // @flow
 import {createAction} from 'redux-actions';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Reports} from '$src/types';
 import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
@@ -12,6 +12,16 @@ import type {
   FetchLeaseInvoicingConfrimationReportsAction,
   NotFoundLeaseInvoicingConfrimationReportsAction,
   ReceiveLeaseInvoicingConfrimationReportsAction,
+  FetchReportsAction,
+  ReceiveReportsAction,
+  ReportsNotFoundAction,
+  FetchReportDataAction,
+  ReceiveReportDataAction,
+  ReportDataNotFoundAction,
+  setReportTypeAction,
+  SendReportToMailAction,
+  NoMailSentAction,
+  MailSentAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -40,3 +50,33 @@ export const receiveLeaseInvoicingConfrimationReports = (runs: Object): ReceiveL
 
 export const notFoundLeaseInvoicingConfrimationReports = (): NotFoundLeaseInvoicingConfrimationReportsAction =>
   createAction('mvj/leaseStatisticReport/NOT_FOUND_LEASE_INVOICING_CONFIRMATION_REPORTS')();
+
+export const fetchReports = (): FetchReportsAction =>
+  createAction('mvj/leaseStatisticReport/FETCH_REPORTS')();
+
+export const receiveReports = (reports: Reports): ReceiveReportsAction =>
+  createAction('mvj/leaseStatisticReport/RECEIVE_REPORTS')(reports);
+
+export const reportsNotFound = (): ReportsNotFoundAction =>
+  createAction('mvj/leaseStatisticReport/REPORTS_NOT_FOUND')();
+
+export const fetchReportData = (payload: Object): FetchReportDataAction =>
+  createAction('mvj/leaseStatisticReport/FETCH_REPORT_DATA')(payload);
+  
+export const receiveReportData = (reportData: Object): ReceiveReportDataAction =>
+  createAction('mvj/leaseStatisticReport/RECEIVE_REPORT_DATA')(reportData);
+  
+export const reportDataNotFound = (): ReportDataNotFoundAction =>
+  createAction('mvj/leaseStatisticReport/REPORT_DATA_NOT_FOUND')();
+  
+export const setReportType = (reportType: Object): setReportTypeAction =>
+  createAction('mvj/leaseStatisticReport/SET_REPORT_TYPE')(reportType);
+  
+export const sendReportToMail = (payload: Object): SendReportToMailAction =>
+  createAction('mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL')(payload);
+
+export const noMailSent = (): NoMailSentAction =>
+  createAction('mvj/leaseStatisticReport/NO_MAIL_SENT')();
+
+export const mailSent = (payload: Object): MailSentAction =>
+  createAction('mvj/leaseStatisticReport/MAIL_SENT')(payload);

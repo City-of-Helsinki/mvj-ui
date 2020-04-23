@@ -11,6 +11,16 @@ import {
   fetchLeaseInvoicingConfrimationReports,
   notFoundLeaseInvoicingConfrimationReports,
   receiveLeaseInvoicingConfrimationReports,
+  fetchReports,
+  reportsNotFound,
+  receiveReports,
+  fetchReportData,
+  receiveReportData,
+  reportDataNotFound,
+  setReportType,
+  sendReportToMail,
+  noMailSent,
+  mailSent,
 } from './actions';
 import leaseStatisticReport from './reducer';
 
@@ -23,6 +33,12 @@ const defaultState: LeaseStatisticReportState = {
   isFetchingLeaseInvoicingConfirmationReportAttributes: false,
   leaseInvoicingConfirmationReport: null,
   isFetchingLeaseInvoicingConfirmationReport: false,
+  reports: null,
+  isFetchingReports: false,
+  reportData: null,
+  isFetchingReportData: false,
+  reportType: null,
+  isSendingMail: false,
 };
 
 // $FlowFixMe
@@ -111,6 +127,86 @@ describe('Lease statistic', () => {
         const state = leaseStatisticReport({}, receiveLeaseInvoicingConfrimationReports(dummyLeaseInvoicingConfirmationReport));
         expect(state).to.deep.equal(newState);
       });
+
+      it('should update isFetchingReports flag to true by fetchReports', () => {
+        const newState = {...defaultState, isFetchingReports: true};
+
+        const state = leaseStatisticReport({}, fetchReports());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingReports flag to false by reportsNotFound', () => {
+        const newState = {...defaultState, isFetchingReports: false};
+
+        let state: Object = leaseStatisticReport({}, fetchReports());
+        state = leaseStatisticReport(state, reportsNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update reports', () => {
+        const dummyReports = {foo: 'bar'};
+
+        const newState = {...defaultState, reports: dummyReports};
+
+        const state = leaseStatisticReport({}, receiveReports(dummyReports));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingReportData flag to true by fetchReportData', () => {
+        const newState = {...defaultState, isFetchingReportData: true};
+
+        const state = leaseStatisticReport({}, fetchReportData());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingReportData flag to false by reportDataNotFound', () => {
+        const newState = {...defaultState, isFetchingReportData: false};
+
+        let state: Object = leaseStatisticReport({}, fetchReportData());
+        state = leaseStatisticReport(state, reportDataNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update report data', () => {
+        const dummyReports = {foo: 'bar'};
+
+        const newState = {...defaultState, reportData: dummyReports};
+
+        const state = leaseStatisticReport({}, receiveReportData(dummyReports));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update reportType by setReportType', () => {
+        const dummyReports = {foo: 'bar'};
+
+        const newState = {...defaultState, reportType: dummyReports};
+
+        const state = leaseStatisticReport({}, setReportType(dummyReports));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSendingMail flag to true by sendReportToMail', () => {
+        const newState = {...defaultState, isSendingMail: true};
+
+        const state = leaseStatisticReport({}, sendReportToMail());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSendingMail flag to false by noMailSent', () => {
+        const newState = {...defaultState, isSendingMail: false};
+
+        let state: Object = leaseStatisticReport({}, sendReportToMail());
+        state = leaseStatisticReport(state, noMailSent());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSendingMail flag to true by mailSent', () => {
+        const newState = {...defaultState, isSendingMail: false};
+
+        const state = leaseStatisticReport({}, mailSent());
+        expect(state).to.deep.equal(newState);
+      });
+
     });
   });
 });
