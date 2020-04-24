@@ -193,6 +193,8 @@ class SideMenu extends Component<Props, State> {
                     <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperiaatteet</Link></li>
                   </Authorization>
 
+                  <li><Link onClick={handleClick} to={getRouteById(Routes.LEASE_STATISTIC_REPORT)}>Tilastot ja raportit</Link></li>
+
                   <li><Link style={{color: '#b7b7b7'}} ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.PROPERTY)}>Tonttihaut</Link></li>
 
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INFILLDEVELOPMENTCOMPENSATION)}>
@@ -200,8 +202,6 @@ class SideMenu extends Component<Props, State> {
                   </Authorization>
                   
                   <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
-
-                  <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.LEASE_STATISTIC_REPORT)}>Tilastot ja raportit</Link></li>
   
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
