@@ -32,8 +32,17 @@ export const getIsFetchingReportData: Selector<boolean, void> = (state: RootStat
 export const getReportData: Selector<Object, void> = (state: RootState): Object =>
   state.leaseStatisticReport.reportData;
 
-export const getReportType: Selector<string, void> = (state: RootState): string =>
-  state.leaseStatisticReport.reportType;
+export const getReportOptions: Selector<string, void> = (state: RootState): string =>
+  state.leaseStatisticReport.reportOptions;
 
 export const getIsSendingMail: Selector<boolean, void> = (state: RootState): boolean =>
   state.leaseStatisticReport.isSendingMail;
+
+export const getOptions: Selector<Object, void> = (state: RootState): Object =>
+  state.leaseStatisticReport.options;
+
+export const getIsFetchingOptions: Selector<boolean, void> = (state: RootState): boolean =>
+  state.leaseStatisticReport.isFetchingOptions;
+
+export const getPayload: Selector<Object, void> = (state: RootState): Object =>
+  state.leaseStatisticReport.payload;

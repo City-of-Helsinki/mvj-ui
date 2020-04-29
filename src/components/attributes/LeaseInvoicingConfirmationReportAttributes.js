@@ -7,7 +7,8 @@ import {fetchLeaseInvoicingConfirmationReportAttributes} from '$src/leaseStatist
 import {
   getReportData,
   getIsFetchingReportData,
-  getReportType,
+  getReportOptions,
+  getReports,
 } from '$src/leaseStatisticReport/selectors';
 
 function LeaseInvoicingConfirmationReportAttributes(WrappedComponent: any) {
@@ -31,7 +32,8 @@ const withLeaseInvoicingConfirmationReportAttributes = flowRight(
       return{
         reportData: getReportData(state),
         isFetchingReportData: getIsFetchingReportData(state),
-        reportType: getReportType(state),
+        reportOptions: getReportOptions(state),
+        reports: getReports(state),
       };
     },
     {

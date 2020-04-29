@@ -17,7 +17,8 @@ import {
   fetchReportData,
   receiveReportData,
   reportDataNotFound,
-  setReportType,
+  setOptions,
+  setPayload,
   sendReportToMail,
   noMailSent,
   mailSent,
@@ -37,8 +38,11 @@ const defaultState: LeaseStatisticReportState = {
   isFetchingReports: false,
   reportData: null,
   isFetchingReportData: false,
-  reportType: null,
+  reportOptions: null,
   isSendingMail: false,
+  options: null,
+  isFetchingOptions: false,
+  payload: null,
 };
 
 // $FlowFixMe
@@ -176,12 +180,21 @@ describe('Lease statistic', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update reportType by setReportType', () => {
+      it('should update reportOptions by setOptions', () => {
         const dummyReports = {foo: 'bar'};
 
-        const newState = {...defaultState, reportType: dummyReports};
+        const newState = {...defaultState, reportOptions: dummyReports};
 
-        const state = leaseStatisticReport({}, setReportType(dummyReports));
+        const state = leaseStatisticReport({}, setOptions(dummyReports));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update payload by setPayload', () => {
+        const dummyPayload = {foo: 'bar'};
+
+        const newState = {...defaultState, payload: dummyPayload};
+
+        const state = leaseStatisticReport({}, setPayload(dummyPayload));
         expect(state).to.deep.equal(newState);
       });
 

@@ -38,7 +38,6 @@ type Props = {
   receiveTopNavigationSettings: Function,
   usersPermissions: UsersPermissionsType,
   reportData: Object,
-  reportType: String,
 };
 
 type State = {

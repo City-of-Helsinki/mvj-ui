@@ -10,7 +10,9 @@ import type {
   ReceiveLeaseInvoicingConfrimationReportsAction,
   ReceiveReportsAction,
   ReceiveReportDataAction,
-  setReportTypeAction,
+  SetOptionsAction,
+  SetPayloadAction,
+  ReceiveOptionsAction,
 } from './types';
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
@@ -73,9 +75,15 @@ const reportDataReducer: Reducer<Object> = handleActions({
   },
 }, null);
 
-const setReportTypeReducer: Reducer<Object> = handleActions({
-  ['mvj/leaseStatisticReport/SET_REPORT_TYPE']: (state: Object, {payload: reportType}: setReportTypeAction) => {
-    return reportType;
+const setOptionsReducer: Reducer<Object> = handleActions({
+  ['mvj/leaseStatisticReport/SET_REPORT_OPTIONS']: (state: Object, {payload: options}: SetOptionsAction) => {
+    return options;
+  },
+}, null);
+
+const setPayloadReducer: Reducer<Object> = handleActions({
+  ['mvj/leaseStatisticReport/SET_PAYLOAD']: (state: Object, {payload: payload}: SetPayloadAction) => {
+    return payload;
   },
 }, null);
 
@@ -84,6 +92,18 @@ const isSendingMailReducer: Reducer<boolean> = handleActions({
   'mvj/leaseStatisticReport/NO_MAIL_SENT': () => false,
   'mvj/leaseStatisticReport/MAIL_SENT': () => false,
 }, false);
+
+const isFetchingOptionsReducer: Reducer<boolean> = handleActions({
+  'mvj/leaseStatisticReport/FETCH_OPTIONS': () => true,
+  'mvj/leaseStatisticReport/RECEIVE_OPTIONS': () => false,
+  'mvj/leaseStatisticReport/OPTIONS_NOT_FOUND': () => false,
+}, false);
+
+const optionsReducer: Reducer<Attributes> = handleActions({
+  ['mvj/leaseStatisticReport/RECEIVE_OPTIONS']: (state: Object, {payload: options}: ReceiveOptionsAction) => {
+    return options;
+  },
+}, null);
 
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
@@ -96,6 +116,9 @@ export default combineReducers<Object, any>({
   isFetchingReports: isFetchingReportsReducer,
   reportData: reportDataReducer,
   isFetchingReportData: isFetchingReportDataReducer,
-  reportType: setReportTypeReducer,
+  reportOptions: setOptionsReducer,
+  payload: setPayloadReducer,
   isSendingMail: isSendingMailReducer,
+  isFetchingOptions: isFetchingOptionsReducer,
+  options: optionsReducer,
 });

@@ -1,7 +1,6 @@
 import type {Reports} from '$src/types';
+import get from 'lodash/get';
 import format from 'date-fns/format';
-
-import {LeaseInvoicingReportTypes} from '$src/leaseStatisticReport/enums';
 
 /**
  * Get report type options
@@ -45,24 +44,12 @@ export const getReportUrl = (reports: Reports, reportType: string): string => {
  * @param {string} invoiceState
  * @return {Object[]}
  */
-export const getPayload = (startDate: string, endDate: string, url: string, reportType: string, leaseType: string, invoiceState: string): Object => {
-  let query = `start_date=${format(startDate, 'yyyy-MM-dd')}&end_date=${format(endDate, 'yyyy-MM-dd')}`;
-  if(leaseType)
-    query += `&lease_type=${leaseType}`;
-  if (invoiceState)
-    query += `&invoice_state=${invoiceState}`;
-  if(reportType === LeaseInvoicingReportTypes.LEASE_COUNT || reportType === LeaseInvoicingReportTypes.LEASE_INVOICING_DISABLED)
-    return {
-      url: url,
-      report_type: reportType,
-      query: '',
-    };
-  else
-    return {
-      url: url,
-      report_type: reportType,
-      query: query,
-    };
+export const getPayload = (query: string, url: string, reportType: string): Object => {
+  return {
+    url: url,
+    report_type: reportType,
+    query: query,
+  };
 };
 
 /**
@@ -80,4 +67,63 @@ export const getInvoiceState = (state: string): string => {
     default:
       return state;
   }
+};
+
+/* 
+* Get fields
+* @param {object} options
+*/
+export const getFields = (options: Object): Array => {
+  return get(options, 'actions.GET');
+};
+
+/* 
+* Get Query parameters
+* @param {object} formValues
+*/
+export const getQueryParams = (formValues: Object): Array => {
+  let query = '';
+  if(formValues)
+    Object.entries(formValues).map(([key, value]) => {
+      if(key === 'start_date' || key === 'end_date'){
+        query += `${key}=${format(value, 'yyyy-MM-dd')}&`;
+      }
+      else 
+        query += `${key}=${value}&`;
+    });
+  return query.slice(0, -1);
+};
+
+/* 
+* format date string
+* @param {string} dateString
+*/
+export const formatDate = (dateString: string): string => {
+  return dateString.split('.').reverse().join('-');
+};
+
+/**
+ * Get outputfields
+ * @param {Object} options
+ * @return {Array[]}
+ */
+export const getOutputFields = (options: Object): Array<Object> => {
+  if(options)
+    return Object.entries(options.output_fields).map(([key, value]) => {
+      return {
+        key: key,
+        label: value.label,
+      };
+    });
+  else
+    return [];
+};
+
+/**
+ * Format type
+ * @param {Object} value
+ * @return {string}
+ */
+export const formatType = (value: Object): string => {
+  return get(value, 'type').replace('Model', '').replace('Field', '').replace('Null', '').toLowerCase();
 };

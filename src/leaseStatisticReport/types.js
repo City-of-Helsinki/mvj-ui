@@ -12,8 +12,11 @@ export type LeaseStatisticReportState = {
   isFetchingReports: boolean,
   reportData: Object,
   isFetchingReportData: boolean,
-  reportType: Object,
+  reportOptions: Object,
   isSendingMail: boolean,
+  options: Object,
+  isFetchingOptions: boolean,
+  payload: Object,
 };
 
 export type LeaseInvoicingConfirmationReport = ApiResponse;
@@ -38,8 +41,14 @@ export type FetchReportDataAction = Action<'mvj/leaseStatisticReport/FETCH_REPOR
 export type ReceiveReportDataAction = Action<'mvj/leaseStatisticReport/RECEIVE_REPORT_DATA', Object>;
 export type ReportDataNotFoundAction = Action<'mvj/leaseStatisticReport/REPORT_DATA_NOT_FOUND', void>;
 
-export type setReportTypeAction = Action<'mvj/leaseStatisticReport/SET_REPORT_TYPE', void>;
+export type SetOptionsAction = Action<'mvj/leaseStatisticReport/SET_REPORT_OPTIONS', void>;
+
+export type SetPayloadAction = Action<'mvj/leaseStatisticReport/SET_PAYLOAD', void>;
 
 export type SendReportToMailAction = Action<'mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL', void>;
 export type NoMailSentAction = Action<'mvj/leaseStatisticReport/NO_MAIL_SENT', void>;
 export type MailSentAction = Action<'mvj/leaseStatisticReport/MAIL_SENT', void>;
+
+export type FetchOptionsAction = Action<'mvj/leaseStatisticReport/FETCH_OPTIONS', void>;
+export type ReceiveOptionsAction = Action<'mvj/leaseStatisticReport/RECEIVE_OPTIONS', void>;
+export type OptionsNotFoundAction = Action<'mvj/leaseStatisticReport/OPTIONS_NOT_FOUND', void>;

@@ -23,5 +23,9 @@ export const fetchReportData = (payload: Object): Generator<any, any, any> => {
 };
 
 export const sendReportToMail = (payload: Object): Generator<any, any, any> => {
-  return callApi(new Request(`${payload.url}?start_year=${payload.start_year}&end_year=${payload.end_year}`));
+  return callApi(new Request(`${payload.url}?${payload.query}`));
+};
+
+export const fetchOptions = (payload: Object): Generator<any, any, any> => {
+  return callApi(new Request(payload, {method: 'OPTIONS'}));
 };

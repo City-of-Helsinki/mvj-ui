@@ -15,8 +15,10 @@ import {
   reportDataNotFound,
   mailSent,
   noMailSent,
+  receiveOptions,
+  optionsNotFound,
 } from './actions';
-import {fetchAttributes, fetchLeaseInvoicingConfirmationReportAttributes, fetchLeaseInvoicingConfrimationReports, fetchReports, fetchReportData, sendReportToMail} from './requests';
+import {fetchAttributes, fetchLeaseInvoicingConfirmationReportAttributes, fetchLeaseInvoicingConfrimationReports, fetchReports, fetchReportData, sendReportToMail, fetchOptions} from './requests';
 import {receiveError} from '../api/actions';
 import {displayUIMessage} from '$util/helpers';
 
@@ -61,7 +63,7 @@ function* fetchReportsSaga(): Generator<any, any, any> {
 }
 
 function* fetchReportDataSaga({payload}): Generator<any, any, any> {
-  // TODO ALSO WRITE SPEC
+
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchReportData, payload);
 
@@ -146,6 +148,26 @@ function* sendReportToMailSaga({payload: query}): Generator<any, any, any> {
   }
 }
 
+function* fetchOptionsSaga({payload}): Generator<any, any, any> {
+  // TODO ALSO WRITE SPEC
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchOptions, payload);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveOptions(bodyAsJson));
+        break;
+      default:
+        yield put(optionsNotFound());
+        break;
+    } 
+  } catch (error) {
+    console.error('Failed to fetch options with error "%s"', error);
+    yield put(optionsNotFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -155,6 +177,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES', fetchLeaseInvoicingConfirmationReportAttributesSaga);
       yield takeLatest('mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS', fetchLeaseInvoicingConfrimationReportsSaga);
       yield takeLatest('mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL', sendReportToMailSaga);
+      yield takeLatest('mvj/leaseStatisticReport/FETCH_OPTIONS', fetchOptionsSaga);
     }),
   ]);
 }
