@@ -22,6 +22,9 @@ import {
   sendReportToMail,
   noMailSent,
   mailSent,
+  fetchOptions,
+  receiveOptions,
+  optionsNotFound,
 } from './actions';
 import leaseStatisticReport from './reducer';
 
@@ -219,6 +222,31 @@ describe('Lease statistic', () => {
         const state = leaseStatisticReport({}, mailSent());
         expect(state).to.deep.equal(newState);
       });
+
+      it('should update isFetchingOptions flag to true by fetchOptions', () => {
+        const newState = {...defaultState, isFetchingOptions: true};
+
+        const state = leaseStatisticReport({}, fetchOptions());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingOptions flag to false by optionsNotFound', () => {
+        const newState = {...defaultState, isFetchingOptions: false};
+
+        let state: Object = leaseStatisticReport({}, fetchOptions());
+        state = leaseStatisticReport(state, optionsNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update options', () => {
+        const dummyOptions = {foo: 'bar'};
+
+        const newState = {...defaultState, options: dummyOptions};
+
+        const state = leaseStatisticReport({}, receiveOptions(dummyOptions));
+        expect(state).to.deep.equal(newState);
+      });
+
 
     });
   });

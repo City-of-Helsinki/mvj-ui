@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import {TableSortOrder} from '$src/enums';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -99,8 +100,17 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
         columns.push({
           key: field.key,
           text: field.label,
+          sortable: false,
           renderer: (area) => area
             ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{`${formatNumber(area)} m²`}</FormText> 
+            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
+        });
+      } else if(field.key === LeaseInvoicingReportPaths.LEASE_ID){
+        columns.push({
+          key: field.key,
+          text: field.label,
+          renderer: (identifier) => identifier
+            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{identifier}</FormText> 
             : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
         });
       } else if(field.key === LeaseInvoicingReportPaths.STATE){
@@ -114,10 +124,12 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
       } else if(field.key === LeaseInvoicingReportPaths.TOTAL_AMOUNT ||
         field.key === LeaseInvoicingReportPaths.BILLED_AMOUNT ||
         field.key === LeaseInvoicingReportPaths.OUTSTANDING_AMOUNT ||
+        field.key === LeaseInvoicingReportPaths.RENT ||
         field.key === LeaseInvoicingReportPaths.PAID_AMOUNT) {
         columns.push({
           key: field.key,
           text: field.label,
+          sortable: false,
           renderer: (amount) => amount
             ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{`${formatNumber(amount)} €`}</FormText> 
             : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
@@ -126,6 +138,7 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
         columns.push({
           key: field.key,
           text: field.label,
+          sortable: false,
         });
       }
     });
@@ -166,6 +179,9 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
           columns={columns}
           data={reportData}
           style={{marginBottom: 10}}
+          defaultSortKey='lease_id'
+          defaultSortOrder={TableSortOrder.ASCENDING}
+          sortable={true}
         />
       </Fragment>
     );

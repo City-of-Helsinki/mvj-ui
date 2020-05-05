@@ -71,6 +71,11 @@ function* fetchReportDataSaga({payload}): Generator<any, any, any> {
       case 200:
         yield put(receiveReportData(bodyAsJson));
         break;
+      case 400:
+        yield put(reportDataNotFound());
+        yield put(receiveReportData([]));
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
       default:
         yield put(reportDataNotFound());
         break;

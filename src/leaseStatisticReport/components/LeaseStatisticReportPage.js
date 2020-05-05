@@ -15,15 +15,20 @@ import {PermissionMissingTexts} from '$src/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {hasPermissions, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
-
+import {
+  getReportTypeOptions,
+} from '$src/leaseStatisticReport/helpers'; 
 import LeaseStatisticReportForm from './LeaseStatisticReportForm';
 import LeaseInvoicingConfirmationReport from './LeaseInvoicingConfirmationReport';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {Reports} from '$src/types';
 import GreenBox from '$components/content/GreenBox';
 import SubTitle from '$components/content/SubTitle';
 import {
-  getIsFetchingReportData,
+  getIsFetchingReportData, 
+  getPayload, 
+  getReports,
 } from '$src/leaseStatisticReport/selectors';
 import {
   LeaseStatisticReportTitles,
@@ -31,6 +36,9 @@ import {
 import {
   getReportData,
 } from '$src/leaseStatisticReport/selectors';
+import {
+  getLabelOfOption,
+} from '$util/helpers';
 
 type Props = {
   isFetchingUsersPermissions: boolean,
@@ -38,6 +46,8 @@ type Props = {
   receiveTopNavigationSettings: Function,
   usersPermissions: UsersPermissionsType,
   reportData: Object,
+  payload: Object,
+  reports: Reports,
 };
 
 type State = {
@@ -63,8 +73,15 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
   }
 
   render() {
-    const {isFetchingUsersPermissions, usersPermissions, reportData, isFetchingReportData} = this.props;
-
+    const {
+      isFetchingUsersPermissions, 
+      usersPermissions, 
+      reportData, 
+      isFetchingReportData,
+      payload,
+      reports,
+    } = this.props;
+    const reportTypeOptions = getReportTypeOptions(reports);
     if(isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(isEmpty(usersPermissions)) return null;
@@ -84,7 +101,7 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
           </GreenBox>
           {(!!reportData || isFetchingReportData) && <GreenBox className='with-top-margin'>
             <SubTitle style={{textTransform: 'uppercase'}} >
-              Vuokrauksen laskutustietojen tarkastusraportti
+              {getLabelOfOption(reportTypeOptions, payload.report_type)}
             </SubTitle>
             <LeaseInvoicingConfirmationReport/>
           </GreenBox>}
@@ -104,6 +121,8 @@ export default flowRight(
         usersPermissions: getUsersPermissions(state),
         reportData: getReportData(state),
         isFetchingReportData: getIsFetchingReportData(state),
+        payload: getPayload(state),
+        reports: getReports(state),
       };
     },
     {

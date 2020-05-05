@@ -1,7 +1,7 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {formValueSelector, getFormValues, reduxForm} from 'redux-form';
+import {formValueSelector, destroy, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
@@ -55,6 +55,7 @@ type Props = {
   options: Object,
   formValues: Object,
   isFetchingOptions: boolean,
+  destroy: Function,
 }
 
 type State = {
@@ -107,6 +108,13 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
     } = this.props;
     const url = getReportUrl(reports, value);
     fetchOptions(url);
+    this.resetAllOtherFields();
+  }
+
+  resetAllOtherFields = () => {
+    const {destroy} = this.props;
+    const formName = FormNames.LEASE_STATISTIC_REPORT;
+    destroy(formName);
   }
 
   render() {
@@ -130,7 +138,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
         <Row>
           <Column small={12} large={12}>
             <Row>
-              <Column large={2} medium={3} small={4}>
+              <Column large={3} medium={4} small={6}>
                 <Authorization allow={isFieldAllowedToEdit(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}>
                   <FormField
                     fieldAttributes={getFieldAttributes(leaseStatisticReportAttributes, LeaseStatisticReportPaths.START_DATE)}
@@ -149,7 +157,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
               {isFetchingOptions && <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>}
               {(fields && !isFetchingOptions) && Object.entries(fields).map(([key, value], index) => {
                 return (
-                  <Column large={2} medium={3} small={4} key={index}>
+                  <Column large={3} medium={4} small={6} key={index}>
                     <FormField
                       fieldAttributes={value}
                       overrideValues={{
@@ -164,7 +172,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
               {(reportType !== LeaseInvoicingReportTypes.RENT_FORECAST && fields && !isFetchingOptions) &&<Column small={3} style={{margin: '10px 0'}}>
                 <Button
                   className={ButtonColors.SUCCESS}
-                  disabled={isFetchingReportData}
+                  disabled={isFetchingReportData} // TODO: or required fields are empty
                   text='Luo raportti'
                   onClick={this.getReportData}
                 />
@@ -206,6 +214,7 @@ export default flowRight(
       sendReportToMail,
       fetchOptions,
       setPayload,
+      destroy,
     }
   ),
   reduxForm({

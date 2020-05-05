@@ -85,21 +85,13 @@ export const getQueryParams = (formValues: Object): Array => {
   let query = '';
   if(formValues)
     Object.entries(formValues).map(([key, value]) => {
-      if(key === 'start_date' || key === 'end_date'){
+      if(key.includes('date')){
         query += `${key}=${format(value, 'yyyy-MM-dd')}&`;
       }
       else 
         query += `${key}=${value}&`;
     });
   return query.slice(0, -1);
-};
-
-/* 
-* format date string
-* @param {string} dateString
-*/
-export const formatDate = (dateString: string): string => {
-  return dateString.split('.').reverse().join('-');
 };
 
 /**
