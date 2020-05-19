@@ -638,8 +638,10 @@ class LandUseContractPage extends Component<Props, State> {
               {label: 'Perustiedot', allow: true, isDirty: isBasicInformationFormDirty, hasError: isSaveClicked && !isBasicInformationFormValid},
               {label: 'Osapuolet', allow: true, isDirty: isLitigantsFormDirty, hasError: isSaveClicked && !isLitigantsFormValid},
               {label: 'Päätökset ja sopimukset', allow: true, isDirty: (isContractsFormDirty || isDecisionsFormDirty), hasError: isSaveClicked && (!isDecisionsFormValid || !isContractsFormValid)},
-              {label: 'Korvaukset ja laskutus', allow: true, isDirty: isCompensationsFormDirty || isInvoicesFormDirty, hasError: isSaveClicked && (!isCompensationsFormValid || !isInvoicesFormValid)},
+              {label: 'Korvaukset', allow: true, isDirty: isCompensationsFormDirty, hasError: isSaveClicked && !isCompensationsFormValid},
+              {label: 'Laskutus', allow: true, isDirty: isInvoicesFormDirty, hasError: isSaveClicked && !isInvoicesFormValid},
               {label: 'Kartta', allow: true},
+              {label: 'Valvottavat ehdot', allow: true},
             ]}
             onTabClick={(id) => this.handleTabClick(id)}
           />
@@ -704,7 +706,11 @@ class LandUseContractPage extends Component<Props, State> {
                   ? <Compensations />
                   : <CompensationsEdit />
                 }
+              </ContentContainer>
+            </TabPane>
 
+            <TabPane>
+              <ContentContainer>
                 <h2>Laskutus</h2>
                 <Divider />
                 {!isEditMode
@@ -717,6 +723,13 @@ class LandUseContractPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 <LandUseContractMap />
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <h2>Valvottavat ehdot</h2>
+                <Divider />
               </ContentContainer>
             </TabPane>
           </TabContent>

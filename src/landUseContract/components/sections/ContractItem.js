@@ -4,25 +4,31 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
-import ExternalLink from '$components/links/ExternalLink';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {FormNames, ViewModes} from '$src/enums';
-import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {formatDate, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
+import Warrants from './Warrants';
 
 type Props = {
+  attributes: Object,
   collapseState: boolean,
   contract: Object,
   receiveCollapseStates: Function,
   stateOptions: Array<Object>,
+  contractTypeOptions: Array<Object>,
+  decisionOptions: Array<Object>,
 }
 
 const ContractItem = ({
+  attributes,
   collapseState,
   contract,
   receiveCollapseStates,
   stateOptions,
+  contractTypeOptions,
+  decisionOptions,
 }: Props) => {
 
   const handleCollapseToggle = (val: boolean) => {
@@ -38,20 +44,20 @@ const ContractItem = ({
   return (
     <Collapse
       defaultOpen={collapseState !== undefined ? collapseState : true}
-      headerTitle={getLabelOfOption(stateOptions, contract.state) || '-'}
+      headerTitle={`${getLabelOfOption(contractTypeOptions, contract.contract_type) || '-'} ${contract.ed_contract_number}`}
       onToggle={handleCollapseToggle}
     >
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
-            title='Sopimuksen vaihe'
-            text={getLabelOfOption(stateOptions, contract.state) || '-'}
+            title='Sopimuksen tyyppi'
+            text={getLabelOfOption(contractTypeOptions, contract.contract_type) || '-'}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
-            title='Päätöspvm'
-            text={formatDate(contract.decision_date) || '-'}
+            title='Sopimuksen vaihe'
+            text={getLabelOfOption(stateOptions, contract.state) || '-'}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -68,23 +74,22 @@ const ContractItem = ({
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
-            title='Diaarinumero'
-            text={contract.reference_number
-              ? <ExternalLink
-                href={getReferenceNumberLink(contract.reference_number)}
-                text={contract.reference_number}
-              />
-              : '-'
-            }
-          />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
             title='Aluejärjestelyt'
             text={contract.area_arrengements ? 'Kyllä' : 'Ei'}
           />
         </Column>
+        <Column small={6} medium={4} large={2}>
+          <FormTitleAndText
+            title='Päätös'
+            text={getLabelOfOption(decisionOptions, contract.decision) || '-'}
+          />
+        </Column>
       </Row>
+      <Warrants
+        attributes={attributes}
+        warrants={contract.warrants}
+        decisionId={contract.id}
+      />
     </Collapse>
   );
 };

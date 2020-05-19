@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
+import {formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
@@ -31,6 +31,7 @@ type InvoicesProps = {
   isSaveClicked: boolean,
 }
 
+/* eslint-disable */ // TODO remove
 const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
@@ -150,6 +151,7 @@ class CompensationsEdit extends Component<Props> {
         <GreenBox>
           <Row>
             <Column small={12} large={6}>
+              <SubTitle>Maankäyttökorvaus</SubTitle>
               <WhiteBox>
                 <Row>
                   <Column small={6} medium={3} large={4}>
@@ -218,7 +220,7 @@ class CompensationsEdit extends Component<Props> {
                 <Divider />
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <FormText>Yhteensä</FormText>
+                    <FormText className='semibold'>Yhteensä</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
                     <FormText>{`${formatNumber(total)} €`}</FormText>
@@ -227,58 +229,95 @@ class CompensationsEdit extends Component<Props> {
               </WhiteBox>
             </Column>
           </Row>
+        </GreenBox>
+        <GreenBox className={'with-top-margin'}>
           <Row>
-            <Column small={6} medium={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'compensations.child.children.free_delivery_area')}
-                name='compensations.free_delivery_area'
-                unit='m²'
-                overrideValues={{
-                  label: 'Ilmaisluovutusala',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'compensations.child.children.free_delivery_amount')}
-                name='compensations.free_delivery_amount'
-                unit='€'
-                overrideValues={{
-                  label: 'Ilmaisluovutusarvo',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'compensations.child.children.additional_floor_area_apartment')}
-                name='compensations.additional_floor_area_apartment'
-                unit='k-m²'
-                overrideValues={{
-                  label: 'Lisäkerrosala asunto',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'compensations.child.children.additional_floor_area_company')}
-                name='compensations.additional_floor_area_company'
-                unit='k-m²'
-                overrideValues={{
-                  label: 'Lisäkerrosala yritys',
-                }}
-              />
+            <Column small={12} large={6}>
+              <SubTitle>Korvauksetta luovutettavat yleiset alueet</SubTitle>
+              <WhiteBox>
+                <Row>
+                  <Column small={6} medium={3} large={4}>
+                    <FormTextTitle title='Kaavayksikön käyttötarkoitus' />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormTextTitle title='Hankinta-arvo €' />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormTextTitle title='m²' />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={3} large={4}>
+                    <FormText>FormText>Katu (9901)</FormText>
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.street_acquisition_value')}
+                      invisibleLabel
+                      name='compensations.street_acquisition_value'
+                      unit='€'
+                    />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.street_area')}
+                      invisibleLabel
+                      name='compensations.street_area'
+                      unit='m²'
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={3} large={4}>
+                    <FormText>Puisto (9903)</FormText>
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.park_acquisition_value')}
+                      invisibleLabel
+                      name='compensations.park_acquisition_value'
+                      unit='€'
+                    />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.park_area')}
+                      invisibleLabel
+                      name='compensations.park_area'
+                      unit='m²'
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={3} large={4}>
+                    <FormText>Muut</FormText>
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.other_acquisition_value')}
+                      invisibleLabel
+                      name='compensations.other_acquisition_value'
+                      unit='€'
+                    />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.other_area')}
+                      invisibleLabel
+                      name='compensations.other_area'
+                      unit='m²'
+                    />
+                  </Column>
+                </Row>
+              </WhiteBox>
             </Column>
           </Row>
-          <FieldArray
-            attributes={attributes}
-            component={renderInvoices}
-            isSaveClicked={isSaveClicked}
-            name="compensations.invoices"
-          />
         </GreenBox>
       </form>
     );
