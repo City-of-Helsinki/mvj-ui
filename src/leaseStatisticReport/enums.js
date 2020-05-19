@@ -127,4 +127,5 @@ export const LeaseInvoicingReportTypes = {
   LEASE_COUNT: 'lease_count',
   LEASE_INVOICING_DISABLED: 'lease_invoicing_disabled',
   RENT_FORECAST: 'rent_forecast',
+  LEASE_STATISTIC: 'lease_statistic',
 };

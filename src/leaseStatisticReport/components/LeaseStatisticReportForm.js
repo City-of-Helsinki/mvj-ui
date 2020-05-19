@@ -169,7 +169,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
                   </Column>
                 );
               })}
-              {(reportType !== LeaseInvoicingReportTypes.RENT_FORECAST && fields && !isFetchingOptions) &&<Column small={3} style={{margin: '10px 0'}}>
+              {((reportType !== LeaseInvoicingReportTypes.RENT_FORECAST && reportType !== LeaseInvoicingReportTypes.LEASE_STATISTIC) && fields && !isFetchingOptions) &&<Column small={3} style={{margin: '10px 0'}}>
                 <Button
                   className={ButtonColors.SUCCESS}
                   disabled={isFetchingReportData} // TODO: or required fields are empty
@@ -177,7 +177,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
                   onClick={this.getReportData}
                 />
               </Column>}
-              {reportType === LeaseInvoicingReportTypes.RENT_FORECAST && <Column small={3} style={{margin: '10px 0'}}>
+              {(reportType === LeaseInvoicingReportTypes.RENT_FORECAST || reportType ===  LeaseInvoicingReportTypes.LEASE_STATISTIC)&& <Column small={3} style={{margin: '10px 0'}}>
                 <Button
                   className={ButtonColors.SUCCESS}
                   disabled={isSendingMail}

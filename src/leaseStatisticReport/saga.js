@@ -143,6 +143,7 @@ function* sendReportToMailSaga({payload: query}): Generator<any, any, any> {
         break;
       case 404:
       case 500:
+        yield put(receiveError(new SubmissionError({_error: 'Server error 500', ...bodyAsJson})));
         yield put(noMailSent());
         break;
     }
