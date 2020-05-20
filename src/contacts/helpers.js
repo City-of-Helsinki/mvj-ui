@@ -20,6 +20,24 @@ export const getContactFullName = (contact: ?Object): string => {
 };
 
 /**
+ * Get Contact business id field errors
+ * @param {string} businessId
+ * @returns {boolean}
+ */
+export const getContactBusinessIdFieldError = (businessId: ?string): boolean => {
+  return (businessId && businessId.length === 9) ? false : true;   
+};
+
+/**
+ * Get Contact business id field errors
+ * @param {Object} contact
+ * @returns {boolean}
+ */
+export const getContactBusinessIdError = (contact: Object): boolean => {
+  return ((contact.business_id && contact.business_id.length === 9)) ? false : true;
+};
+
+/**
  * Get contact content
  * @param {Object} contact
  * @returns {Object}
