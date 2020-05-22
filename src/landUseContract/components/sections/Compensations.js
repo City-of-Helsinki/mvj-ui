@@ -156,56 +156,56 @@ const Compensations = ({currentLandUseContract}: Props) => {
         <Row>
           <Column small={12}>
             <SubTitle>Laskelmassa käytetyt yksikköhinnat</SubTitle>
+            <WhiteBox>
+              <Row>
+                <Column large={2}>
+                  <FormTextTitle title='Kaavayksikön käyttötarkoitus' />
+                </Column>
+                <Column large={2}>
+                  <FormTextTitle title='Hallintamuoto' />
+                </Column>
+                <Column large={1}>
+                  <FormTextTitle title='Suojeltu' />
+                </Column>
+                <Column large={1}>
+                  <FormTextTitle title='k-m²' />
+                </Column>
+                <Column large={1}>
+                  <FormTextTitle title='Yksikköhinta €' />
+                </Column>
+                <Column large={1}>
+                  <FormTextTitle title='Alennus %' />
+                </Column>
+                <Column large={1}>
+                  <FormTextTitle title='Käytetty hinta' />
+                </Column>
+              </Row>
+              {
+                compensations.unit_prices_used_in_calculation && compensations.unit_prices_used_in_calculation.map((calculation, index) => <Row key={index}>
+                  <Column large={2}>
+                    <FormText>{calculation.usage ? calculation.usage : '-'}</FormText>
+                  </Column>
+                  <Column large={2}>
+                    <FormText>{calculation.management ? calculation.management : '-'}</FormText>
+                  </Column>
+                  <Column large={1}>
+                    <FormText>{calculation.protected ? calculation.protected : '-'}</FormText>
+                  </Column>
+                  <Column large={1}>
+                    <FormText>{calculation.area ? `${formatNumber(calculation.area)} m²` : '-'}</FormText>
+                  </Column>
+                  <Column large={1}>
+                    <FormText>{calculation.unit_value ? `${formatNumber(calculation.unit_value)} €` : '-'}</FormText>
+                  </Column>
+                  <Column large={1}>
+                    <FormText>{calculation.discount ? `${formatNumber(calculation.discount)} €` : '-'}</FormText>
+                  </Column>
+                  <Column large={1}>
+                    <FormText>{calculation.used_price ? `${formatNumber(calculation.used_price)} €` : '-'}</FormText>
+                  </Column>
+                </Row>)}
+            </WhiteBox>
           </Column>
-          <WhiteBox small={12}>
-            <Row>
-              <Column small={6} medium={3} large={4}>
-                <FormTextTitle title='Kaavayksikön käyttötarkoitus' />
-              </Column>
-              <Column small={6} medium={3} large={4}>
-                <FormTextTitle title='Hallintamuoto' />
-              </Column>
-              <Column small={6} medium={3} large={4}>
-                <FormTextTitle title='Suojeltu' />
-              </Column>
-              <Column small={6} medium={3} large={4}>
-                <FormTextTitle title='k-m²' />
-              </Column>
-              <Column small={6} medium={3} large={4}>
-                <FormTextTitle title='Yksikköhinta €' />
-              </Column>
-              <Column small={6} medium={3} large={4}>
-                <FormTextTitle title='Alennus %' />
-              </Column>
-              <Column small={6} medium={3} large={4}>
-                <FormTextTitle title='Käytetty hinta' />
-              </Column>
-            </Row>
-            {
-              compensations.unit_prices_used_in_calculation && compensations.unit_prices_used_in_calculation.map((calculation, index) => <Row key={index}>
-                <Column small={6} medium={3} large={4}>
-                  <FormText>{calculation.usage ? calculation.usage : '-'}</FormText>
-                </Column>
-                <Column small={6} medium={3} large={4}>
-                  <FormText>{calculation.management ? calculation.management : '-'}</FormText>
-                </Column>
-                <Column small={6} medium={3} large={4}>
-                  <FormText>{calculation.protected ? calculation.protected : '-'}</FormText>
-                </Column>
-                <Column small={6} medium={3} large={4}>
-                  <FormText>{calculation.area ? `${formatNumber(calculation.area)} m²` : '-'}</FormText>
-                </Column>
-                <Column small={6} medium={3} large={4}>
-                  <FormText>{calculation.unit_value ? `${formatNumber(calculation.unit_value)} €` : '-'}</FormText>
-                </Column>
-                <Column small={6} medium={3} large={4}>
-                  <FormText>{calculation.discount ? `${formatNumber(calculation.discount)} €` : '-'}</FormText>
-                </Column>
-                <Column small={6} medium={3} large={4}>
-                  <FormText>{calculation.used_price ? `${formatNumber(calculation.used_price)} €` : '-'}</FormText>
-                </Column>
-              </Row>)}
-          </WhiteBox>
         </Row>
       </GreenBox>
     </Fragment>
