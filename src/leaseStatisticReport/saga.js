@@ -155,7 +155,6 @@ function* sendReportToMailSaga({payload: query}): Generator<any, any, any> {
 }
 
 function* fetchOptionsSaga({payload}): Generator<any, any, any> {
-  // TODO ALSO WRITE SPEC
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchOptions, payload);
 
