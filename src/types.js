@@ -13,6 +13,8 @@ export type Selector<Value, Props> = (state: RootState, props: Props) => Value;
 
 export type Attributes = ?Object;
 
+export type Reports = ?Object;
+
 export type Methods = ?Object;
 
 export type ApiResponse = ?{

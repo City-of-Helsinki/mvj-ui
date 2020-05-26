@@ -4,12 +4,17 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
 import {fetchAttributes as fetchLeaseStatisticReportAttributes} from '$src/leaseStatisticReport/actions';
+import {fetchReports} from '$src/leaseStatisticReport/actions';
 import {
   getAttributes as getLeaseStatisticReportAttributes,
   getIsFetchingAttributes as getIsFetchingLeaseStatisticReportAttributes,
+  getReports,
+  getIsFetchingReports,
+  getIsFetchingReportData,
+  getIsSendingMail,
 } from '$src/leaseStatisticReport/selectors';
 
-import type {Attributes, Methods} from '$src/types';
+import type {Attributes, Methods, Reports} from '$src/types';
 
 function LeaseStatisticReportTabAttributes(WrappedComponent: any) {
   type Props = {
@@ -17,6 +22,11 @@ function LeaseStatisticReportTabAttributes(WrappedComponent: any) {
     LeaseStatisticReportMethods: Methods,
     fetchLeaseStatisticReportAttributes: Function,
     isFetchingLeaseStatisticReportAttributes: boolean,
+    reports: Reports,
+    fetchReports: Function,
+    isFetchingReports: boolean,
+    isFetchingReportData: boolean,
+    isSendingMail: boolean,
   }
 
   return class LeaseStatisticReportTabAttributes extends PureComponent<Props> {
@@ -26,10 +36,16 @@ function LeaseStatisticReportTabAttributes(WrappedComponent: any) {
         LeaseStatisticReportMethods,
         fetchLeaseStatisticReportAttributes,
         isFetchingLeaseStatisticReportAttributes,
+        reports,
+        fetchReports,
+        isFetchingReports,
       } = this.props;
 
       if(!isFetchingLeaseStatisticReportAttributes && !LeaseStatisticReportAttributes && !LeaseStatisticReportMethods) {
         fetchLeaseStatisticReportAttributes();
+      }
+      if(!isFetchingReports && !reports) {
+        fetchReports();
       }
     }
 
@@ -45,10 +61,15 @@ const withLeaseStatisticReportAttributes = flowRight(
       return{
         LeaseStatisticReportAttributes: getLeaseStatisticReportAttributes(state),
         isFetchingLeaseStatisticReportAttributes: getIsFetchingLeaseStatisticReportAttributes(state),
+        reports: getReports(state),
+        isFetchingReports: getIsFetchingReports(state),
+        isFetchingReportData: getIsFetchingReportData(state),
+        isSendingMail: getIsSendingMail(state),
       };
     },
     {
       fetchLeaseStatisticReportAttributes,
+      fetchReports,
     }
   ),
   LeaseStatisticReportTabAttributes,

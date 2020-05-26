@@ -4,27 +4,31 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
+
+import {TableSortOrder} from '$src/enums';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
-import FileDownloadButton from '$components/file/FileDownloadButton';
 import SortableTable from '$components/table/SortableTable';
 import FormText from '$components/form/FormText';
-import ExternalLink from '$components/links/ExternalLink';
 import ExcelLink from '$components/excel/ExcelLink';
 import {
   getApiResponseResults,
   formatDate,
+  formatNumber,
   hasPermissions,
+  getLabelOfOption,
 } from '$util/helpers';
 import {
   LeaseInvoicingReportPaths,
-  LeaseInvoicingReportTitles,
 } from '$src/leaseStatisticReport/enums';
-import data from './dummyDataLeaseInvoicingReport';
-import {getIsFetchingLeaseInvoicingConfirmationReport, getLeaseInvoicingConfirmationReport} from '$src/leaseStatisticReport/selectors';
-import {fetchLeaseInvoicingConfrimationReports} from '$src/leaseStatisticReport/actions';
-import type {Attributes} from '$src/types';
+import {
+  getOutputFields,
+  getInvoiceState,
+  getReportTypeOptions,
+} from '$src/leaseStatisticReport/helpers'; 
+import {getIsFetchingLeaseInvoicingConfirmationReport, getLeaseInvoicingConfirmationReport, getPayload} from '$src/leaseStatisticReport/selectors';
+import type {Attributes, Reports} from '$src/types';
 import type {LeaseInvoicingConfirmationReport as LeaseInvoicingConfirmationReportsType} from '$src/leaseStatisticReport/types';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {UsersPermissions} from '$src/usersPermissions/enums';
@@ -39,6 +43,11 @@ type Props = {
   isFetchingLeaseInvoicingConfirmationReport: boolean,
   leaseInvoicingConfirmationReportData: LeaseInvoicingConfirmationReportsType,
   usersPermissions: UsersPermissionsType,
+  isFetchingReportData: boolean,
+  reportData: Object,
+  reportOptions: Object,
+  payload: Object,
+  reports: Reports,
 }
 
 type State = {
@@ -53,9 +62,7 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    const {fetchLeaseInvoicingConfrimationReports} = this.props;
 
-    fetchLeaseInvoicingConfrimationReports({limit: 10000});
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -70,43 +77,70 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
   }
 
   getColumns = () => {
+    const {reportOptions} = this.props;
+
     const columns = [];
-
-    columns.push({
-      key: LeaseInvoicingReportPaths.TYPE,
-      text: LeaseInvoicingReportTitles.TYPE,
-    });
-  
-    columns.push({
-      key: LeaseInvoicingReportPaths.LEASE_ID,
-      text: LeaseInvoicingReportTitles.LEASE_ID,
-      renderer: (id) => id 
-        ? <ExternalLink href={''} text={id}/>
-        : null,
-    });
-
-    columns.push({
-      key: LeaseInvoicingReportPaths.START_DATE,
-      text: LeaseInvoicingReportTitles.START_DATE,
-      renderer: (date) => date
-        ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{formatDate(date, 'dd.MM.yyyy')}</FormText> 
-        : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
-    });
-
-    columns.push({
-      key: LeaseInvoicingReportPaths.END_DATE,
-      text: LeaseInvoicingReportTitles.END_DATE,
-      renderer: (date) => date
-        ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{formatDate(date, 'dd.MM.yyyy')}</FormText> 
-        : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
-    });
-
-    columns.push({
-      key: LeaseInvoicingReportPaths.ERROR_MESSAGE,
-      text: LeaseInvoicingReportTitles.ERROR_MESSAGE,
-      renderer: (error) => error
-        ? <FormText className='alert no-margin' style={{whiteSpace: 'nowrap'}}>{error}</FormText> 
-        : <FormText className='alert no-margin' style={{whiteSpace: 'nowrap'}}></FormText>,
+    const outputFields = getOutputFields(reportOptions);
+    outputFields.map(field => {
+      if(field.key === LeaseInvoicingReportPaths.SUPERVISION_DATE ||
+         field.key === LeaseInvoicingReportPaths.START_DATE ||
+         field.key === LeaseInvoicingReportPaths.END_DATE || 
+         field.key === LeaseInvoicingReportPaths.PAID_DATE || 
+         field.key === LeaseInvoicingReportPaths.DUE_DATE || 
+         field.key === LeaseInvoicingReportPaths.RETURNED_DATE || 
+         field.key === LeaseInvoicingReportPaths.SEND_DATE){
+        columns.push({
+          key: field.key,
+          text: field.label,
+          renderer: (date) => date
+            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{formatDate(date, 'dd.MM.yyyy')}</FormText> 
+            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
+        });
+      } else if (field.key === LeaseInvoicingReportPaths.AREA) {
+        columns.push({
+          key: field.key,
+          text: field.label,
+          sortable: false,
+          renderer: (area) => area
+            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{`${formatNumber(area)} m²`}</FormText> 
+            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
+        });
+      } else if(field.key === LeaseInvoicingReportPaths.LEASE_ID){
+        columns.push({
+          key: field.key,
+          text: field.label,
+          renderer: (identifier) => identifier
+            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{identifier}</FormText> 
+            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
+        });
+      } else if(field.key === LeaseInvoicingReportPaths.STATE){
+        columns.push({
+          key: field.key,
+          text: field.label,
+          renderer: (state) => state
+            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{getInvoiceState(state)}</FormText> 
+            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
+        });
+      } else if(field.key === LeaseInvoicingReportPaths.TOTAL_AMOUNT ||
+        field.key === LeaseInvoicingReportPaths.BILLED_AMOUNT ||
+        field.key === LeaseInvoicingReportPaths.OUTSTANDING_AMOUNT ||
+        field.key === LeaseInvoicingReportPaths.RENT ||
+        field.key === LeaseInvoicingReportPaths.PAID_AMOUNT) {
+        columns.push({
+          key: field.key,
+          text: field.label,
+          sortable: false,
+          renderer: (amount) => amount
+            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{`${formatNumber(amount)} €`}</FormText> 
+            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
+        });
+      } else {
+        columns.push({
+          key: field.key,
+          text: field.label,
+          sortable: false,
+        });
+      }
     });
 
     return columns;
@@ -114,36 +148,40 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
 
   render() {
     const {
-      isFetchingLeaseInvoicingConfirmationReportAttributes, 
-      isFetchingLeaseInvoicingConfirmationReport,
       usersPermissions,
+      isFetchingReportData,
+      reportData,
+      payload,
+      reports,
     } = this.props;
 
     const dev = false;
     const columns = this.getColumns();
-    
-    if(isFetchingLeaseInvoicingConfirmationReportAttributes || isFetchingLeaseInvoicingConfirmationReport) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
+    const reportTypeOptions = getReportTypeOptions(reports);
+
+    if(isFetchingReportData) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
     if(!hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE_INVOICING_CONFIRMATION_REPORT) && dev) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
-
     return(
       <Fragment>
         <Row>
           <Column className={''} style={{margin: '0 0 10px 0'}}>
-            <FileDownloadButton
-              disabled={true}
-              label='Luo raportti'
-              payload={{
-              }}
-              url={''} 
-            />
           </Column>
-          <ExcelLink href={''} text={'VIE EXCELIIN'}/>
+          {payload && <ExcelLink
+            fileName='Raportti'
+            identifier={getLabelOfOption(reportTypeOptions, payload.report_type)}
+            url={payload.url}
+            query={payload.query}
+            label='VIE EXCELIIN'
+          />}
         </Row>
         <SortableTable
           columns={columns}
-          data={data}
+          data={reportData}
           style={{marginBottom: 10}}
+          defaultSortKey='lease_id'
+          defaultSortOrder={TableSortOrder.ASCENDING}
+          sortable={true}
         />
       </Fragment>
     );
@@ -158,10 +196,8 @@ export default flowRight(
         isFetchingLeaseInvoicingConfirmationReport: getIsFetchingLeaseInvoicingConfirmationReport(state),
         leaseInvoicingConfirmationReportData: getLeaseInvoicingConfirmationReport(state),
         usersPermissions: getUsersPermissions(state),
+        payload: getPayload(state),
       };
     },
-    {
-      fetchLeaseInvoicingConfrimationReports,
-    }
   ),
 )(LeaseInvoicingConfirmationReport);

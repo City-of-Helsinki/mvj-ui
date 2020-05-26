@@ -5,29 +5,19 @@ import flowRight from 'lodash/flowRight';
 
 import {fetchLeaseInvoicingConfirmationReportAttributes} from '$src/leaseStatisticReport/actions';
 import {
-  getLeaseInvoicingConfirmationReportAttributes,
-  getIsFetchingLeaseInvoicingConfirmationReportAttributes,
+  getReportData,
+  getIsFetchingReportData,
+  getReportOptions,
+  getReports,
 } from '$src/leaseStatisticReport/selectors';
 
-import type {Attributes} from '$src/types';
-
 function LeaseInvoicingConfirmationReportAttributes(WrappedComponent: any) {
+  
   type Props = {
-    leaseInvoicingConfirmationReportAttributes: Attributes,
-    fetchLeaseInvoicingConfirmationReportAttributes: Function,
-    isFetchingLeaseInvoicingConfirmationReportAttributes: boolean,
   }
 
   return class LeaseInvoicingConfirmationReportAttributes extends PureComponent<Props> {
     componentDidMount() {
-      const {
-        isFetchingLeaseInvoicingConfirmationReportAttributes,
-        leaseInvoicingConfirmationReportAttributes,
-        fetchLeaseInvoicingConfirmationReportAttributes,
-      } = this.props;
-      if(!isFetchingLeaseInvoicingConfirmationReportAttributes && !leaseInvoicingConfirmationReportAttributes) {
-        fetchLeaseInvoicingConfirmationReportAttributes();
-      }
     }
 
     render() {
@@ -40,8 +30,10 @@ const withLeaseInvoicingConfirmationReportAttributes = flowRight(
   connect(
     (state) => {
       return{
-        leaseInvoicingConfirmationReportAttributes: getLeaseInvoicingConfirmationReportAttributes(state),
-        isFetchingLeaseInvoicingConfirmationReportAttributes: getIsFetchingLeaseInvoicingConfirmationReportAttributes(state),
+        reportData: getReportData(state),
+        isFetchingReportData: getIsFetchingReportData(state),
+        reportOptions: getReportOptions(state),
+        reports: getReports(state),
       };
     },
     {
