@@ -51,6 +51,10 @@ function* fetchReportsSaga(): Generator<any, any, any> {
       case 200:
         yield put(receiveReports(bodyAsJson));
         break;
+      case 403:
+        yield put(receiveError(new SubmissionError({_error: 'Server error 403', ...bodyAsJson})));
+        yield put(reportsNotFound());
+        break;
       default:
         yield put(reportsNotFound());
         break;
@@ -139,6 +143,10 @@ function* sendReportToMailSaga({payload: query}): Generator<any, any, any> {
         break;
       case 400:
         yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        yield put(noMailSent());
+        break;
+      case 403:
+        yield put(receiveError(new SubmissionError({_error: 'Server error 403', ...bodyAsJson})));
         yield put(noMailSent());
         break;
       case 404:
