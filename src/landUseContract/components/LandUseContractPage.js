@@ -20,8 +20,9 @@ import Decisions from './sections/Decisions';
 import DecisionsEdit from './sections/DecisionsEdit';
 import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
-import Invoices from './sections/Invoices';
-import InvoicesEdit from './sections/InvoicesEdit';
+import InvoicesR from './sections/InvoicesR';
+// import Invoices from './sections/Invoices';
+// import InvoicesEdit from './sections/InvoicesEdit';
 import LandUseContractMap from './sections/LandUseContractMap';
 import Litigants from './sections/Litigants';
 import LitigantsEdit from './sections/LitigantsEdit';
@@ -711,12 +712,13 @@ class LandUseContractPage extends Component<Props, State> {
 
             <TabPane>
               <ContentContainer>
-                <h2>Laskutus</h2>
+                <InvoicesR />
+                {/* <h2>Laskutus</h2>
                 <Divider />
                 {!isEditMode
                   ? <Invoices />
                   : <InvoicesEdit />
-                }
+                } */}
               </ContentContainer>
             </TabPane>
 
