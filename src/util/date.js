@@ -183,6 +183,8 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
   items.forEach((item) => {
     let isAdded = false;
     for(let i = dateRanges.length - 1; i >= 0; i--) {
+      if(i>10)
+        return;
       if(isDateRangesCollapsing({start_date: get(item, startDatePath), end_date: get(item, endDatePath)}, dateRanges[i])) {
         const splittedRanges = splitDateRanges({start_date: get(item, startDatePath), end_date: get(item, endDatePath)}, dateRanges[i]);
 
