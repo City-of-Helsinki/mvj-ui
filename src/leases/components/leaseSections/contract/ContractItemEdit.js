@@ -26,6 +26,8 @@ import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates, fetchLeasesForContractNumber} from '$src/leases/actions';
 import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {
   LeaseContractChangesFieldPaths,
   LeaseContractChangesFieldTitles,
@@ -35,7 +37,7 @@ import {
   LeaseContractsFieldTitles,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getDecisionById} from '$src/leases/helpers';
+import {getDecisionById, getLeasesWithContractNumber} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
@@ -55,6 +57,8 @@ import {
   getLeasesForContractNumbers,
 } from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import WarningContainer from '$components/content/WarningContainer';
+import WarningField from '$components/form/WarningField';
 
 import type {Attributes} from '$src/types';
 import type {Lease, LeaseList} from '$src/leases/types';
@@ -386,10 +390,11 @@ class ContractItemEdit extends Component<Props> {
     const {
       contractNumber,
       fetchLeasesForContractNumber,
+      contract,
     } = this.props;
 
-    if(prevProps.contractNumber !== contractNumber) {
-      fetchLeasesForContractNumber(contractNumber);
+    if(contractNumber && (prevProps.contractNumber !== contractNumber) && (contractNumber !== contract.contract_number)) {
+      fetchLeasesForContractNumber({contract_number: contractNumber});
     }
   }
 
@@ -413,6 +418,7 @@ class ContractItemEdit extends Component<Props> {
       contract,
       isFetchingLeasesForContractNumbers,
       leasesForContractNumbers,
+      contractNumber,
     } = this.props;
     const getContractById = (id: number) => id ? savedContracts.find((decision) => decision.id === id) : {};
 
@@ -466,8 +472,8 @@ class ContractItemEdit extends Component<Props> {
       contractErrors = get(errors, field),
       savedContract = getContractById(contractId);
   
-    console.log(isFetchingLeasesForContractNumbers, leasesForContractNumbers);
-  
+    const leasesWithContractNumber = getLeasesWithContractNumber(leasesForContractNumbers);
+
     return (
       <Collapse
         defaultOpen={contractCollapseState !== undefined ? contractCollapseState : true}
@@ -503,8 +509,19 @@ class ContractItemEdit extends Component<Props> {
                 />
               </Authorization>
             </Column>
-            <Column small={6} medium={4} large={2}>
+            <Column small={6} medium={4} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
+                {isFetchingLeasesForContractNumbers &&
+                  <LoaderWrapper className='contractnumber-fetch-wrapper'>
+                    <Loader isLoading={isFetchingLeasesForContractNumbers}/>
+                  </LoaderWrapper>
+                }
+                {(contractNumber && !isFetchingLeasesForContractNumbers && leasesWithContractNumber && (contractNumber !== contract.contract_number)) && <WarningContainer>
+                  <WarningField
+                    meta={{warning: 'Sopimusnumero käytössä!'}}
+                    showWarning={true}
+                  />
+                </WarningContainer>}
                 <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}
