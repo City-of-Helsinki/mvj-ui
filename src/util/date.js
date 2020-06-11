@@ -38,9 +38,9 @@ export const getCurrentYear = () => new Date().getFullYear().toString();
  */
 export const sortByStartAndEndDateAsc = (a: Object, b: Object, startDatePath?: string = 'start_date', endDatePath?: string = 'end_date') => {
   const startA = get(a, startDatePath) || '0000-01-01',
-    endA = get(a, endDatePath) || '9999-31-12',
+    endA = get(a, endDatePath) || '9999-12-31',
     startB = get(b, startDatePath) || '0000-01-01',
-    endB = get(b, endDatePath) || '9999-31-12';
+    endB = get(b, endDatePath) || '9999-12-31';
 
   if(startA > startB) return 1;
   if(startA < startB) return -1;
@@ -59,9 +59,9 @@ export const sortByStartAndEndDateAsc = (a: Object, b: Object, startDatePath?: s
  */
 export const sortByStartAndEndDateDesc = (a: Object, b: Object, startDatePath?: string = 'start_date', endDatePath?: string = 'end_date') => {
   const startA = get(a, startDatePath) || '0000-01-01',
-    endA = get(a, endDatePath) || '9999-31-12',
+    endA = get(a, endDatePath) || '9999-12-31',
     startB = get(b, startDatePath) || '0000-01-01',
-    endB = get(b, endDatePath) || '9999-31-12';
+    endB = get(b, endDatePath) || '9999-12-31';
 
   if(startA > startB) return -1;
   if(startA < startB) return 1;
@@ -79,9 +79,9 @@ export const sortByStartAndEndDateDesc = (a: Object, b: Object, startDatePath?: 
  */
 export  const isDateRangesCollapsing = (a: Object, b: Object): boolean => {
   const startA = a.start_date || '0000-01-01',
-    endA = a.end_date || '9999-31-12',
+    endA = a.end_date || '9999-12-31',
     startB = b.start_date || '0000-01-01',
-    endB = b.end_date || '9999-31-12';
+    endB = b.end_date || '9999-12-31';
 
   if(startA < startB && endA < startB) return false;
   if(startB < startA && endB < startA) return false;
@@ -99,9 +99,9 @@ export  const splitDateRanges = (a: Object, b: Object): Array<Object> => {
   const item0 = sortedDateRanges[0];
   const item1 = sortedDateRanges[1];
   const start0 = item0.start_date || '0000-01-01',
-    end0 = item0.end_date || '9999-31-12',
+    end0 = item0.end_date || '9999-12-31',
     start1 = item1.start_date || '0000-01-01',
-    end1 = item1.end_date || '9999-31-12';
+    end1 = item1.end_date || '9999-12-31';
   const dateRanges = [];
 
   if(start0 === start1) {
@@ -183,11 +183,11 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
   items.forEach((item) => {
     let isAdded = false;
     for(let i = dateRanges.length - 1; i >= 0; i--) {
-      if(i>10)
+      if(i > 10)
         return;
       if(isDateRangesCollapsing({start_date: get(item, startDatePath), end_date: get(item, endDatePath)}, dateRanges[i])) {
         const splittedRanges = splitDateRanges({start_date: get(item, startDatePath), end_date: get(item, endDatePath)}, dateRanges[i]);
-
+        
         dateRanges.splice(i, 1);
         dateRanges.push(...splittedRanges);
         isAdded = true;
@@ -201,7 +201,7 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
       });
     }
   });
-
+  
   // Filter out all collapsing date ranges until all date ranges are separate
   let valid = false;
   let loopCount = 0;
