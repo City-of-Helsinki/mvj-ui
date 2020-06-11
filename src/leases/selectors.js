@@ -78,3 +78,9 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: Object, fo
 export const getCollapseStateByKey: Selector<?Object, string> = (state: RootState, key: string): ?Object => {
   return get(state.lease.collapseStates, key);
 };
+
+export const getLeasesForContractNumbers: Selector<LeaseList, void> = (state: RootState): LeaseList =>
+  state.lease.leasesForContractNumbers;
+
+export const getIsFetchingLeasesForContractNumbers: Selector<boolean, void> = (state: RootState): boolean =>
+  state.lease.isFetchingLeasesForContractNumbers;

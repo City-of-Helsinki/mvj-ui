@@ -20,6 +20,7 @@ import {
   receiveLeasesByBBox,
   receiveSingleLease,
   receiveLeaseById,
+  receiveLeasesForContractNumbers,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen} from '$src/invoices/actions';
@@ -522,6 +523,26 @@ function* copyDecisionToLeasesSaga({payload}): Generator<any, any, any> {
   }
 }
 
+function* fetchLeasesForContractNumbersSaga({payload: query}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases, query);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLeasesForContractNumbers(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch leases with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -544,6 +565,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
       yield takeLatest('mvj/leases/COPY_AREAS_TO_CONTRACT', copyAreasToContractSaga);
       yield takeLatest('mvj/leases/COPY_DECISION_TO_LEASES', copyDecisionToLeasesSaga);
+      yield takeLatest('mvj/leases/FETCH_LEASES_FOR_CONTRACT_NUMBERS', fetchLeasesForContractNumbersSaga);
     }),
   ]);
 }
