@@ -40,6 +40,8 @@ import {
   showEditMode,
   startInvoicing,
   stopInvoicing,
+  fetchLeasesForContractNumber,
+  receiveLeasesForContractNumbers,
 } from './actions';
 import leasesReducer from './reducer';
 
@@ -72,6 +74,8 @@ const defaultState: LeaseState = {
   list: null,
   listByBBox: null,
   methods: null,
+  leasesForContractNumbers: null,
+  isFetchingLeasesForContractNumbers: false,
 };
 
 // $FlowFixMe
@@ -429,6 +433,27 @@ describe('Leases', () => {
         const newState = {...defaultState};
         const state = leasesReducer({}, createCharge({data: {}, leaseId: 1}));
 
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingLeasesForContractNumbers flag to true when fetching leases for contract numbers', () => {
+        const newState = {...defaultState, isFetchingLeasesForContractNumbers: true};
+
+        const state = leasesReducer({}, fetchLeasesForContractNumber(''));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update leasesForContractNumbers', () => {
+        const dummyLeaseList = {
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        };
+        const newState = {...defaultState};
+        newState.leasesForContractNumbers = dummyLeaseList;
+
+        const state = leasesReducer({}, receiveLeasesForContractNumbers(dummyLeaseList));
         expect(state).to.deep.equal(newState);
       });
 
