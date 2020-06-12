@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/City-of-Helsinki/mvj-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/City-of-Helsinki/mvj-ui)
 
 # MVJ UI 
-City of Helsinki ground rent system UI
+City of Helsinki ground rental system UI
 
 Based on [React Boilerplate](https://github.com/nordsoftware/react-boilerplate).
 
