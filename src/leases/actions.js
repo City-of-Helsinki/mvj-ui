@@ -49,6 +49,8 @@ import type {
   ShowEditModeAction,
   StartInvoicingAction,
   StopInvoicingAction,
+  FetchLeasesForContractNumberAction,
+  ReceiveLeasesForContractNumbersAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -167,3 +169,9 @@ export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesActi
 
 export const createCharge = (payload: CreateChargePayload): CreateChargeAction =>
   createAction('mvj/leases/CREATE_CHARGE')(payload);
+
+export const fetchLeasesForContractNumber = (params: Object): FetchLeasesForContractNumberAction =>
+  createAction('mvj/leases/FETCH_LEASES_FOR_CONTRACT_NUMBERS')(params);
+
+export const receiveLeasesForContractNumbers = (leases: LeaseList): ReceiveLeasesForContractNumbersAction =>
+  createAction('mvj/leases/RECEIVE_LEASES_FOR_CONTRACT_NUMBERS')(leases);

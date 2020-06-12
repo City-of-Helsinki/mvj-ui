@@ -19,6 +19,8 @@ export type LeaseState = {
   list: LeaseList,
   listByBBox: LeaseList,
   methods: Methods,
+  leasesForContractNumbers: LeaseList,
+  isFetchingLeasesForContractNumbers: boolean,
 };
 
 export type Lease = Object;
@@ -90,3 +92,6 @@ export type ReceiveFormValidFlagsAction = Action<'mvj/leases/RECEIVE_FORM_VALID_
 export type ClearFormValidFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALID_FLAGS', void>;
 
 export type ReceiveCollapseStatesAction = Action<'mvj/leases/RECEIVE_COLLAPSE_STATES', Object>;
+
+export type FetchLeasesForContractNumberAction = Action<'mvj/leases/FETCH_LEASES_FOR_CONTRACT_NUMBERS', Object>;
+export type ReceiveLeasesForContractNumbersAction = Action<'mvj/leases/RECEIVE_LEASES_FOR_CONTRACT_NUMBERS', LeaseList>;

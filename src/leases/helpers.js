@@ -60,7 +60,7 @@ import type {Lease} from './types';
 import type {CommentList} from '$src/comments/types';
 import type {Attributes, LeafletFeature, LeafletGeoJson} from '$src/types';
 import type {RootState} from '$src/root/types';
-
+import type {LeaseList} from '$src/leases/types';
 /**
  * Test is lease empty
  * @param {Object} lease
@@ -2964,4 +2964,15 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.LEASE_SUMMARY);
   removeSessionStorageItem(FormNames.LEASE_TENANTS);
   removeSessionStorageItem('leaseId');
+};
+
+
+/**
+ * Get leases with contract number
+ * @param {LeaseList} leasesForContractNumbers
+ * @returns {boolean}
+ */
+export const getLeasesWithContractNumber = (leasesForContractNumbers: LeaseList): boolean => {
+  console.log(get(leasesForContractNumbers, 'count'));
+  return (get(leasesForContractNumbers, 'count') > 0);
 };
