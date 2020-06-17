@@ -19,3 +19,9 @@
     margin-bottom: 0;
   }
 }
+
+@media only screen and (max-width: 900px) {
+  .hide_narrow {
+      display: none;
+  }
+}
