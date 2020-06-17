@@ -184,7 +184,7 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
     let isAdded = false;
     for(let i = dateRanges.length - 1; i >= 0; i--) {
       if(i > 10)
-        return;
+        return; // No test covers this case. Happens in some cases when too many tenants
       if(isDateRangesCollapsing({start_date: get(item, startDatePath), end_date: get(item, endDatePath)}, dateRanges[i])) {
         const splittedRanges = splitDateRanges({start_date: get(item, startDatePath), end_date: get(item, endDatePath)}, dateRanges[i]);
         

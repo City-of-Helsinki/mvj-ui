@@ -13,6 +13,9 @@ import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {receiveContactFormValid} from '$src/contacts/actions';
 import {FieldTypes, FormNames} from '$src/enums';
+import WarningContainer from '$components/content/WarningContainer';
+import WarningField from '$components/form/WarningField';
+import {getContactBusinessIdFieldError} from '$src/contacts/helpers';
 import {
   ContactFieldPaths,
   ContactFieldTitles,
@@ -43,6 +46,7 @@ type Props = {
   isSaveClicked: boolean,
   receiveContactFormValid: Function,
   type: ?string,
+  businessId: ?string,
   valid: boolean,
 }
 
@@ -86,7 +90,8 @@ class ContactForm extends Component<Props> {
   };
 
   render() {
-    const {attributes, isSaveClicked, type} = this.props;
+    const {attributes, isSaveClicked, type, businessId} = this.props;
+    const businessIdError = getContactBusinessIdFieldError(businessId);
 
     if (isEmpty(attributes)) return null;
 
@@ -264,6 +269,12 @@ class ContactForm extends Component<Props> {
                   </Authorization>
                 </Column>
               }
+              {(type && type !== ContactTypes.PERSON && businessIdError && businessId) && <WarningContainer style={{position: 'absolute', marginTop: -45}}>
+                <WarningField
+                  meta={{warning: 'Y-tunnuksen pituuden on oltava 9 merkkiä'}}
+                  showWarning={true}
+                />
+              </WarningContainer>}
               {type && type !== ContactTypes.PERSON &&
                 <Column small={23} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.BUSINESS_ID)}>
@@ -406,6 +417,7 @@ const mapStateToProps = (state: RootState) => {
     initialValues: getInitialContactFormValues(state),
     isSaveClicked: getIsSaveClicked(state),
     type: selector(state, 'type'),
+    businessId: selector(state, 'business_id'),
   };
 };
 
