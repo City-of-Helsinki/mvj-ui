@@ -393,7 +393,7 @@ class ContractItemEdit extends Component<Props> {
       contract,
     } = this.props;
 
-    if(contractNumber && (prevProps.contractNumber !== contractNumber) && (contractNumber !== contract.contract_number)) {
+    if(contractNumber && (prevProps.contractNumber !== contractNumber) && contract && (contractNumber !== contract.contract_number)) {
       fetchLeasesForContractNumber({contract_number: contractNumber});
     }
   }
@@ -516,7 +516,7 @@ class ContractItemEdit extends Component<Props> {
                     <Loader isLoading={isFetchingLeasesForContractNumbers}/>
                   </LoaderWrapper>
                 }
-                {(contractNumber && !isFetchingLeasesForContractNumbers && leasesWithContractNumber && (contractNumber !== contract.contract_number)) && <WarningContainer>
+                {(contractNumber && !isFetchingLeasesForContractNumbers && leasesWithContractNumber && contract && (contractNumber !== contract.contract_number)) && <WarningContainer>
                   <WarningField
                     meta={{warning: 'Sopimusnumero käytössä!'}}
                     showWarning={true}
