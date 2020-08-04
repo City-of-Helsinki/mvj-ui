@@ -113,7 +113,7 @@ class InvoicesR extends PureComponent<Props, State> {
       fetchCollectionNotesByLease,
       fetchInvoiceSetsByLease,
       invoiceSets,
-      match: {params: {leaseId}},
+      match: {params: {leaseId}}, // TODO landuseid
       receiveInvoiceToCredit,
       receiveIsCreateInvoicePanelOpen,
       receiveIsCreditInvoicePanelOpen,

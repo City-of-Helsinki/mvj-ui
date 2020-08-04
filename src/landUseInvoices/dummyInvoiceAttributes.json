@@ -1,0 +1,371 @@
+{
+  "name": "Invoice list",
+  "description": "",
+  "fields": {
+  "id": {
+    "type": "field",
+    "required": false,
+    "read_only": true,
+    "label": "Id"
+    },
+    "recipient": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Recipient"
+    },
+    "rows": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Rows",
+      "child": {
+        "type": "nested object",
+        "required": true,
+        "read_only": false,
+        "children": {
+          "id": {
+            "type": "integer",
+            "required": false,
+            "read_only": false,
+            "label": "Id"
+          },
+          "tenant": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Tenant"
+          },
+          "receivable_type": {
+            "type": "field",
+            "required": true,
+            "read_only": false,
+            "label": "Receivable type",
+            "choices": [
+              {
+                "value": 1,
+                "display_name": "Maanvuokraus"
+              },
+              {
+                "value": 3,
+                "display_name": "Yhteismarkkinointi (sis. ALV)"
+              },
+              {
+                "value": 4,
+                "display_name": "Kiinteistötoimitukset (tonttijaot, lohkomiset, rekisteröimiskustannukset, rasitteet)"
+              },
+              {
+                "value": 5,
+                "display_name": "Haastemiestiedoksianto"
+              },
+              {
+                "value": 6,
+                "display_name": "Rasite ja muut vastaavat korvaukset"
+              },
+              {
+                "value": 7,
+                "display_name": "Esirakentamistoimenpiteet"
+              },
+              {
+                "value": 8,
+                "display_name": "Rahavakuus"
+              },
+              {
+                "value": 9,
+                "display_name": "Väestösuojakorvaus"
+              },
+              {
+                "value": 2,
+                "display_name": "Korko"
+              }
+            ]
+          },
+          "billing_period_start_date": {
+            "type": "date",
+            "required": false,
+            "read_only": false,
+            "label": "Laskutuskauden alkupvm"
+          },
+          "billing_period_end_date": {
+            "type": "date",
+            "required": false,
+            "read_only": false,
+            "label": "Laskutuskauden loppupvm"
+          },
+          "description": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Selite"
+          },
+          "amount": {
+            "type": "decimal",
+            "required": true,
+            "read_only": false,
+            "label": "Määrä",
+            "decimal_places": 2,
+            "max_digits": 10
+          }
+        }
+      }
+    },
+    "payments": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Payments",
+      "child": {
+        "type": "nested object",
+        "required": false,
+        "read_only": false,
+        "children": {
+          "id": {
+            "type": "integer",
+            "required": false,
+            "read_only": false,
+            "label": "Id"
+          },
+          "created_at": {
+            "type": "datetime",
+            "required": false,
+            "read_only": true,
+            "label": "Luotu"
+          },
+          "modified_at": {
+            "type": "datetime",
+            "required": false,
+            "read_only": true,
+            "label": "Muokattu"
+          },
+          "paid_amount": {
+            "type": "decimal",
+            "required": true,
+            "read_only": false,
+            "label": "Maksettu määrä",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "paid_date": {
+            "type": "date",
+            "required": true,
+            "read_only": false,
+            "label": "Maksettu pvm"
+          },
+          "filing_code": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Nimi",
+            "max_length": 35
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "datetime",
+      "required": false,
+      "read_only": true,
+      "label": "Luotu"
+    },
+    "modified_at": {
+      "type": "datetime",
+      "required": false,
+      "read_only": true,
+      "label": "Muokattu"
+    },
+    "number": {
+      "type": "integer",
+      "required": false,
+      "read_only": false,
+      "label": "Numero",
+      "min_value": 0,
+      "max_value": 2147483647
+    },
+    "sent_to_sap_at": {
+      "type": "datetime",
+      "required": false,
+      "read_only": true,
+      "label": "Lähetetty SAP:iin"
+    },
+    "sap_id": {
+      "type": "string",
+      "required": false,
+      "read_only": true,
+      "label": "SAP-numero"
+    },
+    "due_date": {
+      "type": "date",
+      "required": true,
+      "read_only": false,
+      "label": "Eräpäivä"
+    },
+    "adjusted_due_date": {
+      "type": "date",
+      "required": false,
+      "read_only": true,
+      "label": "Eräpäivä (siirretty)"
+    },
+    "invoicing_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Laskutuspvm"
+    },
+    "state": {
+      "type": "choice",
+      "required": false,
+      "read_only": true,
+      "label": "Tila",
+      "choices": [
+        {
+          "value": "open",
+          "display_name": "Avoin"
+        },
+        {
+          "value": "paid",
+          "display_name": "Maksettu"
+        },
+        {
+          "value": "refunded",
+          "display_name": "Hyvitetty"
+        }
+      ]
+    },
+    "billing_period_start_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Laskutuskauden alkupvm"
+    },
+    "billing_period_end_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Laskutuskauden loppupvm"
+    },
+    "postpone_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Lykkäyspvm"
+    },
+    "total_amount": {
+      "type": "decimal",
+      "required": true,
+      "read_only": false,
+      "label": "Pääoma",
+      "decimal_places": 2,
+      "max_digits": 10
+    },
+    "billed_amount": {
+      "type": "decimal",
+      "required": true,
+      "read_only": false,
+      "label": "Laskutettu määrä",
+      "decimal_places": 2,
+      "max_digits": 10
+    },
+    "outstanding_amount": {
+      "type": "decimal",
+      "required": false,
+      "read_only": false,
+      "label": "Maksamaton määrä",
+      "decimal_places": 2,
+      "max_digits": 10
+    },
+    "payment_notification_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Maksukehotuspvm"
+    },
+    "collection_charge": {
+      "type": "decimal",
+      "required": false,
+      "read_only": false,
+      "label": "Perintäkulu",
+      "decimal_places": 2,
+      "max_digits": 10
+    },
+    "payment_notification_catalog_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Maksukehotus luettelo"
+    },
+    "delivery_method": {
+      "type": "choice",
+      "required": false,
+      "read_only": false,
+      "label": "E vai paperilasku",
+      "choices": [
+        {
+          "value": "mail",
+          "display_name": "Posti"
+        },
+        {
+          "value": "electronic",
+          "display_name": "E-lasku"
+        }
+      ]
+    },
+    "type": {
+      "type": "choice",
+      "required": true,
+      "read_only": false,
+      "label": "Tyyppi",
+      "choices": [
+        {
+          "value": "charge",
+          "display_name": "Lasku"
+        },
+        {
+          "value": "credit_note",
+          "display_name": "Hyvityslasku"
+        }
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "Tiedote"
+    },
+    "generated": {
+      "type": "boolean",
+      "required": false,
+      "read_only": true,
+      "label": "Automaattisesti luotu?"
+    },
+    "description": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "Selite"
+    },
+    "lease": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Vuokraus"
+    },
+    "invoiceset": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Laskuryhmät"
+    },
+    "credited_invoice": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Hyvitetty lasku"
+    },
+    "interest_invoice_for": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Korko laskulle"
+    }
+  }
+}

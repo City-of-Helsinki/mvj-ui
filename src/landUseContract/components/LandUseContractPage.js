@@ -23,6 +23,7 @@ import FullWidthContainer from '$components/content/FullWidthContainer';
 import InvoicesR from './sections/InvoicesR';
 // import Invoices from './sections/Invoices';
 // import InvoicesEdit from './sections/InvoicesEdit';
+import {fetchAttributes as fetchLandUseInvoiceAttributes} from '$src/landUseInvoices/actions';
 import LandUseContractMap from './sections/LandUseContractMap';
 import Litigants from './sections/Litigants';
 import LitigantsEdit from './sections/LitigantsEdit';
@@ -33,6 +34,12 @@ import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {fetchInvoicesByLandUseContract} from '$src/landUseInvoices/actions';
+import {
+  getInvoicesByLandUseContractId, 
+  getIsFetchingAttributes as getIsFetchingLandUseInvoiceAttributes,
+  getAttributes as getLandUseInvoiceAttributes,
+} from '$src/landUseInvoices/selectors';
 import {
   clearFormValidFlags,
   editLandUseContract,
@@ -71,6 +78,7 @@ import {withLandUseContractAttributes} from '$components/attributes/LandUseContr
 import type {Attributes} from '$src/types';
 import type {LandUseContract} from '$src/landUseContract/types';
 import type {UsersPermissions} from '$src/usersPermissions/types';
+import type {InvoiceList} from '$src/landUseInvoices/types';
 
 type Props = {
   basicInformationFormValues: Object,
@@ -86,6 +94,7 @@ type Props = {
   hideEditMode: Function,
   history: Object,
   initialize: Function,
+  invoices: InvoiceList,
   invoicesFormValues: Object,
   isBasicInformationFormDirty: boolean,
   isBasicInformationFormValid: boolean,
@@ -117,6 +126,10 @@ type Props = {
   router: Object,
   showEditMode: Function,
   usersPermissions: UsersPermissions,
+  fetchInvoicesByLandUseContract: Function,
+  fetchLandUseInvoiceAttributes: Function,
+  isFetchingLandUseInvoiceAttributes: boolean,
+  landUseInvoiceAttributes: Attributes,
 }
 
 type State = {
@@ -141,6 +154,9 @@ class LandUseContractPage extends Component<Props, State> {
       match: {params: {landUseContractId}},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
+      fetchLandUseInvoiceAttributes,
+      isFetchingLandUseInvoiceAttributes,
+      landUseInvoiceAttributes,
     } = this.props;
     const query = getUrlParams(search);
 
@@ -153,6 +169,11 @@ class LandUseContractPage extends Component<Props, State> {
     });
 
     fetchSingleLandUseContract(landUseContractId);
+    this.fetchLandUseRelatedData();
+
+    if(!isFetchingLandUseInvoiceAttributes && !landUseInvoiceAttributes) { //  && !invoiceMethods TODO
+      fetchLandUseInvoiceAttributes();
+    }
 
     if (query.tab) {
       this.setState({activeTab: query.tab});
@@ -194,6 +215,19 @@ class LandUseContractPage extends Component<Props, State> {
     if(prevProps.isEditMode && !isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
+    }
+  }
+
+  fetchLandUseRelatedData = () => {
+    const {
+      invoices,
+      fetchInvoicesByLandUseContract,
+      match: {params: {landUseContractId}},
+    } = this.props;
+
+    // TODO hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && 
+    if(!invoices) {
+      fetchInvoicesByLandUseContract(landUseContractId);
     }
   }
 
@@ -745,7 +779,7 @@ export default flowRight(
   withRouter,
   withLandUseContractAttributes,
   connect(
-    (state) => {
+    (state, props: Props) => {
       return {
         basicInformationFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION)(state),
         compensationsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_COMPENSATIONS)(state),
@@ -771,6 +805,9 @@ export default flowRight(
         isSaveClicked: getIsSaveClicked(state),
         litigantsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_LITIGANTS)(state),
         usersPermissions: getUsersPermissions(state),
+        invoices: getInvoicesByLandUseContractId(state, props.match.params.landUseContractId),
+        isFetchingLandUseInvoiceAttributes: getIsFetchingLandUseInvoiceAttributes(state),
+        landUseInvoiceAttributes: getLandUseInvoiceAttributes(state),
       };
     },
     {
@@ -778,6 +815,8 @@ export default flowRight(
       clearFormValidFlags,
       destroy,
       editLandUseContract,
+      fetchInvoicesByLandUseContract,
+      fetchLandUseInvoiceAttributes,
       fetchSingleLandUseContract,
       hideEditMode,
       initialize,

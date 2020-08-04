@@ -6,13 +6,13 @@ import {
   receiveMethods,
   fetchAttributes,
   attributesNotFound,
-  receiveInvoicesByLease,
+  receiveInvoicesByLandUseContract,
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditInvoicePanelOpen,
   receiveIsCreateClicked,
   receiveIsCreditClicked,
   receiveIsEditClicked,
-  fetchInvoicesByLease,
+  fetchInvoicesByLandUseContract,
   createInvoice,
   patchInvoice,
   exportInvoiceToLaskeAndUpdateList,
@@ -29,7 +29,7 @@ import type {LandUseInvoicesState} from './types';
 
 const defaultState: LandUseInvoicesState = {
   attributes: null,
-  byLease: {},
+  byLandUseContract: {},
   invoiceToCredit: null,
   isCreateClicked: false,
   isCreatePanelOpen: false,
@@ -99,7 +99,7 @@ describe('Land Use Invoices State', () => {
         ];
         const newState = {...defaultState, byLease: {'1': dummyInvoices}};
 
-        const state = invoiceReducer({}, receiveInvoicesByLease({leaseId: 1, invoices: dummyInvoices}));
+        const state = invoiceReducer({}, receiveInvoicesByLandUseContract({leaseId: 1, invoices: dummyInvoices}));
         expect(state).to.deep.equal(newState);
       });
 
@@ -146,7 +146,7 @@ describe('Land Use Invoices State', () => {
       it('should update isFetching flag to true when fetching invoices', () => {
         const newState = {...defaultState, isFetching: true};
 
-        const state = invoiceReducer({}, fetchInvoicesByLease(1));
+        const state = invoiceReducer({}, fetchInvoicesByLandUseContract(1));
         expect(state).to.deep.equal(newState);
       });
 

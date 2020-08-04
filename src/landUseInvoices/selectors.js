@@ -2,7 +2,8 @@
 import type {Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 import type {Invoice, InvoiceList} from './types';
-import type {LeaseId} from '$src/leases/types';
+
+export type LandUseContractId = number;
 
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.landUseInvoice.isFetching;
@@ -34,8 +35,8 @@ export const getMethods: Selector<Methods, void> = (state: RootState): Methods =
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
   state.landUseInvoice.isFetchingAttributes;
 
-export const getInvoicesByLease: Selector<InvoiceList, LeaseId> = (state: RootState, leaseId: LeaseId): InvoiceList =>
-  state.landUseInvoice.byLease[leaseId];
+export const getInvoicesByLandUseContractId: Selector<InvoiceList, LandUseContractId> = (state: RootState, landUseContractId: LandUseContractId): InvoiceList =>
+  state.landUseInvoice.byLandUseContract[landUseContractId];
 
 export const getInvoiceToCredit: Selector<?string, void> = (state: RootState): ?string =>
   state.landUseInvoice.invoiceToCredit;

@@ -39,6 +39,7 @@ const baseState: LandUseContractState = {
   },
   isSaveClicked: false,
   list: {},
+  byLandUseContract: {},
 };
 
 // $FlowFixMe

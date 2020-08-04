@@ -8,7 +8,7 @@ import type {
   ReceiveMethodsAction,
   Invoice,
   InvoiceListMap,
-  ReceiveInvoicesByLeaseAction,
+  ReceiveInvoicesByLandUseContractAction,
   ReceiveInvoiceToCreditAction,
   ReceiveIsCreateInvoicePanelOpenAction,
   ReceiveIsCreditInvoicePanelOpenAction,
@@ -20,7 +20,7 @@ import type {
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/landUseInvoices/CREATE': () => true,
-  'mvj/landUseInvoices/FETCH_BY_LEASE': () => true,
+  'mvj/landUseInvoices/FETCH_BY_LAND_USE_CONTRACT': () => true,
   'mvj/landUseInvoices/NOT_FOUND': () => false,
   'mvj/landUseInvoices/RECEIVE_BY_LEASE': () => false,
 }, false);
@@ -82,8 +82,8 @@ const methodsReducer: Reducer<Methods> = handleActions({
   },
 }, null);
 
-const byLeaseReducer: Reducer<InvoiceListMap> = handleActions({
-  ['mvj/landUseInvoices/RECEIVE_BY_LEASE']: (state: InvoiceListMap, {payload}: ReceiveInvoicesByLeaseAction) => {
+const byLandUseContractReducer: Reducer<InvoiceListMap> = handleActions({
+  ['mvj/landUseInvoices/RECEIVE_BY_LAND_USE_CONTRACT']: (state: InvoiceListMap, {payload}: ReceiveInvoicesByLandUseContractAction) => {
     return {
       ...state,
       [payload.leaseId]: payload.invoices,
@@ -106,7 +106,7 @@ const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
 
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
-  byLease: byLeaseReducer,
+  byLandUseContract: byLandUseContractReducer,
   invoiceToCredit: invoiceToCreditReducer,
   isCreateClicked: isCreateClickedReducer,
   isCreatePanelOpen: isCreatePanelOpenReducer,

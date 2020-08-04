@@ -14,6 +14,7 @@ import SortableTable from '$components/table/SortableTable';
 import TableAndPanelWrapper from '$components/table/TableAndPanelWrapper';
 import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
 import {FormNames, KeyCodes, TableSortOrder} from '$src/enums';
+import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
 import {
   InvoiceFieldPaths,
   InvoiceFieldTitles,
@@ -29,7 +30,7 @@ import {
   getContentInvoices,
   getPayloadEditInvoice,
   isInvoiceOverdue,
-} from '$src/invoices/helpers';
+} from '$src/landUseInvoices/helpers';
 import {
   findReactById,
   formatDate,
@@ -48,9 +49,11 @@ import {
 } from '$util/helpers';
 import {
   getAttributes as getInvoiceAttributes,
-  getInvoicesByLease,
   getPatchedInvoice,
-} from '$src/invoices/selectors';
+} from '$src/landUseInvoices/selectors';
+
+import {getInvoicesByLandUseContractId} from '$src/landUseInvoices/selectors';
+
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors'; // TODO
 import {getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -168,6 +171,9 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
   }
 
   getColumns = (invoiceAttributes: Attributes, invoiceSets: ?InvoiceSetList, usersPermissions: UsersPermissionsType) => {
+
+    console.log(invoiceAttributes, invoiceSets); // TODO GET ATTRIBUTES ANDS SETS
+
     const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
     const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
     const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
@@ -575,12 +581,12 @@ export default flowRight(
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
-
+      const currentLandUseContract = getCurrentLandUseContract(state);
       return {
         invoiceAttributes: getInvoiceAttributes(state),
-        invoiceListData: getInvoicesByLease(state, currentLease.id),
-        invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
-        patchedInvoice: getPatchedInvoice(state),
+        invoiceListData: getInvoicesByLandUseContractId(state, currentLandUseContract.id),
+        invoiceSets: getInvoiceSetsByLease(state, currentLease.id), // TODO
+        patchedInvoice: getPatchedInvoice(state), // TODO
         usersPermissions: getUsersPermissions(state),
       };
     },

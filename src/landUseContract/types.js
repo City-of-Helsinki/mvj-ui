@@ -11,9 +11,11 @@ export type LandUseContractState = {
   isSaveClicked: boolean,
   list: LandUseContractList,
 };
-export type LandUseContractId = number;
+
+export type InvoiceListMap = Object;
 export type LandUseContract = Object;
 export type LandUseContractList = Object;
+export type LandUseContractId = number;
 
 export type FetchAttributesAction = Action<'mvj/landUseContract/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/landUseContract/RECEIVE_ATTRIBUTES', Attributes>;

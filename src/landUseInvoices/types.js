@@ -1,10 +1,9 @@
 // @flow
 import type {Action, Attributes, Methods} from '$src/types';
-import type {LeaseId} from '$src/landUseInvoices/types';
 
 export type LandUseInvoicesState = {
   attributes: Attributes,
-  byLease: InvoiceListMap,
+  byLandUseContract: InvoiceListMap,
   invoiceToCredit: ?string,
   isCreateClicked: boolean,
   isCreatePanelOpen: boolean,
@@ -21,9 +20,11 @@ export type Invoice = Object;
 export type InvoiceId = number;
 export type InvoiceList = Array<Object>;
 export type InvoiceListMap = Object;
+export type LandUseContractId = number;
+
 export type ExportInvoiceToLaskeAndUpdateListPayload = {
   id: InvoiceId,
-  lease: LeaseId,
+  lease: LandUseContractId,
 };
 
 export type FetchAttributesAction = Action<'mvj/landUseInvoices/FETCH_ATTRIBUTES', void>;
@@ -31,8 +32,9 @@ export type ReceiveAttributesAction = Action<'mvj/landUseInvoices/RECEIVE_ATTRIB
 export type ReceiveMethodsAction = Action<'mvj/landUseInvoices/RECEIVE_METHODS', Methods>;
 export type InvoiceAttributesNotFoundAction = Action<'mvj/landUseInvoices/ATTRIBUTES_NOT_FOUND', void>;
 
-export type FetchInvoicesByLeaseAction = Action<'mvj/landUseInvoices/FETCH_BY_LEASE', LeaseId>;
-export type ReceiveInvoicesByLeaseAction = Action<'mvj/landUseInvoices/RECEIVE_BY_LEASE', InvoiceListMap>;
+export type FetchInvoicesByLandUseContractAction = Action<'mvj/landUseInvoices/FETCH_BY_LAND_USE_CONTRACT', LandUseContractId>;
+export type ReceiveInvoicesByLandUseContractAction = Action<'mvj/landUseInvoices/RECEIVE_BY_LAND_USE_CONTRACT', InvoiceListMap>;
+
 export type CreateInvoiceAction = Action<'mvj/landUseInvoices/CREATE', Invoice>;
 export type CreditInvoiceAction = Action<'mvj/landUseInvoices/CREDIT_INVOICE', Object>;
 export type PatchInvoiceAction = Action<'mvj/landUseInvoices/PATCH', Invoice>;

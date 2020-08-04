@@ -10,8 +10,8 @@ import type {
   InvoiceAttributesNotFoundAction,
   Invoice,
   InvoiceListMap,
-  FetchInvoicesByLeaseAction,
-  ReceiveInvoicesByLeaseAction,
+  FetchInvoicesByLandUseContractAction,
+  ReceiveInvoicesByLandUseContractAction,
   CreateInvoiceAction,
   CreditInvoiceAction,
   PatchInvoiceAction,
@@ -28,7 +28,8 @@ import type {
   ReceiveIsEditClickedAction,
   DeleteInvoiceAction,
 } from './types';
-import type {LeaseId} from '$src/landUseInvoices/types';
+
+import type {LandUseContractId} from '$src/landUseInvoices/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/landUseInvoices/FETCH_ATTRIBUTES')();
@@ -42,11 +43,11 @@ export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
 export const attributesNotFound = (): InvoiceAttributesNotFoundAction =>
   createAction('mvj/landUseInvoices/ATTRIBUTES_NOT_FOUND')();
 
-export const fetchInvoicesByLease = (leaseId: LeaseId): FetchInvoicesByLeaseAction =>
-  createAction('mvj/landUseInvoices/FETCH_BY_LEASE')(leaseId);
+export const fetchInvoicesByLandUseContract = (landUseContractId: LandUseContractId): FetchInvoicesByLandUseContractAction =>
+  createAction('mvj/landUseInvoices/FETCH_BY_LAND_USE_CONTRACT')(landUseContractId);
 
-export const receiveInvoicesByLease = (invoices: InvoiceListMap): ReceiveInvoicesByLeaseAction =>
-  createAction('mvj/landUseInvoices/RECEIVE_BY_LEASE')(invoices);
+export const receiveInvoicesByLandUseContract = (invoices: InvoiceListMap): ReceiveInvoicesByLandUseContractAction =>
+  createAction('mvj/landUseInvoices/RECEIVE_BY_LAND_USE_CONTRACT')(invoices);
 
 export const createInvoice = (invoice: Invoice): CreateInvoiceAction =>
   createAction('mvj/landUseInvoices/CREATE')(invoice);
