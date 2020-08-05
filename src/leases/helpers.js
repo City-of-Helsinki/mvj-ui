@@ -47,6 +47,7 @@ import {
   isDecimalNumberStr,
   isEmptyValue,
   isActive,
+  isActiveOrFuture,
   isArchived,
   sortStringAsc,
   sortStringByKeyAsc,
@@ -1751,7 +1752,7 @@ export const getInvoiceRecipientOptions = (lease: Object, addAll: boolean, addTe
 
   if(addTenants) {
     recipients.push(...items
-      .filter((item) => isActive(item.tenant))
+      .filter((item) => isActiveOrFuture(item.tenant))
       .map((item) => {
         return {
           value: get(item, 'id'),

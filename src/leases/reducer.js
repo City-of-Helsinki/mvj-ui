@@ -20,7 +20,7 @@ import type {
   ReceiveFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
   ReceiveCollapseStatesAction,
-  receiveLeasesForContractNumbers,
+  ReceiveLeasesForContractNumbersAction,
 } from '$src/leases/types';
 
 const isAttachDecisionModalOpenReducer: Reducer<boolean> = handleActions({
@@ -178,7 +178,7 @@ const collapseStatesReducer: Reducer<Object> = handleActions({
 }, {});
 
 const leasesForContractNumbersReducer: Reducer<LeaseList> = handleActions({
-  ['mvj/leases/RECEIVE_LEASES_FOR_CONTRACT_NUMBERS']: (state: LeaseList, {payload: leases}: receiveLeasesForContractNumbers) => {
+  ['mvj/leases/RECEIVE_LEASES_FOR_CONTRACT_NUMBERS']: (state: LeaseList, {payload: leases}: ReceiveLeasesForContractNumbersAction) => {
     return leases;
   },
 }, null);

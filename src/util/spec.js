@@ -53,6 +53,7 @@ import {
   getApiResponseMaxPage,
   getApiResponseResults,
   isActive,
+  isActiveOrFuture,
   isArchived,
 } from './helpers';
 import {
@@ -1439,6 +1440,30 @@ describe('utils', () => {
       
       expect(isActive(item1)).to.deep.equal(false);
       expect(isActive(item2)).to.deep.equal(false);
+    });
+
+    it('item should be active or future', () => {
+      const item1 = {
+        start_date: '9999-12-31',
+        end_date: null,
+      };
+
+      const item2 = {
+        start_date: null,
+        end_date: null,
+      };
+      
+      expect(isActiveOrFuture(item1)).to.deep.equal(true);
+      expect(isActiveOrFuture(item2)).to.deep.equal(true);
+    });
+
+    it('item should not be active or future', () => {
+      const item1 = {
+        start_date: null,
+        end_date: '1970-12-31',
+      };
+      
+      expect(isActiveOrFuture(item1)).to.deep.equal(false);
     });
 
     it('item should be archived', () => {
