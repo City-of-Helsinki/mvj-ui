@@ -7,8 +7,6 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import Authorization from '$components/authorization/Authorization';
-import WarningContainer from '$components/content/WarningContainer';
-import WarningField from '$components/form/WarningField';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactAuditLog from './ContactAuditLog';
@@ -45,7 +43,7 @@ import {
   ContactTypes,
 } from '$src/contacts/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {clearUnsavedChanges, getContactFullName, getContactBusinessIdFieldError, getContactBusinessIdError} from '$src/contacts/helpers';
+import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
 import {getUiDataContactKey} from '$src/uiData/helpers';
 import {
   hasPermissions,
@@ -372,13 +370,11 @@ class ContactPage extends Component<Props, State> {
       isSaving,
       match: {params: {contactId}},
       usersPermissions,
-      businessId,
     } = this.props;
     const {activeTab, isRestoreModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
-    const businessIdError = getContactBusinessIdFieldError(businessId);
-    const contactBusinessIdError = getContactBusinessIdError(contact);
+
 
     if(isFetching || isFetchingContactAttributes) {
       return (
@@ -458,12 +454,6 @@ class ContactPage extends Component<Props, State> {
                 <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataContactKey(ContactFieldPaths.BASIC_INFO)}>
                   {ContactFieldTitles.BASIC_INFO}
                 </Title>
-                {((!!businessId && (businessIdError && isEditMode)) || (!!contact.business_id && (contactBusinessIdError && !isEditMode))) && <WarningContainer>
-                  <WarningField
-                    meta={{warning: 'Y-tunnuksen pituuden on oltava 9 merkkiä'}}
-                    showWarning={true}
-                  />
-                </WarningContainer>}
                 <Divider />
                 {isEditMode
                   ? <Authorization

@@ -748,6 +748,26 @@ export const isActive = (item: ?Object): boolean => {
 };
 
 /**
+ * Test is item active or future
+ * @param {Object} item
+ * @returns {boolean}
+ */
+export const isActiveOrFuture = (item: ?Object): boolean => {
+  const startDate = get(item, 'start_date') || '0000-01-01';
+  const endDate = get(item, 'end_date') || '9999-12-31';
+
+  if((startDate && isFuture(new Date(startDate)))) {
+    return true;
+  }
+
+  if((endDate && isPast(new Date(endDate)))) {
+    return false;
+  }
+
+  return true;
+};
+
+/**
  * Test is item archived
  * @param {Object} item
  * @returns {boolean}

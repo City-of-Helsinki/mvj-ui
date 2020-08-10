@@ -269,7 +269,7 @@ class ContactForm extends Component<Props> {
                   </Authorization>
                 </Column>
               }
-              {(type && type !== ContactTypes.PERSON && businessIdError && businessId) && <WarningContainer style={{position: 'absolute', marginTop: -45}}>
+              {(type && type !== ContactTypes.PERSON && businessIdError && businessId) && <WarningContainer style={{position: 'absolute', marginTop: -50}}>
                 <WarningField
                   meta={{warning: 'Y-tunnuksen pituuden on oltava 9 merkkiä'}}
                   showWarning={true}

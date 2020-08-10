@@ -115,7 +115,6 @@ function LeasePageAttributes(WrappedComponent: any) {
   };
 }
 
-// $FlowFixMe
 const withLeasePageAttributes = flowRight(
   connect(
     (state) => {

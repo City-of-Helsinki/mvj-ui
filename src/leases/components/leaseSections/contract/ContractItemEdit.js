@@ -26,8 +26,6 @@ import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates, fetchLeasesForContractNumber} from '$src/leases/actions';
 import {ConfirmationModalTexts, FormNames, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import Loader from '$components/loader/Loader';
-import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {
   LeaseContractChangesFieldPaths,
   LeaseContractChangesFieldTitles,
@@ -396,6 +394,10 @@ class ContractItemEdit extends Component<Props> {
     if(contractNumber && (prevProps.contractNumber !== contractNumber) && contract && (contractNumber !== contract.contract_number)) {
       fetchLeasesForContractNumber({contract_number: contractNumber});
     }
+
+    if(!contract && contractNumber && (prevProps.contractNumber !== contractNumber)) {
+      fetchLeasesForContractNumber({contract_number: contractNumber});
+    }
   }
 
   render() {
@@ -416,7 +418,6 @@ class ContractItemEdit extends Component<Props> {
       savedContracts,
       usersPermissions,
       contract,
-      isFetchingLeasesForContractNumbers,
       leasesForContractNumbers,
       contractNumber,
     } = this.props;
@@ -511,12 +512,13 @@ class ContractItemEdit extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
-                {isFetchingLeasesForContractNumbers &&
-                  <LoaderWrapper className='contractnumber-fetch-wrapper'>
-                    <Loader isLoading={isFetchingLeasesForContractNumbers}/>
-                  </LoaderWrapper>
-                }
-                {(contractNumber && !isFetchingLeasesForContractNumbers && leasesWithContractNumber && contract && (contractNumber !== contract.contract_number)) && <WarningContainer>
+                {(contractNumber && leasesWithContractNumber && contract && (contractNumber !== contract.contract_number)) && <WarningContainer>
+                  <WarningField
+                    meta={{warning: 'Sopimusnumero käytössä!'}}
+                    showWarning={true}
+                  />
+                </WarningContainer>}
+                {(!contract && contractNumber && leasesWithContractNumber) && <WarningContainer>
                   <WarningField
                     meta={{warning: 'Sopimusnumero käytössä!'}}
                     showWarning={true}
