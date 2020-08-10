@@ -5,7 +5,6 @@ import {routerMiddleware as createRouterMiddleware} from 'connected-react-router
 import createRootReducer from './createRootReducer';
 import createSagaMiddleware from 'redux-saga';
 import createRootSaga from './createRootSaga';
-// $FlowFixMe
 import {loadUser} from 'redux-oidc';
 import userManager from '../auth/util/user-manager';
 
@@ -22,7 +21,6 @@ export default () => {
     window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f
   );
 
-  // $FlowFixMe
   const store = createStore(rootReducer, enhancer);
   loadUser(store, userManager);
 
