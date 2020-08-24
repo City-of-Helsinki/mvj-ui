@@ -15,17 +15,24 @@ export type LandUseInvoicesState = {
   isSaving: boolean,
   methods: Methods,
   patchedInvoice: ?Invoice,
+  collapseStates: Object,
 };
 export type Invoice = Object;
 export type InvoiceId = number;
 export type InvoiceList = Array<Object>;
 export type InvoiceListMap = Object;
+export type LandUseContract = Object;
 export type LandUseContractId = number;
 
 export type ExportInvoiceToLaskeAndUpdateListPayload = {
   id: InvoiceId,
   lease: LandUseContractId,
 };
+
+export type CreateChargePayload = {
+  landUseContractId: number,
+  data: Object,
+}
 
 export type FetchAttributesAction = Action<'mvj/landUseInvoices/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/landUseInvoices/RECEIVE_ATTRIBUTES', Attributes>;
@@ -52,3 +59,9 @@ export type ReceiveInvoiceToCreditAction = Action<'mvj/landUseInvoices/RECEIVE_I
 export type ReceiveIsCreateClickedAction = Action<'mvj/landUseInvoices/RECEIVE_CREATE_CLICKED', boolean>;
 export type ReceiveIsCreditClickedAction = Action<'mvj/landUseInvoices/RECEIVE_CREDIT_CLICKED', boolean>;
 export type ReceiveIsEditClickedAction = Action<'mvj/landUseInvoices/RECEIVE_EDIT_CLICKED', boolean>;
+
+export type ReceiveCollapseStatesAction = Action<'mvj/landUseInvoices/RECEIVE_COLLAPSE_STATES', Object>;
+export type StartInvoicingAction = Action<'mvj/landUseInvoices/START_INVOICING', number>;
+export type StopInvoicingAction = Action<'mvj/landUseInvoices/STOP_INVOICING', number>;
+
+export type CreateChargeAction = Action<'mvj/landUseInvoices/CREATE_CHARGE', CreateChargePayload>;

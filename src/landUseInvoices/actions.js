@@ -4,6 +4,7 @@ import {createAction} from 'redux-actions';
 
 import type {Attributes, Methods} from '$src/types';
 import type {
+  CreateChargePayload,
   FetchAttributesAction,
   ReceiveAttributesAction,
   ReceiveMethodsAction,
@@ -27,6 +28,10 @@ import type {
   ReceiveIsCreditClickedAction,
   ReceiveIsEditClickedAction,
   DeleteInvoiceAction,
+  ReceiveCollapseStatesAction,
+  StartInvoicingAction,
+  StopInvoicingAction,
+  CreateChargeAction,
 } from './types';
 
 import type {LandUseContractId} from '$src/landUseInvoices/types';
@@ -90,3 +95,15 @@ export const receiveInvoiceToCredit = (invoiceId: ?string): ReceiveInvoiceToCred
 
 export const notFound = (): InvoiceNotFoundAction =>
   createAction('mvj/landUseInvoices/NOT_FOUND')();
+
+export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesAction =>
+  createAction('mvj/landUseInvoices/RECEIVE_COLLAPSE_STATES')(status);
+
+export const startInvoicing = (id: number): StartInvoicingAction =>
+  createAction('mvj/landUseInvoices/START_INVOICING')(id);
+
+export const stopInvoicing = (id: number): StopInvoicingAction =>
+  createAction('mvj/landUseInvoices/STOP_INVOICING')(id);
+
+export const createCharge = (payload: CreateChargePayload): CreateChargeAction =>
+  createAction('mvj/landUseInvoices/CREATE_CHARGE')(payload);

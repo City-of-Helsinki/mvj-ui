@@ -1,44 +1,32 @@
 // @flow
-import React, {Fragment} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {FieldArray, formValueSelector, getFormValues, reduxForm} from 'redux-form';
+import {formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import type {Element} from 'react';
 
-import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import AddButtonThird from '$components/form/AddButtonThird';
 import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import FormField from '$components/form/FormField';
-import FormTextTitle from '$components/form/FormTextTitle';
-import RemoveButton from '$components/form/RemoveButton';
-import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
-import {receiveIsCreateClicked} from '$src/invoices/actions';
-import {ConfirmationModalTexts, FormNames} from '$src/enums';
+import {receiveIsCreateClicked} from '$src/landUseInvoices/actions';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
-import {LeaseCreateChargeFieldPaths, LeaseCreateChargeRowsFieldPaths} from '$src/leaseCreateCharge/enums';
+import {InvoiceFieldPaths, InvoiceFieldTitles} from '$src/invoices/enums'; // TODO MAKE OWN ENUMS
+import {LeaseCreateChargeFieldPaths} from '$src/leaseCreateCharge/enums';
 import {RecipientOptions} from '$src/leases/enums';
-import {receivableTypesFromAttributes} from '$src/leaseCreateCharge/helpers';
-import {UsersPermissions} from '$src/usersPermissions/enums';
-import {validateInvoiceForm} from '$src/leases/formValidators';
-import {isInvoiceBillingPeriodRequired} from '$src/invoices/helpers';
-import {getInvoiceRecipientOptions} from '$src/leases/helpers';
+import {validateLandUseInvoiceForm} from '$src/landUseContract/formValidators';
 import {getUiDataCreateChargeKey} from '$src/uiData/helpers';
 import {
   getFieldAttributes,
-  hasPermissions,
   isFieldAllowedToEdit,
-  isFieldRequired,
 } from '$util/helpers';
 import {
   getAttributes as getInvoiceAttributes,
   getIsCreateClicked,
-} from '$src/invoices/selectors';
+} from '$src/landUseInvoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 import {
   getAttributes as getLeaseCreateCrargeAttributes,
@@ -49,166 +37,6 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-
-type InvoiceRowsProps = {
-  fields: any,
-  invoiceAttributes: Attributes,
-  isCreateClicked: boolean,
-  leaseCreateChargeAttributes: Attributes,
-  receivableTypes: Object,
-  useLeaseCreateChargeEndpoint: boolean,
-}
-
-const InvoiceRows = ({
-  fields,
-  invoiceAttributes,
-  isCreateClicked,
-  leaseCreateChargeAttributes,
-  receivableTypes,
-  useLeaseCreateChargeEndpoint,
-}: InvoiceRowsProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-
-  return (
-    <AppConsumer>
-      {({dispatch}) => {
-        return(
-          <Fragment>
-            <SubTitle
-              enableUiDataEdit
-              uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.ROWS)}
-            >Erittely</SubTitle>
-            {!!fields && !!fields.length &&
-              <Fragment>
-                <Row>
-                  <Column small={3} large={2}>
-                    <Authorization allow={useLeaseCreateChargeEndpoint
-                      ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)
-                      : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
-                    >
-                      <FormTextTitle
-                        required={useLeaseCreateChargeEndpoint
-                          ? isFieldRequired(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)
-                          : isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
-                        enableUiDataEdit
-                        uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)}
-                      >
-                        {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column small={3} large={2}>
-                    <Authorization allow={useLeaseCreateChargeEndpoint
-                      ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.AMOUNT)
-                      : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
-                    >
-                      <FormTextTitle
-                        required={useLeaseCreateChargeEndpoint
-                          ? isFieldRequired(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.AMOUNT)
-                          : isFieldRequired(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
-                        enableUiDataEdit
-                        tooltipStyle={{right: 12}}
-                        uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeRowsFieldPaths.AMOUNT)}
-                      >
-                        {InvoiceRowsFieldTitles.AMOUNT}
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                </Row>
-
-                {fields.map((row, index) => {
-                  const handleRemove = () => {
-                    dispatch({
-                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                      confirmationFunction: () => {
-                        fields.remove(index);
-                      },
-                      confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_INVOICE_ROW.BUTTON,
-                      confirmationModalLabel: ConfirmationModalTexts.DELETE_INVOICE_ROW.LABEL,
-                      confirmationModalTitle: ConfirmationModalTexts.DELETE_INVOICE_ROW.TITLE,
-                    });
-                  };
-
-                  return (
-                    <Row key={index}>
-                      <Column small={3} large={2}>
-                        <Authorization allow={useLeaseCreateChargeEndpoint
-                          ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)
-                          : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
-                        >
-                          <FormField
-                            disableTouched={isCreateClicked}
-                            fieldAttributes={useLeaseCreateChargeEndpoint
-                              ? receivableTypesFromAttributes(getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)
-                              : receivableTypesFromAttributes(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)
-                            }
-                            invisibleLabel
-                            name={`${row}.receivable_type`}
-                            overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={2} large={2}>
-                        <Authorization allow={useLeaseCreateChargeEndpoint
-                          ?  isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.AMOUNT)
-                          : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}
-                        >
-                          <FormField
-                            disableTouched={isCreateClicked}
-                            fieldAttributes={useLeaseCreateChargeEndpoint
-                              ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.AMOUNT)
-                              : getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)
-                            }
-                            invisibleLabel
-                            name={`${row}.amount`}
-                            unit='€'
-                            overrideValues={{label: InvoiceRowsFieldTitles.AMOUNT}}
-                          />
-                        </Authorization>
-                      </Column>
-
-                      <Authorization allow={useLeaseCreateChargeEndpoint
-                        ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.ROWS)
-                        : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}
-                      >
-                        <Column small={1} large={2}>
-                          {fields.length > 1 &&
-                            <RemoveButton
-                              className='third-level'
-                              onClick={handleRemove}
-                              title="Poista rivi"
-                            />
-                          }
-                        </Column>
-                      </Authorization>
-                    </Row>
-                  );
-                })}
-              </Fragment>
-            }
-
-            <Authorization allow={useLeaseCreateChargeEndpoint
-              ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.ROWS)
-              : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}
-            >
-              <Row>
-                <Column>
-                  <AddButtonThird
-                    label='Lisää rivi'
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            </Authorization>
-          </Fragment>
-        );
-      }}
-    </AppConsumer>
-  );
-};
 
 type Props = {
   formValues: Object,
@@ -233,16 +61,12 @@ const NewInvoiceForm = ({
   handleSubmit,
   invoiceAttributes,
   isCreateClicked,
-  lease,
   leaseCreateChargeAttributes,
   onClose,
   onSave,
   receiveIsCreateClicked,
   tenant,
-  rows,
-  receivableTypes,
   setRefForFirstField,
-  usersPermissions,
   valid,
 }: Props) => {
   const handleSave = () => {
@@ -253,22 +77,17 @@ const NewInvoiceForm = ({
     }
   };
 
-  const recipientOptions = getInvoiceRecipientOptions(
-    lease,
-    hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
-    hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
-  );
+  const recipientOptions = [{value: 1, label: 'Virve Virkailija'}, {value: 2, label: 'Teuvo Kuusela'}];
   const useLeaseCreateChargeEndpoint = tenant === RecipientOptions.ALL;
-  const billingPeriodRequired = isInvoiceBillingPeriodRequired(rows);
   return (
     <form onSubmit={handleSubmit} className='invoice__new-invoice_form'>
       <WhiteBox>
         <BoxContentWrapper>
-          <h3>Luo lasku</h3>
+          <h3>Luo lasku asdf</h3>
           <CloseButton className='position-topright' onClick={onClose} />
 
           <Row>
-            <Column small={6} medium={4} large={2}>
+            <Column small={6} medium={4} large={1}>
               <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
                 <FormField
                   disableTouched={isCreateClicked}
@@ -276,7 +95,7 @@ const NewInvoiceForm = ({
                   name='tenant'
                   setRefForField={setRefForFirstField}
                   overrideValues={{
-                    label: 'Vuokralainen',
+                    label: 'Laskunsaaja',
                     options: recipientOptions,
                   }}
                   enableUiDataEdit
@@ -284,73 +103,68 @@ const NewInvoiceForm = ({
                 />
               </Authorization>
             </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization allow={useLeaseCreateChargeEndpoint
-                ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.DUE_DATE)
-                : isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}
-              >
-                <FormField
-                  disableTouched={isCreateClicked}
-                  fieldAttributes={useLeaseCreateChargeEndpoint
-                    ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.DUE_DATE)
-                    : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)
-                  }
-                  name='due_date'
-                  overrideValues={{label: InvoiceFieldTitles.DUE_DATE}}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.DUE_DATE)}
-                />
-              </Authorization>
+            <Column small={6} medium={4} large={1}>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={useLeaseCreateChargeEndpoint
+                  ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.DUE_DATE)
+                  : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)
+                }
+                name='due_date'
+                overrideValues={{label: InvoiceFieldTitles.DUE_DATE}}
+                enableUiDataEdit
+                uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.DUE_DATE)}
+              />
             </Column>
+
             <Column small={6} medium={4} large={2}>
-              <Authorization allow={useLeaseCreateChargeEndpoint
-                ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE)
-                : isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}
-              >
-                <FormTextTitle
-                  required={billingPeriodRequired}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE)}
-                >
-                  {InvoiceFieldTitles.BILLING_PERIOD_START_DATE}
-                </FormTextTitle>
-                <FormField
-                  disableTouched={isCreateClicked}
-                  fieldAttributes={useLeaseCreateChargeEndpoint
-                    ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE)
-                    : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)
-                  }
-                  name='billing_period_start_date'
-                  invisibleLabel
-                  overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE}}
-                />
-              </Authorization>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={getFieldAttributes(invoiceAttributes, 'compensation_amount')}
+                name='compensation_amount'
+                overrideValues={{label: 'Korvauksen määrä (€)'}}
+                unit='€'
+              />
             </Column>
+
             <Column small={6} medium={4} large={2}>
-              <Authorization allow={useLeaseCreateChargeEndpoint
-                ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE)
-                : isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}
-              >
-                <FormTextTitle
-                  required={billingPeriodRequired}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE)}
-                >
-                  {InvoiceFieldTitles.BILLING_PERIOD_END_DATE}
-                </FormTextTitle>
-                <FormField
-                  disableTouched={isCreateClicked}
-                  fieldAttributes={useLeaseCreateChargeEndpoint
-                    ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE)
-                    : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)
-                  }
-                  name='billing_period_end_date'
-                  invisibleLabel
-                  overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE}}
-                />
-              </Authorization>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={getFieldAttributes(invoiceAttributes, 'intrest_amount')}
+                name='intrest_amount'
+                overrideValues={{label: 'Korotuksen määrä (%)'}}
+                unit='%'
+              />
+            </Column>
+
+            <Column small={6} medium={4} large={1}>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={getFieldAttributes(invoiceAttributes, 'sign_date')}
+                name='sign_date'
+                overrideValues={{label: 'Allekirjoituspvm'}}
+              />
+            </Column>
+            <Column small={6} medium={4} large={3}>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={getFieldAttributes(invoiceAttributes, 'legal_from_date')}
+                name='legal_from_date'
+                overrideValues={{label: 'Kaavamuutoksen lainvoimaisuuspvm'}}
+              />
+            </Column>
+
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={getFieldAttributes(invoiceAttributes, 'billing_amount')}
+                name='billing_amount'
+                overrideValues={{label: 'Laskutettava määrä (€)'}}
+                unit='€'
+              />
             </Column>
           </Row>
+
           <Row>
             <Column>
               <Authorization allow={useLeaseCreateChargeEndpoint
@@ -371,21 +185,6 @@ const NewInvoiceForm = ({
               </Authorization>
             </Column>
           </Row>
-
-          <Authorization allow={useLeaseCreateChargeEndpoint
-            ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.ROWS)
-            : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}
-          >
-            <FieldArray
-              component={InvoiceRows}
-              receivableTypes={receivableTypes}
-              invoiceAttributes={invoiceAttributes}
-              isCreateClicked={isCreateClicked}
-              leaseCreateChargeAttributes={leaseCreateChargeAttributes}
-              name='rows'
-              useLeaseCreateChargeEndpoint={useLeaseCreateChargeEndpoint}
-            />
-          </Authorization>
 
           <Row>
             <Column>
@@ -434,6 +233,6 @@ export default flowRight(
   ),
   reduxForm({
     form: formName,
-    validate: validateInvoiceForm,
+    validate: validateLandUseInvoiceForm,
   }),
 )(NewInvoiceForm);

@@ -1,6 +1,7 @@
 // @flow
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
+import merge from 'lodash/merge';
 
 import type {Attributes, Methods, Reducer} from '../types';
 import type {
@@ -16,6 +17,7 @@ import type {
   ReceiveIsCreditClickedAction,
   ReceiveIsEditClickedAction,
   ReceivePatchedInvoiceAction,
+  ReceiveCollapseStatesAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -31,6 +33,8 @@ const isSavingReducer: Reducer<boolean> = handleActions({
   'mvj/landUseInvoices/NOT_FOUND': () => false,
   'mvj/landUseInvoices/RECEIVE_BY_LEASE': () => false,
   'mvj/landUseInvoices/DELETE': () => true,
+  'mvj/landUseInvoices/START_INVOICING': () => true,
+  'mvj/landUseInvoices/STOP_INVOICING': () => true,
 }, false);
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
@@ -104,6 +108,12 @@ const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
   'mvj/landUseInvoices/CLEAR_PATCHED': () => null,
 }, null);
 
+const collapseStatesReducer: Reducer<Object> = handleActions({
+  ['mvj/landUseInvoices/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
+    return merge(state, states);
+  },
+}, {});
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   byLandUseContract: byLandUseContractReducer,
@@ -118,4 +128,5 @@ export default combineReducers<Object, any>({
   isFetchingAttributes: isFetchingAttributesReducer,
   methods: methodsReducer,
   patchedInvoice: patchedInvoiceReducer,
+  collapseStates: collapseStatesReducer,
 });

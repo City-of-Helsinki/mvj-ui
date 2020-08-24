@@ -10,7 +10,7 @@ import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import CreditInvoiceForm from './forms/CreditInvoiceForm';
 import NewInvoiceForm from './forms/NewInvoiceForm';
-import {createCharge} from '$src/leases/actions';
+import {createCharge} from '$src/landUseInvoices/actions';
 import {
   createInvoice,
   creditInvoice,
@@ -19,22 +19,23 @@ import {
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditClicked,
   receiveIsCreditInvoicePanelOpen,
-} from '$src/invoices/actions';
+} from '$src/landUseInvoices/actions';
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {RecipientOptions} from '$src/leases/enums';
-import {getPayloadCreateInvoice, getPayloadCreditInvoice} from '$src/invoices/helpers';
+import {RecipientOptions} from '$src/leases/enums'; // TODO
+import {getPayloadCreditInvoice} from '$src/invoices/helpers';
 import {getCreditInvoiceSetPayload} from '$src/invoiceSets/helpers';
-import {getPayloadLeaseCreateCharge} from '$src/leaseCreateCharge/helpers';
 import {hasPermissions} from '$util/helpers';
-import {getCurrentLease} from '$src/leases/selectors';
-import {getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen} from '$src/invoices/selectors';
+import {
+  getCurrentLandUseContract,
+} from '$src/landUseContract/selectors';
+import {getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen, getInvoicesByLandUseContractId} from '$src/landUseInvoices/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {AppConsumer, ActionTypes} from '$src/app/AppContext';
 import {ConfirmationModalTexts} from '$src/enums';
 
-import type {Lease} from '$src/leases/types';
+import type {LandUseContract} from '$src/landUseInvoices/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
@@ -42,7 +43,7 @@ type Props = {
   createInvoice: Function,
   creditInvoice: Function,
   creditInvoiceSet: Function,
-  currentLease: Lease,
+  currentLandUseContract: LandUseContract,
   deleteInvoice: Function,
   invoiceToCredit: ?Object,
   isCreateInvoicePanelOpen: boolean,
@@ -54,6 +55,7 @@ type Props = {
   receiveIsCreditInvoicePanelOpen: Function,
   ref?: Function,
   usersPermissions: UsersPermissionsType,
+  invoices: Object,
 }
 
 class CreateAndCreditInvoiceR extends Component <Props> {
@@ -102,22 +104,19 @@ class CreateAndCreditInvoiceR extends Component <Props> {
 
   handleCreateInvoice = (invoice: Object) => {
     const {
-      createCharge,
       createInvoice,
-      currentLease,
+      currentLandUseContract,
+      invoices,
     } = this.props;
-
-    invoice.lease = currentLease.id;
-    if(invoice.tenant === RecipientOptions.ALL) {
-      createCharge({
-        leaseId: currentLease.id,
-        data: getPayloadLeaseCreateCharge(invoice),
-      });
-    } else {
-      // eslint-disable-next-line 
-      const {recipient, ...getInvoiceTenant} = invoice; 
-      createInvoice(getPayloadCreateInvoice(getInvoiceTenant));
-    }
+    console.log(invoice);
+    createInvoice(
+      {
+        recipient: 1,
+        landUseContractInvoice: invoice,
+        currentLandUseContractId: currentLandUseContract.id,
+        invoices: invoices,
+      }
+    ); // TODO MAKE HELPER FUNCTION
   }
 
   handleOpenCreditInvoicePanelButtonClick = () => {
@@ -136,8 +135,8 @@ class CreateAndCreditInvoiceR extends Component <Props> {
   }
 
   handleDeleteInvoicePanelButtonClick = () => {
-    const {invoiceToCredit, deleteInvoice, currentLease} = this.props;
-    deleteInvoice({...invoiceToCredit, lease: currentLease.id});
+    const {invoiceToCredit, deleteInvoice, currentLandUseContract} = this.props;
+    deleteInvoice({...invoiceToCredit, lease: currentLandUseContract.id});
   }
 
   handleSetRefForCreditPanelFirstField = (element: any) => {
@@ -156,7 +155,7 @@ class CreateAndCreditInvoiceR extends Component <Props> {
   }
 
   handleCreditInvoice = (creditInvoiceData: Object) => {
-    const {currentLease, invoiceToCredit} = this.props,
+    const {currentLandUseContract, invoiceToCredit} = this.props,
       isInvoiceSet = this.isInvoiceSet();
 
     if(isInvoiceSet) {
@@ -165,7 +164,7 @@ class CreateAndCreditInvoiceR extends Component <Props> {
       creditInvoiceSet({
         creditData: getCreditInvoiceSetPayload(creditInvoiceData),
         invoiceSetId: invoiceToCredit && invoiceToCredit.id,
-        lease: currentLease.id,
+        lease: currentLandUseContract.id,
       });
     } else {
       const {creditInvoice} = this.props;
@@ -173,7 +172,7 @@ class CreateAndCreditInvoiceR extends Component <Props> {
       creditInvoice({
         creditData: getPayloadCreditInvoice(creditInvoiceData),
         invoiceId: invoiceToCredit && invoiceToCredit.id,
-        lease: currentLease.id,
+        lease: currentLandUseContract.id,
       });
     }
   }
@@ -285,13 +284,14 @@ class CreateAndCreditInvoiceR extends Component <Props> {
 export default flowRight(
   connect(
     (state) => {
-      const currentLease = getCurrentLease(state);
+      const currentLandUseContract = getCurrentLandUseContract(state);
       return {
-        currentLease: currentLease,
+        currentLandUseContract: currentLandUseContract,
         isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
         isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
-        isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
+        isInvoicingEnabled: currentLandUseContract ? currentLandUseContract.is_invoicing_enabled : null,
         usersPermissions: getUsersPermissions(state),
+        invoices: getInvoicesByLandUseContractId(state, currentLandUseContract.id),
       };
     },
     {

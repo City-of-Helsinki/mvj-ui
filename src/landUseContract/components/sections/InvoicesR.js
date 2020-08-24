@@ -11,40 +11,30 @@ import AuthorizationError from '$components/authorization/AuthorizationError';
 import Button from '$components/button/Button';
 import Collapse from '$components/collapse/Collapse';
 import CreateAndCreditInvoiceR from './CreateAndCreditInvoiceR';
-import CreateCollectionLetterR from './CreateCollectionLetterR';
-import DebtCollectionR from './DebtCollectionR';
 import Divider from '$components/content/Divider';
-import InvoiceNotesR from './InvoiceNotesR';
-import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
 import InvoiceTableAndPanelR from './InvoiceTableAndPanelR';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SuccessField from '$components/form/SuccessField';
 import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
-import WarningField from '$components/form/WarningField';
 import {fetchCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/actions';
 import {fetchCollectionLettersByLease} from '$src/collectionLetter/actions';
 import {fetchCollectionNotesByLease} from '$src/collectionNote/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
-import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
+import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/landUseInvoices/actions';
 import {ConfirmationModalTexts, PermissionMissingTexts, ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
-  LeaseInvoiceNotesFieldPaths,
-  LeaseInvoiceNotesFieldTitles,
   LeaseInvoicingFieldPaths,
   LeaseInvoicingFieldTitles,
   LeaseRentsFieldPaths,
-} from '$src/leases/enums';
+} from '$src/leases/enums'; // TODO
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getContentInvoiceNotes} from '$src/leases/helpers';
+import {getContentInvoiceNotes} from '$src/leases/helpers'; // TODO
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {hasPermissions, isFieldAllowedToRead} from '$util/helpers';
-import {getCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/selectors';
-import {getCollectionLettersByLease} from '$src/collectionLetter/selectors';
-import {getCollectionNotesByLease} from '$src/collectionNote/selectors';
 import {
   getInvoiceToCredit,
 } from '$src/invoices/selectors';
@@ -52,20 +42,21 @@ import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
 import {
   getAttributes as getLeaseAttributes,
   getCollapseStateByKey,
-  getCurrentLease,
-} from '$src/leases/selectors';
+} from '$src/landUseInvoices/selectors';
+import {
+  getCurrentLandUseContract,
+} from '$src/landUseContract/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {withLeaseInvoiceTabAttributes} from '$components/attributes/LeaseInvoiceTabAttributes';
-
 import type {Attributes} from '$src/types';
-import type {Lease} from '$src/leases/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
   collectionCourtDecisions: ?Array<Object>,
   collectionLetters: ?Array<Object>,
   collectionNotes: ?Array<Object>,
-  currentLease: Lease,
+  currentLandUseContract: LandUseContract,
   fetchCollectionCourtDecisionsByLease: Function,
   fetchCollectionLettersByLease: Function,
   fetchCollectionNotesByLease: Function,
@@ -91,13 +82,13 @@ type Props = {
 }
 
 type State = {
-  currentLease: Lease,
+  currentLandUseContract: LandUseContract,
   invoiceNotes: Array<Object>,
 }
 
 class InvoicesR extends PureComponent<Props, State> {
   state = {
-    currentLease: {},
+    currentLandUseContract: {},
     invoiceNotes: [],
   }
 
@@ -144,9 +135,9 @@ class InvoicesR extends PureComponent<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
-    if(props.currentLease !== state.currentLease) {
-      newState.currentLease = props.currentLease;
-      newState.invoiceNotes = getContentInvoiceNotes(props.currentLease);
+    if(props.currentLandUseContract !== state.currentLandUseContract) {
+      newState.currentLandUseContract = props.currentLandUseContract;
+      newState.invoiceNotes = getContentInvoiceNotes(props.currentLandUseContract);
     }
     return !isEmpty(newState) ? newState : null;
   }
@@ -182,30 +173,26 @@ class InvoicesR extends PureComponent<Props, State> {
   };
 
   startInvoicing = () => {
-    const {currentLease, startInvoicing} = this.props;
+    const {currentLandUseContract, startInvoicing} = this.props;
 
-    startInvoicing(currentLease.id);
+    startInvoicing(currentLandUseContract.id);
   }
 
   stopInvoicing = () => {
-    const {currentLease, stopInvoicing} = this.props;
+    const {currentLandUseContract, stopInvoicing} = this.props;
 
-    stopInvoicing(currentLease.id);
+    stopInvoicing(currentLandUseContract.id);
   }
 
   render() {
     const {
-      currentLease,
-      invoiceNotesCollapseState,
       invoicesCollapseState,
       invoiceToCredit,
       isFetchingLeaseInvoiceTabAttributes,
       isInvoicingEnabled,
       leaseAttributes,
-      previewInvoicesCollapseState,
       usersPermissions,
     } = this.props;
-    const {invoiceNotes} = this.state;
 
     if(isFetchingLeaseInvoiceTabAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
@@ -253,28 +240,17 @@ class InvoicesR extends PureComponent<Props, State> {
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_IS_INVOICING_ENABLED)}>
                     {isInvoicingEnabled
                       ? <Button className={ButtonColors.NEUTRAL} onClick={handleStopInvoicing} text='Keskeytä laskutus' />
-                      : <Button disabled={!currentLease.is_rent_info_complete} className={ButtonColors.NEUTRAL} onClick={handleStartInvoicing} text='Käynnistä laskutus' />
+                      : <Button className={ButtonColors.NEUTRAL} onClick={handleStartInvoicing} text='Käynnistä laskutus' />
                     }
                   </Authorization>
                 }
                 success={isInvoicingEnabled}
               >
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED) && isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE)}>
-                  {isInvoicingEnabled && currentLease.is_rent_info_complete
-                    ? <SuccessField
-                      meta={{warning: LeaseInvoicingFieldTitles.INVOICING_ENABLED}}
-                      showWarning={true}
-                    />
-                    : currentLease.is_rent_info_complete ?
-                      <WarningField
-                        meta={{warning: LeaseInvoicingFieldTitles.INVOICING_DISABLED}}
-                        showWarning={true}
-                      />
-                      : <WarningField
-                        meta={{warning: 'Tiedot keskeneräiset'}}
-                        showWarning={true}
-                      />
-                  }
+                  <SuccessField
+                    meta={{warning: LeaseInvoicingFieldTitles.INVOICING_ENABLED}}
+                    showWarning={true}
+                  />
                 </Authorization>
               </WarningContainer>
               <Divider />
@@ -295,46 +271,6 @@ class InvoicesR extends PureComponent<Props, State> {
                 </Authorization>
               </Collapse>
 
-              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICENOTE)}>
-                <Collapse
-                  defaultOpen={invoiceNotesCollapseState !== undefined ? invoiceNotesCollapseState : true}
-                  headerTitle={`${LeaseInvoiceNotesFieldTitles.INVOICE_NOTES} (${invoiceNotes.length})`}
-                  onToggle={this.handleInvoiceNotesCollapseToggle}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(LeaseInvoiceNotesFieldPaths.INVOICE_NOTES)}
-                >
-                  <InvoiceNotesR
-                    initialValues={{invoice_notes: invoiceNotes}}
-                    invoiceNotes={invoiceNotes}
-                  />
-                </Collapse>
-              </Authorization>
-
-              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
-                <Collapse
-                  defaultOpen={previewInvoicesCollapseState !== undefined ? previewInvoicesCollapseState : true}
-                  headerTitle={LeaseInvoicingFieldTitles.PREVIEW_INVOICES}
-                  onToggle={this.handlePreviewInvoicesCollapseToggle}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(LeaseInvoicingFieldPaths.PREVIEW_INVOICES)}
-                >
-                  <InvoiceSimulator />
-                </Collapse>
-              </Authorization>
-              <Authorization
-                allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONCOURTDECISION) ||
-                  hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONLETTER) ||
-                  hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONNOTE)}
-              >
-                <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInvoicingFieldPaths.DEBT_COLLECTION)}>
-                  {LeaseInvoicingFieldTitles.DEBT_COLLECTION}
-                </Title>
-                <Divider />
-                <DebtCollectionR />
-                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)}>
-                  <CreateCollectionLetterR />
-                </Authorization>
-              </Authorization>
             </Fragment>
           );
         }}
@@ -348,17 +284,14 @@ export default flowRight(
   withLeaseInvoiceTabAttributes,
   connect(
     (state) => {
-      const currentLease = getCurrentLease(state);
+      const currentLandUseContract = getCurrentLandUseContract(state);
       return {
-        collectionCourtDecisions: getCollectionCourtDecisionsByLease(state, currentLease.id),
-        collectionLetters: getCollectionLettersByLease(state, currentLease.id),
-        collectionNotes: getCollectionNotesByLease(state, currentLease.id),
-        currentLease: currentLease,
-        invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
+        currentLandUseContract: currentLandUseContract,
+        invoiceSets: getInvoiceSetsByLease(state, currentLandUseContract.id),
         invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.invoices`),
         invoiceNotesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.invoice_notes`),
         invoiceToCredit: getInvoiceToCredit(state),
-        isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
+        isInvoicingEnabled: currentLandUseContract ? currentLandUseContract.is_invoicing_enabled : null,
         leaseAttributes: getLeaseAttributes(state),
         previewInvoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.preview_invoices`),
         usersPermissions: getUsersPermissions(state),

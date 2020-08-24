@@ -195,9 +195,45 @@
     },
     "due_date": {
       "type": "date",
-      "required": true,
+      "required": false,
       "read_only": false,
       "label": "Eräpäivä"
+    },
+    "compensation_amount": {
+      "type": "decimal",
+      "required": false,
+      "read_only": false,
+      "label": "Korvauksen määrä (€)",
+      "decimal_places": 2,
+      "max_digits": 10
+    },
+    "billing_amount": {
+      "type": "decimal",
+      "required": false,
+      "read_only": false,
+      "label": "Laskutettava määrä (€)",
+      "decimal_places": 2,
+      "max_digits": 10
+    },
+    "intrest_amount": {
+      "type": "decimal",
+      "required": false,
+      "read_only": false,
+      "label": "Korotuksen määrä (%)",
+      "decimal_places": 2,
+      "max_digits": 10
+    },
+    "sign_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Allekirjoituspvm"
+    },
+    "legal_from_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Kaavamuutoksen lainvoimaisuuspvm"
     },
     "adjusted_due_date": {
       "type": "date",

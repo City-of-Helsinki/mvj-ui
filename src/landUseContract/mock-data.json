@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "is_invoicing_enabled": true,
     "identifier": {
       "type": {
         "id": 33,

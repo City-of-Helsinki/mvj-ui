@@ -22,6 +22,7 @@ import {
   receiveInvoiceToCredit,
   creditInvoice,
   deleteInvoice,
+  receiveCollapseStates,
 } from './actions';
 import invoiceReducer from './reducer';
 
@@ -41,6 +42,7 @@ const defaultState: LandUseInvoicesState = {
   isSaving: false,
   methods: null,
   patchedInvoice: null,
+  collapseStates: {},
 };
 
 // $FlowFixMe
@@ -217,6 +219,15 @@ describe('Land Use Invoices State', () => {
         const state = invoiceReducer({}, creditInvoice({}));
         
         expect(state).to.deep.equal(defaultState);
+      });
+
+      it('should update collapseStates', () => {
+        const newState = {...defaultState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
+
+        let state = invoiceReducer({}, receiveCollapseStates({foo: 'bar'}));
+        state = invoiceReducer(state, receiveCollapseStates({foo2: 'bar2'}));
+
+        expect(state).to.deep.equal(newState);
       });
     });
   });

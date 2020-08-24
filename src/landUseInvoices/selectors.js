@@ -1,4 +1,5 @@
 // @flow
+import get from 'lodash/get';
 import type {Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 import type {Invoice, InvoiceList} from './types';
@@ -43,3 +44,8 @@ export const getInvoiceToCredit: Selector<?string, void> = (state: RootState): ?
 
 export const getPatchedInvoice: Selector<?Invoice, void> = (state: RootState): ?Invoice =>
   state.landUseInvoice.patchedInvoice;
+
+export const getCollapseStateByKey: Selector<?Object, string> = (state: RootState, key: string): ?Object => {
+  return get(state.landUseInvoice.collapseStates, key);
+};
+  
