@@ -53,7 +53,7 @@ const BasicInformation = ({
   const basicInformation = getContentBasicInformation(currentLandUseContract),
     stateOptions = getFieldOptions(attributes, 'state'),
     planAcceptorOptions = getFieldOptions(attributes, 'plan_acceptor'),
-    landUseContractTypeOptions = getFieldOptions(attributes, 'land_use_contract_type'),
+    landUseContractTypeOptions = getFieldOptions(attributes, 'type'),
     landUseContractDefinitionOptions = getFieldOptions(attributes, 'definition'),
     landUseContractStatusOptions = getFieldOptions(attributes, 'status');
 
@@ -80,7 +80,7 @@ const BasicInformation = ({
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
-              title='Määritelmä'
+              title='Maankäyttösopimus päätös (Määritelmä)'
               text={getLabelOfOption(landUseContractDefinitionOptions, basicInformation.definition) || '-'}
             />
           </Column>
@@ -93,13 +93,13 @@ const BasicInformation = ({
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
-              title='Maankäyttösopimus'
-              text={getLabelOfOption(landUseContractTypeOptions, basicInformation.land_use_contract_type) || '-'}
+              title='Maankäyttösopimuksen tyyppi'
+              text={getLabelOfOption(landUseContractTypeOptions, basicInformation.type) || '-'}
             />
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
-              title='Olotila'
+              title='Maankäyttösopimuksen tila (Olotila)'
               text={getLabelOfOption(landUseContractStatusOptions, basicInformation.status) || '-'}
             />
           </Column>
@@ -187,6 +187,12 @@ const BasicInformation = ({
             <FormTitleAndText
               title='Asemakaavan lainvoimaisuuspvm'
               text={formatDate(basicInformation.plan_lawfulness_date) || '-'}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <FormTitleAndText
+              title='Hankealue'
+              text={basicInformation.project_area || '-'}
             />
           </Column>
         </Row>

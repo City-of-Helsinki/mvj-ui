@@ -163,17 +163,17 @@ export const getContentLitigants = (contract: LandUseContract): Array<Object> =>
 export const getContentBasicInformation = (contract: LandUseContract): Object => {
   return {
     id: contract.id,
+    type: contract.type,
     identifier: getContentLandUseContractIdentifier(contract),
     estate_ids: getContentEstateIds(contract),
     preparer: getContentUser(contract.preparer),
     preparer2: getContentUser(contract.preparer2),
-    land_use_contract_type: contract.land_use_contract_type,
     estimated_completion_year: contract.estimated_completion_year,
     estimated_introduction_year: contract.estimated_introduction_year,
     project_area: contract.project_area,
     plan_reference_number: contract.plan_reference_number,
     plan_number: contract.plan_number,
-    plan_acceptor: contract.plan_acceptor,
+    plan_acceptor: get(contract.plan_acceptor, 'id'),
     plan_lawfulness_date: contract.plan_lawfulness_date,
     state: contract.state,
     definition: contract.definition,
@@ -220,7 +220,8 @@ const getContentDecision = (decision: Object) => {
  * @return {Object[]}
  */
 export const getContentDecisions = (contract: LandUseContract): Array<Object> =>
-  get(contract, 'decisions', []).map((decision) => getContentDecision(decision));
+  get(contract, 'decisions', []);
+  // get(contract, 'decisions', []).map((decision) => getContentDecision(decision));
 
 /** 
  * Get contract of land use contract
@@ -376,6 +377,19 @@ export const addLitigantsFormValuesToPayload = (payload: Object, formValues: Obj
   });
 
   return newPayload;
+};
+
+/**
+ * Get plan accepotr name as string
+ * @param {Object} plan_acceptor
+ * @returns {string}
+ */
+export const getPlanAcceptorName = (plan_acceptor: Object): string=> {
+  if(!plan_acceptor) return '';
+
+  return plan_acceptor.name
+    ? `${plan_acceptor.name}`
+    : '-';
 };
 
 /**

@@ -251,7 +251,7 @@ class BasicInformationEdit extends Component<Props> {
                 fieldAttributes={get(attributes, 'definition')}
                 name='definition'
                 overrideValues={{
-                  label: 'Määritelmä',
+                  label: 'Maankäyttösopimus päätös (Määritelmä)',
                 }}  
               />
             </Column>
@@ -281,10 +281,10 @@ class BasicInformationEdit extends Component<Props> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'land_use_contract_type')}
-                name='land_use_contract_type'
+                fieldAttributes={get(attributes, 'type')}
+                name='type'
                 overrideValues={{
-                  label: 'Maankäyttösopimus',
+                  label: 'Maankäyttösopimuksen tyyppi',
                 }}
               />
             </Column>
@@ -294,7 +294,7 @@ class BasicInformationEdit extends Component<Props> {
                 fieldAttributes={get(attributes, 'status')}
                 name='status'
                 overrideValues={{
-                  label: 'Olotila',
+                  label: 'Maankäyttösopimuksen tila (Olotila)',
                 }}
               />
             </Column>
@@ -314,7 +314,7 @@ class BasicInformationEdit extends Component<Props> {
                 fieldAttributes={get(attributes, 'estimated_introduction_year')}
                 name='estimated_introduction_year'
                 overrideValues={{
-                  label: 'Arvioitu toteutumisvuosi',
+                  label: 'Arvioitu esittelyvuosi',
                 }}
               />
             </Column>
@@ -383,6 +383,16 @@ class BasicInformationEdit extends Component<Props> {
                 name='plan_lawfulness_date'
                 overrideValues={{
                   label: 'Asemakaavan lainvoimaisuuspvm',
+                }}
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'project_area')}
+                name='project_area'
+                overrideValues={{
+                  label: 'Hankealue',
                 }}
               />
             </Column>

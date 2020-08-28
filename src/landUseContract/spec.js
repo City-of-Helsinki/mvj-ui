@@ -17,6 +17,7 @@ import {
   receiveFormValidFlags,
   clearFormValidFlags,
   receiveCollapseStates,
+  receiveMethods,
 } from './actions';
 import landUseContractReducer from './reducer';
 
@@ -40,6 +41,7 @@ const baseState: LandUseContractState = {
   isSaveClicked: false,
   list: {},
   byLandUseContract: {},
+  methods: null,
 };
 
 // $FlowFixMe
@@ -69,6 +71,22 @@ describe('Land use contract', () => {
         const newState = {...baseState, attributes: dummyAttributes, isFetchingAttributes: false};
 
         const state = landUseContractReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {
+          PATCH: true,
+          DELETE: true,
+          GET: true,
+          HEAD: true,
+          POST: true,
+          OPTIONS: true,
+          PUT: true,
+        };
+        const newState = {...baseState, methods: dummyMethods};
+
+        const state = landUseContractReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
 

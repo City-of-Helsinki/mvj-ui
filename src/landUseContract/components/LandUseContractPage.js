@@ -23,6 +23,7 @@ import FullWidthContainer from '$components/content/FullWidthContainer';
 import InvoicesR from './sections/InvoicesR';
 // import Invoices from './sections/Invoices';
 // import InvoicesEdit from './sections/InvoicesEdit';
+import {ButtonColors} from '$components/enums';
 import {fetchAttributes as fetchLandUseInvoiceAttributes} from '$src/landUseInvoices/actions';
 import LandUseContractMap from './sections/LandUseContractMap';
 import Litigants from './sections/Litigants';
@@ -49,6 +50,7 @@ import {
   receiveIsSaveClicked,
   receiveSingleLandUseContract,
   showEditMode,
+  deleteLandUseContract,
 } from '$src/landUseContract/actions';
 import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {
@@ -130,6 +132,7 @@ type Props = {
   fetchLandUseInvoiceAttributes: Function,
   isFetchingLandUseInvoiceAttributes: boolean,
   landUseInvoiceAttributes: Attributes,
+  deleteLandUseContract: Function,
 }
 
 type State = {
@@ -521,6 +524,7 @@ class LandUseContractPage extends Component<Props, State> {
         payload = {...payload, ...basicInformationFormValues};
       }
 
+      // MASSIVE TODO
       if(isDecisionsFormDirty) {
         payload = {...payload, ...decisionsFormValues};
       }
@@ -542,6 +546,9 @@ class LandUseContractPage extends Component<Props, State> {
       }
 
       payload.identifier = currentLandUseContract.identifier;
+
+      payload.decisions = null;
+
       editLandUseContract(payload);
     }
   }
@@ -600,6 +607,15 @@ class LandUseContractPage extends Component<Props, State> {
     this.setState({
       [modalVisibilityKey]: true,
     });
+  }
+
+  handleDelete = () => {
+    const {
+      deleteLandUseContract,
+      match: {params},
+    } = this.props;
+
+    deleteLandUseContract(params.landUseContractId);
   }
 
   destroyAllForms = () => {
@@ -661,6 +677,14 @@ class LandUseContractPage extends Component<Props, State> {
                 onSave={this.saveChanges}
                 showCommentButton={false}
                 showCopyButton={false}
+                onDelete={this.handleDelete}
+                deleteModalTexts={{
+                  buttonClassName: ButtonColors.ALERT,
+                  buttonText: ConfirmationModalTexts.DELETE_LAND_USE_CONTRACT.BUTTON,
+                  label: ConfirmationModalTexts.DELETE_LAND_USE_CONTRACT.LABEL,
+                  title: ConfirmationModalTexts.DELETE_LAND_USE_CONTRACT.TITLE,
+                }}
+                allowDelete={true}
               />
             }
             infoComponent={<h1>{identifier}</h1>}
@@ -825,6 +849,7 @@ export default flowRight(
       receiveSingleLandUseContract,
       receiveTopNavigationSettings,
       showEditMode,
+      deleteLandUseContract,
     }
   ),
 )(LandUseContractPage);

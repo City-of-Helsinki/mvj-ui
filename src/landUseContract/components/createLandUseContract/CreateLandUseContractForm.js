@@ -12,8 +12,6 @@ import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {getDistrictOptions} from '$src/district/helpers';
-import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/types';
@@ -29,12 +27,15 @@ type Props = {
   onClose: Function,
   onSubmit: Function,
   valid: boolean,
+  definition: string,
+  status: string,
+  type: string,
 }
 
 class CreateLandUseContractForm extends Component<Props> {
   firstField: any
 
-  componentDidUpdate(prevProps) {
+  /*   componentDidUpdate(prevProps) {
     if(this.props.municipality !== prevProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
 
@@ -45,46 +46,53 @@ class CreateLandUseContractForm extends Component<Props> {
         change('district', '');
       }
     }
-  }
+  } */
 
   setRefForFirstField = (element: any) => {
     this.firstField = element;
   }
 
   setFocus = () => {
-    this.firstField.focus();
+    // this.firstField.focus();
   }
 
   handleCreate = () => {
     const {
-      municipality,
-      district,
+      // municipality,
+      // district,
       onSubmit,
+      definition,
+      status,
+      type,
     } = this.props;
 
     onSubmit({
-      municipality: municipality,
-      district: district,
+      // municipality: municipality,
+      // district: district,
+      definition: definition,
+      status: status,
+      type: type,
     });
   };
 
   render() {
     const {
       attributes,
-      districts,
+      // districts,
       onClose,
       valid,
     } = this.props;
 
-    const districtOptions = getDistrictOptions(districts);
-
+    // const districtOptions = getDistrictOptions(districts);
+    console.log(attributes);
     return (
       <form>
         <Row>
+          {/*
           <Column small={4}>
             <FormField
               setRefForField={this.setRefForFirstField}
-              fieldAttributes={get(attributes, 'municipality')}
+              fieldAttributes={get(attributes, 'identifier.children.municipality')}
               name='municipality'
               overrideValues={{
                 label: 'Kunta',
@@ -93,12 +101,31 @@ class CreateLandUseContractForm extends Component<Props> {
           </Column>
           <Column small={4}>
             <FormField
-              fieldAttributes={get(attributes, 'district')}
+              fieldAttributes={get(attributes, 'identifier.children.district')}
               name='district'
               overrideValues={{
                 label: 'Kaupunginosa',
                 options: districtOptions,
               }}
+            />
+          </Column> 
+          */}
+          <Column small={4}>
+            <FormField
+              fieldAttributes={get(attributes, 'definition')}
+              name='definition'
+            />
+          </Column>
+          <Column small={4}>
+            <FormField
+              fieldAttributes={get(attributes, 'status')}
+              name='status'
+            />
+          </Column>
+          <Column small={4}>
+            <FormField
+              fieldAttributes={get(attributes, 'type')}
+              name='type'
             />
           </Column>
         </Row>
@@ -126,12 +153,15 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     (state) => {
-      const municipality = selector(state, 'municipality');
+      // const municipality = selector(state, 'municipality');
       return {
         attributes: getAttributes(state),
-        district: selector(state, 'district'),
-        districts: getDistrictsByMunicipality(state, municipality),
-        municipality: municipality,
+        // district: selector(state, 'district'),
+        status: selector(state, 'status'),
+        type: selector(state, 'type'),
+        definition: selector(state, 'definition'),
+        // districts: getDistrictsByMunicipality(state, municipality),
+        // municipality: municipality,
       };
     },
     {

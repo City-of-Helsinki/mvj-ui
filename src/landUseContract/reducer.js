@@ -15,6 +15,8 @@ import type {
   ReceiveSingleLandUseContractAction,
   ReceiveIsSaveClickedAction,
   ReceiveCollapseStatesAction,
+  ReceiveMethodsAction,
+  Methods,
 } from './types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -36,12 +38,21 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/landUseContract/CREATE']: () => true,
   ['mvj/landUseContract/EDIT']: () => true,
   ['mvj/landUseContract/NOT_FOUND']: () => false,
+  // 'mvj/landUseContract/DELETE': () => true, // TODO: check if this flag need to be raised
 }, false);
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/landUseContract/RECEIVE_METHODS']: () => false,
   ['mvj/landUseContract/FETCH_ATTRIBUTES']: () => true,
   ['mvj/landUseContract/RECEIVE_ATTRIBUTES']: () => false,
+  ['mvj/landUseContract/ATTRIBUTES_NOT_FOUND']: () => false,
 }, false);
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/landUseContract/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
+  },
+}, null);
 
 const landUseContractListReducer: Reducer<LandUseContractList> = handleActions({
   ['mvj/landUseContract/RECEIVE_ALL']: (state: LandUseContractList, {payload: list}: ReceiveLandUseContractListAction) => list,
@@ -99,4 +110,5 @@ export default combineReducers<Object, any>({
   isFormValidById: isFormValidByIdReducer,
   isSaveClicked: isSaveClickedReducer,
   list: landUseContractListReducer,
+  methods: methodsReducer,
 });
