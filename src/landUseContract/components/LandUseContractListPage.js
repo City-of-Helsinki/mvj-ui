@@ -172,7 +172,6 @@ class LandUseContractListPage extends Component<Props, State> {
   }
 
   handleCreateLease = (landUseContract: LandUseContract) => {
-    console.log(landUseContract);
     const {createLandUseContract} = this.props;
     createLandUseContract(landUseContract);
   }

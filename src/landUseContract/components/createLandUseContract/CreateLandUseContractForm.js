@@ -84,7 +84,6 @@ class CreateLandUseContractForm extends Component<Props> {
     } = this.props;
 
     // const districtOptions = getDistrictOptions(districts);
-    console.log(attributes);
     return (
       <form>
         <Row>

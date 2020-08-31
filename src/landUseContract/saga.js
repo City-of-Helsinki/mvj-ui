@@ -74,7 +74,6 @@ function* fetchLandUseContractsSaga({payload: search}): Generator<any, any, any>
 function* fetchSingleLandUseContractSaga({payload: contractId}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleLandUseContract, contractId);
-    console.log(bodyAsJson);
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLandUseContract(bodyAsJson));
@@ -95,8 +94,6 @@ function* fetchSingleLandUseContractSaga({payload: contractId}): Generator<any, 
 }
 
 function* createLandUseContractSaga({payload: landUseContract}): Generator<any, any, any> {
-  console.log(landUseContract);
-
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(createLandUseContract, landUseContract);
 

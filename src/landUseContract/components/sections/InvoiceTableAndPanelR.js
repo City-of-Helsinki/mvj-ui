@@ -171,9 +171,6 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
   }
 
   getColumns = (invoiceAttributes: Attributes, invoiceSets: ?InvoiceSetList, usersPermissions: UsersPermissionsType) => {
-
-    console.log(invoiceAttributes, invoiceSets); // TODO GET ATTRIBUTES ANDS SETS
-
     const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
     const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
     const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);

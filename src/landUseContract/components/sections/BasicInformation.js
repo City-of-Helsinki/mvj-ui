@@ -80,7 +80,7 @@ const BasicInformation = ({
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
-              title='Maankäyttösopimus päätös (Määritelmä)'
+              title='Maankäyttösopimus päätös'
               text={getLabelOfOption(landUseContractDefinitionOptions, basicInformation.definition) || '-'}
             />
           </Column>
@@ -99,7 +99,7 @@ const BasicInformation = ({
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
-              title='Maankäyttösopimuksen tila (Olotila)'
+              title='Maankäyttösopimuksen tila'
               text={getLabelOfOption(landUseContractStatusOptions, basicInformation.status) || '-'}
             />
           </Column>

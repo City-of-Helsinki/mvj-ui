@@ -108,7 +108,6 @@ class CreateAndCreditInvoiceR extends Component <Props> {
       currentLandUseContract,
       invoices,
     } = this.props;
-    console.log(invoice);
     createInvoice(
       {
         recipient: 1,

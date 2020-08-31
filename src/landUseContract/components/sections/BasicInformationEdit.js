@@ -251,7 +251,7 @@ class BasicInformationEdit extends Component<Props> {
                 fieldAttributes={get(attributes, 'definition')}
                 name='definition'
                 overrideValues={{
-                  label: 'Maankäyttösopimus päätös (Määritelmä)',
+                  label: 'Maankäyttösopimus päätös',
                 }}  
               />
             </Column>
@@ -294,7 +294,7 @@ class BasicInformationEdit extends Component<Props> {
                 fieldAttributes={get(attributes, 'status')}
                 name='status'
                 overrideValues={{
-                  label: 'Maankäyttösopimuksen tila (Olotila)',
+                  label: 'Maankäyttösopimuksen tila',
                 }}
               />
             </Column>
