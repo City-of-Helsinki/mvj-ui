@@ -54,6 +54,7 @@ import {
   getContentPropertyListResults,
 } from '$src/property/helpers';
 import type {Property, PropertyList} from '$src/property/types';
+import CreatePlotSearchModal from './CreatePlotSearchModal';
 import {FormNames} from '$src/enums';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import {withPropertyAttributes} from '$components/attributes/PropertyAttributes';
@@ -96,6 +97,7 @@ type State = {
   sortOrder: string,
   maxPage: number,
   selectedStates: Array<string>,
+  isModalOpen: boolean,
 }
 
 class PropertyListPage extends PureComponent<Props, State> {
@@ -112,6 +114,7 @@ class PropertyListPage extends PureComponent<Props, State> {
     isSearchInitialized: false,
     maxPage: 0,
     selectedStates: [],
+    isModalOpen: false,
   }
 
   static contextTypes = {
@@ -162,7 +165,7 @@ class PropertyListPage extends PureComponent<Props, State> {
     const stepOptions = getFieldOptions(propertyAttributes, 'step');
 
     columns.push({
-      key: 'search_name',
+      key: 'name',
       text: 'Haku',
       sortable: false,
     });
@@ -239,11 +242,11 @@ class PropertyListPage extends PureComponent<Props, State> {
     fetchPropertyList(getSearchQuery(searchQuery));
   }
 
-  handleRowClick = () => {
+  handleRowClick = (id) => {
     const {history, location: {search}} = this.props;
 
     return history.push({
-      pathname: `${getRouteById(Routes.PROPERTY)}/1`,
+      pathname: `${getRouteById(Routes.PROPERTY)}/${id}`,
       search: search,
     });
   }
@@ -266,9 +269,21 @@ class PropertyListPage extends PureComponent<Props, State> {
     });
   }
 
-  handleCreateProperty = (property: Property) => {
+  handleCreatePlotSearch = (plot_search: Property) => {
     const {createProperty} = this.props;
-    createProperty(property);
+    createProperty(plot_search);
+  }
+
+  openModalhandleCreatePlotSearch = () => {
+    const {initialize} = this.props;
+
+    this.setState({isModalOpen: true});
+
+    initialize(FormNames.PLOT_SEARCH_CREATE, {});
+  }
+
+  hideCreatePlotSearchModal = () => {
+    this.setState({isModalOpen: false});
   }
 
   handleSearchChange = (query: Object) => {
@@ -353,6 +368,7 @@ class PropertyListPage extends PureComponent<Props, State> {
       propertyStates,
       sortKey,
       sortOrder,
+      isModalOpen,
     } = this.state;
 
     const columns = this.getColumns();
@@ -369,12 +385,17 @@ class PropertyListPage extends PureComponent<Props, State> {
 
     return (
       <PageContainer>
+        <CreatePlotSearchModal
+          isOpen={isModalOpen}
+          onClose={this.hideCreatePlotSearchModal}
+          onSubmit={this.handleCreatePlotSearch}
+        />
         <Row>
           <Column small={12} large={4}>
             <AddButtonSecondary
               className='no-top-margin'
               label='Luo tonttihaku'
-              onClick={this.handleCreateProperty}
+              onClick={this.openModalhandleCreatePlotSearch}
             />
           </Column>
           <Column small={12} large={8}>

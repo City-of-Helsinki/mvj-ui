@@ -3,13 +3,19 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-const PropertyInfo = () => {
+type Props = {
+  title: string,
+}
+
+const PropertyInfo = ({
+  title,
+}: Props) => {
 
   return (
     <div className='lease-info'>
       <Row>
         <Column>
-          <h1 className='lease-info__identifier'>{'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}</h1>
+          <h1 className='lease-info__identifier'>{title}</h1>
         </Column>
       </Row>
     </div>

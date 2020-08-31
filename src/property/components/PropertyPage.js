@@ -469,6 +469,7 @@ class PropertyPage extends Component<Props, State> {
       isApplicationFormDirty,
       isApplicationFormValid,
       isSaveClicked,
+      currentProperty,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
@@ -496,9 +497,10 @@ class PropertyPage extends Component<Props, State> {
                 showCopyButton={false}
               />
             }
-            infoComponent={<PropertyInfo/>}
+            infoComponent={<PropertyInfo title={currentProperty.name}/>}
             onBack={this.handleBack}
           />
+          {console.log(currentProperty)}
 
           <Tabs
             active={activeTab}

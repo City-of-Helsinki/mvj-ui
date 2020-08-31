@@ -220,8 +220,7 @@ const getContentDecision = (decision: Object) => {
  * @return {Object[]}
  */
 export const getContentDecisions = (contract: LandUseContract): Array<Object> =>
-  get(contract, 'decisions', []);
-  // get(contract, 'decisions', []).map((decision) => getContentDecision(decision));
+  get(contract, 'decisions', []).map((decision) => getContentDecision(decision));
 
 /** 
  * Get contract of land use contract

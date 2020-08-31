@@ -3,7 +3,7 @@ import merge from 'lodash/merge';
 
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
-import type {Attributes, Reducer} from '$src/types';
+import type {Attributes, Reducer, Methods} from '$src/types';
 import {FormNames} from '$src/enums';
 
 import type {
@@ -15,6 +15,7 @@ import type {
   ReceivePropertyListAction,
   ReceiveSinglePropertyAction,
   ReceiveFormValidFlagsAction,
+  ReceiveMethodsAction,
 } from '$src/property/types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -42,7 +43,15 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/property/FETCH_ATTRIBUTES']: () => true,
   ['mvj/property/RECEIVE_ATTRIBUTES']: () => false,
+  ['mvj/property/ATTRIBUTES_NOT_FOUND']: () => false,
+  ['mvj/property/RECEIVE_METHODS']: () => false,
 }, false);
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/property/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
+  },
+}, null);
 
 const propertyListReducer: Reducer<PropertyList> = handleActions({
   ['mvj/property/RECEIVE_ALL']: (state: PropertyList, {payload: list}: ReceivePropertyListAction) => list,
@@ -92,5 +101,6 @@ export default combineReducers<Object, any>({
   isFormValidById: isFormValidByIdReducer,
   isSaveClicked: isSaveClickedReducer,
   list: propertyListReducer,
+  methods: methodsReducer,
 });
 

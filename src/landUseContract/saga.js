@@ -27,13 +27,16 @@ import {
   deleteLandUseContract,
 } from './requests';
 
+import attributesMockData from './attributes-mock-data.json';
+import mockData from './mock-data.json';
+
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
 
     switch (statusCode) {
       case 200:
-        const attributes = bodyAsJson.fields;
+        const attributes = {...bodyAsJson.fields, litigants: attributesMockData.fields.litigants, decisions: attributesMockData.fields.decisions, contracts: mockData[0].contracts};
         const methods = bodyAsJson.methods;
 
         yield put(receiveAttributes(attributes));
@@ -76,7 +79,7 @@ function* fetchSingleLandUseContractSaga({payload: contractId}): Generator<any, 
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleLandUseContract, contractId);
     switch (statusCode) {
       case 200:
-        yield put(receiveSingleLandUseContract(bodyAsJson));
+        yield put(receiveSingleLandUseContract({...bodyAsJson, litigants: mockData[0].litigants, decisions: mockData[0].decisions, contracts: mockData[0].contracts}));
         break;
       case 404:
         yield put(notFound());

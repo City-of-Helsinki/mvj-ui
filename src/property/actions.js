@@ -1,7 +1,7 @@
 // @flow
 import {createAction} from 'redux-actions';
+import type {Attributes, Methods} from '$src/types';
 
-import type {Attributes} from '$src/types';
 import type {
   CreatePropertyAction,
   EditPropertyAction,
@@ -21,10 +21,18 @@ import type {
   ReceiveCollapseStatesAction,
   ClearFormValidFlagsAction,
   PropertyNotFoundAction,
+  ReceiveMethodsAction,
+  PropertyAttributesNotFoundAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/property/FETCH_ATTRIBUTES')();
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/property/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): PropertyAttributesNotFoundAction =>
+  createAction('mvj/property/ATTRIBUTES_NOT_FOUND')();
 
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
   createAction('mvj/property/RECEIVE_ATTRIBUTES')(attributes);

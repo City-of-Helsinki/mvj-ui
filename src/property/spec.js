@@ -2,6 +2,7 @@
 import {expect} from 'chai';
 
 import {
+  attributesNotFound,
   fetchAttributes,
   receiveAttributes,
   fetchPropertyList,
@@ -17,6 +18,7 @@ import {
   receiveIsSaveClicked,
   receiveFormValidFlags,
   clearFormValidFlags,
+  receiveMethods,
 } from './actions';
 
 import propertyReducer from './reducer';
@@ -36,6 +38,7 @@ const baseState: PropertyState = {
   },
   isSaveClicked: false,
   list: {},
+  methods: null,
 };
 
 
@@ -176,6 +179,30 @@ describe('Property', () => {
 
         let state = propertyReducer({}, receiveFormValidFlags({['property-basic-information-form']: false}));
         state = propertyReducer(state, clearFormValidFlags());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...baseState, isFetchingAttributes: false};
+
+        let state = propertyReducer({}, fetchAttributes());
+        state = propertyReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {
+          PATCH: true,
+          DELETE: true,
+          GET: true,
+          HEAD: true,
+          POST: true,
+          OPTIONS: true,
+          PUT: true,
+        };
+        const newState = {...baseState, methods: dummyMethods};
+
+        const state = propertyReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
 

@@ -130,7 +130,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle >
                     {PropertyFieldTitles.START_DATE}
                   </FormTextTitle>
-                  <FormText>{property.start_date}</FormText>
+                  <FormText>{property.start_at}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
                   <FormTextTitle>
@@ -142,7 +142,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle>
                     {PropertyFieldTitles.END_DATE}
                   </FormTextTitle>
-                  <FormText>{property.end_date}</FormText>
+                  <FormText>{property.end_at}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={1}>
                   <FormTextTitle>

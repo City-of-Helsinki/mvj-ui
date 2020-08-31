@@ -255,18 +255,18 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <Column small={12} large={8}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'search_name')}
-                    name='search_name'
+                    fieldAttributes={get(attributes, 'name')}
+                    name='name'
                     overrideValues={{label: PropertyFieldTitles.NAME}}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
+                  {console.log(attributes)}
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'preparer')}
                     name='preparer'
                     overrideValues={{
-                      fieldType: 'choice',
                       label: PropertyFieldTitles.PREPARER,
                     }}
                   />
@@ -296,8 +296,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <Column small={6} medium={4} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'start_date')}
-                    name='start_date'
+                    fieldAttributes={get(attributes, 'begin_at')}
+                    name='begin_at'
                     overrideValues={{label: PropertyFieldTitles.START_DATE}}
                   />
                 </Column>
@@ -312,8 +312,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <Column small={6} medium={4} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'end_date')}
-                    name='end_date'
+                    fieldAttributes={get(attributes, 'end_at')}
+                    name='end_at'
                     overrideValues={{label: PropertyFieldTitles.END_DATE}}
                   />
                 </Column>

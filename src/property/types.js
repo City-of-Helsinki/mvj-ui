@@ -1,5 +1,5 @@
 // @flow
-import type {Action, Attributes} from '../types';
+import type {Action, Attributes, Methods} from '../types';
 
 export type PropertyState = {
   attributes: Attributes,
@@ -11,6 +11,7 @@ export type PropertyState = {
   collapseStates: Object,
   isSaveClicked: boolean,
   isFormValidById: Object,
+  methods: Object,
 };
 
 export type PropertyId = number;
@@ -19,6 +20,8 @@ export type PropertyList = Object;
 
 export type FetchAttributesAction = Action<'mvj/property/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/property/RECEIVE_ATTRIBUTES', Attributes>;
+export type ReceiveMethodsAction = Action<'mvj/property/RECEIVE_METHODS', Methods>;
+export type PropertyAttributesNotFoundAction = Action<'mvj/property/ATTRIBUTES_NOT_FOUND', void>;
 
 export type CreatePropertyAction = Action<'mvj/property/CREATE', Property>;
 export type EditPropertyAction = Action<'mvj/property/EDIT', Property>;
