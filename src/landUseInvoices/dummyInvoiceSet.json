@@ -1,0 +1,2619 @@
+[
+  {
+    "id": 540809,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 540809,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2013-01-01",
+        "billing_period_end_date": "2013-12-31",
+        "description": null,
+        "amount": "2300.00"
+      }
+    ],
+    "payments": [
+      {
+        "id": 554248,
+        "created_at": "2019-09-20T11:45:30.742141+03:00",
+        "modified_at": "2020-02-13T14:50:48.559775+02:00",
+        "paid_amount": "2300.00",
+        "paid_date": "2013-04-15",
+        "filing_code": null,
+        "invoice": 540809
+      }
+    ],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2019-09-20T11:45:30.727036+03:00",
+    "modified_at": "2020-02-13T14:50:48.587166+02:00",
+    "number": 410837,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2013-04-30",
+    "adjusted_due_date": null,
+    "invoicing_date": "2013-04-16",
+    "state": "paid",
+    "billing_period_start_date": "2013-01-01",
+    "billing_period_end_date": "2013-12-31",
+    "postpone_date": null,
+    "total_amount": "2300.00",
+    "billed_amount": "2300.00",
+    "outstanding_amount": "0.00",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": "mail",
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": null,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 610941,
+    "recipient": {
+      "id": 30793,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.558914+03:00",
+      "modified_at": "2019-09-20T11:45:30.558933+03:00",
+      "type": "person",
+      "first_name": "DANIELA MADELEINE",
+      "last_name": "BRUNNER-SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HAFENRAINSTRASSE 55",
+      "postal_code": "4104",
+      "city": null,
+      "country": "FI",
+      "email": null,
+      "phone": "",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": null
+    },
+    "rows": [
+      {
+        "id": 610966,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2013-01-01",
+        "billing_period_end_date": "2013-04-14",
+        "description": null,
+        "amount": "327.67"
+      }
+    ],
+    "payments": [],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2020-02-13T12:18:38.468066+02:00",
+    "modified_at": "2020-02-13T12:18:38.468093+02:00",
+    "number": null,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2020-03-01",
+    "adjusted_due_date": null,
+    "invoicing_date": "2020-02-13",
+    "state": "open",
+    "billing_period_start_date": "2013-01-01",
+    "billing_period_end_date": "2013-12-31",
+    "postpone_date": null,
+    "total_amount": "16100.00",
+    "billed_amount": "327.67",
+    "outstanding_amount": "327.67",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": null,
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": 8,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 610940,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 610965,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2019-01-01",
+        "billing_period_end_date": "2019-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610964,
+        "tenant": {
+          "id": 38982,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68503,
+              "type": "tenant",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30287,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2019-01-01",
+        "billing_period_end_date": "2019-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610963,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2018-01-01",
+        "billing_period_end_date": "2018-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610962,
+        "tenant": {
+          "id": 38982,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68503,
+              "type": "tenant",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30287,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2018-01-01",
+        "billing_period_end_date": "2018-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610961,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2017-01-01",
+        "billing_period_end_date": "2017-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610960,
+        "tenant": {
+          "id": 38982,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68503,
+              "type": "tenant",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30287,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2017-01-01",
+        "billing_period_end_date": "2017-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610959,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2016-01-01",
+        "billing_period_end_date": "2016-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610958,
+        "tenant": {
+          "id": 38982,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68503,
+              "type": "tenant",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30287,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2016-01-01",
+        "billing_period_end_date": "2016-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610957,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2015-01-01",
+        "billing_period_end_date": "2015-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610956,
+        "tenant": {
+          "id": 38982,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68503,
+              "type": "tenant",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30287,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2015-01-01",
+        "billing_period_end_date": "2015-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610955,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2014-01-01",
+        "billing_period_end_date": "2014-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610954,
+        "tenant": {
+          "id": 38982,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68503,
+              "type": "tenant",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30287,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2014-01-01",
+        "billing_period_end_date": "2014-12-31",
+        "description": null,
+        "amount": "1150.00"
+      },
+      {
+        "id": 610953,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2013-04-15",
+        "billing_period_end_date": "2013-12-31",
+        "description": null,
+        "amount": "822.33"
+      },
+      {
+        "id": 610952,
+        "tenant": {
+          "id": 38982,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68503,
+              "type": "tenant",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30287,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2013-01-01",
+        "billing_period_end_date": "2013-12-31",
+        "description": null,
+        "amount": "1150.00"
+      }
+    ],
+    "payments": [],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2020-02-13T12:18:38.330609+02:00",
+    "modified_at": "2020-02-13T12:18:38.330663+02:00",
+    "number": null,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2020-03-01",
+    "adjusted_due_date": null,
+    "invoicing_date": "2020-02-13",
+    "state": "open",
+    "billing_period_start_date": "2013-01-01",
+    "billing_period_end_date": "2019-12-31",
+    "postpone_date": null,
+    "total_amount": "16100.00",
+    "billed_amount": "15772.33",
+    "outstanding_amount": "15772.33",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": null,
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": 8,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 610933,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 610943,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": null,
+        "billing_period_end_date": null,
+        "description": null,
+        "amount": "123.00"
+      }
+    ],
+    "payments": [
+      {
+        "id": 620601,
+        "created_at": "2020-01-14T10:03:15.463742+02:00",
+        "modified_at": "2020-01-14T10:03:15.463761+02:00",
+        "paid_amount": "23.00",
+        "paid_date": "2020-01-14",
+        "filing_code": null,
+        "invoice": 610933
+      },
+      {
+        "id": 620600,
+        "created_at": "2020-01-14T10:02:31.811868+02:00",
+        "modified_at": "2020-01-14T10:03:15.460825+02:00",
+        "paid_amount": "100.00",
+        "paid_date": "2020-01-14",
+        "filing_code": null,
+        "invoice": 610933
+      }
+    ],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2020-01-14T10:01:51.201547+02:00",
+    "modified_at": "2020-01-14T10:03:15.485785+02:00",
+    "number": null,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2020-01-31",
+    "adjusted_due_date": null,
+    "invoicing_date": "2020-01-14",
+    "state": "paid",
+    "billing_period_start_date": "2020-01-31",
+    "billing_period_end_date": "2020-01-31",
+    "postpone_date": null,
+    "total_amount": "123.00",
+    "billed_amount": "123.00",
+    "outstanding_amount": "0.00",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": null,
+    "type": "charge",
+    "notes": "",
+    "generated": false,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": null,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 540810,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 540810,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2014-01-01",
+        "billing_period_end_date": "2014-12-31",
+        "description": null,
+        "amount": "2300.00"
+      }
+    ],
+    "payments": [
+      {
+        "id": 554249,
+        "created_at": "2019-09-20T11:45:30.758073+03:00",
+        "modified_at": "2019-09-20T11:45:30.758091+03:00",
+        "paid_amount": "2300.00",
+        "paid_date": "2014-04-13",
+        "filing_code": null,
+        "invoice": 540810
+      }
+    ],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2019-09-20T11:45:30.747257+03:00",
+    "modified_at": "2019-09-20T11:45:30.747274+03:00",
+    "number": 431671,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2014-04-30",
+    "adjusted_due_date": null,
+    "invoicing_date": "2014-03-05",
+    "state": "paid",
+    "billing_period_start_date": "2014-01-01",
+    "billing_period_end_date": "2014-12-31",
+    "postpone_date": null,
+    "total_amount": "2300.00",
+    "billed_amount": "2300.00",
+    "outstanding_amount": "0.00",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": "mail",
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": null,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 540811,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 540811,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2015-01-01",
+        "billing_period_end_date": "2015-12-31",
+        "description": null,
+        "amount": "2300.00"
+      }
+    ],
+    "payments": [
+      {
+        "id": 554250,
+        "created_at": "2019-09-20T11:45:30.772675+03:00",
+        "modified_at": "2019-09-20T11:45:30.772693+03:00",
+        "paid_amount": "2300.00",
+        "paid_date": "2015-04-19",
+        "filing_code": null,
+        "invoice": 540811
+      }
+    ],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2019-09-20T11:45:30.762812+03:00",
+    "modified_at": "2019-09-20T11:45:30.762829+03:00",
+    "number": 457378,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2015-04-30",
+    "adjusted_due_date": null,
+    "invoicing_date": "2015-03-02",
+    "state": "paid",
+    "billing_period_start_date": "2015-01-01",
+    "billing_period_end_date": "2015-12-31",
+    "postpone_date": null,
+    "total_amount": "2300.00",
+    "billed_amount": "2300.00",
+    "outstanding_amount": "0.00",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": "mail",
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": null,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 540812,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 540812,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2016-01-01",
+        "billing_period_end_date": "2016-12-31",
+        "description": null,
+        "amount": "2300.00"
+      }
+    ],
+    "payments": [
+      {
+        "id": 554251,
+        "created_at": "2019-09-20T11:45:30.787495+03:00",
+        "modified_at": "2019-09-20T11:45:30.787514+03:00",
+        "paid_amount": "2300.00",
+        "paid_date": "2016-04-20",
+        "filing_code": null,
+        "invoice": 540812
+      }
+    ],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2019-09-20T11:45:30.777321+03:00",
+    "modified_at": "2019-09-20T11:45:30.777337+03:00",
+    "number": 484716,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2016-04-30",
+    "adjusted_due_date": null,
+    "invoicing_date": "2016-03-01",
+    "state": "paid",
+    "billing_period_start_date": "2016-01-01",
+    "billing_period_end_date": "2016-12-31",
+    "postpone_date": null,
+    "total_amount": "2300.00",
+    "billed_amount": "2300.00",
+    "outstanding_amount": "0.00",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": "mail",
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": null,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 540813,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 540813,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2017-01-01",
+        "billing_period_end_date": "2017-12-31",
+        "description": null,
+        "amount": "2300.00"
+      }
+    ],
+    "payments": [
+      {
+        "id": 554252,
+        "created_at": "2019-09-20T11:45:30.802406+03:00",
+        "modified_at": "2019-09-20T11:45:30.802426+03:00",
+        "paid_amount": "2300.00",
+        "paid_date": "2017-04-16",
+        "filing_code": null,
+        "invoice": 540813
+      }
+    ],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2019-09-20T11:45:30.792342+03:00",
+    "modified_at": "2019-09-20T11:45:30.792358+03:00",
+    "number": 615622,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2017-04-30",
+    "adjusted_due_date": null,
+    "invoicing_date": "2017-03-01",
+    "state": "paid",
+    "billing_period_start_date": "2017-01-01",
+    "billing_period_end_date": "2017-12-31",
+    "postpone_date": null,
+    "total_amount": "2300.00",
+    "billed_amount": "2300.00",
+    "outstanding_amount": "0.00",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": "mail",
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": null,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 540814,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 540814,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2018-01-01",
+        "billing_period_end_date": "2018-12-31",
+        "description": null,
+        "amount": "2300.00"
+      }
+    ],
+    "payments": [
+      {
+        "id": 554253,
+        "created_at": "2019-09-20T11:45:30.817114+03:00",
+        "modified_at": "2019-09-20T11:45:30.817137+03:00",
+        "paid_amount": "2300.00",
+        "paid_date": "2018-04-16",
+        "filing_code": null,
+        "invoice": 540814
+      }
+    ],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2019-09-20T11:45:30.807675+03:00",
+    "modified_at": "2019-09-20T11:45:30.807692+03:00",
+    "number": 644892,
+    "sent_to_sap_at": null,
+    "sap_id": null,
+    "due_date": "2018-04-30",
+    "adjusted_due_date": null,
+    "invoicing_date": "2018-03-08",
+    "state": "paid",
+    "billing_period_start_date": "2018-01-01",
+    "billing_period_end_date": "2018-12-31",
+    "postpone_date": null,
+    "total_amount": "2300.00",
+    "billed_amount": "2300.00",
+    "outstanding_amount": "0.00",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": "mail",
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": null,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  },
+  {
+    "id": 540815,
+    "recipient": {
+      "id": 30792,
+      "deleted": null,
+      "created_at": "2019-09-20T11:45:30.529966+03:00",
+      "modified_at": "2019-09-20T15:07:49.211916+03:00",
+      "type": "person",
+      "first_name": "MIKAEL PHILIP",
+      "last_name": "SVARTSTRÖM",
+      "name": null,
+      "care_of": null,
+      "business_id": null,
+      "address": "HIRSIKERRANTIE 8 M 17",
+      "postal_code": "02330",
+      "city": "ESPOO",
+      "country": "FI",
+      "email": null,
+      "phone": "050 554 3443",
+      "language": "fi",
+      "national_identification_number": null,
+      "address_protection": false,
+      "sap_customer_number": null,
+      "electronic_billing_address": null,
+      "partner_code": null,
+      "is_lessor": false,
+      "sap_sales_office": null,
+      "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+    },
+    "rows": [
+      {
+        "id": 540815,
+        "tenant": {
+          "id": 38983,
+          "share_numerator": 1,
+          "share_denominator": 2,
+          "reference": null,
+          "tenantcontact_set": [
+            {
+              "id": 68506,
+              "type": "billing",
+              "contact": {
+                "id": 30792,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.529966+03:00",
+                "modified_at": "2019-09-20T15:07:49.211916+03:00",
+                "type": "person",
+                "first_name": "MIKAEL PHILIP",
+                "last_name": "SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HIRSIKERRANTIE 8 M 17",
+                "postal_code": "02330",
+                "city": "ESPOO",
+                "country": "FI",
+                "email": null,
+                "phone": "050 554 3443",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": "ENT.OS. KATTILAVUORENTIE 15, 02330 ESPOO. 17.12.2013/TN."
+              },
+              "start_date": "2013-04-15",
+              "end_date": null
+            },
+            {
+              "id": 68504,
+              "type": "tenant",
+              "contact": {
+                "id": 30793,
+                "deleted": null,
+                "created_at": "2019-09-20T11:45:30.558914+03:00",
+                "modified_at": "2019-09-20T11:45:30.558933+03:00",
+                "type": "person",
+                "first_name": "DANIELA MADELEINE",
+                "last_name": "BRUNNER-SVARTSTRÖM",
+                "name": null,
+                "care_of": null,
+                "business_id": null,
+                "address": "HAFENRAINSTRASSE 55",
+                "postal_code": "4104",
+                "city": null,
+                "country": "FI",
+                "email": null,
+                "phone": "",
+                "language": "fi",
+                "national_identification_number": null,
+                "address_protection": false,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false,
+                "sap_sales_office": null,
+                "note": null
+              },
+              "start_date": "2009-09-02",
+              "end_date": null
+            }
+          ],
+          "rent_shares": [
+            {
+              "id": 30286,
+              "intended_use": {
+                "id": 1,
+                "name": "Asunto"
+              },
+              "share_numerator": 1,
+              "share_denominator": 2
+            }
+          ]
+        },
+        "receivable_type": 1,
+        "billing_period_start_date": "2019-01-01",
+        "billing_period_end_date": "2019-12-31",
+        "description": null,
+        "amount": "2300.00"
+      }
+    ],
+    "payments": [
+      {
+        "id": 554254,
+        "created_at": "2019-09-20T11:45:30.831896+03:00",
+        "modified_at": "2019-09-20T11:45:30.831913+03:00",
+        "paid_amount": "2300.00",
+        "paid_date": "2019-04-23",
+        "filing_code": null,
+        "invoice": 540815
+      }
+    ],
+    "credit_invoices": [],
+    "interest_invoices": [],
+    "created_at": "2019-09-20T11:45:30.822823+03:00",
+    "modified_at": "2019-09-20T11:45:30.822840+03:00",
+    "number": 674593,
+    "sent_to_sap_at": "2019-03-29T00:00:00+02:00",
+    "sap_id": null,
+    "due_date": "2019-04-30",
+    "adjusted_due_date": null,
+    "invoicing_date": "2019-03-13",
+    "state": "paid",
+    "billing_period_start_date": "2019-01-01",
+    "billing_period_end_date": "2019-12-31",
+    "postpone_date": null,
+    "total_amount": "2300.00",
+    "billed_amount": "2300.00",
+    "outstanding_amount": "0.00",
+    "payment_notification_date": null,
+    "collection_charge": null,
+    "payment_notification_catalog_date": null,
+    "delivery_method": "mail",
+    "type": "charge",
+    "notes": "",
+    "generated": true,
+    "description": null,
+    "lease": 22725,
+    "invoiceset": null,
+    "credited_invoice": null,
+    "interest_invoice_for": null
+  }
+]

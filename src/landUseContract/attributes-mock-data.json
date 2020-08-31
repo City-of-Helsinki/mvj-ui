@@ -227,10 +227,71 @@
       "label": "Kaupunginosa",
       "choices": []
     },
-    "areas": {
+    "definition": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Määritelmä",
+      "choices": [
+        {
+          "display_name": "Kiinteistö",
+          "value": 1
+        }
+      ]
+    },
+    "status": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Olotila",
+      "choices": [
+        {
+          "display_name": "Lorem",
+          "value": 1
+        }
+      ]
+    },
+    "addresses": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Osoitteet",
       "child": {
         "children": {
-          "area": {
+          "address": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Osoite",
+            "max_length": 255
+          },
+          "postal_code": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Postinumero",
+            "max_length": 255
+          },
+          "city": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Kaupunki",
+            "max_length": 255
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Ensisijainen osoite"
+          }
+        }
+      }
+    },
+    "estate_ids": {
+      "child": {
+        "children": {
+          "estate_id": {
             "type": "string",
             "required": false,
             "read_only": false,
@@ -565,6 +626,18 @@
     "contracts": {
       "child": {
         "children": {
+          "contract_type": {
+            "type": "field",
+            "required": true,
+            "read_only": false,
+            "label": "Sopimuksen tyyppi",
+            "choices": [
+              {
+                  "display_name": "Kiinteistökaupan esisopimus",
+                  "value": 1
+              }
+            ]
+          },
           "state": {
             "type": "field",
             "required": true,
@@ -585,12 +658,6 @@
               }
             ]
           },
-          "decision_date": {
-            "type": "date",
-            "required": false,
-            "read_only": false,
-            "label": "Päätöspvm"
-          },
           "sign_date": {
             "type": "date",
             "required": false,
@@ -604,18 +671,87 @@
             "label": "ED sopimusnumero",
             "max_length": 255
           },
-          "reference_number": {
-            "type": "string",
-            "required": false,
-            "read_only": false,
-            "label": "Diaarinumero",
-            "max_length": 255
-          },
           "area_arrengements": {
             "type": "boolean",
             "required": false,
             "read_only": false,
             "label": "AlueJärjestelyt"
+          },
+          "decision": {
+            "type": "field",
+            "required": true,
+            "read_only": false,
+            "label": "Päätös",
+            "choices": [
+              {
+                  "display_name": "Lorem ipsum",
+                  "value": 1
+              }
+            ]
+          },
+          "warrants": {
+            "child": {
+              "children": {
+                "warrant_type": {
+                  "type": "field",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuuden tyyppi",
+                  "choices": [
+                    {
+                      "display_name": "Muu vakuus",
+                      "value": 1
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuuden laji",
+                  "max_length": 255
+                },
+                "rent_warrant_number": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vuokravakuusnro",
+                  "max_length": 255
+                },
+                "start_date": {
+                  "type": "date",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuuden alkupvm"
+                },
+                "end_date": {
+                  "type": "date",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuuden loppupvm"
+                },
+                "amount": {
+                  "type": "decimal",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuuden määrä",
+                  "decimal_places": 2,
+                  "max_digits": 10
+                },
+                "return_date": {
+                  "type": "date",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Palautettu pvm"
+                },
+                "note": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Huomautus"
+                }                
+              }
+            }
           }
         }
       }
@@ -655,7 +791,7 @@
             "decimal_places": 2,
             "max_digits": 10
           },
-          "free_delivery_area": {
+          "street_acquisition_value": {
             "type": "decimal",
             "required": false,
             "read_only": false,
@@ -663,7 +799,7 @@
             "decimal_places": 2,
             "max_digits": 10
           },
-          "free_delivery_amount": {
+          "street_area": {
             "type": "decimal",
             "required": false,
             "read_only": false,
@@ -671,7 +807,7 @@
             "decimal_places": 2,
             "max_digits": 10
           },
-          "additional_floor_area_apartment": {
+          "park_acquisition_value": {
             "type": "decimal",
             "required": false,
             "read_only": false,
@@ -679,7 +815,7 @@
             "decimal_places": 2,
             "max_digits": 10
           },
-          "additional_floor_area_company": {
+          "park_area": {
             "type": "decimal",
             "required": false,
             "read_only": false,
@@ -687,22 +823,74 @@
             "decimal_places": 2,
             "max_digits": 10
           },
-          "invoices": {
+          "other_acquisition_value": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "other_area": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "unit_prices_used_in_calculation": {
             "child": {
               "children": {
-                "amount": {
+                "usage": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuus"
+                },
+                "management": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuus"
+                },
+                "protected": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuus"
+                },
+                "area": {
                   "type": "decimal",
-                  "required": true,
+                  "required": false,
                   "read_only": false,
                   "label": "Vakuus",
                   "decimal_places": 2,
                   "max_digits": 10
                 },
-                "due_date": {
-                  "type": "date",
-                  "required": true,
+                "unit_value": {
+                  "type": "decimal",
+                  "required": false,
                   "read_only": false,
-                  "label": "Allekirjoituspvm"
+                  "label": "Vakuus",
+                  "decimal_places": 2,
+                  "max_digits": 10
+                },
+                "discount": {
+                  "type": "decimal",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuus",
+                  "decimal_places": 2,
+                  "max_digits": 10
+                },
+                "used_price": {
+                  "type": "decimal",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuus",
+                  "decimal_places": 2,
+                  "max_digits": 10
                 }
               }
             }

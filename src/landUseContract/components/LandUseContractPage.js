@@ -20,8 +20,11 @@ import Decisions from './sections/Decisions';
 import DecisionsEdit from './sections/DecisionsEdit';
 import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
-import Invoices from './sections/Invoices';
-import InvoicesEdit from './sections/InvoicesEdit';
+import InvoicesR from './sections/InvoicesR';
+// import Invoices from './sections/Invoices';
+// import InvoicesEdit from './sections/InvoicesEdit';
+import {ButtonColors} from '$components/enums';
+import {fetchAttributes as fetchLandUseInvoiceAttributes} from '$src/landUseInvoices/actions';
 import LandUseContractMap from './sections/LandUseContractMap';
 import Litigants from './sections/Litigants';
 import LitigantsEdit from './sections/LitigantsEdit';
@@ -32,6 +35,12 @@ import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {fetchInvoicesByLandUseContract} from '$src/landUseInvoices/actions';
+import {
+  getInvoicesByLandUseContractId, 
+  getIsFetchingAttributes as getIsFetchingLandUseInvoiceAttributes,
+  getAttributes as getLandUseInvoiceAttributes,
+} from '$src/landUseInvoices/selectors';
 import {
   clearFormValidFlags,
   editLandUseContract,
@@ -41,6 +50,7 @@ import {
   receiveIsSaveClicked,
   receiveSingleLandUseContract,
   showEditMode,
+  deleteLandUseContract,
 } from '$src/landUseContract/actions';
 import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {
@@ -70,6 +80,7 @@ import {withLandUseContractAttributes} from '$components/attributes/LandUseContr
 import type {Attributes} from '$src/types';
 import type {LandUseContract} from '$src/landUseContract/types';
 import type {UsersPermissions} from '$src/usersPermissions/types';
+import type {InvoiceList} from '$src/landUseInvoices/types';
 
 type Props = {
   basicInformationFormValues: Object,
@@ -85,6 +96,7 @@ type Props = {
   hideEditMode: Function,
   history: Object,
   initialize: Function,
+  invoices: InvoiceList,
   invoicesFormValues: Object,
   isBasicInformationFormDirty: boolean,
   isBasicInformationFormValid: boolean,
@@ -116,6 +128,11 @@ type Props = {
   router: Object,
   showEditMode: Function,
   usersPermissions: UsersPermissions,
+  fetchInvoicesByLandUseContract: Function,
+  fetchLandUseInvoiceAttributes: Function,
+  isFetchingLandUseInvoiceAttributes: boolean,
+  landUseInvoiceAttributes: Attributes,
+  deleteLandUseContract: Function,
 }
 
 type State = {
@@ -140,6 +157,9 @@ class LandUseContractPage extends Component<Props, State> {
       match: {params: {landUseContractId}},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
+      fetchLandUseInvoiceAttributes,
+      isFetchingLandUseInvoiceAttributes,
+      landUseInvoiceAttributes,
     } = this.props;
     const query = getUrlParams(search);
 
@@ -152,6 +172,11 @@ class LandUseContractPage extends Component<Props, State> {
     });
 
     fetchSingleLandUseContract(landUseContractId);
+    this.fetchLandUseRelatedData();
+
+    if(!isFetchingLandUseInvoiceAttributes && !landUseInvoiceAttributes) { //  && !invoiceMethods TODO
+      fetchLandUseInvoiceAttributes();
+    }
 
     if (query.tab) {
       this.setState({activeTab: query.tab});
@@ -193,6 +218,19 @@ class LandUseContractPage extends Component<Props, State> {
     if(prevProps.isEditMode && !isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
+    }
+  }
+
+  fetchLandUseRelatedData = () => {
+    const {
+      invoices,
+      fetchInvoicesByLandUseContract,
+      match: {params: {landUseContractId}},
+    } = this.props;
+
+    // TODO hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && 
+    if(!invoices) {
+      fetchInvoicesByLandUseContract(landUseContractId);
     }
   }
 
@@ -486,6 +524,7 @@ class LandUseContractPage extends Component<Props, State> {
         payload = {...payload, ...basicInformationFormValues};
       }
 
+      // MASSIVE TODO
       if(isDecisionsFormDirty) {
         payload = {...payload, ...decisionsFormValues};
       }
@@ -507,6 +546,9 @@ class LandUseContractPage extends Component<Props, State> {
       }
 
       payload.identifier = currentLandUseContract.identifier;
+
+      payload.decisions = null;
+
       editLandUseContract(payload);
     }
   }
@@ -565,6 +607,15 @@ class LandUseContractPage extends Component<Props, State> {
     this.setState({
       [modalVisibilityKey]: true,
     });
+  }
+
+  handleDelete = () => {
+    const {
+      deleteLandUseContract,
+      match: {params},
+    } = this.props;
+
+    deleteLandUseContract(params.landUseContractId);
   }
 
   destroyAllForms = () => {
@@ -626,6 +677,14 @@ class LandUseContractPage extends Component<Props, State> {
                 onSave={this.saveChanges}
                 showCommentButton={false}
                 showCopyButton={false}
+                onDelete={this.handleDelete}
+                deleteModalTexts={{
+                  buttonClassName: ButtonColors.ALERT,
+                  buttonText: ConfirmationModalTexts.DELETE_LAND_USE_CONTRACT.BUTTON,
+                  label: ConfirmationModalTexts.DELETE_LAND_USE_CONTRACT.LABEL,
+                  title: ConfirmationModalTexts.DELETE_LAND_USE_CONTRACT.TITLE,
+                }}
+                allowDelete={true}
               />
             }
             infoComponent={<h1>{identifier}</h1>}
@@ -638,8 +697,10 @@ class LandUseContractPage extends Component<Props, State> {
               {label: 'Perustiedot', allow: true, isDirty: isBasicInformationFormDirty, hasError: isSaveClicked && !isBasicInformationFormValid},
               {label: 'Osapuolet', allow: true, isDirty: isLitigantsFormDirty, hasError: isSaveClicked && !isLitigantsFormValid},
               {label: 'Päätökset ja sopimukset', allow: true, isDirty: (isContractsFormDirty || isDecisionsFormDirty), hasError: isSaveClicked && (!isDecisionsFormValid || !isContractsFormValid)},
-              {label: 'Korvaukset ja laskutus', allow: true, isDirty: isCompensationsFormDirty || isInvoicesFormDirty, hasError: isSaveClicked && (!isCompensationsFormValid || !isInvoicesFormValid)},
+              {label: 'Korvaukset', allow: true, isDirty: isCompensationsFormDirty, hasError: isSaveClicked && !isCompensationsFormValid},
+              {label: 'Laskutus', allow: true, isDirty: isInvoicesFormDirty, hasError: isSaveClicked && !isInvoicesFormValid},
               {label: 'Kartta', allow: true},
+              {label: 'Valvottavat ehdot', allow: true},
             ]}
             onTabClick={(id) => this.handleTabClick(id)}
           />
@@ -704,19 +765,31 @@ class LandUseContractPage extends Component<Props, State> {
                   ? <Compensations />
                   : <CompensationsEdit />
                 }
+              </ContentContainer>
+            </TabPane>
 
-                <h2>Laskutus</h2>
+            <TabPane>
+              <ContentContainer>
+                <InvoicesR />
+                {/* <h2>Laskutus</h2>
                 <Divider />
                 {!isEditMode
                   ? <Invoices />
                   : <InvoicesEdit />
-                }
+                } */}
               </ContentContainer>
             </TabPane>
 
             <TabPane>
               <ContentContainer>
                 <LandUseContractMap />
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <h2>Valvottavat ehdot</h2>
+                <Divider />
               </ContentContainer>
             </TabPane>
           </TabContent>
@@ -730,7 +803,7 @@ export default flowRight(
   withRouter,
   withLandUseContractAttributes,
   connect(
-    (state) => {
+    (state, props: Props) => {
       return {
         basicInformationFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION)(state),
         compensationsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_COMPENSATIONS)(state),
@@ -756,6 +829,9 @@ export default flowRight(
         isSaveClicked: getIsSaveClicked(state),
         litigantsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_LITIGANTS)(state),
         usersPermissions: getUsersPermissions(state),
+        invoices: getInvoicesByLandUseContractId(state, props.match.params.landUseContractId),
+        isFetchingLandUseInvoiceAttributes: getIsFetchingLandUseInvoiceAttributes(state),
+        landUseInvoiceAttributes: getLandUseInvoiceAttributes(state),
       };
     },
     {
@@ -763,6 +839,8 @@ export default flowRight(
       clearFormValidFlags,
       destroy,
       editLandUseContract,
+      fetchInvoicesByLandUseContract,
+      fetchLandUseInvoiceAttributes,
       fetchSingleLandUseContract,
       hideEditMode,
       initialize,
@@ -771,6 +849,7 @@ export default flowRight(
       receiveSingleLandUseContract,
       receiveTopNavigationSettings,
       showEditMode,
+      deleteLandUseContract,
     }
   ),
 )(LandUseContractPage);

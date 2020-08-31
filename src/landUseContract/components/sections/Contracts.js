@@ -18,7 +18,9 @@ type Props = {
 
 const Contracts = ({attributes, currentLandUseContract}: Props) => {
   const contracts = getContentContracts(currentLandUseContract),
-    stateOptions = getFieldOptions(attributes, 'contracts.child.children.state');
+    stateOptions = getFieldOptions(attributes, 'contracts.child.children.state'),
+    contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.contract_type'),
+    decisionOptions = getFieldOptions(attributes, 'contracts.child.children.decision');
 
   return (
     <div>
@@ -29,6 +31,9 @@ const Contracts = ({attributes, currentLandUseContract}: Props) => {
             key={index}
             contract={contract}
             stateOptions={stateOptions}
+            contractTypeOptions={contractTypeOptions}
+            decisionOptions={decisionOptions}
+            attributes={attributes}
           />
         );
       })}

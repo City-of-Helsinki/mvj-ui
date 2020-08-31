@@ -206,6 +206,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa laskurivin?',
     TITLE: 'Poista laskurivi',
   },
+  DELETE_LAND_USE_CONTRACT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa maankäyttösopimuksen?',
+    TITLE: 'Poista maankäyttösopimus',
+  },
   DELETE_LEASE: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa vuokraustunnuksen?',

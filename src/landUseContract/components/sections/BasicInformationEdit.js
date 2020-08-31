@@ -1,11 +1,10 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, Component, type Element} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -22,8 +21,98 @@ import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enu
 import {ButtonColors} from '$components/enums';
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
-
+import AddressItemEdit from './AddressItemEdit';
 import type {Attributes} from '$src/types';
+
+// **** TODO
+
+type AddressesProps = {
+  fields: any,
+  formName: string,
+  attributes: Object,
+  isSaveClicked: boolean,
+}
+
+const renderAddresses = ({
+  fields,
+  formName,
+  attributes,
+  isSaveClicked,
+}: AddressesProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  return (
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <Fragment>
+            {fields && !!fields.length &&
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <FormTextTitle>
+                    {'Osoite'}
+                  </FormTextTitle>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormTextTitle>
+                    {'Postinumero'}
+                  </FormTextTitle>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormTextTitle>
+                    {'Kaupunki'}
+                  </FormTextTitle>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormTextTitle>
+                    {'Ensisijainen osoite'}
+                  </FormTextTitle>
+                </Column>
+              </Row>
+            }
+            {fields && !!fields.length && fields.map((address, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    fields.remove(index);
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
+                  confirmationModalButtonText: 'Lisää osoite', 
+                  confirmationModalLabel: 'Poista osoite',
+                  confirmationModalTitle: 'Oletko varma että haluat poistaa osoitteen',
+                });
+              };
+
+              return (
+                <AddressItemEdit
+                  key={index}
+                  field={address}
+                  index={index}
+                  attributes={attributes}
+                  isSaveClicked={isSaveClicked}
+                  onRemove={handleRemove}
+                  formName={formName}
+                />
+              );
+            })}
+            <Row>
+              <Column>
+                <AddButtonThird
+                  className='no-margin'
+                  label='Lisää osoite'
+                  onClick={handleAdd}
+                />
+              </Column>
+            </Row> 
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
+};
 
 type AreasProps = {
   attributes: Attributes,
@@ -41,7 +130,7 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
       {({dispatch}) => {
         return(
           <div>
-            <FormTextTitle title='Kohteen tunnus' />
+            <FormTextTitle title='Kiinteistötunnus' />
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -63,9 +152,9 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
                       field={
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'areas.child.children.area')}
+                          fieldAttributes={get(attributes, 'estate_ids.child.children.estate_id')}
                           invisibleLabel
-                          name={`${field}.area`}
+                          name={`${field}.estate_id`}
                           overrideValues={{
                             label: 'Kohde',
                           }}
@@ -153,17 +242,17 @@ class BasicInformationEdit extends Component<Props> {
                 attributes={attributes}
                 component={renderAreas}
                 isSaveClicked={isSaveClicked}
-                name='areas'
+                name='estate_ids'
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'project_area')}
-                name='project_area'
+                fieldAttributes={get(attributes, 'definition')}
+                name='definition'
                 overrideValues={{
-                  label: 'Hankealue',
-                }}
+                  label: 'Maankäyttösopimus päätös',
+                }}  
               />
             </Column>
             <Column small={6} medium={4} large={2}>
@@ -192,15 +281,23 @@ class BasicInformationEdit extends Component<Props> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'land_use_contract_type')}
-                name='land_use_contract_type'
+                fieldAttributes={get(attributes, 'type')}
+                name='type'
                 overrideValues={{
-                  label: 'Maankäyttösopimus',
+                  label: 'Maankäyttösopimuksen tyyppi',
                 }}
               />
             </Column>
-          </Row>
-          <Row>
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'status')}
+                name='status'
+                overrideValues={{
+                  label: 'Maankäyttösopimuksen tila',
+                }}
+              />
+            </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
@@ -217,12 +314,21 @@ class BasicInformationEdit extends Component<Props> {
                 fieldAttributes={get(attributes, 'estimated_introduction_year')}
                 name='estimated_introduction_year'
                 overrideValues={{
-                  label: 'Arvioitu toteutumisvuosi',
+                  label: 'Arvioitu esittelyvuosi',
                 }}
               />
             </Column>
           </Row>
 
+          <SubTitle>Osoitteet</SubTitle>
+          <FieldArray
+            component={renderAddresses}
+            attributes={attributes}
+            isSaveClicked={isSaveClicked}
+            disabled={isSaveClicked}
+            formName={FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}
+            name={'addresses'}
+          />
           <SubTitle>Liitetiedostot</SubTitle>
           <FormText>Ei liitetiedostoja</FormText>
 
@@ -277,6 +383,16 @@ class BasicInformationEdit extends Component<Props> {
                 name='plan_lawfulness_date'
                 overrideValues={{
                   label: 'Asemakaavan lainvoimaisuuspvm',
+                }}
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'project_area')}
+                name='project_area'
+                overrideValues={{
+                  label: 'Hankealue',
                 }}
               />
             </Column>

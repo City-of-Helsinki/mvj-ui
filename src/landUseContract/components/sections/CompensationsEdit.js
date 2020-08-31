@@ -18,7 +18,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
-import {ConfirmationModalTexts, FormNames} from '$src/enums';
+import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
@@ -31,7 +31,7 @@ type InvoicesProps = {
   isSaveClicked: boolean,
 }
 
-const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Element<*> => {
+const renderUnitPricesUsedInCalculation = ({attributes, fields, isSaveClicked}: InvoicesProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return(
@@ -39,19 +39,32 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
       {({dispatch}) => {
         return(
           <div>
-            <SubTitle>Korvauksen maksaminen</SubTitle>
-            {!fields || !fields.length && <p>Ei laskuja</p>}
             {fields && !!fields.length &&
               <div>
                 <Row>
-                  <Column small={4} medium={3} large={2}>
-                    <FormTextTitle title='Määrä' />
+                  <Column large={2}>
+                    <FormTextTitle title='Kaavayksikön käyttötarkoitus' />
                   </Column>
-                  <Column small={4} medium={3} large={2}>
-                    <FormTextTitle title='Eräpäivä' />
+                  <Column large={2}>
+                    <FormTextTitle title='Hallintamuoto' />
+                  </Column>
+                  <Column large={1}>
+                    <FormTextTitle title='Suojeltu' />
+                  </Column>
+                  <Column large={1}>
+                    <FormTextTitle title='k-m²' />
+                  </Column>
+                  <Column large={1}>
+                    <FormTextTitle title='Yksikköhinta €' />
+                  </Column>
+                  <Column large={1}>
+                    <FormTextTitle title='Alennus %' />
+                  </Column>
+                  <Column large={1}>
+                    <FormTextTitle title='Käytetty hinta' />
                   </Column>
                 </Row>
-                {fields.map((invoice, index) => {
+                {fields.map((field, index) => {
                   const handleRemove = () => {
                     dispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
@@ -59,35 +72,75 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                         fields.remove(index);
                       },
                       confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: ConfirmationModalTexts.DELETE_COMPENSATION.BUTTON,
-                      confirmationModalLabel: ConfirmationModalTexts.DELETE_COMPENSATION.LABEL,
-                      confirmationModalTitle: ConfirmationModalTexts.DELETE_COMPENSATION.TITLE,
+                      confirmationModalButtonText: 'Lisää yksikköhinta', 
+                      confirmationModalLabel: 'Poista yksikköhinta',
+                      confirmationModalTitle: 'Oletko varma että haluat poistaa yksikköhinnan',
                     });
                   };
 
                   return (
                     <Row key={index}>
-                      <Column small={4} medium={3} large={2}>
+                      <Column large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.invoices.child.children.amount')}
+                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.usage')}
                           invisibleLabel
-                          name={`${invoice}.amount`}
+                          name={`${field}.usage`}
                         />
                       </Column>
-                      <Column small={4} medium={3} large={2}>
+                      <Column large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.invoices.child.children.due_date')}
+                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.management')}
                           invisibleLabel
-                          name={`${invoice}.due_date`}
+                          name={`${field}.management`}
                         />
                       </Column>
-                      <Column small={4} medium={3} large={2}>
+                      <Column large={1}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.protected')}
+                          invisibleLabel
+                          name={`${field}.protected`}
+                        />
+                      </Column>
+                      <Column large={1}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.area')}
+                          invisibleLabel
+                          name={`${field}.area`}
+                        />
+                      </Column>
+                      <Column large={1}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.unit_value')}
+                          invisibleLabel
+                          name={`${field}.unit_value`}
+                        />
+                      </Column>
+                      <Column large={1}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.discount')}
+                          invisibleLabel
+                          name={`${field}.discount`}
+                        />
+                      </Column>
+                      <Column large={1}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.used_price')}
+                          invisibleLabel
+                          name={`${field}.used_price`}
+                        />
+                      </Column>
+                      <Column>
                         <RemoveButton
                           className='third-level'
                           onClick={handleRemove}
-                          title="Poista korvaus"
+                          title="Poista yksikköhinta"
                         />
                       </Column>
                     </Row>
@@ -98,7 +151,7 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
             <Row>
               <Column>
                 <AddButtonThird
-                  label='Lisää korvaus'
+                  label='Lisää yksikköhinta'
                   onClick={handleAdd}
                 />
               </Column>
@@ -150,6 +203,7 @@ class CompensationsEdit extends Component<Props> {
         <GreenBox>
           <Row>
             <Column small={12} large={6}>
+              <SubTitle>Maankäyttökorvaus</SubTitle>
               <WhiteBox>
                 <Row>
                   <Column small={6} medium={3} large={4}>
@@ -218,7 +272,7 @@ class CompensationsEdit extends Component<Props> {
                 <Divider />
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <FormText>Yhteensä</FormText>
+                    <FormText className='semibold'>Yhteensä</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
                     <FormText>{`${formatNumber(total)} €`}</FormText>
@@ -227,58 +281,116 @@ class CompensationsEdit extends Component<Props> {
               </WhiteBox>
             </Column>
           </Row>
+        </GreenBox>
+        <GreenBox className={'with-top-margin'}>
           <Row>
-            <Column small={6} medium={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'compensations.child.children.free_delivery_area')}
-                name='compensations.free_delivery_area'
-                unit='m²'
-                overrideValues={{
-                  label: 'Ilmaisluovutusala',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'compensations.child.children.free_delivery_amount')}
-                name='compensations.free_delivery_amount'
-                unit='€'
-                overrideValues={{
-                  label: 'Ilmaisluovutusarvo',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'compensations.child.children.additional_floor_area_apartment')}
-                name='compensations.additional_floor_area_apartment'
-                unit='k-m²'
-                overrideValues={{
-                  label: 'Lisäkerrosala asunto',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'compensations.child.children.additional_floor_area_company')}
-                name='compensations.additional_floor_area_company'
-                unit='k-m²'
-                overrideValues={{
-                  label: 'Lisäkerrosala yritys',
-                }}
-              />
+            <Column small={12} large={6}>
+              <SubTitle>Korvauksetta luovutettavat yleiset alueet</SubTitle>
+              <WhiteBox>
+                <Row>
+                  <Column small={6} medium={3} large={4}>
+                    <FormTextTitle title='Kaavayksikön käyttötarkoitus' />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormTextTitle title='Hankinta-arvo €' />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormTextTitle title='m²' />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={3} large={4}>
+                    <FormText>Katu (9901)</FormText>
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.street_acquisition_value')}
+                      invisibleLabel
+                      name='compensations.street_acquisition_value'
+                      unit='€'
+                    />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.street_area')}
+                      invisibleLabel
+                      name='compensations.street_area'
+                      unit='m²'
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={3} large={4}>
+                    <FormText>Puisto (9903)</FormText>
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.park_acquisition_value')}
+                      invisibleLabel
+                      name='compensations.park_acquisition_value'
+                      unit='€'
+                    />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.park_area')}
+                      invisibleLabel
+                      name='compensations.park_area'
+                      unit='m²'
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={3} large={4}>
+                    <FormText>Muut</FormText>
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.other_acquisition_value')}
+                      invisibleLabel
+                      name='compensations.other_acquisition_value'
+                      unit='€'
+                    />
+                  </Column>
+                  <Column small={6} medium={3} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'compensations.child.children.other_area')}
+                      invisibleLabel
+                      name='compensations.other_area'
+                      unit='m²'
+                    />
+                  </Column>
+                </Row>
+              </WhiteBox>
             </Column>
           </Row>
-          <FieldArray
-            attributes={attributes}
-            component={renderInvoices}
-            isSaveClicked={isSaveClicked}
-            name="compensations.invoices"
-          />
+        </GreenBox>
+        <GreenBox className={'with-top-margin'}>
+          <Row>
+            <Column>
+              <SubTitle>Laskelmassa käytetyt yksikköhinnat</SubTitle>
+              <WhiteBox>
+                <Row>
+                  <Column>
+                    <FieldArray
+                      component={renderUnitPricesUsedInCalculation}
+                      attributes={attributes}
+                      isSaveClicked={isSaveClicked}
+                      disabled={isSaveClicked}
+                      formName={FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}
+                      name={'compensations.unit_prices_used_in_calculation'}
+                    />
+                  </Column>
+                </Row>
+              </WhiteBox>
+            </Column>
+          </Row>
         </GreenBox>
       </form>
     );

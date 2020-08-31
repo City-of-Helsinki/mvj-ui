@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import {dateGreaterOrEqual} from '$components/form/validations';
-
+import {required} from '$components/form/validations';
 /** 
  * Get litigant errors
  * @param {Object} litigant
@@ -72,5 +72,17 @@ export const validateLitigantForm = (values: Object): Object => {
     errors.archivedLitigants = archivedLitigantArrayErrors;
   }
 
+  return errors;
+};
+
+/**
+ * Validate land use invoice form
+ * @param {Object} values
+ * @returns {Object}
+ */
+export const validateLandUseInvoiceForm = (values: Object): Object => {
+  const errors = {};
+  const recipient = required(values.recipient);
+  errors.recipient = recipient;
   return errors;
 };

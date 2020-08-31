@@ -53,7 +53,9 @@ const BasicInformation = ({
   const basicInformation = getContentBasicInformation(currentLandUseContract),
     stateOptions = getFieldOptions(attributes, 'state'),
     planAcceptorOptions = getFieldOptions(attributes, 'plan_acceptor'),
-    landUseContractTypeOptions = getFieldOptions(attributes, 'land_use_contract_type');
+    landUseContractTypeOptions = getFieldOptions(attributes, 'type'),
+    landUseContractDefinitionOptions = getFieldOptions(attributes, 'definition'),
+    landUseContractStatusOptions = getFieldOptions(attributes, 'status');
 
   return (
     <Fragment>
@@ -66,11 +68,11 @@ const BasicInformation = ({
       >
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTextTitle title='Kohteen tunnus' />
-            {!!basicInformation.areas && !!basicInformation.areas.length
+            <FormTextTitle title='Kiinteistötunnus' />
+            {!!basicInformation.estate_ids && !!basicInformation.estate_ids.length
               ? <ListItems>
-                {basicInformation.areas.map((area, index) =>
-                  <ListItem key={index}>{area.area || '-'}</ListItem>
+                {basicInformation.estate_ids.map((estate_id, index) =>
+                  <ListItem key={index}>{estate_id.estate_id || '-'}</ListItem>
                 )}
               </ListItems>
               : <FormText>-</FormText>
@@ -78,8 +80,8 @@ const BasicInformation = ({
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
-              title='Hankealue'
-              text={basicInformation.project_area || '-'}
+              title='Maankäyttösopimus päätös'
+              text={getLabelOfOption(landUseContractDefinitionOptions, basicInformation.definition) || '-'}
             />
           </Column>
           <Column small={6} medium={4} large={2}>
@@ -91,12 +93,16 @@ const BasicInformation = ({
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
-              title='Maankäyttösopimus'
-              text={getLabelOfOption(landUseContractTypeOptions, basicInformation.land_use_contract_type) || '-'}
+              title='Maankäyttösopimuksen tyyppi'
+              text={getLabelOfOption(landUseContractTypeOptions, basicInformation.type) || '-'}
             />
           </Column>
-        </Row>
-        <Row>
+          <Column small={6} medium={4} large={2}>
+            <FormTitleAndText
+              title='Maankäyttösopimuksen tila'
+              text={getLabelOfOption(landUseContractStatusOptions, basicInformation.status) || '-'}
+            />
+          </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
               title='Arvioitu toteutumisvuosi'
@@ -110,6 +116,36 @@ const BasicInformation = ({
             />
           </Column>
         </Row>
+
+        <SubTitle>Osoitteet</SubTitle>
+        {basicInformation.addresses && basicInformation.addresses.map((address, index) => 
+          <Row key={index}>
+            <Column small={6} medium={4} large={2}>
+              <FormTitleAndText
+                title='Osoite'
+                text={address.address || '-'}
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <FormTitleAndText
+                title='Postinumero'
+                text={address.postal_code || '-'}
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <FormTitleAndText
+                title='Kaupunki'
+                text={address.city || '-'}
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle >
+                {'Ensisijainen osoite'}
+              </FormTextTitle>
+              <FormText>{address.isPrimary?'Kyllä':'ei'}</FormText>
+            </Column>
+          </Row>
+        )}
 
         <SubTitle>Liitetiedostot</SubTitle>
         <FormText>Ei liitetiedostoja</FormText>
@@ -151,6 +187,12 @@ const BasicInformation = ({
             <FormTitleAndText
               title='Asemakaavan lainvoimaisuuspvm'
               text={formatDate(basicInformation.plan_lawfulness_date) || '-'}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <FormTitleAndText
+              title='Hankealue'
+              text={basicInformation.project_area || '-'}
             />
           </Column>
         </Row>
