@@ -18,6 +18,9 @@ import {
   clearFormValidFlags,
   receiveCollapseStates,
   receiveMethods,
+  fetchSingleLandUseContractAfterEdit,
+  attributesNotFound,
+  deleteLandUseContract,
 } from './actions';
 import landUseContractReducer from './reducer';
 
@@ -40,7 +43,6 @@ const baseState: LandUseContractState = {
   },
   isSaveClicked: false,
   list: {},
-  byLandUseContract: {},
   methods: null,
 };
 
@@ -197,6 +199,27 @@ describe('Land use contract', () => {
 
         let state = landUseContractReducer({}, receiveFormValidFlags({['land-use-contract-basic-info-form']: false}));
         state = landUseContractReducer(state, clearFormValidFlags());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('fetchSingleLandUseContractAfterEdit function should not change isFetcihng flag', () => {
+        const state = landUseContractReducer({}, fetchSingleLandUseContractAfterEdit({id: 1}));
+        expect(state).to.deep.equal(baseState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...baseState, isFetchingAttributes: false};
+
+        let state = landUseContractReducer({}, fetchAttributes());
+        state = landUseContractReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true deleting landUseContract', () => {
+        const dummyLandUseContract = 1;
+        const newState = {...baseState, isFetching: true};
+
+        const state = landUseContractReducer({}, deleteLandUseContract(dummyLandUseContract));
         expect(state).to.deep.equal(newState);
       });
 

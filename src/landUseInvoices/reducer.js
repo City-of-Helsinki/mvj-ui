@@ -24,14 +24,14 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/landUseInvoices/CREATE': () => true,
   'mvj/landUseInvoices/FETCH_BY_LAND_USE_CONTRACT': () => true,
   'mvj/landUseInvoices/NOT_FOUND': () => false,
-  'mvj/landUseInvoices/RECEIVE_BY_LEASE': () => false,
+  'mvj/landUseInvoices/RECEIVE_BY_LAND_USE_CONTRACT': () => false,
 }, false);
 
 const isSavingReducer: Reducer<boolean> = handleActions({
   'mvj/landUseInvoices/PATCH': () => true,
   'mvj/landUseInvoices/EXPORT_TO_LASKE_AND_UPDATE': () => true,
   'mvj/landUseInvoices/NOT_FOUND': () => false,
-  'mvj/landUseInvoices/RECEIVE_BY_LEASE': () => false,
+  'mvj/landUseInvoices/RECEIVE_BY_LAND_USE_CONTRACT': () => false,
   'mvj/landUseInvoices/DELETE': () => true,
   'mvj/landUseInvoices/START_INVOICING': () => true,
   'mvj/landUseInvoices/STOP_INVOICING': () => true,
@@ -90,7 +90,7 @@ const byLandUseContractReducer: Reducer<InvoiceListMap> = handleActions({
   ['mvj/landUseInvoices/RECEIVE_BY_LAND_USE_CONTRACT']: (state: InvoiceListMap, {payload}: ReceiveInvoicesByLandUseContractAction) => {
     return {
       ...state,
-      [payload.leaseId]: payload.invoices,
+      [payload.id]: payload.invoices,
     };
   },
 }, {});
