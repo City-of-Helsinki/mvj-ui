@@ -23,6 +23,8 @@ import {
   creditInvoice,
   deleteInvoice,
   receiveCollapseStates,
+  startInvoicing,
+  stopInvoicing,
 } from './actions';
 import invoiceReducer from './reducer';
 
@@ -99,9 +101,9 @@ describe('Land Use Invoices State', () => {
             label: 'Foo',
           },
         ];
-        const newState = {...defaultState, byLease: {'1': dummyInvoices}};
+        const newState = {...defaultState, byLandUseContract: {'1': dummyInvoices}};
 
-        const state = invoiceReducer({}, receiveInvoicesByLandUseContract({leaseId: 1, invoices: dummyInvoices}));
+        const state = invoiceReducer({}, receiveInvoicesByLandUseContract({id: 1, invoices: dummyInvoices}));
         expect(state).to.deep.equal(newState);
       });
 
@@ -220,6 +222,22 @@ describe('Land Use Invoices State', () => {
         
         expect(state).to.deep.equal(defaultState);
       });
+
+      it('should update isSaving flag to true when starting invoicing', () => {
+        const newState = {...defaultState, isSaving: true};
+
+        const state = invoiceReducer({}, startInvoicing(1));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true when stoping invoicing', () => {
+        const newState = {...defaultState, isSaving: true};
+
+        const state = invoiceReducer({}, stopInvoicing(1));
+        expect(state).to.deep.equal(newState);
+      });
+
+      // createCharge
 
       it('should update collapseStates', () => {
         const newState = {...defaultState, collapseStates: {foo: 'bar', foo2: 'bar2'}};

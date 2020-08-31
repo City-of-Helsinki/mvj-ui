@@ -38,7 +38,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/landUseContract/CREATE']: () => true,
   ['mvj/landUseContract/EDIT']: () => true,
   ['mvj/landUseContract/NOT_FOUND']: () => false,
-  // 'mvj/landUseContract/DELETE': () => true, // TODO: check if this flag need to be raised
+  ['mvj/landUseContract/DELETE']: () => true,
 }, false);
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({

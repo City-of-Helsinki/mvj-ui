@@ -45,12 +45,12 @@ function* fetchInvoicesByLandUseContractSaga({payload: search}): Generator<any, 
   console.log('search');
   const invoices = mockData;
 
-  yield put(receiveInvoicesByLandUseContract({leaseId: search, invoices: invoices}));
+  yield put(receiveInvoicesByLandUseContract({id: search, invoices: invoices}));
 }
 
 function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
   const invoices = [invoice.landUseContractInvoice, ...invoice.invoices];
-  yield put(receiveInvoicesByLandUseContract({leaseId: invoice.currentLandUseContractId, invoices: invoices}));
+  yield put(receiveInvoicesByLandUseContract({id: invoice.currentLandUseContractId, invoices: invoices}));
   yield put(receiveIsCreateInvoicePanelOpen(false));
   displayUIMessage({title: '', body: 'Lasku luotu'});
 }
