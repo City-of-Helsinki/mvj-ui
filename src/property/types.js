@@ -16,7 +16,13 @@ export type PropertyState = {
 
 export type PropertyId = number;
 export type Property = Object;
+export type PlotSearch = Property;
 export type PropertyList = Object;
+
+export type FetchSinglePlotSearchAfterEditPayload = {
+  id: any,
+  callbackFuntions?: Array<Object | Function>,
+}
 
 export type FetchAttributesAction = Action<'mvj/property/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/property/RECEIVE_ATTRIBUTES', Attributes>;
@@ -26,6 +32,7 @@ export type PropertyAttributesNotFoundAction = Action<'mvj/property/ATTRIBUTES_N
 export type CreatePropertyAction = Action<'mvj/property/CREATE', Property>;
 export type EditPropertyAction = Action<'mvj/property/EDIT', Property>;
 export type PropertyNotFoundAction = Action<'mvj/property/NOT_FOUND', void>;
+export type FetchSinglePlotSearchAfterEditAction = Action<'mvj/property/FETCH_SINGLE_AFTER_EDIT', FetchSinglePlotSearchAfterEditPayload>;
 
 export type ReceiveIsSaveClickedAction = Action<'mvj/property/RECEIVE_SAVE_CLICKED', boolean>;
 export type ReceiveFormValidFlagsAction = Action<'mvj/property/RECEIVE_FORM_VALID_FLAGS', Object>;

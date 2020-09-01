@@ -330,7 +330,8 @@ class PropertyPage extends Component<Props, State> {
       //TODO: Add helper functions to save property to DB when API is ready
       let payload: Object = {...currentProperty};
 
-      if(isBasicInformationFormDirty) {
+      // TODO: Temporary fix, bug can't save when no basic invormation values are dirty
+      if(isBasicInformationFormDirty || !isBasicInformationFormDirty) {
         payload = {...payload, ...basicInformationFormValues};
       }
       

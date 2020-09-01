@@ -162,7 +162,7 @@ class PropertyListPage extends PureComponent<Props, State> {
     const columns = [];
     const typeOptions = getFieldOptions(propertyAttributes, 'type');
     const subtypeOptions = getFieldOptions(propertyAttributes, 'subtype');
-    const stepOptions = getFieldOptions(propertyAttributes, 'step');
+    const stageOptions = getFieldOptions(propertyAttributes, 'stage');
 
     columns.push({
       key: 'name',
@@ -185,21 +185,21 @@ class PropertyListPage extends PureComponent<Props, State> {
     });
 
     columns.push({
-      key: 'step',
+      key: 'stage',
       text: 'Haun vaihe',
       sortable: false,
-      renderer: (val) => getLabelOfOption(stepOptions, val),
+      renderer: (val) => getLabelOfOption(stageOptions, val),
     });
 
     columns.push({
-      key: 'start_date', 
+      key: 'begin_at', 
       text: 'Alkupvm', 
       sortable: false,
       renderer: (val) => formatDate(val),
     });
 
     columns.push({
-      key: 'end_date', 
+      key: 'end_at', 
       text: 'Loppupvm', 
       sortable: false,
       renderer: (val) => formatDate(val),

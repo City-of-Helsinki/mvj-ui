@@ -1,3 +1,7 @@
+// @flow
+import get from 'lodash/get';
+
+import {getContentUser} from '$src/users/helpers';
 import type {Property} from './types';
 import {removeSessionStorageItem} from '$util/storage';
 import {FormNames} from '$src/enums';
@@ -19,19 +23,34 @@ export const getContentBasicInformation = (property: Property): Object => {
     deleted: property.deleted,
     end_at: property.end_at,
     modified_at: property.modified_at,
-    preparer: property.preparer,
-    stage: property.stage,
-    subtype: property.subtype,
-    type: property.type,
+    preparer: getContentUser(property.preparer),
+    stage: get(property.stage, 'id'),
+    subtype: get(property.subtype, 'id'),
+    type: get(property.type, 'id'),
 
-    applications: property.applications,
+    /* applications: property.applications,
     step: property.step,
     start_time: property.start_time,
     end_time: property.end_time,
     last_update: property.last_update,
     property_sites: getContentSearchProperties(property.property_sites),
-    decisions: property.decisions,
+    decisions: property.decisions, */
   };
+};
+
+/** 
+ * Get basic information form values
+ * @param {Object} basicInformation
+ * @return {Object}
+ */
+export const getBasicInformationFormValues = (basicInformation: Object): Object => {
+  console.log('Basicinformation: ', basicInformation);
+  let values = basicInformation;
+  values.preparer = get(basicInformation.preparer, 'id');
+  values.stage = get(basicInformation.stage, 'id');
+  values.subtype = get(basicInformation.subtype, 'id');
+  values.type = get(basicInformation.type, 'id');
+  return values;
 };
 
 /** 

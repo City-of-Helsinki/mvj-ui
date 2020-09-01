@@ -7,11 +7,11 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 
+import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BasicInfoDecisionEdit from './BasicInfoDecisionEdit';
 import {ButtonColors} from '$components/enums';
-import {ConfirmationModalTexts} from '$src/enums';
 import Collapse from '$components/collapse/Collapse';
 import FormTextTitle from '$components/form/FormTextTitle';
 import Divider from '$components/content/Divider';
@@ -22,7 +22,6 @@ import WhiteBox from '$components/content/WhiteBox';
 import SubTitle from '$components/content/SubTitle';
 import Title from '$components/content/Title';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import {FormNames, ViewModes} from '$src/enums';
 import FormField from '$components/form/FormField';
 import {
   receiveCollapseStates,
@@ -65,7 +64,7 @@ const renderDecisions = ({
       {({dispatch}) => {
         return(
           <Fragment>
-            <Column small={12} large={6}>
+            <Column small={12} large={10}>
               {fields && !!fields.length &&
                 <Row>
                   <Column small={4} large={8}>
@@ -267,28 +266,27 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     fieldAttributes={get(attributes, 'preparer')}
                     name='preparer'
                     overrideValues={{
+                      fieldType: FieldTypes.USER,
                       label: PropertyFieldTitles.PREPARER,
                     }}
                   />
                 </Column>
-                <Column small={12} medium={6} large={2}>
+                <Column small={12} medium={6} large={3}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'type')}
                     name='type'
                     overrideValues={{
-                      fieldType: 'choice',
                       label: PropertyFieldTitles.TYPE,
                     }}
                   />
                 </Column>
-                <Column small={12} medium={6} large={2}>
+                <Column small={12} medium={6} large={3}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'subtype')}
                     name='subtype'
                     overrideValues={{
-                      fieldType: 'choice',
                       label: PropertyFieldTitles.SUBTYPE,
                     }}
                   />
@@ -298,33 +296,42 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'begin_at')}
                     name='begin_at'
-                    overrideValues={{label: PropertyFieldTitles.START_DATE}}
+                    overrideValues={{
+                      label: PropertyFieldTitles.START_DATE,
+                      fieldType: 'date',
+                    }}
                   />
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                {/* <Column small={6} medium={4} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'start_time')}
                     name='start_time'
-                    overrideValues={{label: PropertyFieldTitles.CLOCK}}
-                  />
-                </Column>
+                    overrideValues={{
+                      label: PropertyFieldTitles.CLOCK,
+                      fieldType: 'date',
+                    }}
+                  />  
+                </Column> */}
                 <Column small={6} medium={4} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'end_at')}
                     name='end_at'
-                    overrideValues={{label: PropertyFieldTitles.END_DATE}}
+                    overrideValues={{
+                      label: PropertyFieldTitles.END_DATE,
+                      fieldType: 'date',
+                    }}
                   />
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                {/* <Column small={6} medium={4} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'end_time')}
                     name='end_time'
                     overrideValues={{label: PropertyFieldTitles.CLOCK}}
                   />
-                </Column>
+                </Column> */}
                 <FieldArray
                   component={renderDecisions}
                   attributes={attributes}
@@ -337,8 +344,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <Column small={12} medium={6} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'step')}
-                    name='step'
+                    fieldAttributes={get(attributes, 'stage')}
+                    name='stage'
                     overrideValues={{
                       label: PropertyFieldTitles.STEP,
                     }}

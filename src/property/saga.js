@@ -12,6 +12,7 @@ import {
   attributesNotFound,
   notFound,
   receiveIsSaveClicked,
+  fetchSinglePlotSearchAfterEdit,
 } from './actions';
 import {displayUIMessage} from '$util/helpers';
 import {receiveError} from '$src/api/actions';
@@ -19,7 +20,7 @@ import {getRouteById, Routes} from '$src/root/routes';
 import attributesMockData from './attributes-mock-data.json';
 import mockData from './mock-data.json';
 
-import {fetchAttributes, createPlotSearch, fetchPlotSearches, fetchSinglePlotSearch} from './requests';
+import {fetchAttributes, createPlotSearch, fetchPlotSearches, fetchSinglePlotSearch, editPlotSearch} from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -115,10 +116,69 @@ function* createPropertySaga({payload: plotSearch}): Generator<any, any, any> {
   }
 }
 
-function* editPropertySaga({payload: property}): Generator<any, any, any> {
-  yield put(receiveSingleProperty(property));
-  yield put(hideEditMode());
-  displayUIMessage({title: '', body: 'Tonttihaku tallennettu'});
+function* editPropertySaga({payload: plotSearch}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotSearch, plotSearch);
+    switch (statusCode) {
+      case 200:
+        yield put(fetchSinglePlotSearchAfterEdit({
+          id: plotSearch.id,
+          callbackFunctions: [
+            hideEditMode(),
+            receiveIsSaveClicked(false),
+            () => displayUIMessage({title: '', body: 'Tonttihaku tallennettu'}),
+          ],
+        }));
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchSinglePlotSearchAfterEditSaga({payload}): Generator<any, any, any> {
+  try {
+    const callbackFunctions = payload.callbackFunctions;
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSinglePlotSearch, payload.id);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleProperty({...bodyAsJson, application_base: mockData[0].application_base}));
+        if(callbackFunctions) {
+          for(let i = 0; i < callbackFunctions.length; i++) {
+            switch (typeof callbackFunctions[i]) {
+              case 'function': // Functions
+                callbackFunctions[i]();
+                break;
+              case 'object': // Redux saga functions
+                yield put(callbackFunctions[i]);
+            }
+          }
+        }
+        break;
+      case 404:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch Land Use Contracts with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 export default function*(): Generator<any, any, any> {
@@ -129,6 +189,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/property/FETCH_SINGLE', fetchSinglePropertySaga);
       yield takeLatest('mvj/property/CREATE', createPropertySaga);
       yield takeLatest('mvj/property/EDIT', editPropertySaga);
+      yield takeLatest('mvj/property/FETCH_SINGLE_AFTER_EDIT', fetchSinglePlotSearchAfterEditSaga);
     }),
   ]);
 }

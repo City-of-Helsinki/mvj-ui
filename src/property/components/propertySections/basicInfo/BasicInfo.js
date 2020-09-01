@@ -3,6 +3,7 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import {getUserFullName} from '$src/users/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {FormNames, ViewModes} from '$src/enums';
 import FormTitleAndText from '$components/form/FormTitleAndText';
@@ -23,6 +24,7 @@ import {getContentBasicInformation} from '$src/property/helpers';
 import {
   getFieldOptions,
   getLabelOfOption,
+  formatDate,
 } from '$util/helpers';
 
 import type {Attributes} from '$src/types';
@@ -66,11 +68,10 @@ class BasicInfo extends PureComponent<Props, State> {
     } = this.props;
 
     const property = getContentBasicInformation(currentProperty);
-    const preparerOptions = getFieldOptions(attributes, 'preparer');
     const typeOptions = getFieldOptions(attributes, 'type');
     const subtypeOptions = getFieldOptions(attributes, 'subtype');
     const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
-    const stepOptions = getFieldOptions(attributes, 'step');
+    const stageOptions = getFieldOptions(attributes, 'stage');
     
     return (
       <Fragment>
@@ -90,12 +91,12 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle>
                     {PropertyFieldTitles.NAME}
                   </FormTextTitle>
-                  <FormText>{property.search_name}</FormText>
+                  <FormText>{property.name}</FormText>
                 </Column>
                 <Column small={12} medium={6} large={2}>
                   <FormTitleAndText
                     title={PropertyFieldTitles.PREPARER}
-                    text={getLabelOfOption(preparerOptions, property.preparer) || '-'}
+                    text={getUserFullName(property.preparer) || '-'}
                   />
                 </Column>
                 <Column small={12} medium={6} large={2}>
@@ -126,35 +127,35 @@ class BasicInfo extends PureComponent<Props, State> {
                     text={getLabelOfOption(subtypeOptions, property.subtype) || '-'}
                   />
                 </Column>
-                <Column small={12} medium={6} large={1}>
+                <Column small={6} medium={4} large={2}>
                   <FormTextTitle >
                     {PropertyFieldTitles.START_DATE}
-                  </FormTextTitle>
-                  <FormText>{property.start_at}</FormText>
+                  </FormTextTitle>  
+                  <FormText>{formatDate(property.begin_at)}</FormText>
                 </Column>
-                <Column small={12} medium={6} large={1}>
+                {/* <Column small={12} medium={6} large={1}>
                   <FormTextTitle>
                     {PropertyFieldTitles.CLOCK}
                   </FormTextTitle>
                   <FormText>{property.start_time}</FormText>
-                </Column>
-                <Column small={12} medium={6} large={1}>
+                </Column> */}
+                <Column small={6} medium={4} large={2}>
                   <FormTextTitle>
                     {PropertyFieldTitles.END_DATE}
                   </FormTextTitle>
-                  <FormText>{property.end_at}</FormText>
+                  <FormText>{formatDate(property.end_at)}</FormText>
                 </Column>
-                <Column small={12} medium={6} large={1}>
+                {/* <Column small={12} medium={6} large={1}>
                   <FormTextTitle>
                     {PropertyFieldTitles.CLOCK}
                   </FormTextTitle>
                   <FormText>{property.end_time}</FormText>
-                </Column>
+                </Column> */}
                 <Column small={12} medium={6} large={2}>
                   <FormTextTitle>
                     {PropertyFieldTitles.APPLICATIONS_UPDATED_DATE}
                   </FormTextTitle>
-                  <FormText>{property.last_update}</FormText>
+                  <FormText>{formatDate(property.modified_at)}</FormText>
                 </Column>
               </Row>
               <Row>
@@ -194,7 +195,7 @@ class BasicInfo extends PureComponent<Props, State> {
                 <Column small={6} medium={2} large={2}>
                   <FormTitleAndText
                     title={PropertyFieldTitles.STEP}
-                    text={getLabelOfOption(stepOptions, property.step) || '-'}
+                    text={getLabelOfOption(stageOptions, property.stage) || '-'}
                   />
                 </Column>
               </Row>

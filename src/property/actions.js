@@ -23,6 +23,8 @@ import type {
   PropertyNotFoundAction,
   ReceiveMethodsAction,
   PropertyAttributesNotFoundAction,
+  FetchSinglePlotSearchAfterEditPayload,
+  FetchSinglePlotSearchAfterEditAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -51,6 +53,9 @@ export const receiveSingleProperty = (property: Property): ReceiveSingleProperty
 
 export const editProperty = (property: Property): EditPropertyAction =>
   createAction('mvj/property/EDIT')(property);
+
+export const fetchSinglePlotSearchAfterEdit = (payload: FetchSinglePlotSearchAfterEditPayload): FetchSinglePlotSearchAfterEditAction =>
+  createAction('mvj/property/FETCH_SINGLE_AFTER_EDIT')(payload);
 
 export const createProperty = (property: Property): CreatePropertyAction =>
   createAction('mvj/property/CREATE')(property);
