@@ -22,8 +22,8 @@ import LeaseholdTransferListPage from '$src/leaseholdTransfer/components/Leaseho
 import NewContactPage from '$src/contacts/components/NewContactPage';
 import NewInfillDevelopmentPage from '$src/infillDevelopment/components/NewInfillDevelopmentPage';
 import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
-import PropertyListPage from '$src/property/components/PropertyListPage';
-import PropertyPage from '$src/property/components/PropertyPage';
+import PlotSearchListPage from '$src/plotSearch/components/PlotSearchListPage';
+import PlotSearchPage from '$src/plotSearch/components/PlotSearchPage';
 import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
 import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
 import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage';
@@ -49,7 +49,7 @@ export const Routes = {
   LEASES: 'leases',
   LEASEHOLD_TRANSFER: 'leasehold_transfer',
   LOGOUT: 'logout',
-  PROPERTY: 'property',
+  PLOT_SEARCH: 'plotSearch',
   RENT_BASIS: 'rent_basis',
   RENT_BASIS_NEW: 'rent_basis_new',
   SAP_INVOICES: 'sap_invoices',
@@ -78,7 +78,7 @@ export const getRouteById = (id: string): string => {
     [Routes.LEASES]: '/vuokraukset',
     [Routes.LEASEHOLD_TRANSFER]: '/vuokraoikeudensiirrot',
     [Routes.LOGOUT]: '/logout',
-    [Routes.PROPERTY]: '/tonttihaku',
+    [Routes.PLOT_SEARCH]: '/tonttihaku',
     [Routes.RENT_BASIS]: '/vuokrausperusteet',
     [Routes.RENT_BASIS_NEW]: '/uusivuokrausperuste',
     [Routes.SAP_INVOICES]: '/saplaskut',
@@ -116,8 +116,8 @@ export default
     <Route exact path={getRouteById(Routes.BATCH_RUN)} component={BatchRunPage} />
     <Route exact path={getRouteById(Routes.BASIS_OF_RENT_CALCULATOR)} component={BasisOfRentCalculatorPage} />
     <Route exact path={getRouteById(Routes.CALLBACK)} component={CallbackPage} />
-    <Route exact path={getRouteById(Routes.PROPERTY)} component={PropertyListPage} />
-    <Route exact path={`${getRouteById(Routes.PROPERTY)}/:propertyId`} component={PropertyPage} />
+    <Route exact path={getRouteById(Routes.PLOT_SEARCH)} component={PlotSearchListPage} />
+    <Route exact path={`${getRouteById(Routes.PLOT_SEARCH)}/:plotSearchId`} component={PlotSearchPage} />
     <Route component={ErrorPage} />
   </Switch>
 </App>;

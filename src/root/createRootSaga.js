@@ -40,7 +40,7 @@ import uiDataSaga from '$src/uiData/saga';
 import userSaga from '../users/saga';
 import usersPermissionsSaga from '../usersPermissions/saga';
 import vatSaga from '../vat/saga';
-import propertySaga from '../property/saga';
+import plotSearchSaga from '../plotSearch/saga';
 
 export default () =>
   // $FlowFixMe
@@ -86,6 +86,6 @@ export default () =>
       fork(userSaga),
       fork(usersPermissionsSaga),
       fork(vatSaga),
-      fork(propertySaga),
+      fork(plotSearchSaga),
     ]);
   };
