@@ -260,7 +260,6 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  {console.log(attributes)}
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'preparer')}

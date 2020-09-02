@@ -25,6 +25,7 @@ import type {
   PropertyAttributesNotFoundAction,
   FetchSinglePlotSearchAfterEditPayload,
   FetchSinglePlotSearchAfterEditAction,
+  DeletePlotSearchAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -59,6 +60,9 @@ export const fetchSinglePlotSearchAfterEdit = (payload: FetchSinglePlotSearchAft
 
 export const createProperty = (property: Property): CreatePropertyAction =>
   createAction('mvj/property/CREATE')(property);
+
+export const deletePlotSearch = (id: PropertyId): DeletePlotSearchAction =>
+  createAction('mvj/property/DELETE')(id);
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/property/HIDE_EDIT')();

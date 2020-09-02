@@ -37,8 +37,8 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/property/CREATE']: () => true,
   ['mvj/property/EDIT']: () => true,
   ['mvj/property/NOT_FOUND']: () => false,
+  ['mvj/property/DELETE']: () => true,
 }, false);
-
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/property/FETCH_ATTRIBUTES']: () => true,
@@ -103,4 +103,3 @@ export default combineReducers<Object, any>({
   list: propertyListReducer,
   methods: methodsReducer,
 });
-

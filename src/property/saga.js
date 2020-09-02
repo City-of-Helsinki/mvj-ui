@@ -3,6 +3,7 @@ import {all, fork, put, takeLatest, call} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
+import {displayUIMessage, getSearchQuery, getUrlParams} from '$src/util/helpers';
 import {
   hideEditMode,
   receiveAttributes,
@@ -14,13 +15,12 @@ import {
   receiveIsSaveClicked,
   fetchSinglePlotSearchAfterEdit,
 } from './actions';
-import {displayUIMessage} from '$util/helpers';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import attributesMockData from './attributes-mock-data.json';
 import mockData from './mock-data.json';
 
-import {fetchAttributes, createPlotSearch, fetchPlotSearches, fetchSinglePlotSearch, editPlotSearch} from './requests';
+import {fetchAttributes, createPlotSearch, fetchPlotSearches, fetchSinglePlotSearch, editPlotSearch, deletePlotSearch} from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -181,6 +181,37 @@ function* fetchSinglePlotSearchAfterEditSaga({payload}): Generator<any, any, any
   }
 }
 
+function* deletePlotSearchSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(deletePlotSearch, id);
+
+    switch (statusCode) {
+      case 204:
+        const query = getUrlParams(location.search);
+
+        // Remove page specific url parameters when moving to landuse list page
+        delete query.tab;
+
+        yield put(push(`${getRouteById(Routes.PROPERTY)}/${getSearchQuery(query)}`));
+        displayUIMessage({title: '', body: 'Tonttihaku poistettu'});
+        break;
+      case 400:
+      case 401:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to delete landusecontract with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -190,6 +221,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/property/CREATE', createPropertySaga);
       yield takeLatest('mvj/property/EDIT', editPropertySaga);
       yield takeLatest('mvj/property/FETCH_SINGLE_AFTER_EDIT', fetchSinglePlotSearchAfterEditSaga);
+      yield takeLatest('mvj/property/DELETE', deletePlotSearchSaga);
     }),
   ]);
 }

@@ -356,6 +356,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti siirtää vuokralaskurin pois arkistosta?',
     TITLE: 'Siirrä arkistosta',
   },
+  DELETE_PLOT_SEARCH: {
+    BUTTON: 'Poista tonttihaku',
+    LABEL: 'Haluatko varmasti poistaa tonttihaun?',
+    TITLE: 'Poista tonttihaku',
+  },
 };
 
 /**

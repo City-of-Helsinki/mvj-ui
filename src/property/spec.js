@@ -19,6 +19,8 @@ import {
   receiveFormValidFlags,
   clearFormValidFlags,
   receiveMethods,
+  deletePlotSearch,
+  fetchSinglePlotSearchAfterEdit,
 } from './actions';
 
 import propertyReducer from './reducer';
@@ -203,6 +205,19 @@ describe('Property', () => {
         const newState = {...baseState, methods: dummyMethods};
 
         const state = propertyReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+    
+      it('fetchSinglePlotSearchAfterEdit function should not change isFetcging flag', () => {
+        const state = propertyReducer({}, fetchSinglePlotSearchAfterEdit({id: 1}));
+        expect(state).to.deep.equal(baseState);
+      });
+
+      it('should update isSaving flag to true deleting plotsearch', () => {
+        const dummyPlotSearch = 1;
+        const newState = {...baseState, isFetching: true};
+
+        const state = propertyReducer({}, deletePlotSearch(dummyPlotSearch));
         expect(state).to.deep.equal(newState);
       });
 

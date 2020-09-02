@@ -33,6 +33,7 @@ export type CreatePropertyAction = Action<'mvj/property/CREATE', Property>;
 export type EditPropertyAction = Action<'mvj/property/EDIT', Property>;
 export type PropertyNotFoundAction = Action<'mvj/property/NOT_FOUND', void>;
 export type FetchSinglePlotSearchAfterEditAction = Action<'mvj/property/FETCH_SINGLE_AFTER_EDIT', FetchSinglePlotSearchAfterEditPayload>;
+export type DeletePlotSearchAction = Action<'mvj/property/DELETE', PropertyId>;
 
 export type ReceiveIsSaveClickedAction = Action<'mvj/property/RECEIVE_SAVE_CLICKED', boolean>;
 export type ReceiveFormValidFlagsAction = Action<'mvj/property/RECEIVE_FORM_VALID_FLAGS', Object>;

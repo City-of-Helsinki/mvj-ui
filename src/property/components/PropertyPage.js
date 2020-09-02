@@ -21,7 +21,6 @@ import Tabs from '$components/tabs/Tabs';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
-import {ConfirmationModalTexts} from '$src/enums';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {
@@ -40,15 +39,16 @@ import {
   receiveIsSaveClicked,
   receiveSingleProperty,
   receiveFormValidFlags,
+  deletePlotSearch,
 } from '$src/property/actions';
-import {FormNames} from '$src/enums';
+import {FormNames, ConfirmationModalTexts} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {
   getUrlParams,
   getSearchQuery,
   setPageTitle,
   scrollToTopPage,
 } from '$util/helpers';
-
 import type {Attributes} from '$src/types';
 import type {Property} from '$src/property/types';
 import {
@@ -97,6 +97,7 @@ type Props = {
   usersPermissions: UsersPermissionsType,
   receiveSingleProperty: Function,
   receiveFormValidFlags: Function,
+  deletePlotSearch: Function,
 }
 
 type State = {
@@ -453,6 +454,15 @@ class PropertyPage extends Component<Props, State> {
       isApplicationFormValid
     );
   }
+  
+  handleDelete = () => {
+    const {
+      deletePlotSearch,
+      match: {params: {propertyId}},
+    } = this.props;
+
+    deletePlotSearch(propertyId);
+  }
 
   render() {
     const {
@@ -486,6 +496,7 @@ class PropertyPage extends Component<Props, State> {
             buttonComponent={
               <ControlButtons
                 allowEdit={true}
+                allowDelete={true}
                 isCancelDisabled={false}
                 isCopyDisabled={true}
                 isEditDisabled={false}
@@ -496,13 +507,18 @@ class PropertyPage extends Component<Props, State> {
                 onSave={this.saveChanges}
                 showCommentButton={false}
                 showCopyButton={false}
+                onDelete={this.handleDelete}
+                deleteModalTexts={{
+                  buttonClassName: ButtonColors.ALERT,
+                  buttonText: ConfirmationModalTexts.DELETE_PLOT_SEARCH.BUTTON,
+                  label: ConfirmationModalTexts.DELETE_PLOT_SEARCH.LABEL,
+                  title: ConfirmationModalTexts.DELETE_PLOT_SEARCH.TITLE,
+                }}
               />
             }
             infoComponent={<PropertyInfo title={currentProperty.name}/>}
             onBack={this.handleBack}
           />
-          {console.log(currentProperty)}
-
           <Tabs
             active={activeTab}
             isEditMode={isEditMode}
@@ -612,6 +628,7 @@ export default flowRight(
       fetchSingleProperty,
       receiveSingleProperty,
       receiveFormValidFlags,
+      deletePlotSearch,
     }
   ),
 )(PropertyPage);

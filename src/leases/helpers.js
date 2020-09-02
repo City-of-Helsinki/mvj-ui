@@ -2974,6 +2974,5 @@ export const clearUnsavedChanges = () => {
  * @returns {boolean}
  */
 export const getLeasesWithContractNumber = (leasesForContractNumbers: LeaseList): boolean => {
-  console.log(get(leasesForContractNumbers, 'count'));
   return (get(leasesForContractNumbers, 'count') > 0);
 };

@@ -28,9 +28,12 @@ export const fetchSinglePlotSearch = (id: any): Generator<any, any, any> => {
 export const editPlotSearch = (PlotSearch: PlotSearch): Generator<any, any, any> => {
   const {id} = PlotSearch;
   const body = JSON.stringify(PlotSearch);
-  console.log('MAKE EDIT: ', PlotSearch);
   return callApi(new Request(createUrl(`plot_search/${id}/`), {
     method: 'PATCH',
     body,
   }));
+};
+
+export const deletePlotSearch = (id: any): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`plot_search/${id}/`), {method: 'DELETE'}));
 };

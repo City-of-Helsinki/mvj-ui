@@ -44,7 +44,6 @@ export const getContentBasicInformation = (property: Property): Object => {
  * @return {Object}
  */
 export const getBasicInformationFormValues = (basicInformation: Object): Object => {
-  console.log('Basicinformation: ', basicInformation);
   let values = basicInformation;
   values.preparer = get(basicInformation.preparer, 'id');
   values.stage = get(basicInformation.stage, 'id');
