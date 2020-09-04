@@ -5,7 +5,7 @@ import merge from 'lodash/merge';
 
 import {FormNames} from '$src/enums';
 
-import type {Attributes, Reducer} from '$src/types';
+import type {Attributes, Reducer, Methods} from '$src/types';
 import type {
   LandUseContract,
   LandUseContractList,
@@ -16,7 +16,6 @@ import type {
   ReceiveIsSaveClickedAction,
   ReceiveCollapseStatesAction,
   ReceiveMethodsAction,
-  Methods,
 } from './types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({

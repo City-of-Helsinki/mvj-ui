@@ -1,7 +1,7 @@
 // @flow
 import {createAction} from 'redux-actions';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
@@ -23,7 +23,6 @@ import type {
   ReceiveCollapseStatesAction,
   AttributesNotFoundAction,
   ReceiveMethodsAction,
-  Methods,
   FetchSingleLandUseContractAfterEditPayload,
   FetchSingleLandUseContractAfterEditAction,
   DeleteLandUseContractAction,

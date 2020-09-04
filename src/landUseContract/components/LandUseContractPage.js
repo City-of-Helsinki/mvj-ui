@@ -72,6 +72,7 @@ import {
   getIsFormValidById,
   getIsFormValidFlags,
   getIsSaveClicked,
+  getIsFetching,
 } from '$src/landUseContract/selectors';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
@@ -109,6 +110,7 @@ type Props = {
   isEditMode: boolean,
   isFetchingLandUseContractAttributes: boolean,
   isFetchingUsersPermissions: boolean,
+  isFetching: boolean,
   isFormValidFlags: boolean,
   isInvoicesFormDirty: boolean,
   isInvoicesFormValid: boolean,
@@ -651,12 +653,13 @@ class LandUseContractPage extends Component<Props, State> {
       isSaveClicked,
       landUseContractAttributes,
       usersPermissions,
+      isFetching,
     } = this.props;
     const {isRestoreModalOpen} = this.state;
     const identifier = getContentLandUseContractIdentifier(currentLandUseContract);
     const areFormsValid = this.getAreFormsValid();
 
-    if(isFetchingLandUseContractAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingLandUseContractAttributes || isFetchingUsersPermissions || isFetching) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!landUseContractAttributes || isEmpty(usersPermissions)) return null;
 
@@ -821,6 +824,7 @@ export default flowRight(
         isDecisionsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_DECISIONS),
         isEditMode: getIsEditMode(state),
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        isFetching: getIsFetching(state),
         isFormValidFlags: getIsFormValidFlags(state),
         isInvoicesFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_INVOICES)(state),
         isInvoicesFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_INVOICES),

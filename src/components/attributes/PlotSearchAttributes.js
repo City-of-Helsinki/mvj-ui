@@ -7,15 +7,17 @@ import {fetchAttributes as fetchPlotSearchAttributes} from '$src/plotSearch/acti
 import {
   getAttributes as getPlotSearchAttributes,
   getIsFetchingAttributes as getIsFetchingPlotSearchAttributes,
+  getPlotSearchMethods,
 } from '$src/plotSearch/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 
 function PlotSearchAttributes(WrappedComponent: any) {
   type Props = {
     fetchPlotSearchAttributes: Function,
     isFetchingPlotSearchAttributes: boolean,
     plotSearchAttributes: Attributes,
+    plotSearchMethods: Methods,
   }
 
   return class PlotSearchAttributes extends PureComponent<Props> {
@@ -37,13 +39,13 @@ function PlotSearchAttributes(WrappedComponent: any) {
   };
 }
 
-// $FlowFixMe
 const withPlotSearchAttributes = flowRight(
   connect(
     (state) => {
       return{
         plotSearchAttributes: getPlotSearchAttributes(state),
         isFetchingPlotSearchAttributes: getIsFetchingPlotSearchAttributes(state),
+        plotSearchMethods: getPlotSearchMethods(state),
       };
     },
     {

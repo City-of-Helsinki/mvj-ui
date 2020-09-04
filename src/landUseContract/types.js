@@ -1,5 +1,5 @@
 // @flow
-import type {Action, Attributes} from '../types';
+import type {Action, Attributes, Methods} from '../types';
 
 export type LandUseContractState = {
   attributes: Attributes,
@@ -10,6 +10,7 @@ export type LandUseContractState = {
   isFormValidById: Object,
   isSaveClicked: boolean,
   list: LandUseContractList,
+  methods: Methods,
 };
 
 export type FetchSingleLandUseContractAfterEditPayload = {
@@ -21,7 +22,6 @@ export type InvoiceListMap = Object;
 export type LandUseContract = Object;
 export type LandUseContractList = Object;
 export type LandUseContractId = number;
-export type Methods = Object;
 
 export type FetchAttributesAction = Action<'mvj/landUseContract/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/landUseContract/RECEIVE_ATTRIBUTES', Attributes>;

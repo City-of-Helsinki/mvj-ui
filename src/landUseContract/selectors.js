@@ -2,7 +2,7 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import type {Attributes, Selector} from '../types';
+import type {Attributes, Selector, Methods} from '../types';
 import type {RootState} from '$src/root/types';
 import type {
   LandUseContract,
@@ -11,6 +11,9 @@ import type {
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.landUseContract.attributes;
+
+export const getMethods: Selector<Attributes, void> = (state: RootState): Methods =>
+  state.landUseContract.methods;
 
 export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolean =>
   state.landUseContract.isEditMode;

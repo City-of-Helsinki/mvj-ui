@@ -7,6 +7,9 @@ import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isArray from 'lodash/isArray';
 
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import CreateLandUseContractModal from './createLandUseContract/CreateLandUseContractModal';
 import Loader from '$components/loader/Loader';
@@ -20,7 +23,6 @@ import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLandUseContract, fetchLandUseContractList} from '$src/landUseContract/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {FormNames} from '$src/enums';
 import {getContentLandUseContractListResults} from '$src/landUseContract/helpers';
 import {
   getApiResponseCount,
@@ -30,12 +32,13 @@ import {
   getSearchQuery,
   getUrlParams,
   setPageTitle,
+  isMethodAllowed,
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
 import {withLandUseContractAttributes} from '$components/attributes/LandUseContractAttributes';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods as MethodType} from '$src/types';
 import type {LandUseContract, LandUseContractList} from '$src/landUseContract/types';
 
 type Props = {
@@ -49,6 +52,7 @@ type Props = {
   landUseContractListData: LandUseContractList,
   location: Object,
   receiveTopNavigationSettings: Function,
+  landUseContractMethods: MethodType,
 };
 
 type State = {
@@ -252,7 +256,7 @@ class LandUseContractListPage extends Component<Props, State> {
   }
 
   render() {
-    const {isFetching, isFetchingLandUseContractAttributes, landUseContractAttributes} = this.props;
+    const {isFetching, isFetchingLandUseContractAttributes, landUseContractAttributes, landUseContractMethods} = this.props;
     const {activePage, isModalOpen, isSearchInitialized, landUseContracts, maxPage, selectedStates} = this.state;
     const stateOptions = getFieldOptions(landUseContractAttributes, 'state', false);
     const filteredLandUseContracts = selectedStates.length
@@ -262,21 +266,29 @@ class LandUseContractListPage extends Component<Props, State> {
 
     if(isFetchingLandUseContractAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
+    if(!landUseContractMethods) return null;
+
+    if(!isMethodAllowed(landUseContractMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LAND_USE_CONTRACTS} /></PageContainer>;
+
     return (
       <PageContainer>
-        <CreateLandUseContractModal
-          isOpen={isModalOpen}
-          onClose={this.hideCreateLandUseContractModal}
-          onSubmit={this.handleCreateLease}
-        />
+        <Authorization allow={isMethodAllowed(landUseContractMethods, Methods.POST)}>
+          <CreateLandUseContractModal
+            isOpen={isModalOpen}
+            onClose={this.hideCreateLandUseContractModal}
+            onSubmit={this.handleCreateLease}
+          />
+        </Authorization>
 
         <Row>
           <Column small={12} large={4}>
-            <AddButtonSecondary
-              className='no-top-margin'
-              label='Luo maankäyttösopimus'
-              onClick={this.handleCreateButtonClick}
-            />
+            <Authorization allow={isMethodAllowed(landUseContractMethods, Methods.POST)}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo maankäyttösopimus'
+                onClick={this.handleCreateButtonClick}
+              />
+            </Authorization>
           </Column>
           <Column small={12} large={8}>
             <Search

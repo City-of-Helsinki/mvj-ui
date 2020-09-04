@@ -2,7 +2,7 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import type {Attributes, Selector} from '../types';
+import type {Attributes, Selector, Methods} from '../types';
 import type {RootState} from '$src/root/types';
 
 import type {
@@ -48,3 +48,6 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: RootState,
   }
   return null;
 };
+
+export const getPlotSearchMethods: Selector<Methods, void> = (state: RootState): Methods =>
+  state.plotSearch.methods;

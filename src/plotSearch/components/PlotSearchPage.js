@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import {change, getFormValues, initialize, destroy, isDirty} from 'redux-form';
 
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -29,6 +30,7 @@ import {
   getIsSaveClicked,
   getIsFormValidById,
   getIsFormValidFlags,
+  getIsFetching,
 } from '$src/plotSearch/selectors';
 import {
   editPlotSearch,
@@ -41,15 +43,16 @@ import {
   receiveFormValidFlags,
   deletePlotSearch,
 } from '$src/plotSearch/actions';
-import {FormNames, ConfirmationModalTexts} from '$src/enums';
+import {FormNames, ConfirmationModalTexts, Methods, PermissionMissingTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
   getUrlParams,
   getSearchQuery,
   setPageTitle,
   scrollToTopPage,
+  isMethodAllowed,
 } from '$util/helpers';
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods as MethodType} from '$src/types';
 import type {PlotSearch} from '$src/plotSearch/types';
 import {
   getContentBasicInformation,
@@ -83,6 +86,7 @@ type Props = {
   isApplicationFormValid: boolean,
   isEditMode: boolean,
   isFetchingPlotSearchAttributes: boolean,
+  isFetching: boolean,
   isSaveClicked: boolean,
   isFetchingUsersPermissions: boolean,
   isFormValidFlags: boolean,
@@ -98,6 +102,8 @@ type Props = {
   receiveSinglePlotSearch: Function,
   receiveFormValidFlags: Function,
   deletePlotSearch: Function,
+  deletePlotSearch: Function,
+  plotSearchMethods: MethodType,
 }
 
 type State = {
@@ -473,6 +479,7 @@ class PlotSearchPage extends Component<Props, State> {
       isEditMode,
       plotSearchAttributes,
       isFetchingPlotSearchAttributes,
+      isFetching,
       usersPermissions,
       isFetchingUsersPermissions,
       isBasicInformationFormDirty,
@@ -481,13 +488,18 @@ class PlotSearchPage extends Component<Props, State> {
       isApplicationFormValid,
       isSaveClicked,
       currentPlotSearch,
+      plotSearchMethods,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
 
-    if(isFetchingPlotSearchAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingPlotSearchAttributes || isFetchingUsersPermissions || isFetching) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!plotSearchAttributes || isEmpty(usersPermissions)) return null;
+
+    if(!plotSearchMethods) return null;
+
+    if(!isMethodAllowed(plotSearchMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
 
     return(
       <FullWidthContainer>
@@ -495,8 +507,8 @@ class PlotSearchPage extends Component<Props, State> {
           <ControlButtonBar
             buttonComponent={
               <ControlButtons
-                allowEdit={true}
-                allowDelete={true}
+                allowDelete={isMethodAllowed(plotSearchMethods, Methods.DELETE)}
+                allowEdit={isMethodAllowed(plotSearchMethods, Methods.PATCH)}
                 isCancelDisabled={false}
                 isCopyDisabled={true}
                 isEditDisabled={false}
@@ -610,6 +622,7 @@ export default flowRight(
         currentPlotSearch: getCurrentPlotSearch(state),
         isEditMode: getIsEditMode(state),
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
         usersPermissions: getUsersPermissions(state),
         isFormValidFlags: getIsFormValidFlags(state),

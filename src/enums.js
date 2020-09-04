@@ -462,4 +462,6 @@ export const PermissionMissingTexts = {
   RENT_BASIS: 'Ei oikeuksia vuokrausperusteisiin.',
   STATISTICS_AND_REPORTS: 'Ei oikeuksia tilastoihin ja raportteihin',
   TRADE_REGISTER: 'Ei oikeuksia kaupparekisteriotteisiin',
+  PLOT_SEARCH: 'Ei oikeuksia tonttihakuun',
+  LAND_USE_CONTRACTS: 'Ei oikeuksia maankäyttösopimuksiin',
 };

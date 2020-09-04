@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -16,6 +17,9 @@ import Collapse from '$components/collapse/Collapse';
 import FormTextTitle from '$components/form/FormTextTitle';
 import Divider from '$components/content/Divider';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
+import {
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {PlotSearchFieldTitles, PlotSearchFieldPaths} from '$src/plotSearch/enums';
 import WhiteBox from '$components/content/WhiteBox';
@@ -251,14 +255,16 @@ class BasicInfoEdit extends PureComponent<Props, State> {
               onToggle={this.handleBasicInfoCollapseToggle}
             >
               <Row>
-                <Column small={12} large={8}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'name')}
-                    name='name'
-                    overrideValues={{label: PlotSearchFieldTitles.NAME}}
-                  />
-                </Column>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
+                  <Column small={12} large={8}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'name')}
+                      name='name'
+                      overrideValues={{label: PlotSearchFieldTitles.NAME}}
+                    />
+                  </Column>
+                </Authorization>
                 <Column small={12} medium={6} large={4}>
                   <FormField
                     disableTouched={isSaveClicked}

@@ -8,6 +8,9 @@ import {initialize} from 'redux-form';
 import isArray from 'lodash/isArray';
 import {withRouter} from 'react-router';
 
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import ExternalLink from '$components/links/ExternalLink';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import IconRadioButtons from '$components/button/IconRadioButtons';
@@ -44,6 +47,7 @@ import {
   getApiResponseCount,
   getApiResponseMaxPage,
   getUrlParams,
+  isMethodAllowed,
 } from '$util/helpers';
 import {
   DEFAULT_SORT_KEY,
@@ -55,11 +59,10 @@ import {
 } from '$src/plotSearch/helpers';
 import type {PlotSearch, PlotSearchList} from '$src/plotSearch/types';
 import CreatePlotSearchModal from './CreatePlotSearchModal';
-import {FormNames} from '$src/enums';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -84,6 +87,7 @@ type Props = {
   plotSearchListData: PlotSearchList,
   initialize: Function,
   fetchPlotSearchList: Function,
+  plotSearchMethods: MethodsType
 }
 
 type State = {
@@ -364,6 +368,10 @@ class PlotSearchListPage extends PureComponent<Props, State> {
 
   render() {
     const {
+      plotSearchMethods,
+    } = this.props;
+    
+    const {
       visualizationType,
       plotSearchStates,
       sortKey,
@@ -383,20 +391,28 @@ class PlotSearchListPage extends PureComponent<Props, State> {
 
     if(isFetchingPlotSearchAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
+    if(!plotSearchMethods) return null;
+
+    if(!isMethodAllowed(plotSearchMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+
     return (
       <PageContainer>
-        <CreatePlotSearchModal
-          isOpen={isModalOpen}
-          onClose={this.hideCreatePlotSearchModal}
-          onSubmit={this.handleCreatePlotSearch}
-        />
+        <Authorization allow={isMethodAllowed(plotSearchMethods, Methods.POST)}>
+          <CreatePlotSearchModal
+            isOpen={isModalOpen}
+            onClose={this.hideCreatePlotSearchModal}
+            onSubmit={this.handleCreatePlotSearch}
+          />
+        </Authorization>
         <Row>
           <Column small={12} large={4}>
-            <AddButtonSecondary
-              className='no-top-margin'
-              label='Luo tonttihaku'
-              onClick={this.openModalhandleCreatePlotSearch}
-            />
+            <Authorization allow={isMethodAllowed(plotSearchMethods, Methods.POST)}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo tonttihaku'
+                onClick={this.openModalhandleCreatePlotSearch}
+              />
+            </Authorization>
           </Column>
           <Column small={12} large={8}>
             <Search

@@ -3,6 +3,7 @@ import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import Authorization from '$components/authorization/Authorization';
 import {getUserFullName} from '$src/users/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {FormNames, ViewModes} from '$src/enums';
@@ -25,6 +26,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   formatDate,
+  isFieldAllowedToRead,
 } from '$util/helpers';
 
 import type {Attributes} from '$src/types';
@@ -87,12 +89,14 @@ class BasicInfo extends PureComponent<Props, State> {
               onToggle={this.handleBasicInfoCollapseToggle}
             >
               <Row>
-                <Column small={12} large={8}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.NAME}
-                  </FormTextTitle>
-                  <FormText>{plotSearch.name}</FormText>
-                </Column>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
+                  <Column small={12} large={8}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.NAME}
+                    </FormTextTitle>
+                    <FormText>{plotSearch.name}</FormText>
+                  </Column>
+                </Authorization>
                 <Column small={12} medium={6} large={2}>
                   <FormTitleAndText
                     title={PlotSearchFieldTitles.PREPARER}
@@ -229,6 +233,7 @@ export default connect(
       usersPermissions: getUsersPermissions(state),
       basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.basic_information`),
       attributes: getAttributes(state),
+      pl: getAttributes(state),
       currentPlotSearch: getCurrentPlotSearch(state),
     };
   },
