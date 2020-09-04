@@ -83,7 +83,7 @@ const NewInvoiceForm = ({
     <form onSubmit={handleSubmit} className='invoice__new-invoice_form'>
       <WhiteBox>
         <BoxContentWrapper>
-          <h3>Luo lasku asdf</h3>
+          <h3>Luo lasku</h3>
           <CloseButton className='position-topright' onClick={onClose} />
 
           <Row>
