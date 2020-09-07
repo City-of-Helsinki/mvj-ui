@@ -32,6 +32,9 @@ class CreatePlotSearchForm extends Component<Props> {
   }
 
   setFocus = () => {
+    if(this.firstField) {
+      this.firstField.focus();
+    }
   }
 
   handleCreate = () => {
@@ -57,6 +60,7 @@ class CreatePlotSearchForm extends Component<Props> {
         <Row>
           <Column small={4}>
             <FormField
+              setRefForField={this.setRefForFirstField}
               fieldAttributes={get(attributes, 'name')}
               name='name'
             />

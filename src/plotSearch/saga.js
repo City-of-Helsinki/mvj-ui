@@ -45,9 +45,9 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchPlotSearchSaga({payload: search}): Generator<any, any, any> {
+function* fetchPlotSearchSaga({payload: query}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotSearches, search);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotSearches, query);
 
     switch (statusCode) {
       case 200:

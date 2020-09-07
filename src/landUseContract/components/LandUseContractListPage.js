@@ -136,7 +136,7 @@ class LandUseContractListPage extends Component<Props, State> {
       ? searchQuery.state
       : searchQuery.state ? [searchQuery.lease_state] : [];
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
+  
     const setSearchFormReady = () => {
       this.setState({isSearchInitialized: true});
     };
@@ -149,7 +149,7 @@ class LandUseContractListPage extends Component<Props, State> {
       delete initialValues.sort_order;
       await initialize(FormNames.LAND_USE_CONTRACT_SEARCH, initialValues);
     };
-
+    console.log(page);
     this.setState({
       activePage: page,
       isSearchInitialized: false,
@@ -180,11 +180,13 @@ class LandUseContractListPage extends Component<Props, State> {
     createLandUseContract(landUseContract);
   }
 
-  handleSearchChange = (query: Object) => {
+  handleSearchChange = (query: Object, resetActivePage?: boolean = true) => {
     const {history} = this.props;
 
-    this.setState({activePage: 1});
-    delete query.page;
+    if(resetActivePage) {
+      this.setState({activePage: 1});
+      delete query.page;
+    }
 
     return history.push({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
@@ -205,7 +207,7 @@ class LandUseContractListPage extends Component<Props, State> {
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
 
-    fetchLandUseContractList(getSearchQuery(searchQuery));
+    fetchLandUseContractList(searchQuery);
   }
 
   handleRowClick = (id) => {
@@ -226,6 +228,8 @@ class LandUseContractListPage extends Component<Props, State> {
     } else {
       delete query.page;
     }
+
+    this.setState({activePage: page});
 
     return history.push({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
@@ -251,8 +255,7 @@ class LandUseContractListPage extends Component<Props, State> {
     searchQuery.state = states;
 
     this.setState({selectedStates: states});
-
-    this.handleSearchChange(searchQuery);
+    this.handleSearchChange(searchQuery, true);
   }
 
   render() {

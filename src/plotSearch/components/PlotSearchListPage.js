@@ -5,7 +5,6 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {initialize} from 'redux-form';
-import isArray from 'lodash/isArray';
 import {withRouter} from 'react-router';
 
 import Authorization from '$components/authorization/Authorization';
@@ -149,16 +148,13 @@ class PlotSearchListPage extends PureComponent<Props, State> {
 
   }
 
-  handleSearchChange = () => {
+  handlePlotSearchStatesChange = () => {
+    const {location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
 
-  }
+    delete searchQuery.page;
 
-  showCreateLeaseModal = () => {
-
-  }
-
-  handleLeaseStatesChange = () => {
-
+    this.handleSearchChange(searchQuery, true);
   }
 
   getColumns = () => {
@@ -235,15 +231,14 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
-    delete searchQuery.page;
-
     if(page > 1) {
       searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
-
+    
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
+    delete searchQuery.page;
 
-    fetchPlotSearchList(getSearchQuery(searchQuery));
+    fetchPlotSearchList(searchQuery);
   }
 
   handleRowClick = (id) => {
@@ -260,7 +255,21 @@ class PlotSearchListPage extends PureComponent<Props, State> {
   }
 
   handlePageClick = (page: number) => {
-    console.log(page);
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    if(page > 1) {
+      query.page = page;
+    } else {
+      delete query.page;
+    }
+
+    this.setState({activePage: page});
+
+    return history.push({
+      pathname: getRouteById(Routes.PLOT_SEARCH),
+      search: getSearchQuery(query),
+    });
   }
 
   updateTableData = () => {
@@ -290,11 +299,13 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     this.setState({isModalOpen: false});
   }
 
-  handleSearchChange = (query: Object) => {
+  handleSearchChange = (query: Object, resetActivePage?: boolean = true) => {
     const {history} = this.props;
-
-    this.setState({activePage: 1});
-    delete query.page;
+    
+    if(resetActivePage) {
+      this.setState({activePage: 1});
+      delete query.page;
+    }
 
     return history.push({
       pathname: getRouteById(Routes.PLOT_SEARCH),
@@ -335,9 +346,6 @@ class PlotSearchListPage extends PureComponent<Props, State> {
   setSearchFormValues = () => {
     const {location: {search}, initialize} = this.props;
     const searchQuery = getUrlParams(search);
-    const states = isArray(searchQuery.state)
-      ? searchQuery.state
-      : searchQuery.state ? [searchQuery.lease_state] : [];
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     const setSearchFormReady = () => {
@@ -356,7 +364,6 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     this.setState({
       activePage: page,
       isSearchInitialized: false,
-      selectedStates: states,
     }, async() => {
       await initializeSearchForm();
 
@@ -370,7 +377,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     const {
       plotSearchMethods,
     } = this.props;
-    
+
     const {
       visualizationType,
       plotSearchStates,
@@ -429,7 +436,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
               amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
               filterOptions={plotSearchStateFilterOptions}
               filterValue={plotSearchStates}
-              onFilterChange={this.handleLeaseStatesChange}
+              onFilterChange={this.handlePlotSearchStatesChange}
             />
             
           }
