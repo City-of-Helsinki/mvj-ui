@@ -8,6 +8,7 @@ import type {RootState} from '$src/root/types';
 import type {
   PlotSearch,
   PlotSearchList,
+  PlanUnit,
 } from './types';
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
@@ -51,3 +52,15 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: RootState,
 
 export const getPlotSearchMethods: Selector<Methods, void> = (state: RootState): Methods =>
   state.plotSearch.methods;
+
+export const getPlanUnitAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotSearch.planUnitAttributes;
+
+export const getPlanUnit: Selector<PlotSearch, void> = (state: RootState): PlanUnit =>
+  state.plotSearch.planUnit;
+
+export const getIsFetchingPlanUnit: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingPlanUnit;
+
+export const getIsFetchingPlanUnitAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingPlanUnitAttributes;

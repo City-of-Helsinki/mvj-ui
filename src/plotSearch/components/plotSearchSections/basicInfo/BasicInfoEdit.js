@@ -279,7 +279,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <Column small={12} medium={6} large={3}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'type')}
+                    fieldAttributes={get(attributes, PlotSearchFieldPaths.TYPE)}
                     name='type'
                     overrideValues={{
                       label: PlotSearchFieldTitles.TYPE,
@@ -289,7 +289,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <Column small={12} medium={6} large={3}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'subtype')}
+                    fieldAttributes={get(attributes, PlotSearchFieldPaths.SUBTYPE)}
                     name='subtype'
                     overrideValues={{
                       label: PlotSearchFieldTitles.SUBTYPE,

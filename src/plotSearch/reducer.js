@@ -16,6 +16,7 @@ import type {
   ReceiveSinglePlotSearchAction,
   ReceiveFormValidFlagsAction,
   ReceiveMethodsAction,
+  PlanUnit,
 } from '$src/plotSearch/types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -39,6 +40,31 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/NOT_FOUND']: () => false,
   ['mvj/plotSearch/DELETE']: () => true,
 }, false);
+
+const isFetchingPlanUnitReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_PLAN_UNIT']: () => true,
+  ['mvj/plotSearch/PLAN_UNIT_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: () => false,
+}, false);
+
+const isFetchingPlanUnitAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES']: () => true,
+  ['mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: () => false,
+}, false);
+
+const planUnitAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
+    return merge(state, attributes);
+  },
+}, null);
+
+const planUnitReducer: Reducer<PlanUnit> = handleActions({
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: PlanUnit, {payload: planUnit}: ReceiveSinglePlotSearchAction) => 
+  {
+    return merge(state, planUnit);
+  },
+}, {});
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/FETCH_ATTRIBUTES']: () => true,
@@ -102,4 +128,8 @@ export default combineReducers<Object, any>({
   isSaveClicked: isSaveClickedReducer,
   list: plotSearchListReducer,
   methods: methodsReducer,
+  planUnitAttributes: planUnitAttributesReducer,
+  planUnit: planUnitReducer,
+  isFetchingPlanUnit: isFetchingPlanUnitReducer,
+  isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
 });

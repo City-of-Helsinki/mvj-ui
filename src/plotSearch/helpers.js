@@ -1,5 +1,6 @@
 // @flow
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import {getContentUser} from '$src/users/helpers';
 import type {PlotSearch} from './types';
@@ -91,6 +92,16 @@ export const getContentPlotSearchListItem = (plotSearch: PlotSearch): Object => 
   };
 };
 
+/**
+ * Get content plan unit identifiers
+ * @param {Object} plan_unit
+ * @returns {string}
+ */
+export const getContentPlanUnitIdentifier = (plan_unit: Object): ?string =>
+  !isEmpty(plan_unit)
+    ? `${get(plan_unit, 'identifier')}` // ${get(plan_unit, 'plan_unit_status')}`
+    : null;
+
 /** 
  * Get plotSearch list results
  * @param {Object} plotSearch
@@ -109,3 +120,13 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem('plotSearchId');
   removeSessionStorageItem('plotSearchValidity');
 };
+
+/**
+ * Get label
+ * @param {Object} plan_unit
+ * @returns {string}
+ */
+export const getlabel = (plan_unit: Object): ?string =>
+  !isEmpty(plan_unit)
+    ? `${get(plan_unit, 'label')}`
+    : null;

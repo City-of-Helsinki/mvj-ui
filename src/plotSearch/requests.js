@@ -37,3 +37,11 @@ export const editPlotSearch = (PlotSearch: PlotSearch): Generator<any, any, any>
 export const deletePlotSearch = (id: any): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`plot_search/${id}/`), {method: 'DELETE'}));
 };
+
+export const fetchPlanUnitAttributes = (id: any): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`plan_unit/${id}/`), {method: 'OPTIONS'}));
+};
+
+export const fetchPlanUnit = (id: any): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`plan_unit/${id}/`)));
+};

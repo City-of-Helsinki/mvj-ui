@@ -21,6 +21,12 @@ import {
   receiveMethods,
   deletePlotSearch,
   fetchSinglePlotSearchAfterEdit,
+  planUnitNotFound,
+  fetchPlanUnit,
+  receiveSinglePlanUnit,
+  fetchPlanUnitAttributes,
+  planUnitAttributesNotFound,
+  receivePlanUnitAttributes,
 } from './actions';
 
 import plotSearchReducer from './reducer';
@@ -41,6 +47,10 @@ const baseState: PlotSearchState = {
   isSaveClicked: false,
   list: {},
   methods: null,
+  planUnitAttributes: null,
+  planUnit: {},
+  isFetchingPlanUnit: false,
+  isFetchingPlanUnitAttributes: false,
 };
 
 
@@ -192,6 +202,42 @@ describe('PlotSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isFetchingPlanUnit flag to false by planUnitNotFound', () => {
+        const newState = {...baseState};
+        newState.isFetchingPlanUnit = false;
+
+        const state = plotSearchReducer({}, planUnitNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingPlanUnitAttributes flag to false by planUnitAttributesNotFound', () => {
+        const newState = {...baseState};
+        newState.isFetchingPlanUnitAttributes = false;
+
+        const state = plotSearchReducer({}, planUnitAttributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingPlanUnit flag to true when fetching fetchPlanUnit', () => {
+        const newState = {...baseState};
+        newState.isFetchingPlanUnit = true;
+
+        const state = plotSearchReducer({}, fetchPlanUnit(1));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingPlanUnitAttributes flag to true', () => {
+        const newState = {...baseState, isFetchingPlanUnitAttributes: true};
+
+        const state = plotSearchReducer({}, fetchPlanUnitAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('fetchSinglePlotSearchAfterEdit function should not change isFetcging flag', () => {
+        const state = plotSearchReducer({}, fetchSinglePlotSearchAfterEdit({id: 1}));
+        expect(state).to.deep.equal(baseState);
+      });
+
       it('should update methods', () => {
         const dummyMethods = {
           PATCH: true,
@@ -207,11 +253,6 @@ describe('PlotSearch', () => {
         const state = plotSearchReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
-    
-      it('fetchSinglePlotSearchAfterEdit function should not change isFetcging flag', () => {
-        const state = plotSearchReducer({}, fetchSinglePlotSearchAfterEdit({id: 1}));
-        expect(state).to.deep.equal(baseState);
-      });
 
       it('should update isSaving flag to true deleting plotsearch', () => {
         const dummyPlotSearch = 1;
@@ -221,11 +262,38 @@ describe('PlotSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update planUnitAttributes', () => {
+        const dummyAttributes = {
+          id: 1,
+          label: 'Foo',
+          name: 'Bar',
+        };
+
+        const newState = {...baseState, planUnitAttributes: {[1]: dummyAttributes}, isFetchingPlanUnitAttributes: false};
+
+        const state = plotSearchReducer({}, receivePlanUnitAttributes({[1]: dummyAttributes}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update PlanUnit', () => {
+        const dummyPlotSearch = {
+          id: 1,
+          label: 'Foo',
+          name: 'Bar',
+        };
+
+        const newState = {...baseState, planUnit: {[1]: dummyPlotSearch}};
+
+        const state = plotSearchReducer({}, receiveSinglePlanUnit({[1]: dummyPlotSearch}));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update collapseStates', () => {
         const newState = {...baseState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
 
         let state = plotSearchReducer({}, receiveCollapseStates({foo: 'bar'}));
         state = plotSearchReducer(state, receiveCollapseStates({foo2: 'bar2'}));
+        state.planUnit = {};
         expect(state).to.deep.equal(newState);
       });
     });
