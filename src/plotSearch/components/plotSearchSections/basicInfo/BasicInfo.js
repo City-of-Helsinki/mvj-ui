@@ -28,7 +28,9 @@ import {
   formatDate,
   isFieldAllowedToRead,
 } from '$util/helpers';
-
+import {
+  PlotSearchFieldPaths,
+} from '$src/plotSearch/enums';
 import type {Attributes} from '$src/types';
 import type {PlotSearch} from '$src/plotSearch/types';
 import SingleRadioInput from '$components/inputs/SingleRadioInput';
@@ -70,8 +72,8 @@ class BasicInfo extends PureComponent<Props, State> {
     } = this.props;
 
     const plotSearch = getContentBasicInformation(currentPlotSearch);
-    const typeOptions = getFieldOptions(attributes, 'type');
-    const subtypeOptions = getFieldOptions(attributes, 'subtype');
+    const typeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.TYPE);
+    const subtypeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SUBTYPE);
     const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
     const stageOptions = getFieldOptions(attributes, 'stage');
     
