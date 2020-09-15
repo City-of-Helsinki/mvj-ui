@@ -188,21 +188,39 @@ class SideMenu extends Component<Props, State> {
                     <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_NOTES)}>Muistettavat ehdot</Link></li>
                   </Authorization>
 
-
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_BASISOFRENT)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.RENT_BASIS)}>Vuokrausperiaatteet</Link></li>
                   </Authorization>
 
                   <li><Link onClick={handleClick} to={getRouteById(Routes.LEASE_STATISTIC_REPORT)}>Tilastot ja raportit</Link></li>
 
-                  <li><Link style={{color: '#b7b7b7'}} ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.PLOT_SEARCH)}>Tonttihaut</Link></li>
-
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INFILLDEVELOPMENTCOMPENSATION)}>
                     <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.INFILL_DEVELOPMENTS)}>Täydennysrakentamiskorvaukset</Link></li>
                   </Authorization>
                   
                   <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
-  
+
+                  <SubMenu
+                    header='Tonttihaut ja kilpailut'
+                    isOpen={subMenuKey === 'plot'}
+                    items={[
+                      {
+                        allow: true,
+                        onClick: handleClick,
+                        text: 'Tonttihaut',
+                        to: getRouteById(Routes.PLOT_SEARCH),
+                      },
+                      {
+                        allow: true,
+                        onClick: handleClick,
+                        text: 'Tonttihakemukset',
+                        to: getRouteById(Routes.PLOT_APPLICATIONS),
+                      },
+                    ]}
+                    menuKey='plot'
+                    onHeaderClick={this.handleHeaderClick}
+                  />
+                  
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) ||

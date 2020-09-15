@@ -23,7 +23,9 @@ import NewContactPage from '$src/contacts/components/NewContactPage';
 import NewInfillDevelopmentPage from '$src/infillDevelopment/components/NewInfillDevelopmentPage';
 import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
 import PlotSearchListPage from '$src/plotSearch/components/PlotSearchListPage';
+import PlotApplicationsListPage from '$src/plotApplications/components/PlotApplicationsListPage';
 import PlotSearchPage from '$src/plotSearch/components/PlotSearchPage';
+import PlotApplicationsPage from '$src/plotApplications/components/PlotApplicationsPage';
 import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
 import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
 import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage';
@@ -50,6 +52,7 @@ export const Routes = {
   LEASEHOLD_TRANSFER: 'leasehold_transfer',
   LOGOUT: 'logout',
   PLOT_SEARCH: 'plotSearch',
+  PLOT_APPLICATIONS: 'plotApplications',
   RENT_BASIS: 'rent_basis',
   RENT_BASIS_NEW: 'rent_basis_new',
   SAP_INVOICES: 'sap_invoices',
@@ -79,6 +82,7 @@ export const getRouteById = (id: string): string => {
     [Routes.LEASEHOLD_TRANSFER]: '/vuokraoikeudensiirrot',
     [Routes.LOGOUT]: '/logout',
     [Routes.PLOT_SEARCH]: '/tonttihaku',
+    [Routes.PLOT_APPLICATIONS]: '/tonttihakemukset',
     [Routes.RENT_BASIS]: '/vuokrausperusteet',
     [Routes.RENT_BASIS_NEW]: '/uusivuokrausperuste',
     [Routes.SAP_INVOICES]: '/saplaskut',
@@ -118,6 +122,8 @@ export default
     <Route exact path={getRouteById(Routes.CALLBACK)} component={CallbackPage} />
     <Route exact path={getRouteById(Routes.PLOT_SEARCH)} component={PlotSearchListPage} />
     <Route exact path={`${getRouteById(Routes.PLOT_SEARCH)}/:plotSearchId`} component={PlotSearchPage} />
+    <Route exact path={getRouteById(Routes.PLOT_APPLICATIONS)} component={PlotApplicationsListPage} />
+    <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotSearchId`} component={PlotApplicationsPage} />
     <Route component={ErrorPage} />
   </Switch>
 </App>;
