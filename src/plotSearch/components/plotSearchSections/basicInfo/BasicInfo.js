@@ -206,7 +206,7 @@ class BasicInfo extends PureComponent<Props, State> {
                 </Column>
               </Row>
               <WhiteBox>
-                <SubTitle>
+                <SubTitle style={{paddingBottom: 10}}>
                   {'HAETTAVAT KOHTEET'}
                 </SubTitle>
 

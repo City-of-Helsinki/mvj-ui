@@ -14,13 +14,26 @@ import {
   notFound,
   receiveIsSaveClicked,
   fetchSinglePlotSearchAfterEdit,
+  receivePlanUnitAttributes,
+  planUnitAttributesNotFound,
+  receiveSinglePlanUnit,
+  planUnitNotFound,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import attributesMockData from './attributes-mock-data.json';
 import mockData from './mock-data.json';
 
-import {fetchAttributes, createPlotSearch, fetchPlotSearches, fetchSinglePlotSearch, editPlotSearch, deletePlotSearch} from './requests';
+import {
+  fetchAttributes,
+  createPlotSearch, 
+  fetchPlotSearches, 
+  fetchSinglePlotSearch, 
+  editPlotSearch, 
+  deletePlotSearch,
+  fetchPlanUnitAttributes,
+  fetchPlanUnit,
+} from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -212,6 +225,51 @@ function* deletePlotSearchSaga({payload: id}): Generator<any, any, any> {
   }
 }
 
+function* fetchPlanUnitAttributesSaga({payload: value}): Generator<any, any, any> {
+  try {
+    console.log(value.value);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnitAttributes, value.value);
+
+    switch (statusCode) {
+      case 200:
+        const attributes = bodyAsJson.fields;
+
+        yield put(receivePlanUnitAttributes({[value.value]: attributes}));
+        break;
+      default:
+        yield put(planUnitAttributesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch plan unit attributes with error "%s"', error);
+    yield put(planUnitAttributesNotFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
+  try {
+    console.log(value.value);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnit, value.value);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSinglePlanUnit({[value.value]: bodyAsJson}));
+        break;
+      case 404:
+        yield put(planUnitNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      default:
+        yield put(planUnitNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch planUnit with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -222,6 +280,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotSearch/EDIT', editPlotSearchSaga);
       yield takeLatest('mvj/plotSearch/FETCH_SINGLE_AFTER_EDIT', fetchSinglePlotSearchAfterEditSaga);
       yield takeLatest('mvj/plotSearch/DELETE', deletePlotSearchSaga);
+      yield takeLatest('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
+      yield takeLatest('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
     }),
   ]);
 }

@@ -12,10 +12,15 @@ export type PlotSearchState = {
   isSaveClicked: boolean,
   isFormValidById: Object,
   methods: Object,
+  planUnitAttributes: Attributes,
+  planUnit: Object,
+  isFetchingPlanUnit: boolean,
+  isFetchingPlanUnitAttributes: boolean,
 };
 
 export type PlotSearchId = number;
 export type PlotSearch = Object;
+export type PlanUnit = Object;
 export type PlotSearchList = Object;
 
 export type FetchSinglePlotSearchAfterEditPayload = {
@@ -47,3 +52,10 @@ export type HideEditModeAction = Action<'mvj/plotSearch/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/plotSearch/SHOW_EDIT', void>;
 
 export type ReceiveCollapseStatesAction = Action<'mvj/plotSearch/RECEIVE_COLLAPSE_STATES', Object>;
+
+export type FetchPlanUnitAction = Action<'mvj/plotSearch/FETCH_PLAN_UNIT', Object>;
+export type ReceiveSinglePlanUnitAction = Action<'mvj/plotSearch/RECEIVE_PLAN_UNIT', PlanUnit>;
+export type FetchPlanUnitAttributesAction = Action<'mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', Object>;
+export type PlanUnitAttributesNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND', void>;
+export type PlanUnitNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_NOT_FOUND', void>;
+export type ReceivePlanUnitAttributesAction = Action<'mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES', Attributes>;
