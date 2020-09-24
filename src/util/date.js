@@ -273,7 +273,18 @@ export const getHoursAndMinutes = (date: any): string => {
   if(!date)
     return '-';
   const dateObject = new Date(date);
-  const hours = getHours(dateObject) ? getHours(dateObject) : '00'; 
-  const minutes = getMinutes(dateObject) ? getMinutes(dateObject) : '00'; 
+  
+  const hours = getHours(dateObject) ? 
+    (getHours(dateObject) < 10) ? 
+      `0${getHours(dateObject)}` : 
+      getHours(dateObject) 
+    : '00'; 
+
+  const minutes = getMinutes(dateObject) ? 
+    (getMinutes(dateObject) < 10) ? 
+      `0${getMinutes(dateObject)}` : 
+      getMinutes(dateObject) :
+    '00'; 
+  
   return `${hours}:${minutes}`;
 };
