@@ -78,6 +78,7 @@ const BasicInformation = ({
               : <FormText>-</FormText>
             }
           </Column>
+          {basicInformation && console.log(basicInformation.definition)}
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
               title='Maankäyttösopimus päätös'

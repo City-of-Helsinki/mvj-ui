@@ -5,6 +5,8 @@ import format from 'date-fns/format';
 import isAfter from 'date-fns/isAfter';
 import isValid from 'date-fns/isValid';
 import subDays from 'date-fns/subDays';
+import getHours from 'date-fns/getHours';
+import getMinutes from 'date-fns/getMinutes';
 
 /**
  * Test is date valid
@@ -260,4 +262,18 @@ export  const getSplittedDateRangesWithItems = (items: Array<Object>, startDateP
   });
 
   return dateRangesWithItems;
+};
+
+/**
+ * Hours and minutes
+ * @param {number} date
+ * @returns {string}
+ */
+export const getHoursAndMinutes = (date: any): string => {
+  if(!date)
+    return '-';
+  const dateObject = new Date(date);
+  const hours = getHours(dateObject) ? getHours(dateObject) : '00'; 
+  const minutes = getMinutes(dateObject) ? getMinutes(dateObject) : '00'; 
+  return `${hours}:${minutes}`;
 };

@@ -17,6 +17,7 @@ import Collapse from '$components/collapse/Collapse';
 import FormTextTitle from '$components/form/FormTextTitle';
 import Divider from '$components/content/Divider';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
+import {FieldTypes as FieldTypeOptions} from '$src/enums';
 import {
   isFieldAllowedToRead,
 } from '$util/helpers';
@@ -296,47 +297,28 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     }}
                   />
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={6} medium={6} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'begin_at')}
                     name='begin_at'
                     overrideValues={{
-                      label: PlotSearchFieldTitles.START_DATE,
-                      fieldType: 'date',
+                      label: 'Alkupvm ja Klo',
+                      fieldType: FieldTypeOptions.TIME,
                     }}
                   />
                 </Column>
-                {/* <Column small={6} medium={4} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'start_time')}
-                    name='start_time'
-                    overrideValues={{
-                      label: PlotSearchFieldTitles.CLOCK,
-                      fieldType: 'date',
-                    }}
-                  />  
-                </Column> */}
-                <Column small={6} medium={4} large={2}>
+                <Column small={6} medium={6} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'end_at')}
                     name='end_at'
                     overrideValues={{
-                      label: PlotSearchFieldTitles.END_DATE,
-                      fieldType: 'date',
+                      label: 'Loppupvm ja Klo',
+                      fieldType: FieldTypeOptions.TIME,
                     }}
                   />
                 </Column>
-                {/* <Column small={6} medium={4} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'end_time')}
-                    name='end_time'
-                    overrideValues={{label: PlotSearchFieldTitles.CLOCK}}
-                  />
-                </Column> */}
                 <FieldArray
                   component={renderDecisions}
                   attributes={attributes}

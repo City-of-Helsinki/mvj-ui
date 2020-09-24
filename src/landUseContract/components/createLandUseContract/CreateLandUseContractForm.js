@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import {getDistrictsByMunicipality} from '$src/district/selectors';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
@@ -13,7 +14,11 @@ import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {getAttributes} from '$src/landUseContract/selectors';
+import {getDistrictOptions} from '$src/district/helpers';
 
+import {
+  getFieldOptions,
+} from '$util/helpers';
 import type {Attributes} from '$src/types';
 import type {DistrictList} from '$src/district/types';
 
@@ -35,7 +40,7 @@ type Props = {
 class CreateLandUseContractForm extends Component<Props> {
   firstField: any
 
-  /*   componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     if(this.props.municipality !== prevProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
 
@@ -46,20 +51,20 @@ class CreateLandUseContractForm extends Component<Props> {
         change('district', '');
       }
     }
-  } */
+  }
 
   setRefForFirstField = (element: any) => {
     this.firstField = element;
   }
 
   setFocus = () => {
-    // this.firstField.focus();
+    this.firstField.focus();
   }
 
   handleCreate = () => {
     const {
-      // municipality,
-      // district,
+      municipality,
+      district,
       onSubmit,
       definition,
       status,
@@ -67,8 +72,8 @@ class CreateLandUseContractForm extends Component<Props> {
     } = this.props;
 
     onSubmit({
-      // municipality: municipality,
-      // district: district,
+      municipality: municipality,
+      district: district,
       definition: definition,
       status: status,
       type: type,
@@ -78,37 +83,38 @@ class CreateLandUseContractForm extends Component<Props> {
   render() {
     const {
       attributes,
-      // districts,
+      districts,
       onClose,
       valid,
     } = this.props;
 
-    // const districtOptions = getDistrictOptions(districts);
+    const districtOptions = getDistrictOptions(districts);
+    const municipalityOptions = getFieldOptions(attributes, 'municipality');
+
     return (
       <form>
         <Row>
-          {/*
           <Column small={4}>
             <FormField
               setRefForField={this.setRefForFirstField}
-              fieldAttributes={get(attributes, 'identifier.children.municipality')}
+              fieldAttributes={get(attributes, 'municipality')}
               name='municipality'
               overrideValues={{
-                label: 'Kunta',
+                // label: 'Kunta',
+                options: municipalityOptions,
               }}
             />
           </Column>
           <Column small={4}>
             <FormField
-              fieldAttributes={get(attributes, 'identifier.children.district')}
+              fieldAttributes={get(attributes, 'district')}
               name='district'
               overrideValues={{
-                label: 'Kaupunginosa',
+                // label: 'Kaupunginosa',
                 options: districtOptions,
               }}
             />
           </Column> 
-          */}
           <Column small={4}>
             <FormField
               fieldAttributes={get(attributes, 'definition')}
@@ -152,15 +158,15 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     (state) => {
-      // const municipality = selector(state, 'municipality');
+      const municipality = selector(state, 'municipality');
       return {
         attributes: getAttributes(state),
-        // district: selector(state, 'district'),
+        district: selector(state, 'district'),
         status: selector(state, 'status'),
         type: selector(state, 'type'),
         definition: selector(state, 'definition'),
-        // districts: getDistrictsByMunicipality(state, municipality),
-        // municipality: municipality,
+        districts: getDistrictsByMunicipality(state, municipality),
+        municipality: municipality,
       };
     },
     {
