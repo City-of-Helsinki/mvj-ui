@@ -98,9 +98,12 @@ export const getContentPlotSearchListItem = (plotSearch: PlotSearch): Object => 
  * @returns {string}
  */
 export const getContentPlanUnitIdentifier = (plan_unit: Object): ?string =>
-  !isEmpty(plan_unit)
-    ? `${get(plan_unit, 'identifier')}` // ${get(plan_unit, 'plan_unit_status')}`
+{
+  console.log(plan_unit);
+  return !isEmpty(plan_unit)
+    ? `${get(plan_unit, 'identifier')} ${get(plan_unit, 'plan_unit_status')} ${get(plan_unit, 'lease_identifier')}`
     : null;
+};
 
 /** 
  * Get plotSearch list results

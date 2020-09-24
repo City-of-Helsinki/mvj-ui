@@ -225,7 +225,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
         onToggle={this.handleCollapseToggle}
       >
         <Row>
-          <Column small={6} medium={4} large={2} style={{paddingBottom: 10}}>
+          <Column small={6} medium={6} large={6} style={{paddingBottom: 10}}>
             <PlanUnitSelectInput
               value={planUnitNew}
               onChange={this.handleNew}
@@ -247,7 +247,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             />
           </Column>
           {(planUnitAttributesByValue && planUnitAttributesByValue) && <Fragment>
-            <Column small={6} medium={3} large={1}>
+            <Column small={6} medium={3} large={2}>
               <FormTextTitle>
                 {'Vuokraustunnus'}
               </FormTextTitle>

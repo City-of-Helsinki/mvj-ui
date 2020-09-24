@@ -383,6 +383,7 @@ export const FieldTypes = {
   STRING: 'string',
   TEXTAREA: 'textarea',
   USER: 'user',
+  TIME: 'time',
 };
 
 /**

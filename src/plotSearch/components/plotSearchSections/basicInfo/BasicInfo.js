@@ -29,6 +29,9 @@ import {
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {
+  getHoursAndMinutes,
+} from '$util/date';
+import {
   PlotSearchFieldPaths,
 } from '$src/plotSearch/enums';
 import type {Attributes} from '$src/types';
@@ -133,30 +136,30 @@ class BasicInfo extends PureComponent<Props, State> {
                     text={getLabelOfOption(subtypeOptions, plotSearch.subtype) || '-'}
                   />
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={6} medium={4} large={1}>
                   <FormTextTitle >
                     {PlotSearchFieldTitles.START_DATE}
                   </FormTextTitle>  
-                  <FormText>{formatDate(plotSearch.begin_at)}</FormText>
+                  <FormText>{formatDate(plotSearch.begin_at) || '-'}</FormText>
                 </Column>
-                {/* <Column small={12} medium={6} large={1}>
+                <Column small={6} medium={4} large={1}>
                   <FormTextTitle>
                     {PlotSearchFieldTitles.CLOCK}
                   </FormTextTitle>
-                  <FormText>{plotSearch.start_time}</FormText>
-                </Column> */}
-                <Column small={6} medium={4} large={2}>
+                  <FormText>{getHoursAndMinutes(plotSearch.begin_at) || '-'}</FormText>
+                </Column>
+                <Column small={6} medium={4} large={1}>
                   <FormTextTitle>
                     {PlotSearchFieldTitles.END_DATE}
                   </FormTextTitle>
-                  <FormText>{formatDate(plotSearch.end_at)}</FormText>
+                  <FormText>{formatDate(plotSearch.end_at) || '-'}</FormText>
                 </Column>
-                {/* <Column small={12} medium={6} large={1}>
+                <Column small={6} medium={4} large={1}>
                   <FormTextTitle>
                     {PlotSearchFieldTitles.CLOCK}
                   </FormTextTitle>
-                  <FormText>{plotSearch.end_time}</FormText>
-                </Column> */}
+                  <FormText>{getHoursAndMinutes(plotSearch.end_at) || '-'}</FormText>
+                </Column>
                 <Column small={12} medium={6} large={2}>
                   <FormTextTitle>
                     {PlotSearchFieldTitles.APPLICATIONS_UPDATED_DATE}
