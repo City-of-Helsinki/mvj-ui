@@ -439,6 +439,8 @@ export const FormNames = {
   TRADE_REGISTER_SEARCH: 'trade-register-search-form',
   PLOT_SEARCH_BASIC_INFORMATION: 'plot-search-basic-information-form',
   PLOT_SEARCH_APPLICATION: 'plot-search-application-form',
+  PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
+  PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
 };
 
 /**

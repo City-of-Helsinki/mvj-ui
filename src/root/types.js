@@ -28,6 +28,7 @@ import type {LessorState} from '$src/lessor/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
 import type {PlotSearchState} from '$src/plotSearch/types';
+import type {PlotApplicationsState} from '$src/plotApplications/types';
 import type {RentBasisState} from '$src/rentbasis/types';
 import type {RentForPeriodState} from '$src/rentForPeriod/types';
 import type {SapInvoicesState} from '$src/sapInvoice/types';
@@ -69,6 +70,7 @@ export type RootState = {
   lessor: LessorState,
   penaltyInterest: PenaltyInterestState,
   plotSearch: PlotSearchState,
+  plotApplications: PlotApplicationsState,
   previewInvoices: PreviewInvoicesState,
   rentBasis: RentBasisState,
   rentForPeriod: RentForPeriodState,

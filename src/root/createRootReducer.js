@@ -29,6 +29,7 @@ import landUseInvoiceReducer from '$src/landUseInvoices/reducer';
 import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
 import plotSearchReducer from '../plotSearch/reducer';
+import plotApplicationsReducer from '../plotApplications/reducer';
 import leaseCreateChargeReducer from '../leaseCreateCharge/reducer';
 import leaseholdTransferReducer from '$src/leaseholdTransfer/reducer';
 import leaseTypeReducer from '../leaseType/reducer';
@@ -75,6 +76,7 @@ export default (history: Object): Reducer<RootState> =>
     landUseInvoice: landUseInvoiceReducer,
     lease: leaseReducer,
     plotSearch: plotSearchReducer,
+    plotApplications: plotApplicationsReducer,
     leaseCreateCharge: leaseCreateChargeReducer,
     leaseholdTransfer: leaseholdTransferReducer,
     leaseStatisticReport: leaseStatisticReportReducer,

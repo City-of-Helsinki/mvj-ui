@@ -1,3 +1,21 @@
 {
-
+  "name": "PlotSearch list",
+  "description": "",
+  "fields": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Nimi"
+    }
+  },
+  "methods": {
+    "DELETE": true,
+    "GET": true,
+    "HEAD": true,
+    "OPTIONS": true,
+    "PATCH": true,
+    "POST": true,
+    "PUT": true
+  }
 }
