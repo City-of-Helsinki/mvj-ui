@@ -493,6 +493,7 @@ export const getContentPlanUnits = (area: Object): Array<Object> =>
       section_area: planunit.section_area,
       in_contract: planunit.in_contract,
       plot_division_identifier: planunit.plot_division_identifier,
+      plot_division_date_of_approval: planunit.plot_division_date_of_approval,
       plot_division_effective_date: planunit.plot_division_effective_date,
       plot_division_state: get(planunit, 'plot_division_state.id') || planunit.plot_division_state,
       detailed_plan_identifier: planunit.detailed_plan_identifier,
@@ -526,7 +527,8 @@ export const getContentLeaseArea = (area: Object): Object => {
     location: area.location,
     plots_current: plots.filter((plot) => !plot.in_contract),
     plots_contract: plots.filter((plot) => plot.in_contract),
-    plan_units_current: planUnits.filter((plot) => !plot.in_contract),
+    plan_units_pending: planUnits.filter((plot) => !plot.in_contract && plot.plan_unit_state == 2),
+    plan_units_current: planUnits.filter((plot) => !plot.in_contract && plot.plan_unit_state != 2),
     plan_units_contract: planUnits.filter((plot) => plot.in_contract),
     archived_at: area.archived_at,
     archived_note: area.archived_note,
@@ -2117,8 +2119,11 @@ const getPayloadPlanUnits = (area: Object): Array<Object> => {
   const contractPlanUnits = get(area, 'plan_units_contract', []).map((planunit) => {
     return {...planunit, 'in_contract': true};
   });
+  const pendingPlanUnits = get(area, 'plan_units_pending', []).map((planunit) => {
+    return {...planunit, 'in_contract': false};
+  });
 
-  const planUnits = currentPlanUnits.concat(contractPlanUnits);
+  const planUnits = currentPlanUnits.concat(contractPlanUnits, pendingPlanUnits);
   return planUnits.map((planunit) => {
     return {
       id: planunit.id,
