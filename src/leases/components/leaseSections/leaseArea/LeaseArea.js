@@ -319,6 +319,32 @@ const LeaseArea = ({
               </BoxItemContainer>
             </Collapse>
           </Column>
+          <Column small={0} large={6}>
+            {/* silence is golden */}
+          </Column>
+          <Column small={12} large={6}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : !archived}
+              headerTitle='Vireillä olevat kaavayksiköt'
+              onToggle={handlePlanUnitCurrentCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}
+            >
+              <BoxItemContainer>
+                {!area.plan_units_pending || !area.plan_units_pending.length &&
+                  <FormText>Ei vireillä olevia kaavayksiköitä</FormText>
+                }
+                {area.plan_units_pending && !!area.plan_units_pending.length && area.plan_units_pending.map((item, index) =>
+                  <PlanUnitItem
+                    key={index}
+                    areaArchived={archived}
+                    planUnit={item}
+                  />
+                )}
+              </BoxItemContainer>
+            </Collapse>
+          </Column>
+          {console.log(area)}
         </Row>
       </Authorization>
     </Fragment>

@@ -69,7 +69,7 @@ const FieldTypeDatePicker = ({
         disabled={disabled}
         id={name}
         locale='fi'
-        selected={value}
+        selected={value ? new Date(value) : null}
         dateFormat='dd.MM.yyyy'
         showYearDropdown
         dropdownMode="select"
