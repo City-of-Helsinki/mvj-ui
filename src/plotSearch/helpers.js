@@ -28,7 +28,7 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     stage: get(plotSearch.stage, 'id'),
     subtype: get(plotSearch.subtype, 'id'),
     type: get(plotSearch.type, 'id'),
-
+    targets: plotSearch.targets,
     /* applications: plotSearch.applications,
     step: plotSearch.step,
     start_time: plotSearch.start_time,
@@ -99,7 +99,6 @@ export const getContentPlotSearchListItem = (plotSearch: PlotSearch): Object => 
  */
 export const getContentPlanUnitIdentifier = (plan_unit: Object): ?string =>
 {
-  console.log(plan_unit);
   return !isEmpty(plan_unit)
     ? `${get(plan_unit, 'identifier')} ${get(plan_unit, 'plan_unit_status')} ${get(plan_unit, 'lease_identifier')}`
     : null;
@@ -133,3 +132,11 @@ export const getlabel = (plan_unit: Object): ?string =>
   !isEmpty(plan_unit)
     ? `${get(plan_unit, 'label')}`
     : null;
+
+
+export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object => {
+  if(planUnit && Object.keys(planUnit) && planUnit[Object.keys(planUnit)[index]]) 
+    return planUnit[Object.keys(planUnit)[index]];
+  else
+    return null;
+};

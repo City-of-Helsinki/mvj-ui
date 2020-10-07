@@ -341,11 +341,10 @@ class PlotSearchPage extends Component<Props, State> {
       if(isBasicInformationFormDirty || !isBasicInformationFormDirty) {
         payload = {...payload, ...basicInformationFormValues};
       }
-      
       if(isApplicationFormDirty) {
         payload = {...payload, application_base: {...applicationFormValues}};
       }
-
+      
       payload.identifier = currentPlotSearch.identifier;
       editPlotSearch(payload);
     }

@@ -143,7 +143,7 @@ const BasicInformation = ({
               <FormTextTitle >
                 {'Ensisijainen osoite'}
               </FormTextTitle>
-              <FormText>{address.isPrimary?'Kyllä':'ei'}</FormText>
+              <FormText>{address.is_primary?'Kyllä':'ei'}</FormText>
             </Column>
           </Row>
         )}

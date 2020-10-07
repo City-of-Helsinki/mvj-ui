@@ -1,35 +1,59 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {PureComponent, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import get from 'lodash/get';
 import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {FormNames, ViewModes} from '$src/enums';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import Collapse from '$components/collapse/Collapse';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import {
+  formatDate,
   getFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getAttributes, getCollapseStateByKey} from '$src/plotSearch/selectors';
+import {
+  getAttributes,
+  getCollapseStateByKey, 
+  getPlanUnitAttributes,
+  getPlanUnit,
+  getIsFetchingPlanUnit,
+  getIsFetchingPlanUnitAttributes,
+} from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
+import {
+  fetchPlanUnit,
+  fetchPlanUnitAttributes,
+} from '$src/plotSearch/actions';
 
 type Props = {
   attributes: Attributes,
   plotSearchSite: Object,
   receiveCollapseStates: Function,
+  fetchPlanUnitAttributes: Function,
+  fetchPlanUnit: Function,
   collapseState: Boolean,
+  isFetchingPlanUnitAttributes: boolean,
+  isFetchingPlanUnit: boolean,
+  planUnitAttributes: Attributes,
+  planUnit: Object,
 }
 
 type State = {
-
+  update: number,
 }
 
 class PlotSearchSite extends PureComponent<Props, State> {
   state = {
+    update: 0,
   }
+
+  timer: any
 
   handleCollapseToggle = (val: boolean) => {
     const {receiveCollapseStates, plotSearchSite} = this.props;
@@ -45,144 +69,189 @@ class PlotSearchSite extends PureComponent<Props, State> {
     });
   };
 
-  render (){
+  componentDidMount(){
+    this.getPlanUnitData();
+    this.startTimer();  
+  }
+
+  updateComponent(){
+    const {update} = this.state; 
+    this.setState({
+      update: update + 1,
+    });
+    if(update > 100)
+      this.stopTimer();
+  }
+
+  startTimer = () => {
+    this.timer = setInterval(
+      () => this.updateComponent(),
+      10
+    );
+  }
+
+  stopTimer = () => {
+    clearInterval(this.timer);
+  }
+
+  getPlanUnitData(){
+    const {
+      fetchPlanUnitAttributes,
+      fetchPlanUnit,
+      plotSearchSite,  
+    } = this.props;
+    const payload = {
+      value: plotSearchSite.plan_unit,
+    };
+    fetchPlanUnitAttributes(payload);
+    fetchPlanUnit(payload);
+  }
+
+  render(){
     
     const {
       collapseState,
       plotSearchSite,
-      attributes,
+      isFetchingPlanUnitAttributes,
+      isFetchingPlanUnit,
+      planUnit, 
+      planUnitAttributes,
     } = this.props;
-
-    const identifierOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.target_identifier');
-    const leaseIdOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.lease_id');
-    const stepOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.step');
-    const handlingOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.handling');
-    const useOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.use');
-    const fundingOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.funding');
-    const ownershipOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.ownership');
-    const suggestedNameOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.suggested.child.children.name');
-
+    const {
+      update,
+    } = this.state;
+    const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit);
+    const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit);
+    const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_intended_use');
+    const planUnitStateOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_state');
+    const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
+    const plotDivisionStateOptions = getFieldOptions(planUnitAttributesByValue, 'plot_division_state');
     return (
       <Column large={12}>
         <Collapse
           className='collapse__secondary greenCollapse'
           defaultOpen={collapseState !== undefined ? collapseState : true}
-          headerTitle={getLabelOfOption(identifierOptions, plotSearchSite.target_identifier) || '-'}
+          headerTitle={get(currentPlanUnit, 'identifier') || '-'}
           onToggle={this.handleCollapseToggle}
         >
           <Row>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Kohteen tunnus'}
-              </FormTextTitle>
-              <FormText>
-                <ExternalLink
-                  className='no-margin'
-                  href={`/`}
-                  text={getLabelOfOption(identifierOptions, plotSearchSite.target_identifier) || '-'}
-                />
-              </FormText>
-            </Column>
-            <Column small={3} medium={2} large={1}>
-              <FormTextTitle>
-                {'Vuokraustunnus'}
-              </FormTextTitle>
-              <FormText>
-                <ExternalLink
-                  className='no-margin'
-                  href={`/`}
-                  text={getLabelOfOption(leaseIdOptions, plotSearchSite.lease_id) || '-'}
-                />
-              </FormText>
-            </Column>
-            <Column small={3} medium={2} large={1}>
-              <FormTextTitle>
-                {'Hitas'}
-              </FormTextTitle>
-              <FormText>{plotSearchSite.hitas || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Osoite'}
-              </FormTextTitle>
-              <FormText>{plotSearchSite.address || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Suunniteltu'}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(stepOptions, plotSearchSite.step) || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Asemakaavan ja käsittelyvaihe'}
-              </FormTextTitle>
-              <ExternalLink
-                className='no-margin'
-                href={`/`}
-                text={getLabelOfOption(handlingOptions, plotSearchSite.handling) || '-'}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Hakemukset'}
-              </FormTextTitle>
-              {(plotSearchSite.applications && !!plotSearchSite.applications.length) && plotSearchSite.applications.map((application, index) => 
-                <FormText key={index}>
+            {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
+              <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
+            }
+            {(currentPlanUnit) && <Fragment>
+              <Column small={6} medium={3} large={3}>
+                <FormTextTitle>
+                  {'Vuokraustunnus'}
+                </FormTextTitle>
+                <FormText>
                   <ExternalLink
                     className='no-margin'
                     href={`/`}
-                    text={application.name}
+                    text={get(currentPlanUnit, 'identifier') || '-'}
                   />
                 </FormText>
-              )}
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Käyttötarkoitus'}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(useOptions, plotSearchSite.use) || '-'}</FormText>
-            </Column>
-            <Column small={3} medium={2} large={1}>
-              <FormTextTitle>
-                {'Rak. oikeus'}
-              </FormTextTitle>
-              {plotSearchSite.build_right ? <FormText>{`${plotSearchSite.build_right} k-m2`}</FormText>:<FormText>{'-'}</FormText>}
-            </Column>
-            <Column small={3} medium={2} large={1}>
-              <FormTextTitle>
-                {'Rak. valmius'}
-              </FormTextTitle>
-              <FormText>{plotSearchSite.build_ready_in || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Rahoitusmuoto'}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(fundingOptions, plotSearchSite.funding) || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Hallintamuoto'}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(ownershipOptions, plotSearchSite.ownership) || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Ehdotettu varauksensaaja'}
-              </FormTextTitle>
-              {plotSearchSite.suggested && !!plotSearchSite.suggested.length && plotSearchSite.suggested.map((suggested, index)=>
-                <FormText key={index}>{getLabelOfOption(suggestedNameOptions, suggested.name) || '-'}</FormText>
-              )}
-            </Column>
-            <Column small={3} medium={2} large={1}>
-              <FormTextTitle>
-                {'Osuus'}
-              </FormTextTitle>
-              {plotSearchSite.suggested && !!plotSearchSite.suggested.length && plotSearchSite.suggested.map((suggested, index)=>
-                <FormText key={index}>{`${suggested.share_numerator}/${suggested.share_denominator}`}</FormText>
-              )}
-            </Column>
+                <FormTextTitle>
+                  {'Kaavayksikön vaihe'}
+                </FormTextTitle>
+                <FormText>{plotSearchSite.target_type || '-'}</FormText>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle>
+                  {'Kaavayksikön käyttötarkoitus'}
+                </FormTextTitle>
+                <FormText>{currentPlanUnit && getLabelOfOption(planUnitIntendedUseOptions, currentPlanUnit.plan_unit_intended_use) || '-'}</FormText>
+              </Column>
+              <Column small={6} medium={3} large={2}>
+                <FormTextTitle>
+                  {'Kokonaisala neliömetreissä'}
+                </FormTextTitle>
+                <FormText>
+                  {get(currentPlanUnit, 'area') || '-'}
+                </FormText>
+              </Column>
+              <Column small={6} medium={3} large={2}>
+                <FormTextTitle>
+                  {'Asemakaava'}
+                </FormTextTitle>
+                <FormText>
+                  {get(currentPlanUnit, 'detailed_plan_identifier') || '-'}
+                </FormText>
+              </Column>
+              <Column small={6} medium={4} large={3}>
+                <FormTextTitle>
+                  {'Asemakaavan viimeisin käsittelypvm'}
+                </FormTextTitle>
+                <FormText>
+                  {formatDate(get(currentPlanUnit, 'detailed_plan_latest_processing_date')) || '-'}
+                </FormText>
+              </Column>
+              <Column small={6} medium={4} large={3}>
+                <FormTextTitle>
+                  {'Asemakaavan viimeisin käsittelypvm. selite'}
+                </FormTextTitle>
+                <FormText>
+                  {formatDate(get(currentPlanUnit, 'detailed_plan_latest_processing_date_note')) || '-'}
+                </FormText>
+              </Column>
+              <Column small={6} medium={3} large={2}>
+                <FormTextTitle>
+                  {'Sopimushetkellä'}
+                </FormTextTitle>
+                <FormText>
+                  {get(currentPlanUnit, 'in_contract') || '-'}
+                </FormText>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle>
+                  {'Kaavayksikön olotila'}
+                </FormTextTitle>
+                <FormText>{currentPlanUnit && getLabelOfOption(planUnitStateOptions, currentPlanUnit.plan_unit_state) || '-'}</FormText>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle>
+                  {'Kaavayksikön laji'}
+                </FormTextTitle>
+                <FormText>{currentPlanUnit && getLabelOfOption(planUnitTypeOptions, currentPlanUnit.plan_unit_type) || '-'}</FormText>
+              </Column>
+              <Column small={6} medium={3} large={2}>
+                <FormTextTitle>
+                  {'Tonttijaon hyväksymispvm'}
+                </FormTextTitle>
+                <FormText>
+                  {formatDate(get(currentPlanUnit, 'plot_division_date_of_approval')) || '-'}
+                </FormText>
+              </Column>
+              <Column small={6} medium={3} large={3}>
+                <FormTextTitle>
+                  {'Tonttijaon voimaantulopvm'}
+                </FormTextTitle>
+                <FormText>
+                  {formatDate(get(currentPlanUnit, 'plot_division_effective_date')) || '-'}
+                </FormText>
+              </Column>
+              <Column small={6} medium={3} large={2}>
+                <FormTextTitle>
+                  {'Tonttijaon tunnus'}
+                </FormTextTitle>
+                <FormText>
+                  {get(currentPlanUnit, 'plot_division_identifier') || '-'}
+                </FormText>
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle>
+                  {'Tonttijaon olotila'}
+                </FormTextTitle>
+                <FormText>{currentPlanUnit && getLabelOfOption(plotDivisionStateOptions, currentPlanUnit.plot_division_state) || '-'}</FormText>
+              </Column>
+              <Column small={6} medium={3} large={2}>
+                <FormTextTitle>
+                  {'Leikkausala'}
+                </FormTextTitle>
+                <FormText>
+                  {get(currentPlanUnit, 'section_area') || '-'}
+                </FormText>
+              </Column>
+            </Fragment>}
           </Row>
         </Collapse>
       </Column>
@@ -196,9 +265,15 @@ export default connect(
     return {
       attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.plotSearch_site.${id}`),
+      planUnitAttributes: getPlanUnitAttributes(state),
+      planUnit: getPlanUnit(state),
+      isFetchingPlanUnit: getIsFetchingPlanUnit(state),
+      isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
     };
   },
   {
     receiveCollapseStates,
+    fetchPlanUnitAttributes,
+    fetchPlanUnit,
   }
 )(PlotSearchSite);

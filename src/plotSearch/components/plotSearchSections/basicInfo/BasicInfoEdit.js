@@ -172,6 +172,7 @@ const renderPlotSearchSites = ({
               };
               return <PlotSearchSiteEdit
                 key={index}
+                index={index}
                 disabled={disabled}
                 field={field}
                 formName={formName}
@@ -349,7 +350,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   isClicked={isSaveClicked}
                   disabled={false}
                   formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
-                  name={'plotSearch_sites'}
+                  name={'targets'}
                   usersPermissions={usersPermissions}
                 />
               </WhiteBox>

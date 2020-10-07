@@ -59,8 +59,8 @@ const AddressItemEdit = ({
       <Column small={6} medium={4} large={2}>
         <FormField
           disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'addresses.child.children.isPrimary')}
-          name={`${field}.isPrimary`}
+          fieldAttributes={get(attributes, 'addresses.child.children.is_primary')}
+          name={`${field}.is_primary`}
           invisibleLabel
         />
       </Column>

@@ -17,7 +17,7 @@ import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
 import SubTitle from '$components/content/SubTitle';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import {getAttributes, getCollapseStateByKey, getCurrentPlotSearch} from '$src/plotSearch/selectors';
+import {getAttributes, getCollapseStateByKey, getCurrentPlotSearch, getPlanUnit} from '$src/plotSearch/selectors';
 import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
 import PlotSearchSite from './PlotSearchSite';
@@ -37,6 +37,10 @@ import {
 import type {Attributes} from '$src/types';
 import type {PlotSearch} from '$src/plotSearch/types';
 import SingleRadioInput from '$components/inputs/SingleRadioInput';
+import {
+  fetchPlanUnit,
+  fetchPlanUnitAttributes,
+} from '$src/plotSearch/actions';
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -44,6 +48,9 @@ type Props = {
   receiveCollapseStates: Function,
   attributes: Attributes,
   currentPlotSearch: PlotSearch,
+  fetchPlanUnit: Function,
+  fetchPlanUnitAttributes: Function,
+  planUnit: Object,
 }
 
 type State = {
@@ -79,7 +86,7 @@ class BasicInfo extends PureComponent<Props, State> {
     const subtypeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SUBTYPE);
     const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
     const stageOptions = getFieldOptions(attributes, 'stage');
-    
+  
     return (
       <Fragment>
         <Title>
@@ -213,7 +220,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   {'HAETTAVAT KOHTEET'}
                 </SubTitle>
 
-                {!!plotSearch.plotSearch_sites && plotSearch.plotSearch_sites.map((plotSearchSite, index) => {
+                {!!plotSearch.targets && plotSearch.targets.map((plotSearchSite, index) => {
                   return(
                     <Row key={index}>
                       <PlotSearchSite
@@ -239,10 +246,13 @@ export default connect(
       basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.basic_information`),
       attributes: getAttributes(state),
       pl: getAttributes(state),
+      planUnit: getPlanUnit(state),
       currentPlotSearch: getCurrentPlotSearch(state),
     };
   },
   {
     receiveCollapseStates,
+    fetchPlanUnitAttributes,
+    fetchPlanUnit,
   }
 )(BasicInfo);

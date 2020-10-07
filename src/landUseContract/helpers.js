@@ -173,7 +173,7 @@ export const getContentBasicInformation = (contract: LandUseContract): Object =>
     project_area: contract.project_area,
     plan_reference_number: contract.plan_reference_number,
     plan_number: contract.plan_number,
-    plan_acceptor: get(contract.plan_acceptor, 'id'),
+    plan_acceptor: contract.plan_acceptor,
     plan_lawfulness_date: contract.plan_lawfulness_date,
     state: contract.state,
     definition: contract.definition,

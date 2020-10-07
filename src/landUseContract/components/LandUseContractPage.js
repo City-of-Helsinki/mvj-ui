@@ -518,14 +518,14 @@ class LandUseContractPage extends Component<Props, State> {
         isLitigantsFormDirty,
         litigantsFormValues,
       } = this.props;
-
+      
       //TODO: Add helper functions to save land use contract to DB when API is ready
       let payload: Object = {...currentLandUseContract};
-
+      
       if(isBasicInformationFormDirty) {
         payload = {...payload, ...basicInformationFormValues};
       }
-
+      
       // MASSIVE TODO
       if(isDecisionsFormDirty) {
         payload = {...payload, ...decisionsFormValues};

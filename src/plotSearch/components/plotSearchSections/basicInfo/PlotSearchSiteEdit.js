@@ -1,13 +1,14 @@
 // @flow
 import React, {Fragment, type Element, Component} from 'react';
 import {connect} from 'react-redux';
-import {reduxForm, FieldArray, formValueSelector} from 'redux-form';
+import {change, reduxForm, FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
 
 import Loader from '$components/loader/Loader';
+
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PlanUnitSelectInput from '$components/inputs/PlanUnitSelectInput';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -28,11 +29,13 @@ import {
   fetchPlanUnitAttributes,
 } from '$src/plotSearch/actions';
 import {
+  formatDate,
   getFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
 import {
   getlabel,
+  getPlanUnitFromObjectKeys,
 } from '$src/plotSearch/helpers';
 import {
   getAttributes,
@@ -132,6 +135,7 @@ const renderSuggested = ({
 type Props = {
   currentAmountPerArea: number,
   field: any,
+  index: any,
   formName: string,
   initialYearRent: number,
   errors: ?Object,
@@ -149,6 +153,7 @@ type Props = {
   isFetchingPlanUnit: boolean,
   planUnitAttributes: Attributes,
   planUnit: Object,
+  change: Function,
 }
 
 type State = {
@@ -177,6 +182,30 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     });
   };
 
+  componentDidMount(){
+    this.getPlanUnitData();
+  }
+
+  getPlanUnitData(){
+    const {
+      planUnit,
+      index,
+    } = this.props;
+    const plan_unit = getPlanUnitFromObjectKeys(planUnit, index);
+    if(plan_unit){
+      const payload = {
+        value: plan_unit.id,
+        label: plan_unit.identifier,
+      };
+      this.setState({
+        planUnitNew: payload,
+      });
+      this.changePlanUnitValue(payload);
+      fetchPlanUnitAttributes(payload);
+      fetchPlanUnit(payload);
+    }
+  }
+
   handleNew = (toPlotSearch: Object) => {
     const {
       fetchPlanUnitAttributes,
@@ -185,9 +214,20 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     this.setState({
       planUnitNew: toPlotSearch,
     });
+    this.changePlanUnitValue(toPlotSearch);
     fetchPlanUnitAttributes(toPlotSearch);
     fetchPlanUnit(toPlotSearch);
   }
+
+  changePlanUnitValue = (toPlotSearch: Object) => {
+    const {
+      change,
+      field,
+    } = this.props;
+    const planUnitNewValue = get(toPlotSearch, 'value');
+    change(`${field}.plan_unit`, planUnitNewValue);
+  }
+
 
   render(){
     const {  
@@ -214,7 +254,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const planUnitStateOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_state');
     const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
     const plotDivisionStateOptions = getFieldOptions(planUnitAttributesByValue, 'plot_division_state');
-    
+
     return (
       <Collapse
         className='collapse__secondary greenCollapse'
@@ -226,11 +266,30 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       >
         <Row>
           <Column small={6} medium={6} large={6} style={{paddingBottom: 10}}>
+            <FormTextTitle>
+              {'Kohteentunnus'}
+            </FormTextTitle>
             <PlanUnitSelectInput
               value={planUnitNew}
               onChange={this.handleNew}
               disabled={false}
-              name='plan-units'
+              name={`plan-unit`}
+            />
+            <div style={{display: 'none'}}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'targets.child.children.plan_unit')}
+                name={`${field}.plan_unit`}
+              />
+            </div>
+            <FormTextTitle>
+              {'Kaavayksikön vaihe'}
+            </FormTextTitle>
+            <FormField
+              disableTouched={isSaveClicked}
+              invisibleLabel={true}
+              fieldAttributes={get(attributes, 'targets.child.children.target_type')}
+              name={`${field}.target_type`}
             />
             {((isFetchingPlanUnitAttributes || isFetchingPlanUnit) && (!planUnitAttributesByValue || !planUnitAttributesByValue)) &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
@@ -246,7 +305,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
               }}
             />
           </Column>
-          {(planUnitAttributesByValue && planUnitAttributesByValue) && <Fragment>
+          {(planUnitByValue) && <Fragment>
             <Column small={6} medium={3} large={2}>
               <FormTextTitle>
                 {'Vuokraustunnus'}
@@ -286,7 +345,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {'Asemakaavan viimeisin käsittelypvm'}
               </FormTextTitle>
               <FormText>
-                {get(planUnitByValue, 'detailed_plan_latest_processing_date') || '-'}
+                {formatDate(get(planUnitByValue, 'detailed_plan_latest_processing_date')) || '-'}
               </FormText>
             </Column>
             <Column small={6} medium={4} large={3}>
@@ -294,7 +353,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {'Asemakaavan viimeisin käsittelypvm. selite'}
               </FormTextTitle>
               <FormText>
-                {get(planUnitByValue, 'detailed_plan_latest_processing_date_note') || '-'}
+                {formatDate(get(planUnitByValue, 'detailed_plan_latest_processing_date_note')) || '-'}
               </FormText>
             </Column>
             <Column small={6} medium={3} large={2}>
@@ -322,7 +381,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {'Tonttijaon hyväksymispvm'}
               </FormTextTitle>
               <FormText>
-                {get(planUnitByValue, 'plot_division_date_of_approval') || '-'}
+                {formatDate(get(planUnitByValue, 'plot_division_date_of_approval')) || '-'}
               </FormText>
             </Column>
             <Column small={6} medium={3} large={3}>
@@ -330,7 +389,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {'Tonttijaon voimaantulopvm'}
               </FormTextTitle>
               <FormText>
-                {get(planUnitByValue, 'plot_division_effective_date') || '-'}
+                {formatDate(get(planUnitByValue, 'plot_division_effective_date')) || '-'}
               </FormText>
             </Column>
             <Column small={6} medium={3} large={2}>
@@ -381,7 +440,7 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         isSaveClicked: getIsSaveClicked(state),
-        collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.plotSearch_site.${id}`),
+        collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.target.${id}`),
         type: selector(state, `${props.field}.type`),
         targetIdentifier: selector(state, `${props.field}.target_identifier`),
         decisionToList: selector(state, `${props.field}.decision_to_list`),
@@ -404,5 +463,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    change,
   }),
 )(PlotSearchSiteEdit);

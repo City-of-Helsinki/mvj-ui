@@ -1,5 +1,5 @@
 // @flow
-import {all, fork, put, takeLatest, call} from 'redux-saga/effects';
+import {all, fork, put, takeLatest, call, takeEvery} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
@@ -227,13 +227,10 @@ function* deletePlotSearchSaga({payload: id}): Generator<any, any, any> {
 
 function* fetchPlanUnitAttributesSaga({payload: value}): Generator<any, any, any> {
   try {
-    console.log(value.value);
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnitAttributes, value.value);
-
     switch (statusCode) {
       case 200:
         const attributes = bodyAsJson.fields;
-
         yield put(receivePlanUnitAttributes({[value.value]: attributes}));
         break;
       default:
@@ -249,7 +246,6 @@ function* fetchPlanUnitAttributesSaga({payload: value}): Generator<any, any, any
 
 function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
   try {
-    console.log(value.value);
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnit, value.value);
     switch (statusCode) {
       case 200:
@@ -280,8 +276,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotSearch/EDIT', editPlotSearchSaga);
       yield takeLatest('mvj/plotSearch/FETCH_SINGLE_AFTER_EDIT', fetchSinglePlotSearchAfterEditSaga);
       yield takeLatest('mvj/plotSearch/DELETE', deletePlotSearchSaga);
-      yield takeLatest('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
-      yield takeLatest('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
+      yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
+      yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
     }),
   ]);
 }
