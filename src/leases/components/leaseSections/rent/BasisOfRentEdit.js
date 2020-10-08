@@ -827,7 +827,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const subventionDiscountedInitial = this.getSubventionDiscountedInitial();
     const zonePrice = getZonePriceFromValue(zone);
     const temporaryRent = calculateTemporaryRent(zonePrice, area);
-    const temporaryRentIndexed = calculateBasicAnnualRentIndexed(temporaryRent, indexValue);
+    const temporaryRentIndexed = calculateBasicAnnualRentIndexed(temporaryRent * 12, indexValue);
     const rentExtra = calculateExtraRent(price, area);
     const rentExtraIndexed = calculateBasicAnnualRentIndexed(rentExtra, indexValue);
     const fieldsRent = calculateFieldsRent(price, area);

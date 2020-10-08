@@ -184,7 +184,8 @@ const BasisOfRent = ({
   const subventionDiscountedInitial = getSubventionDiscountedInitial();
   const zonePrice = getZonePriceFromValue(basisOfRent.zone);
   const rent = calculateTemporaryRent(zonePrice, basisOfRent.area);
-  const basicAnnualRentIndexed = calculateBasicAnnualRentIndexed(rent, indexValue);
+  const temporaryRent = calculateTemporaryRent(zonePrice, basisOfRent.area);
+  const temporaryRentIndexed = calculateBasicAnnualRentIndexed(temporaryRent * 12, indexValue);
   const rentExtra = calculateExtraRent(basisOfRent.amount_per_area, basisOfRent.area);
   const rentExtraIndexed = calculateBasicAnnualRentIndexed(rentExtra, indexValue);
   const fieldsRent = calculateFieldsRent(basisOfRent.amount_per_area, basisOfRent.area);
@@ -378,17 +379,31 @@ const BasisOfRent = ({
               <FormText>{'*5%'}</FormText>
             </Authorization>
           </Column>}
-          {(calculatorType !== CalculatorTypes.MAST && calculatorType !== CalculatorTypes.LEASE) && <Column small={6} medium={4} large={2}>
+          {(calculatorType !== CalculatorTypes.MAST && calculatorType !== CalculatorTypes.LEASE) && <Column small={3} medium={2} large={1}>
             <Authorization allow={
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
             }>
-              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+              {calculatorType === CalculatorTypes.TEMPORARY && <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                {'Vuokra/kuukausi'}
+              </FormTextTitle>}
+              {calculatorType !== CalculatorTypes.TEMPORARY && <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
                 {LeaseBasisOfRentsFieldTitles.RENT}
-              </FormTextTitle>
+              </FormTextTitle>}
               {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(rent) ? `${formatNumber(rent)} €` : '-'}</FormText>}
               {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtra) ? `${formatNumber(rentExtra)} €` : '-'}</FormText>}
               {calculatorType === CalculatorTypes.FIELD && <FormText>{!isEmptyValue(fieldsRent) ? `${formatNumber(fieldsRent)} €` : '-'}</FormText>}
+            </Authorization>
+          </Column>}
+          {(calculatorType !== CalculatorTypes.MAST && calculatorType !== CalculatorTypes.LEASE) && <Column small={3} medium={2} large={1}>
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+            }>
+              {calculatorType === CalculatorTypes.TEMPORARY && <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                {'Vuokra/vuosi'}
+              </FormTextTitle>}
+              {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(rent) ? `${formatNumber(rent * 12)} €` : '-'}</FormText>}
             </Authorization>
           </Column>}
           {(calculatorType !== CalculatorTypes.LEASE && calculatorType !== CalculatorTypes.MAST) && <Column small={6} medium={4} large={2}>
@@ -408,7 +423,7 @@ const BasisOfRent = ({
                 {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
               </FormTextTitle>
               {calculatorType === CalculatorTypes.LEASE && <FormText>{!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</FormText>}
-              {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(basicAnnualRentIndexed) ? `${formatNumber(basicAnnualRentIndexed)} €/v` : '-'}</FormText>}
+              {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(temporaryRentIndexed) ? `${formatNumber(temporaryRentIndexed)} €/v` : '-'}</FormText>}
               {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtraIndexed) ? `${formatNumber(rentExtraIndexed)} €/v` : '-'}</FormText>}
               {calculatorType === CalculatorTypes.FIELD && <FormText>{!isEmptyValue(basicAnnualFieldRentIndexed) ? `${formatNumber(basicAnnualFieldRentIndexed)} €/v` : '-'}</FormText>}
             </Authorization>
