@@ -558,7 +558,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const currentAmountPerAreaText = this.getAmountPerAreaText(currentAmountPerArea);
     const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
     const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
-    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const discountedInitialYearRent = calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
     const rentPerMonth = discountedInitialYearRent != null ? discountedInitialYearRent/12 : null;
     const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent/6 : null;
@@ -760,7 +760,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const {subventionType, managementSubventions, basisOfRent, indexOptions} = this.props;
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
-    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
 
     if(subventionType === SubventionTypes.RE_LEASE)
@@ -814,7 +815,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const lockedAtText = this.getLockedText();
     const plansInspectedAtText = this.getPlansInspectedText();
     const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
-    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const discountedInitialYearRent = calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
     const rentPerMonth = discountedInitialYearRent != null ? discountedInitialYearRent / 12 : null;
     const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent / 6 : null;

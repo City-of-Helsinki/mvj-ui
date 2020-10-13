@@ -117,9 +117,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
       planUnit, 
       planUnitAttributes,
     } = this.props;
-    const {
-      update,
-    } = this.state;
+
     const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit);
     const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit);
     const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_intended_use');

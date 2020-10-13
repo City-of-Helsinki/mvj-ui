@@ -1125,16 +1125,11 @@ export const calculateAmountFromValue = (value: string, indexValue: ?string): nu
  * Calculate basis of rent initial year rent
  * @param {Object} basisOfRent
  * @param {string} indexValue
+ * @param {number} basicAnnualRent
  * @return {number}
  */
-export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string): number => {
-  const amountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
-
-  if(!isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return 0;
-  
-  return Number(convertStrToDecimalNumber(amountPerArea))
-    * Number(convertStrToDecimalNumber(basisOfRent.area))
-    * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
+export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string, basicAnnualRent: ?number): number => {
+  return Number(basicAnnualRent) * Number(convertStrToDecimalNumber(indexValue)) / 100;
 };
 
 /**
