@@ -1,5 +1,7 @@
 
 // @flow
+import merge from 'lodash/merge';
+
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import type {Attributes, Reducer, Methods} from '$src/types';
@@ -9,12 +11,23 @@ import type {
   PlotApplicationsList,
   ReceiveAttributesAction,
   ReceiveMethodsAction,
+  ReceiveSinglePlotApplicationAction,
+  PlotApplication,
+  ReceiveIsSaveClickedAction,
+  ReceiveCollapseStatesAction,
 } from '$src/plotApplications/types';
 
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
   ['mvj/plotApplications/RECEIVE_ALL']: () => false,
+  ['mvj/plotApplications/FETCH_SINGLE']: () => true,
+  ['mvj/plotApplications/RECEIVE_SINGLE']: () => false,
+}, false);
+
+const isEditModeReducer: Reducer<boolean> = handleActions({
+  'mvj/plotApplications/HIDE_EDIT': () => false,
+  'mvj/plotApplications/SHOW_EDIT': () => true,
 }, false);
 
 const plotApplicationsListReducer: Reducer<PlotApplicationsList> = handleActions({
@@ -40,10 +53,31 @@ const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/RECEIVE_METHODS']: () => false,
 }, false);
 
+const currentplotApplicationReducer: Reducer<PlotApplication> = handleActions({
+  ['mvj/plotApplications/RECEIVE_SINGLE']: (state: PlotApplication, {payload: plotApplications}: ReceiveSinglePlotApplicationAction) => plotApplications,
+}, {});
+
+const isSaveClickedReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
+    return isClicked;
+  },
+}, false);
+
+
+const collapseStatesReducer: Reducer<Object> = handleActions({
+  ['mvj/plotApplications/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
+    return merge(state, states);
+  },
+}, {});
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   list: plotApplicationsListReducer,
   attributes: attributesReducer,
   methods: methodsReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
+  current: currentplotApplicationReducer,
+  isEditMode: isEditModeReducer,
+  isSaveClicked: isSaveClickedReducer,
+  collapseStates: collapseStatesReducer,
 });

@@ -10,6 +10,13 @@ import type {
   AttributesNotFoundAction,
   ReceiveAttributesAction,
   FetchAttributesAction,
+  PlotApplication,
+  FetchSinglePlotApplicationAction,
+  ReceiveSinglePlotApplicationAction,
+  HideEditModeAction,
+  ShowEditModeAction,
+  ReceiveIsSaveClickedAction,
+  ReceiveCollapseStatesAction,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -17,6 +24,12 @@ export const fetchPlotApplicationsList = (search: string): FetchPlotApplications
 
 export const receivePlotApplicationsList = (list: PlotApplicationsList): ReceivePlotApplicationsListAction =>
   createAction('mvj/plotApplications/RECEIVE_ALL')(list);
+
+export const fetchSinglePlotSearch = (id: number): FetchSinglePlotApplicationAction =>
+  createAction('mvj/plotApplications/FETCH_SINGLE')(id);
+
+export const receiveSinglePlotApplication = (plotApplication: PlotApplication): ReceiveSinglePlotApplicationAction =>
+  createAction('mvj/plotApplications/RECEIVE_SINGLE')(plotApplication);
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/plotApplications/FETCH_ATTRIBUTES')();
@@ -29,3 +42,15 @@ export const attributesNotFound = (): AttributesNotFoundAction =>
 
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
   createAction('mvj/plotApplications/RECEIVE_ATTRIBUTES')(attributes);
+
+export const hideEditMode = (): HideEditModeAction =>
+  createAction('mvj/plotApplications/HIDE_EDIT')();
+
+export const showEditMode = (): ShowEditModeAction =>
+  createAction('mvj/plotApplications/SHOW_EDIT')();
+
+export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
+  createAction('mvj/plotApplications/RECEIVE_SAVE_CLICKED')(isClicked);
+
+export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesAction =>
+  createAction('mvj/plotApplications/RECEIVE_COLLAPSE_STATES')(status);

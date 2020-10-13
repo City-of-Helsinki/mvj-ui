@@ -356,6 +356,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa tonttihaun?',
     TITLE: 'Poista tonttihaku',
   },
+  DELETE_PLOT_APPLICATION: {
+    BUTTON: 'Poista tonttihakemus',
+    LABEL: 'Haluatko varmasti poistaa tonttihakemuksen?',
+    TITLE: 'Poista tonttihakemus',
+  },
 };
 
 /**
@@ -441,6 +446,7 @@ export const FormNames = {
   PLOT_SEARCH_APPLICATION: 'plot-search-application-form',
   PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
+  PLOT_APPLICATION: 'plot-application',
 };
 
 /**
@@ -465,5 +471,6 @@ export const PermissionMissingTexts = {
   STATISTICS_AND_REPORTS: 'Ei oikeuksia tilastoihin ja raportteihin',
   TRADE_REGISTER: 'Ei oikeuksia kaupparekisteriotteisiin',
   PLOT_SEARCH: 'Ei oikeuksia tonttihakuun',
+  PLOT_APPLICATIONS: 'Ei oikeuksia tonttihakukemusiin',
   LAND_USE_CONTRACTS: 'Ei oikeuksia maankäyttösopimuksiin',
 };

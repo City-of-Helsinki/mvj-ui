@@ -123,7 +123,7 @@ export default
     <Route exact path={getRouteById(Routes.PLOT_SEARCH)} component={PlotSearchListPage} />
     <Route exact path={`${getRouteById(Routes.PLOT_SEARCH)}/:plotSearchId`} component={PlotSearchPage} />
     <Route exact path={getRouteById(Routes.PLOT_APPLICATIONS)} component={PlotApplicationsListPage} />
-    <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotSearchId`} component={PlotApplicationsPage} />
+    <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotApplicationId`} component={PlotApplicationsPage} />
     <Route component={ErrorPage} />
   </Switch>
 </App>;
