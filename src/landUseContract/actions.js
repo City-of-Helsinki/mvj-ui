@@ -1,7 +1,7 @@
 // @flow
 import {createAction} from 'redux-actions';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
@@ -21,6 +21,11 @@ import type {
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   ReceiveCollapseStatesAction,
+  AttributesNotFoundAction,
+  ReceiveMethodsAction,
+  FetchSingleLandUseContractAfterEditPayload,
+  FetchSingleLandUseContractAfterEditAction,
+  DeleteLandUseContractAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -28,6 +33,12 @@ export const fetchAttributes = (): FetchAttributesAction =>
 
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
   createAction('mvj/landUseContract/RECEIVE_ATTRIBUTES')(attributes);
+
+export const attributesNotFound = (): AttributesNotFoundAction =>
+  createAction('mvj/landUseContract/ATTRIBUTES_NOT_FOUND')();
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/landUseContract/RECEIVE_METHODS')(methods);
 
 export const fetchLandUseContractList = (search: string): FetchLandUseContractListAction =>
   createAction('mvj/landUseContract/FETCH_ALL')(search);
@@ -40,6 +51,9 @@ export const fetchSingleLandUseContract = (id: LandUseContractId): FetchSingleLa
 
 export const receiveSingleLandUseContract = (contract: LandUseContract): ReceiveSingleLandUseContractAction =>
   createAction('mvj/landUseContract/RECEIVE_SINGLE')(contract);
+
+export const fetchSingleLandUseContractAfterEdit = (payload: FetchSingleLandUseContractAfterEditPayload): FetchSingleLandUseContractAfterEditAction =>
+  createAction('mvj/landUseContract/FETCH_SINGLE_AFTER_EDIT')(payload);
 
 export const createLandUseContract = (landUseContract: LandUseContract): CreateLandUseContractAction =>
   createAction('mvj/landUseContract/CREATE')(landUseContract);
@@ -67,3 +81,6 @@ export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
 
 export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesAction =>
   createAction('mvj/landUseContract/RECEIVE_COLLAPSE_STATES')(status);
+
+export const deleteLandUseContract = (id: LandUseContractId): DeleteLandUseContractAction =>
+  createAction('mvj/landUseContract/DELETE')(id);

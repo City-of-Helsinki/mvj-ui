@@ -7,6 +7,7 @@ import {fetchAttributes as fetchLandUseContractAttributes} from '$src/landUseCon
 import {
   getAttributes as getLandUseContractAttributes,
   getIsFetchingAttributes as getIsFetchingLandUseContractAttributes,
+  getMethods as getLandUseContractMethods,
 } from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/types';
@@ -37,13 +38,13 @@ function LandUseContractAttributes(WrappedComponent: any) {
   };
 }
 
-// $FlowFixMe
 const withLandUseContractAttributes = flowRight(
   connect(
     (state) => {
       return{
         landUseContractAttributes: getLandUseContractAttributes(state),
         isFetchingLandUseContractAttributes: getIsFetchingLandUseContractAttributes(state),
+        landUseContractMethods: getLandUseContractMethods(state),
       };
     },
     {

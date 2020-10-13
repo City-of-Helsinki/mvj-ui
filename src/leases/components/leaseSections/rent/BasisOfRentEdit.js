@@ -558,7 +558,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const currentAmountPerAreaText = this.getAmountPerAreaText(currentAmountPerArea);
     const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
     const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
-    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const discountedInitialYearRent = calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
     const rentPerMonth = discountedInitialYearRent != null ? discountedInitialYearRent/12 : null;
     const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent/6 : null;
@@ -760,7 +760,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const {subventionType, managementSubventions, basisOfRent, indexOptions} = this.props;
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
-    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
 
     if(subventionType === SubventionTypes.RE_LEASE)
@@ -814,7 +815,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const lockedAtText = this.getLockedText();
     const plansInspectedAtText = this.getPlansInspectedText();
     const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
-    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const discountedInitialYearRent = calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
     const rentPerMonth = discountedInitialYearRent != null ? discountedInitialYearRent / 12 : null;
     const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent / 6 : null;
@@ -827,7 +828,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const subventionDiscountedInitial = this.getSubventionDiscountedInitial();
     const zonePrice = getZonePriceFromValue(zone);
     const temporaryRent = calculateTemporaryRent(zonePrice, area);
-    const temporaryRentIndexed = calculateBasicAnnualRentIndexed(temporaryRent, indexValue);
+    const temporaryRentIndexed = calculateBasicAnnualRentIndexed(temporaryRent * 12, indexValue);
     const rentExtra = calculateExtraRent(price, area);
     const rentExtraIndexed = calculateBasicAnnualRentIndexed(rentExtra, indexValue);
     const fieldsRent = calculateFieldsRent(price, area);
@@ -1117,17 +1118,34 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       <FormText>{'*5%'}</FormText>
                     </Authorization>
                   </Column>}
-                  {calculatorType !== CalculatorTypes.MAST && <Column small={6} medium={4} large={2}>
+                  {calculatorType !== CalculatorTypes.MAST && <Column small={3} medium={2} large={1}>
                     <Authorization allow={
                       isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
                       isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
                     }>
-                      <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                        {LeaseBasisOfRentsFieldTitles.RENT}
-                      </FormTextTitle>
+                      {calculatorType !== CalculatorTypes.TEMPORARY &&
+                        <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                          {LeaseBasisOfRentsFieldTitles.RENT}
+                        </FormTextTitle>}
+                      {calculatorType === CalculatorTypes.TEMPORARY &&
+                        <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                          {'Vuokra/kk'}
+                        </FormTextTitle>}
                       {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(temporaryRent) ? `${formatNumber(temporaryRent)} €` : '-'}</FormText>}
                       {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtra) ? `${formatNumber(rentExtra)} €` : '-'}</FormText>}
                       {calculatorType === CalculatorTypes.FIELD && <FormText>{!isEmptyValue(fieldsRent) ? `${formatNumber(fieldsRent)} €` : '-'}</FormText>}
+                    </Authorization>
+                  </Column>}
+                  {calculatorType === CalculatorTypes.TEMPORARY && <Column small={3} medium={2} large={1}>
+                    <Authorization allow={
+                      isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+                      isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+                    }>
+                      {calculatorType === CalculatorTypes.TEMPORARY &&
+                        <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
+                          {'Vuokra/vuosi'}
+                        </FormTextTitle>}
+                      <FormText>{!isEmptyValue(temporaryRent) ? `${formatNumber(temporaryRent * 12)} €` : '-'}</FormText>
                     </Authorization>
                   </Column>}
                   {calculatorType !== CalculatorTypes.MAST && <Column small={6} medium={4} large={2}>

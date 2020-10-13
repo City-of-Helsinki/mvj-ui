@@ -6,16 +6,19 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import {getDistrictsByMunicipality} from '$src/district/selectors';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {getDistrictOptions} from '$src/district/helpers';
-import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes} from '$src/landUseContract/selectors';
+import {getDistrictOptions} from '$src/district/helpers';
 
+import {
+  getFieldOptions,
+} from '$util/helpers';
 import type {Attributes} from '$src/types';
 import type {DistrictList} from '$src/district/types';
 
@@ -29,6 +32,9 @@ type Props = {
   onClose: Function,
   onSubmit: Function,
   valid: boolean,
+  definition: string,
+  status: string,
+  type: string,
 }
 
 class CreateLandUseContractForm extends Component<Props> {
@@ -60,11 +66,17 @@ class CreateLandUseContractForm extends Component<Props> {
       municipality,
       district,
       onSubmit,
+      definition,
+      status,
+      type,
     } = this.props;
 
     onSubmit({
       municipality: municipality,
       district: district,
+      definition: definition,
+      status: status,
+      type: type,
     });
   };
 
@@ -77,6 +89,7 @@ class CreateLandUseContractForm extends Component<Props> {
     } = this.props;
 
     const districtOptions = getDistrictOptions(districts);
+    const municipalityOptions = getFieldOptions(attributes, 'municipality');
 
     return (
       <form>
@@ -87,7 +100,8 @@ class CreateLandUseContractForm extends Component<Props> {
               fieldAttributes={get(attributes, 'municipality')}
               name='municipality'
               overrideValues={{
-                label: 'Kunta',
+                // label: 'Kunta',
+                options: municipalityOptions,
               }}
             />
           </Column>
@@ -96,9 +110,27 @@ class CreateLandUseContractForm extends Component<Props> {
               fieldAttributes={get(attributes, 'district')}
               name='district'
               overrideValues={{
-                label: 'Kaupunginosa',
+                // label: 'Kaupunginosa',
                 options: districtOptions,
               }}
+            />
+          </Column> 
+          <Column small={4}>
+            <FormField
+              fieldAttributes={get(attributes, 'definition')}
+              name='definition'
+            />
+          </Column>
+          <Column small={4}>
+            <FormField
+              fieldAttributes={get(attributes, 'status')}
+              name='status'
+            />
+          </Column>
+          <Column small={4}>
+            <FormField
+              fieldAttributes={get(attributes, 'type')}
+              name='type'
             />
           </Column>
         </Row>
@@ -130,6 +162,9 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         district: selector(state, 'district'),
+        status: selector(state, 'status'),
+        type: selector(state, 'type'),
+        definition: selector(state, 'definition'),
         districts: getDistrictsByMunicipality(state, municipality),
         municipality: municipality,
       };

@@ -206,6 +206,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa laskurivin?',
     TITLE: 'Poista laskurivi',
   },
+  DELETE_LAND_USE_CONTRACT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa maankäyttösopimuksen?',
+    TITLE: 'Poista maankäyttösopimus',
+  },
   DELETE_LEASE: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa vuokraustunnuksen?',
@@ -255,11 +260,6 @@ export const ConfirmationModalTexts = {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa kiinteistön/määräalan?',
     TITLE: 'Poista kiinteistö/määräala',
-  },
-  DELETE_PROPERTY: {
-    BUTTON: DELETE_MODAL_BUTTON_TEXT,
-    LABEL: 'Haluatko varmasti poistaa tonttihaun?',
-    TITLE: 'Poista tonttihaku',
   },
   DELETE_PROPERTY_IDENTIFIER: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
@@ -351,6 +351,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti siirtää vuokralaskurin pois arkistosta?',
     TITLE: 'Siirrä arkistosta',
   },
+  DELETE_PLOT_SEARCH: {
+    BUTTON: 'Poista tonttihaku',
+    LABEL: 'Haluatko varmasti poistaa tonttihaun?',
+    TITLE: 'Poista tonttihaku',
+  },
 };
 
 /**
@@ -378,6 +383,7 @@ export const FieldTypes = {
   STRING: 'string',
   TEXTAREA: 'textarea',
   USER: 'user',
+  TIME: 'time',
 };
 
 /**
@@ -425,14 +431,15 @@ export const FormNames = {
   LEASE_STATISTIC_REPORT: 'lease-statistic-report-form',
   LEASE_TENANTS: 'tenants-form',
   LEASEHOLD_TRANSFER_SEARCH: 'leasehold-transfer-search-form',
-  PROPERTY_SUMMARY: 'property-form',
-  PROPERTY_SEARCH: 'property-search',
+  PLOT_SEARCH_SUMMARY: 'plot-search-form',
+  PLOT_SEARCH_SEARCH: 'plot-search-search',
+  PLOT_SEARCH_CREATE: 'plot-search-create',
   RENT_BASIS: 'rent-basis-form',
   RENT_BASIS_SEARCH: 'rent-basis-search-form',
   RENT_CALCULATOR: 'rent-calculator-form',
   TRADE_REGISTER_SEARCH: 'trade-register-search-form',
-  PROPERTY_BASIC_INFORMATION: 'property-basic-information-form',
-  PROPERTY_APPLICATION: 'property-application-form',
+  PLOT_SEARCH_BASIC_INFORMATION: 'plot-search-basic-information-form',
+  PLOT_SEARCH_APPLICATION: 'plot-search-application-form',
 };
 
 /**
@@ -456,4 +463,6 @@ export const PermissionMissingTexts = {
   RENT_BASIS: 'Ei oikeuksia vuokrausperusteisiin.',
   STATISTICS_AND_REPORTS: 'Ei oikeuksia tilastoihin ja raportteihin',
   TRADE_REGISTER: 'Ei oikeuksia kaupparekisteriotteisiin',
+  PLOT_SEARCH: 'Ei oikeuksia tonttihakuun',
+  LAND_USE_CONTRACTS: 'Ei oikeuksia maankäyttösopimuksiin',
 };

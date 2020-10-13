@@ -50,12 +50,12 @@ export const getContentListLitigants = (contract: Object): Array<Object> =>
     .map((litigant) => getListLitigantName(litigant));
 
 /** 
- * Get land use contract list areas
+ * Get land use contract list estate ids
  * @param {Object} contract
  * @return {Object[]}
  */
-export const getContentListAreas = (contract: Object): Array<Object> =>
-  get(contract, 'areas', []).map((area) => area.area);
+export const getContentListEstateIds = (contract: Object): Array<Object> =>
+  get(contract, 'estate_ids', []).map((estate_id) => estate_id.estate_id);
 
 /** 
  * Get land use contract list item
@@ -68,7 +68,7 @@ export const getContentLandUseContractListItem = (contract: LandUseContract): Ob
     identifier: getContentLandUseContractIdentifier(contract),
     litigants: getContentListLitigants(contract),
     plan_number: contract.plan_number,
-    areas: getContentListAreas(contract),
+    estate_ids: getContentListEstateIds(contract),
     project_area: contract.project_area,
     state: contract.state,
   };
@@ -83,14 +83,14 @@ export const getContentLandUseContractListResults = (content: Object): Array<Obj
   getApiResponseResults(content).map((contract) => getContentLandUseContractListItem(contract));
 
 /** 
- * Get land use contract areas
+ * Get land use contract estate ids
  * @param {Object} contract
  * @return {Object[]}
  */
-const getContentAreas = (contract: LandUseContract): Array<Object> =>
-  get(contract, 'areas', []).map((area) => {
+const getContentEstateIds = (contract: LandUseContract): Array<Object> =>
+  get(contract, 'estate_ids', []).map((estate_id) => {
     return {
-      area: area.area,
+      estate_id: estate_id.estate_id,
     };
   });
 
@@ -163,11 +163,11 @@ export const getContentLitigants = (contract: LandUseContract): Array<Object> =>
 export const getContentBasicInformation = (contract: LandUseContract): Object => {
   return {
     id: contract.id,
+    type: contract.type,
     identifier: getContentLandUseContractIdentifier(contract),
-    areas: getContentAreas(contract),
+    estate_ids: getContentEstateIds(contract),
     preparer: getContentUser(contract.preparer),
     preparer2: getContentUser(contract.preparer2),
-    land_use_contract_type: contract.land_use_contract_type,
     estimated_completion_year: contract.estimated_completion_year,
     estimated_introduction_year: contract.estimated_introduction_year,
     project_area: contract.project_area,
@@ -176,6 +176,9 @@ export const getContentBasicInformation = (contract: LandUseContract): Object =>
     plan_acceptor: contract.plan_acceptor,
     plan_lawfulness_date: contract.plan_lawfulness_date,
     state: contract.state,
+    definition: contract.definition,
+    status: contract.status,
+    addresses: contract.addresses,
   };
 };
 
@@ -227,14 +230,34 @@ export const getContentDecisions = (contract: LandUseContract): Array<Object> =>
 const getContentContract = (contract: Object): Object => {
   return {
     id: contract.id,
+    contract_type: contract.contract_type,
     state: contract.state,
-    decision_date: contract.decision_date,
     sign_date: contract.sign_date,
     ed_contract_number: contract.ed_contract_number,
-    reference_number: contract.reference_number,
     area_arrengements: contract.area_arrengements,
+    decision: contract.decision,
+    warrants: getContractWarrants(contract),
   };
 };
+
+/** 
+ * Get land use contract warrants
+ * @param {Object} decision
+ * @return {Object[]}
+ */
+const getContractWarrants = (contract: Object): Array<Object> =>
+  get(contract, 'warrants', []).map((contract) => {
+    return {
+      warrant_type: contract.warrant_type,
+      type: contract.type,
+      rent_warrant_number: contract.rent_warrant_number,
+      start_date: contract.start_date,
+      end_date: contract.end_date,
+      amount: contract.amount,
+      return_date: contract.return_date,
+      note: contract.note,
+    };
+  });
 
 /** 
  * Get contracts of land use contract
@@ -270,11 +293,13 @@ export const getContentCompensations = (contract: LandUseContract): Object => {
     land_compensation: compensations.land_compensation,
     other_compensation: compensations.other_compensation,
     first_installment_increase: compensations.first_installment_increase,
-    free_delivery_area: compensations.free_delivery_area,
-    free_delivery_amount: compensations.free_delivery_area,
-    additional_floor_area_apartment: compensations.additional_floor_area_apartment,
-    additional_floor_area_company: compensations.additional_floor_area_company,
-    invoices: getContentCompensationInvoices(compensations),
+    street_acquisition_value: compensations.street_acquisition_value,
+    street_area: compensations.street_area,
+    park_acquisition_value: compensations.park_acquisition_value,
+    park_area: compensations.park_area,
+    other_acquisition_value: compensations.other_acquisition_value,
+    other_area: compensations.other_area,
+    unit_prices_used_in_calculation: compensations.unit_prices_used_in_calculation,
   };
 };
 
@@ -351,6 +376,19 @@ export const addLitigantsFormValuesToPayload = (payload: Object, formValues: Obj
   });
 
   return newPayload;
+};
+
+/**
+ * Get plan accepotr name as string
+ * @param {Object} plan_acceptor
+ * @returns {string}
+ */
+export const getPlanAcceptorName = (plan_acceptor: Object): string=> {
+  if(!plan_acceptor) return '';
+
+  return plan_acceptor.name
+    ? `${plan_acceptor.name}`
+    : '-';
 };
 
 /**

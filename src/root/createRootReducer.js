@@ -25,9 +25,10 @@ import infillDevelopmentAttachmentReducer from '$src/infillDevelopmentAttachment
 import invoiceReducer from '$src/invoices/reducer';
 import invoiceNoteReducer from '$src/invoiceNote/reducer';
 import invoiceSetReducer from '$src/invoiceSets/reducer';
+import landUseInvoiceReducer from '$src/landUseInvoices/reducer';
 import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
-import propertyReducer from '../property/reducer';
+import plotSearchReducer from '../plotSearch/reducer';
 import leaseCreateChargeReducer from '../leaseCreateCharge/reducer';
 import leaseholdTransferReducer from '$src/leaseholdTransfer/reducer';
 import leaseTypeReducer from '../leaseType/reducer';
@@ -71,8 +72,9 @@ export default (history: Object): Reducer<RootState> =>
     invoiceNote: invoiceNoteReducer,
     invoiceSet: invoiceSetReducer,
     landUseContract: landUseContractReducer,
+    landUseInvoice: landUseInvoiceReducer,
     lease: leaseReducer,
-    property: propertyReducer,
+    plotSearch: plotSearchReducer,
     leaseCreateCharge: leaseCreateChargeReducer,
     leaseholdTransfer: leaseholdTransferReducer,
     leaseStatisticReport: leaseStatisticReportReducer,

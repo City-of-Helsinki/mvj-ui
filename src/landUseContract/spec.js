@@ -17,6 +17,10 @@ import {
   receiveFormValidFlags,
   clearFormValidFlags,
   receiveCollapseStates,
+  receiveMethods,
+  fetchSingleLandUseContractAfterEdit,
+  attributesNotFound,
+  deleteLandUseContract,
 } from './actions';
 import landUseContractReducer from './reducer';
 
@@ -39,6 +43,7 @@ const baseState: LandUseContractState = {
   },
   isSaveClicked: false,
   list: {},
+  methods: null,
 };
 
 // $FlowFixMe
@@ -68,6 +73,22 @@ describe('Land use contract', () => {
         const newState = {...baseState, attributes: dummyAttributes, isFetchingAttributes: false};
 
         const state = landUseContractReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {
+          PATCH: true,
+          DELETE: true,
+          GET: true,
+          HEAD: true,
+          POST: true,
+          OPTIONS: true,
+          PUT: true,
+        };
+        const newState = {...baseState, methods: dummyMethods};
+
+        const state = landUseContractReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
 
@@ -178,6 +199,27 @@ describe('Land use contract', () => {
 
         let state = landUseContractReducer({}, receiveFormValidFlags({['land-use-contract-basic-info-form']: false}));
         state = landUseContractReducer(state, clearFormValidFlags());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('fetchSingleLandUseContractAfterEdit function should not change isFetcihng flag', () => {
+        const state = landUseContractReducer({}, fetchSingleLandUseContractAfterEdit({id: 1}));
+        expect(state).to.deep.equal(baseState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...baseState, isFetchingAttributes: false};
+
+        let state = landUseContractReducer({}, fetchAttributes());
+        state = landUseContractReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true deleting landUseContract', () => {
+        const dummyLandUseContract = 1;
+        const newState = {...baseState, isFetching: true};
+
+        const state = landUseContractReducer({}, deleteLandUseContract(dummyLandUseContract));
         expect(state).to.deep.equal(newState);
       });
 

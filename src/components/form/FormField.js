@@ -23,6 +23,7 @@ import FieldTypeSelect from './FieldTypeSelect';
 import FieldTypeTextArea from './FieldTypeTextArea';
 import FieldTypeUserSelect from './FieldTypeUserSelect';
 import FormFieldLabel from './FormFieldLabel';
+import FieldTypeTime from './FieldTypeTime';
 import FormText from './FormText';
 import FormTextTitle from './FormTextTitle';
 import {FieldTypes as FieldTypeOptions} from '$src/enums';
@@ -60,6 +61,7 @@ const FieldTypes = {
   [FieldTypeOptions.STRING]: FieldTypeBasic,
   [FieldTypeOptions.TEXTAREA]: FieldTypeTextArea,
   [FieldTypeOptions.USER]: FieldTypeUserSelect,
+  [FieldTypeOptions.TIME]: FieldTypeTime,
 };
 
 const Types = {

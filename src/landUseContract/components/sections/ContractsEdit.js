@@ -32,7 +32,7 @@ const renderContracts = ({attributes, contractsData, errors, fields, isSaveClick
     fields.push({});
   };
 
-  const stateOptions = getFieldOptions(attributes, 'contracts.child.children.state');
+  const contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.contract_type');
 
   return (
     <AppConsumer>
@@ -63,7 +63,7 @@ const renderContracts = ({attributes, contractsData, errors, fields, isSaveClick
                   index={index}
                   isSaveClicked={isSaveClicked}
                   onRemove={handleRemove}
-                  stateOptions={stateOptions}
+                  contractTypeOptions={contractTypeOptions}
                 />
 
               );

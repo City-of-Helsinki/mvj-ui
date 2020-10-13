@@ -40,6 +40,9 @@ import {
 import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getLeaseTypeList} from '$src/leaseType/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {
+  PlotSearchFieldPaths,
+} from '$src/plotSearch/enums';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
@@ -281,7 +284,7 @@ const BasicInfoEmpty = ({isSaveClicked, leaseAttributes}: BasicInfoEmptyProps) =
           <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
-            name='type'
+            name={PlotSearchFieldPaths.TYPE}
             overrideValues={{label: LeaseRentsFieldTitles.TYPE}}
             enableUiDataEdit
             uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.TYPE)}

@@ -17,6 +17,7 @@ import indexSaga from '$src/index/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
 import infillDevelopmentAttachmentSaga from '../infillDevelopmentAttachment/saga';
 import invoiceSaga from '../invoices/saga';
+import landUseinvoiceSaga from '$src/landUseInvoices/saga';
 import invoiceNoteSaga from '../invoiceNote/saga';
 import invoiceSetSaga from '../invoiceSets/saga';
 import landUseContractSaga from '../landUseContract/saga';
@@ -39,7 +40,7 @@ import uiDataSaga from '$src/uiData/saga';
 import userSaga from '../users/saga';
 import usersPermissionsSaga from '../usersPermissions/saga';
 import vatSaga from '../vat/saga';
-import propertySaga from '../property/saga';
+import plotSearchSaga from '../plotSearch/saga';
 
 export default () =>
   // $FlowFixMe
@@ -62,6 +63,7 @@ export default () =>
       fork(infillDevelopmentSaga),
       fork(infillDevelopmentAttachmentSaga),
       fork(invoiceSaga),
+      fork(landUseinvoiceSaga),
       fork(invoiceNoteSaga),
       fork(invoiceSetSaga),
       fork(landUseContractSaga),
@@ -84,6 +86,6 @@ export default () =>
       fork(userSaga),
       fork(usersPermissionsSaga),
       fork(vatSaga),
-      fork(propertySaga),
+      fork(plotSearchSaga),
     ]);
   };

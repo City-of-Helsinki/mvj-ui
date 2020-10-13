@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "is_invoicing_enabled": true,
     "identifier": {
       "type": {
         "id": 33,
@@ -23,12 +24,22 @@
       },
       "sequence": 261
     },
-    "areas": [
+    "estate_ids": [
       {
-        "area": "12345678"
+        "estate_id": "753-433-2-83-P1"
       },
       {
-        "area": "23456789"
+        "estate_id": "753-433-2-83-P2"
+      }
+    ],
+    "definition": 1,
+    "status": 1,
+    "addresses": [
+      {
+        "address": "KAUPPAKATU 31 L 2",
+        "postal_code": "87100",
+        "city": "Helsinki",
+        "isPrimary": true
       }
     ],
     "litigants": [
@@ -253,12 +264,22 @@
     "contracts": [
       {
         "id": 2,
+        "contract_type": 1,
         "state": 2,
-        "decision_date": "2018-04-01",
         "sign_date": "2018-04-01",
         "ed_contract_number": "12345678",
-        "reference_number": "HEL 2018-198237",
-        "area_arrengements": false
+        "area_arrengements": false,
+        "decision": 1,
+        "warrants": [{
+          "warrant_type": 1,
+          "type": "test type",
+          "rent_warrant_number": "test warrant number",
+          "start_date": "2020-01-01",
+          "end_date": "2020-02-01",
+          "amount": "20000",
+          "return_date": "2020-03-01",
+          "note": "test"
+        }]
       }
     ],
 
@@ -267,20 +288,21 @@
       "land_compensation": "200",
       "other_compensation": "200",
       "first_installment_increase": "200",
-      "free_delivery_area": "200",
-      "free_delivery_amount": "20000",
-      "additional_floor_area_apartment": "200",
-      "additional_floor_area_company": "200",
-      "invoices": [
-        {
-          "amount": "5000",
-          "due_date": "2018-06-05"
-        },
-        {
-          "amount": "5000",
-          "due_date": "2018-06-05"
-        }
-      ]
+      "street_acquisition_value": "200",
+      "street_area": "200",
+      "park_acquisition_value": "200",
+      "park_area": "200",
+      "other_acquisition_value": "200",
+      "other_area": "200",
+      "unit_prices_used_in_calculation": [{
+        "usage": "AK",
+        "management": "vapaa",
+        "protected": "Sr-1",
+        "area": "2000",
+        "unit_value": "200",
+        "discount": "20",
+        "used_price": "1000"
+      }]
     },
 
     "invoices": [

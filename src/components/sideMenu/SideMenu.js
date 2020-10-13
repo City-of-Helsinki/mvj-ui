@@ -195,7 +195,7 @@ class SideMenu extends Component<Props, State> {
 
                   <li><Link onClick={handleClick} to={getRouteById(Routes.LEASE_STATISTIC_REPORT)}>Tilastot ja raportit</Link></li>
 
-                  <li><Link style={{color: '#b7b7b7'}} ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.PROPERTY)}>Tonttihaut</Link></li>
+                  <li><Link style={{color: '#b7b7b7'}} ref={this.setLinkRef} onClick={handleClick} to={getRouteById(Routes.PLOT_SEARCH)}>Tonttihaut</Link></li>
 
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INFILLDEVELOPMENTCOMPENSATION)}>
                     <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.INFILL_DEVELOPMENTS)}>Täydennysrakentamiskorvaukset</Link></li>

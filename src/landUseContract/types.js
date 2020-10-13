@@ -1,5 +1,5 @@
 // @flow
-import type {Action, Attributes} from '../types';
+import type {Action, Attributes, Methods} from '../types';
 
 export type LandUseContractState = {
   attributes: Attributes,
@@ -10,18 +10,31 @@ export type LandUseContractState = {
   isFormValidById: Object,
   isSaveClicked: boolean,
   list: LandUseContractList,
+  methods: Methods,
 };
-export type LandUseContractId = number;
+
+export type FetchSingleLandUseContractAfterEditPayload = {
+  id: any,
+  callbackFuntions?: Array<Object | Function>,
+}
+
+export type InvoiceListMap = Object;
 export type LandUseContract = Object;
 export type LandUseContractList = Object;
+export type LandUseContractId = number;
 
 export type FetchAttributesAction = Action<'mvj/landUseContract/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/landUseContract/RECEIVE_ATTRIBUTES', Attributes>;
+export type AttributesNotFoundAction = Action<'mvj/landUseContract/ATTRIBUTES_NOT_FOUND', void>;
+
+export type ReceiveMethodsAction = Action<'mvj/landUseContract/RECEIVE_METHODS', Methods>;
 
 export type FetchLandUseContractListAction = Action<'mvj/landUseContract/FETCH_ALL', string>;
 export type ReceiveLandUseContractListAction = Action<'mvj/landUseContract/RECEIVE_ALL', LandUseContractList>;
 export type FetchSingleLandUseContractAction = Action<'mvj/landUseContract/FETCH_SINGLE', LandUseContractId>;
 export type ReceiveSingleLandUseContractAction = Action<'mvj/landUseContract/RECEIVE_SINGLE', LandUseContract>;
+export type FetchSingleLandUseContractAfterEditAction = Action<'mvj/landUseContract/FETCH_SINGLE_AFTER_EDIT', FetchSingleLandUseContractAfterEditPayload>;
+export type DeleteLandUseContractAction = Action<'mvj/landUseContract/DELETE', LandUseContractId>;
 
 export type CreateLandUseContractAction = Action<'mvj/landUseContract/CREATE', LandUseContract>;
 export type EditLandUseContractAction = Action<'mvj/landUseContract/EDIT', LandUseContract>;

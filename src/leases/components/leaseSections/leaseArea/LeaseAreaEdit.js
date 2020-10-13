@@ -694,6 +694,24 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 usersPermissions={usersPermissions}
               />
             </Column>
+            <Column small={0} large={6}>
+              {/* Silence is golden */}
+            </Column>
+            <Column small={12} large={6}>
+              <FieldArray
+                attributes={attributes}
+                buttonTitle='Vireillä olevat kaavayksiköt'
+                collapseState={planUnitsCurrentCollapseState}
+                component={renderPlanUnits}
+                errors={errors}
+                isSaveClicked={isSaveClicked}
+                name={`${field}.plan_units_pending`}
+                noDataText='Ei vireillä olevia kaavayksiköitä'
+                onCollapseToggle={this.handlePlanUnitCurrentCollapseToggle}
+                title='Vireillä olevat kaavayksiköt'
+                usersPermissions={usersPermissions}
+              />
+            </Column>
           </Row>
         </Authorization>
       </Fragment>

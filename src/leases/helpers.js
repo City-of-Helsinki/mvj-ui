@@ -493,6 +493,7 @@ export const getContentPlanUnits = (area: Object): Array<Object> =>
       section_area: planunit.section_area,
       in_contract: planunit.in_contract,
       plot_division_identifier: planunit.plot_division_identifier,
+      plot_division_date_of_approval: planunit.plot_division_date_of_approval,
       plot_division_effective_date: planunit.plot_division_effective_date,
       plot_division_state: get(planunit, 'plot_division_state.id') || planunit.plot_division_state,
       detailed_plan_identifier: planunit.detailed_plan_identifier,
@@ -526,7 +527,8 @@ export const getContentLeaseArea = (area: Object): Object => {
     location: area.location,
     plots_current: plots.filter((plot) => !plot.in_contract),
     plots_contract: plots.filter((plot) => plot.in_contract),
-    plan_units_current: planUnits.filter((plot) => !plot.in_contract),
+    plan_units_pending: planUnits.filter((plot) => !plot.in_contract && plot.plan_unit_state == 2),
+    plan_units_current: planUnits.filter((plot) => !plot.in_contract && plot.plan_unit_state != 2),
     plan_units_contract: planUnits.filter((plot) => plot.in_contract),
     archived_at: area.archived_at,
     archived_note: area.archived_note,
@@ -1123,16 +1125,11 @@ export const calculateAmountFromValue = (value: string, indexValue: ?string): nu
  * Calculate basis of rent initial year rent
  * @param {Object} basisOfRent
  * @param {string} indexValue
+ * @param {number} basicAnnualRent
  * @return {number}
  */
-export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string): number => {
-  const amountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
-
-  if(!isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return 0;
-  
-  return Number(convertStrToDecimalNumber(amountPerArea))
-    * Number(convertStrToDecimalNumber(basisOfRent.area))
-    * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
+export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string, basicAnnualRent: ?number): number => {
+  return Number(roundToFixed(Number(basicAnnualRent), 2)) * Number(convertStrToDecimalNumber(indexValue)) / 100;
 };
 
 /**
@@ -1169,7 +1166,8 @@ export const calculateInitialYearRentsTotal = (basisOfRents: Object[], indexOpti
  * @return {number}
  */
 export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Object, indexValue: ?string): number => {
-  const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+  const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+  const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
 
   if(!isDecimalNumberStr(initialYearRent)) return 0;
 
@@ -2117,8 +2115,11 @@ const getPayloadPlanUnits = (area: Object): Array<Object> => {
   const contractPlanUnits = get(area, 'plan_units_contract', []).map((planunit) => {
     return {...planunit, 'in_contract': true};
   });
+  const pendingPlanUnits = get(area, 'plan_units_pending', []).map((planunit) => {
+    return {...planunit, 'in_contract': false};
+  });
 
-  const planUnits = currentPlanUnits.concat(contractPlanUnits);
+  const planUnits = currentPlanUnits.concat(contractPlanUnits, pendingPlanUnits);
   return planUnits.map((planunit) => {
     return {
       id: planunit.id,
@@ -2974,6 +2975,5 @@ export const clearUnsavedChanges = () => {
  * @returns {boolean}
  */
 export const getLeasesWithContractNumber = (leasesForContractNumbers: LeaseList): boolean => {
-  console.log(get(leasesForContractNumbers, 'count'));
   return (get(leasesForContractNumbers, 'count') > 0);
 };
