@@ -1166,7 +1166,8 @@ export const calculateInitialYearRentsTotal = (basisOfRents: Object[], indexOpti
  * @return {number}
  */
 export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Object, indexValue: ?string): number => {
-  const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+  const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+  const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
 
   if(!isDecimalNumberStr(initialYearRent)) return 0;
 
