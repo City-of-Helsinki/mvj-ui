@@ -143,7 +143,8 @@ const BasisOfRent = ({
 
   const getSubventionDiscountedInitial = () => {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
-    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const currentAmountPerArea = calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
     const managementSubventions = basisOfRent.management_subventions;
     if(basisOfRent.subvention_type === SubventionTypes.FORM_OF_MANAGEMENT)
