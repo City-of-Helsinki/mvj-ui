@@ -414,7 +414,7 @@ const BasisOfRent = ({
               <FormText>{getLabelOfOption(indexOptions, basisOfRent.index) || '-'}</FormText>
             </Authorization>
           </Column>}
-          {calculatorType !== CalculatorTypes.MAST && <Column small={6} medium={4} large={2}>
+          {(calculatorType !== CalculatorTypes.LEASE && calculatorType !== CalculatorTypes.MAST) && <Column small={6} medium={4} large={2}>
             <Authorization allow={
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
