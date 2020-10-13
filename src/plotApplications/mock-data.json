@@ -2,5 +2,9 @@
   {
     "id": 1,
     "name": "Testi hakemus"
+  },
+  {
+    "id": 2,
+    "name": "Uusi hakemus"
   }
 ]

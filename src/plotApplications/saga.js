@@ -13,7 +13,6 @@ import mockAttributes from './attributes-mock-data.json';
 
 function* fetchPlotApplications({payload: query}): Generator<any, any, any> {
   console.log(query);
-  console.log('Kappa 123');
   yield put(receivePlotApplicationsList({
     count: 1,
     results: mockData,
