@@ -1129,7 +1129,7 @@ export const calculateAmountFromValue = (value: string, indexValue: ?string): nu
  * @return {number}
  */
 export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string, basicAnnualRent: ?number): number => {
-  return Number(basicAnnualRent) * Number(convertStrToDecimalNumber(indexValue)) / 100;
+  return Number(roundToFixed(Number(basicAnnualRent), 2)) * Number(convertStrToDecimalNumber(indexValue)) / 100;
 };
 
 /**
