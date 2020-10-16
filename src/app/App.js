@@ -32,6 +32,13 @@ import type {ApiToken} from '../auth/types';
 import type {UserGroups} from '$src/usersPermissions/types';
 import type {RootState} from '../root/types';
 
+const NODE_ENV = process.env.NODE_ENV;
+if (!NODE_ENV) {
+  throw new Error(
+    'The NODE_ENV environment variable is required but was not specified.'
+  );
+}
+
 type Props = {
   apiError: ApiError,
   apiToken: ApiToken,
@@ -173,10 +180,11 @@ class App extends Component<Props, State> {
       userGroups,
     } = this.props;
     const {displaySideMenu} = this.state;
+    const appStyle = (NODE_ENV == 'production') ? 'app' : 'app-dev';
 
     if (isEmpty(user) || isEmpty(apiToken)) {
       return (
-        <div className={'app'}>
+        <div className={appStyle}>
           <ReduxToastr
             newestOnTop={true}
             position="bottom-right"
@@ -224,7 +232,7 @@ class App extends Component<Props, State> {
             };
 
             return(
-              <div className={'app'}>
+              <div className={appStyle}>
                 <ApiErrorModal size={Sizes.LARGE}
                   data={apiError}
                   isOpen={Boolean(apiError)}

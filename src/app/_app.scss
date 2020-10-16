@@ -65,3 +65,73 @@
     }
   }
 }
+
+.app-dev {
+  margin-top: rem-calc(60px);
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  min-height: 100%;
+  background: url('../assets/images/dev-background.png');
+  background-repeat: repeat;
+
+  [type="radio"] {
+    margin-bottom: 0;
+    transition: none;
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+  }
+  .wrapper {
+    display: flex;
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    max-width: $content-max-width;
+  }
+
+  input:-ms-input-placeholder {
+    color: $medium-dark-gray;
+    opacity: 1;
+  }
+
+  input::placeholder {
+    color: $medium-dark-gray;
+    opacity: 1;
+  }
+
+  textarea:-ms-input-placeholder {
+    color: $medium-dark-gray;
+    opacity: 1;
+  }
+
+  textarea::placeholder {
+    color: $medium-dark-gray;
+    opacity: 1;
+  }
+
+  a,
+  button {
+    @include focus();
+
+    &:hover {
+      outline: none;
+    }
+  }
+
+  input[type='text'],
+  select,
+  textarea {
+    @include focusInput();
+
+    &:hover {
+      outline: none;
+    }
+  }
+}
