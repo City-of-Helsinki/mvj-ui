@@ -32,12 +32,8 @@ import type {ApiToken} from '../auth/types';
 import type {UserGroups} from '$src/usersPermissions/types';
 import type {RootState} from '../root/types';
 
-const NODE_ENV = process.env.NODE_ENV;
-if (!NODE_ENV) {
-  throw new Error(
-    'The NODE_ENV environment variable is required but was not specified.'
-  );
-}
+const url = window.location.toString();
+const IS_DEVELOPMENT_URL = url.includes('ninja') || url.includes('localhost');
 
 type Props = {
   apiError: ApiError,
@@ -180,7 +176,7 @@ class App extends Component<Props, State> {
       userGroups,
     } = this.props;
     const {displaySideMenu} = this.state;
-    const appStyle = (NODE_ENV == 'production') ? 'app' : 'app-dev';
+    const appStyle = (IS_DEVELOPMENT_URL) ? 'app-dev' : 'app';
 
     if (isEmpty(user) || isEmpty(apiToken)) {
       return (
