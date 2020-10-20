@@ -103,7 +103,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
       plotSearchSite,  
     } = this.props;
     const payload = {
-      value: plotSearchSite.plan_unit,
+      value: plotSearchSite.plan_unit.id,
     };
     fetchPlanUnitAttributes(payload);
     fetchPlanUnit(payload);
@@ -120,8 +120,8 @@ class PlotSearchSite extends PureComponent<Props, State> {
       planUnitAttributes,
     } = this.props;
 
-    const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit);
-    const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit);
+    const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit.id);
+    const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit.id);
     const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_intended_use');
     const planUnitStateOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_state');
     const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
