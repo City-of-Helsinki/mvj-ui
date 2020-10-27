@@ -229,9 +229,8 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       field,
     } = this.props;
     const planUnitNewValue = get(toPlotSearch, 'value');
-    change(`${field}.plan_unit`, planUnitNewValue);
+    change(`${field}.plan_unit_id`, planUnitNewValue);
   }
-
 
   render(){
     const {  
@@ -294,8 +293,8 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             <div style={{display: 'none'}}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'targets.child.children.plan_unit')}
-                name={`${field}.plan_unit`}
+                fieldAttributes={get(attributes, 'targets.child.children.plan_unit_id')}
+                name={`${field}.plan_unit_id`}
               />
             </div>
             <FormTextTitle>
