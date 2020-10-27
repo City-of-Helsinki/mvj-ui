@@ -140,3 +140,31 @@ export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object
   else
     return null;
 };
+
+/**
+ * clean targets
+ * @param {Object} plan_unit
+ * @returns {Object}
+ */
+export const cleanTargets = (payload: Object): Object => {
+  const targets = payload.targets.map(target => ({
+    plan_unit_id: target.plan_unit_id,
+    target_type: target.target_type,
+  }));
+  return payload = {...payload, targets: targets};
+};
+
+/**
+ * filter Sub Types
+ * @param {Object} subTypes
+ * @param {string} type
+ * @returns {Object}
+ */
+export const filterSubTypes = (subTypes: Object, type: string): Object => {
+  const filteredSubTypes = subTypes.filter(subType => subType.plot_search_type === type);
+  const subTypesAsOptions = filteredSubTypes.map(subType => ({
+    value: subType.id,
+    label: subType.name,
+  }));
+  return subTypesAsOptions;
+};

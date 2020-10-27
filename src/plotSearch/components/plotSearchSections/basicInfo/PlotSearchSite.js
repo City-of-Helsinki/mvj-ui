@@ -130,6 +130,11 @@ class PlotSearchSite extends PureComponent<Props, State> {
     const isNewer = get(plotSearchSite, 'is_master_plan_unit_newer');
     const label = get(plotSearchSite, 'message_label');
 
+    const leaseAddress = get(plotSearchSite, 'lease_address');
+    const address = get(leaseAddress, 'address');
+    const leaseIdentifier = get(plotSearchSite, 'lease_identifier');
+    const leaseHitas = get(plotSearchSite, 'lease_hitas');
+
     return (
       <Column large={12}>
         <Collapse
@@ -157,13 +162,17 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   <ExternalLink
                     className='no-margin'
                     href={`/`}
-                    text={get(currentPlanUnit, 'identifier') || '-'}
+                    text={leaseIdentifier || '-'}
                   />
                 </FormText>
                 <FormTextTitle>
+                  {'Osoite'}
+                </FormTextTitle>
+                <FormText>{address || '-'}</FormText>
+                {/* <FormTextTitle>
                   {'Kaavayksikön vaihe'}
                 </FormTextTitle>
-                <FormText>{plotSearchSite.target_type || '-'}</FormText>
+                <FormText>{plotSearchSite.target_type || '-'}</FormText> */}
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
@@ -261,6 +270,14 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {get(currentPlanUnit, 'section_area') || '-'}
                 </FormText>
               </Column>
+              {leaseHitas && <Column small={6} medium={3} large={2}>
+                <FormTextTitle>
+                  {'Hitas'}
+                </FormTextTitle>
+                <FormText>
+                  {leaseHitas || '-'}
+                </FormText>
+              </Column>}
             </Fragment>}
           </Row>
         </Collapse>

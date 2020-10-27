@@ -399,7 +399,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {formatDate(get(planUnitByValue, 'plot_division_date_of_approval')) || '-'}
               </FormText>
             </Column>
-            <Column small={6} medium={3} large={3}>
+            <Column small={6} medium={3} large={2}>
               <FormTextTitle>
                 {'Tonttijaon voimaantulopvm'}
               </FormTextTitle>

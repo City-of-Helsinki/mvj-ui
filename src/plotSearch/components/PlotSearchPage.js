@@ -58,6 +58,7 @@ import {
   getContentBasicInformation,
   getContentApplication,
   clearUnsavedChanges,
+  cleanTargets,
 } from '$src/plotSearch/helpers';
 
 import PlotSearchInfo from './plotSearchSections/plotSearchInfo/PlotSearchInfo';
@@ -344,7 +345,7 @@ class PlotSearchPage extends Component<Props, State> {
       if(isApplicationFormDirty) {
         payload = {...payload, application_base: {...applicationFormValues}};
       }
-      
+      payload = cleanTargets(payload);
       payload.identifier = currentPlotSearch.identifier;
       editPlotSearch(payload);
     }

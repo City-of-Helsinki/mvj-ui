@@ -18,6 +18,8 @@ import {
   planUnitAttributesNotFound,
   receiveSinglePlanUnit,
   planUnitNotFound,
+  receivePlotSearchSubtype,
+  PlotSearchSubtypeNotFound,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -33,6 +35,7 @@ import {
   deletePlotSearch,
   fetchPlanUnitAttributes,
   fetchPlanUnit,
+  fetchPlotSearchSubtypes,
 } from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -266,6 +269,27 @@ function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
   }
 }
 
+function* fetchPlotSearchSubtype(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotSearchSubtypes);
+
+    switch (statusCode) {
+      case 200:
+        const subTypes = bodyAsJson.results;
+
+        yield put(receivePlotSearchSubtype(subTypes));
+        break;
+      default:
+        yield put(PlotSearchSubtypeNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch plot search subtypes with error "%s"', error);
+    yield put(PlotSearchSubtypeNotFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -278,6 +302,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotSearch/DELETE', deletePlotSearchSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
+      yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtype);
     }),
   ]);
 }
