@@ -5,6 +5,7 @@ import merge from 'lodash/merge';
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import type {Attributes, Reducer, Methods} from '$src/types';
+import {FormNames} from '$src/enums';
 
 import type {
   ReceivePlotApplicationsListAction,
@@ -15,6 +16,7 @@ import type {
   PlotApplication,
   ReceiveIsSaveClickedAction,
   ReceiveCollapseStatesAction,
+  ReceiveFormValidFlagsAction,
 } from '$src/plotApplications/types';
 
 
@@ -70,6 +72,22 @@ const collapseStatesReducer: Reducer<Object> = handleActions({
   },
 }, {});
 
+const isFormValidByIdReducer: Reducer<Object> = handleActions({
+  ['mvj/plotApplications/RECEIVE_FORM_VALID_FLAGS']: (state: Object, {payload: valid}: ReceiveFormValidFlagsAction) => {
+    return {
+      ...state,
+      ...valid,
+    };
+  },
+  ['mvj/plotApplications/CLEAR_FORM_VALID_FLAGS']: () => {
+    return {
+      [FormNames.PLOT_APPLICATION]: true,
+    };
+  },
+}, {
+  [FormNames.PLOT_APPLICATION]: true,
+});
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   list: plotApplicationsListReducer,
@@ -80,4 +98,5 @@ export default combineReducers<Object, any>({
   isEditMode: isEditModeReducer,
   isSaveClicked: isSaveClickedReducer,
   collapseStates: collapseStatesReducer,
+  isFormValidById: isFormValidByIdReducer,
 });

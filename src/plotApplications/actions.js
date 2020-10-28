@@ -17,6 +17,8 @@ import type {
   ShowEditModeAction,
   ReceiveIsSaveClickedAction,
   ReceiveCollapseStatesAction,
+  ReceiveFormValidFlagsAction,
+  ClearFormValidFlagsAction,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -25,7 +27,7 @@ export const fetchPlotApplicationsList = (search: string): FetchPlotApplications
 export const receivePlotApplicationsList = (list: PlotApplicationsList): ReceivePlotApplicationsListAction =>
   createAction('mvj/plotApplications/RECEIVE_ALL')(list);
 
-export const fetchSinglePlotSearch = (id: number): FetchSinglePlotApplicationAction =>
+export const fetchSinglePlotApplication = (id: number): FetchSinglePlotApplicationAction =>
   createAction('mvj/plotApplications/FETCH_SINGLE')(id);
 
 export const receiveSinglePlotApplication = (plotApplication: PlotApplication): ReceiveSinglePlotApplicationAction =>
@@ -54,3 +56,9 @@ export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAc
 
 export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesAction =>
   createAction('mvj/plotApplications/RECEIVE_COLLAPSE_STATES')(status);
+
+export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
+  createAction('mvj/plotApplications/RECEIVE_FORM_VALID_FLAGS')(valid);
+
+export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
+  createAction('mvj/plotApplications/CLEAR_FORM_VALID_FLAGS')();

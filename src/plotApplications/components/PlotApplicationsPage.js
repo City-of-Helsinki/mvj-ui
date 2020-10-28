@@ -5,7 +5,9 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
+import {initialize, isDirty, destroy} from 'redux-form';
 
+import {FormNames} from '$src/enums';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import PageContainer from '$components/content/PageContainer';
@@ -24,17 +26,22 @@ import {withPlotApplicationsAttributes} from '$components/attributes/PlotApplica
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import {ConfirmationModalTexts, Methods, PermissionMissingTexts} from '$src/enums';
+import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {
   getIsFetching,
   getCurrentPlotApplication,
   getIsEditMode,
   getIsSaveClicked,
+  getIsFormValidById,
+  getIsFormValidFlags,
 } from '$src/plotApplications/selectors';
 import {
-  fetchSinglePlotSearch,
+  fetchSinglePlotApplication,
   showEditMode,
   receiveIsSaveClicked,
   hideEditMode,
+  clearFormValidFlags,
+  receiveFormValidFlags,
 } from '$src/plotApplications/actions';
 import type {
   PlotApplication as PlotApplicationType,
@@ -49,10 +56,13 @@ import {
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import PlotApplicationInfo from './PlotApplicationInfo';
 import PlotApplication from './PlotApplication';
+import PlotApplicationEdit from './PlotApplicationEdit';
 
 type Props = {
+  clearFormValidFlags: Function,
   currentPlotApplication: PlotApplicationType,
-  fetchSinglePlotSearch: Function,
+  fetchSinglePlotApplication: Function,
+  basicInformationFormValues: Object,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
   hideEditMode: Function,
@@ -70,6 +80,11 @@ type Props = {
   isSaveClicked: boolean,
   receiveIsSaveClicked: Function,
   history: Object,
+  isBasicInformationFormDirty: boolean,
+  initialize: Function,
+  destroy: Function,
+  isFormValidFlags: boolean,
+  receiveFormValidFlags: Function,
 }
 
 type State = {
@@ -90,8 +105,9 @@ class PlotApplicationsPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
+      clearFormValidFlags,
       receiveTopNavigationSettings,
-      fetchSinglePlotSearch,
+      fetchSinglePlotApplication,
       match: {params: {plotApplicationId}},
       location: {search},
       receiveIsSaveClicked,
@@ -104,6 +120,7 @@ class PlotApplicationsPage extends Component<Props, State> {
       this.setState({activeTab: query.tab});
     }
 
+    clearFormValidFlags();
     receiveIsSaveClicked(false);
     setPageTitle('Test 123');
 
@@ -117,13 +134,50 @@ class PlotApplicationsPage extends Component<Props, State> {
       this.setState({activeTab: query.tab});
     }
 
-    fetchSinglePlotSearch(plotApplicationId);
+    fetchSinglePlotApplication(plotApplicationId);
   }
 
   handleShowEditMode = () => {
-    const {showEditMode, receiveIsSaveClicked} = this.props;
+    const {showEditMode, receiveIsSaveClicked, currentPlotApplication} = this.props;
     receiveIsSaveClicked(false);
+    clearFormValidFlags();
     showEditMode();
+    this.destroyAllForms();
+    this.initializeForms(currentPlotApplication);
+    this.startAutoSaveTimer();
+  }
+
+  startAutoSaveTimer = () => {
+    this.timerAutoSave = setInterval(
+      () => this.saveUnsavedChanges(),
+      5000
+    );
+  }
+
+  saveUnsavedChanges = () => {
+    const {
+      basicInformationFormValues,
+      isBasicInformationFormDirty,
+      isFormValidFlags,
+      match: {params: {plotApplicationId}},
+    } = this.props;
+    
+    let isDirty = false;
+
+    if(isBasicInformationFormDirty) {
+      setSessionStorageItem(FormNames.PLOT_APPLICATION, basicInformationFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.PLOT_APPLICATION);
+    }
+
+    if(isDirty) {
+      setSessionStorageItem('plotApplicationId', plotApplicationId);
+      setSessionStorageItem('plotApplicationValidity', isFormValidFlags);
+    } else {
+      removeSessionStorageItem('plotApplicationId');
+      removeSessionStorageItem('plotApplicationValidity');
+    }
   }
 
   // TODO
@@ -174,6 +228,8 @@ class PlotApplicationsPage extends Component<Props, State> {
   componentDidUpdate(prevProps:Props, prevState: State) {
     const {
       location: {search},
+      currentPlotApplication,
+      match: {params: {plotApplicationId}},
     } = this.props;
     const {activeTab} = this.state;
     const query = getUrlParams(search);
@@ -187,6 +243,54 @@ class PlotApplicationsPage extends Component<Props, State> {
     if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
+
+    if(isEmpty(prevProps.currentPlotApplication) && !isEmpty(currentPlotApplication)) {
+      const storedPlotApplicationId = getSessionStorageItem('plotApplicationId');
+
+      if(Number(plotApplicationId) === storedPlotApplicationId) {
+        this.setState({isRestoreModalOpen: true});
+      }
+    }
+  }
+
+  restoreUnsavedChanges = () => {
+    const {
+      clearFormValidFlags,
+      currentPlotApplication,
+      receiveFormValidFlags,
+      showEditMode,
+    } = this.props;
+
+    showEditMode();
+    clearFormValidFlags();
+
+    this.destroyAllForms();
+    this.initializeForms(currentPlotApplication);
+
+    const storedBasicInformationFormValues = getSessionStorageItem(FormNames.PLOT_APPLICATION);
+    if(storedBasicInformationFormValues) {
+      this.bulkChange(FormNames.PLOT_APPLICATION, storedBasicInformationFormValues);
+    }
+
+    const storedFormValidity = getSessionStorageItem('plotApplicationValidity');
+    if(storedFormValidity) {
+      receiveFormValidFlags(storedFormValidity);
+    }
+
+    this.startAutoSaveTimer();
+    this.hideModal('Restore');
+  }
+
+  destroyAllForms = () => {
+    const {destroy} = this.props;
+
+    destroy(FormNames.PLOT_APPLICATION);
+  }
+
+  initializeForms = (currentPlotApplication: PlotApplication) => {
+    const {initialize} = this.props;
+    initialize(FormNames.PLOT_APPLICATION, currentPlotApplication);
+    // initialize(FormNames.PLOT_APPLICATION, getContentBasicInformation(currentPlotApplication));
   }
 
   render() {
@@ -204,6 +308,7 @@ class PlotApplicationsPage extends Component<Props, State> {
       isFetching,
       isEditMode,
       isSaveClicked,
+      isBasicInformationFormDirty,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
@@ -214,7 +319,7 @@ class PlotApplicationsPage extends Component<Props, State> {
 
     if(!plotApplicationsMethods) return null;
 
-    if(!isMethodAllowed(plotApplicationsMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    if(!isMethodAllowed(plotApplicationsMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATION} /></PageContainer>;
 
     return(
       <FullWidthContainer>
@@ -253,7 +358,7 @@ class PlotApplicationsPage extends Component<Props, State> {
               {
                 label: 'Hakemus',
                 allow: true,
-                isDirty: false, //isBasicInformationFormDirty,
+                isDirty: isBasicInformationFormDirty,
                 hasError: false, // isSaveClicked && !isBasicInformationFormValid,
               },
               {
@@ -269,7 +374,7 @@ class PlotApplicationsPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 {isEditMode
-                  ? 'Hakemus edit'
+                  ? <PlotApplicationEdit/>
                   : <PlotApplication/>
                 }
               </ContentContainer>
@@ -299,14 +404,21 @@ export default flowRight(
         isFetching: getIsFetching(state),
         isEditMode: getIsEditMode(state),
         isSaveClicked: getIsSaveClicked(state),
+        isBasicInformationFormDirty: isDirty(FormNames.PLOT_APPLICATION)(state),
+        isBasicInformationFormValid: getIsFormValidById(state, FormNames.PLOT_APPLICATION),
+        isFormValidFlags: getIsFormValidFlags(state),
       };
     },
     {
-      fetchSinglePlotSearch,
+      destroy,
+      fetchSinglePlotApplication,
       receiveTopNavigationSettings,
       showEditMode,
       hideEditMode,
       receiveIsSaveClicked,
+      initialize,
+      clearFormValidFlags,
+      receiveFormValidFlags,
     }
   ),
 )(PlotApplicationsPage);

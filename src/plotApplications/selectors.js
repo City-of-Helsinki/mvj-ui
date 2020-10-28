@@ -2,6 +2,7 @@
 import get from 'lodash/get';
 import type {Attributes, Selector, Methods} from '../types';
 import type {RootState} from '$src/root/types';
+import isEmpty from 'lodash/isEmpty';
 
 import type {
   PlotApplicationsList,
@@ -34,4 +35,18 @@ export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boo
 
 export const getCollapseStateByKey: Selector<?Object, string> = (state: RootState, key: string): ?Object => {
   return get(state.plotApplications.collapseStates, key);
+};
+
+export const getIsFormValidById: Selector<boolean, string> = (state: RootState, id: string): boolean =>
+  state.plotApplications.isFormValidById[id];
+
+export const getIsFormValidFlags: Selector<Object, void> = (state: RootState): Object =>
+  state.plotApplications.isFormValidById;
+
+export const getErrorsByFormName: Selector<?Object, string> = (state: RootState, formName: string): ?Object => {
+  const form = state.form[formName];
+  if(!isEmpty(form)) {
+    return form.syncErrors;
+  }
+  return null;
 };

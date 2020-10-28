@@ -12,6 +12,7 @@ export type PlotApplicationsState = {
   isEditMode: boolean,
   isSaveClicked: boolean,
   collapseStates: Object,
+  isFormValidById: Object,
 };
 
 export type PlotApplicationsList = Object;
@@ -32,5 +33,7 @@ export type HideEditModeAction = Action<'mvj/plotApplications/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/plotApplications/SHOW_EDIT', void>;
 
 export type ReceiveIsSaveClickedAction = Action<'mvj/plotApplications/RECEIVE_SAVE_CLICKED', boolean>;
+export type ReceiveFormValidFlagsAction = Action<'mvj/plotApplications/RECEIVE_FORM_VALID_FLAGS', Object>;
+export type ClearFormValidFlagsAction = Action<'mvj/plotApplications/CLEAR_FORM_VALID_FLAGS', void>;
 
 export type ReceiveCollapseStatesAction = Action<'mvj/plotApplications/RECEIVE_COLLAPSE_STATES', Object>;
