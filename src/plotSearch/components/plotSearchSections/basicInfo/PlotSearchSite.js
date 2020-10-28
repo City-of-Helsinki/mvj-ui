@@ -12,6 +12,8 @@ import Collapse from '$components/collapse/Collapse';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ExternalLink from '$components/links/ExternalLink';
+import WarningContainer from '$components/content/WarningContainer';
+import WarningField from '$components/form/WarningField';
 import {
   formatDate,
   getFieldOptions,
@@ -101,7 +103,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
       plotSearchSite,  
     } = this.props;
     const payload = {
-      value: plotSearchSite.plan_unit,
+      value: plotSearchSite.plan_unit.id,
     };
     fetchPlanUnitAttributes(payload);
     fetchPlanUnit(payload);
@@ -118,12 +120,16 @@ class PlotSearchSite extends PureComponent<Props, State> {
       planUnitAttributes,
     } = this.props;
 
-    const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit);
-    const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit);
+    const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit.id);
+    const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit.id);
     const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_intended_use');
     const planUnitStateOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_state');
     const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
     const plotDivisionStateOptions = getFieldOptions(planUnitAttributesByValue, 'plot_division_state');
+    const isDeleted = get(plotSearchSite, 'is_master_plan_unit_deleted');
+    const isNewer = get(plotSearchSite, 'is_master_plan_unit_newer');
+    const label = get(plotSearchSite, 'message_label');
+
     return (
       <Column large={12}>
         <Collapse
@@ -136,6 +142,12 @@ class PlotSearchSite extends PureComponent<Props, State> {
             {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
             }
+            {(isDeleted || isNewer) && <WarningContainer style={{position: 'absolute', right: '15px', top: '-5px'}}>
+              <WarningField
+                meta={{warning: label}}
+                showWarning={(isDeleted || isNewer)}
+              />
+            </WarningContainer>}
             {(currentPlanUnit) && <Fragment>
               <Column small={6} medium={3} large={3}>
                 <FormTextTitle>
@@ -188,7 +200,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {'Asemakaavan viimeisin käsittelypvm. selite'}
                 </FormTextTitle>
                 <FormText>
-                  {formatDate(get(currentPlanUnit, 'detailed_plan_latest_processing_date_note')) || '-'}
+                  {get(currentPlanUnit, 'detailed_plan_latest_processing_date_note') || '-'}
                 </FormText>
               </Column>
               <Column small={6} medium={3} large={2}>

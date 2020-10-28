@@ -22,6 +22,8 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import WarningContainer from '$components/content/WarningContainer';
+import WarningField from '$components/form/WarningField';
 import {
   receiveCollapseStates,
   receiveIsSaveClicked,
@@ -46,6 +48,7 @@ import {
   getPlanUnit,
   getIsFetchingPlanUnit,
   getIsFetchingPlanUnitAttributes,
+  getCurrentPlotSearch,
 } from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
@@ -154,6 +157,7 @@ type Props = {
   planUnitAttributes: Attributes,
   planUnit: Object,
   change: Function,
+  currentPlotSearch: Object,
 }
 
 type State = {
@@ -225,9 +229,8 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       field,
     } = this.props;
     const planUnitNewValue = get(toPlotSearch, 'value');
-    change(`${field}.plan_unit`, planUnitNewValue);
+    change(`${field}.plan_unit_id`, planUnitNewValue);
   }
-
 
   render(){
     const {  
@@ -241,6 +244,8 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       isFetchingPlanUnit,
       planUnit, 
       planUnitAttributes,
+      currentPlotSearch,
+      index,
     } = this.props;
     const {
       planUnitNew,
@@ -254,6 +259,10 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const planUnitStateOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_state');
     const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
     const plotDivisionStateOptions = getFieldOptions(planUnitAttributesByValue, 'plot_division_state');
+    const currentTarget = currentPlotSearch.targets[index];
+    const isDeleted = get(currentTarget, 'is_master_plan_unit_deleted');
+    const isNewer = get(currentTarget, 'is_master_plan_unit_newer');
+    const label = get(currentTarget, 'message_label');
 
     return (
       <Collapse
@@ -265,6 +274,12 @@ class PlotSearchSiteEdit extends Component<Props, State> {
         onToggle={this.handleCollapseToggle}
       >
         <Row>
+          {(isDeleted || isNewer) && <WarningContainer style={{position: 'absolute', right: '35px', top: '-5px'}}>
+            <WarningField
+              meta={{warning: label}}
+              showWarning={(isDeleted || isNewer)}
+            />
+          </WarningContainer>}
           <Column small={6} medium={6} large={6} style={{paddingBottom: 10}}>
             <FormTextTitle>
               {'Kohteentunnus'}
@@ -278,8 +293,8 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             <div style={{display: 'none'}}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'targets.child.children.plan_unit')}
-                name={`${field}.plan_unit`}
+                fieldAttributes={get(attributes, 'targets.child.children.plan_unit_id')}
+                name={`${field}.plan_unit_id`}
               />
             </div>
             <FormTextTitle>
@@ -353,7 +368,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {'Asemakaavan viimeisin käsittelypvm. selite'}
               </FormTextTitle>
               <FormText>
-                {formatDate(get(planUnitByValue, 'detailed_plan_latest_processing_date_note')) || '-'}
+                {get(planUnitByValue, 'detailed_plan_latest_processing_date_note') || '-'}
               </FormText>
             </Column>
             <Column small={6} medium={3} large={2}>
@@ -451,6 +466,7 @@ export default flowRight(
         planUnit: getPlanUnit(state),
         isFetchingPlanUnit: getIsFetchingPlanUnit(state),
         isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+        currentPlotSearch: getCurrentPlotSearch(state),
       };
     },
     {

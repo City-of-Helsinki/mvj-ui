@@ -32,6 +32,9 @@ import type {ApiToken} from '../auth/types';
 import type {UserGroups} from '$src/usersPermissions/types';
 import type {RootState} from '../root/types';
 
+const url = window.location.toString();
+const IS_DEVELOPMENT_URL = url.includes('ninja') || url.includes('localhost');
+
 type Props = {
   apiError: ApiError,
   apiToken: ApiToken,
@@ -173,10 +176,11 @@ class App extends Component<Props, State> {
       userGroups,
     } = this.props;
     const {displaySideMenu} = this.state;
+    const appStyle = (IS_DEVELOPMENT_URL) ? 'app-dev' : 'app';
 
     if (isEmpty(user) || isEmpty(apiToken)) {
       return (
-        <div className={'app'}>
+        <div className={appStyle}>
           <ReduxToastr
             newestOnTop={true}
             position="bottom-right"
@@ -224,7 +228,7 @@ class App extends Component<Props, State> {
             };
 
             return(
-              <div className={'app'}>
+              <div className={appStyle}>
                 <ApiErrorModal size={Sizes.LARGE}
                   data={apiError}
                   isOpen={Boolean(apiError)}
