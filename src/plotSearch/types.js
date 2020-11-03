@@ -16,6 +16,7 @@ export type PlotSearchState = {
   planUnit: Object,
   isFetchingPlanUnit: boolean,
   isFetchingPlanUnitAttributes: boolean,
+  subTypes: Object,
 };
 
 export type PlotSearchId = number;
@@ -59,3 +60,7 @@ export type FetchPlanUnitAttributesAction = Action<'mvj/plotSearch/FETCH_PLAN_UN
 export type PlanUnitAttributesNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND', void>;
 export type PlanUnitNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_NOT_FOUND', void>;
 export type ReceivePlanUnitAttributesAction = Action<'mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES', Attributes>;
+
+export type fetchPlotSearchSubtypesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
+export type ReceivePlotSearchSubtypeAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
+export type PlotSearchSubtypeNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;

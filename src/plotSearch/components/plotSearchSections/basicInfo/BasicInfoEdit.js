@@ -37,7 +37,11 @@ import {
   getCollapseStateByKey,
   getIsSaveClicked,
   getErrorsByFormName,
+  getPlotSearchSubTypes,
 } from '$src/plotSearch/selectors';
+import {
+  filterSubTypes,
+} from '$src/plotSearch/helpers';
 
 import PlotSearchSiteEdit from './PlotSearchSiteEdit';
 
@@ -207,6 +211,8 @@ type Props = {
   preparer: ?string,
   formName: string,
   isSaveClicked: boolean,
+  plotSearchSubTypes: Object,
+  type: string,
 }
 
 type State = {
@@ -240,7 +246,10 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       isSaveClicked,
       attributes,
       errors,
+      plotSearchSubTypes,
+      type,
     } = this.props;
+    const subTypeOptions = filterSubTypes(plotSearchSubTypes, type);
 
     return (
       <form>
@@ -295,6 +304,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     name='subtype'
                     overrideValues={{
                       label: PlotSearchFieldTitles.SUBTYPE,
+                      options: subTypeOptions,
                     }}
                   />
                 </Column>
@@ -342,7 +352,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
               </Row>
               <WhiteBox>
                 <SubTitle>
-                  {'HAETTAVAT KOHTEET'}
+                  {'KOHTEET'}
                 </SubTitle>
                 <FieldArray
                   component={renderPlotSearchSites}
@@ -373,8 +383,10 @@ export default flowRight(
         usersPermissions: getUsersPermissions(state),
         collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.basic`),
         preparer: selector(state, 'preparer'),
+        type: selector(state, 'type'),
         isSaveClicked: getIsSaveClicked(state),
         errors: getErrorsByFormName(state, formName),
+        plotSearchSubTypes: getPlotSearchSubTypes(state),
       };
     },
     {

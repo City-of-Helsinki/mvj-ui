@@ -27,6 +27,9 @@ import {
   fetchPlanUnitAttributes,
   planUnitAttributesNotFound,
   receivePlanUnitAttributes,
+  fetchPlotSearchSubtypes,
+  PlotSearchSubtypeNotFound,
+  receivePlotSearchSubtype,
 } from './actions';
 
 import plotSearchReducer from './reducer';
@@ -51,6 +54,7 @@ const baseState: PlotSearchState = {
   planUnit: {},
   isFetchingPlanUnit: false,
   isFetchingPlanUnitAttributes: false,
+  subTypes: null,
 };
 
 
@@ -236,6 +240,34 @@ describe('PlotSearch', () => {
       it('fetchSinglePlotSearchAfterEdit function should not change isFetcging flag', () => {
         const state = plotSearchReducer({}, fetchSinglePlotSearchAfterEdit({id: 1}));
         expect(state).to.deep.equal(baseState);
+      });
+
+      it('should update subTypes', () => {
+        const dummyData = [{
+          id: 16,
+          name: 'Hinta- ja laatukilpailu',
+          plot_search_type: 3,
+        }];
+        const newState = {...baseState, subTypes: dummyData};
+
+        const state = plotSearchReducer({}, receivePlotSearchSubtype(dummyData));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to false by PlotSearchSubtypeNotFound', () => {
+        const newState = {...baseState};
+        newState.isFetching = false;
+
+        const state = plotSearchReducer({}, PlotSearchSubtypeNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when fetching fetchPlotSearchSubtypes', () => {
+        const newState = {...baseState};
+        newState.isFetching = true;
+
+        const state = plotSearchReducer({}, fetchPlotSearchSubtypes());
+        expect(state).to.deep.equal(newState);
       });
 
       it('should update methods', () => {

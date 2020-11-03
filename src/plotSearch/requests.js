@@ -45,3 +45,7 @@ export const fetchPlanUnitAttributes = (id: any): Generator<any, any, any> => {
 export const fetchPlanUnit = (id: any): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`plan_unit/${id}/`)));
 };
+
+export const fetchPlotSearchSubtypes = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('plot_search_subtype/')));
+};

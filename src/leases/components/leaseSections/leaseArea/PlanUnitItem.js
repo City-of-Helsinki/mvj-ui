@@ -64,12 +64,20 @@ const PlanUnitItem = ({
   return (
     <BoxItem className='no-border-on-first-child no-border-on-last-child'>
       <Row>
-        <Column small={12} medium={9} large={9}>
+        <Column small={12} medium={8} large={8}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.IDENTIFIER)}>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.IDENTIFIER)}>
               {LeasePlanUnitsFieldTitles.IDENTIFIER}
             </FormTextTitle>
             <FormText>{planUnit.identifier || '-'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={12} medium={2} large={2}>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.IS_MASTER)}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.IS_MASTER)}>
+              {LeasePlanUnitsFieldTitles.IS_MASTER}
+            </FormTextTitle>
+            <FormText>{planUnit.is_master ? 'Kyllä' : 'Ei'}</FormText>
           </Authorization>
         </Column>
         <Column small={12} medium={3} large={3}>
