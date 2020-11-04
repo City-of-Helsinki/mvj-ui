@@ -331,7 +331,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {'Kokonaisala neliömetreissä'}
               </FormTextTitle>
               <FormText>
-                {get(planUnitByValue, 'area') || '-'}
+                {`${get(planUnitByValue, 'area')} m²` || '-'}
               </FormText>
             </Column>
             <Column small={6} medium={3} large={2}>
@@ -413,7 +413,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {'Leikkausala'}
               </FormTextTitle>
               <FormText>
-                {get(planUnitByValue, 'section_area') || '-'}
+                {`${get(planUnitByValue, 'section_area')} m²` || '-'}
               </FormText>
             </Column>
             <FieldArray

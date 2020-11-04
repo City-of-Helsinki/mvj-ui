@@ -185,7 +185,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {'Kokonaisala neliömetreissä'}
                 </FormTextTitle>
                 <FormText>
-                  {get(currentPlanUnit, 'area') || '-'}
+                  {`${get(currentPlanUnit, 'area')} m²` || '-'}
                 </FormText>
               </Column>
               <Column small={6} medium={3} large={2}>
@@ -267,7 +267,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {'Leikkausala'}
                 </FormTextTitle>
                 <FormText>
-                  {get(currentPlanUnit, 'section_area') || '-'}
+                  {`${get(currentPlanUnit, 'section_area')} m²` || '-'}
                 </FormText>
               </Column>
               {leaseHitas && <Column small={6} medium={3} large={2}>
