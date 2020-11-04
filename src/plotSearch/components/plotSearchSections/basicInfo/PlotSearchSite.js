@@ -14,6 +14,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import WarningContainer from '$components/content/WarningContainer';
 import WarningField from '$components/form/WarningField';
+import {createPaikkatietovipunenUrl} from '$util/helpers';
 import {
   formatDate,
   getFieldOptions,
@@ -192,9 +193,13 @@ class PlotSearchSite extends PureComponent<Props, State> {
                 <FormTextTitle>
                   {'Asemakaava'}
                 </FormTextTitle>
-                <FormText>
-                  {get(currentPlanUnit, 'detailed_plan_identifier') || '-'}
-                </FormText>
+                {get(currentPlanUnit, 'detailed_plan_identifier')
+                  ? <ExternalLink
+                    href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(currentPlanUnit, 'detailed_plan_identifier')}`)}
+                    text={get(currentPlanUnit, 'detailed_plan_identifier')}
+                  />
+                  : <FormText>-</FormText>
+                }
               </Column>
               <Column small={6} medium={4} large={3}>
                 <FormTextTitle>

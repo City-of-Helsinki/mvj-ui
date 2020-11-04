@@ -8,7 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
 
 import Loader from '$components/loader/Loader';
-
+import ExternalLink from '$components/links/ExternalLink';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PlanUnitSelectInput from '$components/inputs/PlanUnitSelectInput';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -23,6 +23,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import WarningContainer from '$components/content/WarningContainer';
 import WarningField from '$components/form/WarningField';
+import {createPaikkatietovipunenUrl} from '$util/helpers';
 import {
   receiveCollapseStates,
   receiveIsSaveClicked,
@@ -338,9 +339,13 @@ class PlotSearchSiteEdit extends Component<Props, State> {
               <FormTextTitle>
                 {'Asemakaava'}
               </FormTextTitle>
-              <FormText>
-                {get(planUnitByValue, 'detailed_plan_identifier') || '-'}
-              </FormText>
+              {planUnitByValue
+                ? <ExternalLink
+                  href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(planUnitByValue, 'detailed_plan_identifier')}`)}
+                  text={get(planUnitByValue, 'detailed_plan_identifier')}
+                />
+                : <FormText>-</FormText>
+              }
             </Column>
             <Column small={6} medium={4} large={3}>
               <FormTextTitle>
