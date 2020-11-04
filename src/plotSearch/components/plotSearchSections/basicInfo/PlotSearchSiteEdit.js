@@ -20,7 +20,6 @@ import FormField from '$components/form/FormField';
 import {FormNames, ViewModes} from '$src/enums';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import ExternalLink from '$components/links/ExternalLink';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import WarningContainer from '$components/content/WarningContainer';
 import WarningField from '$components/form/WarningField';
@@ -321,18 +320,6 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             />
           </Column>
           {(planUnitByValue) && <Fragment>
-            <Column small={6} medium={3} large={2}>
-              <FormTextTitle>
-                {'Vuokraustunnus'}
-              </FormTextTitle>
-              <FormText>
-                <ExternalLink
-                  className='no-margin'
-                  href={`/`}
-                  text={get(planUnitByValue, 'identifier') || '-'}
-                />
-              </FormText>
-            </Column>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle>
                 {'Kaavayksikön käyttötarkoitus'}

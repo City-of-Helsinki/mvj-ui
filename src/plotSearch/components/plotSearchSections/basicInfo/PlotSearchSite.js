@@ -161,7 +161,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
                 <FormText>
                   <ExternalLink
                     className='no-margin'
-                    href={`/`}
+                    href={`/vuokraukset?search=${leaseIdentifier}`}
                     text={leaseIdentifier || '-'}
                   />
                 </FormText>
