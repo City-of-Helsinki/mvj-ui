@@ -19,6 +19,7 @@ import type {
   ReceiveCollapseStatesAction,
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
+  EditPlotApplicationAction,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -62,3 +63,6 @@ export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsActio
 
 export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
   createAction('mvj/plotApplications/CLEAR_FORM_VALID_FLAGS')();
+
+export const editPlotApplication = (plotApplication: PlotApplication): EditPlotApplicationAction =>
+  createAction('mvj/plotApplications/EDIT')(plotApplication);

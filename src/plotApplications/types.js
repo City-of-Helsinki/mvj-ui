@@ -37,3 +37,5 @@ export type ReceiveFormValidFlagsAction = Action<'mvj/plotApplications/RECEIVE_F
 export type ClearFormValidFlagsAction = Action<'mvj/plotApplications/CLEAR_FORM_VALID_FLAGS', void>;
 
 export type ReceiveCollapseStatesAction = Action<'mvj/plotApplications/RECEIVE_COLLAPSE_STATES', Object>;
+
+export type EditPlotApplicationAction = Action<'mvj/plotApplications/EDIT', PlotApplication>;

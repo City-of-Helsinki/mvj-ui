@@ -89,12 +89,57 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
               onToggle={this.handleBasicInfoCollapseToggle}
             >
               <Row>
-                <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
-                  <Column small={12} large={8}>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'plot_search')}>
+                  <Column small={12} medium={6} large={4}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'name')}
-                      name='name'
+                      fieldAttributes={get(attributes, 'plot_search')}
+                      name='plot_search'
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'arrival_time')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'arrival_time')}
+                      name='arrival_time'
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'time')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'time')}
+                      name='time'
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'saver')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'saver')}
+                      name='saver'
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'disapproval_reason')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'disapproval_reason')}
+                      name='disapproval_reason'
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'notice')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'notice')}
+                      name='notice'
                     />
                   </Column>
                 </Authorization>

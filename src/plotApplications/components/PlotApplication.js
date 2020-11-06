@@ -72,16 +72,55 @@ class PlotApplication extends PureComponent<Props, State> {
               onToggle={this.handleBasicInfoCollapseToggle}
             >
               <Row>
-                <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
-                  <Column small={12} large={8}>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'plot_search')}>
+                  <Column small={12} medium={6} large={4}>
                     <FormTextTitle>
-                      {'Nimi'}
+                      {'Tonttihakemus'}
                     </FormTextTitle>
-                    <FormText>{plotApplication.name}</FormText>
+                    <FormText>{plotApplication.plot_search}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'arrival_time')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormTextTitle>
+                      {'Saapumisajankohta'}
+                    </FormTextTitle>
+                    <FormText>{plotApplication.arrival_time}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'time')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormTextTitle>
+                      {'Klo'}
+                    </FormTextTitle>
+                    <FormText>{plotApplication.time}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'saver')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormTextTitle>
+                      {'Tallentaja'}
+                    </FormTextTitle>
+                    <FormText>{plotApplication.saver}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'disapproval_reason')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormTextTitle>
+                      {'Hylkäämisen syy'}
+                    </FormTextTitle>
+                    <FormText>{plotApplication.disapproval_reason}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'notice')}>
+                  <Column small={6} medium={4} large={2}>
+                    <FormTextTitle>
+                      {'Huomautus'}
+                    </FormTextTitle>
+                    <FormText>{plotApplication.notice}</FormText>
                   </Column>
                 </Authorization>
               </Row>
-
             </Collapse>
           </Column>
         </Row>

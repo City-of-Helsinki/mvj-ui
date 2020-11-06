@@ -18,6 +18,6 @@ export const getContentPlotApplicationsListResults = (content: Object): Array<Ob
 export const getContentApplicationListItem = (plotApplication: Object): Object => {
   return {
     id: plotApplication.id,
-    name: plotApplication.name,
+    plot_search: plotApplication.plot_search,
   };
 };

@@ -195,7 +195,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     const columns = [];
 
     columns.push({
-      key: 'name',
+      key: 'plot_search',
       text: 'Haku',
       sortable: false,
     });

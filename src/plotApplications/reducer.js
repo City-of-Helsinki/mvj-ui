@@ -25,6 +25,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/RECEIVE_ALL']: () => false,
   ['mvj/plotApplications/FETCH_SINGLE']: () => true,
   ['mvj/plotApplications/RECEIVE_SINGLE']: () => false,
+  ['mvj/plotApplications/EDIT']: () => true,
 }, false);
 
 const isEditModeReducer: Reducer<boolean> = handleActions({

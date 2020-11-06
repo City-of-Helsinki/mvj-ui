@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
-import {initialize, isDirty, destroy} from 'redux-form';
+import {initialize, isDirty, destroy, getFormValues} from 'redux-form';
 
 import {FormNames} from '$src/enums';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -42,6 +42,7 @@ import {
   hideEditMode,
   clearFormValidFlags,
   receiveFormValidFlags,
+  editPlotApplication,
 } from '$src/plotApplications/actions';
 import type {
   PlotApplication as PlotApplicationType,
@@ -62,6 +63,7 @@ type Props = {
   clearFormValidFlags: Function,
   currentPlotApplication: PlotApplicationType,
   fetchSinglePlotApplication: Function,
+  editPlotApplication: Function,
   basicInformationFormValues: Object,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
@@ -253,6 +255,30 @@ class PlotApplicationsPage extends Component<Props, State> {
     }
   }
 
+  saveChanges = () => {
+    const {receiveIsSaveClicked} = this.props;
+    receiveIsSaveClicked(true);
+
+    const areFormsValid = this.getAreFormsValid();
+
+    if(areFormsValid) {
+      const {
+        basicInformationFormValues,
+        currentPlotApplication,
+        editPlotApplication,
+        isBasicInformationFormDirty,
+      } = this.props;
+    
+      let payload: Object = {...currentPlotApplication};
+
+      if(isBasicInformationFormDirty || !isBasicInformationFormDirty) {
+        payload = {...payload, ...basicInformationFormValues};
+      }
+
+      editPlotApplication(payload);
+    }
+  }
+
   restoreUnsavedChanges = () => {
     const {
       clearFormValidFlags,
@@ -348,7 +374,7 @@ class PlotApplicationsPage extends Component<Props, State> {
                 }}
               />
             }
-            infoComponent={<PlotApplicationInfo title={currentPlotApplication.name}/>}
+            infoComponent={<PlotApplicationInfo title={currentPlotApplication.plot_search}/>}
             onBack={this.handleBack}
           />
           <Tabs
@@ -398,6 +424,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        basicInformationFormValues: getFormValues(FormNames.PLOT_APPLICATION)(state),
         currentPlotApplication: getCurrentPlotApplication(state),
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         usersPermissions: getUsersPermissions(state),
@@ -419,6 +446,7 @@ export default flowRight(
       initialize,
       clearFormValidFlags,
       receiveFormValidFlags,
+      editPlotApplication,
     }
   ),
 )(PlotApplicationsPage);

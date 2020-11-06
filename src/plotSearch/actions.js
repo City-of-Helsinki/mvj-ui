@@ -84,3 +84,4 @@ export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
 
 export const notFound = (): PlotSearchNotFoundAction =>
   createAction('mvj/plotSearch/NOT_FOUND')();
+
