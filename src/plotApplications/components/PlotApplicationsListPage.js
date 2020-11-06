@@ -285,7 +285,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
             <VisualisationTypeWrapper>
               <IconRadioButtons
                 legend={'Kartta/taulukko'}
-                onChange={this.handleVisualizationTypeChange}
+                onChange={()=>{}} // this.handleVisualizationTypeChange
                 options={visualizationTypeOptions}
                 radioName='visualization-type-radio'
                 value={visualizationType}
