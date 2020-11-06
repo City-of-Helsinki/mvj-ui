@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "plot_search": "Testi hakemus",
+    "arrival_time": "10:00",
+    "time": "10:00",
+    "saver": "Teppo Matikainen",
+    "disapproval_reason": "Hylätty",
+    "notice": "Huomautus"
+  },
+  {
+    "id": 2,
+    "plot_search": "Testi",
+    "arrival_time": "10:00",
+    "time": "10:00",
+    "saver": "Teppo Matikainen",
+    "disapproval_reason": "Hylätty",
+    "notice": "Huomautus"
+  }
+]

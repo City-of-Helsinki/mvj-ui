@@ -1,9 +1,8 @@
 // @flow
 import React, {Component} from 'react';
 
-import CreatePlotSearchForm from './CreatePlotSearchForm';
 import Modal from '$components/modal/Modal';
-
+import CreatePlotApplicationForm from './CreatePlotApplicationForm';
 
 type Props = {
   isOpen: boolean,
@@ -11,7 +10,7 @@ type Props = {
   onSubmit: Function,
 }
 
-class CreatePlotSearchModal extends Component<Props> {
+class CreatePlotApplicationsModal extends Component<Props> {
   form: any
 
   componentDidUpdate(prevProps: Props) {
@@ -37,7 +36,7 @@ class CreatePlotSearchModal extends Component<Props> {
         onClose={onClose}
         title='Luo uusi tonttihakemus'
       >
-        <CreatePlotSearchForm
+        <CreatePlotApplicationForm
           ref={this.setRefForForm}
           onClose={onClose}
           onSubmit={onSubmit}
@@ -47,4 +46,4 @@ class CreatePlotSearchModal extends Component<Props> {
   }
 }
 
-export default CreatePlotSearchModal;
+export default CreatePlotApplicationsModal;
