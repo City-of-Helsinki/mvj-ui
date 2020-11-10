@@ -276,8 +276,11 @@ function* fetchPlotSearchSubtype(): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         const subTypes = bodyAsJson.results;
-
         yield put(receivePlotSearchSubtype(subTypes));
+        break;
+      case 403:
+        yield put(PlotSearchSubtypeNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, get: 'plot_search_subtype'})));
         break;
       default:
         yield put(PlotSearchSubtypeNotFound());
