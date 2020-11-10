@@ -22,6 +22,7 @@ import Title from '$components/content/Title';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {FormNames, ViewModes} from '$src/enums';
 import FormField from '$components/form/FormField';
+import Button from '$components/button/Button';
 import {
   receiveCollapseStates,
 } from '$src/plotSearch/actions';
@@ -38,6 +39,7 @@ import {
 } from '$src/plotSearch/selectors';
 import ApplicantEdit from './ApplicantEdit';
 import TargetEdit from './TargetEdit';
+import EditPlotApplicationModal from './EditPlotApplicationModal';
 import type {Attributes} from '$src/types';
 import Loader from "../../../../components/loader/Loader";
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
@@ -181,11 +183,12 @@ type Props = {
 }
 
 type State = {
-
+  isModalOpen: boolean,
 }
 
 class ApplicationEdit extends PureComponent<Props, State> {
   state = {
+    isModalOpen: false,
   }
 
   handleCollapseToggle = (key: string, val: boolean) => {
@@ -225,6 +228,14 @@ class ApplicationEdit extends PureComponent<Props, State> {
     }
   };
 
+  hideEditPlotApplicationModal = () => {
+    this.setState({isModalOpen: false});
+  }
+
+  openEditPlotApplicationModal = () => {
+    this.setState({isModalOpen: true});
+  }
+
   render (){
     const {
       collapseStateBasic,
@@ -238,6 +249,10 @@ class ApplicationEdit extends PureComponent<Props, State> {
       useExistingForm,
       hasMinimumRequiredFieldsFilled
     } = this.props;
+
+    const {
+      isModalOpen,
+    } = this.state;
 
     const formOptions = templateForms?.map((templateForm) => ({
       value: templateForm.id,
@@ -260,7 +275,12 @@ class ApplicationEdit extends PureComponent<Props, State> {
       disabled={!hasMinimumRequiredFieldsFilled}
     />;
 
-    return (
+    return (<>
+      <EditPlotApplicationModal
+        isOpen={isModalOpen}
+        onClose={this.hideEditPlotApplicationModal}
+        onSubmit={()=>{}}
+      />
       <form>
         <Title uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}>
           {ApplicationFieldTitles.APPLICATION}
@@ -315,20 +335,26 @@ class ApplicationEdit extends PureComponent<Props, State> {
               </Row>
             </Collapse>
             {formData !== null && <>
-              <Collapse
-                defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-                hasErrors={isSaveClicked && !isEmpty(errors)}
-                headerTitle={ApplicationFieldTitles.APPLICATION}
-                onToggle={this.handleBasicInfoCollapseToggle}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}
-              >
-                <WhiteBox className='application__white-stripes'>
-                  <TitleH3>
-                    {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
-                  </TitleH3>
-
-                  {/* <FieldArray
+            <Collapse
+              defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
+              hasErrors={isSaveClicked && !isEmpty(errors)}
+              headerTitle={ApplicationFieldTitles.APPLICATION}
+              onToggle={this.handleBasicInfoCollapseToggle}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}
+            >
+              <WhiteBox className='application__white-stripes'>
+                <Column className={'editPlotApplication'}>
+                  <Button
+                    className={ButtonColors.PRIMARY}
+                    onClick={this.openEditPlotApplicationModal}
+                    text='Muokkaa'
+                  />
+                </Column>
+                <TitleH3>
+                  {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
+                </TitleH3>
+                {/* <FieldArray
                     component={renderApplicant}
                     disabled={false}
                     formName={FormNames.PLOT_SEARCH_APPLICATION}
@@ -349,7 +375,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
           </Column>
         </Row>
       </form>
-    );
+    </>);
   }
 }
 

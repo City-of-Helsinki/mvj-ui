@@ -366,6 +366,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa tonttihakemuksen?',
     TITLE: 'Poista tonttihakemus',
   },
+  DELETE_SECTION_FIELD: {
+    BUTTON: 'Poista kenttä',
+    LABEL: 'Haluatko varmasti poistaa kentän?',
+    TITLE: 'Poista kenttä',
+  },
 };
 
 /**

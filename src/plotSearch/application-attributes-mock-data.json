@@ -1,0 +1,133 @@
+{
+  "name": "Application attributes",
+  "description": "",
+  "fields": {
+    "search_name": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Osion tyyppi",
+      "choices": [
+        {
+          "value": 1, "display_name": "Hakijan tiedot"
+        }, {
+          "value": 2, "display_name": "Haettava kohde"
+        }, {
+          "value": 3, "display_name": "Uusi osio"
+        }
+      ]
+    },
+    "section_fields": {
+      "child": {
+        "children": {
+          "field_name": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Kentän nimi"
+          },
+          "field_type": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Kentän tyyppi",
+            "choices": [
+              {
+                "display_name": "address",
+                "value": 1
+              },
+              {
+                "display_name": "boolean",
+                "value": 2
+              },
+              {
+                "display_name": "choice",
+                "value": 3
+              },
+              {
+                "display_name": "checkbox",
+                "value": 4
+              },
+              {
+                "display_name": "checkbox-date-time",
+                "value": 5
+              },
+              {
+                "display_name": "contact",
+                "value": 6
+              },
+              {
+                "display_name": "date",
+                "value": 7
+              },
+              {
+                "display_name": "decimal",
+                "value": 8
+              },
+              {
+                "display_name": "field",
+                "value": 9
+              },
+              {
+                "display_name": "integer",
+                "value": 10
+              },
+              {
+                "display_name": "lease",
+                "value": 11
+              },
+              {
+                "display_name": "lessor",
+                "value": 12
+              },
+              {
+                "display_name": "multiselect",
+                "value": 13
+              },
+              {
+                "display_name": "radio-with-field",
+                "value": 14
+              },
+              {
+                "display_name": "reference_number",
+                "value": 15
+              },
+              {
+                "display_name": "search",
+                "value": 16
+              },
+              {
+                "display_name": "string",
+                "value": 17
+              },
+              {
+                "display_name": "textarea",
+                "value": 18
+              },
+              {
+                "display_name": "user",
+                "value": 19
+              },
+              {
+                "display_name": "time",
+                "value": 20
+              }
+            ]
+          },
+          "required_field": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Pakollinen tieto"
+          },
+          "duplicate": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Monistettava"
+          }
+        }
+      }
+    }
+  }
+}
