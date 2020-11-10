@@ -35,7 +35,7 @@ class CreatePlotSearchModal extends Component<Props> {
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title='Luo uusi tonttihakemus'
+        title='Luo uusi tonttihaku'
       >
         <CreatePlotSearchForm
           ref={this.setRefForForm}
