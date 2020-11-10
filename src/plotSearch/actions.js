@@ -37,6 +37,9 @@ import type {
   PlotSearchSubtypeNotFoundAction,
   ReceivePlotSearchSubtypeAction,
   NullPlanUnitsAction,
+  FetchApplicationAttributesAction,
+  ApplicationAttributesNotFoundAction,
+  ReceiveApplicationAttributesAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -125,3 +128,12 @@ export const receivePlotSearchSubtype = (subTypes: Object): ReceivePlotSearchSub
 
 export const nullPlanUnits = (): NullPlanUnitsAction =>
   createAction('mvj/plotSearch/NULL_PLAN_UNITS')();
+
+export const fetchApplicationAttributes = (): FetchApplicationAttributesAction =>
+  createAction('mvj/plotSearch/FETCH_APPLICATION_ATTRIBUTES')();
+
+export const applicationAttributesNotFound = (): ApplicationAttributesNotFoundAction =>
+  createAction('mvj/plotSearch/APPLICATION_ATTRIBUTES_NOT_FOUND')();
+
+export const receiveApplicationAttributes = (attributes: Attributes): ReceiveApplicationAttributesAction =>
+  createAction('mvj/plotSearch/RECEIVE_APPLICATION_ATTRIBUTES')(attributes);

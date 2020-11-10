@@ -123,12 +123,12 @@ class Application extends PureComponent<Props, State> {
                 <TitleH3>
                   {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
                 </TitleH3>
-                {application.applicants.map((applicant, index)=>
+                {application.applicants && application.applicants.map((applicant, index)=>
                   <Applicant
                     applicant={applicant}
                     key={index}
                   />)}
-                {application.targets.map((target, index)=>
+                {application.targets && application.targets.map((target, index)=>
                   <Target
                     target={target}
                     key={index}

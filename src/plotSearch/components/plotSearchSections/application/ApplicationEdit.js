@@ -13,7 +13,6 @@ import {ButtonColors} from '$components/enums';
 import {ConfirmationModalTexts} from '$src/enums';
 import TitleH3 from '$components/content/TitleH3';
 import WhiteBox from '$components/content/WhiteBox';
-import FileDownloadButton from '$components/file/FileDownloadButton';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -23,6 +22,7 @@ import Title from '$components/content/Title';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {FormNames, ViewModes} from '$src/enums';
 import FormField from '$components/form/FormField';
+import Button from '$components/button/Button';
 import {
   receiveCollapseStates,
 } from '$src/plotSearch/actions';
@@ -34,6 +34,7 @@ import {
 } from '$src/plotSearch/selectors';
 import ApplicantEdit from './ApplicantEdit';
 import TargetEdit from './TargetEdit';
+import EditPlotApplicationModal from './EditPlotApplicationModal';
 import type {Attributes} from '$src/types';
 
 type ApplicantProps = {
@@ -173,11 +174,12 @@ type Props = {
 }
 
 type State = {
-
+  isModalOpen: boolean,
 }
 
 class ApplicationEdit extends PureComponent<Props, State> {
   state = {
+    isModalOpen: false,
   }
 
   handleCollapseToggle = (key: string, val: boolean) => {
@@ -196,6 +198,14 @@ class ApplicationEdit extends PureComponent<Props, State> {
     this.handleCollapseToggle('basic', val);
   }
 
+  hideEditPlotApplicationModal = () => {
+    this.setState({isModalOpen: false});
+  }
+
+  openEditPlotApplicationModal = () => {
+    this.setState({isModalOpen: true});
+  }
+
   render (){
     const {
       collapseStateBasic,
@@ -203,104 +213,112 @@ class ApplicationEdit extends PureComponent<Props, State> {
       attributes,
       errors,
     } = this.props;
+    const {
+      isModalOpen,
+    } = this.state;
     return (
-      <form>
-        <Title uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}>
-          {ApplicationFieldTitles.APPLICATION}
-        </Title>
-        <Divider />
-        <Row className='summary__content-wrapper'>
-          <Column small={12}>
-            <Collapse
-              defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle={ApplicationFieldTitles.APPLICATION_BASE}
-              onToggle={this.handleBasicInfoCollapseToggle}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION_BASE)}
-            >
-              <Row>
-                <Column large={3}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'application_base.child.children.default')}
-                    name={`default`}
-                    overrideValues={{
-                      fieldType: 'checkbox',
-                      label: ApplicationFieldTitles.APPLICATION_DEFAULT,
-                      options: [{value: 1, label: 'Hakytyypin oletuslomake'}],
-                    }}
-                    enableUiDataEdit
-                    invisibleLabel
+      <Fragment>
+        <EditPlotApplicationModal
+          isOpen={isModalOpen}
+          onClose={this.hideEditPlotApplicationModal}
+          onSubmit={()=>{}}
+        />
+        <form>
+          <Title uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}>
+            {ApplicationFieldTitles.APPLICATION}
+          </Title>
+          <Divider />
+          <Row className='summary__content-wrapper'>
+            <Column small={12}>
+              <Collapse
+                defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
+                hasErrors={isSaveClicked && !isEmpty(errors)}
+                headerTitle={ApplicationFieldTitles.APPLICATION_BASE}
+                onToggle={this.handleBasicInfoCollapseToggle}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION_BASE)}
+              >
+                <Row>
+                  <Column large={3}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'application_base.child.children.default')}
+                      name={`default`}
+                      overrideValues={{
+                        fieldType: 'checkbox',
+                        label: ApplicationFieldTitles.APPLICATION_DEFAULT,
+                        options: [{value: 1, label: 'Hakytyypin oletuslomake'}],
+                      }}
+                      enableUiDataEdit
+                      invisibleLabel
+                    />
+                  </Column>
+                  <Column large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'application_base.child.children.extra')}
+                      name={`extra`}
+                      overrideValues={{
+                        label: ApplicationFieldTitles.APPLICATION_EXTRA,
+                      }}
+                      enableUiDataEdit
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column large={3}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'application_base.child.children.previous')}
+                      name={`previous`}
+                      overrideValues={{
+                        label: ApplicationFieldTitles.APPLICATION_PREVIOUS,
+                      }}
+                      enableUiDataEdit
+                      invisibleLabel
+                    />
+                  </Column>
+                  <Column large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'application_base.child.children.created')}
+                      name={`created`}
+                      overrideValues={{
+                        label: ApplicationFieldTitles.APPLICATION_CREATED,
+                      }}
+                      enableUiDataEdit
+                    />
+                  </Column>
+                </Row>
+                <WhiteBox className='application__white-stripes'>
+                  <Column className={'editPlotApplication'}>
+                    <Button
+                      className={ButtonColors.PRIMARY}
+                      onClick={this.openEditPlotApplicationModal}
+                      text='Muokkaa'
+                    />
+                  </Column>
+                  <TitleH3>
+                    {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
+                  </TitleH3>
+                  <FieldArray
+                    component={renderApplicant}
+                    disabled={false}
+                    formName={FormNames.PLOT_SEARCH_APPLICATION}
+                    name={'applicants'}
                   />
-                </Column>
-                <Column large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'application_base.child.children.extra')}
-                    name={`extra`}
-                    overrideValues={{
-                      label: ApplicationFieldTitles.APPLICATION_EXTRA,
-                    }}
-                    enableUiDataEdit
+                  <FieldArray
+                    component={renderTarget}
+                    disabled={false}
+                    formName={FormNames.PLOT_SEARCH_APPLICATION}
+                    name={'targets'}
                   />
-                </Column>
-              </Row>
-              <Row>
-                <Column large={3}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'application_base.child.children.previous')}
-                    name={`previous`}
-                    overrideValues={{
-                      label: ApplicationFieldTitles.APPLICATION_PREVIOUS,
-                    }}
-                    enableUiDataEdit
-                    invisibleLabel
-                  />
-                </Column>
-                <Column large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'application_base.child.children.created')}
-                    name={`created`}
-                    overrideValues={{
-                      label: ApplicationFieldTitles.APPLICATION_CREATED,
-                    }}
-                    enableUiDataEdit
-                  />
-                </Column>
-              </Row>
-              <Column className={''} style={{margin: '0 0 10px 0'}}>
-                <FileDownloadButton
-                  disabled={true}
-                  label='ESIKATSELE'
-                  payload={{
-                  }}
-                  url={''} 
-                />
-              </Column>
-              <WhiteBox className='application__white-stripes'>
-                <TitleH3>
-                  {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
-                </TitleH3>
-                <FieldArray
-                  component={renderApplicant}
-                  disabled={false}
-                  formName={FormNames.PLOT_SEARCH_APPLICATION}
-                  name={'applicants'}
-                />
-                <FieldArray
-                  component={renderTarget}
-                  disabled={false}
-                  formName={FormNames.PLOT_SEARCH_APPLICATION}
-                  name={'targets'}
-                />
-              </WhiteBox>
-            </Collapse>
-          </Column>
-        </Row>
-      </form>
+                </WhiteBox>
+              </Collapse>
+            </Column>
+          </Row>
+        </form>
+      </Fragment>
     );
   }
 }

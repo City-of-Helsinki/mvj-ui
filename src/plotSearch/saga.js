@@ -21,10 +21,12 @@ import {
   receivePlotSearchSubtype,
   PlotSearchSubtypeNotFound,
   nullPlanUnits,
+  receiveApplicationAttributes,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import attributesMockData from './attributes-mock-data.json';
+import mockApplicationAttributes from './application-attributes-mock-data.json';
 import mockData from './mock-data.json';
 
 import {
@@ -249,6 +251,13 @@ function* fetchPlanUnitAttributesSaga({payload: value}): Generator<any, any, any
   }
 }
 
+function* fetchApplicationAttributesSaga(): Generator<any, any, any> {
+  const attributes = mockApplicationAttributes.fields;
+  console.log('attributes');
+  console.log(attributes);
+  yield put(receiveApplicationAttributes(attributes));
+}
+
 function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnit, value.value);
@@ -308,6 +317,7 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtype);
+      yield takeLatest('mvj/plotSearch/FETCH_APPLICATION_ATTRIBUTES', fetchApplicationAttributesSaga);
     }),
   ]);
 }

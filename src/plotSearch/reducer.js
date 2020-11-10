@@ -18,6 +18,7 @@ import type {
   ReceiveMethodsAction,
   PlanUnit,
   ReceivePlotSearchSubtypeAction,
+  ReceiveApplicationAttributesAction,
 } from '$src/plotSearch/types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -128,6 +129,18 @@ const subTypesReducer: Reducer<Object> = handleActions({
   },
 }, null);
 
+const ApplicationAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotSearch/RECEIVE_APPLICATION_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveApplicationAttributesAction) => {
+    return attributes;
+  },
+}, null);
+
+const isFetchingApplicationAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_APPLICATION_ATTRIBUTES']: () => true,
+  ['mvj/plotSearch/APPLICATION_ATTRIBUTES_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_APPLICATION_ATTRIBUTES']: () => false,
+}, false);
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
@@ -144,4 +157,6 @@ export default combineReducers<Object, any>({
   isFetchingPlanUnit: isFetchingPlanUnitReducer,
   isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
   subTypes: subTypesReducer,
+  applicationAttributes: ApplicationAttributesReducer,
+  isFetchingApplicationAttributes: isFetchingApplicationAttributesReducer,
 });

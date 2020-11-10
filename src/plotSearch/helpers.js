@@ -60,12 +60,12 @@ export const getBasicInformationFormValues = (basicInformation: Object): Object 
  */
 export const getContentApplication = (plotSearch: PlotSearch): Object => {
   return {
-    default: plotSearch.application_base.default,
-    extra: plotSearch.application_base.extra,
-    previous: plotSearch.application_base.previous,
-    created: plotSearch.application_base.created,
-    applicants: plotSearch.application_base.applicants,
-    targets: plotSearch.application_base.targets,
+    default: get(plotSearch.application_base, 'default'),
+    extra: get(plotSearch.application_base, 'extra'),
+    previous: get(plotSearch.application_base, 'previous'),
+    created: get(plotSearch.application_base, 'created'),
+    applicants: get(plotSearch.application_base, 'applicants'),
+    targets: get(plotSearch.application_base, 'targets'),
   };
 };
 

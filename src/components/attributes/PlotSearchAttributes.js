@@ -6,6 +6,7 @@ import flowRight from 'lodash/flowRight';
 import {
   fetchAttributes as fetchPlotSearchAttributes,
   fetchPlotSearchSubtypes,
+  fetchApplicationAttributes,
 } from '$src/plotSearch/actions';
 import {
   getAttributes as getPlotSearchAttributes,
@@ -13,6 +14,8 @@ import {
   getPlotSearchMethods,
   getPlotSearchSubTypes,
   getIsFetching,
+  getIsFetchingApplicationAttributes,
+  getApplicationAttributes,
 } from '$src/plotSearch/selectors';
 
 import type {Attributes, Methods} from '$src/types';
@@ -21,8 +24,11 @@ function PlotSearchAttributes(WrappedComponent: any) {
   type Props = {
     fetchPlotSearchAttributes: Function,
     fetchPlotSearchSubtypes: Function,
+    fetchApplicationAttributes: Function,
     isFetchingPlotSearchAttributes: boolean,
     isFetching: boolean,
+    applicationAttributes: Attributes,
+    isFetchingApplicationAttribute: boolean,
     plotSearchAttributes: Attributes,
     plotSearchMethods: Methods,
     plotSearchSubTypes: Object,
@@ -37,6 +43,9 @@ function PlotSearchAttributes(WrappedComponent: any) {
         fetchPlotSearchSubtypes,
         plotSearchSubTypes,
         isFetching,
+        isFetchingApplicationAttribute,
+        applicationAttributes,
+        fetchApplicationAttributes,
       } = this.props;
 
       if(!isFetchingPlotSearchAttributes && !plotSearchAttributes) {
@@ -45,6 +54,11 @@ function PlotSearchAttributes(WrappedComponent: any) {
       if(!isFetching && !plotSearchSubTypes) {
         fetchPlotSearchSubtypes();
       }
+      if(!isFetchingApplicationAttribute && !applicationAttributes) {
+        fetchApplicationAttributes();
+        console.log('asdf');
+      }
+
     }
 
     render() {
@@ -62,11 +76,14 @@ const withPlotSearchAttributes = flowRight(
         plotSearchMethods: getPlotSearchMethods(state),
         plotSearchSubTypes: getPlotSearchSubTypes(state),
         isFetching: getIsFetching(state),
+        isFetchingApplicationAttribute: getIsFetchingApplicationAttributes(state),
+        applicationAttributes: getApplicationAttributes(state),
       };
     },
     {
       fetchPlotSearchAttributes,
       fetchPlotSearchSubtypes,
+      fetchApplicationAttributes,
     },
   ),
   PlotSearchAttributes,

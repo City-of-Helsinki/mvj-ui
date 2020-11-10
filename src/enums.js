@@ -361,6 +361,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa tonttihakemuksen?',
     TITLE: 'Poista tonttihakemus',
   },
+  DELETE_SECTION_FIELD: {
+    BUTTON: 'Poista kenttä',
+    LABEL: 'Haluatko varmasti poistaa kentän?',
+    TITLE: 'Poista kenttä',
+  },
 };
 
 /**
@@ -448,6 +453,7 @@ export const FormNames = {
   PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
+  EDIT_PLOT_APPLICATION: 'edit-plot-application',
 };
 
 /**

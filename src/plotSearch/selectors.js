@@ -11,6 +11,12 @@ import type {
   PlanUnit,
 } from './types';
 
+export const getApplicationAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotSearch.applicationAttributes;
+
+export const getIsFetchingApplicationAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingApplicationAttributes;
+
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.plotSearch.attributes;
 

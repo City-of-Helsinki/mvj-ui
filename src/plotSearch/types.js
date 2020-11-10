@@ -17,6 +17,8 @@ export type PlotSearchState = {
   isFetchingPlanUnit: boolean,
   isFetchingPlanUnitAttributes: boolean,
   subTypes: Object,
+  applicationAttributes: Attributes,
+  isFetchingApplicationAttributes: boolean,
 };
 
 export type PlotSearchId = number;
@@ -67,3 +69,6 @@ export type PlotSearchSubtypeNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH
 
 export type NullPlanUnits = Action<'mvj/plotSearch/NULL_PLAN_UNITS', void>;
 
+export type FetchApplicationAttributesAction = Action<'mvj/plotSearch/FETCH_APPLICATION_ATTRIBUTES', void>;
+export type ApplicationAttributesNotFoundAction = Action<'mvj/plotSearch/RECEIVE_APPLICATION_ATTRIBUTES', Attributes>;
+export type ReceiveApplicationAttributesAction = Action<'mvj/plotSearch/APPLICATION_ATTRIBUTES_NOT_FOUND', void>;
