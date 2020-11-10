@@ -161,6 +161,8 @@ export const cleanTargets = (payload: Object): Object => {
  * @returns {Object}
  */
 export const filterSubTypes = (subTypes: Object, type: string): Object => {
+  if(isEmpty(subTypes))
+    return [];
   const filteredSubTypes = subTypes.filter(subType => subType.plot_search_type === type);
   const subTypesAsOptions = filteredSubTypes.map(subType => ({
     value: subType.id,

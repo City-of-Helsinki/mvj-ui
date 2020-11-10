@@ -64,3 +64,6 @@ export type ReceivePlanUnitAttributesAction = Action<'mvj/plotSearch/RECEIVE_PLA
 export type fetchPlotSearchSubtypesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
 export type ReceivePlotSearchSubtypeAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
 export type PlotSearchSubtypeNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;
+
+export type NullPlanUnits = Action<'mvj/plotSearch/NULL_PLAN_UNITS', void>;
+

@@ -68,6 +68,7 @@ const planUnitReducer: Reducer<PlanUnit> = handleActions({
   {
     return merge(state, planUnit);
   },
+  ['mvj/plotSearch/NULL_PLAN_UNITS']: () => null,
 }, {});
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({

@@ -30,6 +30,7 @@ import {
   fetchPlotSearchSubtypes,
   PlotSearchSubtypeNotFound,
   receivePlotSearchSubtype,
+  nullPlanUnits,
 } from './actions';
 
 import plotSearchReducer from './reducer';
@@ -317,6 +318,13 @@ describe('PlotSearch', () => {
         const newState = {...baseState, planUnit: {[1]: dummyPlotSearch}};
 
         const state = plotSearchReducer({}, receiveSinglePlanUnit({[1]: dummyPlotSearch}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should null PlanUnits', () => {
+        const newState = {...baseState, planUnit: null};
+
+        const state = plotSearchReducer({}, nullPlanUnits());
         expect(state).to.deep.equal(newState);
       });
 

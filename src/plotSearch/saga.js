@@ -20,6 +20,7 @@ import {
   planUnitNotFound,
   receivePlotSearchSubtype,
   PlotSearchSubtypeNotFound,
+  nullPlanUnits,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -143,6 +144,7 @@ function* editPlotSearchSaga({payload: plotSearch}): Generator<any, any, any> {
             hideEditMode(),
             receiveIsSaveClicked(false),
             () => displayUIMessage({title: '', body: 'Tonttihaku tallennettu'}),
+            nullPlanUnits(),
           ],
         }));
         break;
@@ -276,8 +278,11 @@ function* fetchPlotSearchSubtype(): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         const subTypes = bodyAsJson.results;
-
         yield put(receivePlotSearchSubtype(subTypes));
+        break;
+      case 403:
+        yield put(PlotSearchSubtypeNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, get: 'plot_search_subtype'})));
         break;
       default:
         yield put(PlotSearchSubtypeNotFound());

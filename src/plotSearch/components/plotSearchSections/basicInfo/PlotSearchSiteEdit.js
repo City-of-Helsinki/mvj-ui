@@ -190,6 +190,12 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     this.getPlanUnitData();
   }
 
+  componentDidUpdate(prevProps: Object){
+    if(this.props.planUnit !== prevProps.planUnit){
+      this.getPlanUnitData();
+    }
+  }
+
   getPlanUnitData(){
     const {
       planUnit,
