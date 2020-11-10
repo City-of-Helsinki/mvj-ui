@@ -56,6 +56,8 @@ type DecisionsProps = {
   usersPermissions: UsersPermissionsType,
 }
 
+// TODO
+// eslint-disable-next-line
 const renderDecisions = ({
   disabled,
   fields,
@@ -330,7 +332,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     }}
                   />
                 </Column>
-                <FieldArray
+                {/* <FieldArray
                   component={renderDecisions}
                   attributes={attributes}
                   disabled={false}
@@ -348,7 +350,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       label: PlotSearchFieldTitles.STEP,
                     }}
                   />
-                </Column>
+                </Column> */}
               </Row>
               <WhiteBox>
                 <SubTitle>

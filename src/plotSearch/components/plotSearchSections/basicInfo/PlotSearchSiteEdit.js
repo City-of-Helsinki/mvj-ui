@@ -238,6 +238,28 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     change(`${field}.plan_unit_id`, planUnitNewValue);
   }
 
+  updatePlanUnit = () => {
+    const {
+      currentPlotSearch,
+      index,
+      fetchPlanUnitAttributes,
+      fetchPlanUnit,
+      planUnit,
+    } = this.props;
+    const currentTarget = currentPlotSearch.targets[index];
+    const masterPlanUnitId = get(currentTarget, 'master_plan_unit_id');
+    const plan_unit = getPlanUnitFromObjectKeys(planUnit, index);
+    const payload = {
+      value: masterPlanUnitId,
+      label: plan_unit.identifier,
+    };
+    this.setState({
+      planUnitNew: payload,
+    });
+    fetchPlanUnitAttributes(payload);
+    fetchPlanUnit(payload);
+  }
+
   render(){
     const {  
       field,
@@ -279,14 +301,17 @@ class PlotSearchSiteEdit extends Component<Props, State> {
         hasErrors={isSaveClicked && !isEmpty(plotSearchSiteErrors)}
         onToggle={this.handleCollapseToggle}
       >
-        <Row>
-          {(isDeleted || isNewer) && <WarningContainer style={{position: 'absolute', right: '35px', top: '-5px'}}>
-            <WarningField
-              meta={{warning: label}}
-              showWarning={(isDeleted || isNewer)}
-            />
+        <Row style={{marginBottom: 10}}>
+          {(isDeleted || isNewer) && <WarningContainer style={{marginLeft: 5, marginTop: 1, marginBottom: 1}}> {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
+            <a onClick={this.updatePlanUnit}>
+              <WarningField
+                meta={{warning: label}}
+                showWarning={(isDeleted || isNewer)}
+              />
+            </a>
           </WarningContainer>}
-          <Column small={6} medium={6} large={6} style={{paddingBottom: 10}}>
+          {(isDeleted || isNewer) && <Column small={12} medium={12} large={12}></Column>}
+          <Column small={6} medium={3} large={3}>
             <FormTextTitle>
               {'Kohteentunnus'}
             </FormTextTitle>
@@ -304,7 +329,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
               />
             </div>
             <FormTextTitle>
-              {'Kaavayksikön vaihe'}
+              {'kohteen tyyppi'}
             </FormTextTitle>
             <FormField
               disableTouched={isSaveClicked}
@@ -369,7 +394,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {get(planUnitByValue, 'detailed_plan_latest_processing_date_note') || '-'}
               </FormText>
             </Column>
-            <Column small={6} medium={3} large={2}>
+            <Column small={6} medium={4} large={2}>
               <FormTextTitle>
                 {'Sopimushetkellä'}
               </FormTextTitle>
@@ -389,7 +414,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
               </FormTextTitle>
               <FormText>{planUnitByValue && getLabelOfOption(planUnitTypeOptions, planUnitByValue.plan_unit_type) || '-'}</FormText>
             </Column>
-            <Column small={6} medium={3} large={2}>
+            <Column small={6} medium={4} large={2}>
               <FormTextTitle>
                 {'Tonttijaon hyväksymispvm'}
               </FormTextTitle>
@@ -397,7 +422,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {formatDate(get(planUnitByValue, 'plot_division_date_of_approval')) || '-'}
               </FormText>
             </Column>
-            <Column small={6} medium={3} large={2}>
+            <Column small={6} medium={4} large={3}>
               <FormTextTitle>
                 {'Tonttijaon voimaantulopvm'}
               </FormTextTitle>
@@ -405,7 +430,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {formatDate(get(planUnitByValue, 'plot_division_effective_date')) || '-'}
               </FormText>
             </Column>
-            <Column small={6} medium={3} large={2}>
+            <Column small={6} medium={4} large={2}>
               <FormTextTitle>
                 {'Tonttijaon tunnus'}
               </FormTextTitle>
@@ -419,7 +444,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
               </FormTextTitle>
               <FormText>{planUnitByValue && getLabelOfOption(plotDivisionStateOptions, planUnitByValue.plot_division_state) || '-'}</FormText>
             </Column>
-            <Column small={6} medium={3} large={2}>
+            <Column small={6} medium={4} large={2}>
               <FormTextTitle>
                 {'Leikkausala'}
               </FormTextTitle>

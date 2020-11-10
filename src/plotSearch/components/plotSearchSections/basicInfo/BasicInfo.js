@@ -36,7 +36,7 @@ import {
 } from '$src/plotSearch/enums';
 import type {Attributes} from '$src/types';
 import type {PlotSearch} from '$src/plotSearch/types';
-import SingleRadioInput from '$components/inputs/SingleRadioInput';
+// import SingleRadioInput from '$components/inputs/SingleRadioInput';
 import {
   fetchPlanUnit,
   fetchPlanUnitAttributes,
@@ -84,8 +84,8 @@ class BasicInfo extends PureComponent<Props, State> {
     const plotSearch = getContentBasicInformation(currentPlotSearch);
     const typeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.TYPE);
     const subtypeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SUBTYPE);
-    const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
-    const stageOptions = getFieldOptions(attributes, 'stage');
+    // const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
+    // const stageOptions = getFieldOptions(attributes, 'stage');
   
     return (
       <Fragment>
@@ -174,7 +174,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormText>{formatDate(plotSearch.modified_at)}</FormText>
                 </Column>
               </Row>
-              <Row>
+              {/* <Row>
                 <Column small={12} medium={6} large={6}>
                   <FormTextTitle>
                     {PlotSearchFieldTitles.DECISION}
@@ -208,13 +208,14 @@ class BasicInfo extends PureComponent<Props, State> {
                     </Row>
                   )}
                 </Column>
+
                 <Column small={6} medium={2} large={2}>
                   <FormTitleAndText
                     title={PlotSearchFieldTitles.STEP}
                     text={getLabelOfOption(stageOptions, plotSearch.stage) || '-'}
                   />
                 </Column>
-              </Row>
+              </Row> */}
               {(!!plotSearch.targets && plotSearch.targets.
                 filter(plotSearchSite => plotSearchSite.target_type === 'searchable').length > 0) && <WhiteBox>
                 <SubTitle>
