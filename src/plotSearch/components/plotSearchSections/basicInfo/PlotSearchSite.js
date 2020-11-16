@@ -141,14 +141,20 @@ class PlotSearchSite extends PureComponent<Props, State> {
         <Collapse
           className='collapse__secondary greenCollapse'
           defaultOpen={collapseState !== undefined ? collapseState : true}
-          headerTitle={get(currentPlanUnit, 'identifier') || '-'}
+          headerTitle={`${get(currentPlanUnit, 'identifier')} ${get(currentPlanUnit, 'plan_unit_status')}` || '-'}
           onToggle={this.handleCollapseToggle}
         >
           <Row style={{marginBottom: 10}}>
             {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
             }
-            {(isDeleted || isNewer) && <WarningContainer style={{marginLeft: 5, marginBottom: 5}}> {/* style={{position: 'absolute', right: '15px', top: '-5px'}}> */}
+            {(isNewer) && <WarningContainer style={{marginLeft: 5, marginBottom: 5}}> {/* style={{position: 'absolute', right: '15px', top: '-5px'}}> */}
+              <WarningField
+                meta={{warning: label}}
+                showWarning={(isDeleted || isNewer)}
+              />
+            </WarningContainer>}
+            {(isDeleted) && <WarningContainer style={{marginLeft: 5, marginBottom: 5}}> {/* style={{position: 'absolute', right: '15px', top: '-5px'}}> */}
               <WarningField
                 meta={{warning: label}}
                 showWarning={(isDeleted || isNewer)}

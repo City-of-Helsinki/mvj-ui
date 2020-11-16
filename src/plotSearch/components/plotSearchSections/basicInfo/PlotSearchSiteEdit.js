@@ -245,6 +245,8 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       fetchPlanUnitAttributes,
       fetchPlanUnit,
       planUnit,
+      field,
+      change,
     } = this.props;
     const currentTarget = currentPlotSearch.targets[index];
     const masterPlanUnitId = get(currentTarget, 'master_plan_unit_id');
@@ -258,6 +260,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     });
     fetchPlanUnitAttributes(payload);
     fetchPlanUnit(payload);
+    change(`${field}.plan_unit_id`, masterPlanUnitId);
   }
 
   render(){
@@ -291,19 +294,28 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const isDeleted = get(currentTarget, 'is_master_plan_unit_deleted');
     const isNewer = get(currentTarget, 'is_master_plan_unit_newer');
     const label = get(currentTarget, 'message_label');
+    const plan_unit = getPlanUnitFromObjectKeys(planUnit, index);
 
     return (
       <Collapse
         className='collapse__secondary greenCollapse'
         defaultOpen={collapseState !== undefined ? collapseState : true}
-        headerTitle={getlabel(planUnitNew) || '-'}
+        headerTitle={`${getlabel(planUnitNew)} ${get(plan_unit, 'plan_unit_status')}` || '-'}
         onRemove={onRemove}
         hasErrors={isSaveClicked && !isEmpty(plotSearchSiteErrors)}
         onToggle={this.handleCollapseToggle}
       >
         <Row style={{marginBottom: 10}}>
-          {(isDeleted || isNewer) && <WarningContainer style={{marginLeft: 5, marginTop: 1, marginBottom: 1}}> {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
+          {(isNewer) && <WarningContainer style={{marginLeft: 5, marginTop: 1, marginBottom: 1}}> {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
             <a onClick={this.updatePlanUnit}>
+              <WarningField
+                meta={{warning: label}}
+                showWarning={(isDeleted || isNewer)}
+              />
+            </a>
+          </WarningContainer>}
+          {(isDeleted) && <WarningContainer style={{marginLeft: 5, marginTop: 1, marginBottom: 1}}> {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
+            <a onClick={onRemove}>
               <WarningField
                 meta={{warning: label}}
                 showWarning={(isDeleted || isNewer)}

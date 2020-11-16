@@ -16,7 +16,7 @@ import {ButtonColors} from '$components/enums';
 import Collapse from '$components/collapse/Collapse';
 import FormTextTitle from '$components/form/FormTextTitle';
 import Divider from '$components/content/Divider';
-import {getUiDataLeaseKey} from '$src/uiData/helpers';
+import {getUiDataPlotSearchKey} from '$src/uiData/helpers';
 import {FieldTypes as FieldTypeOptions} from '$src/enums';
 import {
   isFieldAllowedToRead,
@@ -81,7 +81,6 @@ const renderDecisions = ({
                   <Column small={4} large={8}>
                     <FormTextTitle
                       required={false}
-                      uiDataKey={getUiDataLeaseKey(PlotSearchFieldPaths.DECISION)}
                     >
                       {PlotSearchFieldTitles.DECISION}
                     </FormTextTitle>
@@ -89,7 +88,6 @@ const renderDecisions = ({
                   <Column large={3}>
                     <FormTextTitle
                       required={false}
-                      uiDataKey={getUiDataLeaseKey(PlotSearchFieldPaths.DECISION_TO_LIST)}
                     >
                       {PlotSearchFieldTitles.DECISION_TO_LIST}
                     </FormTextTitle>
@@ -275,63 +273,85 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       fieldAttributes={get(attributes, 'name')}
                       name='name'
                       overrideValues={{label: PlotSearchFieldTitles.NAME}}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataPlotSearchKey('name')}
                     />
                   </Column>
                 </Authorization>
-                <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'preparer')}
-                    name='preparer'
-                    overrideValues={{
-                      fieldType: FieldTypes.USER,
-                      label: PlotSearchFieldTitles.PREPARER,
-                    }}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={3}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, PlotSearchFieldPaths.TYPE)}
-                    name='type'
-                    overrideValues={{
-                      label: PlotSearchFieldTitles.TYPE,
-                    }}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={3}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, PlotSearchFieldPaths.SUBTYPE)}
-                    name='subtype'
-                    overrideValues={{
-                      label: PlotSearchFieldTitles.SUBTYPE,
-                      options: subTypeOptions,
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={6} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'begin_at')}
-                    name='begin_at'
-                    overrideValues={{
-                      label: 'Alkupvm ja Klo',
-                      fieldType: FieldTypeOptions.TIME,
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={6} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'end_at')}
-                    name='end_at'
-                    overrideValues={{
-                      label: 'Loppupvm ja Klo',
-                      fieldType: FieldTypeOptions.TIME,
-                    }}
-                  />
-                </Column>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
+                  <Column small={12} medium={6} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'preparer')}
+                      name='preparer'
+                      overrideValues={{
+                        fieldType: FieldTypes.USER,
+                        label: PlotSearchFieldTitles.PREPARER,
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataPlotSearchKey('preparer')}
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, PlotSearchFieldPaths.TYPE)}
+                      name='type'
+                      overrideValues={{
+                        label: PlotSearchFieldTitles.TYPE,
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataPlotSearchKey('type')}
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'subtype')}>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, PlotSearchFieldPaths.SUBTYPE)}
+                      name='subtype'
+                      overrideValues={{
+                        label: PlotSearchFieldTitles.SUBTYPE,
+                        options: subTypeOptions,
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataPlotSearchKey('subtype')}
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
+                  <Column small={6} medium={6} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'begin_at')}
+                      name='begin_at'
+                      overrideValues={{
+                        label: 'Alkupvm ja Klo',
+                        fieldType: FieldTypeOptions.TIME,
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataPlotSearchKey('begin_at')}
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'end_at')}>
+                  <Column small={6} medium={6} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'end_at')}
+                      name='end_at'
+                      overrideValues={{
+                        label: 'Loppupvm ja Klo',
+                        fieldType: FieldTypeOptions.TIME,
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataPlotSearchKey('end_at')}
+                    />
+                  </Column>
+                </Authorization>
                 {/* <FieldArray
                   component={renderDecisions}
                   attributes={attributes}

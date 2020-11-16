@@ -22,6 +22,7 @@ import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
 import PlotSearchSite from './PlotSearchSite';
 import {getContentBasicInformation} from '$src/plotSearch/helpers';
+import {getUiDataPlotSearchKey} from '$src/uiData/helpers';
 import {
   getFieldOptions,
   getLabelOfOption,
@@ -103,76 +104,97 @@ class BasicInfo extends PureComponent<Props, State> {
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
                   <Column small={12} large={8}>
-                    <FormTextTitle>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('name')}>
                       {PlotSearchFieldTitles.NAME}
                     </FormTextTitle>
                     <FormText>{plotSearch.name}</FormText>
                   </Column>
                 </Authorization>
-                <Column small={12} medium={6} large={2}>
-                  <FormTitleAndText
-                    title={PlotSearchFieldTitles.PREPARER}
-                    text={getUserFullName(plotSearch.preparer) || '-'}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={2}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.APPLICATIONS}
-                  </FormTextTitle>
-                  {plotSearch.applications && plotSearch.applications.map((application, index) => 
-                    <FormText key={index}>
-                      <ExternalLink
-                        className='no-margin'
-                        href={`${application.id}`}
-                        text={application.name}
-                      />
-                    </FormText>
-                  )}
-                </Column>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
+                  <Column small={12} medium={6} large={2}>
+                    <FormTitleAndText
+                      uiDataKey={getUiDataPlotSearchKey('preparer')}
+                      title={PlotSearchFieldTitles.PREPARER}
+                      text={getUserFullName(plotSearch.preparer) || '-'}
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'applications')}>
+                  <Column small={12} medium={6} large={2}>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('applications')}>
+                      {PlotSearchFieldTitles.APPLICATIONS}
+                    </FormTextTitle>
+                    {plotSearch.applications && plotSearch.applications.map((application, index) => 
+                      <FormText key={index}>
+                        <ExternalLink
+                          className='no-margin'
+                          href={`${application.id}`}
+                          text={application.name}
+                        />
+                      </FormText>
+                    )}
+                  </Column>
+                </Authorization>
               </Row>
               <Row>
-                <Column small={12} medium={6} large={3}>
-                  <FormTitleAndText
-                    title={PlotSearchFieldTitles.TYPE}
-                    text={getLabelOfOption(typeOptions, plotSearch.type) || '-'}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={3}>
-                  <FormTitleAndText
-                    title={PlotSearchFieldTitles.SUBTYPE}
-                    text={getLabelOfOption(subtypeOptions, plotSearch.subtype) || '-'}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={1}>
-                  <FormTextTitle >
-                    {PlotSearchFieldTitles.START_DATE}
-                  </FormTextTitle>  
-                  <FormText>{formatDate(plotSearch.begin_at) || '-'}</FormText>
-                </Column>
-                <Column small={6} medium={4} large={1}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.CLOCK}
-                  </FormTextTitle>
-                  <FormText>{getHoursAndMinutes(plotSearch.begin_at) || '-'}</FormText>
-                </Column>
-                <Column small={6} medium={4} large={1}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.END_DATE}
-                  </FormTextTitle>
-                  <FormText>{formatDate(plotSearch.end_at) || '-'}</FormText>
-                </Column>
-                <Column small={6} medium={4} large={1}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.CLOCK}
-                  </FormTextTitle>
-                  <FormText>{getHoursAndMinutes(plotSearch.end_at) || '-'}</FormText>
-                </Column>
-                <Column small={12} medium={6} large={2}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.APPLICATIONS_UPDATED_DATE}
-                  </FormTextTitle>
-                  <FormText>{formatDate(plotSearch.modified_at)}</FormText>
-                </Column>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
+                  <Column small={12} medium={6} large={3}>
+                    <FormTitleAndText
+                      title={PlotSearchFieldTitles.TYPE}
+                      text={getLabelOfOption(typeOptions, plotSearch.type) || '-'}
+                      uiDataKey={getUiDataPlotSearchKey('type')}
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'subtype')}>
+                  <Column small={12} medium={6} large={3}>
+                    <FormTitleAndText
+                      title={PlotSearchFieldTitles.SUBTYPE}
+                      text={getLabelOfOption(subtypeOptions, plotSearch.subtype) || '-'}
+                      uiDataKey={getUiDataPlotSearchKey('subtype')}
+                    />
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
+                  <Column small={6} medium={4} large={1}>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('begin_at')}>
+                      {PlotSearchFieldTitles.START_DATE}
+                    </FormTextTitle>  
+                    <FormText>{formatDate(plotSearch.begin_at) || '-'}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
+                  <Column small={6} medium={4} large={1}>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('begin_at')}>
+                      {PlotSearchFieldTitles.CLOCK}
+                    </FormTextTitle>
+                    <FormText>{getHoursAndMinutes(plotSearch.begin_at) || '-'}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'end_at')}>
+                  <Column small={6} medium={4} large={1}>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('end_at')}>
+                      {PlotSearchFieldTitles.END_DATE}
+                    </FormTextTitle>
+                    <FormText>{formatDate(plotSearch.end_at) || '-'}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'end_at')}>
+                  <Column small={6} medium={4} large={1}>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('end_at')}>
+                      {PlotSearchFieldTitles.CLOCK}
+                    </FormTextTitle>
+                    <FormText>{getHoursAndMinutes(plotSearch.end_at) || '-'}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'modified_at')}>
+                  <Column small={12} medium={6} large={2}>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('modified_at')}>
+                      {PlotSearchFieldTitles.APPLICATIONS_UPDATED_DATE}
+                    </FormTextTitle>
+                    <FormText>{formatDate(plotSearch.modified_at)}</FormText>
+                  </Column>
+                </Authorization>
               </Row>
               {/* <Row>
                 <Column small={12} medium={6} large={6}>
