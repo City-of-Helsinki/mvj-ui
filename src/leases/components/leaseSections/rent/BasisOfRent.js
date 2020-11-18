@@ -247,7 +247,7 @@ const BasisOfRent = ({
               <Column small={6} medium={4} large={2}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
                   <FormTextTitle>{'Ala/korkeus'}</FormTextTitle>
-                  <FormText>{!isEmptyValue(basisOfRent.area) ? `${formatNumber(basisOfRent.area)} €` : '-'}</FormText>
+                  <FormText>{!isEmptyValue(basisOfRent.area) ? `${formatNumber(basisOfRent.area)}` : '-'}</FormText>
                 </Authorization>
               </Column>
               <Column small={6} medium={4} large={2}>
