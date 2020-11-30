@@ -19,9 +19,9 @@ type Props = {
 const Contracts = ({attributes, currentLandUseContract}: Props) => {
   const contracts = getContentContracts(currentLandUseContract),
     stateOptions = getFieldOptions(attributes, 'contracts.child.children.state'),
-    contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.contract_type'),
+    contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.type'),
     decisionOptions = getFieldOptions(attributes, 'contracts.child.children.decision');
-
+  console.log(currentLandUseContract);
   return (
     <div>
       {!contracts.length && <FormText className='no-margin'>Ei sopimuksia</FormText>}
@@ -34,6 +34,7 @@ const Contracts = ({attributes, currentLandUseContract}: Props) => {
             contractTypeOptions={contractTypeOptions}
             decisionOptions={decisionOptions}
             attributes={attributes}
+            currentLandUseContract={currentLandUseContract}
           />
         );
       })}

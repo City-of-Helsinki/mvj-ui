@@ -200,7 +200,7 @@ const LitigantItemEdit = ({
                   <Column small={9} medium={8} large={8}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'litigants.child.children.litigantcontact_set.child.children.contact')}
+                      fieldAttributes={get(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.contact')}
                       name={`${field}.litigant.contact`}
                       overrideValues={{
                         fieldType: FieldTypes.CONTACT,
@@ -247,7 +247,7 @@ const LitigantItemEdit = ({
               <Column small={6} medium={3} large={2}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'litigants.child.children.litigantcontact_set.child.children.start_date')}
+                  fieldAttributes={get(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.start_date')}
                   name={`${field}.litigant.start_date`}
                   overrideValues={{
                     label: 'Alkupvm',
@@ -257,7 +257,7 @@ const LitigantItemEdit = ({
               <Column small={6} medium={3} large={2}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'litigants.child.children.litigantcontact_set.child.children.end_date')}
+                  fieldAttributes={get(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.end_date')}
                   name={`${field}.litigant.end_date`}
                   overrideValues={{
                     label: 'Loppupvm',
@@ -298,7 +298,7 @@ const LitigantItemEdit = ({
       <FieldArray
         component={renderBillingPersons}
         savedLitigant={savedLitigant}
-        name={`${field}.litigantcontact_set`}
+        name={`${field}.landuseagreementlitigantcontact_set`}
         showAddButton={!archived}
       />
     </Collapse>

@@ -85,6 +85,12 @@ const DecisionItem = ({
             }
           />
         </Column>
+        <Column small={12}>
+          <FormTitleAndText
+            title='Huomautus'
+            text={decision.description || '-'}
+          />
+        </Column>
       </Row>
 
       <DecisionConditions

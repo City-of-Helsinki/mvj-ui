@@ -3,12 +3,12 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
@@ -21,8 +21,10 @@ import {
   getFieldOptions,
   getLabelOfOption,
   getReferenceNumberLink,
+  isFieldAllowedToRead,
 } from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getCurrentLandUseContract} from '$src/landUseContract/selectors';
+import {getUiDataLandUseContractKey} from '$src/uiData/helpers';
 
 import type {Attributes} from '$src/types';
 import type {LandUseContract} from '$src/landUseContract/types';
@@ -67,84 +69,106 @@ const BasicInformation = ({
         onToggle={handleBasicInformationCollapseToggle}
       >
         <Row>
-          <Column small={6} medium={4} large={2}>
-            <FormTextTitle title='Kiinteistötunnus' />
-            {!!basicInformation.estate_ids && !!basicInformation.estate_ids.length
-              ? <ListItems>
-                {basicInformation.estate_ids.map((estate_id, index) =>
-                  <ListItem key={index}>{estate_id.estate_id || '-'}</ListItem>
-                )}
+          <Authorization allow={isFieldAllowedToRead(attributes, 'estate_ids')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle title='Kiinteistötunnus' uiDataKey={getUiDataLandUseContractKey('estate_ids')}/>
+              {!!basicInformation.estate_ids && !!basicInformation.estate_ids.length
+                ? <ListItems>
+                  {basicInformation.estate_ids.map((estate_id, index) =>
+                    <ListItem key={index}>{estate_id.estate_id || '-'}</ListItem>
+                  )}
+                </ListItems>
+                : <FormText>-</FormText>
+              }
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'definition')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('definition')}>
+                {'Maankäyttösopimus päätös'}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(landUseContractDefinitionOptions, basicInformation.definition) || '-'}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle title='Valmistelijat' uiDataKey={getUiDataLandUseContractKey('preparer')}/>
+              <ListItems>
+                <ListItem>{getUserFullName(basicInformation.preparer) || '-'}</ListItem>
+                <ListItem>{getUserFullName(basicInformation.preparer2) || '-'}</ListItem>
               </ListItems>
-              : <FormText>-</FormText>
-            }
-          </Column>
-          {basicInformation && console.log(basicInformation.definition)}
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Maankäyttösopimus päätös'
-              text={getLabelOfOption(landUseContractDefinitionOptions, basicInformation.definition) || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTextTitle title='Valmistelijat' />
-            <ListItems>
-              <ListItem>{getUserFullName(basicInformation.preparer) || '-'}</ListItem>
-              <ListItem>{getUserFullName(basicInformation.preparer2) || '-'}</ListItem>
-            </ListItems>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Maankäyttösopimuksen tyyppi'
-              text={getLabelOfOption(landUseContractTypeOptions, basicInformation.type) || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Maankäyttösopimuksen tila'
-              text={getLabelOfOption(landUseContractStatusOptions, basicInformation.status) || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Arvioitu toteutumisvuosi'
-              text={basicInformation.estimated_completion_year || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Arvioitu esittelyvuosi'
-              text={basicInformation.estimated_introduction_year || '-'}
-            />
-          </Column>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('type')}>
+                {'Maankäyttösopimuksen tyyppi'}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(landUseContractTypeOptions, basicInformation.type) || '-'}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'status')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('status')}>
+                {'Maankäyttösopimuksen tila'}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(landUseContractStatusOptions, basicInformation.status) || '-'}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'estimated_completion_year')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('estimated_completion_year')}>
+                {'Arvioitu toteutumisvuosi'}
+              </FormTextTitle>
+              <FormText>{basicInformation.estimated_completion_year || '-'}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'estimated_introduction_year')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('estimated_introduction_year')}>
+                {'Arvioitu esittelyvuosi'}
+              </FormTextTitle>
+              <FormText>{basicInformation.estimated_introduction_year || '-'}</FormText>
+            </Column>
+          </Authorization>
         </Row>
 
         <SubTitle>Osoitteet</SubTitle>
         {basicInformation.addresses && basicInformation.addresses.map((address, index) => 
           <Row key={index}>
-            <Column small={6} medium={4} large={2}>
-              <FormTitleAndText
-                title='Osoite'
-                text={address.address || '-'}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTitleAndText
-                title='Postinumero'
-                text={address.postal_code || '-'}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTitleAndText
-                title='Kaupunki'
-                text={address.city || '-'}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle >
-                {'Ensisijainen osoite'}
-              </FormTextTitle>
-              <FormText>{address.is_primary?'Kyllä':'ei'}</FormText>
-            </Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'addresses.child.children.address')}>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle uiDataKey={getUiDataLandUseContractKey('addresses.child.children.address')}>
+                  {'Osoite'}
+                </FormTextTitle>
+                <FormText>{address.address || '-'}</FormText>
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'addresses.child.children.postal_code')}>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle uiDataKey={getUiDataLandUseContractKey('addresses.child.children.postal_code')}>
+                  {'Postinumero'}
+                </FormTextTitle>
+                <FormText>{address.postal_code || '-'}</FormText>
+              </Column>
+            </Authorization>
+
+            <Authorization allow={isFieldAllowedToRead(attributes, 'addresses.child.children.city')}>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle uiDataKey={getUiDataLandUseContractKey('addresses.child.children.city')}>
+                  {'Kaupunki'}
+                </FormTextTitle>
+                <FormText>{address.city || '-'}</FormText>
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'addresses.child.children.is_primary')}>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle uiDataKey={getUiDataLandUseContractKey('addresses.child.children.is_primary')}>
+                  {'Ensisijainen osoite'}
+                </FormTextTitle>
+                <FormText>{address.is_primary?'Kyllä':'ei'}</FormText>
+              </Column>
+            </Authorization>
           </Row>
         )}
 
@@ -153,49 +177,62 @@ const BasicInformation = ({
 
         <SubTitle>Asemakaavatiedot</SubTitle>
         <Row>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Asemakaavan diaarinumero'
-              text={basicInformation.plan_reference_number
-                ? <ExternalLink
-                  className='no-margin'
-                  href={getReferenceNumberLink(basicInformation.plan_reference_number)}
-                  text={basicInformation.plan_reference_number}
-                />
-                : '-'
-              }
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Asemakaavan numero'
-              text={basicInformation.plan_number || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Asemakaavan käsittelyvaihe'
-              text={getLabelOfOption(stateOptions, basicInformation.state) || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Asemakaavan hyväksyjä'
-              text={getLabelOfOption(planAcceptorOptions, basicInformation.plan_acceptor) || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Asemakaavan lainvoimaisuuspvm'
-              text={formatDate(basicInformation.plan_lawfulness_date) || '-'}
-            />
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Hankealue'
-              text={basicInformation.project_area || '-'}
-            />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'plan_reference_number')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('plan_reference_number')}>
+                {'Asemakaavan diaarinumero'}
+              </FormTextTitle>
+              <FormText>{
+                basicInformation.plan_reference_number
+                  ? <ExternalLink
+                    className='no-margin'
+                    href={getReferenceNumberLink(basicInformation.plan_reference_number)}
+                    text={basicInformation.plan_reference_number}
+                  />
+                  : '-'
+              }</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'plan_number')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('plan_number')}>
+                {'Asemakaavan numero'}
+              </FormTextTitle>
+              <FormText>{basicInformation.plan_number || '-'}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'state')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('state')}>
+                {'Asemakaavan käsittelyvaihe'}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(stateOptions, basicInformation.state) || '-'}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'plan_acceptor')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('plan_acceptor')}>
+                {'Asemakaavan hyväksyjä'}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(planAcceptorOptions, basicInformation.plan_acceptor) || '-'}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'plan_lawfulness_date')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('plan_lawfulness_date')}>
+                {'Asemakaavan lainvoimaisuuspvm'}
+              </FormTextTitle>
+              <FormText>{formatDate(basicInformation.plan_lawfulness_date) || '-'}</FormText>
+            </Column>
+          </Authorization>
+          <Authorization allow={isFieldAllowedToRead(attributes, 'project_area')}>
+            <Column small={6} medium={4} large={2}>
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('project_area')}>
+                {'Hankealue'}
+              </FormTextTitle>
+              <FormText>{basicInformation.project_area || '-'}</FormText>
+            </Column>
+          </Authorization>
         </Row>
       </Collapse>
     </Fragment>

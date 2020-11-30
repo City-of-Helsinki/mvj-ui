@@ -6,8 +6,11 @@ import {change, destroy, getFormValues, initialize, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import {withUiDataList} from '$components/uiData/UiDataListHOC';
 import BasicInformation from './sections/BasicInformation';
 import BasicInformationEdit from './sections/BasicInformationEdit';
+import Conditions from './sections/Conditions';
+import ConditionsEdit from './sections/ConditionsEdit';
 import Compensations from './sections/Compensations';
 import CompensationsEdit from './sections/CompensationsEdit';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -63,6 +66,7 @@ import {
   getContentDecisions,
   getContentInvoices,
   getContentLitigants,
+  getContentConditions,
 } from '$src/landUseContract/helpers';
 import {getSearchQuery, getUrlParams, isArchived, scrollToTopPage, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -107,6 +111,9 @@ type Props = {
   isContractsFormValid: boolean,
   isDecisionsFormDirty: boolean,
   isDecisionsFormValid: boolean,
+  isConditionsFormDirty: boolean,
+  isConditionsFormValid: boolean,
+  conditionsFormValues: Object,
   isEditMode: boolean,
   isFetchingLandUseContractAttributes: boolean,
   isFetchingUsersPermissions: boolean,
@@ -486,6 +493,7 @@ class LandUseContractPage extends Component<Props, State> {
     initialize(FormNames.LAND_USE_CONTRACT_CONTRACTS, {contracts: getContentContracts(landUseContract)});
     initialize(FormNames.LAND_USE_CONTRACT_COMPENSATIONS, {compensations: getContentCompensations(landUseContract)});
     initialize(FormNames.LAND_USE_CONTRACT_INVOICES, {invoices: getContentInvoices(landUseContract)});
+    initialize(FormNames.LAND_USE_CONTRACT_CONDITIONS, {conditions: getContentConditions(landUseContract)});
   }
 
   cancelChanges = () => {
@@ -517,6 +525,8 @@ class LandUseContractPage extends Component<Props, State> {
         isInvoicesFormDirty,
         isLitigantsFormDirty,
         litigantsFormValues,
+        isConditionsFormDirty,
+        conditionsFormValues,
       } = this.props;
       
       //TODO: Add helper functions to save land use contract to DB when API is ready
@@ -542,14 +552,16 @@ class LandUseContractPage extends Component<Props, State> {
       if(isInvoicesFormDirty) {
         payload = {...payload, ...invoicesFormValues};
       }
-
+      
       if(isLitigantsFormDirty) {
         payload = addLitigantsFormValuesToPayload(payload, litigantsFormValues);
       }
 
-      payload.identifier = currentLandUseContract.identifier;
+      if(isConditionsFormDirty) {
+        payload = {...payload, ...conditionsFormValues};
+      }
 
-      payload.decisions = null;
+      payload.identifier = currentLandUseContract.identifier;
 
       editLandUseContract(payload);
     }
@@ -563,6 +575,7 @@ class LandUseContractPage extends Component<Props, State> {
       isDecisionsFormValid,
       isInvoicesFormValid,
       isLitigantsFormValid,
+      isConditionsFormValid,
     } = this.props;
 
     return (
@@ -571,7 +584,8 @@ class LandUseContractPage extends Component<Props, State> {
       isContractsFormValid &&
       isDecisionsFormValid &&
       isInvoicesFormValid &&
-      isLitigantsFormValid
+      isLitigantsFormValid && 
+      isConditionsFormValid
     );
   }
 
@@ -791,8 +805,14 @@ class LandUseContractPage extends Component<Props, State> {
 
             <TabPane>
               <ContentContainer>
+                {!isEditMode
+                  ? <Conditions />
+                  : <ConditionsEdit />
+                }
+                {/*
                 <h2>Valvottavat ehdot</h2>
-                <Divider />
+                <Divider /> 
+                */}
               </ContentContainer>
             </TabPane>
           </TabContent>
@@ -805,6 +825,7 @@ class LandUseContractPage extends Component<Props, State> {
 export default flowRight(
   withRouter,
   withLandUseContractAttributes,
+  withUiDataList,
   connect(
     (state, props: Props) => {
       return {
@@ -836,6 +857,10 @@ export default flowRight(
         invoices: getInvoicesByLandUseContractId(state, props.match.params.landUseContractId),
         isFetchingLandUseInvoiceAttributes: getIsFetchingLandUseInvoiceAttributes(state),
         landUseInvoiceAttributes: getLandUseInvoiceAttributes(state),
+
+        isConditionsFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_CONDITIONS)(state),
+        isConditionsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_CONDITIONS),
+        conditionsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_CONDITIONS)(state),
       };
     },
     {
