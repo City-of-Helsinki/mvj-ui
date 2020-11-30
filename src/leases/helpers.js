@@ -502,6 +502,7 @@ export const getContentPlanUnits = (area: Object): Array<Object> =>
       plan_unit_type: get(planunit, 'plan_unit_type.id') || planunit.plan_unit_type,
       plan_unit_state: get(planunit, 'plan_unit_state.id') || planunit.plan_unit_state,
       plan_unit_intended_use: get(planunit, 'plan_unit_intended_use.id') || planunit.plan_unit_intended_use,
+      is_master: get(planunit, 'is_master') || planunit.is_master,
     };
   });
 
@@ -2136,6 +2137,7 @@ const getPayloadPlanUnits = (area: Object): Array<Object> => {
       plan_unit_type: planunit.plan_unit_type,
       plan_unit_state: planunit.plan_unit_state,
       plan_unit_intended_use: planunit.plan_unit_intended_use,
+      is_master: planunit.is_master,
     };
   });
 };

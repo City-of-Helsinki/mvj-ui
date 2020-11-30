@@ -17,6 +17,7 @@ import type {
   ReceiveFormValidFlagsAction,
   ReceiveMethodsAction,
   PlanUnit,
+  ReceivePlotSearchSubtypeAction,
 } from '$src/plotSearch/types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -39,6 +40,9 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/EDIT']: () => true,
   ['mvj/plotSearch/NOT_FOUND']: () => false,
   ['mvj/plotSearch/DELETE']: () => true,
+  ['mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES']: () => true,
+  ['mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES']: () => false,
 }, false);
 
 const isFetchingPlanUnitReducer: Reducer<boolean> = handleActions({
@@ -64,6 +68,7 @@ const planUnitReducer: Reducer<PlanUnit> = handleActions({
   {
     return merge(state, planUnit);
   },
+  ['mvj/plotSearch/NULL_PLAN_UNITS']: () => null,
 }, {});
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
@@ -117,6 +122,12 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   [FormNames.PLOT_SEARCH_APPLICATION]: true,
 });
 
+const subTypesReducer: Reducer<Object> = handleActions({
+  ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES']: (state: Object, {payload: subTypes}: ReceivePlotSearchSubtypeAction) => {
+    return subTypes;
+  },
+}, null);
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
@@ -132,4 +143,5 @@ export default combineReducers<Object, any>({
   planUnit: planUnitReducer,
   isFetchingPlanUnit: isFetchingPlanUnitReducer,
   isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
+  subTypes: subTypesReducer,
 });

@@ -41,6 +41,7 @@ import userSaga from '../users/saga';
 import usersPermissionsSaga from '../usersPermissions/saga';
 import vatSaga from '../vat/saga';
 import plotSearchSaga from '../plotSearch/saga';
+import plotApplicationsSaga from '../plotApplications/saga';
 
 export default () =>
   // $FlowFixMe
@@ -87,5 +88,6 @@ export default () =>
       fork(usersPermissionsSaga),
       fork(vatSaga),
       fork(plotSearchSaga),
+      fork(plotApplicationsSaga),
     ]);
   };

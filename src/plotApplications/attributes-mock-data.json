@@ -1,0 +1,51 @@
+{
+  "name": "PlotSearch list",
+  "description": "",
+  "fields": {
+    "plot_search": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Tonttihaku"
+    },
+    "arrival_time": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Saapumisajankohta"
+    },
+    "time": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Klo"
+    },
+    "saver": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Tallentaja"
+    },
+    "disapproval_reason": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Hylkäämisen syy"
+    },
+    "notice": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Huomautus"
+    }    
+  },
+  "methods": {
+    "DELETE": true,
+    "GET": true,
+    "HEAD": true,
+    "OPTIONS": true,
+    "PATCH": true,
+    "POST": true,
+    "PUT": true
+  }
+}

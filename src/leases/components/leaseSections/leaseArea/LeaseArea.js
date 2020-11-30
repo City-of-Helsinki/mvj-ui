@@ -322,7 +322,6 @@ const LeaseArea = ({
           <Column small={0} large={6}>
             {/* silence is golden */}
           </Column>
-          {console.log(area)}
           <Column small={12} large={6}>
             <Collapse
               className='collapse__secondary'
@@ -345,7 +344,6 @@ const LeaseArea = ({
               </BoxItemContainer>
             </Collapse>
           </Column>
-          {console.log(area)}
         </Row>
       </Authorization>
     </Fragment>

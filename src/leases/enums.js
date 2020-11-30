@@ -570,6 +570,7 @@ export const LeasePlanUnitsFieldPaths = {
   PLOT_DIVISION_IDENTIFIER: 'lease_areas.child.children.plan_units.child.children.plot_division_identifier',
   PLOT_DIVISION_STATE: 'lease_areas.child.children.plan_units.child.children.plot_division_state',
   SECTION_AREA: 'lease_areas.child.children.plan_units.child.children.section_area',
+  IS_MASTER: 'lease_areas.child.children.plan_units.child.children.is_master',
 };
 
 /**
@@ -592,6 +593,7 @@ export const LeasePlanUnitsFieldTitles = {
   PLOT_DIVISION_IDENTIFIER: 'Tonttijaon tunnus',
   PLOT_DIVISION_STATE: 'Tonttijaon olotila',
   SECTION_AREA: 'Leikkausala',
+  IS_MASTER: 'Onko alkuperäinen?',
 };
 
 /**

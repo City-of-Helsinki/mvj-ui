@@ -33,6 +33,10 @@ import type {
   ReceivePlanUnitAttributesAction,
   PlanUnit,
   PlanUnitNotFoundAction,
+  fetchPlotSearchSubtypesAction,
+  PlotSearchSubtypeNotFoundAction,
+  ReceivePlotSearchSubtypeAction,
+  NullPlanUnitsAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -109,3 +113,15 @@ export const planUnitAttributesNotFound = (): PlanUnitAttributesNotFoundAction =
 
 export const receivePlanUnitAttributes = (attributes: Attributes): ReceivePlanUnitAttributesAction =>
   createAction('mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES')(attributes);
+
+export const fetchPlotSearchSubtypes = (payload: Object): fetchPlotSearchSubtypesAction =>
+  createAction('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES')(payload);
+
+export const PlotSearchSubtypeNotFound = (): PlotSearchSubtypeNotFoundAction =>
+  createAction('mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND')();
+
+export const receivePlotSearchSubtype = (subTypes: Object): ReceivePlotSearchSubtypeAction =>
+  createAction('mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES')(subTypes);
+
+export const nullPlanUnits = (): NullPlanUnitsAction =>
+  createAction('mvj/plotSearch/NULL_PLAN_UNITS')();

@@ -14,6 +14,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import WarningContainer from '$components/content/WarningContainer';
 import WarningField from '$components/form/WarningField';
+import {createPaikkatietovipunenUrl} from '$util/helpers';
 import {
   formatDate,
   getFieldOptions,
@@ -130,25 +131,37 @@ class PlotSearchSite extends PureComponent<Props, State> {
     const isNewer = get(plotSearchSite, 'is_master_plan_unit_newer');
     const label = get(plotSearchSite, 'message_label');
 
+    const leaseAddress = get(plotSearchSite, 'lease_address');
+    const address = get(leaseAddress, 'address');
+    const leaseIdentifier = get(plotSearchSite, 'lease_identifier');
+    const leaseHitas = get(plotSearchSite, 'lease_hitas');
+
     return (
       <Column large={12}>
         <Collapse
           className='collapse__secondary greenCollapse'
           defaultOpen={collapseState !== undefined ? collapseState : true}
-          headerTitle={get(currentPlanUnit, 'identifier') || '-'}
+          headerTitle={`${get(currentPlanUnit, 'identifier')} ${get(currentPlanUnit, 'plan_unit_status')}` || '-'}
           onToggle={this.handleCollapseToggle}
         >
-          <Row>
+          <Row style={{marginBottom: 10}}>
             {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
             }
-            {(isDeleted || isNewer) && <WarningContainer style={{position: 'absolute', right: '15px', top: '-5px'}}>
+            {(isNewer) && <WarningContainer style={{marginLeft: 5, marginBottom: 5}}> {/* style={{position: 'absolute', right: '15px', top: '-5px'}}> */}
+              <WarningField
+                meta={{warning: label}}
+                showWarning={(isDeleted || isNewer)}
+              />
+            </WarningContainer>}
+            {(isDeleted) && <WarningContainer style={{marginLeft: 5, marginBottom: 5}}> {/* style={{position: 'absolute', right: '15px', top: '-5px'}}> */}
               <WarningField
                 meta={{warning: label}}
                 showWarning={(isDeleted || isNewer)}
               />
             </WarningContainer>}
             {(currentPlanUnit) && <Fragment>
+              {(isDeleted || isNewer) && <Column small={12} medium={12} large={12}></Column>}
               <Column small={6} medium={3} large={3}>
                 <FormTextTitle>
                   {'Vuokraustunnus'}
@@ -156,14 +169,18 @@ class PlotSearchSite extends PureComponent<Props, State> {
                 <FormText>
                   <ExternalLink
                     className='no-margin'
-                    href={`/`}
-                    text={get(currentPlanUnit, 'identifier') || '-'}
+                    href={`/vuokraukset?search=${leaseIdentifier}`}
+                    text={leaseIdentifier || '-'}
                   />
                 </FormText>
                 <FormTextTitle>
+                  {'Osoite'}
+                </FormTextTitle>
+                <FormText>{address || '-'}</FormText>
+                {/* <FormTextTitle>
                   {'Kaavayksikön vaihe'}
                 </FormTextTitle>
-                <FormText>{plotSearchSite.target_type || '-'}</FormText>
+                <FormText>{plotSearchSite.target_type || '-'}</FormText> */}
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
@@ -176,16 +193,20 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {'Kokonaisala neliömetreissä'}
                 </FormTextTitle>
                 <FormText>
-                  {get(currentPlanUnit, 'area') || '-'}
+                  {`${get(currentPlanUnit, 'area')} m²` || '-'}
                 </FormText>
               </Column>
               <Column small={6} medium={3} large={2}>
                 <FormTextTitle>
                   {'Asemakaava'}
                 </FormTextTitle>
-                <FormText>
-                  {get(currentPlanUnit, 'detailed_plan_identifier') || '-'}
-                </FormText>
+                {get(currentPlanUnit, 'detailed_plan_identifier')
+                  ? <ExternalLink
+                    href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(currentPlanUnit, 'detailed_plan_identifier')}`)}
+                    text={get(currentPlanUnit, 'detailed_plan_identifier')}
+                  />
+                  : <FormText>-</FormText>
+                }
               </Column>
               <Column small={6} medium={4} large={3}>
                 <FormTextTitle>
@@ -203,7 +224,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {get(currentPlanUnit, 'detailed_plan_latest_processing_date_note') || '-'}
                 </FormText>
               </Column>
-              <Column small={6} medium={3} large={2}>
+              <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
                   {'Sopimushetkellä'}
                 </FormTextTitle>
@@ -223,7 +244,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
                 </FormTextTitle>
                 <FormText>{currentPlanUnit && getLabelOfOption(planUnitTypeOptions, currentPlanUnit.plan_unit_type) || '-'}</FormText>
               </Column>
-              <Column small={6} medium={3} large={2}>
+              <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
                   {'Tonttijaon hyväksymispvm'}
                 </FormTextTitle>
@@ -231,7 +252,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {formatDate(get(currentPlanUnit, 'plot_division_date_of_approval')) || '-'}
                 </FormText>
               </Column>
-              <Column small={6} medium={3} large={3}>
+              <Column small={6} medium={4} large={3}>
                 <FormTextTitle>
                   {'Tonttijaon voimaantulopvm'}
                 </FormTextTitle>
@@ -239,7 +260,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {formatDate(get(currentPlanUnit, 'plot_division_effective_date')) || '-'}
                 </FormText>
               </Column>
-              <Column small={6} medium={3} large={2}>
+              <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
                   {'Tonttijaon tunnus'}
                 </FormTextTitle>
@@ -253,14 +274,22 @@ class PlotSearchSite extends PureComponent<Props, State> {
                 </FormTextTitle>
                 <FormText>{currentPlanUnit && getLabelOfOption(plotDivisionStateOptions, currentPlanUnit.plot_division_state) || '-'}</FormText>
               </Column>
-              <Column small={6} medium={3} large={2}>
+              <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
                   {'Leikkausala'}
                 </FormTextTitle>
                 <FormText>
-                  {get(currentPlanUnit, 'section_area') || '-'}
+                  {`${get(currentPlanUnit, 'section_area')} m²` || '-'}
                 </FormText>
               </Column>
+              {leaseHitas && <Column small={6} medium={4} large={2}>
+                <FormTextTitle>
+                  {'Hitas'}
+                </FormTextTitle>
+                <FormText>
+                  {leaseHitas || '-'}
+                </FormText>
+              </Column>}
             </Fragment>}
           </Row>
         </Collapse>
