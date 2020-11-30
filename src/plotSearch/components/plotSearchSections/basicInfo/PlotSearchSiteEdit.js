@@ -309,7 +309,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
           {(isNewer) && <WarningContainer style={{marginLeft: 5, marginTop: 1, marginBottom: 1}}> {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
             <a onClick={this.updatePlanUnit}>
               <WarningField
-                meta={{warning: label}}
+                meta={{warning: label + ' Päivitä tiedot'}}
                 showWarning={(isDeleted || isNewer)}
               />
             </a>
@@ -317,7 +317,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
           {(isDeleted) && <WarningContainer style={{marginLeft: 5, marginTop: 1, marginBottom: 1}}> {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
             <a onClick={onRemove}>
               <WarningField
-                meta={{warning: label}}
+                meta={{warning: label + ' Poista kohde hausta'}}
                 showWarning={(isDeleted || isNewer)}
               />
             </a>

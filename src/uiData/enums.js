@@ -27,5 +27,6 @@ export const UiDataPrefixes = {
   TRADE_REGISTER_COMPANY_NOTICE: 'trade_register_company_notice',
   TRADE_REGISTER_COMPANY_REPRESENT: 'trade_register_company_represent',
   PLOT_SEARCH: 'plot_search',
+  LAND_USE_CONTRACT: 'land_use_contract',
 };
 

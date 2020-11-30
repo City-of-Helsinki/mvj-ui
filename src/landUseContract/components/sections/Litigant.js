@@ -36,11 +36,10 @@ const Litigant = ({
       },
     });
   };
-
   const contact = get(litigant, 'litigant.contact');
   const active = isActive(litigant.litigant);
   const archived = isArchived(litigant.litigant);
-
+  
   return (
     <Collapse
       archived={archived}
@@ -62,8 +61,8 @@ const Litigant = ({
         contact={contact}
         litigant={litigant}
       />
-      {litigant.litigantcontact_set && !!litigant.litigantcontact_set.length &&
-        litigant.litigantcontact_set.map((person) => {
+      {litigant.landuseagreementlitigantcontact_set && !!litigant.landuseagreementlitigantcontact_set.length &&
+        litigant.landuseagreementlitigantcontact_set.map((person) => {
           return (
             <LitigantBillingPerson
               key={person.id}

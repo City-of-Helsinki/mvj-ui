@@ -44,14 +44,15 @@ const ContractItem = ({
   return (
     <Collapse
       defaultOpen={collapseState !== undefined ? collapseState : true}
-      headerTitle={`${getLabelOfOption(contractTypeOptions, contract.contract_type) || '-'} ${contract.ed_contract_number}`}
+      headerTitle={`${getLabelOfOption(contractTypeOptions, contract.type) || '-'} ${contract.ed_contract_number}`}
       onToggle={handleCollapseToggle}
     >
       <Row>
+        {console.log(contract)}
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='Sopimuksen tyyppi'
-            text={getLabelOfOption(contractTypeOptions, contract.contract_type) || '-'}
+            text={getLabelOfOption(contractTypeOptions, contract.type) || '-'}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -87,7 +88,7 @@ const ContractItem = ({
       </Row>
       <Warrants
         attributes={attributes}
-        warrants={contract.warrants}
+        collaterals={contract.collaterals}
         decisionId={contract.id}
       />
     </Collapse>

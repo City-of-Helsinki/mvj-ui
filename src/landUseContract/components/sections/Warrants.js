@@ -19,7 +19,7 @@ import type {Attributes} from '$src/types';
 type Props = {
   attributes: Attributes,
   collapseState: boolean,
-  warrants: Array<Object>,
+  collaterals: Array<Object>,
   contractId: number,
   largeScreen: boolean,
   receiveCollapseStates: Function,
@@ -28,7 +28,7 @@ type Props = {
 const Warrants = ({
   attributes,
   collapseState,
-  warrants,
+  collaterals,
   contractId,
   receiveCollapseStates,
 }: Props) => {
@@ -43,7 +43,7 @@ const Warrants = ({
       },
     });
   };
-  const typeOptions = getFieldOptions(attributes, 'contracts.child.children.warrants.child.children.warrant_type');
+  const typeOptions = getFieldOptions(attributes, 'contracts.child.children.collaterals.child.children.type');
 
   return (
     <Collapse
@@ -53,40 +53,40 @@ const Warrants = ({
       onToggle={handleCollapseToggle}
     >
       <BoxItemContainer>
-        {warrants.map((warrants, index) => {
+        {collaterals.map((collateral, index) => {
           return(
             <Row key={index}>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle title='Vakuuden tyyppi' />
-                <FormText>{getLabelOfOption(typeOptions, warrants.warrant_type) || '–'}</FormText>
+                <FormText>{getLabelOfOption(typeOptions, collateral.type) || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle title='Vakuuden laji' />
-                <FormText>{warrants.type || '–'}</FormText>
+                <FormText>{collateral.other_type || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle title='Vuokravakuusnro' />
-                <FormText>{warrants.rent_warrant_number || '–'}</FormText>
+                <FormText>{collateral.number || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle title='Vakuuden alkupvm' />
-                <FormText>{formatDate(warrants.start_date) || '–'}</FormText>
+                <FormText>{formatDate(collateral.start_date) || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle title='Vakuuden loppupvm' />
-                <FormText>{formatDate(warrants.end_date) || '–'}</FormText>
+                <FormText>{formatDate(collateral.end_date) || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle title='Vakuuden määrä' />
-                <FormText>{!isEmptyValue(warrants.amount) ? `${formatNumber(warrants.amount)} €` : '-'}</FormText>
+                <FormText>{!isEmptyValue(collateral.total_amount) ? `${formatNumber(collateral.total_amount)} €` : '-'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle title='Palautettu pvm' />
-                <FormText>{formatDate(warrants.return_date) || '–'}</FormText>
+                <FormText>{formatDate(collateral.return_date) || '–'}</FormText>
               </Column>
               <Column small={6} medium={8} large={10}>
                 <FormTextTitle title='Huomautus' />
-                <FormText>{warrants.note || '–'}</FormText>
+                <FormText>{collateral.note || '–'}</FormText>
               </Column>
             </Row>
           );

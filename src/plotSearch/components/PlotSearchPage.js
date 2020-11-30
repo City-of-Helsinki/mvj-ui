@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import {change, getFormValues, initialize, destroy, isDirty} from 'redux-form';
 
+import {withUiDataList} from '$components/uiData/UiDataListHOC';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import ContentContainer from '$components/content/ContentContainer';
@@ -610,6 +611,7 @@ class PlotSearchPage extends Component<Props, State> {
 export default flowRight(
   withRouter,
   withPlotSearchAttributes,
+  withUiDataList,
   connect(
     (state) => {
       return {

@@ -31,7 +31,7 @@ const getLitigantsErrors = (litigants: Array<Object>): Array<Object> => {
       litigantErrors.litigant = litigantError;
     }
 
-    const litigantContacts = get(litigant, 'litigantcontact_set', []);
+    const litigantContacts = get(litigant, 'landuseagreementlitigantcontact_set', []);
     const litigantContactArrayErrors = [];
 
     litigantContacts.forEach((contact, contactIndex) => {
@@ -42,7 +42,7 @@ const getLitigantsErrors = (litigants: Array<Object>): Array<Object> => {
     });
 
     if(litigantContactArrayErrors.length) {
-      litigantErrors.litigantcontact_set = litigantContactArrayErrors;
+      litigantErrors.landuseagreementlitigantcontact_set = litigantContactArrayErrors;
     }
 
     if(!isEmpty(litigantErrors)) {

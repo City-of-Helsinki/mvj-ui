@@ -86,8 +86,8 @@ const renderWarrants = ({
                       <Column small={6} medium={4} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.warrants.child.children.warrant_type')}
-                          name={`${warrants}.warrant_type`}
+                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.collaterals.child.children.type')}
+                          name={`${warrants}.type`}
                           overrideValues={{
                             label: 'Vakuuden tyyppi',
                           }}
@@ -96,8 +96,8 @@ const renderWarrants = ({
                       <Column small={6} medium={4} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.warrants.child.children.type')}
-                          name={`${warrants}.type`}
+                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.collaterals.child.children.other_type')}
+                          name={`${warrants}.other_type`}
                           overrideValues={{
                             label: 'Vakuuden laji',
                           }}
@@ -106,8 +106,8 @@ const renderWarrants = ({
                       <Column small={12} medium={4} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.warrants.child.children.rent_warrant_number')}
-                          name={`${warrants}.rent_warrant_number`}
+                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.collaterals.child.children.number')}
+                          name={`${warrants}.number`}
                           overrideValues={{
                             label: 'Vuokravakuusnro',
                           }}
@@ -116,7 +116,7 @@ const renderWarrants = ({
                       <Column small={12} medium={4} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.warrants.child.children.start_date')}
+                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.collaterals.child.children.start_date')}
                           name={`${warrants}.start_date`}
                           overrideValues={{
                             label: 'Vakuuden alkupvm',
@@ -126,7 +126,7 @@ const renderWarrants = ({
                       <Column small={12} medium={4} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.warrants.child.children.end_date')}
+                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.collaterals.child.children.end_date')}
                           name={`${warrants}.end_date`}
                           overrideValues={{
                             label: 'Vakuuden loppupvm',
@@ -136,8 +136,8 @@ const renderWarrants = ({
                       <Column small={12} medium={4} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.warrants.child.children.amount')}
-                          name={`${warrants}.amount`}
+                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.collaterals.child.children.total_amount')}
+                          name={`${warrants}.total_amount`}
                           unit='€'
                           overrideValues={{
                             label: 'Vakuuden määrä',
@@ -147,8 +147,8 @@ const renderWarrants = ({
                       <Column small={12} medium={4} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.warrants.child.children.return_date')}
-                          name={`${warrants}.return_date`}
+                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.collaterals.child.children.returned_date')}
+                          name={`${warrants}.returned_date`}
                           overrideValues={{
                             label: 'Palautus pvm',
                           }}
@@ -157,7 +157,7 @@ const renderWarrants = ({
                       <Column small={12} medium={8} large={10}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.warrants.child.children.note')}
+                          fieldAttributes={getFieldAttributes(attributes, 'contracts.child.children.collaterals.child.children.note')}
                           name={`${warrants}.note`}
                           overrideValues={{
                             label: 'Huomautus',
@@ -247,7 +247,7 @@ const ContractItemEdit = ({
 
   const getCollapseTitle = (contract: ?Object) => {
     if(!contract) {return '-';}
-    return `${getLabelOfOption(contractTypeOptions, contract.contract_type) || '-'} ${contract.ed_contract_number}`;
+    return `${getLabelOfOption(contractTypeOptions, contract.type) || '-'} ${contract.ed_contract_number}`;
   };
 
   const contractErrors = get(errors, field),
@@ -263,11 +263,12 @@ const ContractItemEdit = ({
     >
       <BoxContentWrapper>
         <Row>
+          {console.log(attributes)}
           <Column small={6} medium={4} large={2}>
             <FormField
               disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'contracts.child.children.contract_type')}
-              name={`${field}.contract_type`}
+              fieldAttributes={get(attributes, 'contracts.child.children.type')}
+              name={`${field}.type`}
               overrideValues={{
                 label: 'Sopimuksen tyyppi',
               }}
@@ -330,7 +331,7 @@ const ContractItemEdit = ({
           component={renderWarrants}
           errors={errors}
           isSaveClicked={isSaveClicked}
-          name={`${field}.warrants`}
+          name={`${field}.collaterals`}
           onCollapseToggle={handleWarrantsCollapseToggle}
         />
       </BoxContentWrapper>

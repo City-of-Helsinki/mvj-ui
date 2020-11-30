@@ -48,7 +48,7 @@
         "share_numerator": 1,
         "share_denominator": 2,
         "reference": null,
-        "litigantcontact_set": [
+        "landuseagreementlitigantcontact_set": [
           {
             "id": 1610,
             "type": "billing",
@@ -116,7 +116,7 @@
         "share_numerator": 1,
         "share_denominator": 2,
         "reference": "Viitenumero",
-        "litigantcontact_set": [
+        "landuseagreementlitigantcontact_set": [
           {
             "id": 1608,
             "type": "litigant",
@@ -154,7 +154,7 @@
         "share_numerator": 2,
         "share_denominator": 3,
         "reference": "0123456780",
-        "litigantcontact_set": [
+        "landuseagreementlitigantcontact_set": [
           {
             "id": 1606,
             "type": "billing",
@@ -264,7 +264,7 @@
     "contracts": [
       {
         "id": 2,
-        "contract_type": 1,
+        "type": 1,
         "state": 2,
         "sign_date": "2018-04-01",
         "ed_contract_number": "12345678",

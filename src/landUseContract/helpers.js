@@ -45,7 +45,7 @@ export const getListLitigantName = (litigant: Object): ?string =>
  */
 export const getContentListLitigants = (contract: Object): Array<Object> =>
   get(contract, 'litigants', [])
-    .map((litigant) => get(litigant, 'litigantcontact_set', []).find((x) => x.type === LitigantContactType.LITIGANT))
+    .map((litigant) => get(litigant, 'landuseagreementlitigantcontact_set', []).find((x) => x.type === LitigantContactType.TENANT))
     .filter((litigant) => !isArchived(litigant))
     .map((litigant) => getListLitigantName(litigant));
 
@@ -100,7 +100,7 @@ const getContentEstateIds = (contract: LandUseContract): Array<Object> =>
  * @return {Object}
  */
 export const getContentLitigantDetails = (litigant: Object): Object => {
-  const contact = get(litigant, 'litigantcontact_set', []).find(x => x.type === LitigantContactType.LITIGANT);
+  const contact = get(litigant, 'landuseagreementlitigantcontact_set', []).find(x => x.type === LitigantContactType.TENANT);
 
   return contact ? {
     id: contact.id,
@@ -117,8 +117,8 @@ export const getContentLitigantDetails = (litigant: Object): Object => {
  * @return {Object[]}
  */
 export const getContentLitigantContactSet = (litigant: Object): Array<Object> =>
-  get(litigant, 'litigantcontact_set', [])
-    .filter((x) => x.type !== LitigantContactType.LITIGANT)
+  get(litigant, 'landuseagreementlitigantcontact_set', [])
+    .filter((x) => x.type !== LitigantContactType.TENANT)
     .map((contact) => {
       return {
         id: contact.id,
@@ -142,7 +142,7 @@ export const getContentLitigant = (litigant: Object): Object => {
     share_denominator: litigant.share_denominator,
     reference: litigant.reference,
     litigant: getContentLitigantDetails(litigant),
-    litigantcontact_set: getContentLitigantContactSet(litigant),
+    landuseagreementlitigantcontact_set: getContentLitigantContactSet(litigant),
 
   } : {};
 };
@@ -229,33 +229,53 @@ export const getContentDecisions = (contract: LandUseContract): Array<Object> =>
  */
 const getContentContract = (contract: Object): Object => {
   return {
+    type: contract.type,
     id: contract.id,
-    contract_type: contract.contract_type,
     state: contract.state,
     sign_date: contract.sign_date,
     ed_contract_number: contract.ed_contract_number,
     area_arrengements: contract.area_arrengements,
     decision: contract.decision,
-    warrants: getContractWarrants(contract),
+    // warrants: getContractWarrants(contract),
+    collaterals: getContractCollaterals(contract),
+    /*
+    collaterals: {type: "field", required: false, read_only: false, label: "Collaterals",…}
+    contract_changes: {type: "field", required: false, read_only: false, label: "Contract changes",…}
+    contract_number: {type: "string", required: false, read_only: false, label: "Sopimusnumero", max_length: 255}
+    decision: {type: "field", required: false, read_only: false, label: "Decision"}
+    first_call_sent: {type: "date", required: false, read_only: false, label: "1. kutsu lähetetty"}
+    id: {type: "integer", required: false, read_only: false, label: "Id"}
+    institution_identifier: {type: "string", required: false, read_only: false, label: "Laitostunnus", max_length: 255}
+    is_readjustment_decision: {type: "boolean", required: false, read_only: true, label: "Järjestelypäätös"}
+    ktj_link: {type: "string", required: false, read_only: false, label: "KTJ vuokraoikeustodistuksen linkki",…}
+    second_call_sent: {type: "date", required: false, read_only: false, label: "2. kutsu lähetetty"}
+    sign_by_date: {type: "date", required: false, read_only: false, label: "Allekirjoitettava mennessä"}
+    signing_date: {type: "date", required: false, read_only: false, label: "Allekirjoituspäivämäärä"}
+    signing_note: {type: "string", required: false, read_only: false, label: "Kommentti allekirjoitukselle"}
+    third_call_sent: {type: "date", required: false, read_only: false, label: "3. kutsu lähetetty"}
+    type: {type: "field", required: true, read_only: false, label: "Type",…} */
   };
 };
 
 /** 
- * Get land use contract warrants
+ * Get land use contract collaterals
  * @param {Object} decision
  * @return {Object[]}
  */
-const getContractWarrants = (contract: Object): Array<Object> =>
-  get(contract, 'warrants', []).map((contract) => {
+const getContractCollaterals = (contract: Object): Array<Object> =>
+  get(contract, 'collaterals', []).map((contract) => {
     return {
-      warrant_type: contract.warrant_type,
       type: contract.type,
-      rent_warrant_number: contract.rent_warrant_number,
       start_date: contract.start_date,
       end_date: contract.end_date,
-      amount: contract.amount,
-      return_date: contract.return_date,
       note: contract.note,
+      deed_date: contract.deed_date,
+      id: contract.id,
+      number: contract.number,
+      other_type: contract.other_type,
+      paid_date: contract.paid_date,
+      returned_date: contract.returned_date,
+      total_amount: contract.total_amount,
     };
   });
 
@@ -336,13 +356,13 @@ const getPayloadLitigantContactSet = (litigant: Object): Array<Object> => {
 
   contacts.push({
     id: contact.id,
-    type: LitigantContactType.LITIGANT,
+    type: LitigantContactType.TENANT,
     contact: contact.contact,
     start_date: contact.start_date,
     end_date: contact.end_date,
   });
 
-  const billingPersons = get(litigant, 'litigantcontact_set', []);
+  const billingPersons = get(litigant, 'landuseagreementlitigantcontact_set', []);
   billingPersons.forEach((person) => {
     contacts.push({
       id: person.id,
@@ -371,7 +391,7 @@ export const addLitigantsFormValuesToPayload = (payload: Object, formValues: Obj
       share_numerator: litigant.share_numerator,
       share_denominator: litigant.share_denominator,
       reference: litigant.reference,
-      litigantcontact_set: getPayloadLitigantContactSet(litigant),
+      landuseagreementlitigantcontact_set: getPayloadLitigantContactSet(litigant),
     };
   });
 

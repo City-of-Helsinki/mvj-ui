@@ -32,7 +32,7 @@ const renderContracts = ({attributes, contractsData, errors, fields, isSaveClick
     fields.push({});
   };
 
-  const contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.contract_type');
+  const contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.type');
 
   return (
     <AppConsumer>

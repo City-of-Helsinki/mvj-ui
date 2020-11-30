@@ -6,6 +6,7 @@ import {change, destroy, getFormValues, initialize, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import {withUiDataList} from '$components/uiData/UiDataListHOC';
 import BasicInformation from './sections/BasicInformation';
 import BasicInformationEdit from './sections/BasicInformationEdit';
 import Compensations from './sections/Compensations';
@@ -549,8 +550,6 @@ class LandUseContractPage extends Component<Props, State> {
 
       payload.identifier = currentLandUseContract.identifier;
 
-      payload.decisions = null;
-
       editLandUseContract(payload);
     }
   }
@@ -805,6 +804,7 @@ class LandUseContractPage extends Component<Props, State> {
 export default flowRight(
   withRouter,
   withLandUseContractAttributes,
+  withUiDataList,
   connect(
     (state, props: Props) => {
       return {
