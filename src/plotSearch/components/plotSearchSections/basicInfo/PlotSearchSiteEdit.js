@@ -36,7 +36,6 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 import {
-  getlabel,
   getPlanUnitFromObjectKeys,
 } from '$src/plotSearch/helpers';
 import {
@@ -253,7 +252,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const plan_unit = getPlanUnitFromObjectKeys(planUnit, index);
     const payload = {
       value: masterPlanUnitId,
-      label: plan_unit.identifier,
+      label: (plan_unit) ? plan_unit.identifier : '',
     };
     this.setState({
       planUnitNew: payload,
@@ -300,7 +299,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       <Collapse
         className='collapse__secondary greenCollapse'
         defaultOpen={collapseState !== undefined ? collapseState : true}
-        headerTitle={`${getlabel(planUnitNew)} ${get(plan_unit, 'plan_unit_status')}` || '-'}
+        headerTitle={`${get(planUnitNew, 'label')} ${get(plan_unit, 'plan_unit_status')}` || '-'}
         onRemove={onRemove}
         hasErrors={isSaveClicked && !isEmpty(plotSearchSiteErrors)}
         onToggle={this.handleCollapseToggle}

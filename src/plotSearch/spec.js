@@ -56,6 +56,10 @@ const baseState: PlotSearchState = {
   isFetchingPlanUnit: false,
   isFetchingPlanUnitAttributes: false,
   subTypes: null,
+  isFetchingFormAttributes: false,
+  isFetchingForm: false,
+  formAttributes: null,
+  form: null,
 };
 
 

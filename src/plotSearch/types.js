@@ -69,7 +69,7 @@ export type fetchPlotSearchSubtypesAction = Action<'mvj/plotSearch/FETCH_PLOT_SE
 export type ReceivePlotSearchSubtypeAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
 export type PlotSearchSubtypeNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;
 
-export type NullPlanUnits = Action<'mvj/plotSearch/NULL_PLAN_UNITS', void>;
+export type NullPlanUnitsAction = Action<'mvj/plotSearch/NULL_PLAN_UNITS', void>;
 
 export type FetchFormAttributesAction = Action<'mvj/plotSearch/FETCH_FORM_ATTRIBUTES', Object>;
 export type FormAttributesNotFoundAction = Action<'mvj/plotSearch/FORM_ATTRIBUTES_NOT_FOUND', void>;
