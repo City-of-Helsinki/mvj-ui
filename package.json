@@ -55,7 +55,7 @@
     "leaflet-geosearch": "^2.7.0",
     "leaflet-measure-path": "^1.4.2",
     "leaflet-zoombox": "^0.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.12.0",
     "normalize.css": "^8.0.1",
