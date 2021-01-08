@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
@@ -23,6 +24,10 @@ import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landU
 import {referenceNumber} from '$components/form/validations';
 import AddressItemEdit from './AddressItemEdit';
 import type {Attributes} from '$src/types';
+import {getUiDataLandUseContractKey} from '$src/uiData/helpers';
+import {
+  isFieldAllowedToRead,
+} from '$util/helpers';
 
 // **** TODO
 
@@ -51,22 +56,34 @@ const renderAddresses = ({
             {fields && !!fields.length &&
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <FormTextTitle>
+                  <FormTextTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLandUseContractKey('addresses.child.children.address')}
+                  >
                     {'Osoite'}
                   </FormTextTitle>
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <FormTextTitle>
+                  <FormTextTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLandUseContractKey('addresses.child.children.postal_code')}
+                  >
                     {'Postinumero'}
                   </FormTextTitle>
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <FormTextTitle>
+                  <FormTextTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLandUseContractKey('addresses.child.children.city')}
+                  >
                     {'Kaupunki'}
                   </FormTextTitle>
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <FormTextTitle>
+                  <FormTextTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLandUseContractKey('addresses.child.children.is_primary')}
+                  >
                     {'Ensisijainen osoite'}
                   </FormTextTitle>
                 </Column>
@@ -150,15 +167,17 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
                   <Column>
                     <FieldAndRemoveButtonWrapper
                       field={
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'estate_ids.child.children.estate_id')}
-                          invisibleLabel
-                          name={`${field}.estate_id`}
-                          overrideValues={{
-                            label: 'Kohde',
-                          }}
-                        />
+                        <Authorization allow={isFieldAllowedToRead(attributes, 'estate_ids.child.children.estate_id')}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'estate_ids.child.children.estate_id')}
+                            invisibleLabel
+                            name={`${field}.estate_id`}
+                            overrideValues={{
+                              label: 'Kohde',
+                            }}
+                          />
+                        </Authorization>
                       }
                       removeButton={
                         <RemoveButton
@@ -237,87 +256,115 @@ class BasicInformationEdit extends Component<Props> {
           onToggle={this.handleBasicInformationCollapseToggle}
         >
           <Row>
-            <Column small={6} medium={4} large={2}>
-              <FieldArray
-                attributes={attributes}
-                component={renderAreas}
-                isSaveClicked={isSaveClicked}
-                name='estate_ids'
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'definition')}
-                name='definition'
-                overrideValues={{
-                  label: 'Maankäyttösopimus päätös',
-                }}  
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle title='Valmistelijat' />
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'preparer')}
-                invisibleLabel
-                name='preparer'
-                overrideValues={{
-                  fieldType: FieldTypes.USER,
-                  label: 'Valmistelija 1',
-                }}
-              />
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'preparer')}
-                invisibleLabel
-                name='preparer2'
-                overrideValues={{
-                  fieldType: FieldTypes.USER,
-                  label: 'Valmistelija 2',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'type')}
-                name='type'
-                overrideValues={{
-                  label: 'Maankäyttösopimuksen tyyppi',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'status')}
-                name='status'
-                overrideValues={{
-                  label: 'Maankäyttösopimuksen tila',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'estimated_completion_year')}
-                name='estimated_completion_year'
-                overrideValues={{
-                  label: 'Arvioitu toteutumisvuosi',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'estimated_introduction_year')}
-                name='estimated_introduction_year'
-                overrideValues={{
-                  label: 'Arvioitu esittelyvuosi',
-                }}
-              />
-            </Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'estate_ids')}>
+              <Column small={6} medium={4} large={2}>
+                <FieldArray
+                  attributes={attributes}
+                  component={renderAreas}
+                  isSaveClicked={isSaveClicked}
+                  name='estate_ids'
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('estate_ids')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'definition')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'definition')}
+                  name='definition'
+                  overrideValues={{
+                    label: 'Maankäyttösopimus päätös',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('definition')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
+              <Column small={6} medium={4} large={2}>
+                <FormTextTitle title='Valmistelijat' />
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'preparer')}
+                  invisibleLabel
+                  name='preparer'
+                  overrideValues={{
+                    fieldType: FieldTypes.USER,
+                    label: 'Valmistelija 1',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('preparer')}
+                />
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'preparer')}
+                  invisibleLabel
+                  name='preparer2'
+                  overrideValues={{
+                    fieldType: FieldTypes.USER,
+                    label: 'Valmistelija 2',
+                  }}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'type')}
+                  name='type'
+                  overrideValues={{
+                    label: 'Maankäyttösopimuksen tyyppi',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('type')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'status')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'status')}
+                  name='status'
+                  overrideValues={{
+                    label: 'Maankäyttösopimuksen tila',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('status')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'estimated_completion_year')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'estimated_completion_year')}
+                  name='estimated_completion_year'
+                  overrideValues={{
+                    label: 'Arvioitu toteutumisvuosi',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('estimated_completion_year')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'estimated_introduction_year')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'estimated_introduction_year')}
+                  name='estimated_introduction_year'
+                  overrideValues={{
+                    label: 'Arvioitu esittelyvuosi',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('estimated_introduction_year')}
+                />
+              </Column>
+            </Authorization>
           </Row>
 
           <SubTitle>Osoitteet</SubTitle>
@@ -334,68 +381,92 @@ class BasicInformationEdit extends Component<Props> {
 
           <SubTitle>Asemakaavatiedot</SubTitle>
           <Row>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_reference_number')}
-                name='plan_reference_number'
-                validate={referenceNumber}
-                overrideValues={{
-                  label: 'Asemakaavan diaarinumero',
-                  fieldType: FieldTypes.REFERENCE_NUMBER,
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_number')}
-                name='plan_number'
-                overrideValues={{
-                  label: 'Asemakaavan numero',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'state')}
-                name='state'
-                overrideValues={{
-                  label: 'Asemakaavan käsittelyvaihe',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_acceptor')}
-                name='plan_acceptor'
-                overrideValues={{
-                  label: 'Asemakaavan hyväksyjä',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_lawfulness_date')}
-                name='plan_lawfulness_date'
-                overrideValues={{
-                  label: 'Asemakaavan lainvoimaisuuspvm',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'project_area')}
-                name='project_area'
-                overrideValues={{
-                  label: 'Hankealue',
-                }}
-              />
-            </Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'plan_reference_number')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'plan_reference_number')}
+                  name='plan_reference_number'
+                  validate={referenceNumber}
+                  overrideValues={{
+                    label: 'Asemakaavan diaarinumero',
+                    fieldType: FieldTypes.REFERENCE_NUMBER,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('plan_reference_number')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'plan_number')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'plan_number')}
+                  name='plan_number'
+                  overrideValues={{
+                    label: 'Asemakaavan numero',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('plan_number')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'state')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'state')}
+                  name='state'
+                  overrideValues={{
+                    label: 'Asemakaavan käsittelyvaihe',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('state')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'plan_acceptor')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'plan_acceptor')}
+                  name='plan_acceptor'
+                  overrideValues={{
+                    label: 'Asemakaavan hyväksyjä',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('plan_acceptor')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'plan_lawfulness_date')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'plan_lawfulness_date')}
+                  name='plan_lawfulness_date'
+                  overrideValues={{
+                    label: 'Asemakaavan lainvoimaisuuspvm',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('plan_lawfulness_date')}
+                />
+              </Column>
+            </Authorization>
+            <Authorization allow={isFieldAllowedToRead(attributes, 'project_area')}>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'project_area')}
+                  name='project_area'
+                  overrideValues={{
+                    label: 'Hankealue',
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLandUseContractKey('project_area')}
+                />
+              </Column>
+            </Authorization>
           </Row>
         </Collapse>
       </form>

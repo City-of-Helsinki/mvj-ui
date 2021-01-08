@@ -11,6 +11,8 @@ import {
   getApiResponseResults, 
   isArchived,
   sortStringByKeyDesc,
+  addEmptyOption,
+  formatDate,
 } from '$util/helpers';
 import {getIsEditMode} from '$src/landUseContract/selectors';
 import {removeSessionStorageItem} from '$util/storage';
@@ -45,7 +47,7 @@ export const getListLitigantName = (litigant: Object): ?string =>
  */
 export const getContentListLitigants = (contract: Object): Array<Object> =>
   get(contract, 'litigants', [])
-    .map((litigant) => get(litigant, 'litigantcontact_set', []).find((x) => x.type === LitigantContactType.LITIGANT))
+    .map((litigant) => get(litigant, 'landuseagreementlitigantcontact_set', []).find((x) => x.type === LitigantContactType.TENANT))
     .filter((litigant) => !isArchived(litigant))
     .map((litigant) => getListLitigantName(litigant));
 
@@ -100,7 +102,7 @@ const getContentEstateIds = (contract: LandUseContract): Array<Object> =>
  * @return {Object}
  */
 export const getContentLitigantDetails = (litigant: Object): Object => {
-  const contact = get(litigant, 'litigantcontact_set', []).find(x => x.type === LitigantContactType.LITIGANT);
+  const contact = get(litigant, 'landuseagreementlitigantcontact_set', []).find(x => x.type === LitigantContactType.TENANT);
 
   return contact ? {
     id: contact.id,
@@ -117,8 +119,8 @@ export const getContentLitigantDetails = (litigant: Object): Object => {
  * @return {Object[]}
  */
 export const getContentLitigantContactSet = (litigant: Object): Array<Object> =>
-  get(litigant, 'litigantcontact_set', [])
-    .filter((x) => x.type !== LitigantContactType.LITIGANT)
+  get(litigant, 'landuseagreementlitigantcontact_set', [])
+    .filter((x) => x.type !== LitigantContactType.TENANT)
     .map((contact) => {
       return {
         id: contact.id,
@@ -142,7 +144,7 @@ export const getContentLitigant = (litigant: Object): Object => {
     share_denominator: litigant.share_denominator,
     reference: litigant.reference,
     litigant: getContentLitigantDetails(litigant),
-    litigantcontact_set: getContentLitigantContactSet(litigant),
+    landuseagreementlitigantcontact_set: getContentLitigantContactSet(litigant),
 
   } : {};
 };
@@ -209,6 +211,7 @@ const getContentDecision = (decision: Object) => {
     decision_date: decision.decision_date,
     section: decision.section,
     type: decision.type,
+    description: decision.description,
     reference_number: decision.reference_number,
     conditions: getContentDecisionConditions(decision),
   };
@@ -229,33 +232,82 @@ export const getContentDecisions = (contract: LandUseContract): Array<Object> =>
  */
 const getContentContract = (contract: Object): Object => {
   return {
+    type: contract.type,
     id: contract.id,
-    contract_type: contract.contract_type,
     state: contract.state,
-    sign_date: contract.sign_date,
-    ed_contract_number: contract.ed_contract_number,
+    signing_date: contract.signing_date,
+    contract_number: contract.contract_number,
     area_arrengements: contract.area_arrengements,
     decision: contract.decision,
-    warrants: getContractWarrants(contract),
+    // warrants: getContractWarrants(contract),
+    collaterals: getContractCollaterals(contract),
+    contract_changes: contract.contract_changes,
+    /*
+    collaterals: {type: "field", required: false, read_only: false, label: "Collaterals",…}
+    contract_number: {type: "string", required: false, read_only: false, label: "Sopimusnumero", max_length: 255}
+    decision: {type: "field", required: false, read_only: false, label: "Decision"}
+    first_call_sent: {type: "date", required: false, read_only: false, label: "1. kutsu lähetetty"}
+    id: {type: "integer", required: false, read_only: false, label: "Id"}
+    institution_identifier: {type: "string", required: false, read_only: false, label: "Laitostunnus", max_length: 255}
+    is_readjustment_decision: {type: "boolean", required: false, read_only: true, label: "Järjestelypäätös"}
+    
+    */
+    ktj_link: contract.ktj_link,
+    second_call_sent: contract.second_call_sent,
+    sign_by_date: contract.sign_by_date,
+    signing_note: contract.signing_note,
+    third_call_sent: contract.third_call_sent,
   };
 };
 
+/**
+ * Get decision options from lease data
+ * @param {Object} lease
+ * @return {Object[]};
+ */
+export const getDecisionOptions = (contract: LandUseContract): Array<Object> => {
+  const decisions = getContentDecisions(contract);
+  const decisionOptions = decisions.map((item) => {
+    return {
+      value: item.id,
+      label: (!item.reference_number && !item.decision_date && !item.section)
+        ? item.id
+        : `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date) || ''}`,
+    };
+  });
+
+  return addEmptyOption(decisionOptions);
+};
+
+/**
+ * Get decision by id
+ * @param {Object} lease
+ * @param {number} id
+ * @returns {Object}
+ */
+export const getDecisionById = (contract: LandUseContract, id: ?number): ?Object =>
+  getContentDecisions(contract).find((decision) => decision.id === id);
+
+
 /** 
- * Get land use contract warrants
+ * Get land use contract collaterals
  * @param {Object} decision
  * @return {Object[]}
  */
-const getContractWarrants = (contract: Object): Array<Object> =>
-  get(contract, 'warrants', []).map((contract) => {
+const getContractCollaterals = (contract: Object): Array<Object> =>
+  get(contract, 'collaterals', []).map((contract) => {
     return {
-      warrant_type: contract.warrant_type,
       type: contract.type,
-      rent_warrant_number: contract.rent_warrant_number,
       start_date: contract.start_date,
       end_date: contract.end_date,
-      amount: contract.amount,
-      return_date: contract.return_date,
       note: contract.note,
+      deed_date: contract.deed_date,
+      id: contract.id,
+      number: contract.number,
+      other_type: contract.other_type,
+      paid_date: contract.paid_date,
+      returned_date: contract.returned_date,
+      total_amount: contract.total_amount,
     };
   });
 
@@ -336,13 +388,13 @@ const getPayloadLitigantContactSet = (litigant: Object): Array<Object> => {
 
   contacts.push({
     id: contact.id,
-    type: LitigantContactType.LITIGANT,
+    type: LitigantContactType.TENANT,
     contact: contact.contact,
     start_date: contact.start_date,
     end_date: contact.end_date,
   });
 
-  const billingPersons = get(litigant, 'litigantcontact_set', []);
+  const billingPersons = get(litigant, 'landuseagreementlitigantcontact_set', []);
   billingPersons.forEach((person) => {
     contacts.push({
       id: person.id,
@@ -371,12 +423,40 @@ export const addLitigantsFormValuesToPayload = (payload: Object, formValues: Obj
       share_numerator: litigant.share_numerator,
       share_denominator: litigant.share_denominator,
       reference: litigant.reference,
-      litigantcontact_set: getPayloadLitigantContactSet(litigant),
+      landuseagreementlitigantcontact_set: getPayloadLitigantContactSet(litigant),
     };
   });
 
   return newPayload;
 };
+
+
+/** 
+ * Get land use contract conditions
+ * @param {Object} contract
+ * @return {Object[]}
+ */
+export const getContentConditions = (contract: LandUseContract): Object=> 
+  get(contract, 'conditions', []).map((condition) => getContentCondition(condition));
+
+/** 
+ * Get land use contract condition
+ * @param {Object} condition
+ * @return {Object}
+ */
+export const getContentCondition = (condition: Object): Object => {
+  return condition ? {
+    actualized_area: condition.actualized_area,
+    compensation_pc: condition.compensation_pc,
+    form_of_management: condition.form_of_management,
+    id: condition.id,
+    obligated_area: condition.obligated_area,
+    subvention_amount: condition.subvention_amount,
+    supervised_date: condition.supervised_date,
+    supervision_date: condition.supervision_date,
+  } : {};
+};
+
 
 /**
  * Get plan accepotr name as string

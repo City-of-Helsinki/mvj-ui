@@ -15,6 +15,7 @@ import {ButtonColors} from '$components/enums';
 import {getContentContracts} from '$src/landUseContract/helpers';
 import {getFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
+import {getDecisionOptions} from '$src/landUseContract/helpers';
 
 import type {Attributes} from '$src/types';
 import type {LandUseContract} from '$src/landUseContract/types';
@@ -25,14 +26,24 @@ type ContractsProps = {
   errors: ?Object,
   fields: any,
   isSaveClicked: boolean,
+  currentLandUseContract: LandUseContract,
+  decisionOptions: Array<Object>,
 }
 
-const renderContracts = ({attributes, contractsData, errors, fields, isSaveClicked}: ContractsProps): Element<*> => {
+const renderContracts = ({
+  attributes, 
+  contractsData, 
+  errors, 
+  fields, 
+  isSaveClicked, 
+  currentLandUseContract,
+  decisionOptions,
+}: ContractsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  const contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.contract_type');
+  const contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.type');
 
   return (
     <AppConsumer>
@@ -64,6 +75,8 @@ const renderContracts = ({attributes, contractsData, errors, fields, isSaveClick
                   isSaveClicked={isSaveClicked}
                   onRemove={handleRemove}
                   contractTypeOptions={contractTypeOptions}
+                  currentLandUseContract={currentLandUseContract}
+                  decisionOptions={decisionOptions}
                 />
 
               );
@@ -95,12 +108,14 @@ type Props = {
 type State = {
   contractsData: Array<Object>,
   currentLandUseContract: ?LandUseContract,
+  decisionOptions: Array<Object>,
 }
 
 class ContractsEdit extends Component<Props, State> {
   state = {
     contractsData: [],
     currentLandUseContract: null,
+    decisionOptions: [],
   }
 
   componentDidUpdate(prevProps) {
@@ -118,6 +133,7 @@ class ContractsEdit extends Component<Props, State> {
       return {
         contractsData: getContentContracts(props.currentLandUseContract),
         currentLandUseContract: props.currentLandUseContract,
+        decisionOptions: getDecisionOptions(props.currentLandUseContract),
       };
     }
     return null;
@@ -125,7 +141,7 @@ class ContractsEdit extends Component<Props, State> {
 
   render() {
     const {attributes, errors, isSaveClicked} = this.props,
-      {contractsData} = this.state;
+      {contractsData, decisionOptions} = this.state;
 
     return (
 
@@ -137,6 +153,7 @@ class ContractsEdit extends Component<Props, State> {
           errors={errors}
           isSaveClicked={isSaveClicked}
           name="contracts"
+          decisionOptions={decisionOptions}
         />
       </form>
     );

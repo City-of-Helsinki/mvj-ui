@@ -100,8 +100,8 @@ const LitigantBillingPersonEdit = ({
     });
   };
 
-  const litigantContactSet = get(savedLitigant, 'litigantcontact_set', []),
-    savedBillingPerson = findItemById(litigantContactSet, billingPersonId),
+  const landuseAgreementLitigantContactSet = get(savedLitigant, 'landuseagreementlitigantcontact_set', []),
+    savedBillingPerson = findItemById(landuseAgreementLitigantContactSet, billingPersonId),
     active = isActive(savedBillingPerson),
     archived = isArchived(savedBillingPerson),
     litigantErrors = get(errors, field);
@@ -133,7 +133,7 @@ const LitigantBillingPersonEdit = ({
                   <Column small={9} medium={8} large={8}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.litigantcontact_set.child.children.contact')}
+                      fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.contact')}
                       name={`${field}.contact`}
                       overrideValues={{
                         fieldType: FieldTypes.CONTACT,
@@ -158,7 +158,7 @@ const LitigantBillingPersonEdit = ({
               <Column small={6} medium={3} large={2}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.litigantcontact_set.child.children.start_date')}
+                  fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.start_date')}
                   name={`${field}.start_date`}
                   overrideValues={{
                     label: 'Alkupvm',
@@ -168,7 +168,7 @@ const LitigantBillingPersonEdit = ({
               <Column small={6} medium={3} large={2}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.litigantcontact_set.child.children.end_date')}
+                  fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.end_date')}
                   name={`${field}.end_date`}
                   overrideValues={{
                     label: 'Loppupvm',

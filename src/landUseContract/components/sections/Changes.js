@@ -10,83 +10,88 @@ import Collapse from '$components/collapse/Collapse';
 import FormText from '$components/form/FormText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {FormNames, ViewModes} from '$src/enums';
-import {formatDate, formatNumber, isEmptyValue, getFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
+import {getDecisionById, getDecisionOptions} from '$src/landUseContract/helpers';
+import type {LandUseContract} from '$src/landUseContract/types';
+import DecisionLink from '$components/links/DecisionLink';
 
 import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,
   collapseState: boolean,
-  collaterals: Array<Object>,
+  changes: Array<Object>,
   contractId: number,
   largeScreen: boolean,
   receiveCollapseStates: Function,
+  currentLandUseContract: LandUseContract,
 }
 
-const Warrants = ({
-  attributes,
+const Changes = ({
   collapseState,
-  collaterals,
+  changes,
   contractId,
   receiveCollapseStates,
+  currentLandUseContract,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LAND_USE_CONTRACT_DECISIONS]: {
           [contractId]: {
-            warrants: val,
+            changes: val,
           },
         },
       },
     });
   };
-  const typeOptions = getFieldOptions(attributes, 'contracts.child.children.collaterals.child.children.type');
 
   return (
     <Collapse
       className='collapse__secondary'
       defaultOpen={collapseState !== undefined ? collapseState : true}
-      headerTitle='Vakuudet'
+      headerTitle='sopimuksen muutos'
       onToggle={handleCollapseToggle}
     >
       <BoxItemContainer>
-        {collaterals.map((collateral, index) => {
+        {changes && changes.map((change, index) => {
+          const decisionOptions = getDecisionOptions(currentLandUseContract);
+          const decision = getDecisionById(currentLandUseContract, change.decision);
+
           return(
             <Row key={index}>
               <Column small={6} medium={4} large={2}>
-                <FormTextTitle title='Vakuuden tyyppi' />
-                <FormText>{getLabelOfOption(typeOptions, collateral.type) || '–'}</FormText>
+                <FormTextTitle title='Allekirjoituspvm' />
+                <FormText>{formatDate(change.signing_date) || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
-                <FormTextTitle title='Vakuuden laji' />
-                <FormText>{collateral.other_type || '–'}</FormText>
+                <FormTextTitle title='Allekirjoitettava mennessä' />
+                <FormText>{formatDate(change.sign_by_date) || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
-                <FormTextTitle title='Vuokravakuusnro' />
-                <FormText>{collateral.number || '–'}</FormText>
+                <FormTextTitle title='1. kutsu lähetetty' />
+                <FormText>{formatDate(change.first_call_sent) || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
-                <FormTextTitle title='Vakuuden alkupvm' />
-                <FormText>{formatDate(collateral.start_date) || '–'}</FormText>
+                <FormTextTitle title='2. kutsu lähetetty' />
+                <FormText>{formatDate(change.second_call_sent) || '–'}</FormText>
+              </Column>
+              <Column small={6} medium={4} large={4}>
+                <FormTextTitle title='3. kutsu lähetetty' />
+                <FormText>{formatDate(change.third_call_sent) || '–'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
-                <FormTextTitle title='Vakuuden loppupvm' />
-                <FormText>{formatDate(collateral.end_date) || '–'}</FormText>
+                <FormTextTitle title='Päätös' />
+                <DecisionLink
+                  decision={decision}
+                  decisionOptions={decisionOptions}
+                />
               </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormTextTitle title='Vakuuden määrä' />
-                <FormText>{!isEmptyValue(collateral.total_amount) ? `${formatNumber(collateral.total_amount)} €` : '-'}</FormText>
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormTextTitle title='Palautettu pvm' />
-                <FormText>{formatDate(collateral.return_date) || '–'}</FormText>
-              </Column>
-              <Column small={6} medium={8} large={10}>
+              <Column small={12} medium={12} large={10}>
                 <FormTextTitle title='Huomautus' />
-                <FormText>{collateral.note || '–'}</FormText>
+                <FormText>{change.description || '–'}</FormText>
               </Column>
             </Row>
           );
@@ -103,11 +108,11 @@ export default flowRight(
       const id = props.contractId;
 
       return {
-        collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_CONTRACTS}.${id}.warrants`),
+        collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_CONTRACTS}.${id}.changes`),
       };
     },
     {
       receiveCollapseStates,
     }
   ),
-)(Warrants);
+)(Changes);

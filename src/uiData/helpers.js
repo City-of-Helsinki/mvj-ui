@@ -103,6 +103,13 @@ export const getUiDataLeaseKey = (key: string): string => getKeyWithPrefix(UiDat
 export const getUiDataPlotSearchKey = (key: string): string => getKeyWithPrefix(UiDataPrefixes.PLOT_SEARCH, key);
 
 /**
+ * Get key for ui data on land use contract page
+ * @param {string} key
+ * @return {string}
+ */
+export const getUiDataLandUseContractKey = (key: string): string => getKeyWithPrefix(UiDataPrefixes.LAND_USE_CONTRACT, key);
+
+/**
  * Get key for ui data on property page
  * @param {string} key
  * @return {string}

@@ -8,4 +8,5 @@
 export const LitigantContactType = {
   LITIGANT: 'litigant',
   BILLING: 'billing',
+  TENANT: 'tenant',
 };

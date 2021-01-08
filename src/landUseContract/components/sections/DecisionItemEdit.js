@@ -154,6 +154,7 @@ const renderDecisionConditions = ({
                               name={`${condition}.description`}
                               overrideValues={{
                                 label: 'Huomautus',
+                                fieldType: FieldTypes.TEXTAREA,
                               }}
                             />
                           }
@@ -371,6 +372,16 @@ const DecisionItemEdit = ({
               overrideValues={{
                 label: 'Diaarinumero',
                 fieldType: FieldTypes.REFERENCE_NUMBER,
+              }}
+            />
+          </Column>
+          <Column small={12}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.description')}
+              name={`${field}.description`}
+              overrideValues={{
+                label: 'Huomautus',
               }}
             />
           </Column>

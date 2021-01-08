@@ -340,7 +340,7 @@
             "label": "Viite",
             "max_length": 255
           },
-          "litigantcontact_set": {
+          "landuseagreementlitigantcontact_set": {
             "type": "field",
             "required": false,
             "read_only": false,
@@ -626,14 +626,22 @@
     "contracts": {
       "child": {
         "children": {
-          "contract_type": {
+          "type": {
             "type": "field",
             "required": true,
             "read_only": false,
             "label": "Sopimuksen tyyppi",
+            "label_translations": {
+              "finnish": "Sopimukset tyyppi",
+              "swedish": "Jag talar inte svärge"
+            },
             "choices": [
               {
                   "display_name": "Kiinteistökaupan esisopimus",
+                  "display_name_translations": {
+                    "finnish": "Kiinteistökaupan esisopimus",
+                    "swedish": "Jag talar inte svärge"
+                  },
                   "value": 1
               }
             ]

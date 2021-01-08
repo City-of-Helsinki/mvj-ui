@@ -448,6 +448,7 @@ export const FormNames = {
   PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
+  LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
 };
 
 /**

@@ -10,6 +10,8 @@ import {FormNames, ViewModes} from '$src/enums';
 import {formatDate, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import Warrants from './Warrants';
+import Changes from './Changes';
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Object,
@@ -19,6 +21,7 @@ type Props = {
   stateOptions: Array<Object>,
   contractTypeOptions: Array<Object>,
   decisionOptions: Array<Object>,
+  currentLandUseContract: LandUseContract,
 }
 
 const ContractItem = ({
@@ -29,6 +32,7 @@ const ContractItem = ({
   stateOptions,
   contractTypeOptions,
   decisionOptions,
+  currentLandUseContract,
 }: Props) => {
 
   const handleCollapseToggle = (val: boolean) => {
@@ -44,14 +48,15 @@ const ContractItem = ({
   return (
     <Collapse
       defaultOpen={collapseState !== undefined ? collapseState : true}
-      headerTitle={`${getLabelOfOption(contractTypeOptions, contract.contract_type) || '-'} ${contract.ed_contract_number}`}
+      headerTitle={`${getLabelOfOption(contractTypeOptions, contract.type) || '-'} ${contract.contract_number}`}
       onToggle={handleCollapseToggle}
     >
       <Row>
+        {console.log(contract)}
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='Sopimuksen tyyppi'
-            text={getLabelOfOption(contractTypeOptions, contract.contract_type) || '-'}
+            text={getLabelOfOption(contractTypeOptions, contract.type) || '-'}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -63,13 +68,13 @@ const ContractItem = ({
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='Allekirjoituspvm'
-            text={formatDate(contract.sign_date) || '-'}
+            text={formatDate(contract.signing_date) || '-'}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='ED sopimusnumero'
-            text={contract.ed_contract_number || '-'}
+            text={contract.contract_number || '-'}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -85,9 +90,15 @@ const ContractItem = ({
           />
         </Column>
       </Row>
+      <Changes
+        attributes={attributes}
+        changes={contract.contract_changes}
+        decisionId={contract.id}
+        currentLandUseContract={currentLandUseContract}
+      />
       <Warrants
         attributes={attributes}
-        warrants={contract.warrants}
+        collaterals={contract.collaterals}
         decisionId={contract.id}
       />
     </Collapse>

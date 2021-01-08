@@ -7,7 +7,6 @@ import Authorization from '$components/authorization/Authorization';
 import {getUserFullName} from '$src/users/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {FormNames, ViewModes} from '$src/enums';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import WhiteBox from '$components/content/WhiteBox';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
@@ -112,11 +111,10 @@ class BasicInfo extends PureComponent<Props, State> {
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
                   <Column small={12} medium={6} large={2}>
-                    <FormTitleAndText
-                      uiDataKey={getUiDataPlotSearchKey('preparer')}
-                      title={PlotSearchFieldTitles.PREPARER}
-                      text={getUserFullName(plotSearch.preparer) || '-'}
-                    />
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('preparer')}>
+                      {PlotSearchFieldTitles.PREPARER}
+                    </FormTextTitle>
+                    <FormText>{getUserFullName(plotSearch.preparer) || '-'}</FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'applications')}>
@@ -139,20 +137,18 @@ class BasicInfo extends PureComponent<Props, State> {
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
                   <Column small={12} medium={6} large={3}>
-                    <FormTitleAndText
-                      title={PlotSearchFieldTitles.TYPE}
-                      text={getLabelOfOption(typeOptions, plotSearch.type) || '-'}
-                      uiDataKey={getUiDataPlotSearchKey('type')}
-                    />
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('type')}>
+                      {PlotSearchFieldTitles.TYPE}
+                    </FormTextTitle>
+                    <FormText>{getLabelOfOption(typeOptions, plotSearch.type) || '-'}</FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'subtype')}>
                   <Column small={12} medium={6} large={3}>
-                    <FormTitleAndText
-                      title={PlotSearchFieldTitles.SUBTYPE}
-                      text={getLabelOfOption(subtypeOptions, plotSearch.subtype) || '-'}
-                      uiDataKey={getUiDataPlotSearchKey('subtype')}
-                    />
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('subtype')}>
+                      {PlotSearchFieldTitles.SUBTYPE}
+                    </FormTextTitle>
+                    <FormText>{getLabelOfOption(subtypeOptions, plotSearch.subtype) || '-'}</FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
@@ -165,7 +161,7 @@ class BasicInfo extends PureComponent<Props, State> {
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
                   <Column small={6} medium={4} large={1}>
-                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('begin_at')}>
+                    <FormTextTitle>
                       {PlotSearchFieldTitles.CLOCK}
                     </FormTextTitle>
                     <FormText>{getHoursAndMinutes(plotSearch.begin_at) || '-'}</FormText>
@@ -181,7 +177,7 @@ class BasicInfo extends PureComponent<Props, State> {
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'end_at')}>
                   <Column small={6} medium={4} large={1}>
-                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('end_at')}>
+                    <FormTextTitle>
                       {PlotSearchFieldTitles.CLOCK}
                     </FormTextTitle>
                     <FormText>{getHoursAndMinutes(plotSearch.end_at) || '-'}</FormText>
