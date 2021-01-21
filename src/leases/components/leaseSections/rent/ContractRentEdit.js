@@ -1,7 +1,7 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {formValueSelector} from 'redux-form';
+import {formValueSelector, change, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
@@ -44,6 +44,8 @@ import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type Props = {
+  amount: string,
+  period: string,
   contractRent: Object,
   field: string,
   isSaveClicked: boolean,
@@ -54,112 +56,72 @@ type Props = {
   rentType: string,
   showRemove: boolean,
   usersPermissions: UsersPermissionsType,
+  change: Function,
 }
 
-const ContractRentEdit = ({
-  contractRent,
-  field,
-  isSaveClicked,
-  largeScreen,
-  leaseAttributes,
-  onRemove,
-  rentType,
-  showRemove,
-  usersPermissions,
-}: Props) => {
-  const getAmountText = () => {
-    if(!contractRent || isEmptyValue(contractRent.amount)) return null;
+class ContractRentEdit extends PureComponent<Props> {
 
-    const amountPeriodOptions = getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD);
+  componentDidUpdate(prevProps: Props) {
+    const {field, change, amount, period} = this.props;
+    if(prevProps.amount !== amount){
+      change(`${field}.base_amount`, amount);
+    }
+    if(prevProps.period !== period){
+      change(`${field}.base_amount_period`, period);
+    }
+  }
 
-    return `${formatNumber(contractRent.amount)} € ${getLabelOfOption(amountPeriodOptions, contractRent.period) || ''}`;
-  };
+  render(){
+    const {
+      contractRent,
+      field,
+      isSaveClicked,
+      largeScreen,
+      leaseAttributes,
+      onRemove,
+      rentType,
+      showRemove,
+      usersPermissions,
+    } = this.props;
 
-  const getBaseAmountText = () => {
-    if(!contractRent || isEmptyValue(contractRent.base_amount)) return null;
+    const getAmountText = () => {
+      if(!contractRent || isEmptyValue(contractRent.amount)) return null;
 
-    const baseAmountPeriodOptions = getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
+      const amountPeriodOptions = getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD);
 
-    return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period) || ''}`;
-  };
+      return `${formatNumber(contractRent.amount)} € ${getLabelOfOption(amountPeriodOptions, contractRent.period) || ''}`;
+    };
 
-  const getContractRentPeriodOptions = () => {
-    return rentType === RentTypes.INDEX
-      ? getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)
-        .filter((option) => option.value === ContractRentPeriods.PER_YEAR || option.value === '')
-      : getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD);
-  };
+    const getBaseAmountText = () => {
+      if(!contractRent || isEmptyValue(contractRent.base_amount)) return null;
 
-  const getContractRentBaseAmountPeriodOptions = () => {
-    return rentType === RentTypes.INDEX
-      ? getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)
-        .filter((option) => option.value === ContractRentPeriods.PER_YEAR || option.value === '')
-      : getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
-  };
+      const baseAmountPeriodOptions = getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
 
-  const amountText = getAmountText();
-  const baseAmountText = getBaseAmountText();
-  const periodOptions = getContractRentPeriodOptions();
-  const baseAmountPeriodOptions = getContractRentBaseAmountPeriodOptions();
+      return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period) || ''}`;
+    };
 
-  if(largeScreen) {
-    return(
-      <Row>
-        <Column large={2}>
-          <Row>
-            <Authorization
-              allow={
-                isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT) ||
-                isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)
-              }
-              errorComponent={<Column><FormText>{amountText}</FormText></Column>}
-            >
-              <Column small={6}>
-                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
-                    invisibleLabel
-                    name={`${field}.amount`}
-                    unit='€'
-                    overrideValues={{label: rentType !== RentTypes.FIXED
-                      ? LeaseRentContractRentsFieldTitles.AMOUNT
-                      : LeaseRentContractRentsFieldTitles.AMOUNT_FIXED_RENT,
-                    }}
+    const getContractRentPeriodOptions = () => {
+      return rentType === RentTypes.INDEX
+        ? getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)
+          .filter((option) => option.value === ContractRentPeriods.PER_YEAR || option.value === '')
+        : getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD);
+    };
 
-                  />
-                </Authorization>
-              </Column>
-              <Column small={6}>
-                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}
-                    invisibleLabel
-                    name={`${field}.period`}
-                    overrideValues={{
-                      label: LeaseRentContractRentsFieldTitles.PERIOD,
-                      options: periodOptions,
-                    }}
-                  />
-                </Authorization>
-              </Column>
-            </Authorization>
-          </Row>
-        </Column>
-        <Column large={2}>
-          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}
-              invisibleLabel
-              name={`${field}.intended_use`}
-              overrideValues={{label: LeaseRentContractRentsFieldTitles.INTENDED_USE}}
-            />
-          </Authorization>
-        </Column>
-        {(rentType === RentTypes.INDEX ||
-          rentType === RentTypes.MANUAL) &&
+    const getContractRentBaseAmountPeriodOptions = () => {
+      return rentType === RentTypes.INDEX
+        ? getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)
+          .filter((option) => option.value === ContractRentPeriods.PER_YEAR || option.value === '')
+        : getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
+    };
+
+    const amountText = getAmountText();
+    const baseAmountText = getBaseAmountText();
+    const periodOptions = getContractRentPeriodOptions();
+    const baseAmountPeriodOptions = getContractRentBaseAmountPeriodOptions();
+
+    if(largeScreen) {
+      return(
+        <Row>
           <Column large={2}>
             <Row>
               <Authorization
@@ -167,30 +129,34 @@ const ContractRentEdit = ({
                   isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT) ||
                   isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)
                 }
-                errorComponent={<Column><FormText>{baseAmountText}</FormText></Column>}
+                errorComponent={<Column><FormText>{amountText}</FormText></Column>}
               >
                 <Column small={6}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
+                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
                       invisibleLabel
-                      name={`${field}.base_amount`}
+                      name={`${field}.amount`}
                       unit='€'
-                      overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT}}
+                      overrideValues={{label: rentType !== RentTypes.FIXED
+                        ? LeaseRentContractRentsFieldTitles.AMOUNT
+                        : LeaseRentContractRentsFieldTitles.AMOUNT_FIXED_RENT,
+                      }}
+
                     />
                   </Authorization>
                 </Column>
                 <Column small={6}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}
+                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}
                       invisibleLabel
-                      name={`${field}.base_amount_period`}
+                      name={`${field}.period`}
                       overrideValues={{
-                        label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT_PERIOD,
-                        options: baseAmountPeriodOptions,
+                        label: LeaseRentContractRentsFieldTitles.PERIOD,
+                        options: periodOptions,
                       }}
                     />
                   </Authorization>
@@ -198,149 +164,141 @@ const ContractRentEdit = ({
               </Authorization>
             </Row>
           </Column>
-        }
-        {(rentType === RentTypes.INDEX ||
-          rentType === RentTypes.MANUAL) &&
-          <Column large={2} offsetOnLarge={1}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
+          <Column large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
+                fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}
                 invisibleLabel
-                name={`${field}.base_year_rent`}
-                unit='€'
-                overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}}
+                name={`${field}.intended_use`}
+                overrideValues={{label: LeaseRentContractRentsFieldTitles.INTENDED_USE}}
               />
             </Authorization>
           </Column>
-        }
-        <Column large={2}>
-          <Row>
-            <Column small={6}>
-              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}
-                  invisibleLabel
-                  name={`${field}.start_date`}
-                  overrideValues={{label: LeaseRentContractRentsFieldTitles.START_DATE}}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6}>
-              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}
-                  invisibleLabel
-                  name={`${field}.end_date`}
-                  overrideValues={{label: LeaseRentContractRentsFieldTitles.END_DATE}}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-        </Column>
-        <Column>
-          {showRemove &&
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONTRACTRENT)}>
-              <RemoveButton
-                className='third-level'
-                onClick={onRemove}
-                title="Poista sopimusvuokra"
-              />
-            </Authorization>
-          }
-        </Column>
-      </Row>
-    );
-  } else {
-    // For small and medium screens
-    return(
-      <BoxItem>
-        <BoxContentWrapper>
-          {showRemove &&
-            <ActionButtonWrapper>
-              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONTRACTRENT)}>
-                <RemoveButton
-                  onClick={onRemove}
-                  title="Poista sopimusvuokra"
-                />
-              </Authorization>
-            </ActionButtonWrapper>
-          }
-          <Row>
-            <Column small={6} medium={4}>
-              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
-                <FormTextTitle
-                  required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
-                  enableUiDataEdit
-                  uiDataKey={rentType !== RentTypes.FIXED
-                    ? getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT)
-                    : getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT_FIXED_RENT)}
-                >
-                  {rentType !== RentTypes.FIXED
-                    ? LeaseRentContractRentsFieldTitles.AMOUNT
-                    : LeaseRentContractRentsFieldTitles.AMOUNT_FIXED_RENT
-                  }
-                </FormTextTitle>
-              </Authorization>
-
+          {(rentType === RentTypes.INDEX ||
+            rentType === RentTypes.MANUAL) &&
+            <Column large={2}>
               <Row>
                 <Authorization
                   allow={
                     isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT) ||
                     isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)
                   }
-                  errorComponent={<Column><FormText>{amountText}</FormText></Column>}
+                  errorComponent={<Column><FormText>{baseAmountText}</FormText></Column>}
                 >
                   <Column small={6}>
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
                       <FormField
                         disableTouched={isSaveClicked}
-                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
+                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
                         invisibleLabel
-                        name={`${field}.amount`}
+                        name={`${field}.base_amount`}
                         unit='€'
-                        overrideValues={{label: LeaseRentContractRentsFieldTitles.AMOUNT}}
+                        overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT}}
                       />
                     </Authorization>
                   </Column>
                   <Column small={6}>
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}>
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}>
                       <FormField
                         disableTouched={isSaveClicked}
-                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}
+                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}
                         invisibleLabel
-                        name={`${field}.period`}
-                        overrideValues={{label: LeaseRentContractRentsFieldTitles.PERIOD}}
+                        name={`${field}.base_amount_period`}
+                        overrideValues={{
+                          label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT_PERIOD,
+                          options: baseAmountPeriodOptions,
+                        }}
                       />
                     </Authorization>
                   </Column>
                 </Authorization>
               </Row>
             </Column>
-            <Column small={6} medium={4}>
-              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
+          }
+          {(rentType === RentTypes.INDEX ||
+            rentType === RentTypes.MANUAL) &&
+            <Column large={2} offsetOnLarge={1}>
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
                 <FormField
                   disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}
-                  name={`${field}.intended_use`}
-                  overrideValues={{label: LeaseRentContractRentsFieldTitles.INTENDED_USE}}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.INTENDED_USE)}
+                  fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
+                  invisibleLabel
+                  name={`${field}.base_year_rent`}
+                  unit='€'
+                  overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}}
                 />
               </Authorization>
             </Column>
-            {(rentType === RentTypes.INDEX ||
-              rentType === RentTypes.MANUAL) &&
+          }
+          <Column large={2}>
+            <Row>
+              <Column small={6}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}
+                    invisibleLabel
+                    name={`${field}.start_date`}
+                    overrideValues={{label: LeaseRentContractRentsFieldTitles.START_DATE}}
+                  />
+                </Authorization>
+              </Column>
+              <Column small={6}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}
+                    invisibleLabel
+                    name={`${field}.end_date`}
+                    overrideValues={{label: LeaseRentContractRentsFieldTitles.END_DATE}}
+                  />
+                </Authorization>
+              </Column>
+            </Row>
+          </Column>
+          <Column>
+            {showRemove &&
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONTRACTRENT)}>
+                <RemoveButton
+                  className='third-level'
+                  onClick={onRemove}
+                  title="Poista sopimusvuokra"
+                />
+              </Authorization>
+            }
+          </Column>
+        </Row>
+      );
+    } else {
+      // For small and medium screens
+      return(
+        <BoxItem>
+          <BoxContentWrapper>
+            {showRemove &&
+              <ActionButtonWrapper>
+                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONTRACTRENT)}>
+                  <RemoveButton
+                    onClick={onRemove}
+                    title="Poista sopimusvuokra"
+                  />
+                </Authorization>
+              </ActionButtonWrapper>
+            }
+            <Row>
               <Column small={6} medium={4}>
-                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
                   <FormTextTitle
-                    required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
+                    required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
                     enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.BASE_AMOUNT)}
+                    uiDataKey={rentType !== RentTypes.FIXED
+                      ? getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT)
+                      : getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT_FIXED_RENT)}
                   >
-                    {LeaseRentContractRentsFieldTitles.BASE_AMOUNT}
+                    {rentType !== RentTypes.FIXED
+                      ? LeaseRentContractRentsFieldTitles.AMOUNT
+                      : LeaseRentContractRentsFieldTitles.AMOUNT_FIXED_RENT
+                    }
                   </FormTextTitle>
                 </Authorization>
 
@@ -350,87 +308,147 @@ const ContractRentEdit = ({
                       isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT) ||
                       isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)
                     }
-                    errorComponent={<Column><FormText>{baseAmountText}</FormText></Column>}
+                    errorComponent={<Column><FormText>{amountText}</FormText></Column>}
                   >
                     <Column small={6}>
-                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
+                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
+                          fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}
                           invisibleLabel
-                          name={`${field}.base_amount`}
+                          name={`${field}.amount`}
                           unit='€'
-                          overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT}}
+                          overrideValues={{label: LeaseRentContractRentsFieldTitles.AMOUNT}}
                         />
                       </Authorization>
                     </Column>
                     <Column small={6}>
-                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}>
+                      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}>
                         <FormField
                           disableTouched={isSaveClicked}
-                          fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}
+                          fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.PERIOD)}
                           invisibleLabel
-                          name={`${field}.base_amount_period`}
-                          overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT_PERIOD}}
+                          name={`${field}.period`}
+                          overrideValues={{label: LeaseRentContractRentsFieldTitles.PERIOD}}
                         />
                       </Authorization>
                     </Column>
                   </Authorization>
                 </Row>
               </Column>
-            }
-            {(rentType === RentTypes.INDEX ||
-              rentType === RentTypes.MANUAL) &&
               <Column small={6} medium={4}>
-                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
-                    invisibleLabel
-                    name={`${field}.base_year_rent`}
-                    unit='€'
-                    overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}}
+                    fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}
+                    name={`${field}.intended_use`}
+                    overrideValues={{label: LeaseRentContractRentsFieldTitles.INTENDED_USE}}
                     enableUiDataEdit
-                    tooltipStyle={{right: 12}}
-                    uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
+                    uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.INTENDED_USE)}
                   />
                 </Authorization>
               </Column>
-            }
-            <Column small={6} medium={4}>
-              <Row>
-                <Column small={6}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
+              {(rentType === RentTypes.INDEX ||
+                rentType === RentTypes.MANUAL) &&
+                <Column small={6} medium={4}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
+                    <FormTextTitle
+                      required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.BASE_AMOUNT)}
+                    >
+                      {LeaseRentContractRentsFieldTitles.BASE_AMOUNT}
+                    </FormTextTitle>
+                  </Authorization>
+
+                  <Row>
+                    <Authorization
+                      allow={
+                        isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT) ||
+                        isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)
+                      }
+                      errorComponent={<Column><FormText>{baseAmountText}</FormText></Column>}
+                    >
+                      <Column small={6}>
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}
+                            invisibleLabel
+                            name={`${field}.base_amount`}
+                            unit='€'
+                            overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT}}
+                          />
+                        </Authorization>
+                      </Column>
+                      <Column small={6}>
+                        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)}
+                            invisibleLabel
+                            name={`${field}.base_amount_period`}
+                            overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_AMOUNT_PERIOD}}
+                          />
+                        </Authorization>
+                      </Column>
+                    </Authorization>
+                  </Row>
+                </Column>
+              }
+              {(rentType === RentTypes.INDEX ||
+                rentType === RentTypes.MANUAL) &&
+                <Column small={6} medium={4}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}
-                      name={`${field}.start_date`}
-                      overrideValues={{label: LeaseRentContractRentsFieldTitles.START_DATE}}
+                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
+                      invisibleLabel
+                      name={`${field}.base_year_rent`}
+                      unit='€'
+                      overrideValues={{label: LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}}
                       enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.START_DATE)}
+                      tooltipStyle={{right: 12}}
+                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}
                     />
                   </Authorization>
                 </Column>
-                <Column small={6}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}
-                      name={`${field}.end_date`}
-                      overrideValues={{label: LeaseRentContractRentsFieldTitles.END_DATE}}
-                      enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)}
-                    />
-                  </Authorization>
-                </Column>
-              </Row>
-            </Column>
-          </Row>
-        </BoxContentWrapper>
-      </BoxItem>
-    );
+              }
+              <Column small={6} medium={4}>
+                <Row>
+                  <Column small={6}>
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}
+                        name={`${field}.start_date`}
+                        overrideValues={{label: LeaseRentContractRentsFieldTitles.START_DATE}}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.START_DATE)}
+                      />
+                    </Authorization>
+                  </Column>
+                  <Column small={6}>
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}
+                        name={`${field}.end_date`}
+                        overrideValues={{label: LeaseRentContractRentsFieldTitles.END_DATE}}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)}
+                      />
+                    </Authorization>
+                  </Column>
+                </Row>
+              </Column>
+            </Row>
+          </BoxContentWrapper>
+        </BoxItem>
+      );
+    }
   }
-};
+}
 
 const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
@@ -444,7 +462,14 @@ export default flowRight(
         isSaveClicked: getIsSaveClicked(state),
         leaseAttributes: getLeaseAttributes(state),
         usersPermissions: getUsersPermissions(state),
+        amount: selector(state, `${props.field}.amount`),
+        period: selector(state, `${props.field}.period`),
       };
     },
   ),
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+    change,
+  }),
 )(ContractRentEdit);
