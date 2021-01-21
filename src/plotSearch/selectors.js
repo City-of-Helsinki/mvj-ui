@@ -67,3 +67,15 @@ export const getIsFetchingPlanUnitAttributes: Selector<boolean, void> = (state: 
 
 export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
   state.plotSearch.subTypes;
+
+export const getIsFetchingFormAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingFormAttributes;
+
+export const getIsFetchingForm: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingForm;
+
+export const getFormAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotSearch.formAttributes;
+
+export const getForm: Selector<Object, void> = (state: RootState): Object =>
+  state.plotSearch.form;

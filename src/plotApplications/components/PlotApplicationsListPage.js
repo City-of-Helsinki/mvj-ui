@@ -306,7 +306,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
                 data={filteredApplications}
                 listTable
                 onRowClick={this.handleRowClick}
-                onSortingChange={this.handleSortingChange}
+                onSortingChange={()=>{}} // this.handleSortingChange
                 serverSideSorting
                 showCollapseArrowColumn
                 sortable
@@ -316,7 +316,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
               <Pagination
                 activePage={activePage}
                 maxPage={maxPage}
-                onPageClick={(page) => this.handlePageClick(page)}
+                onPageClick={()=>{}} // this.handlePageClick(page)
               />
             </Fragment>
           }

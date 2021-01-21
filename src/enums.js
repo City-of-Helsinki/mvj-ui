@@ -473,6 +473,6 @@ export const PermissionMissingTexts = {
   STATISTICS_AND_REPORTS: 'Ei oikeuksia tilastoihin ja raportteihin',
   TRADE_REGISTER: 'Ei oikeuksia kaupparekisteriotteisiin',
   PLOT_SEARCH: 'Ei oikeuksia tonttihakuun',
-  PLOT_APPLICATIONS: 'Ei oikeuksia tonttihakukemusiin',
+  PLOT_APPLICATIONS: 'Ei oikeuksia tonttihakekemusiin',
   LAND_USE_CONTRACTS: 'Ei oikeuksia maankäyttösopimuksiin',
 };

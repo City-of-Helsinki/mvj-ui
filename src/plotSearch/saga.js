@@ -21,6 +21,12 @@ import {
   receivePlotSearchSubtype,
   PlotSearchSubtypeNotFound,
   nullPlanUnits,
+  receiveForm,
+  formNotFound,
+  receiveFormAttributes,
+  formAttributesNotFound,
+  fetchFormAttributes,
+  fetchForm,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -37,6 +43,8 @@ import {
   fetchPlanUnitAttributes,
   fetchPlanUnit,
   fetchPlotSearchSubtypes,
+  fetchFormRequest,
+  fetchFormAttributesRequest,
 } from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -91,6 +99,8 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSinglePlotSearch({...bodyAsJson, application_base: mockData[0].application_base}));
+        yield put(fetchFormAttributes(1));
+        yield put(fetchForm(1));
         break;
       case 404:
         yield put(notFound());
@@ -295,6 +305,47 @@ function* fetchPlotSearchSubtype(): Generator<any, any, any> {
   }
 }
 
+function* fetchFormSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchFormRequest, id);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveForm(bodyAsJson));
+        break;
+      case 404:
+        yield put(formNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      default:
+        yield put(formNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch form with error "%s"', error);
+    yield put(formNotFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchFormAttributesSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchFormAttributesRequest, id);
+    switch (statusCode) {
+      case 200:
+        const attributes = bodyAsJson.fields;
+        yield put(receiveFormAttributes(attributes));
+        break;
+      default:
+        yield put(formAttributesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch form attributes with error "%s"', error);
+    yield put(formAttributesNotFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -307,6 +358,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotSearch/DELETE', deletePlotSearchSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
+      yield takeEvery('mvj/plotSearch/FETCH_FORM_ATTRIBUTES', fetchFormAttributesSaga);
+      yield takeEvery('mvj/plotSearch/FETCH_FORM', fetchFormSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtype);
     }),
   ]);

@@ -150,13 +150,13 @@ class PlotSearchSite extends PureComponent<Props, State> {
             }
             {(isNewer) && <WarningContainer style={{marginLeft: 5, marginBottom: 5}}> {/* style={{position: 'absolute', right: '15px', top: '-5px'}}> */}
               <WarningField
-                meta={{warning: label}}
+                meta={{warning: label + ' Päivitä tiedot'}}
                 showWarning={(isDeleted || isNewer)}
               />
             </WarningContainer>}
             {(isDeleted) && <WarningContainer style={{marginLeft: 5, marginBottom: 5}}> {/* style={{position: 'absolute', right: '15px', top: '-5px'}}> */}
               <WarningField
-                meta={{warning: label}}
+                meta={{warning: label + ' Poista kohde hausta'}}
                 showWarning={(isDeleted || isNewer)}
               />
             </WarningContainer>}

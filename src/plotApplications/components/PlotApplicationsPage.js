@@ -250,7 +250,7 @@ class PlotApplicationsPage extends Component<Props, State> {
       const storedPlotApplicationId = getSessionStorageItem('plotApplicationId');
 
       if(Number(plotApplicationId) === storedPlotApplicationId) {
-        this.setState({isRestoreModalOpen: true});
+        // this.setState({isRestoreModalOpen: true});
       }
     }
   }
@@ -295,7 +295,7 @@ class PlotApplicationsPage extends Component<Props, State> {
 
     const storedBasicInformationFormValues = getSessionStorageItem(FormNames.PLOT_APPLICATION);
     if(storedBasicInformationFormValues) {
-      this.bulkChange(FormNames.PLOT_APPLICATION, storedBasicInformationFormValues);
+      // this.bulkChange(FormNames.PLOT_APPLICATION, storedBasicInformationFormValues);
     }
 
     const storedFormValidity = getSessionStorageItem('plotApplicationValidity');
@@ -304,7 +304,7 @@ class PlotApplicationsPage extends Component<Props, State> {
     }
 
     this.startAutoSaveTimer();
-    this.hideModal('Restore');
+    // this.hideModal('Restore');
   }
 
   destroyAllForms = () => {
@@ -345,7 +345,7 @@ class PlotApplicationsPage extends Component<Props, State> {
 
     if(!plotApplicationsMethods) return null;
 
-    if(!isMethodAllowed(plotApplicationsMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATION} /></PageContainer>;
+    if(!isMethodAllowed(plotApplicationsMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS} /></PageContainer>;
 
     return(
       <FullWidthContainer>
@@ -365,7 +365,7 @@ class PlotApplicationsPage extends Component<Props, State> {
                 onSave={this.saveChanges}
                 showCommentButton={false}
                 showCopyButton={false}
-                onDelete={this.handleDelete}
+                onDelete={()=>{}} // this.handleDelete
                 deleteModalTexts={{
                   buttonClassName: ButtonColors.ALERT,
                   buttonText: ConfirmationModalTexts.DELETE_PLOT_APPLICATION.BUTTON,
