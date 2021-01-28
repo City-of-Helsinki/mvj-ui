@@ -318,6 +318,8 @@ class LandUseContractPage extends Component<Props, State> {
       isFormValidFlags,
       isLitigantsFormDirty,
       litigantsFormValues,
+      isConditionsFormDirty,
+      conditionsFormValues,
       match: {params: {landUseContractId}},
     } = this.props;
 
@@ -363,6 +365,13 @@ class LandUseContractPage extends Component<Props, State> {
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_LITIGANTS);
+    }
+
+    if(isConditionsFormDirty) {
+      setSessionStorageItem(FormNames.LAND_USE_CONTRACT_CONDITIONS, conditionsFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_CONDITIONS);
     }
 
     if(isDirty) {
@@ -421,6 +430,11 @@ class LandUseContractPage extends Component<Props, State> {
     const storedLitigantsFormValues = getSessionStorageItem(FormNames.LAND_USE_CONTRACT_LITIGANTS);
     if(storedLitigantsFormValues) {
       this.bulkChange(FormNames.LAND_USE_CONTRACT_LITIGANTS, storedLitigantsFormValues);
+    }
+
+    const storedConditionsFormValues = getSessionStorageItem(FormNames.LAND_USE_CONTRACT_CONDITIONS);
+    if(storedConditionsFormValues) {
+      this.bulkChange(FormNames.LAND_USE_CONTRACT_CONDITIONS, storedConditionsFormValues);
     }
 
     const storedFormValidity = getSessionStorageItem('leaseValidity');
@@ -577,7 +591,7 @@ class LandUseContractPage extends Component<Props, State> {
       isLitigantsFormValid,
       isConditionsFormValid,
     } = this.props;
-
+    
     return (
       isBasicInformationFormValid &&
       isCompensationsFormValid &&
@@ -597,6 +611,7 @@ class LandUseContractPage extends Component<Props, State> {
       isDecisionsFormDirty,
       isInvoicesFormDirty,
       isLitigantsFormDirty,
+      isConditionsFormDirty,
     } = this.props;
 
     return (
@@ -605,7 +620,8 @@ class LandUseContractPage extends Component<Props, State> {
       isContractsFormDirty ||
       isDecisionsFormDirty ||
       isInvoicesFormDirty ||
-      isLitigantsFormDirty
+      isLitigantsFormDirty ||
+      isConditionsFormDirty
     );
   }
 
@@ -643,6 +659,7 @@ class LandUseContractPage extends Component<Props, State> {
     destroy(FormNames.LAND_USE_CONTRACT_COMPENSATIONS);
     destroy(FormNames.LAND_USE_CONTRACT_INVOICES);
     destroy(FormNames.LAND_USE_CONTRACT_LITIGANTS);
+    destroy(FormNames.LAND_USE_CONTRACT_CONDITIONS);
   }
 
   render() {
@@ -668,6 +685,8 @@ class LandUseContractPage extends Component<Props, State> {
       landUseContractAttributes,
       usersPermissions,
       isFetching,
+      isConditionsFormDirty,
+      isConditionsFormValid,
     } = this.props;
     const {isRestoreModalOpen} = this.state;
     const identifier = getContentLandUseContractIdentifier(currentLandUseContract);
@@ -717,7 +736,7 @@ class LandUseContractPage extends Component<Props, State> {
               {label: 'Korvaukset', allow: true, isDirty: isCompensationsFormDirty, hasError: isSaveClicked && !isCompensationsFormValid},
               {label: 'Laskutus', allow: true, isDirty: isInvoicesFormDirty, hasError: isSaveClicked && !isInvoicesFormValid},
               {label: 'Kartta', allow: true},
-              {label: 'Valvottavat ehdot', allow: true},
+              {label: 'Valvottavat ehdot', isDirty: isConditionsFormDirty, hasErrors: isSaveClicked && !isConditionsFormValid, allow: true},
             ]}
             onTabClick={(id) => this.handleTabClick(id)}
           />
@@ -857,7 +876,6 @@ export default flowRight(
         invoices: getInvoicesByLandUseContractId(state, props.match.params.landUseContractId),
         isFetchingLandUseInvoiceAttributes: getIsFetchingLandUseInvoiceAttributes(state),
         landUseInvoiceAttributes: getLandUseInvoiceAttributes(state),
-
         isConditionsFormDirty: isDirty(FormNames.LAND_USE_CONTRACT_CONDITIONS)(state),
         isConditionsFormValid: getIsFormValidById(state, FormNames.LAND_USE_CONTRACT_CONDITIONS),
         conditionsFormValues: getFormValues(FormNames.LAND_USE_CONTRACT_CONDITIONS)(state),
