@@ -275,7 +275,7 @@ class BasicInformationEdit extends Component<Props> {
                   fieldAttributes={get(attributes, 'definition')}
                   name='definition'
                   overrideValues={{
-                    label: 'Maankäyttösopimus päätös',
+                    label: 'määritelmä',
                   }}
                   enableUiDataEdit
                   uiDataKey={getUiDataLandUseContractKey('definition')}

@@ -85,7 +85,7 @@ const BasicInformation = ({
           <Authorization allow={isFieldAllowedToRead(attributes, 'definition')}>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={getUiDataLandUseContractKey('definition')}>
-                {'Maankäyttösopimus päätös'}
+                {'Määritelmä'}
               </FormTextTitle>
               <FormText>{getLabelOfOption(landUseContractDefinitionOptions, basicInformation.definition) || '-'}</FormText>
             </Column>
