@@ -37,6 +37,12 @@ import type {
   PlotSearchSubtypeNotFoundAction,
   ReceivePlotSearchSubtypeAction,
   NullPlanUnitsAction,
+  FetchFormAttributesAction,
+  FormAttributesNotFoundAction,
+  ReceiveFormAttributesAction,
+  FormNotFoundAction,
+  fetchFormAction,
+  ReceiveFormAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -125,3 +131,21 @@ export const receivePlotSearchSubtype = (subTypes: Object): ReceivePlotSearchSub
 
 export const nullPlanUnits = (): NullPlanUnitsAction =>
   createAction('mvj/plotSearch/NULL_PLAN_UNITS')();
+
+export const fetchFormAttributes = (payload: Object): FetchFormAttributesAction =>
+  createAction('mvj/plotSearch/FETCH_FORM_ATTRIBUTES')(payload);
+
+export const formAttributesNotFound = (): FormAttributesNotFoundAction =>
+  createAction('mvj/plotSearch/FORM_ATTRIBUTES_NOT_FOUND')();
+
+export const receiveFormAttributes = (attributes: Attributes): ReceiveFormAttributesAction =>
+  createAction('mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES')(attributes);
+  
+export const formNotFound = (payload: Object): FormNotFoundAction =>
+  createAction('mvj/plotSearch/FORM_NOT_FOUND')(payload);
+
+export const fetchForm = (payload: Object): fetchFormAction =>
+  createAction('mvj/plotSearch/FETCH_FORM')(payload);
+
+export const receiveForm = (payload: Object): ReceiveFormAction =>
+  createAction('mvj/plotSearch/RECEIVE_FORM')(payload);

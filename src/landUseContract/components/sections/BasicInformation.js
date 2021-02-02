@@ -2,6 +2,7 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
@@ -85,7 +86,7 @@ const BasicInformation = ({
           <Authorization allow={isFieldAllowedToRead(attributes, 'definition')}>
             <Column small={6} medium={4} large={2}>
               <FormTextTitle uiDataKey={getUiDataLandUseContractKey('definition')}>
-                {'Maankäyttösopimus päätös'}
+                {get(attributes, 'definition.label') || 'Maankäyttösopimuksen määritelmä'}
               </FormTextTitle>
               <FormText>{getLabelOfOption(landUseContractDefinitionOptions, basicInformation.definition) || '-'}</FormText>
             </Column>

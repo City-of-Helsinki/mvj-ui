@@ -18,6 +18,8 @@ import type {
   ReceiveMethodsAction,
   PlanUnit,
   ReceivePlotSearchSubtypeAction,
+  ReceiveFormAttributesAction,
+  ReceiveFormAction,
 } from '$src/plotSearch/types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -128,6 +130,30 @@ const subTypesReducer: Reducer<Object> = handleActions({
   },
 }, null);
 
+const isFetchingFormAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_FORM_ATTRIBUTES']: () => true,
+  ['mvj/plotSearch/FORM_ATTRIBUTES_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: () => false,
+}, false);
+
+const isFetchingFormReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_FORM']: () => true,
+  ['mvj/plotSearch/FORM_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_FORM']: () => false,
+}, false);
+
+const formAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveFormAttributesAction) => {
+    return attributes;
+  },
+}, null);
+
+const formReducer: Reducer<Object> = handleActions({
+  ['mvj/plotSearch/RECEIVE_FORM']: (state: Object, {payload: subTypes}: ReceiveFormAction) => {
+    return subTypes;
+  },
+}, null);
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
@@ -144,4 +170,8 @@ export default combineReducers<Object, any>({
   isFetchingPlanUnit: isFetchingPlanUnitReducer,
   isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
   subTypes: subTypesReducer,
+  isFetchingFormAttributes: isFetchingFormAttributesReducer,
+  isFetchingForm: isFetchingFormReducer,
+  formAttributes: formAttributesReducer,
+  form: formReducer,
 });

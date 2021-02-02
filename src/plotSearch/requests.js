@@ -49,3 +49,11 @@ export const fetchPlanUnit = (id: any): Generator<any, any, any> => {
 export const fetchPlotSearchSubtypes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('plot_search_subtype/')));
 };
+
+export const fetchFormRequest = (id: any): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`form/${id}/`)));
+};
+
+export const fetchFormAttributesRequest = (id: any): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`form/${id}/`), {method: 'OPTIONS'}));
+};

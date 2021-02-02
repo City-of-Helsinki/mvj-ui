@@ -76,6 +76,7 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
       [FormNames.LAND_USE_CONTRACT_DECISIONS]: true,
       [FormNames.LAND_USE_CONTRACT_INVOICES]: true,
       [FormNames.LAND_USE_CONTRACT_LITIGANTS]: true,
+      [FormNames.LAND_USE_CONTRACT_CONDITIONS]: true,
     };
   },
 }, {
@@ -85,6 +86,7 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   [FormNames.LAND_USE_CONTRACT_DECISIONS]: true,
   [FormNames.LAND_USE_CONTRACT_INVOICES]: true,
   [FormNames.LAND_USE_CONTRACT_LITIGANTS]: true,
+  [FormNames.LAND_USE_CONTRACT_CONDITIONS]: true,
 });
 
 const isSaveClickedReducer: Reducer<boolean> = handleActions({

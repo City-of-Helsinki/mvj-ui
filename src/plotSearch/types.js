@@ -17,6 +17,10 @@ export type PlotSearchState = {
   isFetchingPlanUnit: boolean,
   isFetchingPlanUnitAttributes: boolean,
   subTypes: Object,
+  isFetchingFormAttributes: boolean,
+  isFetchingForm: boolean,
+  formAttributes: Object,
+  form: Object,
 };
 
 export type PlotSearchId = number;
@@ -65,5 +69,12 @@ export type fetchPlotSearchSubtypesAction = Action<'mvj/plotSearch/FETCH_PLOT_SE
 export type ReceivePlotSearchSubtypeAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
 export type PlotSearchSubtypeNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;
 
-export type NullPlanUnits = Action<'mvj/plotSearch/NULL_PLAN_UNITS', void>;
+export type NullPlanUnitsAction = Action<'mvj/plotSearch/NULL_PLAN_UNITS', void>;
 
+export type FetchFormAttributesAction = Action<'mvj/plotSearch/FETCH_FORM_ATTRIBUTES', Object>;
+export type FormAttributesNotFoundAction = Action<'mvj/plotSearch/FORM_ATTRIBUTES_NOT_FOUND', void>;
+export type ReceiveFormAttributesAction = Action<'mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES', Attributes>;
+
+export type FormNotFoundAction = Action<'mvj/plotSearch/FORM_NOT_FOUND', Object>;
+export type fetchFormAction = Action<'mvj/plotSearch/FETCH_FORM', void>;
+export type ReceiveFormAction = Action<'mvj/plotSearch/RECEIVE_FORM', Object>;

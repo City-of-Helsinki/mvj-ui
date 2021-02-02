@@ -2,8 +2,12 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
+import FormField from '$components/form/FormField';
+import SubTitle from '$components/content/SubTitle';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import Loader from '$components/loader/Loader';
 import {FormNames, ViewModes} from '$src/enums';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import FileDownloadButton from '$components/file/FileDownloadButton';
@@ -15,7 +19,15 @@ import Title from '$components/content/Title';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import {getAttributes, getCollapseStateByKey, getCurrentPlotSearch} from '$src/plotSearch/selectors';
+import {
+  getAttributes, 
+  getCollapseStateByKey, 
+  getCurrentPlotSearch,
+  getIsFetchingFormAttributes,
+  getIsFetchingForm,
+  getFormAttributes,
+  getForm,
+} from '$src/plotSearch/selectors';
 import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {getContentApplication} from '$src/plotSearch/helpers';
 import {ApplicationFieldTitles} from '$src/plotSearch/enums';
@@ -35,6 +47,10 @@ type Props = {
   receiveCollapseStates: Function,
   attributes: Attributes,
   currentPlotSearch: PlotSearch,
+  isFetchingFormAttributes: Boolean,
+  ifFetchingForm: Boolean,
+  formAttributes: Attributes,
+  form: Object,
 }
 
 type State = {
@@ -57,17 +73,67 @@ class Application extends PureComponent<Props, State> {
     });
   }
 
+  renderSection = (section: Object) => {
+    return (
+      <Fragment>
+        <Row>
+          <Column large={12}>
+            <SubTitle>
+              {get(section, 'title')}
+            </SubTitle>
+          </Column>
+        </Row>
+        <Row>
+          {section.fields && section.fields.map(field => this.renderField(field))}
+        </Row>
+        {section.subsections && section.subsections.map(subsection => this.renderSection(subsection))}
+      </Fragment>
+    );
+  }
+
+  renderField = (field: Object) => {
+    switch (field.type) {
+      case 'checkbox':
+        return (
+          <Column small={12} medium={12} large={12}>
+            <FormTextTitle>{get(field, 'label')}</FormTextTitle>
+            <FormText>{get(field, 'type')}</FormText>
+          </Column>
+        );
+      case 'textarea':
+        return (
+          <Column small={12} medium={12} large={12}>
+            <FormTextTitle>{get(field, 'label')}</FormTextTitle>
+            <FormText>{get(field, 'type')}</FormText>
+          </Column>
+        );
+      default:
+        return (
+          <Column small={6} medium={4} large={3}>
+            <FormTextTitle>{get(field, 'label')}</FormTextTitle>
+            <FormText>{get(field, 'type')}</FormText>
+          </Column>
+        );
+    }
+  }
+
   render (){
     const {
       // usersPermissions,
       applicationCollapseState,
       attributes,
       currentPlotSearch,
+      isFetchingFormAttributes,
+      ifFetchingForm,
+      // formAttributes,
+      form,
     } = this.props;
 
     const application = getContentApplication(currentPlotSearch);
     const extraOptions = getFieldOptions(attributes, 'application_base.child.children.extra');
     const createdOptions = getFieldOptions(attributes, 'application_base.child.children.created');
+
+    if(isFetchingFormAttributes || ifFetchingForm) return <Loader isLoading={true} />;
 
     return (
       <Fragment>
@@ -75,68 +141,21 @@ class Application extends PureComponent<Props, State> {
           {ApplicationFieldTitles.APPLICATION}
         </Title>
         <Divider />
-        <Row className='summary__content-wrapper'>
-          <Column small={12}>
-            <Collapse
-              defaultOpen={applicationCollapseState !== undefined ? applicationCollapseState : true}
-              headerTitle={ApplicationFieldTitles.APPLICATION_BASE}
-              onToggle={this.handleBasicInfoCollapseToggle}
-            >
-              <Row>
-                <Column large={3}>
-                  <FormTextTitle >
-                    {ApplicationFieldTitles.APPLICATION_DEFAULT}
-                  </FormTextTitle>
-                  <FormText>{application.default?'Hakytyypin oletuslomake':'-'}</FormText>
-                </Column>
-                <Column large={4}>
-                  <FormTitleAndText
-                    title={ApplicationFieldTitles.APPLICATION_EXTRA}
-                    text={getLabelOfOption(extraOptions, application.extra) || '-'}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column large={3}>
-                  <FormTextTitle >
-                    {ApplicationFieldTitles.APPLICATION_PREVIOUS}
-                  </FormTextTitle>
-                  <FormText>{application.previous?'Aiemmin luotu lomake':'-'}</FormText>
-                </Column>
-                <Column large={4}>
-                  <FormTitleAndText
-                    title={ApplicationFieldTitles.APPLICATION_CREATED}
-                    text={getLabelOfOption(createdOptions, application.created) || '-'}
-                  />
-                </Column>
-              </Row>
-              <Column className={''} style={{margin: '0 0 10px 0'}}>
-                <FileDownloadButton
-                  disabled={true}
-                  label='ESIKATSELE'
-                  payload={{
-                  }}
-                  url={''} 
-                />
+        {form && form.sections.map((section, index) => {
+          return (
+            <Row className='summary__content-wrapper' key={index}>
+              <Column small={12} style={{marginTop: 15}}>
+                <Collapse
+                  defaultOpen={applicationCollapseState !== undefined ? applicationCollapseState : true}
+                  headerTitle={'Osio'}
+                  onToggle={this.handleBasicInfoCollapseToggle(index)}
+                >
+                  {this.renderSection(section)}
+                </Collapse>
               </Column>
-              <WhiteBox className='application__white-stripes'>
-                <TitleH3>
-                  {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
-                </TitleH3>
-                {application.applicants.map((applicant, index)=>
-                  <Applicant
-                    applicant={applicant}
-                    key={index}
-                  />)}
-                {application.targets.map((target, index)=>
-                  <Target
-                    target={target}
-                    key={index}
-                  />)}
-              </WhiteBox>
-            </Collapse>
-          </Column>
-        </Row>
+            </Row>
+          );
+        })}
       </Fragment>
     );
   }
@@ -149,6 +168,10 @@ export default connect(
       applicationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_APPLICATION}.application`),
       attributes: getAttributes(state),
       currentPlotSearch: getCurrentPlotSearch(state),
+      isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+      ifFetchingForm: getIsFetchingForm(state),
+      formAttributes: getFormAttributes(state),
+      form: getForm(state),
     };
   },
   {

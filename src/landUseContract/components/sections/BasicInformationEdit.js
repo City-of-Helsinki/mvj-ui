@@ -274,9 +274,6 @@ class BasicInformationEdit extends Component<Props> {
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'definition')}
                   name='definition'
-                  overrideValues={{
-                    label: 'Maankäyttösopimus päätös',
-                  }}
                   enableUiDataEdit
                   uiDataKey={getUiDataLandUseContractKey('definition')}
                 />
