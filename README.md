@@ -1,4 +1,4 @@
-[![Build](https://github.com/City-of-Helsinki/mvj-ui/workflows/test/badge.svg)](https://github.com/City-of-Helsinki/mvj-ui/actions)
+[![Build](https://github.com/City-of-Helsinki/mvj-ui/workflows/Node.js%20CI/badge.svg)(https://github.com/City-of-Helsinki/mvj-ui/actions)
 [![codecov](https://codecov.io/gh/City-of-Helsinki/mvj-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/City-of-Helsinki/mvj-ui)
 
 
