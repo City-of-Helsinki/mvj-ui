@@ -40,6 +40,7 @@ const baseState: LandUseContractState = {
     'land-use-contract-decisions-form': true,
     'land-use-contract-invoices-form': true,
     'land-use-contract-litigants-form': true,
+    'land-use-contract-conditions': true,
   },
   isSaveClicked: false,
   list: {},
