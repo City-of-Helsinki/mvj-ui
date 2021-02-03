@@ -1,11 +1,13 @@
 // @flow
 import React, {Fragment, Component, type Element} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, reduxForm} from 'redux-form';
+
+import {change, FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import EstateIdSelectInput from '$components/inputs/EstateIdSelectInput';
 import Authorization from '$components/authorization/Authorization';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -135,9 +137,10 @@ type AreasProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  change: Function,
 }
 
-const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*> => {
+const renderAreas = ({attributes, fields, isSaveClicked, change}: AreasProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -168,15 +171,22 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
                     <FieldAndRemoveButtonWrapper
                       field={
                         <Authorization allow={isFieldAllowedToRead(attributes, 'estate_ids.child.children.estate_id')}>
-                          <FormField
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={get(attributes, 'estate_ids.child.children.estate_id')}
-                            invisibleLabel
-                            name={`${field}.estate_id`}
-                            overrideValues={{
-                              label: 'Kohde',
+                          <EstateIdSelectInput
+                            onChange={(estate_id)=>{
+                              if(estate_id && estate_id.value.length)
+                                change(`${field}.estate_id`, estate_id.value[0]);
                             }}
+                            disabled={false}
+                            name={`estate_id`}
                           />
+                          <div style={{display: 'none'}}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'estate_ids.child.children.estate_id')}
+                              invisibleLabel
+                              name={`${field}.estate_id`}
+                            />
+                          </div>
                         </Authorization>
                       }
                       removeButton={
@@ -244,6 +254,7 @@ class BasicInformationEdit extends Component<Props> {
       attributes,
       basicInformationCollapseState,
       isSaveClicked,
+      change,
     } = this.props;
 
     return (
@@ -264,6 +275,7 @@ class BasicInformationEdit extends Component<Props> {
                   isSaveClicked={isSaveClicked}
                   name='estate_ids'
                   enableUiDataEdit
+                  change={change}
                   uiDataKey={getUiDataLandUseContractKey('estate_ids')}
                 />
               </Column>
@@ -490,5 +502,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    change,
   }),
 )(BasicInformationEdit);
