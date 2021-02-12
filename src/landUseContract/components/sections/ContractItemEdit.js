@@ -440,7 +440,7 @@ const ContractItemEdit = ({
 
   const getCollapseTitle = (contract: ?Object) => {
     if(!contract) {return '-';}
-    return `${getLabelOfOption(contractTypeOptions, contract.type) || '-'} ${contract.contract_number}`;
+    return `${getLabelOfOption(contractTypeOptions, contract.type) || '-'} ${contract.contract_number || '-'}`;
   };
 
   const contractErrors = get(errors, field),

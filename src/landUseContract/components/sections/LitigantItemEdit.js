@@ -12,11 +12,9 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
-import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
@@ -28,7 +26,6 @@ import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enu
 import {ButtonColors} from '$components/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
-  formatDateRange,
   findItemById,
   isActive, 
   isArchived,
@@ -177,16 +174,6 @@ const LitigantItemEdit = ({
       archived={archived}
       defaultOpen={collapseState !== undefined ? collapseState : active}
       hasErrors={isSaveClicked && !isEmpty(litigantErrors)}
-      headerSubtitles={savedLitigant &&
-        <Fragment>
-          <Column>
-            <CollapseHeaderSubtitle><span>Hallintaosuus:</span> {savedLitigant.share_numerator || ''} / {savedLitigant.share_denominator || ''}</CollapseHeaderSubtitle>
-          </Column>
-          <Column>
-            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(savedLitigant, 'litigant.start_date'), get(savedLitigant, 'litigant.end_date')) || '-'}</CollapseHeaderSubtitle>
-          </Column>
-        </Fragment>
-      }
       headerTitle={getContactFullName(get(savedLitigant, 'litigant.contact')) || '-'}
       onRemove={onRemove}
       onToggle={handleCollapseToggle}
@@ -195,7 +182,7 @@ const LitigantItemEdit = ({
         <FormWrapper>
           <FormWrapperLeft>
             <Row>
-              <Column small={12} large={8}>
+              <Column>
                 <Row>
                   <Column small={9} medium={8} large={8}>
                     <FormField
@@ -222,28 +209,6 @@ const LitigantItemEdit = ({
           </FormWrapperLeft>
           <FormWrapperRight>
             <Row>
-              <Column small={12} medium={6} large={4}>
-                <FormTextTitle required title='Hallintaosuus' />
-                <Row>
-                  <Column>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'litigants.child.children.share_numerator')}
-                      invisibleLabel
-                      name={`${field}.share_numerator`}
-                    />
-                  </Column>
-                  <Column>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      className='with-slash'
-                      fieldAttributes={get(attributes, 'litigants.child.children.share_denominator')}
-                      invisibleLabel
-                      name={`${field}.share_denominator`}
-                    />
-                  </Column>
-                </Row>
-              </Column>
               <Column small={6} medium={3} large={2}>
                 <FormField
                   disableTouched={isSaveClicked}

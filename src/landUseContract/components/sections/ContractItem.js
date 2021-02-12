@@ -48,11 +48,10 @@ const ContractItem = ({
   return (
     <Collapse
       defaultOpen={collapseState !== undefined ? collapseState : true}
-      headerTitle={`${getLabelOfOption(contractTypeOptions, contract.type) || '-'} ${contract.contract_number}`}
+      headerTitle={`${getLabelOfOption(contractTypeOptions, contract.type) || '-'} ${contract.contract_number || '-'}`}
       onToggle={handleCollapseToggle}
     >
       <Row>
-        {console.log(contract)}
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='Sopimuksen tyyppi'
