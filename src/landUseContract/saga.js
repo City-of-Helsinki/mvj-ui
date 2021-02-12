@@ -27,7 +27,7 @@ import {
   deleteLandUseContract,
 } from './requests';
 
-// import attributesMockData from './attributes-mock-data.json';
+import attributesMockData from './attributes-mock-data.json';
 // import mockData from './mock-data.json';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -39,7 +39,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         const attributes = bodyAsJson.fields;
         const methods = bodyAsJson.methods;
 
-        yield put(receiveAttributes(attributes));
+        yield put(receiveAttributes({...attributes, compensations: attributesMockData.fields.compensations}));
         yield put(receiveMethods(methods));
         break;
       default:
