@@ -547,7 +547,11 @@ class LandUseContractPage extends Component<Props, State> {
       let payload: Object = {...currentLandUseContract};
       
       if(isBasicInformationFormDirty) {
-        payload = {...payload, ...basicInformationFormValues};
+        if(basicInformationFormValues.estate_ids){
+          const plotsFromEstate = {...basicInformationFormValues, plots: basicInformationFormValues.estate_ids.map(estate => ({'id': estate.plot}))};
+          payload = {...payload, ...plotsFromEstate};
+        } else 
+          payload = {...payload, ...basicInformationFormValues};
       }
       
       // MASSIVE TODO

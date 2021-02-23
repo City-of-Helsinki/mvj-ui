@@ -13,6 +13,7 @@ import {
   sortStringByKeyDesc,
   addEmptyOption,
   formatDate,
+  convertStrToDecimalNumber,
 } from '$util/helpers';
 import {getIsEditMode} from '$src/landUseContract/selectors';
 import {removeSessionStorageItem} from '$util/storage';
@@ -498,4 +499,27 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_INVOICES);
   removeSessionStorageItem('landUseContractId');
   removeSessionStorageItem('landUseContractValidity');
+};
+
+/**
+ * Get used price
+ * @param {string} unitValue
+ * @param {string} discount
+ * @return {number}
+ */
+export const getUsedPrice = (unitValue, discount): number => {
+  const value = Number(convertStrToDecimalNumber(unitValue));
+  const dis = Number(convertStrToDecimalNumber(discount));
+  return (value - (value * (dis / 100)));
+};
+
+/**
+ * Test is lease empty
+ * @param {Object} lease
+ * @return {boolean}
+ */
+export const getSum = (area, usedPrice): number => {
+  const areaNumber = Number(convertStrToDecimalNumber(area));
+  const price = Number(convertStrToDecimalNumber(usedPrice));
+  return (areaNumber * price);
 };

@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
+import {FieldArray, formValueSelector, reduxForm, change} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
@@ -14,7 +14,6 @@ import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
-import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
@@ -22,13 +21,15 @@ import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
-
+import UnitPricesUsedInCalculations from './UnitPricesUsedInCalculations';
 import type {Attributes} from '$src/types';
 
 type InvoicesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  change: Function,
+  formName: string,
 }
 
 const renderUnitPricesUsedInCalculation = ({attributes, fields, isSaveClicked}: InvoicesProps): Element<*> => {
@@ -63,6 +64,9 @@ const renderUnitPricesUsedInCalculation = ({attributes, fields, isSaveClicked}: 
                   <Column large={1}>
                     <FormTextTitle title='Käytetty hinta' />
                   </Column>
+                  <Column large={1}>
+                    <FormTextTitle title='Summa' />
+                  </Column>
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
@@ -79,71 +83,14 @@ const renderUnitPricesUsedInCalculation = ({attributes, fields, isSaveClicked}: 
                   };
 
                   return (
-                    <Row key={index}>
-                      <Column large={2}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.usage')}
-                          invisibleLabel
-                          name={`${field}.usage`}
-                        />
-                      </Column>
-                      <Column large={2}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.management')}
-                          invisibleLabel
-                          name={`${field}.management`}
-                        />
-                      </Column>
-                      <Column large={1}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.protected')}
-                          invisibleLabel
-                          name={`${field}.protected`}
-                        />
-                      </Column>
-                      <Column large={1}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.area')}
-                          invisibleLabel
-                          name={`${field}.area`}
-                        />
-                      </Column>
-                      <Column large={1}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.unit_value')}
-                          invisibleLabel
-                          name={`${field}.unit_value`}
-                        />
-                      </Column>
-                      <Column large={1}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.discount')}
-                          invisibleLabel
-                          name={`${field}.discount`}
-                        />
-                      </Column>
-                      <Column large={1}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.used_price')}
-                          invisibleLabel
-                          name={`${field}.used_price`}
-                        />
-                      </Column>
-                      <Column>
-                        <RemoveButton
-                          className='third-level'
-                          onClick={handleRemove}
-                          title="Poista yksikköhinta"
-                        />
-                      </Column>
-                    </Row>
+                    <UnitPricesUsedInCalculations 
+                      key={index}
+                      onRemove={handleRemove}
+                      attributes={attributes}
+                      isSaveClicked={isSaveClicked}
+                      formName={formName}
+                      field={field}
+                    />
                   );
                 })}
               </div>
@@ -172,6 +119,7 @@ type Props = {
   landCompensation: number,
   otherCompensation: number,
   firstInstallmentIncrease: number,
+  change: Function,
 }
 
 class CompensationsEdit extends Component<Props> {
@@ -195,7 +143,7 @@ class CompensationsEdit extends Component<Props> {
   };
 
   render() {
-    const {attributes, isSaveClicked} = this.props;
+    const {attributes, isSaveClicked, change} = this.props;
     const total = this.getTotal();
 
     return (
@@ -382,6 +330,7 @@ class CompensationsEdit extends Component<Props> {
                       component={renderUnitPricesUsedInCalculation}
                       attributes={attributes}
                       isSaveClicked={isSaveClicked}
+                      change={change}
                       disabled={isSaveClicked}
                       formName={FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}
                       name={'compensations.unit_prices_used_in_calculation'}
@@ -419,5 +368,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    change,
   })
 )(CompensationsEdit);

@@ -172,9 +172,11 @@ const renderAreas = ({attributes, fields, isSaveClicked, change}: AreasProps): E
                       field={
                         <Authorization allow={isFieldAllowedToRead(attributes, 'estate_ids.child.children.estate_id')}>
                           <EstateIdSelectInput
-                            onChange={(estate_id)=>{
-                              if(estate_id && estate_id.value.length)
-                                change(`${field}.estate_id`, estate_id.value[0]);
+                            onChange={estate_id => {
+                              if(estate_id && estate_id.value){
+                                change(`${field}.estate_id`, estate_id.value);
+                                change(`${field}.plot`, estate_id.id);
+                              }
                             }}
                             disabled={false}
                             name={`estate_id`}
@@ -187,13 +189,21 @@ const renderAreas = ({attributes, fields, isSaveClicked, change}: AreasProps): E
                               name={`${field}.estate_id`}
                             />
                           </div>
+                          <div style={{display: 'none'}}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'plots.child.children.id')}
+                              invisibleLabel
+                              name={`${field}.plot`}
+                            />
+                          </div>
                         </Authorization>
                       }
                       removeButton={
                         <RemoveButton
                           className='third-level'
                           onClick={handleRemove}
-                          title="Poista kohde"
+                          title='Poista kohde'
                         />
                       }
                     />

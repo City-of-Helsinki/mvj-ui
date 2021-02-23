@@ -899,6 +899,14 @@
                   "label": "Vakuus",
                   "decimal_places": 2,
                   "max_digits": 10
+                },
+                "sum": {
+                  "type": "decimal",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Summa",
+                  "decimal_places": 2,
+                  "max_digits": 12
                 }
               }
             }

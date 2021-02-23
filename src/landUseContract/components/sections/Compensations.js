@@ -179,6 +179,9 @@ const Compensations = ({currentLandUseContract}: Props) => {
                 <Column large={1}>
                   <FormTextTitle title='Käytetty hinta' />
                 </Column>
+                <Column large={1}>
+                  <FormTextTitle title='Summa' />
+                </Column>
               </Row>
               {
                 compensations.unit_prices_used_in_calculation && compensations.unit_prices_used_in_calculation.map((calculation, index) => <Row key={index}>

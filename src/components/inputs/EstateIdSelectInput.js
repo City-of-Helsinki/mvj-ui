@@ -5,8 +5,6 @@ import debounce from 'lodash/debounce';
 import AsyncSelect from '$components/form/AsyncSelect';
 import {fetchEstateIdList} from '$src/landUseContract/requestsAsync';
 
-import {getContentLeaseListAreaIdentifiers} from '$src/leases/helpers.js';
-
 type Props = {
   disabled?: boolean,
   name: string,
@@ -24,18 +22,20 @@ const EstateIdSelectInput = ({
   placeholder,
   value,
 }: Props) => {
-  const getEstateIdOptions = (EstateIdList: Array<Object>): Array<Object> =>
-    EstateIdList
-      .map((lease) => {
+  const getEstateIdOptions = (EstateIdList: Array<Object>): Array<Object> => {
+    return  EstateIdList
+      .map(lease => {
         return {
-          value: getContentLeaseListAreaIdentifiers(lease),
-          label: getContentLeaseListAreaIdentifiers(lease),
+          id: lease.id,
+          value: lease.identifier,
+          label: lease.identifier,
         };
       });
+  };
 
   const getEstateIdList = debounce(async(inputValue: string, callback: Function) => {
     const EstateIdList = await fetchEstateIdList({
-      property_identifier: inputValue,
+      search: inputValue,
       limit: 10,
     });
 
