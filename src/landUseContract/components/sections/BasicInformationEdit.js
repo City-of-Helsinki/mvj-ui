@@ -7,6 +7,7 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import AddFileButton from '$components/form/AddFileButton';
 import EstateIdSelectInput from '$components/inputs/EstateIdSelectInput';
 import Authorization from '$components/authorization/Authorization';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -16,22 +17,33 @@ import Divider from '$components/content/Divider';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
+import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
-import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
+import {createLandUseAgreementAttachment, deleteLandUseAgreementAttachment} from '$src/landUseAgreementAttachment/actions';
+import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
+import {getAttributes, getCollapseStateByKey, getIsSaveClicked, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 import AddressItemEdit from './AddressItemEdit';
-import type {Attributes} from '$src/types';
-import {getUiDataLandUseContractKey} from '$src/uiData/helpers';
+import type {Attributes, Methods as MethodsType} from '$src/types';
+import {getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey} from '$src/uiData/helpers';
+import {LandUseAgreementAttachmentFieldPaths} from '$src/landUseAgreementAttachment/enums';
+import {getUserFullName} from '$src/users/helpers';
+
 import {
   isFieldAllowedToRead,
+  isMethodAllowed,
+  formatDate,
 } from '$util/helpers';
+import {
+  getMethods as getLandUseAgreementAttachmentMethods,
+  getAttributes as getLandUseAgreementAttachmentAttributes,
+} from '$src/landUseAgreementAttachment/selectors';
 
-// **** TODO
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type AddressesProps = {
   fields: any,
@@ -228,12 +240,17 @@ const renderAreas = ({attributes, fields, isSaveClicked, change}: AreasProps): E
 
 type Props = {
   attributes: Attributes,
+  landUseAgreementAttachmentAttributes: Attributes,
+  landUseAgreementAttachmentMethods: MethodsType,
   basicInformationCollapseState: boolean,
   change: Function,
   isSaveClicked: boolean,
   receiveCollapseStates: Function,
+  createLandUseAgreementAttachment: Function,
+  deleteLandUseAgreementAttachment: Function,
   receiveFormValidFlags: Function,
   valid: boolean,
+  currentLandUseContract: LandUseContract,
 }
 
 class BasicInformationEdit extends Component<Props> {
@@ -259,13 +276,42 @@ class BasicInformationEdit extends Component<Props> {
     });
   }
 
+  handleFileChange = (e) => {
+    const {
+      createLandUseAgreementAttachment,
+      currentLandUseContract,
+    } = this.props;
+
+    createLandUseAgreementAttachment({
+      id: currentLandUseContract.id,
+      data: {
+        land_use_agreement: currentLandUseContract.id,
+        type: 'general',
+      },
+      file: e.target.files[0],
+    });
+  };
+
+  handleDeleteLandUseAgreementAttachmentFile = (fileId: number) => {
+    const {deleteLandUseAgreementAttachment, currentLandUseContract} = this.props;
+
+    deleteLandUseAgreementAttachment({
+      id: currentLandUseContract.id,
+      fileId,
+    });
+  }
+
   render() {
     const {
       attributes,
+      landUseAgreementAttachmentAttributes,
+      landUseAgreementAttachmentMethods,
       basicInformationCollapseState,
       isSaveClicked,
       change,
+      currentLandUseContract,
     } = this.props;
+    const attachments = get(currentLandUseContract, 'attachments', []).filter(file => file.type === 'general');
 
     return (
       <form>
@@ -395,8 +441,100 @@ class BasicInformationEdit extends Component<Props> {
             formName={FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}
             name={'addresses'}
           />
-          <SubTitle>Liitetiedostot</SubTitle>
-          <FormText>Ei liitetiedostoja</FormText>
+
+          <Authorization allow={isMethodAllowed(landUseAgreementAttachmentMethods, Methods.GET)}>
+            {!!currentLandUseContract.id &&
+              <AppConsumer>
+                {({dispatch}) => {
+                  return(
+                    <Fragment>
+                      <SubTitle enableUiDataEdit uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.ATTACHMENTS)}>
+                        {'Liitetiedostot'}
+                      </SubTitle>
+
+                      {!!attachments && !!attachments.length &&
+                        <Fragment>
+                          <Row>
+                            <Column small={3} large={4}>
+                              <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
+                                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.FILE)}>
+                                  {'Tiedoston nimi'}
+                                </FormTextTitle>
+                              </Authorization>
+                            </Column>
+                            <Column small={3} large={2}>
+                              <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                                  {'Ladattu'}
+                                </FormTextTitle>
+                              </Authorization>
+                            </Column>
+                            <Column small={3} large={2}>
+                              <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADER)}>
+                                {'Lataaja'}
+                              </FormTextTitle>
+                            </Column>
+                          </Row>
+                          {attachments.map((file, index) => {
+                            const handleRemove = () => {
+                              dispatch({
+                                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                                confirmationFunction: () => {
+                                  this.handleDeleteLandUseAgreementAttachmentFile(file.id);
+                                },
+                                confirmationModalButtonClassName: ButtonColors.ALERT,
+                                confirmationModalButtonText: ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
+                                confirmationModalLabel: ConfirmationModalTexts.DELETE_ATTACHMENT.LABEL,
+                                confirmationModalTitle: ConfirmationModalTexts.DELETE_ATTACHMENT.TITLE,
+                              });
+                            };
+
+                            return (
+                              <Row key={index}>
+                                <Column small={3} large={4}>
+                                  <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
+                                    <FileDownloadLink
+                                      fileUrl={file.file}
+                                      label={file.filename}
+                                    />
+                                  </Authorization>
+                                </Column>
+                                <Column small={3} large={2}>
+                                  <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                                    <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
+                                  </Authorization>
+                                </Column>
+                                <Column small={3} large={2}>
+                                  <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
+                                </Column>
+                                <Column small={3} large={2}>
+                                  <Authorization allow={isMethodAllowed(landUseAgreementAttachmentMethods, Methods.DELETE)}>
+                                    <RemoveButton
+                                      className='third-level'
+                                      onClick={handleRemove}
+                                      style={{right: 12}}
+                                      title="Poista liitetiedosto"
+                                    />
+                                  </Authorization>
+                                </Column>
+                              </Row>
+                            );
+                          })}
+                        </Fragment>
+                      }
+                      <Authorization allow={isMethodAllowed(landUseAgreementAttachmentMethods, Methods.POST)}>
+                        <AddFileButton
+                          label='Lisää tiedosto'
+                          name={`${currentLandUseContract.id}`}
+                          onChange={this.handleFileChange}
+                        />
+                      </Authorization>
+                    </Fragment>
+                  );
+                }}
+              </AppConsumer>
+            }
+          </Authorization>
 
           <SubTitle>Asemakaavatiedot</SubTitle>
           <Row>
@@ -502,11 +640,16 @@ export default flowRight(
         attributes: getAttributes(state),
         basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.basic_information`),
         isSaveClicked: getIsSaveClicked(state),
+        currentLandUseContract: getCurrentLandUseContract(state),
+        landUseAgreementAttachmentMethods: getLandUseAgreementAttachmentMethods(state),
+        landUseAgreementAttachmentAttributes: getLandUseAgreementAttachmentAttributes(state),
       };
     },
     {
       receiveCollapseStates,
       receiveFormValidFlags,
+      createLandUseAgreementAttachment,
+      deleteLandUseAgreementAttachment,
     }
   ),
   reduxForm({

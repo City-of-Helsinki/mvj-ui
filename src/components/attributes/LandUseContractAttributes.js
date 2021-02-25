@@ -10,13 +10,24 @@ import {
   getMethods as getLandUseContractMethods,
 } from '$src/landUseContract/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
+
+import {fetchAttributes as fetchLandUseAgreementAttachmentAttributes} from '$src/landUseAgreementAttachment/actions';
+import {
+  getAttributes as getLandUseAgreementAttachmentAttributes,
+  getIsFetchingAttributes as getIsFetchingLandUseAgreementAttachmentAttributes,
+  getMethods as getLandUseAgreementAttachmentMethods,
+} from '$src/landUseAgreementAttachment/selectors';
 
 function LandUseContractAttributes(WrappedComponent: any) {
   type Props = {
     fetchLandUseContractAttributes: Function,
     isFetchingLandUseContractAttributes: boolean,
     landUseContractAttributes: Attributes,
+    fetchLandUseAgreementAttachmentAttributes: Function,
+    landUseAgreementAttachmentAttributes: Attributes,
+    landUseAgreementAttachmentMethods: Methods,
+    isFetchingLandUseAgreementAttachmentAttributes: boolean,
   }
 
   return class LandUseContractAttributes extends PureComponent<Props> {
@@ -25,10 +36,18 @@ function LandUseContractAttributes(WrappedComponent: any) {
         fetchLandUseContractAttributes,
         isFetchingLandUseContractAttributes,
         landUseContractAttributes,
+        landUseAgreementAttachmentAttributes,
+        landUseAgreementAttachmentMethods,
+        isFetchingLandUseAgreementAttachmentAttributes,
+        fetchLandUseAgreementAttachmentAttributes,
       } = this.props;
 
       if(!isFetchingLandUseContractAttributes && !landUseContractAttributes) {
         fetchLandUseContractAttributes();
+      }
+
+      if(!isFetchingLandUseAgreementAttachmentAttributes && !landUseAgreementAttachmentAttributes && !landUseAgreementAttachmentMethods) {
+        fetchLandUseAgreementAttachmentAttributes();
       }
     }
 
@@ -45,10 +64,14 @@ const withLandUseContractAttributes = flowRight(
         landUseContractAttributes: getLandUseContractAttributes(state),
         isFetchingLandUseContractAttributes: getIsFetchingLandUseContractAttributes(state),
         landUseContractMethods: getLandUseContractMethods(state),
+        isFetchingLandUseAgreementAttachmentAttributes: getIsFetchingLandUseAgreementAttachmentAttributes(state),
+        landUseAgreementAttachmentAttributes: getLandUseAgreementAttachmentAttributes(state),
+        landUseAgreementAttachmentMethods: getLandUseAgreementAttachmentMethods(state),
       };
     },
     {
       fetchLandUseContractAttributes,
+      fetchLandUseAgreementAttachmentAttributes,
     },
   ),
   LandUseContractAttributes,

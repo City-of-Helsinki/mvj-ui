@@ -166,6 +166,13 @@ export const getUiDataTradeRegisterCompanyNoticeKey = (key: string): string => g
 export const getUiDataTradeRegisterCompanyRepresentKey = (key: string): string => getKeyWithPrefix(UiDataPrefixes.TRADE_REGISTER_COMPANY_REPRESENT, key);
 
 /**
+ * Get key for ui data on trade register company notice component
+ * @param {string} key
+ * @return {string}
+ */
+export const getUiDataLandUseAgreementAttachmentKey = (key: string): string => getKeyWithPrefix(UiDataPrefixes.LAND_USE_CONTRACT_AGREEMENT_ATTACHMENT, key);
+
+/**
  * Return value of ui data object by key
  * @param {Object[]} uiDataList
  * @param {string} key

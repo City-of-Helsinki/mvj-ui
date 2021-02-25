@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -12,15 +13,34 @@ import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {getContentCompensations} from '$src/landUseContract/helpers';
 import {formatNumber} from '$util/helpers';
+import {getUserFullName} from '$src/users/helpers';
 import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
-
+import {LandUseAgreementAttachmentFieldPaths} from '$src/landUseAgreementAttachment/enums';
 import type {LandUseContract} from '$src/landUseContract/types';
+import {getUiDataLandUseAgreementAttachmentKey} from '$src/uiData/helpers';
+import {
+  getAttributes as getLandUseAgreementAttachmentAttributes,
+} from '$src/landUseAgreementAttachment/selectors';
+import {
+  formatDate,
+  isFieldAllowedToRead,
+} from '$util/helpers';
+import type {Attributes} from '$src/types';
+import FileDownloadLink from '$components/file/FileDownloadLink';
+import {
+  getUsedPrice,
+  getSum,
+} from '$src/landUseContract/helpers';
 
 type Props = {
   currentLandUseContract: LandUseContract,
+  landUseAgreementAttachmentAttributes: Attributes,
 }
 
-const Compensations = ({currentLandUseContract}: Props) => {
+const Compensations = ({
+  currentLandUseContract,
+  landUseAgreementAttachmentAttributes,
+}: Props) => {
   const getTotal = (compensations: Object) => {
     const cash = Number(get(compensations, 'cash_compensation'));
     const land = Number(get(compensations, 'land_compensation'));
@@ -31,7 +51,7 @@ const Compensations = ({currentLandUseContract}: Props) => {
 
   const compensations = getContentCompensations(currentLandUseContract);
   const total = getTotal(compensations);
-
+  const attachments = get(currentLandUseContract, 'attachments', []).filter(file => file.type === 'compensation_calculation');
   return (
     <Fragment>
       <GreenBox>
@@ -149,6 +169,56 @@ const Compensations = ({currentLandUseContract}: Props) => {
         <Row>
           <Column small={12} large={6}>
             <SubTitle>Maankäyttökorvaus laskelma</SubTitle>
+
+            {!attachments.length && <FormText>Ei liitetiedostoja</FormText>}
+            {!!attachments.length &&
+              <Fragment>
+                <Row>
+                  <Column small={3} large={4}>
+                    <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
+                      <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.FILE)}>
+                        {'Tiedoston nimi'}
+                      </FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column small={3} large={2}>
+                    <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                      <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                        {'Ladattu'}
+                      </FormTextTitle>
+                    </Authorization>
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADER)}>
+                      {'Lataaja'}
+                    </FormTextTitle>
+                  </Column>
+                </Row>
+
+                {attachments.map((file, index) => {
+                  return (
+                    <Row key={index}>
+                      <Column small={3} large={4}>
+                        <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
+                          <FileDownloadLink
+                            fileUrl={file.file}
+                            label={file.filename}
+                          />
+                        </Authorization>
+                      </Column>
+                      <Column small={3} large={2}>
+                        <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                          <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
+                        </Authorization>
+                      </Column>
+                      <Column small={3} large={2}>
+                        <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </Fragment>
+            }
           </Column>
         </Row>
       </GreenBox>
@@ -184,29 +254,37 @@ const Compensations = ({currentLandUseContract}: Props) => {
                 </Column>
               </Row>
               {
-                compensations.unit_prices_used_in_calculation && compensations.unit_prices_used_in_calculation.map((calculation, index) => <Row key={index}>
-                  <Column large={2}>
-                    <FormText>{calculation.usage ? calculation.usage : '-'}</FormText>
-                  </Column>
-                  <Column large={2}>
-                    <FormText>{calculation.management ? calculation.management : '-'}</FormText>
-                  </Column>
-                  <Column large={1}>
-                    <FormText>{calculation.protected ? calculation.protected : '-'}</FormText>
-                  </Column>
-                  <Column large={1}>
-                    <FormText>{calculation.area ? `${formatNumber(calculation.area)} m²` : '-'}</FormText>
-                  </Column>
-                  <Column large={1}>
-                    <FormText>{calculation.unit_value ? `${formatNumber(calculation.unit_value)} €` : '-'}</FormText>
-                  </Column>
-                  <Column large={1}>
-                    <FormText>{calculation.discount ? `${formatNumber(calculation.discount)} €` : '-'}</FormText>
-                  </Column>
-                  <Column large={1}>
-                    <FormText>{calculation.used_price ? `${formatNumber(calculation.used_price)} €` : '-'}</FormText>
-                  </Column>
-                </Row>)}
+                compensations.unit_prices_used_in_calculation && compensations.unit_prices_used_in_calculation.map((calculation, index) => {
+                  const sum = getSum(calculation.area, getUsedPrice(calculation.unit_value, calculation.discount));
+                  return (
+                    <Row key={index}>
+                      <Column large={2}>
+                        <FormText>{calculation.usage ? calculation.usage : '-'}</FormText>
+                      </Column>
+                      <Column large={2}>
+                        <FormText>{calculation.management ? calculation.management : '-'}</FormText>
+                      </Column>
+                      <Column large={1}>
+                        <FormText>{calculation.protected ? calculation.protected : '-'}</FormText>
+                      </Column>
+                      <Column large={1}>
+                        <FormText>{calculation.area ? `${formatNumber(calculation.area)} m²` : '-'}</FormText>
+                      </Column>
+                      <Column large={1}>
+                        <FormText>{calculation.unit_value ? `${formatNumber(calculation.unit_value)} €` : '-'}</FormText>
+                      </Column>
+                      <Column large={1}>
+                        <FormText>{calculation.discount ? `${formatNumber(calculation.discount)} €` : '-'}</FormText>
+                      </Column>
+                      <Column large={1}>
+                        <FormText>{calculation.used_price ? `${formatNumber(calculation.used_price)} €` : '-'}</FormText>
+                      </Column>
+                      <Column large={1}>
+                        <FormText>{sum ? `${formatNumber(sum)} €` : '-'}</FormText>
+                      </Column>
+                    </Row>);
+                })
+              }
             </WhiteBox>
           </Column>
         </Row>
@@ -219,6 +297,7 @@ export default connect(
   (state) => {
     return {
       currentLandUseContract: getCurrentLandUseContract(state),
+      landUseAgreementAttachmentAttributes: getLandUseAgreementAttachmentAttributes(state),
     };
   }
 )(Compensations);

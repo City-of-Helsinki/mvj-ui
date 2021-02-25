@@ -12,6 +12,8 @@ import {
   getUsedPrice,
   getSum,
 } from '$src/landUseContract/helpers';
+import FormText from '$components/form/FormText';
+import {formatNumber} from '$util/helpers';
 
 type Props = {
   attributes: Attributes,
@@ -42,13 +44,14 @@ class UnitPricesUsedInCalculation extends Component<Props> {
   }
 
   render(){
-    const {isSaveClicked, attributes, field, onRemove} = this.props;
+    const {isSaveClicked, attributes, field, onRemove, area, unitValue, discount} = this.props;
+    const sum = getSum(area, getUsedPrice(unitValue, discount));
     return(    
       <Row>
         <Column large={2}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.usage')}
+            fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.usage')}
             invisibleLabel
             name={`${field}.usage`}
           />
@@ -56,7 +59,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
         <Column large={2}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.management')}
+            fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.management')}
             invisibleLabel
             name={`${field}.management`}
           />
@@ -64,7 +67,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
         <Column large={1}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.protected')}
+            fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.protected')}
             invisibleLabel
             name={`${field}.protected`}
           />
@@ -72,7 +75,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
         <Column large={1}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.area')}
+            fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.area')}
             invisibleLabel
             name={`${field}.area`}
             onChange={this.onChangeUsedPrice}
@@ -81,7 +84,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
         <Column large={1}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.unit_value')}
+            fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.unit_value')}
             invisibleLabel
             name={`${field}.unit_value`}
             onChange={this.onChangeUsedPrice}
@@ -90,7 +93,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
         <Column large={1}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.discount')}
+            fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.discount')}
             invisibleLabel
             name={`${field}.discount`}
             onChange={this.onChangeUsedPrice}
@@ -99,18 +102,13 @@ class UnitPricesUsedInCalculation extends Component<Props> {
         <Column large={1}>
           <FormField
             disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.used_price')}
+            fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.used_price')}
             invisibleLabel
             name={`${field}.used_price`}
           />
         </Column>
         <Column large={1}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'compensations.child.children.unit_prices_used_in_calculation.child.children.used_price')}
-            invisibleLabel
-            name={`${field}.sum`}
-          />
+          <FormText>{sum ? `${formatNumber(sum)} €` : '-'}</FormText>
         </Column>
         <Column>
           <RemoveButton

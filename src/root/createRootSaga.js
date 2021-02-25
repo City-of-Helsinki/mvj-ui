@@ -21,6 +21,7 @@ import landUseinvoiceSaga from '$src/landUseInvoices/saga';
 import invoiceNoteSaga from '../invoiceNote/saga';
 import invoiceSetSaga from '../invoiceSets/saga';
 import landUseContractSaga from '../landUseContract/saga';
+import landUseAgreementAttachmentSaga from '../landUseAgreementAttachment/saga';
 import leaseSaga from '../leases/saga';
 import leaseAreaAttachmentSaga from '$src/leaseAreaAttachment/saga';
 import leaseInspectionAttachmentSaga from '$src/leaseInspectionAttachment/saga';
@@ -68,6 +69,7 @@ export default () =>
       fork(invoiceNoteSaga),
       fork(invoiceSetSaga),
       fork(landUseContractSaga),
+      fork(landUseAgreementAttachmentSaga),
       fork(leaseSaga),
       fork(leaseAreaAttachmentSaga),
       fork(leaseCreateChargeSaga),

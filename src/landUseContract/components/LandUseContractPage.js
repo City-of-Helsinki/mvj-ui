@@ -67,6 +67,7 @@ import {
   getContentInvoices,
   getContentLitigants,
   getContentConditions,
+  convertCompensationValuesToDecimalNumber,
 } from '$src/landUseContract/helpers';
 import {getSearchQuery, getUrlParams, isArchived, scrollToTopPage, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -545,6 +546,7 @@ class LandUseContractPage extends Component<Props, State> {
       
       //TODO: Add helper functions to save land use contract to DB when API is ready
       let payload: Object = {...currentLandUseContract};
+      delete payload.attachments;
       
       if(isBasicInformationFormDirty) {
         if(basicInformationFormValues.estate_ids){
@@ -564,7 +566,8 @@ class LandUseContractPage extends Component<Props, State> {
       }
 
       if(isCompensationsFormDirty) {
-        payload = {...payload, ...compensationsFormValues};
+        const convertedCompensationsFormValues = convertCompensationValuesToDecimalNumber(compensationsFormValues);
+        payload = {...payload, ...convertedCompensationsFormValues};
       }
 
       if(isInvoicesFormDirty) {

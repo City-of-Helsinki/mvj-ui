@@ -456,7 +456,6 @@ const ContractItemEdit = ({
     >
       <BoxContentWrapper>
         <Row>
-          {console.log(attributes)}
           <Column small={6} medium={4} large={2}>
             <FormField
               disableTouched={isSaveClicked}

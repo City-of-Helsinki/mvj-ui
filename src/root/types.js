@@ -39,6 +39,7 @@ import type {UserState} from '../users/types';
 import type {UsersPermissionsState} from '$src/usersPermissions/types';
 import type {VatState} from '$src/vat/types';
 import type {LandUseInvoicesState} from '$src/landUseInvoices/types';
+import type {LandUseAgreementAttachmentState} from '$src/landUseAgreementAttachment/types';
 
 export type RootState = {
   api: ApiState,
@@ -82,4 +83,5 @@ export type RootState = {
   usersPermissions: UsersPermissionsState,
   vat: VatState,
   landUseInvoice: LandUseInvoicesState,
+  landUseAgreementAttachment: LandUseAgreementAttachmentState,
 };

@@ -27,6 +27,7 @@ import invoiceNoteReducer from '$src/invoiceNote/reducer';
 import invoiceSetReducer from '$src/invoiceSets/reducer';
 import landUseInvoiceReducer from '$src/landUseInvoices/reducer';
 import landUseContractReducer from '$src/landUseContract/reducer';
+import landUseAgreementAttachmentReducer from '$src/landUseAgreementAttachment/reducer';
 import leaseReducer from '../leases/reducer';
 import plotSearchReducer from '../plotSearch/reducer';
 import plotApplicationsReducer from '../plotApplications/reducer';
@@ -73,6 +74,7 @@ export default (history: Object): Reducer<RootState> =>
     invoiceNote: invoiceNoteReducer,
     invoiceSet: invoiceSetReducer,
     landUseContract: landUseContractReducer,
+    landUseAgreementAttachment: landUseAgreementAttachmentReducer,
     landUseInvoice: landUseInvoiceReducer,
     lease: leaseReducer,
     plotSearch: plotSearchReducer,
