@@ -16,11 +16,13 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
-import SendupButton from '$components/button/SendupButton';
 import SubTitle from '$components/content/SubTitle';
-import {exportInvoiceToLaskeAndUpdateList} from '$src/invoices/actions';
 import {ConfirmationModalTexts, FieldTypes, FormNames} from '$src/enums';
+import SendupButton from '$components/button/SendupButton';
 import {ButtonColors} from '$components/enums';
+import {UsersPermissions} from '$src/usersPermissions/enums';
+import {getRecipientOptionsFromLitigants} from '$src/landUseContract/helpers';
+import {exportInvoiceToLaskeAndUpdateList} from '$src/landUseInvoices/actions';
 import {
   InvoiceCreditInvoicesFieldPaths,
   InvoiceCreditInvoicesFieldTitles,
@@ -32,12 +34,10 @@ import {
   InvoicePaymentsFieldTitles,
   InvoiceRowsFieldPaths,
   InvoiceType,
-} from '$src/invoices/enums';
-import {UsersPermissions} from '$src/usersPermissions/enums';
+} from '$src/landUseInvoices/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getContactFullName} from '$src/contacts/helpers';
-import {isInvoiceBillingPeriodRequired} from '$src/invoices/helpers';
-import {getInvoiceTenantOptions} from '$src/leases/helpers';
+import {isInvoiceBillingPeriodRequired} from '$src/landUseInvoices/helpers';
 import {getUiDataInvoiceKey} from '$src/uiData/helpers';
 import {
   formatDate,
@@ -45,18 +45,18 @@ import {
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
-  hasPermissions,
   isEmptyValue,
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
   isFieldRequired,
+  hasPermissions,
 } from '$util/helpers';
-import {getAttributes as getInvoiceAttributes, getIsEditClicked} from '$src/invoices/selectors';
-import {getCurrentLease} from '$src/leases/selectors';
+import {getAttributes as getInvoiceAttributes, getIsEditClicked} from '$src/landUseInvoices/selectors';
+import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
-import type {Lease} from '$src/leases/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type PaymentsProps = {
@@ -177,7 +177,7 @@ const renderPayments = ({attributes, fields, isEditClicked, relativeTo}: Payment
 
 type Props = {
   creditedInvoice: ?Object,
-  currentLease: Lease,
+  currentLandUseContract: LandUseContract,
   exportInvoiceToLaskeAndUpdateList: Function,
   handleSubmit: Function,
   interestInvoiceFor: ?Object,
@@ -192,8 +192,7 @@ type Props = {
 
 const EditInvoiceForm = ({
   creditedInvoice,
-  currentLease,
-  exportInvoiceToLaskeAndUpdateList,
+  currentLandUseContract,
   handleSubmit,
   interestInvoiceFor,
   invoice,
@@ -203,6 +202,7 @@ const EditInvoiceForm = ({
   relativeTo,
   rows, 
   usersPermissions,
+  exportInvoiceToLaskeAndUpdateList,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
     if(invoice) {
@@ -228,15 +228,6 @@ const EditInvoiceForm = ({
     }
   };
 
-  const handleExportToLaske = () => {
-    if(invoice) {
-      exportInvoiceToLaskeAndUpdateList({
-        id: invoice.id,
-        lease: currentLease.id,
-      });
-    }
-  };
-
   const shouldShowOldInvoiceInfo = () => {
     return Boolean(invoice &&
       (invoice.payment_notification_date ||
@@ -246,8 +237,18 @@ const EditInvoiceForm = ({
       ));
   };
 
+  const handleExportToLaske = () => {
+    if(invoice) {
+      exportInvoiceToLaskeAndUpdateList({
+        id: invoice.id,
+        landUseContract: currentLandUseContract.id,
+      });
+    }
+  };
+
   const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
-  const tenantOptions = getInvoiceTenantOptions(currentLease);
+  const litigants = currentLandUseContract.litigants;
+  const recipientOptions = getRecipientOptionsFromLitigants(litigants);
   const deliveryMethodOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD);
   const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
   const creditInvoices = invoice ? invoice.credit_invoices : [];
@@ -294,7 +295,7 @@ const EditInvoiceForm = ({
               />
             </Authorization>
           }
-        </Column>
+        </Column> 
       </Row>
       <Row>
         <Column small={4}>
@@ -717,21 +718,21 @@ const EditInvoiceForm = ({
           name='rows'
           isEditClicked={isEditClicked}
           relativeTo={relativeTo}
-          tenantOptions={tenantOptions}
+          litigantOptions={recipientOptions}
         />
       </Authorization>
     </form>
   );
 };
 
-const formName = FormNames.LEASE_INVOICE_EDIT;
+const formName = FormNames.LAND_USE_CONTRACT_INVOICE_EDIT;
 const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        currentLease: getCurrentLease(state),
+        currentLandUseContract: getCurrentLandUseContract(state),
         invoiceAttributes: getInvoiceAttributes(state),
         isEditClicked: getIsEditClicked(state),
         rows: selector(state, 'rows'),
@@ -740,7 +741,7 @@ export default flowRight(
     },
     {
       exportInvoiceToLaskeAndUpdateList,
-    },
+    }
   ),
   reduxForm({
     form: formName,

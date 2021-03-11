@@ -14,12 +14,11 @@ import {FormNames, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {isMethodAllowed} from '$util/helpers';
 import {
-  getInvoicesByLease,
+  getInvoicesByLandUseContractId,
   getIsEditClicked,
   getMethods as getInvoiceMethods,
-} from '$src/invoices/selectors';
-import {getCurrentLease} from '$src/leases/selectors';
-
+} from '$src/landUseInvoices/selectors';
+import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
 import type {Methods as MethodsType} from '$src/types';
 import type {Invoice, InvoiceList} from '$src/invoices/types';
 
@@ -48,7 +47,7 @@ class InvoicePanelR extends PureComponent<Props, State> {
   state = {
     creditedInvoice: null,
     interestInvoiceFor: null,
-    invoice: null,
+    invoice: {},
   }
 
   setComponentRef = (el: any) => {
@@ -97,7 +96,7 @@ class InvoicePanelR extends PureComponent<Props, State> {
       creditedInvoice,
       interestInvoiceFor,
     } = this.state;
-
+    
     return(
       <TablePanelContainer
         innerRef={this.setComponentRef}
@@ -142,15 +141,15 @@ class InvoicePanelR extends PureComponent<Props, State> {
   }
 }
 
-const formName = FormNames.LEASE_INVOICE_EDIT;
+const formName = FormNames.LAND_USE_CONTRACT_INVOICE_EDIT;
 export default connect(
   (state) => {
-    const currentLease = getCurrentLease(state);
+    const currentLandUseContract = getCurrentLandUseContract(state);
 
     return {
       formValues: getFormValues(formName)(state),
       invoiceMethods: getInvoiceMethods(state),
-      invoices: getInvoicesByLease(state, currentLease.id),
+      invoices: getInvoicesByLandUseContractId(state, currentLandUseContract.id),
       isEditClicked: getIsEditClicked(state),
       valid: isValid(formName)(state),
     };

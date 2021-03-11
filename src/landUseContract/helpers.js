@@ -561,3 +561,56 @@ export const getSum = (area: string, usedPrice: number): number => {
   const price = Number(convertStrToDecimalNumber(usedPrice));
   return (areaNumber * price);
 };
+
+/**
+ * get recipient options from litigants
+ * @param {Object[]} litigants
+ * @return {Object[]}
+ */
+export const getRecipientOptionsFromLitigants = (litigants: Array<Object>): Array<Object> => {
+  return litigants.map((litigant) => get(litigant, 'landuseagreementlitigantcontact_set', []).find((x) => x.type === LitigantContactType.TENANT))
+    .filter((litigant) => !isArchived(litigant))
+    .map((litigant) => {
+      return ({
+        value: get(get(litigant, 'contact'), 'id'),
+        label: getListLitigantName(litigant),
+      });
+    });
+};
+
+
+/**
+ * Get create invoice payload for API
+ * @param {Object} invoice
+ * @returns {Object}
+ */
+export const getPayloadCreateInvoice = (invoice: Object): Object => {
+  return {
+    land_use_agreement: invoice.land_use_agreement,
+    recipient: invoice.recipient,
+    type: invoice.type,
+    due_date: invoice.due_date,
+    total_amount: convertStrToDecimalNumber(invoice.total_amount),
+    notes: invoice.notes,
+    rows: getPayloadInvoiceRows(invoice),
+  };
+};
+
+/**
+ * Get rows for invoice payload for API
+ * @param {Object} invoice
+ * @returns {Object[]}
+ */
+const getPayloadInvoiceRows = (invoice: Object): Array<Object> => {
+  return get(invoice, 'rows', []).map((row) => {
+    return {
+      compensation_amount: convertStrToDecimalNumber(row.compensation_amount),
+      amount: convertStrToDecimalNumber(row.amount),
+      increase_percentage: convertStrToDecimalNumber(row.increase_percentage),
+      plan_lawfulness_date: row.plan_lawfulness_date,
+      receivable_type: row.receivable_type,
+      sign_date: row.sign_date,
+      description: row.description,
+    };
+  });
+};

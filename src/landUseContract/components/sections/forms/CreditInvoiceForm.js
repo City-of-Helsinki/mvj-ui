@@ -12,7 +12,7 @@ import CloseButton from '$components/button/CloseButton';
 import FormField from '$components/form/FormField';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreditClicked} from '$src/invoices/actions';
-import {CreditInvoiceOptions, CreditInvoiceSetOptions} from '$src/leases/constants';
+import {CreditInvoiceOptions, CreditInvoiceSetOptions} from '$src/landUseContract/constants';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {
@@ -20,8 +20,8 @@ import {
   InvoiceFieldTitles,
   InvoiceRowsFieldPaths,
   InvoiceRowsFieldTitles,
-} from '$src/invoices/enums';
-import {CreditInvoiceOptions as CreditInvoiceOptionsEnum} from '$src/leases/enums';
+} from '$src/landUseInvoices/enums';
+import {CreditInvoiceOptions as CreditInvoiceOptionsEnum} from '$src/landUseContract/enums';
 import {getUiDataCreditInvoiceKey} from '$src/uiData/helpers';
 import {
   addEmptyOption,
@@ -31,7 +31,7 @@ import {
   isFieldAllowedToEdit,
   sortStringByKeyAsc,
 } from '$util/helpers';
-import {getAttributes as getInvoiceAttributes, getIsCreditClicked} from '$src/invoices/selectors';
+import {getAttributes as getInvoiceAttributes, getIsCreditClicked} from '$src/landUseInvoices/selectors';
 
 import type {Attributes} from '$src/types';
 

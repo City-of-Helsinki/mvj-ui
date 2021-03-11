@@ -23,9 +23,9 @@ import {
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {RecipientOptions} from '$src/leases/enums'; // TODO
 import {getPayloadCreditInvoice} from '$src/invoices/helpers';
 import {getCreditInvoiceSetPayload} from '$src/invoiceSets/helpers';
+import {getPayloadCreateInvoice} from '$src/landUseContract/helpers';
 import {hasPermissions} from '$util/helpers';
 import {
   getCurrentLandUseContract,
@@ -106,16 +106,8 @@ class CreateAndCreditInvoiceR extends Component <Props> {
     const {
       createInvoice,
       currentLandUseContract,
-      invoices,
     } = this.props;
-    createInvoice(
-      {
-        recipient: 1,
-        landUseContractInvoice: invoice,
-        currentLandUseContractId: currentLandUseContract.id,
-        invoices: invoices,
-      }
-    ); // TODO MAKE HELPER FUNCTION
+    createInvoice(getPayloadCreateInvoice({...invoice, land_use_agreement: currentLandUseContract.id}));
   }
 
   handleOpenCreditInvoicePanelButtonClick = () => {
@@ -135,7 +127,7 @@ class CreateAndCreditInvoiceR extends Component <Props> {
 
   handleDeleteInvoicePanelButtonClick = () => {
     const {invoiceToCredit, deleteInvoice, currentLandUseContract} = this.props;
-    deleteInvoice({...invoiceToCredit, lease: currentLandUseContract.id});
+    deleteInvoice({...invoiceToCredit, land_use_agreement: currentLandUseContract.id});
   }
 
   handleSetRefForCreditPanelFirstField = (element: any) => {
@@ -163,7 +155,7 @@ class CreateAndCreditInvoiceR extends Component <Props> {
       creditInvoiceSet({
         creditData: getCreditInvoiceSetPayload(creditInvoiceData),
         invoiceSetId: invoiceToCredit && invoiceToCredit.id,
-        lease: currentLandUseContract.id,
+        landUseContract: currentLandUseContract.id,
       });
     } else {
       const {creditInvoice} = this.props;
@@ -171,7 +163,7 @@ class CreateAndCreditInvoiceR extends Component <Props> {
       creditInvoice({
         creditData: getPayloadCreditInvoice(creditInvoiceData),
         invoiceId: invoiceToCredit && invoiceToCredit.id,
-        lease: currentLandUseContract.id,
+        landUseContract: currentLandUseContract.id,
       });
     }
   }
@@ -187,11 +179,11 @@ class CreateAndCreditInvoiceR extends Component <Props> {
       invoiceToCredit,
       isCreateInvoicePanelOpen,
       isCreditInvoicePanelOpen,
-      isInvoicingEnabled,
       usersPermissions,
+      currentLandUseContract,
     } = this.props;
-    const isInvoiceSet = this.isInvoiceSet();
-
+    // const isInvoiceSet = this.isInvoiceSet();
+    const litigants = currentLandUseContract.litigants;
     return (
       <div className='invoice__new-invoice'>
         <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
@@ -236,7 +228,6 @@ class CreateAndCreditInvoiceR extends Component <Props> {
             {isCreditInvoicePanelOpen &&
               <CreditInvoiceForm
                 invoiceToCredit={invoiceToCredit}
-                isInvoiceSet={isInvoiceSet}
                 onClose={this.handleCloseCreditInvoicePanel}
                 onSave={this.handleCreditInvoice}
                 setRefForFirstField={this.handleSetRefForCreditPanelFirstField}
@@ -245,11 +236,12 @@ class CreateAndCreditInvoiceR extends Component <Props> {
           </div>
         </Authorization>
 
+
         <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
           <Row>
             <Column>
               <AddButton
-                disabled={isCreateInvoicePanelOpen || !isInvoicingEnabled}
+                disabled={isCreateInvoicePanelOpen}
                 label='Luo lasku'
                 onClick={this.handleOpenCreateInvoicePanelButtonClick}
                 style={{marginTop: 15}}
@@ -262,12 +254,7 @@ class CreateAndCreditInvoiceR extends Component <Props> {
           <div ref={this.setCreatePanelRef}>
             {isCreateInvoicePanelOpen &&
               <NewInvoiceForm
-                initialValues={{
-                  recipient: hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)
-                    ? RecipientOptions.ALL
-                    : undefined,
-                  rows: [{}],
-                }}
+                litigants={litigants}
                 onClose={this.handleCloseCreateInvoicePanel}
                 onSave={this.handleCreateInvoice}
                 setRefForFirstField={this.handleSetRefForCreatePanelFirstField}

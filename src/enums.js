@@ -426,6 +426,7 @@ export const FormNames = {
   LEASE_INVOICE_CREDIT: 'credit-invoice-form',
   LEASE_INVOICE_EDIT: 'edit-invoice-form',
   LEASE_INVOICE_NEW: 'new-invoice-form',
+  LAND_USE_INVOICE_NEW: 'land-use-invoice-form',
   LEASE_INVOICE_NOTES: 'invoice-notes-form',
   LEASE_NEW_COMMENT: 'new-comment-form',
   LEASE_REFUND: 'refund-form',
@@ -449,6 +450,7 @@ export const FormNames = {
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
+  LAND_USE_CONTRACT_INVOICE_EDIT: 'land-use-contract-invoice-edit',
 };
 
 /**

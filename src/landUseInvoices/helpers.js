@@ -27,7 +27,7 @@ const getContentInvoicePayments = (invoice: Object): Array<Object> => {
  */
 const getContentIncoiceRows = (invoice: Object): Array<Object> => {
   const rows = get(invoice, 'rows', []);
-
+  
   return rows.map((row) => ({
     id: row.id,
     tenant: get(row, 'tenant.id'),
@@ -37,6 +37,11 @@ const getContentIncoiceRows = (invoice: Object): Array<Object> => {
     receivable_type: get(row, 'receivable_type.id') || row.receivable_type,
     billing_period_end_date: row.billing_period_end_date,
     billing_period_start_date: row.billing_period_start_date,
+    compensation_amount: row.compensation_amount,
+    increase_percentage: row.increase_percentage,
+    litigant: row.litigant,
+    plan_lawfulness_date: row.plan_lawfulness_date,
+    sign_date: row.sign_date,
   }));
 };
 
@@ -194,6 +199,13 @@ const getPayloadInvoiceRows = (invoice: Object): Array<Object> => {
       billing_period_start_date: row.billing_period_start_date,
       billing_period_end_date: row.billing_period_end_date,
       description: row.description,
+      id: row.id,
+      tenantFull: row.tenant,
+      compensation_amount: convertStrToDecimalNumber(row.compensation_amount),
+      increase_percentage: convertStrToDecimalNumber(row.increase_percentage),
+      litigant: row.litigant,
+      plan_lawfulness_date: row.plan_lawfulness_date,
+      sign_date: row.sign_date,
     };
   });
 };

@@ -16,13 +16,13 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
+import {InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/landUseInvoices/enums';
 import {getUiDataInvoiceKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
-import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
-import {getReceivableTypes} from '$src/leaseCreateCharge/selectors';
+import {getAttributes as getInvoiceAttributes} from '$src/landUseInvoices/selectors';
+// import {getReceivableTypes} from '$src/leaseCreateCharge/selectors';
 import type {Attributes} from '$src/types';
-import {receivableTypesFromAttributes, receivableTypeFromRows} from '$src/leaseCreateCharge/helpers';
+// import {receivableTypesFromAttributes, receivableTypeFromRows} from '$src/leaseCreateCharge/helpers';
 
 
 type Props = {
@@ -32,15 +32,13 @@ type Props = {
   relativeTo: any,
   receivableTypes: Object,
   rows: Object,
-  tenantOptions: Array<Object>,
+  litigantOptions: Array<Object>,
 }
 
-const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, receivableTypes, tenantOptions, rows}: Props): Element<*> => {
+const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, litigantOptions /* , rows */}: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
-
-  const receivableType = receivableTypeFromRows(rows);
 
   return (
     <AppConsumer>
@@ -79,14 +77,14 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, 
                         </ActionButtonWrapper>
                         <Row key={index}>
                           <Column small={4}>
-                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.LITIGANT)}>
                               <FormField
                                 disableTouched={isEditClicked}
-                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}
-                                name={`${row}.tenant`}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.LITIGANT)}
+                                name={`${row}.litigant`}
                                 overrideValues={{
-                                  label: InvoiceRowsFieldTitles.TENANT,
-                                  options: tenantOptions,
+                                  label: InvoiceRowsFieldTitles.LITIGANT,
+                                  options: litigantOptions,
                                 }}
                               />
                             </Authorization>
@@ -95,10 +93,7 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, 
                             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
                               <FormField
                                 disableTouched={isEditClicked}
-                                fieldAttributes={
-                                  receivableType === 2 ?
-                                    getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE):
-                                    receivableTypesFromAttributes(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
                                 name={`${row}.receivable_type`}
                                 overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
                               />
@@ -116,22 +111,42 @@ const InvoiceRowsEdit = ({fields, invoiceAttributes, isEditClicked, relativeTo, 
                             </Authorization>
                           </Column>
                           <Column small={4}>
-                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_START_DATE)}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.COMPENSATION_AMOUNT)}>
                               <FormField
                                 disableTouched={isEditClicked}
-                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_START_DATE)}
-                                name={`${row}.billing_period_start_date`}
-                                overrideValues={{label: InvoiceRowsFieldTitles.BILLING_PERIOD_START_DATE}}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.COMPENSATION_AMOUNT)}
+                                name={`${row}.compensation_amount`}
+                                overrideValues={{label: InvoiceRowsFieldTitles.COMPENSATION_AMOUNT}}
                               />
                             </Authorization>
                           </Column>
                           <Column small={4}>
-                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_END_DATE)}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.INCREASE_PERCENTAGE)}>
                               <FormField
                                 disableTouched={isEditClicked}
-                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_END_DATE)}
-                                name={`${row}.billing_period_end_date`}
-                                overrideValues={{label: InvoiceRowsFieldTitles.BILLING_PERIOD_END_DATE}}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.INCREASE_PERCENTAGE)}
+                                name={`${row}.increase_percentage`}
+                                overrideValues={{label: InvoiceRowsFieldTitles.INCREASE_PERCENTAGE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={4}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.SIGN_DATE)}>
+                              <FormField
+                                disableTouched={isEditClicked}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.SIGN_DATE)}
+                                name={`${row}.sign_date`}
+                                overrideValues={{label: InvoiceRowsFieldTitles.SIGN_DATE}}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={4}>
+                            <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.PLAN_LAWFULNESS_DATE)}>
+                              <FormField
+                                disableTouched={isEditClicked}
+                                fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.PLAN_LAWFULNESS_DATE)}
+                                name={`${row}.plan_lawfulness_date`}
+                                overrideValues={{label: InvoiceRowsFieldTitles.PLAN_LAWFULNESS_DATE}}
                               />
                             </Authorization>
                           </Column>
@@ -176,7 +191,7 @@ export default connect(
   (state) => {
     return {
       invoiceAttributes: getInvoiceAttributes(state),
-      receivableTypes: getReceivableTypes(state),
+      // receivableTypes: getReceivableTypes(state),
       rows: selector(state, `rows`),
     };
   }
