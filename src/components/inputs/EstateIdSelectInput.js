@@ -12,6 +12,7 @@ type Props = {
   placeholder?: string,
   onChange: Function,
   value?: Object,
+  initialValues: [],
 }
 
 const EstateIdSelectInput = ({
@@ -21,6 +22,7 @@ const EstateIdSelectInput = ({
   onBlur,
   placeholder,
   value,
+  initialValues,
 }: Props) => {
   const getEstateIdOptions = (EstateIdList: Array<Object>): Array<Object> => {
     return  EstateIdList
@@ -48,7 +50,7 @@ const EstateIdSelectInput = ({
     onChange,
     value,
   };
-
+  
   return(
     <AsyncSelect
       disabled={disabled}
@@ -57,6 +59,7 @@ const EstateIdSelectInput = ({
       input={input}
       isDirty={false}
       placeholder={placeholder}
+      initialValues={initialValues}
     />
   );
 };

@@ -182,6 +182,7 @@ export const getContentBasicInformation = (contract: LandUseContract): Object =>
     definition: contract.definition,
     status: contract.status,
     addresses: contract.addresses,
+    plots: contract.plots,
   };
 };
 
@@ -559,7 +560,7 @@ export const convertUnitPricesUsedInCalculations = (UnitPrices: Object): Object 
 export const getSum = (area: string, usedPrice: number): number => {
   const areaNumber = Number(convertStrToDecimalNumber(area));
   const price = Number(convertStrToDecimalNumber(usedPrice));
-  return (areaNumber * price);
+  return Number((areaNumber * price).toFixed(2));
 };
 
 /**
@@ -568,14 +569,17 @@ export const getSum = (area: string, usedPrice: number): number => {
  * @return {Object[]}
  */
 export const getRecipientOptionsFromLitigants = (litigants: Array<Object>): Array<Object> => {
-  return litigants.map((litigant) => get(litigant, 'landuseagreementlitigantcontact_set', []).find((x) => x.type === LitigantContactType.TENANT))
-    .filter((litigant) => !isArchived(litigant))
-    .map((litigant) => {
-      return ({
-        value: get(get(litigant, 'contact'), 'id'),
-        label: getListLitigantName(litigant),
+  if(litigants)
+    return litigants.map((litigant) => get(litigant, 'landuseagreementlitigantcontact_set', []).find((x) => x.type === LitigantContactType.TENANT))
+      .filter((litigant) => !isArchived(litigant))
+      .map((litigant) => {
+        return ({
+          value: get(get(litigant, 'contact'), 'id'),
+          label: getListLitigantName(litigant),
+        });
       });
-    });
+  else
+    return [];
 };
 
 
@@ -604,6 +608,8 @@ export const getPayloadCreateInvoice = (invoice: Object): Object => {
 const getPayloadInvoiceRows = (invoice: Object): Array<Object> => {
   return get(invoice, 'rows', []).map((row) => {
     return {
+      tenant: row.tenant,
+
       compensation_amount: convertStrToDecimalNumber(row.compensation_amount),
       amount: convertStrToDecimalNumber(row.amount),
       increase_percentage: convertStrToDecimalNumber(row.increase_percentage),

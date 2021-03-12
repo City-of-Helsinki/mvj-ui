@@ -15,6 +15,7 @@ type Props = {
   isDirty: boolean,
   placeholder?: string,
   setRef?: Function,
+  initialValues?: Object,
 }
 
 type State = {
@@ -106,8 +107,9 @@ class AsyncSelect extends Component<Props, State> {
       input: {name, value},
       isDirty,
       placeholder,
+      initialValues,
     } = this.props;
-
+    
     return(
       <div className={classNames(
         'form-field__select',
@@ -137,6 +139,7 @@ class AsyncSelect extends Component<Props, State> {
           options={[]}
           placeholder={placeholder || 'Valitse...'}
           value={value}
+          defaultInputValue={initialValues ? initialValues.estate_id : ''}
         />
       </div>
     );

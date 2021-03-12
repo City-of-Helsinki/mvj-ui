@@ -488,7 +488,7 @@ class CompensationsEdit extends Component<Props> {
                       isSaveClicked={isSaveClicked}
                       change={change}
                       disabled={isSaveClicked}
-                      formName={FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}
+                      formName={FormNames.LAND_USE_CONTRACT_COMPENSATIONS}
                       name={'compensations.unit_prices_used_in_calculation'}
                     />
                   </Column>

@@ -150,9 +150,11 @@ type AreasProps = {
   fields: any,
   isSaveClicked: boolean,
   change: Function,
+  estateIds: [],
+  plots: [],
 }
 
-const renderAreas = ({attributes, fields, isSaveClicked, change}: AreasProps): Element<*> => {
+const renderAreas = ({attributes, fields, isSaveClicked, change, estateIds, plots}: AreasProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -176,7 +178,9 @@ const renderAreas = ({attributes, fields, isSaveClicked, change}: AreasProps): E
                   confirmationModalTitle: ConfirmationModalTexts.DELETE_LEASE_AREA.TITLE,
                 });
               };
-
+              if(plots[index]){
+                change(`${field}.plot`, plots[index].id);
+              }
               return(
                 <Row key={index}>
                   <Column>
@@ -192,6 +196,7 @@ const renderAreas = ({attributes, fields, isSaveClicked, change}: AreasProps): E
                             }}
                             disabled={false}
                             name={`estate_id`}
+                            initialValues={estateIds[index]}
                           />
                           <div style={{display: 'none'}}>
                             <FormField
@@ -312,7 +317,8 @@ class BasicInformationEdit extends Component<Props> {
       currentLandUseContract,
     } = this.props;
     const attachments = get(currentLandUseContract, 'attachments', []).filter(file => file.type === 'general');
-
+    const estateIds = get(currentLandUseContract, 'estate_ids');
+    const plots = get(currentLandUseContract, 'plots');
     return (
       <form>
         <h2>Perustiedot</h2>
@@ -333,6 +339,8 @@ class BasicInformationEdit extends Component<Props> {
                   enableUiDataEdit
                   change={change}
                   uiDataKey={getUiDataLandUseContractKey('estate_ids')}
+                  estateIds={estateIds}
+                  plots={plots}
                 />
               </Column>
             </Authorization>

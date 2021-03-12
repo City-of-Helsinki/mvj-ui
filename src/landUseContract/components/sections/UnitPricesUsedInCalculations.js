@@ -43,6 +43,18 @@ class UnitPricesUsedInCalculation extends Component<Props> {
     change(formName, `${field}.sum`, sum);
   }
 
+  componentDidUpdate(prevProps) {
+    if(
+      this.props.discount !== prevProps.discount ||
+      this.props.unitValue !== prevProps.unitValue ||
+      this.props.usedPrice !== prevProps.usedPrice ||
+      this.props.area !== prevProps.area) 
+    {
+      this.onChangeUsedPrice();
+    }
+  }
+
+
   render(){
     const {isSaveClicked, attributes, field, onRemove, area, unitValue, discount} = this.props;
     const sum = getSum(area, getUsedPrice(unitValue, discount));
@@ -78,7 +90,6 @@ class UnitPricesUsedInCalculation extends Component<Props> {
             fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.area')}
             invisibleLabel
             name={`${field}.area`}
-            onChange={this.onChangeUsedPrice}
           />
         </Column>
         <Column large={1}>
@@ -87,7 +98,6 @@ class UnitPricesUsedInCalculation extends Component<Props> {
             fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.unit_value')}
             invisibleLabel
             name={`${field}.unit_value`}
-            onChange={this.onChangeUsedPrice}
           />
         </Column>
         <Column large={1}>
@@ -96,7 +106,6 @@ class UnitPricesUsedInCalculation extends Component<Props> {
             fieldAttributes={get(attributes, 'compensations.children.unit_prices_used_in_calculation.child.children.discount')}
             invisibleLabel
             name={`${field}.discount`}
-            onChange={this.onChangeUsedPrice}
           />
         </Column>
         <Column large={1}>
