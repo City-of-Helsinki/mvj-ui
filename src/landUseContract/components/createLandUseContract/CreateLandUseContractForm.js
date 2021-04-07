@@ -117,12 +117,6 @@ class CreateLandUseContractForm extends Component<Props> {
           </Column> 
           <Column small={4}>
             <FormField
-              fieldAttributes={get(attributes, 'definition')}
-              name='definition'
-            />
-          </Column>
-          <Column small={4}>
-            <FormField
               fieldAttributes={get(attributes, 'status')}
               name='status'
             />

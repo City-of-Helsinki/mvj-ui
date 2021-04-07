@@ -180,6 +180,7 @@ const renderAreas = ({attributes, fields, isSaveClicked, change, estateIds, plot
               };
               if(plots[index]){
                 change(`${field}.plot`, plots[index].id);
+                change(`${field}.estate_id`, plots[index].estate_id);
               }
               return(
                 <Row key={index}>
