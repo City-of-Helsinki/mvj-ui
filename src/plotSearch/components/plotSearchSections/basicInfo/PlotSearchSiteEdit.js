@@ -41,8 +41,8 @@ import {
 import {
   getAttributes,
   getIsSaveClicked,
-  getCollapseStateByKey, 
-  getErrorsByFormName, 
+  getCollapseStateByKey,
+  getErrorsByFormName,
   getPlanUnitAttributes,
   getPlanUnit,
   getIsFetchingPlanUnit,
@@ -164,13 +164,13 @@ type State = {
 }
 
 class PlotSearchSiteEdit extends Component<Props, State> {
-  
+
   state = {
     planUnitNew: null,
   };
 
   handleCollapseToggle = (val: boolean) => {
-    const {  
+    const {
       plotSearchSiteId,
       receiveCollapseStates,
     } = this.props;
@@ -218,7 +218,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
   handleNew = (toPlotSearch: Object) => {
     const {
       fetchPlanUnitAttributes,
-      fetchPlanUnit,  
+      fetchPlanUnit,
     } = this.props;
     this.setState({
       planUnitNew: toPlotSearch,
@@ -263,7 +263,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
   }
 
   render(){
-    const {  
+    const {
       field,
       isSaveClicked,
       collapseState,
@@ -272,7 +272,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       onRemove,
       isFetchingPlanUnitAttributes,
       isFetchingPlanUnit,
-      planUnit, 
+      planUnit,
       planUnitAttributes,
       currentPlotSearch,
       index,
@@ -321,7 +321,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
               />
             </a>
           </WarningContainer>}
-          {(isDeleted || isNewer) && <Column small={12} medium={12} large={12}></Column>}
+          {(isDeleted || isNewer) && <Column small={12} medium={12} large={12} />}
           <Column small={6} medium={3} large={3}>
             <FormTextTitle>
               {'Kohteentunnus'}
@@ -340,7 +340,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
               />
             </div>
             <FormTextTitle>
-              {'kohteen tyyppi'}
+              {'Kohteen tyyppi'}
             </FormTextTitle>
             <FormField
               disableTouched={isSaveClicked}

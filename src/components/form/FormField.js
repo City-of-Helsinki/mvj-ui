@@ -73,10 +73,10 @@ const Types = {
 };
 
 const resolveFieldType = (type: string): Object => Object.prototype.hasOwnProperty.call(FieldTypes, type)
-  ? FieldTypes[type] 
+  ? FieldTypes[type]
   : FieldTypeBasic;
 const resolveType = (type: string): ?string => Object.prototype.hasOwnProperty.call(Types, type)
-  ? Types[type] 
+  ? Types[type]
   : null;
 
 type InputProps = {
@@ -303,7 +303,7 @@ class FormField extends PureComponent<Props, State> {
     options: [],
     required: false,
   }
-  static defualtProps = {
+  static defaultProps = {
     autoBlur: false,
     disabled: false,
     disableDirty: false,

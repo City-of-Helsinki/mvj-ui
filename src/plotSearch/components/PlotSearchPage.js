@@ -135,7 +135,7 @@ class PlotSearchPage extends Component<Props, State> {
       receiveIsSaveClicked,
       hideEditMode,
     } = this.props;
-    
+
     const query = getUrlParams(search);
 
     setPageTitle('Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu');
@@ -171,11 +171,11 @@ class PlotSearchPage extends Component<Props, State> {
     const query = getUrlParams(search);
     const tab = query.tab ? Number(query.tab) : 0;
 
-    
-    if(tab != activeTab) {
+
+    if(tab !== activeTab) {
       this.setState({activeTab: tab});
     }
-    
+
     if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
@@ -335,7 +335,7 @@ class PlotSearchPage extends Component<Props, State> {
         isBasicInformationFormDirty,
         isApplicationFormDirty,
       } = this.props;
-    
+
       //TODO: Add helper functions to save plotSearch to DB when API is ready
       let payload: Object = {...currentPlotSearch};
 
@@ -377,7 +377,7 @@ class PlotSearchPage extends Component<Props, State> {
       isFormValidFlags,
       match: {params: {plotSearchId}},
     } = this.props;
-    
+
     let isDirty = false;
 
     if(isBasicInformationFormDirty) {
@@ -457,11 +457,11 @@ class PlotSearchPage extends Component<Props, State> {
     } = this.props;
 
     return (
-      isBasicInformationFormValid && 
+      isBasicInformationFormValid &&
       isApplicationFormValid
     );
   }
-  
+
   handleDelete = () => {
     const {
       deletePlotSearch,
