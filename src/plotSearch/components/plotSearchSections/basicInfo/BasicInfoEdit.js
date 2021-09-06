@@ -31,13 +31,14 @@ import FormField from '$components/form/FormField';
 import {
   receiveCollapseStates,
   receiveIsSaveClicked,
+  receiveFormValidFlags
 } from '$src/plotSearch/actions';
 import {
   getAttributes,
   getCollapseStateByKey,
   getIsSaveClicked,
   getErrorsByFormName,
-  getPlotSearchSubTypes,
+  getPlotSearchSubTypes
 } from '$src/plotSearch/selectors';
 import {
   filterSubTypes,
@@ -213,6 +214,8 @@ type Props = {
   isSaveClicked: boolean,
   plotSearchSubTypes: Object,
   type: string,
+  receiveFormValidFlags: Function,
+  valid: boolean
 }
 
 type State = {
@@ -237,6 +240,16 @@ class BasicInfoEdit extends PureComponent<Props, State> {
 
   handleBasicInfoCollapseToggle = (val: boolean) => {
     this.handleCollapseToggle('basic', val);
+  }
+
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.PLOT_SEARCH_BASIC_INFORMATION]: this.props.valid,
+      });
+    }
   }
 
   render (){
@@ -403,17 +416,18 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         usersPermissions: getUsersPermissions(state),
-        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.basic`),
+        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.basic`),
         preparer: selector(state, 'preparer'),
         type: selector(state, 'type'),
         isSaveClicked: getIsSaveClicked(state),
         errors: getErrorsByFormName(state, formName),
-        plotSearchSubTypes: getPlotSearchSubTypes(state),
+        plotSearchSubTypes: getPlotSearchSubTypes(state)
       };
     },
     {
       receiveCollapseStates,
       receiveIsSaveClicked,
+      receiveFormValidFlags
     }
   ),
   reduxForm({
