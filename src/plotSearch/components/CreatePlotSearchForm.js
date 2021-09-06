@@ -12,6 +12,7 @@ import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {getAttributes} from '$src/plotSearch/selectors';
+import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
 
 import type {Attributes} from '$src/types';
 
@@ -63,6 +64,9 @@ class CreatePlotSearchForm extends Component<Props> {
               setRefForField={this.setRefForFirstField}
               fieldAttributes={get(attributes, 'name')}
               name='name'
+              overrideValues={{
+                label: PlotSearchFieldTitles.NAME
+              }}
             />
           </Column>
         </Row>
