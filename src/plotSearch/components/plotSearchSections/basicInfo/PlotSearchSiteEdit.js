@@ -299,7 +299,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       <Collapse
         className='collapse__secondary greenCollapse'
         defaultOpen={collapseState !== undefined ? collapseState : true}
-        headerTitle={`${get(planUnitNew, 'label')} ${get(plan_unit, 'plan_unit_status')}` || '-'}
+        headerTitle={!!get(planUnitNew, 'label') ? `${get(planUnitNew, 'label')} ${get(plan_unit, 'plan_unit_status')}` : 'Uusi kohde'}
         onRemove={onRemove}
         hasErrors={isSaveClicked && !isEmpty(plotSearchSiteErrors)}
         onToggle={this.handleCollapseToggle}
