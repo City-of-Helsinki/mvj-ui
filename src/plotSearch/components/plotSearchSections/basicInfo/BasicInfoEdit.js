@@ -352,6 +352,18 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     />
                   </Column>
                 </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'stage')}>
+                  <Column small={12} medium={6} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'stage')}
+                      name='stage'
+                      overrideValues={{
+                        label: PlotSearchFieldTitles.STAGE,
+                      }}
+                    />
+                  </Column>
+                </Authorization>
                 {/* <FieldArray
                   component={renderDecisions}
                   attributes={attributes}
@@ -360,17 +372,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   name={'decisions'}
                   isSaveClicked={isSaveClicked}
                   usersPermissions={usersPermissions}
-                />
-                <Column small={12} medium={6} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'stage')}
-                    name='stage'
-                    overrideValues={{
-                      label: PlotSearchFieldTitles.STEP,
-                    }}
-                  />
-                </Column> */}
+                /> */}
               </Row>
               <WhiteBox>
                 <SubTitle>
