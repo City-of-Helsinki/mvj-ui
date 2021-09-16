@@ -85,9 +85,11 @@ class Application extends PureComponent<Props, State> {
           </Column>
         </Row>
         <Row>
-          {section.fields && section.fields.map(field => this.renderField(field))}
+          {section.fields && section.fields.map((field, i) =>
+            <Fragment key={i}>{this.renderField(field)}</Fragment>)}
         </Row>
-        {section.subsections && section.subsections.map(subsection => this.renderSection(subsection))}
+        {section.subsections && section.subsections.map((subsection, i) =>
+          <Fragment key={i}>{this.renderSection(subsection)}</Fragment>)}
       </Fragment>
     );
   }
@@ -151,7 +153,7 @@ class Application extends PureComponent<Props, State> {
               <Column small={12} style={{marginTop: 15}}>
                 <Collapse
                   defaultOpen={applicationCollapseState !== undefined ? applicationCollapseState : true}
-                  headerTitle={'Osio'}
+                  headerTitle={section.title}
                   onToggle={this.handleBasicInfoCollapseToggle(index)}
                 >
                   {this.renderSection(section)}
