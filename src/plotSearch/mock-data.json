@@ -3,10 +3,12 @@
     "id": 1,
     "search_name": "Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu",
     "preparer": 1,
-    "applications": [{
-      "id": 1234,
-      "name": "Hakemus"
-      },{
+    "applications": [
+      {
+        "id": 1234,
+        "name": "Hakemus"
+      },
+      {
         "id": 2345,
         "name": "Hakemus"
       }
@@ -18,96 +20,503 @@
     "end_date": "2029-09-02",
     "end_time": "12:00",
     "last_update": "14.09.2019 klo 00:00",
-    "decisions": [{
-      "decision_to_list": true,
-      "type": 1,
-      "id": 123
-    },
-    {
-      "decision_to_list": true,
-      "type": 2,
-      "id": 124
-    }],
+    "decisions": [
+      {
+        "decision_to_list": true,
+        "type": 1,
+        "id": 123
+      },
+      {
+        "decision_to_list": true,
+        "type": 2,
+        "id": 124
+      }
+    ],
     "identifier": {
     },
     "step": 3,
-    "plotSearch_sites": [{
-      "identifier": 1,
-      "id": 12345,
-      "target_identifier": 1,
-      "lease_id": 1,
-      "hitas": "Hitas 1",
-      "address": "Verkkosaarenranta",
-      "step": 1,
-      "handling": 1,
-      "applications": [{
-        "name": "Hakemukset(25)"
-      }],
-      "use": 1,
-      "build_right": "3500",
-      "build_ready_in": "12/2022",
-      "funding": 1,
-      "ownership": 1,
-      "suggested": [
+    "plotSearch_sites": [
+      {
+        "identifier": 1,
+        "id": 12345,
+        "target_identifier": 1,
+        "lease_id": 1,
+        "hitas": "Hitas 1",
+        "address": "Verkkosaarenranta",
+        "step": 1,
+        "handling": 1,
+        "applications": [
+          {
+            "name": "Hakemukset(25)"
+          }
+        ],
+        "use": 1,
+        "build_right": "3500",
+        "build_ready_in": "12/2022",
+        "funding": 1,
+        "ownership": 1,
+        "suggested": [
+          {
+            "name": 1,
+            "share_numerator": "1",
+            "share_denominator": "3"
+          },
+          {
+            "name": 2,
+            "share_numerator": "1",
+            "share_denominator": "3"
+          },
+          {
+            "name": 3,
+            "share_numerator": "1",
+            "share_denominator": "3"
+          }
+        ]
+      }
+    ],
+    "form": {
+      "id": 1,
+      "name": "Tonttihaun peruslomake",
+      "is_template": false,
+      "title": "Tonttihaun peruslomake",
+      "sections": [
         {
-          "name": 1,
-          "share_numerator": "1",
-          "share_denominator": "3"
-        },{
-          "name": 2,
-          "share_numerator": "1",
-          "share_denominator": "3"
-        },{
-          "name": 3,
-          "share_numerator": "1",
-          "share_denominator": "3"
-        }]
-    }],
+          "id": 50,
+          "identifier": "hakijan-tiedot",
+          "title": "Hakijan tiedot",
+          "visible": true,
+          "sort_order": 0,
+          "add_new_allowed": true,
+          "add_new_text": "Lisää hakija",
+          "subsections": [],
+          "fields": [
+            {
+              "id": 350,
+              "identifier": "hakija",
+              "type": "radiobuttoninline",
+              "label": "Hakija",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 0,
+              "choices": [
+                {
+                  "text": "Yritys",
+                  "value": "1",
+                  "action": "showSection=2;hideSection=6",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Henkilö",
+                  "value": "2",
+                  "action": "showSection=6;hideSection=2",
+                  "has_text_input": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 55,
+          "identifier": "haettava-kohde",
+          "title": "Haettava kohde",
+          "visible": true,
+          "sort_order": 1,
+          "add_new_allowed": false,
+          "add_new_text": "",
+          "subsections": [],
+          "fields": [
+            {
+              "id": 386,
+              "identifier": "onko-aiemmin-saanut-tonttia",
+              "type": "radiobuttoninline",
+              "label": "Onko aiemmin saanut tonttia kaupungin haussa?",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 0,
+              "choices": [
+                {
+                  "text": "Kyllä",
+                  "value": "1",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Ei",
+                  "value": "0",
+                  "action": "",
+                  "has_text_input": false
+                }
+              ]
+            },
+            {
+              "id": 387,
+              "identifier": "tontti-jota-hakemus-koskee",
+              "type": "dropdown",
+              "label": "Tontti, jota hakemus koskee",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 1,
+              "choices": []
+            },
+            {
+              "id": 388,
+              "identifier": "prosentti-perusteinen",
+              "type": "textbox",
+              "label": "%-perusteinen",
+              "hint_text": "€/k-m2",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 2,
+              "choices": []
+            },
+            {
+              "id": 389,
+              "identifier": "hankkeen-paasuunnittelija",
+              "type": "textbox",
+              "label": "Hankkeen pääsuunnittelija",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 3,
+              "choices": []
+            },
+            {
+              "id": 390,
+              "identifier": "hankkeen-arvioitu-aikataulu",
+              "type": "textbox",
+              "label": "Hankkeen arvioitu aikataulu",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 4,
+              "choices": []
+            },
+            {
+              "id": 391,
+              "identifier": "hankkeen-toivottu-laajuus",
+              "type": "textbox",
+              "label": "Hankkeen toivottu laajuus (rakennusoikeus ja asuntojen lkm)",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 5,
+              "choices": []
+            },
+            {
+              "id": 392,
+              "identifier": "rahoitus-ja-hallintamuoto",
+              "type": "checkbox",
+              "label": "Rahoitus- ja hallintamuoto",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 6,
+              "choices": [
+                {
+                  "text": "Kohtuuhintaisuus",
+                  "value": "1",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Asumisen ratkaisut",
+                  "value": "2",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Elinkaariratkaisut",
+                  "value": "3",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Tekniset ratkaisut",
+                  "value": "4",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Hiilineutraali Helsinki",
+                  "value": "5",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Muu:",
+                  "value": "6",
+                  "action": "",
+                  "has_text_input": true
+                }
+              ]
+            },
+            {
+              "id": 393,
+              "identifier": "erityisryhmat",
+              "type": "checkbox",
+              "label": "Erityisryhmät",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 7,
+              "choices": [
+                {
+                  "text": "Opiskelijat",
+                  "value": "1",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Nuoret/nuoret aikuiset",
+                  "value": "2",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Seniorit",
+                  "value": "3",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Muut erityisryhmät, mitä:",
+                  "value": "4",
+                  "action": "",
+                  "has_text_input": true
+                }
+              ]
+            },
+            {
+              "id": 394,
+              "identifier": "muut-hankkeen-mahdolliset-kehitysteemat",
+              "type": "checkbox",
+              "label": "Muut hankkeen mahdolliset kehitysteemat",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 8,
+              "choices": [
+                {
+                  "text": "Sääntelemätön omistus",
+                  "value": "1",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Hitas omistus",
+                  "value": "2",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Hintakontrolloitu omistus",
+                  "value": "3",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Asumisoikeus",
+                  "value": "4",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Sääntelemätön vuokra",
+                  "value": "5",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Valtion tukema vuokra 10v",
+                  "value": "6",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Valtion tukema vuokra pitkä",
+                  "value": "7",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Valtion tukema takauslaina",
+                  "value": "8",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Muu:",
+                  "value": "9",
+                  "action": "",
+                  "has_text_input": true
+                }
+              ]
+            },
+            {
+              "id": 395,
+              "identifier": "hankkeen-yleiskuvaus",
+              "type": "textarea",
+              "label": "Hankkeen yleiskuvaus",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 9,
+              "choices": []
+            },
+            {
+              "id": 396,
+              "identifier": "hankkeen-mahdolliset-erityispiirteet",
+              "type": "textarea",
+              "label": "Hankkeen mahdolliset erityispiirteet ja mahdolliset kehittämisteemat",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 10,
+              "choices": []
+            },
+            {
+              "id": 397,
+              "identifier": "lyhyt-kuvaus-hankkeen-suunnittelusta",
+              "type": "textarea",
+              "label": "Lyhyt kuvaus hankkeen suunnittelusta ja toteutustavasta ja -organisaatiosta sekä hakijan käytössä olevista taloudellisista ja muista resursseista",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 11,
+              "choices": []
+            }
+          ]
+        },
+        {
+          "id": 60,
+          "identifier": "vahvistukset",
+          "title": "Vahvistukset",
+          "visible": true,
+          "sort_order": 2,
+          "add_new_allowed": false,
+          "add_new_text": "",
+          "subsections": [],
+          "fields": [
+            {
+              "id": 431,
+              "identifier": "lahettamalla-hakemuksen-vakuutan",
+              "type": "checkbox",
+              "label": "Lähettämällä hakemuksen vakuutan antamani tiedot oikeiksi ja ilmoitan tutustuneeni yleisen asuntotonttien varauskierroksen verkkosivustolla asiaa koskevaan materiaaliin.",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 0,
+              "choices": [
+                {
+                  "text": "Kyllä",
+                  "value": "1",
+                  "action": "",
+                  "has_text_input": false
+                }
+              ]
+            },
+            {
+              "id": 432,
+              "identifier": "suostun-siihen-että-helsingin-kaupunki",
+              "type": "checkbox",
+              "label": "Suostun siihen, että Helsingin kaupunki voi antaa päätöksen tai muun asiakirjan tiedoksi sähköisenä viestinä ilmoittamaani sähköpostiosoitteeseen siten kuin sähköisestä asioinnista viranomaistoiminnassa annetun lain 19:ssä säädetään.",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 1,
+              "choices": [
+                {
+                  "text": "Kyllä, hyväksyn tietojeni tallentamisen ja käsittelyn",
+                  "value": "1",
+                  "action": "",
+                  "has_text_input": false
+                }
+              ]
+            },
+            {
+              "id": 433,
+              "identifier": "valitse-miten-haluat-varauspaatosta",
+              "type": "radiobutton",
+              "label": "Valitse miten haluat varauspäätöstä koskeva pöytäkirjaotteet",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 2,
+              "choices": [
+                {
+                  "text": "Haluan pöytäkirjaotteet sähköpostitse",
+                  "value": "1",
+                  "action": "",
+                  "has_text_input": false
+                },
+                {
+                  "text": "Haluan pöytäkirjaotteet postitse",
+                  "value": "2",
+                  "action": "",
+                  "has_text_input": false
+                }
+              ]
+            },
+            {
+              "id": 434,
+              "identifier": "hyvaksyn-tietojeni-talentamisen",
+              "type": "checkbox",
+              "label": "Hyväksyn tietojeni tallentamisen ja käsittelyn Helsingin kaupunkiympäristön asiakasrekisterin selosteen mukaisesti. Lisätiedot: hel.fi/rekisteriseloste",
+              "hint_text": "",
+              "enabled": true,
+              "required": false,
+              "validation": "",
+              "action": "",
+              "sort_order": 3,
+              "choices": [
+                {
+                  "text": "Kyllä",
+                  "value": "1",
+                  "action": "",
+                  "has_text_input": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
     "application_base": {
-      "default": true,
-      "extra": 1,
-      "previous": true,
-      "created": 1,
-      "applicants": [{
-        "client_type": "1",
-        "company_organization": "Yritys Oy",
-        "company_y_identifier": "y-10234",
-        "company_founding_year": "1988",
-        "company_revenue": "10M",
-        "company_address": "Pasilankatu 12",
-        "company_postal_code": "00100",
-        "company_city": "Helsinki",
-        "company_email": "yritys@email.fi",
-        "company_phonenumber": "0401233456",
-        "contact_name": "Teppo Tiiroinen",
-        "contact_address": "Esplanadi 11",
-        "contact_postalcode": "00900",
-        "contact_city": "Helsinki",
-        "contact_phonenumber": "0100 12345678",
-        "person_name": "Tarmo Turunen",
-        "person_hetu": "01011988-123A",
-        "person_email": "tarmo@email.fi",
-        "person_phonenumber": "0100 1234321",
-        "person_address": "Tikkurilantie",
-        "person_postalcode": "00300",
-        "person_city": "Vantaa",
-        "transcript_address": "Lammila",
-        "transcript_postalcode": "00110",
-        "transcript_city": "Kotka"
-      }],
-      "targets": [{
-        "target_plotSearch": "1",
-        "percentage": 10,
-        "head_planner": "Teuvo Tarmola",
-        "estimated_schedule": "2020-2022",
-        "desired_size": "12",
-        "funding": [1, 2, 4],
-        "special": [2],
-        "other": [3, 6],
-        "overal_picture": "Test",
-        "peculiarities": "Test",
-        "descriptions" : "Test"
-      }]
     }
   }
 ]

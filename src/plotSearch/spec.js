@@ -31,11 +31,19 @@ import {
   PlotSearchSubtypeNotFound,
   receivePlotSearchSubtype,
   nullPlanUnits,
+  receiveForm,
+  formNotFound,
+  receiveTemplateForms,
+  fetchForm,
 } from './actions';
+
+import mockData from './mock-data.json';
 
 import plotSearchReducer from './reducer';
 
 import type {PlotSearchState} from './types';
+
+const mockForm = mockData[0].form;
 
 const baseState: PlotSearchState = {
   attributes: null,
@@ -58,8 +66,10 @@ const baseState: PlotSearchState = {
   subTypes: null,
   isFetchingFormAttributes: false,
   isFetchingForm: false,
+  isFetchingTemplateForms: false,
   formAttributes: null,
   form: null,
+  templateForms: []
 };
 
 
@@ -168,7 +178,7 @@ describe('PlotSearch', () => {
         const state = plotSearchReducer({}, receiveIsSaveClicked(true));
         expect(state).to.deep.equal(newState);
       });
-      
+
       it('should update isEditMode flag to false by hideEditMode', () => {
         const newState = {...baseState};
         newState.isEditMode = false;
@@ -195,7 +205,7 @@ describe('PlotSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('shoyauld clear isFormValidById', () => {
+      it('should clear isFormValidById', () => {
         const newState = {...baseState};
 
         let state = plotSearchReducer({}, receiveFormValidFlags({['plotSearch-basic-information-form']: false}));
@@ -242,7 +252,7 @@ describe('PlotSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('fetchSinglePlotSearchAfterEdit function should not change isFetcging flag', () => {
+      it('fetchSinglePlotSearchAfterEdit function should not change isFetching flag', () => {
         const state = plotSearchReducer({}, fetchSinglePlotSearchAfterEdit({id: 1}));
         expect(state).to.deep.equal(baseState);
       });
@@ -296,6 +306,54 @@ describe('PlotSearch', () => {
         const newState = {...baseState, isFetching: true};
 
         const state = plotSearchReducer({}, deletePlotSearch(dummyPlotSearch));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update template forms', () => {
+        const newState = {
+          ...baseState,
+          templateForms: [{
+            ...mockForm,
+            is_template: true
+          }]
+        };
+
+        const state = plotSearchReducer({}, receiveTemplateForms([
+          {
+            ...mockForm,
+            is_template: true
+          }
+        ]));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingForm flag to true by fetchForm', () => {
+        const newState = {
+          ...baseState,
+          isFetchingForm: true
+        };
+
+        const state = plotSearchReducer({}, fetchForm(1));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update plotForm', () => {
+        const newState = {
+          ...baseState,
+          form: mockForm
+        };
+
+        const state = plotSearchReducer({}, receiveForm(mockForm));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingForm flag to false by notFound', () => {
+        const newState = {
+          ...baseState,
+          isFetchingForm: false
+        };
+
+        const state = plotSearchReducer({}, formNotFound());
         expect(state).to.deep.equal(newState);
       });
 

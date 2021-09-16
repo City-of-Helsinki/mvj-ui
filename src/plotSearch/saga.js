@@ -27,6 +27,9 @@ import {
   formAttributesNotFound,
   fetchFormAttributes,
   fetchForm,
+  fetchTemplateForms,
+  receiveTemplateForms,
+  templateFormsNotFound,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -35,16 +38,17 @@ import mockData from './mock-data.json';
 
 import {
   fetchAttributes,
-  createPlotSearch, 
-  fetchPlotSearches, 
-  fetchSinglePlotSearch, 
-  editPlotSearch, 
+  createPlotSearch,
+  fetchPlotSearches,
+  fetchSinglePlotSearch,
+  editPlotSearch,
   deletePlotSearch,
   fetchPlanUnitAttributes,
   fetchPlanUnit,
   fetchPlotSearchSubtypes,
   fetchFormRequest,
   fetchFormAttributesRequest,
+  fetchTemplateFormsRequest,
 } from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -99,8 +103,11 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSinglePlotSearch({...bodyAsJson, application_base: mockData[0].application_base}));
-        yield put(fetchFormAttributes(1));
-        yield put(fetchForm(1));
+        yield put(fetchTemplateForms());
+        if (bodyAsJson.form) {
+          yield put(fetchFormAttributes(bodyAsJson.form));
+          yield put(fetchForm(bodyAsJson.form));
+        }
         break;
       case 404:
         yield put(notFound());
@@ -113,6 +120,29 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
   } catch (error) {
     console.error('Failed to fetch plot search with error "%s"', error);
     yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchTemplateFormsSaga(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchTemplateFormsRequest);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveTemplateForms(bodyAsJson.results));
+        break;
+      case 404:
+        yield put(templateFormsNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      default:
+        yield put(templateFormsNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch form templates with error "%s"', error);
+    yield put(templateFormsNotFound());
     yield put(receiveError(error));
   }
 }
@@ -157,6 +187,11 @@ function* editPlotSearchSaga({payload: plotSearch}): Generator<any, any, any> {
             nullPlanUnits(),
           ],
         }));
+        if (bodyAsJson.form) {
+          const id = bodyAsJson.form?.id || bodyAsJson.form;
+          yield put(fetchFormAttributes(id));
+          yield put(fetchForm(id));
+        }
         break;
       case 400:
         yield put(notFound());
@@ -356,6 +391,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotSearch/EDIT', editPlotSearchSaga);
       yield takeLatest('mvj/plotSearch/FETCH_SINGLE_AFTER_EDIT', fetchSinglePlotSearchAfterEditSaga);
       yield takeLatest('mvj/plotSearch/DELETE', deletePlotSearchSaga);
+      yield takeLatest('mvj/plotSearch/FETCH_TEMPLATE_FORMS', fetchTemplateFormsSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
       yield takeEvery('mvj/plotSearch/FETCH_FORM_ATTRIBUTES', fetchFormAttributesSaga);

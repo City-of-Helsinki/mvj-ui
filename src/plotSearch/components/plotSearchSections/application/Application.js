@@ -20,13 +20,14 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {
-  getAttributes, 
-  getCollapseStateByKey, 
+  getAttributes,
+  getCollapseStateByKey,
   getCurrentPlotSearch,
   getIsFetchingFormAttributes,
   getIsFetchingForm,
   getFormAttributes,
   getForm,
+  getIsFetchingTemplateForms
 } from '$src/plotSearch/selectors';
 import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {getContentApplication} from '$src/plotSearch/helpers';
@@ -124,8 +125,9 @@ class Application extends PureComponent<Props, State> {
       attributes,
       currentPlotSearch,
       isFetchingFormAttributes,
-      ifFetchingForm,
-      // formAttributes,
+      isFetchingForm,
+      isFetchingTemplateForms,
+      formAttributes,
       form,
     } = this.props;
 
@@ -133,7 +135,9 @@ class Application extends PureComponent<Props, State> {
     const extraOptions = getFieldOptions(attributes, 'application_base.child.children.extra');
     const createdOptions = getFieldOptions(attributes, 'application_base.child.children.created');
 
-    if(isFetchingFormAttributes || ifFetchingForm) return <Loader isLoading={true} />;
+    if (isFetchingFormAttributes || isFetchingForm || isFetchingTemplateForms) {
+      return <Loader isLoading={true} />;
+    }
 
     return (
       <Fragment>
@@ -169,7 +173,8 @@ export default connect(
       attributes: getAttributes(state),
       currentPlotSearch: getCurrentPlotSearch(state),
       isFetchingFormAttributes: getIsFetchingFormAttributes(state),
-      ifFetchingForm: getIsFetchingForm(state),
+      isFetchingForm: getIsFetchingForm(state),
+      isFetchingTemplateForms: getIsFetchingTemplateForms(state),
       formAttributes: getFormAttributes(state),
       form: getForm(state),
     };
