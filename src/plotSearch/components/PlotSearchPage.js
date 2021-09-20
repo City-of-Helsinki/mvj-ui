@@ -32,6 +32,7 @@ import {
   getIsFormValidById,
   getIsFormValidFlags,
   getIsFetching,
+  getForm
 } from '$src/plotSearch/selectors';
 import {
   editPlotSearch,
@@ -54,7 +55,7 @@ import {
   isMethodAllowed,
 } from '$util/helpers';
 import type {Attributes, Methods as MethodType} from '$src/types';
-import type {PlotSearch} from '$src/plotSearch/types';
+import type {PlotSearch, Form} from '$src/plotSearch/types';
 import {
   getContentBasicInformation,
   getContentApplication,
@@ -263,14 +264,14 @@ class PlotSearchPage extends Component<Props, State> {
   }
 
   handleShowEditMode = () => {
-    const {clearFormValidFlags, currentPlotSearch, receiveIsSaveClicked, showEditMode} = this.props;
+    const {clearFormValidFlags, currentPlotSearch, receiveIsSaveClicked, showEditMode, plotSearchForm} = this.props;
 
     receiveIsSaveClicked(false);
     clearFormValidFlags();
 
     showEditMode();
     this.destroyAllForms();
-    this.initializeForms(currentPlotSearch);
+    this.initializeForms(currentPlotSearch, plotSearchForm);
     this.startAutoSaveTimer();
   }
 
@@ -281,10 +282,10 @@ class PlotSearchPage extends Component<Props, State> {
     );
   }
 
-  initializeForms = (plotSearch: PlotSearch) => {
+  initializeForms = (plotSearch: PlotSearch, plotSearchForm: Form) => {
     const {initialize} = this.props;
     initialize(FormNames.PLOT_SEARCH_BASIC_INFORMATION, getContentBasicInformation(plotSearch));
-    initialize(FormNames.PLOT_SEARCH_APPLICATION, getContentApplication(plotSearch));
+    initialize(FormNames.PLOT_SEARCH_APPLICATION, getContentApplication(plotSearch, plotSearchForm));
   }
 
   destroyAllForms = () => {
@@ -350,7 +351,7 @@ class PlotSearchPage extends Component<Props, State> {
         payload = {...payload, ...basicInformationFormValues};
       }
       if(isApplicationFormDirty) {
-        payload = {...payload, application_base: {...applicationFormValues}};
+        payload = {...payload, form: applicationFormValues.form.id};
       }
       payload = cleanTargets(payload);
       payload.identifier = currentPlotSearch.identifier;
@@ -421,13 +422,14 @@ class PlotSearchPage extends Component<Props, State> {
       currentPlotSearch,
       receiveFormValidFlags,
       showEditMode,
+      plotSearchForm
     } = this.props;
 
     showEditMode();
     clearFormValidFlags();
 
     this.destroyAllForms();
-    this.initializeForms(currentPlotSearch);
+    this.initializeForms(currentPlotSearch, plotSearchForm);
 
     const storedBasicInformationFormValues = getSessionStorageItem(FormNames.PLOT_SEARCH_BASIC_INFORMATION);
     if(storedBasicInformationFormValues) {
@@ -635,6 +637,7 @@ export default flowRight(
         isSaveClicked: getIsSaveClicked(state),
         usersPermissions: getUsersPermissions(state),
         isFormValidFlags: getIsFormValidFlags(state),
+        plotSearchForm: getForm(state)
       };
     },
     {

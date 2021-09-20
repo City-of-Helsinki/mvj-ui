@@ -57,7 +57,11 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        const attributes = {...bodyAsJson.fields, application_base: attributesMockData.fields.application_base};
+        const attributes = {
+          ...bodyAsJson.fields,
+          application_base: attributesMockData.fields.application_base,
+          form: attributesMockData.fields.form
+        };
         const methods = bodyAsJson.methods;
 
         yield put(receiveAttributes(attributes));

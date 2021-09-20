@@ -30,6 +30,14 @@ export type PlotSearch = Object;
 export type PlanUnit = Object;
 export type PlotSearchList = Object;
 
+export type Form = {
+  name: string,
+  title: string,
+  id: number,
+  is_template: boolean,
+  sections: Object
+};
+
 export type FetchSinglePlotSearchAfterEditPayload = {
   id: any,
   callbackFuntions?: Array<Object | Function>,

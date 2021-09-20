@@ -68,4 +68,5 @@ export const ApplicationFieldTitles = {
   APPLICATION_EXTRA: 'Lomakkeen lisäosat',
   APPLICATION_PREVIOUS: 'Aiemmin luotu lomake',
   APPLICATION_CREATED: 'Luodut hakulomakkeet',
+  APPLICATION_TITLE: 'Lomakkeen otsikko',
 };

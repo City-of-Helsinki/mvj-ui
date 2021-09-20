@@ -2,7 +2,7 @@
 import React, {Fragment, PureComponent, type Element} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {FieldArray, reduxForm} from 'redux-form';
+import {FieldArray, reduxForm, formValues} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
@@ -13,7 +13,6 @@ import {ButtonColors} from '$components/enums';
 import {ConfirmationModalTexts} from '$src/enums';
 import TitleH3 from '$components/content/TitleH3';
 import WhiteBox from '$components/content/WhiteBox';
-import FileDownloadButton from '$components/file/FileDownloadButton';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -31,10 +30,16 @@ import {
   getCollapseStateByKey,
   getIsSaveClicked,
   getErrorsByFormName,
+  getFormAttributes,
+  getIsFetchingTemplateForms,
+  getTemplateForms,
+  getCurrentPlotSearch,
+  getForm
 } from '$src/plotSearch/selectors';
 import ApplicantEdit from './ApplicantEdit';
 import TargetEdit from './TargetEdit';
 import type {Attributes} from '$src/types';
+import Loader from "../../../../components/loader/Loader";
 
 type ApplicantProps = {
   disabled: boolean,
@@ -66,9 +71,9 @@ const renderApplicant = ({
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  confirmationModalButtonClassName: ButtonColors.ALERT, 
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: ConfirmationModalTexts.DELETE_APPLICANT.BUTTON,
-                  confirmationModalLabel: ConfirmationModalTexts.DELETE_APPLICANT.LABEL, 
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_APPLICANT.LABEL,
                   confirmationModalTitle: ConfirmationModalTexts.DELETE_APPLICANT.TITLE,
                 });
               };
@@ -129,9 +134,9 @@ const renderTarget = ({
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  confirmationModalButtonClassName: ButtonColors.ALERT, 
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: ConfirmationModalTexts.DELETE_TARGET.BUTTON,
-                  confirmationModalLabel: ConfirmationModalTexts.DELETE_TARGET.LABEL, 
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_TARGET.LABEL,
                   confirmationModalTitle: ConfirmationModalTexts.DELETE_TARGET.TITLE,
                 });
               };
@@ -196,13 +201,60 @@ class ApplicationEdit extends PureComponent<Props, State> {
     this.handleCollapseToggle('basic', val);
   }
 
+  loadTemplate = (newTemplateId) => {
+    const { templateForms, change } = this.props;
+
+    const template = templateForms.find((templateForm) => templateForm.id === newTemplateId);
+    change('form', {
+      ...template,
+      is_template: false
+    });
+  };
+
+  replaceTemplate = (useExisting) => {
+    const { currentPlotSearchForm, change } = this.props;
+
+    if (useExisting) {
+      change('template', null);
+      change('form', { ...currentPlotSearchForm });
+    } else {
+      change('form', null);
+    }
+  };
+
   render (){
     const {
       collapseStateBasic,
       isSaveClicked,
       attributes,
       errors,
+      templateForms,
+      isFetchingTemplateForms,
+      currentPlotSearch,
+      formData,
+      useExistingForm
     } = this.props;
+
+    const formOptions = templateForms?.map((templateForm) => ({
+      value: templateForm.id,
+      label: templateForm.title
+    })) || [];
+
+    const formTemplateSelect = <FormField
+      disableTouched={isSaveClicked}
+      fieldAttributes={{
+        "type": "field",
+        "required": false,
+        "read_only": false,
+        "label": currentPlotSearch.form !== null ? "Korvaava lomakepohja" : "Lomakepohja"
+      }}
+      name={`template`}
+      overrideValues={{
+        options: formOptions
+      }}
+      onChange={(_, newValue) => this.loadTemplate(newValue)}
+    />;
+
     return (
       <form>
         <Title uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}>
@@ -220,66 +272,47 @@ class ApplicationEdit extends PureComponent<Props, State> {
               uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION_BASE)}
             >
               <Row>
-                <Column large={3}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'application_base.child.children.default')}
-                    name={`default`}
-                    overrideValues={{
-                      fieldType: 'checkbox',
-                      label: ApplicationFieldTitles.APPLICATION_DEFAULT,
-                      options: [{value: 1, label: 'Hakytyypin oletuslomake'}],
-                    }}
-                    enableUiDataEdit
-                    invisibleLabel
-                  />
-                </Column>
-                <Column large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'application_base.child.children.extra')}
-                    name={`extra`}
-                    overrideValues={{
-                      label: ApplicationFieldTitles.APPLICATION_EXTRA,
-                    }}
-                    enableUiDataEdit
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column large={3}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'application_base.child.children.previous')}
-                    name={`previous`}
-                    overrideValues={{
-                      label: ApplicationFieldTitles.APPLICATION_PREVIOUS,
-                    }}
-                    enableUiDataEdit
-                    invisibleLabel
-                  />
-                </Column>
-                <Column large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'application_base.child.children.created')}
-                    name={`created`}
-                    overrideValues={{
-                      label: ApplicationFieldTitles.APPLICATION_CREATED,
-                    }}
-                    enableUiDataEdit
-                  />
+                <Column large={6}>
+                  {isFetchingTemplateForms ? <Loader isLoading={true} /> : <>
+                    {currentPlotSearch.form !== null ? <>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={{
+                          "required": false,
+                          "read_only": false,
+                          "label": "Lomakepohja",
+                          "type": "radio-with-field",
+                          "choices": []
+                        }}
+                        name={`useExistingForm`}
+                        overrideValues={{
+                          "options": [
+                            {
+                              "label": "Käytä aiemmin tallennettua lomaketta",
+                              "value": "1"
+                            },
+                            {
+                              "label": "Korvaa uudella lomakepohjalla",
+                              "value": "0"
+                            }
+                          ]
+                        }}
+                        onChange={(_, value) => this.replaceTemplate(value === '1')}
+                      />
+                      {useExistingForm === "0" && formTemplateSelect}
+                    </> : formTemplateSelect}
+                  </>}
                 </Column>
               </Row>
-              <Column className={''} style={{margin: '0 0 10px 0'}}>
-                <FileDownloadButton
-                  disabled={true}
-                  label='ESIKATSELE'
-                  payload={{
-                  }}
-                  url={''} 
-                />
-              </Column>
+            </Collapse>
+            {formData !== null && <Collapse
+              defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
+              hasErrors={isSaveClicked && !isEmpty(errors)}
+              headerTitle={ApplicationFieldTitles.APPLICATION}
+              onToggle={this.handleBasicInfoCollapseToggle}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}
+            >
               <WhiteBox className='application__white-stripes'>
                 <TitleH3>
                   {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
@@ -297,7 +330,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
                   name={'targets'}
                 />
               </WhiteBox>
-            </Collapse>
+            </Collapse>}
           </Column>
         </Row>
       </form>
@@ -316,6 +349,11 @@ export default flowRight(
         collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.PLOT_SEARCH_APPLICATION}.basic`),
         isSaveClicked: getIsSaveClicked(state),
         errors: getErrorsByFormName(state, formName),
+        formAttributes: getFormAttributes(state),
+        isFetchingTemplateForms: getIsFetchingTemplateForms(state),
+        templateForms: getTemplateForms(state),
+        currentPlotSearch: getCurrentPlotSearch(state),
+        currentPlotSearchForm: getForm(state)
       };
     },
     {
@@ -326,4 +364,8 @@ export default flowRight(
     form: formName,
     destroyOnUnmount: false,
   }),
+  formValues({
+    formData: 'form',
+    useExistingForm: 'useExistingForm'
+  })
 )(ApplicationEdit);

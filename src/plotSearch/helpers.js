@@ -3,14 +3,14 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import {getContentUser} from '$src/users/helpers';
-import type {PlotSearch} from './types';
+import type {PlotSearch, Form} from './types';
 import {removeSessionStorageItem} from '$util/storage';
 import {FormNames} from '$src/enums';
 import {
-  getApiResponseResults, 
+  getApiResponseResults,
 } from '$util/helpers';
 
-/** 
+/**
  * Get plotSearch basic information content
  * @param {Object} plotSearch
  * @return {Object}
@@ -39,7 +39,7 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
   };
 };
 
-/** 
+/**
  * Get basic information form values
  * @param {Object} basicInformation
  * @return {Object}
@@ -53,23 +53,21 @@ export const getBasicInformationFormValues = (basicInformation: Object): Object 
   return values;
 };
 
-/** 
+/**
  * Get plotSearch application content
  * @param {Object} plotSearch
+ * @param {Object} plotSearchForm
  * @return {Object}
  */
-export const getContentApplication = (plotSearch: PlotSearch): Object => {
+export const getContentApplication = (plotSearch: PlotSearch, plotSearchForm: Form): Object => {
   return {
-    default: plotSearch.application_base.default,
-    extra: plotSearch.application_base.extra,
-    previous: plotSearch.application_base.previous,
-    created: plotSearch.application_base.created,
-    applicants: plotSearch.application_base.applicants,
-    targets: plotSearch.application_base.targets,
+    template: null,
+    useExistingForm: !!plotSearch.form ? "1" : "0",
+    form: plotSearchForm
   };
 };
 
-/** 
+/**
  * Get search properties
  * @param {Object} searchProperties
  * @return {Object}
@@ -78,7 +76,7 @@ export const getContentSearchProperties = (searchProperties: Object): Object => 
   return searchProperties;
 };
 
-/** 
+/**
  * Get plotSearch list item
  * @param {Object} contract
  * @return {Object}
@@ -104,7 +102,7 @@ export const getContentPlanUnitIdentifier = (plan_unit: Object): ?string =>
     : null;
 };
 
-/** 
+/**
  * Get plotSearch list results
  * @param {Object} plotSearch
  * @return {Object[]}
@@ -135,7 +133,7 @@ export const getlabel = (plan_unit: Object): ?string =>
 
 
 export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object => {
-  if(planUnit && Object.keys(planUnit) && planUnit[Object.keys(planUnit)[index]]) 
+  if(planUnit && Object.keys(planUnit) && planUnit[Object.keys(planUnit)[index]])
     return planUnit[Object.keys(planUnit)[index]];
   else
     return null;
