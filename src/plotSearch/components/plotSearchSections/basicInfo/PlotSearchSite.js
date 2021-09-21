@@ -22,7 +22,7 @@ import {
 } from '$util/helpers';
 import {
   getAttributes,
-  getCollapseStateByKey, 
+  getCollapseStateByKey,
   getPlanUnitAttributes,
   getPlanUnit,
   getIsFetchingPlanUnit,
@@ -74,11 +74,11 @@ class PlotSearchSite extends PureComponent<Props, State> {
 
   componentDidMount(){
     this.getPlanUnitData();
-    this.startTimer();  
+    this.startTimer();
   }
 
   updateComponent(){
-    const {update} = this.state; 
+    const {update} = this.state;
     this.setState({
       update: update + 1,
     });
@@ -101,7 +101,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
     const {
       fetchPlanUnitAttributes,
       fetchPlanUnit,
-      plotSearchSite,  
+      plotSearchSite,
     } = this.props;
     const payload = {
       value: plotSearchSite.plan_unit.id,
@@ -111,13 +111,13 @@ class PlotSearchSite extends PureComponent<Props, State> {
   }
 
   render(){
-    
+
     const {
       collapseState,
       plotSearchSite,
       isFetchingPlanUnitAttributes,
       isFetchingPlanUnit,
-      planUnit, 
+      planUnit,
       planUnitAttributes,
     } = this.props;
 
@@ -141,7 +141,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
         <Collapse
           className='collapse__secondary greenCollapse'
           defaultOpen={collapseState !== undefined ? collapseState : true}
-          headerTitle={`${get(currentPlanUnit, 'identifier')} ${get(currentPlanUnit, 'plan_unit_status')}` || '-'}
+          headerTitle={get(currentPlanUnit, 'identifier') ? `${get(currentPlanUnit, 'identifier')} ${get(currentPlanUnit, 'plan_unit_status')}` : '-'}
           onToggle={this.handleCollapseToggle}
         >
           <Row style={{marginBottom: 10}}>

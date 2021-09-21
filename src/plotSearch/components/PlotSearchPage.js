@@ -135,10 +135,10 @@ class PlotSearchPage extends Component<Props, State> {
       receiveIsSaveClicked,
       hideEditMode,
     } = this.props;
-    
+
     const query = getUrlParams(search);
 
-    setPageTitle('Kruununvuorenrannan kortteleiden 49288 ja 49289 laatu- ja hintakilpailu');
+    this.setPageTitle();
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.PLOT_SEARCH),
@@ -171,11 +171,11 @@ class PlotSearchPage extends Component<Props, State> {
     const query = getUrlParams(search);
     const tab = query.tab ? Number(query.tab) : 0;
 
-    
-    if(tab != activeTab) {
+
+    if(tab !== activeTab) {
       this.setState({activeTab: tab});
     }
-    
+
     if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
@@ -186,6 +186,8 @@ class PlotSearchPage extends Component<Props, State> {
       if(Number(plotSearchId) === storedPlotSearchId) {
         this.setState({isRestoreModalOpen: true});
       }
+
+      this.setPageTitle(currentPlotSearch.name);
     }
 
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes
@@ -239,6 +241,10 @@ class PlotSearchPage extends Component<Props, State> {
       return confirmationMessage;              // Gecko, WebKit, Chrome <34
     }
   }
+
+  setPageTitle = (name) => {
+    setPageTitle(`${name ? `${name} | ` : ''}Tonttihaku`)
+  };
 
   isAnyFormDirty = () => {
     const {
@@ -335,7 +341,7 @@ class PlotSearchPage extends Component<Props, State> {
         isBasicInformationFormDirty,
         isApplicationFormDirty,
       } = this.props;
-    
+
       //TODO: Add helper functions to save plotSearch to DB when API is ready
       let payload: Object = {...currentPlotSearch};
 
@@ -349,6 +355,7 @@ class PlotSearchPage extends Component<Props, State> {
       payload = cleanTargets(payload);
       payload.identifier = currentPlotSearch.identifier;
       editPlotSearch(payload);
+      this.setPageTitle(basicInformationFormValues.name);
     }
   }
 
@@ -377,7 +384,7 @@ class PlotSearchPage extends Component<Props, State> {
       isFormValidFlags,
       match: {params: {plotSearchId}},
     } = this.props;
-    
+
     let isDirty = false;
 
     if(isBasicInformationFormDirty) {
@@ -457,11 +464,11 @@ class PlotSearchPage extends Component<Props, State> {
     } = this.props;
 
     return (
-      isBasicInformationFormValid && 
+      isBasicInformationFormValid &&
       isApplicationFormValid
     );
   }
-  
+
   handleDelete = () => {
     const {
       deletePlotSearch,

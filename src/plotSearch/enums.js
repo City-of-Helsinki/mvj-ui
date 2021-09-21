@@ -30,7 +30,7 @@ export const PlotSearchFieldTitles = {
   BASIC_INFO: 'Perustiedot',
   NAME: 'Haun nimi',
   PREPARER: 'Valmistelija',
-  APPLICATIONS: 'Hakemuset',
+  APPLICATIONS: 'Hakemukset',
   TYPE: 'Haun tyyppi',
   SUBTYPE: 'Haun alatyyppi',
   START_DATE: 'Alkupvm',
