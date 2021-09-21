@@ -18,7 +18,7 @@ export const PlotSearchFieldPaths = {
   APPLICATIONS_UPDATED_DATE: 'Applications_updated_date',
   DECISION: 'decision',
   DECISION_TO_LIST: 'decision_to_list',
-  STEP: 'step',
+  STAGE: 'stage',
 };
 
 /**
@@ -39,7 +39,7 @@ export const PlotSearchFieldTitles = {
   APPLICATIONS_UPDATED_DATE: 'Hakemukset päivitetty',
   DECISION: 'Päätös',
   DECISION_TO_LIST: 'Päätös hakutuloslistaan',
-  STEP: 'Haun vaihe',
+  STAGE: 'Haun vaihe',
 };
 
 /**

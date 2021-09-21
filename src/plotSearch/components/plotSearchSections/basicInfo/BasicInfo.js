@@ -84,9 +84,9 @@ class BasicInfo extends PureComponent<Props, State> {
     const plotSearch = getContentBasicInformation(currentPlotSearch);
     const typeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.TYPE);
     const subtypeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SUBTYPE);
+    const stageOptions = getFieldOptions(attributes, PlotSearchFieldPaths.STAGE);
     // const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
-    // const stageOptions = getFieldOptions(attributes, 'stage');
-  
+
     return (
       <Fragment>
         <Title>
@@ -122,7 +122,7 @@ class BasicInfo extends PureComponent<Props, State> {
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('applications')}>
                       {PlotSearchFieldTitles.APPLICATIONS}
                     </FormTextTitle>
-                    {plotSearch.applications && plotSearch.applications.map((application, index) => 
+                    {plotSearch.applications && plotSearch.applications.map((application, index) =>
                       <FormText key={index}>
                         <ExternalLink
                           className='no-margin'
@@ -136,7 +136,7 @@ class BasicInfo extends PureComponent<Props, State> {
               </Row>
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
-                  <Column small={12} medium={6} large={3}>
+                  <Column small={12} medium={6} large={2}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('type')}>
                       {PlotSearchFieldTitles.TYPE}
                     </FormTextTitle>
@@ -144,7 +144,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'subtype')}>
-                  <Column small={12} medium={6} large={3}>
+                  <Column small={12} medium={6} large={2}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('subtype')}>
                       {PlotSearchFieldTitles.SUBTYPE}
                     </FormTextTitle>
@@ -152,15 +152,15 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
-                  <Column small={6} medium={4} large={1}>
+                  <Column small={6} medium={3} large={1}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('begin_at')}>
                       {PlotSearchFieldTitles.START_DATE}
-                    </FormTextTitle>  
+                    </FormTextTitle>
                     <FormText>{formatDate(plotSearch.begin_at) || '-'}</FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
-                  <Column small={6} medium={4} large={1}>
+                  <Column small={6} medium={3} large={1}>
                     <FormTextTitle>
                       {PlotSearchFieldTitles.CLOCK}
                     </FormTextTitle>
@@ -168,7 +168,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'end_at')}>
-                  <Column small={6} medium={4} large={1}>
+                  <Column small={6} medium={3} large={1}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('end_at')}>
                       {PlotSearchFieldTitles.END_DATE}
                     </FormTextTitle>
@@ -176,11 +176,21 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'end_at')}>
-                  <Column small={6} medium={4} large={1}>
+                  <Column small={6} medium={3} large={1}>
                     <FormTextTitle>
                       {PlotSearchFieldTitles.CLOCK}
                     </FormTextTitle>
                     <FormText>{getHoursAndMinutes(plotSearch.end_at) || '-'}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'stage')}>
+                  <Column small={6} medium={6} large={2}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.STAGE}
+                    </FormTextTitle>
+                    <FormText>
+                      {getLabelOfOption(stageOptions, plotSearch.stage) || '-'}
+                    </FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'modified_at')}>
@@ -197,7 +207,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle>
                     {PlotSearchFieldTitles.DECISION}
                   </FormTextTitle>
-                  {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) => 
+                  {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
                     <FormText key={index}>
                       <ExternalLink
                         className='no-margin'
@@ -211,7 +221,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   <FormTextTitle>
                     {PlotSearchFieldTitles.DECISION_TO_LIST}
                   </FormTextTitle>
-                  {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) => 
+                  {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
                     <Row key={index}>
                       <Column>
                         <SingleRadioInput
@@ -225,13 +235,6 @@ class BasicInfo extends PureComponent<Props, State> {
                       </Column>
                     </Row>
                   )}
-                </Column>
-
-                <Column small={6} medium={2} large={2}>
-                  <FormTitleAndText
-                    title={PlotSearchFieldTitles.STEP}
-                    text={getLabelOfOption(stageOptions, plotSearch.stage) || '-'}
-                  />
                 </Column>
               </Row> */}
               {(!!plotSearch.targets && plotSearch.targets.
