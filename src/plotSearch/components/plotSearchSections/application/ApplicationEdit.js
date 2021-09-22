@@ -40,6 +40,7 @@ import ApplicantEdit from './ApplicantEdit';
 import TargetEdit from './TargetEdit';
 import type {Attributes} from '$src/types';
 import Loader from "../../../../components/loader/Loader";
+import ApplicationPreviewSection from "./ApplicationPreviewSection";
 
 type ApplicantProps = {
   disabled: boolean,
@@ -305,32 +306,38 @@ class ApplicationEdit extends PureComponent<Props, State> {
                 </Column>
               </Row>
             </Collapse>
-            {formData !== null && <Collapse
-              defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle={ApplicationFieldTitles.APPLICATION}
-              onToggle={this.handleBasicInfoCollapseToggle}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}
-            >
-              <WhiteBox className='application__white-stripes'>
-                <TitleH3>
-                  {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
-                </TitleH3>
-                <FieldArray
-                  component={renderApplicant}
-                  disabled={false}
-                  formName={FormNames.PLOT_SEARCH_APPLICATION}
-                  name={'applicants'}
-                />
-                <FieldArray
-                  component={renderTarget}
-                  disabled={false}
-                  formName={FormNames.PLOT_SEARCH_APPLICATION}
-                  name={'targets'}
-                />
-              </WhiteBox>
-            </Collapse>}
+            {formData !== null && <>
+              <Collapse
+                defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
+                hasErrors={isSaveClicked && !isEmpty(errors)}
+                headerTitle={ApplicationFieldTitles.APPLICATION}
+                onToggle={this.handleBasicInfoCollapseToggle}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}
+              >
+                <WhiteBox className='application__white-stripes'>
+                  <TitleH3>
+                    {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
+                  </TitleH3>
+
+                  {/* <FieldArray
+                    component={renderApplicant}
+                    disabled={false}
+                    formName={FormNames.PLOT_SEARCH_APPLICATION}
+                    name={'applicants'}
+                  />
+                  <FieldArray
+                    component={renderTarget}
+                    disabled={false}
+                    formName={FormNames.PLOT_SEARCH_APPLICATION}
+                    name={'targets'}
+                  />*/}
+                </WhiteBox>
+              </Collapse>
+              {formData.sections.filter((section) => section.visible).map((section, index) =>
+                <ApplicationPreviewSection section={section} key={index} handleToggle={() => this.handleBasicInfoCollapseToggle(index)} />
+              )}
+            </>}
           </Column>
         </Row>
       </form>
