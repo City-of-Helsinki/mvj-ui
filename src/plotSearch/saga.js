@@ -26,7 +26,6 @@ import {
   receiveFormAttributes,
   formAttributesNotFound,
   fetchFormAttributes,
-  fetchForm,
   fetchTemplateForms,
   receiveTemplateForms,
   templateFormsNotFound,
@@ -86,7 +85,7 @@ function* fetchPlotSearchSaga({payload: query}): Generator<any, any, any> {
       case 200:
         yield put(receivePlotSearchList({
           count: bodyAsJson.count,
-          results: bodyAsJson.results.map(result => ({...result, application_base: mockData[0].application_base})),
+          results: bodyAsJson.results,
         }));
         break;
       case 404:
@@ -109,8 +108,10 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
         yield put(receiveSinglePlotSearch({...bodyAsJson, application_base: mockData[0].application_base}));
         yield put(fetchTemplateForms());
         if (bodyAsJson.form) {
-          yield put(fetchFormAttributes(bodyAsJson.form));
-          yield put(fetchForm(bodyAsJson.form));
+          yield put(fetchFormAttributes(bodyAsJson.form.id));
+          yield put(receiveForm(bodyAsJson.form));
+        } else {
+          yield put(receiveForm(null));
         }
         break;
       case 404:
@@ -191,11 +192,6 @@ function* editPlotSearchSaga({payload: plotSearch}): Generator<any, any, any> {
             nullPlanUnits(),
           ],
         }));
-        if (bodyAsJson.form) {
-          const id = bodyAsJson.form?.id || bodyAsJson.form;
-          yield put(fetchFormAttributes(id));
-          yield put(fetchForm(id));
-        }
         break;
       case 400:
         yield put(notFound());
@@ -220,7 +216,14 @@ function* fetchSinglePlotSearchAfterEditSaga({payload}): Generator<any, any, any
 
     switch (statusCode) {
       case 200:
-        yield put(receiveSinglePlotSearch({...bodyAsJson, application_base: mockData[0].application_base}));
+        yield put(receiveSinglePlotSearch(bodyAsJson));
+        if (bodyAsJson.form) {
+          yield put(fetchFormAttributes(bodyAsJson.form.id));
+          yield put(receiveForm(bodyAsJson.form));
+        } else {
+          yield put(receiveForm(null));
+        }
+
         if(callbackFunctions) {
           for(let i = 0; i < callbackFunctions.length; i++) {
             switch (typeof callbackFunctions[i]) {
