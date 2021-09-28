@@ -20,6 +20,7 @@ import type {
   ReceivePlotSearchSubtypeAction,
   ReceiveFormAttributesAction,
   ReceiveFormAction,
+  ReceiveTemplateFormsAction
 } from '$src/plotSearch/types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -66,7 +67,7 @@ const planUnitAttributesReducer: Reducer<Attributes> = handleActions({
 }, null);
 
 const planUnitReducer: Reducer<PlanUnit> = handleActions({
-  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: PlanUnit, {payload: planUnit}: ReceiveSinglePlotSearchAction) => 
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: PlanUnit, {payload: planUnit}: ReceiveSinglePlotSearchAction) =>
   {
     return merge(state, planUnit);
   },
@@ -136,6 +137,12 @@ const isFetchingFormAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: () => false,
 }, false);
 
+const isFetchingTemplateFormsReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_TEMPLATE_FORMS']: () => true,
+  ['mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_TEMPLATE_FORMS']: () => false,
+}, false);
+
 const isFetchingFormReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/FETCH_FORM']: () => true,
   ['mvj/plotSearch/FORM_NOT_FOUND']: () => false,
@@ -148,9 +155,15 @@ const formAttributesReducer: Reducer<Attributes> = handleActions({
   },
 }, null);
 
+const templateFormsReducer: Reducer<Object> = handleActions({
+  ['mvj/plotSearch/RECEIVE_TEMPLATE_FORMS']: (state: Object, {payload: forms}: ReceiveTemplateFormsAction) => {
+    return forms;
+  },
+}, []);
+
 const formReducer: Reducer<Object> = handleActions({
-  ['mvj/plotSearch/RECEIVE_FORM']: (state: Object, {payload: subTypes}: ReceiveFormAction) => {
-    return subTypes;
+  ['mvj/plotSearch/RECEIVE_FORM']: (state: Object, {payload: form}: ReceiveFormAction) => {
+    return form;
   },
 }, null);
 
@@ -171,7 +184,9 @@ export default combineReducers<Object, any>({
   isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
   subTypes: subTypesReducer,
   isFetchingFormAttributes: isFetchingFormAttributesReducer,
+  isFetchingTemplateForms: isFetchingTemplateFormsReducer,
   isFetchingForm: isFetchingFormReducer,
   formAttributes: formAttributesReducer,
+  templateForms: templateFormsReducer,
   form: formReducer,
 });

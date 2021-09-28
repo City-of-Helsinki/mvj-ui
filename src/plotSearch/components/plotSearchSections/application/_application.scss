@@ -24,3 +24,24 @@
     }
   }
 }
+
+.application-preview-section {
+  .form-field__checkbox {
+    display: flex;
+    flex-direction: column;
+
+    > label .form-field {
+      display: inline-block;
+      width: auto;
+    }
+  }
+
+  .form-field__textarea {
+    margin-bottom: rem-calc(10px);
+  }
+
+  .form-field__radio-button-inline fieldset {
+    display: flex;
+    flex-direction: row;
+  }
+}
