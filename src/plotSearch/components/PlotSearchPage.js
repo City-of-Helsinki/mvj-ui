@@ -351,7 +351,7 @@ class PlotSearchPage extends Component<Props, State> {
       if(isBasicInformationFormDirty || !isBasicInformationFormDirty) {
         payload = {...payload, ...basicInformationFormValues};
       }
-      if(isApplicationFormDirty) {
+      if(isApplicationFormDirty || !!currentPlotSearch.form) {
         payload = {...payload, form: applicationFormValues.form.id};
       }
       payload = cleanTargets(payload);
