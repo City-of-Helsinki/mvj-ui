@@ -17,6 +17,7 @@ import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
 import contractFileReducer from '$src/contractFile/reducer';
 import createCollectionLetterReducer from '$src/createCollectionLetter/reducer';
+import creditDecisionReducer from '$src/creditDecision/reducer';
 import leaseStatisticReportReducer from '$src/leaseStatisticReport/reducer';
 import districtsReducer from '../district/reducer';
 import indexReducer from '$src/index/reducer';
@@ -65,6 +66,7 @@ export default (history: Object): Reducer<RootState> =>
     contact: contactsReducer,
     contractFile: contractFileReducer,
     createCollectionLetter: createCollectionLetterReducer,
+    creditDecision: creditDecisionReducer,
     district: districtsReducer,
     form: formReducer,
     index: indexReducer,

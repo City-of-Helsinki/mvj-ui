@@ -12,6 +12,7 @@ import type {CommentState} from '$src/comments/types';
 import type {ContractFileState} from '$src/contractFile/types';
 import type {ContactState} from '$src/contacts/types';
 import type {CreateCollectionLetterState} from '$src/createCollectionLetter/types';
+import type {CreditDecisionState} from '$src/creditDecision/types';
 import type {DistrictState} from '$src/district/types';
 import type {IndexState} from '$src/index/types';
 import type {InfillDevelopmentState} from '$src/infillDevelopment/types';
@@ -55,6 +56,7 @@ export type RootState = {
   contact: ContactState,
   contractFile: ContractFileState,
   createCollectionLetter: CreateCollectionLetterState,
+  creditDecision: CreditDecisionState,
   district: DistrictState,
   form: Object,
   index: IndexState,

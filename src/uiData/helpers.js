@@ -173,6 +173,13 @@ export const getUiDataTradeRegisterCompanyRepresentKey = (key: string): string =
 export const getUiDataLandUseAgreementAttachmentKey = (key: string): string => getKeyWithPrefix(UiDataPrefixes.LAND_USE_CONTRACT_AGREEMENT_ATTACHMENT, key);
 
 /**
+ * Get key for ui data on credit decision component
+ * @param {string} key
+ * @return {string}
+ */
+export const getUiDataCreditDecisionKey = (key: string): string => getKeyWithPrefix(UiDataPrefixes.CREDIT_DECISION, key);
+
+/**
  * Return value of ui data object by key
  * @param {Object[]} uiDataList
  * @param {string} key
