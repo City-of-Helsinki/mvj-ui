@@ -20,7 +20,7 @@ import {getAttributes, getCollapseStateByKey, getCurrentPlotSearch, getPlanUnit}
 import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
 import PlotSearchSite from './PlotSearchSite';
-import {getContentBasicInformation} from '$src/plotSearch/helpers';
+import {getContentBasicInformation, formatDecisionName} from '$src/plotSearch/helpers';
 import {getUiDataPlotSearchKey} from '$src/uiData/helpers';
 import {
   getFieldOptions,
@@ -36,11 +36,11 @@ import {
 } from '$src/plotSearch/enums';
 import type {Attributes} from '$src/types';
 import type {PlotSearch} from '$src/plotSearch/types';
-// import SingleRadioInput from '$components/inputs/SingleRadioInput';
 import {
   fetchPlanUnit,
   fetchPlanUnitAttributes,
 } from '$src/plotSearch/actions';
+import {getRouteById, Routes} from "../../../../root/routes";
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -85,7 +85,6 @@ class BasicInfo extends PureComponent<Props, State> {
     const typeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.TYPE);
     const subtypeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SUBTYPE);
     const stageOptions = getFieldOptions(attributes, PlotSearchFieldPaths.STAGE);
-    // const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
 
     return (
       <Fragment>
@@ -202,41 +201,44 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
               </Row>
-              {/* <Row>
-                <Column small={12} medium={6} large={6}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.DECISION}
-                  </FormTextTitle>
-                  {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
-                    <FormText key={index}>
-                      <ExternalLink
-                        className='no-margin'
-                        href={`${decision.id}`}
-                        text={getLabelOfOption(decisionOptions, decision.type) || '-'}
-                      />
-                    </FormText>
-                  )}
-                </Column>
-                <Column small={6} medium={4} large={4}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.DECISION_TO_LIST}
-                  </FormTextTitle>
-                  {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
-                    <Row key={index}>
-                      <Column>
-                        <SingleRadioInput
+              <div>
+                <Row>
+                  <Column small={12} medium={6} large={6}>
+                    <FormTextTitle id="plotSearchDecisionTable__decision-header">
+                      {PlotSearchFieldTitles.DECISION}
+                    </FormTextTitle>
+                  </Column>
+                  {/*<Column small={6} medium={4} large={4}>
+                    <FormTextTitle id="plotSearchDecisionTable__to-list-header">
+                      {PlotSearchFieldTitles.DECISION_TO_LIST}
+                    </FormTextTitle>
+                  </Column>*/}
+                </Row>
+                {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
+                  <Row key={index}>
+                    <Column small={12} medium={6} large={6} aria-labelledby="plotSearchDecisionTable__decision-header">
+                      <FormText key={index}>
+                        <ExternalLink
+                          className='no-margin'
+                          href={`${getRouteById(Routes.LEASES)}/${decision.lease}?tab=4`}
+                          text={formatDecisionName(decision)}
+                        />
+                      </FormText>
+                    </Column>
+                    {/*<Column small={6} medium={4} large={4} aria-labelledby="plotSearchDecisionTable__to-list-header">
+                      <SingleRadioInput
                           name={''}
                           label={''}
                           checked={!!decision.decision_to_list}
                           onChange={()=>{}}
                           onClick={()=>{}}
                           onKeyDown={()=>{}}
+                          disabled
                         />
-                      </Column>
-                    </Row>
-                  )}
-                </Column>
-              </Row> */}
+                    </Column>*/}
+                  </Row>
+                )}
+              </div>
               {(!!plotSearch.targets && plotSearch.targets.
                 filter(plotSearchSite => plotSearchSite.target_type === 'searchable').length > 0) && <WhiteBox>
                 <SubTitle>

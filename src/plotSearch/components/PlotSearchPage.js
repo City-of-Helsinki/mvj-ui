@@ -70,6 +70,7 @@ import Application from './plotSearchSections/application/Application';
 import ApplicationEdit from './plotSearchSections/application/ApplicationEdit';
 import ApplicationMap from './plotSearchSections/map/ApplicationMap';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
+import {cleanDecisions} from "../helpers";
 
 type Props = {
   applicationFormValues: Object,
@@ -355,6 +356,7 @@ class PlotSearchPage extends Component<Props, State> {
         payload = {...payload, form: applicationFormValues.form.id};
       }
       payload = cleanTargets(payload);
+      payload = cleanDecisions(payload);
       payload.identifier = currentPlotSearch.identifier;
       editPlotSearch(payload);
       this.setPageTitle(basicInformationFormValues.name);

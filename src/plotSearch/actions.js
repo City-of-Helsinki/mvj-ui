@@ -46,6 +46,7 @@ import type {
   FetchTemplateFormsAction,
   ReceiveTemplateFormsAction,
   TemplateFormsNotFoundAction,
+  RemovePlanUnitDecisionsAction, AddPlanUnitDecisionsAction, ResetPlanUnitDecisionsAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -161,3 +162,12 @@ export const fetchForm = (payload: Object): FetchFormAction =>
 
 export const receiveForm = (payload: Object): ReceiveFormAction =>
   createAction('mvj/plotSearch/RECEIVE_FORM')(payload);
+
+export const addPlanUnitDecisions = (planUnit: Object): AddPlanUnitDecisionsAction =>
+  createAction('mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS')(planUnit);
+
+export const removePlanUnitDecisions = (planUnitId: number): RemovePlanUnitDecisionsAction =>
+  createAction('mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS')(planUnitId);
+
+export const resetPlanUnitDecisions = (): ResetPlanUnitDecisionsAction =>
+  createAction('mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS')();

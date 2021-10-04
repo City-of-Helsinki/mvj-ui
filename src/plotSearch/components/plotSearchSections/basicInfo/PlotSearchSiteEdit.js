@@ -146,6 +146,7 @@ type Props = {
   isSaveClicked: boolean,
   attributes: Attributes,
   onRemove: Function,
+  onReplace: Function,
   usersPermissions: UsersPermissionsType,
   targetIdentifier: string,
   collapseState: boolean,
@@ -232,8 +233,17 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const {
       change,
       field,
+      onReplace
     } = this.props;
+
+    const {
+      planUnitNew
+    } = this.state;
+
     const planUnitNewValue = get(toPlotSearch, 'value');
+    if (planUnitNew?.value && planUnitNew.value !== planUnitNewValue) {
+      onReplace(planUnitNew.value, planUnitNewValue);
+    }
     change(`${field}.plan_unit_id`, planUnitNewValue);
   }
 

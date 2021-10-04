@@ -16,6 +16,7 @@ type Props = {
   placeholder?: string,
   setRef?: Function,
   initialValues?: Object,
+  cacheOptions: any
 }
 
 type State = {
@@ -108,8 +109,9 @@ class AsyncSelect extends Component<Props, State> {
       isDirty,
       placeholder,
       initialValues,
+      cacheOptions = true
     } = this.props;
-    
+
     return(
       <div className={classNames(
         'form-field__select',
@@ -118,7 +120,7 @@ class AsyncSelect extends Component<Props, State> {
       >
         <Async
           ref={this.setSelectRef}
-          cacheOptions
+          cacheOptions={cacheOptions}
           className='select-input'
           classNamePrefix='select-input'
           components={{

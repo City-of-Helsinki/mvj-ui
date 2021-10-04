@@ -22,6 +22,8 @@ import type {
   ReceiveFormAction,
   ReceiveTemplateFormsAction
 } from '$src/plotSearch/types';
+import {annotatePlanUnitDecision} from "./helpers";
+import type {AddPlanUnitDecisionsAction, RemovePlanUnitDecisionsAction} from "./types";
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -167,6 +169,35 @@ const formReducer: Reducer<Object> = handleActions({
   },
 }, null);
 
+const decisionCandidateReducer: Reducer<Array> = handleActions({
+  ['mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS']: (state: Object, {payload: planUnit}: AddPlanUnitDecisionsAction) => {
+    if (!planUnit.decisions) {
+      return state;
+    }
+
+    return {
+      ...state,
+      [planUnit.id]: planUnit.decisions?.map((decision) => annotatePlanUnitDecision(decision, planUnit)) || []
+    };
+  },
+  ['mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS']: (state: Object, {payload: planUnitId}: RemovePlanUnitDecisionsAction) => {
+    if (!state[planUnitId]) {
+      return state;
+    }
+
+    const newState = {
+      ...state
+    };
+
+    delete newState[planUnitId];
+
+    return newState;
+  },
+  ['mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS']: (state: Object) => {
+    return {};
+  }
+}, {});
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
@@ -189,4 +220,5 @@ export default combineReducers<Object, any>({
   formAttributes: formAttributesReducer,
   templateForms: templateFormsReducer,
   form: formReducer,
+  decisionCandidates: decisionCandidateReducer
 });

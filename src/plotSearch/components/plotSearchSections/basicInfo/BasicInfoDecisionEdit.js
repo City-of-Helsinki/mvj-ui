@@ -3,15 +3,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
-import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
-import {
-  getFieldOptions,
-} from '$util/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {
   getAttributes,
@@ -19,6 +13,8 @@ import {
 } from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import DecisionSelectInput from "../../../../components/form/DecisionSelectInput";
+import {formatDecisionName} from "../../../helpers";
 
 type Props = {
   attributes: Attributes,
@@ -29,36 +25,37 @@ type Props = {
   initialYearRent: number,
   isSaveClicked: boolean,
   onRemove: Function,
-  subventionAmount: string,
+  getPlotUnitDecisions: Function,
   usersPermissions: UsersPermissionsType,
 }
 
 const BasicInfoDecisionEdit = ({
   disabled,
   field,
-  isSaveClicked,
   attributes,
   onRemove,
+  initialValue,
+  onChange,
+  getPlotUnitDecisions,
+  cacheKey
 }: Props) => {
-
-  const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
-
   return (
     <Row>
       <Column large={8}>
-        <FormField
-          disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'decision.child.children.type')}
-          name={`${field}.type`}
-          overrideValues={{
-            fieldType: 'choice',
-            label: PlotSearchFieldTitles.DECISION,
-            options: decisionOptions,
-          }}
-          invisibleLabel
+        <DecisionSelectInput
+          value={initialValue?.id ? {
+            id: initialValue.id,
+            label: formatDecisionName(initialValue)
+          } : null}
+          onChange={onChange}
+          name={field}
+          getOptions={getPlotUnitDecisions}
+          hasError={initialValue?.id && !initialValue.relatedPlanUnitId}
+          cacheOptions={false}
+          key={cacheKey}
         />
       </Column>
-      <Column large={3}>
+      {/*<Column large={3}>
         <FormField
           disableTouched={isSaveClicked}
           fieldAttributes={get(attributes, 'decision.child.children.decision_to_list')}
@@ -69,7 +66,7 @@ const BasicInfoDecisionEdit = ({
           }}
           invisibleLabel
         />
-      </Column>
+      </Column>*/}
       <Column large={1}>
         <Authorization allow={true}>
           {!disabled &&
@@ -94,9 +91,9 @@ export default connect(
     return {
       attributes: getAttributes(state),
       isSaveClicked: getIsSaveClicked(state),
-      type: selector(state, `${props.field}.type`),
       decisionToList: selector(state, `${props.field}.decision_to_list`),
-      usersPermissions: getUsersPermissions(state),
+      initialValue: selector(state, `${props.field}`),
+      usersPermissions: getUsersPermissions(state)
     };
   },
 )(BasicInfoDecisionEdit);
