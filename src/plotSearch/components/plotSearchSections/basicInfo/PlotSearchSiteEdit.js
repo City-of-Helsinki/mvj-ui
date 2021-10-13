@@ -508,8 +508,8 @@ export default flowRight(
         plotSearchSiteId: id,
         planUnitAttributes: getPlanUnitAttributes(state),
         planUnit: getPlanUnit(state),
-        isFetchingPlanUnit: getIsFetchingPlanUnit(state),
-        isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+        isFetchingPlanUnit: getIsFetchingPlanUnit(state, id),
+        isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state, id),
         currentPlotSearch: getCurrentPlotSearch(state),
       };
     },

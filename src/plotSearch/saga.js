@@ -287,43 +287,45 @@ function* deletePlotSearchSaga({payload: id}): Generator<any, any, any> {
 }
 
 function* fetchPlanUnitAttributesSaga({payload: value}): Generator<any, any, any> {
+  const id = value?.value;
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnitAttributes, value.value);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnitAttributes, id);
     switch (statusCode) {
       case 200:
         const attributes = bodyAsJson.fields;
-        yield put(receivePlanUnitAttributes({[value.value]: attributes}));
+        yield put(receivePlanUnitAttributes({[id]: attributes}));
         break;
       default:
-        yield put(planUnitAttributesNotFound());
+        yield put(planUnitAttributesNotFound(id));
         break;
     }
   } catch (error) {
     console.error('Failed to fetch plan unit attributes with error "%s"', error);
-    yield put(planUnitAttributesNotFound());
+    yield put(planUnitAttributesNotFound(id));
     yield put(receiveError(error));
   }
 }
 
 function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
+  const id = value?.value;
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnit, value.value);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnit, id);
     switch (statusCode) {
       case 200:
-        yield put(receiveSinglePlanUnit({[value.value]: bodyAsJson}));
+        yield put(receiveSinglePlanUnit({[id]: bodyAsJson}));
         yield put(addPlanUnitDecisions(bodyAsJson));
         break;
       case 404:
-        yield put(planUnitNotFound());
+        yield put(planUnitNotFound(id));
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
       default:
-        yield put(planUnitNotFound());
+        yield put(planUnitNotFound(id));
         break;
     }
   } catch (error) {
     console.error('Failed to fetch planUnit with error "%s"', error);
-    yield put(notFound());
+    yield put(planUnitNotFound(id));
     yield put(receiveError(error));
   }
 }

@@ -120,7 +120,6 @@ class PlotSearchSite extends PureComponent<Props, State> {
       planUnit,
       planUnitAttributes,
     } = this.props;
-
     const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit.id);
     const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit.id);
     const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_intended_use');
@@ -161,7 +160,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               />
             </WarningContainer>}
             {(currentPlanUnit) && <Fragment>
-              {(isDeleted || isNewer) && <Column small={12} medium={12} large={12}></Column>}
+              {(isDeleted || isNewer) && <Column small={12} medium={12} large={12} />}
               <Column small={6} medium={3} large={3}>
                 <FormTextTitle>
                   {'Vuokraustunnus'}
@@ -301,13 +300,14 @@ class PlotSearchSite extends PureComponent<Props, State> {
 export default connect(
   (state, props) => {
     const id = props.plotSearchSite.id;
+    const planUnitId = props.plotSearchSite.plan_unit?.id;
     return {
       attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.plotSearch_site.${id}`),
       planUnitAttributes: getPlanUnitAttributes(state),
       planUnit: getPlanUnit(state),
-      isFetchingPlanUnit: getIsFetchingPlanUnit(state),
-      isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+      isFetchingPlanUnit: getIsFetchingPlanUnit(state, planUnitId),
+      isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state, planUnitId)
     };
   },
   {

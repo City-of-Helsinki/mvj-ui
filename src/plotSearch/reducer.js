@@ -50,17 +50,31 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES']: () => false,
 }, false);
 
-const isFetchingPlanUnitReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotSearch/FETCH_PLAN_UNIT']: () => true,
-  ['mvj/plotSearch/PLAN_UNIT_NOT_FOUND']: () => false,
-  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: () => false,
-}, false);
+const pendingPlanUnitFetchesReducer: Reducer<Array<number>> = handleActions({
+  ['mvj/plotSearch/FETCH_PLAN_UNIT']: (state: Array<number>, {payload: value}) => {
+    const id = value.value;
+    if (state.includes(id)) {
+      return state;
+    }
 
-const isFetchingPlanUnitAttributesReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES']: () => true,
-  ['mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND']: () => false,
-  ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: () => false,
-}, false);
+    return [...state, id];
+  },
+  ['mvj/plotSearch/PLAN_UNIT_NOT_FOUND']: (state: Array<number>, {payload: id}) => state.filter((item) => item === id),
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: Array<number>, {payload: result}) => state.filter((item) => !result[item])
+}, []);
+
+const pendingPlanUnitAttributeFetchesReducer: Reducer<Array<number>> = handleActions({
+  ['mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES']: (state: Array<number>, {payload: value}) => {
+    const id = value.value;
+    if (state.includes(id)) {
+      return state;
+    }
+
+    return [...state, id];
+  },
+  ['mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND']: (state: Array<number>, {payload: id}) => state.filter((item) => item === id),
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: (state: Array<number>, {payload: result}) => state.filter((item) => !result[item])
+}, []);
 
 const planUnitAttributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -211,8 +225,8 @@ export default combineReducers<Object, any>({
   methods: methodsReducer,
   planUnitAttributes: planUnitAttributesReducer,
   planUnit: planUnitReducer,
-  isFetchingPlanUnit: isFetchingPlanUnitReducer,
-  isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
+  pendingPlanUnitFetches: pendingPlanUnitFetchesReducer,
+  pendingPlanUnitAttributeFetches: pendingPlanUnitAttributeFetchesReducer,
   subTypes: subTypesReducer,
   isFetchingFormAttributes: isFetchingFormAttributesReducer,
   isFetchingTemplateForms: isFetchingTemplateFormsReducer,
