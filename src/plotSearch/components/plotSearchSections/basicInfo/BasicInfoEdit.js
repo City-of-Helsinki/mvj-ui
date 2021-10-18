@@ -229,7 +229,7 @@ const renderPlotSearchSites = ({
               };
 
               return <PlotSearchSiteEdit
-                key={index}
+                key={`${fields.get(index)?.id}_${index}`}
                 index={index}
                 disabled={disabled}
                 field={field}
