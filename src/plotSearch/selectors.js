@@ -85,3 +85,9 @@ export const getTemplateForms: Selector<Object, void> = (state: RootState): Obje
 
 export const getForm: Selector<Object, void> = (state: RootState): Object =>
   state.plotSearch.form;
+
+export const getDecisionCandidates: Selector<Array, void> = (state: RootState): Object => {
+  return Object.values(state.plotSearch.decisionCandidates).reduce((acc, next) => {
+    return ([ ...acc, ...next ]);
+  }, []);
+}

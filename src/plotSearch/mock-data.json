@@ -22,14 +22,232 @@
     "last_update": "14.09.2019 klo 00:00",
     "decisions": [
       {
-        "decision_to_list": true,
-        "type": 1,
-        "id": 123
+        "id": 1,
+        "lease": 1,
+        "reference_number": "HEL 2021-000001",
+        "decision_maker": {
+          "id": 79,
+          "name": "Kaupunginvaltuusto"
+        },
+        "decision_date": "2021-01-01",
+        "section": "18",
+        "type": {
+          "id": 9,
+          "name": "Vuokran alentaminen",
+          "kind": null
+        },
+        "description": "Test",
+        "conditions": []
       },
       {
-        "decision_to_list": true,
-        "type": 2,
-        "id": 124
+        "id": 2,
+        "lease": 1,
+        "reference_number": "HEL 2021-000002",
+        "decision_maker": {
+          "id": 110,
+          "name": "Rahatoimikamari"
+        },
+        "decision_date": "2021-01-01",
+        "section": "1350",
+        "type": {
+          "id": 3,
+          "name": "Vuokraus-/lupa (1.1.2002->vain kiinteät)",
+          "kind": null
+        },
+        "description": null,
+        "conditions": [
+          {
+            "id": 1,
+            "type": 1,
+            "supervision_date": null,
+            "supervised_date": null,
+            "description": "Decision condition"
+          }
+        ]
+      }
+    ],
+    "targets": [
+      {
+        "id": 1,
+        "plan_unit": {
+          "id": 1,
+          "identifier": "91-1-1-1",
+          "area": 100,
+          "section_area": 1,
+          "in_contract": false,
+          "is_master": false,
+          "decisions": [
+            {
+              "id": 1,
+              "lease": 1,
+              "reference_number": "HEL 2021-000001",
+              "decision_maker": {
+                "id": 79,
+                "name": "Kaupunginvaltuusto"
+              },
+              "decision_date": "2021-01-01",
+              "section": "18",
+              "type": {
+                "id": 9,
+                "name": "Vuokran alentaminen",
+                "kind": null
+              },
+              "description": "Test",
+              "conditions": []
+            },
+            {
+              "id": 2,
+              "lease": 1,
+              "reference_number": "HEL 2021-000002",
+              "decision_maker": {
+                "id": 110,
+                "name": "Rahatoimikamari"
+              },
+              "decision_date": "2021-01-01",
+              "section": "1350",
+              "type": {
+                "id": 3,
+                "name": "Vuokraus-/lupa (1.1.2002->vain kiinteät)",
+                "kind": null
+              },
+              "description": null,
+              "conditions": [
+                {
+                  "id": 1,
+                  "type": 1,
+                  "supervision_date": null,
+                  "supervised_date": null,
+                  "description": "Decision condition"
+                }
+              ]
+            }
+          ],
+          "plot_division_identifier": "1",
+          "plot_division_date_of_approval": "2000-01-01",
+          "plot_division_effective_date": "2000-01-01",
+          "plot_division_state": 10,
+          "detailed_plan_identifier": "1",
+          "detailed_plan_latest_processing_date": null,
+          "detailed_plan_latest_processing_date_note": null,
+          "plan_unit_type": 7,
+          "plan_unit_state": 3,
+          "plan_unit_status": "Present",
+          "plan_unit_intended_use": 925,
+          "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
+              [
+                [
+                  [
+                    24.9451892771361,
+                    60.1698246818776
+                  ],
+                  [
+                    24.9451039989082,
+                    60.1698226818641
+                  ],
+                  [
+                    24.9440355388603,
+                    60.1697976244087
+                  ],
+                  [
+                    24.9440361478551,
+                    60.1697922474792
+                  ],
+                  [
+                    24.9440811785999,
+                    60.1693859267273
+                  ],
+                  [
+                    24.9440883023055,
+                    60.1693215812032
+                  ],
+                  [
+                    24.9440999204009,
+                    60.1693218571616
+                  ],
+                  [
+                    24.9452449944929,
+                    60.1693485389148
+                  ],
+                  [
+                    24.9451892771361,
+                    60.1698246818776
+                  ]
+                ]
+              ]
+            ]
+          }
+        },
+        "target_type": "searchable",
+        "master_plan_unit_id": 100,
+        "is_master_plan_unit_deleted": false,
+        "is_master_plan_unit_newer": false,
+        "message_label": null,
+        "lease_identifier": "L1000-1",
+        "lease_address": {
+          "address": "ESIMERKKIKATU 1"
+        },
+        "info_links": [
+          {
+            "url": "https://www.hel.fi/helsinki/fi",
+            "plot_search_target": 1,
+            "description": "Esimerkki",
+            "language": "fi"
+          },
+          {
+            "url": "https://www.hel.fi/helsinki/en",
+            "plot_search_target": 5,
+            "description": "Example",
+            "language": "en"
+          }
+        ],
+        "decisions": [
+          {
+            "id": 1,
+            "lease": 1,
+            "reference_number": "HEL 2021-000001",
+            "decision_maker": {
+              "id": 79,
+              "name": "Kaupunginvaltuusto"
+            },
+            "decision_date": "2021-01-01",
+            "section": "18",
+            "type": {
+              "id": 9,
+              "name": "Vuokran alentaminen",
+              "kind": null
+            },
+            "description": "Test",
+            "conditions": []
+          },
+          {
+            "id": 2,
+            "lease": 1,
+            "reference_number": "HEL 2021-000002",
+            "decision_maker": {
+              "id": 110,
+              "name": "Rahatoimikamari"
+            },
+            "decision_date": "2021-01-01",
+            "section": "1350",
+            "type": {
+              "id": 3,
+              "name": "Vuokraus-/lupa (1.1.2002->vain kiinteät)",
+              "kind": null
+            },
+            "description": null,
+            "conditions": [
+              {
+                "id": 1,
+                "type": 1,
+                "supervision_date": null,
+                "supervised_date": null,
+                "description": "Decision condition"
+              }
+            ]
+          }
+        ]
       }
     ],
     "identifier": {

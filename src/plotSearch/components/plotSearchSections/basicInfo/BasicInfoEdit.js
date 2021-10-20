@@ -11,6 +11,7 @@ import Authorization from '$components/authorization/Authorization';
 import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
+import ErrorField from "../../../../components/form/ErrorField";
 import BasicInfoDecisionEdit from './BasicInfoDecisionEdit';
 import {ButtonColors} from '$components/enums';
 import Collapse from '$components/collapse/Collapse';
@@ -31,14 +32,16 @@ import FormField from '$components/form/FormField';
 import {
   receiveCollapseStates,
   receiveIsSaveClicked,
-  receiveFormValidFlags
+  receiveFormValidFlags,
+  removePlanUnitDecisions
 } from '$src/plotSearch/actions';
 import {
   getAttributes,
   getCollapseStateByKey,
   getIsSaveClicked,
   getErrorsByFormName,
-  getPlotSearchSubTypes
+  getPlotSearchSubTypes,
+  getDecisionCandidates
 } from '$src/plotSearch/selectors';
 import {
   filterSubTypes,
@@ -64,12 +67,39 @@ const renderDecisions = ({
   fields,
   formName,
   attributes,
-  isSaveClicked,
+  decisionCandidates,
+  hasUnidentifiedDecisions,
   // usersPermissions,
 }: DecisionsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
+
+  const getPlotUnitDecisions = async (input) => {
+    const lcInput = input.toLowerCase();
+
+    return decisionCandidates.filter((item) => {
+      if (item.relatedPlotUnitIdentifier?.toLowerCase()?.includes(lcInput)) {
+        return true;
+      }
+      if (item.reference_number?.toLowerCase()?.includes(lcInput)) {
+        return true;
+      }
+      if (item.decision_maker?.name?.toLowerCase()?.includes(lcInput)) {
+        return true;
+      }
+      if (item.type?.name?.toLowerCase()?.includes(lcInput)) {
+        return true;
+      }
+      if (item.description?.toLowerCase()?.includes(lcInput)) {
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  const cacheKey = decisionCandidates.map((item) => item.id).join(',');
 
   return (
     <AppConsumer>
@@ -86,13 +116,13 @@ const renderDecisions = ({
                       {PlotSearchFieldTitles.DECISION}
                     </FormTextTitle>
                   </Column>
-                  <Column large={3}>
+                  {/*<Column large={3}>
                     <FormTextTitle
                       required={false}
                     >
                       {PlotSearchFieldTitles.DECISION_TO_LIST}
                     </FormTextTitle>
-                  </Column>
+                  </Column>*/}
                 </Row>
               }
 
@@ -110,16 +140,26 @@ const renderDecisions = ({
                   });
                 };
 
+                const handleChange = (item) => {
+                  fields.splice(index, 1, item.data);
+                };
+
                 return <BasicInfoDecisionEdit
-                  key={index}
+                  key={`${fields.get(index)?.id}_${index}`}
                   disabled={disabled}
                   field={field}
                   formName={formName}
                   onRemove={handleRemove}
+                  onChange={handleChange}
                   attributes={attributes}
-                  isSaveClicked={isSaveClicked}
+                  getPlotUnitDecisions={getPlotUnitDecisions}
+                  cacheKey={cacheKey}
                 />;
               })}
+
+              <ErrorField showError={hasUnidentifiedDecisions} meta={{
+                error: 'Kunkin päätöksen on liityttävä johonkin valituista kohteista. Kohteiden ulkopuoliset päätökset poistetaan tallennettaessa.'
+              }} />
 
               {!disabled &&
                 <Row>
@@ -151,6 +191,7 @@ const renderPlotSearchSites = ({
   disabled,
   fields,
   formName,
+  onRemove
   // usersPermissions,
 }: PlotSearchSitesProps): Element<*> => {
   const handleAdd = () => {
@@ -167,7 +208,12 @@ const renderPlotSearchSites = ({
                 dispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
+                    const id = fields.get(index)?.plan_unit?.id;
                     fields.remove(index);
+
+                    if (id) {
+                      onRemove(id);
+                    }
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: ConfirmationModalTexts.DELETE_DECISION.BUTTON,
@@ -175,6 +221,13 @@ const renderPlotSearchSites = ({
                   confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE,
                 });
               };
+
+              const handleChange = (oldId, newId) => {
+                if (oldId) {
+                  onRemove(oldId);
+                }
+              };
+
               return <PlotSearchSiteEdit
                 key={index}
                 index={index}
@@ -182,6 +235,7 @@ const renderPlotSearchSites = ({
                 field={field}
                 formName={formName}
                 onRemove={handleRemove}
+                onReplace={handleChange}
               />;
             })}
             <Column small={12} large={6}>
@@ -243,13 +297,49 @@ class BasicInfoEdit extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {receiveFormValidFlags} = this.props;
+    const {receiveFormValidFlags, selectedDecisions} = this.props;
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
         [FormNames.PLOT_SEARCH_BASIC_INFORMATION]: this.props.valid,
       });
     }
+
+    if (prevProps.decisionCandidates !== this.props.decisionCandidates) {
+      const selectedMissingIds = {};
+      const currentCandidateIds = this.props.decisionCandidates.map((candidate) => candidate.id);
+
+      selectedDecisions.forEach((decision) => {
+        if (decision.relatedPlanUnitId) {
+          if (!currentCandidateIds.includes(decision.id)) {
+            selectedMissingIds[decision.id] = decision;
+            decision.relatedPlanUnitIdentifier = null;
+            decision.relatedPlanUnitId = null;
+          }
+        } else {
+          selectedMissingIds[decision.id] = decision;
+        }
+      });
+
+      this.props.decisionCandidates.forEach((candidate) => {
+        if (selectedMissingIds[candidate.id]) {
+          selectedMissingIds[candidate.id].relatedPlanUnitIdentifier = candidate.relatedPlanUnitIdentifier;
+          selectedMissingIds[candidate.id].relatedPlanUnitId = candidate.relatedPlanUnitId;
+        }
+      })
+    }
+  }
+
+  onTargetRemoved = (id) => {
+    const { targets, removeTargetDecisions } = this.props;
+
+    // If there's more than one target with the same plan unit, the decisions should not be removed
+    // from the candidate list.
+    if (targets.filter((target) => target.plan_unit?.id === id).length > 1) {
+      return;
+    }
+
+    removeTargetDecisions(id);
   }
 
   render (){
@@ -261,8 +351,12 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       errors,
       plotSearchSubTypes,
       type,
+      decisionCandidates,
+      selectedDecisions
     } = this.props;
     const subTypeOptions = filterSubTypes(plotSearchSubTypes, type);
+
+    const hasUnidentifiedDecisions = selectedDecisions.some((decision) => decision?.id && !decision?.relatedPlanUnitId);
 
     return (
       <form>
@@ -377,15 +471,19 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     />
                   </Column>
                 </Authorization>
-                {/* <FieldArray
-                  component={renderDecisions}
-                  attributes={attributes}
-                  disabled={false}
-                  formName={FormNames.PLOT_SEARCH_SUMMARY}
-                  name={'decisions'}
-                  isSaveClicked={isSaveClicked}
-                  usersPermissions={usersPermissions}
-                /> */}
+                <Authorization allow={isFieldAllowedToRead(attributes, 'decisions')}>
+                  <FieldArray
+                    component={renderDecisions}
+                    attributes={attributes}
+                    disabled={false}
+                    formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
+                    name={'decisions'}
+                    isSaveClicked={isSaveClicked}
+                    usersPermissions={usersPermissions}
+                    decisionCandidates={decisionCandidates}
+                    hasUnidentifiedDecisions={hasUnidentifiedDecisions}
+                  />
+                </Authorization>
               </Row>
               <WhiteBox>
                 <SubTitle>
@@ -399,6 +497,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
                   name={'targets'}
                   usersPermissions={usersPermissions}
+                  onRemove={this.onTargetRemoved}
                 />
               </WhiteBox>
             </Collapse>
@@ -423,13 +522,17 @@ export default flowRight(
         type: selector(state, 'type'),
         isSaveClicked: getIsSaveClicked(state),
         errors: getErrorsByFormName(state, formName),
-        plotSearchSubTypes: getPlotSearchSubTypes(state)
+        plotSearchSubTypes: getPlotSearchSubTypes(state),
+        decisionCandidates: getDecisionCandidates(state),
+        selectedDecisions: selector(state, 'decisions'),
+        targets: selector(state, 'targets')
       };
     },
     {
       receiveCollapseStates,
       receiveIsSaveClicked,
-      receiveFormValidFlags
+      receiveFormValidFlags,
+      removeTargetDecisions: removePlanUnitDecisions
     }
   ),
   reduxForm({

@@ -9,6 +9,7 @@ import {FormNames} from '$src/enums';
 import {
   getApiResponseResults,
 } from '$util/helpers';
+import {formatDate} from "../util/helpers";
 
 /**
  * Get plotSearch basic information content
@@ -34,23 +35,13 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     start_time: plotSearch.start_time,
     end_time: plotSearch.end_time,
     last_update: plotSearch.last_update,
-    plotSearch_sites: getContentSearchProperties(plotSearch.plotSearch_sites),
-    decisions: plotSearch.decisions, */
+    plotSearch_sites: getContentSearchProperties(plotSearch.plotSearch_sites), */
+    decisions: plotSearch.decisions?.map((decision) => {
+      // Targets are simple IDs if called for listing search items, so the decision array might not necessarily exist.
+      const matchingTarget = plotSearch.targets.find((target) => target.decisions?.find((targetDecision) => targetDecision.id === decision.id));
+      return annotatePlanUnitDecision(decision, matchingTarget?.plan_unit);
+    })
   };
-};
-
-/**
- * Get basic information form values
- * @param {Object} basicInformation
- * @return {Object}
- */
-export const getBasicInformationFormValues = (basicInformation: Object): Object => {
-  let values = basicInformation;
-  values.preparer = get(basicInformation.preparer, 'id');
-  values.stage = get(basicInformation.stage, 'id');
-  values.subtype = get(basicInformation.subtype, 'id');
-  values.type = get(basicInformation.type, 'id');
-  return values;
 };
 
 /**
@@ -121,16 +112,6 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem('plotSearchValidity');
 };
 
-/**
- * Get label
- * @param {Object} plan_unit
- * @returns {string}
- */
-export const getlabel = (plan_unit: Object): ?string =>
-  !isEmpty(plan_unit)
-    ? `${get(plan_unit, 'label')}`
-    : null;
-
 
 export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object => {
   if(planUnit && Object.keys(planUnit) && planUnit[Object.keys(planUnit)[index]])
@@ -141,7 +122,7 @@ export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object
 
 /**
  * clean targets
- * @param {Object} plan_unit
+ * @param {Object} payload
  * @returns {Object}
  */
 export const cleanTargets = (payload: Object): Object => {
@@ -150,6 +131,20 @@ export const cleanTargets = (payload: Object): Object => {
     target_type: target.target_type,
   }));
   return payload = {...payload, targets: targets};
+};
+
+/**
+ * clean targets
+ * @param {Object} payload
+ * @returns {Object}
+ */
+export const cleanDecisions = (payload: Object): Object => {
+  return {
+    ...payload,
+    decisions: payload.decisions
+      .filter((decision) => !!decision.id && !!decision.relatedPlanUnitId)
+      .map((decision) => decision.id)
+  };
 };
 
 /**
@@ -168,3 +163,27 @@ export const filterSubTypes = (subTypes: Object, type: string): Object => {
   }));
   return subTypesAsOptions;
 };
+
+export const formatDecisionName = (decision: Object) => {
+  const textsFromFields = [
+    decision.relatedPlanUnitIdentifier && `(${decision.relatedPlanUnitIdentifier})`,
+    decision.reference_number,
+    decision.decision_maker?.name,
+    formatDate(decision.decision_date),
+    decision.section ? decision.section + '\u00a0§' : null,
+    decision.type?.name,
+    decision.conditions?.length > 0
+      ? `(${decision.conditions.length} ehto${decision.conditions.length === 1 ? '' : 'a'})`
+      : null
+  ].filter((text) => !!text);
+
+  return textsFromFields.join('\u00a0\u00a0');
+};
+
+export const annotatePlanUnitDecision = (decision: Object, plotUnit: Object) => {
+  return {
+    ...decision,
+    relatedPlanUnitIdentifier: plotUnit?.identifier || decision.relatedPlanUnitIdentifier,
+    relatedPlanUnitId: plotUnit?.id || decision.relatedPlanUnitId
+  };
+}

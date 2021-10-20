@@ -35,6 +35,9 @@ import {
   formNotFound,
   receiveTemplateForms,
   fetchForm,
+  removePlanUnitDecisions,
+  addPlanUnitDecisions,
+  resetPlanUnitDecisions,
 } from './actions';
 
 import mockData from './mock-data.json';
@@ -69,7 +72,8 @@ const baseState: PlotSearchState = {
   isFetchingTemplateForms: false,
   formAttributes: null,
   form: null,
-  templateForms: []
+  templateForms: [],
+  decisionCandidates: {}
 };
 
 
@@ -397,6 +401,54 @@ describe('PlotSearch', () => {
         state = plotSearchReducer(state, receiveCollapseStates({foo2: 'bar2'}));
         state.planUnit = {};
         expect(state).to.deep.equal(newState);
+      });
+
+      it('should add and annotate decision candidates from plan units', () => {
+        const state = mockData[0].targets.reduce(
+          (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
+          {});
+
+        expect(Object.keys(state.decisionCandidates).length).to.equal(1);
+        expect(state.decisionCandidates[1]).to.exist;
+        expect(state.decisionCandidates[1].length).to.equal(2);
+        expect(state.decisionCandidates[1][1].reference_number).to.equal("HEL 2021-000002");
+        expect(state.decisionCandidates[1][1].relatedPlanUnitIdentifier).to.equal("91-1-1-1");
+      });
+
+      it('should remove decision candidates when plan units are no longer present in any targets', () => {
+        let state = mockData[0].targets.reduce(
+          (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
+          {});
+
+        expect(state.decisionCandidates[1]).to.exist;
+        expect(state.decisionCandidates[1].length).to.equal(2);
+
+        state = plotSearchReducer(state, removePlanUnitDecisions(1));
+
+        expect(state.decisionCandidates[1]).to.not.exist;
+      });
+
+      it('should not remove unrelated decision candidates', () => {
+        let state = mockData[0].targets.reduce(
+          (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
+          {});
+
+        expect(state.decisionCandidates[1]).to.exist;
+        expect(state.decisionCandidates[1].length).to.equal(2);
+
+        state = plotSearchReducer(state, removePlanUnitDecisions(42));
+
+        expect(state.decisionCandidates[1]).to.exist;
+      });
+
+      it('should reset decision candidates', () => {
+        let state = mockData[0].targets.reduce(
+          (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
+          {});
+
+        state = plotSearchReducer(state, resetPlanUnitDecisions());
+
+        expect(state.decisionCandidates).to.deep.equal({});
       });
     });
   });

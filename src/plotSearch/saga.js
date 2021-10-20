@@ -28,7 +28,7 @@ import {
   fetchFormAttributes,
   fetchTemplateForms,
   receiveTemplateForms,
-  templateFormsNotFound,
+  templateFormsNotFound, addPlanUnitDecisions, resetPlanUnitDecisions,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -112,6 +112,10 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
           yield put(receiveForm(bodyAsJson.form));
         } else {
           yield put(receiveForm(null));
+        }
+        yield put(resetPlanUnitDecisions());
+        for (const target of bodyAsJson.targets) {
+          yield put(addPlanUnitDecisions(target.plan_unit));
         }
         break;
       case 404:
@@ -307,6 +311,7 @@ function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSinglePlanUnit({[value.value]: bodyAsJson}));
+        yield put(addPlanUnitDecisions(bodyAsJson));
         break;
       case 404:
         yield put(planUnitNotFound());
