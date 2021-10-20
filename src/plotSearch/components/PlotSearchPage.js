@@ -32,7 +32,9 @@ import {
   getIsFormValidById,
   getIsFormValidFlags,
   getIsFetching,
-  getForm
+  getForm,
+  getIsFetchingAnyPlanUnits,
+  getIsFetchingPlanUnitAttributes
 } from '$src/plotSearch/selectors';
 import {
   editPlotSearch,
@@ -61,6 +63,7 @@ import {
   getContentApplication,
   clearUnsavedChanges,
   cleanTargets,
+  cleanDecisions
 } from '$src/plotSearch/helpers';
 
 import PlotSearchInfo from './plotSearchSections/plotSearchInfo/PlotSearchInfo';
@@ -70,7 +73,6 @@ import Application from './plotSearchSections/application/Application';
 import ApplicationEdit from './plotSearchSections/application/ApplicationEdit';
 import ApplicationMap from './plotSearchSections/map/ApplicationMap';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
-import {cleanDecisions} from "../helpers";
 
 type Props = {
   applicationFormValues: Object,
@@ -502,6 +504,8 @@ class PlotSearchPage extends Component<Props, State> {
       isSaveClicked,
       currentPlotSearch,
       plotSearchMethods,
+      isFetchingAnyPlanUnits,
+      isFetchingAnyPlanUnitAttributes
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
@@ -524,7 +528,7 @@ class PlotSearchPage extends Component<Props, State> {
                 allowEdit={isMethodAllowed(plotSearchMethods, Methods.PATCH)}
                 isCancelDisabled={false}
                 isCopyDisabled={true}
-                isEditDisabled={false}
+                isEditDisabled={isFetchingAnyPlanUnits || isFetchingAnyPlanUnitAttributes}
                 isEditMode={isEditMode}
                 isSaveDisabled={isSaveClicked && !areFormsValid}
                 onCancel={this.cancelChanges}
@@ -575,7 +579,7 @@ class PlotSearchPage extends Component<Props, State> {
         <PageContainer className='with-control-bar-and-tabs' hasTabs>
           <ConfirmationModal
             confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
-            isOpen={isRestoreModalOpen}
+            isOpen={isRestoreModalOpen && !isFetchingAnyPlanUnits && !isFetchingAnyPlanUnitAttributes}
             label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
             onCancel={this.cancelRestoreUnsavedChanges}
             onClose={this.cancelRestoreUnsavedChanges}
@@ -640,7 +644,9 @@ export default flowRight(
         isSaveClicked: getIsSaveClicked(state),
         usersPermissions: getUsersPermissions(state),
         isFormValidFlags: getIsFormValidFlags(state),
-        plotSearchForm: getForm(state)
+        plotSearchForm: getForm(state),
+        isFetchingAnyPlanUnits: getIsFetchingAnyPlanUnits(state),
+        isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state)
       };
     },
     {

@@ -29,7 +29,10 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     stage: get(plotSearch.stage, 'id'),
     subtype: get(plotSearch.subtype, 'id'),
     type: get(plotSearch.type, 'id'),
-    targets: plotSearch.targets,
+    targets: plotSearch.targets?.map((target) => ({
+      ...target,
+      plan_unit_id: target.plan_unit?.id
+    })),
     /* applications: plotSearch.applications,
     step: plotSearch.step,
     start_time: plotSearch.start_time,
@@ -89,7 +92,7 @@ export const getContentPlotSearchListItem = (plotSearch: PlotSearch): Object => 
 export const getContentPlanUnitIdentifier = (plan_unit: Object): ?string =>
 {
   return !isEmpty(plan_unit)
-    ? `${get(plan_unit, 'identifier')} ${get(plan_unit, 'plan_unit_status')} ${get(plan_unit, 'lease_identifier')}`
+    ? `${get(plan_unit, 'identifier')} ${get(plan_unit, 'plan_unit_status') || ''} ${get(plan_unit, 'lease_identifier') || ''}`
     : null;
 };
 

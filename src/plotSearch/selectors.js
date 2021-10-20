@@ -59,11 +59,17 @@ export const getPlanUnitAttributes: Selector<Attributes, void> = (state: RootSta
 export const getPlanUnit: Selector<PlotSearch, void> = (state: RootState): PlanUnit =>
   state.plotSearch.planUnit;
 
-export const getIsFetchingPlanUnit: Selector<boolean, void> = (state: RootState): boolean =>
-  state.plotSearch.isFetchingPlanUnit;
+export const getIsFetchingPlanUnit: Selector<boolean, number> = (state: RootState, id: number): boolean =>
+  state.plotSearch.pendingPlanUnitFetches.includes(id);
 
-export const getIsFetchingPlanUnitAttributes: Selector<boolean, void> = (state: RootState): boolean =>
-  state.plotSearch.isFetchingPlanUnitAttributes;
+export const getIsFetchingAnyPlanUnits: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.pendingPlanUnitFetches.length > 0;
+
+export const getIsFetchingPlanUnitAttributes: Selector<boolean, number> = (state: RootState, id: number): boolean =>
+  state.plotSearch.pendingPlanUnitAttributeFetches.includes(id);
+
+export const getIsFetchingAnyPlanUnitAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.pendingPlanUnitAttributeFetches.length > 0;
 
 export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
   state.plotSearch.subTypes;
