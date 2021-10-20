@@ -50,6 +50,7 @@ import {
 import PlotSearchSiteEdit from './PlotSearchSiteEdit';
 
 import type {Attributes} from '$src/types';
+import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 
 type DecisionsProps = {
   attributes: Attributes,
@@ -269,7 +270,8 @@ type Props = {
   plotSearchSubTypes: Object,
   type: string,
   receiveFormValidFlags: Function,
-  valid: boolean
+  valid: boolean,
+  hasMinimumRequiredFieldsFilled: boolean
 }
 
 type State = {
@@ -352,7 +354,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       plotSearchSubTypes,
       type,
       decisionCandidates,
-      selectedDecisions
+      selectedDecisions,
+      hasMinimumRequiredFieldsFilled
     } = this.props;
     const subTypeOptions = filterSubTypes(plotSearchSubTypes, type);
 
@@ -394,6 +397,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       overrideValues={{
                         fieldType: FieldTypes.USER,
                         label: PlotSearchFieldTitles.PREPARER,
+                        required: true
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('preparer')}
@@ -408,6 +412,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       name='type'
                       overrideValues={{
                         label: PlotSearchFieldTitles.TYPE,
+                        required: true
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('type')}
@@ -423,6 +428,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       overrideValues={{
                         label: PlotSearchFieldTitles.SUBTYPE,
                         options: subTypeOptions,
+                        required: true
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('subtype')}
@@ -467,6 +473,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       name='stage'
                       overrideValues={{
                         label: PlotSearchFieldTitles.STAGE,
+                        required: true
                       }}
                     />
                   </Column>
@@ -489,11 +496,14 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <SubTitle>
                   {'KOHTEET'}
                 </SubTitle>
+                {!hasMinimumRequiredFieldsFilled && <p>
+                  Ole hyvä ja täytä ensin pakolliset perustiedot.
+                </p>}
                 <FieldArray
                   component={renderPlotSearchSites}
                   attributes={attributes}
                   isClicked={isSaveClicked}
-                  disabled={false}
+                  disabled={!hasMinimumRequiredFieldsFilled}
                   formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
                   name={'targets'}
                   usersPermissions={usersPermissions}
@@ -525,7 +535,8 @@ export default flowRight(
         plotSearchSubTypes: getPlotSearchSubTypes(state),
         decisionCandidates: getDecisionCandidates(state),
         selectedDecisions: selector(state, 'decisions'),
-        targets: selector(state, 'targets')
+        targets: selector(state, 'targets'),
+        hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state)
       };
     },
     {

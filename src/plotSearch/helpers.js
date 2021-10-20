@@ -10,6 +10,7 @@ import {
   getApiResponseResults,
 } from '$util/helpers';
 import {formatDate} from "../util/helpers";
+import {formValueSelector} from "redux-form";
 
 /**
  * Get plotSearch basic information content
@@ -165,6 +166,16 @@ export const filterSubTypes = (subTypes: Object, type: string): Object => {
     label: subType.name,
   }));
   return subTypesAsOptions;
+};
+
+export const hasMinimumRequiredFieldsFilled = (state) => {
+  return [
+    'name',
+    'preparer',
+    'stage',
+    'type',
+    'subtype'
+  ].every((fieldName) => !!formValueSelector(FormNames.PLOT_SEARCH_BASIC_INFORMATION)(state, fieldName));
 };
 
 export const formatDecisionName = (decision: Object) => {

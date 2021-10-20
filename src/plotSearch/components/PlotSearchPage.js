@@ -6,6 +6,7 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import {change, getFormValues, initialize, destroy, isDirty} from 'redux-form';
+import get from "lodash/get";
 
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -107,7 +108,6 @@ type Props = {
   usersPermissions: UsersPermissionsType,
   receiveSinglePlotSearch: Function,
   receiveFormValidFlags: Function,
-  deletePlotSearch: Function,
   deletePlotSearch: Function,
   plotSearchMethods: MethodType,
 }

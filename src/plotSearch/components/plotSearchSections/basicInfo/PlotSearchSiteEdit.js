@@ -343,7 +343,8 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       planUnitMap,
       planUnitAttributes,
       currentPlotSearch,
-      index
+      index,
+      disabled
     } = this.props;
     const {
       planUnitNew,
@@ -370,7 +371,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
         className='collapse__secondary greenCollapse'
         defaultOpen={collapseState !== undefined ? collapseState : true}
         headerTitle={planUnitTitle}
-        onRemove={onRemove}
+        onRemove={!disabled ? onRemove : null}
         hasErrors={isSaveClicked && !isEmpty(plotSearchSiteErrors)}
         onToggle={this.handleCollapseToggle}
       >
@@ -399,7 +400,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             <PlanUnitSelectInput
               value={planUnitNew}
               onChange={this.handleNew}
-              disabled={false}
+              disabled={disabled}
               name={`plan-unit`}
             />
             <div style={{display: 'none'}}>
@@ -417,6 +418,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
               invisibleLabel={true}
               fieldAttributes={get(attributes, 'targets.child.children.target_type')}
               name={`${field}.target_type`}
+              disabled={disabled}
             />
             {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
