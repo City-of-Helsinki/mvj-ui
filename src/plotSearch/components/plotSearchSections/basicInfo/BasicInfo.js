@@ -92,7 +92,7 @@ class BasicInfo extends PureComponent<Props, State> {
           {PlotSearchFieldTitles.BASIC_INFO}
         </Title>
         <Divider />
-        <Row className='summary__content-wrapper'>
+        <Row className='summary__content-wrapper plot_search__basic-info'>
           <Column small={12}>
             <Collapse
               defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}

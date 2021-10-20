@@ -132,8 +132,10 @@ export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object
  */
 export const cleanTargets = (payload: Object): Object => {
   const plot_search_targets = payload.plot_search_targets.map(target => ({
+    id: target.id,
     plan_unit_id: target.plan_unit_id,
     target_type: target.target_type,
+    info_links: target.info_links
   }));
   return payload = {...payload, plot_search_targets};
 };
