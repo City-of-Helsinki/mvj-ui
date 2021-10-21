@@ -12,6 +12,7 @@ import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
 import contractFileSaga from '$src/contractFile/saga';
 import createCollectionLetterSaga from '$src/createCollectionLetter/saga';
+import creditDecisionSaga from '$src/creditDecision/saga';
 import districtSaga from '../district/saga';
 import indexSaga from '$src/index/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
@@ -60,6 +61,7 @@ export default () =>
       fork(contactSaga),
       fork(contractFileSaga),
       fork(createCollectionLetterSaga),
+      fork(creditDecisionSaga),
       fork(districtSaga),
       fork(indexSaga),
       fork(infillDevelopmentSaga),

@@ -1,0 +1,79 @@
+.history-table {
+  margin-bottom: 0;
+  font-size: $font-small;
+
+  thead,
+  tbody,
+  tfoot {
+    border: none;
+  }
+
+  thead {
+    color: $dark-gray;
+  }
+
+  thead,
+  tr {
+    background: transparent !important;
+    border-bottom: 1px solid $medium-gray !important;
+  }
+}
+
+.icon-and-text {
+  display: inline-flex;
+  align-items: center;
+  padding: .25rem;
+
+  svg {
+    margin-right: .5rem;
+  }
+}
+
+.credit-decision-status-text {
+  display: inline-flex;
+  align-items: center;
+
+  svg {
+    margin-right: .5rem;
+  }
+}
+
+.credit-decision {
+  &__result {
+    margin-top: .5rem;
+
+    .credit-decision-status-text {
+      line-height: 1;
+
+      svg {
+        margin-left: .5rem;
+      }
+    }
+  }
+
+  &__reasons {
+    margin-top: 1rem;
+  }
+
+  &__business-data,
+  &__meta {
+    hr {
+      margin-top: .75rem;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.credit-decision-success-icon #Artboard {
+  fill: $dark-green;
+}
+
+.credit-decision-cancel-icon {
+  fill: $red;
+  stroke: $red;
+}
+
+.credit-decision-consideration-icon {
+  fill: #ff8800;
+  stroke: #ff8800;
+}

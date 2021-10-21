@@ -10,6 +10,7 @@ import BatchRunPage from '$src/batchrun/components/BatchRunPage';
 import CallbackPage from '$src/auth/components/CallbackPage';
 import ContactListPage from '$src/contacts/components/ContactsListPage';
 import ContactPage from '$src/contacts/components/ContactPage';
+import CreditDecisionSearchPage from '$src/creditDecision/components/CreditDecisionSearchPage';
 import IndexListPage from '$src/index/components/IndexListPage';
 import InfillDevelopmentPage from '$src/infillDevelopment/components/InfillDevelopmentPage';
 import InfillDevelopmentListPage from '$src/infillDevelopment/components/InfillDevelopmentListPage';
@@ -32,7 +33,7 @@ import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage'
 import LeaseStatisticReport from '$src/leaseStatisticReport/components/LeaseStatisticReportPage';
 import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegisterSearchPage';
 
-/** 
+/**
  * Routes enumerate
  * @enum {string}
  */
@@ -43,6 +44,7 @@ export const Routes = {
   CALLBACK: 'callback',
   CONTACTS: 'contacts',
   CONTACT_NEW: 'contact_new',
+  CREDIT_DECISION: 'asiakastieto',
   INDEX: 'index',
   INFILL_DEVELOPMENTS: 'infill_developments',
   INFILL_DEVELOPMENT_NEW: 'infill_development_new',
@@ -60,7 +62,7 @@ export const Routes = {
   TRADE_REGISTER: 'trade_register',
 };
 
-/** 
+/**
  * Get route by id
  * @param {string} string
  * @returns {string}
@@ -73,6 +75,7 @@ export const getRouteById = (id: string): string => {
     [Routes.CALLBACK]: '/callback',
     [Routes.CONTACTS]: '/asiakkaat',
     [Routes.CONTACT_NEW]: '/uusiasiakas',
+    [Routes.CREDIT_DECISION]: '/asiakastieto',
     [Routes.INDEX]: '/indeksi',
     [Routes.INFILL_DEVELOPMENTS]: '/taydennysrakennuskorvaus',
     [Routes.INFILL_DEVELOPMENT_NEW]: '/uusitaydennysrakennuskorvaus',
@@ -124,6 +127,7 @@ export default
     <Route exact path={`${getRouteById(Routes.PLOT_SEARCH)}/:plotSearchId`} component={PlotSearchPage} />
     <Route exact path={getRouteById(Routes.PLOT_APPLICATIONS)} component={PlotApplicationsListPage} />
     <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotApplicationId`} component={PlotApplicationsPage} />
+    <Route exact path={getRouteById(Routes.CREDIT_DECISION)} component={CreditDecisionSearchPage} />
     <Route component={ErrorPage} />
   </Switch>
 </App>;

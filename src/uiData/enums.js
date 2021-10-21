@@ -13,6 +13,7 @@ export const UiDataPrefixes = {
   CONTACT: 'contact',
   CREATE_CHARGE: 'create_charge',
   CREATE_COLLECTION_LETTER: 'create_collection_letter',
+  CREDIT_DECISION: 'credit_decision',
   CREDIT_INVOICE: 'credit_invoice',
   INFILL_DEVELOPMENT: 'infill_development',
   INFILL_DEVELOPMENT_ATTACHMENT: 'infill_development_attachment',

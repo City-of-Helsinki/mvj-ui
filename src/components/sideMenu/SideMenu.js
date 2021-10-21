@@ -197,7 +197,7 @@ class SideMenu extends Component<Props, State> {
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INFILLDEVELOPMENTCOMPENSATION)}>
                     <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.INFILL_DEVELOPMENTS)}>Täydennysrakentamiskorvaukset</Link></li>
                   </Authorization>
-                  
+
                   <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
 
                   <SubMenu
@@ -220,7 +220,7 @@ class SideMenu extends Component<Props, State> {
                     menuKey='plot'
                     onHeaderClick={this.handleHeaderClick}
                   />
-                  
+
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) ||
@@ -274,6 +274,12 @@ class SideMenu extends Component<Props, State> {
                           onClick: handleClick,
                           text: 'Vuokraoikeuden siirrot',
                           to: getRouteById(Routes.LEASEHOLD_TRANSFER),
+                        },
+                        {
+                          allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_CREDITDECISION),
+                          onClick: handleClick,
+                          text: 'Asiakastieto',
+                          to: getRouteById(Routes.CREDIT_DECISION),
                         },
                       ]}
                       menuKey='tools'

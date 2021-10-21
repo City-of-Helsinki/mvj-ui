@@ -204,6 +204,14 @@
       margin: 0;
     }
 
+    &.with-bottom-margin {
+      margin-bottom: rem-calc(10px);
+    }
+
+    &.with-bottom-padding {
+      padding-bottom: rem-calc(10px);
+    }
+
     h3 {
       margin-bottom: rem-calc(15px);
     }

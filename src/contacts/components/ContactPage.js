@@ -15,6 +15,7 @@ import ContactReadonly from './ContactReadonly';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import CreditDecisionTemplate from '../../creditDecision/components/CreditDecisionTemplate';
 import Divider from '$components/content/Divider';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
@@ -423,6 +424,10 @@ class ContactPage extends Component<Props, State> {
                 allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !!contact.business_id && contact.type !== ContactTypes.PERSON,
               },
               {
+                label: 'Asiakastieto',
+                allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_CREDITDECISION),
+              },
+              {
                 label: 'Muutoshistoria',
                 allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_CONTACT),
               },
@@ -482,6 +487,21 @@ class ContactPage extends Component<Props, State> {
                       />
                     </Fragment>
                   }
+                </Authorization>
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <Authorization
+                  allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_CREDITDECISION)}
+                  errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                >
+                  <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataContactKey(ContactFieldPaths.CREDIT_DECISION)}>
+                    {ContactFieldTitles.CREDIT_DECISION}
+                  </Title>
+                  <Divider />
+                  <CreditDecisionTemplate contactType={contact.type} contactId={contactId} />
                 </Authorization>
               </ContentContainer>
             </TabPane>
