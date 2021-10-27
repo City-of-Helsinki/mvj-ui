@@ -104,7 +104,7 @@ class CreditDecisionRequest extends PureComponent<Props, State> {
             onClick={handleRequest}
             text="Hae luottopäätös"
             style={{marginLeft: 0, marginRight: 20}}
-            disabled={isFetchingResult}
+            disabled={isFetchingResult || (hasRequested && !isEmpty(result))}
           />
           <small>
             {contactType === ContactTypes.BUSINESS && (
