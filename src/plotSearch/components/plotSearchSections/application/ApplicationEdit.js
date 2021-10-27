@@ -41,6 +41,7 @@ import TargetEdit from './TargetEdit';
 import type {Attributes} from '$src/types';
 import Loader from "../../../../components/loader/Loader";
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
+import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 
 type ApplicantProps = {
   disabled: boolean,
@@ -176,6 +177,7 @@ type Props = {
   isSaveClicked: boolean,
   errors: ?Object,
   attributes: Attributes,
+  hasMinimumRequiredFieldsFilled: boolean
 }
 
 type State = {
@@ -233,7 +235,8 @@ class ApplicationEdit extends PureComponent<Props, State> {
       isFetchingTemplateForms,
       currentPlotSearch,
       formData,
-      useExistingForm
+      useExistingForm,
+      hasMinimumRequiredFieldsFilled
     } = this.props;
 
     const formOptions = templateForms?.map((templateForm) => ({
@@ -254,6 +257,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
         options: formOptions
       }}
       onChange={(_, newValue) => this.loadTemplate(newValue)}
+      disabled={!hasMinimumRequiredFieldsFilled}
     />;
 
     return (
@@ -275,6 +279,9 @@ class ApplicationEdit extends PureComponent<Props, State> {
               <Row>
                 <Column large={6}>
                   {isFetchingTemplateForms ? <Loader isLoading={true} /> : <>
+                    {!hasMinimumRequiredFieldsFilled && <p>
+                      Ole hyvä ja täytä ensin pakolliset perustiedot.
+                    </p>}
                     {currentPlotSearch.form !== null ? <>
                       <FormField
                         disableTouched={isSaveClicked}
@@ -299,6 +306,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
                           ]
                         }}
                         onChange={(_, value) => this.replaceTemplate(value === '1')}
+                        disabled={!hasMinimumRequiredFieldsFilled}
                       />
                       {useExistingForm === "0" && formTemplateSelect}
                     </> : formTemplateSelect}
@@ -360,7 +368,8 @@ export default flowRight(
         isFetchingTemplateForms: getIsFetchingTemplateForms(state),
         templateForms: getTemplateForms(state),
         currentPlotSearch: getCurrentPlotSearch(state),
-        currentPlotSearchForm: getForm(state)
+        currentPlotSearchForm: getForm(state),
+        hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state)
       };
     },
     {
