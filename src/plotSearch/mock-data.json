@@ -66,7 +66,8 @@
         ]
       }
     ],
-    "targets": [
+    "targets": [1],
+    "plot_search_targets": [
       {
         "id": 1,
         "plan_unit": {

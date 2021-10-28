@@ -30,7 +30,7 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     stage: get(plotSearch.stage, 'id'),
     subtype: get(plotSearch.subtype, 'id'),
     type: get(plotSearch.type, 'id'),
-    targets: plotSearch.targets?.map((target) => ({
+    plot_search_targets: plotSearch.plot_search_targets?.map((target) => ({
       ...target,
       plan_unit_id: target.plan_unit?.id
     })),
@@ -41,8 +41,9 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     last_update: plotSearch.last_update,
     plotSearch_sites: getContentSearchProperties(plotSearch.plotSearch_sites), */
     decisions: plotSearch.decisions?.map((decision) => {
-      // Targets are simple IDs if called for listing search items, so the decision array might not necessarily exist.
-      const matchingTarget = plotSearch.targets.find((target) => target.decisions?.find((targetDecision) => targetDecision.id === decision.id));
+      // Detailed target objects are not available in a search result, only when fetching a single plot search,
+      // so the decisions might not always be available.
+      const matchingTarget = plotSearch.plot_search_targets?.find((target) => target.decisions?.find((targetDecision) => targetDecision.id === decision.id));
       return annotatePlanUnitDecision(decision, matchingTarget?.plan_unit);
     })
   };
@@ -130,11 +131,11 @@ export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object
  * @returns {Object}
  */
 export const cleanTargets = (payload: Object): Object => {
-  const targets = payload.targets.map(target => ({
+  const plot_search_targets = payload.plot_search_targets.map(target => ({
     plan_unit_id: target.plan_unit_id,
     target_type: target.target_type,
   }));
-  return payload = {...payload, targets: targets};
+  return payload = {...payload, plot_search_targets};
 };
 
 /**

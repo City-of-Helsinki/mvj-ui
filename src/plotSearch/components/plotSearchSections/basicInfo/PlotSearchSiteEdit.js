@@ -310,7 +310,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       change,
     } = this.props;
 
-    const currentTarget = currentPlotSearch.targets[index];
+    const currentTarget = currentPlotSearch.plot_search_targets[index];
     const masterPlanUnitId = get(currentTarget, 'master_plan_unit_id');
     const planUnit = planUnitMap[masterPlanUnitId];
     const payload = {
@@ -359,7 +359,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
     const plotDivisionStateOptions = getFieldOptions(planUnitAttributesByValue, 'plot_division_state');
 
-    const currentTarget = currentPlotSearch.targets[index];
+    const currentTarget = currentPlotSearch.plot_search_targets[index];
     const isDeleted = get(currentTarget, 'is_master_plan_unit_deleted');
     const isNewer = get(currentTarget, 'is_master_plan_unit_newer');
     const label = get(currentTarget, 'message_label');
@@ -406,7 +406,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             <div style={{display: 'none'}}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'targets.child.children.plan_unit_id')}
+                fieldAttributes={get(attributes, 'plot_search_targets.child.children.plan_unit_id')}
                 name={`${field}.plan_unit_id`}
               />
             </div>
@@ -416,7 +416,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             <FormField
               disableTouched={isSaveClicked}
               invisibleLabel={true}
-              fieldAttributes={get(attributes, 'targets.child.children.target_type')}
+              fieldAttributes={get(attributes, 'plot_search_targets.child.children.target_type')}
               name={`${field}.target_type`}
               disabled={disabled}
             />

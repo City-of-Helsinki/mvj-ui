@@ -239,12 +239,12 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Row>
                 )}
               </div>
-              {(!!plotSearch.targets && plotSearch.targets.
+              {(!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
                 filter(plotSearchSite => plotSearchSite.target_type === 'searchable').length > 0) && <WhiteBox>
                 <SubTitle>
                   {'HAETTAVAT KOHTEET'}
                 </SubTitle>
-                {!!plotSearch.targets && plotSearch.targets.
+                {!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
                   filter(plotSearchSite => plotSearchSite.target_type === 'searchable').
                   map((plotSearchSite, index) => {
                     return(
@@ -257,12 +257,12 @@ class BasicInfo extends PureComponent<Props, State> {
                     );
                   })}
               </WhiteBox>}
-              {(!!plotSearch.targets && plotSearch.targets.
+              {(!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
                 filter(plotSearchSite => plotSearchSite.target_type === 'procedural_reservation').length > 0) && <WhiteBox>
                 <SubTitle>
                   {'MENETTELYVARAUS'}
                 </SubTitle>
-                {!!plotSearch.targets && plotSearch.targets.
+                {!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
                   filter(plotSearchSite => plotSearchSite.target_type === 'procedural_reservation').
                   map((plotSearchSite, index) => {
                     return(
@@ -275,12 +275,12 @@ class BasicInfo extends PureComponent<Props, State> {
                     );
                   })}
               </WhiteBox>}
-              {(!!plotSearch.targets && plotSearch.targets.
+              {(!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
                 filter(plotSearchSite => plotSearchSite.target_type === 'direct_reservation').length > 0) && <WhiteBox>
                 <SubTitle>
                   {'SUORAVARAUS'}
                 </SubTitle>
-                {!!plotSearch.targets && plotSearch.targets.
+                {!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
                   filter(plotSearchSite => plotSearchSite.target_type === 'direct_reservation').
                   map((plotSearchSite, index) => {
                     return(

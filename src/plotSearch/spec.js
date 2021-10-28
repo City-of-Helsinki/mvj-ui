@@ -429,7 +429,7 @@ describe('PlotSearch', () => {
       });
 
       it('should add and annotate decision candidates from plan units', () => {
-        const state = mockData[0].targets.reduce(
+        const state = mockData[0].plot_search_targets.reduce(
           (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
           {});
 
@@ -441,7 +441,7 @@ describe('PlotSearch', () => {
       });
 
       it('should remove decision candidates when plan units are no longer present in any targets', () => {
-        let state = mockData[0].targets.reduce(
+        let state = mockData[0].plot_search_targets.reduce(
           (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
           {});
 
@@ -454,7 +454,7 @@ describe('PlotSearch', () => {
       });
 
       it('should not remove unrelated decision candidates', () => {
-        let state = mockData[0].targets.reduce(
+        let state = mockData[0].plot_search_targets.reduce(
           (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
           {});
 
@@ -467,7 +467,7 @@ describe('PlotSearch', () => {
       });
 
       it('should reset decision candidates', () => {
-        let state = mockData[0].targets.reduce(
+        let state = mockData[0].plot_search_targets.reduce(
           (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
           {});
 

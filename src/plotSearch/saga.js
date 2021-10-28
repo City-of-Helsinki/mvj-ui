@@ -114,7 +114,7 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
           yield put(receiveForm(null));
         }
         yield put(resetPlanUnitDecisions());
-        for (const target of bodyAsJson.targets) {
+        for (const target of bodyAsJson.plot_search_targets) {
           yield put(addPlanUnitDecisions(target.plan_unit));
         }
         break;
