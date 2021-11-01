@@ -149,7 +149,6 @@ class LandUseContractListPage extends Component<Props, State> {
       delete initialValues.sort_order;
       await initialize(FormNames.LAND_USE_CONTRACT_SEARCH, initialValues);
     };
-    console.log(page);
     this.setState({
       activePage: page,
       isSearchInitialized: false,

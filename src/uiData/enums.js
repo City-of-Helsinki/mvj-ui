@@ -13,6 +13,7 @@ export const UiDataPrefixes = {
   CONTACT: 'contact',
   CREATE_CHARGE: 'create_charge',
   CREATE_COLLECTION_LETTER: 'create_collection_letter',
+  CREDIT_DECISION: 'credit_decision',
   CREDIT_INVOICE: 'credit_invoice',
   INFILL_DEVELOPMENT: 'infill_development',
   INFILL_DEVELOPMENT_ATTACHMENT: 'infill_development_attachment',
@@ -28,5 +29,6 @@ export const UiDataPrefixes = {
   TRADE_REGISTER_COMPANY_REPRESENT: 'trade_register_company_represent',
   PLOT_SEARCH: 'plot_search',
   LAND_USE_CONTRACT: 'land_use_contract',
+  LAND_USE_CONTRACT_AGREEMENT_ATTACHMENT: 'land_use_contract_agreement_attachment',
 };
 

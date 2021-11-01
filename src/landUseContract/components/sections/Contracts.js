@@ -21,7 +21,6 @@ const Contracts = ({attributes, currentLandUseContract}: Props) => {
     stateOptions = getFieldOptions(attributes, 'contracts.child.children.state'),
     contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.type'),
     decisionOptions = getFieldOptions(attributes, 'contracts.child.children.decision');
-  console.log(currentLandUseContract);
   return (
     <div>
       {!contracts.length && <FormText className='no-margin'>Ei sopimuksia</FormText>}

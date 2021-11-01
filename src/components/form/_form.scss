@@ -375,6 +375,7 @@
   }
 
   &__select {
+    width: 100%;
     &.is-dirty {
       .select-input__control {
         background-color: $is-dirty-color !important;
@@ -549,6 +550,19 @@
           display: inherit;
         }
       }
+    }
+  }
+
+  &__hint-text {
+    font-size: rem-calc(13px);
+    line-height: rem-calc(16px);
+    font-weight: normal;
+    color: $neutral-color;
+    margin-bottom: rem-calc(10px);
+    max-width: 100%;
+
+    .form-field + & {
+      margin-top: rem-calc(-10px);
     }
   }
 

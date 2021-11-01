@@ -13,6 +13,7 @@ import {
   sortStringByKeyDesc,
   addEmptyOption,
   formatDate,
+  convertStrToDecimalNumber,
 } from '$util/helpers';
 import {getIsEditMode} from '$src/landUseContract/selectors';
 import {removeSessionStorageItem} from '$util/storage';
@@ -181,6 +182,7 @@ export const getContentBasicInformation = (contract: LandUseContract): Object =>
     definition: contract.definition,
     status: contract.status,
     addresses: contract.addresses,
+    plots: contract.plots,
   };
 };
 
@@ -341,17 +343,17 @@ export const getContentCompensations = (contract: LandUseContract): Object => {
   const compensations = get(contract, 'compensations', {});
 
   return {
-    cash_compensation: compensations.cash_compensation,
-    land_compensation: compensations.land_compensation,
-    other_compensation: compensations.other_compensation,
-    first_installment_increase: compensations.first_installment_increase,
-    street_acquisition_value: compensations.street_acquisition_value,
-    street_area: compensations.street_area,
-    park_acquisition_value: compensations.park_acquisition_value,
-    park_area: compensations.park_area,
-    other_acquisition_value: compensations.other_acquisition_value,
-    other_area: compensations.other_area,
-    unit_prices_used_in_calculation: compensations.unit_prices_used_in_calculation,
+    cash_compensation: get(compensations, 'cash_compensation'),
+    land_compensation: get(compensations, 'land_compensation'),
+    other_compensation: get(compensations, 'other_compensation'),
+    first_installment_increase: get(compensations, 'first_installment_increase'),
+    street_acquisition_value: get(compensations, 'street_acquisition_value'),
+    street_area: get(compensations, 'street_area'),
+    park_acquisition_value: get(compensations, 'park_acquisition_value'),
+    park_area: get(compensations, 'park_area'),
+    other_acquisition_value: get(compensations, 'other_acquisition_value'),
+    other_area: get(compensations, 'other_area'),
+    unit_prices_used_in_calculation: get(compensations, 'unit_prices_used_in_calculation'),
   };
 };
 
@@ -498,4 +500,123 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_INVOICES);
   removeSessionStorageItem('landUseContractId');
   removeSessionStorageItem('landUseContractValidity');
+};
+
+/**
+ * Get used price
+ * @param {string} unitValue
+ * @param {string} discount
+ * @return {number}
+ */
+export const getUsedPrice = (unitValue: string, discount: string): number => {
+  const value = Number(convertStrToDecimalNumber(unitValue));
+  const dis = Number(convertStrToDecimalNumber(discount));
+  return (value - (value * (dis / 100)));
+};
+
+/**
+ * Convert Compensation Values To Decimal Number
+ * @param {Object} values
+ * @return {Object}
+ */
+export const convertCompensationValuesToDecimalNumber = (values: Object): Object => {
+  return {
+    compensations: {
+      ...values.compensations,
+      cash_compensation: Number(convertStrToDecimalNumber(values.compensations.cash_compensation)),
+      first_installment_increase: Number(convertStrToDecimalNumber(values.compensations.first_installment_increase)),
+      land_compensation: Number(convertStrToDecimalNumber(values.compensations.land_compensation)),
+      other_acquisition_value: Number(convertStrToDecimalNumber(values.compensations.other_acquisition_value)),
+      other_area: Number(convertStrToDecimalNumber(values.compensations.other_area)),
+      other_compensation: Number(convertStrToDecimalNumber(values.compensations.other_compensation)),
+      park_acquisition_value: Number(convertStrToDecimalNumber(values.compensations.park_acquisition_value)),
+      park_area: Number(convertStrToDecimalNumber(values.compensations.park_area)),
+      street_acquisition_value: Number(convertStrToDecimalNumber(values.compensations.street_acquisition_value)),
+      street_area: Number(convertStrToDecimalNumber(values.compensations.street_area)),
+      unit_prices_used_in_calculation: convertUnitPricesUsedInCalculations(values.compensations.unit_prices_used_in_calculation),
+    },
+  };
+};
+
+export const convertUnitPricesUsedInCalculations = (UnitPrices: Object): Object => {
+  if(UnitPrices)
+    return UnitPrices.map(UnitPrice => ({
+      ...UnitPrice,
+      area: Number(convertStrToDecimalNumber(UnitPrice.area)),
+      unit_value: Number(convertStrToDecimalNumber(UnitPrice.unit_value)),
+      discount: Number(convertStrToDecimalNumber(UnitPrice.discount)),
+      used_price: Number(convertStrToDecimalNumber(UnitPrice.used_price)),
+    }));
+  else
+    return [];
+};
+
+/**
+ * get sum
+ * @param {string} area
+ * @param {number} usedPrice
+ * @return {boolean}
+ */
+export const getSum = (area: string, usedPrice: number): number => {
+  const areaNumber = Number(convertStrToDecimalNumber(area));
+  const price = Number(convertStrToDecimalNumber(usedPrice));
+  return Number((areaNumber * price).toFixed(2));
+};
+
+/**
+ * get recipient options from litigants
+ * @param {Object[]} litigants
+ * @return {Object[]}
+ */
+export const getRecipientOptionsFromLitigants = (litigants: Array<Object>): Array<Object> => {
+  if(litigants)
+    return litigants.map((litigant) => get(litigant, 'landuseagreementlitigantcontact_set', []).find((x) => x.type === LitigantContactType.TENANT))
+      .filter((litigant) => !isArchived(litigant))
+      .map((litigant) => {
+        return ({
+          value: get(get(litigant, 'contact'), 'id'),
+          label: getListLitigantName(litigant),
+        });
+      });
+  else
+    return [];
+};
+
+
+/**
+ * Get create invoice payload for API
+ * @param {Object} invoice
+ * @returns {Object}
+ */
+export const getPayloadCreateInvoice = (invoice: Object): Object => {
+  return {
+    land_use_agreement: invoice.land_use_agreement,
+    recipient: invoice.recipient,
+    type: invoice.type,
+    due_date: invoice.due_date,
+    total_amount: convertStrToDecimalNumber(invoice.total_amount),
+    notes: invoice.notes,
+    rows: getPayloadInvoiceRows(invoice),
+  };
+};
+
+/**
+ * Get rows for invoice payload for API
+ * @param {Object} invoice
+ * @returns {Object[]}
+ */
+const getPayloadInvoiceRows = (invoice: Object): Array<Object> => {
+  return get(invoice, 'rows', []).map((row) => {
+    return {
+      tenant: row.tenant,
+
+      compensation_amount: convertStrToDecimalNumber(row.compensation_amount),
+      amount: convertStrToDecimalNumber(row.amount),
+      increase_percentage: convertStrToDecimalNumber(row.increase_percentage),
+      plan_lawfulness_date: row.plan_lawfulness_date,
+      receivable_type: row.receivable_type,
+      sign_date: row.sign_date,
+      description: row.description,
+    };
+  });
 };

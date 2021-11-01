@@ -33,7 +33,7 @@ import type {
   ReceivePlanUnitAttributesAction,
   PlanUnit,
   PlanUnitNotFoundAction,
-  fetchPlotSearchSubtypesAction,
+  FetchPlotSearchSubtypesAction,
   PlotSearchSubtypeNotFoundAction,
   ReceivePlotSearchSubtypeAction,
   NullPlanUnitsAction,
@@ -41,8 +41,12 @@ import type {
   FormAttributesNotFoundAction,
   ReceiveFormAttributesAction,
   FormNotFoundAction,
-  fetchFormAction,
+  FetchFormAction,
   ReceiveFormAction,
+  FetchTemplateFormsAction,
+  ReceiveTemplateFormsAction,
+  TemplateFormsNotFoundAction,
+  RemovePlanUnitDecisionsAction, AddPlanUnitDecisionsAction, ResetPlanUnitDecisionsAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -120,7 +124,7 @@ export const planUnitAttributesNotFound = (): PlanUnitAttributesNotFoundAction =
 export const receivePlanUnitAttributes = (attributes: Attributes): ReceivePlanUnitAttributesAction =>
   createAction('mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES')(attributes);
 
-export const fetchPlotSearchSubtypes = (payload: Object): fetchPlotSearchSubtypesAction =>
+export const fetchPlotSearchSubtypes = (payload: Object): FetchPlotSearchSubtypesAction =>
   createAction('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES')(payload);
 
 export const PlotSearchSubtypeNotFound = (): PlotSearchSubtypeNotFoundAction =>
@@ -140,12 +144,30 @@ export const formAttributesNotFound = (): FormAttributesNotFoundAction =>
 
 export const receiveFormAttributes = (attributes: Attributes): ReceiveFormAttributesAction =>
   createAction('mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES')(attributes);
-  
+
+export const templateFormsNotFound = (payload: Object): TemplateFormsNotFoundAction =>
+  createAction('mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND')(payload);
+
+export const fetchTemplateForms = (): FetchTemplateFormsAction =>
+  createAction('mvj/plotSearch/FETCH_TEMPLATE_FORMS')();
+
+export const receiveTemplateForms = (payload: Object): ReceiveTemplateFormsAction =>
+  createAction('mvj/plotSearch/RECEIVE_TEMPLATE_FORMS')(payload);
+
 export const formNotFound = (payload: Object): FormNotFoundAction =>
   createAction('mvj/plotSearch/FORM_NOT_FOUND')(payload);
 
-export const fetchForm = (payload: Object): fetchFormAction =>
+export const fetchForm = (payload: Object): FetchFormAction =>
   createAction('mvj/plotSearch/FETCH_FORM')(payload);
 
 export const receiveForm = (payload: Object): ReceiveFormAction =>
   createAction('mvj/plotSearch/RECEIVE_FORM')(payload);
+
+export const addPlanUnitDecisions = (planUnit: Object): AddPlanUnitDecisionsAction =>
+  createAction('mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS')(planUnit);
+
+export const removePlanUnitDecisions = (planUnitId: number): RemovePlanUnitDecisionsAction =>
+  createAction('mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS')(planUnitId);
+
+export const resetPlanUnitDecisions = (): ResetPlanUnitDecisionsAction =>
+  createAction('mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS')();

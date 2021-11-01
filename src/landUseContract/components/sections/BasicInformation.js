@@ -15,6 +15,7 @@ import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {FormNames, ViewModes} from '$src/enums';
+import {LandUseAgreementAttachmentFieldPaths} from '$src/landUseAgreementAttachment/enums';
 import {getContentBasicInformation} from '$src/landUseContract/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
@@ -25,16 +26,20 @@ import {
   isFieldAllowedToRead,
 } from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getCurrentLandUseContract} from '$src/landUseContract/selectors';
-import {getUiDataLandUseContractKey} from '$src/uiData/helpers';
-
+import {getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey} from '$src/uiData/helpers';
+import {
+  getAttributes as getLandUseAgreementAttachmentAttributes,
+} from '$src/landUseAgreementAttachment/selectors';
 import type {Attributes} from '$src/types';
 import type {LandUseContract} from '$src/landUseContract/types';
+import FileDownloadLink from '$components/file/FileDownloadLink';
 
 type Props = {
   attributes: Attributes,
   basicInformationCollapseState: boolean,
   currentLandUseContract: LandUseContract,
   receiveCollapseStates: Function,
+  landUseAgreementAttachmentAttributes: Attributes,
 }
 
 const BasicInformation = ({
@@ -42,6 +47,7 @@ const BasicInformation = ({
   basicInformationCollapseState,
   currentLandUseContract,
   receiveCollapseStates,
+  landUseAgreementAttachmentAttributes,
 }: Props) => {
   const handleBasicInformationCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
@@ -58,7 +64,8 @@ const BasicInformation = ({
     planAcceptorOptions = getFieldOptions(attributes, 'plan_acceptor'),
     landUseContractTypeOptions = getFieldOptions(attributes, 'type'),
     landUseContractDefinitionOptions = getFieldOptions(attributes, 'definition'),
-    landUseContractStatusOptions = getFieldOptions(attributes, 'status');
+    landUseContractStatusOptions = getFieldOptions(attributes, 'status'),
+    attachments = get(currentLandUseContract, 'attachments', []).filter(file => file.type === 'general');
 
   return (
     <Fragment>
@@ -173,8 +180,55 @@ const BasicInformation = ({
           </Row>
         )}
 
-        <SubTitle>Liitetiedostot</SubTitle>
-        <FormText>Ei liitetiedostoja</FormText>
+        {!attachments.length && <FormText>Ei liitetiedostoja</FormText>}
+        {!!attachments.length &&
+          <Fragment>
+            <Row>
+              <Column small={3} large={4}>
+                <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
+                  <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.FILE)}>
+                    {'Tiedoston nimi'}
+                  </FormTextTitle>
+                </Authorization>
+              </Column>
+              <Column small={3} large={2}>
+                <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                  <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                    {'Ladattu'}
+                  </FormTextTitle>
+                </Authorization>
+              </Column>
+              <Column small={3} large={2}>
+                <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADER)}>
+                  {'Lataaja'}
+                </FormTextTitle>
+              </Column>
+            </Row>
+
+            {attachments.map((file, index) => {
+              return (
+                <Row key={index}>
+                  <Column small={3} large={4}>
+                    <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
+                      <FileDownloadLink
+                        fileUrl={file.file}
+                        label={file.filename}
+                      />
+                    </Authorization>
+                  </Column>
+                  <Column small={3} large={2}>
+                    <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
+                      <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
+                    </Authorization>
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
+                  </Column>
+                </Row>
+              );
+            })}
+          </Fragment>
+        }
 
         <SubTitle>Asemakaavatiedot</SubTitle>
         <Row>
@@ -246,6 +300,7 @@ export default connect(
       attributes: getAttributes(state),
       basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}.basic_information`),
       currentLandUseContract: getCurrentLandUseContract(state),
+      landUseAgreementAttachmentAttributes: getLandUseAgreementAttachmentAttributes(state),
     };
   },
   {

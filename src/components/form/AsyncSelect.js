@@ -15,6 +15,8 @@ type Props = {
   isDirty: boolean,
   placeholder?: string,
   setRef?: Function,
+  initialValues?: Object,
+  cacheOptions: any
 }
 
 type State = {
@@ -106,6 +108,8 @@ class AsyncSelect extends Component<Props, State> {
       input: {name, value},
       isDirty,
       placeholder,
+      initialValues,
+      cacheOptions = true
     } = this.props;
 
     return(
@@ -116,7 +120,7 @@ class AsyncSelect extends Component<Props, State> {
       >
         <Async
           ref={this.setSelectRef}
-          cacheOptions
+          cacheOptions={cacheOptions}
           className='select-input'
           classNamePrefix='select-input'
           components={{
@@ -137,6 +141,7 @@ class AsyncSelect extends Component<Props, State> {
           options={[]}
           placeholder={placeholder || 'Valitse...'}
           value={value}
+          defaultInputValue={initialValues ? initialValues.estate_id : ''}
         />
       </div>
     );

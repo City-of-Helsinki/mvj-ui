@@ -20,7 +20,10 @@ import type {
   ReceivePlotSearchSubtypeAction,
   ReceiveFormAttributesAction,
   ReceiveFormAction,
+  ReceiveTemplateFormsAction
 } from '$src/plotSearch/types';
+import {annotatePlanUnitDecision} from "./helpers";
+import type {AddPlanUnitDecisionsAction, RemovePlanUnitDecisionsAction} from "./types";
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -47,17 +50,31 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES']: () => false,
 }, false);
 
-const isFetchingPlanUnitReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotSearch/FETCH_PLAN_UNIT']: () => true,
-  ['mvj/plotSearch/PLAN_UNIT_NOT_FOUND']: () => false,
-  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: () => false,
-}, false);
+const pendingPlanUnitFetchesReducer: Reducer<Array<number>> = handleActions({
+  ['mvj/plotSearch/FETCH_PLAN_UNIT']: (state: Array<number>, {payload: value}) => {
+    const id = value.value;
+    if (state.includes(id)) {
+      return state;
+    }
 
-const isFetchingPlanUnitAttributesReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES']: () => true,
-  ['mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND']: () => false,
-  ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: () => false,
-}, false);
+    return [...state, id];
+  },
+  ['mvj/plotSearch/PLAN_UNIT_NOT_FOUND']: (state: Array<number>, {payload: id}) => state.filter((item) => item === id),
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: Array<number>, {payload: result}) => state.filter((item) => !result[item])
+}, []);
+
+const pendingPlanUnitAttributeFetchesReducer: Reducer<Array<number>> = handleActions({
+  ['mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES']: (state: Array<number>, {payload: value}) => {
+    const id = value.value;
+    if (state.includes(id)) {
+      return state;
+    }
+
+    return [...state, id];
+  },
+  ['mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND']: (state: Array<number>, {payload: id}) => state.filter((item) => item === id),
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: (state: Array<number>, {payload: result}) => state.filter((item) => !result[item])
+}, []);
 
 const planUnitAttributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -66,7 +83,7 @@ const planUnitAttributesReducer: Reducer<Attributes> = handleActions({
 }, null);
 
 const planUnitReducer: Reducer<PlanUnit> = handleActions({
-  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: PlanUnit, {payload: planUnit}: ReceiveSinglePlotSearchAction) => 
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: PlanUnit, {payload: planUnit}: ReceiveSinglePlotSearchAction) =>
   {
     return merge(state, planUnit);
   },
@@ -136,6 +153,12 @@ const isFetchingFormAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: () => false,
 }, false);
 
+const isFetchingTemplateFormsReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_TEMPLATE_FORMS']: () => true,
+  ['mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_TEMPLATE_FORMS']: () => false,
+}, false);
+
 const isFetchingFormReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/FETCH_FORM']: () => true,
   ['mvj/plotSearch/FORM_NOT_FOUND']: () => false,
@@ -148,11 +171,46 @@ const formAttributesReducer: Reducer<Attributes> = handleActions({
   },
 }, null);
 
+const templateFormsReducer: Reducer<Object> = handleActions({
+  ['mvj/plotSearch/RECEIVE_TEMPLATE_FORMS']: (state: Object, {payload: forms}: ReceiveTemplateFormsAction) => {
+    return forms;
+  },
+}, []);
+
 const formReducer: Reducer<Object> = handleActions({
-  ['mvj/plotSearch/RECEIVE_FORM']: (state: Object, {payload: subTypes}: ReceiveFormAction) => {
-    return subTypes;
+  ['mvj/plotSearch/RECEIVE_FORM']: (state: Object, {payload: form}: ReceiveFormAction) => {
+    return form;
   },
 }, null);
+
+const decisionCandidateReducer: Reducer<Array> = handleActions({
+  ['mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS']: (state: Object, {payload: planUnit}: AddPlanUnitDecisionsAction) => {
+    if (!planUnit.decisions) {
+      return state;
+    }
+
+    return {
+      ...state,
+      [planUnit.id]: planUnit.decisions?.map((decision) => annotatePlanUnitDecision(decision, planUnit)) || []
+    };
+  },
+  ['mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS']: (state: Object, {payload: planUnitId}: RemovePlanUnitDecisionsAction) => {
+    if (!state[planUnitId]) {
+      return state;
+    }
+
+    const newState = {
+      ...state
+    };
+
+    delete newState[planUnitId];
+
+    return newState;
+  },
+  ['mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS']: (state: Object) => {
+    return {};
+  }
+}, {});
 
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
@@ -167,11 +225,14 @@ export default combineReducers<Object, any>({
   methods: methodsReducer,
   planUnitAttributes: planUnitAttributesReducer,
   planUnit: planUnitReducer,
-  isFetchingPlanUnit: isFetchingPlanUnitReducer,
-  isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
+  pendingPlanUnitFetches: pendingPlanUnitFetchesReducer,
+  pendingPlanUnitAttributeFetches: pendingPlanUnitAttributeFetchesReducer,
   subTypes: subTypesReducer,
   isFetchingFormAttributes: isFetchingFormAttributesReducer,
+  isFetchingTemplateForms: isFetchingTemplateFormsReducer,
   isFetchingForm: isFetchingFormReducer,
   formAttributes: formAttributesReducer,
+  templateForms: templateFormsReducer,
   form: formReducer,
+  decisionCandidates: decisionCandidateReducer
 });

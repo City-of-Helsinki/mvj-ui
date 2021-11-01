@@ -31,11 +31,22 @@ import {
   PlotSearchSubtypeNotFound,
   receivePlotSearchSubtype,
   nullPlanUnits,
+  receiveForm,
+  formNotFound,
+  receiveTemplateForms,
+  fetchForm,
+  removePlanUnitDecisions,
+  addPlanUnitDecisions,
+  resetPlanUnitDecisions,
 } from './actions';
+
+import mockData from './mock-data.json';
 
 import plotSearchReducer from './reducer';
 
 import type {PlotSearchState} from './types';
+
+const mockForm = mockData[0].form;
 
 const baseState: PlotSearchState = {
   attributes: null,
@@ -53,13 +64,16 @@ const baseState: PlotSearchState = {
   methods: null,
   planUnitAttributes: null,
   planUnit: {},
-  isFetchingPlanUnit: false,
-  isFetchingPlanUnitAttributes: false,
+  pendingPlanUnitFetches: [],
+  pendingPlanUnitAttributeFetches: [],
   subTypes: null,
   isFetchingFormAttributes: false,
   isFetchingForm: false,
+  isFetchingTemplateForms: false,
   formAttributes: null,
   form: null,
+  templateForms: [],
+  decisionCandidates: {}
 };
 
 
@@ -168,7 +182,7 @@ describe('PlotSearch', () => {
         const state = plotSearchReducer({}, receiveIsSaveClicked(true));
         expect(state).to.deep.equal(newState);
       });
-      
+
       it('should update isEditMode flag to false by hideEditMode', () => {
         const newState = {...baseState};
         newState.isEditMode = false;
@@ -195,7 +209,7 @@ describe('PlotSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('shoyauld clear isFormValidById', () => {
+      it('should clear isFormValidById', () => {
         const newState = {...baseState};
 
         let state = plotSearchReducer({}, receiveFormValidFlags({['plotSearch-basic-information-form']: false}));
@@ -211,38 +225,51 @@ describe('PlotSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetchingPlanUnit flag to false by planUnitNotFound', () => {
-        const newState = {...baseState};
-        newState.isFetchingPlanUnit = false;
+      it('should update pendingPlanUnitFetches array by planUnitNotFound', () => {
+        const newState = {
+          ...baseState,
+          pendingPlanUnitFetches: []
+        };
 
-        const state = plotSearchReducer({}, planUnitNotFound());
+        const state = plotSearchReducer({
+          pendingPlanUnitFetches: [1]
+        }, planUnitNotFound(1));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetchingPlanUnitAttributes flag to false by planUnitAttributesNotFound', () => {
-        const newState = {...baseState};
-        newState.isFetchingPlanUnitAttributes = false;
+      it('should update pendingPlanUnitAttributeFetches array to false by planUnitAttributesNotFound', () => {
+        const newState = {
+          ...baseState,
+          pendingPlanUnitAttributeFetches: []
+        };
 
-        const state = plotSearchReducer({}, planUnitAttributesNotFound());
+        const state = plotSearchReducer({
+          pendingPlanUnitAttributeFetches: [1]
+        }, planUnitAttributesNotFound(1));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetchingPlanUnit flag to true when fetching fetchPlanUnit', () => {
-        const newState = {...baseState};
-        newState.isFetchingPlanUnit = true;
+      it('should update pendingPlanUnitFetches array when fetching fetchPlanUnit', () => {
+        const newState = {
+          ...baseState,
+          pendingPlanUnitFetches: [1]
+        };
 
-        const state = plotSearchReducer({}, fetchPlanUnit(1));
+        const state = plotSearchReducer({}, fetchPlanUnit({ value: 1 }));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetchingPlanUnitAttributes flag to true', () => {
-        const newState = {...baseState, isFetchingPlanUnitAttributes: true};
+      it('should update pendingPlanUnitFetchAttributes array when fetching fetchPlanUnitAttributes', () => {
+        const newState = {
+          ...baseState,
+          pendingPlanUnitAttributeFetches: [1]
+        };
 
-        const state = plotSearchReducer({}, fetchPlanUnitAttributes());
+        const state = plotSearchReducer({}, fetchPlanUnitAttributes({ value: 1 }));
         expect(state).to.deep.equal(newState);
       });
 
-      it('fetchSinglePlotSearchAfterEdit function should not change isFetcging flag', () => {
+      it('fetchSinglePlotSearchAfterEdit function should not change isFetching flag', () => {
         const state = plotSearchReducer({}, fetchSinglePlotSearchAfterEdit({id: 1}));
         expect(state).to.deep.equal(baseState);
       });
@@ -299,6 +326,54 @@ describe('PlotSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update template forms', () => {
+        const newState = {
+          ...baseState,
+          templateForms: [{
+            ...mockForm,
+            is_template: true
+          }]
+        };
+
+        const state = plotSearchReducer({}, receiveTemplateForms([
+          {
+            ...mockForm,
+            is_template: true
+          }
+        ]));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingForm flag to true by fetchForm', () => {
+        const newState = {
+          ...baseState,
+          isFetchingForm: true
+        };
+
+        const state = plotSearchReducer({}, fetchForm(1));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update plotForm', () => {
+        const newState = {
+          ...baseState,
+          form: mockForm
+        };
+
+        const state = plotSearchReducer({}, receiveForm(mockForm));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingForm flag to false by notFound', () => {
+        const newState = {
+          ...baseState,
+          isFetchingForm: false
+        };
+
+        const state = plotSearchReducer({}, formNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update planUnitAttributes', () => {
         const dummyAttributes = {
           id: 1,
@@ -306,7 +381,13 @@ describe('PlotSearch', () => {
           name: 'Bar',
         };
 
-        const newState = {...baseState, planUnitAttributes: {[1]: dummyAttributes}, isFetchingPlanUnitAttributes: false};
+        const newState = {
+          ...baseState,
+          planUnitAttributes: {
+            [1]: dummyAttributes
+          },
+          pendingPlanUnitAttributeFetches: []
+        };
 
         const state = plotSearchReducer({}, receivePlanUnitAttributes({[1]: dummyAttributes}));
         expect(state).to.deep.equal(newState);
@@ -319,7 +400,13 @@ describe('PlotSearch', () => {
           name: 'Bar',
         };
 
-        const newState = {...baseState, planUnit: {[1]: dummyPlotSearch}};
+        const newState = {
+          ...baseState,
+          planUnit: {
+            [1]: dummyPlotSearch
+          },
+          pendingPlanUnitFetches: []
+        };
 
         const state = plotSearchReducer({}, receiveSinglePlanUnit({[1]: dummyPlotSearch}));
         expect(state).to.deep.equal(newState);
@@ -339,6 +426,54 @@ describe('PlotSearch', () => {
         state = plotSearchReducer(state, receiveCollapseStates({foo2: 'bar2'}));
         state.planUnit = {};
         expect(state).to.deep.equal(newState);
+      });
+
+      it('should add and annotate decision candidates from plan units', () => {
+        const state = mockData[0].targets.reduce(
+          (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
+          {});
+
+        expect(Object.keys(state.decisionCandidates).length).to.equal(1);
+        expect(state.decisionCandidates[1]).to.exist;
+        expect(state.decisionCandidates[1].length).to.equal(2);
+        expect(state.decisionCandidates[1][1].reference_number).to.equal("HEL 2021-000002");
+        expect(state.decisionCandidates[1][1].relatedPlanUnitIdentifier).to.equal("91-1-1-1");
+      });
+
+      it('should remove decision candidates when plan units are no longer present in any targets', () => {
+        let state = mockData[0].targets.reduce(
+          (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
+          {});
+
+        expect(state.decisionCandidates[1]).to.exist;
+        expect(state.decisionCandidates[1].length).to.equal(2);
+
+        state = plotSearchReducer(state, removePlanUnitDecisions(1));
+
+        expect(state.decisionCandidates[1]).to.not.exist;
+      });
+
+      it('should not remove unrelated decision candidates', () => {
+        let state = mockData[0].targets.reduce(
+          (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
+          {});
+
+        expect(state.decisionCandidates[1]).to.exist;
+        expect(state.decisionCandidates[1].length).to.equal(2);
+
+        state = plotSearchReducer(state, removePlanUnitDecisions(42));
+
+        expect(state.decisionCandidates[1]).to.exist;
+      });
+
+      it('should reset decision candidates', () => {
+        let state = mockData[0].targets.reduce(
+          (state, nextTarget) => plotSearchReducer(state, addPlanUnitDecisions(nextTarget.plan_unit)),
+          {});
+
+        state = plotSearchReducer(state, resetPlanUnitDecisions());
+
+        expect(state.decisionCandidates).to.deep.equal({});
       });
     });
   });

@@ -12,7 +12,7 @@ import InvoicePanelR from './InvoicePanelR';
 import SingleRadioInput from '$components/inputs/SingleRadioInput';
 import SortableTable from '$components/table/SortableTable';
 import TableAndPanelWrapper from '$components/table/TableAndPanelWrapper';
-import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
+import {clearPatchedInvoice, patchInvoice} from '$src/landUseInvoices/actions';
 import {FormNames, KeyCodes, TableSortOrder} from '$src/enums';
 import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
 import {
@@ -21,7 +21,7 @@ import {
   InvoiceRowsFieldPaths,
   InvoiceRowsFieldTitles,
   InvoiceType,
-} from '$src/invoices/enums';
+} from '$src/landUseInvoices/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
@@ -34,8 +34,6 @@ import {
 import {
   findReactById,
   formatDate,
-  formatDateRange,
-  formatNumber,
   getFieldOptions,
   getLabelOfOption,
   hasPermissions,
@@ -54,12 +52,9 @@ import {
 
 import {getInvoicesByLandUseContractId} from '$src/landUseInvoices/selectors';
 
-import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors'; // TODO
-import {getCurrentLease} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Invoice, InvoiceList} from '$src/invoices/types';
-import type {InvoiceSetList} from '$src/invoiceSets/types';
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
@@ -68,7 +63,6 @@ type Props = {
   initialize: Function,
   invoiceAttributes: Attributes,
   invoiceListData: ?InvoiceList,
-  invoiceSets: ?InvoiceSetList,
   invoiceToCredit: ?Object,
   onInvoiceToCreditChange: Function,
   patchInvoice: Function,
@@ -140,17 +134,16 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
     }
 
     if(this.props.invoiceAttributes !== prevProps.invoiceAttributes ||
-      this.props.invoiceSets !== prevProps.invoiceSets ||
       this.props.usersPermissions !== prevProps.usersPermissions) {
       this.setColumns();
     }
   }
 
   setColumns = () => {
-    const {invoiceAttributes, invoiceSets, usersPermissions} = this.props;
+    const {invoiceAttributes, usersPermissions} = this.props;
 
     this.setState({
-      columns: this.getColumns(invoiceAttributes, invoiceSets, usersPermissions),
+      columns: this.getColumns(invoiceAttributes, usersPermissions),
     });
   }
 
@@ -170,16 +163,10 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
     }
   }
 
-  getColumns = (invoiceAttributes: Attributes, invoiceSets: ?InvoiceSetList, usersPermissions: UsersPermissionsType) => {
+  getColumns = (invoiceAttributes: Attributes, usersPermissions: UsersPermissionsType) => {
     const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
     const stateOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.STATE);
     const typeOptions = getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE);
-    const invoiceSetOptions = invoiceSets
-      ? invoiceSets.map((set) => ({
-        ...set,
-        invoiceset: set.id,
-      }))
-      : [];
     const columns = [];
 
     const sortByRecipientNameAsc = (a, b) => {
@@ -259,27 +246,6 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
       });
     }
 
-    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INVOICESET)) {
-      columns.push({
-        key: 'invoiceset',
-        ascSortFunction: sortNumberByKeyAsc,
-        descSortFunction: sortNumberByKeyDesc,
-        grouping: {
-          key: 'invoiceset',
-          options: invoiceSetOptions,
-          columnKeys: [
-            'billing_period_start_date',
-            'invoiceset',
-            'select',
-          ],
-          columnsToHide: [
-            'invoiceset',
-          ],
-        },
-        text: InvoiceFieldTitles.INVOICESET,
-      });
-    }
-
     if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)) {
       columns.push({
         key: 'recipientFull',
@@ -310,36 +276,6 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
         descSortFunction: sortNumberByKeyDesc,
         dataClassName: 'no-wrap',
         text: 'Laskunro',
-      });
-    }
-
-    columns.push({
-      key: 'totalShare',
-      ascSortFunction: sortNumberByKeyAsc,
-      descSortFunction: sortNumberByKeyDesc,
-      dataClassName: 'no-wrap',
-      renderer: (val) => val != null  ? `${formatNumber(val * 100)} %` : '-',
-      text: InvoiceFieldTitles.SHARE,
-    });
-
-    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)) {
-      columns.push({
-        key: 'billing_period_start_date',
-        dataClassName: 'no-wrap',
-        grouping: {
-          key: 'invoiceset',
-          options: invoiceSetOptions,
-          columnKeys: [
-            'billing_period_start_date',
-            'invoiceset',
-            'select',
-          ],
-          columnsToHide: [
-            'invoiceset',
-          ],
-        },
-        renderer: (val, invoice) => formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-',
-        text: InvoiceFieldTitles.BILLING_PERIOD,
       });
     }
 
@@ -482,7 +418,7 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
 
   handleSelectRow = (row: Object) => {
     const {onInvoiceToCreditChange} = this.props;
-
+    console.log(row);
     onInvoiceToCreditChange(row);
   }
 
@@ -524,7 +460,7 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
   initilizeEditInvoiceForm = (invoice: Object) => {
     const {initialize} = this.props;
 
-    initialize(FormNames.LEASE_INVOICE_EDIT, invoice);
+    initialize(FormNames.LAND_USE_CONTRACT_INVOICE_EDIT, invoice);
   }
 
   editInvoice = (invoice: Object) => {
@@ -577,12 +513,10 @@ export default flowRight(
   withRouter,
   connect(
     (state) => {
-      const currentLease = getCurrentLease(state);
       const currentLandUseContract = getCurrentLandUseContract(state);
       return {
         invoiceAttributes: getInvoiceAttributes(state),
         invoiceListData: getInvoicesByLandUseContractId(state, currentLandUseContract.id),
-        invoiceSets: getInvoiceSetsByLease(state, currentLease.id), // TODO
         patchedInvoice: getPatchedInvoice(state), // TODO
         usersPermissions: getUsersPermissions(state),
       };

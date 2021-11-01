@@ -50,6 +50,12 @@ export const fetchPlotSearchSubtypes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('plot_search_subtype/')));
 };
 
+export const fetchTemplateFormsRequest = (id: any): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`form/`, {
+    is_template: true
+  })));
+};
+
 export const fetchFormRequest = (id: any): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`form/${id}/`)));
 };

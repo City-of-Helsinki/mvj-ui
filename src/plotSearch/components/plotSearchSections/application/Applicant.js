@@ -27,7 +27,7 @@ class Applicant extends PureComponent<Props, State> {
   }
 
   render (){
-    
+
     const {
       applicant,
       attributes,
@@ -63,7 +63,7 @@ class Applicant extends PureComponent<Props, State> {
             <FormText>{applicant.company_y_identifier || '-'}</FormText>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTextTitle>{'Hakijayrityksen perustmisvuosi'}</FormTextTitle>
+            <FormTextTitle>{'Hakijayrityksen perustamisvuosi'}</FormTextTitle>
             <FormText>{applicant.company_founding_year || '-'}</FormText>
           </Column>
           <Column small={6} medium={4} large={2}>

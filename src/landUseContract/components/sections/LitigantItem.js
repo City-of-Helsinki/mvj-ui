@@ -11,7 +11,7 @@ import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {getContactFullName} from '$src/contacts/helpers';
-import {formatDate, formatNumber} from '$util/helpers';
+import {formatDate} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 
 type Props = {
@@ -23,24 +23,16 @@ const LitigantItem = ({
   contact,
   litigant,
 }: Props) => {
-  const getInvoiceManagementShare = () => {
-    if(!Number(litigant.share_numerator) || !Number(litigant.share_denominator)) {
-      return 0;
-    }
-    return (Number(litigant.share_numerator)*100/Number(litigant.share_denominator));
-  };
-
   if(!contact) {
     return null;
   }
 
-  const share = getInvoiceManagementShare();
   return (
     <Fragment>
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
-            <Column small={12} medium={6} large={8}>
+            <Column>
               <FormTitleAndText
                 title='Asiakas'
                 text={contact
@@ -57,18 +49,6 @@ const LitigantItem = ({
         </FormWrapperLeft>
         <FormWrapperRight>
           <Row>
-            <Column small={12} medium={6} large={4}>
-              <FormTitleAndText
-                title='Hallintaosuus'
-                text={`${get(litigant, 'share_numerator', '')} / ${get(litigant, 'share_denominator', '')}`}
-              />
-            </Column>
-            <Column small={12} medium={6} large={4}>
-              <FormTitleAndText
-                title='Laskun hallintaosuus'
-                text={share ? `${formatNumber(share)} %` : '-'}
-              />
-            </Column>
             <Column small={12} medium={6} large={4}>
               <Row>
                 <Column>

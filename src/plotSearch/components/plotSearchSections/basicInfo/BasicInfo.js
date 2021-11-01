@@ -20,7 +20,7 @@ import {getAttributes, getCollapseStateByKey, getCurrentPlotSearch, getPlanUnit}
 import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
 import PlotSearchSite from './PlotSearchSite';
-import {getContentBasicInformation} from '$src/plotSearch/helpers';
+import {getContentBasicInformation, formatDecisionName} from '$src/plotSearch/helpers';
 import {getUiDataPlotSearchKey} from '$src/uiData/helpers';
 import {
   getFieldOptions,
@@ -36,11 +36,11 @@ import {
 } from '$src/plotSearch/enums';
 import type {Attributes} from '$src/types';
 import type {PlotSearch} from '$src/plotSearch/types';
-// import SingleRadioInput from '$components/inputs/SingleRadioInput';
 import {
   fetchPlanUnit,
   fetchPlanUnitAttributes,
 } from '$src/plotSearch/actions';
+import {getRouteById, Routes} from "../../../../root/routes";
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -84,9 +84,8 @@ class BasicInfo extends PureComponent<Props, State> {
     const plotSearch = getContentBasicInformation(currentPlotSearch);
     const typeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.TYPE);
     const subtypeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SUBTYPE);
-    // const decisionOptions = getFieldOptions(attributes, 'decision.child.children.type');
-    // const stageOptions = getFieldOptions(attributes, 'stage');
-  
+    const stageOptions = getFieldOptions(attributes, PlotSearchFieldPaths.STAGE);
+
     return (
       <Fragment>
         <Title>
@@ -122,7 +121,7 @@ class BasicInfo extends PureComponent<Props, State> {
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('applications')}>
                       {PlotSearchFieldTitles.APPLICATIONS}
                     </FormTextTitle>
-                    {plotSearch.applications && plotSearch.applications.map((application, index) => 
+                    {plotSearch.applications && plotSearch.applications.map((application, index) =>
                       <FormText key={index}>
                         <ExternalLink
                           className='no-margin'
@@ -136,7 +135,7 @@ class BasicInfo extends PureComponent<Props, State> {
               </Row>
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
-                  <Column small={12} medium={6} large={3}>
+                  <Column small={12} medium={6} large={2}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('type')}>
                       {PlotSearchFieldTitles.TYPE}
                     </FormTextTitle>
@@ -144,7 +143,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'subtype')}>
-                  <Column small={12} medium={6} large={3}>
+                  <Column small={12} medium={6} large={2}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('subtype')}>
                       {PlotSearchFieldTitles.SUBTYPE}
                     </FormTextTitle>
@@ -152,15 +151,15 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
-                  <Column small={6} medium={4} large={1}>
+                  <Column small={6} medium={3} large={1}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('begin_at')}>
                       {PlotSearchFieldTitles.START_DATE}
-                    </FormTextTitle>  
+                    </FormTextTitle>
                     <FormText>{formatDate(plotSearch.begin_at) || '-'}</FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'begin_at')}>
-                  <Column small={6} medium={4} large={1}>
+                  <Column small={6} medium={3} large={1}>
                     <FormTextTitle>
                       {PlotSearchFieldTitles.CLOCK}
                     </FormTextTitle>
@@ -168,7 +167,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'end_at')}>
-                  <Column small={6} medium={4} large={1}>
+                  <Column small={6} medium={3} large={1}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('end_at')}>
                       {PlotSearchFieldTitles.END_DATE}
                     </FormTextTitle>
@@ -176,11 +175,21 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'end_at')}>
-                  <Column small={6} medium={4} large={1}>
+                  <Column small={6} medium={3} large={1}>
                     <FormTextTitle>
                       {PlotSearchFieldTitles.CLOCK}
                     </FormTextTitle>
                     <FormText>{getHoursAndMinutes(plotSearch.end_at) || '-'}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'stage')}>
+                  <Column small={6} medium={6} large={2}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.STAGE}
+                    </FormTextTitle>
+                    <FormText>
+                      {getLabelOfOption(stageOptions, plotSearch.stage) || '-'}
+                    </FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'modified_at')}>
@@ -192,48 +201,44 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
               </Row>
-              {/* <Row>
-                <Column small={12} medium={6} large={6}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.DECISION}
-                  </FormTextTitle>
-                  {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) => 
-                    <FormText key={index}>
-                      <ExternalLink
-                        className='no-margin'
-                        href={`${decision.id}`}
-                        text={getLabelOfOption(decisionOptions, decision.type) || '-'}
-                      />
-                    </FormText>
-                  )}
-                </Column>
-                <Column small={6} medium={4} large={4}>
-                  <FormTextTitle>
-                    {PlotSearchFieldTitles.DECISION_TO_LIST}
-                  </FormTextTitle>
-                  {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) => 
-                    <Row key={index}>
-                      <Column>
-                        <SingleRadioInput
+              <div>
+                <Row>
+                  <Column small={12} medium={6} large={6}>
+                    <FormTextTitle id="plotSearchDecisionTable__decision-header">
+                      {PlotSearchFieldTitles.DECISION}
+                    </FormTextTitle>
+                  </Column>
+                  {/*<Column small={6} medium={4} large={4}>
+                    <FormTextTitle id="plotSearchDecisionTable__to-list-header">
+                      {PlotSearchFieldTitles.DECISION_TO_LIST}
+                    </FormTextTitle>
+                  </Column>*/}
+                </Row>
+                {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
+                  <Row key={index}>
+                    <Column small={12} medium={6} large={6} aria-labelledby="plotSearchDecisionTable__decision-header">
+                      <FormText key={index}>
+                        <ExternalLink
+                          className='no-margin'
+                          href={`${getRouteById(Routes.LEASES)}/${decision.lease}?tab=4`}
+                          text={formatDecisionName(decision)}
+                        />
+                      </FormText>
+                    </Column>
+                    {/*<Column small={6} medium={4} large={4} aria-labelledby="plotSearchDecisionTable__to-list-header">
+                      <SingleRadioInput
                           name={''}
                           label={''}
                           checked={!!decision.decision_to_list}
                           onChange={()=>{}}
                           onClick={()=>{}}
                           onKeyDown={()=>{}}
+                          disabled
                         />
-                      </Column>
-                    </Row>
-                  )}
-                </Column>
-
-                <Column small={6} medium={2} large={2}>
-                  <FormTitleAndText
-                    title={PlotSearchFieldTitles.STEP}
-                    text={getLabelOfOption(stageOptions, plotSearch.stage) || '-'}
-                  />
-                </Column>
-              </Row> */}
+                    </Column>*/}
+                  </Row>
+                )}
+              </div>
               {(!!plotSearch.targets && plotSearch.targets.
                 filter(plotSearchSite => plotSearchSite.target_type === 'searchable').length > 0) && <WhiteBox>
                 <SubTitle>

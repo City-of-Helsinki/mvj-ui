@@ -18,7 +18,7 @@ export const PlotSearchFieldPaths = {
   APPLICATIONS_UPDATED_DATE: 'Applications_updated_date',
   DECISION: 'decision',
   DECISION_TO_LIST: 'decision_to_list',
-  STEP: 'step',
+  STAGE: 'stage',
 };
 
 /**
@@ -30,7 +30,7 @@ export const PlotSearchFieldTitles = {
   BASIC_INFO: 'Perustiedot',
   NAME: 'Haun nimi',
   PREPARER: 'Valmistelija',
-  APPLICATIONS: 'Hakemuset',
+  APPLICATIONS: 'Hakemukset',
   TYPE: 'Haun tyyppi',
   SUBTYPE: 'Haun alatyyppi',
   START_DATE: 'Alkupvm',
@@ -39,7 +39,7 @@ export const PlotSearchFieldTitles = {
   APPLICATIONS_UPDATED_DATE: 'Hakemukset päivitetty',
   DECISION: 'Päätös',
   DECISION_TO_LIST: 'Päätös hakutuloslistaan',
-  STEP: 'Haun vaihe',
+  STAGE: 'Haun vaihe',
 };
 
 /**
@@ -68,4 +68,5 @@ export const ApplicationFieldTitles = {
   APPLICATION_EXTRA: 'Lomakkeen lisäosat',
   APPLICATION_PREVIOUS: 'Aiemmin luotu lomake',
   APPLICATION_CREATED: 'Luodut hakulomakkeet',
+  APPLICATION_TITLE: 'Lomakkeen otsikko',
 };

@@ -73,10 +73,10 @@ const Types = {
 };
 
 const resolveFieldType = (type: string): Object => Object.prototype.hasOwnProperty.call(FieldTypes, type)
-  ? FieldTypes[type] 
+  ? FieldTypes[type]
   : FieldTypeBasic;
 const resolveType = (type: string): ?string => Object.prototype.hasOwnProperty.call(Types, type)
-  ? Types[type] 
+  ? Types[type]
   : null;
 
 type InputProps = {
@@ -303,7 +303,7 @@ class FormField extends PureComponent<Props, State> {
     options: [],
     required: false,
   }
-  static defualtProps = {
+  static defaultProps = {
     autoBlur: false,
     disabled: false,
     disableDirty: false,
@@ -316,6 +316,11 @@ class FormField extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
+    const overrideableBoolean = (fieldName) => {
+      return get(props.overrideValues, fieldName) !== undefined
+        ? !!get(props.overrideValues, fieldName) : !!get(props.fieldAttributes, fieldName)
+    };
+
     if (props.fieldAttributes !== state.fieldAttributes) {
       return {
         allowEdit: get(props.fieldAttributes, 'read_only') === false,
@@ -324,7 +329,7 @@ class FormField extends PureComponent<Props, State> {
         fieldType: get(props.fieldAttributes, 'type'),
         label: get(props.overrideValues, 'label') || get(props.fieldAttributes, 'label'),
         options: getFieldAttributeOptions(props.fieldAttributes),
-        required: !!get(props.fieldAttributes, 'required'),
+        required: overrideableBoolean('required')
       };
     }
     return null;
@@ -332,12 +337,22 @@ class FormField extends PureComponent<Props, State> {
 
   handleGenericNormalize = (value: any) => {
     const {fieldAttributes} = this.props;
-    return genericNormalizer(value, fieldAttributes);
+    const {fieldAttributes: _, ...rest} = this.state;
+
+    return genericNormalizer(value, {
+      ...fieldAttributes,
+      ...rest
+    });
   }
 
   handleGenericValidate = (value: any) => {
     const {fieldAttributes} = this.props;
-    return genericValidator(value, fieldAttributes);
+    const {fieldAttributes: _, ...rest} = this.state;
+
+    return genericValidator(value, {
+      ...fieldAttributes,
+      ...rest
+    });
   }
 
   handleValidate = (value: any) => {

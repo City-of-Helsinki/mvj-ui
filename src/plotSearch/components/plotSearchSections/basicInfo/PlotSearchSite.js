@@ -22,7 +22,7 @@ import {
 } from '$util/helpers';
 import {
   getAttributes,
-  getCollapseStateByKey, 
+  getCollapseStateByKey,
   getPlanUnitAttributes,
   getPlanUnit,
   getIsFetchingPlanUnit,
@@ -74,11 +74,11 @@ class PlotSearchSite extends PureComponent<Props, State> {
 
   componentDidMount(){
     this.getPlanUnitData();
-    this.startTimer();  
+    this.startTimer();
   }
 
   updateComponent(){
-    const {update} = this.state; 
+    const {update} = this.state;
     this.setState({
       update: update + 1,
     });
@@ -101,7 +101,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
     const {
       fetchPlanUnitAttributes,
       fetchPlanUnit,
-      plotSearchSite,  
+      plotSearchSite,
     } = this.props;
     const payload = {
       value: plotSearchSite.plan_unit.id,
@@ -111,16 +111,15 @@ class PlotSearchSite extends PureComponent<Props, State> {
   }
 
   render(){
-    
+
     const {
       collapseState,
       plotSearchSite,
       isFetchingPlanUnitAttributes,
       isFetchingPlanUnit,
-      planUnit, 
+      planUnit,
       planUnitAttributes,
     } = this.props;
-
     const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit.id);
     const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit.id);
     const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_intended_use');
@@ -141,7 +140,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
         <Collapse
           className='collapse__secondary greenCollapse'
           defaultOpen={collapseState !== undefined ? collapseState : true}
-          headerTitle={`${get(currentPlanUnit, 'identifier')} ${get(currentPlanUnit, 'plan_unit_status')}` || '-'}
+          headerTitle={get(currentPlanUnit, 'identifier') ? `${get(currentPlanUnit, 'identifier')} ${get(currentPlanUnit, 'plan_unit_status')}` : '-'}
           onToggle={this.handleCollapseToggle}
         >
           <Row style={{marginBottom: 10}}>
@@ -161,7 +160,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               />
             </WarningContainer>}
             {(currentPlanUnit) && <Fragment>
-              {(isDeleted || isNewer) && <Column small={12} medium={12} large={12}></Column>}
+              {(isDeleted || isNewer) && <Column small={12} medium={12} large={12} />}
               <Column small={6} medium={3} large={3}>
                 <FormTextTitle>
                   {'Vuokraustunnus'}
@@ -301,13 +300,14 @@ class PlotSearchSite extends PureComponent<Props, State> {
 export default connect(
   (state, props) => {
     const id = props.plotSearchSite.id;
+    const planUnitId = props.plotSearchSite.plan_unit?.id;
     return {
       attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.plotSearch_site.${id}`),
       planUnitAttributes: getPlanUnitAttributes(state),
       planUnit: getPlanUnit(state),
-      isFetchingPlanUnit: getIsFetchingPlanUnit(state),
-      isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+      isFetchingPlanUnit: getIsFetchingPlanUnit(state, planUnitId),
+      isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state, planUnitId)
     };
   },
   {

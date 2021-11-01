@@ -179,11 +179,13 @@ export const InvoicePaymentsFieldTitles = {
 export const InvoiceRowsFieldPaths = {
   ROWS: 'rows',
   AMOUNT: 'rows.child.children.amount',
-  BILLING_PERIOD_END_DATE: 'rows.child.children.billing_period_end_date',
-  BILLING_PERIOD_START_DATE: 'rows.child.children.billing_period_start_date',
+  COMPENSATION_AMOUNT: 'rows.child.children.compensation_amount',
+  INCREASE_PERCENTAGE: 'rows.child.children.increase_percentage',
+  PLAN_LAWFULNESS_DATE: 'rows.child.children.plan_lawfulness_date',
+  SIGN_DATE: 'rows.child.children.sign_date',
   DESCRIPTION: 'rows.child.children.description',
   RECEIVABLE_TYPE: 'rows.child.children.receivable_type',
-  TENANT: 'rows.child.children.tenant',
+  LITIGANT: 'rows.child.children.litigant',
 };
 
 /**
@@ -194,9 +196,11 @@ export const InvoiceRowsFieldPaths = {
 export const InvoiceRowsFieldTitles = {
   ROWS: 'Erittely',
   AMOUNT: 'Määrä (alviton)',
-  BILLING_PERIOD_END_DATE: 'Laskutuskauden loppupvm',
-  BILLING_PERIOD_START_DATE: 'Laskutuskauden alkupvm',
+  COMPENSATION_AMOUNT: 'Korvausinvestoinnit',
+  INCREASE_PERCENTAGE: 'Korkoprosentti',
+  SIGN_DATE: 'Allekirjoitettava mennessä',
+  PLAN_LAWFULNESS_DATE: 'Asemakaavan lainvoimaisuuspvm',
   DESCRIPTION: 'Selite',
   RECEIVABLE_TYPE: 'Saamislaji',
-  TENANT: 'Vuokralainen',
+  LITIGANT: 'Osapuoli',
 };

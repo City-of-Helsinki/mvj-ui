@@ -10,3 +10,5 @@ yarn-error.log
 npm-debug.log
 /dist/
 /log
+
+report.*.json

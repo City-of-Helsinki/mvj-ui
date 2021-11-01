@@ -112,8 +112,8 @@ const withInfillDevelopmentPageAttributes = flowRight(
       return{
         infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
         infillDevelopmentMethods: getInfillDevelopmentMethods(state),
-        infillDevelopmentAttahmentAttributes: getInfillDevelopmentAttachmentAttributes(state),
-        infillDevelopmentAttahmentMethods: getInfillDevelopmentAttachmentMethods(state),
+        infillDevelopmentAttachmentAttributes: getInfillDevelopmentAttachmentAttributes(state),
+        infillDevelopmentAttachmentMethods: getInfillDevelopmentAttachmentMethods(state),
         isFetchingInfillDevelopmentAttributes: getIsFetchingInfillDevelopmentAttributes(state),
         isFetchingInfillDevelopmentAttachmentAttributes: getIsFetchingInfillDevelopmentAttachmentAttributes(state),
         isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),

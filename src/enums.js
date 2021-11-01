@@ -401,6 +401,7 @@ export const FormNames = {
   BASIS_OF_RENT_CALCULATOR: 'basis-of-rent-calculator-form',
   CONTACT: 'contact-form',
   CONTACT_SEARCH: 'contact-search-form',
+  CREDIT_DECISION_SEARCH: 'credit-info-search-form',
   INFILL_DEVELOPMENT: 'infill-development-form',
   INFILL_DEVELOPMENT_SEARCH: 'infill-development-search-form',
   INVOICE_NOTE_CREATE: 'create-invoice-note-form',
@@ -426,6 +427,7 @@ export const FormNames = {
   LEASE_INVOICE_CREDIT: 'credit-invoice-form',
   LEASE_INVOICE_EDIT: 'edit-invoice-form',
   LEASE_INVOICE_NEW: 'new-invoice-form',
+  LAND_USE_INVOICE_NEW: 'land-use-invoice-form',
   LEASE_INVOICE_NOTES: 'invoice-notes-form',
   LEASE_NEW_COMMENT: 'new-comment-form',
   LEASE_REFUND: 'refund-form',
@@ -448,7 +450,9 @@ export const FormNames = {
   PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
+  PLOT_APPLICATION_PREVIEW: 'plot-application-preview',
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
+  LAND_USE_CONTRACT_INVOICE_EDIT: 'land-use-contract-invoice-edit',
 };
 
 /**
@@ -461,6 +465,7 @@ export const PermissionMissingTexts = {
   BASIS_OF_RENT_CALCULATOR: 'Ei oikeuksia vuokralaskuriin',
   BATCHRUN: 'Ei oikeuksia eräajoihin',
   CONTACT: 'Ei oikeuksia asiakkaisiin',
+  CREDIT_DECISION: 'Ei oikeuksia asiakastietoon',
   GENERAL: 'Ei oikeuksia sisältöön.',
   INDEX: 'Ei oikeksia elinkustannusindekseihin',
   INFILL_DEVELOPMENT: 'Ei oikeksia täydennysrakennuskorvauksiin',

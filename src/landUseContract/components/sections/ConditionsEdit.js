@@ -86,7 +86,7 @@ const renderConditions = ({
                     fields.remove(index);
                   },
                   confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: 'Lisää hallintamuoto', 
+                  confirmationModalButtonText: 'Poista hallintamuoto', 
                   confirmationModalLabel: 'Poista hallintamuoto',
                   confirmationModalTitle: 'Oletko varma että haluat poistaa hallintamuodon',
                 });

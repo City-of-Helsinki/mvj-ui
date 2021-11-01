@@ -538,9 +538,12 @@ class AddressSearchInput extends Component<Props, State> {
         .then((response) => response.json())
         .then((results) => {
           const details = results.results;
-          const postalCode = details.length
-            ? details[0].origin_id || ''
-            : '';
+          const postalCode = (details.length && details[0].name && details[0].name.fi) 
+            ? details[0].name.fi 
+            : (details.length)
+              ? details[0].origin_id || ''
+              : '';
+              
           const country = details.length
             ? findFromOcdString(details[0].ocd_id, 'country') || ''
             : '';

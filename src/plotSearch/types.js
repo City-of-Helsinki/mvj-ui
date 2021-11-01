@@ -14,19 +14,29 @@ export type PlotSearchState = {
   methods: Object,
   planUnitAttributes: Attributes,
   planUnit: Object,
-  isFetchingPlanUnit: boolean,
-  isFetchingPlanUnitAttributes: boolean,
+  pendingPlanUnitFetches: Array<number>,
+  pendingPlanUnitAttributeFetches: Array<number>,
   subTypes: Object,
   isFetchingFormAttributes: boolean,
   isFetchingForm: boolean,
+  isFetchingTemplateForms: boolean,
   formAttributes: Object,
   form: Object,
+  templateForms: Object
 };
 
 export type PlotSearchId = number;
 export type PlotSearch = Object;
 export type PlanUnit = Object;
 export type PlotSearchList = Object;
+
+export type Form = {
+  name: string,
+  title: string,
+  id: number,
+  is_template: boolean,
+  sections: Object
+};
 
 export type FetchSinglePlotSearchAfterEditPayload = {
   id: any,
@@ -65,7 +75,7 @@ export type PlanUnitAttributesNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_
 export type PlanUnitNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_NOT_FOUND', void>;
 export type ReceivePlanUnitAttributesAction = Action<'mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES', Attributes>;
 
-export type fetchPlotSearchSubtypesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
+export type FetchPlotSearchSubtypesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
 export type ReceivePlotSearchSubtypeAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
 export type PlotSearchSubtypeNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;
 
@@ -76,5 +86,13 @@ export type FormAttributesNotFoundAction = Action<'mvj/plotSearch/FORM_ATTRIBUTE
 export type ReceiveFormAttributesAction = Action<'mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES', Attributes>;
 
 export type FormNotFoundAction = Action<'mvj/plotSearch/FORM_NOT_FOUND', Object>;
-export type fetchFormAction = Action<'mvj/plotSearch/FETCH_FORM', void>;
+export type FetchFormAction = Action<'mvj/plotSearch/FETCH_FORM', void>;
 export type ReceiveFormAction = Action<'mvj/plotSearch/RECEIVE_FORM', Object>;
+
+export type TemplateFormsNotFoundAction = Action<'mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND', Object>;
+export type FetchTemplateFormsAction = Action<'mvj/plotSearch/FETCH_TEMPLATE_FORMS', void>;
+export type ReceiveTemplateFormsAction = Action<'mvj/plotSearch/RECEIVE_TEMPLATE_FORMS', Object>;
+
+export type AddPlanUnitDecisionsAction = Action<'mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS', Object>;
+export type RemovePlanUnitDecisionsAction = Action<'mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS', number>;
+export type ResetPlanUnitDecisionsAction = Action<'mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS', void>;
