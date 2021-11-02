@@ -13,6 +13,8 @@ import FormField from "$components/form/FormField";
 import FormHintText from "$components/form/FormHintText";
 import AddButtonThird from "$components/form/AddButtonThird";
 import Collapse from "$components/collapse/Collapse";
+import {getFormAttributes} from "../../../selectors";
+import {connect} from "react-redux";
 
 type Props = {
   section: Object,
@@ -57,6 +59,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
   }
 
   renderField = (field: Object) => {
+    const { attributes } = this.props;
     const fakeFieldId = `fakeField${field.id}`;
     let fieldSpecificComponents = [];
     let columnWidths = {
@@ -65,7 +68,10 @@ class ApplicationPreviewSection extends PureComponent<Props> {
       large: 12
     };
 
-    switch (field.type) {
+    const typeMapping = get(attributes, 'sections.child.children.fields.child.children.type.choices');
+    const matchingType = typeMapping.find((type) => type.value === field.type)?.display_name;
+
+    switch (matchingType) {
       case 'checkbox':
         fieldSpecificComponents = <FormField name={fakeFieldId} fieldAttributes={{
           type: "checkbox",
@@ -155,7 +161,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
         };
         break;
       default:
-        console.error(`Form field type ${field.type} is not implemented`);
+        console.error(`Form field type ${matchingType} (${field?.type}) is not implemented`);
         fieldSpecificComponents = <>
           <FormTextTitle>{get(field, 'label')}</FormTextTitle>
           <FormText>NOT IMPLEMENTED</FormText>
@@ -187,6 +193,13 @@ class ApplicationPreviewSection extends PureComponent<Props> {
 }
 
 export default flowRight(
+  connect(
+    (state) => {
+      return {
+        attributes: getFormAttributes(state)
+      }
+    }
+  ),
   reduxForm({
     form: FormNames.PLOT_APPLICATION_PREVIEW
   })
