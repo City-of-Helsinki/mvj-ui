@@ -192,6 +192,8 @@ const renderPlotSearchSites = ({
   disabled,
   fields,
   formName,
+  form,
+  change,
   onRemove
   // usersPermissions,
 }: PlotSearchSitesProps): Element<*> => {
@@ -234,7 +236,9 @@ const renderPlotSearchSites = ({
                 index={index}
                 disabled={disabled}
                 field={field}
+                form={form}
                 formName={formName}
+                change={change}
                 onRemove={handleRemove}
                 onReplace={handleChange}
               />;

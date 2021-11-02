@@ -540,7 +540,6 @@ class PlotSearchSiteEdit extends Component<Props, State> {
   }
 }
 
-const formName = FormNames.PLOT_SEARCH_BASIC_INFORMATION;
 
 export default flowRight(
   connect(
@@ -582,9 +581,4 @@ export default flowRight(
       fetchPlanUnitAttributes,
     }
   ),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-    change,
-  }),
 )(PlotSearchSiteEdit);
