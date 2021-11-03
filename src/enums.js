@@ -176,6 +176,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa vuokrauksen täydennysrakentamiskorvauksesta?',
     TITLE: 'Poista vuokraus täydennysrakentamiskorvauksesta',
   },
+  DELETE_INFO_LINK: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa lisätietolinkin?',
+    TITLE: 'Poista lisätietolinkki',
+  },
   DELETE_INSPECTION: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa tarkastuksen?',

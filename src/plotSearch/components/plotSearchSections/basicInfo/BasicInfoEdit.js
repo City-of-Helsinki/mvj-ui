@@ -192,6 +192,8 @@ const renderPlotSearchSites = ({
   disabled,
   fields,
   formName,
+  form,
+  change,
   onRemove
   // usersPermissions,
 }: PlotSearchSitesProps): Element<*> => {
@@ -234,7 +236,9 @@ const renderPlotSearchSites = ({
                 index={index}
                 disabled={disabled}
                 field={field}
+                form={form}
                 formName={formName}
+                change={change}
                 onRemove={handleRemove}
                 onReplace={handleChange}
               />;
@@ -505,7 +509,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   isClicked={isSaveClicked}
                   disabled={!hasMinimumRequiredFieldsFilled}
                   formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
-                  name={'targets'}
+                  name={'plot_search_targets'}
                   usersPermissions={usersPermissions}
                   onRemove={this.onTargetRemoved}
                 />
@@ -535,7 +539,7 @@ export default flowRight(
         plotSearchSubTypes: getPlotSearchSubTypes(state),
         decisionCandidates: getDecisionCandidates(state),
         selectedDecisions: selector(state, 'decisions'),
-        targets: selector(state, 'targets'),
+        targets: selector(state, 'plot_search_targets'),
         hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state)
       };
     },

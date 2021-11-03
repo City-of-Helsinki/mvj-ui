@@ -33,6 +33,9 @@ import {
   fetchPlanUnit,
   fetchPlanUnitAttributes,
 } from '$src/plotSearch/actions';
+import {
+  PlotSearchFieldTitles
+} from '$src/plotSearch/enums';
 
 type Props = {
   attributes: Attributes,
@@ -113,6 +116,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
   render(){
 
     const {
+      attributes,
       collapseState,
       plotSearchSite,
       isFetchingPlanUnitAttributes,
@@ -134,6 +138,12 @@ class PlotSearchSite extends PureComponent<Props, State> {
     const address = get(leaseAddress, 'address');
     const leaseIdentifier = get(plotSearchSite, 'lease_identifier');
     const leaseHitas = get(plotSearchSite, 'lease_hitas');
+    const infoLinks = get(plotSearchSite, 'info_links');
+
+    const getInfoLinkLanguageDisplayText = (key) => {
+      const languages = get(attributes, 'plot_search_targets.child.children.info_links.child.children.language.choices');
+      return languages?.find((language) => language.value === key)?.display_name || key;
+    }
 
     return (
       <Column large={12}>
@@ -289,6 +299,42 @@ class PlotSearchSite extends PureComponent<Props, State> {
                   {leaseHitas || '-'}
                 </FormText>
               </Column>}
+              {infoLinks.length > 0 && (<Column small={12} medium={12} large={12} className="plot_search_target__info-links">
+                <Row>
+                  <Column small={12} medium={4} large={4}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.INFO_LINK_DESCRIPTION}
+                    </FormTextTitle>
+                  </Column>
+                  <Column small={8} medium={6} large={6}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.INFO_LINK_URL}
+                    </FormTextTitle>
+                  </Column>
+                  <Column small={4} medium={2} large={2}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.INFO_LINK_LANGUAGE}
+                    </FormTextTitle>
+                  </Column>
+                </Row>
+                {infoLinks.map((infoLink) => <Row key={infoLink.id}>
+                  <Column small={12} medium={4} large={4}>
+                    <FormText>
+                      {infoLink.description}
+                    </FormText>
+                  </Column>
+                  <Column small={8} medium={6} large={6}>
+                    <FormText>
+                      <ExternalLink href={infoLink.url} text={infoLink.url} />
+                    </FormText>
+                  </Column>
+                  <Column small={4} medium={2} large={2}>
+                    <FormText>
+                      {getInfoLinkLanguageDisplayText(infoLink.language)}
+                    </FormText>
+                  </Column>
+                </Row>)}
+              </Column>)}
             </Fragment>}
           </Row>
         </Collapse>

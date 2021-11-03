@@ -40,6 +40,9 @@ export const PlotSearchFieldTitles = {
   DECISION: 'Päätös',
   DECISION_TO_LIST: 'Päätös hakutuloslistaan',
   STAGE: 'Haun vaihe',
+  INFO_LINK_DESCRIPTION: 'Lisätietolinkin kuvaus',
+  INFO_LINK_URL: 'Lisätietolinkki',
+  INFO_LINK_LANGUAGE: 'Kieli'
 };
 
 /**

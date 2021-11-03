@@ -31,6 +31,9 @@ import {
   fetchPlanUnitAttributes,
 } from '$src/plotSearch/actions';
 import {
+  PlotSearchFieldTitles
+} from '$src/plotSearch/enums';
+import {
   formatDate,
   getFieldOptions,
   getLabelOfOption,
@@ -52,6 +55,7 @@ import {
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import SuggestedEdit from './SuggestedEdit';
+import RemoveButton from "../../../../components/form/RemoveButton";
 
 type SuggestedProps = {
   attributes: Attributes,
@@ -132,6 +136,121 @@ const renderSuggested = ({
       }}
     </AppConsumer>
   );
+};
+
+const renderInfoLinks = ({
+   disabled,
+   fields,
+   formName,
+   attributes,
+   isSaveClicked,
+ }): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return <div>
+          <FormTextTitle>
+            Lisätietolinkit
+          </FormTextTitle>
+          <div role="table">
+            <Row>
+              <Column large={4} role="columnheader">
+                <FormTextTitle>
+                  {PlotSearchFieldTitles.INFO_LINK_DESCRIPTION}
+                </FormTextTitle>
+              </Column>
+              <Column large={5} role="columnheader">
+                <FormTextTitle>
+                  {PlotSearchFieldTitles.INFO_LINK_URL}
+                </FormTextTitle>
+              </Column>
+              <Column large={2} role="columnheader">
+                <FormTextTitle>
+                  {PlotSearchFieldTitles.INFO_LINK_LANGUAGE}
+                </FormTextTitle>
+              </Column>
+              <Column large={1} />
+            </Row>
+            {!!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    fields.remove(index);
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
+                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_INFO_LINK.BUTTON,
+                  confirmationModalLabel: ConfirmationModalTexts.DELETE_INFO_LINK.LABEL,
+                  confirmationModalTitle: ConfirmationModalTexts.DELETE_INFO_LINK.TITLE,
+                });
+              };
+
+              return <Row role="row" key={index}>
+                <Column role="cell" large={4}>
+                  <FormField
+                    fieldAttributes={get(attributes, 'plot_search_targets.child.children.info_links.child.children.description')}
+                    name={`${field}.description`}
+                    invisibleLabel
+                    overrideValues={{
+                      label: PlotSearchFieldTitles.INFO_LINK_DESCRIPTION
+                    }}
+                    disabled={disabled}
+                    disableTouched={isSaveClicked}
+                  />
+                </Column>
+                <Column role="cell" large={5}>
+                  <FormField
+                    fieldAttributes={get(attributes, 'plot_search_targets.child.children.info_links.child.children.url')}
+                    name={`${field}.url`}
+                    invisibleLabel
+                    overrideValues={{
+                      label: PlotSearchFieldTitles.INFO_LINK_URL
+                    }}
+                    disabled={disabled}
+                    disableTouched={isSaveClicked}
+                  />
+                </Column>
+                <Column role="cell" large={2}>
+                  <FormField
+                    fieldAttributes={get(attributes, 'plot_search_targets.child.children.info_links.child.children.language')}
+                    name={`${field}.language`}
+                    invisibleLabel
+                    overrideValues={{
+                      label: PlotSearchFieldTitles.INFO_LINK_LANGUAGE
+                    }}
+                    disabled={disabled}
+                    disableTouched={isSaveClicked}
+                  />
+                </Column>
+                <Column role="cell" large={1}>
+                  <RemoveButton
+                    className='third-level'
+                    onClick={(...rest) => handleRemove(index, ...rest)}
+                    style={{height: 'unset'}}
+                    title='Poista lisätietolinkki'
+                    disabled={disabled}
+                  />
+                </Column>
+              </Row>;
+            })}
+            {!disabled &&
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää lisätietolinkki'
+                  onClick={handleAdd}
+                />
+              </Column>
+            </Row>
+            }
+          </div>
+        </div>;
+      }}
+    </AppConsumer>);
 };
 
 type Props = {
@@ -310,7 +429,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       change,
     } = this.props;
 
-    const currentTarget = currentPlotSearch.targets[index];
+    const currentTarget = currentPlotSearch.plot_search_targets[index];
     const masterPlanUnitId = get(currentTarget, 'master_plan_unit_id');
     const planUnit = planUnitMap[masterPlanUnitId];
     const payload = {
@@ -359,7 +478,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
     const plotDivisionStateOptions = getFieldOptions(planUnitAttributesByValue, 'plot_division_state');
 
-    const currentTarget = currentPlotSearch.targets[index];
+    const currentTarget = currentPlotSearch.plot_search_targets[index];
     const isDeleted = get(currentTarget, 'is_master_plan_unit_deleted');
     const isNewer = get(currentTarget, 'is_master_plan_unit_newer');
     const label = get(currentTarget, 'message_label');
@@ -406,7 +525,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             <div style={{display: 'none'}}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'targets.child.children.plan_unit_id')}
+                fieldAttributes={get(attributes, 'plot_search_targets.child.children.plan_unit_id')}
                 name={`${field}.plan_unit_id`}
               />
             </div>
@@ -416,7 +535,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             <FormField
               disableTouched={isSaveClicked}
               invisibleLabel={true}
-              fieldAttributes={get(attributes, 'targets.child.children.target_type')}
+              fieldAttributes={get(attributes, 'plot_search_targets.child.children.target_type')}
               name={`${field}.target_type`}
               disabled={disabled}
             />
@@ -525,10 +644,20 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 {`${get(planUnitByValue, 'section_area')} m²` || '-'}
               </FormText>
             </Column>
+            <Column small={12} medium={12} large={12}>
+              <FieldArray
+                component={renderInfoLinks}
+                attributes={attributes}
+                isSaveClicked={isSaveClicked}
+                disabled={disabled}
+                formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
+                name={`${field}.info_links`}
+              />
+            </Column>
             <FieldArray
               component={renderSuggested}
               attributes={attributes}
-              isClicked={isSaveClicked}
+              isSaveClicked={isSaveClicked}
               disabled={true}
               formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
               name={`${field}.suggested`}
@@ -540,7 +669,6 @@ class PlotSearchSiteEdit extends Component<Props, State> {
   }
 }
 
-const formName = FormNames.PLOT_SEARCH_BASIC_INFORMATION;
 
 export default flowRight(
   connect(
@@ -582,9 +710,4 @@ export default flowRight(
       fetchPlanUnitAttributes,
     }
   ),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-    change,
-  }),
 )(PlotSearchSiteEdit);
