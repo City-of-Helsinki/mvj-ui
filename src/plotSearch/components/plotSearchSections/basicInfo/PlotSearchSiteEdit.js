@@ -1,7 +1,7 @@
 // @flow
 import React, {Fragment, type Element, Component} from 'react';
 import {connect} from 'react-redux';
-import {change, reduxForm, FieldArray, formValueSelector} from 'redux-form';
+import {FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
