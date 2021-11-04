@@ -39,7 +39,7 @@ import {
 } from '$src/plotSearch/selectors';
 import ApplicantEdit from './ApplicantEdit';
 import TargetEdit from './TargetEdit';
-import EditPlotApplicationModal from './EditPlotApplicationModal';
+import EditPlotApplicationSectionModal from './EditPlotApplicationSectionModal';
 import type {Attributes} from '$src/types';
 import Loader from "../../../../components/loader/Loader";
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
@@ -229,12 +229,15 @@ class ApplicationEdit extends PureComponent<Props, State> {
     }
   };
 
-  hideEditPlotApplicationModal = () => {
+  hideEditPlotApplicationSectionModal = () => {
     this.setState({isModalOpen: false});
   }
 
-  openEditPlotApplicationModal = () => {
-    this.setState({isModalOpen: true});
+  openEditPlotApplicationSectionModal = (sectionIndex) => {
+    this.setState({
+      isModalOpen: true,
+      modalSectionIndex: sectionIndex
+    });
   }
 
   render (){
@@ -248,7 +251,8 @@ class ApplicationEdit extends PureComponent<Props, State> {
       currentPlotSearch,
       formData,
       useExistingForm,
-      hasMinimumRequiredFieldsFilled
+      hasMinimumRequiredFieldsFilled,
+      change
     } = this.props;
 
     const {
@@ -280,10 +284,13 @@ class ApplicationEdit extends PureComponent<Props, State> {
     />;
 
     return (<>
-      <EditPlotApplicationModal
+      <EditPlotApplicationSectionModal
         isOpen={isModalOpen}
-        onClose={this.hideEditPlotApplicationModal}
-        onSubmit={()=>{}}
+        onClose={this.hideEditPlotApplicationSectionModal}
+        onSubmit={(sectionData) => {
+          change(`form.sections[${this.state.modalSectionIndex}]`, sectionData);
+        }}
+        sectionIndex={this.state.modalSectionIndex}
       />
       <form>
         <Title uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}>
@@ -373,8 +380,14 @@ class ApplicationEdit extends PureComponent<Props, State> {
                   />*/}
                 </WhiteBox>
               </Collapse>
-              {formData.sections.filter((section) => section.visible).map((section, index) =>
-                <ApplicationPreviewSection section={section} key={index} handleToggle={() => this.handleBasicInfoCollapseToggle(index)} />
+              {formData.sections.map((section, index) =>
+                <ApplicationPreviewSection
+                  section={section}
+                  key={index}
+                  handleToggle={() => this.handleBasicInfoCollapseToggle(index)}
+                  openEditPlotApplicationSectionModal={() => this.openEditPlotApplicationSectionModal(index)}
+                  disabled={isReadOnly}
+                />
               )}
             </>}
           </Column>

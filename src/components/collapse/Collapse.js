@@ -23,6 +23,7 @@ type Props = {
   hasErrors: boolean,
   headerSubtitles?: any,
   headerTitle: any,
+  headerExtras?: any,
   onArchive?: Function,
   onAttach?: Function,
   onCopyToClipboard?: Function,
@@ -145,6 +146,7 @@ class Collapse extends PureComponent<Props, State> {
       hasErrors,
       headerSubtitles,
       headerTitle,
+      headerExtras,
       onArchive,
       onAttach,
       onCopyToClipboard,
@@ -188,6 +190,7 @@ class Collapse extends PureComponent<Props, State> {
                       {headerTitle}
                     </CollapseHeaderTitle>
                   </a>
+                  {headerExtras}
                 </Column>
               }
               {(showTitleOnOpen || !isOpen) && headerSubtitles}

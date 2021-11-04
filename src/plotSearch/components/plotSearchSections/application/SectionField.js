@@ -2,16 +2,13 @@
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {reduxForm} from 'redux-form';
 import get from 'lodash/get';
 
 import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {FormNames} from '$src/enums';
 import {
   getFormAttributes,
-  // getIsSaveClicked,
 } from '$src/plotSearch/selectors';
 
 import type {Attributes} from '$src/types';
@@ -20,7 +17,6 @@ type Props = {
   disabled: boolean,
   field: any,
   formName: string,
-  // isSaveClicked: boolean,
   attributes: Attributes,
   onRemove: Function,
 }
@@ -28,53 +24,44 @@ type Props = {
 const SectionField = ({
   disabled,
   field,
-  // isSaveClicked,
   attributes,
-  onRemove,
+  change,
 }: Props) => {
   return (
     <Fragment>
-      <Row>
-        <Column>
-          <Authorization allow={true}>
-            {!disabled &&
-              <RemoveButton
-                className='third-level'
-                onClick={onRemove}
-                style={{height: 'unset'}}
-                title='Poista kenttä'
-              />
-            }
-          </Authorization>
-        </Column>
-      </Row>
-      <Row>
-        <Column>
+      <Row className="section-field">
+        <Column large={9}>
           <FormField
-            // disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'section_fields.child.children.field_name')}
-            name={`${field}.field_name`}
+            fieldAttributes={get(attributes, 'sections.child.children.fields.child.children.enabled')}
+            name={`${field}.enabled`}
+            overrideValues={{
+              fieldType: 'checkbox'
+            }}
+            invisibleLabel
+          />
+          <FormField
+            fieldAttributes={get(attributes, 'sections.child.children.fields.child.children.label')}
+            name={`${field}.label`}
+            overrideValues={{
+              allowEdit: false
+            }}
+            invisibleLabel
           />
         </Column>
-        <Column>
+        <Column large={3}>
           <FormField
-            // disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'section_fields.child.children.field_type')}
-            name={`${field}.field_type`}
-          />
-        </Column>
-        <Column>
-          <FormField
-            // disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'section_fields.child.children.required_field')}
-            name={`${field}.required_field`}
-          />
-        </Column>
-        <Column>
-          <FormField
-            // disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'section_fields.child.children.duplicate')}
-            name={`${field}.duplicate`}
+            fieldAttributes={get(attributes, 'sections.child.children.fields.child.children.required')}
+            name={`${field}.required`}
+            overrideValues={{
+              fieldType: 'checkbox',
+              options: [
+                {
+                  label: 'Pakollinen tieto',
+                  value: true
+                }
+              ]
+            }}
+            invisibleLabel
           />
         </Column>
       </Row>
@@ -82,17 +69,10 @@ const SectionField = ({
   );
 };
 
-const formName = FormNames.PLOT_APPLICATION;
-
 export default connect(
   (state) => {
     return {
       attributes: getFormAttributes(state),
-      // isSaveClicked: getIsSaveClicked(state),
     };
-  },
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-  }),
+  }
 )(SectionField);

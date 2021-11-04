@@ -4,11 +4,13 @@
     background-color: $white;
     width: rem-calc(800px);
     max-width: 100%;
+    max-height: 95%;
     position: fixed;
     top: -50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
+    overflow: auto;
 
     @include transition(0.5s, top, ease);
   }

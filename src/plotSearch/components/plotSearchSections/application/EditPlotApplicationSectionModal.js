@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 
 import Modal from '$components/modal/Modal';
-import EditPlotApplicationForm from './EditPlotApplicationForm';
+import EditPlotApplicationSectionForm from './EditPlotApplicationSectionForm';
 
 type Props = {
   isOpen: boolean,
@@ -10,7 +10,7 @@ type Props = {
   onSubmit: Function,
 }
 
-class EditPlotApplicationModal extends Component<Props> {
+class EditPlotApplicationSectionModal extends Component<Props> {
   form: any
 
   componentDidUpdate(prevProps: Props) {
@@ -28,6 +28,7 @@ class EditPlotApplicationModal extends Component<Props> {
       isOpen,
       onClose,
       onSubmit,
+      ...rest
     } = this.props;
 
     return (
@@ -36,14 +37,15 @@ class EditPlotApplicationModal extends Component<Props> {
         onClose={onClose}
         title='Muokkaa osiota'
       >
-        <EditPlotApplicationForm
+        <EditPlotApplicationSectionForm
           ref={this.setRefForForm}
           onClose={onClose}
           onSubmit={onSubmit}
+          {...rest}
         />
       </Modal>
     );
   }
 }
 
-export default EditPlotApplicationModal;
+export default EditPlotApplicationSectionModal;

@@ -288,6 +288,9 @@ class PlotSearchPage extends Component<Props, State> {
     const {initialize} = this.props;
     initialize(FormNames.PLOT_SEARCH_BASIC_INFORMATION, getContentBasicInformation(plotSearch));
     initialize(FormNames.PLOT_SEARCH_APPLICATION, getContentApplication(plotSearch, plotSearchForm));
+    initialize(FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING, {
+      section: {}
+    });
     initialize(FormNames.PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM, {});
   }
 

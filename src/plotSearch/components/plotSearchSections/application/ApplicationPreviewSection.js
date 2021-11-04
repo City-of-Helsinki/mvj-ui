@@ -4,6 +4,8 @@ import {Row, Column} from 'react-foundation';
 import {reduxForm} from "redux-form";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
+import classNames from 'classnames';
+import {connect} from "react-redux";
 
 import {FormNames} from "$src/enums";
 import SubTitle from '$components/content/SubTitle';
@@ -14,12 +16,15 @@ import FormHintText from "$components/form/FormHintText";
 import AddButtonThird from "$components/form/AddButtonThird";
 import Collapse from "$components/collapse/Collapse";
 import {getFormAttributes} from "../../../selectors";
-import {connect} from "react-redux";
+import Button from "../../../../components/button/Button";
+import {ButtonColors} from "../../../../components/enums";
 
 type Props = {
   section: Object,
   handleToggle: function,
-  defaultOpen?: boolean
+  defaultOpen?: boolean,
+  openEditPlotApplicationSectionModal?: function,
+  disabled?: boolean
 };
 
 class ApplicationPreviewSection extends PureComponent<Props> {
@@ -27,22 +32,22 @@ class ApplicationPreviewSection extends PureComponent<Props> {
     defaultOpen: true
   }
 
-  renderSection = (section: Object) => {
+  renderSection = (section: Object, isFirstLevel: boolean) => {
     return (
       <Fragment>
-        <Row>
+        {!isFirstLevel && <Row>
           <Column large={12}>
             <SubTitle>
               {get(section, 'title')}
             </SubTitle>
           </Column>
-        </Row>
+        </Row>}
         <Row>
           {section.fields && section.fields.filter((field) => field.enabled).map((field, i) =>
             <Fragment key={i}>{this.renderField(field)}</Fragment>)}
         </Row>
         {section.subsections && section.subsections.filter((section) => section.visible).map((subsection, i) =>
-          <Fragment key={i}>{this.renderSection(subsection)}</Fragment>)}
+          <Fragment key={i}>{this.renderSection(subsection, false)}</Fragment>)}
         {section.add_new_allowed &&
           <Row>
             <Column>
@@ -175,17 +180,28 @@ class ApplicationPreviewSection extends PureComponent<Props> {
   }
 
   render() {
-    const { section, handleToggle, defaultOpen } = this.props;
+    const { section, handleToggle, defaultOpen, openEditPlotApplicationSectionModal, disabled } = this.props;
 
     return <Row className='summary__content-wrapper'>
       <Column small={12} style={{marginTop: 15}}>
         <Collapse
           defaultOpen={defaultOpen}
           headerTitle={section.title}
+          headerExtras={openEditPlotApplicationSectionModal && <Button
+            className={classNames(ButtonColors.SECONDARY, 'application-preview-section__edit-button')}
+            onClick={() => {
+              openEditPlotApplicationSectionModal();
+            }}
+            text='Muokkaa'
+            disabled={disabled}
+          />}
           onToggle={handleToggle}
           className="application-preview-section"
         >
-          {this.renderSection(section)}
+          {section.visible
+            ? this.renderSection(section, true)
+            : <div style={{ marginBottom: 15 }}>
+              <em>Osio on piilotettu kokonaisuudessaan.</em></div>}
         </Collapse>
       </Column>
     </Row>;
