@@ -1,5 +1,5 @@
 // @flow
-import {all, fork, put, takeLatest, call, takeEvery} from 'redux-saga/effects';
+import {all, fork, put, takeLatest, call, takeEvery, take} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
@@ -28,7 +28,10 @@ import {
   fetchFormAttributes,
   fetchTemplateForms,
   receiveTemplateForms,
-  templateFormsNotFound, addPlanUnitDecisions, resetPlanUnitDecisions,
+  templateFormsNotFound,
+  addPlanUnitDecisions,
+  resetPlanUnitDecisions,
+  editForm,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -40,7 +43,7 @@ import {
   createPlotSearch,
   fetchPlotSearches,
   fetchSinglePlotSearch,
-  editPlotSearch,
+  editPlotSearch as editPlotSearchRequest,
   deletePlotSearch,
   fetchPlanUnitAttributes,
   fetchPlanUnit,
@@ -48,6 +51,7 @@ import {
   fetchFormRequest,
   fetchFormAttributesRequest,
   fetchTemplateFormsRequest,
+  editFormRequest
 } from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -182,19 +186,28 @@ function* createPlotSearchSaga({payload: plotSearch}): Generator<any, any, any> 
   }
 }
 
-function* editPlotSearchSaga({payload: plotSearch}): Generator<any, any, any> {
+function* editPlotSearchSaga({payload: { basicInfo, form }}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotSearch, plotSearch);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotSearchRequest, basicInfo);
     switch (statusCode) {
       case 200:
+        if (form && form.id === bodyAsJson.form?.id) {
+          yield put(editForm(form));
+          const result = yield take(['mvj/plotSearch/RECEIVE_FORM', 'mvj/api/RECEIVE_ERROR']);
+          if (result.type === 'mvj/api/RECEIVE_ERROR') {
+            yield receiveIsSaveClicked(false);
+            break;
+          }
+        }
+
         yield put(fetchSinglePlotSearchAfterEdit({
-          id: plotSearch.id,
+          id: basicInfo.id,
           callbackFunctions: [
             hideEditMode(),
             receiveIsSaveClicked(false),
             () => displayUIMessage({title: '', body: 'Tonttihaku tallennettu'}),
             nullPlanUnits(),
-          ],
+          ]
         }));
         break;
       case 400:
@@ -207,7 +220,7 @@ function* editPlotSearchSaga({payload: plotSearch}): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
+    console.error('Failed to edit plot search with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -376,6 +389,26 @@ function* fetchFormSaga({payload: id}): Generator<any, any, any> {
   }
 }
 
+function* editFormSaga({payload: form}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editFormRequest, form);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveForm(bodyAsJson));
+        break;
+      case 400:
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit form with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
 function* fetchFormAttributesSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchFormAttributesRequest, id);
@@ -410,6 +443,7 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
       yield takeEvery('mvj/plotSearch/FETCH_FORM_ATTRIBUTES', fetchFormAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_FORM', fetchFormSaga);
+      yield takeEvery('mvj/plotSearch/EDIT_FORM', editFormSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtype);
     }),
   ]);

@@ -157,6 +157,9 @@ export const receiveTemplateForms = (payload: Object): ReceiveTemplateFormsActio
 export const formNotFound = (payload: Object): FormNotFoundAction =>
   createAction('mvj/plotSearch/FORM_NOT_FOUND')(payload);
 
+export const editForm = (payload: Object): EditFormAction =>
+  createAction('mvj/plotSearch/EDIT_FORM')(payload);
+
 export const fetchForm = (payload: Object): FetchFormAction =>
   createAction('mvj/plotSearch/FETCH_FORM')(payload);
 

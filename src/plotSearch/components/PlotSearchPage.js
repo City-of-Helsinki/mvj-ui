@@ -6,7 +6,6 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import {change, getFormValues, initialize, destroy, isDirty} from 'redux-form';
-import get from "lodash/get";
 
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -332,35 +331,41 @@ class PlotSearchPage extends Component<Props, State> {
   }
 
   saveChanges = () => {
-    const {receiveIsSaveClicked} = this.props;
+    const {
+      receiveIsSaveClicked,
+      applicationFormValues,
+      basicInformationFormValues,
+      currentPlotSearch,
+      editPlotSearch,
+      isBasicInformationFormDirty,
+      isApplicationFormDirty,
+    } = this.props;
     receiveIsSaveClicked(true);
 
     const areFormsValid = this.getAreFormsValid();
 
-    if(areFormsValid) {
-      const {
-        applicationFormValues,
-        basicInformationFormValues,
-        currentPlotSearch,
-        editPlotSearch,
-        isBasicInformationFormDirty,
-        isApplicationFormDirty,
-      } = this.props;
-
+    if (areFormsValid) {
       //TODO: Add helper functions to save plotSearch to DB when API is ready
-      let payload: Object = {...currentPlotSearch};
+      let payload: Object = {
+        basicInfo: { ...currentPlotSearch },
+        form: null
+      };
 
-      // TODO: Temporary fix, bug can't save when no basic invormation values are dirty
-      if(isBasicInformationFormDirty || !isBasicInformationFormDirty) {
-        payload = {...payload, ...basicInformationFormValues};
+      if (isApplicationFormDirty || !!currentPlotSearch.form && applicationFormValues.form) {
+        payload.form = { ...applicationFormValues.form };
       }
-      if(isApplicationFormDirty || !!currentPlotSearch.form) {
-        payload = {...payload, form: applicationFormValues.form.id};
+
+      if (isBasicInformationFormDirty || payload.form && currentPlotSearch.form !== payload.form) {
+        payload.basicInfo = {...payload.basicInfo, ...basicInformationFormValues};
+
+        payload.basicInfo = cleanTargets(payload.basicInfo);
+        payload.basicInfo = cleanDecisions(payload.basicInfo);
+        payload.basicInfo.identifier = currentPlotSearch.identifier;
+        payload.basicInfo.form = applicationFormValues.form?.id;
       }
-      payload = cleanTargets(payload);
-      payload = cleanDecisions(payload);
-      payload.identifier = currentPlotSearch.identifier;
+
       editPlotSearch(payload);
+
       this.setPageTitle(basicInformationFormValues.name);
     }
   }

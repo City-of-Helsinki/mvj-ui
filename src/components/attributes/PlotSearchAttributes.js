@@ -54,10 +54,6 @@ function PlotSearchAttributes(WrappedComponent: any) {
       if(!isFetching && !plotSearchSubTypes) {
         fetchPlotSearchSubtypes();
       }
-      if(!isFetchingFormAttributes && !formAttributes) {
-        fetchFormAttributes();
-      }
-
     }
 
     render() {

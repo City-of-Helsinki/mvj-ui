@@ -44,6 +44,7 @@ import type {Attributes} from '$src/types';
 import Loader from "../../../../components/loader/Loader";
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
+import WarningField from "../../../../components/form/WarningField";
 
 type ApplicantProps = {
   disabled: boolean,
@@ -213,7 +214,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
     const template = templateForms.find((templateForm) => templateForm.id === newTemplateId);
     change('form', {
       ...template,
-      is_template: false
+      is_template: undefined
     });
   };
 
@@ -240,7 +241,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
     const {
       collapseStateBasic,
       isSaveClicked,
-      attributes,
+      formAttributes,
       errors,
       templateForms,
       isFetchingTemplateForms,
@@ -253,6 +254,9 @@ class ApplicationEdit extends PureComponent<Props, State> {
     const {
       isModalOpen,
     } = this.state;
+
+    const formIdChanged = currentPlotSearch.form?.id !== formData?.id;
+    const isReadOnly = !hasMinimumRequiredFieldsFilled || formIdChanged;
 
     const formOptions = templateForms?.map((templateForm) => ({
       value: templateForm.id,
@@ -291,17 +295,12 @@ class ApplicationEdit extends PureComponent<Props, State> {
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle={ApplicationFieldTitles.APPLICATION_BASE}
+              headerTitle={ApplicationFieldTitles.APPLICATION_TEMPLATE}
               onToggle={this.handleBasicInfoCollapseToggle}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION_BASE)}
             >
               <Row>
                 <Column large={6}>
                   {isFetchingTemplateForms ? <Loader isLoading={true} /> : <>
-                    {!hasMinimumRequiredFieldsFilled && <p>
-                      Ole hyvä ja täytä ensin pakolliset perustiedot.
-                    </p>}
                     {currentPlotSearch.form !== null ? <>
                       <FormField
                         disableTouched={isSaveClicked}
@@ -329,6 +328,12 @@ class ApplicationEdit extends PureComponent<Props, State> {
                         disabled={!hasMinimumRequiredFieldsFilled}
                       />
                       {useExistingForm === "0" && formTemplateSelect}
+                      <WarningField showWarning={formIdChanged} meta={{
+                        warning: "Lomakkeen kenttiä voi muokata vasta, kun lomakepohjan vaihto on vahvistettu tonttihaku tallentamalla."
+                      }} />
+                      <WarningField showWarning={!hasMinimumRequiredFieldsFilled} meta={{
+                        warning: "Ole hyvä ja täytä ensin pakolliset perustiedot."
+                      }} />
                     </> : formTemplateSelect}
                   </>}
                 </Column>
@@ -340,19 +345,19 @@ class ApplicationEdit extends PureComponent<Props, State> {
               hasErrors={isSaveClicked && !isEmpty(errors)}
               headerTitle={ApplicationFieldTitles.APPLICATION}
               onToggle={this.handleBasicInfoCollapseToggle}
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.APPLICATION)}
             >
               <WhiteBox className='application__white-stripes'>
-                <Column className={'editPlotApplication'}>
-                  <Button
-                    className={ButtonColors.PRIMARY}
-                    onClick={this.openEditPlotApplicationModal}
-                    text='Muokkaa'
-                  />
-                </Column>
                 <TitleH3>
-                  {'Kruununvuorenrannan kortteleiden 49288 ja 49289 hinta- ja laatukilpailu'}
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(formAttributes, ApplicationFieldPaths.NAME)}
+                    name='form.title'
+                    overrideValues={{
+                      label: ApplicationFieldTitles.APPLICATION_NAME
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.NAME)}
+                  />
                 </TitleH3>
                 {/* <FieldArray
                     component={renderApplicant}
