@@ -51,6 +51,7 @@ import PlotSearchSiteEdit from './PlotSearchSiteEdit';
 
 import type {Attributes} from '$src/types';
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
+import WarningField from "../../../../components/form/WarningField";
 
 type DecisionsProps = {
   attributes: Attributes,
@@ -502,9 +503,9 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <SubTitle>
                   {'KOHTEET'}
                 </SubTitle>
-                {!hasMinimumRequiredFieldsFilled && <p>
-                  Ole hyvä ja täytä ensin pakolliset perustiedot.
-                </p>}
+                <WarningField showWarning={!hasMinimumRequiredFieldsFilled} meta={{
+                  warning: "Ole hyvä ja täytä ensin pakolliset perustiedot."
+                }} />
                 <FieldArray
                   component={renderPlotSearchSites}
                   attributes={attributes}
