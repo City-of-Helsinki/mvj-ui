@@ -44,4 +44,69 @@
     display: flex;
     flex-direction: row;
   }
+
+  .application-preview-section__edit-button {
+    position: absolute;
+    top: -2px;
+    right: 0;
+  }
+}
+
+.editPlotApplication {
+  float: right;
+  margin: 0 0 10px 0;
+}
+
+.edit-plot-application-section-form__section {
+  .section-field {
+    padding: .75rem 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+
+    > * {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    + .section-field {
+      border-top: 0;
+    }
+
+    .columns:last-child {
+      justify-content: flex-end;
+    }
+  }
+
+  .section-field, .collapse__header {
+    .form-field {
+      width: auto;
+      align-self: auto;
+
+      &, & input {
+        margin-bottom: 0;
+      }
+      .option-label {
+        height: 1em;
+      }
+    }
+    .form__text {
+      margin-bottom: 0;
+    }
+  }
+
+  .edit-plot-application-section-form__add-new-allowed-field {
+    margin-left: auto;
+  }
+
+  .collapse {
+    // As with .row, to align subsections with individual field rows
+    margin-right: rem-calc(-7.5px);
+    margin-left: rem-calc(-7.5px);
+
+    &__third > .collapse__header .collapse__header_title {
+      font-size: rem-calc(14px);
+    }
+  }
 }

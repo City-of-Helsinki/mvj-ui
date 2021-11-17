@@ -88,6 +88,7 @@ export type ReceiveFormAttributesAction = Action<'mvj/plotSearch/RECEIVE_FORM_AT
 export type FormNotFoundAction = Action<'mvj/plotSearch/FORM_NOT_FOUND', Object>;
 export type FetchFormAction = Action<'mvj/plotSearch/FETCH_FORM', void>;
 export type ReceiveFormAction = Action<'mvj/plotSearch/RECEIVE_FORM', Object>;
+export type EditFormAction = Action<'mvj/plotSearch/EDIT_FORM', Object>;
 
 export type TemplateFormsNotFoundAction = Action<'mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND', Object>;
 export type FetchTemplateFormsAction = Action<'mvj/plotSearch/FETCH_TEMPLATE_FORMS', void>;
@@ -96,3 +97,4 @@ export type ReceiveTemplateFormsAction = Action<'mvj/plotSearch/RECEIVE_TEMPLATE
 export type AddPlanUnitDecisionsAction = Action<'mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS', Object>;
 export type RemovePlanUnitDecisionsAction = Action<'mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS', number>;
 export type ResetPlanUnitDecisionsAction = Action<'mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS', void>;
+

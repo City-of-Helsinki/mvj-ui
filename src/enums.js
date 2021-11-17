@@ -366,6 +366,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa tonttihakemuksen?',
     TITLE: 'Poista tonttihakemus',
   },
+  DELETE_SECTION_FIELD: {
+    BUTTON: 'Poista kenttä',
+    LABEL: 'Haluatko varmasti poistaa kentän?',
+    TITLE: 'Poista kenttä',
+  },
 };
 
 /**
@@ -452,6 +457,7 @@ export const FormNames = {
   TRADE_REGISTER_SEARCH: 'trade-register-search-form',
   PLOT_SEARCH_BASIC_INFORMATION: 'plot-search-basic-information-form',
   PLOT_SEARCH_APPLICATION: 'plot-search-application-form',
+  PLOT_SEARCH_APPLICATION_SECTION_STAGING: 'plot-search-application-form-section-staging',
   PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
@@ -483,6 +489,6 @@ export const PermissionMissingTexts = {
   STATISTICS_AND_REPORTS: 'Ei oikeuksia tilastoihin ja raportteihin',
   TRADE_REGISTER: 'Ei oikeuksia kaupparekisteriotteisiin',
   PLOT_SEARCH: 'Ei oikeuksia tonttihakuun',
-  PLOT_APPLICATIONS: 'Ei oikeuksia tonttihakekemusiin',
+  PLOT_APPLICATIONS: 'Ei oikeuksia tonttihakemuksiin',
   LAND_USE_CONTRACTS: 'Ei oikeuksia maankäyttösopimuksiin',
 };

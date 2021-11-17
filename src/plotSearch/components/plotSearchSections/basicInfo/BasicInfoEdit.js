@@ -2,7 +2,7 @@
 import React, {Fragment, PureComponent, type Element} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {formValueSelector, FieldArray, reduxForm} from 'redux-form';
+import {formValueSelector, FieldArray, reduxForm, change} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
@@ -51,6 +51,7 @@ import PlotSearchSiteEdit from './PlotSearchSiteEdit';
 
 import type {Attributes} from '$src/types';
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
+import WarningField from "../../../../components/form/WarningField";
 
 type DecisionsProps = {
   attributes: Attributes,
@@ -275,7 +276,8 @@ type Props = {
   type: string,
   receiveFormValidFlags: Function,
   valid: boolean,
-  hasMinimumRequiredFieldsFilled: boolean
+  hasMinimumRequiredFieldsFilled: boolean,
+  change: Function
 }
 
 type State = {
@@ -359,7 +361,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       type,
       decisionCandidates,
       selectedDecisions,
-      hasMinimumRequiredFieldsFilled
+      hasMinimumRequiredFieldsFilled,
+      change
     } = this.props;
     const subTypeOptions = filterSubTypes(plotSearchSubTypes, type);
 
@@ -500,9 +503,9 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 <SubTitle>
                   {'KOHTEET'}
                 </SubTitle>
-                {!hasMinimumRequiredFieldsFilled && <p>
-                  Ole hyvä ja täytä ensin pakolliset perustiedot.
-                </p>}
+                <WarningField showWarning={!hasMinimumRequiredFieldsFilled} meta={{
+                  warning: "Ole hyvä ja täytä ensin pakolliset perustiedot."
+                }} />
                 <FieldArray
                   component={renderPlotSearchSites}
                   attributes={attributes}
@@ -512,6 +515,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   name={'plot_search_targets'}
                   usersPermissions={usersPermissions}
                   onRemove={this.onTargetRemoved}
+                  change={change}
                 />
               </WhiteBox>
             </Collapse>
@@ -553,5 +557,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    change
   }),
 )(BasicInfoEdit);

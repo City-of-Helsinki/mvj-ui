@@ -6,6 +6,7 @@ import flowRight from 'lodash/flowRight';
 import {
   fetchAttributes as fetchPlotSearchAttributes,
   fetchPlotSearchSubtypes,
+  fetchFormAttributes,
 } from '$src/plotSearch/actions';
 import {
   getAttributes as getPlotSearchAttributes,
@@ -13,6 +14,8 @@ import {
   getPlotSearchMethods,
   getPlotSearchSubTypes,
   getIsFetching,
+  getIsFetchingFormAttributes,
+  getFormAttributes,
 } from '$src/plotSearch/selectors';
 
 import type {Attributes, Methods} from '$src/types';
@@ -21,8 +24,11 @@ function PlotSearchAttributes(WrappedComponent: any) {
   type Props = {
     fetchPlotSearchAttributes: Function,
     fetchPlotSearchSubtypes: Function,
+    fetchFormAttributes: Function,
     isFetchingPlotSearchAttributes: boolean,
     isFetching: boolean,
+    formAttributes: Attributes,
+    isFetchingFormAttributes: boolean,
     plotSearchAttributes: Attributes,
     plotSearchMethods: Methods,
     plotSearchSubTypes: Object,
@@ -37,6 +43,9 @@ function PlotSearchAttributes(WrappedComponent: any) {
         fetchPlotSearchSubtypes,
         plotSearchSubTypes,
         isFetching,
+        isFetchingFormAttributes,
+        formAttributes,
+        fetchFormAttributes,
       } = this.props;
 
       if(!isFetchingPlotSearchAttributes && !plotSearchAttributes) {
@@ -62,11 +71,14 @@ const withPlotSearchAttributes = flowRight(
         plotSearchMethods: getPlotSearchMethods(state),
         plotSearchSubTypes: getPlotSearchSubTypes(state),
         isFetching: getIsFetching(state),
+        isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+        formAttributes: getFormAttributes(state),
       };
     },
     {
       fetchPlotSearchAttributes,
       fetchPlotSearchSubtypes,
+      fetchFormAttributes,
     },
   ),
   PlotSearchAttributes,

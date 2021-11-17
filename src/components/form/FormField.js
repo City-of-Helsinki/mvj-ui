@@ -147,6 +147,7 @@ const FormFieldInput = ({
   const getText = (type: string, value: any) => {
     switch (type) {
       case FieldTypeOptions.BOOLEAN:
+      case FieldTypeOptions.CHECKBOX:
         return !isEmptyValue(value) ? value ? 'Kyllä' : 'Ei' : '-';
       case FieldTypeOptions.CHOICE:
       case FieldTypeOptions.FIELD:

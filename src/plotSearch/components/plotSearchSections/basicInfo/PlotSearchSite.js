@@ -96,6 +96,10 @@ class PlotSearchSite extends PureComponent<Props, State> {
     );
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
   stopTimer = () => {
     clearInterval(this.timer);
   }

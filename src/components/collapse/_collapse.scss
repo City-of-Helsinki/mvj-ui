@@ -5,7 +5,7 @@
   margin-bottom: rem-calc(15px);
   display: block;
 
-  &__header {
+  > .collapse__header {
     padding: rem-calc(10px);
     display: flex;
     align-items: center;
@@ -43,7 +43,7 @@
       }
     }
 
-    &_button-wrapper {
+    .collapse__header_button-wrapper {
       position: absolute;
       right: 0;
       align-items: center;
@@ -64,7 +64,7 @@
       }
     }
 
-    &_error-badge {
+    .collapse__header_error-badge {
       background-image: url(../assets/icons/icon_error.svg);
       height: 14px;
       width: 14px;
@@ -74,7 +74,7 @@
       background-position: 50%;
     }
 
-    &_subtitle {
+    .collapse__header_subtitle {
       font-size: rem-calc(14px);
       line-height: rem-calc(16px);
       max-width: 100%;
@@ -88,7 +88,7 @@
       }
     }
 
-    &_title {
+    .collapse__header_title {
       max-width: 100%;
       white-space: normal;
       overflow: hidden;
@@ -121,7 +121,7 @@
       }
     }
 
-    &_icon {
+    .collapse__header_icon {
       line-height: rem-calc(20px);
       display: flex;
       align-items: center;
@@ -178,29 +178,29 @@
     }
   }
 
-  &__content {
+  > .collapse__content {
     overflow: hidden;
     position: relative;
     padding: 0;
     display: none;
     line-height: 1;
-  }
 
-  &__content-wrapper {
-    padding: 0 rem-calc(10px) 0;
-    display: inline-block;
-    width: 100%;
+    > .collapse__content-wrapper {
+      padding: 0 rem-calc(10px) 0;
+      display: inline-block;
+      width: 100%;
+    }
   }
 
   // Opened stage
   &.open {
-    .collapse__header {
+    > .collapse__header {
       .arrow-icon {
         @include transform(translateY(-50%) rotate(90deg));
       }
     }
 
-    .collapse__content {
+    > .collapse__content {
       height: auto;
       overflow: visible;
       display: inherit;
@@ -214,13 +214,13 @@
   &.is-collapsing,
   &.is-expanding
    {
-    .collapse__content {
+    > .collapse__content {
       @include transition(0.4s, max-height, ease);
       overflow: hidden;
       display: inherit;
     }
 
-    .collapse__header {
+    > .collapse__header {
       .arrow-icon {
         @include transition(0.4s, transform, ease-in-out);
       }
@@ -236,8 +236,8 @@
     margin: rem-calc(5px) 0 rem-calc(15px);
     padding: 0;
 
-    .collapse__header {
-      &_title {
+    > .collapse__header {
+      .collapse__header_title {
         font-size: rem-calc(16px);
         text-transform: uppercase;
 
@@ -251,20 +251,20 @@
       }
     }
 
-    .collapse__content {
+    > .collapse__content {
       overflow: hidden !important;
-    }
 
-    .collapse__content-wrapper {
-      padding: 0 rem-calc(10px);
+      > .collapse__content-wrapper {
+        padding: 0 rem-calc(10px);
+      }
     }
 
     &.open {
-      .collapse__content {
+      > .collapse__content {
         overflow: visible !important;
       }
 
-      .collapse__header {
+      > .collapse__header {
         .arrow-icon {
           @include transform(translateY(-50%) rotate(90deg));
         }
@@ -284,18 +284,18 @@
     }
 
     .collapse__third {
-      .collapse__header {
+      > .collapse__header {
         .arrow-icon {
           @include transform(translateY(-50%) rotate(0) !important);
         }
       }
 
-      .collapse__content {
+      > .collapse__content {
         overflow: hidden !important;
       }
 
       &.open {
-        .collapse__header {
+        > .collapse__header {
           .arrow-icon {
             @include transform(translateY(-50%) rotate(90deg) !important);
           }

@@ -51,12 +51,8 @@ export const PlotSearchFieldTitles = {
  * @type {{}}
  */
 export const ApplicationFieldPaths = {
-  APPLICATION: 'application',
-  APPLICATION_BASE: 'application_base',
-  APPLICATION_DEFAULT: 'application_default',
-  APPLICATION_EXTRA: 'application_extra',
-  APPLICATION_PREVIOUS: 'application_previous',
-  APPLICATION_CREATED: 'application_created',
+  APPLICATION: 'formData',
+  NAME: 'name',
 };
 
 /**
@@ -66,10 +62,6 @@ export const ApplicationFieldPaths = {
  */
 export const ApplicationFieldTitles = {
   APPLICATION: 'HAKEMUSLOMAKE',
-  APPLICATION_BASE: 'Lomakepohja',
-  APPLICATION_DEFAULT: 'Hakutyypin oletuslomake',
-  APPLICATION_EXTRA: 'Lomakkeen lisäosat',
-  APPLICATION_PREVIOUS: 'Aiemmin luotu lomake',
-  APPLICATION_CREATED: 'Luodut hakulomakkeet',
-  APPLICATION_TITLE: 'Lomakkeen otsikko',
+  APPLICATION_TEMPLATE: 'Lomakepohja',
+  APPLICATION_NAME: 'Lomakkeen otsikko',
 };
