@@ -19,6 +19,7 @@ export const PlotSearchFieldPaths = {
   DECISION: 'decision',
   DECISION_TO_LIST: 'decision_to_list',
   STAGE: 'stage',
+  SEARCH_CLASS: 'search_class'
 };
 
 /**
@@ -33,6 +34,7 @@ export const PlotSearchFieldTitles = {
   APPLICATIONS: 'Hakemukset',
   TYPE: 'Haun tyyppi',
   SUBTYPE: 'Haun alatyyppi',
+  SEARCH_CLASS: 'Haun luokittelu',
   START_DATE: 'Alkupvm',
   CLOCK: 'Klo',
   END_DATE: 'Loppupvm',

@@ -411,6 +411,20 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     />
                   </Column>
                 </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'search_class')}>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, PlotSearchFieldPaths.SEARCH_CLASS)}
+                      name='search_class'
+                      overrideValues={{
+                        label: PlotSearchFieldTitles.SEARCH_CLASS
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataPlotSearchKey('search_class')}
+                    />
+                  </Column>
+                </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
                   <Column small={12} medium={6} large={3}>
                     <FormField
