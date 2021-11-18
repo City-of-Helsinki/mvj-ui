@@ -30,6 +30,7 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     stage: get(plotSearch.stage, 'id'),
     subtype: get(plotSearch.subtype, 'id'),
     type: get(plotSearch.type, 'id'),
+    search_class: plotSearch.search_class,
     plot_search_targets: plotSearch.plot_search_targets?.map((target) => ({
       ...target,
       plan_unit_id: target.plan_unit?.id

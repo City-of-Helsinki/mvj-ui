@@ -85,6 +85,7 @@ class BasicInfo extends PureComponent<Props, State> {
     const typeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.TYPE);
     const subtypeOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SUBTYPE);
     const stageOptions = getFieldOptions(attributes, PlotSearchFieldPaths.STAGE);
+    const searchClassOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SEARCH_CLASS);
 
     return (
       <Fragment>
@@ -101,7 +102,7 @@ class BasicInfo extends PureComponent<Props, State> {
             >
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
-                  <Column small={12} large={8}>
+                  <Column small={12} large={6}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('name')}>
                       {PlotSearchFieldTitles.NAME}
                     </FormTextTitle>
@@ -114,6 +115,14 @@ class BasicInfo extends PureComponent<Props, State> {
                       {PlotSearchFieldTitles.PREPARER}
                     </FormTextTitle>
                     <FormText>{getUserFullName(plotSearch.preparer) || '-'}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'search_class')}>
+                  <Column small={12} medium={6} large={2}>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('search_class')}>
+                      {PlotSearchFieldTitles.SEARCH_CLASS}
+                    </FormTextTitle>
+                    <FormText>{getLabelOfOption(searchClassOptions, plotSearch.search_class) || '-'}</FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'applications')}>
