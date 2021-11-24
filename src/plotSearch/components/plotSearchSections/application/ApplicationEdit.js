@@ -2,7 +2,7 @@
 import React, {Fragment, PureComponent, type Element} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {FieldArray, reduxForm, formValues} from 'redux-form';
+import {reduxForm, formValues} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
@@ -22,9 +22,9 @@ import Title from '$components/content/Title';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {FormNames, ViewModes} from '$src/enums';
 import FormField from '$components/form/FormField';
-import Button from '$components/button/Button';
 import {
   receiveCollapseStates,
+  fetchFormAttributes
 } from '$src/plotSearch/actions';
 import {
   getAttributes,
@@ -45,6 +45,7 @@ import Loader from "../../../../components/loader/Loader";
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 import WarningField from "../../../../components/form/WarningField";
+import {getIsFetchingForm, getIsFetchingFormAttributes} from "../../../selectors";
 
 type ApplicantProps = {
   disabled: boolean,
@@ -175,12 +176,14 @@ const renderTarget = ({
 type Props = {
   collapseStateBasic: boolean,
   receiveCollapseStates: Function,
+  fetchFormAttributes: Function,
   usersPermissions: UsersPermissionsType,
   formName: string,
   isSaveClicked: boolean,
   errors: ?Object,
   attributes: Attributes,
-  hasMinimumRequiredFieldsFilled: boolean
+  hasMinimumRequiredFieldsFilled: boolean,
+  isFetchingFormAttributes: boolean
 }
 
 type State = {
@@ -190,6 +193,13 @@ type State = {
 class ApplicationEdit extends PureComponent<Props, State> {
   state = {
     isModalOpen: false,
+  }
+
+  componentDidMount() {
+    const { formAttributes, formData, fetchFormAttributes } = this.props;
+    if (!formAttributes && formData?.id) {
+      fetchFormAttributes(formData?.id);
+    }
   }
 
   handleCollapseToggle = (key: string, val: boolean) => {
@@ -209,13 +219,14 @@ class ApplicationEdit extends PureComponent<Props, State> {
   }
 
   loadTemplate = (newTemplateId) => {
-    const { templateForms, change } = this.props;
+    const { templateForms, fetchFormAttributes, change } = this.props;
 
     const template = templateForms.find((templateForm) => templateForm.id === newTemplateId);
     change('form', {
       ...template,
       is_template: undefined
     });
+    fetchFormAttributes(template.id);
   };
 
   replaceTemplate = (useExisting) => {
@@ -335,61 +346,66 @@ class ApplicationEdit extends PureComponent<Props, State> {
                         disabled={!hasMinimumRequiredFieldsFilled}
                       />
                       {useExistingForm === "0" && formTemplateSelect}
-                      <WarningField showWarning={formIdChanged} meta={{
-                        warning: "Lomakkeen kenttiä voi muokata vasta, kun lomakepohjan vaihto on vahvistettu tonttihaku tallentamalla."
-                      }} />
-                      <WarningField showWarning={!hasMinimumRequiredFieldsFilled} meta={{
-                        warning: "Ole hyvä ja täytä ensin pakolliset perustiedot."
-                      }} />
-                    </> : formTemplateSelect}
+                    </> : <>
+                      {formTemplateSelect}
+                    </>}
+                    <WarningField showWarning={formIdChanged} meta={{
+                      warning: "Lomakkeen kenttiä voi muokata vasta, kun lomakepohjan vaihto on vahvistettu tonttihaku tallentamalla."
+                    }} />
+                    <WarningField showWarning={!hasMinimumRequiredFieldsFilled} meta={{
+                      warning: "Ole hyvä ja täytä ensin pakolliset perustiedot."
+                    }} />
                   </>}
                 </Column>
               </Row>
             </Collapse>
-            {formData !== null && <>
-            <Collapse
-              defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle={ApplicationFieldTitles.APPLICATION}
-              onToggle={this.handleBasicInfoCollapseToggle}
-            >
-              <WhiteBox className='application__white-stripes'>
-                <TitleH3>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(formAttributes, ApplicationFieldPaths.NAME)}
-                    name='form.title'
-                    overrideValues={{
-                      label: ApplicationFieldTitles.APPLICATION_NAME
-                    }}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.NAME)}
-                  />
-                </TitleH3>
-                {/* <FieldArray
-                    component={renderApplicant}
-                    disabled={false}
-                    formName={FormNames.PLOT_SEARCH_APPLICATION}
-                    name={'applicants'}
-                  />
-                  <FieldArray
-                    component={renderTarget}
-                    disabled={false}
-                    formName={FormNames.PLOT_SEARCH_APPLICATION}
-                    name={'targets'}
-                  />*/}
-                </WhiteBox>
-              </Collapse>
-              {formData.sections.map((section, index) =>
-                <ApplicationPreviewSection
-                  section={section}
-                  key={index}
-                  handleToggle={() => this.handleBasicInfoCollapseToggle(index)}
-                  openEditPlotApplicationSectionModal={() => this.openEditPlotApplicationSectionModal(index)}
-                  disabled={isReadOnly}
-                />
-              )}
-            </>}
+            {formData !== null && (!formAttributes
+              ? <Loader isLoading={true} />
+              : <>
+              <Collapse
+                defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
+                hasErrors={isSaveClicked && !isEmpty(errors)}
+                headerTitle={ApplicationFieldTitles.APPLICATION}
+                onToggle={this.handleBasicInfoCollapseToggle}
+              >
+                <WhiteBox className='application__white-stripes'>
+                  <TitleH3>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(formAttributes, ApplicationFieldPaths.NAME)}
+                      name='form.title'
+                      overrideValues={{
+                        label: ApplicationFieldTitles.APPLICATION_NAME
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.NAME)}
+                    />
+                  </TitleH3>
+                  {/* <FieldArray
+                      component={renderApplicant}
+                      disabled={false}
+                      formName={FormNames.PLOT_SEARCH_APPLICATION}
+                      name={'applicants'}
+                    />
+                    <FieldArray
+                      component={renderTarget}
+                      disabled={false}
+                      formName={FormNames.PLOT_SEARCH_APPLICATION}
+                      name={'targets'}
+                    />*/}
+                  </WhiteBox>
+                </Collapse>
+                {formData.sections.map((section, index) =>
+                    <ApplicationPreviewSection
+                      section={section}
+                      key={index}
+                      handleToggle={() => this.handleBasicInfoCollapseToggle(index)}
+                      openEditPlotApplicationSectionModal={() => this.openEditPlotApplicationSectionModal(index)}
+                      disabled={isReadOnly}
+                    />
+                )}
+              </>)
+            }
           </Column>
         </Row>
       </form>
@@ -410,6 +426,7 @@ export default flowRight(
         errors: getErrorsByFormName(state, formName),
         formAttributes: getFormAttributes(state),
         isFetchingTemplateForms: getIsFetchingTemplateForms(state),
+        isFetchingFormAttributes: getIsFetchingFormAttributes(state),
         templateForms: getTemplateForms(state),
         currentPlotSearch: getCurrentPlotSearch(state),
         currentPlotSearchForm: getForm(state),
@@ -418,6 +435,7 @@ export default flowRight(
     },
     {
       receiveCollapseStates,
+      fetchFormAttributes
     }
   ),
   reduxForm({
