@@ -223,6 +223,7 @@ class BasicInfo extends PureComponent<Props, State> {
                     </FormTextTitle>
                   </Column>*/}
                 </Row>
+                {(!plotSearch.decisions || plotSearch.decisions.length === 0) && <FormText>Ei valittuja päätöksiä.</FormText>}
                 {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
                   <Row key={index}>
                     <Column small={12} medium={6} large={6} aria-labelledby="plotSearchDecisionTable__decision-header">
