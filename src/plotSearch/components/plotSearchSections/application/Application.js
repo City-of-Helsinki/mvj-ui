@@ -28,6 +28,7 @@ import {
 import type {Attributes} from '$src/types';
 import type {PlotSearch} from '$src/plotSearch/types';
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
+import FormText from "../../../../components/form/FormText";
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -96,6 +97,7 @@ class Application extends PureComponent<Props, State> {
               defaultOpen={applicationCollapseState}
             />
         )}
+        {!form && <FormText>Hakemuslomaketta ei ole vielä määritetty.</FormText>}
       </Fragment>
     );
   }

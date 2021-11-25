@@ -384,7 +384,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
             >
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
-                  <Column small={12} large={8}>
+                  <Column small={12} medium={12} large={6}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'name')}
@@ -396,7 +396,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
-                  <Column small={12} medium={6} large={4}>
+                  <Column small={12} medium={6} large={3}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'preparer')}
