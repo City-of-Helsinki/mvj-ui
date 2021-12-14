@@ -57,7 +57,7 @@
     "leaflet-zoombox": "^0.5.1",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^0.8.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "normalize.css": "^8.0.1",
     "offline-plugin": "^5.0.7",
     "oidc-client": "^1.8.2",
