@@ -68,7 +68,7 @@
     "react-datepicker": "2.8.0",
     "react-dev-utils": "^9.0.1",
     "react-dom": "16.8.6",
-    "react-dual-listbox": "^2.0.0",
+    "react-dual-listbox": "^2.1.0",
     "react-foundation": "^0.9.6",
     "react-hot-loader": "^4.12.10",
     "react-leaflet": "^2.4.0",
