@@ -1,5 +1,5 @@
 import {
-  getApiResponseResults, 
+  getApiResponseResults,
 } from '$util/helpers';
 
 /** 
@@ -19,5 +19,11 @@ export const getContentApplicationListItem = (plotApplication: Object): Object =
   return {
     id: plotApplication.id,
     plot_search: plotApplication.plot_search,
+    applicant: plotApplication.applicant,
+    plot_search_type: plotApplication.plot_search_type,
+    plot_search_subtype: plotApplication.plot_search_subtype,
+    target_identifier: plotApplication.targets.map(target => target.identifier),
+    target_address: plotApplication.targets.map(target => target.address.address),
+    target_reserved: plotApplication.targets.map(target => target.reserved),
   };
 };

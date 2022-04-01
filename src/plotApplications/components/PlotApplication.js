@@ -57,13 +57,13 @@ class PlotApplication extends PureComponent<Props, State> {
     } = this.props;
 
     const plotApplication = currentPlotApplication; // getContentBasicInformation(currentPlotApplication);
-    
     return (
       <Fragment>
         <Title>
           {'Hakemus'}
         </Title>
         <Divider />
+        {JSON.stringify(plotApplication)}
         <Row className='summary__content-wrapper'>
           <Column small={12}>
             <Collapse

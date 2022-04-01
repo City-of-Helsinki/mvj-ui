@@ -1,20 +1,215 @@
 [
   {
     "id": 1,
-    "plot_search": "Testi hakemus",
-    "arrival_time": "10:00",
-    "time": "10:00",
-    "saver": "Teppo Matikainen",
-    "disapproval_reason": "Hylätty",
-    "notice": "Huomautus"
+    "plot_search": "Kruunuvuorenrannan kortteleiden 49288 ja 49189 laatu- ja hintakilpailu",
+    "plot_search_type": "Asuntorakentaminen",
+    "plot_search_subtype": "Hinta- ja laatukilpailu",
+    "applicant": "Oy Firma Ab",
+    "targets": [
+      {
+        "identifier": "H1065/1",
+        "address": "Isokatu 1",
+        "reserved": true
+      },
+      {
+        "identifier": "H1605/2",
+        "address": "Isokatu 2",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/3",
+        "address": "Isokatu 3",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/4",
+        "address": "Isokatu 4",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/5",
+        "address": "Isokatu 5",
+        "reserved": false
+      }
+    ],
+    "reservation": true
   },
   {
     "id": 2,
-    "plot_search": "Testi",
-    "arrival_time": "10:00",
-    "time": "10:00",
-    "saver": "Teppo Matikainen",
-    "disapproval_reason": "Hylätty",
-    "notice": "Huomautus"
+    "plot_search": "Kruunuvuorenrannan kortteleiden 49288 ja 49189 laatu- ja hintakilpailu",
+    "plot_search_type": "Asuntorakentaminen",
+    "plot_search_subtype": "Hinta- ja laatukilpailu",
+    "applicant": "As Oy Asuntorakentaja",
+    "targets": [
+      {
+        "identifier": "H1065/1",
+        "address": "Isokatu 1",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/2",
+        "address": "Isokatu 2",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/3",
+        "address": "Isokatu 3",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/4",
+        "address": "Isokatu 4",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/5",
+        "address": "Isokatu 5",
+        "reserved": false
+      },
+      {
+        "identifier": "H1065/6",
+        "address": "Isokatu 6",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/7",
+        "address": "Isokatu 7",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/8",
+        "address": "Isokatu 8",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/9",
+        "address": "Isokatu 9",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/10",
+        "address": "Isokatu 10",
+        "reserved": false
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "plot_search": "Kruunuvuorenrannan kortteleiden 49288 ja 49189 laatu- ja hintakilpailu",
+    "plot_search_type": "Asuntorakentaminen",
+    "plot_search_subtype": "Hinta- ja laatukilpailu",
+    "applicant": "As Oy Asuntorakentaja",
+    "targets": [
+      {
+        "identifier": "H1065/1",
+        "address": "Isokatu 1",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/2",
+        "address": "Isokatu 2",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/3",
+        "address": "Isokatu 3",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/4",
+        "address": "Isokatu 4",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/5",
+        "address": "Isokatu 5",
+        "reserved": false
+      },
+      {
+        "identifier": "H1065/6",
+        "address": "Isokatu 6",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/7",
+        "address": "Isokatu 7",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/8",
+        "address": "Isokatu 8",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/9",
+        "address": "Isokatu 9",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/10",
+        "address": "Isokatu 10",
+        "reserved": false
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "plot_search": "Kruunuvuorenrannan kortteleiden 49288 ja 49189 laatu- ja hintakilpailu",
+    "plot_search_type": "Asuntorakentaminen",
+    "plot_search_subtype": "Hinta- ja laatukilpailu",
+    "applicant": "As Oy Asuntorakentaja",
+    "targets": [
+      {
+        "identifier": "H1065/1",
+        "address": "Isokatu 1",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/2",
+        "address": "Isokatu 2",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/3",
+        "address": "Isokatu 3",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/4",
+        "address": "Isokatu 4",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/5",
+        "address": "Isokatu 5",
+        "reserved": false
+      },
+      {
+        "identifier": "H1065/6",
+        "address": "Isokatu 6",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/7",
+        "address": "Isokatu 7",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/8",
+        "address": "Isokatu 8",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/9",
+        "address": "Isokatu 9",
+        "reserved": false
+      },
+      {
+        "identifier": "H1605/10",
+        "address": "Isokatu 10",
+        "reserved": false
+      }
+    ]
   }
 ]
+

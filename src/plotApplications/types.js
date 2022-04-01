@@ -25,6 +25,7 @@ export type AttributesNotFoundAction = Action<'mvj/plotApplications/ATTRIBUTES_N
 
 export type FetchPlotApplicationsListAction = Action<'mvj/plotApplications/FETCH_ALL', string>;
 export type ReceivePlotApplicationsListAction = Action<'mvj/plotApplications/RECEIVE_ALL', PlotApplicationsList>;
+export type ApplicationsNotFoundAction = Action<'mvj/plotApplications/APPLICATIONS_NOT_FOUND', void>;
 
 export type FetchSinglePlotApplicationAction = Action<'mvj/plotApplications/FETCH_SINGLE', number>;
 export type ReceiveSinglePlotApplicationAction = Action<'mvj/plotApplications/RECEIVE_SINGLE', PlotApplication>;

@@ -20,6 +20,7 @@ import type {
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   EditPlotApplicationAction,
+  ApplicationsNotFoundAction,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -39,6 +40,9 @@ export const fetchAttributes = (): FetchAttributesAction =>
 
 export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
   createAction('mvj/plotApplications/RECEIVE_METHODS')(methods);
+
+export const applicationsNotFound = (): ApplicationsNotFoundAction =>
+  createAction('mvj/plotApplications/APPLICATIONS_NOT_FOUND')();
 
 export const attributesNotFound = (): AttributesNotFoundAction =>
   createAction('mvj/plotApplications/ATTRIBUTES_NOT_FOUND')();

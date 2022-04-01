@@ -1,6 +1,6 @@
 
 // @flow
-import {all, fork, put, takeLatest} from 'redux-saga/effects';
+import {all, fork, put, takeLatest, call} from 'redux-saga/effects';
 
 import {displayUIMessage} from '$src/util/helpers';
 import {
@@ -10,30 +10,75 @@ import {
   receiveSinglePlotApplication,
   hideEditMode,
   receiveIsSaveClicked,
+  attributesNotFound,
+  applicationsNotFound,
 } from './actions';
+import {receiveError} from '$src/api/actions';
 
-import mockData from './mock-data.json';
-import mockAttributes from './attributes-mock-data.json';
+import {fetchPlotApplications, fetchSinglePlotApplication, fetchAttributes} from './requests';
 
-function* fetchPlotApplications({payload: query}): Generator<any, any, any> {
-  console.log(query);
-  yield put(receivePlotApplicationsList({
-    count: 1,
-    results: mockData,
-  }));
+// import mockAttributes from './attributes-mock-data.json';
+
+function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotApplications, query);
+    switch (statusCode) {
+      case 200:
+        yield put(receivePlotApplicationsList({
+          count: bodyAsJson.count,
+          results: bodyAsJson.results,
+        }));
+        break;
+      default:
+        yield put(applicationsNotFound());
+    }
+    
+  } catch (e) {
+    console.error(e);
+    yield put(applicationsNotFound());
+  }
 }
 
 function* fetchSinglePlotApplicationSaga({payload: id}): Generator<any, any, any> {
-  const current = mockData.find(application => application.id == id);
-  yield put(receiveSinglePlotApplication(current));
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSinglePlotApplication, id);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSinglePlotApplication(bodyAsJson));
+        break;
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
-  const attributes = mockAttributes.fields;
-  const methods = mockAttributes.methods;
+  // const attributes = mockAttributes.fields;
+  // const methods = mockAttributes.methods;
 
-  yield put(receiveAttributes(attributes));
-  yield put(receiveMethods(methods));
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
+    
+    switch(statusCode) {
+      case 200:
+        const attributes = {
+          ...bodyAsJson.fields,
+        };
+        const methods = bodyAsJson.methods;
+
+        yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
+        break;
+      default:
+        yield put(attributesNotFound());
+    }
+  } catch (error) {
+    console.error('Failed to fetch attributes with error "%s"', error);
+    yield put(attributesNotFound());
+    yield put(receiveError(error));
+  }
+
+  
 }
 
 function* editPlotApplicationSaga({payload: plotApplication}): Generator<any, any, any> {
@@ -46,7 +91,7 @@ function* editPlotApplicationSaga({payload: plotApplication}): Generator<any, an
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
-      yield takeLatest('mvj/plotApplications/FETCH_ALL', fetchPlotApplications);
+      yield takeLatest('mvj/plotApplications/FETCH_ALL', fetchPlotApplicationsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_SINGLE', fetchSinglePlotApplicationSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/plotApplications/EDIT', editPlotApplicationSaga);

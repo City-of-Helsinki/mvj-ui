@@ -13,5 +13,11 @@ npm-debug.log
 
 report.*.json
 
-docker-compose_override.yml
+docker-compose.override.yml
+docker-compose.dev.yml
 .idea
+mvj-ui.iml
+.devcontainer
+.vscode
+jsconfig.json
+start.sh
