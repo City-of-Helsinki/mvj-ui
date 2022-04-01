@@ -46,7 +46,7 @@ import type {
   FetchTemplateFormsAction,
   ReceiveTemplateFormsAction,
   TemplateFormsNotFoundAction,
-  RemovePlanUnitDecisionsAction, AddPlanUnitDecisionsAction, ResetPlanUnitDecisionsAction,
+  RemovePlanUnitDecisionsAction, AddPlanUnitDecisionsAction, ResetPlanUnitDecisionsAction, EditFormAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
