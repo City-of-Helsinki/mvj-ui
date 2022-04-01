@@ -319,7 +319,7 @@ class FormField extends PureComponent<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     const overrideableBoolean = (fieldName) => {
       return get(props.overrideValues, fieldName) !== undefined
-        ? !!get(props.overrideValues, fieldName) : !!get(props.fieldAttributes, fieldName)
+        ? !!get(props.overrideValues, fieldName) : !!get(props.fieldAttributes, fieldName);
     };
 
     if (props.fieldAttributes !== state.fieldAttributes) {
@@ -330,7 +330,7 @@ class FormField extends PureComponent<Props, State> {
         fieldType: get(props.fieldAttributes, 'type'),
         label: get(props.overrideValues, 'label') || get(props.fieldAttributes, 'label'),
         options: getFieldAttributeOptions(props.fieldAttributes),
-        required: overrideableBoolean('required')
+        required: overrideableBoolean('required'),
       };
     }
     return null;
@@ -342,7 +342,7 @@ class FormField extends PureComponent<Props, State> {
 
     return genericNormalizer(value, {
       ...fieldAttributes,
-      ...rest
+      ...rest,
     });
   }
 
@@ -352,7 +352,7 @@ class FormField extends PureComponent<Props, State> {
 
     return genericValidator(value, {
       ...fieldAttributes,
-      ...rest
+      ...rest,
     });
   }
 

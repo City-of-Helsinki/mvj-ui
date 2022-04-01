@@ -96,4 +96,4 @@ export const getDecisionCandidates: Selector<Array, void> = (state: RootState): 
   return Object.values(state.plotSearch.decisionCandidates).reduce((acc, next) => {
     return ([ ...acc, ...next ]);
   }, []);
-}
+};

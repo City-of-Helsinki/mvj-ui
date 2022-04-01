@@ -51,7 +51,7 @@ import {
   fetchFormRequest,
   fetchFormAttributesRequest,
   fetchTemplateFormsRequest,
-  editFormRequest
+  editFormRequest,
 } from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -63,7 +63,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         const attributes = {
           ...bodyAsJson.fields,
           application_base: attributesMockData.fields.application_base,
-          form: attributesMockData.fields.form
+          form: attributesMockData.fields.form,
         };
         const methods = bodyAsJson.methods;
 
@@ -186,7 +186,7 @@ function* createPlotSearchSaga({payload: plotSearch}): Generator<any, any, any> 
   }
 }
 
-function* editPlotSearchSaga({payload: { basicInfo, form }}): Generator<any, any, any> {
+function* editPlotSearchSaga({payload: {basicInfo, form}}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotSearchRequest, basicInfo);
     switch (statusCode) {
@@ -207,7 +207,7 @@ function* editPlotSearchSaga({payload: { basicInfo, form }}): Generator<any, any
             receiveIsSaveClicked(false),
             () => displayUIMessage({title: '', body: 'Tonttihaku tallennettu'}),
             nullPlanUnits(),
-          ]
+          ],
         }));
         break;
       case 400:
