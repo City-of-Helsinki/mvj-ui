@@ -6,6 +6,7 @@ import {FeatureGroup} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
 import 'leaflet-measure-path';
 import isEmpty from 'lodash/isEmpty';
+import throttle from "lodash/throttle";
 
 import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
@@ -103,6 +104,16 @@ class AreaNotesEditMap extends Component<Props, State> {
     }
   }
 
+  updateAllFeatures = throttle(() => {
+    this.featureGroup.leafletElement?.eachLayer((layer) => {
+      layer.showMeasurements();
+      layer.updateMeasurements();
+    });
+  }, 1000 / 60, {
+    leading: true,
+    trailing: true
+  });
+
   handleAction = () => {
     this.setState({
       isValid: !!Object.keys(this.featureGroup.leafletElement._layers).length,
@@ -115,6 +126,10 @@ class AreaNotesEditMap extends Component<Props, State> {
     this.setState({
       isValid: !!Object.keys(this.featureGroup.leafletElement._layers).length,
     });
+  }
+
+  handleNonCommittedChange = () => {
+    this.updateAllFeatures();
   }
 
   cancelChanges = () => {
@@ -190,6 +205,10 @@ class AreaNotesEditMap extends Component<Props, State> {
                 onCreated={this.handleCreated}
                 onDeleted={this.handleAction}
                 onEdited={this.handleAction}
+                onEditMove={this.handleNonCommittedChange}
+                onEditVertex={this.handleNonCommittedChange}
+                onEditStop={this.handleNonCommittedChange}
+                onDeleteStop={this.handleNonCommittedChange}
                 draw={{
                   circlemarker: false,
                   circle: false,
