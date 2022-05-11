@@ -62,3 +62,11 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: RootState,
 
 export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
   state.plotApplications.subTypes;
+
+export const getIsFetchingApplicationRelatedForm: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingForm;
+
+export const getApplicationRelatedForm: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.form;
+
+export const getIsFetchingApplicationRelatedAttachments: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingAttachments;
+
+export const getApplicationRelatedAttachments: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.attachments;

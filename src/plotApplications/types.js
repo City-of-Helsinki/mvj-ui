@@ -50,3 +50,11 @@ export type EditPlotApplicationAction = Action<'mvj/plotApplications/EDIT', Plot
 export type FetchPlotSearchSubtypesAction = Action<'mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
 export type ReceivePlotSearchSubtypesAction = Action<'mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
 export type PlotSearchSubtypesNotFoundAction = Action<'mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;
+
+export type FetchApplicationRelatedFormAction = Action<'mvj/plotApplications/FETCH_FORM', void>;
+export type ReceiveApplicationRelatedFormAction = Action<'mvj/plotApplications/RECEIVE_FORM', Object>;
+export type ApplicationRelatedFormNotFoundAction = Action<'mvj/plotApplications/FORM_NOT_FOUND', void>;
+
+export type FetchApplicationRelatedAttachmentsAction = Action<'mvj/plotApplications/FETCH_ATTACHMENTS', void>;
+export type ReceiveApplicationRelatedAttachmentsAction = Action<'mvj/plotApplications/RECEIVE_ATTACHMENTS', Object>;
+export type ApplicationRelatedAttachmentsNotFoundAction = Action<'mvj/plotApplications/ATTACHMENTS_NOT_FOUND', void>;

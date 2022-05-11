@@ -1,0 +1,15 @@
+.PlotApplication {
+  .form__text-title {
+    white-space: normal;
+  }
+
+  &__field-value {
+    ul {
+      margin-left: 0;
+
+      li {
+        list-style: none;
+      }
+    }
+  }
+}

@@ -17,7 +17,12 @@ import {
   attributesNotFound,
   applicationsNotFound,
   plotSearchSubtypesNotFound,
-  receivePlotSearchSubtypes
+  receivePlotSearchSubtypes,
+  fetchApplicationRelatedForm,
+  receiveApplicationRelatedForm,
+  applicationRelatedAttachmentsNotFound,
+  fetchApplicationRelatedAttachments,
+  receiveApplicationRelatedAttachments
 } from './actions';
 import {receiveError} from '$src/api/actions';
 
@@ -25,8 +30,11 @@ import {
   fetchPlotApplications,
   fetchSinglePlotApplication,
   fetchAttributes,
-  fetchPlotSearchSubtypesRequest
+  fetchPlotSearchSubtypesRequest,
+  fetchSinglePlotApplicationAttachments
 } from './requests';
+import {fetchFormRequest} from "../plotSearch/requests";
+import {fetchFormAttributes} from "../plotSearch/actions";
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
@@ -71,6 +79,9 @@ function* fetchSinglePlotApplicationSaga({payload: id}): Generator<any, any, any
     switch (statusCode) {
       case 200:
         yield put(receiveSinglePlotApplication(bodyAsJson));
+        yield put(fetchApplicationRelatedForm(bodyAsJson.form));
+        yield put(fetchApplicationRelatedAttachments(id));
+        yield put(fetchFormAttributes(bodyAsJson.form));
         break;
     }
   } catch (e) {
@@ -134,6 +145,42 @@ function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
   }
 }
 
+function* fetchApplicationRelatedFormSaga({ payload: id }): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchFormRequest, id);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveApplicationRelatedForm(bodyAsJson));
+        break;
+      default:
+        yield put(applicationRelatedFormNotFound());
+        displayUIMessage({title: '', body: 'Hakemukseen liittyvää lomaketta ei löytynyt!'}, { type: 'error' });
+    }
+  } catch {
+    yield put(applicationRelatedFormNotFound());
+    displayUIMessage({title: '', body: 'Hakemukseen liittyvää lomaketta ei löytynyt!'}, { type: 'error' });
+  }
+}
+
+function* fetchApplicationRelatedAttachmentsSaga({ payload: id }): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSinglePlotApplicationAttachments, id);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveApplicationRelatedAttachments(bodyAsJson));
+        break;
+      default:
+        yield put(applicationRelatedAttachmentsNotFound());
+        displayUIMessage({title: '', body: 'Hakemuksen liitteitä ei löytynyt!'}, { type: 'error' });
+    }
+  } catch (e) {
+    yield put(applicationRelatedAttachmentsNotFound());
+    displayUIMessage({title: '', body: 'Hakemuksen liitteitä ei löytynyt!'}, { type: 'error' });
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -143,6 +190,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/plotApplications/EDIT', editPlotApplicationSaga);
       yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);
+      yield takeLatest('mvj/plotApplications/FETCH_FORM', fetchApplicationRelatedFormSaga);
+      yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENTS', fetchApplicationRelatedAttachmentsSaga);
     }),
   ]);
 }

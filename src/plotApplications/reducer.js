@@ -1,4 +1,3 @@
-
 // @flow
 import merge from 'lodash/merge';
 
@@ -18,9 +17,10 @@ import type {
   ReceiveCollapseStatesAction,
   ReceiveFormValidFlagsAction,
   ReceivePlotApplicationsByBBoxAction,
-} from '$src/plotApplications/types';
-import type {ReceivePlotSearchSubtypesAction} from "./types";
-
+  ReceiveApplicationRelatedFormAction,
+  ReceiveApplicationRelatedAttachmentsAction,
+  ReceivePlotSearchSubtypesAction
+} from "./types";
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
@@ -116,6 +116,32 @@ const isFetchingSubTypesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND']: () => false
 }, false);
 
+const formReducer: Reducer<Object> = handleActions({
+  ['mvj/plotApplications/FETCH_FORM']: () => null,
+  ['mvj/plotApplications/RECEIVE_FORM']: (state: Object, { payload: form }: ReceiveApplicationRelatedFormAction) => {
+    return form;
+  }
+}, null);
+
+const isFetchingFormReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_FORM']: () => true,
+  ['mvj/plotApplications/RECEIVE_FORM']: () => false,
+  ['mvj/plotApplications/FORM_NOT_FOUND']: () => false,
+}, false);
+
+const attachmentReducer: Reducer<Object> = handleActions({
+  ['mvj/plotApplications/FETCH_ATTACHMENTS']: () => null,
+  ['mvj/plotApplications/RECEIVE_ATTACHMENTS']: (state: Object, { payload: attachments }: ReceiveApplicationRelatedAttachmentsAction) => {
+    return attachments;
+  },
+}, null);
+
+const isFetchingAttachmentsReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_ATTACHMENTS']: () => true,
+  ['mvj/plotApplications/RECEIVE_ATTACHMENTS']: () => false,
+  ['mvj/plotApplications/ATTACHMENTS_NOT_FOUND']: () => false,
+}, false);
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   isFetchingByBBox: isFetchingByBBoxReducer,
@@ -129,5 +155,9 @@ export default combineReducers<Object, any>({
   isSaveClicked: isSaveClickedReducer,
   collapseStates: collapseStatesReducer,
   isFormValidById: isFormValidByIdReducer,
-  subTypes: subTypesReducer
+  subTypes: subTypesReducer,
+  form: formReducer,
+  isFetchingForm: isFetchingFormReducer,
+  attachments: attachmentReducer,
+  isFetchingAttachments: isFetchingAttachmentsReducer
 });
