@@ -9,6 +9,9 @@ import type {
   PlotApplication,
 } from './types';
 
+export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
+  state.plotApplications.listByBBox;
+
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.plotApplications.attributes;
 

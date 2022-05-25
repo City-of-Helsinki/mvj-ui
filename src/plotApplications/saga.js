@@ -9,6 +9,8 @@ import {
   receiveAttributes,
   receiveSinglePlotApplication,
   hideEditMode,
+  notFoundByBBox,
+  receivePlotApplicationsByBBox,
   receiveIsSaveClicked,
   attributesNotFound,
   applicationsNotFound,
@@ -17,17 +19,12 @@ import {receiveError} from '$src/api/actions';
 
 import {fetchPlotApplications, fetchSinglePlotApplication, fetchAttributes} from './requests';
 
-// import mockAttributes from './attributes-mock-data.json';
-
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotApplications, query);
     switch (statusCode) {
       case 200:
-        yield put(receivePlotApplicationsList({
-          count: bodyAsJson.count,
-          results: bodyAsJson.results,
-        }));
+        yield put(receivePlotApplicationsList(bodyAsJson));
         break;
       default:
         yield put(applicationsNotFound());
@@ -36,6 +33,26 @@ function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> 
   } catch (e) {
     console.error(e);
     yield put(applicationsNotFound());
+  }
+}
+
+function* fetchPlotApplicationsByBBoxSaga({payload: query}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotApplications, query);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receivePlotApplicationsByBBox(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        yield put(notFoundByBBox());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch applications with error "%s"', error);
+    yield put(notFoundByBBox());
+    yield put(receiveError(error));
   }
 }
 
@@ -53,8 +70,6 @@ function* fetchSinglePlotApplicationSaga({payload: id}): Generator<any, any, any
 }
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
-  // const attributes = mockAttributes.fields;
-  // const methods = mockAttributes.methods;
 
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
@@ -93,6 +108,7 @@ export default function*(): Generator<any, any, any> {
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_ALL', fetchPlotApplicationsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_SINGLE', fetchSinglePlotApplicationSaga);
+      yield takeLatest('mvj/plotApplications/FETCH_BY_BBOX', fetchPlotApplicationsByBBoxSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/plotApplications/EDIT', editPlotApplicationSaga);
     }),

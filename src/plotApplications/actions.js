@@ -21,6 +21,9 @@ import type {
   ClearFormValidFlagsAction,
   EditPlotApplicationAction,
   ApplicationsNotFoundAction,
+  FetchPlotApplicationsByBBoxAction,
+  NotFoundByBBoxAction,
+  ReceivePlotApplicationsByBBoxAction,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -34,6 +37,15 @@ export const fetchSinglePlotApplication = (id: number): FetchSinglePlotApplicati
 
 export const receiveSinglePlotApplication = (plotApplication: PlotApplication): ReceiveSinglePlotApplicationAction =>
   createAction('mvj/plotApplications/RECEIVE_SINGLE')(plotApplication);
+
+export const fetchPlotApplicationsByBBox = (params: Object): FetchPlotApplicationsByBBoxAction =>
+  createAction('mvj/plotApplications/FETCH_BY_BBOX')(params);
+
+export const receivePlotApplicationsByBBox = (leases: PlotApplicationsList): ReceivePlotApplicationsByBBoxAction =>
+  createAction('mvj/plotApplications/RECEIVE_BY_BBOX')(leases);
+
+export const notFoundByBBox = (): NotFoundByBBoxAction =>
+  createAction('mvj/plotApplications/NOT_FOUND_BY_BBOX')();
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/plotApplications/FETCH_ATTRIBUTES')();

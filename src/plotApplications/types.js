@@ -9,6 +9,8 @@ export type PlotApplicationsState = {
   list: PlotApplicationsList,
   methods: Object,
   current: PlotApplication,
+  isFetchingByBBox: boolean,
+  listByBBox: PlotApplicationsList,
   isEditMode: boolean,
   isSaveClicked: boolean,
   collapseStates: Object,
@@ -26,6 +28,9 @@ export type AttributesNotFoundAction = Action<'mvj/plotApplications/ATTRIBUTES_N
 export type FetchPlotApplicationsListAction = Action<'mvj/plotApplications/FETCH_ALL', string>;
 export type ReceivePlotApplicationsListAction = Action<'mvj/plotApplications/RECEIVE_ALL', PlotApplicationsList>;
 export type ApplicationsNotFoundAction = Action<'mvj/plotApplications/APPLICATIONS_NOT_FOUND', void>;
+export type FetchPlotApplicationsByBBoxAction = Action<'mvj/plotApplications/FETCH_BY_BBOX', Object>;
+export type ReceivePlotApplicationsByBBoxAction = Action<'mvj/plotApplications/RECEIVE_BY_BBOX', PlotApplicationsList>;
+export type NotFoundByBBoxAction = Action<'mvj/plotApplications/NOT_FOUND_BY_BBOX', void>;
 
 export type FetchSinglePlotApplicationAction = Action<'mvj/plotApplications/FETCH_SINGLE', number>;
 export type ReceiveSinglePlotApplicationAction = Action<'mvj/plotApplications/RECEIVE_SINGLE', PlotApplication>;

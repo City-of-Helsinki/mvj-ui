@@ -2,6 +2,7 @@
 import React, {Fragment, PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
+import debounce from 'lodash/debounce';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
@@ -11,6 +12,7 @@ import Search from './search/Search';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {
   fetchPlotApplicationsList,
+  fetchPlotApplicationsByBBox,
 } from '$src/plotApplications/actions';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -43,7 +45,6 @@ import {
   getFieldOptions,
   getApiResponseCount,
   getApiResponseMaxPage,
-  getLabelOfOption,
   getSearchQuery,
 } from '$util/helpers';
 import {
@@ -54,9 +55,12 @@ import {
   DEFAULT_SORT_KEY,
   DEFAULT_SORT_ORDER,
   DEFAULT_PLOT_APPLICATIONS_STATES,
+  BOUNDING_BOX_FOR_SEARCH_QUERY,
+  MAX_ZOOM_LEVEL_TO_FETCH_LEASES,
 } from '$src/plotApplications/constants';
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import {fetchPlotSearchList, fetchAttributes as fetchPlotSearchAttributes} from '$src/plotSearch/actions';
+import ApplicationListMap from '$src/plotApplications/components/map/ApplicationListMap';
 
 
 const VisualizationTypes = {
@@ -76,6 +80,7 @@ type Props = {
   plotApplicationsAttributes: Attributes,
   isFetching: boolean,
   fetchPlotApplicationsList: Function,
+  fetchPlotApplicationsByBBox: Function,
   fetchPlotSearchAttributes: Function,
   fetchPlotSearchList: Function,
   location: Object,
@@ -98,7 +103,6 @@ type State = {
   selectedStates: Array<string>,
   sortKey: string,
   sortOrder: string,
-  selectedStates: Array<string>,
 }
 
 class PlotApplicationsListPage extends PureComponent<Props, State> {
@@ -127,8 +131,17 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       receiveTopNavigationSettings,
       fetchPlotSearchAttributes,
       fetchPlotSearchList,
+      location: {search},
     } = this.props;
+    const searchQuery = getUrlParams(search);
     setPageTitle('Tonttihakemukset');
+
+    if(searchQuery.visualization === VisualizationTypes.MAP) {
+      this.setState({visualizationType: VisualizationTypes.MAP});
+      this.searchByBBox();
+    } else {
+      this.search();
+    }
     
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.PLOT_APPLICATIONS),
@@ -137,7 +150,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     });
     fetchPlotSearchAttributes();
     fetchPlotSearchList();
-    this.search();
     this.setSearchFormValues();
     this._isMounted = true;
   }
@@ -145,10 +157,18 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   componentDidUpdate(prevProps) {
     const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const {visualizationType} = this.state;
     const searchQuery = getUrlParams(currentSearch);
 
     if (currentSearch !== prevSearch) {
-      this.search();
+      switch(visualizationType) {
+        case VisualizationTypes.MAP:
+          this.searchByBBox();
+          break;
+        case VisualizationTypes.TABLE:
+          this.search();
+          break;
+      }
 
       delete searchQuery.sort_key;
       delete searchQuery.sort_order;
@@ -165,6 +185,27 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+  }
+
+
+  searchByBBox = () => {
+    const {fetchPlotApplicationsByBBox, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    if(searchQuery && searchQuery.search && searchQuery.search.length>6) {
+      searchQuery.in_bbox = BOUNDING_BOX_FOR_SEARCH_QUERY;
+    } else if(!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) {
+      return;
+    }
+
+    searchQuery.limit = 10000;
+    delete searchQuery.page;
+    delete searchQuery.visualization;
+    delete searchQuery.zoom;
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
+
+    fetchPlotApplicationsByBBox(searchQuery);
   }
 
   hideCreatePlotApplicationsModal = () => {
@@ -221,7 +262,8 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
-
+    delete searchQuery.in_bbox;
+    delete searchQuery.zoom;
     fetchPlotApplicationsList(searchQuery);
   }
 
@@ -240,9 +282,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   }
 
   getColumns = () => {
-    const {plotApplicationsAttributes} = this.props;
-    const typeOptions = getFieldOptions(plotApplicationsAttributes, 'type');
-    const subtypeOptions = getFieldOptions(plotApplicationsAttributes, 'subtype');
     const columns = [];
 
     columns.push({
@@ -258,14 +297,12 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'plot_search_type',
       text: 'Hakutyyppi',
       sortable: false,
-      renderer: (val) => getLabelOfOption(typeOptions, val),
     });
 
     columns.push({
       key: 'plot_search_subtype',
       text: 'Haun alatyyppi',
       sortable: false,
-      renderer: (val) => getLabelOfOption(subtypeOptions, val),
     });
 
     columns.push({
@@ -322,6 +359,37 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       search: getSearchQuery(query),
     });
   }
+
+  handleVisualizationTypeChange = (value: string) => {
+    this.setState({visualizationType: value}, () => {
+      const {history, location: {search}} = this.props;
+      const searchQuery = getUrlParams(search);
+
+      if(value === VisualizationTypes.MAP) {
+        searchQuery.visualization = VisualizationTypes.MAP;
+      } else {
+        delete searchQuery.visualization;
+      }
+
+      return history.push({
+        pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+        search: getSearchQuery(searchQuery),
+      });
+    });
+  }
+
+  handleMapViewportChanged = debounce((mapOptions: Object) => {
+    const {history, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    searchQuery.in_bbox = mapOptions.bBox.split(',');
+    searchQuery.zoom = mapOptions.zoom;
+
+    return history.push({
+      pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+      search: getSearchQuery(searchQuery),
+    });
+  }, 1000);
 
   render() {
     const {
@@ -395,7 +463,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
             <VisualisationTypeWrapper>
               <IconRadioButtons
                 legend={'Kartta/taulukko'}
-                onChange={() => { }} // this.handleVisualizationTypeChange
+                onChange={(value) => this.handleVisualizationTypeChange(value)}
                 options={visualizationTypeOptions}
                 radioName='visualization-type-radio'
                 value={visualizationType}
@@ -408,7 +476,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
           }
 
-          {visualizationType === 'table' &&
+          {visualizationType === VisualizationTypes.TABLE &&
             <Fragment>
               <SortableTable
                 columns={columns}
@@ -429,6 +497,13 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
               />
             </Fragment>
           }
+          {visualizationType === VisualizationTypes.MAP &&
+            <ApplicationListMap
+              allowToEdit={false}
+              isLoading={isFetching}
+              onViewportChanged={this.handleMapViewportChanged}
+            />
+          }
         </TableWrapper>
       </PageContainer>
     );
@@ -447,6 +522,7 @@ export default flowRight(
     },
     {
       receiveTopNavigationSettings,
+      fetchPlotApplicationsByBBox,
       fetchPlotApplicationsList,
       fetchPlotSearchList,
       fetchPlotSearchAttributes,

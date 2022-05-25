@@ -106,6 +106,7 @@ class Search extends Component<Props, State> {
     if(this.state.isBasicSearch) {
       fValues = {q: formValues.q};
     }
+
     onSearch({...fValues, state: (states.length ? states : undefined)});
   }
 
@@ -174,7 +175,7 @@ class Search extends Component<Props, State> {
                         read_only: false,
                       }}
                       invisibleLabel
-                      name='plotsearch'
+                      name='plot_search'
                       overrideValues={{
                         options: plotSearchOptions,
                       }}
@@ -193,7 +194,7 @@ class Search extends Component<Props, State> {
                         type: FieldTypes.CHOICE,
                         read_only: false,
                       }}
-                      name='search_type'
+                      name='plot_search_type'
                       overrideValues={{options: typeOptions}}
                     />
                   </SearchInputColumn>
@@ -213,7 +214,7 @@ class Search extends Component<Props, State> {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name='plot_search_start_date_start'
+                          name='begin_at_after'
                         />
                       </Column>
                       <Column small={6}>
@@ -225,7 +226,7 @@ class Search extends Component<Props, State> {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name='plot_search_start_date_end'
+                          name='begin_at_before'
                         />
                       </Column>
                     </Row>
@@ -285,7 +286,7 @@ class Search extends Component<Props, State> {
                         read_only: false,
                       }}
                       invisibleLabel
-                      name='target_identifier'
+                      name='identifier'
                     />
                   </SearchInputColumn>
                 </SearchRow>
@@ -301,7 +302,7 @@ class Search extends Component<Props, State> {
                         type: FieldTypes.CHOICE,
                         read_only: false,
                       }}
-                      name='search_sub_type'
+                      name='plot_search_subtype'
                       overrideValues={{options: subtypeOptions}}
                     />
                   </SearchInputColumn>
@@ -321,7 +322,7 @@ class Search extends Component<Props, State> {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name='plot_search_end_date_start'
+                          name='end_at_after'
                         />
                       </Column>
                       <Column small={6}>
@@ -333,7 +334,7 @@ class Search extends Component<Props, State> {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name='plot_search_end_date_end'
+                          name='end_at_before'
                         />
                       </Column>
                     </Row>
