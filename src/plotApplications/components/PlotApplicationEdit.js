@@ -164,7 +164,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
                       fieldAttributes={{
                         ...get(attributes, 'form'),
                         label: 'Tonttihaku',
-                        choices: plotSearches.results.filter((option) => option.form).map((option) => ({
+                        choices: plotSearches.results?.filter((option) => option.form).map((option) => ({
                           display_name: option.name,
                           value: option.form.id
                         }))

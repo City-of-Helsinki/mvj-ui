@@ -259,7 +259,8 @@ class PlotApplicationsPage extends Component<Props, State> {
       currentPlotApplication,
       match: {params: {plotApplicationId}},
       isEditMode,
-      isFetching
+      isFetching,
+      fetchPlotSearchList
     } = this.props;
     const {activeTab} = this.state;
     const query = getUrlParams(search);
@@ -282,8 +283,12 @@ class PlotApplicationsPage extends Component<Props, State> {
       }
     }
 
-    if (prevProps.isEditMode && !isEditMode) {
-      fetchSinglePlotApplication(plotApplicationId);
+    if (prevProps.isEditMode !== isEditMode) {
+      if (isEditMode) {
+        fetchPlotSearchList();
+      } else {
+        fetchSinglePlotApplication(plotApplicationId);
+      }
     }
 
     if (!isFetching && prevProps.isFetching) {
