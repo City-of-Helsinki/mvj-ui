@@ -2,6 +2,10 @@ import get from 'lodash/get';
 import _ from 'lodash';
 import {getFieldAttributes} from "../util/helpers";
 import createUrl from "../api/createUrl";
+import {store} from '../root/startApp';
+import {formValueSelector} from "redux-form";
+import {FormNames} from "../enums";
+import {getPendingUploads} from "./selectors";
 
 import {
   getApiResponseResults,
@@ -166,3 +170,138 @@ export const reshapeSavedApplicationObject = (application, form, formAttributes,
 };
 
 export const getAttachmentLink = (id) => createUrl(`attachment/${id}/download/`);
+
+export const getInitialApplication = () => {
+  return {
+    //plotSearch: null,
+    formId: null,
+    targets: [],
+    formEntries: null
+  }
+};
+
+export const getInitialApplicationForm = (
+  fieldTypes,
+  form
+) => {
+  if (!form) {
+    return null;
+  }
+
+  const root = {
+    sections: {},
+    sectionTemplates: {},
+    fileFieldIds: []
+  };
+
+  const buildSection = (
+    section,
+    parent = root.sections
+  ): void => {
+    if (!section.visible) {
+      return;
+    }
+
+    const workingItem = {
+      sections: {},
+      fields: {},
+    };
+
+    section.subsections.forEach((subsection) =>
+      buildSection(subsection, workingItem.sections)
+    );
+    section.fields.forEach((field) => buildField(field, workingItem.fields));
+
+    if (section.add_new_allowed) {
+      parent[section.identifier] = [workingItem];
+      root.sectionTemplates[section.identifier] = { ...workingItem };
+    } else {
+      parent[section.identifier] = workingItem;
+    }
+  };
+
+  const buildField = (field, parent): void => {
+    if (!field.enabled) {
+      return;
+    }
+
+    let initialValue;
+    switch (fieldTypes[field.type]) {
+      case 'uploadfiles':
+        // handled outside redux-form
+        root.fileFieldIds.push(field.id);
+        break;
+      case 'dropdown':
+      case 'radiobutton':
+      case 'radiobuttoninline':
+        initialValue = {
+          value: '', //null,
+          extraValue: '',
+        };
+        break;
+      case 'checkbox':
+        if (field.choices?.length > 1) {
+          initialValue = {
+            value: [],
+            extraValue: '',
+          };
+        } else {
+          initialValue = {
+            value: false,
+            extraValue: '',
+          };
+        }
+        break;
+      case 'textbox':
+      case 'textarea':
+      default:
+        initialValue = {
+          value: '',
+          extraValue: '',
+        };
+        break;
+    }
+
+    if (initialValue) {
+      parent[field.identifier] = initialValue;
+    }
+  };
+
+  form.sections.forEach((section) => buildSection(section));
+
+  return root;
+};
+
+export const getSectionTemplate = (identifier: string) => {
+  const state = store.getState();
+  const templates = formValueSelector(FormNames.PLOT_APPLICATION)(
+    state,
+    'formEntries.sectionTemplates'
+  );
+
+  return templates[identifier] || {};
+};
+
+export const prepareApplicationForSubmission = () => {
+  const state = store.getState();
+  const selector = formValueSelector(FormNames.PLOT_APPLICATION);
+
+  const sections = selector(state, 'formEntries.sections');
+  const fileFieldIds = selector(
+    state,
+    'formEntries.fileFieldIds'
+  );
+
+  return {
+    form: selector(state, 'formId'),
+    entries: {
+      sections,
+    },
+    targets: selector(state, 'targets'),
+    attachments: getPendingUploads(state)
+      .filter((file) => fileFieldIds.includes(file.field))
+      .map((file) => file.id)
+  };
+};
+
+export const getApplicationAttachmentDownloadLink = (id) => createUrl(`attachment/${id}/download`);

@@ -32,7 +32,15 @@ import type {
   ReceiveApplicationRelatedFormAction,
   FetchApplicationRelatedAttachmentsAction,
   ReceiveApplicationRelatedAttachmentsAction,
-  ApplicationRelatedAttachmentsNotFoundAction
+  ApplicationRelatedAttachmentsNotFoundAction,
+  CreatePlotApplicationAction,
+  ReceivePlotApplicationSavedAction,
+  ReceivePlotApplicationSaveFailedAction,
+  UploadFileAction,
+  FetchAttachmentAttributesAction,
+  ReceiveAttachmentAttributesAction,
+  ReceiveAttachmentMethodsAction,
+  AttachmentAttributesNotFoundAction,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -89,6 +97,9 @@ export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsActio
 export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
   createAction('mvj/plotApplications/CLEAR_FORM_VALID_FLAGS')();
 
+export const createPlotApplication = (plotApplication: PlotApplication): CreatePlotApplicationAction =>
+  createAction('mvj/plotApplications/CREATE')(plotApplication);
+
 export const editPlotApplication = (plotApplication: PlotApplication): EditPlotApplicationAction =>
   createAction('mvj/plotApplications/EDIT')(plotApplication);
 
@@ -100,6 +111,12 @@ export const plotSearchSubtypesNotFound = (): PlotSearchSubtypesNotFoundAction =
 
 export const receivePlotSearchSubtypes = (subTypes: Object): ReceivePlotSearchSubtypesAction =>
   createAction('mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES')(subTypes);
+
+export const receivePlotApplicationSaved = (id: Number): ReceivePlotApplicationSavedAction =>
+  createAction('mvj/plotApplications/RECEIVE_SAVED')(id);
+
+export const receivePlotApplicationSaveFailed = (): ReceivePlotApplicationSaveFailedAction =>
+  createAction('mvj/plotApplications/RECEIVE_SAVE_FAILED')();
 
 export const fetchApplicationRelatedForm = (payload: Object): FetchApplicationRelatedFormAction =>
   createAction('mvj/plotApplications/FETCH_FORM')(payload);
@@ -118,3 +135,36 @@ export const receiveApplicationRelatedAttachments = (payload: Object): ReceiveAp
 
 export const applicationRelatedAttachmentsNotFound = (payload: Object): ApplicationRelatedAttachmentsNotFoundAction =>
   createAction('mvj/plotApplications/ATTACHMENTS_NOT_FOUND')(payload);
+
+export const initializeFormEntriesForApplication = (payload: Object): InitializeFormEntriesForApplicationAction =>
+  createAction('mvj/plotApplications/INITIALIZE_FORM_ENTRIES')(payload);
+
+export const fetchPendingUploads = (): FetchPendingUploadsAction =>
+  createAction('mvj/plotApplications/FETCH_PENDING_UPLOADS')();
+
+export const receivePendingUploads = (payload: Object): ReceivePendingUploadsAction =>
+  createAction('mvj/plotApplications/RECEIVE_PENDING_UPLOADS')(payload);
+
+export const pendingUploadsNotFound = (): PendingUploadsNotFoundAction =>
+  createAction('mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND')();
+
+export const deleteUploadedAttachment = (payload: number): DeleteUploadAction =>
+  createAction('mvj/plotApplications/DELETE_UPLOAD')(payload);
+
+export const uploadAttachment = (payload: Object): UploadFileAction =>
+  createAction('mvj/plotApplications/UPLOAD_FILE')(payload);
+
+export const receiveFileOperationFinished = (): ReceiveFileOperationFinishedAction =>
+  createAction('mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED')();
+
+export const fetchAttachmentAttributes = (): FetchAttachmentAttributesAction =>
+  createAction('mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES')();
+
+export const receiveAttachmentAttributes = (payload: Object): ReceiveAttachmentAttributesAction =>
+  createAction('mvj/plotApplications/RECEIVE_ATTACHMENT_ATTRIBUTES')(payload);
+
+export const receiveAttachmentMethods = (payload: Object): ReceiveAttachmentMethodsAction =>
+  createAction('mvj/plotApplications/RECEIVE_ATTACHMENT_METHODS')(payload);
+
+export const attachmentAttributesNotFound = (): AttachmentAttributesNotFoundAction =>
+  createAction('mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND')();

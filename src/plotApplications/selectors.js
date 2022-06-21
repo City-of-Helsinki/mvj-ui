@@ -70,3 +70,27 @@ export const getApplicationRelatedForm: Selector<boolean, void> = (state: RootSt
 export const getIsFetchingApplicationRelatedAttachments: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingAttachments;
 
 export const getApplicationRelatedAttachments: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.attachments;
+
+export const getFieldTypeMapping: Selector<Object, void> = (state: RootState): Object =>
+  state.plotApplications.fieldTypeMapping;
+
+export const getPendingUploads: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
+  state.plotApplications.pendingUploads;
+
+export const getIsFetchingPendingUploads: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isFetchingPendingUploads;
+
+export const getIsPerformingFileOperation: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isPerformingFileOperation;
+
+export const getIsFetchingAttachmentAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isFetchingAttachmentAttributes;
+
+export const getAttachmentAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotApplications.attachmentAttributes;
+
+export const getAttachmentMethods: Selector<Methods, void> = (state: RootState): Methods =>
+  state.plotApplications.attachmentMethods;
+
+export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isSaving;

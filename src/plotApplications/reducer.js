@@ -19,7 +19,9 @@ import type {
   ReceivePlotApplicationsByBBoxAction,
   ReceiveApplicationRelatedFormAction,
   ReceiveApplicationRelatedAttachmentsAction,
-  ReceivePlotSearchSubtypesAction
+  ReceivePlotSearchSubtypesAction,
+  ReceiveAttachmentAttributesAction,
+  ReceiveAttachmentMethodsAction
 } from "./types";
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -81,7 +83,6 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
-
 const collapseStatesReducer: Reducer<Object> = handleActions({
   ['mvj/plotApplications/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
     return merge(state, states);
@@ -142,6 +143,59 @@ const isFetchingAttachmentsReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/ATTACHMENTS_NOT_FOUND']: () => false,
 }, false);
 
+const fieldTypeMappingReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveFormAttributesAction) => {
+    return attributes.sections?.child?.children.fields?.child?.children.type?.choices?.reduce(
+      (acc, choice) => {
+        acc[choice.value] = choice.display_name;
+        return acc;
+      },
+      {}
+    ) || {};
+  },
+}, {});
+
+const isSavingReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/CREATE']: () => true,
+  ['mvj/plotApplications/EDIT']: () => true,
+  ['mvj/plotApplications/RECEIVE_SAVED']: () => false,
+  ['mvj/plotApplications/RECEIVE_SAVE_FAILED']: () => false,
+}, false);
+
+const pendingUploadsReducer: Reducer<Array<Object>> = handleActions({
+  ['mvj/plotApplications/FETCH_PENDING_UPLOADS']: () => [],
+  ['mvj/plotApplications/RECEIVE_PENDING_UPLOADS']: (state, { payload }) => payload,
+}, []);
+
+const isFetchingPendingUploadsReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_PENDING_UPLOADS']: () => true,
+  ['mvj/plotApplications/RECEIVE_PENDING_UPLOADS']: () => false,
+  ['mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND']: () => false,
+}, false);
+
+const isPerformingFileOperationReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/UPLOAD_FILE']: () => true,
+  ['mvj/plotApplications/DELETE_UPLOAD']: () => true,
+  ['mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED']: () => false,
+}, false);
+
+const attachmentAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotApplications/RECEIVE_ATTACHMENT_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttachmentAttributesAction) => attributes,
+  ['mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND']: () => null,
+}, null);
+
+const attachmentMethodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/plotApplications/RECEIVE_ATTACHMENT_METHODS']: (state: Methods, {payload: methods}: ReceiveAttachmentMethodsAction) => methods,
+  ['mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND']: () => null,
+}, null);
+
+const isFetchingAttachmentAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES']: () => true,
+  ['mvj/plotApplications/RECEIVE_ATTACHMENT_ATTRIBUTES']: () => false,
+  ['mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND']: () => false,
+  ['mvj/plotApplications/RECEIVE_ATTACHMENT_METHODS']: () => false,
+}, false);
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   isFetchingByBBox: isFetchingByBBoxReducer,
@@ -159,5 +213,13 @@ export default combineReducers<Object, any>({
   form: formReducer,
   isFetchingForm: isFetchingFormReducer,
   attachments: attachmentReducer,
-  isFetchingAttachments: isFetchingAttachmentsReducer
+  isFetchingAttachments: isFetchingAttachmentsReducer,
+  fieldTypeMapping: fieldTypeMappingReducer,
+  isSaving: isSavingReducer,
+  pendingUploads: pendingUploadsReducer,
+  isFetchingPendingUploads: isFetchingPendingUploadsReducer,
+  isPerformingFileOperation: isPerformingFileOperationReducer,
+  isFetchingAttachmentAttributes: isFetchingAttachmentAttributesReducer,
+  attachmentAttributes: attachmentAttributesReducer,
+  attachmentMethods: attachmentMethodsReducer
 });
