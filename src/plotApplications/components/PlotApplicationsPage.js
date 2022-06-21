@@ -134,7 +134,6 @@ class PlotApplicationsPage extends Component<Props, State> {
 
     clearFormValidFlags();
     receiveIsSaveClicked(false);
-    setPageTitle('Test 123');
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.PLOT_APPLICATIONS),
@@ -149,8 +148,10 @@ class PlotApplicationsPage extends Component<Props, State> {
     if (this.isNewEditor()) {
       this.handleShowEditMode();
       fetchPlotSearchList();
+      setPageTitle('Uusi hakemus');
     } else {
       fetchSinglePlotApplication(plotApplicationId);
+      setPageTitle('Hakemus');
     }
   }
 
@@ -257,7 +258,8 @@ class PlotApplicationsPage extends Component<Props, State> {
       location: {search},
       currentPlotApplication,
       match: {params: {plotApplicationId}},
-      isEditMode
+      isEditMode,
+      isFetching
     } = this.props;
     const {activeTab} = this.state;
     const query = getUrlParams(search);
@@ -282,6 +284,10 @@ class PlotApplicationsPage extends Component<Props, State> {
 
     if (prevProps.isEditMode && !isEditMode) {
       fetchSinglePlotApplication(plotApplicationId);
+    }
+
+    if (!isFetching && prevProps.isFetching) {
+      setPageTitle(`Hakemus ${currentPlotApplication.id}`);
     }
   }
 
