@@ -37,6 +37,7 @@ import relatedLeaseSaga from '../relatedLease/saga';
 import rentBasisSaga from '../rentbasis/saga';
 import rentForPeriodSaga from '../rentForPeriod/saga';
 import sapInvoicesSaga from '$src/sapInvoice/saga';
+import serviceUnitsSaga from '$src/serviceUnits/saga';
 import tradeRegisterSaga from '$src/tradeRegister/saga';
 import uiDataSaga from '$src/uiData/saga';
 import userSaga from '../users/saga';
@@ -86,6 +87,7 @@ export default () =>
       fork(rentBasisSaga),
       fork(rentForPeriodSaga),
       fork(sapInvoicesSaga),
+      fork(serviceUnitsSaga),
       fork(tradeRegisterSaga),
       fork(uiDataSaga),
       fork(userSaga),
