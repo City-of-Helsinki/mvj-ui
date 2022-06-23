@@ -8,6 +8,8 @@ import {getContentUser} from '$src/users/helpers';
 import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchUsers} from '$src/users/requestsAsync';
 
+import type {UserServiceUnit} from '$src/usersPermissions/types';
+
 type Props = {
   disabled?: boolean,
   displayError: boolean,
@@ -15,6 +17,7 @@ type Props = {
   isDirty: boolean,
   onChange: Function,
   placeholder?: string,
+  serviceUnit: UserServiceUnit,
 }
 
 const FieldTypeUserSelect = ({
@@ -24,10 +27,12 @@ const FieldTypeUserSelect = ({
   isDirty,
   onChange,
   placeholder,
+  serviceUnit,
 }: Props) => {
   const getUsers = debounce(async(inputValue: string, callback: Function) => {
     const contacts = await fetchUsers({
       search: inputValue,
+      service_unit: serviceUnit ? serviceUnit.id : '',
     });
 
     callback(addEmptyOption(contacts.map((lessor) => getContentUser(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
