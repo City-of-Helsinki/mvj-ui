@@ -165,7 +165,7 @@ export const getContentLeaseIdentifier = (lease: Object): ?string =>
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseListTenants = (lease: Object, query: Object = {}): Array<Object> => 
+export const getContentLeaseListTenants = (lease: Object, query: Object = {}): Array<Object> =>
   get(lease, 'tenants', [])
     .map((item) => get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT))
     .filter((tenant) => query.only_past_tenants === 'true' ? isArchived(tenant) : !isArchived(tenant))
@@ -178,7 +178,7 @@ export const getContentLeaseListTenants = (lease: Object, query: Object = {}): A
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseListAreaIdentifiers = (lease: Object): Array<Object> => 
+export const getContentLeaseListAreaIdentifiers = (lease: Object): Array<Object> =>
   get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)
     .map((area) => area.identifier)
@@ -204,7 +204,7 @@ export const getContentLeaseListLeaseAddresses = (lease: Object): Array<Object> 
   const sortedAddresses = addresses
     .filter((address, index, self) =>  self.indexOf(address) == index)
     .sort(sortStringAsc);
-  
+
   return sortedAddresses;
 };
 
@@ -359,6 +359,7 @@ export const getContentLeaseSummary = (lease: Object): Object => {
     regulated: lease.regulated,
     regulation: lease.regulation,
     reservation_procedure: lease.reservation_procedure,
+    service_unit: lease.service_unit,
     special_project: lease.special_project,
     state: lease.state,
     start_date: lease.start_date,
@@ -463,7 +464,7 @@ export const getContentLeaseAreaAddresses = (area: Object): Array<Object> => {
  * @param {Object} area
  * @returns {Object[]}
  */
-export const getContentPlots = (area: Object): Array<Object> => 
+export const getContentPlots = (area: Object): Array<Object> =>
   get(area, 'plots', []).map((plot) => {
     return {
       id: plot.id,
@@ -483,7 +484,7 @@ export const getContentPlots = (area: Object): Array<Object> =>
  * @param {Object} area
  * @returns {Object[]}
  */
-export const getContentPlanUnits = (area: Object): Array<Object> => 
+export const getContentPlanUnits = (area: Object): Array<Object> =>
   get(area, 'plan_units', []).map((planunit) => {
     return {
       id: planunit.id,
@@ -552,8 +553,8 @@ export const getContentLeaseAreas = (lease: Object): Array<Object> =>
  * @returns {Object}
  */
 export const getLeaseAreaById = (lease: Lease, id: ?number): ?Object =>
-  id 
-    ? getContentLeaseAreas(lease).find((area) => area.id === id) 
+  id
+    ? getContentLeaseAreas(lease).find((area) => area.id === id)
     : null;
 
 /**
@@ -847,7 +848,7 @@ export const getContentInvoiceNote = (invoiceNote: Object): Object => ({
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentInvoiceNotes = (lease: Lease): Array<Object> => 
+export const getContentInvoiceNotes = (lease: Lease): Array<Object> =>
   get(lease, 'invoice_notes', []).map((note) => getContentInvoiceNote(note));
 
 /**
@@ -983,7 +984,7 @@ export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttribut
     const tenants = dateRange.items;
     const rentShares = [];
     const sharesByIntendedUse = {};
-    
+
     tenants.forEach((tenant) => {
       if(tenant.rent_shares && tenant.rent_shares.length) {
         rentShares.push(...tenant.rent_shares);
@@ -992,7 +993,7 @@ export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttribut
 
     rentShares.forEach((rentShare) => {
       if(rentShare.intended_use != null) {
-        
+
         if(Object.prototype.hasOwnProperty.call(sharesByIntendedUse, rentShare.intended_use)) {
           sharesByIntendedUse[rentShare.intended_use].push(rentShare);
         } else {
@@ -1090,7 +1091,7 @@ export const getBasisOfRentIndexValue = (basisOfRent: Object, indexOptions: Arra
  */
 export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): number => {
   if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return 0;
-  
+
   return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
     * Number(convertStrToDecimalNumber(basisOfRent.area))
     * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
@@ -1141,7 +1142,7 @@ export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexVa
  */
 export const calculateBasisOfRentDiscountedInitialYearRentsTotal = (basisOfRents: Object[], indexOptions: Object[]): number => {
   if(basisOfRents)
-    return Number(basisOfRents.map(basisOfRent => 
+    return Number(basisOfRents.map(basisOfRent =>
       calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, getBasisOfRentIndexValue(basisOfRent, indexOptions))).reduce((sum, cur) => sum + cur));
   else
     return 0;
@@ -1154,7 +1155,7 @@ export const calculateBasisOfRentDiscountedInitialYearRentsTotal = (basisOfRents
  */
 export const calculateInitialYearRentsTotal = (basisOfRents: Object[], indexOptions: Object[]): number => {
   if(basisOfRents)
-    return Number(basisOfRents.map(basisOfRent => 
+    return Number(basisOfRents.map(basisOfRent =>
       calculateBasisOfRentInitialYearRent(basisOfRent, getBasisOfRentIndexValue(basisOfRent, indexOptions))).reduce((sum, cur) => sum + cur));
   else
     return 0;
@@ -1185,7 +1186,7 @@ export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Objec
 export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents: Array<Object>, indexOptions: Array<Object>): ?number => {
   return basisOfRents.reduce((total, basisOfRent) => {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
-    
+
     return  calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue) + total;
   }, 0);
 };
@@ -1203,7 +1204,7 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
     * initialYearRent;
 };
 
-/** 
+/**
  * Calculate basis of rent temporary rent cumulative
  * @param {number} initialYearRent
  * @param {any} subventionPercent
@@ -1328,7 +1329,7 @@ export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: numb
   if(subventionType === SubventionTypes.RE_LEASE) {
     discount = discount * ((100 - calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent)) / 100);
   }
-  
+
   if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
     if(managementSubventions) {
       managementSubventions.forEach((subvention) => {
@@ -1336,13 +1337,13 @@ export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: numb
       });
     }
   }
-  
+
   if(temporarySubventions) {
     temporarySubventions.forEach((subvention) => {
       discount = discount * (Number((100 - Number(convertStrToDecimalNumber(subvention.subvention_percent))) / 100) || 1);
     });
   }
-  
+
   return (1 - discount) * 100;
 };
 
@@ -1362,7 +1363,7 @@ export const calculateRentAdjustmentSubventionPercentCumulative = (subventionTyp
   if(subventionType === SubventionTypes.RE_LEASE) {
     discount = discount * ((100 - calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent)) / 100);
   }
-  
+
   if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
     if(managementSubventions) {
       managementSubventions.forEach((subvention) => {
@@ -1370,13 +1371,13 @@ export const calculateRentAdjustmentSubventionPercentCumulative = (subventionTyp
       });
     }
   }
-  
+
   if(temporarySubventions) {
     temporarySubventions.forEach((subvention) => {
       discount = discount * (Number((100 - Number(convertStrToDecimalNumber(subvention.subvention_percent))) / 100) || 1);
     });
   }
-  
+
   return (1 - discount) * 100;
 };
 
@@ -1684,7 +1685,7 @@ export const getRentWarnings = (rents: Array<Object>): Array<string> => {
       if(rent.intended_use) {
         const filteredFixedInitialYearRents = fixedInitialYearRents.filter((item) => item.intended_use === rent.intended_use);
         const filteredContractRents = contractRents.filter((item) => item.intended_use === rent.intended_use);
-        
+
         if(filteredFixedInitialYearRents.length !== filteredContractRents.length) {
           showWarning = true;
           return false;
@@ -2018,6 +2019,7 @@ export const getPayloadCreateLease = (lease: Object): Object => {
     note: lease.note,
     relate_to: relateTo,
     relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
+    service_unit: lease.service_unit,
   };
 };
 
@@ -2696,7 +2698,7 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
   payload.is_rent_info_complete = formValues.is_rent_info_complete ? true : false;
 
   const basisOfRents = [
-    ...get(formValues, 'basis_of_rents', []), 
+    ...get(formValues, 'basis_of_rents', []),
     ...get(formValues, 'basis_of_rents_archived', []),
   ];
 
@@ -2711,7 +2713,7 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
     } else {
       return {
         id: item.id,
-        intended_use: intendedUse(item), 
+        intended_use: intendedUse(item),
         area: convertStrToDecimalNumber(item.area),
         area_unit: areaUnit(item),
         type: item.type,
@@ -2734,7 +2736,7 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
   });
 
   const rents = [
-    ...get(formValues, 'rents', []), 
+    ...get(formValues, 'rents', []),
     ...get(formValues, 'rentsArchived', []),
   ];
 
@@ -2842,7 +2844,7 @@ export const getZonePriceFromValue = (zone: ?string): number => {
 };
 
 /**
- * Map lease page search filters for API 
+ * Map lease page search filters for API
  * @param {Object} query
  * @returns {Object}
  */
