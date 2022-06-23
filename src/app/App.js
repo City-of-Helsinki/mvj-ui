@@ -24,13 +24,13 @@ import {getEpochTime} from '$util/helpers';
 import {getError} from '$src/api/selectors';
 import {getApiToken, getApiTokenExpires, getIsFetching, getLoggedInUser} from '$src/auth/selectors';
 import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
-import {getUserGroups} from '$src/usersPermissions/selectors';
+import {getUserGroups, getUserActiveServiceUnit, getUserServiceUnits} from '$src/usersPermissions/selectors';
 import {setRedirectUrlToSessionStorage} from '$util/storage';
 
-import type {ApiError} from '$src/api/types';
-import type {ApiToken} from '$src/auth/types';
-import type {UserGroups} from '$src/usersPermissions/types';
-import type {RootState} from '$src/root/types';
+import type {ApiError} from '../api/types';
+import type {ApiToken} from '../auth/types';
+import type {UserGroups, UserServiceUnit, UserServiceUnits} from '$src/usersPermissions/types';
+import type {RootState} from '../root/types';
 
 const url = window.location.toString();
 const IS_DEVELOPMENT_URL = url.includes('ninja') || url.includes('localhost');
@@ -53,6 +53,8 @@ type Props = {
   linkUrl: string,
   location: Object,
   pageTitle: string,
+  userActiveServiceUnit: UserServiceUnit,
+  userServiceUnits: UserServiceUnits,
   showSearch: boolean,
   user: Object,
   userGroups: UserGroups,
@@ -178,6 +180,8 @@ class App extends Component<Props, State> {
       showSearch,
       user,
       userGroups,
+      userActiveServiceUnit,
+      userServiceUnits,
     } = this.props;
     const {displaySideMenu} = this.state;
     const appStyle = (IS_DEVELOPMENT_URL) ? 'app-dev' : 'app';
@@ -260,6 +264,7 @@ class App extends Component<Props, State> {
                   transitionOut="fadeOut"
                   closeOnToastrClick={true}
                 />
+
                 <TopNavigation
                   isMenuOpen={displaySideMenu}
                   linkUrl={linkUrl}
@@ -269,6 +274,8 @@ class App extends Component<Props, State> {
                   toggleSideMenu={this.toggleSideMenu}
                   userGroups={userGroups}
                   username={get(user, 'profile.name')}
+                  userServiceUnits={userServiceUnits}
+                  userActiveServiceUnit={userActiveServiceUnit}
                 />
 
                 <section className="app__content">
@@ -311,6 +318,8 @@ const mapStateToProps = (state: RootState) => {
     showSearch: getShowSearch(state),
     user,
     userGroups: getUserGroups(state),
+    userServiceUnits: getUserServiceUnits(state),
+    userActiveServiceUnit: getUserActiveServiceUnit(state),
   };
 };
 
