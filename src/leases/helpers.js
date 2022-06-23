@@ -359,6 +359,7 @@ export const getContentLeaseSummary = (lease: Object): Object => {
     regulated: lease.regulated,
     regulation: lease.regulation,
     reservation_procedure: lease.reservation_procedure,
+    service_unit: lease.service_unit,
     special_project: lease.special_project,
     state: lease.state,
     start_date: lease.start_date,
@@ -2141,6 +2142,7 @@ export const getPayloadCreateLease = (lease: Object): Object => {
     note: lease.note,
     relate_to: relateTo,
     relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
+    service_unit: lease.service_unit,
   };
 };
 
