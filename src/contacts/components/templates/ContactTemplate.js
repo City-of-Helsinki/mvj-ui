@@ -211,6 +211,14 @@ const ContactTemplate = ({attributes, contact}: Props) => {
               <FormText>{contact.is_lessor ? 'Kyllä' : 'Ei'}</FormText>
             </Authorization>
           </Column>
+          <Column small={12} medium={6} large={4}>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.SERVICE_UNIT)}>
+              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.SERVICE_UNIT)}>
+                {ContactFieldTitles.SERVICE_UNIT}
+              </FormTextTitle>
+              <FormText>{(contact.service_unit && contact.service_unit.name) ? contact.service_unit.name : '-'}</FormText>
+            </Authorization>
+          </Column>
           {contact.type === ContactTypes.PERSON &&
             <Column small={12} medium={6} large={4}>
               <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ADDRESS_PROTECTION)}>
