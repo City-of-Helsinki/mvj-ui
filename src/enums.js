@@ -415,6 +415,7 @@ export const FormNames = {
   INFILL_DEVELOPMENT: 'infill-development-form',
   INFILL_DEVELOPMENT_SEARCH: 'infill-development-search-form',
   INVOICE_NOTE_CREATE: 'create-invoice-note-form',
+  INVOICE_NOTE_SEARCH: 'invoice-note-search-form',
   INVOICE_SIMULATOR: 'invoice-simulator-form',
   LAND_USE_CONTRACT_BASIC_INFORMATION: 'land-use-contract-basic-info-form',
   LAND_USE_CONTRACT_COMPENSATIONS: 'land-use-contract-compensations-form',
@@ -464,6 +465,8 @@ export const FormNames = {
   PLOT_APPLICATION_PREVIEW: 'plot-application-preview',
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
   LAND_USE_CONTRACT_INVOICE_EDIT: 'land-use-contract-invoice-edit',
+  USER_SERVICE_UNIT_SELECT: 'user-service-unit-select',
+  SAP_INVOICE_SEARCH: 'sap-invoice-search',
 };
 
 /**
