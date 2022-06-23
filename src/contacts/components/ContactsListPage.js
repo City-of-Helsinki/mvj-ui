@@ -42,10 +42,12 @@ import {
 import {getRouteById, Routes} from '$src/root/routes';
 import {getContactList, getIsFetching} from '../selectors';
 import {withContactAttributes} from '$components/attributes/ContactAttributes';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {ContactList} from '../types';
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
+import type {UserServiceUnit} from '$src/usersPermissions/types';
 
 type Props = {
   contactAttributes: Attributes,
@@ -60,6 +62,7 @@ type Props = {
   location: Object,
   receiveTopNavigationSettings: Function,
   router: Object,
+  userActiveServiceUnit: UserServiceUnit,
 }
 
 type State = {
@@ -77,6 +80,7 @@ type State = {
 
 class ContactListPage extends Component<Props, State> {
   _isMounted: boolean
+  _hasFetchedContacts: boolean
 
   state = {
     activePage: 1,
@@ -89,6 +93,7 @@ class ContactListPage extends Component<Props, State> {
     sortKey: DEFAULT_SORT_KEY,
     sortOrder: DEFAULT_SORT_ORDER,
     typeOptions: [],
+    userActiveServiceUnit: undefined,
   }
 
   search: any
@@ -122,22 +127,43 @@ class ContactListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    this.setSearchFormValues();
-
-    this.search();
-
     window.addEventListener('popstate', this.handlePopState);
     this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}} = this.props;
-    const {location: {search: prevSearch}} = prevProps;
+    const {location: {search: currentSearch}, userActiveServiceUnit} = this.props;
+    const {location: {search: prevSearch}, userActiveServiceUnit: prevUserActiveServiceUnit} = prevProps;
     const searchQuery = getUrlParams(currentSearch);
+
+    const handleSearch = () => {
+      this.setSearchFormValues();
+      this.search();
+    };
+
+    if(userActiveServiceUnit) {
+      if(userActiveServiceUnit !== prevUserActiveServiceUnit) {
+        if(!this._hasFetchedContacts) { // No search has been done yet
+          handleSearch();
+          this._hasFetchedContacts = true;
+        } else {
+          // Search again after changing user active service unit only if not explicitly setting the service unit filter
+          if (!currentSearch.includes('service_unit')) {
+            handleSearch();
+          }
+        }
+      } else {
+        if(!this._hasFetchedContacts) { // No search has been done yet
+          handleSearch();
+          this._hasFetchedContacts = true;
+        }
+      }
+    }
 
     if(currentSearch !== prevSearch) {
       this.search();
 
+      // Ignore these two from searchquery length check
       delete searchQuery.sort_key;
       delete searchQuery.sort_order;
 
@@ -150,6 +176,7 @@ class ContactListPage extends Component<Props, State> {
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
     this._isMounted = false;
+    this._hasFetchedContacts = false;
   }
 
   handlePopState = () => {
@@ -157,7 +184,7 @@ class ContactListPage extends Component<Props, State> {
   }
 
   setSearchFormValues = () => {
-    const {location: {search}, initialize} = this.props;
+    const {location: {search}, initialize, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
@@ -167,9 +194,15 @@ class ContactListPage extends Component<Props, State> {
 
     const initializeSearchForm = async() => {
       const initialValues = {...searchQuery};
+
+      if(initialValues.service_unit === undefined && userActiveServiceUnit) {
+        initialValues.service_unit = userActiveServiceUnit.id;
+      }
+
       delete initialValues.page;
       delete initialValues.sort_key;
       delete initialValues.sort_order;
+
       await initialize(FormNames.CONTACT_SEARCH, initialValues);
     };
 
@@ -213,7 +246,7 @@ class ContactListPage extends Component<Props, State> {
   }
 
   search = () => {
-    const {fetchContacts, location: {search}} = this.props;
+    const {fetchContacts, location: {search}, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
@@ -226,6 +259,10 @@ class ContactListPage extends Component<Props, State> {
 
     searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
     searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
+
+    if (searchQuery.service_unit === undefined && userActiveServiceUnit) {
+      searchQuery.service_unit = userActiveServiceUnit.id;
+    }
 
     fetchContacts(mapContactSearchFilters(searchQuery));
   }
@@ -291,6 +328,13 @@ class ContactListPage extends Component<Props, State> {
         sortable: false,
       });
     }
+    if (isFieldAllowedToRead(contactAttributes, ContactFieldPaths.SERVICE_UNIT)) {
+      columns.push({
+        key: 'service_unit.name',
+        text: ContactFieldTitles.SERVICE_UNIT,
+        sortable: false,
+      });
+    }
 
     return columns;
   }
@@ -311,7 +355,7 @@ class ContactListPage extends Component<Props, State> {
   }
 
   render() {
-    const {contactMethods, isFetching, isFetchingContactAttributes} = this.props;
+    const {contactMethods, isFetching, isFetchingContactAttributes, userActiveServiceUnit} = this.props;
     const {
       activePage,
       contacts,
@@ -342,12 +386,14 @@ class ContactListPage extends Component<Props, State> {
             </Authorization>
           </Column>
           <Column small={12} large={8}>
-            <Search
-              isSearchInitialized={isSearchInitialized}
-              onSearch={this.handleSearchChange}
-              sortKey={sortKey}
-              sortOrder={sortOrder}
-            />
+            {userActiveServiceUnit && (
+              <Search
+                isSearchInitialized={isSearchInitialized}
+                onSearch={this.handleSearchChange}
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+              />
+            )}
 
             <TableFilters
               amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
@@ -392,6 +438,7 @@ export default flowRight(
       return {
         contactList: getContactList(state),
         isFetching: getIsFetching(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     },
     {
