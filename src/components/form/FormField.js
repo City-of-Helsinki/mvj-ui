@@ -44,6 +44,8 @@ import {getRouteById, Routes} from '$src/root/routes';
 import {genericValidator} from '$components/form/validations';
 import {getHoursAndMinutes} from '$util/date';
 
+import type {UserServiceUnit} from '$src/usersPermissions/types';
+
 const FieldTypes = {
   [FieldTypeOptions.ADDRESS]: FieldTypeAddress,
   [FieldTypeOptions.BOOLEAN]: FieldTypeBoolean,
@@ -116,6 +118,7 @@ type InputProps = {
   relativeTo?: any,
   required: boolean,
   rows?: number,
+  serviceUnit: UserServiceUnit,
   setRefForField?: Function,
   tooltipStyle?: Object,
   uiDataKey: ?string,
@@ -152,6 +155,7 @@ const FormFieldInput = ({
   relativeTo,
   required,
   rows,
+  serviceUnit,
   setRefForField,
   tooltipStyle,
   valueSelectedCallback,
@@ -241,7 +245,7 @@ const FormFieldInput = ({
           </FormFieldLabel>
         }
         <div className={classNames('form-field__component', {'has-unit': unit})}>
-          {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, minDate, maxDate, multiSelect, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
+          {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, minDate, maxDate, multiSelect, optionLabel, placeholder, options, rows, serviceUnit,setRefForField, type, valueSelectedCallback})}
           {unit && <span className='form-field__unit'>{unit}</span>}
         </div>
         {displayError && <ErrorComponent {...meta}/>}
@@ -303,6 +307,7 @@ type Props = {
   readOnlyValueRenderer?: Function,
   relativeTo?: any,
   rows?: number,
+  serviceUnit: UserServiceUnit,
   setRefForField?: Function,
   tooltipStyle?: Object,
   validate?: Function,
@@ -421,6 +426,7 @@ class FormField extends PureComponent<Props, State> {
       readOnlyValueRenderer,
       relativeTo,
       rows,
+      serviceUnit,
       setRefForField,
       tooltipStyle,
       valueSelectedCallback,
@@ -469,6 +475,7 @@ class FormField extends PureComponent<Props, State> {
         relativeTo={relativeTo}
         required={required}
         rows={rows}
+        serviceUnit={serviceUnit}
         setRefForField={setRefForField}
         tooltipStyle={tooltipStyle}
         validate={allowEdit
