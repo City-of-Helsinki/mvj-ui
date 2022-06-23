@@ -1,6 +1,7 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
+import {initialize} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
@@ -15,6 +16,7 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
+import Search from './Search';
 import ShowMore from '$components/showMore/ShowMore';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
@@ -28,7 +30,7 @@ import {
 } from '$src/invoiceNote/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/enums';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {
@@ -44,9 +46,11 @@ import {
 import {getRouteById, Routes} from '$src/root/routes';
 import {getInvoiceNoteList, getIsCreateModalOpen, getIsFetching} from '$src/invoiceNote/selectors';
 import {withInvoiceNoteAttributes} from '$components/attributes/InvoiceNoteAttributes';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {InvoiceNoteList} from '$src/invoiceNote/types';
+import type {UserServiceUnit} from '$src/usersPermissions/types';
 
 const getColumns = (invoiceNoteAttributes: Attributes) => {
   const columns = [];
@@ -97,6 +101,7 @@ type Props = {
   fetchInvoiceNoteList: Function,
   hideCreateInvoiceNoteModal: Function,
   history: Object,
+  initialize: Function,
   invoiceNoteAttributes: Attributes,
   invoiceNoteList: InvoiceNoteList,
   invoiceNoteMethods: MethodsType,
@@ -107,6 +112,7 @@ type Props = {
   receiveInvoiceNoteList: Function,
   receiveTopNavigationSettings: Function,
   showCreateInvoiceNoteModal: Function,
+  userActiveServiceUnit: UserServiceUnit,
 }
 
 type State = {
@@ -116,10 +122,14 @@ type State = {
   invoiceNoteAttributes: Attributes,
   invoiceNoteList: InvoiceNoteList,
   invoiceNotes: Array<Object>,
+  isSearchInitialized: boolean,
   maxPage: number,
 }
 
 class InvoiceNoteListPage extends PureComponent<Props, State> {
+  _isMounted: boolean
+  _hasFetchedInvoiceNotes: boolean
+
   state = {
     activePage: 1,
     columns: [],
@@ -127,13 +137,12 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
     invoiceNoteAttributes: null,
     invoiceNoteList: {},
     invoiceNotes: [],
+    isSearchInitialized: false,
     maxPage: 0,
   }
 
   componentDidMount() {
-    const {location: {search}, receiveTopNavigationSettings} = this.props;
-    const query = getUrlParams(search);
-    const page = query.page ? Number(query.page) : 1;
+    const {receiveTopNavigationSettings} = this.props;
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INVOICE_NOTES),
@@ -141,9 +150,7 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
       showSearch: false,
     });
 
-    this.setState({activePage: page});
-
-    this.search();
+    this._isMounted = true;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -165,15 +172,35 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}} = this.props;
-    const {location: {search: prevSearch}} = prevProps;
-    if(currentSearch !== prevSearch) {
-      const query = getUrlParams(currentSearch);
-      const page = query.page ? Number(query.page) : 1;
+    const {location: {search: currentSearch}, userActiveServiceUnit} = this.props;
+    const {location: {search: prevSearch}, userActiveServiceUnit: prevUserActiveServiceUnit} = prevProps;
 
-      this.setState({activePage: page}, () => {
-        this.search();
-      });
+    const handleSearch = () => {
+      this.setSearchValues();
+      this.search();
+    };
+
+    if (userActiveServiceUnit) {
+      if (userActiveServiceUnit !== prevUserActiveServiceUnit) {
+        if (!this._hasFetchedInvoiceNotes) { // No search has been done yet
+          handleSearch();
+          this._hasFetchedInvoiceNotes = true;
+        } else {
+          // Search again after changing user active service unit only if not explicitly setting the service unit filter
+          if (!currentSearch.includes('service_unit')) {
+            handleSearch();
+          }
+        }
+      } else {
+        if (!this._hasFetchedInvoiceNotes) { // No search has been done yet
+          handleSearch();
+          this._hasFetchedInvoiceNotes = true;
+        }
+      }
+    }
+
+    if (currentSearch !== prevSearch) {
+      handleSearch();
     }
   }
 
@@ -182,10 +209,46 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
 
     // Clear invoice note list
     receiveInvoiceNoteList({});
+
+    this._isMounted = false;
+    this._hasFetchedInvoiceNotes = false;
+  }
+
+  setSearchValues = () => {
+    const {location: {search}, initialize, userActiveServiceUnit} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async () => {
+      const initialValues = {...searchQuery};
+
+      if (initialValues.service_unit === undefined && userActiveServiceUnit) {
+        initialValues.service_unit = userActiveServiceUnit.id;
+      }
+
+      delete initialValues.page;
+
+      initialize(FormNames.INVOICE_NOTE_SEARCH, initialValues);
+    };
+
+    this.setState({
+      isSearchInitialized: false,
+      activePage: page,
+    }, async () => {
+      await initializeSearchForm();
+
+      if (this._isMounted) {
+        setSearchFormReady();
+      }
+    });
   }
 
   search = () => {
-    const {fetchInvoiceNoteList, location: {search}} = this.props;
+    const {fetchInvoiceNoteList, location: {search}, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
@@ -196,7 +259,20 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
 
+    if (searchQuery.service_unit === undefined && userActiveServiceUnit) {
+      searchQuery.service_unit = userActiveServiceUnit.id;
+    }
+
     fetchInvoiceNoteList(searchQuery);
+  }
+
+  handleSearchChange = (query: any) => {
+    const {history} = this.props;
+
+    return history.push({
+      pathname: getRouteById(Routes.INVOICE_NOTES),
+      search: getSearchQuery(query),
+    });
   }
 
   handlePageClick = (page: number) => {
@@ -245,16 +321,18 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
       isCreateModalOpen,
       isFetching,
       isFetchingInvoiceNoteAttributes,
+      userActiveServiceUnit,
     } = this.props;
     const {
       activePage,
       columns,
       count,
       invoiceNotes,
+      isSearchInitialized,
       maxPage,
     } = this.state;
 
-    if(isFetchingInvoiceNoteAttributes || isFetching) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingInvoiceNoteAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!invoiceNoteMethods) return null;
 
@@ -270,7 +348,7 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
           />
         </Authorization>
         <Row>
-          <Column small={12} large={6}>
+          <Column small={12} large={8}>
             <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
@@ -278,6 +356,14 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
                 onClick={this.showCreateInvoiceNoteModal}
               />
             </Authorization>
+          </Column>
+          <Column small={12} large={4}>
+            {userActiveServiceUnit && (
+              <Search
+                isSearchInitialized={isSearchInitialized}
+                onSearch={this.handleSearchChange}
+              />
+            )}
           </Column>
         </Row>
         <Row>
@@ -322,6 +408,7 @@ export default flowRight(
         invoiceNoteList: getInvoiceNoteList(state),
         isCreateModalOpen: getIsCreateModalOpen(state),
         isFetching: getIsFetching(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     },
     {
@@ -331,6 +418,7 @@ export default flowRight(
       receiveInvoiceNoteList,
       receiveTopNavigationSettings,
       showCreateInvoiceNoteModal,
+      initialize,
     }
   ),
 )(InvoiceNoteListPage);
