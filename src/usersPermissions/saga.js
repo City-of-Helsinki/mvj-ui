@@ -4,6 +4,8 @@ import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {
   receiveUserGroups,
   receiveUsersPermissions,
+  receiveUserServiceUnits,
+  setUserActiveServiceUnit,
   notFound,
 } from './actions';
 
@@ -20,7 +22,9 @@ function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveUserGroups(bodyAsJson.groups));
+        yield put(receiveUserServiceUnits(bodyAsJson.service_units));
         yield put(receiveUsersPermissions(bodyAsJson.permissions));
+        yield put(setUserActiveServiceUnit(bodyAsJson.service_units[0]));
         break;
       default:
         yield put(receiveError(bodyAsJson));

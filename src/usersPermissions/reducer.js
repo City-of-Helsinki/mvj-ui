@@ -6,8 +6,11 @@ import type {Reducer} from '../types';
 import type {
   UserGroups,
   UsersPermissions,
+  UserServiceUnits,
   ReceiveUserGroupsAction,
   ReceiveUsersPermissionsAction,
+  ReceiveUserServiceUnitsAction,
+  SetUserActiveServiceUnitAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -28,8 +31,22 @@ const groupsReducer: Reducer<UserGroups> = handleActions({
   },
 }, []);
 
+const serviceUnitsReducer: Reducer<UserServiceUnits> = handleActions({
+  ['mvj/usersPermissions/RECEIVE_SERVICE_UNITS']: (state: UserServiceUnits, {payload: serviceUnits}: ReceiveUserServiceUnitsAction) => {
+    return serviceUnits;
+  },
+}, []);
+
+const activeServiceUnitReducer: Reducer<UserServiceUnit> = handleActions({
+  ['mvj/usersPermissions/SET_ACTIVE_SERVICE_UNIT']: (state: UserServiceUnit, {payload: serviceUnit}: SetUserActiveServiceUnitAction) => {
+    return serviceUnit;
+  },
+}, null);
+
 export default combineReducers<Object, any>({
+  activeServiceUnit: activeServiceUnitReducer,
   isFetching: isFetchingReducer,
   groups: groupsReducer,
   permissions: usersPermissionsReducer,
+  serviceUnits: serviceUnitsReducer,
 });
