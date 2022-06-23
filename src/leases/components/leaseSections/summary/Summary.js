@@ -251,6 +251,14 @@ class Summary extends PureComponent<Props, State> {
                     <FormText>{getLabelOfOption(classificationOptions, summary.classification) || '-'}</FormText>
                   </Column>
                 </Authorization>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SERVICE_UNIT)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SERVICE_UNIT)}>
+                      {LeaseFieldTitles.SERVICE_UNIT}
+                    </FormTextTitle>
+                    <FormText>{(summary.service_unit && summary.service_unit.name) ? summary.service_unit.name : '-'}</FormText>
+                  </Authorization>
+                </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>

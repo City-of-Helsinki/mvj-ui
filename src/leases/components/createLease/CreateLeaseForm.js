@@ -8,6 +8,8 @@ import flowRight from 'lodash/flowRight';
 import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FieldTypes, FormNames} from '$src/enums';
@@ -21,9 +23,11 @@ import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
 import {getDistrictsByMunicipality, getIsFetching as getIsFetchingDistricts} from '$src/district/selectors';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {DistrictList} from '$src/district/types';
+import type {UserServiceUnit} from '$src/usersPermissions/types';
 
 type OwnProps = {
   onClose: Function,
@@ -42,6 +46,7 @@ type Props = {
   leaseAttributes: Attributes,
   municipality: string,
   setRefForFirstField?: Function,
+  userActiveServiceUnit: UserServiceUnit,
   valid: boolean,
   district: number | string,
   isFetchingDistricts: boolean,
@@ -67,6 +72,16 @@ class CreateLeaseForm extends Component<Props> {
         change('district', '');
       } else {
         change('district', '');
+      }
+    }
+  }
+
+  componentDidUpdate() {
+    const {change, formValues, userActiveServiceUnit} = this.props;
+
+    if (userActiveServiceUnit) {
+      if (formValues && !formValues.service_unit) {
+        change('service_unit', userActiveServiceUnit.id);
       }
     }
   }
@@ -98,11 +113,14 @@ class CreateLeaseForm extends Component<Props> {
       isFetchingDistricts,
       leaseAttributes,
       onClose,
+      userActiveServiceUnit,
       valid,
       confirmButtonLabel,
     } = this.props;
 
     const districtOptions = getDistrictOptions(districts);
+
+    if (!userActiveServiceUnit) return null;
 
     return (
       <div>
@@ -117,6 +135,14 @@ class CreateLeaseForm extends Component<Props> {
                 enableUiDataEdit
                 uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATE)}
               />
+            </Authorization>
+          </Column>
+          <Column small={4}>
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.SERVICE_UNIT)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SERVICE_UNIT)}>
+                {LeaseFieldTitles.SERVICE_UNIT}
+              </FormTextTitle>
+              <FormText>{userActiveServiceUnit.name ? userActiveServiceUnit.name : '-'}</FormText>
             </Authorization>
           </Column>
         </Row>
@@ -199,6 +225,7 @@ class CreateLeaseForm extends Component<Props> {
                     fieldType: FieldTypes.LEASE,
                     label: LeaseFieldTitles.RELATE_TO,
                   }}
+                  serviceUnit={userActiveServiceUnit}
                   enableUiDataEdit
                   uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)}
                 />
@@ -244,6 +271,7 @@ export default (flowRight(
         state: selector(state, 'state'),
         type: selector(state, 'type'),
         isFetchingDistricts: getIsFetchingDistricts(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     },
     {

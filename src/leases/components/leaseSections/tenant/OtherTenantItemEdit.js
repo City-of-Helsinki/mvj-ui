@@ -42,7 +42,7 @@ import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClic
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
@@ -59,6 +59,7 @@ type Props = {
   receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
   receiveIsSaveClicked: Function,
+  serviceUnit: UserServiceUnit,
   showContactModal: Function,
   tenant: Object,
   tenantId: number,
@@ -79,6 +80,7 @@ const OtherTenantItemEdit = ({
   receiveCollapseStates,
   receiveContactModalSettings,
   receiveIsSaveClicked,
+  serviceUnit,
   showContactModal,
   tenant,
   tenantId,
@@ -178,6 +180,7 @@ const OtherTenantItemEdit = ({
                           fieldType: FieldTypes.CONTACT,
                           label: LeaseTenantContactSetFieldTitles.CONTACT,
                         }}
+                        serviceUnit={serviceUnit}
                         enableUiDataEdit
                         uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}
                       />

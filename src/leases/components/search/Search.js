@@ -63,6 +63,7 @@ type State = {
   municipalityOptions: Array<Object>,
   tenantTypeOptions: Array<Object>,
   typeOptions: Array<Object>,
+  serviceUnitOptions: Array<Object>,
 }
 
 class Search extends PureComponent<Props, State> {
@@ -77,6 +78,7 @@ class Search extends PureComponent<Props, State> {
     municipalityOptions: [],
     tenantTypeOptions: [],
     typeOptions: [],
+    serviceUnitOptions: [],
   }
 
   componentDidMount() {
@@ -103,6 +105,7 @@ class Search extends PureComponent<Props, State> {
       newState.municipalityOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.MUNICIPALITY);
       newState.tenantTypeOptions = getFieldOptions(props.leaseAttributes, LeaseTenantContactSetFieldPaths.TYPE, false);
       newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.TYPE);
+      newState.serviceUnitOptions = getFieldOptions(props.leaseAttributes, 'service_unit', true);
     }
 
     if(props.lessors !== state.lessors) {
@@ -211,6 +214,7 @@ class Search extends PureComponent<Props, State> {
       municipalityOptions,
       tenantTypeOptions,
       typeOptions,
+      serviceUnitOptions,
     } = this.state;
     const districtOptions = getDistrictOptions(districts);
     const radioButtonsDisabled = this.formHasNoName();
@@ -730,6 +734,28 @@ class Search extends PureComponent<Props, State> {
                       }}
                       invisibleLabel
                       name='invoice_number'
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Palvelukokonaisuus</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Palvelukokonaisuus',
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='service_unit'
+                      overrideValues={{
+                        options: serviceUnitOptions,
+                      }}
                     />
                   </SearchInputColumn>
                 </SearchRow>

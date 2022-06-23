@@ -58,7 +58,7 @@ import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClic
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 
 
 type RentSharesProps = {
@@ -87,7 +87,7 @@ const renderRentShares = ({
           <Fragment>
             <SubTitle>{LeaseTenantRentSharesFieldTitles.RENT_SHARES}</SubTitle>
 
-            {fields && !!fields.length && 
+            {fields && !!fields.length &&
               <Fragment>
                 <Row>
                   <Column small={6} large={4}>
@@ -178,7 +178,7 @@ const renderRentShares = ({
                               />
                             </Authorization>
                           }
-                        />  
+                        />
                       </Column>
                     </Row>
                   );
@@ -207,6 +207,7 @@ const renderRentShares = ({
 type OtherTenantsProps = {
   contactType: 'billing' | 'contact',
   fields: any,
+  serviceUnit: UserServiceUnit,
   showAddButton: boolean,
   tenant: Object,
   usersPermissions: UsersPermissionsType,
@@ -215,6 +216,7 @@ type OtherTenantsProps = {
 const renderOtherTenants = ({
   contactType,
   fields,
+  serviceUnit,
   showAddButton,
   tenant,
   usersPermissions,
@@ -248,6 +250,7 @@ const renderOtherTenants = ({
                   contactType={contactType}
                   field={field}
                   onRemove={handleRemove}
+                  serviceUnit={serviceUnit}
                   tenant={tenant}
                 />
               );
@@ -285,6 +288,7 @@ type Props = {
   receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
   receiveIsSaveClicked: Function,
+  serviceUnit: UserServiceUnit,
   shareDenominator: ?string,
   shareNumerator: ?string,
   showContactModal: Function,
@@ -306,6 +310,7 @@ const TenantItemEdit = ({
   receiveCollapseStates,
   receiveContactModalSettings,
   receiveIsSaveClicked,
+  serviceUnit,
   shareDenominator,
   shareNumerator,
   showContactModal,
@@ -405,6 +410,7 @@ const TenantItemEdit = ({
                       fieldType: FieldTypes.CONTACT,
                       label: LeaseTenantContactSetFieldTitles.CONTACT,
                     }}
+                    serviceUnit={serviceUnit}
                     enableUiDataEdit
                     uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}
                   />
@@ -517,7 +523,7 @@ const TenantItemEdit = ({
                     archived={archived}
                     attributes={attributes}
                     isSaveClicked={isSaveClicked}
-                    name={`${field}.rent_shares`}                  
+                    name={`${field}.rent_shares`}
                     usersPermissions={usersPermissions}
                   />
                 </Authorization>
@@ -545,6 +551,7 @@ const TenantItemEdit = ({
           component={renderOtherTenants}
           contactType={TenantContactType.BILLING}
           name={`${field}.billing_persons`}
+          serviceUnit={serviceUnit}
           showAddButton={!archived}
           tenant={savedTenant}
           usersPermissions={usersPermissions}
@@ -554,6 +561,7 @@ const TenantItemEdit = ({
           component={renderOtherTenants}
           contactType={TenantContactType.CONTACT}
           name={`${field}.contact_persons`}
+          serviceUnit={serviceUnit}
           showAddButton={!archived}
           tenant={savedTenant}
           usersPermissions={usersPermissions}

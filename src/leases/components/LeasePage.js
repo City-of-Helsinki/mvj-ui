@@ -116,13 +116,14 @@ import {getVats} from '$src/vat/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {CommentList} from '$src/comments/types';
 import type {InvoiceList} from '$src/invoices/types';
 import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 import type {VatList} from '$src/vat/types';
 
 type Props = {
@@ -187,6 +188,7 @@ type Props = {
   showEditMode: Function,
   summaryFormValues: Object,
   tenantsFormValues: Object,
+  userActiveServiceUnit: UserServiceUnit,
   usersPermissions: UsersPermissionsType,
   vats: VatList,
 }
@@ -281,7 +283,7 @@ class LeasePage extends Component<Props, State> {
     if(tab != activeTab) {
       this.setState({activeTab: tab});
     }
-    
+
     if(prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
@@ -342,7 +344,7 @@ class LeasePage extends Component<Props, State> {
       fetchSingleLease,
       match: {params: {leaseId}},
     } = this.props;
-    
+
     fetchSingleLease(leaseId);
   }
 
@@ -359,7 +361,7 @@ class LeasePage extends Component<Props, State> {
       usersPermissions,
       vats,
     } = this.props;
-    
+
     if(hasPermissions(usersPermissions, UsersPermissions.VIEW_COMMENT) && !comments) {
       fetchCommentsByLease(leaseId);
     }
@@ -848,9 +850,17 @@ class LeasePage extends Component<Props, State> {
       leaseAttributes,
       leaseMethods,
       match: {params: {leaseId}},
+      userActiveServiceUnit,
       usersPermissions,
     } = this.props;
     const areFormsValid = this.validateForms();
+
+    const isServiceUnitSameAsActiveServiceUnit = () => {
+      if (userActiveServiceUnit && currentLease.service_unit) {
+        return userActiveServiceUnit.id === currentLease.service_unit.id;
+      }
+      return false;
+    };
 
     if(isFetching || isFetchingLeasePageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
@@ -867,8 +877,11 @@ class LeasePage extends Component<Props, State> {
             buttonComponent={
               <ControlButtons
                 allowComments={isMethodAllowed(commentMethods, Methods.GET)}
-                allowDelete={isMethodAllowed(leaseMethods, Methods.DELETE) && (allowToDeleteEmptyLease || hasPermissions(usersPermissions, UsersPermissions.DELETE_NONEMPTY_LEASE))}
-                allowEdit={isMethodAllowed(leaseMethods, Methods.PATCH)}
+                allowDelete={
+                  isMethodAllowed(leaseMethods, Methods.DELETE) &&
+                  (allowToDeleteEmptyLease || hasPermissions(usersPermissions, UsersPermissions.DELETE_NONEMPTY_LEASE)) &&
+                  isServiceUnitSameAsActiveServiceUnit()}
+                allowEdit={isMethodAllowed(leaseMethods, Methods.PATCH) && isServiceUnitSameAsActiveServiceUnit()}
                 commentAmount={comments ? comments.length : 0}
                 deleteModalTexts={{
                   buttonClassName: ButtonColors.ALERT,
@@ -1148,6 +1161,7 @@ export default flowRight(
         rentsFormValues: getFormValues(FormNames.LEASE_RENTS)(state),
         summaryFormValues: getFormValues(FormNames.LEASE_SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.LEASE_TENANTS)(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
         vats: getVats(state),
       };
     },
