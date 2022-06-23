@@ -6,6 +6,8 @@ import AsyncSelect from '$components/form/AsyncSelect';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {fetchLeases} from '$src/leases/requestsAsync';
 
+import type {UserServiceUnit} from '$src/usersPermissions/types';
+
 type Props = {
   disabled?: boolean,
   name: string,
@@ -13,6 +15,7 @@ type Props = {
   onChange: Function,
   placeholder?: string,
   relatedLeases: Array<Object>,
+  serviceUnit: UserServiceUnit,
   value?: Object,
 }
 
@@ -23,6 +26,7 @@ const LeaseSelectInput = ({
   onChange,
   placeholder,
   relatedLeases,
+  serviceUnit,
   value,
 }: Props) => {
   const getLeaseOptions = (leases: Array<Object>): Array<Object> =>
@@ -40,6 +44,7 @@ const LeaseSelectInput = ({
       succinct: true,
       identifier: inputValue,
       limit: 10,
+      service_unit: serviceUnit ? serviceUnit.id : '',
     });
 
     callback(getLeaseOptions(leases));
