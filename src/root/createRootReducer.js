@@ -42,6 +42,7 @@ import previewInvoicesReducer from '$src/previewInvoices/reducer';
 import rentBasisReducer from '$src/rentbasis/reducer';
 import rentForPeriodReducer from '$src/rentForPeriod/reducer';
 import sapInvoiceReducer from '$src/sapInvoice/reducer';
+import serviceUnitsReducer from '$src/serviceUnits/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
 import tradeRegisterReducer from '$src/tradeRegister/reducer';
 import uiDataReducer from '$src/uiData/reducer';
@@ -94,6 +95,7 @@ export default (history: Object): Reducer<RootState> =>
     rentBasis: rentBasisReducer,
     rentForPeriod: rentForPeriodReducer,
     router: connectRouter(history),
+    serviceUnits: serviceUnitsReducer,
     sapInvoice: sapInvoiceReducer,
     toastr: toastrReducer,
     topNavigation: topNavigationReducer,
