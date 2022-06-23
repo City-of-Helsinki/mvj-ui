@@ -14,8 +14,10 @@ import {InvoiceNoteFieldPaths, InvoiceNoteFieldTitles} from '$src/invoiceNote/en
 import {ButtonColors} from '$components/enums';
 import {getFieldAttributes} from '$util/helpers';
 import {getAttributes} from '$src/invoiceNote/selectors';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
+import type {UserServiceUnit} from '$src/usersPermissions/types';
 
 type Props = {
   handleSubmit: Function,
@@ -25,6 +27,7 @@ type Props = {
   onClose: Function,
   onSubmit: Function,
   valid: boolean,
+  userActiveServiceUnit: UserServiceUnit,
 }
 
 class CreateInvoiceNoteModal extends PureComponent<Props> {
@@ -56,6 +59,7 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
       isOpen,
       onClose,
       valid,
+      userActiveServiceUnit,
     } = this.props;
 
     return(
@@ -75,6 +79,7 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
                   fieldType: FieldTypes.LEASE,
                   label: InvoiceNoteFieldTitles.LEASE,
                 }}
+                serviceUnit={userActiveServiceUnit}
               />
             </Column>
             <Column small={4}>
@@ -135,6 +140,7 @@ export default flowRight(
     (state) => {
       return {
         invoiceNoteAttributes: getAttributes(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     }
   ),
