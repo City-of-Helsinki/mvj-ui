@@ -1,0 +1,23 @@
+.inline-search-fields {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+
+  .contact-search-dropdown {
+    flex-basis: 275px;
+  }
+
+  .select-input {
+    .select-input__control {
+      height: 1.875rem;
+      background: transparent;
+      border-right: 0;
+    }
+
+    .select-input__indicators {
+      bottom: 0;
+      height: auto;
+    }
+  }
+}

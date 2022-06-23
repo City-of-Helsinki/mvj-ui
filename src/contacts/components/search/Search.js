@@ -6,26 +6,45 @@ import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
 
 import FormField from '$components/form/FormField';
 import SearchClearLink from '$components/search/SearchClearLink';
 import SearchContainer from '$components/search/SearchContainer';
 import {FieldTypes, FormNames} from '$src/enums';
+import {fetchServiceUnits} from '$src/serviceUnits/actions';
+import {getServiceUnits, getIsFetching as getIsFetchingServiceUnits} from '$src/serviceUnits/selectors';
+
+import type {ServiceUnits} from '$src/serviceUnits/types';
 
 type Props = {
   formValues: Object,
+  fetchServiceUnits: Function,
   handleSubmit: Function,
   initialize: Function,
+  isFetchingServiceUnits: boolean,
   isSearchInitialized: boolean,
   onSearch: Function,
+  serviceUnits: ServiceUnits,
   sortKey: ?string,
   sortOrder: ?string,
+  initialValues: Array,
 }
 
 class Search extends PureComponent<Props> {
   _isMounted: boolean;
 
   componentDidMount() {
+    const {
+      fetchServiceUnits,
+      isFetchingServiceUnits,
+      serviceUnits,
+    } = this.props;
+
+    if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
+      fetchServiceUnits();
+    }
+
     this._isMounted = true;
   }
 
@@ -71,23 +90,62 @@ class Search extends PureComponent<Props> {
     onSearch(query, true);
   }
 
+  getServiceUnitOptions = (): Array<Object> => {
+    const options = [{
+      id: '',
+      value: '',
+      label: '',
+    }];
+    this.props.serviceUnits.map((serviceUnit) => {
+      options.push({
+        id: serviceUnit.id,
+        value: serviceUnit.id,
+        label: serviceUnit.name,
+      });
+    });
+    return options;
+  };
+
   render () {
-    const {handleSubmit} = this.props;
+    const {
+      handleSubmit,
+      serviceUnits,
+    } = this.props;
+
+    if (!serviceUnits.length) {
+      return null;
+    }
 
     return (
       <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
-            <FormField
-              disableDirty
-              fieldAttributes={{
-                label: 'Hae hakusanalla',
-                type: FieldTypes.SEARCH,
-                read_only: false,
-              }}
-              invisibleLabel
-              name='search'
-            />
+            <div className='inline-search-fields'>
+              <FormField
+                autoBlur
+                disableDirty
+                fieldAttributes={{
+                  label: 'Palvelukokonaisuus',
+                  type: FieldTypes.CHOICE,
+                  read_only: false,
+                }}
+                name='service_unit'
+                overrideValues={{
+                  options: this.getServiceUnitOptions(),
+                }}
+                className='contact-search-dropdown'
+              />
+              <FormField
+                disableDirty
+                fieldAttributes={{
+                  label: 'Hae hakusanalla',
+                  type: FieldTypes.SEARCH,
+                  read_only: false,
+                }}
+                invisibleLabel
+                name='search'
+              />
+            </div>
           </Column>
         </Row>
         <Row>
@@ -108,8 +166,13 @@ export default flowRight(
     state => {
       return {
         formValues: getFormValues(formName)(state),
+        isFetchingServiceUnits: getIsFetchingServiceUnits(state),
+        serviceUnits: getServiceUnits(state),
       };
     },
+    {
+      fetchServiceUnits,
+    }
   ),
   reduxForm({
     form: formName,
