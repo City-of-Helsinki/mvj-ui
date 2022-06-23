@@ -42,6 +42,7 @@ export const ContactFieldPaths = {
   PHONE: 'phone',
   POSTAL_CODE: 'postal_code',
   SAP_CUSTOMER_NUMBER: 'sap_customer_number',
+  SERVICE_UNIT: 'service_unit',
   TRADE_REGISTER: 'trade_register',
   TYPE: 'type',
 };
@@ -75,6 +76,7 @@ export const ContactFieldTitles = {
   PHONE: 'Puhelinnumero',
   POSTAL_CODE: 'Postinumero',
   SAP_CUSTOMER_NUMBER: 'SAP asiakasnumero',
+  SERVICE_UNIT: 'Palvelukokonaisuus',
   TRADE_REGISTER: 'Kaupparekisteri',
   TYPE: 'Asiakastyyppi',
 };
