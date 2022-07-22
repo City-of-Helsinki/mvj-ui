@@ -27,6 +27,8 @@ const baseState: PlotApplicationsState = {
   attributes: null,
   isFetching: false,
   isFetchingAttributes: false,
+  isFetchingByBBox: false,
+  listByBBox: null,
   list: {},
   methods: null,
   current: {},
