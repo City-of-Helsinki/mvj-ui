@@ -20,6 +20,7 @@ import {
   receivePlotSearchSubtypes,
   fetchApplicationRelatedForm,
   receiveApplicationRelatedForm,
+  applicationRelatedFormNotFound,
   applicationRelatedAttachmentsNotFound,
   fetchApplicationRelatedAttachments,
   receiveApplicationRelatedAttachments,
@@ -29,7 +30,13 @@ import {
   receiveFileOperationFinished,
   fetchPendingUploads,
   pendingUploadsNotFound,
-  receivePendingUploads, receiveAttachmentAttributes, receiveAttachmentMethods, attachmentAttributesNotFound
+  receivePendingUploads,
+  receiveAttachmentAttributes,
+  receiveAttachmentMethods,
+  attachmentAttributesNotFound,
+  fetchApplicationRelatedPlotSearch,
+  receiveApplicationRelatedPlotSearch,
+  applicationRelatedPlotSearchNotFound
 } from './actions';
 import {receiveError} from '$src/api/actions';
 
@@ -42,10 +49,17 @@ import {
   createPlotApplicationRequest,
   editPlotApplicationRequest,
   uploadFileRequest,
-  deleteUploadRequest, fetchPendingUploadsRequest, fetchAttachmentAttributesRequest
+  deleteUploadRequest,
+  fetchPendingUploadsRequest,
+  fetchAttachmentAttributesRequest
 } from './requests';
-import {fetchFormRequest} from "../plotSearch/requests";
-import {fetchFormAttributes} from "../plotSearch/actions";
+import {
+  fetchFormRequest,
+  fetchSinglePlotSearch
+} from "../plotSearch/requests";
+import {
+  fetchFormAttributes,
+} from "../plotSearch/actions";
 import {push} from "react-router-redux";
 import {getRouteById, Routes} from "../root/routes";
 import type {DeleteUploadAction, UploadFileAction} from "./types";
@@ -204,6 +218,7 @@ function* fetchApplicationRelatedFormSaga({ payload: id }): Generator<any, any, 
     switch (statusCode) {
       case 200:
         yield put(receiveApplicationRelatedForm(bodyAsJson));
+        yield put(fetchApplicationRelatedPlotSearch(bodyAsJson.plot_search_id));
         break;
       default:
         yield put(applicationRelatedFormNotFound());
@@ -212,6 +227,28 @@ function* fetchApplicationRelatedFormSaga({ payload: id }): Generator<any, any, 
   } catch {
     yield put(applicationRelatedFormNotFound());
     displayUIMessage({title: '', body: 'Hakemukseen liittyvää lomaketta ei löytynyt!'}, { type: 'error' });
+  }
+}
+
+function* fetchApplicationRelatedPlotSearchSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSinglePlotSearch, id);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveApplicationRelatedPlotSearch(bodyAsJson));
+        break;
+      case 404:
+        yield put(applicationRelatedPlotSearchNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      default:
+        yield put(applicationRelatedPlotSearchNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch plot search with error "%s"', error);
+    yield put(applicationRelatedPlotSearchNotFound());
+    yield put(receiveError(error));
   }
 }
 
@@ -314,6 +351,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/EDIT', editPlotApplicationSaga);
       yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);
       yield takeLatest('mvj/plotApplications/FETCH_FORM', fetchApplicationRelatedFormSaga);
+      yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH', fetchApplicationRelatedPlotSearchSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENTS', fetchApplicationRelatedAttachmentsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', fetchAttachmentAttributesSaga);
       yield takeLatest('mvj/plotApplications/UPLOAD_FILE', uploadFileSaga);

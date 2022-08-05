@@ -67,6 +67,10 @@ export const getIsFetchingApplicationRelatedForm: Selector<boolean, void> = (sta
 
 export const getApplicationRelatedForm: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.form;
 
+export const getIsFetchingApplicationRelatedPlotSearch: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingPlotSearch;
+
+export const getApplicationRelatedPlotSearch: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.plotSearch;
+
 export const getIsFetchingApplicationRelatedAttachments: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingAttachments;
 
 export const getApplicationRelatedAttachments: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.attachments;
@@ -94,3 +98,6 @@ export const getAttachmentMethods: Selector<Methods, void> = (state: RootState):
 
 export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotApplications.isSaving;
+
+export const getCurrentEditorTargets: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
+  state.plotApplications.currentEditorTargets;

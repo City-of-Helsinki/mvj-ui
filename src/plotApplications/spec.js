@@ -28,6 +28,7 @@ const baseState: PlotApplicationsState = {
   attachmentMethods: null,
   attachments: null,
   attributes: null,
+  currentEditorTargets: [],
   fieldTypeMapping: {},
   form: null,
   isFetching: false,
@@ -35,6 +36,7 @@ const baseState: PlotApplicationsState = {
   isFetchingAttachments: false,
   isFetchingAttributes: false,
   isFetchingByBBox: false,
+  isFetchingPlotSearch: false,
   listByBBox: null,
   isFetchingForm: false,
   isFetchingPendingUploads: false,
@@ -51,7 +53,8 @@ const baseState: PlotApplicationsState = {
     'plot-application': true,
   },
   subTypes: null,
-  pendingUploads: []
+  pendingUploads: [],
+  plotSearch: null
 };
 
 // $FlowFixMe

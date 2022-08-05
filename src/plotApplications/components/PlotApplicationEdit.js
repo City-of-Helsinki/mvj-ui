@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {reduxForm, initialize, change} from 'redux-form';
+import {reduxForm, initialize, change, getFormValues } from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
@@ -27,7 +27,7 @@ import {
 } from '$src/plotApplications/selectors';
 
 import type {Attributes} from '$src/types';
-import { getInitialApplication, getInitialApplicationForm} from "../helpers";
+import {getInitialApplication, getInitialApplicationForm, getSectionTemplate} from "../helpers";
 import {
   getIsFetching as getIsFetchingPlotSearchList,
   getIsFetchingFormAttributes,
@@ -35,13 +35,20 @@ import {
 } from "../../plotSearch/selectors";
 import {fetchFormAttributes} from "../../plotSearch/actions";
 import {
+  getCurrentEditorTargets,
   getFieldTypeMapping,
   getIsFetchingApplicationRelatedAttachments,
   getIsFetchingAttachmentAttributes
 } from "../selectors";
 import PlotApplicationSubsection from "./PlotApplicationSubsection";
-import {fetchAttachmentAttributes, fetchPendingUploads, receiveFormValidFlags} from "../actions";
+import {
+  fetchAttachmentAttributes,
+  fetchPendingUploads,
+  receiveFormValidFlags,
+  setCurrentEditorTargets
+} from "../actions";
 import Loader from "../../components/loader/Loader";
+import {TARGET_SECTION_IDENTIFIER} from "../constants";
 
 type Props = {
   attributes: Attributes,
@@ -60,17 +67,23 @@ type Props = {
   fetchAttachmentAttributes: Function,
   isFetchingFormAttributes: boolean,
   isFetchingAttachmentAttributes: boolean,
-  isFetchingPlotSearchList: boolean
+  isFetchingPlotSearchList: boolean,
+  array: Array<Function>,
+  fieldTypeMapping: Object,
+  valid: boolean,
+  receiveFormValidFlags: Function,
+  formValues: Object,
+  currentEditorTargets: Array<Object>,
+  setCurrentEditorTargets: Function
 }
 
 type State = {
-
+  form: Object
 }
 
 class PlotApplicationEdit extends PureComponent<Props, State> {
   state = {
-    form: null,
-    targets: []
+    form: null
   }
 
   componentDidUpdate(prevProps) {
@@ -113,6 +126,8 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
   }
 
   initializeFormValues = (formId) => {
+    const { setCurrentEditorTargets } = this.props;
+
     const matchingSearch = this.props.plotSearches.results?.find((search) => search.form?.id === formId);
 
     this.props.change('formEntries', getInitialApplicationForm(
@@ -121,9 +136,39 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
     this.props.change('targets', []);
 
     this.setState(() => ({
-      form: matchingSearch?.form,
-      targets: matchingSearch?.plot_search_targets || []
+      form: matchingSearch?.form
     }));
+
+    setCurrentEditorTargets(matchingSearch?.plot_search_targets);
+  }
+
+  updateTargetSections = (newTargetIds, _, oldTargetIds) => {
+    const { array, formValues } = this.props;
+
+    const deleted = oldTargetIds.filter((id) => !newTargetIds.includes(id));
+    const added = newTargetIds.filter((id) => !oldTargetIds.includes(id));
+
+    const targetSectionsArrayPath = `formEntries.sections.${TARGET_SECTION_IDENTIFIER}`;
+    const oldValues = get(formValues, targetSectionsArrayPath);
+
+    // Create a new section for every previously missing target ID
+    added.forEach((id) => {
+      array.push(targetSectionsArrayPath, {
+        ...getSectionTemplate(TARGET_SECTION_IDENTIFIER),
+        metadata: {
+          identifier: id
+        }
+      });
+    });
+
+    // Remove all sections for no longer existing target IDs
+    // (sorted descending by index, so we can remove them all in one sweep
+    //  without the indices changing halfway)
+    const deletedIndices = deleted.map((id) => oldValues
+      .findIndex((item) => item.metadata?.identifier === id))
+      .sort((a, b) => a < b ? 1 : -1);
+    deletedIndices.forEach((index) =>
+        array.remove(targetSectionsArrayPath, index));
   }
 
   render (){
@@ -135,7 +180,8 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       isFetchingFormAttributes,
       isFetchingAttachmentAttributes,
       isFetchingPlotSearchList,
-      plotSearches
+      plotSearches,
+      currentEditorTargets
     } = this.props;
 
     if (isFetchingPlotSearchList || isFetchingFormAttributes || isFetchingAttachmentAttributes) {
@@ -246,12 +292,13 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
                       label: 'Haettavat kohteet'
                     }}
                     overrideValues={{
-                      options: this.state.targets.map((target) => ({
+                      options: currentEditorTargets.map((target) => ({
                         value: target.id,
                         label: `${target.lease_address.address} (${target.lease_identifier})`
                       }))
                     }}
                     name='targets'
+                    onChange={this.updateTargetSections}
                   />
                 </Column>
             </Row>
@@ -292,6 +339,8 @@ export default flowRight(
         isFetchingFormAttributes: getIsFetchingFormAttributes(state),
         isFetchingAttachmentAttributes: getIsFetchingAttachmentAttributes(state),
         isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
+        formValues: getFormValues(formName)(state),
+        currentEditorTargets: getCurrentEditorTargets(state)
       };
     },
     {
@@ -302,7 +351,8 @@ export default flowRight(
       change,
       fetchFormAttributes,
       fetchPendingUploads,
-      fetchAttachmentAttributes
+      fetchAttachmentAttributes,
+      setCurrentEditorTargets
     }
   ),
   reduxForm({
