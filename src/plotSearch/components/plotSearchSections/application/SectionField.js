@@ -61,6 +61,7 @@ const SectionField = ({
                 }
               ]
             }}
+            className="edit-plot-application-section-form__field-required-field"
             invisibleLabel
           />
         </Column>

@@ -1,13 +1,12 @@
 // @flow
-import React, {Fragment, Component} from 'react';
+import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import {change, formValueSelector, reduxForm, getFormValues} from 'redux-form';
+import {formValueSelector, reduxForm, getFormValues} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import classNames from 'classnames';
 
-import {AppConsumer} from '$src/app/AppContext';
 import {FieldArray} from 'redux-form';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
@@ -17,69 +16,180 @@ import {ButtonColors} from '$components/enums';
 import {getFormAttributes} from '$src/plotSearch/selectors';
 import SectionField from './SectionField';
 import Collapse from "../../../../components/collapse/Collapse";
-import TitleH3 from "../../../../components/content/TitleH3";
-
 import type {Attributes} from '$src/types';
+import SubTitle from "../../../../components/content/SubTitle";
 
 type SectionFieldProps = {
   disabled: boolean,
   fields: any,
   formName: string,
   isSaveClicked: Boolean,
-  attributes: Attributes,
+  form: string
 }
 
-const renderSectionFields = ({
+const EditPlotApplicationSectionFormSectionFields = ({
   disabled,
   fields,
   form,
   // usersPermissions,
-}: SectionFieldProps): Element<*> => {
+}: SectionFieldProps): React$Element<*> => {
   return (
-    <AppConsumer>
-      {() => {
-        return (
-          <Fragment>
-            {!!fields.length && fields.map((field, index) => {
-              return <SectionField
-                key={index}
-                disabled={disabled}
-                field={field}
-                form={form}
-              />;
-            })}
-          </Fragment>
-        );
-      }}
-    </AppConsumer>
+    <div className="edit-plot-application-form__section-fields-container">
+      {!!fields.length && fields.map((field, index) => {
+        return <SectionField
+          key={index}
+          disabled={disabled}
+          field={field}
+          form={form}
+        />;
+      })}
+    </div>
   );
 };
 
+type SectionSubsectionProps = {
+  fields: any,
+  form: string,
+  attributes: Attributes,
+  level: number,
+  stagedSectionValues: Object
+}
+
+const EditPlotApplicationSectionFormSectionSubsections = ({
+  fields,
+  form,
+  attributes,
+  level,
+  stagedSectionValues
+}: SectionSubsectionProps): React$Element<*> => {
+  return fields.map(
+    (ss, i) => <EditPlotApplicationSectionFormSubsection
+      sectionPath={ss}
+      level={level}
+      stagedSectionValues={stagedSectionValues}
+      form={form}
+      attributes={attributes}
+      key={i}
+    />);
+}
+
+type SubsectionProps = {
+  attributes: Attributes,
+  level: number,
+  sectionPath: string,
+  form: string,
+  stagedSectionValues: Object
+}
+
+const EditPlotApplicationSectionFormSubsectionFirstLevelWrapper = ({children, level}) => <div className={classNames(
+  'edit-plot-application-section-form__section',
+  `edit-plot-application-section-form__section--level-${level}`
+)}>{children}</div>;
+
+const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
+  children,
+  attributes,
+  sectionPath,
+  level,
+  subsection
+}) => <Collapse
+  defaultOpen
+  headerTitle={subsection.title}
+  headerExtras={<div className="edit-plot-application-section-form__subsection-header-options">
+    <FormField
+      fieldAttributes={get(attributes, 'sections.child.children.visible')}
+      name={`${sectionPath}.visible`}
+      overrideValues={{
+        label: 'Lohko käytössä'
+      }}
+      className="edit-plot-application-section-form__subsection-header-visible-field"
+    />
+    {subsection.show_duplication_check ? <FormField
+      fieldAttributes={get(attributes, 'sections.child.children.add_new_allowed')}
+      name={`${sectionPath}.add_new_allowed`}
+      overrideValues={{
+        fieldType: 'checkbox',
+        options: [
+          {
+            label: 'Monistettava lohko',
+            value: true
+          }
+        ]
+      }}
+      className="edit-plot-application-section-form__subsection-header-add-new-allowed-field"
+      invisibleLabel
+    /> : <div className="edit-plot-application-section-form__subsection-header-add-new-allowed-field" />}
+  </div>}
+  className={classNames(
+    'edit-plot-application-section-form__section',
+    `edit-plot-application-section-form__section--level-${level}`,
+    {
+      'collapse__secondary': level === 2,
+      'collapse__third': level > 2
+    }
+  )}
+>{children}</Collapse>;
+
+const EditPlotApplicationSectionFormSubsection: React$ComponentType<SubsectionProps> = ({
+  sectionPath,
+  level,
+  form,
+  attributes,
+  stagedSectionValues
+}: SubsectionProps) => {
+  const subsection = get(stagedSectionValues, sectionPath);
+
+  const Wrapper = (level > 1)
+    ? EditPlotApplicationSectionFormSubsectionSecondLevelWrapper
+    : EditPlotApplicationSectionFormSubsectionFirstLevelWrapper;
+
+  return <Wrapper level={level} attributes={attributes} sectionPath={sectionPath} subsection={subsection}>
+    <FieldArray
+      component={EditPlotApplicationSectionFormSectionFields}
+      disabled={false}
+      form={form}
+      name={`${sectionPath}.fields`}
+    />
+    <FieldArray
+      component={EditPlotApplicationSectionFormSectionSubsections}
+      disabled={false}
+      form={form}
+      name={`${sectionPath}.subsections`}
+      attributes={attributes}
+      level={level + 1}
+      stagedSectionValues={stagedSectionValues}
+    />
+  </Wrapper>;
+}
+
 type Props = {
   attributes: Attributes,
-  change: Function,
   onClose: Function,
   onSubmit: Function,
   valid: boolean,
   name: string,
   sectionIndex: number,
-  section: Object
+  section: Object,
+  parentFormSection: Object,
+  initialize: Function,
+  form: string,
+  stagedSectionValues: Object
 }
 
 class EditPlotApplicationSectionForm extends Component<Props> {
   firstField: any
 
-  setRefForFirstField = (element: any) => {
+  setRefForFirstField = (element: any): void => {
     this.firstField = element;
   }
 
-  setFocus = () => {
+  setFocus = (): void => {
     if(this.firstField) {
       this.firstField.focus();
     }
   }
 
-  componentDidMount(): * {
+  componentDidMount(): void {
     const {
       sectionIndex,
       parentFormSection,
@@ -92,7 +202,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
     }
   }
 
-  componentDidUpdate(prevProps: Props): * {
+  componentDidUpdate(prevProps: Props): void {
     const {
       sectionIndex,
       parentFormSection,
@@ -105,7 +215,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
     }
   }
 
-  handleSubmit = () => {
+  handleSubmit = (): void => {
     const {
       onSubmit,
       onClose,
@@ -115,80 +225,25 @@ class EditPlotApplicationSectionForm extends Component<Props> {
     onClose();
   };
 
-  renderSubsection = (field, level) => {
-    const { stagedSectionValues, form, change, attributes } = this.props;
-    const subsection = get(stagedSectionValues, field);
-
-    const Wrapper = (level > 1)
-      ? ({children}) => <Collapse
-          defaultOpen={true}
-          headerTitle={subsection.title}
-          headerExtras={<div className="edit-plot-application-section-form__add-new-allowed-field">
-            <FormField
-              fieldAttributes={get(attributes, 'sections.child.children.add_new_allowed')}
-              name={`${field}.add_new_allowed`}
-              overrideValues={{
-                fieldType: 'checkbox',
-                options: [
-                  {
-                    label: 'Monistettava lohko',
-                    value: true
-                  }
-                ]
-              }}
-              invisibleLabel
-            />
-          </div>}
-          className={classNames(
-            'edit-plot-application-section-form__section',
-            `edit-plot-application-section-form__section--level-${level}`,
-            {
-              'collapse__secondary': level === 2,
-              'collapse__third': level > 2
-            }
-          )}
-        >{children}</Collapse>
-      : ({children}) => <div className={classNames(
-        'edit-plot-application-section-form__section',
-        `edit-plot-application-section-form__section--level-${level}`
-      )}>{children}</div>
-
-    return <Wrapper>
-      <FieldArray
-        component={renderSectionFields}
-        disabled={false}
-        form={form}
-        name={`${field}.fields`}
-        change={change}
-        stagedSectionValues={stagedSectionValues}
-      />
-      <FieldArray
-        component={({ fields }) => fields.map(
-          (ss, i) => <Fragment key={i}>{this.renderSubsection(ss, level + 1)}</Fragment>)}
-        disabled={false}
-        form={form}
-        name={`${field}.subsections`}
-      />
-    </Wrapper>;
-  };
-
   render() {
     const {
       attributes,
       onClose,
       valid,
-      stagedSectionValues
+      parentFormSection,
+      stagedSectionValues,
+      form,
     } = this.props;
 
-    if (!stagedSectionValues?.section) {
+    if (!parentFormSection) {
       return null;
     }
 
     return (
       <form>
-        <TitleH3>
-          {stagedSectionValues.section.title}
-        </TitleH3>
+        <SubTitle>
+          {parentFormSection.title}
+        </SubTitle>
         <Row>
           <Column small={6}>
             <FormField
@@ -209,7 +264,12 @@ class EditPlotApplicationSectionForm extends Component<Props> {
             />
           </Column>
         </Row>
-        {this.renderSubsection('section', 1)}
+        <EditPlotApplicationSectionFormSubsection
+          sectionPath='section'
+          level={1}
+          stagedSectionValues={stagedSectionValues}
+          form={form}
+          attributes={attributes} />
         <ModalButtonWrapper>
           <Button
             className={ButtonColors.SECONDARY}
@@ -232,7 +292,6 @@ const parentFormName = FormNames.PLOT_SEARCH_APPLICATION;
 const parentSelector = formValueSelector(parentFormName);
 
 const formName = FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING;
-const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
@@ -243,9 +302,7 @@ export default flowRight(
         stagedSectionValues: getFormValues(formName)(state)
       };
     },
-    {
-      change,
-    },
+    null,
     null,
     {forwardRef: true}
   ),

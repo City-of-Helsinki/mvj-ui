@@ -60,8 +60,10 @@
 .edit-plot-application-section-form__section {
   .section-field {
     padding: .75rem 0;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    margin-right: rem-calc(-10px);
+    margin-left: rem-calc(-10px);
+    background-color: $light-gray;
+    border-bottom: 1px solid $gray-separator;
 
     > * {
       display: flex;
@@ -77,6 +79,20 @@
     .columns:last-child {
       justify-content: flex-end;
     }
+  }
+
+  .collapse__header {
+    background-color: $light-gray;
+    border-bottom: 1px solid $gray-separator;
+  }
+
+  .collapse.collapse__secondary > .collapse__content > .collapse__content-wrapper,
+  .collapse.collapse__third > .collapse__content > .collapse__content-wrapper {
+    margin-bottom: rem-calc(8px);
+  }
+
+  .collapse.collapse__third .edit-plot-application-form__section-fields-container {
+    margin-bottom: 0;
   }
 
   .section-field, .collapse__header {
@@ -96,17 +112,76 @@
     }
   }
 
-  .edit-plot-application-section-form__add-new-allowed-field {
+  .edit-plot-application-section-form__subsection-header-options {
     margin-left: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .edit-plot-application-section-form__subsection-header-visible-field {
+      margin-right: 1rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      fieldset {
+        margin-left: 1rem;
+      }
+
+      .form__text-title {
+        font-size: $font-small;
+      }
+    }
+
+    fieldset, fieldset label {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
   }
 
   .collapse {
     // As with .row, to align subsections with individual field rows
-    margin-right: rem-calc(-7.5px);
-    margin-left: rem-calc(-7.5px);
+    margin-right: rem-calc(-10px);
+    margin-left: rem-calc(-10px);
+    margin-bottom: rem-calc(8px);
 
     &__third > .collapse__header .collapse__header_title {
-      font-size: rem-calc(14px);
+      font-size: $font-regular;
     }
+
+    &.collapse__third:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
+  .edit-plot-application-form__section-fields-container {
+    margin-bottom: .5rem;
+  }
+
+  $section-indent-amount: 1.5rem;
+  @for $level from 2 through 10 {
+    &--level-#{$level} {
+      > .collapse__header .header-info-link {
+        margin-left: ($level - 2) * $section-indent-amount;
+
+        .arrow-icon {
+          left: ($level - 2) * $section-indent-amount;
+        }
+      }
+
+      > .collapse__content > .collapse__content-wrapper > .edit-plot-application-form__section-fields-container .columns:first-child .form-field {
+        margin-left: ($level - 1) * $section-indent-amount;
+      }
+    }
+  }
+
+  .edit-plot-application-section-form__subsection-header-add-new-allowed-field,
+  .edit-plot-application-section-form__field-required-field {
+    min-width: 140px;
+  }
+
+  .edit-plot-application-section-form__field-required-field {
+    margin-right: rem-calc(2px);
   }
 }
