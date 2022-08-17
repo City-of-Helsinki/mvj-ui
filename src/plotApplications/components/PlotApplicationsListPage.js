@@ -50,6 +50,7 @@ import {
 import {
   getIsFetching,
   getPlotApplicationsList,
+  getIsFetchingByBBox
 } from '$src/plotApplications/selectors';
 import {
   DEFAULT_SORT_KEY,
@@ -61,7 +62,7 @@ import {
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import {fetchPlotSearchList, fetchAttributes as fetchPlotSearchAttributes} from '$src/plotSearch/actions';
 import ApplicationListMap from '$src/plotApplications/components/map/ApplicationListMap';
-
+import {getPlotApplicationsListByBBox} from "../selectors";
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -81,6 +82,7 @@ type Props = {
   plotApplicationsMethods: MethodsType,
   plotApplicationsAttributes: Attributes,
   isFetching: boolean,
+  isFetchingByBBox: boolean,
   fetchPlotApplicationsList: Function,
   fetchPlotApplicationsByBBox: Function,
   fetchPlotSearchAttributes: Function,
@@ -88,6 +90,7 @@ type Props = {
   location: Object,
   receiveTopNavigationSettings: Function,
   plotApplicationsListData: Object,
+  plotApplicationsMapData: Object,
   sortKey: string,
   sortOrder: string,
   initialize: Function,
@@ -396,8 +399,11 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   render() {
     const {
       isFetching,
+      isFetchingByBBox,
       plotApplicationsMethods,
       plotApplicationsAttributes,
+      plotApplicationsMapData,
+      location: {search}
     } = this.props;
 
     const {
@@ -413,19 +419,34 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       sortOrder,
     } = this.state;
 
-    const plotApplicationStateFilterOptions = getFieldOptions(plotApplicationsAttributes, 'state', false);
-    const filteredApplications = selectedStates.length
-      ? (applications.filter((application) => selectedStates.indexOf(application.state) !== -1))
-      : applications;
-    const count = filteredApplications.length;
-    const columns = this.getColumns();
-
     if (!plotApplicationsMethods && !plotApplicationsAttributes) {
       return null;
     }
 
     if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
       return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    }
+
+    const isTable = visualizationType === VisualizationTypes.TABLE;
+    const isMap = visualizationType === VisualizationTypes.MAP;
+
+    const plotApplicationStateFilterOptions = getFieldOptions(plotApplicationsAttributes, 'state', false);
+    const filteredApplications = selectedStates.length
+      ? (applications.filter((application) => selectedStates.indexOf(application.state) !== -1))
+      : applications;
+
+    const count = isMap ? getApiResponseCount(plotApplicationsMapData) : filteredApplications.length;
+    const columns = this.getColumns();
+
+    let amountText;
+    if (isMap && isFetchingByBBox || isTable && isFetching) {
+      amountText = 'Ladataan...';
+    } else {
+      if (isMap && Number(getUrlParams(search)?.zoom || 0) < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) {
+        amountText = '';
+      } else {
+        amountText = `Löytyi ${count} kpl`;
+      }
     }
 
     return (
@@ -458,7 +479,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
         <TableFilterWrapper
           filterComponent={
             <TableFilters
-              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              amountText={amountText}
               filterOptions={plotApplicationStateFilterOptions}
               filterValue={plotApplicationStates}
               onFilterChange={() => { }}
@@ -482,7 +503,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
           }
 
-          {visualizationType === VisualizationTypes.TABLE &&
+          {isTable &&
             <Fragment>
               <SortableTable
                 columns={columns}
@@ -503,7 +524,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
               />
             </Fragment>
           }
-          {visualizationType === VisualizationTypes.MAP &&
+          {isMap &&
             <ApplicationListMap
               allowToEdit={false}
               isLoading={isFetching}
@@ -523,7 +544,9 @@ export default flowRight(
     (state) => {
       return {
         isFetching: getIsFetching(state),
+        isFetchingByBBox: getIsFetchingByBBox(state),
         plotApplicationsListData: getPlotApplicationsList(state),
+        plotApplicationsMapData: getPlotApplicationsListByBBox(state),
       };
     },
     {
