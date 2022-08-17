@@ -376,7 +376,7 @@ class Search extends Component<Props, State> {
             <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
           </Column>
         </Row>
-      </SearchContainer >
+      </SearchContainer>
     );
   }
 }
