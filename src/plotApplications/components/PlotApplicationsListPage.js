@@ -68,6 +68,8 @@ const VisualizationTypes = {
   TABLE: 'table',
 };
 
+const MIN_QUERY_LENGTH = 6;
+
 const visualizationTypeOptions = [
   {value: VisualizationTypes.TABLE, label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
   {value: VisualizationTypes.MAP, label: 'Kartta', icon: <MapIcon className='icon-medium' />},
@@ -142,7 +144,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     } else {
       this.search();
     }
-    
+
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.PLOT_APPLICATIONS),
       pageTitle: 'Tonttihakemukset',
@@ -192,9 +194,9 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     const {fetchPlotApplicationsByBBox, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
 
-    if(searchQuery && searchQuery.search && searchQuery.search.length>6) {
+    if (searchQuery && searchQuery.search && searchQuery.search.length > MIN_QUERY_LENGTH) {
       searchQuery.in_bbox = BOUNDING_BOX_FOR_SEARCH_QUERY;
-    } else if(!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) {
+    } else if (!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) {
       return;
     }
 
@@ -288,7 +290,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'plot_search',
       text: 'Haku',
       sortable: false,
-      renderer: (id) => id 
+      renderer: (id) => id
         ? <ExternalLink href={'/tonttihaku/'} text={id}/> // getReferenceNumberLink(id)
         : null,
     });
@@ -315,7 +317,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'target_identifier',
       text: 'Kohteen hakemustunnus',
       sortable: false,
-      renderer: (id) => id 
+      renderer: (id) => id
         ? <ExternalLink href={'/'} text={id}/> // getReferenceNumberLink(id)
         : null,
     });
@@ -348,8 +350,8 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
 
   handleSearchUpdated = (query: Object, resetActivePage?: boolean = true) => {
     const {history} = this.props;
-    
-    if(resetActivePage) {
+
+    if (resetActivePage) {
       this.setState({activePage: 1});
       delete query.page;
     }
@@ -365,7 +367,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       const {history, location: {search}} = this.props;
       const searchQuery = getUrlParams(search);
 
-      if(value === VisualizationTypes.MAP) {
+      if (value === VisualizationTypes.MAP) {
         searchQuery.visualization = VisualizationTypes.MAP;
       } else {
         delete searchQuery.visualization;
@@ -418,9 +420,13 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     const count = filteredApplications.length;
     const columns = this.getColumns();
 
-    if (!plotApplicationsMethods && !plotApplicationsAttributes) return null;
+    if (!plotApplicationsMethods && !plotApplicationsAttributes) {
+      return null;
+    }
 
-    if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
+      return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    }
 
     return (
       <PageContainer>

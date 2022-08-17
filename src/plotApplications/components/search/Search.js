@@ -65,7 +65,7 @@ class Search extends Component<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     const {isSearchInitialized} = this.props;
-    if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
+    if (isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       this.onSearchChange();
     }
   }
@@ -84,7 +84,7 @@ class Search extends Component<Props, State> {
 
     const keys = Object.keys(searchQuery);
 
-    if(!keys.length || (keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search'))) {
+    if (!keys.length || (keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search'))) {
       return true;
     }
 
@@ -96,18 +96,22 @@ class Search extends Component<Props, State> {
   }
 
   onSearchChange = debounce(() => {
-    if (!this._isMounted) return;
+    if (!this._isMounted) {
+      return;
+    }
     this.search();
   }, 1000);
 
   search = () => {
     const {formValues, onSearch, states} = this.props;
-    let fValues = formValues;
-    if(this.state.isBasicSearch) {
-      fValues = {q: formValues.q};
+    let searchParams = formValues;
+    if (this.state.isBasicSearch) {
+      searchParams = {
+        q: formValues.q
+      };
     }
 
-    onSearch({...fValues, state: (states.length ? states : undefined)});
+    onSearch({...searchParams, state: (states.length ? states : undefined)});
   }
 
   handleClear = () => {
@@ -123,12 +127,12 @@ class Search extends Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
-    if(props.plotSearchAttributes !== state.plotSearchAttributes) {
+    if (props.plotSearchAttributes !== state.plotSearchAttributes) {
       newState.typeOptions = getFieldOptions(props.plotSearchAttributes, PlotSearchFieldPaths.TYPE);
       newState.subtypeOptions = getFieldOptions(props.plotSearchAttributes, PlotSearchFieldPaths.SUBTYPE);
 
     }
-    if(props.plotSearches !== state.plotSearches && props.plotSearches.results) {
+    if (props.plotSearches !== state.plotSearches && props.plotSearches.results) {
       newState.plotSearchOptions = props.plotSearches.results.map(result => ({label: result.name, value: result.id}));
     }
 
