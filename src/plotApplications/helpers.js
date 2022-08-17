@@ -1,17 +1,24 @@
 import get from 'lodash/get';
 import _ from 'lodash';
-import {getFieldAttributes} from "../util/helpers";
+import {getFieldAttributes, getFieldOptions} from "../util/helpers";
 import createUrl from "../api/createUrl";
 import {store} from '../root/startApp';
 import {formValueSelector} from "redux-form";
 import {FormNames} from "../enums";
-import {getCurrentEditorTargets, getPendingUploads} from "./selectors";
+import {
+  getApplicationInfoCheckData,
+  getCurrentEditorTargets,
+  getInfoCheckAttributes,
+  getPendingUploads
+} from "./selectors";
 import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "./constants";
 
 import {
   getApiResponseResults,
 } from '$util/helpers';
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
+import {ApplicantInfoCheckTypes} from "./enums";
+import type {RootState} from "../root/types";
 
 /**
  * Get plotApplication list results
@@ -356,4 +363,83 @@ export const getSectionTargetFromMeta = (field: string): string => {
   }
 }
 
-export const getApplicationAttachmentDownloadLink = (id) => createUrl(`attachment/${id}/download`);
+export const getApplicationAttachmentDownloadLink = (id: number): string => createUrl(`attachment/${id}/download`);
+
+export const getApplicantInfoCheckItems = (state: RootState, identifier: string): Array<Object> => {
+  const definitions = [
+    {
+      type: ApplicantInfoCheckTypes.TRADE_REGISTER,
+      label: 'Kaupparekisteriote',
+      useIfCompany: true,
+      useIfPerson: false,
+      external: true
+    },
+    {
+      type: ApplicantInfoCheckTypes.CREDITWORTHINESS,
+      label: 'Luottokelpoisuustodistus / luottotiedot',
+      useIfCompany: true,
+      useIfPerson: true,
+      external: false
+    },
+    {
+      type: ApplicantInfoCheckTypes.PENSION_CONTRIBUTIONS,
+      label: 'Selvitys työeläkemaksujen maksamisesta',
+      useIfCompany: true,
+      useIfPerson: true,
+      external: false
+    },
+    {
+      type: ApplicantInfoCheckTypes.VAT_REGISTER,
+      label: 'Todistus arvonlisärekisteriin lisäämisestä',
+      useIfCompany: true,
+      useIfPerson: false,
+      external: true
+    },
+    {
+      type: ApplicantInfoCheckTypes.ADVANCE_PAYMENT,
+      label: 'Todistus ennakkoperintärekisteriin lisäämisestä',
+      useIfCompany: true,
+      useIfPerson: false,
+      external: true
+    },
+    {
+      type: ApplicantInfoCheckTypes.TAX_DEBT,
+      label: 'Verovelkatodistus',
+      useIfCompany: true,
+      useIfPerson: false,
+      external: true
+    },
+    {
+      type: ApplicantInfoCheckTypes.EMPLOYER_REGISTER,
+      label: 'Todistus työnantajarekisteriin lisäämisestä',
+      useIfCompany: true,
+      useIfPerson: false,
+      external: true
+    }
+  ];
+
+  const existingData = getApplicationInfoCheckData(state).filter((item) => item.entry === identifier);
+
+  return definitions.map((item) => {
+    const existingItem = existingData.find((existingItem) => existingItem.name === item.type);
+
+    if (!existingItem) {
+      return null;
+    }
+
+    return {
+      kind: { ...item },
+      data: { ...existingItem }
+    }
+  }).filter((item) => !!item);
+}
+
+export const prepareInfoCheckForSubmission = (infoCheck: Object): Object => {
+  return {
+    id: infoCheck.id,
+    preparer: infoCheck.preparer?.id,
+    comment: infoCheck.comment,
+    state: infoCheck.state,
+    mark_all: infoCheck.mark_all
+  }
+}

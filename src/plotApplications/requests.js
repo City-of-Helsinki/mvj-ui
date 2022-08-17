@@ -35,6 +35,10 @@ export const fetchAttachmentAttributesRequest = (): Generator<any, any, any> => 
   return callApi(new Request(createUrl('attachment/'), {method: 'OPTIONS'}));
 };
 
+export const fetchInfoCheckAttributesRequest = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('information_check/'), {method: 'OPTIONS'}));
+};
+
 export const uploadFileRequest = ({ field, file, answer }: {
   field: number;
   file: File;
@@ -73,4 +77,8 @@ export const deleteUploadRequest = (
       method: 'DELETE',
     })
   );
+};
+
+export const editInfoCheckItemRequest = (payload): Generator <any, any, any> => {
+  return callApi(new Request(createUrl(`information_check/${payload.id}/`), { method: 'PATCH', body: JSON.stringify(payload) }));
 };

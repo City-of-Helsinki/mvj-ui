@@ -24,7 +24,11 @@ export type PlotApplicationsState = {
   attachmentMethods: Methods,
   isFetchingAttachmentAttributes: boolean,
   attachments: ?Array<Object>,
-  currentEditorTargets: Array<Object>
+  currentEditorTargets: Array<Object>,
+  isFetchingInfoCheckAttributes: boolean,
+  infoCheckAttributes: Attributes,
+  isUpdatingInfoCheck: { [id: number]: boolean },
+  lastInfoCheckUpdateSuccessful: { [id: number]: boolean }
 };
 
 export type PlotApplicationsList = Object;
@@ -56,7 +60,7 @@ export type ReceiveCollapseStatesAction = Action<'mvj/plotApplications/RECEIVE_C
 
 export type CreatePlotApplicationAction = Action<'mvj/plotApplications/CREATE', PlotApplication>;
 export type EditPlotApplicationAction = Action<'mvj/plotApplications/EDIT', PlotApplication>;
-export type ReceivePlotApplicationSavedAction = Action<'mvj/plotApplications/RECEIVE_SAVED', void>;
+export type ReceivePlotApplicationSavedAction = Action<'mvj/plotApplications/RECEIVE_SAVED', number>;
 export type ReceivePlotApplicationSaveFailedAction = Action<'mvj/plotApplications/RECEIVE_SAVE_FAILED', void>;
 
 export type FetchPlotSearchSubtypesAction = Action<'mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
@@ -80,9 +84,9 @@ export type InitializeFormEntriesForApplicationAction = Action<'mvj/plotApplicat
 export type FetchPendingUploadsAction = Action<'mvj/plotApplications/FETCH_PENDING_UPLOADS', void>;
 export type ReceivePendingUploadsAction = Action<'mvj/plotApplications/RECEIVE_PENDING_UPLOADS', Object>;
 export type PendingUploadsNotFoundAction = Action<'mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND', void>;
-export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', void>;
+export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', number>;
 export type UploadFileAction = Action<'mvj/plotApplications/UPLOAD_FILE', void>;
-export type ReceiveFileOperationFinishedAction = Action<'mvj/plotApplications/FILE_OPERATION_FINISHED', void>;
+export type ReceiveFileOperationFinishedAction = Action<'mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED', void>;
 
 export type FetchAttachmentAttributesAction = Action<'mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', void>;
 export type ReceiveAttachmentAttributesAction = Action<'mvj/plotApplications/RECEIVE_ATTACHMENT_ATTRIBUTES', Attributes>;
@@ -90,3 +94,10 @@ export type ReceiveAttachmentMethodsAction = Action<'mvj/plotApplications/RECEIV
 export type AttachmentAttributesNotFoundAction = Action<'mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND', void>;
 
 export type SetCurrentEditorTargetsAction = Action<'mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS', Array<Object>>;
+
+export type FetchInfoCheckAttributesAction = Action<'mvj/plotApplications/FETCH_INFO_CHECK_ATTRIBUTES', void>;
+export type ReceiveInfoCheckAttributesAction = Action<'mvj/plotApplications/RECEIVE_INFO_CHECK_ATTRIBUTES', Attributes>;
+export type InfoCheckAttributesNotFoundAction = Action<'mvj/plotApplications/INFO_CHECK_ATTRIBUTES_NOT_FOUND', void>;
+export type EditInfoCheckItemAction = Action<'mvj/plotApplications/EDIT_INFO_CHECK_ITEM', Object>;
+export type ReceiveUpdatedInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM', Object>;
+export type InfoCheckUpdateFailed = Action<'mvj/plotApplications/INFO_CHECK_UPDATE_FAILED', number>;

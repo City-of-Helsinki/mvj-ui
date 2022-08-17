@@ -1,0 +1,11 @@
+.PlotApplicationInfoCheckCollapse {
+  .collapse__content {
+    &, span, a {
+      font-size: $font-small;
+    }
+  }
+
+  .modal__wrapper {
+    overflow: visible;
+  }
+}

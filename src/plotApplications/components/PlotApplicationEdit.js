@@ -38,7 +38,7 @@ import {
   getCurrentEditorTargets,
   getFieldTypeMapping,
   getIsFetchingApplicationRelatedAttachments,
-  getIsFetchingAttachmentAttributes
+  getIsFetchingAttachmentAttributes, getIsFetchingInfoCheckAttributes
 } from "../selectors";
 import PlotApplicationSubsection from "./PlotApplicationSubsection";
 import {
@@ -74,7 +74,8 @@ type Props = {
   receiveFormValidFlags: Function,
   formValues: Object,
   currentEditorTargets: Array<Object>,
-  setCurrentEditorTargets: Function
+  setCurrentEditorTargets: Function,
+  isFetchingInfoCheckAttributes: boolean
 }
 
 type State = {
@@ -180,11 +181,12 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       isFetchingFormAttributes,
       isFetchingAttachmentAttributes,
       isFetchingPlotSearchList,
+      isFetchingInfoCheckAttributes,
       plotSearches,
       currentEditorTargets
     } = this.props;
 
-    if (isFetchingPlotSearchList || isFetchingFormAttributes || isFetchingAttachmentAttributes) {
+    if (isFetchingPlotSearchList || isFetchingFormAttributes || isFetchingAttachmentAttributes || isFetchingInfoCheckAttributes) {
       return <Loader isLoading={true} />;
     }
 
@@ -339,6 +341,7 @@ export default flowRight(
         isFetchingFormAttributes: getIsFetchingFormAttributes(state),
         isFetchingAttachmentAttributes: getIsFetchingAttachmentAttributes(state),
         isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
+        isFetchingInfoCheckAttributes: getIsFetchingInfoCheckAttributes(state),
         formValues: getFormValues(formName)(state),
         currentEditorTargets: getCurrentEditorTargets(state)
       };

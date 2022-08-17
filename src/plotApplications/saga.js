@@ -1,6 +1,6 @@
 // @flow
 
-import {all, fork, put, takeLatest, call} from 'redux-saga/effects';
+import {all, fork, put, takeLatest, takeEvery, call, select} from 'redux-saga/effects';
 import {SubmissionError} from "redux-form";
 
 
@@ -36,7 +36,12 @@ import {
   attachmentAttributesNotFound,
   fetchApplicationRelatedPlotSearch,
   receiveApplicationRelatedPlotSearch,
-  applicationRelatedPlotSearchNotFound
+  applicationRelatedPlotSearchNotFound,
+  fetchInfoCheckAttributes,
+  receiveInfoCheckAttributes,
+  infoCheckAttributesNotFound,
+  receiveUpdatedInfoCheckItem,
+  infoCheckUpdateFailed
 } from './actions';
 import {receiveError} from '$src/api/actions';
 
@@ -51,7 +56,9 @@ import {
   uploadFileRequest,
   deleteUploadRequest,
   fetchPendingUploadsRequest,
-  fetchAttachmentAttributesRequest
+  fetchAttachmentAttributesRequest,
+  fetchInfoCheckAttributesRequest,
+  editInfoCheckItemRequest
 } from './requests';
 import {
   fetchFormRequest,
@@ -63,6 +70,7 @@ import {
 import {push} from "react-router-redux";
 import {getRouteById, Routes} from "../root/routes";
 import type {DeleteUploadAction, UploadFileAction} from "./types";
+import {getCurrentPlotApplication} from "./selectors";
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
@@ -110,6 +118,7 @@ function* fetchSinglePlotApplicationSaga({payload: id}): Generator<any, any, any
         yield put(fetchApplicationRelatedForm(bodyAsJson.form));
         yield put(fetchApplicationRelatedAttachments(id));
         yield put(fetchFormAttributes(bodyAsJson.form));
+        yield put(fetchInfoCheckAttributes());
         break;
     }
   } catch (e) {
@@ -184,7 +193,6 @@ function* editPlotApplicationSaga({payload: plotApplication}): Generator<any, an
     yield put(receivePlotApplicationSaveFailed());
     displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, { type: 'error' });
   }
-  displayUIMessage({title: '', body: 'Tonttihaku tallennettu'});
 }
 
 function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
@@ -334,9 +342,55 @@ function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
         yield put(attachmentAttributesNotFound());
     }
   } catch (error) {
-    console.error('Failed to fetch attributes with error "%s"', error);
+    console.error('Failed to fetch attachment attributes with error "%s"', error);
     yield put(attachmentAttributesNotFound());
     yield put(receiveError(error));
+  }
+}
+
+function* fetchInfoCheckAttributesSaga(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchInfoCheckAttributesRequest);
+
+    switch(statusCode) {
+      case 200:
+        const attributes = {
+          ...bodyAsJson.fields,
+        };
+
+        yield put(receiveInfoCheckAttributes(attributes));
+        break;
+      default:
+        yield put(infoCheckAttributesNotFound());
+    }
+  } catch (error) {
+    console.error('Failed to fetch info check attributes with error "%s"', error);
+    yield put(infoCheckAttributesNotFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* editInfoCheckItemSaga({payload: infoCheck}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editInfoCheckItemRequest, infoCheck);
+
+    switch (statusCode) {
+      case 200:
+      case 201:
+        const currentPlotApplication = yield select(getCurrentPlotApplication);
+
+        yield put(receiveUpdatedInfoCheckItem(bodyAsJson));
+        yield put(fetchSinglePlotApplication(currentPlotApplication.id));
+        displayUIMessage({title: '', body: 'Käsittelytieto tallennettu'});
+        break;
+      default:
+        yield put(infoCheckUpdateFailed(infoCheck.id));
+        displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, { type: 'error' });
+    }
+  } catch(e) {
+    yield put(infoCheckUpdateFailed(infoCheck.id));
+    console.log(e);
+    displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, { type: 'error' });
   }
 }
 
@@ -354,9 +408,11 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH', fetchApplicationRelatedPlotSearchSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENTS', fetchApplicationRelatedAttachmentsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', fetchAttachmentAttributesSaga);
+      yield takeLatest('mvj/plotApplications/FETCH_INFO_CHECK_ATTRIBUTES', fetchInfoCheckAttributesSaga);
       yield takeLatest('mvj/plotApplications/UPLOAD_FILE', uploadFileSaga);
       yield takeLatest('mvj/plotApplications/FETCH_PENDING_UPLOADS', fetchPendingUploadsSaga);
       yield takeLatest('mvj/plotApplications/DELETE_UPLOAD', deleteUploadSaga);
+      yield takeEvery('mvj/plotApplications/EDIT_INFO_CHECK_ITEM', editInfoCheckItemSaga);
     }),
   ]);
 }

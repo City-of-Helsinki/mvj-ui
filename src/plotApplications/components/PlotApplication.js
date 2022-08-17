@@ -38,8 +38,10 @@ import {
 } from "../../plotSearch/selectors";
 import {getFieldAttributes} from "../../util/helpers";
 import ExternalLink from "../../components/links/ExternalLink";
-import {TARGET_SECTION_IDENTIFIER} from "../constants";
+import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "../constants";
 import {getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch} from "../selectors";
+import PlotApplicationTargetInfoCheck from "./infoCheck/PlotApplicationTargetInfoCheck";
+import PlotApplicationApplicantInfoCheck from "./infoCheck/PlotApplicationApplicantInfoCheck";
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -54,14 +56,15 @@ type Props = {
   isFetchingFormAttachments: boolean,
   attachments: Array<Object>,
   isFetchingPlotSearch: boolean,
-  plotSearch: ?Object
+  plotSearch: ?Object,
+  topLevel: boolean
 }
 
 type State = {
 
 }
 
-const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch }) => {
+const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch, topLevel, identifier }) => {
   return <>
     <Row>
       {section.fields.filter((field) => field.enabled).map((field) => {
@@ -118,6 +121,16 @@ const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch }) => {
     {section.subsections.filter((section) => section.visible).map((subsection) =>
       <SectionData section={subsection} answer={answer.sections[subsection.identifier]} key={subsection.identifier}
                    fieldTypes={fieldTypes} plotSearch={plotSearch} />)}
+    {topLevel && section.identifier === TARGET_SECTION_IDENTIFIER &&
+      <PlotApplicationTargetInfoCheck
+        section={section}
+        identifier={identifier}
+      />}
+    {topLevel && section.identifier === APPLICANT_SECTION_IDENTIFIER &&
+      <PlotApplicationApplicantInfoCheck
+        section={section}
+        identifier={identifier}
+      />}
   </>
 };
 
@@ -145,11 +158,11 @@ const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch 
           }
         }
 
-        return <Collapse className="collapse__secondary" key={i} headerTitle={subtitle}>
-          <SingleSectionItem section={section} answer={singleAnswer} fieldTypes={fieldTypes} plotSearch={plotSearch} />
+        return <Collapse className="collapse__secondary" key={i} headerTitle={subtitle} defaultOpen={topLevel}>
+          <SingleSectionItem section={section} answer={singleAnswer} fieldTypes={fieldTypes} plotSearch={plotSearch} topLevel={topLevel} identifier={`${section.identifier}[${i}]`} />
         </Collapse>;
       })
-      : <SingleSectionItem section={section} answer={answer} fieldTypes={fieldTypes} plotSearch={plotSearch} />}
+      : <SingleSectionItem section={section} answer={answer} fieldTypes={fieldTypes} plotSearch={plotSearch} topLevel={topLevel} identifier={section.identifier} />}
   </Wrapper>
 };
 

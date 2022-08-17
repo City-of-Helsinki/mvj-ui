@@ -22,7 +22,7 @@ import type {
   ReceivePlotSearchSubtypesAction,
   ReceiveApplicationRelatedPlotSearchAction,
   ReceiveAttachmentAttributesAction,
-  ReceiveAttachmentMethodsAction
+  ReceiveAttachmentMethodsAction, ReceiveInfoCheckAttributesAction
 } from "./types";
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -214,6 +214,59 @@ const currentEditorTargetsReducer: Reducer<Array<Object>> = handleActions({
   ['mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS']: (state, {payload: targets}) => targets
 }, []);
 
+const infoCheckAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotApplications/RECEIVE_INFO_CHECK_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveInfoCheckAttributesAction) => attributes,
+  ['mvj/plotApplications/INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => null,
+}, null);
+
+const isFetchingInfoCheckAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_INFO_CHECK_ATTRIBUTES']: () => true,
+  ['mvj/plotApplications/RECEIVE_INFO_CHECK_ATTRIBUTES']: () => false,
+  ['mvj/plotApplications/INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => false,
+}, false);
+
+const isUpdatingInfoCheckReducer: Reducer<Record<number, boolean>> = handleActions({
+  ['mvj/plotApplications/EDIT_INFO_CHECK_ITEM']: (state: Record<number, boolean>, {payload}) => {
+    return {
+      ...state,
+      [payload.id]: true
+    };
+  },
+  ['mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM']: (state: Record<number, boolean>, {payload}) => {
+    return {
+      ...state,
+      [payload.id]: false
+    };
+  },
+  ['mvj/plotApplications/INFO_CHECK_UPDATE_FAILED']: (state: Record<number, boolean>, {payload: id}) => {
+    return {
+      ...state,
+      [id]: false
+    };
+  }
+}, {});
+
+const lastInfoCheckUpdateSuccessfulReducer: Reducer<Record<number, ?boolean>> = handleActions({
+  ['mvj/plotApplications/EDIT_INFO_CHECK_ITEM']: (state: Record<number, ?boolean>, {payload}) => {
+    return {
+      ...state,
+      [payload.id]: null
+    };
+  },
+  ['mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM']: (state: Record<number, boolean>, {payload}) => {
+    return {
+      ...state,
+      [payload.id]: true
+    };
+  },
+  ['mvj/plotApplications/INFO_CHECK_UPDATE_FAILED']: (state: Record<number, boolean>, {payload: id}) => {
+    return {
+      ...state,
+      [id]: false
+    };
+  }
+}, {});
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   isFetchingByBBox: isFetchingByBBoxReducer,
@@ -242,5 +295,9 @@ export default combineReducers<Object, any>({
   isFetchingAttachmentAttributes: isFetchingAttachmentAttributesReducer,
   attachmentAttributes: attachmentAttributesReducer,
   attachmentMethods: attachmentMethodsReducer,
-  currentEditorTargets: currentEditorTargetsReducer
+  currentEditorTargets: currentEditorTargetsReducer,
+  isFetchingInfoCheckAttributes: isFetchingInfoCheckAttributesReducer,
+  infoCheckAttributes: infoCheckAttributesReducer,
+  isUpdatingInfoCheck: isUpdatingInfoCheckReducer,
+  lastInfoCheckUpdateSuccessful: lastInfoCheckUpdateSuccessfulReducer
 });
