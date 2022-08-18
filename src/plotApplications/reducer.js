@@ -19,6 +19,7 @@ import type {
   ReceiveFormValidFlagsAction,
   ReceivePlotApplicationsByBBoxAction,
 } from '$src/plotApplications/types';
+import type {ReceivePlotSearchSubtypesAction} from "./types";
 
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -103,6 +104,18 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   [FormNames.PLOT_APPLICATION]: true,
 });
 
+const subTypesReducer: Reducer<Object> = handleActions({
+  ['mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES']: (state: Object, {payload: subTypes}: ReceivePlotSearchSubtypesAction) => {
+    return subTypes;
+  },
+}, null);
+
+const isFetchingSubTypesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES']: () => true,
+  ['mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES']: () => false,
+  ['mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND']: () => false
+}, false);
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   isFetchingByBBox: isFetchingByBBoxReducer,
@@ -116,4 +129,5 @@ export default combineReducers<Object, any>({
   isSaveClicked: isSaveClickedReducer,
   collapseStates: collapseStatesReducer,
   isFormValidById: isFormValidByIdReducer,
+  subTypes: subTypesReducer
 });

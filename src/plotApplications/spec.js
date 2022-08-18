@@ -38,6 +38,7 @@ const baseState: PlotApplicationsState = {
   isFormValidById: {
     'plot-application': true,
   },
+  subTypes: null
 };
 
 // $FlowFixMe
@@ -186,7 +187,7 @@ describe('PlotApplication', () => {
 
         const state = plotApplicationReducer({}, editPlotApplication({}));
         expect(state).to.deep.equal(newState);
-      });      
+      });
 
       it('should update collapseStates', () => {
         const newState = {...baseState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
@@ -195,7 +196,7 @@ describe('PlotApplication', () => {
         state = plotApplicationReducer(state, receiveCollapseStates({foo2: 'bar2'}));
         expect(state).to.deep.equal(newState);
       });
-    
+
     });
   });
 });

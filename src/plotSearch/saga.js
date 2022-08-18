@@ -19,7 +19,7 @@ import {
   receiveSinglePlanUnit,
   planUnitNotFound,
   receivePlotSearchSubtype,
-  PlotSearchSubtypeNotFound,
+  plotSearchSubtypesNotFound,
   nullPlanUnits,
   receiveForm,
   formNotFound,
@@ -47,7 +47,7 @@ import {
   deletePlotSearch,
   fetchPlanUnitAttributes,
   fetchPlanUnit,
-  fetchPlotSearchSubtypes,
+  fetchPlotSearchSubtypesRequest,
   fetchFormRequest,
   fetchFormAttributesRequest,
   fetchTemplateFormsRequest,
@@ -345,7 +345,7 @@ function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
 
 function* fetchPlotSearchSubtype(): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotSearchSubtypes);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotSearchSubtypesRequest);
 
     switch (statusCode) {
       case 200:
@@ -353,16 +353,16 @@ function* fetchPlotSearchSubtype(): Generator<any, any, any> {
         yield put(receivePlotSearchSubtype(subTypes));
         break;
       case 403:
-        yield put(PlotSearchSubtypeNotFound());
+        yield put(plotSearchSubtypesNotFound());
         yield put(receiveError(new SubmissionError({...bodyAsJson, get: 'plot_search_subtype'})));
         break;
       default:
-        yield put(PlotSearchSubtypeNotFound());
+        yield put(plotSearchSubtypesNotFound());
         break;
     }
   } catch (error) {
     console.error('Failed to fetch plot search subtypes with error "%s"', error);
-    yield put(PlotSearchSubtypeNotFound());
+    yield put(plotSearchSubtypesNotFound());
     yield put(receiveError(error));
   }
 }

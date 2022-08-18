@@ -15,6 +15,7 @@ export type PlotApplicationsState = {
   isSaveClicked: boolean,
   collapseStates: Object,
   isFormValidById: Object,
+  subTypes: ?Array<Object>
 };
 
 export type PlotApplicationsList = Object;
@@ -45,3 +46,7 @@ export type ClearFormValidFlagsAction = Action<'mvj/plotApplications/CLEAR_FORM_
 export type ReceiveCollapseStatesAction = Action<'mvj/plotApplications/RECEIVE_COLLAPSE_STATES', Object>;
 
 export type EditPlotApplicationAction = Action<'mvj/plotApplications/EDIT', PlotApplication>;
+
+export type FetchPlotSearchSubtypesAction = Action<'mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
+export type ReceivePlotSearchSubtypesAction = Action<'mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
+export type PlotSearchSubtypesNotFoundAction = Action<'mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;

@@ -24,6 +24,9 @@ import type {
   FetchPlotApplicationsByBBoxAction,
   NotFoundByBBoxAction,
   ReceivePlotApplicationsByBBoxAction,
+  FetchPlotSearchSubtypesAction,
+  PlotSearchSubtypesNotFoundAction,
+  ReceivePlotSearchSubtypesAction
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -82,3 +85,12 @@ export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
 
 export const editPlotApplication = (plotApplication: PlotApplication): EditPlotApplicationAction =>
   createAction('mvj/plotApplications/EDIT')(plotApplication);
+
+export const fetchPlotSearchSubtypes = (payload: Object): FetchPlotSearchSubtypesAction =>
+  createAction('mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES')(payload);
+
+export const plotSearchSubtypesNotFound = (): PlotSearchSubtypesNotFoundAction =>
+  createAction('mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND')();
+
+export const receivePlotSearchSubtypes = (subTypes: Object): ReceivePlotSearchSubtypesAction =>
+  createAction('mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES')(subTypes);

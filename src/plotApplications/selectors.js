@@ -59,3 +59,6 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: RootState,
   }
   return null;
 };
+
+export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
+  state.plotApplications.subTypes;

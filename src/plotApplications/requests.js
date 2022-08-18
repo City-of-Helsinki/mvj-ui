@@ -13,3 +13,7 @@ export const fetchSinglePlotApplication = (id: Number): Generator <any, any, any
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('answer/'), {method: 'OPTIONS'}));
 };
+
+export const fetchPlotSearchSubtypesRequest = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('plot_search_subtype/')));
+};

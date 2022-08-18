@@ -1,6 +1,8 @@
-
 // @flow
+
 import {all, fork, put, takeLatest, call} from 'redux-saga/effects';
+import {SubmissionError} from "redux-form";
+
 
 import {displayUIMessage} from '$src/util/helpers';
 import {
@@ -14,10 +16,17 @@ import {
   receiveIsSaveClicked,
   attributesNotFound,
   applicationsNotFound,
+  plotSearchSubtypesNotFound,
+  receivePlotSearchSubtypes
 } from './actions';
 import {receiveError} from '$src/api/actions';
 
-import {fetchPlotApplications, fetchSinglePlotApplication, fetchAttributes} from './requests';
+import {
+  fetchPlotApplications,
+  fetchSinglePlotApplication,
+  fetchAttributes,
+  fetchPlotSearchSubtypesRequest
+} from './requests';
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
@@ -29,7 +38,7 @@ function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> 
       default:
         yield put(applicationsNotFound());
     }
-    
+
   } catch (e) {
     console.error(e);
     yield put(applicationsNotFound());
@@ -73,7 +82,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
-    
+
     switch(statusCode) {
       case 200:
         const attributes = {
@@ -92,8 +101,6 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
-
-  
 }
 
 function* editPlotApplicationSaga({payload: plotApplication}): Generator<any, any, any> {
@@ -101,6 +108,30 @@ function* editPlotApplicationSaga({payload: plotApplication}): Generator<any, an
   yield put(hideEditMode());
   yield put(receiveIsSaveClicked(false));
   displayUIMessage({title: '', body: 'Tonttihaku tallennettu'});
+}
+
+function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotSearchSubtypesRequest);
+
+    switch (statusCode) {
+      case 200:
+        const subTypes = bodyAsJson.results;
+        yield put(receivePlotSearchSubtypes(subTypes));
+        break;
+      case 403:
+        yield put(plotSearchSubtypesNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, get: 'plot_search_subtype'})));
+        break;
+      default:
+        yield put(plotSearchSubtypesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch plot search subtypes with error "%s"', error);
+    yield put(plotSearchSubtypesNotFound());
+    yield put(receiveError(error));
+  }
 }
 
 export default function*(): Generator<any, any, any> {
@@ -111,6 +142,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_BY_BBOX', fetchPlotApplicationsByBBoxSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/plotApplications/EDIT', editPlotApplicationSaga);
+      yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);
     }),
   ]);
 }
