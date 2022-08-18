@@ -23,7 +23,7 @@ export const getContentApplicationListItem = (plotApplication: Object): Object =
   return {
     id: plotApplication.id,
     plot_search: plotApplication.plot_search,
-    applicant: plotApplication.applicant,
+    applicants: plotApplication.applicants,
     plot_search_type: plotApplication.plot_search_type,
     plot_search_subtype: plotApplication.plot_search_subtype,
     target_identifier: plotApplication.targets.map(target => target.identifier),

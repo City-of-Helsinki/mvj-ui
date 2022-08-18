@@ -311,7 +311,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     });
 
     columns.push({
-      key: 'applicant',
+      key: 'applicants',
       text: 'Hakija',
       sortable: false,
     });
