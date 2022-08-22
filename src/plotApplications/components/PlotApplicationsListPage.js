@@ -163,9 +163,16 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
     const {visualizationType} = this.state;
+
+    const prevSearchQuery = getUrlParams(prevSearch);
     const searchQuery = getUrlParams(currentSearch);
 
     if (currentSearch !== prevSearch) {
+      if (searchQuery.visualization && searchQuery.visualization !== prevSearchQuery.visualization) {
+        this.setSearchFormValues();
+        this.handleVisualizationTypeChange(searchQuery.visualization);
+      }
+
       switch(visualizationType) {
         case VisualizationTypes.MAP:
           this.searchByBBox();
@@ -473,6 +480,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchUpdated}
               states={selectedStates}
+              context={visualizationType}
             />
           </Column>
         </Row>

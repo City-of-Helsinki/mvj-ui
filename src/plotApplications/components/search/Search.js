@@ -40,7 +40,8 @@ type Props = {
   fetchPlotSearchSubtypes: Function,
   plotSearchSubtypes: Object,
   selectedMainType: ?(number | string),
-  change: Function
+  change: Function,
+  context: string
 }
 
 type State = {
@@ -91,6 +92,10 @@ class Search extends Component<Props, State> {
           })) || [])
         ]
       }));
+    }
+
+    if (this.props.context !== prevProps.context) {
+      this.setState({isBasicSearch: this.isSearchBasicMode()});
     }
   }
 

@@ -6,17 +6,17 @@ import {
 
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
 
-/** 
+/**
  * Get plotApplication list results
- * @param {Object} plotApplication
+ * @param {Object} content
  * @return {Object[]}
  */
 export const getContentPlotApplicationsListResults = (content: Object): Array<Object> =>
   getApiResponseResults(content).map((plotApplication) => getContentApplicationListItem(plotApplication));
 
-/** 
+/**
  * Get plotApplication list item
- * @param {Object} application
+ * @param {Object} plotApplication
  * @return {Object}
  */
 export const getContentApplicationListItem = (plotApplication: Object): Object => {
@@ -34,45 +34,47 @@ export const getContentApplicationListItem = (plotApplication: Object): Object =
 
 /**
  * Get application target features for geojson data
- * @param {Object[]} targets
+ * @param {Object[]} applications
  * @returns {Object[]}
  */
 export const getApplicationTargetFeatures = (applications: Array<Object>): Array<LeafletFeature> => {
-  return applications.map((application) => {
-    const coordinates = [];
-    const areas = get(application, 'targets', []);
+  const features = [];
 
-    areas.forEach((area) => {
-      const coords = get(area, 'geometry.coordinates', []);
+  applications.forEach((application) => {
+    const targets = get(application, 'targets', []);
 
-      if(coords.length) {
-        coordinates.push(coords[0]);
+    targets.forEach((target) => {
+      const coords = get(target, 'geometry.coordinates', []);
+
+      if (!coords.length) {
+        return;
       }
-    });
 
-    return {
-      type: 'Feature',
-      geometry: {
-        coordinates: coordinates,
-        type: 'MultiPolygon',
-      },
-      properties: {
-        id: application.id,
-        feature_type: 'plotApplication',
-        targets: application.targets,
-        state: get(application, 'state.id') || application.state,
-      },
-    };
+      features.push({
+        type: 'Feature',
+        geometry: {
+          ...target.geometry
+        },
+        properties: {
+          id: application.id,
+          feature_type: 'plotApplication',
+          target: target,
+          state: get(application, 'state.id') || application.state,
+        },
+      });
+    });
   });
+
+  return features;
 };
 
 /**
  * Get application target geojson data
- * @param {Object[]} leases
+ * @param {Object[]} applications
  * @returns {Object}
  */
-export const getApplicationTargetGeoJson = (targets: Array<Object>): LeafletGeoJson => {
-  const features = getApplicationTargetFeatures(targets);
+export const getApplicationTargetGeoJson = (applications: Array<Object>): LeafletGeoJson => {
+  const features = getApplicationTargetFeatures(applications);
 
   return {
     type: 'FeatureCollection',
