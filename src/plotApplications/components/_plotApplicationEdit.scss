@@ -1,0 +1,13 @@
+.PlotApplicationEdit {
+  .ApplicationFormField__container {
+    .form-field__checkbox label {
+      display: block;
+
+      span {
+        // Fix extra value field positioning
+        display: inline-flex;
+        gap: 1em;
+      }
+    }
+  }
+}

@@ -24,11 +24,23 @@ import plotApplicationReducer from './reducer';
 import type {PlotApplicationsState} from './types';
 
 const baseState: PlotApplicationsState = {
+  attachmentAttributes: null,
+  attachmentMethods: null,
+  attachments: null,
   attributes: null,
+  fieldTypeMapping: {},
+  form: null,
   isFetching: false,
+  isFetchingAttachmentAttributes: false,
+  isFetchingAttachments: false,
   isFetchingAttributes: false,
   isFetchingByBBox: false,
   listByBBox: null,
+  isFetchingForm: false,
+  isFetchingPendingUploads: false,
+  isPerformingFileOperation: false,
+  isSaving: false,
+  isSaveClicked: false,
   list: {},
   methods: null,
   current: {},
@@ -38,7 +50,8 @@ const baseState: PlotApplicationsState = {
   isFormValidById: {
     'plot-application': true,
   },
-  subTypes: null
+  subTypes: null,
+  pendingUploads: []
 };
 
 // $FlowFixMe
@@ -173,7 +186,7 @@ describe('PlotApplication', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('shoyauld clear isFormValidById', () => {
+      it('should clear isFormValidById', () => {
         const newState = {...baseState};
 
         let state = plotApplicationReducer({}, receiveFormValidFlags({['plot-application']: false}));
@@ -181,9 +194,10 @@ describe('PlotApplication', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true by editPlotApplication', () => {
+      it('should update isFetching and isSaving flags to true by editPlotApplication', () => {
         const newState = {...baseState};
         newState.isFetching = true;
+        newState.isSaving = true;
 
         const state = plotApplicationReducer({}, editPlotApplication({}));
         expect(state).to.deep.equal(newState);

@@ -12,7 +12,15 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import {getAttributes, getCollapseStateByKey, getCurrentPlotApplication} from '$src/plotApplications/selectors';
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getCurrentPlotApplication,
+  getIsFetchingApplicationRelatedForm,
+  getApplicationRelatedForm,
+  getApplicationRelatedAttachments,
+  getIsFetchingApplicationRelatedAttachments
+} from '$src/plotApplications/selectors';
 import {receiveCollapseStates} from '$src/plotApplications/actions';
 // import {getContentBasicInformation} from '$src/plotApplications/helpers';
 import {
@@ -20,6 +28,12 @@ import {
 } from '$util/helpers';
 import type {Attributes} from '$src/types';
 import type {PlotApplication as PlotApplicationType} from '$src/plotApplications/types';
+import Loader from "../../components/loader/Loader";
+import SubTitle from "../../components/content/SubTitle";
+import {getAttachmentLink, reshapeSavedApplicationObject} from "../helpers";
+import {getFormAttributes, getIsFetchingFormAttributes} from "../../plotSearch/selectors";
+import {getFieldAttributes} from "../../util/helpers";
+import ExternalLink from "../../components/links/ExternalLink";
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -32,6 +46,86 @@ type Props = {
 type State = {
 
 }
+
+const SingleSectionItem = ({ section, answer, fieldTypes }) => {
+  return <>
+    <Row>
+      {section.fields.filter((field) => field.enabled).map((field) => {
+        const fieldAnswer = answer.fields[field.identifier];
+
+        const getChoiceName = (id) => {
+          if (!id) {
+            return null;
+          }
+
+          const choice = field.choices.find((choice) => choice.value === id || Number(choice.value) === id);
+
+          let name = choice?.text || '(tuntematon vaihtoehto)';
+          if (choice?.has_text_input) {
+            name += ` (${fieldAnswer.extra_value})`;
+          }
+
+          return name;
+        }
+
+        let displayValue = fieldAnswer?.value;
+        if (displayValue !== undefined && displayValue !== null) {
+          switch (fieldTypes.find((fieldType) => fieldType.value === field.type)?.display_name) {
+            case 'radiobutton':
+            case 'radiobuttoninline':
+              displayValue = getChoiceName(displayValue);
+              break;
+            case 'checkbox':
+            case 'dropdown':
+              if (Array.isArray(displayValue)) {
+                displayValue = displayValue.map(getChoiceName).join(', ');
+              } else {
+                displayValue = getChoiceName(displayValue);
+              }
+              break;
+            case 'uploadfiles':
+              displayValue = displayValue.length > 0 ? <ul>{displayValue.map((file) => <li key={file.id}>
+                <ExternalLink href={getAttachmentLink(file.id)} text={file.name} openInNewTab />
+              </li>)}</ul> : null;
+              break;
+          }
+        }
+
+        return <Column small={12} medium={6} large={3} key={field.identifier}>
+          <FormTextTitle>
+            {field.label}
+          </FormTextTitle>
+          <FormText className="PlotApplication__field-value">
+            {displayValue || '-'}
+          </FormText>
+        </Column>
+      })}
+    </Row>
+    {section.subsections.filter((section) => section.visible).map((subsection) =>
+      <SectionData section={subsection} answer={answer.sections[subsection.identifier]} key={subsection.identifier}
+                   fieldTypes={fieldTypes}/>)}
+  </>
+};
+
+const SectionData = ({section, answer, topLevel = false, fieldTypes }) => {
+  const title = section.title || "(tuntematon osio)";
+
+  const Wrapper = topLevel ?
+    ({ children }) => <Collapse
+      defaultOpen={true}
+      headerTitle={title}
+    >{children}</Collapse> : ({ children }) => <div>
+      <SubTitle>
+        {title}
+      </SubTitle>
+      {children}
+    </div>;
+  return <Wrapper>
+    {section.add_new_allowed ? answer.map((singleAnswer, i) => <Collapse className="collapse__secondary" key={i} headerTitle={`#${i+1}`}>
+      <SingleSectionItem section={section} answer={singleAnswer} fieldTypes={fieldTypes} />
+    </Collapse>) : <SingleSectionItem section={section} answer={answer} fieldTypes={fieldTypes} />}
+  </Wrapper>
+};
 
 class PlotApplication extends PureComponent<Props, State> {
   state = {
@@ -54,28 +148,43 @@ class PlotApplication extends PureComponent<Props, State> {
       applicationCollapseState,
       attributes,
       currentPlotApplication,
+      isFetchingForm,
+      form,
+      isFetchingFormAttributes,
+      formAttributes,
+      isFetchingFormAttachments,
+      attachments
     } = this.props;
 
     const plotApplication = currentPlotApplication; // getContentBasicInformation(currentPlotApplication);
+    const isLoading = !form || isFetchingForm || isFetchingFormAttributes || isFetchingFormAttachments;
+
+    let answerData;
+    if (!isLoading) {
+      answerData = reshapeSavedApplicationObject(plotApplication.entries_data, form, formAttributes, attachments);
+    }
+
+    const fieldTypes = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
+
     return (
-      <Fragment>
+      <div className="PlotApplication">
         <Title>
-          {'Hakemus'}
+          Hakemus
         </Title>
         <Divider />
-        {JSON.stringify(plotApplication)}
+        <Loader isLoading={isLoading} />
         <Row className='summary__content-wrapper'>
           <Column small={12}>
             <Collapse
               defaultOpen={applicationCollapseState !== undefined ? applicationCollapseState : true}
-              headerTitle={'Hakemus'}
+              headerTitle='Hakemuksen käsittelytiedot'
               onToggle={this.handleBasicInfoCollapseToggle}
             >
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'plot_search')}>
                   <Column small={12} medium={6} large={4}>
                     <FormTextTitle>
-                      {'Tonttihakemus'}
+                      Tonttihakemus
                     </FormTextTitle>
                     <FormText>{plotApplication.plot_search}</FormText>
                   </Column>
@@ -83,7 +192,7 @@ class PlotApplication extends PureComponent<Props, State> {
                 <Authorization allow={isFieldAllowedToRead(attributes, 'arrival_time')}>
                   <Column small={6} medium={4} large={2}>
                     <FormTextTitle>
-                      {'Saapumisajankohta'}
+                      Saapumisajankohta
                     </FormTextTitle>
                     <FormText>{plotApplication.arrival_time}</FormText>
                   </Column>
@@ -91,7 +200,7 @@ class PlotApplication extends PureComponent<Props, State> {
                 <Authorization allow={isFieldAllowedToRead(attributes, 'time')}>
                   <Column small={6} medium={4} large={2}>
                     <FormTextTitle>
-                      {'Klo'}
+                      Klo
                     </FormTextTitle>
                     <FormText>{plotApplication.time}</FormText>
                   </Column>
@@ -99,7 +208,7 @@ class PlotApplication extends PureComponent<Props, State> {
                 <Authorization allow={isFieldAllowedToRead(attributes, 'saver')}>
                   <Column small={6} medium={4} large={2}>
                     <FormTextTitle>
-                      {'Tallentaja'}
+                      Tallentaja
                     </FormTextTitle>
                     <FormText>{plotApplication.saver}</FormText>
                   </Column>
@@ -107,7 +216,7 @@ class PlotApplication extends PureComponent<Props, State> {
                 <Authorization allow={isFieldAllowedToRead(attributes, 'disapproval_reason')}>
                   <Column small={6} medium={4} large={2}>
                     <FormTextTitle>
-                      {'Hylkäämisen syy'}
+                      Hylkäämisen syy
                     </FormTextTitle>
                     <FormText>{plotApplication.disapproval_reason}</FormText>
                   </Column>
@@ -115,16 +224,18 @@ class PlotApplication extends PureComponent<Props, State> {
                 <Authorization allow={isFieldAllowedToRead(attributes, 'notice')}>
                   <Column small={6} medium={4} large={2}>
                     <FormTextTitle>
-                      {'Huomautus'}
+                      Huomautus
                     </FormTextTitle>
                     <FormText>{plotApplication.notice}</FormText>
                   </Column>
                 </Authorization>
               </Row>
             </Collapse>
+            {!isLoading && _.orderBy(form.sections, 'order').filter((section) => section.visible).map((section) =>
+                <SectionData section={section} answer={answerData.sections[section.identifier]} topLevel fieldTypes={fieldTypes} key={section.identifier} />)}
           </Column>
         </Row>
-      </Fragment>
+      </div>
     );
   }
 }
@@ -136,6 +247,12 @@ export default connect(
       applicationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_APPLICATION}.basic_information`),
       attributes: getAttributes(state),
       currentPlotApplication: getCurrentPlotApplication(state),
+      isFetchingForm: getIsFetchingApplicationRelatedForm(state),
+      form: getApplicationRelatedForm(state),
+      formAttributes: getFormAttributes(state),
+      isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+      attachments: getApplicationRelatedAttachments(state),
+      isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state)
     };
   },
   {

@@ -32,7 +32,6 @@ import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import PageContainer from '$components/content/PageContainer';
 import {withPlotApplicationsAttributes} from '$components/attributes/PlotApplicationsAttributes';
 import Pagination from '$components/table/Pagination';
-import CreatePlotApplicationsModal from './CreatePlotApplicationsModal';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import MapIcon from '$components/icons/MapIcon';
 import {
@@ -199,7 +198,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     this._isMounted = false;
   }
 
-
   searchByBBox = () => {
     const {fetchPlotApplicationsByBBox, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
@@ -279,8 +277,12 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     fetchPlotApplicationsList(searchQuery);
   }
 
-  openModalhandleCreatePlotApplication = () => {
-    this.setState({isModalOpen: true});
+  openCreatePlotApplication = () => {
+    const {history} = this.props;
+
+    history.push({
+      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/new`,
+    });
   }
 
   updateTableData = () => {
@@ -458,20 +460,13 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
 
     return (
       <PageContainer>
-        <Authorization allow={isMethodAllowed(plotApplicationsMethods, Methods.POST)}>
-          <CreatePlotApplicationsModal
-            isOpen={isModalOpen}
-            onClose={this.hideCreatePlotApplicationsModal}
-            onSubmit={this.handleCreatePlotApplications}
-          />
-        </Authorization>
         <Row>
           <Column small={12} large={4}>
             <Authorization allow={isMethodAllowed(plotApplicationsMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
                 label='Luo tonttihakemus'
-                onClick={this.openModalhandleCreatePlotApplication}
+                onClick={this.openCreatePlotApplication}
               />
             </Authorization>
           </Column>
