@@ -9,17 +9,26 @@ import type {
   PlotApplication,
 } from './types';
 
+export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
+  state.plotApplications.listByBBox;
+
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.plotApplications.attributes;
 
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotApplications.isFetching;
 
+export const getIsFetchingByBBox: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isFetchingByBBox;
+
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotApplications.isFetchingAttributes;
 
 export const getPlotApplicationsList: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
   state.plotApplications.list;
+
+export const getPlotApplicationsListByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
+  state.plotApplications.listByBBox;
 
 export const getPlotApplicationsMethods: Selector<Methods, void> = (state: RootState): Methods =>
   state.plotApplications.methods;
@@ -50,3 +59,6 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: RootState,
   }
   return null;
 };
+
+export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
+  state.plotApplications.subTypes;

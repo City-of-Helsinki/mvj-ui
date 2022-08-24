@@ -17,7 +17,9 @@ import type {
   ReceiveIsSaveClickedAction,
   ReceiveCollapseStatesAction,
   ReceiveFormValidFlagsAction,
+  ReceivePlotApplicationsByBBoxAction,
 } from '$src/plotApplications/types';
+import type {ReceivePlotSearchSubtypesAction} from "./types";
 
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -26,12 +28,25 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_SINGLE']: () => true,
   ['mvj/plotApplications/RECEIVE_SINGLE']: () => false,
   ['mvj/plotApplications/EDIT']: () => true,
+  ['mvj/plotApplications/APPLICATIONS_NOT_FOUND']: () => false,
 }, false);
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/plotApplications/HIDE_EDIT': () => false,
   'mvj/plotApplications/SHOW_EDIT': () => true,
 }, false);
+
+const isFetchingByBBoxReducer: Reducer<boolean> = handleActions({
+  'mvj/plotApplications/FETCH_BY_BBOX': () => true,
+  'mvj/plotApplications/NOT_FOUND_BY_BBOX': () => false,
+  'mvj/plotApplications/RECEIVE_BY_BBOX': () => false,
+}, false);
+
+const listByBBoxReducer: Reducer<PlotApplicationsList> = handleActions({
+  ['mvj/plotApplications/RECEIVE_BY_BBOX']: (state: PlotApplicationsList, {payload: plotApplications}: ReceivePlotApplicationsByBBoxAction) => {
+    return plotApplications;
+  },
+}, null);
 
 const plotApplicationsListReducer: Reducer<PlotApplicationsList> = handleActions({
   ['mvj/plotApplications/RECEIVE_ALL']: (state: PlotApplicationsList, {payload: list}: ReceivePlotApplicationsListAction) => list,
@@ -89,8 +104,22 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   [FormNames.PLOT_APPLICATION]: true,
 });
 
+const subTypesReducer: Reducer<Object> = handleActions({
+  ['mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES']: (state: Object, {payload: subTypes}: ReceivePlotSearchSubtypesAction) => {
+    return subTypes;
+  },
+}, null);
+
+const isFetchingSubTypesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES']: () => true,
+  ['mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES']: () => false,
+  ['mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND']: () => false
+}, false);
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
+  isFetchingByBBox: isFetchingByBBoxReducer,
+  listByBBox: listByBBoxReducer,
   list: plotApplicationsListReducer,
   attributes: attributesReducer,
   methods: methodsReducer,
@@ -100,4 +129,5 @@ export default combineReducers<Object, any>({
   isSaveClicked: isSaveClickedReducer,
   collapseStates: collapseStatesReducer,
   isFormValidById: isFormValidByIdReducer,
+  subTypes: subTypesReducer
 });

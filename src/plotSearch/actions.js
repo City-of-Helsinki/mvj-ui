@@ -34,8 +34,8 @@ import type {
   PlanUnit,
   PlanUnitNotFoundAction,
   FetchPlotSearchSubtypesAction,
-  PlotSearchSubtypeNotFoundAction,
-  ReceivePlotSearchSubtypeAction,
+  PlotSearchSubtypesNotFoundAction,
+  ReceivePlotSearchSubtypesAction,
   NullPlanUnitsAction,
   FetchFormAttributesAction,
   FormAttributesNotFoundAction,
@@ -46,7 +46,7 @@ import type {
   FetchTemplateFormsAction,
   ReceiveTemplateFormsAction,
   TemplateFormsNotFoundAction,
-  RemovePlanUnitDecisionsAction, AddPlanUnitDecisionsAction, ResetPlanUnitDecisionsAction,
+  RemovePlanUnitDecisionsAction, AddPlanUnitDecisionsAction, ResetPlanUnitDecisionsAction, EditFormAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -127,10 +127,10 @@ export const receivePlanUnitAttributes = (attributes: Attributes): ReceivePlanUn
 export const fetchPlotSearchSubtypes = (payload: Object): FetchPlotSearchSubtypesAction =>
   createAction('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES')(payload);
 
-export const PlotSearchSubtypeNotFound = (): PlotSearchSubtypeNotFoundAction =>
+export const plotSearchSubtypesNotFound = (): PlotSearchSubtypesNotFoundAction =>
   createAction('mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND')();
 
-export const receivePlotSearchSubtype = (subTypes: Object): ReceivePlotSearchSubtypeAction =>
+export const receivePlotSearchSubtype = (subTypes: Object): ReceivePlotSearchSubtypesAction =>
   createAction('mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES')(subTypes);
 
 export const nullPlanUnits = (): NullPlanUnitsAction =>

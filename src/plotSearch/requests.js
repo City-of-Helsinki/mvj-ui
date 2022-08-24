@@ -46,13 +46,13 @@ export const fetchPlanUnit = (id: any): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`plan_unit/${id}/`)));
 };
 
-export const fetchPlotSearchSubtypes = (): Generator<any, any, any> => {
+export const fetchPlotSearchSubtypesRequest = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('plot_search_subtype/')));
 };
 
-export const fetchTemplateFormsRequest = (id: any): Generator<any, any, any> => {
+export const fetchTemplateFormsRequest = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`form/`, {
-    is_template: true
+    is_template: true,
   })));
 };
 
@@ -67,6 +67,6 @@ export const fetchFormAttributesRequest = (id: any): Generator<any, any, any> =>
 export const editFormRequest = (form: Object): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`form/${form.id}/`), {
     method: 'PATCH',
-    body: JSON.stringify(form)
-  }))
-}
+    body: JSON.stringify(form),
+  }));
+};

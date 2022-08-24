@@ -19,7 +19,7 @@ export const PlotSearchFieldPaths = {
   DECISION: 'decision',
   DECISION_TO_LIST: 'decision_to_list',
   STAGE: 'stage',
-  SEARCH_CLASS: 'search_class'
+  SEARCH_CLASS: 'search_class',
 };
 
 /**
@@ -44,7 +44,7 @@ export const PlotSearchFieldTitles = {
   STAGE: 'Haun vaihe',
   INFO_LINK_DESCRIPTION: 'Lisätietolinkin kuvaus',
   INFO_LINK_URL: 'Lisätietolinkki',
-  INFO_LINK_LANGUAGE: 'Kieli'
+  INFO_LINK_LANGUAGE: 'Kieli',
 };
 
 /**

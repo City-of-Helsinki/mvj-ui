@@ -28,7 +28,7 @@ import {
   planUnitAttributesNotFound,
   receivePlanUnitAttributes,
   fetchPlotSearchSubtypes,
-  PlotSearchSubtypeNotFound,
+  plotSearchSubtypesNotFound,
   receivePlotSearchSubtype,
   nullPlanUnits,
   receiveForm,
@@ -290,7 +290,7 @@ describe('PlotSearch', () => {
         const newState = {...baseState};
         newState.isFetching = false;
 
-        const state = plotSearchReducer({}, PlotSearchSubtypeNotFound());
+        const state = plotSearchReducer({}, plotSearchSubtypesNotFound());
         expect(state).to.deep.equal(newState);
       });
 

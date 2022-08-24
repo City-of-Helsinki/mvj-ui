@@ -9,10 +9,13 @@ export type PlotApplicationsState = {
   list: PlotApplicationsList,
   methods: Object,
   current: PlotApplication,
+  isFetchingByBBox: boolean,
+  listByBBox: PlotApplicationsList,
   isEditMode: boolean,
   isSaveClicked: boolean,
   collapseStates: Object,
   isFormValidById: Object,
+  subTypes: ?Array<Object>
 };
 
 export type PlotApplicationsList = Object;
@@ -25,6 +28,10 @@ export type AttributesNotFoundAction = Action<'mvj/plotApplications/ATTRIBUTES_N
 
 export type FetchPlotApplicationsListAction = Action<'mvj/plotApplications/FETCH_ALL', string>;
 export type ReceivePlotApplicationsListAction = Action<'mvj/plotApplications/RECEIVE_ALL', PlotApplicationsList>;
+export type ApplicationsNotFoundAction = Action<'mvj/plotApplications/APPLICATIONS_NOT_FOUND', void>;
+export type FetchPlotApplicationsByBBoxAction = Action<'mvj/plotApplications/FETCH_BY_BBOX', Object>;
+export type ReceivePlotApplicationsByBBoxAction = Action<'mvj/plotApplications/RECEIVE_BY_BBOX', PlotApplicationsList>;
+export type NotFoundByBBoxAction = Action<'mvj/plotApplications/NOT_FOUND_BY_BBOX', void>;
 
 export type FetchSinglePlotApplicationAction = Action<'mvj/plotApplications/FETCH_SINGLE', number>;
 export type ReceiveSinglePlotApplicationAction = Action<'mvj/plotApplications/RECEIVE_SINGLE', PlotApplication>;
@@ -39,3 +46,7 @@ export type ClearFormValidFlagsAction = Action<'mvj/plotApplications/CLEAR_FORM_
 export type ReceiveCollapseStatesAction = Action<'mvj/plotApplications/RECEIVE_COLLAPSE_STATES', Object>;
 
 export type EditPlotApplicationAction = Action<'mvj/plotApplications/EDIT', PlotApplication>;
+
+export type FetchPlotSearchSubtypesAction = Action<'mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
+export type ReceivePlotSearchSubtypesAction = Action<'mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
+export type PlotSearchSubtypesNotFoundAction = Action<'mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;

@@ -20,6 +20,13 @@ import type {
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   EditPlotApplicationAction,
+  ApplicationsNotFoundAction,
+  FetchPlotApplicationsByBBoxAction,
+  NotFoundByBBoxAction,
+  ReceivePlotApplicationsByBBoxAction,
+  FetchPlotSearchSubtypesAction,
+  PlotSearchSubtypesNotFoundAction,
+  ReceivePlotSearchSubtypesAction
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -34,11 +41,23 @@ export const fetchSinglePlotApplication = (id: number): FetchSinglePlotApplicati
 export const receiveSinglePlotApplication = (plotApplication: PlotApplication): ReceiveSinglePlotApplicationAction =>
   createAction('mvj/plotApplications/RECEIVE_SINGLE')(plotApplication);
 
+export const fetchPlotApplicationsByBBox = (params: Object): FetchPlotApplicationsByBBoxAction =>
+  createAction('mvj/plotApplications/FETCH_BY_BBOX')(params);
+
+export const receivePlotApplicationsByBBox = (leases: PlotApplicationsList): ReceivePlotApplicationsByBBoxAction =>
+  createAction('mvj/plotApplications/RECEIVE_BY_BBOX')(leases);
+
+export const notFoundByBBox = (): NotFoundByBBoxAction =>
+  createAction('mvj/plotApplications/NOT_FOUND_BY_BBOX')();
+
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/plotApplications/FETCH_ATTRIBUTES')();
 
 export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
   createAction('mvj/plotApplications/RECEIVE_METHODS')(methods);
+
+export const applicationsNotFound = (): ApplicationsNotFoundAction =>
+  createAction('mvj/plotApplications/APPLICATIONS_NOT_FOUND')();
 
 export const attributesNotFound = (): AttributesNotFoundAction =>
   createAction('mvj/plotApplications/ATTRIBUTES_NOT_FOUND')();
@@ -66,3 +85,12 @@ export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
 
 export const editPlotApplication = (plotApplication: PlotApplication): EditPlotApplicationAction =>
   createAction('mvj/plotApplications/EDIT')(plotApplication);
+
+export const fetchPlotSearchSubtypes = (payload: Object): FetchPlotSearchSubtypesAction =>
+  createAction('mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES')(payload);
+
+export const plotSearchSubtypesNotFound = (): PlotSearchSubtypesNotFoundAction =>
+  createAction('mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND')();
+
+export const receivePlotSearchSubtypes = (subTypes: Object): ReceivePlotSearchSubtypesAction =>
+  createAction('mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES')(subTypes);

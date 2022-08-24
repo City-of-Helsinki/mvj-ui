@@ -12,3 +12,6 @@ npm-debug.log
 /log
 
 report.*.json
+
+docker-compose.override.yml
+docker-compose.dev.yml

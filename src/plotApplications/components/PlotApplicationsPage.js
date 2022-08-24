@@ -127,7 +127,7 @@ class PlotApplicationsPage extends Component<Props, State> {
     setPageTitle('Test 123');
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.PLOT_SEARCH),
+      linkUrl: getRouteById(Routes.PLOT_APPLICATIONS),
       pageTitle: 'Tonttihakemukset',
       showSearch: true,
     });
