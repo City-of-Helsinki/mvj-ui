@@ -33,7 +33,7 @@ import {
   calculateBasisOfRentSubventionAmount,
   calculateBasisOfRentSubventionAmountCumulative,
   calculateBasisOfRentSubventionPercantage,
-  calculateReLeaseDiscountPercent, 
+  calculateReLeaseDiscountPercent,
   calculateBasisOfRentSubventionPercent,
   calculateSubventionDiscountTotal,
   calculateSubventionDiscountTotalFromReLease,
@@ -268,7 +268,7 @@ const BasisOfRent = ({
 
               return <Row key={index}>
                 <Column small={6} medium={4} large={2}>
-                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>            
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
                     {(index === 0) && <FormText>{`Laitekaappi`}</FormText>}
                     {(index === 1) && <FormText>{`Masto`}</FormText>}
                   </Authorization>
@@ -573,7 +573,7 @@ const BasisOfRent = ({
               </Authorization>
             </Column>
           </Fragment>}
-            
+
           {calculatorType === CalculatorTypes.LEASE && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
@@ -714,7 +714,7 @@ const BasisOfRent = ({
                       const subventionPercent = calculateBasisOfRentSubventionPercantage(subvention.subvention_amount, currentAmountPerArea);
                       /* Use initial year rent to calculate subvention total */
                       const subventionTotal = calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
-                      
+
                       return(
                         <Row key={subvention.id}>
                           <Column small={4} large={2}>

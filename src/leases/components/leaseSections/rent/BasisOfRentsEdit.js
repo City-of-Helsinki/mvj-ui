@@ -120,8 +120,8 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
       usersPermissions,
     } = this.props;
     const {
-      areaUnitOptions, 
-      indexOptions, 
+      areaUnitOptions,
+      indexOptions,
       intendedUseOptions,
       managementTypeOptions,
       subventionTypeOptions,
@@ -139,7 +139,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
             <Column>
               <AddButtonSecondary
                 className={classNames(
-                  addButtonClass, 
+                  addButtonClass,
                   {'no-top-margin': (!fields || !fields.length)})
                 }
                 label='Lisää vuokralaskuri'
@@ -286,7 +286,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                   </Row>
                 </Authorization>
 
-                {basisOfRents.length > 1 && <CalculateRentTotal 
+                {basisOfRents.length > 1 && <CalculateRentTotal
                   basisOfRents={basisOfRents}
                   indexOptions={indexOptions}
                 />}

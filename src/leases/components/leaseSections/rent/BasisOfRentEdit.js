@@ -217,7 +217,7 @@ type TemporarySubventionsProps = {
 const renderTemporarySubventions = ({
   disabled,
   fields,
-  formName, 
+  formName,
   initialYearRent,
   leaseAttributes,
   usersPermissions,
@@ -440,7 +440,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       const {subventionType, subventionBasePercent, subventionGraduatedPercent, managementSubventions, temporarySubventions} = this.props;
 
       // Don't change discount_percent automatically if basis of rent is deleted
-      if(subventionType !== undefined ||  
+      if(subventionType !== undefined ||
         subventionBasePercent !== undefined ||
         subventionGraduatedPercent !== undefined ||
         managementSubventions !== undefined ||
@@ -453,7 +453,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   changeDiscounts(){
     const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
     const {change, field, subventionType, managementSubventions} = this.props;
-    
+
     if(subventionType === SubventionTypes.RE_LEASE){
       change(this.props.formName, `${field}.discount_percentage`, formatNumber(this.calculateTotalSubventionPercent()));
       change(this.props.formName, `${field}.subvention_discount_percentage`, releaseDiscountPercent.toFixed(2));
@@ -521,7 +521,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   handleCopyToClipboard = () => {
     const tableContent = this.getTableContentForClipBoard(),
       el = document.createElement('table');
-    
+
     el.className = 'sortable-table__clipboard-table';
     el.innerHTML = tableContent;
     if(copyElementContentsToClipboard(el)) {
@@ -741,7 +741,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const currentAmountPerArea = calculateBasisOfRentAmountPerArea({amount_per_area: value}, indexValue);
     change(this.props.formName, `${field}.current_amount_per_area`, currentAmountPerArea);
   }
-  
+
   onChangeCurrentAmountPerArea = (value: any) => {
     const {basisOfRent, change, field, indexOptions} = this.props;
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
@@ -874,7 +874,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
               </Authorization>
             }
           </ActionButtonWrapper>
-
           <Row>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.TYPE)}>
               <Column small={6} medium={4} large={2}>
@@ -1184,7 +1183,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 </Authorization>
               </Row>
             </Column>}
-            {showPlansInspectedAt && calculatorType === CalculatorTypes.LEASE && 
+            {showPlansInspectedAt && calculatorType === CalculatorTypes.LEASE &&
               <Column small={6} medium={4} large={2}>
                 <Authorization
                   allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}
@@ -1210,8 +1209,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 </Authorization>
               </Column>
             }
-            
-            {showLockedAt && calculatorType === CalculatorTypes.LEASE && 
+
+            {showLockedAt && calculatorType === CalculatorTypes.LEASE &&
               <Column small={6} medium={4} large={2}>
                 <Authorization
                   allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}
