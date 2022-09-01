@@ -26,7 +26,7 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     deleted: plotSearch.deleted,
     end_at: plotSearch.end_at,
     modified_at: plotSearch.modified_at,
-    preparer: getContentUser(plotSearch.preparer),
+    preparers: plotSearch.preparers?.map(getContentUser),
     stage: get(plotSearch.stage, 'id'),
     subtype: get(plotSearch.subtype, 'id'),
     type: get(plotSearch.type, 'id'),
@@ -175,7 +175,7 @@ export const filterSubTypes = (subTypes: Object, type: string): Object => {
 export const hasMinimumRequiredFieldsFilled = (state) => {
   return [
     'name',
-    'preparer',
+    'preparers',
     'stage',
     'type',
     'subtype'

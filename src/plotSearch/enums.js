@@ -6,7 +6,7 @@
 export const PlotSearchFieldPaths = {
   BASIC_INFO: 'basic_info',
   name: 'name',
-  PREPARER: 'preparer',
+  PREPARERS: 'preparers',
   APPLICATIONS: 'applications',
   TYPE: 'type',
   SUBTYPE: 'subtype',
@@ -30,7 +30,7 @@ export const PlotSearchFieldPaths = {
 export const PlotSearchFieldTitles = {
   BASIC_INFO: 'Perustiedot',
   NAME: 'Haun nimi',
-  PREPARER: 'Valmistelija',
+  PREPARERS: 'Valmistelijat',
   APPLICATIONS: 'Hakemukset',
   TYPE: 'Haun tyyppi',
   SUBTYPE: 'Haun alatyyppi',

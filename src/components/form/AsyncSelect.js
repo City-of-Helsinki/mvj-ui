@@ -16,7 +16,8 @@ type Props = {
   placeholder?: string,
   setRef?: Function,
   initialValues?: Object,
-  cacheOptions: any
+  cacheOptions: any,
+  multiSelect?: boolean
 }
 
 type State = {
@@ -109,7 +110,8 @@ class AsyncSelect extends Component<Props, State> {
       isDirty,
       placeholder,
       initialValues,
-      cacheOptions = true
+      cacheOptions = true,
+      multiSelect
     } = this.props;
 
     return(
@@ -129,8 +131,9 @@ class AsyncSelect extends Component<Props, State> {
             LoadingIndicator,
           }}
           defaultOptions
-          isDisabled={disabled}
           id={name}
+          isDisabled={disabled}
+          isMulti={multiSelect}
           loadingMessage={() => 'Ladataan...'}
           loadOptions={this.loadOptions}
           noOptionsMessage={() => 'Ei tuloksia'}

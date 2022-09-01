@@ -269,7 +269,6 @@ type Props = {
   receiveCollapseStates: Function,
   usersPermissions: UsersPermissionsType,
   errors: ?Object,
-  preparer: ?string,
   formName: string,
   isSaveClicked: boolean,
   plotSearchSubTypes: Object,
@@ -384,7 +383,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
             >
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
-                  <Column small={12} medium={12} large={6}>
+                  <Column small={12} medium={12} large={5}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'name')}
@@ -395,19 +394,20 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                     />
                   </Column>
                 </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
-                  <Column small={12} medium={6} large={3}>
+                <Authorization allow={isFieldAllowedToRead(attributes, 'preparers')}>
+                  <Column small={12} medium={6} large={4}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'preparer')}
-                      name='preparer'
+                      fieldAttributes={get(attributes, 'preparers')}
+                      name='preparers'
                       overrideValues={{
                         fieldType: FieldTypes.USER,
-                        label: PlotSearchFieldTitles.PREPARER,
-                        required: true
+                        label: PlotSearchFieldTitles.PREPARERS,
+                        required: true,
+                        multiSelect: true
                       }}
                       enableUiDataEdit
-                      uiDataKey={getUiDataPlotSearchKey('preparer')}
+                      uiDataKey={getUiDataPlotSearchKey('preparers')}
                     />
                   </Column>
                 </Authorization>
@@ -550,7 +550,6 @@ export default flowRight(
         attributes: getAttributes(state),
         usersPermissions: getUsersPermissions(state),
         collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.basic`),
-        preparer: selector(state, 'preparer'),
         type: selector(state, 'type'),
         isSaveClicked: getIsSaveClicked(state),
         errors: getErrorsByFormName(state, formName),
