@@ -75,7 +75,7 @@ export const getContentSearchProperties = (searchProperties: Object): Object => 
 
 /**
  * Get plotSearch list item
- * @param {Object} contract
+ * @param {Object} plotSearch
  * @return {Object}
  */
 export const getContentPlotSearchListItem = (plotSearch: PlotSearch): Object => {
@@ -101,7 +101,7 @@ export const getContentPlanUnitIdentifier = (plan_unit: Object): ?string =>
 
 /**
  * Get plotSearch list results
- * @param {Object} plotSearch
+ * @param {Object} content
  * @return {Object[]}
  */
 export const getContentPlotSearchListResults = (content: Object): Array<Object> =>
@@ -129,16 +129,17 @@ export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object
 /**
  * clean targets
  * @param {Object} payload
+ * @param {boolean} shouldFixTargetType
  * @returns {Object}
  */
-export const cleanTargets = (payload: Object): Object => {
+export const cleanTargets = (payload: Object, shouldFixTargetType: boolean): Object => {
   const plot_search_targets = payload.plot_search_targets.map(target => ({
     id: target.id,
     plan_unit_id: target.plan_unit_id,
-    target_type: target.target_type,
+    target_type: shouldFixTargetType ? 'searchable' : target.target_type,
     info_links: target.info_links
   }));
-  return payload = {...payload, plot_search_targets};
+  return {...payload, plot_search_targets};
 };
 
 /**

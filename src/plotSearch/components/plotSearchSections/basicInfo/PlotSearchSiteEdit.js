@@ -56,6 +56,7 @@ import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import SuggestedEdit from './SuggestedEdit';
 import RemoveButton from "../../../../components/form/RemoveButton";
+import {areTargetsAllowedToHaveType} from "../../../selectors";
 
 type SuggestedProps = {
   attributes: Attributes,
@@ -277,6 +278,7 @@ type Props = {
   planUnitMap: Object,
   change: Function,
   currentPlotSearch: Object,
+  areTargetsAllowedToHaveType: boolean
 }
 
 type State = {
@@ -449,7 +451,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     change(`${field}.plan_unit_id`, masterPlanUnitId);
   }
 
-  render(){
+  render() {
     const {
       field,
       isSaveClicked,
@@ -463,7 +465,8 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       planUnitAttributes,
       currentPlotSearch,
       index,
-      disabled
+      disabled,
+      areTargetsAllowedToHaveType
     } = this.props;
     const {
       planUnitNew,
@@ -529,16 +532,18 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 name={`${field}.plan_unit_id`}
               />
             </div>
-            <FormTextTitle>
-              {'Kohteen tyyppi'}
-            </FormTextTitle>
-            <FormField
-              disableTouched={isSaveClicked}
-              invisibleLabel={true}
-              fieldAttributes={get(attributes, 'plot_search_targets.child.children.target_type')}
-              name={`${field}.target_type`}
-              disabled={disabled}
-            />
+            {areTargetsAllowedToHaveType && <>
+              <FormTextTitle>
+                {'Kohteen tyyppi'}
+              </FormTextTitle>
+              <FormField
+                disableTouched={isSaveClicked}
+                invisibleLabel={true}
+                fieldAttributes={get(attributes, 'plot_search_targets.child.children.target_type')}
+                name={`${field}.target_type`}
+                disabled={disabled}
+              />
+            </>}
             {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
             }
@@ -701,6 +706,7 @@ export default flowRight(
         isFetchingPlanUnit: getIsFetchingPlanUnit(state, planUnitId),
         isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state, planUnitId),
         currentPlotSearch: getCurrentPlotSearch(state),
+        areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state)
       };
     },
     {

@@ -10,6 +10,8 @@ import type {
   PlotSearchList,
   PlanUnit,
 } from './types';
+import {formValueSelector} from "redux-form";
+import {FormNames} from "../enums";
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.plotSearch.attributes;
@@ -97,3 +99,10 @@ export const getDecisionCandidates: Selector<Array, void> = (state: RootState): 
     return ([ ...acc, ...next ]);
   }, []);
 };
+
+export const areTargetsAllowedToHaveType: Selector<boolean, void> = (state: RootState): Object => {
+  const selected = formValueSelector(FormNames.PLOT_SEARCH_BASIC_INFORMATION)(state, 'subtype');
+  const subtypes = getPlotSearchSubTypes(state);
+
+  return subtypes?.find((subtype) => subtype.id === selected)?.target_selection === true;
+}

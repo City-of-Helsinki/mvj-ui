@@ -34,8 +34,9 @@ import {
   getIsFetching,
   getForm,
   getIsFetchingAnyPlanUnits,
-  getIsFetchingPlanUnitAttributes
-} from '$src/plotSearch/selectors';
+  getIsFetchingPlanUnitAttributes,
+  areTargetsAllowedToHaveType
+} from '../selectors';
 import {
   editPlotSearch,
   hideEditMode,
@@ -109,6 +110,7 @@ type Props = {
   receiveFormValidFlags: Function,
   deletePlotSearch: Function,
   plotSearchMethods: MethodType,
+  areTargetsAllowedToHaveType: boolean
 }
 
 type State = {
@@ -342,6 +344,7 @@ class PlotSearchPage extends Component<Props, State> {
       editPlotSearch,
       isBasicInformationFormDirty,
       isApplicationFormDirty,
+      areTargetsAllowedToHaveType
     } = this.props;
     receiveIsSaveClicked(true);
 
@@ -361,7 +364,7 @@ class PlotSearchPage extends Component<Props, State> {
       if (isBasicInformationFormDirty || payload.form && currentPlotSearch.form !== payload.form) {
         payload.basicInfo = {...payload.basicInfo, ...basicInformationFormValues};
 
-        payload.basicInfo = cleanTargets(payload.basicInfo);
+        payload.basicInfo = cleanTargets(payload.basicInfo, !areTargetsAllowedToHaveType);
         payload.basicInfo = cleanDecisions(payload.basicInfo);
         payload.basicInfo.identifier = currentPlotSearch.identifier;
         payload.basicInfo.form = applicationFormValues.form?.id;
@@ -654,7 +657,8 @@ export default flowRight(
         isFormValidFlags: getIsFormValidFlags(state),
         plotSearchForm: getForm(state),
         isFetchingAnyPlanUnits: getIsFetchingAnyPlanUnits(state),
-        isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state)
+        isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+        areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state)
       };
     },
     {
