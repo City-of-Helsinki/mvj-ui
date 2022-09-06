@@ -15,6 +15,7 @@ type Props = {
   isDirty: boolean,
   onChange: Function,
   placeholder?: string,
+  multiSelect?: boolean
 }
 
 const FieldTypeUserSelect = ({
@@ -24,6 +25,7 @@ const FieldTypeUserSelect = ({
   isDirty,
   onChange,
   placeholder,
+  multiSelect
 }: Props) => {
   const getUsers = debounce(async(inputValue: string, callback: Function) => {
     const contacts = await fetchUsers({
@@ -42,6 +44,7 @@ const FieldTypeUserSelect = ({
       isDirty={isDirty}
       onChange={onChange}
       placeholder={placeholder}
+      multiSelect={multiSelect}
     />
   );
 };

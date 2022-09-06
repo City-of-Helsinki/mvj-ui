@@ -102,19 +102,19 @@ class BasicInfo extends PureComponent<Props, State> {
             >
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'name')}>
-                  <Column small={12} large={6}>
+                  <Column small={12} large={4}>
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('name')}>
                       {PlotSearchFieldTitles.NAME}
                     </FormTextTitle>
                     <FormText>{plotSearch.name}</FormText>
                   </Column>
                 </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
-                  <Column small={12} medium={6} large={2}>
-                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('preparer')}>
-                      {PlotSearchFieldTitles.PREPARER}
+                <Authorization allow={isFieldAllowedToRead(attributes, 'preparers')}>
+                  <Column small={12} medium={6} large={4}>
+                    <FormTextTitle uiDataKey={getUiDataPlotSearchKey('preparers')}>
+                      {PlotSearchFieldTitles.PREPARERS}
                     </FormTextTitle>
-                    <FormText>{getUserFullName(plotSearch.preparer) || '-'}</FormText>
+                    <FormText>{plotSearch.preparers?.map(getUserFullName).join(", ") || '-'}</FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'search_class')}>

@@ -395,6 +395,20 @@
         }
       }
     }
+
+    .select-input__multi-value {
+      border-radius: 0;
+
+      &__label {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      &__remove {
+        height: auto !important;
+        margin-left: 3px !important;
+      }
+    }
   }
 
   &.no-margin {

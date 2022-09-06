@@ -98,6 +98,7 @@ type InputProps = {
   label: ?string,
   language?: string,
   meta: Object,
+  multiSelect?: boolean,
   optionLabel?: string,
   options: ?Array<Object>,
   placeholder?: string,
@@ -131,6 +132,7 @@ const FormFieldInput = ({
   label,
   language,
   meta,
+  multiSelect,
   optionLabel,
   options,
   placeholder,
@@ -220,7 +222,7 @@ const FormFieldInput = ({
           </FormFieldLabel>
         }
         <div className={classNames('form-field__component', {'has-unit': unit})}>
-          {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
+          {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, multiSelect, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
           {unit && <span className='form-field__unit'>{unit}</span>}
         </div>
         {displayError && <ErrorComponent {...meta}/>}
@@ -229,7 +231,9 @@ const FormFieldInput = ({
   }
 
   if(allowRead){
-    const text = getText(fieldType, input.value);
+    const text = multiSelect
+      ? input.value.map((single) => getText(fieldType, single)).join(', ')
+      : getText(fieldType, input.value);
 
     return (
       <Fragment>
