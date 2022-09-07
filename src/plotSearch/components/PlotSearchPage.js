@@ -35,7 +35,7 @@ import {
   getForm,
   getIsFetchingAnyPlanUnits,
   getIsFetchingPlanUnitAttributes,
-  areTargetsAllowedToHaveType
+  areTargetsAllowedToHaveType, isLockedForModifications
 } from '../selectors';
 import {
   editPlotSearch,
@@ -74,6 +74,7 @@ import Application from './plotSearchSections/application/Application';
 import ApplicationEdit from './plotSearchSections/application/ApplicationEdit';
 import ApplicationMap from './plotSearchSections/map/ApplicationMap';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
+import {FIELDS_LOCKED_FOR_EDITING} from "../constants";
 
 type Props = {
   applicationFormValues: Object,
@@ -344,7 +345,8 @@ class PlotSearchPage extends Component<Props, State> {
       editPlotSearch,
       isBasicInformationFormDirty,
       isApplicationFormDirty,
-      areTargetsAllowedToHaveType
+      areTargetsAllowedToHaveType,
+      isLockedForModifications
     } = this.props;
     receiveIsSaveClicked(true);
 
@@ -368,6 +370,10 @@ class PlotSearchPage extends Component<Props, State> {
         payload.basicInfo = cleanDecisions(payload.basicInfo);
         payload.basicInfo.identifier = currentPlotSearch.identifier;
         payload.basicInfo.form = applicationFormValues.form?.id;
+
+        if (isLockedForModifications) {
+          FIELDS_LOCKED_FOR_EDITING.forEach((field) => delete payload.basicInfo[field]);
+        }
       }
 
       editPlotSearch(payload);
@@ -658,7 +664,8 @@ export default flowRight(
         plotSearchForm: getForm(state),
         isFetchingAnyPlanUnits: getIsFetchingAnyPlanUnits(state),
         isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
-        areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state)
+        areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state),
+        isLockedForModifications: isLockedForModifications(state)
       };
     },
     {

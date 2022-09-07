@@ -35,12 +35,6 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
       ...target,
       plan_unit_id: target.plan_unit?.id
     })),
-    /* applications: plotSearch.applications,
-    step: plotSearch.step,
-    start_time: plotSearch.start_time,
-    end_time: plotSearch.end_time,
-    last_update: plotSearch.last_update,
-    plotSearch_sites: getContentSearchProperties(plotSearch.plotSearch_sites), */
     decisions: plotSearch.decisions?.map((decision) => {
       // Detailed target objects are not available in a search result, only when fetching a single plot search,
       // so the decisions might not always be available.
@@ -136,7 +130,7 @@ export const cleanTargets = (payload: Object, shouldFixTargetType: boolean): Obj
   const plot_search_targets = payload.plot_search_targets.map(target => ({
     id: target.id,
     plan_unit_id: target.plan_unit_id,
-    target_type: shouldFixTargetType ? 'searchable' : target.target_type,
+    target_type: shouldFixTargetType ? PlotSearchTargetType.SEARCHABLE : target.target_type,
     info_links: target.info_links
   }));
   return {...payload, plot_search_targets};

@@ -1,5 +1,6 @@
 // @flow
 import {TableSortOrder} from '$src/enums';
+import {PlotSearchStageTypes} from "./enums";
 
 /**
  * Default plotSearch states value for plotSearch list search
@@ -26,3 +27,20 @@ export const DEFAULT_SORT_ORDER = TableSortOrder.ASCENDING;
 export const plotSearchStateFilterOptions = [
   {value: 'filter_one', label: 'Suodatusehto 1'},
 ];
+
+export const AUTOMATIC_PLOT_SEARCH_STAGES = [
+  PlotSearchStageTypes.IN_PREPARATION,
+  PlotSearchStageTypes.IN_ACTION
+];
+
+export const FIELDS_LOCKED_FOR_EDITING = [
+  'plot_search_targets',
+  'type',
+  'subtype',
+  'search_class',
+  'begin_at',
+  'end_at',
+  'created_at',
+  'modified_at',
+  'form'
+]

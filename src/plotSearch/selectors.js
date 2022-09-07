@@ -12,6 +12,7 @@ import type {
 } from './types';
 import {formValueSelector} from "redux-form";
 import {FormNames} from "../enums";
+import {PlotSearchStageTypes} from "./enums";
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.plotSearch.attributes;
@@ -100,9 +101,14 @@ export const getDecisionCandidates: Selector<Array, void> = (state: RootState): 
   }, []);
 };
 
-export const areTargetsAllowedToHaveType: Selector<boolean, void> = (state: RootState): Object => {
+export const areTargetsAllowedToHaveType: Selector<boolean, void> = (state: RootState): boolean => {
   const selected = formValueSelector(FormNames.PLOT_SEARCH_BASIC_INFORMATION)(state, 'subtype');
   const subtypes = getPlotSearchSubTypes(state);
 
   return subtypes?.find((subtype) => subtype.id === selected)?.target_selection === true;
+}
+
+export const isLockedForModifications: Selector<boolean, void> = (state: RootState): boolean => {
+  const stage = getCurrentPlotSearch(state)?.stage?.stage;
+  return stage && stage !== PlotSearchStageTypes.IN_PREPARATION;
 }

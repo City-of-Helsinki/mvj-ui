@@ -35,8 +35,10 @@ import {
   getIsFetchingTemplateForms,
   getTemplateForms,
   getCurrentPlotSearch,
-  getForm
-} from '$src/plotSearch/selectors';
+  getForm,
+  getIsFetchingFormAttributes,
+  isLockedForModifications
+} from '../../../selectors';
 import ApplicantEdit from './ApplicantEdit';
 import TargetEdit from './TargetEdit';
 import EditPlotApplicationSectionModal from './EditPlotApplicationSectionModal';
@@ -45,7 +47,6 @@ import Loader from "../../../../components/loader/Loader";
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 import WarningField from "../../../../components/form/WarningField";
-import {getIsFetchingForm, getIsFetchingFormAttributes} from "../../../selectors";
 
 type ApplicantProps = {
   disabled: boolean,
@@ -183,7 +184,8 @@ type Props = {
   errors: ?Object,
   attributes: Attributes,
   hasMinimumRequiredFieldsFilled: boolean,
-  isFetchingFormAttributes: boolean
+  isFetchingFormAttributes: boolean,
+  isLockedForModifications: boolean
 }
 
 type State = {
@@ -263,6 +265,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
       formData,
       useExistingForm,
       hasMinimumRequiredFieldsFilled,
+      isLockedForModifications,
       change
     } = this.props;
 
@@ -271,7 +274,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
     } = this.state;
 
     const formIdChanged = currentPlotSearch.form?.id !== formData?.id;
-    const isReadOnly = !hasMinimumRequiredFieldsFilled || formIdChanged;
+    const isReadOnly = !hasMinimumRequiredFieldsFilled || isLockedForModifications || formIdChanged;
 
     const formOptions = templateForms?.map((templateForm) => ({
       value: templateForm.id,
@@ -310,7 +313,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
         <Divider />
         <Row className='summary__content-wrapper'>
           <Column small={12}>
-            <Collapse
+            {!isLockedForModifications && <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
               headerTitle={ApplicationFieldTitles.APPLICATION_TEMPLATE}
@@ -323,22 +326,22 @@ class ApplicationEdit extends PureComponent<Props, State> {
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={{
-                          "required": false,
-                          "read_only": false,
-                          "label": "Lomakepohja",
-                          "type": "radio-with-field",
-                          "choices": []
+                          required: false,
+                          read_only: false,
+                          label: "Lomakepohja",
+                          type: "radio-with-field",
+                          choices: []
                         }}
                         name={`useExistingForm`}
                         overrideValues={{
-                          "options": [
+                          options: [
                             {
-                              "label": "Käytä aiemmin tallennettua lomaketta",
-                              "value": "1"
+                              label: "Käytä aiemmin tallennettua lomaketta",
+                              value: "1"
                             },
                             {
-                              "label": "Korvaa uudella lomakepohjalla",
-                              "value": "0"
+                              label: "Korvaa uudella lomakepohjalla",
+                              value: "0"
                             }
                           ]
                         }}
@@ -358,7 +361,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
                   </>}
                 </Column>
               </Row>
-            </Collapse>
+            </Collapse>}
             {formData !== null && (!formAttributes
               ? <Loader isLoading={true} />
               : <>
@@ -375,7 +378,8 @@ class ApplicationEdit extends PureComponent<Props, State> {
                       fieldAttributes={get(formAttributes, ApplicationFieldPaths.NAME)}
                       name='form.title'
                       overrideValues={{
-                        label: ApplicationFieldTitles.APPLICATION_NAME
+                        label: ApplicationFieldTitles.APPLICATION_NAME,
+                        allowEdit: !isLockedForModifications
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.NAME)}
@@ -430,7 +434,8 @@ export default flowRight(
         templateForms: getTemplateForms(state),
         currentPlotSearch: getCurrentPlotSearch(state),
         currentPlotSearchForm: getForm(state),
-        hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state)
+        hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state),
+        isLockedForModifications: isLockedForModifications(state)
       };
     },
     {

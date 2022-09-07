@@ -67,3 +67,17 @@ export const ApplicationFieldTitles = {
   APPLICATION_TEMPLATE: 'Lomakepohja',
   APPLICATION_NAME: 'Lomakkeen otsikko',
 };
+
+export const PlotSearchTargetType = {
+  SEARCHABLE: 'searchable',
+  PROCEDURAL: 'procedural_reservation',
+  DIRECT: 'direct_reservation'
+}
+
+export const PlotSearchStageTypes = {
+  IN_PREPARATION: 'in_preparation',
+  IN_ACTION: 'in_action',
+  PROCESSING: 'processing',
+  DECISION: 'decision',
+  SETTLED: 'settled'
+}
