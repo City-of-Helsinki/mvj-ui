@@ -1,5 +1,5 @@
 // @flow
-import React, {Fragment, PureComponent, type Element} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {reduxForm, formValues} from 'redux-form';
@@ -7,10 +7,6 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 
-import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import AddButtonThird from '$components/form/AddButtonThird';
-import {ButtonColors} from '$components/enums';
-import {ConfirmationModalTexts} from '$src/enums';
 import TitleH3 from '$components/content/TitleH3';
 import WhiteBox from '$components/content/WhiteBox';
 import Collapse from '$components/collapse/Collapse';
@@ -39,140 +35,12 @@ import {
   getIsFetchingFormAttributes,
   isLockedForModifications
 } from '../../../selectors';
-import ApplicantEdit from './ApplicantEdit';
-import TargetEdit from './TargetEdit';
 import EditPlotApplicationSectionModal from './EditPlotApplicationSectionModal';
 import type {Attributes} from '$src/types';
 import Loader from "../../../../components/loader/Loader";
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 import WarningField from "../../../../components/form/WarningField";
-
-type ApplicantProps = {
-  disabled: boolean,
-  fields: any,
-  formName: string,
-  isSaveClicked: Boolean,
-  usersPermissions: UsersPermissionsType,
-  attributes: Attributes,
-}
-
-const renderApplicant = ({
-  disabled,
-  fields,
-  formName,
-  // usersPermissions,
-}: ApplicantProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-  return (
-    <AppConsumer>
-      {({dispatch}) => {
-        return(
-          <Fragment>
-            {!!fields.length && fields.map((field, index) => {
-              const handleRemove = () => {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    fields.remove(index);
-                  },
-                  confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_APPLICANT.BUTTON,
-                  confirmationModalLabel: ConfirmationModalTexts.DELETE_APPLICANT.LABEL,
-                  confirmationModalTitle: ConfirmationModalTexts.DELETE_APPLICANT.TITLE,
-                });
-              };
-
-              return <ApplicantEdit
-                key={index}
-                disabled={disabled}
-                field={field}
-                formName={formName}
-                onRemove={handleRemove}
-              />;
-            })}
-
-            {!disabled &&
-              <Row>
-                <Column>
-                  <AddButtonThird
-                    label='Lisää hakija'
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            }
-          </Fragment>
-        );
-      }}
-    </AppConsumer>
-  );
-};
-
-type TargetProps = {
-  disabled: boolean,
-  fields: any,
-  formName: string,
-  isSaveClicked: Boolean,
-  usersPermissions: UsersPermissionsType,
-  attributes: Attributes,
-}
-
-const renderTarget = ({
-  disabled,
-  fields,
-  formName,
-  // usersPermissions,
-}: TargetProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-  return (
-    <AppConsumer>
-      {({dispatch}) => {
-        return(
-          <Fragment>
-            {!!fields.length && fields.map((field, index) => {
-              const handleRemove = () => {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    fields.remove(index);
-                  },
-                  confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_TARGET.BUTTON,
-                  confirmationModalLabel: ConfirmationModalTexts.DELETE_TARGET.LABEL,
-                  confirmationModalTitle: ConfirmationModalTexts.DELETE_TARGET.TITLE,
-                });
-              };
-
-              return <TargetEdit
-                key={index}
-                disabled={disabled}
-                field={field}
-                formName={formName}
-                onRemove={handleRemove}
-              />;
-            })}
-
-            {!disabled &&
-              <Row>
-                <Column>
-                  <AddButtonThird
-                    label='Lisää kohde'
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            }
-          </Fragment>
-        );
-      }}
-    </AppConsumer>
-  );
-};
 
 type Props = {
   collapseStateBasic: boolean,

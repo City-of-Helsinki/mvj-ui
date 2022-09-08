@@ -35,8 +35,6 @@ import {
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
-import attributesMockData from './attributes-mock-data.json';
-import mockData from './mock-data.json';
 
 import {
   fetchAttributes,
@@ -61,9 +59,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         const attributes = {
-          ...bodyAsJson.fields,
-          application_base: attributesMockData.fields.application_base,
-          form: attributesMockData.fields.form,
+          ...bodyAsJson.fields
         };
         const methods = bodyAsJson.methods;
 
@@ -109,7 +105,7 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSinglePlotSearch, id);
     switch (statusCode) {
       case 200:
-        yield put(receiveSinglePlotSearch({...bodyAsJson, application_base: mockData[0].application_base}));
+        yield put(receiveSinglePlotSearch({...bodyAsJson }));
         yield put(fetchTemplateForms());
         if (bodyAsJson.form) {
           yield put(fetchFormAttributes(bodyAsJson.form.id));

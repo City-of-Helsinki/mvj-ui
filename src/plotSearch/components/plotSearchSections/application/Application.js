@@ -34,11 +34,8 @@ type Props = {
   usersPermissions: UsersPermissionsType,
   applicationCollapseState: Boolean,
   receiveCollapseStates: Function,
-  attributes: Attributes,
-  currentPlotSearch: PlotSearch,
   isFetchingFormAttributes: Boolean,
   ifFetchingForm: Boolean,
-  formAttributes: Attributes,
   form: Object,
 }
 
@@ -47,9 +44,6 @@ type State = {
 }
 
 class Application extends PureComponent<Props, State> {
-  state = {
-  }
-
   handleBasicInfoCollapseToggle = (val: boolean) => {
     const {receiveCollapseStates} = this.props;
 
@@ -66,18 +60,11 @@ class Application extends PureComponent<Props, State> {
     const {
       // usersPermissions,
       applicationCollapseState,
-      attributes,
-      currentPlotSearch,
       isFetchingFormAttributes,
       isFetchingForm,
       isFetchingTemplateForms,
-      formAttributes,
       form,
     } = this.props;
-
-    const application = getContentApplication(currentPlotSearch);
-    const extraOptions = getFieldOptions(attributes, 'application_base.child.children.extra');
-    const createdOptions = getFieldOptions(attributes, 'application_base.child.children.created');
 
     if (isFetchingFormAttributes || isFetchingForm || isFetchingTemplateForms) {
       return <Loader isLoading={true} />;
@@ -108,12 +95,9 @@ export default connect(
     return {
       usersPermissions: getUsersPermissions(state),
       applicationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_APPLICATION}.application`),
-      attributes: getAttributes(state),
-      currentPlotSearch: getCurrentPlotSearch(state),
       isFetchingFormAttributes: getIsFetchingFormAttributes(state),
       isFetchingForm: getIsFetchingForm(state),
       isFetchingTemplateForms: getIsFetchingTemplateForms(state),
-      formAttributes: getFormAttributes(state),
       form: getForm(state),
     };
   },
