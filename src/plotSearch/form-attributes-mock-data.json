@@ -1,0 +1,307 @@
+{
+  "name": "Form instance",
+  "description": "",
+  "fields": {
+    "id": {
+      "type": "integer",
+      "required": false,
+      "read_only": true,
+      "label": "ID"
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "read_only": false,
+      "label": "Name",
+      "max_length": 255
+    },
+    "is_template": {
+      "type": "boolean",
+      "required": false,
+      "read_only": false,
+      "label": "Is template"
+    },
+    "title": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "Title",
+      "max_length": 255
+    },
+    "sections": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Sections",
+      "child": {
+        "type": "nested object",
+        "required": true,
+        "read_only": false,
+        "children": {
+          "id": {
+            "type": "integer",
+            "required": false,
+            "read_only": false,
+            "label": "Id"
+          },
+          "identifier": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Identifier"
+          },
+          "title": {
+            "type": "string",
+            "required": true,
+            "read_only": false,
+            "label": "Title",
+            "max_length": 255
+          },
+          "visible": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Visible"
+          },
+          "sort_order": {
+            "type": "integer",
+            "required": false,
+            "read_only": false,
+            "label": "Sort order",
+            "min_value": 0,
+            "max_value": 2147483647
+          },
+          "add_new_allowed": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "Add new allowed"
+          },
+          "add_new_text": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Add new text",
+            "max_length": 255
+          },
+          "subsections": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Subsections",
+            "child": {
+              "type": "nested object",
+              "required": false,
+              "read_only": false
+            }
+          },
+          "fields": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Fields",
+            "child": {
+              "type": "nested object",
+              "required": false,
+              "read_only": false,
+              "children": {
+                "id": {
+                  "type": "integer",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Id"
+                },
+                "identifier": {
+                  "type": "field",
+                  "required": false,
+                  "read_only": true,
+                  "label": "Identifier"
+                },
+                "type": {
+                  "type": "field",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Type",
+                  "choices": [
+                    {
+                      "value": 1,
+                      "display_name": "textbox"
+                    },
+                    {
+                      "value": 2,
+                      "display_name": "textarea"
+                    },
+                    {
+                      "value": 3,
+                      "display_name": "dropdown"
+                    },
+                    {
+                      "value": 4,
+                      "display_name": "checkbox"
+                    },
+                    {
+                      "value": 5,
+                      "display_name": "radiobutton"
+                    },
+                    {
+                      "value": 6,
+                      "display_name": "radiobuttoninline"
+                    },
+                    {
+                      "value": 7,
+                      "display_name": "uploadfiles"
+                    }
+                  ]
+                },
+                "label": {
+                  "type": "string",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Label",
+                  "max_length": 255
+                },
+                "hint_text": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Hint text",
+                  "max_length": 255
+                },
+                "enabled": {
+                  "type": "boolean",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Enabled"
+                },
+                "required": {
+                  "type": "boolean",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Required"
+                },
+                "validation": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Validation",
+                  "max_length": 255
+                },
+                "action": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Action",
+                  "max_length": 255
+                },
+                "sort_order": {
+                  "type": "integer",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Sort order",
+                  "min_value": 0,
+                  "max_value": 2147483647
+                },
+                "choices": {
+                  "type": "field",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Choices",
+                  "child": {
+                    "type": "nested object",
+                    "required": true,
+                    "read_only": false,
+                    "children": {
+                      "text": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "Text",
+                        "max_length": 255
+                      },
+                      "value": {
+                        "type": "string",
+                        "required": true,
+                        "read_only": false,
+                        "label": "Value",
+                        "max_length": 50
+                      },
+                      "action": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Action",
+                        "max_length": 255
+                      },
+                      "has_text_input": {
+                        "type": "boolean",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Has text input"
+                      }
+                    }
+                  }
+                },
+                "section_id": {
+                  "type": "field",
+                  "required": false,
+                  "read_only": true,
+                  "label": "Section id"
+                }
+              }
+            }
+          },
+          "form_id": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Form id"
+          },
+          "parent_id": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Parent id"
+          },
+          "type": {
+            "type": "string",
+            "required": false,
+            "read_only": true,
+            "label": "Type"
+          }
+        }
+      }
+    },
+    "state": {
+      "type": "choice",
+      "required": true,
+      "read_only": false,
+      "label": "State",
+      "choices": [
+        {
+          "value": "work_in_progress",
+          "display_name": "Work in progress"
+        },
+        {
+          "value": "ready",
+          "display_name": "Ready"
+        },
+        {
+          "value": "deleted",
+          "display_name": "Deleted"
+        }
+      ]
+    },
+    "plot_search_name": {
+      "type": "string",
+      "required": false,
+      "read_only": true,
+      "label": "Plot search name"
+    },
+    "plot_search_id": {
+      "type": "integer",
+      "required": false,
+      "read_only": true,
+      "label": "Plot search id"
+    }
+  }
+}
