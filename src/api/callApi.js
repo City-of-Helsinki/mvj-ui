@@ -2,6 +2,7 @@
 import {call, select} from 'redux-saga/effects';
 
 import {getApiToken} from '$src/auth/selectors';
+import {UI_ACCEPT_LANGUAGE_VALUE} from "./constants";
 
 function* callApi(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);
@@ -9,6 +10,11 @@ function* callApi(request: Request): Generator<any, any, any> {
   if (apiToken) {
     request.headers.set('Authorization', `Bearer ${apiToken}`);
   }
+
+  request.headers.set(
+    'Accept-Language',
+    UI_ACCEPT_LANGUAGE_VALUE
+  );
 
   if (request.method === 'PATCH' || request.method === 'POST' || request.method === 'PUT') {
     request.headers.set('Content-Type', 'application/json');
