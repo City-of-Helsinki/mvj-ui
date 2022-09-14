@@ -30,3 +30,6 @@ export const BOUNDING_BOX_FOR_SEARCH_QUERY = ['24.681112147072024', '60.10217395
  * @const {number}
  */
 export const MAX_ZOOM_LEVEL_TO_FETCH_LEASES = 7;
+
+export const APPLICANT_SECTION_IDENTIFIER = 'hakijan-tiedot';
+export const TARGET_SECTION_IDENTIFIER = 'haettava-kohde';

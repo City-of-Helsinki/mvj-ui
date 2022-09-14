@@ -20,6 +20,7 @@ import type {
   ReceiveApplicationRelatedFormAction,
   ReceiveApplicationRelatedAttachmentsAction,
   ReceivePlotSearchSubtypesAction,
+  ReceiveApplicationRelatedPlotSearchAction,
   ReceiveAttachmentAttributesAction,
   ReceiveAttachmentMethodsAction
 } from "./types";
@@ -124,10 +125,23 @@ const formReducer: Reducer<Object> = handleActions({
   }
 }, null);
 
+const plotSearchReducer: Reducer<Object> = handleActions({
+  ['mvj/plotApplications/FETCH_PLOT_SEARCH']: () => null,
+  ['mvj/plotApplications/RECEIVE_PLOT_SEARCH']: (state: Object, { payload: plotSearch }: ReceiveApplicationRelatedPlotSearchAction) => {
+    return plotSearch;
+  }
+}, null);
+
 const isFetchingFormReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_FORM']: () => true,
   ['mvj/plotApplications/RECEIVE_FORM']: () => false,
   ['mvj/plotApplications/FORM_NOT_FOUND']: () => false,
+}, false);
+
+const isFetchingPlotSearchReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_PLOT_SEARCH']: () => true,
+  ['mvj/plotApplications/RECEIVE_PLOT_SEARCH']: () => false,
+  ['mvj/plotApplications/PLOT_SEARCH_NOT_FOUND']: () => false,
 }, false);
 
 const attachmentReducer: Reducer<Object> = handleActions({
@@ -196,6 +210,10 @@ const isFetchingAttachmentAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/RECEIVE_ATTACHMENT_METHODS']: () => false,
 }, false);
 
+const currentEditorTargetsReducer: Reducer<Array<Object>> = handleActions({
+  ['mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS']: (state, {payload: targets}) => targets
+}, []);
+
 export default combineReducers<Object, any>({
   isFetching: isFetchingReducer,
   isFetchingByBBox: isFetchingByBBoxReducer,
@@ -211,7 +229,9 @@ export default combineReducers<Object, any>({
   isFormValidById: isFormValidByIdReducer,
   subTypes: subTypesReducer,
   form: formReducer,
+  plotSearch: plotSearchReducer,
   isFetchingForm: isFetchingFormReducer,
+  isFetchingPlotSearch: isFetchingFormReducer,
   attachments: attachmentReducer,
   isFetchingAttachments: isFetchingAttachmentsReducer,
   fieldTypeMapping: fieldTypeMappingReducer,
@@ -221,5 +241,6 @@ export default combineReducers<Object, any>({
   isPerformingFileOperation: isPerformingFileOperationReducer,
   isFetchingAttachmentAttributes: isFetchingAttachmentAttributesReducer,
   attachmentAttributes: attachmentAttributesReducer,
-  attachmentMethods: attachmentMethodsReducer
+  attachmentMethods: attachmentMethodsReducer,
+  currentEditorTargets: currentEditorTargetsReducer
 });

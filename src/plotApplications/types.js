@@ -24,6 +24,7 @@ export type PlotApplicationsState = {
   attachmentMethods: Methods,
   isFetchingAttachmentAttributes: boolean,
   attachments: ?Array<Object>,
+  currentEditorTargets: Array<Object>
 };
 
 export type PlotApplicationsList = Object;
@@ -66,6 +67,10 @@ export type FetchApplicationRelatedFormAction = Action<'mvj/plotApplications/FET
 export type ReceiveApplicationRelatedFormAction = Action<'mvj/plotApplications/RECEIVE_FORM', Object>;
 export type ApplicationRelatedFormNotFoundAction = Action<'mvj/plotApplications/FORM_NOT_FOUND', void>;
 
+export type FetchApplicationRelatedPlotSearchAction = Action<'mvj/plotApplications/FETCH_PLOT_SEARCH', void>;
+export type ReceiveApplicationRelatedPlotSearchAction = Action<'mvj/plotApplications/RECEIVE_PLOT_SEARCH', Object>;
+export type ApplicationRelatedPlotSearchNotFoundAction = Action<'mvj/plotApplications/PLOT_SEARCH_NOT_FOUND', void>;
+
 export type FetchApplicationRelatedAttachmentsAction = Action<'mvj/plotApplications/FETCH_ATTACHMENTS', void>;
 export type ReceiveApplicationRelatedAttachmentsAction = Action<'mvj/plotApplications/RECEIVE_ATTACHMENTS', Object>;
 export type ApplicationRelatedAttachmentsNotFoundAction = Action<'mvj/plotApplications/ATTACHMENTS_NOT_FOUND', void>;
@@ -82,4 +87,6 @@ export type ReceiveFileOperationFinishedAction = Action<'mvj/plotApplications/FI
 export type FetchAttachmentAttributesAction = Action<'mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', void>;
 export type ReceiveAttachmentAttributesAction = Action<'mvj/plotApplications/RECEIVE_ATTACHMENT_ATTRIBUTES', Attributes>;
 export type ReceiveAttachmentMethodsAction = Action<'mvj/plotApplications/RECEIVE_ATTACHMENT_METHODS', Methods>;
-export type AttachmentAttributesNotFoundAction = Action<'mvj/plotApplications/ATTACHMENT_METHODS_NOT_FOUND', void>;
+export type AttachmentAttributesNotFoundAction = Action<'mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND', void>;
+
+export type SetCurrentEditorTargetsAction = Action<'mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS', Array<Object>>;

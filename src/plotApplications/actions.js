@@ -41,6 +41,10 @@ import type {
   ReceiveAttachmentAttributesAction,
   ReceiveAttachmentMethodsAction,
   AttachmentAttributesNotFoundAction,
+  SetCurrentEditorTargetsAction,
+  FetchApplicationRelatedPlotSearchAction,
+  ReceiveApplicationRelatedPlotSearchAction,
+  ApplicationRelatedPlotSearchNotFoundAction,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -127,6 +131,15 @@ export const receiveApplicationRelatedForm = (payload: Object): ReceiveApplicati
 export const applicationRelatedFormNotFound = (payload: Object): ApplicationRelatedFormNotFoundAction =>
   createAction('mvj/plotApplications/FORM_NOT_FOUND')(payload);
 
+export const fetchApplicationRelatedPlotSearch = (payload: Object): FetchApplicationRelatedPlotSearchAction =>
+  createAction('mvj/plotApplications/FETCH_PLOT_SEARCH')(payload);
+
+export const receiveApplicationRelatedPlotSearch = (payload: Object): ReceiveApplicationRelatedPlotSearchAction =>
+  createAction('mvj/plotApplications/RECEIVE_PLOT_SEARCH')(payload);
+
+export const applicationRelatedPlotSearchNotFound = (payload: Object): ApplicationRelatedPlotSearchNotFoundAction =>
+  createAction('mvj/plotApplications/PLOT_SEARCH_NOT_FOUND')(payload);
+
 export const fetchApplicationRelatedAttachments = (payload: Object): FetchApplicationRelatedAttachmentsAction =>
   createAction('mvj/plotApplications/FETCH_ATTACHMENTS')(payload);
 
@@ -168,3 +181,6 @@ export const receiveAttachmentMethods = (payload: Object): ReceiveAttachmentMeth
 
 export const attachmentAttributesNotFound = (): AttachmentAttributesNotFoundAction =>
   createAction('mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND')();
+
+export const setCurrentEditorTargets = (payload: Array<Object>): SetCurrentEditorTargetsAction =>
+  createAction('mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS')(payload);

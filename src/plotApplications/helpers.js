@@ -5,7 +5,8 @@ import createUrl from "../api/createUrl";
 import {store} from '../root/startApp';
 import {formValueSelector} from "redux-form";
 import {FormNames} from "../enums";
-import {getPendingUploads} from "./selectors";
+import {getCurrentEditorTargets, getPendingUploads} from "./selectors";
+import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "./constants";
 
 import {
   getApiResponseResults,
@@ -100,6 +101,10 @@ export const reshapeSavedApplicationObject = (application, form, formAttributes,
 
   const reshapeSingleSectionData = (section, answersNode) => {
     const data = getEmptySection();
+
+    if (answersNode.metadata) {
+      data.metadata = { ...answersNode.metadata };
+    }
 
     section.subsections.forEach((subsection) => {
       reshapeArrayOrSingleSection(subsection, data, answersNode);
@@ -213,8 +218,13 @@ export const getInitialApplicationForm = (
     section.fields.forEach((field) => buildField(field, workingItem.fields));
 
     if (section.add_new_allowed) {
-      parent[section.identifier] = [workingItem];
       root.sectionTemplates[section.identifier] = { ...workingItem };
+
+      if (section.identifier === TARGET_SECTION_IDENTIFIER) {
+        parent[section.identifier] = [];
+      } else {
+        parent[section.identifier] = [workingItem];
+      }
     } else {
       parent[section.identifier] = workingItem;
     }
@@ -292,10 +302,39 @@ export const prepareApplicationForSubmission = () => {
     'formEntries.fileFieldIds'
   );
 
+  const attachMeta = (rootLevelSections) => {
+    Object.keys(rootLevelSections).forEach((sectionName) => {
+      switch (sectionName) {
+        case APPLICANT_SECTION_IDENTIFIER:
+          rootLevelSections[sectionName].forEach((applicant) => {
+            if (applicant.fields['hakija'] === 'Yritys') {
+              applicant.metadata = {
+                identifier: null // todo
+              };
+            } else {
+              applicant.metadata = {
+                identifier: null // todo
+              };
+            }
+          });
+          break;
+        case TARGET_SECTION_IDENTIFIER:
+          rootLevelSections[sectionName].forEach((target) => {
+            target.metadata = {
+              identifier: target.metadata.identifier
+            };
+          });
+          break;
+      }
+    });
+
+    return rootLevelSections;
+  }
+
   return {
     form: selector(state, 'formId'),
     entries: {
-      sections,
+      sections: attachMeta(sections),
     },
     targets: selector(state, 'targets'),
     attachments: getPendingUploads(state)
@@ -303,5 +342,18 @@ export const prepareApplicationForSubmission = () => {
       .map((file) => file.id)
   };
 };
+
+export const getSectionTargetFromMeta = (field: string): string => {
+  const state = store.getState();
+  const meta = formValueSelector(FormNames.PLOT_APPLICATION)(state, `${field}.metadata`);
+
+  if (meta) {
+    const target = getCurrentEditorTargets(state).find((target) => target.id === meta.identifier);
+    return target ? `${target.lease_address.address} (${target.lease_identifier})` : '';
+  }
+  else {
+    return '';
+  }
+}
 
 export const getApplicationAttachmentDownloadLink = (id) => createUrl(`attachment/${id}/download`);

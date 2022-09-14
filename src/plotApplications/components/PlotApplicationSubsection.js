@@ -13,7 +13,11 @@ import {
   getIsFetchingPendingUploads, getIsPerformingFileOperation,
   getPendingUploads
 } from '../selectors';
-import {getApplicationAttachmentDownloadLink, getSectionTemplate} from '../helpers';
+import {
+  getApplicationAttachmentDownloadLink,
+  getSectionTargetFromMeta,
+  getSectionTemplate
+} from '../helpers';
 import AddButton from "../../components/form/AddButton";
 import RemoveButton from "../../components/form/RemoveButton";
 import FormField from "../../components/form/FormField";
@@ -29,6 +33,7 @@ import {ConfirmationModalTexts} from "../../enums";
 import {ButtonColors} from "../../components/enums";
 import {ActionTypes, AppConsumer} from "../../app/AppContext";
 import FormHintText from "../../components/form/FormHintText";
+import {TARGET_SECTION_IDENTIFIER} from "../constants";
 
 const ApplicationSectionKeys = {
   Subsections: 'sections',
@@ -302,7 +307,6 @@ const ApplicationFormSubsectionFieldArray = ({
   section,
   headerTag: HeaderTag,
 }) => {
-
   return (
     <div className="ApplicationFormSubsectionFieldArray">
       {fields.map((identifier, i) => (
@@ -312,9 +316,13 @@ const ApplicationFormSubsectionFieldArray = ({
         >
           <div className="ApplicationFormSubsectionFieldArray__item-content">
             <HeaderTag>
-              {section.title} ({i + 1})
+              {section.identifier === TARGET_SECTION_IDENTIFIER
+                ? <>{section.title} ({getSectionTargetFromMeta(identifier)})</>
+                : <>{section.title} ({i + 1})</>
+              }
+
             </HeaderTag>
-            {fields.length > 1 && (
+            {fields.length > 1 && section.identifier !== TARGET_SECTION_IDENTIFIER && (
               <RemoveButton
                 onClick={() => fields.remove(i)}
               />
@@ -326,10 +334,10 @@ const ApplicationFormSubsectionFieldArray = ({
           </div>
         </div>
       ))}
-      <AddButton
+      {section.identifier !== TARGET_SECTION_IDENTIFIER && <AddButton
         onClick={() => fields.push(getSectionTemplate(section.identifier))}
         label={section.add_new_text || "Lisää uusi"}
-      />
+      />}
     </div>
   );
 };
