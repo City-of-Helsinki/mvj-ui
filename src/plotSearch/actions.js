@@ -46,7 +46,11 @@ import type {
   FetchTemplateFormsAction,
   ReceiveTemplateFormsAction,
   TemplateFormsNotFoundAction,
-  RemovePlanUnitDecisionsAction, AddPlanUnitDecisionsAction, ResetPlanUnitDecisionsAction, EditFormAction,
+  RemovePlanUnitDecisionsAction,
+  AddPlanUnitDecisionsAction,
+  ResetPlanUnitDecisionsAction,
+  EditFormAction,
+  FetchPlotSearchStagesAction, ReceivePlotSearchStagesAction, PlotSearchStagesNotFoundAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -174,3 +178,12 @@ export const removePlanUnitDecisions = (planUnitId: number): RemovePlanUnitDecis
 
 export const resetPlanUnitDecisions = (): ResetPlanUnitDecisionsAction =>
   createAction('mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS')();
+
+export const fetchStages = (): FetchPlotSearchStagesAction =>
+  createAction('mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES')();
+
+export const receiveStages = (payload: Array<Object>): ReceivePlotSearchStagesAction =>
+  createAction('mvj/plotSearch/RECEIVE_PLOT_SEARCH_STAGES')(payload);
+
+export const stagesNotFound = (): PlotSearchStagesNotFoundAction =>
+  createAction('mvj/plotSearch/PLOT_SEARCH_STAGES_NOT_FOUND')();

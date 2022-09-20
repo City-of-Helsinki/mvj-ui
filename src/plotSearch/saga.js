@@ -32,6 +32,9 @@ import {
   addPlanUnitDecisions,
   resetPlanUnitDecisions,
   editForm,
+  receiveStages,
+  stagesNotFound,
+  fetchStages,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -50,6 +53,7 @@ import {
   fetchFormAttributesRequest,
   fetchTemplateFormsRequest,
   editFormRequest,
+  fetchStagesRequest,
 } from './requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -107,6 +111,7 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
       case 200:
         yield put(receiveSinglePlotSearch({...bodyAsJson }));
         yield put(fetchTemplateForms());
+        yield put(fetchStages());
         if (bodyAsJson.form) {
           yield put(fetchFormAttributes(bodyAsJson.form.id));
           yield put(receiveForm(bodyAsJson.form));
@@ -339,7 +344,7 @@ function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
   }
 }
 
-function* fetchPlotSearchSubtype(): Generator<any, any, any> {
+function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotSearchSubtypesRequest);
 
@@ -424,6 +429,30 @@ function* fetchFormAttributesSaga({payload: id}): Generator<any, any, any> {
   }
 }
 
+function* fetchStagesSaga(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchStagesRequest);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveStages(bodyAsJson.results));
+        break;
+      case 403:
+        yield put(stagesNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, get: 'plot_search_stage'})));
+        break;
+      default:
+        yield put(stagesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch plot search stages with error "%s"', error);
+    yield put(stagesNotFound());
+    yield put(receiveError(error));
+  }
+}
+
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -440,7 +469,8 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/plotSearch/FETCH_FORM_ATTRIBUTES', fetchFormAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_FORM', fetchFormSaga);
       yield takeEvery('mvj/plotSearch/EDIT_FORM', editFormSaga);
-      yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtype);
+      yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);
+      yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES', fetchStagesSaga);
     }),
   ]);
 }

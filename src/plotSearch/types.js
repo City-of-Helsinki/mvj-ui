@@ -22,7 +22,9 @@ export type PlotSearchState = {
   isFetchingTemplateForms: boolean,
   formAttributes: Object,
   form: Object,
-  templateForms: Object
+  templateForms: Object,
+  isFetchingStages: boolean,
+  stages: Array<Object>
 };
 
 export type PlotSearchId = number;
@@ -97,4 +99,8 @@ export type ReceiveTemplateFormsAction = Action<'mvj/plotSearch/RECEIVE_TEMPLATE
 export type AddPlanUnitDecisionsAction = Action<'mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS', Object>;
 export type RemovePlanUnitDecisionsAction = Action<'mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS', number>;
 export type ResetPlanUnitDecisionsAction = Action<'mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS', void>;
+
+export type FetchPlotSearchStagesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES', Object>;
+export type ReceivePlotSearchStagesAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_STAGES', Array<Object>>;
+export type PlotSearchStagesNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_STAGES_NOT_FOUND', void>;
 

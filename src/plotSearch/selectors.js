@@ -112,3 +112,9 @@ export const isLockedForModifications: Selector<boolean, void> = (state: RootSta
   const stage = getCurrentPlotSearch(state)?.stage?.stage;
   return stage && stage !== PlotSearchStageTypes.IN_PREPARATION;
 }
+
+export const isFetchingStages: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingStages;
+
+export const getStages: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
+  state.plotSearch.stages;

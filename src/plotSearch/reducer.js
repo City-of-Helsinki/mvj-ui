@@ -20,10 +20,12 @@ import type {
   ReceivePlotSearchSubtypeAction,
   ReceiveFormAttributesAction,
   ReceiveFormAction,
-  ReceiveTemplateFormsAction
-} from '$src/plotSearch/types';
+  ReceiveTemplateFormsAction,
+  AddPlanUnitDecisionsAction,
+  ReceivePlotSearchStagesAction,
+  RemovePlanUnitDecisionsAction
+} from './types';
 import {annotatePlanUnitDecision} from "./helpers";
-import type {AddPlanUnitDecisionsAction, RemovePlanUnitDecisionsAction} from "./types";
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -212,6 +214,19 @@ const decisionCandidateReducer: Reducer<Array> = handleActions({
   }
 }, {});
 
+const stagesReducer: Reducer<Array<Object>> = handleActions({
+  ['mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES']: () => [],
+  ['mvj/plotSearch/PLOT_SEARCH_STAGES_NOT_FOUND']: () => [],
+  ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_STAGES']: (state, {payload: stages}: ReceivePlotSearchStagesAction) => stages,
+}, []);
+
+const isFetchingStagesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES']: () => true,
+  ['mvj/plotSearch/PLOT_SEARCH_STAGES_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_STAGES']: () => false,
+}, false);
+
+
 export default combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
@@ -234,5 +249,7 @@ export default combineReducers<Object, any>({
   formAttributes: formAttributesReducer,
   templateForms: templateFormsReducer,
   form: formReducer,
-  decisionCandidates: decisionCandidateReducer
+  decisionCandidates: decisionCandidateReducer,
+  stages: stagesReducer,
+  isFetchingStages: isFetchingStagesReducer
 });

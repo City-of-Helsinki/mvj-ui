@@ -52,8 +52,9 @@ import PlotSearchSiteEdit from './PlotSearchSiteEdit';
 import type {Attributes} from '$src/types';
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 import WarningField from "../../../../components/form/WarningField";
-import {getCurrentPlotSearch, isLockedForModifications} from "../../../selectors";
+import {getCurrentPlotSearch, getStages, isLockedForModifications} from "../../../selectors";
 import PlotSearchTargetListing from "./PlotSearchTargetListing";
+import {AUTOMATIC_PLOT_SEARCH_STAGES} from "../../../constants";
 
 type DecisionsProps = {
   attributes: Attributes,
@@ -367,11 +368,25 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       hasMinimumRequiredFieldsFilled,
       change,
       currentPlotSearch,
-      isLockedForModifications
+      isLockedForModifications,
+      stages
     } = this.props;
     const subTypeOptions = filterSubTypes(plotSearchSubTypes, type);
 
     const hasUnidentifiedDecisions = selectedDecisions.some((decision) => decision?.id && !decision?.relatedPlanUnitId);
+
+    const canEditStage = !AUTOMATIC_PLOT_SEARCH_STAGES.includes(currentPlotSearch.stage.stage);
+    let stageAttributes = get(attributes, 'stage');
+    if (stageAttributes && canEditStage) {
+      stageAttributes = {
+        ...stageAttributes,
+        choices: stages.filter((stage) => !AUTOMATIC_PLOT_SEARCH_STAGES.includes(stage.stage)
+        ).map((stage) => ({
+          display_name: stage.name,
+          value: stage.id
+        }))
+      };
+    }
 
     return (
       <form>
@@ -502,11 +517,12 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   <Column small={12} medium={6} large={2}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'stage')}
+                      fieldAttributes={stageAttributes}
                       name='stage'
                       overrideValues={{
                         label: PlotSearchFieldTitles.STAGE,
-                        required: true
+                        required: true,
+                        allowEdit: canEditStage
                       }}
                     />
                   </Column>
@@ -572,7 +588,8 @@ export default flowRight(
         targets: selector(state, 'plot_search_targets'),
         hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state),
         currentPlotSearch: getCurrentPlotSearch(state),
-        isLockedForModifications: isLockedForModifications(state)
+        isLockedForModifications: isLockedForModifications(state),
+        stages: getStages(state)
       };
     },
     {

@@ -77,7 +77,9 @@ const baseState: PlotSearchState = {
   formAttributes: null,
   form: null,
   templateForms: [],
-  decisionCandidates: {}
+  decisionCandidates: {},
+  stages: [],
+  isFetchingStages: false
 };
 
 
