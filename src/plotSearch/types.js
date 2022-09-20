@@ -16,6 +16,7 @@ export type PlotSearchState = {
   planUnit: Object,
   pendingPlanUnitFetches: Array<number>,
   pendingPlanUnitAttributeFetches: Array<number>,
+  isFetchingSubtypes: boolean,
   subTypes: Object,
   isFetchingFormAttributes: boolean,
   isFetchingForm: boolean,

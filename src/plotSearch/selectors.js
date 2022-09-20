@@ -74,6 +74,9 @@ export const getIsFetchingPlanUnitAttributes: Selector<boolean, number> = (state
 export const getIsFetchingAnyPlanUnitAttributes: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotSearch.pendingPlanUnitAttributeFetches.length > 0;
 
+export const getIsFetchingSubtypes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingSubtypes;
+
 export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
   state.plotSearch.subTypes;
 

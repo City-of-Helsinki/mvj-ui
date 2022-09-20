@@ -35,7 +35,7 @@ import {
   getForm,
   getIsFetchingAnyPlanUnits,
   getIsFetchingPlanUnitAttributes,
-  areTargetsAllowedToHaveType, isLockedForModifications, isFetchingStages
+  areTargetsAllowedToHaveType, isLockedForModifications, isFetchingStages, getIsFetchingSubtypes
 } from '../selectors';
 import {
   editPlotSearch,
@@ -523,12 +523,13 @@ class PlotSearchPage extends Component<Props, State> {
       plotSearchMethods,
       isFetchingAnyPlanUnits,
       isFetchingAnyPlanUnitAttributes,
-      isFetchingStages
+      isFetchingStages,
+      isFetchingSubtypes
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
 
-    if(isFetchingPlotSearchAttributes || isFetchingUsersPermissions || isFetching || isFetchingStages) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingPlotSearchAttributes || isFetchingUsersPermissions || isFetching || isFetchingSubtypes || isFetchingStages) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!plotSearchAttributes || isEmpty(usersPermissions)) return null;
 
@@ -667,7 +668,8 @@ export default flowRight(
         isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
         areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state),
         isLockedForModifications: isLockedForModifications(state),
-        isFetchingStages: isFetchingStages(state)
+        isFetchingStages: isFetchingStages(state),
+        isFetchingSubtypes: getIsFetchingSubtypes(state)
       };
     },
     {

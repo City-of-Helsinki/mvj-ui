@@ -79,7 +79,8 @@ const baseState: PlotSearchState = {
   templateForms: [],
   decisionCandidates: {},
   stages: [],
-  isFetchingStages: false
+  isFetchingStages: false,
+  isFetchingSubtypes: false
 };
 
 
@@ -294,17 +295,19 @@ describe('PlotSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to false by PlotSearchSubtypeNotFound', () => {
+      it('should update isFetchingSubtypes flag to false by PlotSearchSubtypeNotFound', () => {
         const newState = {...baseState};
-        newState.isFetching = false;
+        newState.isFetchingSubtypes = false;
 
-        const state = plotSearchReducer({}, plotSearchSubtypesNotFound());
+        const state = plotSearchReducer({
+          isFetchingSubtypes: true
+        }, plotSearchSubtypesNotFound());
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when fetching fetchPlotSearchSubtypes', () => {
+      it('should update isFetchingSubtypes flag to true when fetching fetchPlotSearchSubtypes', () => {
         const newState = {...baseState};
-        newState.isFetching = true;
+        newState.isFetchingSubtypes = true;
 
         const state = plotSearchReducer({}, fetchPlotSearchSubtypes());
         expect(state).to.deep.equal(newState);

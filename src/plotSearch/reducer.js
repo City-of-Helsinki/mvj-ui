@@ -47,6 +47,9 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/EDIT']: () => true,
   ['mvj/plotSearch/NOT_FOUND']: () => false,
   ['mvj/plotSearch/DELETE']: () => true,
+}, false);
+
+const isFetchingSubtypesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES']: () => true,
   ['mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND']: () => false,
   ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES']: () => false,
@@ -233,6 +236,7 @@ export default combineReducers<Object, any>({
   current: currentPlotSearchReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isFetchingSubtypes: isFetchingSubtypesReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isFormValidById: isFormValidByIdReducer,
   isSaveClicked: isSaveClickedReducer,
