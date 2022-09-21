@@ -11,6 +11,7 @@ import {
 } from '$util/helpers';
 import {formatDate} from "../util/helpers";
 import {formValueSelector} from "redux-form";
+import {PlotSearchTargetType} from "./enums";
 
 /**
  * Get plotSearch basic information content
