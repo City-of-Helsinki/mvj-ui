@@ -7,19 +7,16 @@ import Authorization from '$components/authorization/Authorization';
 import {getUserFullName} from '$src/users/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {FormNames, ViewModes} from '$src/enums';
-import WhiteBox from '$components/content/WhiteBox';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
-import SubTitle from '$components/content/SubTitle';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {getAttributes, getCollapseStateByKey, getCurrentPlotSearch, getPlanUnit} from '$src/plotSearch/selectors';
 import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
-import PlotSearchSite from './PlotSearchSite';
 import {getContentBasicInformation, formatDecisionName} from '$src/plotSearch/helpers';
 import {getUiDataPlotSearchKey} from '$src/uiData/helpers';
 import {
@@ -41,6 +38,7 @@ import {
   fetchPlanUnitAttributes,
 } from '$src/plotSearch/actions';
 import {getRouteById, Routes} from "../../../../root/routes";
+import PlotSearchTargetListing from "./PlotSearchTargetListing";
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -249,60 +247,7 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Row>
                 )}
               </div>
-              {(!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
-                filter(plotSearchSite => plotSearchSite.target_type === 'searchable').length > 0) && <WhiteBox>
-                <SubTitle>
-                  {'HAETTAVAT KOHTEET'}
-                </SubTitle>
-                {!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
-                  filter(plotSearchSite => plotSearchSite.target_type === 'searchable').
-                  map((plotSearchSite, index) => {
-                    return(
-                      <Row key={index}>
-                        <PlotSearchSite
-                          plotSearchSite={plotSearchSite}
-                          index={index}
-                        />
-                      </Row>
-                    );
-                  })}
-              </WhiteBox>}
-              {(!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
-                filter(plotSearchSite => plotSearchSite.target_type === 'procedural_reservation').length > 0) && <WhiteBox>
-                <SubTitle>
-                  {'MENETTELYVARAUS'}
-                </SubTitle>
-                {!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
-                  filter(plotSearchSite => plotSearchSite.target_type === 'procedural_reservation').
-                  map((plotSearchSite, index) => {
-                    return(
-                      <Row key={index}>
-                        <PlotSearchSite
-                          plotSearchSite={plotSearchSite}
-                          index={index}
-                        />
-                      </Row>
-                    );
-                  })}
-              </WhiteBox>}
-              {(!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
-                filter(plotSearchSite => plotSearchSite.target_type === 'direct_reservation').length > 0) && <WhiteBox>
-                <SubTitle>
-                  {'SUORAVARAUS'}
-                </SubTitle>
-                {!!plotSearch.plot_search_targets && plotSearch.plot_search_targets.
-                  filter(plotSearchSite => plotSearchSite.target_type === 'direct_reservation').
-                  map((plotSearchSite, index) => {
-                    return(
-                      <Row key={index}>
-                        <PlotSearchSite
-                          plotSearchSite={plotSearchSite}
-                          index={index}
-                        />
-                      </Row>
-                    );
-                  })}
-              </WhiteBox>}
+              <PlotSearchTargetListing />
             </Collapse>
           </Column>
         </Row>

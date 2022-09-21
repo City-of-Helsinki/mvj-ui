@@ -70,3 +70,7 @@ export const editFormRequest = (form: Object): Generator<any, any, any> => {
     body: JSON.stringify(form),
   }));
 };
+
+export const fetchStagesRequest = (params: ?Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('plot_search_stage/', params)));
+};

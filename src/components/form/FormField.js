@@ -40,6 +40,7 @@ import {getUserFullName} from '$src/users/helpers';
 import {genericNormalizer} from './normalizers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {genericValidator} from '../form/validations';
+import {getHoursAndMinutes} from "../../util/date";
 
 const FieldTypes = {
   [FieldTypeOptions.ADDRESS]: FieldTypeAddress,
@@ -156,6 +157,8 @@ const FormFieldInput = ({
         return getLabelOfOption(options || [], value);
       case FieldTypeOptions.DATE:
         return formatDate(value);
+      case FieldTypeOptions.TIME:
+        return formatDate(value) + ', ' + getHoursAndMinutes(value);
       case FieldTypeOptions.ADDRESS:
       case FieldTypeOptions.INTEGER:
       case FieldTypeOptions.STRING:

@@ -1,5 +1,5 @@
 // @flow
-import React, {Fragment, PureComponent, type Element} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {reduxForm, formValues} from 'redux-form';
@@ -7,10 +7,6 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 
-import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import AddButtonThird from '$components/form/AddButtonThird';
-import {ButtonColors} from '$components/enums';
-import {ConfirmationModalTexts} from '$src/enums';
 import TitleH3 from '$components/content/TitleH3';
 import WhiteBox from '$components/content/WhiteBox';
 import Collapse from '$components/collapse/Collapse';
@@ -35,143 +31,16 @@ import {
   getIsFetchingTemplateForms,
   getTemplateForms,
   getCurrentPlotSearch,
-  getForm
-} from '$src/plotSearch/selectors';
-import ApplicantEdit from './ApplicantEdit';
-import TargetEdit from './TargetEdit';
+  getForm,
+  getIsFetchingFormAttributes,
+  isLockedForModifications
+} from '../../../selectors';
 import EditPlotApplicationSectionModal from './EditPlotApplicationSectionModal';
 import type {Attributes} from '$src/types';
 import Loader from "../../../../components/loader/Loader";
 import ApplicationPreviewSection from "./ApplicationPreviewSection";
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 import WarningField from "../../../../components/form/WarningField";
-import {getIsFetchingForm, getIsFetchingFormAttributes} from "../../../selectors";
-
-type ApplicantProps = {
-  disabled: boolean,
-  fields: any,
-  formName: string,
-  isSaveClicked: Boolean,
-  usersPermissions: UsersPermissionsType,
-  attributes: Attributes,
-}
-
-const renderApplicant = ({
-  disabled,
-  fields,
-  formName,
-  // usersPermissions,
-}: ApplicantProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-  return (
-    <AppConsumer>
-      {({dispatch}) => {
-        return(
-          <Fragment>
-            {!!fields.length && fields.map((field, index) => {
-              const handleRemove = () => {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    fields.remove(index);
-                  },
-                  confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_APPLICANT.BUTTON,
-                  confirmationModalLabel: ConfirmationModalTexts.DELETE_APPLICANT.LABEL,
-                  confirmationModalTitle: ConfirmationModalTexts.DELETE_APPLICANT.TITLE,
-                });
-              };
-
-              return <ApplicantEdit
-                key={index}
-                disabled={disabled}
-                field={field}
-                formName={formName}
-                onRemove={handleRemove}
-              />;
-            })}
-
-            {!disabled &&
-              <Row>
-                <Column>
-                  <AddButtonThird
-                    label='Lisää hakija'
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            }
-          </Fragment>
-        );
-      }}
-    </AppConsumer>
-  );
-};
-
-type TargetProps = {
-  disabled: boolean,
-  fields: any,
-  formName: string,
-  isSaveClicked: Boolean,
-  usersPermissions: UsersPermissionsType,
-  attributes: Attributes,
-}
-
-const renderTarget = ({
-  disabled,
-  fields,
-  formName,
-  // usersPermissions,
-}: TargetProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-  return (
-    <AppConsumer>
-      {({dispatch}) => {
-        return(
-          <Fragment>
-            {!!fields.length && fields.map((field, index) => {
-              const handleRemove = () => {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    fields.remove(index);
-                  },
-                  confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: ConfirmationModalTexts.DELETE_TARGET.BUTTON,
-                  confirmationModalLabel: ConfirmationModalTexts.DELETE_TARGET.LABEL,
-                  confirmationModalTitle: ConfirmationModalTexts.DELETE_TARGET.TITLE,
-                });
-              };
-
-              return <TargetEdit
-                key={index}
-                disabled={disabled}
-                field={field}
-                formName={formName}
-                onRemove={handleRemove}
-              />;
-            })}
-
-            {!disabled &&
-              <Row>
-                <Column>
-                  <AddButtonThird
-                    label='Lisää kohde'
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            }
-          </Fragment>
-        );
-      }}
-    </AppConsumer>
-  );
-};
 
 type Props = {
   collapseStateBasic: boolean,
@@ -183,7 +52,8 @@ type Props = {
   errors: ?Object,
   attributes: Attributes,
   hasMinimumRequiredFieldsFilled: boolean,
-  isFetchingFormAttributes: boolean
+  isFetchingFormAttributes: boolean,
+  isLockedForModifications: boolean
 }
 
 type State = {
@@ -263,6 +133,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
       formData,
       useExistingForm,
       hasMinimumRequiredFieldsFilled,
+      isLockedForModifications,
       change
     } = this.props;
 
@@ -271,7 +142,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
     } = this.state;
 
     const formIdChanged = currentPlotSearch.form?.id !== formData?.id;
-    const isReadOnly = !hasMinimumRequiredFieldsFilled || formIdChanged;
+    const isReadOnly = !hasMinimumRequiredFieldsFilled || isLockedForModifications || formIdChanged;
 
     const formOptions = templateForms?.map((templateForm) => ({
       value: templateForm.id,
@@ -310,7 +181,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
         <Divider />
         <Row className='summary__content-wrapper'>
           <Column small={12}>
-            <Collapse
+            {!isLockedForModifications && <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
               headerTitle={ApplicationFieldTitles.APPLICATION_TEMPLATE}
@@ -323,22 +194,22 @@ class ApplicationEdit extends PureComponent<Props, State> {
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={{
-                          "required": false,
-                          "read_only": false,
-                          "label": "Lomakepohja",
-                          "type": "radio-with-field",
-                          "choices": []
+                          required: false,
+                          read_only: false,
+                          label: "Lomakepohja",
+                          type: "radio-with-field",
+                          choices: []
                         }}
                         name={`useExistingForm`}
                         overrideValues={{
-                          "options": [
+                          options: [
                             {
-                              "label": "Käytä aiemmin tallennettua lomaketta",
-                              "value": "1"
+                              label: "Käytä aiemmin tallennettua lomaketta",
+                              value: "1"
                             },
                             {
-                              "label": "Korvaa uudella lomakepohjalla",
-                              "value": "0"
+                              label: "Korvaa uudella lomakepohjalla",
+                              value: "0"
                             }
                           ]
                         }}
@@ -358,7 +229,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
                   </>}
                 </Column>
               </Row>
-            </Collapse>
+            </Collapse>}
             {formData !== null && (!formAttributes
               ? <Loader isLoading={true} />
               : <>
@@ -375,7 +246,8 @@ class ApplicationEdit extends PureComponent<Props, State> {
                       fieldAttributes={get(formAttributes, ApplicationFieldPaths.NAME)}
                       name='form.title'
                       overrideValues={{
-                        label: ApplicationFieldTitles.APPLICATION_NAME
+                        label: ApplicationFieldTitles.APPLICATION_NAME,
+                        allowEdit: !isLockedForModifications
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.NAME)}
@@ -430,7 +302,8 @@ export default flowRight(
         templateForms: getTemplateForms(state),
         currentPlotSearch: getCurrentPlotSearch(state),
         currentPlotSearchForm: getForm(state),
-        hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state)
+        hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state),
+        isLockedForModifications: isLockedForModifications(state)
       };
     },
     {

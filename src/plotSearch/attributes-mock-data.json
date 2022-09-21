@@ -2,24 +2,17 @@
   "name": "PlotSearch list",
   "description": "",
   "fields": {
-    "search_name": {
+    "id": {
+      "type": "field",
+      "required": false,
+      "read_only": true,
+      "label": "Id"
+    },
+    "name": {
       "type": "string",
       "required": true,
       "read_only": false,
       "label": "Haun nimi"
-    },
-    "preparer": {
-      "choices": [{"value": 1, "display_name": "Virve Virkailija"}, {"value": 2, "display_name": "Teuvo Kuusela"}, {"value": 3, "display_name": "Jussi Mannisto"}],
-      "type": "field",
-      "required": false,
-      "read_only": false,
-      "label": "Valmistelija"
-    },
-    "applications": {
-      "type": "field",
-      "required": false,
-      "read_only": false,
-      "label": "Hakemukset"
     },
     "type": {
       "type": "field",
@@ -44,46 +37,16 @@
       "label": "Haun alatyyppi",
       "choices": [
         {
-            "display_name": "Hinta- ja laatukilpailu",
-            "value": 1
+          "display_name": "Hinta- ja laatukilpailu",
+          "value": 1
         },
         {
-            "display_name": "Tontti- ja korkeus",
-            "value": 2
+          "display_name": "Tontti- ja korkeus",
+          "value": 2
         }
       ]
     },
-    "start_date": {
-      "type": "date",
-      "required": false,
-      "read_only": false,
-      "label": "Alkupvm"
-    },
-    "start_time": {
-      "type": "string",
-      "required": false,
-      "read_only": false,
-      "label": "klo"
-    },
-    "end_date": {
-      "type": "date",
-      "required": false,
-      "read_only": false,
-      "label": "Loppupvm"
-    },
-    "end_time": {
-      "type": "string",
-      "required": false,
-      "read_only": false,
-      "label": "klo"
-    },
-    "last_update": {
-      "type": "field",
-      "required": false,
-      "read_only": false,
-      "label": "Hakemukset päivitetty"
-    },
-    "step": {
+    "stage": {
       "choices": [
         {
           "display_name": "Valmisteilla",
@@ -94,7 +57,7 @@
           "value": 2
         },
         {
-          "display_name": "Valmis",
+          "display_name": "Päätetty",
           "value": 3
         }
       ],
@@ -103,438 +66,1473 @@
       "read_only": false,
       "label": "Haun vaihe"
     },
-    "decision": {
+    "preparers": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Valmistelijat"
+    },
+    "plot_search_targets": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Plot search targets",
       "child": {
+        "type": "nested object",
+        "required": false,
+        "read_only": false,
         "children": {
-          "type": {
-            "type": "field",
+          "id": {
+            "type": "integer",
             "required": false,
             "read_only": false,
-            "label": "Haun alatyyppi",
+            "label": "Id"
+          },
+          "plan_unit": {
+            "type": "nested object",
+            "required": false,
+            "read_only": true,
+            "label": "Plan unit",
+            "children": {
+              "id": {
+                "type": "integer",
+                "required": false,
+                "read_only": false,
+                "label": "Id"
+              },
+              "identifier": {
+                "type": "string",
+                "required": true,
+                "read_only": false,
+                "label": "Identifier",
+                "max_length": 255
+              },
+              "area": {
+                "type": "integer",
+                "required": true,
+                "read_only": false,
+                "label": "Area in square meters",
+                "min_value": 0,
+                "max_value": 2147483647
+              },
+              "section_area": {
+                "type": "integer",
+                "required": false,
+                "read_only": false,
+                "label": "Section area",
+                "min_value": 0,
+                "max_value": 2147483647
+              },
+              "in_contract": {
+                "type": "boolean",
+                "required": false,
+                "read_only": false,
+                "label": "At time of contract"
+              },
+              "is_master": {
+                "type": "boolean",
+                "required": false,
+                "read_only": false,
+                "label": "Is master?"
+              },
+              "decisions": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Decisions",
+                "child": {
+                  "type": "nested object",
+                  "required": false,
+                  "read_only": false,
+                  "children": {
+                    "id": {
+                      "type": "integer",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Id"
+                    },
+                    "lease": {
+                      "type": "field",
+                      "required": true,
+                      "read_only": false,
+                      "label": "Lease"
+                    },
+                    "reference_number": {
+                      "type": "string",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Reference number",
+                      "max_length": 255
+                    },
+                    "decision_maker": {
+                      "type": "nested object",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Decision maker",
+                      "children": {
+                        "id": {
+                          "type": "integer",
+                          "required": false,
+                          "read_only": false,
+                          "label": "Id"
+                        },
+                        "name": {
+                          "type": "string",
+                          "required": false,
+                          "read_only": true,
+                          "label": "Name"
+                        }
+                      }
+                    },
+                    "decision_date": {
+                      "type": "date",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Decision date"
+                    },
+                    "section": {
+                      "type": "string",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Section",
+                      "max_length": 255
+                    },
+                    "type": {
+                      "type": "nested object",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Type",
+                      "children": {
+                        "id": {
+                          "type": "integer",
+                          "required": false,
+                          "read_only": false,
+                          "label": "Id"
+                        },
+                        "name": {
+                          "type": "string",
+                          "required": false,
+                          "read_only": true,
+                          "label": "Name"
+                        },
+                        "kind": {
+                          "type": "choice",
+                          "required": false,
+                          "read_only": false,
+                          "label": "Decision type kind",
+                          "choices": [
+                            {
+                              "value": "lease_cancellation",
+                              "display_name": "Lease cancellation"
+                            },
+                            {
+                              "value": "basis_of_rent",
+                              "display_name": "Basis of Rent"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Description"
+                    },
+                    "conditions": {
+                      "type": "field",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Conditions",
+                      "child": {
+                        "type": "nested object",
+                        "required": false,
+                        "read_only": false,
+                        "children": {
+                          "id": {
+                            "type": "integer",
+                            "required": false,
+                            "read_only": false,
+                            "label": "Id"
+                          },
+                          "type": {
+                            "type": "field",
+                            "required": false,
+                            "read_only": false,
+                            "label": "Type",
+                            "choices": [
+                              {
+                                "value": 6,
+                                "display_name": "Alennusehto"
+                              },
+                              {
+                                "value": 25,
+                                "display_name": "ALV:n perintäehto"
+                              },
+                              {
+                                "value": 2,
+                                "display_name": "Erityissiirtoehto"
+                              },
+                              {
+                                "value": 23,
+                                "display_name": "Korkotukiehto"
+                              },
+                              {
+                                "value": 7,
+                                "display_name": "Korotusehto"
+                              },
+                              {
+                                "value": 4,
+                                "display_name": "Korvaussehto (ent. sopimusehto)"
+                              },
+                              {
+                                "value": 1,
+                                "display_name": "Käyttötarkoitusehto"
+                              },
+                              {
+                                "value": 11,
+                                "display_name": "Lunastussiirtoehto"
+                              },
+                              {
+                                "value": 21,
+                                "display_name": "Maankäyttösopimus"
+                              },
+                              {
+                                "value": 22,
+                                "display_name": "Maksamaton kauppahinta"
+                              },
+                              {
+                                "value": 13,
+                                "display_name": "Muu ehto"
+                              },
+                              {
+                                "value": 24,
+                                "display_name": "Osto-optioehto"
+                              },
+                              {
+                                "value": 12,
+                                "display_name": "Rakentamisvelvollisuusehto"
+                              },
+                              {
+                                "value": 16,
+                                "display_name": "Rasite- ja/tai rasitteenluont.ehto"
+                              },
+                              {
+                                "value": 15,
+                                "display_name": "Siirto perustettavan yhtiön lukuun"
+                              },
+                              {
+                                "value": 5,
+                                "display_name": "Sopimussakko"
+                              },
+                              {
+                                "value": 26,
+                                "display_name": "Sotaveteraanialennus"
+                              },
+                              {
+                                "value": 14,
+                                "display_name": "Takuuvuokra/Takaus tms."
+                              },
+                              {
+                                "value": 20,
+                                "display_name": "Tiedote laskuun (seuraavaan)"
+                              },
+                              {
+                                "value": 3,
+                                "display_name": "Valvottava ehto"
+                              },
+                              {
+                                "value": 10,
+                                "display_name": "Vuokra-ajan pidentämisehto (Varaus)"
+                              },
+                              {
+                                "value": 9,
+                                "display_name": "Vuokra-ajan päättymisehto"
+                              },
+                              {
+                                "value": 8,
+                                "display_name": "Vuokran tarkistusehto"
+                              }
+                            ]
+                          },
+                          "supervision_date": {
+                            "type": "date",
+                            "required": false,
+                            "read_only": false,
+                            "label": "Supervision date"
+                          },
+                          "supervised_date": {
+                            "type": "date",
+                            "required": false,
+                            "read_only": false,
+                            "label": "Supervised date"
+                          },
+                          "description": {
+                            "type": "string",
+                            "required": false,
+                            "read_only": false,
+                            "label": "Description"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "plot_division_identifier": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Plot division identifier",
+                "max_length": 255
+              },
+              "plot_division_date_of_approval": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Plot division date of approval"
+              },
+              "plot_division_effective_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Plot division effective date"
+              },
+              "detailed_plan_identifier": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Detailed plan identifier",
+                "max_length": 255
+              },
+              "detailed_plan_latest_processing_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Detailed plan latest processing date"
+              },
+              "detailed_plan_latest_processing_date_note": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Note for latest processing date"
+              },
+              "plot_division_state": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Plot division state",
+                "choices": [
+                  {
+                    "value": 5,
+                    "display_name": "Kumottu kokonaan"
+                  },
+                  {
+                    "value": 11,
+                    "display_name": "kumottu osittain"
+                  },
+                  {
+                    "value": 4,
+                    "display_name": "Kumottu osittain"
+                  },
+                  {
+                    "value": 1,
+                    "display_name": "Numeronvaraus"
+                  },
+                  {
+                    "value": 9,
+                    "display_name": "Peruutettu"
+                  },
+                  {
+                    "value": 12,
+                    "display_name": "vireillä"
+                  },
+                  {
+                    "value": 2,
+                    "display_name": "Vireillä"
+                  },
+                  {
+                    "value": 10,
+                    "display_name": "voimassa"
+                  },
+                  {
+                    "value": 3,
+                    "display_name": "Voimassa"
+                  }
+                ]
+              },
+              "plan_unit_type": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Plan unit type",
+                "choices": [
+                  {
+                    "value": 11,
+                    "display_name": "Hyv. tonttijaon muk. tontti"
+                  },
+                  {
+                    "value": 5,
+                    "display_name": "Hyväksytyn tonttijaon mukainen tontti"
+                  },
+                  {
+                    "value": 10,
+                    "display_name": "Keinokaavayksikkö (yleisen alueen lisäosa)"
+                  },
+                  {
+                    "value": 9,
+                    "display_name": "Keinoyksikkö (maarekisterialue)"
+                  },
+                  {
+                    "value": 6,
+                    "display_name": "Muodostusluetteloon merkitty tontti"
+                  },
+                  {
+                    "value": 12,
+                    "display_name": "Muu kuin korttelialueen yks"
+                  },
+                  {
+                    "value": 8,
+                    "display_name": "Muun kuin korttelialueen yksikkö"
+                  },
+                  {
+                    "value": 2,
+                    "display_name": "Ohjeellinen kaavatontti"
+                  },
+                  {
+                    "value": 1,
+                    "display_name": "Rekisteröity yleinen alue"
+                  },
+                  {
+                    "value": 13,
+                    "display_name": "Rekist. yleinen alue"
+                  },
+                  {
+                    "value": 7,
+                    "display_name": "Tonttirekisteritontti"
+                  },
+                  {
+                    "value": 3,
+                    "display_name": "Vireillä olevan tonttijaon/-muutoksen mukainen tontti"
+                  },
+                  {
+                    "value": 4,
+                    "display_name": "Vireillä olevan tonttijaonmuutoksen mukainen tontti"
+                  },
+                  {
+                    "value": 15,
+                    "display_name": "Vir.tjako tai -muutos (kaava)"
+                  },
+                  {
+                    "value": 14,
+                    "display_name": "Vir.tj-muutos (maanomistaja)"
+                  }
+                ]
+              },
+              "plan_unit_state": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Plan unit state",
+                "choices": [
+                  {
+                    "value": 4,
+                    "display_name": "Kumottu"
+                  },
+                  {
+                    "value": 1,
+                    "display_name": "Numeronvaraus"
+                  },
+                  {
+                    "value": 2,
+                    "display_name": "Vireillä"
+                  },
+                  {
+                    "value": 3,
+                    "display_name": "Voimassa"
+                  }
+                ]
+              },
+              "plan_unit_status": {
+                "type": "string",
+                "required": false,
+                "read_only": true,
+                "label": "Plan unit status"
+              },
+              "plan_unit_intended_use": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Plan unit intended use",
+                "choices": [
+                  {
+                    "value": 1100,
+                    "display_name": "A-1 Asuinrakennusten korttelialue"
+                  },
+                  {
+                    "value": 30,
+                    "display_name": "A-1 korttelialuetta palvelevien rakennusten korttelialue (AH-1)"
+                  }
+                ]
+              },
+              "geometry": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Geometry"
+              }
+            }
+          },
+          "plan_unit_id": {
+            "type": "integer",
+            "required": false,
+            "read_only": false,
+            "label": "Plan unit id"
+          },
+          "target_type": {
+            "type": "choice",
+            "required": true,
+            "read_only": false,
+            "label": "Target type",
             "choices": [
               {
-                "display_name": "Kiinteistölautakunta 15.12.2016 503 § Varausajan jatkaminen HEL 2018-123456",
-                "value": 1
+                "value": "searchable",
+                "display_name": "Searchable"
               },
               {
-                "display_name": "Kiinteistölautakunta 15.12.2016 503 § Lorem ipsum HEL 2018-123456",
-                "value": 2
+                "value": "procedural_reservation",
+                "display_name": "Procedural reservation"
+              },
+              {
+                "value": "direct_reservation",
+                "display_name": "Direct reservation"
               }
             ]
           },
-          "decision_to_list": {
-            "type": "boolean",
+          "master_plan_unit_id": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Master plan unit id"
+          },
+          "is_master_plan_unit_deleted": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Is master plan unit deleted"
+          },
+          "is_master_plan_unit_newer": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Is master plan unit newer"
+          },
+          "message_label": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Message label"
+          },
+          "lease_identifier": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Lease identifier"
+          },
+          "lease_hitas": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Lease hitas"
+          },
+          "lease_address": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Lease address"
+          },
+          "lease_financing": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Lease financing"
+          },
+          "lease_management": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "Lease management"
+          },
+          "district": {
+            "type": "field",
+            "required": false,
+            "read_only": true,
+            "label": "District"
+          },
+          "info_links": {
+            "type": "field",
             "required": false,
             "read_only": false,
-            "label": "Päätöshakulistaan"
+            "label": "Info links",
+            "child": {
+              "type": "nested object",
+              "required": false,
+              "read_only": false,
+              "children": {
+                "id": {
+                  "type": "integer",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Id"
+                },
+                "url": {
+                  "type": "url",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Url",
+                  "max_length": 200
+                },
+                "description": {
+                  "type": "string",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Description",
+                  "max_length": 255
+                },
+                "language": {
+                  "type": "choice",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Language",
+                  "choices": [
+                    {
+                      "value": "en",
+                      "display_name": "English"
+                    },
+                    {
+                      "value": "fi",
+                      "display_name": "Finnish"
+                    },
+                    {
+                      "value": "sv",
+                      "display_name": "Swedish"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "decisions": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Decisions",
+            "child": {
+              "type": "nested object",
+              "required": false,
+              "read_only": false,
+              "children": {
+                "id": {
+                  "type": "integer",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Id"
+                },
+                "lease": {
+                  "type": "field",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Lease"
+                },
+                "reference_number": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Reference number",
+                  "max_length": 255
+                },
+                "decision_maker": {
+                  "type": "nested object",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Decision maker",
+                  "children": {
+                    "id": {
+                      "type": "integer",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "required": false,
+                      "read_only": true,
+                      "label": "Name"
+                    }
+                  }
+                },
+                "decision_date": {
+                  "type": "date",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Decision date"
+                },
+                "section": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Section",
+                  "max_length": 255
+                },
+                "type": {
+                  "type": "nested object",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Type",
+                  "children": {
+                    "id": {
+                      "type": "integer",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "required": false,
+                      "read_only": true,
+                      "label": "Name"
+                    },
+                    "kind": {
+                      "type": "choice",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Decision type kind",
+                      "choices": [
+                        {
+                          "value": "lease_cancellation",
+                          "display_name": "Lease cancellation"
+                        },
+                        {
+                          "value": "basis_of_rent",
+                          "display_name": "Basis of Rent"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Description"
+                },
+                "conditions": {
+                  "type": "field",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Conditions",
+                  "child": {
+                    "type": "nested object",
+                    "required": false,
+                    "read_only": false,
+                    "children": {
+                      "id": {
+                        "type": "integer",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Id"
+                      },
+                      "type": {
+                        "type": "field",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Type",
+                        "choices": [
+                          {
+                            "value": 6,
+                            "display_name": "Alennusehto"
+                          },
+                          {
+                            "value": 25,
+                            "display_name": "ALV:n perintäehto"
+                          },
+                          {
+                            "value": 2,
+                            "display_name": "Erityissiirtoehto"
+                          },
+                          {
+                            "value": 23,
+                            "display_name": "Korkotukiehto"
+                          },
+                          {
+                            "value": 7,
+                            "display_name": "Korotusehto"
+                          },
+                          {
+                            "value": 4,
+                            "display_name": "Korvaussehto (ent. sopimusehto)"
+                          },
+                          {
+                            "value": 1,
+                            "display_name": "Käyttötarkoitusehto"
+                          },
+                          {
+                            "value": 11,
+                            "display_name": "Lunastussiirtoehto"
+                          },
+                          {
+                            "value": 21,
+                            "display_name": "Maankäyttösopimus"
+                          },
+                          {
+                            "value": 22,
+                            "display_name": "Maksamaton kauppahinta"
+                          },
+                          {
+                            "value": 13,
+                            "display_name": "Muu ehto"
+                          },
+                          {
+                            "value": 24,
+                            "display_name": "Osto-optioehto"
+                          },
+                          {
+                            "value": 12,
+                            "display_name": "Rakentamisvelvollisuusehto"
+                          },
+                          {
+                            "value": 16,
+                            "display_name": "Rasite- ja/tai rasitteenluont.ehto"
+                          },
+                          {
+                            "value": 15,
+                            "display_name": "Siirto perustettavan yhtiön lukuun"
+                          },
+                          {
+                            "value": 5,
+                            "display_name": "Sopimussakko"
+                          },
+                          {
+                            "value": 26,
+                            "display_name": "Sotaveteraanialennus"
+                          },
+                          {
+                            "value": 14,
+                            "display_name": "Takuuvuokra/Takaus tms."
+                          },
+                          {
+                            "value": 20,
+                            "display_name": "Tiedote laskuun (seuraavaan)"
+                          },
+                          {
+                            "value": 3,
+                            "display_name": "Valvottava ehto"
+                          },
+                          {
+                            "value": 10,
+                            "display_name": "Vuokra-ajan pidentämisehto (Varaus)"
+                          },
+                          {
+                            "value": 9,
+                            "display_name": "Vuokra-ajan päättymisehto"
+                          },
+                          {
+                            "value": 8,
+                            "display_name": "Vuokran tarkistusehto"
+                          }
+                        ]
+                      },
+                      "supervision_date": {
+                        "type": "date",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Supervision date"
+                      },
+                      "supervised_date": {
+                        "type": "date",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Supervised date"
+                      },
+                      "description": {
+                        "type": "string",
+                        "required": false,
+                        "read_only": false,
+                        "label": "Description"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
+    },
+    "plan_unit": {
+      "type": "nested object",
+      "required": false,
+      "read_only": true,
+      "label": "Plan unit",
+      "children": {
+        "id": {
+          "type": "integer",
+          "required": false,
+          "read_only": false,
+          "label": "Id"
+        },
+        "identifier": {
+          "type": "string",
+          "required": true,
+          "read_only": false,
+          "label": "Identifier",
+          "max_length": 255
+        },
+        "area": {
+          "type": "integer",
+          "required": true,
+          "read_only": false,
+          "label": "Area in square meters",
+          "min_value": 0,
+          "max_value": 2147483647
+        },
+        "section_area": {
+          "type": "integer",
+          "required": false,
+          "read_only": false,
+          "label": "Section area",
+          "min_value": 0,
+          "max_value": 2147483647
+        },
+        "in_contract": {
+          "type": "boolean",
+          "required": false,
+          "read_only": false,
+          "label": "At time of contract"
+        },
+        "is_master": {
+          "type": "boolean",
+          "required": false,
+          "read_only": false,
+          "label": "Is master?"
+        },
+        "decisions": {
+          "type": "field",
+          "required": false,
+          "read_only": false,
+          "label": "Decisions",
+          "child": {
+            "type": "nested object",
+            "required": false,
+            "read_only": false,
+            "children": {
+              "id": {
+                "type": "integer",
+                "required": false,
+                "read_only": false,
+                "label": "Id"
+              },
+              "lease": {
+                "type": "field",
+                "required": true,
+                "read_only": false,
+                "label": "Lease"
+              },
+              "reference_number": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Reference number",
+                "max_length": 255
+              },
+              "decision_maker": {
+                "type": "nested object",
+                "required": false,
+                "read_only": false,
+                "label": "Decision maker",
+                "children": {
+                  "id": {
+                    "type": "integer",
+                    "required": false,
+                    "read_only": false,
+                    "label": "Id"
+                  },
+                  "name": {
+                    "type": "string",
+                    "required": false,
+                    "read_only": true,
+                    "label": "Name"
+                  }
+                }
+              },
+              "decision_date": {
+                "type": "date",
+                "required": false,
+                "read_only": false,
+                "label": "Decision date"
+              },
+              "section": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Section",
+                "max_length": 255
+              },
+              "type": {
+                "type": "nested object",
+                "required": false,
+                "read_only": false,
+                "label": "Type",
+                "children": {
+                  "id": {
+                    "type": "integer",
+                    "required": false,
+                    "read_only": false,
+                    "label": "Id"
+                  },
+                  "name": {
+                    "type": "string",
+                    "required": false,
+                    "read_only": true,
+                    "label": "Name"
+                  },
+                  "kind": {
+                    "type": "choice",
+                    "required": false,
+                    "read_only": false,
+                    "label": "Decision type kind",
+                    "choices": [
+                      {
+                        "value": "lease_cancellation",
+                        "display_name": "Lease cancellation"
+                      },
+                      {
+                        "value": "basis_of_rent",
+                        "display_name": "Basis of Rent"
+                      }
+                    ]
+                  }
+                }
+              },
+              "description": {
+                "type": "string",
+                "required": false,
+                "read_only": false,
+                "label": "Description"
+              },
+              "conditions": {
+                "type": "field",
+                "required": false,
+                "read_only": false,
+                "label": "Conditions",
+                "child": {
+                  "type": "nested object",
+                  "required": false,
+                  "read_only": false,
+                  "children": {
+                    "id": {
+                      "type": "integer",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Id"
+                    },
+                    "type": {
+                      "type": "field",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Type",
+                      "choices": [
+                        {
+                          "value": 6,
+                          "display_name": "Alennusehto"
+                        },
+                        {
+                          "value": 25,
+                          "display_name": "ALV:n perintäehto"
+                        },
+                        {
+                          "value": 2,
+                          "display_name": "Erityissiirtoehto"
+                        },
+                        {
+                          "value": 23,
+                          "display_name": "Korkotukiehto"
+                        },
+                        {
+                          "value": 7,
+                          "display_name": "Korotusehto"
+                        },
+                        {
+                          "value": 4,
+                          "display_name": "Korvaussehto (ent. sopimusehto)"
+                        },
+                        {
+                          "value": 1,
+                          "display_name": "Käyttötarkoitusehto"
+                        },
+                        {
+                          "value": 11,
+                          "display_name": "Lunastussiirtoehto"
+                        },
+                        {
+                          "value": 21,
+                          "display_name": "Maankäyttösopimus"
+                        },
+                        {
+                          "value": 22,
+                          "display_name": "Maksamaton kauppahinta"
+                        },
+                        {
+                          "value": 13,
+                          "display_name": "Muu ehto"
+                        },
+                        {
+                          "value": 24,
+                          "display_name": "Osto-optioehto"
+                        },
+                        {
+                          "value": 12,
+                          "display_name": "Rakentamisvelvollisuusehto"
+                        },
+                        {
+                          "value": 16,
+                          "display_name": "Rasite- ja/tai rasitteenluont.ehto"
+                        },
+                        {
+                          "value": 15,
+                          "display_name": "Siirto perustettavan yhtiön lukuun"
+                        },
+                        {
+                          "value": 5,
+                          "display_name": "Sopimussakko"
+                        },
+                        {
+                          "value": 26,
+                          "display_name": "Sotaveteraanialennus"
+                        },
+                        {
+                          "value": 14,
+                          "display_name": "Takuuvuokra/Takaus tms."
+                        },
+                        {
+                          "value": 20,
+                          "display_name": "Tiedote laskuun (seuraavaan)"
+                        },
+                        {
+                          "value": 3,
+                          "display_name": "Valvottava ehto"
+                        },
+                        {
+                          "value": 10,
+                          "display_name": "Vuokra-ajan pidentämisehto (Varaus)"
+                        },
+                        {
+                          "value": 9,
+                          "display_name": "Vuokra-ajan päättymisehto"
+                        },
+                        {
+                          "value": 8,
+                          "display_name": "Vuokran tarkistusehto"
+                        }
+                      ]
+                    },
+                    "supervision_date": {
+                      "type": "date",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Supervision date"
+                    },
+                    "supervised_date": {
+                      "type": "date",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Supervised date"
+                    },
+                    "description": {
+                      "type": "string",
+                      "required": false,
+                      "read_only": false,
+                      "label": "Description"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "plot_division_identifier": {
+          "type": "string",
+          "required": false,
+          "read_only": false,
+          "label": "Plot division identifier",
+          "max_length": 255
+        },
+        "plot_division_date_of_approval": {
+          "type": "date",
+          "required": false,
+          "read_only": false,
+          "label": "Plot division date of approval"
+        },
+        "plot_division_effective_date": {
+          "type": "date",
+          "required": false,
+          "read_only": false,
+          "label": "Plot division effective date"
+        },
+        "plot_division_state": {
+          "type": "field",
+          "required": false,
+          "read_only": false,
+          "label": "Plot division state",
+          "choices": [
+            {
+              "value": 5,
+              "display_name": "Kumottu kokonaan"
+            },
+            {
+              "value": 11,
+              "display_name": "kumottu osittain"
+            },
+            {
+              "value": 4,
+              "display_name": "Kumottu osittain"
+            },
+            {
+              "value": 1,
+              "display_name": "Numeronvaraus"
+            },
+            {
+              "value": 9,
+              "display_name": "Peruutettu"
+            },
+            {
+              "value": 12,
+              "display_name": "vireillä"
+            },
+            {
+              "value": 2,
+              "display_name": "Vireillä"
+            },
+            {
+              "value": 10,
+              "display_name": "voimassa"
+            },
+            {
+              "value": 3,
+              "display_name": "Voimassa"
+            }
+          ]
+        },
+        "detailed_plan_identifier": {
+          "type": "string",
+          "required": false,
+          "read_only": false,
+          "label": "Detailed plan identifier",
+          "max_length": 255
+        },
+        "detailed_plan_latest_processing_date": {
+          "type": "date",
+          "required": false,
+          "read_only": false,
+          "label": "Detailed plan latest processing date"
+        },
+        "detailed_plan_latest_processing_date_note": {
+          "type": "string",
+          "required": false,
+          "read_only": false,
+          "label": "Note for latest processing date"
+        },
+        "plan_unit_type": {
+          "type": "field",
+          "required": false,
+          "read_only": false,
+          "label": "Plan unit type",
+          "choices": [
+            {
+              "value": 11,
+              "display_name": "Hyv. tonttijaon muk. tontti"
+            },
+            {
+              "value": 5,
+              "display_name": "Hyväksytyn tonttijaon mukainen tontti"
+            },
+            {
+              "value": 10,
+              "display_name": "Keinokaavayksikkö (yleisen alueen lisäosa)"
+            },
+            {
+              "value": 9,
+              "display_name": "Keinoyksikkö (maarekisterialue)"
+            },
+            {
+              "value": 6,
+              "display_name": "Muodostusluetteloon merkitty tontti"
+            },
+            {
+              "value": 12,
+              "display_name": "Muu kuin korttelialueen yks"
+            },
+            {
+              "value": 8,
+              "display_name": "Muun kuin korttelialueen yksikkö"
+            },
+            {
+              "value": 2,
+              "display_name": "Ohjeellinen kaavatontti"
+            },
+            {
+              "value": 1,
+              "display_name": "Rekisteröity yleinen alue"
+            },
+            {
+              "value": 13,
+              "display_name": "Rekist. yleinen alue"
+            },
+            {
+              "value": 7,
+              "display_name": "Tonttirekisteritontti"
+            },
+            {
+              "value": 3,
+              "display_name": "Vireillä olevan tonttijaon/-muutoksen mukainen tontti"
+            },
+            {
+              "value": 4,
+              "display_name": "Vireillä olevan tonttijaonmuutoksen mukainen tontti"
+            },
+            {
+              "value": 15,
+              "display_name": "Vir.tjako tai -muutos (kaava)"
+            },
+            {
+              "value": 14,
+              "display_name": "Vir.tj-muutos (maanomistaja)"
+            }
+          ]
+        },
+        "plan_unit_state": {
+          "type": "field",
+          "required": false,
+          "read_only": false,
+          "label": "Plan unit state",
+          "choices": [
+            {
+              "value": 4,
+              "display_name": "Kumottu"
+            },
+            {
+              "value": 1,
+              "display_name": "Numeronvaraus"
+            },
+            {
+              "value": 2,
+              "display_name": "Vireillä"
+            },
+            {
+              "value": 3,
+              "display_name": "Voimassa"
+            }
+          ]
+        },
+        "plan_unit_status": {
+          "type": "string",
+          "required": false,
+          "read_only": true,
+          "label": "Plan unit status"
+        },
+        "plan_unit_intended_use": {
+          "type": "field",
+          "required": false,
+          "read_only": false,
+          "label": "Plan unit intended use",
+          "choices": [
+            {
+              "value": 1100,
+              "display_name": "A-1 Asuinrakennusten korttelialue"
+            },
+            {
+              "value": 30,
+              "display_name": "A-1 korttelialuetta palvelevien rakennusten korttelialue (AH-1)"
+            }
+          ]
+        },
+        "geometry": {
+          "type": "field",
+          "required": false,
+          "read_only": false,
+          "label": "Geometry"
+        }
+      }
+    },
+    "deleted": {
+      "type": "datetime",
+      "required": false,
+      "read_only": true,
+      "label": "Deleted"
+    },
+    "created_at": {
+      "type": "datetime",
+      "required": false,
+      "read_only": true,
+      "label": "Time created"
+    },
+    "modified_at": {
+      "type": "datetime",
+      "required": false,
+      "read_only": true,
+      "label": "Time modified"
+    },
+    "begin_at": {
+      "type": "datetime",
+      "required": false,
+      "read_only": false,
+      "label": "Begin at"
+    },
+    "end_at": {
+      "type": "datetime",
+      "required": false,
+      "read_only": false,
+      "label": "End at"
+    },
+    "search_class": {
+      "type": "choice",
+      "required": false,
+      "read_only": false,
+      "label": "Search class",
+      "choices": [
+        {
+          "value": "plot_search",
+          "display_name": "Plot search"
+        },
+        {
+          "value": "other_search",
+          "display_name": "Other"
+        }
+      ]
     },
     "form": {
-      "title": {
-        "type": "string",
-        "read_only": false,
-        "required": false,
-        "label": "Lomakkeen otsikko"
-      }
-    },
-    "application_base": {
-      "child": {
-        "children": {
-          "default": {
-            "type": "boolean",
-            "required": false,
-            "read_only": false,
-            "label": "Hakytyypin oletuslomake"
-          },
-          "extra": {
-            "type": "field",
-            "read_only": false,
-            "required": false,
-            "label": "Lomakkeen lisäosat",
-            "choices": [
-              {
-                "display_name": "Valitse kaikki",
-                "value": 0
-              },
-              {
-                "display_name": "Lisätieto 1",
-                "value": 1
-              },
-              {
-                "display_name": "Lisätieto 2",
-                "value": 2
-              },
-              {
-                "display_name": "Lisätieto 3",
-                "value": 3
-              }
-            ]
-          },
-          "previous": {
-            "type": "boolean",
-            "required": false,
-            "read_only": false,
-            "label": "Aiemmin luotu lomake"
-          },
-          "created": {
-            "type": "field",
-            "read_only": false,
-            "required": false,
-            "label": "Luodut hakulomakkeet",
-            "choices": [
-              {
-                "display_name": "Valitse kaikki",
-                "value": 0
-              },
-              {
-                "display_name": "Lisätieto 1",
-                "value": 1
-              },
-              {
-                "display_name": "Lisätieto 2",
-                "value": 2
-              },
-              {
-                "display_name": "Lisätieto 3",
-                "value": 3
-              }
-            ]
-          },
-          "applicants": {
-            "child": {
-              "children": {
-                "client_type": {
-                  "label": "Asiakastyyppi",
-                  "read_only": false,
-                  "required": false,
-                  "type": "radio-with-field",
-                  "choices": [
-                    {
-                      "display_name": "Yritys",
-                      "value": "1"
-                    },
-                    {
-                      "display_name": "Henkilö",
-                      "value": "2"
-                    }
-                  ]
-                },
-                "company_organization": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Organisaatio"
-                },
-                "company_y_identifier": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Y-tunnus"
-                },
-                "company_founding_year": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Hakijayrityksen perustmisvuosi"
-                },
-                "company_revenue": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Liikevaihto (edellinen vuosi)"
-                },
-                "company_address": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Katuosoite"
-                },
-                "company_postal_code": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Postinumero"
-                },
-                "company_city": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Kaupunki"
-                },
-                "company_email": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Sähköposti"
-                },
-                "company_phonenumber": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Puhelinnumero"
-                },
-                "contact_name": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Nimi"
-                },
-                "contact_address": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Katuosoite"
-                },
-                "contact_postalcode": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Postinumero"
-                },
-                "contact_city": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Kaupunki"
-                },
-                "contact_phonenumber": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Puhelinnumero"
-                },
-                "person_name": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Nimi"
-                },
-                "person_hetu": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Hetu"
-                },
-                "person_email": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Sähköposti"
-                },
-                "person_phonenumber": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Puhelinnumero"
-                },
-                "person_address": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Katuosoite"
-                },
-                "person_postalcode": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Postinumero"
-                },
-                "person_city": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Kaupunki"
-                },
-                "transcript_address": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Katuosoite"
-                },
-                "transcript_postalcode": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Postinumero"
-                },
-                "transcript_city": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Kaupunki"
-                }
-              }
-            }
-          },
-          "target": {
-            "child": {
-              "children": {
-                "target_plotSearch": {
-                  "label": "Tontti, jota hakemus koskee",
-                  "read_only": false,
-                  "required": false,
-                  "type": "radio-with-field",
-                  "choices": [
-                    {
-                      "display_name": "Mäntylä",
-                      "value": "1"
-                    },
-                    {
-                      "display_name": "Kuusamo",
-                      "value": "2"
-                    }
-                  ]
-                },
-                "percentage" : {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "%-perusteinen"
-                },
-                "head_planner": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Hankkeen pääsuunnittelija"
-                },
-                "estimated_schedule": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Hannkeen arvioitu aikataulu"
-                },
-                "desired_size": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Hankkeen toivottu laajuus (rakennusoikeus ja asuntojen lkm)"
-                },
-                "funding": {
-                  "label": "Rahoitus- ja hallintamuoto",
-                  "read_only": false,
-                  "required": false,
-                  "type": "checkbox",
-                  "choices": [
-                    {
-                      "display_name": "Sääntelemätön omistus",
-                      "value": 1
-                    },
-                    {
-                      "display_name": "Hitas omistus",
-                      "value": 2
-                    },
-                    {
-                      "display_name": "Hintakontrolloitu omistus",
-                      "value": 3
-                    },
-                    {
-                      "display_name": "Asumisoikeus",
-                      "value": 4
-                    },
-                    {
-                      "display_name": "Sääntelemätön vuokra",
-                      "value": 5
-                    },
-                    {
-                      "display_name": "Valtion tukema vuokra 10v",
-                      "value": 6
-                    },
-                    {
-                      "display_name": "Valtion tukema vuokra pitkä",
-                      "value": 7
-                    },
-                    {
-                      "display_name": "Valtion tukema takauslaina",
-                      "value": 8
-                    },
-                    {
-                      "display_name": "Muu:",
-                      "value": 9
-                    }
-                  ]},
-                "special": {
-                  "label": "Erityisryhmät",
-                  "read_only": false,
-                  "required": false,
-                  "type": "checkbox",
-                  "choices": [
-                    {
-                      "display_name": "Opiskelijat",
-                      "value": 1
-                    },
-                    {
-                      "display_name": "Nuoret/nuoret aikuiset",
-                      "value": 2
-                    },
-                    {
-                      "display_name": "Seniorit",
-                      "value": 3
-                    },
-                    {
-                      "display_name": "Muut erityisryhmät, mitä:",
-                      "value": 4
-                    }
-                  ]},
-                "other": {
-                  "label": "Muut hankkeen mahdolliset kehitysteemat",
-                  "read_only": false,
-                  "required": false,
-                  "type": "checkbox",
-                  "choices": [
-                    {
-                      "display_name": "Luontoa säästävät energiaratkaisut",
-                      "value": 1
-                    },
-                    {
-                      "display_name": "Hiilineutraali Helsinki 2035",
-                      "value": 2
-                    },
-                    {
-                      "display_name": "Asuntojen muunneltavuus",
-                      "value": 3
-                    },
-                    {
-                      "display_name": "Yhteisöllisyys",
-                      "value": 4
-                    },
-                    {
-                      "display_name": "Kohtuuhintainen asuminen",
-                      "value": 5
-                    },
-                    {
-                      "display_name": "Kehittyvä kerrostalo -hanke",
-                      "value": 6
-                    },
-                    {
-                      "display_name": "Muu:",
-                      "value": 7
-                    }
-                  ]},
-                "overal_picture": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Hankkeen yleiskuvaus"
-                },
-                "peculiarities": {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Hankkeen mahdolliset eristyispiirteet ja mahdolliset kehittämisteemat"
-                },
-                "descriptions" : {
-                  "type": "string",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Lyhyt kuvaus hankkeen suunnilusta ja toteutustavasta ja -organisaatiosta sekä hajikjan käytössä olevista taloudellisista ja muista resursseista"
-                }
-              }
-            }
-          }
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Form",
+      "choices": [
+        {
+          "value": 1,
+          "display_name": "Tonttihaun peruslomake"
         }
-      }
+      ]
+    },
+    "targets": {
+      "type": "field",
+      "required": false,
+      "read_only": true,
+      "label": "Targets"
+    },
+    "decisions": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Decisions"
     }
   }
 }

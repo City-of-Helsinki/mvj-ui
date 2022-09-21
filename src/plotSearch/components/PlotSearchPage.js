@@ -34,8 +34,9 @@ import {
   getIsFetching,
   getForm,
   getIsFetchingAnyPlanUnits,
-  getIsFetchingPlanUnitAttributes
-} from '$src/plotSearch/selectors';
+  getIsFetchingPlanUnitAttributes,
+  areTargetsAllowedToHaveType, isLockedForModifications, isFetchingStages, getIsFetchingSubtypes
+} from '../selectors';
 import {
   editPlotSearch,
   hideEditMode,
@@ -73,6 +74,7 @@ import Application from './plotSearchSections/application/Application';
 import ApplicationEdit from './plotSearchSections/application/ApplicationEdit';
 import ApplicationMap from './plotSearchSections/map/ApplicationMap';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
+import {FIELDS_LOCKED_FOR_EDITING} from "../constants";
 
 type Props = {
   applicationFormValues: Object,
@@ -109,6 +111,7 @@ type Props = {
   receiveFormValidFlags: Function,
   deletePlotSearch: Function,
   plotSearchMethods: MethodType,
+  areTargetsAllowedToHaveType: boolean
 }
 
 type State = {
@@ -342,6 +345,8 @@ class PlotSearchPage extends Component<Props, State> {
       editPlotSearch,
       isBasicInformationFormDirty,
       isApplicationFormDirty,
+      areTargetsAllowedToHaveType,
+      isLockedForModifications
     } = this.props;
     receiveIsSaveClicked(true);
 
@@ -361,10 +366,14 @@ class PlotSearchPage extends Component<Props, State> {
       if (isBasicInformationFormDirty || payload.form && currentPlotSearch.form !== payload.form) {
         payload.basicInfo = {...payload.basicInfo, ...basicInformationFormValues};
 
-        payload.basicInfo = cleanTargets(payload.basicInfo);
+        payload.basicInfo = cleanTargets(payload.basicInfo, !areTargetsAllowedToHaveType);
         payload.basicInfo = cleanDecisions(payload.basicInfo);
         payload.basicInfo.identifier = currentPlotSearch.identifier;
         payload.basicInfo.form = applicationFormValues.form?.id;
+
+        if (isLockedForModifications) {
+          FIELDS_LOCKED_FOR_EDITING.forEach((field) => delete payload.basicInfo[field]);
+        }
       }
 
       editPlotSearch(payload);
@@ -513,12 +522,14 @@ class PlotSearchPage extends Component<Props, State> {
       currentPlotSearch,
       plotSearchMethods,
       isFetchingAnyPlanUnits,
-      isFetchingAnyPlanUnitAttributes
+      isFetchingAnyPlanUnitAttributes,
+      isFetchingStages,
+      isFetchingSubtypes
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
 
-    if(isFetchingPlotSearchAttributes || isFetchingUsersPermissions || isFetching) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if(isFetchingPlotSearchAttributes || isFetchingUsersPermissions || isFetching || isFetchingSubtypes || isFetchingStages) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
     if(!plotSearchAttributes || isEmpty(usersPermissions)) return null;
 
@@ -654,7 +665,11 @@ export default flowRight(
         isFormValidFlags: getIsFormValidFlags(state),
         plotSearchForm: getForm(state),
         isFetchingAnyPlanUnits: getIsFetchingAnyPlanUnits(state),
-        isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state)
+        isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+        areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state),
+        isLockedForModifications: isLockedForModifications(state),
+        isFetchingStages: isFetchingStages(state),
+        isFetchingSubtypes: getIsFetchingSubtypes(state)
       };
     },
     {

@@ -35,12 +35,6 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
       ...target,
       plan_unit_id: target.plan_unit?.id
     })),
-    /* applications: plotSearch.applications,
-    step: plotSearch.step,
-    start_time: plotSearch.start_time,
-    end_time: plotSearch.end_time,
-    last_update: plotSearch.last_update,
-    plotSearch_sites: getContentSearchProperties(plotSearch.plotSearch_sites), */
     decisions: plotSearch.decisions?.map((decision) => {
       // Detailed target objects are not available in a search result, only when fetching a single plot search,
       // so the decisions might not always be available.
@@ -75,7 +69,7 @@ export const getContentSearchProperties = (searchProperties: Object): Object => 
 
 /**
  * Get plotSearch list item
- * @param {Object} contract
+ * @param {Object} plotSearch
  * @return {Object}
  */
 export const getContentPlotSearchListItem = (plotSearch: PlotSearch): Object => {
@@ -101,7 +95,7 @@ export const getContentPlanUnitIdentifier = (plan_unit: Object): ?string =>
 
 /**
  * Get plotSearch list results
- * @param {Object} plotSearch
+ * @param {Object} content
  * @return {Object[]}
  */
 export const getContentPlotSearchListResults = (content: Object): Array<Object> =>
@@ -129,16 +123,17 @@ export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object
 /**
  * clean targets
  * @param {Object} payload
+ * @param {boolean} shouldFixTargetType
  * @returns {Object}
  */
-export const cleanTargets = (payload: Object): Object => {
+export const cleanTargets = (payload: Object, shouldFixTargetType: boolean): Object => {
   const plot_search_targets = payload.plot_search_targets.map(target => ({
     id: target.id,
     plan_unit_id: target.plan_unit_id,
-    target_type: target.target_type,
+    target_type: shouldFixTargetType ? PlotSearchTargetType.SEARCHABLE : target.target_type,
     info_links: target.info_links
   }));
-  return payload = {...payload, plot_search_targets};
+  return {...payload, plot_search_targets};
 };
 
 /**

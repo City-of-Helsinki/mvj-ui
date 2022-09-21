@@ -10,6 +10,9 @@ import type {
   PlotSearchList,
   PlanUnit,
 } from './types';
+import {formValueSelector} from "redux-form";
+import {FormNames} from "../enums";
+import {PlotSearchStageTypes} from "./enums";
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.plotSearch.attributes;
@@ -71,6 +74,9 @@ export const getIsFetchingPlanUnitAttributes: Selector<boolean, number> = (state
 export const getIsFetchingAnyPlanUnitAttributes: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotSearch.pendingPlanUnitAttributeFetches.length > 0;
 
+export const getIsFetchingSubtypes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingSubtypes;
+
 export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
   state.plotSearch.subTypes;
 
@@ -97,3 +103,21 @@ export const getDecisionCandidates: Selector<Array, void> = (state: RootState): 
     return ([ ...acc, ...next ]);
   }, []);
 };
+
+export const areTargetsAllowedToHaveType: Selector<boolean, void> = (state: RootState): boolean => {
+  const selected = formValueSelector(FormNames.PLOT_SEARCH_BASIC_INFORMATION)(state, 'subtype');
+  const subtypes = getPlotSearchSubTypes(state);
+
+  return subtypes?.find((subtype) => subtype.id === selected)?.target_selection === true;
+}
+
+export const isLockedForModifications: Selector<boolean, void> = (state: RootState): boolean => {
+  const stage = getCurrentPlotSearch(state)?.stage?.stage;
+  return stage && stage !== PlotSearchStageTypes.IN_PREPARATION;
+}
+
+export const isFetchingStages: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingStages;
+
+export const getStages: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
+  state.plotSearch.stages;

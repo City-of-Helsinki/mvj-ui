@@ -52,6 +52,9 @@ import PlotSearchSiteEdit from './PlotSearchSiteEdit';
 import type {Attributes} from '$src/types';
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 import WarningField from "../../../../components/form/WarningField";
+import {getCurrentPlotSearch, getStages, isLockedForModifications} from "../../../selectors";
+import PlotSearchTargetListing from "./PlotSearchTargetListing";
+import {AUTOMATIC_PLOT_SEARCH_STAGES} from "../../../constants";
 
 type DecisionsProps = {
   attributes: Attributes,
@@ -276,7 +279,9 @@ type Props = {
   receiveFormValidFlags: Function,
   valid: boolean,
   hasMinimumRequiredFieldsFilled: boolean,
-  change: Function
+  change: Function,
+  currentPlotSearch: Object,
+  isLockedForModifications: boolean
 }
 
 type State = {
@@ -361,11 +366,27 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       decisionCandidates,
       selectedDecisions,
       hasMinimumRequiredFieldsFilled,
-      change
+      change,
+      currentPlotSearch,
+      isLockedForModifications,
+      stages
     } = this.props;
     const subTypeOptions = filterSubTypes(plotSearchSubTypes, type);
 
     const hasUnidentifiedDecisions = selectedDecisions.some((decision) => decision?.id && !decision?.relatedPlanUnitId);
+
+    const canEditStage = !AUTOMATIC_PLOT_SEARCH_STAGES.includes(currentPlotSearch.stage.stage);
+    let stageAttributes = get(attributes, 'stage');
+    if (stageAttributes && canEditStage) {
+      stageAttributes = {
+        ...stageAttributes,
+        choices: stages.filter((stage) => !AUTOMATIC_PLOT_SEARCH_STAGES.includes(stage.stage)
+        ).map((stage) => ({
+          display_name: stage.name,
+          value: stage.id
+        }))
+      };
+    }
 
     return (
       <form>
@@ -418,7 +439,9 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       fieldAttributes={get(attributes, PlotSearchFieldPaths.SEARCH_CLASS)}
                       name='search_class'
                       overrideValues={{
-                        label: PlotSearchFieldTitles.SEARCH_CLASS
+                        label: PlotSearchFieldTitles.SEARCH_CLASS,
+                        required: true,
+                        allowEdit: !isLockedForModifications
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('search_class')}
@@ -433,7 +456,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       name='type'
                       overrideValues={{
                         label: PlotSearchFieldTitles.TYPE,
-                        required: true
+                        required: true,
+                        allowEdit: !isLockedForModifications
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('type')}
@@ -449,7 +473,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       overrideValues={{
                         label: PlotSearchFieldTitles.SUBTYPE,
                         options: subTypeOptions,
-                        required: true
+                        required: true,
+                        allowEdit: !isLockedForModifications
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('subtype')}
@@ -463,8 +488,9 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       fieldAttributes={get(attributes, 'begin_at')}
                       name='begin_at'
                       overrideValues={{
-                        label: 'Alkupvm ja Klo',
+                        label: 'Alkupvm ja klo',
                         fieldType: FieldTypeOptions.TIME,
+                        allowEdit: !isLockedForModifications
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('begin_at')}
@@ -478,8 +504,9 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       fieldAttributes={get(attributes, 'end_at')}
                       name='end_at'
                       overrideValues={{
-                        label: 'Loppupvm ja Klo',
+                        label: 'Loppupvm ja klo',
                         fieldType: FieldTypeOptions.TIME,
+                        allowEdit: !isLockedForModifications
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('end_at')}
@@ -490,11 +517,12 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   <Column small={12} medium={6} large={2}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'stage')}
+                      fieldAttributes={stageAttributes}
                       name='stage'
                       overrideValues={{
                         label: PlotSearchFieldTitles.STAGE,
-                        required: true
+                        required: true,
+                        allowEdit: canEditStage
                       }}
                     />
                   </Column>
@@ -513,9 +541,9 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   />
                 </Authorization>
               </Row>
-              <WhiteBox>
+              {!isLockedForModifications && <WhiteBox>
                 <SubTitle>
-                  {'KOHTEET'}
+                  KOHTEET
                 </SubTitle>
                 <WarningField showWarning={!hasMinimumRequiredFieldsFilled} meta={{
                   warning: "Ole hyvä ja täytä ensin pakolliset perustiedot."
@@ -531,7 +559,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   onRemove={this.onTargetRemoved}
                   change={change}
                 />
-              </WhiteBox>
+              </WhiteBox>}
+              {isLockedForModifications && <PlotSearchTargetListing />}
             </Collapse>
           </Column>
         </Row>
@@ -557,7 +586,10 @@ export default flowRight(
         decisionCandidates: getDecisionCandidates(state),
         selectedDecisions: selector(state, 'decisions'),
         targets: selector(state, 'plot_search_targets'),
-        hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state)
+        hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state),
+        currentPlotSearch: getCurrentPlotSearch(state),
+        isLockedForModifications: isLockedForModifications(state),
+        stages: getStages(state)
       };
     },
     {
