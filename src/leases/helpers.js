@@ -1086,14 +1086,39 @@ export const getBasisOfRentIndexValue = (basisOfRent: Object, indexOptions: Arra
 /**
  * Calculate basis of rent basis annual rent
  * @param {Object} basisOfRent
+ * @param {string} indexValue
  * @return {number}
  */
-export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): number => {
-  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return 0;
+export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object, indexValue: ?string): number => {
+  if(basisOfRent.type === CalculatorTypes.LEASE2022) {
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    if(!initialYearRent || !isDecimalNumberStr(indexValue)) {
+      return 0;
+    }
+    return Number(initialYearRent / (convertStrToDecimalNumber(indexValue) / 100));
+  }
+
+  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) {
+    return 0;
+  }
 
   return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
     * Number(convertStrToDecimalNumber(basisOfRent.area))
     * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
+};
+
+/**
+ * Get current basis of rent amount per area based on calculator type
+ * @param {Object} basisOfRent
+ * @param {string} indexValue
+ * @return {number}
+ */
+export const getBasisOfRentAmountPerArea = (basisOfRent: Object, indexValue: ?string): number => {
+  if(basisOfRent.type === CalculatorTypes.LEASE2022) {
+    return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area));
+  }
+
+  return calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
 };
 
 /**
@@ -1130,6 +1155,18 @@ export const calculateAmountFromValue = (value: string, indexValue: ?string): nu
  * @return {number}
  */
 export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string, basicAnnualRent: ?number): number => {
+  if(basisOfRent.type === CalculatorTypes.LEASE2022) {
+    const area = convertStrToDecimalNumber(basisOfRent.area);
+    const amountPerArea = convertStrToDecimalNumber(basisOfRent.amount_per_area);
+    const profitMarginPercentage = convertStrToDecimalNumber(basisOfRent.profit_margin_percentage);
+
+    if(!isDecimalNumberStr(area) || !isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(profitMarginPercentage)) {
+      return 0;
+    }
+
+    return Number(area * amountPerArea * Number(profitMarginPercentage / 100));
+  }
+
   return Number(roundToFixed(Number(basicAnnualRent), 2)) * Number(convertStrToDecimalNumber(indexValue)) / 100;
 };
 
@@ -1153,11 +1190,16 @@ export const calculateBasisOfRentDiscountedInitialYearRentsTotal = (basisOfRents
  * @return {number}
  */
 export const calculateInitialYearRentsTotal = (basisOfRents: Object[], indexOptions: Object[]): number => {
-  if(basisOfRents)
-    return Number(basisOfRents.map(basisOfRent =>
-      calculateBasisOfRentInitialYearRent(basisOfRent, getBasisOfRentIndexValue(basisOfRent, indexOptions))).reduce((sum, cur) => sum + cur));
-  else
+  if(basisOfRents) {
+    const initialYearRents = basisOfRents.map(basisOfRent => {
+      const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+      const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+      return calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
+    });
+    return Number(initialYearRents.reduce((sum, cur) => sum + cur));
+  } else {
     return 0;
+  }
 };
 
 /**
@@ -1172,8 +1214,11 @@ export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Objec
 
   if(!isDecimalNumberStr(initialYearRent)) return 0;
 
-  return Number(convertStrToDecimalNumber(initialYearRent))
-    * Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - Number(convertStrToDecimalNumber(basisOfRent.discount_percentage)))/100 : 1);
+  const decimalNumberInitialYearRent = Number(convertStrToDecimalNumber(initialYearRent));
+  const decimalNumberDiscountPercentage = Number(convertStrToDecimalNumber(basisOfRent.discount_percentage));
+  const discountMultiplier = Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - decimalNumberDiscountPercentage) / 100 : 1);
+
+  return decimalNumberInitialYearRent * discountMultiplier;
 };
 
 /**
@@ -1389,8 +1434,13 @@ export const calculateRentAdjustmentSubventionPercentCumulative = (subventionTyp
  */
 export const calculateSubventionDiscountTotal = (initialYearRent: number, managementSubventions: ?Array<Object>, currentAmountPerArea: number) => {
   if(managementSubventions && managementSubventions[0] && managementSubventions[0].subvention_amount !== null){
-    return Number(initialYearRent * (1 - ((currentAmountPerArea - Number(convertStrToDecimalNumber(managementSubventions[0].subvention_amount))) / currentAmountPerArea)));
+    const roundedInitialYear = initialYearRent.toFixed(2);
+    const roundedDiscountPercentage = Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercantage(managementSubventions[0].subvention_amount, currentAmountPerArea))).toFixed(2);
+    const discountMultiplier = Number(((100 - roundedDiscountPercentage) / 100) || 1);
+
+    return Number(roundedInitialYear * discountMultiplier);
   }
+
   return Number(initialYearRent);
 };
 
