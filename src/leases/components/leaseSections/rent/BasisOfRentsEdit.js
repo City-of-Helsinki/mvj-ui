@@ -90,12 +90,8 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
   }
 
   handleAdd = () => {
-    const {basisOfRents, fields} = this.props;
-    const lastBasisOfRent = basisOfRents.slice(-1).pop();
-
-    fields.push({
-      profit_margin_percentage: lastBasisOfRent ? lastBasisOfRent.profit_margin_percentage : null,
-    });
+    const {fields} = this.props;
+    fields.push({});
   }
 
   removeBasisOfRent = (index: number) => {
