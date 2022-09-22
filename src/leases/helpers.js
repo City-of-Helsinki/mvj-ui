@@ -1307,7 +1307,9 @@ export const calculateBasisOfRentSubventionPercantage = (subventionAmount: strin
   if(!isDecimalNumberStr(subventionAmount)) return 0;
   if(!currentAmountPerArea) return 0;
 
-  return  (1 - (Number(convertStrToDecimalNumber(subventionAmount)) / currentAmountPerArea)) * 100;
+  const subventionPercentage = (1 - (Number(convertStrToDecimalNumber(subventionAmount)) / currentAmountPerArea)) * 100;
+
+  return Number(subventionPercentage.toFixed(2));
 };
 
 /**
@@ -1319,7 +1321,8 @@ export const calculateBasisOfRentSubventionPercantage = (subventionAmount: strin
 export const calculateSubventionAmountFromPercantage = (subventionPercantage: string | number, currentAmountPerArea: number | number): number => {
   if(!isDecimalNumberStr(subventionPercantage)) return 0;
   if(!currentAmountPerArea) return 0;
-  return  (1 - (Number(convertStrToDecimalNumber(subventionPercantage)) / 100)) * currentAmountPerArea;
+  const subventionAmount = (1 - (Number(convertStrToDecimalNumber(subventionPercantage)) / 100)) * currentAmountPerArea;
+  return Number(subventionAmount.toFixed(2));
 };
 
 /**
