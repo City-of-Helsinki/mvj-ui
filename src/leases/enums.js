@@ -17,6 +17,7 @@ export const AreaLocation = {
  * @type {{}}
  */
 export const CalculatorTypes = {
+  LEASE2022: 'lease2022',
   LEASE: 'lease',
   TEMPORARY: 'temporary',
   ADDITIONAL_YARD: 'additional_yard',
@@ -1463,7 +1464,8 @@ export const LeaseInvoiceNotesFieldTitles = {
  * @type {{}}
  */
 export const calculatorTypeOptions = [
-  {value: 'lease', label: 'Vuokra'},
+  {value: 'lease2022', label: 'Vuokra'},
+  {value: 'lease', label: 'Vuokra (Vanha)'},
   {value: 'temporary', label: 'Tilapäiset'},
   {value: 'additional_yard', label: 'Lisäpihat'},
   {value: 'field', label: 'Pelto'},
