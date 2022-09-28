@@ -31,9 +31,6 @@ import {
   getReports,
 } from '$src/leaseStatisticReport/selectors';
 import {
-  LeaseStatisticReportTitles,
-} from '$src/leaseStatisticReport/enums';
-import {
   getReportData,
 } from '$src/leaseStatisticReport/selectors';
 import {
@@ -94,9 +91,6 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
           <h2>RAPORTIT</h2>
           <Divider />
           <GreenBox>
-            <SubTitle style={{textTransform: 'uppercase'}} >
-              {LeaseStatisticReportTitles.LEASE_STATISTICS_REPORT}
-            </SubTitle>
             <LeaseStatisticReportForm/>
           </GreenBox>
           {(!!reportData || isFetchingReportData) && <GreenBox className='with-top-margin'>
