@@ -20,7 +20,6 @@ import {
 import {
   LeaseStatisticReportPaths,
   LeaseStatisticReportTitles,
-  LeaseInvoicingReportTypes,
 } from '$src/leaseStatisticReport/enums';
 import {
   getReportTypeOptions,
@@ -122,7 +121,6 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
       reports,
       isFetchingReports,
       isFetchingReportData,
-      reportType,
       isSendingMail,
       options,
       isFetchingOptions,
@@ -131,6 +129,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
     if(isFetchingReports) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
     const reportTypeOptions = getReportTypeOptions(reports);
     const fields = getFields(options);
+    const isAsync = !!(options && options.is_async);
 
     return(
       <form>
@@ -168,7 +167,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
                   </Column>
                 );
               })}
-              {((reportType !== LeaseInvoicingReportTypes.RENT_FORECAST && reportType !== LeaseInvoicingReportTypes.LEASE_STATISTIC) && fields && !isFetchingOptions) &&<Column small={3} style={{margin: '10px 0'}}>
+              {(!isAsync && fields && !isFetchingOptions) &&<Column small={3} style={{margin: '10px 0'}}>
                 <Button
                   className={ButtonColors.SUCCESS}
                   disabled={isFetchingReportData}
@@ -176,7 +175,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
                   onClick={this.getReportData}
                 />
               </Column>}
-              {(reportType === LeaseInvoicingReportTypes.RENT_FORECAST || reportType ===  LeaseInvoicingReportTypes.LEASE_STATISTIC)&& <Column small={3} style={{margin: '10px 0'}}>
+              {isAsync && <Column small={3} style={{margin: '10px 0'}}>
                 <Button
                   className={ButtonColors.SUCCESS}
                   disabled={isSendingMail}
