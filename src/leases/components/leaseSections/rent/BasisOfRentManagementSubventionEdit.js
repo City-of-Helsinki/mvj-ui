@@ -44,6 +44,14 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
     change(formName, `${field}.subvention_percent`, subventionPercent);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    const {change, currentAmountPerArea, formName, field, subventionAmount} = this.props;
+    if(currentAmountPerArea !== prevProps.currentAmountPerArea) {
+      const subventionPercent = calculateBasisOfRentSubventionPercantage(subventionAmount, currentAmountPerArea).toFixed(2);
+      change(formName, `${field}.subvention_percent`, subventionPercent);
+    }
+  }
+
   onChangeCurrentSubventionAmount = (value: any) => {
     const {change, currentAmountPerArea, formName, field} = this.props;
     const subventionAmount = calculateSubventionAmountFromPercantage(value, currentAmountPerArea).toFixed(2);
