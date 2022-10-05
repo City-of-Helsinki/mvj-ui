@@ -1,24 +1,29 @@
+// @flow
+
 import get from 'lodash/get';
 import _ from 'lodash';
-import {getFieldAttributes, getFieldOptions} from "../util/helpers";
+import {getFieldAttributes, displayUIMessage, getApiResponseResults} from "../util/helpers";
+import {formValueSelector} from "redux-form";
+
 import createUrl from "../api/createUrl";
 import {store} from '../root/startApp';
-import {formValueSelector} from "redux-form";
 import {FormNames} from "../enums";
 import {
   getApplicationInfoCheckData,
   getCurrentEditorTargets,
-  getInfoCheckAttributes,
-  getPendingUploads
+  getPendingUploads,
 } from "./selectors";
-import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "./constants";
-
 import {
-  getApiResponseResults,
-} from '$util/helpers';
+  APPLICANT_MAIN_IDENTIFIERS,
+  APPLICANT_SECTION_IDENTIFIER,
+  TARGET_SECTION_IDENTIFIER
+} from "./constants";
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
-import {ApplicantInfoCheckTypes} from "./enums";
+import {ApplicantInfoCheckTypes, ApplicantTypes} from "./enums";
 import type {RootState} from "../root/types";
+import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState} from "./types";
+import type {Form, FormSection} from "../plotSearch/types";
+import type {Attributes} from "../types";
 
 /**
  * Get plotApplication list results
@@ -96,8 +101,13 @@ export const getApplicationTargetGeoJson = (applications: Array<Object>): Leafle
   };
 };
 
-export const reshapeSavedApplicationObject = (application, form, formAttributes, attachments) => {
-  const getEmptySection = () => ({
+export const reshapeSavedApplicationObject = (
+  application: Object,
+  form: Form,
+  formAttributes: Attributes,
+  attachments: Array<Object>
+): Object => {
+  const getEmptySection = (): Object => ({
     sections: {},
     fields: {}
   });
@@ -120,7 +130,7 @@ export const reshapeSavedApplicationObject = (application, form, formAttributes,
     section.fields.forEach((field) => {
       let { value, extra_value } = answersNode.fields[field.identifier] || {};
 
-      switch (fieldTypes.find((fieldType) => fieldType.value === field.type)?.display_name) {
+      switch (fieldTypes?.find((fieldType) => fieldType.value === field.type)?.display_name) {
         case 'radiobutton':
         case 'radiobuttoninline':
           value = value !== null && value !== undefined ? value : null;
@@ -167,8 +177,6 @@ export const reshapeSavedApplicationObject = (application, form, formAttributes,
 
 
     } else {
-      parentResultNode.sections[section.identifier] = getEmptySection();
-
       const sectionAnswers = answersNode[section.identifier];
 
       if (sectionAnswers) {
@@ -181,9 +189,9 @@ export const reshapeSavedApplicationObject = (application, form, formAttributes,
   return result;
 };
 
-export const getAttachmentLink = (id) => createUrl(`attachment/${id}/download/`);
+export const getAttachmentLink = (id: number): string => createUrl(`attachment/${id}/download/`);
 
-export const getInitialApplication = () => {
+export const getInitialApplication = (): ApplicationFormState => {
   return {
     //plotSearch: null,
     formId: null,
@@ -193,9 +201,9 @@ export const getInitialApplication = () => {
 };
 
 export const getInitialApplicationForm = (
-  fieldTypes,
-  form
-) => {
+  fieldTypes: { [id: number]: string },
+  form?: Form
+): Object | null => {
   if (!form) {
     return null;
   }
@@ -214,10 +222,21 @@ export const getInitialApplicationForm = (
       return;
     }
 
-    const workingItem = {
+    const workingItem: ApplicationFormSection = {
       sections: {},
       fields: {},
+      sectionRestrictions: {}
     };
+
+    if (section.identifier === APPLICANT_SECTION_IDENTIFIER) {
+      workingItem.metadata = {
+        applicantType: null
+      };
+
+      section.subsections.forEach((subsection) => {
+        workingItem.sectionRestrictions[subsection.identifier] = subsection.applicant_type;
+      })
+    }
 
     section.subsections.forEach((subsection) =>
       buildSection(subsection, workingItem.sections)
@@ -289,7 +308,7 @@ export const getInitialApplicationForm = (
   return root;
 };
 
-export const getSectionTemplate = (identifier: string) => {
+export const getSectionTemplate = (identifier: string): Object => {
   const state = store.getState();
   const templates = formValueSelector(FormNames.PLOT_APPLICATION)(
     state,
@@ -299,7 +318,7 @@ export const getSectionTemplate = (identifier: string) => {
   return templates[identifier] || {};
 };
 
-export const prepareApplicationForSubmission = () => {
+export const prepareApplicationForSubmission = (): Object | null => {
   const state = store.getState();
   const selector = formValueSelector(FormNames.PLOT_APPLICATION);
 
@@ -309,45 +328,85 @@ export const prepareApplicationForSubmission = () => {
     'formEntries.fileFieldIds'
   );
 
-  const attachMeta = (rootLevelSections) => {
-    Object.keys(rootLevelSections).forEach((sectionName) => {
-      switch (sectionName) {
-        case APPLICANT_SECTION_IDENTIFIER:
-          rootLevelSections[sectionName].forEach((applicant) => {
-            if (applicant.fields['hakija'] === 'Yritys') {
-              applicant.metadata = {
-                identifier: null // todo
-              };
-            } else {
-              applicant.metadata = {
-                identifier: null // todo
-              };
-            }
-          });
-          break;
-        case TARGET_SECTION_IDENTIFIER:
-          rootLevelSections[sectionName].forEach((target) => {
-            target.metadata = {
-              identifier: target.metadata.identifier
-            };
-          });
-          break;
-      }
-    });
+  try {
+    const attachMeta = (rootLevelSections) => {
+      Object.keys(rootLevelSections).forEach((sectionName) => {
+        const section = rootLevelSections[sectionName];
 
-    return rootLevelSections;
+        switch (sectionName) {
+          case APPLICANT_SECTION_IDENTIFIER:
+            section.forEach((applicant) => {
+              const applicantType = applicant.metadata.applicantType;
+
+              applicant.sections = _.pickBy(
+                _.cloneDeep(applicant.sections),
+                (subsection, sectionIdentifier: string) => [ApplicantTypes.BOTH, applicant.metadata.applicantType].includes(
+                  applicant.sectionRestrictions[sectionIdentifier]
+                )
+              );
+
+              try {
+                const identifiers = APPLICANT_MAIN_IDENTIFIERS[applicantType];
+
+                const sectionWithIdentifier = applicant.sections[identifiers?.DATA_SECTION];
+                const identifier = sectionWithIdentifier?.fields[identifiers?.IDENTIFIER_FIELD]
+                  || sectionWithIdentifier[0]?.fields[identifiers?.IDENTIFIER_FIELD];
+
+                if (!identifier?.value) {
+                  // noinspection ExceptionCaughtLocallyJS
+                  throw new Error(`no identifier of type ${applicant.metadata?.applicantType || 'unknown'} found for applicant section`);
+                }
+                applicant.metadata.identifier = identifier.value;
+              } catch (e) {
+                // sectionWithIdentifier or the value itself was not found, or something else went unexpectedly wrong
+                displayUIMessage({title: '', body: 'Hakijan henkilö- tai Y-tunnuksen käsittely epäonnistui!'}, { type: 'error' });
+                throw e;
+              }
+            });
+            break;
+          case TARGET_SECTION_IDENTIFIER:
+            section.forEach((target) => {
+              target.metadata = {
+                identifier: target.metadata.identifier
+              };
+            });
+            break;
+        }
+      });
+
+      return rootLevelSections;
+    }
+
+    const purgeUIFields = (node) => {
+      _.each(node, (section) => {
+        if (section instanceof Array) {
+          section.forEach((item) => {
+            delete item.sectionRestrictions;
+            purgeUIFields(item.sections);
+          })
+        } else {
+          delete section.sectionRestrictions;
+          purgeUIFields(section.sections);
+        }
+      });
+
+      return node;
+    };
+
+    return {
+      form: selector(state, 'formId'),
+      entries: {
+        sections: purgeUIFields(attachMeta(sections)),
+      },
+      targets: selector(state, 'targets'),
+      attachments: getPendingUploads(state)
+        .filter((file) => fileFieldIds.includes(file.field))
+        .map((file) => file.id)
+    };
+  } catch (e) {
+    console.log(e);
+    return null;
   }
-
-  return {
-    form: selector(state, 'formId'),
-    entries: {
-      sections: attachMeta(sections),
-    },
-    targets: selector(state, 'targets'),
-    attachments: getPendingUploads(state)
-      .filter((file) => fileFieldIds.includes(file.field))
-      .map((file) => file.id)
-  };
 };
 
 export const getSectionTargetFromMeta = (field: string): string => {
@@ -442,4 +501,23 @@ export const prepareInfoCheckForSubmission = (infoCheck: Object): Object => {
     state: infoCheck.state,
     mark_all: infoCheck.mark_all
   }
+};
+
+export const valueToApplicantType = (value: PlotApplicationFormValue): string | null => {
+  if (value === '1') {
+    return ApplicantTypes.COMPANY;
+  }
+  if (value === '2') {
+    return ApplicantTypes.PERSON;
+  }
+
+  return ApplicantTypes.UNKNOWN;
 }
+
+export const getSectionApplicantType = (state: RootState, section: FormSection, reduxFormPath: string): string => {
+  if (section.identifier !== APPLICANT_SECTION_IDENTIFIER) {
+    return ApplicantTypes.NOT_APPLICABLE;
+  }
+
+  return formValueSelector(FormNames.PLOT_APPLICATION)(state, `${reduxFormPath}.metadata.applicantType`) || ApplicantTypes.UNSELECTED;
+};

@@ -31,8 +31,28 @@ export type PlotApplicationsState = {
   lastInfoCheckUpdateSuccessful: { [id: number]: boolean }
 };
 
+export type PlotApplicationFormValue = string | Array<string> | boolean;
+
 export type PlotApplicationsList = Object;
 export type PlotApplication = Object;
+
+export type ApplicationFormField = {
+  value: PlotApplicationFormValue | null,
+  extraValue: string
+}
+
+export type ApplicationFormSection = {
+  fields: { [identifier: string]: ApplicationFormField},
+  sections: { [identifier: string]: ApplicationFormSection | Array<ApplicationFormSection> },
+  metadata?: { [key: string]: mixed },
+  sectionRestrictions: { [identifier: string]: string }
+}
+
+export type ApplicationFormState = {
+  formId: number | null,
+  targets: Array<number>,
+  formEntries: { [identifier: string]: ApplicationFormSection } | null
+}
 
 export type FetchAttributesAction = Action<'mvj/plotApplications/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/plotApplications/RECEIVE_ATTRIBUTES', Attributes>;
@@ -85,7 +105,7 @@ export type FetchPendingUploadsAction = Action<'mvj/plotApplications/FETCH_PENDI
 export type ReceivePendingUploadsAction = Action<'mvj/plotApplications/RECEIVE_PENDING_UPLOADS', Object>;
 export type PendingUploadsNotFoundAction = Action<'mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND', void>;
 export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', number>;
-export type UploadFileAction = Action<'mvj/plotApplications/UPLOAD_FILE', void>;
+export type UploadFileAction = Action<'mvj/plotApplications/UPLOAD_FILE', Object>;
 export type ReceiveFileOperationFinishedAction = Action<'mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED', void>;
 
 export type FetchAttachmentAttributesAction = Action<'mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', void>;
