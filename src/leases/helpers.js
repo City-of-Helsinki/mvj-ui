@@ -1265,8 +1265,11 @@ export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents:
 export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, subventionPercent: string | number): number => {
   if(!isDecimalNumberStr(subventionPercent)) return 0;
 
-  return  (Number(convertStrToDecimalNumber(subventionPercent)) / 100)
-    * initialYearRent;
+  const multiplier = Number(subventionPercent / 100);
+
+  const result = multiplier * initialYearRent;
+
+  return Number(convertStrToDecimalNumber(result.toFixed(3)));
 };
 
 /**
@@ -1279,26 +1282,30 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
  * @param {string} view
  * @return {number}
  */
-export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: number, subventionPercent: string | number, managementSubventions: Array<Object>, temporarySubventions: Array<Object>, index: number, view: string): number => {
+export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: number, subventionPercent: string | number, managementSubventions: Array<Object>, temporarySubventions: Array<Object>, index: number, view: string, currentAmountPerArea: ?number): number => {
   if(!isDecimalNumberStr(subventionPercent)) return 0;
 
   let discounted = initialYearRent;
   let discount = 0;
 
   managementSubventions && managementSubventions.forEach(managementSubvention => {
-    if(view === 'EDIT')
+    if(view === 'EDIT') {
       discounted = discounted * ((100 - Number(convertStrToDecimalNumber(managementSubvention.subvention_percent))) / 100);
-    else
-      discounted = discounted - calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
+    }else{
+      const subventionPercentage = calculateBasisOfRentSubventionPercantage(managementSubvention.subvention_amount, currentAmountPerArea);
+      discounted = discounted * ((100 - Number(convertStrToDecimalNumber(subventionPercentage))) / 100);
+    }
   });
+
+  discounted = discounted.toFixed(6);
 
   for(let i = 0; i <= index; i++){
     let lastTotal = discounted;
     discounted = discounted * ((100 - Number(convertStrToDecimalNumber(temporarySubventions[index].subvention_percent))) / 100);
-    discount = lastTotal - discounted;
+    discount = lastTotal - Number(convertStrToDecimalNumber(discounted.toFixed(6)));
   }
 
-  return  Number(discount);
+  return Number(convertStrToDecimalNumber(discount.toFixed(3))); // Return value with 3 decimals
 };
 
 /**
@@ -1307,7 +1314,6 @@ export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: 
  * @return {string}
  */
 export const calculateTemporarySubventionDiscountPercentage = (temporarySubventions: Object): string => {
-
   let base = 1;
 
   temporarySubventions && temporarySubventions.forEach(temporarySubvention => {
@@ -1315,7 +1321,7 @@ export const calculateTemporarySubventionDiscountPercentage = (temporarySubventi
       base = base * ((100 - (parseFloat(temporarySubvention.subvention_percent.replace(',', '.')))) / 100);
   });
 
-  return Number((1 - base)*100).toFixed(2);
+  return Number((1 - base) * 100).toFixed(2);
 };
 
 /**
@@ -1407,25 +1413,37 @@ export const calculateBasisOfRentSubventionPercent = (
 ): number => {
   let discount = 1;
 
+  // Use 4 decimals for all the multipliers, because e.g. 20,19% discount as a multiplier is 0,7981
+
   if(subventionType === SubventionTypes.RE_LEASE) {
-    discount = discount * ((100 - calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent)) / 100);
+    const calculatedReLeasePercentage = calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
+    const reLeaseMultiplier = (100 - calculatedReLeasePercentage) / 100 || 1;
+    const reLeaseMultiplierRounded = Number(convertStrToDecimalNumber(reLeaseMultiplier.toFixed(4)));
+    discount = discount * reLeaseMultiplierRounded;
   }
 
   if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
     if(managementSubventions) {
       managementSubventions.forEach((subvention) => {
-        discount = discount * Number(((100 - Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercantage(subvention.subvention_amount, currentAmountPerArea)))) / 100) || 1);
+        const calculatedSubventionPercentage = Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercantage(subvention.subvention_amount, currentAmountPerArea)));
+        const subventionMultiplier = (100 - calculatedSubventionPercentage) / 100 || 1;
+        const subventionMultiplierRounded = Number(convertStrToDecimalNumber(subventionMultiplier.toFixed(4)));
+        discount = Number(convertStrToDecimalNumber(discount.toFixed(4))) * subventionMultiplierRounded;
       });
     }
   }
 
   if(temporarySubventions) {
     temporarySubventions.forEach((subvention) => {
-      discount = discount * (Number((100 - Number(convertStrToDecimalNumber(subvention.subvention_percent))) / 100) || 1);
+      const temporarySubventionPercent = Number(convertStrToDecimalNumber(subvention.subvention_percent));
+      const temporarySubventionMultiplier = (100 - temporarySubventionPercent) / 100 || 1;
+      const temporarySubventionMultiplierRounded = Number(convertStrToDecimalNumber(temporarySubventionMultiplier.toFixed(4)));
+      discount = Number(convertStrToDecimalNumber(discount.toFixed(4))) * temporarySubventionMultiplierRounded;
     });
   }
 
-  return (1 - discount) * 100;
+  // Round final percentage to 6 decimals
+  return Number(convertStrToDecimalNumber(((1 - discount) * 100).toFixed(6)));
 };
 
 /**
