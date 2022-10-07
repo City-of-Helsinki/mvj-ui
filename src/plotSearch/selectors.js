@@ -98,8 +98,10 @@ export const getTemplateForms: Selector<Object, void> = (state: RootState): Obje
 export const getForm: Selector<Object, void> = (state: RootState): Object =>
   state.plotSearch.form;
 
-export const getDecisionCandidates: Selector<Array, void> = (state: RootState): Object => {
+export const getDecisionCandidates: Selector<Array<Object>, void> = (state: RootState): Array<Object> => {
   return Object.values(state.plotSearch.decisionCandidates).reduce((acc, next) => {
+    // https://github.com/facebook/flow/issues/2133
+    // $FlowFixMe
     return ([ ...acc, ...next ]);
   }, []);
 };
@@ -112,8 +114,8 @@ export const areTargetsAllowedToHaveType: Selector<boolean, void> = (state: Root
 }
 
 export const isLockedForModifications: Selector<boolean, void> = (state: RootState): boolean => {
-  const stage = getCurrentPlotSearch(state)?.stage?.stage;
-  return stage && stage !== PlotSearchStageTypes.IN_PREPARATION;
+  const stage = getCurrentPlotSearchStage(state);
+  return stage ? stage !== PlotSearchStageTypes.IN_PREPARATION : false;
 }
 
 export const isFetchingStages: Selector<boolean, void> = (state: RootState): boolean =>
@@ -121,3 +123,6 @@ export const isFetchingStages: Selector<boolean, void> = (state: RootState): boo
 
 export const getStages: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
   state.plotSearch.stages;
+
+export const getCurrentPlotSearchStage: Selector<string | null, void> = (state: RootState): string | null =>
+  getCurrentPlotSearch(state)?.stage?.stage || null;

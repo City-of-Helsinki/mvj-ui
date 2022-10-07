@@ -25,7 +25,8 @@ export type PlotSearchState = {
   form: Object,
   templateForms: Object,
   isFetchingStages: boolean,
-  stages: Array<Object>
+  stages: Array<Object>,
+  decisionCandidates: Array<Object>
 };
 
 export type PlotSearchId = number;
