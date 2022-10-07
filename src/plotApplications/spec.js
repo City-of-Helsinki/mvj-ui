@@ -54,7 +54,11 @@ const baseState: PlotApplicationsState = {
   },
   subTypes: null,
   pendingUploads: [],
-  plotSearch: null
+  plotSearch: null,
+  isFetchingInfoCheckAttributes: false,
+  infoCheckAttributes: null,
+  isUpdatingInfoCheck: {},
+  lastInfoCheckUpdateSuccessful: {}
 };
 
 // $FlowFixMe

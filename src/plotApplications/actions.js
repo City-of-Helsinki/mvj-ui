@@ -45,6 +45,18 @@ import type {
   FetchApplicationRelatedPlotSearchAction,
   ReceiveApplicationRelatedPlotSearchAction,
   ApplicationRelatedPlotSearchNotFoundAction,
+  ReceiveFileOperationFinishedAction,
+  DeleteUploadAction,
+  PendingUploadsNotFoundAction,
+  ReceivePendingUploadsAction,
+  InitializeFormEntriesForApplicationAction,
+  FetchPendingUploadsAction,
+  FetchInfoCheckAttributesAction,
+  ReceiveInfoCheckAttributesAction,
+  InfoCheckAttributesNotFoundAction,
+  EditInfoCheckItemAction,
+  ReceiveUpdatedInfoCheckItemAction,
+  InfoCheckUpdateFailed
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -184,3 +196,21 @@ export const attachmentAttributesNotFound = (): AttachmentAttributesNotFoundActi
 
 export const setCurrentEditorTargets = (payload: Array<Object>): SetCurrentEditorTargetsAction =>
   createAction('mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS')(payload);
+
+export const fetchInfoCheckAttributes = (): FetchInfoCheckAttributesAction =>
+  createAction('mvj/plotApplications/FETCH_INFO_CHECK_ATTRIBUTES')();
+
+export const receiveInfoCheckAttributes = (payload: Object): ReceiveInfoCheckAttributesAction =>
+  createAction('mvj/plotApplications/RECEIVE_INFO_CHECK_ATTRIBUTES')(payload);
+
+export const infoCheckAttributesNotFound = (): InfoCheckAttributesNotFoundAction =>
+  createAction('mvj/plotApplications/INFO_CHECK_ATTRIBUTES_NOT_FOUND')();
+
+export const editInfoCheckItem = (payload: Object): EditInfoCheckItemAction =>
+  createAction('mvj/plotApplications/EDIT_INFO_CHECK_ITEM')(payload);
+
+export const receiveUpdatedInfoCheckItem = (payload: Object): ReceiveUpdatedInfoCheckItemAction =>
+  createAction('mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM')(payload);
+
+export const infoCheckUpdateFailed = (payload: number): InfoCheckUpdateFailed =>
+  createAction('mvj/plotApplications/INFO_CHECK_UPDATE_FAILED')(payload);

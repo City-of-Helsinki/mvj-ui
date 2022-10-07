@@ -101,3 +101,18 @@ export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean 
 
 export const getCurrentEditorTargets: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
   state.plotApplications.currentEditorTargets;
+
+export const getIsFetchingInfoCheckAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotApplications.isFetchingInfoCheckAttributes;
+
+export const getInfoCheckAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotApplications.infoCheckAttributes;
+
+export const getApplicationInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
+  state.plotApplications.current?.information_checks;
+
+export const getIsUpdatingInfoCheckData: Selector<boolean, void> = (state: RootState): Record<number, boolean> =>
+  state.plotApplications.isUpdatingInfoCheck;
+
+export const getWasLastInfoCheckUpdateSuccessfulData: Selector<boolean, void> = (state: RootState): Record<number, boolean> =>
+  state.plotApplications.lastInfoCheckUpdateSuccessful;
