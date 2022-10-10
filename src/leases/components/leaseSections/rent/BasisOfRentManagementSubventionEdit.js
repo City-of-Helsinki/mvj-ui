@@ -136,7 +136,7 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
           <FieldAndRemoveButtonWrapper
             field={
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
-                <FormText className='full-width'>{formatNumber(subventionTotal)} €</FormText>
+                <FormText className='full-width'>{formatNumber(subventionTotal, 3)} €</FormText>
               </Authorization>
             }
             removeButton={

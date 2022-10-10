@@ -83,7 +83,7 @@ const BasisOfRentTemporarySubventionEdit = ({
         <FieldAndRemoveButtonWrapper
           field={
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT)}>
-              <FormText className='full-width'>{formatNumber(subventionAmount)} €</FormText>
+              <FormText className='full-width'>{formatNumber(subventionAmount, 3)} €</FormText>
             </Authorization>
           }
           removeButton={
