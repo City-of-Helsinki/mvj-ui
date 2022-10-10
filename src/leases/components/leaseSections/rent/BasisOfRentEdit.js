@@ -1798,7 +1798,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE)}>
                           <FormField
                             disableTouched={isSaveClicked}
-                            fieldAttributes={{...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE), required: true}}
+                            fieldAttributes={{...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE), required: false}}
                             name={`${field}.subvention_type`}
                             disabled={(!!savedBasisOfRent && !!savedBasisOfRent.locked_at)}
                             overrideValues={{label: LeaseBasisOfRentsFieldTitles.SUBVENTION_TYPE}}
