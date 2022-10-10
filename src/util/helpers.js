@@ -239,16 +239,16 @@ export const formatNumberWithThousandSeparator = (x: any, separator?: string = '
 
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 };
-  
+
 
 /**
  * Format decimal number
  * @param {number} x
  * @returns {string}
  */
-export const formatDecimalNumber = (x: ?number): ?string => 
-  !isEmptyValue(x) 
-    ? parseFloat(x).toFixed(2).toString().replace('.', ',') 
+export const formatDecimalNumber = (x: ?number, decimals: ?number = 2): ?string =>
+  !isEmptyValue(x)
+    ? parseFloat(x).toFixed(decimals).toString().replace('.', ',')
     : null;
 
 /**
@@ -256,9 +256,9 @@ export const formatDecimalNumber = (x: ?number): ?string =>
  * @param {*} x
  * @returns {string}
  */
-export const formatNumber = (x: any): string => 
-  !isEmptyValue(x) 
-    ? formatNumberWithThousandSeparator(formatDecimalNumber(x)) 
+export const formatNumber = (x: any, decimals: ?number = 2): string =>
+  !isEmptyValue(x)
+    ? formatNumberWithThousandSeparator(formatDecimalNumber(x, decimals))
     : '';
 
 /**
