@@ -133,6 +133,7 @@ const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch, topLevel, 
       <PlotApplicationApplicantInfoCheck
         section={section}
         identifier={identifier}
+        answer={answer}
       />}
   </>
 };

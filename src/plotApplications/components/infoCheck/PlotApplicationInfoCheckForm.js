@@ -17,15 +17,22 @@ import {prepareInfoCheckForSubmission} from "../../helpers";
 import {getUserFullName} from "../../../users/helpers";
 import {PlotApplicationInfoCheckFieldPaths, PlotApplicationInfoCheckFieldTitles} from "../../enums";
 
-type Props = {
+type OwnProps = {
+  infoCheck: Object,
   onClose: Function,
   onSubmit: Function,
+};
+
+type Props = {
+  ...OwnProps,
+  initialize: Function,
   attributes: Attributes,
   valid: boolean,
+  formValues: Object
 };
 
 class PlotApplicationInfoCheckForm extends Component<Props> {
-  firstField: ?React$Ref
+  firstField: ?HTMLInputElement
 
   componentDidMount(): void {
     const infoCheck = this.props?.infoCheck;
@@ -45,7 +52,7 @@ class PlotApplicationInfoCheckForm extends Component<Props> {
     });
   }
 
-  setRefForFirstField = (element: React$Ref): void => {
+  setRefForFirstField = (element: HTMLInputElement): void => {
     this.firstField = element;
   }
 
@@ -136,7 +143,7 @@ class PlotApplicationInfoCheckForm extends Component<Props> {
 }
 
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state) => ({
       attributes: getInfoCheckAttributes(state),
@@ -149,4 +156,4 @@ export default flowRight(
   reduxForm({
     form: FormNames.PLOT_APPLICATION_INFO_CHECK,
   })
-)(PlotApplicationInfoCheckForm);
+)(PlotApplicationInfoCheckForm) : React$AbstractComponent<OwnProps, mixed>);

@@ -34,7 +34,12 @@ export const PlotApplicationInfoCheckFieldTitles = {
   COMMENT: 'Kommentti'
 };
 
-export const ApplicantTypes = {
+export const PlotApplicationInfoCheckExternalTypes = {
+  CREDIT_INQUIRY: 'credit_inquiry',
+  TRADE_REGISTER_INQUIRY: 'trade_register_inquiry'
+};
+
+  export const ApplicantTypes = {
   PERSON: 'Person',
   COMPANY: 'Company',
   BOTH: 'Both',
