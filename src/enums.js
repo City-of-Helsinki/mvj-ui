@@ -151,6 +151,16 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa kohteen?',
     TITLE: 'Poista kohde',
   },
+  DELETE_CUSTOM_DETAILED_PLAN: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Halutako varmasti poistaa oman muun alueen?',
+    TITLE: 'Poista oma muu alue',
+  },
+  DELETE_INFO_LINKS: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Halutako varmasti poistaa lisätietolinkin?',
+    TITLE: 'Poista lisätietolinkki',
+  },
   DELETE_SUGGESTION: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa ehdotuksen?',
@@ -321,6 +331,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa ohjetekstin',
     TITLE: 'Poista ohjeteksti',
   },
+  DELETE_USAGE_DISTRIBUTIONS: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa käyttöjakauman?',
+    TITLE: 'Poista käyttöjakauma',
+  },
   RESTORE_CHANGES: {
     BUTTON: 'Palauta muutokset',
     LABEL: 'Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?',
@@ -462,7 +477,6 @@ export const FormNames = {
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
   PLOT_APPLICATION_PREVIEW: 'plot-application-preview',
-  PLOT_APPLICATION_INFO_CHECK: 'plot-application-info-check',
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
   LAND_USE_CONTRACT_INVOICE_EDIT: 'land-use-contract-invoice-edit',
 };
