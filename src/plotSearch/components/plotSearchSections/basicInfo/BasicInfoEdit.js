@@ -52,21 +52,21 @@ import PlotSearchSiteEdit from './PlotSearchSiteEdit';
 import type {Attributes} from '$src/types';
 import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
 import WarningField from "../../../../components/form/WarningField";
-import {getCurrentPlotSearch, getStages, isLockedForModifications} from "../../../selectors";
+import {getCurrentPlotSearch, getCurrentPlotSearchStage, getStages, isLockedForModifications} from "../../../selectors";
 import PlotSearchTargetListing from "./PlotSearchTargetListing";
 import {AUTOMATIC_PLOT_SEARCH_STAGES} from "../../../constants";
+import {PlotSearchStageTypes} from "../../../enums";
 
 type DecisionsProps = {
   attributes: Attributes,
   disabled: boolean,
   fields: any,
   formName: string,
-  isSaveClicked: Boolean,
+  isSaveClicked: boolean,
   usersPermissions: UsersPermissionsType,
+  decisionCandidates: Array<Object>,
+  hasUnidentifiedDecisions: boolean
 }
-
-// TODO
-// eslint-disable-next-line
 const renderDecisions = ({
   disabled,
   fields,
@@ -188,8 +188,10 @@ type PlotSearchSitesProps = {
   disabled: boolean,
   fields: any,
   formName: string,
-  // leaseAttrobites
   usersPermissions: UsersPermissionsType,
+  onRemove: Function,
+  change: Function,
+  form: string
 }
 
 const renderPlotSearchSites = ({
@@ -266,6 +268,10 @@ const renderPlotSearchSites = ({
   );
 };
 
+type OwnProps = {
+
+};
+
 type Props = {
   attributes: Attributes,
   collapseStateBasic: boolean,
@@ -281,7 +287,13 @@ type Props = {
   hasMinimumRequiredFieldsFilled: boolean,
   change: Function,
   currentPlotSearch: Object,
-  isLockedForModifications: boolean
+  decisionCandidates: Array<Object>,
+  selectedDecisions: Array<Object>,
+  targets: Array<Object>,
+  removeTargetDecisions: Function,
+  isLockedForModifications: boolean,
+  stages: Array<Object>,
+  currentStage: string | null
 }
 
 type State = {
@@ -290,6 +302,16 @@ type State = {
 
 class BasicInfoEdit extends PureComponent<Props, State> {
   state = {
+  }
+
+  componentDidMount() {
+    const { currentStage, change, stages } = this.props;
+    if (!currentStage) {
+      const initialStage = stages.find((stage) => stage.stage === PlotSearchStageTypes.IN_PREPARATION);
+      if (initialStage) {
+        change('stage', initialStage.id);
+      }
+    }
   }
 
   handleCollapseToggle = (key: string, val: boolean) => {
@@ -375,7 +397,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
 
     const hasUnidentifiedDecisions = selectedDecisions.some((decision) => decision?.id && !decision?.relatedPlanUnitId);
 
-    const canEditStage = !AUTOMATIC_PLOT_SEARCH_STAGES.includes(currentPlotSearch.stage.stage);
+    const canEditStage = currentPlotSearch?.stage && !AUTOMATIC_PLOT_SEARCH_STAGES.includes(currentPlotSearch.stage.stage);
     let stageAttributes = get(attributes, 'stage');
     if (stageAttributes && canEditStage) {
       stageAttributes = {
@@ -572,7 +594,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
 const formName = FormNames.PLOT_SEARCH_BASIC_INFORMATION;
 const selector = formValueSelector(formName);
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state) => {
       return {
@@ -589,7 +611,8 @@ export default flowRight(
         hasMinimumRequiredFieldsFilled: hasMinimumRequiredFieldsFilled(state),
         currentPlotSearch: getCurrentPlotSearch(state),
         isLockedForModifications: isLockedForModifications(state),
-        stages: getStages(state)
+        stages: getStages(state),
+        currentStage: getCurrentPlotSearchStage(state)
       };
     },
     {
@@ -604,4 +627,4 @@ export default flowRight(
     destroyOnUnmount: false,
     change
   }),
-)(BasicInfoEdit);
+)(BasicInfoEdit) : React$AbstractComponent<OwnProps, mixed>);
