@@ -49,7 +49,7 @@ import {
 import {
   getIsFetching,
   getPlotApplicationsList,
-  getIsFetchingByBBox
+  getIsFetchingByBBox,
 } from '$src/plotApplications/selectors';
 import {
   DEFAULT_SORT_KEY,
@@ -61,7 +61,7 @@ import {
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import {fetchPlotSearchList, fetchAttributes as fetchPlotSearchAttributes} from '$src/plotSearch/actions';
 import ApplicationListMap from '$src/plotApplications/components/map/ApplicationListMap';
-import {getPlotApplicationsListByBBox} from "../selectors";
+import {getPlotApplicationsListByBBox} from '../selectors';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -412,11 +412,10 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       plotApplicationsMethods,
       plotApplicationsAttributes,
       plotApplicationsMapData,
-      location: {search}
+      location: {search},
     } = this.props;
 
     const {
-      isModalOpen,
       activePage,
       isSearchInitialized,
       applications,
