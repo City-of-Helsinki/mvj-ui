@@ -19,10 +19,16 @@ const ExternalLink = ({
 }: Props) => {
   const isRelativePath = href && href.substring(0, 4) !== 'www.' ? true : false;
 
-  return <a className={classNames('links__external-link', className)} target={openInNewTab ? '_blank' : '_self'} href={isRelativePath ? href : `http://${href || ''}`}>
-    <span>{text}</span>
-    <ExternalLinkIcon />
-  </a>;
+  return (
+    <a 
+      onMouseDown={e => e.stopPropagation() /* Links are used in clickable rows in few places */}
+      className={classNames('links__external-link', className)}
+      target={openInNewTab ? '_blank' : '_self'}
+      href={isRelativePath ? href : `http://${href || ''}`}
+    >
+      <span>{text}</span>
+      <ExternalLinkIcon />
+    </a>);
 };
 
 
