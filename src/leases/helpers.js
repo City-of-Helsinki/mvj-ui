@@ -375,7 +375,7 @@ export const getContentLeaseSummary = (lease: Object): Object => {
   * @param {string} path
   * @returns {Object}
   */
-export const getContentRelatedLease = (content: Object, path: string = 'from_lease') =>
+export const getContentRelatedLease = (content: Object, path: string = 'from_lease'): Object =>
   get(content, path, {});
 
 /**
@@ -507,6 +507,26 @@ export const getContentPlanUnits = (area: Object): Array<Object> =>
   });
 
 /**
+ * Get lease area custom detailed plan content
+ * @param {Object} area
+ * @returns {Object}
+ */
+export const getContentCustomDetailedPlan = (area: Object): Object => {
+  let customDetailedPlan = get(area, 'custom_detailed_plan');
+  
+  if (!customDetailedPlan) {
+    return null;
+  }
+
+  customDetailedPlan.state = get(customDetailedPlan, 'state.id') || customDetailedPlan.state;
+  customDetailedPlan.type = get(customDetailedPlan, 'type.id') || customDetailedPlan.type;
+  customDetailedPlan.intended_use = get(customDetailedPlan, 'intended_use.id') || customDetailedPlan.intended_use;
+
+  return customDetailedPlan;
+};
+
+
+/**
  * Get single lease area content
  * @param {Object} area
  * @returns {Object}
@@ -534,6 +554,7 @@ export const getContentLeaseArea = (area: Object): Object => {
     archived_at: area.archived_at,
     archived_note: area.archived_note,
     archived_decision: get(area, 'archived_decision.id') || get(area, 'archived_decision'),
+    custom_detailed_plan: getContentCustomDetailedPlan(area),
   };
 };
 
@@ -705,7 +726,7 @@ export const getContentContracts = (lease: Object): Array<Object> =>
  * @param {Object} contract
  * @returns {Object}
  */
-export const getContentInspection = (inspection: Object) => {
+export const getContentInspection = (inspection: Object): Object => {
   return {
     id: inspection.id,
     inspector: inspection.inspector,
@@ -721,7 +742,7 @@ export const getContentInspection = (inspection: Object) => {
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentInspections = (lease: Object) =>
+export const getContentInspections = (lease: Object): Array<Object> =>
   get(lease, 'inspections', []).map((inspection) => getContentInspection(inspection));
 
 /**
@@ -731,7 +752,7 @@ export const getContentInspections = (lease: Object) =>
  * @param {Object} text
  * @returns {string}
  */
-export const getContentConstructabilityEmail = (lease: Object, user: Object, text: ?string) => {
+export const getContentConstructabilityEmail = (lease: Object, user: Object, text: ?string): string => {
   let emailContent = `Vuokraustunnus: ${getContentLeaseIdentifier(lease) || '-'}\n`;
   const leaseAreas = get(lease, 'lease_areas', []);
 
@@ -855,7 +876,7 @@ export const getContentInvoiceNotes = (lease: Lease): Array<Object> =>
  * @param {Object} tenant
  * @returns {Object[]}
  */
-export const getContentTenantRentShares = (tenant: Object) => {
+export const getContentTenantRentShares = (tenant: Object): Array<Object> => {
   const rentShares = get(tenant, 'rent_shares', []);
 
   return rentShares.map((rentShare) => ({
@@ -992,7 +1013,7 @@ export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttribut
 
     rentShares.forEach((rentShare) => {
       if(rentShare.intended_use != null) {
-        
+        // $FlowFixMe[method-unbinding] This seems to be a bug on flow.. https://github.com/facebook/flow/issues/8689
         if(Object.prototype.hasOwnProperty.call(sharesByIntendedUse, rentShare.intended_use)) {
           sharesByIntendedUse[rentShare.intended_use].push(rentShare);
         } else {
@@ -1043,7 +1064,7 @@ export const getContentPayableRents = (rent: Object): Array<Object> =>
  * @param {Object} rent
  * @returns {Object[]}
  */
-export const getContentEqualizedRents = (rent: Object) =>
+export const getContentEqualizedRents = (rent: Object): Array<Object> =>
   get(rent, 'equalized_rents', [])
     .map((item) => {
       return {
@@ -1238,9 +1259,9 @@ export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: 
 /**
  * Calculate temporary subvention discount percantage for cumulative discounts
  * @param {Object} temporarySubventions
- * @return {number}
+ * @return {string}
  */
-export const calculateTemporarySubventionDiscountPercentage = (temporarySubventions: Object) => {
+export const calculateTemporarySubventionDiscountPercentage = (temporarySubventions: Object): string => {
 
   let base = 1;
 
@@ -1287,7 +1308,13 @@ export const calculateSubventionAmountFromPercantage = (subventionPercantage: st
  * @param {string} subventionGraduatedPercent
  * @return {number}
  */
-export const calculateRentAdjustmentSubventionPercent = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+export const calculateRentAdjustmentSubventionPercent = (
+  subventionType: ?string,
+  subventionBasePercent: ?string,
+  subventionGraduatedPercent: ?string,
+  managementSubventions: ?Array<Object>,
+  temporarySubventions: ?Array<Object>
+): number => {
   let discount = 0;
 
   if(subventionType === SubventionTypes.RE_LEASE) {
@@ -1322,7 +1349,14 @@ export const calculateRentAdjustmentSubventionPercent = (subventionType: ?string
  * @param {string} subventionGraduatedPercent
  * @return {number}
  */
-export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: number, subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+export const calculateBasisOfRentSubventionPercent = (
+  currentAmountPerArea: number,
+  subventionType: ?string,
+  subventionBasePercent: ?string,
+  subventionGraduatedPercent: ?string,
+  managementSubventions: ?Array<Object>,
+  temporarySubventions: ?Array<Object>
+): number => {
   let discount = 1;
 
   if(subventionType === SubventionTypes.RE_LEASE) {
@@ -1356,7 +1390,13 @@ export const calculateBasisOfRentSubventionPercent = (currentAmountPerArea: numb
  * @param {string} subventionGraduatedPercent
  * @return {number}
  */
-export const calculateRentAdjustmentSubventionPercentCumulative = (subventionType: ?string, subventionBasePercent: ?string, subventionGraduatedPercent: ?string, managementSubventions: ?Array<Object>,  temporarySubventions: ?Array<Object>) => {
+export const calculateRentAdjustmentSubventionPercentCumulative = (
+  subventionType: ?string,
+  subventionBasePercent: ?string,
+  subventionGraduatedPercent: ?string,
+  managementSubventions: ?Array<Object>,
+  temporarySubventions: ?Array<Object>
+): number => {
   let discount = 1;
 
   if(subventionType === SubventionTypes.RE_LEASE) {
@@ -1387,7 +1427,7 @@ export const calculateRentAdjustmentSubventionPercentCumulative = (subventionTyp
  * @param {number} currentAmountPerArea
  * @return {number}
  */
-export const calculateSubventionDiscountTotal = (initialYearRent: number, managementSubventions: ?Array<Object>, currentAmountPerArea: number) => {
+export const calculateSubventionDiscountTotal = (initialYearRent: number, managementSubventions: ?Array<Object>, currentAmountPerArea: number): number => {
   if(managementSubventions && managementSubventions[0] && managementSubventions[0].subvention_amount !== null){
     return Number(initialYearRent * (1 - ((currentAmountPerArea - Number(convertStrToDecimalNumber(managementSubventions[0].subvention_amount))) / currentAmountPerArea)));
   }
@@ -1400,7 +1440,7 @@ export const calculateSubventionDiscountTotal = (initialYearRent: number, manage
  * @param {number} reLeaseDiscountPercent
  * @return {number}
  */
-export const calculateSubventionDiscountTotalFromReLease = (initialYearRent: number, reLeaseDiscountPercent: number) => {
+export const calculateSubventionDiscountTotalFromReLease = (initialYearRent: number, reLeaseDiscountPercent: number): number => {
   return Number(initialYearRent * (1 - reLeaseDiscountPercent / 100));
 };
 
@@ -1786,7 +1826,7 @@ export const getInvoiceTenantOptions = (lease: Object): Array<Object> =>{
  * @param lease
  * @returns {Object[]}
  */
-export const getContentDebtCollectionDecisions = (lease: Object) =>
+export const getContentDebtCollectionDecisions = (lease: Object): Array<Object> =>
   get(lease, 'decisions', []).filter((decision) => get(decision, 'type.kind') === DecisionTypeKinds.LEASE_CANCELLATION).map((decision) => getContentDecision(decision));
 
 /**
@@ -2165,6 +2205,7 @@ export const addAreasFormValuesToPayload = (payload: Object, values: Object): Ob
       archived_at: area.archived_at,
       archived_note: area.archived_note,
       archived_decision: area.archived_decision,
+      custom_detailed_plan: area.custom_detailed_plan,
     };
   });
 
@@ -2373,7 +2414,7 @@ export const getPayloadConstructabilityDescriptions = (area: Object): Array<Obje
  * @param {Object} values
  * @returns {Object[]}
  */
-export const getPayloadConstructabilityArea = (area: Object, values: Object) => {
+export const getPayloadConstructabilityArea = (area: Object, values: Object): Array<Object> => {
   return {
     ...area,
     preconstruction_state: values.preconstruction_state,
@@ -2449,7 +2490,7 @@ export const getPayloadTenantContactDetails = (tenant: Object, contactType: 'ten
  * @param {Object} tenant
  * @returns {Object[]}
  */
-export const getPayloadTenantRentShares = (tenant: Object) => {
+export const getPayloadTenantRentShares = (tenant: Object): Array<Object> => {
   const rentShares = get(tenant, 'rent_shares', []);
 
   return rentShares.map((rentShare) => ({

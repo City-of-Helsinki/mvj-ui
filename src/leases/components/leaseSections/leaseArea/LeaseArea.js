@@ -25,6 +25,7 @@ import {
   LeaseAreaAddressesFieldTitles,
   LeaseAreasFieldPaths,
   LeaseAreasFieldTitles,
+  LeaseAreaCustomDetailedPlanFieldPaths,
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
 } from '$src/leases/enums';
@@ -41,6 +42,7 @@ import {
 import {getAttributes, getCollapseStateByKey, getIsEditMode} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
+import CustomDetailedPlan from './CustomDetailedPlan';
 
 type Props = {
   area: Object,
@@ -51,6 +53,7 @@ type Props = {
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
   plotsCurrentCollapseState: boolean,
+  customDetailedPlanCollapseState: boolean,
   receiveCollapseStates: Function,
 }
 
@@ -63,11 +66,13 @@ const LeaseArea = ({
   planUnitsCurrentCollapseState,
   plotsContractCollapseState,
   plotsCurrentCollapseState,
+  customDetailedPlanCollapseState,
   receiveCollapseStates,
 }: Props) => {
   const handleCollapseToggle = (key: string, val: boolean) => {
+    const mode: string = isEditMode ? ViewModes.EDIT : ViewModes.READONLY;
     receiveCollapseStates({
-      [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
+      [mode]: {
         [formName]: {
           [area.id]: {
             [key]: val,
@@ -91,6 +96,10 @@ const LeaseArea = ({
 
   const handlePlotsCurrentCollapseToggle = (val: boolean) => {
     handleCollapseToggle('plots_current', val);
+  };
+
+  const handleCustomDetailedPlanCollapseToggle = (val: boolean) => {
+    handleCollapseToggle('custom_detailed_plan', val);
   };
 
   const getMapLinkUrl = () => {
@@ -319,9 +328,7 @@ const LeaseArea = ({
               </BoxItemContainer>
             </Collapse>
           </Column>
-          <Column small={0} large={6}>
-            {/* silence is golden */}
-          </Column>
+          <Column small={0} large={6} /> {/* Force next column to right */}
           <Column small={12} large={6}>
             <Collapse
               className='collapse__secondary'
@@ -346,13 +353,39 @@ const LeaseArea = ({
           </Column>
         </Row>
       </Authorization>
+      
+      {/* Custom detailed plan (Oma muu alue) */}
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.CUSTOM_DETAILED_PLAN)}>
+        <Row>
+          <Column small={12} large={6} /> {/* Force next column to right */}
+          <Column small={12} large={6}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={customDetailedPlanCollapseState !== undefined ? customDetailedPlanCollapseState : !archived}
+              headerTitle='Oma muu alue'
+              onToggle={handleCustomDetailedPlanCollapseToggle}
+              uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.CUSTOM_DETAILED_PLAN)}
+            >
+              <BoxItemContainer>
+                {!area.custom_detailed_plan ?
+                  <FormText>Ei omaa muuta aluetta</FormText>
+                  :
+                  <CustomDetailedPlan
+                    customDetailedPlan={area.custom_detailed_plan}
+                  />
+                }
+              </BoxItemContainer>
+            </Collapse>
+          </Column>
+        </Row>
+      </Authorization>
     </Fragment>
   );
 };
 
 const formName = FormNames.LEASE_AREAS;
 
-export default flowRight(
+export default (flowRight(
   // $FlowFixMe
   withRouter,
   connect(
@@ -367,10 +400,11 @@ export default flowRight(
         planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plan_units_current`),
         plotsContractCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plots_contract`),
         plotsCurrentCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plots_current`),
+        customDetailedPlanCollapseState: getCollapseStateByKey(state, `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.custom_detailed_plan`),
       };
     },
     {
       receiveCollapseStates,
     }
   ),
-)(LeaseArea);
+)(LeaseArea): React$AbstractComponent<Props, mixed>);
