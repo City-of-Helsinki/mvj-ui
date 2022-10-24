@@ -38,10 +38,13 @@ import {
 } from "../../plotSearch/selectors";
 import {getFieldAttributes} from "../../util/helpers";
 import ExternalLink from "../../components/links/ExternalLink";
-import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "../constants";
+import {APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "../constants";
 import {getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch} from "../selectors";
 import PlotApplicationTargetInfoCheck from "./infoCheck/PlotApplicationTargetInfoCheck";
 import PlotApplicationApplicantInfoCheck from "./infoCheck/PlotApplicationApplicantInfoCheck";
+import {ApplicantTypes} from "../enums";
+
+type OwnProps = {};
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -135,6 +138,10 @@ const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch, topLevel, 
 };
 
 const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch }) => {
+  if (!answer) {
+    return null;
+  }
+
   const title = section.title || "(tuntematon osio)";
 
   const Wrapper = topLevel ?
@@ -154,7 +161,22 @@ const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch 
         if (section.identifier === TARGET_SECTION_IDENTIFIER && singleAnswer?.metadata?.identifier) {
           const target = plotSearch?.plot_search_targets.find((target) => target.id === singleAnswer.metadata.identifier);
           if (target) {
-            subtitle = `${target.lease_address.address} (${target.lease_identifier})`;
+            subtitle = `${target.lease_address.address || '-'} (${target.lease_identifier})`;
+          }
+        }
+        if (section.identifier === APPLICANT_SECTION_IDENTIFIER) {
+          if (singleAnswer?.metadata?.identifier) {
+            if (singleAnswer?.metadata?.applicantType) {
+              const identifiers = APPLICANT_MAIN_IDENTIFIERS[singleAnswer.metadata.applicantType];
+              const sectionWithIdentifier = singleAnswer.sections[identifiers?.DATA_SECTION];
+
+              const typeText = identifiers?.LABEL || 'Hakija';
+              const nameText = identifiers?.NAME_FIELDS?.map((field) => {
+                return sectionWithIdentifier.fields[field]?.value || '';
+              }).join(' ') || '-';
+
+              subtitle += ` (${nameText}, ${typeText})`;
+            }
           }
         }
 
@@ -281,7 +303,7 @@ class PlotApplication extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
+export default (connect(
   (state) => {
     return {
       usersPermissions: getUsersPermissions(state),
@@ -301,4 +323,4 @@ export default connect(
   {
     receiveCollapseStates,
   }
-)(PlotApplication);
+)(PlotApplication) : React$AbstractComponent<OwnProps, mixed>);

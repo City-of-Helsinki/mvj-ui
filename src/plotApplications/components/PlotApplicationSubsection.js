@@ -2,8 +2,10 @@
 import React, { useCallback, Fragment } from 'react';
 import {
   FieldArray,
+  change,
 } from 'redux-form';
 import { connect } from 'react-redux';
+import type {Fields} from "redux-form/lib/FieldArrayProps.types";
 import {Column, Row} from "react-foundation";
 
 import {
@@ -14,9 +16,9 @@ import {
   getPendingUploads
 } from '../selectors';
 import {
-  getApplicationAttachmentDownloadLink,
+  getApplicationAttachmentDownloadLink, getSectionApplicantType,
   getSectionTargetFromMeta,
-  getSectionTemplate
+  getSectionTemplate, valueToApplicantType
 } from '../helpers';
 import AddButton from "../../components/form/AddButton";
 import RemoveButton from "../../components/form/RemoveButton";
@@ -29,11 +31,13 @@ import Authorization from "../../components/authorization/Authorization";
 import FileDownloadLink from "../../components/file/FileDownloadLink";
 import {formatDate, isFieldAllowedToRead} from "../../util/helpers";
 import LoadingIndicator from "../../components/multi-select/LoadingIndicator";
-import {ConfirmationModalTexts} from "../../enums";
+import {ConfirmationModalTexts, FormNames} from "../../enums";
 import {ButtonColors} from "../../components/enums";
 import {ActionTypes, AppConsumer} from "../../app/AppContext";
 import FormHintText from "../../components/form/FormHintText";
-import {TARGET_SECTION_IDENTIFIER} from "../constants";
+import {APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "../constants";
+import type {PlotApplicationFormValue} from "../types";
+import {ApplicantTypes} from "../enums";
 
 const ApplicationSectionKeys = {
   Subsections: 'sections',
@@ -164,14 +168,19 @@ const ApplicationFormFileField = connect(
 });
 
 const ApplicationFormSubsectionFields = connect(
-  (state) => ({
+  (state, props) => ({
     fieldTypeMapping: getFieldTypeMapping(state),
-  })
+    sectionApplicantType: getSectionApplicantType(state, props.section, props.identifier)
+  }), {
+    change
+  }
 )(
   ({
     section,
     fieldTypeMapping,
     identifier,
+    change,
+    sectionApplicantType
   }) => {
     const renderField = useCallback((pathName, field) => {
       if (!field.enabled) {
@@ -280,9 +289,16 @@ const ApplicationFormSubsectionFields = connect(
               ...extraAttributes
             }}
             overrideValues={fieldOverrides}
+            onChange={(newValue) => checkSpecialValues(field, newValue)}
           />
         </Column>
       );
+    }, []);
+
+    const checkSpecialValues = useCallback((field: Object, newValue: PlotApplicationFormValue): void => {
+      if (field.identifier === APPLICANT_TYPE_FIELD_IDENTIFIER && section.identifier === APPLICANT_SECTION_IDENTIFIER) {
+        change(FormNames.PLOT_APPLICATION, `${identifier}.metadata.applicantType`, valueToApplicantType(newValue));
+      }
     }, []);
 
     return (
@@ -295,6 +311,7 @@ const ApplicationFormSubsectionFields = connect(
             path={[identifier, ApplicationSectionKeys.Subsections]}
             section={subsection}
             key={subsection.id}
+            parentApplicantType={sectionApplicantType}
           />
         ))}
       </>
@@ -306,7 +323,11 @@ const ApplicationFormSubsectionFieldArray = ({
   fields,
   section,
   headerTag: HeaderTag,
-}) => {
+} : {
+  fields: Fields,
+  section: Object,
+  headerTag: string | React$AbstractComponent<{ children?: React$Node }, null>
+}): React$Node => {
   return (
     <div className="ApplicationFormSubsectionFieldArray">
       {fields.map((identifier, i) => (
@@ -346,8 +367,26 @@ const PlotApplicationSubsection = ({
   path,
   section,
   headerTag: HeaderTag = 'h3',
-}) => {
+  parentApplicantType
+} : {
+  path: Array<string>,
+  section: Object,
+  headerTag?: string | React$AbstractComponent<{ children?: React$Node }, null>,
+  parentApplicantType?: string | null
+}): React$Node => {
   if (!section.visible) {
+    return null;
+  }
+
+  if (parentApplicantType === ApplicantTypes.UNSELECTED) {
+    return null;
+  }
+
+  if (parentApplicantType !== ApplicantTypes.NOT_APPLICABLE && ![
+    ApplicantTypes.UNKNOWN,
+    ApplicantTypes.BOTH,
+    parentApplicantType
+  ].includes(section.applicant_type)) {
     return null;
   }
 

@@ -39,7 +39,46 @@ export type Form = {
   title: string,
   id: number,
   is_template: boolean,
-  sections: Object
+  sections: Array<FormSection>
+};
+
+export type FormSection = {
+  id: number;
+  identifier: string;
+  title: string;
+  visible: boolean;
+  sort_order: number;
+  add_new_allowed: boolean;
+  add_new_text?: string;
+  subsections: Array<FormSection>;
+  fields: Array<FormField>;
+  form_id: number;
+  parent_id: number | null;
+  show_duplication_check: boolean;
+  applicant_type: string;
+};
+
+export type FormField = {
+  id: number;
+  identifier: string;
+  type: number;
+  label: string;
+  hint_text?: string;
+  enabled: boolean;
+  required: boolean;
+  validation?: string | null;
+  action?: string | null;
+  sort_order: number;
+  choices: Array<FormFieldChoice>;
+  section_id: number;
+};
+
+export type FormFieldChoice = {
+  id: number;
+  text: string;
+  value: string;
+  action?: string | null;
+  has_text_input: boolean;
 };
 
 export type FetchSinglePlotSearchAfterEditPayload = {

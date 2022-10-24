@@ -1,3 +1,4 @@
+//@flow
 export const ApplicationFieldPaths = {
   PLOTSEARCH: 'plotsearch',
 };
@@ -31,4 +32,15 @@ export const PlotApplicationInfoCheckFieldTitles = {
   STATE: 'Tila',
   MARK_ALL: 'Merkitse kaikkiin hakijan hakemuksiin',
   COMMENT: 'Kommentti'
+};
+
+export const ApplicantTypes = {
+  PERSON: 'Person',
+  COMPANY: 'Company',
+  BOTH: 'Both',
+  UNKNOWN: null,
+
+  // UI only states
+  UNSELECTED: 'unselected',
+  NOT_APPLICABLE: 'not applicable'
 };

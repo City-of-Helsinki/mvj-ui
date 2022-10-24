@@ -6,6 +6,7 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import {initialize, isDirty, destroy, getFormValues} from 'redux-form';
+import type {ContextRouter} from "react-router";
 
 import {FormNames} from '$src/enums';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -62,25 +63,26 @@ import {fetchPlotSearchList} from "../../plotSearch/actions";
 import {
   getPlotSearchList,
   getIsFetching as getIsFetchingPlotSearchList,
-  getIsFetchingFormAttributes
 } from "../../plotSearch/selectors";
 import {createPlotApplication} from "../actions";
 import {prepareApplicationForSubmission} from "../helpers";
 import {getIsPerformingFileOperation, getIsSaving} from "../selectors";
 
+type OwnProps = {
+  ...ContextRouter
+};
+
 type Props = {
+  ...OwnProps,
   clearFormValidFlags: Function,
   currentPlotApplication: PlotApplicationType,
   fetchSinglePlotApplication: Function,
   editPlotApplication: Function,
+  createPlotApplication: Function,
   basicInformationFormValues: Object,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
   hideEditMode: Function,
-  location: Object,
-  match: {
-    params: Object,
-  },
   plotApplicationsMethods: MethodsType,
   plotApplicationsAttributes: Attributes,
   isFetchingPlotApplicationsAttributes: boolean,
@@ -90,13 +92,16 @@ type Props = {
   isEditMode: boolean,
   isSaveClicked: boolean,
   receiveIsSaveClicked: Function,
-  history: Object,
   isApplicationFormDirty: boolean,
   initialize: Function,
   destroy: Function,
   isFormValidFlags: boolean,
   receiveFormValidFlags: Function,
-  isFetchingPlotSearchList: boolean
+  isFetchingPlotSearchList: boolean,
+  fetchPlotSearchList: Function,
+  isApplicationFormValid: boolean,
+  isPerformingFileOperation: boolean,
+  isSaving: boolean
 }
 
 type State = {
@@ -287,7 +292,9 @@ class PlotApplicationsPage extends Component<Props, State> {
       if (isEditMode) {
         fetchPlotSearchList();
       } else {
-        fetchSinglePlotApplication(plotApplicationId);
+        if (plotApplicationId) {
+          fetchSinglePlotApplication(Number(plotApplicationId));
+        }
       }
     }
 
@@ -308,10 +315,19 @@ class PlotApplicationsPage extends Component<Props, State> {
     const areFormsValid = this.getAreFormsValid();
 
     if(areFormsValid) {
+      const data = prepareApplicationForSubmission();
+
+      if (!data) {
+        // an error occurred
+        receiveIsSaveClicked(false);
+        console.log(data);
+        return;
+      }
+
       if (this.isNewEditor()) {
-        createPlotApplication(prepareApplicationForSubmission());
+        createPlotApplication(data);
       } else {
-        editPlotApplication(prepareApplicationForSubmission());
+        editPlotApplication(data);
       }
     }
   }
@@ -350,7 +366,7 @@ class PlotApplicationsPage extends Component<Props, State> {
     destroy(FormNames.PLOT_APPLICATION);
   }
 
-  initializeForms = (currentPlotApplication: PlotApplication) => {
+  initializeForms = (currentPlotApplication: PlotApplicationType) => {
     const {initialize} = this.props;
     initialize(FormNames.PLOT_APPLICATION, currentPlotApplication);
   }
@@ -458,7 +474,7 @@ class PlotApplicationsPage extends Component<Props, State> {
   }
 }
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   withPlotApplicationsAttributes,
   connect(
@@ -495,4 +511,4 @@ export default flowRight(
       createPlotApplication
     }
   ),
-)(PlotApplicationsPage);
+)(PlotApplicationsPage) : React$AbstractComponent<OwnProps, mixed>);
