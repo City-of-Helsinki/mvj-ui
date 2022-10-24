@@ -420,7 +420,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   }
 
   state = {
-    showSubventions: this.props.subventionType ? true : false,
+    showSubventions: (this.props.subventionType || (this.props.temporarySubventions && !!this.props.temporarySubventions.length)) ? true : false,
   }
 
   initialFormValues = () => {
@@ -448,7 +448,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       temporarySubventions,
     } = this.props;
 
-    if(showSubventions) {
+    if(showSubventions || (temporarySubventions && !!temporarySubventions.length)) {
       if(currentAmountPerArea !== prevProps.currentAmountPerArea && managementSubventions !== undefined) {
         this.changeDiscounts();
       }
@@ -474,13 +474,12 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   changeDiscounts(){
     const {change, field, subventionType, managementSubventions} = this.props;
 
+    change(this.props.formName, `${field}.discount_percentage`, this.calculateTotalSubventionPercent());
     if(subventionType === SubventionTypes.RE_LEASE){
       const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
-      change(this.props.formName, `${field}.discount_percentage`, this.calculateTotalSubventionPercent());
       change(this.props.formName, `${field}.subvention_discount_percentage`, releaseDiscountPercent.toFixed(2));
     }
     if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT){
-      change(this.props.formName, `${field}.discount_percentage`, this.calculateTotalSubventionPercent());
       if(managementSubventions && managementSubventions[0]){
         change(this.props.formName, `${field}.subvention_discount_percentage`, managementSubventions[0].subvention_percent);
       }
@@ -731,10 +730,13 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   }
 
   handleRemoveSubventions = () => {
-    const {change, field, formName} = this.props;
+    const {change, field, formName, temporarySubventions} = this.props;
 
     change(formName, `${field}.subvention_type`, null);
-    this.setState({showSubventions: false});
+
+    if(!temporarySubventions?.length) {
+      this.setState({showSubventions: false});
+    }
   }
 
   calculateReLeaseDiscountPercent = () => {
