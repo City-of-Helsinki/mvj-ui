@@ -4,13 +4,21 @@ import React, {Component} from 'react';
 import Modal from '$components/modal/Modal';
 import PlotApplicationInfoCheckForm from "./PlotApplicationInfoCheckForm";
 import Button from "../../../components/button/Button";
-
+import TradeRegisterTemplate from "../../../tradeRegister/components/TradeRegisterTemplate";
+import CreditDecisionTemplate from "../../../creditDecision/components/CreditDecisionTemplate";
+import {ContactTypes} from "../../../contacts/enums";
+import {PlotApplicationInfoCheckExternalTypes} from "../../enums";
+import ModalButtonWrapper from "../../../components/modal/ModalButtonWrapper";
 
 type Props = {
   isOpen: boolean,
   onClose: Function,
   onSubmit: Function,
-  infoCheck: Object
+  infoCheck: Object,
+  modalPage: number,
+  setPage: Function,
+  businessId?: string,
+  personId?: string
 }
 
 type State = {
@@ -18,7 +26,8 @@ type State = {
 };
 
 class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
-  form: any;
+  // TODO: Not entirely the correct type, as wrappedInstance isn't resolved below correctly.
+  form: ?typeof PlotApplicationInfoCheckForm;
 
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen || prevProps.modalPage !== this.props.modalPage) {
@@ -28,18 +37,20 @@ class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
     }
   }
 
-  setRefForForm = (element: any): void => {
+  setRefForForm: Function = (element: any): void => {
     this.form = element;
   }
 
-  render (): React$Node {
+  render(): React$Node {
     const {
       isOpen,
       onClose,
       onSubmit,
       infoCheck,
       modalPage,
-      setPage
+      setPage,
+      businessId,
+      personId
     } = this.props;
 
     let title = '';
@@ -59,9 +70,17 @@ class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
       >
         {
           infoCheck && modalPage === 1 && <div>
-            {/* TODO */}
-            <p>Ei vielä toteutettu</p>
-            <Button onClick={() => setPage(2)} text="Ohita" />
+            {infoCheck.kind.external === PlotApplicationInfoCheckExternalTypes.CREDIT_INQUIRY && <>
+              {businessId && <CreditDecisionTemplate businessId={businessId} contactType={ContactTypes.BUSINESS} />}
+              {personId && <CreditDecisionTemplate nin={personId} contactType={ContactTypes.PERSON} />}
+            </>}
+            {infoCheck.kind.external === PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY && <>
+              <div className="alert">Kaupparekisteri-integraatiota ei ole vielä toteutettu.</div>
+            </>}
+            {!businessId && !personId && <div className="alert">Hakemuksen osiosta ei löytynyt hakijan tunnistetietoa!</div>}
+            <ModalButtonWrapper>
+              <Button onClick={() => setPage(2)} text="Jatka" />
+            </ModalButtonWrapper>
           </div>
         }
         {

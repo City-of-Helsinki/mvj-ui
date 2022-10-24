@@ -14,13 +14,21 @@ import {
 import {getFieldOptions, getLabelOfOption} from "../../../util/helpers";
 import {editInfoCheckItem} from "../../actions";
 import {getUserFullName} from "../../../users/helpers";
+import type {Attributes} from "../../../types";
+import {ApplicantTypes} from "../../enums";
 
-type Props = {
-  infoCheckAttributes: Attributes,
-  infoCheckData: Array<Object>,
+type OwnProps = {
   section: Object,
   identifier: string,
-  editInfoCheckItem: Function
+  answer: Object
+};
+
+type Props = {
+  ...OwnProps,
+  infoCheckAttributes: Attributes,
+  infoCheckData: Array<Object>,
+  editInfoCheckItem: Function,
+  wasUpdateSuccessful: { [id: number]: boolean }
 };
 
 type State = {
@@ -41,7 +49,7 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
 
     const id = modalCheckItem?.data.id;
 
-    if (modalCheckItem && this.props.wasUpdateSuccessful[id] && prevProps.wasUpdateSuccessful[id] === null) {
+    if (modalCheckItem && id && this.props.wasUpdateSuccessful[id] && prevProps.wasUpdateSuccessful[id] === null) {
       this.closeModal();
     }
   }
@@ -83,9 +91,11 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
     const {
       infoCheckAttributes,
       infoCheckData,
+      answer
     } = this.props;
 
     const infoCheckStatusOptions = getFieldOptions(infoCheckAttributes, 'state');
+    const applicantType = answer?.metadata?.applicantType;
 
     return (
       <PlotApplicationInfoCheckCollapse headerTitle="Hakijan käsittelytiedot">
@@ -118,17 +128,19 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
           onClose={this.closeModal}
           onSubmit={(data) => this.saveInfoCheck(data)}
           infoCheck={modalCheckItem}
+          businessId={applicantType === ApplicantTypes.COMPANY ? answer.metadata.identifier : undefined}
+          personId={applicantType === ApplicantTypes.PERSON ? answer.metadata.identifier : undefined}
         />
       </PlotApplicationInfoCheckCollapse>
     );
   }
 }
 
-export default connect((state, props) => ({
+export default (connect((state, props) => ({
   infoCheckAttributes: getInfoCheckAttributes(state),
   infoCheckData: getApplicantInfoCheckItems(state, props.identifier),
   wasUpdateSuccessful: getWasLastInfoCheckUpdateSuccessfulData(state),
   isUpdating: getIsUpdatingInfoCheckData(state)
 }), {
   editInfoCheckItem
-})(PlotApplicationApplicantInfoCheck);
+})(PlotApplicationApplicantInfoCheck) : React$AbstractComponent<OwnProps, mixed>);

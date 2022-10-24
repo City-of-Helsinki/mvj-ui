@@ -19,7 +19,7 @@ import {
   TARGET_SECTION_IDENTIFIER
 } from "./constants";
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
-import {ApplicantInfoCheckTypes, ApplicantTypes} from "./enums";
+import {ApplicantInfoCheckTypes, ApplicantTypes, PlotApplicationInfoCheckExternalTypes} from "./enums";
 import type {RootState} from "../root/types";
 import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState} from "./types";
 import type {Form, FormSection} from "../plotSearch/types";
@@ -431,49 +431,49 @@ export const getApplicantInfoCheckItems = (state: RootState, identifier: string)
       label: 'Kaupparekisteriote',
       useIfCompany: true,
       useIfPerson: false,
-      external: true
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
     },
     {
       type: ApplicantInfoCheckTypes.CREDITWORTHINESS,
       label: 'Luottokelpoisuustodistus / luottotiedot',
       useIfCompany: true,
       useIfPerson: true,
-      external: false
+      external: PlotApplicationInfoCheckExternalTypes.CREDIT_INQUIRY
     },
     {
       type: ApplicantInfoCheckTypes.PENSION_CONTRIBUTIONS,
       label: 'Selvitys työeläkemaksujen maksamisesta',
       useIfCompany: true,
       useIfPerson: true,
-      external: false
+      external: null
     },
     {
       type: ApplicantInfoCheckTypes.VAT_REGISTER,
       label: 'Todistus arvonlisärekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: true
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
     },
     {
       type: ApplicantInfoCheckTypes.ADVANCE_PAYMENT,
       label: 'Todistus ennakkoperintärekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: true
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
     },
     {
       type: ApplicantInfoCheckTypes.TAX_DEBT,
       label: 'Verovelkatodistus',
       useIfCompany: true,
       useIfPerson: false,
-      external: true
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
     },
     {
       type: ApplicantInfoCheckTypes.EMPLOYER_REGISTER,
       label: 'Todistus työnantajarekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: true
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
     }
   ];
 
