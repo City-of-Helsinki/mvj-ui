@@ -32,7 +32,7 @@ import {
   calculateBasisOfRentInitialYearRent,
   calculateBasisOfRentSubventionAmount,
   calculateBasisOfRentSubventionAmountCumulative,
-  calculateBasisOfRentSubventionPercantage,
+  calculateBasisOfRentSubventionPercentage,
   calculateReLeaseDiscountPercent,
   calculateBasisOfRentSubventionPercent,
   calculateSubventionDiscountTotal,
@@ -134,7 +134,7 @@ const BasisOfRent = ({
   const getDiscountPercentage = () => {
     if(basisOfRent.subvention_type === SubventionTypes.FORM_OF_MANAGEMENT){
       if(basisOfRent.management_subventions && !!basisOfRent.management_subventions.length && basisOfRent.management_subventions[0].subvention_amount)
-        return calculateBasisOfRentSubventionPercantage(basisOfRent.management_subventions[0].subvention_amount, currentAmountPerArea);
+        return calculateBasisOfRentSubventionPercentage(basisOfRent.management_subventions[0].subvention_amount, currentAmountPerArea);
       return 0;
     }
     if(basisOfRent.subvention_type === SubventionTypes.RE_LEASE)
@@ -739,7 +739,7 @@ const BasisOfRent = ({
 
                     {managementSubventions.map((subvention) => {
                       /* Use current amount per area to calculate percantage */
-                      const subventionPercent = calculateBasisOfRentSubventionPercantage(subvention.subvention_amount, currentAmountPerArea);
+                      const subventionPercent = calculateBasisOfRentSubventionPercentage(subvention.subvention_amount, currentAmountPerArea);
                       /* Use initial year rent to calculate subvention total */
                       const subventionTotal = calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
 
