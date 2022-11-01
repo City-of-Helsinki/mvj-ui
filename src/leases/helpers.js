@@ -165,7 +165,7 @@ export const getContentLeaseIdentifier = (lease: Object): ?string =>
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseListTenants = (lease: Object, query: Object = {}): Array<Object> => 
+export const getContentLeaseListTenants = (lease: Object, query: Object = {}): Array<Object> =>
   get(lease, 'tenants', [])
     .map((item) => get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT))
     .filter((tenant) => query.only_past_tenants === 'true' ? isArchived(tenant) : !isArchived(tenant))
@@ -178,7 +178,7 @@ export const getContentLeaseListTenants = (lease: Object, query: Object = {}): A
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseListAreaIdentifiers = (lease: Object): Array<Object> => 
+export const getContentLeaseListAreaIdentifiers = (lease: Object): Array<Object> =>
   get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)
     .map((area) => area.identifier)
@@ -204,7 +204,7 @@ export const getContentLeaseListLeaseAddresses = (lease: Object): Array<Object> 
   const sortedAddresses = addresses
     .filter((address, index, self) =>  self.indexOf(address) == index)
     .sort(sortStringAsc);
-  
+
   return sortedAddresses;
 };
 
@@ -463,7 +463,7 @@ export const getContentLeaseAreaAddresses = (area: Object): Array<Object> => {
  * @param {Object} area
  * @returns {Object[]}
  */
-export const getContentPlots = (area: Object): Array<Object> => 
+export const getContentPlots = (area: Object): Array<Object> =>
   get(area, 'plots', []).map((plot) => {
     return {
       id: plot.id,
@@ -483,7 +483,7 @@ export const getContentPlots = (area: Object): Array<Object> =>
  * @param {Object} area
  * @returns {Object[]}
  */
-export const getContentPlanUnits = (area: Object): Array<Object> => 
+export const getContentPlanUnits = (area: Object): Array<Object> =>
   get(area, 'plan_units', []).map((planunit) => {
     return {
       id: planunit.id,
@@ -513,7 +513,7 @@ export const getContentPlanUnits = (area: Object): Array<Object> =>
  */
 export const getContentCustomDetailedPlan = (area: Object): Object => {
   let customDetailedPlan = get(area, 'custom_detailed_plan');
-  
+
   if (!customDetailedPlan) {
     return null;
   }
@@ -573,8 +573,8 @@ export const getContentLeaseAreas = (lease: Object): Array<Object> =>
  * @returns {Object}
  */
 export const getLeaseAreaById = (lease: Lease, id: ?number): ?Object =>
-  id 
-    ? getContentLeaseAreas(lease).find((area) => area.id === id) 
+  id
+    ? getContentLeaseAreas(lease).find((area) => area.id === id)
     : null;
 
 /**
@@ -868,7 +868,7 @@ export const getContentInvoiceNote = (invoiceNote: Object): Object => ({
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentInvoiceNotes = (lease: Lease): Array<Object> => 
+export const getContentInvoiceNotes = (lease: Lease): Array<Object> =>
   get(lease, 'invoice_notes', []).map((note) => getContentInvoiceNote(note));
 
 /**
@@ -1004,7 +1004,7 @@ export const getTenantRentShareWarnings = (tenants: Array<Object>, leaseAttribut
     const tenants = dateRange.items;
     const rentShares = [];
     const sharesByIntendedUse = {};
-    
+
     tenants.forEach((tenant) => {
       if(tenant.rent_shares && tenant.rent_shares.length) {
         rentShares.push(...tenant.rent_shares);
@@ -1107,14 +1107,39 @@ export const getBasisOfRentIndexValue = (basisOfRent: Object, indexOptions: Arra
 /**
  * Calculate basis of rent basis annual rent
  * @param {Object} basisOfRent
+ * @param {string} indexValue
  * @return {number}
  */
-export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object): number => {
-  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return 0;
-  
+export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Object, indexValue: ?string): number => {
+  if(basisOfRent.type === CalculatorTypes.LEASE2022) {
+    const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
+    if(!initialYearRent || !isDecimalNumberStr(indexValue)) {
+      return 0;
+    }
+    return Number(initialYearRent / (convertStrToDecimalNumber(indexValue) / 100));
+  }
+
+  if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) {
+    return 0;
+  }
+
   return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
     * Number(convertStrToDecimalNumber(basisOfRent.area))
     * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 : 0);
+};
+
+/**
+ * Get current basis of rent amount per area based on calculator type
+ * @param {Object} basisOfRent
+ * @param {string} indexValue
+ * @return {number}
+ */
+export const getBasisOfRentAmountPerArea = (basisOfRent: Object, indexValue: ?string): number => {
+  if(basisOfRent.type === CalculatorTypes.LEASE2022) {
+    return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area));
+  }
+
+  return calculateBasisOfRentAmountPerArea(basisOfRent, indexValue);
 };
 
 /**
@@ -1151,6 +1176,18 @@ export const calculateAmountFromValue = (value: string, indexValue: ?string): nu
  * @return {number}
  */
 export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexValue: ?string, basicAnnualRent: ?number): number => {
+  if(basisOfRent.type === CalculatorTypes.LEASE2022) {
+    const area = convertStrToDecimalNumber(basisOfRent.area);
+    const amountPerArea = convertStrToDecimalNumber(basisOfRent.amount_per_area);
+    const profitMarginPercentage = convertStrToDecimalNumber(basisOfRent.profit_margin_percentage);
+
+    if(!isDecimalNumberStr(area) || !isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(profitMarginPercentage)) {
+      return 0;
+    }
+
+    return Number(area * amountPerArea * Number(profitMarginPercentage / 100));
+  }
+
   return Number(roundToFixed(Number(basicAnnualRent), 2)) * Number(convertStrToDecimalNumber(indexValue)) / 100;
 };
 
@@ -1162,7 +1199,7 @@ export const calculateBasisOfRentInitialYearRent = (basisOfRent: Object, indexVa
  */
 export const calculateBasisOfRentDiscountedInitialYearRentsTotal = (basisOfRents: Object[], indexOptions: Object[]): number => {
   if(basisOfRents)
-    return Number(basisOfRents.map(basisOfRent => 
+    return Number(basisOfRents.map(basisOfRent =>
       calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, getBasisOfRentIndexValue(basisOfRent, indexOptions))).reduce((sum, cur) => sum + cur));
   else
     return 0;
@@ -1174,11 +1211,16 @@ export const calculateBasisOfRentDiscountedInitialYearRentsTotal = (basisOfRents
  * @return {number}
  */
 export const calculateInitialYearRentsTotal = (basisOfRents: Object[], indexOptions: Object[]): number => {
-  if(basisOfRents)
-    return Number(basisOfRents.map(basisOfRent => 
-      calculateBasisOfRentInitialYearRent(basisOfRent, getBasisOfRentIndexValue(basisOfRent, indexOptions))).reduce((sum, cur) => sum + cur));
-  else
+  if(basisOfRents) {
+    const initialYearRents = basisOfRents.map(basisOfRent => {
+      const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+      const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+      return calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
+    });
+    return Number(initialYearRents.reduce((sum, cur) => sum + cur));
+  } else {
     return 0;
+  }
 };
 
 /**
@@ -1193,8 +1235,11 @@ export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Objec
 
   if(!isDecimalNumberStr(initialYearRent)) return 0;
 
-  return Number(convertStrToDecimalNumber(initialYearRent))
-    * Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - Number(convertStrToDecimalNumber(basisOfRent.discount_percentage)))/100 : 1);
+  const decimalNumberInitialYearRent = Number(convertStrToDecimalNumber(initialYearRent));
+  const decimalNumberDiscountPercentage = Number(convertStrToDecimalNumber(basisOfRent.discount_percentage));
+  const discountMultiplier = Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - decimalNumberDiscountPercentage) / 100 : 1);
+
+  return decimalNumberInitialYearRent * discountMultiplier;
 };
 
 /**
@@ -1206,7 +1251,7 @@ export const calculateBasisOfRentDiscountedInitialYearRent = (basisOfRent: Objec
 export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents: Array<Object>, indexOptions: Array<Object>): ?number => {
   return basisOfRents.reduce((total, basisOfRent) => {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
-    
+
     return  calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue) + total;
   }, 0);
 };
@@ -1220,11 +1265,14 @@ export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents:
 export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, subventionPercent: string | number): number => {
   if(!isDecimalNumberStr(subventionPercent)) return 0;
 
-  return  (Number(convertStrToDecimalNumber(subventionPercent)) / 100)
-    * initialYearRent;
+  const multiplier = Number(subventionPercent / 100);
+
+  const result = multiplier * initialYearRent;
+
+  return Number(convertStrToDecimalNumber(result.toFixed(3)));
 };
 
-/** 
+/**
  * Calculate basis of rent temporary rent cumulative
  * @param {number} initialYearRent
  * @param {any} subventionPercent
@@ -1234,26 +1282,30 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
  * @param {string} view
  * @return {number}
  */
-export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: number, subventionPercent: string | number, managementSubventions: Array<Object>, temporarySubventions: Array<Object>, index: number, view: string): number => {
+export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: number, subventionPercent: string | number, managementSubventions: Array<Object>, temporarySubventions: Array<Object>, index: number, view: string, currentAmountPerArea: ?number): number => {
   if(!isDecimalNumberStr(subventionPercent)) return 0;
 
   let discounted = initialYearRent;
   let discount = 0;
 
   managementSubventions && managementSubventions.forEach(managementSubvention => {
-    if(view === 'EDIT')
+    if(view === 'EDIT') {
       discounted = discounted * ((100 - Number(convertStrToDecimalNumber(managementSubvention.subvention_percent))) / 100);
-    else
-      discounted = discounted - calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
+    }else{
+      const subventionPercentage = calculateBasisOfRentSubventionPercentage(managementSubvention.subvention_amount, currentAmountPerArea);
+      discounted = discounted * ((100 - Number(convertStrToDecimalNumber(subventionPercentage))) / 100);
+    }
   });
+
+  discounted = discounted.toFixed(6);
 
   for(let i = 0; i <= index; i++){
     let lastTotal = discounted;
     discounted = discounted * ((100 - Number(convertStrToDecimalNumber(temporarySubventions[index].subvention_percent))) / 100);
-    discount = lastTotal - discounted;
+    discount = lastTotal - Number(convertStrToDecimalNumber(discounted.toFixed(6)));
   }
 
-  return  Number(discount);
+  return Number(convertStrToDecimalNumber(discount.toFixed(3))); // Return value with 3 decimals
 };
 
 /**
@@ -1262,7 +1314,6 @@ export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: 
  * @return {string}
  */
 export const calculateTemporarySubventionDiscountPercentage = (temporarySubventions: Object): string => {
-
   let base = 1;
 
   temporarySubventions && temporarySubventions.forEach(temporarySubvention => {
@@ -1270,7 +1321,7 @@ export const calculateTemporarySubventionDiscountPercentage = (temporarySubventi
       base = base * ((100 - (parseFloat(temporarySubvention.subvention_percent.replace(',', '.')))) / 100);
   });
 
-  return Number((1 - base)*100).toFixed(2);
+  return Number((1 - base) * 100).toFixed(2);
 };
 
 /**
@@ -1279,11 +1330,13 @@ export const calculateTemporarySubventionDiscountPercentage = (temporarySubventi
  * @param {number} currentAmountPerArea
  * @return {number}
  */
-export const calculateBasisOfRentSubventionPercantage = (subventionAmount: string | number, currentAmountPerArea: number | number): number => {
+export const calculateBasisOfRentSubventionPercentage = (subventionAmount: string | number, currentAmountPerArea: number | number): number => {
   if(!isDecimalNumberStr(subventionAmount)) return 0;
   if(!currentAmountPerArea) return 0;
 
-  return  (1 - (Number(convertStrToDecimalNumber(subventionAmount)) / currentAmountPerArea)) * 100;
+  const subventionPercentage = (1 - (Number(convertStrToDecimalNumber(subventionAmount)) / currentAmountPerArea)) * 100;
+
+  return Number(subventionPercentage.toFixed(2));
 };
 
 /**
@@ -1295,7 +1348,8 @@ export const calculateBasisOfRentSubventionPercantage = (subventionAmount: strin
 export const calculateSubventionAmountFromPercantage = (subventionPercantage: string | number, currentAmountPerArea: number | number): number => {
   if(!isDecimalNumberStr(subventionPercantage)) return 0;
   if(!currentAmountPerArea) return 0;
-  return  (1 - (Number(convertStrToDecimalNumber(subventionPercantage)) / 100)) * currentAmountPerArea;
+  const subventionAmount = (1 - (Number(convertStrToDecimalNumber(subventionPercantage)) / 100)) * currentAmountPerArea;
+  return Number(subventionAmount.toFixed(2));
 };
 
 /**
@@ -1359,25 +1413,37 @@ export const calculateBasisOfRentSubventionPercent = (
 ): number => {
   let discount = 1;
 
+  // Use 4 decimals for all the multipliers, because e.g. 20,19% discount as a multiplier is 0,7981
+
   if(subventionType === SubventionTypes.RE_LEASE) {
-    discount = discount * ((100 - calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent)) / 100);
+    const calculatedReLeasePercentage = calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent);
+    const reLeaseMultiplier = (100 - calculatedReLeasePercentage) / 100 || 1;
+    const reLeaseMultiplierRounded = Number(convertStrToDecimalNumber(reLeaseMultiplier.toFixed(4)));
+    discount = discount * reLeaseMultiplierRounded;
   }
-  
+
   if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
     if(managementSubventions) {
       managementSubventions.forEach((subvention) => {
-        discount = discount * Number(((100 - Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercantage(subvention.subvention_amount, currentAmountPerArea)))) / 100) || 1);
+        const calculatedSubventionPercentage = Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercentage(subvention.subvention_amount, currentAmountPerArea)));
+        const subventionMultiplier = (100 - calculatedSubventionPercentage) / 100 || 1;
+        const subventionMultiplierRounded = Number(convertStrToDecimalNumber(subventionMultiplier.toFixed(4)));
+        discount = Number(convertStrToDecimalNumber(discount.toFixed(4))) * subventionMultiplierRounded;
       });
     }
   }
-  
+
   if(temporarySubventions) {
     temporarySubventions.forEach((subvention) => {
-      discount = discount * (Number((100 - Number(convertStrToDecimalNumber(subvention.subvention_percent))) / 100) || 1);
+      const temporarySubventionPercent = Number(convertStrToDecimalNumber(subvention.subvention_percent));
+      const temporarySubventionMultiplier = (100 - temporarySubventionPercent) / 100 || 1;
+      const temporarySubventionMultiplierRounded = Number(convertStrToDecimalNumber(temporarySubventionMultiplier.toFixed(4)));
+      discount = Number(convertStrToDecimalNumber(discount.toFixed(4))) * temporarySubventionMultiplierRounded;
     });
   }
-  
-  return (1 - discount) * 100;
+
+  // Round final percentage to 6 decimals
+  return Number(convertStrToDecimalNumber(((1 - discount) * 100).toFixed(6)));
 };
 
 /**
@@ -1402,7 +1468,7 @@ export const calculateRentAdjustmentSubventionPercentCumulative = (
   if(subventionType === SubventionTypes.RE_LEASE) {
     discount = discount * ((100 - calculateReLeaseDiscountPercent(subventionBasePercent, subventionGraduatedPercent)) / 100);
   }
-  
+
   if(subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
     if(managementSubventions) {
       managementSubventions.forEach((subvention) => {
@@ -1410,13 +1476,13 @@ export const calculateRentAdjustmentSubventionPercentCumulative = (
       });
     }
   }
-  
+
   if(temporarySubventions) {
     temporarySubventions.forEach((subvention) => {
       discount = discount * (Number((100 - Number(convertStrToDecimalNumber(subvention.subvention_percent))) / 100) || 1);
     });
   }
-  
+
   return (1 - discount) * 100;
 };
 
@@ -1429,8 +1495,13 @@ export const calculateRentAdjustmentSubventionPercentCumulative = (
  */
 export const calculateSubventionDiscountTotal = (initialYearRent: number, managementSubventions: ?Array<Object>, currentAmountPerArea: number): number => {
   if(managementSubventions && managementSubventions[0] && managementSubventions[0].subvention_amount !== null){
-    return Number(initialYearRent * (1 - ((currentAmountPerArea - Number(convertStrToDecimalNumber(managementSubventions[0].subvention_amount))) / currentAmountPerArea)));
+    const roundedInitialYear = initialYearRent.toFixed(2);
+    const roundedDiscountPercentage = Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercentage(managementSubventions[0].subvention_amount, currentAmountPerArea))).toFixed(2);
+    const discountMultiplier = Number(((100 - roundedDiscountPercentage) / 100) || 1);
+
+    return Number(roundedInitialYear * discountMultiplier);
   }
+
   return Number(initialYearRent);
 };
 
@@ -1724,7 +1795,7 @@ export const getRentWarnings = (rents: Array<Object>): Array<string> => {
       if(rent.intended_use) {
         const filteredFixedInitialYearRents = fixedInitialYearRents.filter((item) => item.intended_use === rent.intended_use);
         const filteredContractRents = contractRents.filter((item) => item.intended_use === rent.intended_use);
-        
+
         if(filteredFixedInitialYearRents.length !== filteredContractRents.length) {
           showWarning = true;
           return false;
@@ -2737,7 +2808,7 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
   payload.is_rent_info_complete = formValues.is_rent_info_complete ? true : false;
 
   const basisOfRents = [
-    ...get(formValues, 'basis_of_rents', []), 
+    ...get(formValues, 'basis_of_rents', []),
     ...get(formValues, 'basis_of_rents_archived', []),
   ];
 
@@ -2752,7 +2823,7 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
     } else {
       return {
         id: item.id,
-        intended_use: intendedUse(item), 
+        intended_use: intendedUse(item),
         area: convertStrToDecimalNumber(item.area),
         area_unit: areaUnit(item),
         type: item.type,
@@ -2775,7 +2846,7 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
   });
 
   const rents = [
-    ...get(formValues, 'rents', []), 
+    ...get(formValues, 'rents', []),
     ...get(formValues, 'rentsArchived', []),
   ];
 
@@ -2883,7 +2954,7 @@ export const getZonePriceFromValue = (zone: ?string): number => {
 };
 
 /**
- * Map lease page search filters for API 
+ * Map lease page search filters for API
  * @param {Object} query
  * @returns {Object}
  */

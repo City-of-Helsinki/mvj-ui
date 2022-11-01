@@ -24,8 +24,8 @@ import type {UsersPermissions} from '$src/usersPermissions/types';
  * @returns {string}
  */
 export const composePageTitle = (title: string = '', prepend?: boolean = true): string => {
-  return prepend 
-    ? `${title ? `${title} | ` : ''}Maanvuokrausjärjestelmä | Helsingin Kaupunki` 
+  return prepend
+    ? `${title ? `${title} | ` : ''}Maanvuokrausjärjestelmä | Helsingin Kaupunki`
     : title;
 };
 
@@ -231,7 +231,7 @@ export const formatNumberWithThousandSeparator = (x: any, separator?: string = '
   if(isDecimalNumber) {
     const decimalSeparator = x.toString().includes('.') ? '.' : ',';
     const parts = x.toString().split(decimalSeparator);
-    
+
     return parts[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator) +
       decimalSeparator +
       parts[1];
@@ -239,16 +239,16 @@ export const formatNumberWithThousandSeparator = (x: any, separator?: string = '
 
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 };
-  
+
 
 /**
  * Format decimal number
  * @param {number} x
  * @returns {string}
  */
-export const formatDecimalNumber = (x: ?number): ?string => 
-  !isEmptyValue(x) 
-    ? parseFloat(x).toFixed(2).toString().replace('.', ',') 
+export const formatDecimalNumber = (x: ?number, decimals: ?number = 2): ?string =>
+  !isEmptyValue(x)
+    ? parseFloat(x).toFixed(decimals).toString().replace('.', ',')
     : null;
 
 /**
@@ -256,9 +256,9 @@ export const formatDecimalNumber = (x: ?number): ?string =>
  * @param {*} x
  * @returns {string}
  */
-export const formatNumber = (x: any): string => 
-  !isEmptyValue(x) 
-    ? formatNumberWithThousandSeparator(formatDecimalNumber(x)) 
+export const formatNumber = (x: any, decimals: ?number = 2): string =>
+  !isEmptyValue(x)
+    ? formatNumberWithThousandSeparator(formatDecimalNumber(x, decimals))
     : '';
 
 /**
@@ -266,7 +266,7 @@ export const formatNumber = (x: any): string =>
  * @param {*} value
  * @returns {boolean}
  */
-export const isDecimalNumberStr = (value: any): boolean => 
+export const isDecimalNumberStr = (value: any): boolean =>
   (!isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')));
 
 /**
@@ -274,8 +274,8 @@ export const isDecimalNumberStr = (value: any): boolean =>
  * @param {*} x
  * @returns {number}
  */
-export const convertStrToDecimalNumber = (x: any): ?number => 
-  isDecimalNumberStr(x) 
+export const convertStrToDecimalNumber = (x: any): ?number =>
+  isDecimalNumberStr(x)
     ? Number(x.toString().replace(',', '.').replace(/\s+/g, ''))
     : null;
 
@@ -335,7 +335,7 @@ export const getReferenceNumberLink = (referenceNumber: ?string): ?string => {
  * @param {number} id
  * @returns {Object}
  */
-export const findItemById = (collection: Array<Object>, id: number): ?Object => 
+export const findItemById = (collection: Array<Object>, id: number): ?Object =>
   collection.find((item) => item.id == id);
 
 /**
@@ -344,7 +344,7 @@ export const findItemById = (collection: Array<Object>, id: number): ?Object =>
  * @param {*} value
  * @returns {string}
  */
-export const getLabelOfOption = (options: Array<Object>, value: any): ?string => 
+export const getLabelOfOption = (options: Array<Object>, value: any): ?string =>
   (options && value != null)
     ? get(options.find(x => x.value == value), 'label', null)
     : null;
@@ -479,7 +479,7 @@ const getFilenameFromContentDisposition = (contentDisposition: any): ?string => 
  * @returns {string | null}
  */
 /* istanbul ignore next */
-export const getFileNameFromResponse = (response: any) => 
+export const getFileNameFromResponse = (response: any) =>
   getFilenameFromContentDisposition(response.headers.get('content-disposition'));
 
 /**
@@ -535,7 +535,7 @@ export const copyElementContentsToClipboard = (el: any) => {
  * @param {Object[]} options
  * @returns {Object[]}
  */
-export const addEmptyOption = (options: Array<Object>): Array<Object> => 
+export const addEmptyOption = (options: Array<Object>): Array<Object> =>
   [{value: '', label: ''}, ...options];
 
 /**
@@ -626,7 +626,7 @@ export const getFieldOptions = (attributes: Attributes, path: string, addEmpty: 
  * @returns {Object}
  */
 
-export const getFieldAttributes = (attributes: Attributes, path: string): ?Object => 
+export const getFieldAttributes = (attributes: Attributes, path: string): ?Object =>
   get(attributes, path);
 
 /**
@@ -648,7 +648,7 @@ export const humanReadableByteCount = (bytes: number): string => {
  * @param {string} text
  * @returns {boolean}
  */
-export const hasNumber = (text: string): boolean => 
+export const hasNumber = (text: string): boolean =>
   /\d/.test(text);
 
 /**
@@ -672,7 +672,7 @@ export const findFromOcdString = (ocd: string, key: string) => {
  * @param {string} url
  * @returns {string}
  */
-export const createPaikkatietovipunenUrl = (url: string): string => 
+export const createPaikkatietovipunenUrl = (url: string): string =>
   `${PAIKKATIETOVIPUNEN_URL}/${url}`;
 
 
@@ -681,7 +681,7 @@ export const createPaikkatietovipunenUrl = (url: string): string =>
  * @param {Object} response
  * @returns {number}
  */
-export const getApiResponseCount = (response: ApiResponse): number => 
+export const getApiResponseCount = (response: ApiResponse): number =>
   get(response, 'count', 0);
 
 /**
@@ -701,7 +701,7 @@ export const getApiResponseMaxPage = (response: ApiResponse, size: number): numb
  * @param {Object} response
  * @returns {Object[]}
  */
-export const  getApiResponseResults = (response: ApiResponse) => 
+export const  getApiResponseResults = (response: ApiResponse) =>
   get(response, 'results', []);
 
 /**
