@@ -1215,7 +1215,7 @@ export const LeaseBasisOfRentsFieldTitles = {
   INITIAL_YEAR_RENT: 'Alkuvuosivuokra (ind)',
   INITIAL_YEAR_RENT_TOTAL: 'Alkuvuosivuokra (ind) yhteensä',
   INTENDED_USE: 'Käyttötarkoitus',
-  LOCKED_AT: 'Laskelma lukittu',
+  LOCKED_AT: 'Laskuri lukittu',
   PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
   PRICE: 'Hinta',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
