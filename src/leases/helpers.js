@@ -2726,7 +2726,7 @@ export const getPayloadRentDueDates = (rent: Object): Array<Object> => {
  * @returns {string}
  */
 export const areaUnit = (item: Object): string => {
-  if(item.type === CalculatorTypes.LEASE)
+  if(item.type === CalculatorTypes.LEASE || item.type === CalculatorTypes.LEASE2022)
     return item.area_unit;
   return 'm2';
 };
@@ -2737,7 +2737,7 @@ export const areaUnit = (item: Object): string => {
  * @returns {number}
  */
 export const intendedUse = (item: Object): number => {
-  if(item.type === CalculatorTypes.LEASE)
+  if(item.type === CalculatorTypes.LEASE || item.type === CalculatorTypes.LEASE2022)
     return item.intended_use;
   return 7;
 };
