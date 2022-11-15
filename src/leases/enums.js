@@ -551,6 +551,93 @@ export const LeaseAreaAddressesFieldTitles = {
 };
 
 /**
+ * Lease area custom detailed plan field paths enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanFieldPaths = {
+  CUSTOM_DETAILED_PLAN: 'lease_areas.child.children.custom_detailed_plan',
+  IDENTIFIER: 'lease_areas.child.children.custom_detailed_plan.children.identifier',
+  INTENDED_USE: 'lease_areas.child.children.custom_detailed_plan.children.intended_use',
+  ADDRESS: 'lease_areas.child.children.custom_detailed_plan.children.address',
+  AREA: 'lease_areas.child.children.custom_detailed_plan.children.area',
+  STATE: 'lease_areas.child.children.custom_detailed_plan.children.state',
+  TYPE: 'lease_areas.child.children.custom_detailed_plan.children.type',
+  DETAILED_PLAN: 'lease_areas.child.children.custom_detailed_plan.children.detailed_plan',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE: 'lease_areas.child.children.custom_detailed_plan.children.detailed_plan_latest_processing_date',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE: 'lease_areas.child.children.custom_detailed_plan.children.detailed_plan_latest_processing_date_note',
+  RENT_BUILD_PERMISSION: 'lease_areas.child.children.custom_detailed_plan.children.rent_build_permission',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'lease_areas.child.children.custom_detailed_plan.children.preconstruction_estimated_construction_readiness_moment',
+  USAGE_DISTRIBUTIONS: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions',
+  INFO_LINKS: 'lease_areas.child.children.custom_detailed_plan.children.info_links',
+};
+
+/**
+ * Lease area custom detailed plan usage distribution field paths enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths = {
+  DISTRIBUTION: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.distribution',
+  BUILD_PERMISSION: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.build_permission',
+  NOTE: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.note',
+};
+
+/**
+ * Lease area custom detailed plan usage distribution field titles enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles = {
+  DISTRIBUTION: 'Käyttöjakauma',
+  BUILD_PERMISSION: 'Rakennusoikeus',
+  NOTE: 'Huomautus',
+};
+
+/**
+ * Lease area custom detailed plan usage distribution field paths enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanInfoLinksFieldPaths = {
+  URL: 'lease_areas.child.children.custom_detailed_plan.children.info_links.child.children.url',
+  DESCRIPTION: 'lease_areas.child.children.custom_detailed_plan.children.info_links.child.children.description',
+  LANGUAGE: 'lease_areas.child.children.custom_detailed_plan.children.info_links.child.children.language',
+};
+
+/**
+ * Lease area custom detailed plan usage distribution field titles enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanInfoLinksFieldTitles = {
+  URL: 'Lisätietolinkki',
+  DESCRIPTION: 'Lisätietolinkin kuvaus',
+  LANGUAGE: 'Kieli',
+};
+
+/**
+ * Lease area custom detailed plan field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanFieldTitles = {
+  IDENTIFIER: 'Kohteen tunnus',
+  INTENDED_USE: 'Kaavayksikön käyttötarkoitus',
+  ADDRESS: 'Osoite',
+  AREA: 'Kokonaisalue',
+  STATE: 'Kaavayksikön olotila',
+  TYPE: 'Kaavayksikön laji',
+  DETAILED_PLAN: 'Asemakaava',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE: 'Asemakaavan viim. käsittelypvm',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE: 'Asemak. käsittelypvm huomautus',
+  RENT_BUILD_PERMISSION: 'Kokonaisrakennusoikeus',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'Arvioitu rakentamisen valmius',
+  INFO_LINKS: 'Lisätietolinkit',
+  USAGE_DISTRIBUTIONS: 'Käyttöjakaumat',
+};
+
+/**
  * Lease area plan units field paths enumerable.
  *
  * @type {{}}
