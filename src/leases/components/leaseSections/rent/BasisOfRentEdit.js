@@ -563,13 +563,16 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       amountPerArea,
       area,
       basisOfRent,
-      discountPercentage,
+      calculatorType,
       index,
       indexOptions,
       intendedUse,
       intendedUseOptions,
       leaseAttributes,
       profitMarginPercentage,
+      temporarySubventions,
+      managementSubventions,
+      subventionType,
     } = this.props;
 
     const areaText = this.getAreaText(area);
@@ -582,6 +585,18 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const discountedInitialYearRent = calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
     const rentPerMonth = discountedInitialYearRent != null ? discountedInitialYearRent/12 : null;
     const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent/6 : null;
+    const temporarySubventionDiscountPercentage = calculateTemporarySubventionDiscountPercentage(temporarySubventions);
+
+    let subvention_discount_percentage = null;
+    if (subventionType === SubventionTypes.RE_LEASE) {
+      const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
+      subvention_discount_percentage = releaseDiscountPercent.toFixed(2);
+    }
+    if (subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
+      if (managementSubventions && managementSubventions[0]) {
+        subvention_discount_percentage = managementSubventions[0].subvention_percent;
+      }
+    }
 
     return(
       `<thead>
@@ -594,7 +609,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         ? `<th>${LeaseBasisOfRentsFieldTitles.AREA}</th>`
         : ''
       }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+          ${calculatorType === CalculatorTypes.LEASE && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
         ? `<th>${LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}</th>`
         : ''
       }
@@ -624,7 +639,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
-        ? `<th>${LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE}</th>`
+        ? `<th>${LeaseBasisOfRentsFieldTitles.SUBVENTION_DISCOUNT_PERCENTAGE}</th>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.TEMPORARY_DISCOUNT_PERCENTAGE}</th>`
         : ''
       }
           ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
@@ -663,7 +682,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         ? `<td>${areaText}</td>`
         : ''
       }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+          ${calculatorType === CalculatorTypes.LEASE && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
         ? `<td>${amountPerAreaText}</td>`
         : ''
       }
@@ -693,7 +712,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
-        ? `<td>${!isEmptyValue(discountPercentage) ? `${formatNumber(discountPercentage)} %` : '-'}</td>`
+        ? `<td>${!isEmptyValue(subvention_discount_percentage) ? `${formatNumber(subvention_discount_percentage)} %` : '-'}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+        ? `<td>${!isEmptyValue(temporarySubventionDiscountPercentage) ? `${formatNumber(temporarySubventionDiscountPercentage)} %` : '-'}</td>`
         : ''
       }
           ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
@@ -1046,7 +1069,9 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       <BoxItem className='no-border-on-first-child'>
         <BoxContentWrapper>
           <ActionButtonWrapper>
-            <CopyToClipboardButton onClick={this.handleCopyToClipboard} />
+            {(calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) && (
+              <CopyToClipboardButton onClick={this.handleCopyToClipboard} />
+            )}
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.ARCHIVED_AT)}>
               {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at &&
                 <ArchiveButton onClick={this.handleArchive}/>
