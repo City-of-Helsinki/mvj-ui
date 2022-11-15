@@ -1370,59 +1370,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 </Authorization>
               </Row>
             </Column>}
-
-            {showPlansInspectedAt && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) &&
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}
-                  errorComponent={
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
-                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</FormTextTitle>
-                      <FormText>{plansInspectedAtText}</FormText>
-                    </Authorization>
-                  }
-                >
-                  <FormField
-                    className='with-top-padding'
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
-                      ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), required: false, type: 'checkbox-date-time'}
-                      : {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), type: 'checkbox-date-time'}
-                    }
-                    disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
-                    invisibleLabel
-                    name={`${field}.plans_inspected_at`}
-                    overrideValues={{label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}}
-                  />
-                </Authorization>
-              </Column>
-            }
-
-            {showLockedAt && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) &&
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}
-                  errorComponent={
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
-                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.LOCKED_AT}</FormTextTitle>
-                      <FormText>{lockedAtText}</FormText>
-                    </Authorization>
-                  }
-                >
-                  <FormField
-                    className='with-top-padding'
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={{
-                      ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT),
-                      type: 'checkbox-date-time',
-                    }}
-                    invisibleLabel
-                    name={`${field}.locked_at`}
-                    overrideValues={{label: LeaseBasisOfRentsFieldTitles.LOCKED_AT}}
-                  />
-                </Authorization>
-              </Column>
-            }
           </Row>
 
           {calculatorType === CalculatorTypes.LEASE && <Row>
@@ -1756,6 +1703,61 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
               </Column>
             </Authorization>
           </Row>}
+
+          <Row>
+            {showPlansInspectedAt && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) &&
+              <Column small={6} medium={4} large={2}>
+                <Authorization
+                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}
+                  errorComponent={
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
+                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</FormTextTitle>
+                      <FormText>{plansInspectedAtText}</FormText>
+                    </Authorization>
+                  }
+                >
+                  <FormField
+                    className='with-top-padding'
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
+                      ? { ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), required: false, type: 'checkbox-date-time' }
+                      : { ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), type: 'checkbox-date-time' }
+                    }
+                    disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                    invisibleLabel
+                    name={`${field}.plans_inspected_at`}
+                    overrideValues={{ label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT }}
+                  />
+                </Authorization>
+              </Column>
+            }
+
+            {showLockedAt &&
+              <Column small={6} medium={4} large={2}>
+                <Authorization
+                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}
+                  errorComponent={
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
+                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.LOCKED_AT}</FormTextTitle>
+                      <FormText>{lockedAtText}</FormText>
+                    </Authorization>
+                  }
+                >
+                  <FormField
+                    className='with-top-padding'
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={{
+                      ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT),
+                      type: 'checkbox-date-time',
+                    }}
+                    invisibleLabel
+                    name={`${field}.locked_at`}
+                    overrideValues={{ label: LeaseBasisOfRentsFieldTitles.LOCKED_AT }}
+                  />
+                </Authorization>
+              </Column>
+            }
+          </Row>
 
           {(!savedBasisOfRent || !savedBasisOfRent.locked_at) && !showSubventions && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) &&
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE)}>
