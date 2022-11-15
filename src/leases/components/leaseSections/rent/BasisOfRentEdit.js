@@ -327,7 +327,8 @@ type renderMastChildrenProps = {
   isSaveClicked: boolean,
   formName: string,
   parentField: string,
-  fields: any
+  fields: any,
+  fieldsDisabled: boolean,
 }
 
 const renderMastChildren = ({
@@ -336,6 +337,7 @@ const renderMastChildren = ({
   formName,
   fields,
   parentField,
+  fieldsDisabled,
 }: renderMastChildrenProps): Element<*> => {
   fields = [{}, {}];
   return (
@@ -352,6 +354,7 @@ const renderMastChildren = ({
                 field={field}
                 key={index}
                 parentField={parentField}
+                fieldsDisabled={fieldsDisabled}
               />;
             })}
           </Fragment>
@@ -909,13 +912,13 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent, indexValue);
     const areaText = this.getAreaText(area);
+    const lockedAtText = this.getLockedText();
 
     // Used by CalculatorTypes.LEASE
     const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
     const currentAmountPerArea = getBasisOfRentAmountPerArea(basisOfRent, indexValue);
 
     // Used by CalculatorTypes.LEASE and CalculatorTypes.LEASE2022
-    const lockedAtText = this.getLockedText();
     const plansInspectedAtText = this.getPlansInspectedText();
     const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
@@ -1094,6 +1097,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                   fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.TYPE)}
                   onChange={this.onChangeTypeOptions}
                   name={`${field}.type`}
+                  disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                   overrideValues={{
                     label: 'Laskurin tyyppi',
                   }}
@@ -1189,6 +1193,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         disableTouched={isSaveClicked}
                         fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.ZONE)}
                         name={`${field}.zone`}
+                        disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                         overrideValues={{
                           label: LeaseBasisOfRentsFieldTitles.ZONE,
                         }}
@@ -1213,6 +1218,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
                         }
                         name={`${field}.amount_per_area`}
+                        disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                         invisibleLabel
                         unit='€'
                         overrideValues={{label: LeaseBasisOfRentsFieldTitles.PRICE}}
@@ -1251,6 +1257,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}
                               name={`${field}.amount_per_area`}
+                              disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                               unit='€'
                               overrideValues={{label: 'Hinta'}}
                             />}
@@ -1268,6 +1275,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}
                               name={`${field}.area`}
+                              disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                               overrideValues={{label: 'Ala/korkeus'}}
                             />
                           </Authorization>
@@ -1297,6 +1305,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             name={`${field}.children`}
                             formName={formName}
                             parentField={field}
+                            fieldsDisabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
                           />
                         </Column>;
                       }}

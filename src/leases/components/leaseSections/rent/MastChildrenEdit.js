@@ -8,14 +8,14 @@ import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import {
-  isFieldAllowedToRead, 
+  isFieldAllowedToRead,
   getFieldAttributes,
   formatNumber,
   isEmptyValue,
 } from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getIsSaveClicked} from '$src/leases/selectors';
 import {
-  LeaseBasisOfRentsFieldPaths,  
+  LeaseBasisOfRentsFieldPaths,
 } from '$src/leases/enums';
 import type {Attributes} from '$src/types';
 
@@ -28,6 +28,7 @@ type Props = {
   leaseAttributes: Attributes,
   index: number,
   area: number,
+  fieldsDisabled: boolean,
 }
 
 const MastChildrenEdit = ({
@@ -36,6 +37,7 @@ const MastChildrenEdit = ({
   leaseAttributes,
   index,
   area,
+  fieldsDisabled,
 }: Props) => {
   const rent = mastCalculatorRent(index, area);
 
@@ -43,7 +45,7 @@ const MastChildrenEdit = ({
     <Fragment key={index}>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>            
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
             {(index === 0) && <FormText>{`Laitekaappi`}</FormText>}
             {(index === 1) && <FormText>{`Masto`}</FormText>}
           </Authorization>
@@ -66,6 +68,7 @@ const MastChildrenEdit = ({
               name={`${parentField}.children[${index}].area`}
               invisibleLabel={true}
               overrideValues={{label: 'Ala/korkeus'}}
+              disabled={fieldsDisabled}
             />
           </Authorization>
         </Column>
