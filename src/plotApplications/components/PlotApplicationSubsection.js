@@ -12,8 +12,13 @@ import {
   getAttachmentAttributes,
   getAttachmentMethods,
   getFieldTypeMapping,
-  getIsFetchingPendingUploads, getIsPerformingFileOperation,
-  getPendingUploads
+  getIsFetchingPendingUploads,
+  getIsPerformingFileOperation,
+  getPendingUploads,
+  getExistingUploads,
+  getCurrentPlotApplication,
+  getIsFetchingApplicationRelatedAttachments,
+  getIsFetchingAttachmentAttributes
 } from '../selectors';
 import {
   getApplicationAttachmentDownloadLink, getSectionApplicantType,
@@ -45,12 +50,16 @@ const ApplicationSectionKeys = {
 }
 
 const ApplicationFormFileField = connect(
-  (state) => ({
+  (state, props) => ({
     pendingUploads: getPendingUploads(state),
+    existingUploads: getExistingUploads(state, props.field.identifier),
     attachmentMethods: getAttachmentMethods(state),
     attachmentAttributes: getAttachmentAttributes(state),
     isFetchingPendingUploads: getIsFetchingPendingUploads(state),
-    isPerformingFileOperation: getIsPerformingFileOperation(state)
+    isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
+    isFetchingAttachmentAttributes: getIsFetchingAttachmentAttributes(state),
+    isPerformingFileOperation: getIsPerformingFileOperation(state),
+    currentPlotApplication: getCurrentPlotApplication(state)
   }),
   {
     uploadAttachment,
@@ -60,32 +69,39 @@ const ApplicationFormFileField = connect(
   uploadAttachment,
   deleteUploadedAttachment,
   pendingUploads,
+  existingUploads,
   // TODO: Method authorization is disabled, since at this point in time, the backend returns false for all methods.
   //attachmentMethods,
   attachmentAttributes,
   isFetchingPendingUploads,
+  isFetchingAttachments,
+  isFetchingAttachmentAttributes,
   isPerformingFileOperation,
   field,
-  fieldName
+  fieldName,
+  currentPlotApplication
 }) => {
   return (
     <AppConsumer>
       {({dispatch}) => {
 
+        const isNew = !currentPlotApplication?.id;
+
         const submitFile = (fieldId, e) => {
           uploadAttachment({
             field: fieldId,
-            file: e.target.files[0]
+            file: e.target.files[0],
+            answer: currentPlotApplication?.id || undefined
           });
         };
 
-        const uploads = pendingUploads.filter((file) => file.field === field.id);
+        const uploads = isNew ? pendingUploads.filter((file) => file.field === field.id) : existingUploads;
 
-        const deleteFile = (fileId) => {
+        const deleteFile = (file) => {
           dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
-              deleteUploadedAttachment(fileId);
+              deleteUploadedAttachment(file);
             },
             confirmationModalButtonClassName: ButtonColors.ALERT,
             confirmationModalButtonText: ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
@@ -94,11 +110,11 @@ const ApplicationFormFileField = connect(
           });
         }
 
-        const busy = isFetchingPendingUploads || isPerformingFileOperation;
+        const busy = isFetchingPendingUploads || isPerformingFileOperation || isFetchingAttachments || isFetchingAttachmentAttributes;
 
         return <Column small={12} medium={12} large={12}>
       <FormTextTitle>{field.label}</FormTextTitle>
-        {uploads.length > 0 && <Row>
+        {!isFetchingAttachmentAttributes && uploads.length > 0 && <Row>
         <Column small={6} large={5}>
           <Authorization allow={isFieldAllowedToRead(attachmentAttributes, 'name')}>
             <FormTextTitle>
@@ -114,7 +130,7 @@ const ApplicationFormFileField = connect(
           </Authorization>
         </Column>
       </Row>}
-      {uploads.map((file, index) => {
+      {!isFetchingAttachmentAttributes && uploads.map((file, index) => {
         return <Row key={index}>
           <Column small={6} large={5}>
             <Authorization
@@ -140,7 +156,7 @@ const ApplicationFormFileField = connect(
             >
               <RemoveButton
                 className='third-level'
-                onClick={() => deleteFile(file.id)}
+                onClick={() => deleteFile(file)}
                 style={{right: 12}}
                 title="Poista liitetiedosto"
                 disabled={busy}
@@ -337,17 +353,17 @@ const ApplicationFormSubsectionFieldArray = ({
         >
           <div className="ApplicationFormSubsectionFieldArray__item-content">
             <HeaderTag>
+              {fields.length > 1 && section.identifier !== TARGET_SECTION_IDENTIFIER && (
+                <RemoveButton
+                  onClick={() => fields.remove(i)}
+                  style={{float: 'right'}}
+                />
+              )}
               {section.identifier === TARGET_SECTION_IDENTIFIER
                 ? <>{section.title} ({getSectionTargetFromMeta(identifier)})</>
                 : <>{section.title} ({i + 1})</>
               }
-
             </HeaderTag>
-            {fields.length > 1 && section.identifier !== TARGET_SECTION_IDENTIFIER && (
-              <RemoveButton
-                onClick={() => fields.remove(i)}
-              />
-            )}
             <ApplicationFormSubsectionFields
               section={section}
               identifier={identifier}

@@ -22,8 +22,12 @@ import type {
   ReceivePlotSearchSubtypesAction,
   ReceiveApplicationRelatedPlotSearchAction,
   ReceiveAttachmentAttributesAction,
-  ReceiveAttachmentMethodsAction, ReceiveInfoCheckAttributesAction
+  ReceiveAttachmentMethodsAction,
+  ReceiveInfoCheckAttributesAction,
+  PlotApplicationsState
 } from "./types";
+import type {Action, CombinedReducer} from "redux";
+import type {ReceiveFormAttributesAction} from "../plotSearch/types";
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
@@ -31,6 +35,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_SINGLE']: () => true,
   ['mvj/plotApplications/RECEIVE_SINGLE']: () => false,
   ['mvj/plotApplications/EDIT']: () => true,
+  ['mvj/plotApplications/RECEIVE_SAVED']: () => false,
   ['mvj/plotApplications/APPLICATIONS_NOT_FOUND']: () => false,
 }, false);
 
@@ -159,7 +164,7 @@ const isFetchingAttachmentsReducer: Reducer<boolean> = handleActions({
 
 const fieldTypeMappingReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveFormAttributesAction) => {
-    return attributes.sections?.child?.children.fields?.child?.children.type?.choices?.reduce(
+    return attributes?.sections?.child?.children.fields?.child?.children.type?.choices?.reduce(
       (acc, choice) => {
         acc[choice.value] = choice.display_name;
         return acc;
@@ -225,20 +230,20 @@ const isFetchingInfoCheckAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => false,
 }, false);
 
-const isUpdatingInfoCheckReducer: Reducer<Record<number, boolean>> = handleActions({
-  ['mvj/plotApplications/EDIT_INFO_CHECK_ITEM']: (state: Record<number, boolean>, {payload}) => {
+const isUpdatingInfoCheckReducer: Reducer<{ [id: number]: boolean }> = handleActions({
+  ['mvj/plotApplications/EDIT_INFO_CHECK_ITEM']: (state: { [id: number]: boolean }, {payload}) => {
     return {
       ...state,
       [payload.id]: true
     };
   },
-  ['mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM']: (state: Record<number, boolean>, {payload}) => {
+  ['mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM']: (state: { [id: number]: boolean }, {payload}) => {
     return {
       ...state,
       [payload.id]: false
     };
   },
-  ['mvj/plotApplications/INFO_CHECK_UPDATE_FAILED']: (state: Record<number, boolean>, {payload: id}) => {
+  ['mvj/plotApplications/INFO_CHECK_UPDATE_FAILED']: (state: { [id: number]: boolean }, {payload: id}) => {
     return {
       ...state,
       [id]: false
@@ -246,20 +251,20 @@ const isUpdatingInfoCheckReducer: Reducer<Record<number, boolean>> = handleActio
   }
 }, {});
 
-const lastInfoCheckUpdateSuccessfulReducer: Reducer<Record<number, ?boolean>> = handleActions({
-  ['mvj/plotApplications/EDIT_INFO_CHECK_ITEM']: (state: Record<number, ?boolean>, {payload}) => {
+const lastInfoCheckUpdateSuccessfulReducer: Reducer<{ [id: number]: (boolean | null) }> = handleActions({
+  ['mvj/plotApplications/EDIT_INFO_CHECK_ITEM']: (state: { [id: number]: boolean | null }, {payload}) => {
     return {
       ...state,
       [payload.id]: null
     };
   },
-  ['mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM']: (state: Record<number, boolean>, {payload}) => {
+  ['mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM']: (state: { [id: number]: boolean | null }, {payload}) => {
     return {
       ...state,
       [payload.id]: true
     };
   },
-  ['mvj/plotApplications/INFO_CHECK_UPDATE_FAILED']: (state: Record<number, boolean>, {payload: id}) => {
+  ['mvj/plotApplications/INFO_CHECK_UPDATE_FAILED']: (state: { [id: number]: boolean | null }, {payload: id}) => {
     return {
       ...state,
       [id]: false
@@ -267,7 +272,7 @@ const lastInfoCheckUpdateSuccessfulReducer: Reducer<Record<number, ?boolean>> = 
   }
 }, {});
 
-export default combineReducers<Object, any>({
+export default (combineReducers<Object, mixed>({
   isFetching: isFetchingReducer,
   isFetchingByBBox: isFetchingByBBoxReducer,
   listByBBox: listByBBoxReducer,
@@ -300,4 +305,4 @@ export default combineReducers<Object, any>({
   infoCheckAttributes: infoCheckAttributesReducer,
   isUpdatingInfoCheck: isUpdatingInfoCheckReducer,
   lastInfoCheckUpdateSuccessful: lastInfoCheckUpdateSuccessfulReducer
-});
+}) : CombinedReducer<PlotApplicationsState, mixed>);

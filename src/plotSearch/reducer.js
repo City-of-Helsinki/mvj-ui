@@ -17,15 +17,17 @@ import type {
   ReceiveFormValidFlagsAction,
   ReceiveMethodsAction,
   PlanUnit,
-  ReceivePlotSearchSubtypeAction,
   ReceiveFormAttributesAction,
   ReceiveFormAction,
   ReceiveTemplateFormsAction,
   AddPlanUnitDecisionsAction,
   ReceivePlotSearchStagesAction,
-  RemovePlanUnitDecisionsAction
+  RemovePlanUnitDecisionsAction,
+  ReceivePlotSearchSubtypesAction,
+  PlotSearchState
 } from './types';
 import {annotatePlanUnitDecision} from "./helpers";
+import type {CombinedReducer} from "redux";
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -147,7 +149,7 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
 });
 
 const subTypesReducer: Reducer<Object> = handleActions({
-  ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES']: (state: Object, {payload: subTypes}: ReceivePlotSearchSubtypeAction) => {
+  ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES']: (state: Object, {payload: subTypes}: ReceivePlotSearchSubtypesAction) => {
     return subTypes;
   },
 }, null);
@@ -188,7 +190,7 @@ const formReducer: Reducer<Object> = handleActions({
   },
 }, null);
 
-const decisionCandidateReducer: Reducer<Array> = handleActions({
+const decisionCandidateReducer: Reducer<{ [planUnit: number]: Array<Object> }> = handleActions({
   ['mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS']: (state: Object, {payload: planUnit}: AddPlanUnitDecisionsAction) => {
     if (!planUnit.decisions) {
       return state;
@@ -230,7 +232,7 @@ const isFetchingStagesReducer: Reducer<boolean> = handleActions({
 }, false);
 
 
-export default combineReducers<Object, any>({
+export default (combineReducers<Object, mixed>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
   current: currentPlotSearchReducer,
@@ -256,4 +258,4 @@ export default combineReducers<Object, any>({
   decisionCandidates: decisionCandidateReducer,
   stages: stagesReducer,
   isFetchingStages: isFetchingStagesReducer
-});
+}) : CombinedReducer<PlotSearchState, mixed>);

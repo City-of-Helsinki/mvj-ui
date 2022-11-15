@@ -27,30 +27,44 @@ import {
 } from '$src/plotApplications/selectors';
 
 import type {Attributes} from '$src/types';
-import {getInitialApplication, getInitialApplicationForm, getSectionTemplate} from "../helpers";
 import {
-  getIsFetching as getIsFetchingPlotSearchList,
+  getInitialApplication,
+  getInitialApplicationForm,
+  getSectionTemplate,
+  reshapeSavedApplicationObject
+} from "../helpers";
+import {
+  getFormAttributes,
+  getIsFetching as getIsFetchingPlotSearchList, getIsFetchingForm,
   getIsFetchingFormAttributes,
   getPlotSearchList
 } from "../../plotSearch/selectors";
 import {fetchFormAttributes} from "../../plotSearch/actions";
 import {
-  getCurrentEditorTargets,
+  getApplicationRelatedAttachments, getApplicationRelatedPlotSearch,
+  getCurrentEditorTargets, getCurrentPlotApplication,
   getFieldTypeMapping,
-  getIsFetchingApplicationRelatedAttachments,
+  getIsFetchingApplicationRelatedAttachments, getIsFetchingApplicationRelatedPlotSearch,
   getIsFetchingAttachmentAttributes, getIsFetchingInfoCheckAttributes
 } from "../selectors";
 import PlotApplicationSubsection from "./PlotApplicationSubsection";
 import {
   fetchAttachmentAttributes,
-  fetchPendingUploads,
-  receiveFormValidFlags,
+  fetchPendingUploads, receiveApplicationRelatedAttachments,
+  receiveFormValidFlags, receiveSinglePlotApplication,
   setCurrentEditorTargets
 } from "../actions";
 import Loader from "../../components/loader/Loader";
 import {TARGET_SECTION_IDENTIFIER} from "../constants";
+import type {PlotSearch, PlotSearchList} from "../../plotSearch/types";
+import type {PlotApplication} from "../types";
+
+type OwnProps = {
+  isNew: boolean
+};
 
 type Props = {
+  ...OwnProps,
   attributes: Attributes,
   collapseStateCommon: boolean,
   receiveCollapseStates: Function,
@@ -61,53 +75,93 @@ type Props = {
   isSaveClicked: boolean,
   initialize: Function,
   change: Function,
-  plotSearches: Array<Object>,
+  plotSearches: PlotSearchList,
   fetchPendingUploads: Function,
   fetchFormAttributes: Function,
   fetchAttachmentAttributes: Function,
   isFetchingFormAttributes: boolean,
   isFetchingAttachmentAttributes: boolean,
   isFetchingPlotSearchList: boolean,
-  array: Array<Function>,
+  array: { [key: string]: Function },
   fieldTypeMapping: Object,
   valid: boolean,
   receiveFormValidFlags: Function,
   formValues: Object,
   currentEditorTargets: Array<Object>,
   setCurrentEditorTargets: Function,
-  isFetchingInfoCheckAttributes: boolean
+  isFetchingInfoCheckAttributes: boolean,
+  retrievingData: boolean,
+  currentPlotApplication?: PlotApplication,
+  formAttributes: Attributes,
+  attachments: Array<Object>,
+  currentPlotSearch?: PlotSearch,
+  isFetchingApplicationRelatedPlotSearch: boolean,
+  receiveSinglePlotApplication: Function,
+  receiveApplicationRelatedAttachments: Function
 }
 
 type State = {
-  form: Object
+  form: Object,
+  isFormFixed: boolean
 }
 
 class PlotApplicationEdit extends PureComponent<Props, State> {
   state = {
-    form: null
+    form: null,
+    isFormFixed: false
+  }
+
+  componentDidMount() {
+    const {
+      fetchFormAttributes,
+      fetchAttachmentAttributes,
+      fetchPendingUploads,
+      initialize,
+      valid,
+      isNew,
+      retrievingData,
+      receiveSinglePlotApplication,
+      receiveApplicationRelatedAttachments
+    } = this.props;
+
+
+    fetchPendingUploads();
+    fetchFormAttributes(1);
+    fetchAttachmentAttributes();
+
+    if (isNew) {
+      initialize(getInitialApplication());
+
+      // remove single application view data if that view had been visited during the same session
+      receiveSinglePlotApplication({});
+      receiveApplicationRelatedAttachments([]);
+    } else {
+      if (!isNew && !retrievingData) {
+        this.setupEditMode();
+      }
+    }
+
+    receiveFormValidFlags({
+      [FormNames.PLOT_APPLICATION]: valid
+    });
   }
 
   componentDidUpdate(prevProps) {
-    const { receiveFormValidFlags } = this.props;
+    const {
+      receiveFormValidFlags,
+      isNew,
+      retrievingData,
+    } = this.props;
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
         [FormNames.PLOT_APPLICATION]: this.props.valid
       });
     }
-  }
 
-  componentDidMount() {
-    this.props.fetchFormAttributes(1);
-    this.props.fetchAttachmentAttributes();
-    this.props.fetchPendingUploads();
-
-    // TODO: adjust for existing application later
-    this.props.initialize(getInitialApplication());
-
-    receiveFormValidFlags({
-      [FormNames.PLOT_APPLICATION]: this.props.valid
-    });
+    if (!isNew && !retrievingData && prevProps.retrievingData) {
+      this.setupEditMode();
+    }
   }
 
   handleCollapseToggle = (key: string, val: boolean) => {
@@ -126,6 +180,46 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
     this.handleCollapseToggle('common', val);
   }
 
+  setupEditMode = () => {
+    const {
+      currentPlotApplication,
+      currentPlotSearch,
+      formAttributes,
+      attachments,
+      initialize,
+      setCurrentEditorTargets
+    } = this.props;
+
+    if (currentPlotApplication) {
+      if (!currentPlotSearch) {
+        throw new Error('base plot search not found');
+      }
+
+      const reshapedData = reshapeSavedApplicationObject(
+        currentPlotApplication.entries_data,
+        currentPlotSearch.form,
+        formAttributes,
+        attachments
+      );
+
+      initialize({
+        formId: currentPlotApplication.form,
+        targets: currentPlotApplication.targets,
+        formEntries: getInitialApplicationForm(
+          this.props.fieldTypeMapping,
+          currentPlotSearch.form,
+          reshapedData
+        )
+      });
+      setCurrentEditorTargets(currentPlotSearch.plot_search_targets);
+
+      this.setState(() => ({
+        isFormFixed: true,
+        form: currentPlotSearch.form
+      }))
+    }
+  }
+
   initializeFormValues = (formId) => {
     const { setCurrentEditorTargets } = this.props;
 
@@ -133,7 +227,9 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
 
     this.props.change('formEntries', getInitialApplicationForm(
       this.props.fieldTypeMapping,
-      matchingSearch?.form));
+      matchingSearch?.form,
+      null
+    ));
     this.props.change('targets', []);
 
     this.setState(() => ({
@@ -178,22 +274,33 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       isSaveClicked,
       attributes,
       errors,
-      isFetchingFormAttributes,
-      isFetchingAttachmentAttributes,
-      isFetchingPlotSearchList,
-      isFetchingInfoCheckAttributes,
       plotSearches,
-      currentEditorTargets
+      currentEditorTargets,
+      currentPlotSearch,
+      retrievingData,
+      isNew
     } = this.props;
 
-    if (isFetchingPlotSearchList || isFetchingFormAttributes || isFetchingAttachmentAttributes || isFetchingInfoCheckAttributes) {
+    const {
+      isFormFixed
+    } = this.state;
+
+    if (retrievingData) {
       return <Loader isLoading={true} />;
     }
+
+    const plotSearchCandidates = isNew
+      ? (plotSearches.results || [])
+      : (currentPlotSearch && [currentPlotSearch] || []);
+    const plotSearchChoices = plotSearchCandidates.filter((option) => option.form).map((option) => ({
+      display_name: option.name,
+      value: option.form.id
+    }));
 
     return (
       <form className="PlotApplicationEdit">
         <Title>
-          {'Hakemus'}
+          Hakemus
         </Title>
         <Divider />
         <Row className='summary__content-wrapper'>
@@ -201,7 +308,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
             <Collapse
               defaultOpen={collapseStateCommon !== undefined ? collapseStateCommon : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle={'Hakemus'}
+              headerTitle='Hakemus'
               onToggle={this.handleCommonFieldsCollapseToggle}
             >
               <Row>
@@ -212,10 +319,10 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
                       fieldAttributes={{
                         ...get(attributes, 'form'),
                         label: 'Tonttihaku',
-                        choices: plotSearches.results?.filter((option) => option.form).map((option) => ({
-                          display_name: option.name,
-                          value: option.form.id
-                        }))
+                        choices: plotSearchChoices,
+                      }}
+                      overrideValues={{
+                        allowEdit: !isFormFixed
                       }}
                       name='formId'
                       onChange={this.initializeFormValues}
@@ -296,8 +403,8 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
                     overrideValues={{
                       options: currentEditorTargets.map((target) => ({
                         value: target.id,
-                        label: `${target.lease_address.address} (${target.lease_identifier})`
-                      }))
+                        label: `${target.lease_address?.address || '-'} (${target.lease_identifier})`,
+                      })),
                     }}
                     name='targets'
                     onChange={this.updateTargetSections}
@@ -326,9 +433,22 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
 
 const formName = FormNames.PLOT_APPLICATION;
 
-export default flowRight(
+export default (flowRight(
   connect(
-    (state) => {
+    (state, props) => {
+
+      const isFetchingPlotSearchList = getIsFetchingPlotSearchList(state);
+      const isFetchingFormAttributes = getIsFetchingFormAttributes(state);
+      const isFetchingAttachmentAttributes = getIsFetchingAttachmentAttributes(state);
+      const isFetchingAttachments = getIsFetchingApplicationRelatedAttachments(state);
+      const isFetchingInfoCheckAttributes = getIsFetchingInfoCheckAttributes(state);
+      const isFetchingForm = getIsFetchingForm(state);
+      const isFetchingApplicationRelatedPlotSearch = getIsFetchingApplicationRelatedPlotSearch(state);
+
+      const isRetrievingCommonData = isFetchingFormAttributes || isFetchingAttachmentAttributes || isFetchingInfoCheckAttributes || isFetchingForm || isFetchingAttachments;
+      const isRetrievingCreateModeData = isFetchingPlotSearchList;
+      const isRetrievingEditModeData = isFetchingApplicationRelatedPlotSearch;
+
       return {
         attributes: getAttributes(state),
         usersPermissions: getUsersPermissions(state),
@@ -337,13 +457,20 @@ export default flowRight(
         errors: getErrorsByFormName(state, formName),
         plotSearches: getPlotSearchList(state),
         fieldTypeMapping: getFieldTypeMapping(state),
-        isFetchingPlotSearchList: getIsFetchingPlotSearchList(state),
-        isFetchingFormAttributes: getIsFetchingFormAttributes(state),
-        isFetchingAttachmentAttributes: getIsFetchingAttachmentAttributes(state),
-        isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
-        isFetchingInfoCheckAttributes: getIsFetchingInfoCheckAttributes(state),
+        isFetchingPlotSearchList,
+        isFetchingFormAttributes,
+        isFetchingAttachmentAttributes,
+        isFetchingAttachments,
+        isFetchingInfoCheckAttributes,
+        isFetchingForm,
+        isFetchingApplicationRelatedPlotSearch,
         formValues: getFormValues(formName)(state),
-        currentEditorTargets: getCurrentEditorTargets(state)
+        currentEditorTargets: getCurrentEditorTargets(state),
+        currentPlotApplication: getCurrentPlotApplication(state),
+        formAttributes: getFormAttributes(state),
+        retrievingData: isRetrievingCommonData || (props.isNew ? isRetrievingCreateModeData : isRetrievingEditModeData),
+        attachments: getApplicationRelatedAttachments(state),
+        currentPlotSearch: getApplicationRelatedPlotSearch(state),
       };
     },
     {
@@ -355,10 +482,12 @@ export default flowRight(
       fetchFormAttributes,
       fetchPendingUploads,
       fetchAttachmentAttributes,
-      setCurrentEditorTargets
+      setCurrentEditorTargets,
+      receiveSinglePlotApplication,
+      receiveApplicationRelatedAttachments
     }
   ),
   reduxForm({
     form: formName,
   }),
-)(PlotApplicationEdit);
+)(PlotApplicationEdit) : React$AbstractComponent<OwnProps, mixed>);

@@ -133,7 +133,7 @@ export const reshapeSavedApplicationObject = (
       switch (fieldTypes?.find((fieldType) => fieldType.value === field.type)?.display_name) {
         case 'radiobutton':
         case 'radiobuttoninline':
-          value = value !== null && value !== undefined ? value : null;
+          value = value !== null && value !== undefined ? value.toString() : null;
           break;
         case 'checkbox':
         case 'dropdown':
@@ -193,7 +193,6 @@ export const getAttachmentLink = (id: number): string => createUrl(`attachment/$
 
 export const getInitialApplication = (): ApplicationFormState => {
   return {
-    //plotSearch: null,
     formId: null,
     targets: [],
     formEntries: null
@@ -202,7 +201,8 @@ export const getInitialApplication = (): ApplicationFormState => {
 
 export const getInitialApplicationForm = (
   fieldTypes: { [id: number]: string },
-  form?: Form
+  form?: Form,
+  existingValues?: Object | null
 ): Object | null => {
   if (!form) {
     return null;
@@ -214,14 +214,7 @@ export const getInitialApplicationForm = (
     fileFieldIds: []
   };
 
-  const buildSection = (
-    section,
-    parent = root.sections
-  ): void => {
-    if (!section.visible) {
-      return;
-    }
-
+  const buildSectionItem = (section, parent, sectionAnswer) => {
     const workingItem: ApplicationFormSection = {
       sections: {},
       fields: {},
@@ -239,44 +232,87 @@ export const getInitialApplicationForm = (
     }
 
     section.subsections.forEach((subsection) =>
-      buildSection(subsection, workingItem.sections)
+      buildSection(subsection, workingItem.sections, sectionAnswer?.sections?.[subsection.identifier])
     );
-    section.fields.forEach((field) => buildField(field, workingItem.fields));
+    section.fields.forEach((field) => buildField(field, workingItem.fields, sectionAnswer?.fields?.[field.identifier]));
 
-    if (section.add_new_allowed) {
-      root.sectionTemplates[section.identifier] = { ...workingItem };
+    if (sectionAnswer?.metadata) {
+      workingItem.metadata = {
+        ...(workingItem.metadata || {}),
+        ...sectionAnswer.metadata
+      };
+    }
 
-      if (section.identifier === TARGET_SECTION_IDENTIFIER) {
-        parent[section.identifier] = [];
+    return workingItem;
+  };
+
+  const buildSection = (
+    section,
+    parent,
+    sectionAnswers
+  ): void => {
+    if (!section.visible) {
+      return;
+    }
+
+    if (section.add_new_allowed && !root.sectionTemplates[section.identifier]) {
+      root.sectionTemplates[section.identifier] = buildSectionItem(section, parent);
+    }
+
+    if (sectionAnswers) {
+      if (section.add_new_allowed) {
+        if (!sectionAnswers instanceof Array) {
+          console.error('type mismatch', section, sectionAnswers);
+        }
+        parent[section.identifier] = sectionAnswers.map((sectionAnswer) => buildSectionItem(section, parent, sectionAnswer));
       } else {
-        parent[section.identifier] = [workingItem];
+        parent[section.identifier] = buildSectionItem(section, parent, sectionAnswers);
       }
     } else {
-      parent[section.identifier] = workingItem;
+      const defaultItem = buildSectionItem(section, parent);
+      if (section.add_new_allowed && section.identifier === TARGET_SECTION_IDENTIFIER) {
+        parent[section.identifier] = [];
+      } else if (section.add_new_allowed) {
+        parent[section.identifier] = [defaultItem];
+      } else {
+        parent[section.identifier] = defaultItem;
+      }
     }
   };
 
-  const buildField = (field, parent): void => {
+  const buildField = (field, parent, answer): void => {
     if (!field.enabled) {
       return;
+    }
+
+    let reformattedAnswer;
+    if (answer) {
+      reformattedAnswer = {
+        value: answer.value,
+        extraValue: answer.extra_value
+      };
     }
 
     let initialValue;
     switch (fieldTypes[field.type]) {
       case 'uploadfiles':
         // handled outside redux-form
-        root.fileFieldIds.push(field.id);
+        if (!root.fileFieldIds.includes(field.id)) {
+          root.fileFieldIds.push(field.id);
+        }
         break;
       case 'dropdown':
       case 'radiobutton':
       case 'radiobuttoninline':
-        initialValue = {
-          value: '', //null,
+        initialValue = reformattedAnswer || {
+          value: '',
           extraValue: '',
         };
         break;
       case 'checkbox':
-        if (field.choices?.length > 1) {
+        if (reformattedAnswer) {
+          initialValue = reformattedAnswer;
+        } else if (field.choices?.length > 1) {
           initialValue = {
             value: [],
             extraValue: '',
@@ -291,7 +327,7 @@ export const getInitialApplicationForm = (
       case 'textbox':
       case 'textarea':
       default:
-        initialValue = {
+        initialValue = reformattedAnswer || {
           value: '',
           extraValue: '',
         };
@@ -303,7 +339,7 @@ export const getInitialApplicationForm = (
     }
   };
 
-  form.sections.forEach((section) => buildSection(section));
+  form.sections.forEach((section) => buildSection(section, root.sections, existingValues?.sections?.[section.identifier]));
 
   return root;
 };

@@ -1,5 +1,6 @@
 // @flow
 import type {Action, Attributes, Methods} from '../types';
+import type {PlotSearch} from "../plotSearch/types";
 
 export type PlotApplicationsState = {
   attributes: Attributes,
@@ -28,7 +29,12 @@ export type PlotApplicationsState = {
   isFetchingInfoCheckAttributes: boolean,
   infoCheckAttributes: Attributes,
   isUpdatingInfoCheck: { [id: number]: boolean },
-  lastInfoCheckUpdateSuccessful: { [id: number]: boolean }
+  lastInfoCheckUpdateSuccessful: { [id: number]: boolean },
+  isSaveClicked: boolean,
+  isFetchingForm: boolean,
+  form: ?Object,
+  isFetchingPlotSearch: boolean,
+  plotSearch: ?PlotSearch
 };
 
 export type PlotApplicationFormValue = string | Array<string> | boolean;
@@ -104,7 +110,7 @@ export type InitializeFormEntriesForApplicationAction = Action<'mvj/plotApplicat
 export type FetchPendingUploadsAction = Action<'mvj/plotApplications/FETCH_PENDING_UPLOADS', void>;
 export type ReceivePendingUploadsAction = Action<'mvj/plotApplications/RECEIVE_PENDING_UPLOADS', Object>;
 export type PendingUploadsNotFoundAction = Action<'mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND', void>;
-export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', number>;
+export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', Object>;
 export type UploadFileAction = Action<'mvj/plotApplications/UPLOAD_FILE', Object>;
 export type ReceiveFileOperationFinishedAction = Action<'mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED', void>;
 

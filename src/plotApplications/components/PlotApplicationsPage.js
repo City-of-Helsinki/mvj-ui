@@ -128,7 +128,8 @@ class PlotApplicationsPage extends Component<Props, State> {
       match: {params: {plotApplicationId}},
       location: {search},
       receiveIsSaveClicked,
-      fetchPlotSearchList
+      fetchPlotSearchList,
+      hideEditMode
     } = this.props;
 
     const query = getUrlParams(search);
@@ -158,6 +159,10 @@ class PlotApplicationsPage extends Component<Props, State> {
       fetchSinglePlotApplication(plotApplicationId);
       setPageTitle('Hakemus');
     }
+  }
+
+  componentWillUnmount() {
+    this.props.hideEditMode();
   }
 
   handleShowEditMode = () => {
@@ -290,7 +295,10 @@ class PlotApplicationsPage extends Component<Props, State> {
 
     if (prevProps.isEditMode !== isEditMode) {
       if (isEditMode) {
-        fetchPlotSearchList();
+        // existing plot searches can't have their plot search/form changed
+        if (this.isNewEditor()) {
+          fetchPlotSearchList();
+        }
       } else {
         if (plotApplicationId) {
           fetchSinglePlotApplication(Number(plotApplicationId));
@@ -456,7 +464,7 @@ class PlotApplicationsPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 {isEditMode
-                  ? <PlotApplicationEdit/>
+                  ? <PlotApplicationEdit isNew={this.isNewEditor()}/>
                   : <PlotApplication/>
                 }
               </ContentContainer>

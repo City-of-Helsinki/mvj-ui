@@ -1,3 +1,4 @@
+//@flow
 import type {Action, ApiResponse, Attributes, Methods} from '$src/types';
 
 export type BatchRunState = {

@@ -69,7 +69,7 @@ import {
 } from "../plotSearch/actions";
 import {push} from "react-router-redux";
 import {getRouteById, Routes} from "../root/routes";
-import type {DeleteUploadAction, UploadFileAction} from "./types";
+import type {DeleteUploadAction, PlotApplication, UploadFileAction} from "./types";
 import {getCurrentPlotApplication} from "./selectors";
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
@@ -159,8 +159,8 @@ function* createPlotApplicationSaga({payload: plotApplication}): Generator<any, 
       case 201:
         yield put(receivePlotApplicationSaved(bodyAsJson.id));
         yield put(push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${bodyAsJson.id}`));
-        yield put(hideEditMode());
         yield put(fetchSinglePlotApplication(bodyAsJson.id));
+        yield put(hideEditMode());
         displayUIMessage({title: '', body: 'Hakemus luotu'});
         break;
       default:
@@ -175,23 +175,35 @@ function* createPlotApplicationSaga({payload: plotApplication}): Generator<any, 
 }
 
 function* editPlotApplicationSaga({payload: plotApplication}): Generator<any, any, any> {
+  const handleFail = function*() {
+    yield put(receivePlotApplicationSaveFailed());
+    displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, { type: 'error' });
+  }
+
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotApplicationRequest, plotApplication);
+    const currentPlotApplication: ?PlotApplication = yield select(getCurrentPlotApplication);
+    if (!currentPlotApplication) {
+      yield handleFail();
+      return;
+    }
+
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotApplicationRequest, currentPlotApplication?.id, plotApplication);
 
     switch (statusCode) {
       case 200:
       case 201:
         yield put(receivePlotApplicationSaved(bodyAsJson.id));
-        yield put(push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${bodyAsJson.id}`));
+        yield put(receiveSinglePlotApplication(bodyAsJson));
+        yield put(fetchApplicationRelatedAttachments(bodyAsJson.id));
+        yield put(hideEditMode());
         displayUIMessage({title: '', body: 'Hakemus tallennettu'});
         break;
       default:
-        yield put(receivePlotApplicationSaveFailed());
-        displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, { type: 'error' });
+        yield handleFail();
     }
-  } catch {
-    yield put(receivePlotApplicationSaveFailed());
-    displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, { type: 'error' });
+  } catch (e) {
+    console.log(e);
+    yield handleFail();
   }
 }
 
@@ -300,10 +312,14 @@ function* fetchPendingUploadsSaga(): Generator<any, any, any> {
 
 function* deleteUploadSaga({ payload }: DeleteUploadAction): Generator<any, any, any> {
   try {
-    yield call(deleteUploadRequest, payload);
+    yield call(deleteUploadRequest, payload.id);
 
     yield put(receiveFileOperationFinished());
-    yield put(fetchPendingUploads());
+    if (payload.answer) {
+      yield put(fetchApplicationRelatedAttachments(payload.answer));
+    } else {
+      yield put(fetchPendingUploads());
+    }
   } catch (e) {
     console.error(e);
     yield put(pendingUploadsNotFound());
@@ -316,7 +332,11 @@ function* uploadFileSaga({ payload }: UploadFileAction): Generator<any, any, any
     yield call(uploadFileRequest, payload);
 
     yield put(receiveFileOperationFinished());
-    yield put(fetchPendingUploads());
+    if (payload.answer) {
+      yield put(fetchApplicationRelatedAttachments(payload.answer));
+    } else {
+      yield put(fetchPendingUploads());
+    }
   } catch (e) {
     console.log(e);
     yield put(pendingUploadsNotFound());
