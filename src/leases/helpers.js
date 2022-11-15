@@ -1778,6 +1778,17 @@ export const getRentWarnings = (rents: Array<Object>): Array<string> => {
  */
 export const getContentBasisOfRents = (lease: Object): Array<Object> => {
   const allChildren = get(lease, 'basis_of_rents', []).flatMap(item => item.children);
+
+  // Get children sorted ascending by id
+  const getSortedChildren = (lease: Object, item: Object): Array<Object> => {
+    const children = get(lease, 'basis_of_rents', [])
+      .filter(filterItem => get(item, 'children', []).includes(filterItem.id));
+
+    if (!children.length) return [];
+
+    return [...children].sort((a, b) => a.id - b.id);
+  }
+
   return get(lease, 'basis_of_rents', []).filter(item => !allChildren.includes(item.id)).map((item) => {
     return {
       id: item.id || undefined,
@@ -1787,7 +1798,7 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> => {
       amount_per_area: item.amount_per_area,
       index: get(item, 'index.id') || get(item, 'index'),
       profit_margin_percentage: item.profit_margin_percentage,
-      children: get(lease, 'basis_of_rents', []).filter(filterItem => get(item, 'children', []).includes(filterItem.id)),
+      children: getSortedChildren(lease, item),
       type: item.type,
       discount_percentage: item.discount_percentage,
       plans_inspected_at: item.plans_inspected_at,
