@@ -1346,7 +1346,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     }>
                       {calculatorType !== CalculatorTypes.TEMPORARY &&
                         <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                          {LeaseBasisOfRentsFieldTitles.RENT}
+                          {'Vuokra/vuosi'}
                         </FormTextTitle>}
                       {calculatorType === CalculatorTypes.TEMPORARY &&
                         <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>

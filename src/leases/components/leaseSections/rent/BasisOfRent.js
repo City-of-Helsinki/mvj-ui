@@ -427,10 +427,10 @@ const BasisOfRent = ({
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
             }>
               {calculatorType === CalculatorTypes.TEMPORARY && <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                {'Vuokra/kuukausi'}
+                {'Vuokra/kk'}
               </FormTextTitle>}
               {calculatorType !== CalculatorTypes.TEMPORARY && <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                {LeaseBasisOfRentsFieldTitles.RENT}
+                {'Vuokra/vuosi'}
               </FormTextTitle>}
               {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(rent) ? `${formatNumber(rent)} €` : '-'}</FormText>}
               {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtra) ? `${formatNumber(rentExtra)} €` : '-'}</FormText>}
