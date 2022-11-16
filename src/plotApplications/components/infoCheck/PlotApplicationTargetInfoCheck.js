@@ -1,7 +1,7 @@
 // @flow
 
 import React, {PureComponent} from 'react';
-import PlotApplicationInfoCheckCollapse from "./PlotApplicationInfoCheckCollapse";
+import PlotApplicationInfoCheckCollapse from './PlotApplicationInfoCheckCollapse';
 
 type Props = {
 

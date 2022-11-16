@@ -1,12 +1,12 @@
 // @flow
-import React, { useCallback, Fragment } from 'react';
+import React, {useCallback, Fragment} from 'react';
 import {
   FieldArray,
   change,
 } from 'redux-form';
-import { connect } from 'react-redux';
-import type {Fields} from "redux-form/lib/FieldArrayProps.types";
-import {Column, Row} from "react-foundation";
+import {connect} from 'react-redux';
+import type {Fields} from 'redux-form/lib/FieldArrayProps.types';
+import {Column, Row} from 'react-foundation';
 
 import {
   getAttachmentAttributes,
@@ -18,36 +18,36 @@ import {
   getExistingUploads,
   getCurrentPlotApplication,
   getIsFetchingApplicationRelatedAttachments,
-  getIsFetchingAttachmentAttributes
+  getIsFetchingAttachmentAttributes,
 } from '../selectors';
 import {
   getApplicationAttachmentDownloadLink, getSectionApplicantType,
   getSectionTargetFromMeta,
-  getSectionTemplate, valueToApplicantType
+  getSectionTemplate, valueToApplicantType,
 } from '../helpers';
-import AddButton from "../../components/form/AddButton";
-import RemoveButton from "../../components/form/RemoveButton";
-import FormField from "../../components/form/FormField";
-import AddFileButton from "../../components/form/AddFileButton";
-import {deleteUploadedAttachment, uploadAttachment} from "../actions";
-import FormTextTitle from "../../components/form/FormTextTitle";
-import FormText from "../../components/form/FormText";
-import Authorization from "../../components/authorization/Authorization";
-import FileDownloadLink from "../../components/file/FileDownloadLink";
-import {formatDate, isFieldAllowedToRead} from "../../util/helpers";
-import LoadingIndicator from "../../components/multi-select/LoadingIndicator";
-import {ConfirmationModalTexts, FormNames} from "../../enums";
-import {ButtonColors} from "../../components/enums";
-import {ActionTypes, AppConsumer} from "../../app/AppContext";
-import FormHintText from "../../components/form/FormHintText";
-import {APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "../constants";
-import type {PlotApplicationFormValue} from "../types";
-import {ApplicantTypes} from "../enums";
+import AddButton from '../../components/form/AddButton';
+import RemoveButton from '../../components/form/RemoveButton';
+import FormField from '../../components/form/FormField';
+import AddFileButton from '../../components/form/AddFileButton';
+import {deleteUploadedAttachment, uploadAttachment} from '../actions';
+import FormTextTitle from '../../components/form/FormTextTitle';
+import FormText from '../../components/form/FormText';
+import Authorization from '../../components/authorization/Authorization';
+import FileDownloadLink from '../../components/file/FileDownloadLink';
+import {formatDate, isFieldAllowedToRead} from '../../util/helpers';
+import LoadingIndicator from '../../components/multi-select/LoadingIndicator';
+import {ConfirmationModalTexts, FormNames} from '../../enums';
+import {ButtonColors} from '../../components/enums';
+import {ActionTypes, AppConsumer} from '../../app/AppContext';
+import FormHintText from '../../components/form/FormHintText';
+import {APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '../constants';
+import type {PlotApplicationFormValue} from '../types';
+import {ApplicantTypes} from '../enums';
 
 const ApplicationSectionKeys = {
   Subsections: 'sections',
-  Fields: 'fields'
-}
+  Fields: 'fields',
+};
 
 const ApplicationFormFileField = connect(
   (state, props) => ({
@@ -59,11 +59,11 @@ const ApplicationFormFileField = connect(
     isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
     isFetchingAttachmentAttributes: getIsFetchingAttachmentAttributes(state),
     isPerformingFileOperation: getIsPerformingFileOperation(state),
-    currentPlotApplication: getCurrentPlotApplication(state)
+    currentPlotApplication: getCurrentPlotApplication(state),
   }),
   {
     uploadAttachment,
-    deleteUploadedAttachment
+    deleteUploadedAttachment,
   }
 )(({
   uploadAttachment,
@@ -79,7 +79,7 @@ const ApplicationFormFileField = connect(
   isPerformingFileOperation,
   field,
   fieldName,
-  currentPlotApplication
+  currentPlotApplication,
 }) => {
   return (
     <AppConsumer>
@@ -91,7 +91,7 @@ const ApplicationFormFileField = connect(
           uploadAttachment({
             field: fieldId,
             file: e.target.files[0],
-            answer: currentPlotApplication?.id || undefined
+            answer: currentPlotApplication?.id || undefined,
           });
         };
 
@@ -108,77 +108,77 @@ const ApplicationFormFileField = connect(
             confirmationModalLabel: ConfirmationModalTexts.DELETE_ATTACHMENT.LABEL,
             confirmationModalTitle: ConfirmationModalTexts.DELETE_ATTACHMENT.TITLE,
           });
-        }
+        };
 
         const busy = isFetchingPendingUploads || isPerformingFileOperation || isFetchingAttachments || isFetchingAttachmentAttributes;
 
         return <Column small={12} medium={12} large={12}>
-      <FormTextTitle>{field.label}</FormTextTitle>
-        {!isFetchingAttachmentAttributes && uploads.length > 0 && <Row>
-        <Column small={6} large={5}>
-          <Authorization allow={isFieldAllowedToRead(attachmentAttributes, 'name')}>
-            <FormTextTitle>
+          <FormTextTitle>{field.label}</FormTextTitle>
+          {!isFetchingAttachmentAttributes && uploads.length > 0 && <Row>
+            <Column small={6} large={5}>
+              <Authorization allow={isFieldAllowedToRead(attachmentAttributes, 'name')}>
+                <FormTextTitle>
               Tiedoston nimi
-            </FormTextTitle>
+                </FormTextTitle>
+              </Authorization>
+            </Column>
+            <Column small={3} large={3}>
+              <Authorization allow={isFieldAllowedToRead(attachmentAttributes, 'created_at')}>
+                <FormTextTitle>
+                  {'Ladattu'}
+                </FormTextTitle>
+              </Authorization>
+            </Column>
+          </Row>}
+          {!isFetchingAttachmentAttributes && uploads.map((file, index) => {
+            return <Row key={index}>
+              <Column small={6} large={5}>
+                <Authorization
+                  allow={isFieldAllowedToRead(attachmentAttributes, 'name')}
+                >
+                  <FileDownloadLink
+                    fileUrl={getApplicationAttachmentDownloadLink(file.id)}
+                    label={file.name}
+                  />
+                </Authorization>
+              </Column>
+              <Column small={3} large={3}>
+                <Authorization
+                  allow={isFieldAllowedToRead(attachmentAttributes, 'created_at')}
+                >
+                  <FormText>{formatDate(file.created_at) || '-'}</FormText>
+                </Authorization>
+              </Column>
+              <Column small={3} large={2}>
+                <Authorization
+                  //allow={isMethodAllowed(attachmentMethods, Methods.DELETE)}
+                  allow={true}
+                >
+                  <RemoveButton
+                    className='third-level'
+                    onClick={() => deleteFile(file)}
+                    style={{right: 12}}
+                    title="Poista liitetiedosto"
+                    disabled={busy}
+                  />
+                </Authorization>
+              </Column>
+            </Row>;
+          })}
+          {uploads.length === 0 && !busy && <Row>
+            <Column small={12}>
+              <FormHintText>Ei lisättyjä liitteitä.</FormHintText>
+            </Column>
+          </Row>}
+          <Authorization
+            //allow={isMethodAllowed(attachmentMethods, Methods.POST)}
+            allow={true}
+          >
+            {busy
+              ? <LoadingIndicator />
+              : <AddFileButton label="Lisää tiedosto" name={fieldName} onChange={(e) => submitFile(field.id, e)} />}
           </Authorization>
-        </Column>
-        <Column small={3} large={3}>
-          <Authorization allow={isFieldAllowedToRead(attachmentAttributes, 'created_at')}>
-            <FormTextTitle>
-              {'Ladattu'}
-            </FormTextTitle>
-          </Authorization>
-        </Column>
-      </Row>}
-      {!isFetchingAttachmentAttributes && uploads.map((file, index) => {
-        return <Row key={index}>
-          <Column small={6} large={5}>
-            <Authorization
-              allow={isFieldAllowedToRead(attachmentAttributes, 'name')}
-            >
-              <FileDownloadLink
-                fileUrl={getApplicationAttachmentDownloadLink(file.id)}
-                label={file.name}
-              />
-            </Authorization>
-          </Column>
-          <Column small={3} large={3}>
-            <Authorization
-              allow={isFieldAllowedToRead(attachmentAttributes, 'created_at')}
-            >
-              <FormText>{formatDate(file.created_at) || '-'}</FormText>
-            </Authorization>
-          </Column>
-          <Column small={3} large={2}>
-            <Authorization
-              //allow={isMethodAllowed(attachmentMethods, Methods.DELETE)}
-              allow={true}
-            >
-              <RemoveButton
-                className='third-level'
-                onClick={() => deleteFile(file)}
-                style={{right: 12}}
-                title="Poista liitetiedosto"
-                disabled={busy}
-              />
-            </Authorization>
-          </Column>
-        </Row>;
-      })}
-      {uploads.length === 0 && !busy && <Row>
-        <Column small={12}>
-          <FormHintText>Ei lisättyjä liitteitä.</FormHintText>
-        </Column>
-      </Row>}
-      <Authorization
-        //allow={isMethodAllowed(attachmentMethods, Methods.POST)}
-        allow={true}
-      >
-        {busy
-          ? <LoadingIndicator />
-          : <AddFileButton label="Lisää tiedosto" name={fieldName} onChange={(e) => submitFile(field.id, e)} />}
-      </Authorization>
-    </Column>}}
+        </Column>;}}
     </AppConsumer>
   );
 });
@@ -186,9 +186,9 @@ const ApplicationFormFileField = connect(
 const ApplicationFormSubsectionFields = connect(
   (state, props) => ({
     fieldTypeMapping: getFieldTypeMapping(state),
-    sectionApplicantType: getSectionApplicantType(state, props.section, props.identifier)
+    sectionApplicantType: getSectionApplicantType(state, props.section, props.identifier),
   }), {
-    change
+    change,
   }
 )(
   ({
@@ -196,7 +196,7 @@ const ApplicationFormSubsectionFields = connect(
     fieldTypeMapping,
     identifier,
     change,
-    sectionApplicantType
+    sectionApplicantType,
   }) => {
     const renderField = useCallback((pathName, field) => {
       if (!field.enabled) {
@@ -237,8 +237,8 @@ const ApplicationFormSubsectionFields = connect(
           extraAttributes = {
             choices: field.choices.map((option) => ({
               display_name: option.label,
-              value: option.value
-            }))
+              value: option.value,
+            })),
           };
           break;
         case 'checkbox':
@@ -247,15 +247,15 @@ const ApplicationFormSubsectionFields = connect(
               value: choice.value,
               label: choice.has_text_input ? <>
                 {choice.text}
-                { " " }
+                { ' ' }
                 <FormField name={`${fieldName}.extraValue`} fieldAttributes={{
-                  type: "textbox",
+                  type: 'textbox',
                   required: false,
                   read_only: false,
-                  label: ''
+                  label: '',
                 }} invisibleLabel />
               </> : choice.text,
-            }))
+            })),
           };
           columnWidths = {
             small: 12,
@@ -266,7 +266,7 @@ const ApplicationFormSubsectionFields = connect(
         case 'radiobutton':
         case 'radiobuttoninline':
           extraAttributes = {
-            type: 'radio-with-field'
+            type: 'radio-with-field',
           };
           fieldOverrides = {
             options: field.choices.map((choice) => ({
@@ -274,14 +274,14 @@ const ApplicationFormSubsectionFields = connect(
               value: choice.value,
               field: choice.has_text_input
                 ? <FormField name={`${fieldName}.extraValue`} fieldAttributes={{
-                  type: "textbox",
+                  type: 'textbox',
                   required: false,
                   read_only: false,
-                  label: ''
+                  label: '',
                 }} invisibleLabel />
-                : null
-            }))
-          }
+                : null,
+            })),
+          };
           columnWidths = {
             small: 12,
             medium: 12,
@@ -302,7 +302,7 @@ const ApplicationFormSubsectionFields = connect(
               type: fieldType,
               label: field.label,
               required: field.required,
-              ...extraAttributes
+              ...extraAttributes,
             }}
             overrideValues={fieldOverrides}
             onChange={(newValue) => checkSpecialValues(field, newValue)}
@@ -339,7 +339,7 @@ const ApplicationFormSubsectionFieldArray = ({
   fields,
   section,
   headerTag: HeaderTag,
-} : {
+}: {
   fields: Fields,
   section: Object,
   headerTag: string | React$AbstractComponent<{ children?: React$Node }, null>
@@ -373,7 +373,7 @@ const ApplicationFormSubsectionFieldArray = ({
       ))}
       {section.identifier !== TARGET_SECTION_IDENTIFIER && <AddButton
         onClick={() => fields.push(getSectionTemplate(section.identifier))}
-        label={section.add_new_text || "Lisää uusi"}
+        label={section.add_new_text || 'Lisää uusi'}
       />}
     </div>
   );
@@ -383,8 +383,8 @@ const PlotApplicationSubsection = ({
   path,
   section,
   headerTag: HeaderTag = 'h3',
-  parentApplicantType
-} : {
+  parentApplicantType,
+}: {
   path: Array<string>,
   section: Object,
   headerTag?: string | React$AbstractComponent<{ children?: React$Node }, null>,
@@ -401,7 +401,7 @@ const PlotApplicationSubsection = ({
   if (parentApplicantType !== ApplicantTypes.NOT_APPLICABLE && ![
     ApplicantTypes.UNKNOWN,
     ApplicantTypes.BOTH,
-    parentApplicantType
+    parentApplicantType,
   ].includes(section.applicant_type)) {
     return null;
   }
@@ -415,7 +415,7 @@ const PlotApplicationSubsection = ({
         <FieldArray
           name={pathName}
           component={ApplicationFormSubsectionFieldArray}
-          props={{ section, headerTag: HeaderTag }}
+          props={{section, headerTag: HeaderTag}}
         />
       ) : (
         <div className="ApplicationFormSubsection__content">

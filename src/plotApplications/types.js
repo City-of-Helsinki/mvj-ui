@@ -1,6 +1,6 @@
 // @flow
 import type {Action, Attributes, Methods} from '../types';
-import type {PlotSearch} from "../plotSearch/types";
+import type {PlotSearch} from '../plotSearch/types';
 
 export type PlotApplicationsState = {
   attributes: Attributes,
@@ -16,8 +16,9 @@ export type PlotApplicationsState = {
   collapseStates: Object,
   isFormValidById: Object,
   subTypes: ?Array<Object>,
+  isFetchingSubTypes: boolean,
   isFetchingAttachments: boolean,
-  fieldTypeMapping: Object,
+  fieldTypeMapping: { [id: number]: string },
   pendingUploads: Array<Object>,
   isFetchingPendingUploads: boolean,
   isPerformingFileOperation: boolean,
@@ -37,7 +38,7 @@ export type PlotApplicationsState = {
   plotSearch: ?PlotSearch
 };
 
-export type PlotApplicationFormValue = string | Array<string> | boolean;
+export type PlotApplicationFormValue = string | Array<string> | Array<UploadedFileMeta> | boolean;
 
 export type PlotApplicationsList = Object;
 export type PlotApplication = Object;
@@ -59,6 +60,26 @@ export type ApplicationFormState = {
   targets: Array<number>,
   formEntries: { [identifier: string]: ApplicationFormSection } | null
 }
+
+export type SavedApplicationFormField = {
+  value: PlotApplicationFormValue | null,
+  extra_value: string
+}
+
+export type SavedApplicationFormSection = {
+  fields: { [identifier: string]: SavedApplicationFormField},
+  sections: { [identifier: string]: SavedApplicationFormSection | Array<SavedApplicationFormSection> },
+  metadata?: { [key: string]: mixed },
+}
+
+export type UploadedFileMeta = {
+  id: number;
+  attachment: string;
+  name: string;
+  field: number;
+  created_at: string;
+  answer: number | null;
+};
 
 export type FetchAttributesAction = Action<'mvj/plotApplications/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/plotApplications/RECEIVE_ATTRIBUTES', Attributes>;

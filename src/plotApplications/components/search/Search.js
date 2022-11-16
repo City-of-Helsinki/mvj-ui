@@ -1,5 +1,5 @@
 // @flow
-import React, {Component, Fragment, memo} from 'react';
+import React, {Component, Fragment} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {formValueSelector, getFormValues, reduxForm} from 'redux-form';
@@ -25,15 +25,19 @@ import {
 } from '$src/plotSearch/enums';
 import type {PlotSearchList} from '$src/plotSearch/types';
 import type {Attributes} from '$src/types';
-import {fetchPlotSearchSubtypes} from "../../actions";
-import {getPlotSearchSubTypes} from "../../selectors";
+import {fetchPlotSearchSubtypes} from '../../actions';
+import {getPlotSearchSubTypes} from '../../selectors';
 
-type Props = {
-  formValues: Object,
-  handleSubmit: Function,
+type OwnProps = {
   isSearchInitialized: boolean,
   onSearch: Function,
   states: Array<Object>,
+};
+
+type Props = {
+  ...OwnProps,
+  formValues: Object,
+  handleSubmit: Function,
   location: Object,
   plotSearchAttributes: Attributes,
   plotSearches: PlotSearchList,
@@ -62,6 +66,9 @@ class Search extends Component<Props, State> {
     typeOptions: [],
     subtypeOptions: [],
     plotSearches: {},
+    plotSearchOptions: [],
+    plotSearchAttributes: {},
+    attributes: {},
   }
 
   componentDidMount() {
@@ -83,14 +90,14 @@ class Search extends Component<Props, State> {
           {
             value: '',
             label: '',
-            parent: null
+            parent: null,
           },
           ...(this.props.plotSearchSubtypes?.map((subtype) => ({
             value: subtype.id,
             label: subtype.name,
-            parent: subtype.plot_search_type.id
-          })) || [])
-        ]
+            parent: subtype.plot_search_type.id,
+          })) || []),
+        ],
       }));
     }
 
@@ -113,6 +120,7 @@ class Search extends Component<Props, State> {
 
     const keys = Object.keys(searchQuery);
 
+    // $FlowFixMe[method-unbinding] https://github.com/facebook/flow/issues/8689
     if (!keys.length || (keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search'))) {
       return true;
     }
@@ -136,7 +144,7 @@ class Search extends Component<Props, State> {
     let searchParams = formValues;
     if (this.state.isBasicSearch) {
       searchParams = {
-        q: formValues.q
+        q: formValues.q,
       };
     }
 
@@ -181,7 +189,7 @@ class Search extends Component<Props, State> {
       isBasicSearch,
       typeOptions,
       plotSearchOptions,
-      subtypeOptions
+      subtypeOptions,
     } = this.state;
 
     const filteredSubtypeOptions = subtypeOptions?.filter(
@@ -228,7 +236,7 @@ class Search extends Component<Props, State> {
                       name='plot_search'
                       overrideValues={{
                         options: plotSearchOptions,
-                        disabled: (plotSearchOptions?.length || 0) <= 1
+                        disabled: (plotSearchOptions?.length || 0) <= 1,
                       }}
                     />
                   </SearchInputColumn>
@@ -248,7 +256,7 @@ class Search extends Component<Props, State> {
                       name='plot_search_type'
                       overrideValues={{
                         options: typeOptions,
-                        disabled: typeOptions.length <= 1
+                        disabled: typeOptions.length <= 1,
                       }}
                       onChange={this.resetSelectedSubtype}
                     />
@@ -360,7 +368,7 @@ class Search extends Component<Props, State> {
                       name='plot_search_subtype'
                       overrideValues={{
                         options: filteredSubtypeOptions,
-                        disabled: filteredSubtypeOptions.length <= 1 || !selectedMainType
+                        disabled: filteredSubtypeOptions.length <= 1 || !selectedMainType,
                       }}
                     />
                   </SearchInputColumn>
@@ -437,7 +445,7 @@ class Search extends Component<Props, State> {
 
 const formName = FormNames.PLOT_APPLICATIONS_SEARCH;
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   connect(
     (state) => {
@@ -446,14 +454,14 @@ export default flowRight(
         plotSearchAttributes: getPlotSearchAttributes(state),
         plotSearches: getPlotSearchList(state),
         plotSearchSubtypes: getPlotSearchSubTypes(state),
-        selectedMainType: formValueSelector(formName)(state, 'plot_search_type')
+        selectedMainType: formValueSelector(formName)(state, 'plot_search_type'),
       };
     },
     {
-      fetchPlotSearchSubtypes
+      fetchPlotSearchSubtypes,
     }
   ),
   reduxForm({
     form: formName,
   }),
-)(Search);
+)(Search): React$AbstractComponent<OwnProps, mixed>);

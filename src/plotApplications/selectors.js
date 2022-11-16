@@ -8,9 +8,7 @@ import type {
   PlotApplicationsList,
   PlotApplication,
 } from './types';
-import {formValueSelector} from "redux-form";
-import {FormNames} from "../enums";
-import type {PlotSearch} from "../plotSearch/types";
+import type {PlotSearch} from '../plotSearch/types';
 
 export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
   state.plotApplications.listByBBox;
@@ -122,4 +120,4 @@ export const getWasLastInfoCheckUpdateSuccessfulData: Selector<{ [id: number]: b
 
 export const getExistingUploads = (state: RootState, identifier: string): Array<Object> => {
   return getApplicationRelatedAttachments(state).filter((attachment) => attachment.field === identifier);
-}
+};

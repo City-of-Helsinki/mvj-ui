@@ -43,11 +43,11 @@ const baseState: PlotApplicationsState = {
   isPerformingFileOperation: false,
   isSaving: false,
   isSaveClicked: false,
+  isFetchingSubTypes: false,
   list: {},
   methods: null,
   current: {},
   isEditMode: false,
-  isSaveClicked: false,
   collapseStates: {},
   isFormValidById: {
     'plot-application': true,
@@ -58,7 +58,7 @@ const baseState: PlotApplicationsState = {
   isFetchingInfoCheckAttributes: false,
   infoCheckAttributes: null,
   isUpdatingInfoCheck: {},
-  lastInfoCheckUpdateSuccessful: {}
+  lastInfoCheckUpdateSuccessful: {},
 };
 
 // $FlowFixMe

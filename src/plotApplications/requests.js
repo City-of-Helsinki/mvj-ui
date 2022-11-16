@@ -1,13 +1,13 @@
 // @flow
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
-import callUploadRequest from "../api/callUploadRequest";
+import callUploadRequest from '../api/callUploadRequest';
 
 export const fetchPlotApplications = (params: ?Object): Generator<any, any, any> => {
   return callApi(new Request(createUrl('answer/', params)));
 };
 
-export const fetchSinglePlotApplication = (id: number): Generator <any, any, any> => {
+export const fetchSinglePlotApplication = (id: number): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`answer/${id}/`)));
 };
 
@@ -19,16 +19,16 @@ export const fetchPlotSearchSubtypesRequest = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('plot_search_subtype/')));
 };
 
-export const fetchSinglePlotApplicationAttachments = (id: number): Generator <any, any, any> => {
+export const fetchSinglePlotApplicationAttachments = (id: number): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`answer/${id}/attachments/`)));
 };
 
-export const createPlotApplicationRequest = (payload: Object): Generator <any, any, any> => {
-  return callApi(new Request(createUrl(`answer/`), { method: 'POST', body: JSON.stringify(payload) }));
+export const createPlotApplicationRequest = (payload: Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`answer/`), {method: 'POST', body: JSON.stringify(payload)}));
 };
 
-export const editPlotApplicationRequest = (id: number, payload: Object): Generator <any, any, any> => {
-  return callApi(new Request(createUrl(`answer/${id}/`), { method: 'PATCH', body: JSON.stringify(payload) }));
+export const editPlotApplicationRequest = (id: number, payload: Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`answer/${id}/`), {method: 'PATCH', body: JSON.stringify(payload)}));
 };
 
 export const fetchAttachmentAttributesRequest = (): Generator<any, any, any> => {
@@ -39,7 +39,7 @@ export const fetchInfoCheckAttributesRequest = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('information_check/'), {method: 'OPTIONS'}));
 };
 
-export const uploadFileRequest = ({ field, file, answer }: {
+export const uploadFileRequest = ({field, file, answer}: {
   field: number;
   file: File;
   answer: ?number;
@@ -75,6 +75,6 @@ export const deleteUploadRequest = (
   );
 };
 
-export const editInfoCheckItemRequest = (payload: Object): Generator <any, any, any> => {
-  return callApi(new Request(createUrl(`information_check/${payload.id}/`), { method: 'PATCH', body: JSON.stringify(payload) }));
+export const editInfoCheckItemRequest = (payload: Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`information_check/${payload.id}/`), {method: 'PATCH', body: JSON.stringify(payload)}));
 };

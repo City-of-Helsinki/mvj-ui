@@ -1,7 +1,7 @@
 //@flow
 
 import React from 'react';
-import Collapse from "../../../components/collapse/Collapse";
+import Collapse from '../../../components/collapse/Collapse';
 import classNames from 'classnames';
 
 type Props = {
@@ -10,9 +10,11 @@ type Props = {
   headerTitle: string
 };
 
-const PlotApplicationInfoCheckCollapse: React$ComponentType<Props> = ({ children, className, ...rest } : Props) => {
+const PlotApplicationInfoCheckCollapse: React$ComponentType<Props> = ({children, className, headerTitle}: Props) => {
   return (
-    <Collapse className={classNames("collapse__third PlotApplicationInfoCheckCollapse", className)} {...rest}>
+    <Collapse
+      className={classNames('collapse__third PlotApplicationInfoCheckCollapse', className)}
+      headerTitle={headerTitle}>
       {children}
     </Collapse>
   );

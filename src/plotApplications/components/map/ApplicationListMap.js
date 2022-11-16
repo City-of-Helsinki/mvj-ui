@@ -21,7 +21,7 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {LeafletGeoJson} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
-import type {PlotApplicationsList} from '$src/applications/types';
+import type {PlotApplicationsList} from '$src/plotApplications/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const getMapBounds = () => {
@@ -44,12 +44,17 @@ const getMapZoom = () => {
   return searchQuery.zoom || DEFAULT_ZOOM;
 };
 
-type Props = {
-  areaNotes: AreaNoteList,
+type OwnProps = {
+  allowToEdit: boolean,
   isLoading: boolean,
+  onViewportChanged: Function,
+};
+
+type Props = {
+  ...OwnProps,
+  areaNotes: AreaNoteList,
   applicationsData: PlotApplicationsList,
   location: Object,
-  onViewportChanged: Function,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -68,6 +73,7 @@ class ApplicationListMap extends PureComponent<Props, State> {
     center: getMapCenter(),
     leaseAttributes: null,
     leasesData: null,
+    applicationsData: [],
     applicationsGeoJson: {
       features: [],
       type: 'FeatureCollection',
@@ -105,15 +111,16 @@ class ApplicationListMap extends PureComponent<Props, State> {
     return layers;
   }
 
-  getBounds(){
-    const {bounds, leasesGeoJson} = this.state;
+  getBounds() {
+    const {bounds, applicationsGeoJson} = this.state;
     const {location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
 
-    if(searchQuery && searchQuery.search)
-      return getBoundsFromFeatures(leasesGeoJson);
-    else
+    if (searchQuery && searchQuery.search) {
+      return getBoundsFromFeatures(applicationsGeoJson);
+    } else {
       return bounds;
+    }
   }
 
   handleViewportChanged = (mapOptions: Object) => {
@@ -148,7 +155,7 @@ class ApplicationListMap extends PureComponent<Props, State> {
   }
 }
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   connect(
     (state) => {
@@ -159,4 +166,4 @@ export default flowRight(
       };
     },
   ),
-)(ApplicationListMap);
+)(ApplicationListMap): React$ComponentType<OwnProps>);

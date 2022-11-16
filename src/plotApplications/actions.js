@@ -56,7 +56,7 @@ import type {
   InfoCheckAttributesNotFoundAction,
   EditInfoCheckItemAction,
   ReceiveUpdatedInfoCheckItemAction,
-  InfoCheckUpdateFailed
+  InfoCheckUpdateFailed,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>

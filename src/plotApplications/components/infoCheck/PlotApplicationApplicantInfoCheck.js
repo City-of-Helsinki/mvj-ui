@@ -1,21 +1,21 @@
 // @flow
 import React, {PureComponent} from 'react';
 
-import {Column, Row} from "react-foundation";
-import {getApplicantInfoCheckItems} from "../../helpers";
-import PlotApplicationApplicantInfoCheckModal from "./PlotApplicationApplicantInfoCheckModal";
-import PlotApplicationInfoCheckCollapse from "./PlotApplicationInfoCheckCollapse";
-import {connect} from "react-redux";
+import {Column, Row} from 'react-foundation';
+import {getApplicantInfoCheckItems} from '../../helpers';
+import PlotApplicationApplicantInfoCheckModal from './PlotApplicationApplicantInfoCheckModal';
+import PlotApplicationInfoCheckCollapse from './PlotApplicationInfoCheckCollapse';
+import {connect} from 'react-redux';
 import {
   getInfoCheckAttributes,
   getIsUpdatingInfoCheckData,
-  getWasLastInfoCheckUpdateSuccessfulData
-} from "../../selectors";
-import {getFieldOptions, getLabelOfOption} from "../../../util/helpers";
-import {editInfoCheckItem} from "../../actions";
-import {getUserFullName} from "../../../users/helpers";
-import type {Attributes} from "../../../types";
-import {ApplicantTypes} from "../../enums";
+  getWasLastInfoCheckUpdateSuccessfulData,
+} from '../../selectors';
+import {getFieldOptions, getLabelOfOption} from '../../../util/helpers';
+import {editInfoCheckItem} from '../../actions';
+import {getUserFullName} from '../../../users/helpers';
+import type {Attributes} from '../../../types';
+import {ApplicantTypes} from '../../enums';
 
 type OwnProps = {
   section: Object,
@@ -41,11 +41,11 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
   state: State = {
     isModalOpen: false,
     modalCheckItem: null,
-    modalPage: 0
+    modalPage: 0,
   };
 
   componentDidUpdate(prevProps) {
-    const { modalCheckItem } = this.state;
+    const {modalCheckItem} = this.state;
 
     const id = modalCheckItem?.data.id;
 
@@ -59,7 +59,7 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
     this.setState(() => ({
       isModalOpen: true,
       modalCheckItem: checkItem,
-      modalPage: (!skipToForm && checkItem.kind.external) ? 1 : 2
+      modalPage: (!skipToForm && checkItem.kind.external) ? 1 : 2,
     }));
   };
 
@@ -67,13 +67,13 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
     this.setState(() => ({
       isModalOpen: false,
       modalCheckItem: null,
-      modalPage: 0
+      modalPage: 0,
     }));
   };
 
   setPage = (page: number): void => {
     this.setState(() => ({
-      modalPage: page
+      modalPage: page,
     }));
   }
 
@@ -85,13 +85,13 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
     const {
       isModalOpen,
       modalCheckItem,
-      modalPage
+      modalPage,
     } = this.state;
 
     const {
       infoCheckAttributes,
       infoCheckData,
-      answer
+      answer,
     } = this.props;
 
     const infoCheckStatusOptions = getFieldOptions(infoCheckAttributes, 'state');
@@ -118,7 +118,7 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
                   </a>}
                 </Column>
               </Row>
-            </Column>
+            </Column>;
           })}
         </Row>
         <PlotApplicationApplicantInfoCheckModal
@@ -140,7 +140,7 @@ export default (connect((state, props) => ({
   infoCheckAttributes: getInfoCheckAttributes(state),
   infoCheckData: getApplicantInfoCheckItems(state, props.identifier),
   wasUpdateSuccessful: getWasLastInfoCheckUpdateSuccessfulData(state),
-  isUpdating: getIsUpdatingInfoCheckData(state)
+  isUpdating: getIsUpdatingInfoCheckData(state),
 }), {
-  editInfoCheckItem
-})(PlotApplicationApplicantInfoCheck) : React$AbstractComponent<OwnProps, mixed>);
+  editInfoCheckItem,
+})(PlotApplicationApplicantInfoCheck): React$ComponentType<OwnProps>);

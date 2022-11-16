@@ -1,19 +1,23 @@
-// @ flow
+// @flow
 import React from 'react';
 import {withRouter} from 'react-router';
 import {FeatureGroup, GeoJSON, Popup} from 'react-leaflet';
 import flowRight from 'lodash/flowRight';
-import {Link} from "react-router-dom";
+import {Link} from 'react-router-dom';
 
 import {getRouteById, Routes} from '$src/root/routes';
 
 import type {LeafletGeoJson} from '$src/types';
 
-type Props = {
+type OwnProps = {|
   color: string,
   targetsGeoJson: LeafletGeoJson,
-  location: Object,
   stateOptions: Array<Object>,
+|};
+
+type Props = {
+  ...OwnProps,
+  location: Object,
 }
 
 const TargetListLayer = ({
@@ -40,7 +44,7 @@ const TargetListLayer = ({
 
   return <>
     {targetsGeoJson.features.map((feature) => {
-      const { target, id } = feature.properties;
+      const {target} = feature.properties;
 
       return <FeatureGroup
         key={target.identifier}
@@ -63,6 +67,6 @@ const TargetListLayer = ({
   </>;
 };
 
-export default flowRight(
+export default (flowRight(
   withRouter,
-)(TargetListLayer);
+)(TargetListLayer): React$ComponentType<OwnProps>);

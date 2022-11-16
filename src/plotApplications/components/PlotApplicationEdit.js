@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {reduxForm, initialize, change, getFormValues } from 'redux-form';
+import {reduxForm, initialize, change, getFormValues} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
@@ -31,33 +31,33 @@ import {
   getInitialApplication,
   getInitialApplicationForm,
   getSectionTemplate,
-  reshapeSavedApplicationObject
-} from "../helpers";
+  reshapeSavedApplicationObject,
+} from '../helpers';
 import {
   getFormAttributes,
   getIsFetching as getIsFetchingPlotSearchList, getIsFetchingForm,
   getIsFetchingFormAttributes,
-  getPlotSearchList
-} from "../../plotSearch/selectors";
-import {fetchFormAttributes} from "../../plotSearch/actions";
+  getPlotSearchList,
+} from '../../plotSearch/selectors';
+import {fetchFormAttributes} from '../../plotSearch/actions';
 import {
   getApplicationRelatedAttachments, getApplicationRelatedPlotSearch,
   getCurrentEditorTargets, getCurrentPlotApplication,
   getFieldTypeMapping,
   getIsFetchingApplicationRelatedAttachments, getIsFetchingApplicationRelatedPlotSearch,
-  getIsFetchingAttachmentAttributes, getIsFetchingInfoCheckAttributes
-} from "../selectors";
-import PlotApplicationSubsection from "./PlotApplicationSubsection";
+  getIsFetchingAttachmentAttributes, getIsFetchingInfoCheckAttributes,
+} from '../selectors';
+import PlotApplicationSubsection from './PlotApplicationSubsection';
 import {
   fetchAttachmentAttributes,
   fetchPendingUploads, receiveApplicationRelatedAttachments,
   receiveFormValidFlags, receiveSinglePlotApplication,
-  setCurrentEditorTargets
-} from "../actions";
-import Loader from "../../components/loader/Loader";
-import {TARGET_SECTION_IDENTIFIER} from "../constants";
-import type {PlotSearch, PlotSearchList} from "../../plotSearch/types";
-import type {PlotApplication} from "../types";
+  setCurrentEditorTargets,
+} from '../actions';
+import Loader from '../../components/loader/Loader';
+import {TARGET_SECTION_IDENTIFIER} from '../constants';
+import type {PlotSearch, PlotSearchList} from '../../plotSearch/types';
+import type {PlotApplication} from '../types';
 
 type OwnProps = {
   isNew: boolean
@@ -108,7 +108,7 @@ type State = {
 class PlotApplicationEdit extends PureComponent<Props, State> {
   state = {
     form: null,
-    isFormFixed: false
+    isFormFixed: false,
   }
 
   componentDidMount() {
@@ -121,7 +121,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       isNew,
       retrievingData,
       receiveSinglePlotApplication,
-      receiveApplicationRelatedAttachments
+      receiveApplicationRelatedAttachments,
     } = this.props;
 
 
@@ -142,7 +142,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
     }
 
     receiveFormValidFlags({
-      [FormNames.PLOT_APPLICATION]: valid
+      [FormNames.PLOT_APPLICATION]: valid,
     });
   }
 
@@ -155,7 +155,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.PLOT_APPLICATION]: this.props.valid
+        [FormNames.PLOT_APPLICATION]: this.props.valid,
       });
     }
 
@@ -187,7 +187,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       formAttributes,
       attachments,
       initialize,
-      setCurrentEditorTargets
+      setCurrentEditorTargets,
     } = this.props;
 
     if (currentPlotApplication) {
@@ -209,19 +209,19 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
           this.props.fieldTypeMapping,
           currentPlotSearch.form,
           reshapedData
-        )
+        ),
       });
       setCurrentEditorTargets(currentPlotSearch.plot_search_targets);
 
       this.setState(() => ({
         isFormFixed: true,
-        form: currentPlotSearch.form
-      }))
+        form: currentPlotSearch.form,
+      }));
     }
   }
 
   initializeFormValues = (formId) => {
-    const { setCurrentEditorTargets } = this.props;
+    const {setCurrentEditorTargets} = this.props;
 
     const matchingSearch = this.props.plotSearches.results?.find((search) => search.form?.id === formId);
 
@@ -233,14 +233,14 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
     this.props.change('targets', []);
 
     this.setState(() => ({
-      form: matchingSearch?.form
+      form: matchingSearch?.form,
     }));
 
     setCurrentEditorTargets(matchingSearch?.plot_search_targets);
   }
 
   updateTargetSections = (newTargetIds, _, oldTargetIds) => {
-    const { array, formValues } = this.props;
+    const {array, formValues} = this.props;
 
     const deleted = oldTargetIds.filter((id) => !newTargetIds.includes(id));
     const added = newTargetIds.filter((id) => !oldTargetIds.includes(id));
@@ -253,8 +253,8 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       array.push(targetSectionsArrayPath, {
         ...getSectionTemplate(TARGET_SECTION_IDENTIFIER),
         metadata: {
-          identifier: id
-        }
+          identifier: id,
+        },
       });
     });
 
@@ -265,7 +265,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       .findIndex((item) => item.metadata?.identifier === id))
       .sort((a, b) => a < b ? 1 : -1);
     deletedIndices.forEach((index) =>
-        array.remove(targetSectionsArrayPath, index));
+      array.remove(targetSectionsArrayPath, index));
   }
 
   render (){
@@ -278,11 +278,11 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       currentEditorTargets,
       currentPlotSearch,
       retrievingData,
-      isNew
+      isNew,
     } = this.props;
 
     const {
-      isFormFixed
+      isFormFixed,
     } = this.state;
 
     if (retrievingData) {
@@ -294,7 +294,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       : (currentPlotSearch && [currentPlotSearch] || []);
     const plotSearchChoices = plotSearchCandidates.filter((option) => option.form).map((option) => ({
       display_name: option.name,
-      value: option.form.id
+      value: option.form.id,
     }));
 
     return (
@@ -322,7 +322,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
                         choices: plotSearchChoices,
                       }}
                       overrideValues={{
-                        allowEdit: !isFormFixed
+                        allowEdit: !isFormFixed,
                       }}
                       name='formId'
                       onChange={this.initializeFormValues}
@@ -391,14 +391,14 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
 
             {this.state.form && <>
 
-            <Row>
+              <Row>
                 <Column small={12}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={{
                       ...get(attributes, 'targets'),
                       type: 'multiselect',
-                      label: 'Haettavat kohteet'
+                      label: 'Haettavat kohteet',
                     }}
                     overrideValues={{
                       options: currentEditorTargets.map((target) => ({
@@ -410,7 +410,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
                     onChange={this.updateTargetSections}
                   />
                 </Column>
-            </Row>
+              </Row>
               <Row>
                 <Column small={12}>
                   {this.state.form.sections.map((section) => (
@@ -484,10 +484,10 @@ export default (flowRight(
       fetchAttachmentAttributes,
       setCurrentEditorTargets,
       receiveSinglePlotApplication,
-      receiveApplicationRelatedAttachments
+      receiveApplicationRelatedAttachments,
     }
   ),
   reduxForm({
     form: formName,
   }),
-)(PlotApplicationEdit) : React$AbstractComponent<OwnProps, mixed>);
+)(PlotApplicationEdit): React$ComponentType<OwnProps>);

@@ -2,13 +2,13 @@
 import React, {Component} from 'react';
 
 import Modal from '$components/modal/Modal';
-import PlotApplicationInfoCheckForm from "./PlotApplicationInfoCheckForm";
-import Button from "../../../components/button/Button";
-import TradeRegisterTemplate from "../../../tradeRegister/components/TradeRegisterTemplate";
-import CreditDecisionTemplate from "../../../creditDecision/components/CreditDecisionTemplate";
-import {ContactTypes} from "../../../contacts/enums";
-import {PlotApplicationInfoCheckExternalTypes} from "../../enums";
-import ModalButtonWrapper from "../../../components/modal/ModalButtonWrapper";
+import PlotApplicationInfoCheckForm from './PlotApplicationInfoCheckForm';
+import Button from '../../../components/button/Button';
+// import TradeRegisterTemplate from "../../../tradeRegister/components/TradeRegisterTemplate";
+import CreditDecisionTemplate from '../../../creditDecision/components/CreditDecisionTemplate';
+import {ContactTypes} from '../../../contacts/enums';
+import {PlotApplicationInfoCheckExternalTypes} from '../../enums';
+import ModalButtonWrapper from '../../../components/modal/ModalButtonWrapper';
 
 type Props = {
   isOpen: boolean,
@@ -32,6 +32,7 @@ class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen || prevProps.modalPage !== this.props.modalPage) {
       if (this.form) {
+        // $FlowFixMe
         this.form.wrappedInstance.setFocus();
       }
     }
@@ -50,7 +51,7 @@ class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
       modalPage,
       setPage,
       businessId,
-      personId
+      personId,
     } = this.props;
 
     let title = '';
