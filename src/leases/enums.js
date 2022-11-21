@@ -1221,6 +1221,8 @@ export const LeaseBasisOfRentsFieldTitles = {
   PRICE: 'Hinta',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
   RENT: 'Vuokra',
+  RENT_PER_YEAR: 'Vuokra/vuosi',
+  RENT_PER_MONTH: 'Vuokra/kk',
   SUBVENTION_BASE_PERCENT: 'Markkinavuokran subventio',
   SUBVENTION_GRADUATED_PERCENT: 'Siirtymäajan subventio',
   SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT: 'Subventio euroa/vuosi',
