@@ -1288,7 +1288,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         </Column>
                         <Column small={6} medium={4} large={2}>
                           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-                            <FormTextTitle>{'Vuokra'}</FormTextTitle>
+                            <FormTextTitle>{LeaseBasisOfRentsFieldTitles.RENT}</FormTextTitle>
                             <FormText>{!isEmptyValue(mastAreaRent) ? `${formatNumber(mastAreaRent)} €` : '-'}</FormText>
                           </Authorization>
                         </Column>
@@ -1346,11 +1346,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     }>
                       {calculatorType !== CalculatorTypes.TEMPORARY &&
                         <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                          {'Vuokra/vuosi'}
+                          {LeaseBasisOfRentsFieldTitles.RENT_PER_YEAR}
                         </FormTextTitle>}
                       {calculatorType === CalculatorTypes.TEMPORARY &&
                         <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                          {'Vuokra/kk'}
+                          {LeaseBasisOfRentsFieldTitles.RENT_PER_MONTH}
                         </FormTextTitle>}
                       {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(temporaryRent) ? `${formatNumber(temporaryRent)} €` : '-'}</FormText>}
                       {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtra) ? `${formatNumber(rentExtra)} €` : '-'}</FormText>}
@@ -1364,7 +1364,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     }>
                       {calculatorType === CalculatorTypes.TEMPORARY &&
                         <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                          {'Vuokra/vuosi'}
+                          {LeaseBasisOfRentsFieldTitles.RENT_PER_YEAR}
                         </FormTextTitle>}
                       <FormText>{!isEmptyValue(temporaryRent) ? `${formatNumber(temporaryRent * 12)} €` : '-'}</FormText>
                     </Authorization>
