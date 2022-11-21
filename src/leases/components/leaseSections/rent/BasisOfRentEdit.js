@@ -327,7 +327,8 @@ type renderMastChildrenProps = {
   isSaveClicked: boolean,
   formName: string,
   parentField: string,
-  fields: any
+  fields: any,
+  fieldsDisabled: boolean,
 }
 
 const renderMastChildren = ({
@@ -336,6 +337,7 @@ const renderMastChildren = ({
   formName,
   fields,
   parentField,
+  fieldsDisabled,
 }: renderMastChildrenProps): Element<*> => {
   fields = [{}, {}];
   return (
@@ -352,6 +354,7 @@ const renderMastChildren = ({
                 field={field}
                 key={index}
                 parentField={parentField}
+                fieldsDisabled={fieldsDisabled}
               />;
             })}
           </Fragment>
@@ -563,13 +566,16 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       amountPerArea,
       area,
       basisOfRent,
-      discountPercentage,
+      calculatorType,
       index,
       indexOptions,
       intendedUse,
       intendedUseOptions,
       leaseAttributes,
       profitMarginPercentage,
+      temporarySubventions,
+      managementSubventions,
+      subventionType,
     } = this.props;
 
     const areaText = this.getAreaText(area);
@@ -582,6 +588,18 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const discountedInitialYearRent = calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
     const rentPerMonth = discountedInitialYearRent != null ? discountedInitialYearRent/12 : null;
     const rentPer2Months = discountedInitialYearRent != null ? discountedInitialYearRent/6 : null;
+    const temporarySubventionDiscountPercentage = calculateTemporarySubventionDiscountPercentage(temporarySubventions);
+
+    let subvention_discount_percentage = null;
+    if (subventionType === SubventionTypes.RE_LEASE) {
+      const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
+      subvention_discount_percentage = releaseDiscountPercent.toFixed(2);
+    }
+    if (subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
+      if (managementSubventions && managementSubventions[0]) {
+        subvention_discount_percentage = managementSubventions[0].subvention_percent;
+      }
+    }
 
     return(
       `<thead>
@@ -594,7 +612,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         ? `<th>${LeaseBasisOfRentsFieldTitles.AREA}</th>`
         : ''
       }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+          ${calculatorType === CalculatorTypes.LEASE && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
         ? `<th>${LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}</th>`
         : ''
       }
@@ -624,7 +642,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
-        ? `<th>${LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE}</th>`
+        ? `<th>${LeaseBasisOfRentsFieldTitles.SUBVENTION_DISCOUNT_PERCENTAGE}</th>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.TEMPORARY_DISCOUNT_PERCENTAGE}</th>`
         : ''
       }
           ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
@@ -663,7 +685,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         ? `<td>${areaText}</td>`
         : ''
       }
-          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+          ${calculatorType === CalculatorTypes.LEASE && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
         ? `<td>${amountPerAreaText}</td>`
         : ''
       }
@@ -693,7 +715,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         : ''
       }
           ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
-        ? `<td>${!isEmptyValue(discountPercentage) ? `${formatNumber(discountPercentage)} %` : '-'}</td>`
+        ? `<td>${!isEmptyValue(subvention_discount_percentage) ? `${formatNumber(subvention_discount_percentage)} %` : '-'}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+        ? `<td>${!isEmptyValue(temporarySubventionDiscountPercentage) ? `${formatNumber(temporarySubventionDiscountPercentage)} %` : '-'}</td>`
         : ''
       }
           ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
@@ -886,13 +912,14 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent, indexValue);
     const areaText = this.getAreaText(area);
+    const lockedAtText = this.getLockedText();
+    const isLocked = !!savedBasisOfRent && !!savedBasisOfRent.locked_at;
 
     // Used by CalculatorTypes.LEASE
     const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
     const currentAmountPerArea = getBasisOfRentAmountPerArea(basisOfRent, indexValue);
 
     // Used by CalculatorTypes.LEASE and CalculatorTypes.LEASE2022
-    const lockedAtText = this.getLockedText();
     const plansInspectedAtText = this.getPlansInspectedText();
     const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue, basicAnnualRent);
     const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
@@ -945,7 +972,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
             required: false,
             type: 'decimal',
           }}
-          disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+          disabled={isLocked}
           name={`${field}.current_amount_per_area`}
           unit='€'
           invisibleLabel
@@ -964,7 +991,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
             ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE), required: false}
             : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
           }
-          disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+          disabled={isLocked}
           name={`${field}.profit_margin_percentage`}
           unit='%'
           overrideValues={{label: LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE}}
@@ -999,7 +1026,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
           disableTouched={isSaveClicked}
           fieldAttributes={{...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}}
           onChange={this.onChangeIndexOptions}
-          disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+          disabled={isLocked}
           name={`${field}.index`}
           overrideValues={{
             label: LeaseBasisOfRentsFieldTitles.INDEX,
@@ -1046,7 +1073,9 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       <BoxItem className='no-border-on-first-child'>
         <BoxContentWrapper>
           <ActionButtonWrapper>
-            <CopyToClipboardButton onClick={this.handleCopyToClipboard} />
+            {(calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) && (
+              <CopyToClipboardButton onClick={this.handleCopyToClipboard} />
+            )}
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.ARCHIVED_AT)}>
               {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at &&
                 <ArchiveButton onClick={this.handleArchive}/>
@@ -1069,6 +1098,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                   fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.TYPE)}
                   onChange={this.onChangeTypeOptions}
                   name={`${field}.type`}
+                  disabled={isLocked}
                   overrideValues={{
                     label: 'Laskurin tyyppi',
                   }}
@@ -1085,7 +1115,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE), required: false}
                     : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)
                   }
-                  disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                  disabled={isLocked}
                   name={`${field}.intended_use`}
                   overrideValues={{label: LeaseBasisOfRentsFieldTitles.INTENDED_USE}}
                   enableUiDataEdit
@@ -1119,7 +1149,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA), required: false}
                           : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
                         }
-                        disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                        disabled={isLocked}
                         name={`${field}.area`}
                         invisibleLabel
                         overrideValues={{label: LeaseBasisOfRentsFieldTitles.AREA}}
@@ -1134,7 +1164,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT), required: false}
                           : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)
                         }
-                        disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                        disabled={isLocked}
                         name={`${field}.area_unit`}
                         invisibleLabel
                         overrideValues={{
@@ -1164,6 +1194,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         disableTouched={isSaveClicked}
                         fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.ZONE)}
                         name={`${field}.zone`}
+                        disabled={isLocked}
                         overrideValues={{
                           label: LeaseBasisOfRentsFieldTitles.ZONE,
                         }}
@@ -1188,6 +1219,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
                         }
                         name={`${field}.amount_per_area`}
+                        disabled={isLocked}
                         invisibleLabel
                         unit='€'
                         overrideValues={{label: LeaseBasisOfRentsFieldTitles.PRICE}}
@@ -1226,6 +1258,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}
                               name={`${field}.amount_per_area`}
+                              disabled={isLocked}
                               unit='€'
                               overrideValues={{label: 'Hinta'}}
                             />}
@@ -1243,6 +1276,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}
                               name={`${field}.area`}
+                              disabled={isLocked}
                               overrideValues={{label: 'Ala/korkeus'}}
                             />
                           </Authorization>
@@ -1255,7 +1289,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         </Column>
                         <Column small={6} medium={4} large={2}>
                           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
-                            <FormTextTitle>{'Vuokra'}</FormTextTitle>
+                            <FormTextTitle>{LeaseBasisOfRentsFieldTitles.RENT}</FormTextTitle>
                             <FormText>{!isEmptyValue(mastAreaRent) ? `${formatNumber(mastAreaRent)} €` : '-'}</FormText>
                           </Authorization>
                         </Column>
@@ -1272,6 +1306,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             name={`${field}.children`}
                             formName={formName}
                             parentField={field}
+                            fieldsDisabled={isLocked}
                           />
                         </Column>;
                       }}
@@ -1292,7 +1327,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA), required: false}
                           : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
                         }
-                        disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                        disabled={isLocked}
                         name={`${field}.area`}
                         invisibleLabel
                         unit={calculatorType === CalculatorTypes.FIELD ? 'ha' : `m${String.fromCharCode(178)}`}
@@ -1312,11 +1347,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     }>
                       {calculatorType !== CalculatorTypes.TEMPORARY &&
                         <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                          {LeaseBasisOfRentsFieldTitles.RENT}
+                          {LeaseBasisOfRentsFieldTitles.RENT_PER_YEAR}
                         </FormTextTitle>}
                       {calculatorType === CalculatorTypes.TEMPORARY &&
                         <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                          {'Vuokra/kk'}
+                          {LeaseBasisOfRentsFieldTitles.RENT_PER_MONTH}
                         </FormTextTitle>}
                       {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(temporaryRent) ? `${formatNumber(temporaryRent)} €` : '-'}</FormText>}
                       {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtra) ? `${formatNumber(rentExtra)} €` : '-'}</FormText>}
@@ -1330,7 +1365,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     }>
                       {calculatorType === CalculatorTypes.TEMPORARY &&
                         <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                          {'Vuokra/vuosi'}
+                          {LeaseBasisOfRentsFieldTitles.RENT_PER_YEAR}
                         </FormTextTitle>}
                       <FormText>{!isEmptyValue(temporaryRent) ? `${formatNumber(temporaryRent * 12)} €` : '-'}</FormText>
                     </Authorization>
@@ -1343,7 +1378,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}
                           : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)
                         }
-                        disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                        disabled={isLocked}
                         name={`${field}.index`}
                         overrideValues={{
                           label: LeaseBasisOfRentsFieldTitles.INDEX,
@@ -1370,59 +1405,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 </Authorization>
               </Row>
             </Column>}
-
-            {showPlansInspectedAt && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) &&
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}
-                  errorComponent={
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
-                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</FormTextTitle>
-                      <FormText>{plansInspectedAtText}</FormText>
-                    </Authorization>
-                  }
-                >
-                  <FormField
-                    className='with-top-padding'
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
-                      ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), required: false, type: 'checkbox-date-time'}
-                      : {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), type: 'checkbox-date-time'}
-                    }
-                    disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
-                    invisibleLabel
-                    name={`${field}.plans_inspected_at`}
-                    overrideValues={{label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}}
-                  />
-                </Authorization>
-              </Column>
-            }
-
-            {showLockedAt && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) &&
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}
-                  errorComponent={
-                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
-                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.LOCKED_AT}</FormTextTitle>
-                      <FormText>{lockedAtText}</FormText>
-                    </Authorization>
-                  }
-                >
-                  <FormField
-                    className='with-top-padding'
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={{
-                      ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT),
-                      type: 'checkbox-date-time',
-                    }}
-                    invisibleLabel
-                    name={`${field}.locked_at`}
-                    overrideValues={{label: LeaseBasisOfRentsFieldTitles.LOCKED_AT}}
-                  />
-                </Authorization>
-              </Column>
-            }
           </Row>
 
           {calculatorType === CalculatorTypes.LEASE && <Row>
@@ -1457,7 +1439,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA), required: false}
                           : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
                         }
-                        disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                        disabled={isLocked}
                         name={`${field}.amount_per_area`}
                         unit='€'
                         invisibleLabel
@@ -1730,7 +1712,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}
                           : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)
                         }
-                        disabled={!!savedBasisOfRent && !!savedBasisOfRent.locked_at}
+                        disabled={isLocked}
                         name={`${field}.index`}
                         overrideValues={{
                           label: LeaseBasisOfRentsFieldTitles.INDEX,
@@ -1756,6 +1738,61 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
               </Column>
             </Authorization>
           </Row>}
+
+          <Row>
+            {showPlansInspectedAt && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) &&
+              <Column small={6} medium={4} large={2}>
+                <Authorization
+                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}
+                  errorComponent={
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
+                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</FormTextTitle>
+                      <FormText>{plansInspectedAtText}</FormText>
+                    </Authorization>
+                  }
+                >
+                  <FormField
+                    className='with-top-padding'
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={savedBasisOfRent && !!savedBasisOfRent.locked_at
+                      ? { ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), required: false, type: 'checkbox-date-time' }
+                      : { ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), type: 'checkbox-date-time' }
+                    }
+                    disabled={isLocked}
+                    invisibleLabel
+                    name={`${field}.plans_inspected_at`}
+                    overrideValues={{ label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT }}
+                  />
+                </Authorization>
+              </Column>
+            }
+
+            {showLockedAt &&
+              <Column small={6} medium={4} large={2}>
+                <Authorization
+                  allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}
+                  errorComponent={
+                    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
+                      <FormTextTitle>{LeaseBasisOfRentsFieldTitles.LOCKED_AT}</FormTextTitle>
+                      <FormText>{lockedAtText}</FormText>
+                    </Authorization>
+                  }
+                >
+                  <FormField
+                    className='with-top-padding'
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={{
+                      ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT),
+                      type: 'checkbox-date-time',
+                    }}
+                    invisibleLabel
+                    name={`${field}.locked_at`}
+                    overrideValues={{ label: LeaseBasisOfRentsFieldTitles.LOCKED_AT }}
+                  />
+                </Authorization>
+              </Column>
+            }
+          </Row>
 
           {(!savedBasisOfRent || !savedBasisOfRent.locked_at) && !showSubventions && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) &&
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE)}>
@@ -1802,7 +1839,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             disableTouched={isSaveClicked}
                             fieldAttributes={{...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE), required: false}}
                             name={`${field}.subvention_type`}
-                            disabled={(!!savedBasisOfRent && !!savedBasisOfRent.locked_at)}
+                            disabled={isLocked}
                             overrideValues={{label: LeaseBasisOfRentsFieldTitles.SUBVENTION_TYPE}}
                             enableUiDataEdit
                             uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE)}
@@ -1815,7 +1852,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>{BasisOfRentManagementSubventionsFieldTitles.MANAGEMENT_SUBVENTIONS}</SubTitle>
                         <FieldArray
                           component={renderManagementSubventions}
-                          disabled={(!!savedBasisOfRent && !!savedBasisOfRent.locked_at)}
+                          disabled={isLocked}
                           formName={formName}
                           initialYearRent={initialYearRent}
                           currentAmountPerArea={currentAmountPerArea}
@@ -1833,7 +1870,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT)}
                               name={`${field}.subvention_base_percent`}
-                              disabled={(!!savedBasisOfRent && !!savedBasisOfRent.locked_at)}
+                              disabled={isLocked}
                               overrideValues={{label: LeaseBasisOfRentsFieldTitles.SUBVENTION_BASE_PERCENT}}
                               unit='%'
                               enableUiDataEdit
@@ -1847,7 +1884,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_GRADUATED_PERCENT)}
                               name={`${field}.subvention_graduated_percent`}
-                              disabled={(!!savedBasisOfRent && !!savedBasisOfRent.locked_at)}
+                              disabled={isLocked}
                               overrideValues={{label: LeaseBasisOfRentsFieldTitles.SUBVENTION_GRADUATED_PERCENT}}
                               unit='%'
                               enableUiDataEdit
@@ -1883,7 +1920,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       <FieldArray
                         component={renderTemporarySubventions}
                         leaseAttributes={leaseAttributes}
-                        disabled={(!!savedBasisOfRent && !!savedBasisOfRent.locked_at)}
+                        disabled={isLocked}
                         formName={formName}
                         initialYearRent={initialYearRent}
                         name={`${field}.temporary_subventions`}

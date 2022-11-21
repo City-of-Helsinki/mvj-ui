@@ -281,7 +281,6 @@ const BasisOfRent = ({
               <FormText>{getLabelOfOption(calculatorTypeOptions, calculatorType) || '-'}</FormText>
             </Authorization>
           </Column>
-
           {calculatorType === CalculatorTypes.MAST && <Column large={5} medium={9} small={12}>
             <Row>
               <Column small={6} medium={4} large={2}>
@@ -417,22 +416,6 @@ const BasisOfRent = ({
               <FormText>{areaText}</FormText>
             </Authorization>
           </Column>}
-          {(calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) && <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
-                {LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}
-              </FormTextTitle>
-              <FormText>{plansInspectedText}</FormText>
-            </Authorization>
-          </Column>}
-          {(calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) && <Column small={6} medium={4} large={2}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
-              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
-                {LeaseBasisOfRentsFieldTitles.LOCKED_AT}
-              </FormTextTitle>
-              <FormText>{lockedText}</FormText>
-            </Authorization>
-          </Column>}
           {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <Column small={3} medium={2} large={1} style={{marginTop: 15}}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
               <FormText>{'*5%'}</FormText>
@@ -444,10 +427,10 @@ const BasisOfRent = ({
               isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
             }>
               {calculatorType === CalculatorTypes.TEMPORARY && <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                {'Vuokra/kuukausi'}
+                {'Vuokra/kk'}
               </FormTextTitle>}
               {calculatorType !== CalculatorTypes.TEMPORARY && <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT)}>
-                {LeaseBasisOfRentsFieldTitles.RENT}
+                {'Vuokra/vuosi'}
               </FormTextTitle>}
               {calculatorType === CalculatorTypes.TEMPORARY && <FormText>{!isEmptyValue(rent) ? `${formatNumber(rent)} €` : '-'}</FormText>}
               {calculatorType === CalculatorTypes.ADDITIONAL_YARD && <FormText>{!isEmptyValue(rentExtra) ? `${formatNumber(rentExtra)} €` : '-'}</FormText>}
@@ -685,6 +668,25 @@ const BasisOfRent = ({
             </Column>
           </Fragment>}
         </Row>}
+
+        <Row>
+          {(calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) && <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
+                {LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}
+              </FormTextTitle>
+              <FormText>{plansInspectedText}</FormText>
+            </Authorization>
+          </Column>}
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
+              <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
+                {LeaseBasisOfRentsFieldTitles.LOCKED_AT}
+              </FormTextTitle>
+              <FormText>{lockedText}</FormText>
+            </Authorization>
+          </Column>
+        </Row>
 
         {((basisOfRent.subvention_type || (!!temporarySubventions && !!temporarySubventions.length)) && (calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022)) &&
           <WhiteBox>

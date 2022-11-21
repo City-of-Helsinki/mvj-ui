@@ -552,7 +552,7 @@ export const LeaseAreaAddressesFieldTitles = {
 
 /**
  * Lease area custom detailed plan field paths enumerable
- * 
+ *
  * @type {{}}
  */
 export const LeaseAreaCustomDetailedPlanFieldPaths = {
@@ -574,7 +574,7 @@ export const LeaseAreaCustomDetailedPlanFieldPaths = {
 
 /**
  * Lease area custom detailed plan usage distribution field paths enumerable
- * 
+ *
  * @type {{}}
  */
 export const LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths = {
@@ -585,7 +585,7 @@ export const LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths = {
 
 /**
  * Lease area custom detailed plan usage distribution field titles enumerable
- * 
+ *
  * @type {{}}
  */
 export const LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles = {
@@ -596,7 +596,7 @@ export const LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles = {
 
 /**
  * Lease area custom detailed plan usage distribution field paths enumerable
- * 
+ *
  * @type {{}}
  */
 export const LeaseAreaCustomDetailedPlanInfoLinksFieldPaths = {
@@ -607,7 +607,7 @@ export const LeaseAreaCustomDetailedPlanInfoLinksFieldPaths = {
 
 /**
  * Lease area custom detailed plan usage distribution field titles enumerable
- * 
+ *
  * @type {{}}
  */
 export const LeaseAreaCustomDetailedPlanInfoLinksFieldTitles = {
@@ -1216,11 +1216,13 @@ export const LeaseBasisOfRentsFieldTitles = {
   INITIAL_YEAR_RENT: 'Alkuvuosivuokra (ind)',
   INITIAL_YEAR_RENT_TOTAL: 'Alkuvuosivuokra (ind) yhteensä',
   INTENDED_USE: 'Käyttötarkoitus',
-  LOCKED_AT: 'Laskelma lukittu',
+  LOCKED_AT: 'Laskuri lukittu',
   PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
   PRICE: 'Hinta',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
   RENT: 'Vuokra',
+  RENT_PER_YEAR: 'Vuokra/vuosi',
+  RENT_PER_MONTH: 'Vuokra/kk',
   SUBVENTION_BASE_PERCENT: 'Markkinavuokran subventio',
   SUBVENTION_GRADUATED_PERCENT: 'Siirtymäajan subventio',
   SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT: 'Subventio euroa/vuosi',

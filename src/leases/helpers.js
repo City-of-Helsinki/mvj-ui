@@ -1818,6 +1818,17 @@ export const getRentWarnings = (rents: Array<Object>): Array<string> => {
  */
 export const getContentBasisOfRents = (lease: Object): Array<Object> => {
   const allChildren = get(lease, 'basis_of_rents', []).flatMap(item => item.children);
+
+  // Get children sorted ascending by id
+  const getSortedChildren = (lease: Object, item: Object): Array<Object> => {
+    const children = get(lease, 'basis_of_rents', [])
+      .filter(filterItem => get(item, 'children', []).includes(filterItem.id));
+
+    if (!children.length) return [];
+
+    return [...children].sort((a, b) => a.id - b.id);
+  }
+
   return get(lease, 'basis_of_rents', []).filter(item => !allChildren.includes(item.id)).map((item) => {
     return {
       id: item.id || undefined,
@@ -1827,7 +1838,7 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> => {
       amount_per_area: item.amount_per_area,
       index: get(item, 'index.id') || get(item, 'index'),
       profit_margin_percentage: item.profit_margin_percentage,
-      children: get(lease, 'basis_of_rents', []).filter(filterItem => get(item, 'children', []).includes(filterItem.id)),
+      children: getSortedChildren(lease, item),
       type: item.type,
       discount_percentage: item.discount_percentage,
       plans_inspected_at: item.plans_inspected_at,
@@ -2767,7 +2778,7 @@ export const getPayloadRentDueDates = (rent: Object): Array<Object> => {
  * @returns {string}
  */
 export const areaUnit = (item: Object): string => {
-  if(item.type === CalculatorTypes.LEASE)
+  if(item.type === CalculatorTypes.LEASE || item.type === CalculatorTypes.LEASE2022)
     return item.area_unit;
   return 'm2';
 };
@@ -2778,7 +2789,7 @@ export const areaUnit = (item: Object): string => {
  * @returns {number}
  */
 export const intendedUse = (item: Object): number => {
-  if(item.type === CalculatorTypes.LEASE)
+  if(item.type === CalculatorTypes.LEASE || item.type === CalculatorTypes.LEASE2022)
     return item.intended_use;
   return 7;
 };
