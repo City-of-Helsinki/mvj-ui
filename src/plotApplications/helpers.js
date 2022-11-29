@@ -11,7 +11,6 @@ import {FormNames} from '../enums';
 import {
   getApplicationInfoCheckData,
   getCurrentEditorTargets,
-  getPendingUploads,
 } from './selectors';
 import {
   APPLICANT_MAIN_IDENTIFIERS,
@@ -116,7 +115,7 @@ export const reshapeSavedApplicationObject = (
 
   const result = getEmptySection();
 
-  const reshapeSingleSectionData = (section, answersNode) => {
+  const reshapeSingleSectionData = (section, answersNode, sectionPath) => {
     const data = getEmptySection();
 
     if (answersNode.metadata) {
@@ -124,7 +123,7 @@ export const reshapeSavedApplicationObject = (
     }
 
     section.subsections.forEach((subsection) => {
-      reshapeArrayOrSingleSection(subsection, data, answersNode);
+      reshapeArrayOrSingleSection(subsection, data, answersNode, `${sectionPath}.${subsection.identifier}`);
     });
 
     section.fields.forEach((field) => {
@@ -142,8 +141,10 @@ export const reshapeSavedApplicationObject = (
           }
           break;
         case 'uploadfiles':
+          // auto added attachment path goes only up to the section as field is already in its own field
+          value = attachments.filter((attachment) =>
+            attachment.field === field.identifier && attachment.path === sectionPath);
           extra_value = '';
-          value = attachments.filter((attachment) => attachment.field === field.identifier);
           break;
       }
 
@@ -156,7 +157,7 @@ export const reshapeSavedApplicationObject = (
     return data;
   };
 
-  const reshapeArrayOrSingleSection = (section, parentResultNode, answersNode) => {
+  const reshapeArrayOrSingleSection = (section, parentResultNode, answersNode, sectionPath) => {
     if (section.add_new_allowed) {
       parentResultNode.sections[section.identifier] = [];
 
@@ -171,8 +172,8 @@ export const reshapeSavedApplicationObject = (
         return acc;
       }, []).filter((item) => item !== undefined);
 
-      sectionAnswers.forEach((answer) => {
-        parentResultNode.sections[section.identifier].push(reshapeSingleSectionData(section, answer));
+      sectionAnswers.forEach((answer, i) => {
+        parentResultNode.sections[section.identifier].push(reshapeSingleSectionData(section, answer, `${sectionPath}[${i}]`));
       });
 
 
@@ -180,16 +181,14 @@ export const reshapeSavedApplicationObject = (
       const sectionAnswers = answersNode[section.identifier];
 
       if (sectionAnswers) {
-        parentResultNode.sections[section.identifier] = reshapeSingleSectionData(section, sectionAnswers);
+        parentResultNode.sections[section.identifier] = reshapeSingleSectionData(section, sectionAnswers, sectionPath);
       }
     }
   };
 
-  form.sections.forEach((section) => reshapeArrayOrSingleSection(section, result, application));
+  form.sections.forEach((section) => reshapeArrayOrSingleSection(section, result, application, `${section.identifier}`));
   return result;
 };
-
-export const getAttachmentLink = (id: number): string => createUrl(`attachment/${id}/download/`);
 
 export const getInitialApplication = (): ApplicationFormState => {
   return {
@@ -212,6 +211,7 @@ export const getInitialApplicationForm = (
     sections: {},
     sectionTemplates: {},
     fileFieldIds: [],
+    attachments: [],
   };
 
   const buildSectionItem = (section, parent, sectionAnswer) => {
@@ -296,10 +296,18 @@ export const getInitialApplicationForm = (
     let initialValue;
     switch (fieldTypes[field.type]) {
       case 'uploadfiles':
-        // handled outside redux-form
         if (!root.fileFieldIds.includes(field.id)) {
           root.fileFieldIds.push(field.id);
         }
+
+        if (reformattedAnswer) {
+          root.attachments.push(...reformattedAnswer.value.map((file) => file.id));
+        }
+
+        initialValue = {
+          value: reformattedAnswer?.value?.map((file) => file.id) || [],
+          extraValue: '',
+        };
         break;
       case 'dropdown':
       case 'radiobutton':
@@ -359,10 +367,6 @@ export const prepareApplicationForSubmission = (): Object | null => {
   const selector = formValueSelector(FormNames.PLOT_APPLICATION);
 
   const sections = selector(state, 'formEntries.sections');
-  const fileFieldIds = selector(
-    state,
-    'formEntries.fileFieldIds'
-  );
 
   try {
     const attachMeta = (rootLevelSections) => {
@@ -435,9 +439,7 @@ export const prepareApplicationForSubmission = (): Object | null => {
         sections: purgeUIFields(attachMeta(sections)),
       },
       targets: selector(state, 'targets'),
-      attachments: getPendingUploads(state)
-        .filter((file) => fileFieldIds.includes(file.field))
-        .map((file) => file.id),
+      attachments: selector(state, 'formEntries.attachments'),
     };
   } catch (e) {
     console.log(e);
@@ -556,4 +558,9 @@ export const getSectionApplicantType = (state: RootState, section: FormSection, 
   }
 
   return formValueSelector(FormNames.PLOT_APPLICATION)(state, `${reduxFormPath}.metadata.applicantType`) || ApplicantTypes.UNSELECTED;
+};
+
+export const getFieldFileIds = (state: RootState, fieldPath: string): Array<number> => {
+  const fieldValue = formValueSelector(FormNames.PLOT_APPLICATION)(state, fieldPath);
+  return fieldValue?.value || [];
 };

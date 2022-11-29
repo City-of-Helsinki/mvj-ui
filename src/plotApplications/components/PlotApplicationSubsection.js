@@ -3,6 +3,7 @@ import React, {useCallback, Fragment} from 'react';
 import {
   FieldArray,
   change,
+  formValueSelector,
 } from 'redux-form';
 import {connect} from 'react-redux';
 import type {Fields} from 'redux-form/lib/FieldArrayProps.types';
@@ -21,7 +22,7 @@ import {
   getIsFetchingAttachmentAttributes,
 } from '../selectors';
 import {
-  getApplicationAttachmentDownloadLink, getSectionApplicantType,
+  getApplicationAttachmentDownloadLink, getFieldFileIds, getSectionApplicantType,
   getSectionTargetFromMeta,
   getSectionTemplate, valueToApplicantType,
 } from '../helpers';
@@ -41,7 +42,7 @@ import {ButtonColors} from '../../components/enums';
 import {ActionTypes, AppConsumer} from '../../app/AppContext';
 import FormHintText from '../../components/form/FormHintText';
 import {APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '../constants';
-import type {PlotApplicationFormValue} from '../types';
+import type {PlotApplicationFormValue, UploadedFileMeta} from '../types';
 import {ApplicantTypes} from '../enums';
 
 const ApplicationSectionKeys = {
@@ -60,10 +61,13 @@ const ApplicationFormFileField = connect(
     isFetchingAttachmentAttributes: getIsFetchingAttachmentAttributes(state),
     isPerformingFileOperation: getIsPerformingFileOperation(state),
     currentPlotApplication: getCurrentPlotApplication(state),
+    fieldFileIds: getFieldFileIds(state, props.fieldName),
+    attachmentIds: formValueSelector(FormNames.PLOT_APPLICATION)(state, 'formEntries.attachments'),
   }),
   {
     uploadAttachment,
     deleteUploadedAttachment,
+    change,
   }
 )(({
   uploadAttachment,
@@ -80,28 +84,54 @@ const ApplicationFormFileField = connect(
   field,
   fieldName,
   currentPlotApplication,
+  change,
+  fieldFileIds,
+  attachmentIds,
 }) => {
   return (
     <AppConsumer>
       {({dispatch}) => {
-
         const isNew = !currentPlotApplication?.id;
+        const pathWithinForm = fieldName.split('.').slice(1).join('.');
+
+        const addId = (newId: number) => {
+          change(FormNames.PLOT_APPLICATION, `${fieldName}.value`, [...fieldFileIds, newId]);
+          change(FormNames.PLOT_APPLICATION, 'formEntries.attachments', [...attachmentIds, newId]);
+        };
+
+        const removeId = (newId: number) => {
+          change(FormNames.PLOT_APPLICATION, `${fieldName}.value`, fieldFileIds.filter((id) => id !== newId));
+          change(FormNames.PLOT_APPLICATION, 'formEntries.attachments', attachmentIds.filter((id) => id !== newId));
+        };
 
         const submitFile = (fieldId, e) => {
           uploadAttachment({
-            field: fieldId,
-            file: e.target.files[0],
-            answer: currentPlotApplication?.id || undefined,
+            fileData: {
+              field: fieldId,
+              file: e.target.files[0],
+              answer: currentPlotApplication?.id || undefined,
+            },
+            callback: (path: string, uploadedFile: UploadedFileMeta) => {
+              addId(uploadedFile.id);
+            },
+            path: pathWithinForm,
           });
         };
 
-        const uploads = isNew ? pendingUploads.filter((file) => file.field === field.id) : existingUploads;
+        const uploads = (isNew ? pendingUploads : existingUploads).filter((file) => fieldFileIds.includes(file.id));
 
         const deleteFile = (file) => {
           dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
-              deleteUploadedAttachment(file);
+              // Hard delete only if this is a new editor. Edit mode can be canceled, in which case changes to files
+              // are desirable to not also take place. Orphaned files not attached to an application anymore are
+              // planned to be removed by the backend periodically.
+              if (isNew) {
+                deleteUploadedAttachment(file);
+              }
+
+              removeId(file.id);
             },
             confirmationModalButtonClassName: ButtonColors.ALERT,
             confirmationModalButtonText: ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
@@ -212,7 +242,9 @@ const ApplicationFormSubsectionFields = connect(
 
       // Special cases that use a different submission path and thus different props
       if (fieldType === 'uploadfiles') {
-        return <ApplicationFormFileField field={field} fieldName={fieldName} />;
+        return <ApplicationFormFileField
+          field={field}
+          fieldName={fieldName} />;
       }
 
       let extraAttributes = {};

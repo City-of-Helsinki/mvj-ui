@@ -79,6 +79,7 @@ export type UploadedFileMeta = {
   field: number;
   created_at: string;
   answer: number | null;
+  path: string | null;
 };
 
 export type FetchAttributesAction = Action<'mvj/plotApplications/FETCH_ATTRIBUTES', void>;
@@ -132,7 +133,11 @@ export type FetchPendingUploadsAction = Action<'mvj/plotApplications/FETCH_PENDI
 export type ReceivePendingUploadsAction = Action<'mvj/plotApplications/RECEIVE_PENDING_UPLOADS', Object>;
 export type PendingUploadsNotFoundAction = Action<'mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND', void>;
 export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', Object>;
-export type UploadFileAction = Action<'mvj/plotApplications/UPLOAD_FILE', Object>;
+export type UploadFileAction = Action<'mvj/plotApplications/UPLOAD_FILE', {
+  fileData: Object,
+  callback?: (UploadedFileMeta) => void,
+  path: string
+}>;
 export type ReceiveFileOperationFinishedAction = Action<'mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED', void>;
 
 export type FetchAttachmentAttributesAction = Action<'mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', void>;

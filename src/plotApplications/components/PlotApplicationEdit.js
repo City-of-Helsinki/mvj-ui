@@ -94,6 +94,7 @@ type Props = {
   currentPlotApplication?: PlotApplication,
   formAttributes: Attributes,
   attachments: Array<Object>,
+  isFetchingAttachments: boolean,
   currentPlotSearch?: PlotSearch,
   isFetchingApplicationRelatedPlotSearch: boolean,
   receiveSinglePlotApplication: Function,
@@ -102,7 +103,7 @@ type Props = {
 
 type State = {
   form: Object,
-  isFormFixed: boolean
+  isFormFixed: boolean,
 }
 
 class PlotApplicationEdit extends PureComponent<Props, State> {
@@ -151,6 +152,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       receiveFormValidFlags,
       isNew,
       retrievingData,
+      isFetchingAttachments,
     } = this.props;
 
     if(prevProps.valid !== this.props.valid) {
@@ -159,7 +161,7 @@ class PlotApplicationEdit extends PureComponent<Props, State> {
       });
     }
 
-    if (!isNew && !retrievingData && prevProps.retrievingData) {
+    if (!isNew && !retrievingData && !isFetchingAttachments && prevProps.retrievingData && !this.state.isFormFixed) {
       this.setupEditMode();
     }
   }
@@ -445,7 +447,7 @@ export default (flowRight(
       const isFetchingForm = getIsFetchingForm(state);
       const isFetchingApplicationRelatedPlotSearch = getIsFetchingApplicationRelatedPlotSearch(state);
 
-      const isRetrievingCommonData = isFetchingFormAttributes || isFetchingAttachmentAttributes || isFetchingInfoCheckAttributes || isFetchingForm || isFetchingAttachments;
+      const isRetrievingCommonData = isFetchingFormAttributes || isFetchingAttachmentAttributes || isFetchingInfoCheckAttributes || isFetchingForm;
       const isRetrievingCreateModeData = isFetchingPlotSearchList;
       const isRetrievingEditModeData = isFetchingApplicationRelatedPlotSearch;
 

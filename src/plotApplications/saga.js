@@ -328,13 +328,19 @@ function* deleteUploadSaga({payload}: DeleteUploadAction): Generator<any, any, a
 
 function* uploadFileSaga({payload}: UploadFileAction): Generator<any, any, any> {
   try {
-    yield call(uploadFileRequest, payload);
+    const {path, callback, fileData} = payload;
+
+    const result = yield call(uploadFileRequest, fileData);
 
     yield put(receiveFileOperationFinished());
-    if (payload.answer) {
-      yield put(fetchApplicationRelatedAttachments(payload.answer));
+    if (fileData.answer) {
+      yield put(fetchApplicationRelatedAttachments(fileData.answer));
     } else {
       yield put(fetchPendingUploads());
+    }
+
+    if (callback) {
+      callback(path, result.bodyAsJson);
     }
   } catch (e) {
     console.log(e);
