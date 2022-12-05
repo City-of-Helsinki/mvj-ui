@@ -298,10 +298,6 @@ class PlotApplicationsPage extends Component<Props, State> {
         if (this.isNewEditor()) {
           fetchPlotSearchList();
         }
-      } else {
-        if (plotApplicationId) {
-          fetchSinglePlotApplication(Number(plotApplicationId));
-        }
       }
     }
 

@@ -31,19 +31,19 @@ import type {Attributes} from '$src/types';
 import type {PlotApplication as PlotApplicationType} from '$src/plotApplications/types';
 import Loader from '../../components/loader/Loader';
 import SubTitle from '../../components/content/SubTitle';
-import {getAttachmentLink, reshapeSavedApplicationObject} from '../helpers';
+import {getApplicationAttachmentDownloadLink, reshapeSavedApplicationObject} from '../helpers';
 import {
   getFormAttributes,
   getIsFetchingFormAttributes,
 } from '../../plotSearch/selectors';
 import {getFieldAttributes} from '../../util/helpers';
-import ExternalLink from '../../components/links/ExternalLink';
 import {APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '../constants';
 import {getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch} from '../selectors';
 import PlotApplicationTargetInfoCheck from './infoCheck/PlotApplicationTargetInfoCheck';
 import PlotApplicationApplicantInfoCheck from './infoCheck/PlotApplicationApplicantInfoCheck';
 import type {PlotSearch, FormSection} from '../../plotSearch/types';
 import type {SavedApplicationFormSection, UploadedFileMeta} from '../types';
+import FileDownloadLink from '../../components/file/FileDownloadLink';
 
 type OwnProps = {};
 
@@ -113,7 +113,10 @@ const SingleSectionItem = ({section, answer, fieldTypes, plotSearch, topLevel, i
               // TODO: can this be cast in a cleaner way?
               const files: Array<UploadedFileMeta> = (displayValue: any);
               displayValue = files.length > 0 ? <ul>{files.map((file) => <li key={file.id}>
-                <ExternalLink href={getAttachmentLink(file.id)} text={file.name} openInNewTab />
+                <FileDownloadLink
+                  fileUrl={getApplicationAttachmentDownloadLink(file.id)}
+                  label={file.name}
+                />
               </li>)}</ul> : null;
               break;
           }
@@ -219,7 +222,7 @@ class PlotApplication extends PureComponent<Props, void> {
     });
   }
 
-  render (){
+  render() {
     const {
       applicationCollapseState,
       attributes,

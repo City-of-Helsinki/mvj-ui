@@ -69,7 +69,7 @@ export const deleteUploadRequest = (
   id: number
 ): Generator<any, any, any> => {
   return callApi(
-    new Request(createUrl('attachment/' + id), {
+    new Request(createUrl(`attachment/${id}/`), {
       method: 'DELETE',
     })
   );
