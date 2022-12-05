@@ -1,6 +1,6 @@
 // @flow
 import {TableSortOrder} from '$src/enums';
-import {ApplicantTypes} from "./enums";
+import {ApplicantTypes} from './enums';
 
 /**
  * Default plotApplications states value for plotSearch list search
@@ -48,17 +48,17 @@ export const APPLICANT_MAIN_IDENTIFIERS: {
     DATA_SECTION: 'yrityksen-tiedot',
     IDENTIFIER_FIELD: 'y-tunnus',
     NAME_FIELDS: [
-      'yrityksen-nimi'
+      'yrityksen-nimi',
     ],
-    LABEL: 'Yritys'
+    LABEL: 'Yritys',
   },
   [ApplicantTypes.PERSON]: {
     DATA_SECTION: 'henkilon-tiedot',
     IDENTIFIER_FIELD: 'henkilotunnus',
     NAME_FIELDS: [
       'etunimi',
-      'Sukunimi'
+      'Sukunimi',
     ],
-    LABEL: 'Henkilö'
-  }
+    LABEL: 'Henkilö',
+  },
 };

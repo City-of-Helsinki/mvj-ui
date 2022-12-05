@@ -5,6 +5,7 @@ import flowRight from 'lodash/flowRight';
 import debounce from 'lodash/debounce';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
+import type {ContextRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import {initialize} from 'redux-form';
 
@@ -75,9 +76,12 @@ const visualizationTypeOptions = [
   {value: VisualizationTypes.MAP, label: 'Kartta', icon: <MapIcon className='icon-medium' />},
 ];
 
+type OwnProps = {
+  ...ContextRouter
+};
 
 type Props = {
-  history: Object,
+  ...OwnProps,
   plotApplicationsMethods: MethodsType,
   plotApplicationsAttributes: Attributes,
   isFetching: boolean,
@@ -86,7 +90,6 @@ type Props = {
   fetchPlotApplicationsByBBox: Function,
   fetchPlotSearchAttributes: Function,
   fetchPlotSearchList: Function,
-  location: Object,
   receiveTopNavigationSettings: Function,
   plotApplicationsListData: Object,
   plotApplicationsMapData: Object,
@@ -539,7 +542,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   }
 }
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   withPlotApplicationsAttributes,
   connect(
@@ -560,4 +563,4 @@ export default flowRight(
       initialize,
     }
   ),
-)(PlotApplicationsListPage);
+)(PlotApplicationsListPage): React$ComponentType<OwnProps>);

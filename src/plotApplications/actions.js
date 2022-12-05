@@ -56,7 +56,7 @@ import type {
   InfoCheckAttributesNotFoundAction,
   EditInfoCheckItemAction,
   ReceiveUpdatedInfoCheckItemAction,
-  InfoCheckUpdateFailed
+  InfoCheckUpdateFailed,
 } from './types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -128,7 +128,7 @@ export const plotSearchSubtypesNotFound = (): PlotSearchSubtypesNotFoundAction =
 export const receivePlotSearchSubtypes = (subTypes: Object): ReceivePlotSearchSubtypesAction =>
   createAction('mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES')(subTypes);
 
-export const receivePlotApplicationSaved = (id: Number): ReceivePlotApplicationSavedAction =>
+export const receivePlotApplicationSaved = (id: number): ReceivePlotApplicationSavedAction =>
   createAction('mvj/plotApplications/RECEIVE_SAVED')(id);
 
 export const receivePlotApplicationSaveFailed = (): ReceivePlotApplicationSaveFailedAction =>
@@ -173,7 +173,7 @@ export const receivePendingUploads = (payload: Object): ReceivePendingUploadsAct
 export const pendingUploadsNotFound = (): PendingUploadsNotFoundAction =>
   createAction('mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND')();
 
-export const deleteUploadedAttachment = (payload: number): DeleteUploadAction =>
+export const deleteUploadedAttachment = (payload: Object): DeleteUploadAction =>
   createAction('mvj/plotApplications/DELETE_UPLOAD')(payload);
 
 export const uploadAttachment = (payload: Object): UploadFileAction =>

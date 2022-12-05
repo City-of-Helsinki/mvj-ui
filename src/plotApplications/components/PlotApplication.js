@@ -1,8 +1,8 @@
 // @flow
-import React, { PureComponent} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import { orderBy } from 'lodash';
+import {orderBy} from 'lodash';
 
 import Authorization from '$components/authorization/Authorization';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -20,7 +20,7 @@ import {
   getIsFetchingApplicationRelatedForm,
   getApplicationRelatedForm,
   getApplicationRelatedAttachments,
-  getIsFetchingApplicationRelatedAttachments
+  getIsFetchingApplicationRelatedAttachments,
 } from '$src/plotApplications/selectors';
 import {receiveCollapseStates} from '$src/plotApplications/actions';
 // import {getContentBasicInformation} from '$src/plotApplications/helpers';
@@ -29,20 +29,21 @@ import {
 } from '$util/helpers';
 import type {Attributes} from '$src/types';
 import type {PlotApplication as PlotApplicationType} from '$src/plotApplications/types';
-import Loader from "../../components/loader/Loader";
-import SubTitle from "../../components/content/SubTitle";
-import {getAttachmentLink, reshapeSavedApplicationObject} from "../helpers";
+import Loader from '../../components/loader/Loader';
+import SubTitle from '../../components/content/SubTitle';
+import {getAttachmentLink, reshapeSavedApplicationObject} from '../helpers';
 import {
   getFormAttributes,
   getIsFetchingFormAttributes,
-} from "../../plotSearch/selectors";
-import {getFieldAttributes} from "../../util/helpers";
-import ExternalLink from "../../components/links/ExternalLink";
-import {APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from "../constants";
-import {getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch} from "../selectors";
-import PlotApplicationTargetInfoCheck from "./infoCheck/PlotApplicationTargetInfoCheck";
-import PlotApplicationApplicantInfoCheck from "./infoCheck/PlotApplicationApplicantInfoCheck";
-import {ApplicantTypes} from "../enums";
+} from '../../plotSearch/selectors';
+import {getFieldAttributes} from '../../util/helpers';
+import ExternalLink from '../../components/links/ExternalLink';
+import {APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '../constants';
+import {getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch} from '../selectors';
+import PlotApplicationTargetInfoCheck from './infoCheck/PlotApplicationTargetInfoCheck';
+import PlotApplicationApplicantInfoCheck from './infoCheck/PlotApplicationApplicantInfoCheck';
+import type {PlotSearch, FormSection} from '../../plotSearch/types';
+import type {SavedApplicationFormSection, UploadedFileMeta} from '../types';
 
 type OwnProps = {};
 
@@ -63,11 +64,16 @@ type Props = {
   topLevel: boolean
 }
 
-type State = {
+type SingleSectionItemProps = {
+  section: FormSection,
+  answer: SavedApplicationFormSection,
+  topLevel: boolean,
+  fieldTypes: Array<{ value: string, display_name: string }>,
+  plotSearch: PlotSearch,
+  identifier: string
+};
 
-}
-
-const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch, topLevel, identifier }) => {
+const SingleSectionItem = ({section, answer, fieldTypes, plotSearch, topLevel, identifier}: SingleSectionItemProps) => {
   return <>
     <Row>
       {section.fields.filter((field) => field.enabled).map((field) => {
@@ -86,7 +92,7 @@ const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch, topLevel, 
           }
 
           return name;
-        }
+        };
 
         let displayValue = fieldAnswer?.value;
         if (displayValue !== undefined && displayValue !== null) {
@@ -104,7 +110,9 @@ const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch, topLevel, 
               }
               break;
             case 'uploadfiles':
-              displayValue = displayValue.length > 0 ? <ul>{displayValue.map((file) => <li key={file.id}>
+              // TODO: can this be cast in a cleaner way?
+              const files: Array<UploadedFileMeta> = (displayValue: any);
+              displayValue = files.length > 0 ? <ul>{files.map((file) => <li key={file.id}>
                 <ExternalLink href={getAttachmentLink(file.id)} text={file.name} openInNewTab />
               </li>)}</ul> : null;
               break;
@@ -118,12 +126,12 @@ const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch, topLevel, 
           <FormText className="PlotApplication__field-value">
             {displayValue || '-'}
           </FormText>
-        </Column>
+        </Column>;
       })}
     </Row>
     {section.subsections.filter((section) => section.visible).map((subsection) =>
       <SectionData section={subsection} answer={answer.sections[subsection.identifier]} key={subsection.identifier}
-                   fieldTypes={fieldTypes} plotSearch={plotSearch} />)}
+        fieldTypes={fieldTypes} plotSearch={plotSearch} />)}
     {topLevel && section.identifier === TARGET_SECTION_IDENTIFIER &&
       <PlotApplicationTargetInfoCheck
         section={section}
@@ -135,21 +143,29 @@ const SingleSectionItem = ({ section, answer, fieldTypes, plotSearch, topLevel, 
         identifier={identifier}
         answer={answer}
       />}
-  </>
+  </>;
 };
 
-const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch }) => {
+type SectionDataProps = {
+  section: FormSection,
+  answer: SavedApplicationFormSection | Array<SavedApplicationFormSection>,
+  topLevel?: boolean,
+  fieldTypes: Array<{ value: string, display_name: string }>,
+  plotSearch: PlotSearch
+};
+
+const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch}: SectionDataProps) => {
   if (!answer) {
     return null;
   }
 
-  const title = section.title || "(tuntematon osio)";
+  const title = section.title || '(tuntematon osio)';
 
   const Wrapper = topLevel ?
-    ({ children }) => <Collapse
+    ({children}) => <Collapse
       defaultOpen={true}
       headerTitle={title}
-    >{children}</Collapse> : ({ children }) => <div>
+    >{children}</Collapse> : ({children}) => <div>
       <SubTitle>
         {title}
       </SubTitle>
@@ -157,10 +173,10 @@ const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch 
     </div>;
   return <Wrapper>
     {section.add_new_allowed
-      ? answer.map((singleAnswer, i) => {
+      ? (answer instanceof Array ? answer : []).map((singleAnswer, i) => {
         let subtitle = `#${i + 1}`;
         if (section.identifier === TARGET_SECTION_IDENTIFIER && singleAnswer?.metadata?.identifier) {
-          const target = plotSearch?.plot_search_targets.find((target) => target.id === singleAnswer.metadata.identifier);
+          const target = plotSearch?.plot_search_targets.find((target) => target.id === singleAnswer.metadata?.identifier);
           if (target) {
             subtitle = `${target.lease_address.address || '-'} (${target.lease_identifier})`;
           }
@@ -168,8 +184,9 @@ const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch 
         if (section.identifier === APPLICANT_SECTION_IDENTIFIER) {
           if (singleAnswer?.metadata?.identifier) {
             if (singleAnswer?.metadata?.applicantType) {
-              const identifiers = APPLICANT_MAIN_IDENTIFIERS[singleAnswer.metadata.applicantType];
-              const sectionWithIdentifier = singleAnswer.sections[identifiers?.DATA_SECTION];
+              const identifiers = APPLICANT_MAIN_IDENTIFIERS[String(singleAnswer?.metadata?.applicantType)];
+              const sectionsWithIdentifier = singleAnswer.sections[identifiers?.DATA_SECTION];
+              const sectionWithIdentifier = sectionsWithIdentifier instanceof Array ? sectionsWithIdentifier[0] : sectionsWithIdentifier;
 
               const typeText = identifiers?.LABEL || 'Hakija';
               const nameText = identifiers?.NAME_FIELDS?.map((field) => {
@@ -185,14 +202,11 @@ const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch 
           <SingleSectionItem section={section} answer={singleAnswer} fieldTypes={fieldTypes} plotSearch={plotSearch} topLevel={topLevel} identifier={`${section.identifier}[${i}]`} />
         </Collapse>;
       })
-      : <SingleSectionItem section={section} answer={answer} fieldTypes={fieldTypes} plotSearch={plotSearch} topLevel={topLevel} identifier={section.identifier} />}
-  </Wrapper>
+      : <SingleSectionItem section={section} answer={answer[0] || answer} fieldTypes={fieldTypes} plotSearch={plotSearch} topLevel={topLevel} identifier={section.identifier} />}
+  </Wrapper>;
 };
 
-class PlotApplication extends PureComponent<Props, State> {
-  state = {
-  }
-
+class PlotApplication extends PureComponent<Props, void> {
   handleBasicInfoCollapseToggle = (val: boolean) => {
     const {receiveCollapseStates} = this.props;
 
@@ -217,7 +231,7 @@ class PlotApplication extends PureComponent<Props, State> {
       isFetchingFormAttachments,
       attachments,
       plotSearch,
-      isFetchingPlotSearch
+      isFetchingPlotSearch,
     } = this.props;
 
     const plotApplication = currentPlotApplication; // getContentBasicInformation(currentPlotApplication);
@@ -295,8 +309,8 @@ class PlotApplication extends PureComponent<Props, State> {
                 </Authorization>
               </Row>
             </Collapse>
-            {!isLoading && orderBy(form.sections, 'order').filter((section) => section.visible).map((section) =>
-                <SectionData section={section} answer={answerData.sections[section.identifier]} topLevel fieldTypes={fieldTypes} key={section.identifier} plotSearch={plotSearch} />)}
+            {!isLoading && fieldTypes && orderBy(form.sections, 'order').filter((section) => section.visible).map((section) =>
+              <SectionData section={section} answer={answerData.sections[section.identifier]} topLevel fieldTypes={fieldTypes} key={section.identifier} plotSearch={plotSearch} />)}
           </Column>
         </Row>
       </div>
@@ -318,10 +332,10 @@ export default (connect(
       attachments: getApplicationRelatedAttachments(state),
       isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
       isFetchingPlotSearch: getIsFetchingApplicationRelatedPlotSearch(state),
-      plotSearch: getApplicationRelatedPlotSearch(state)
+      plotSearch: getApplicationRelatedPlotSearch(state),
     };
   },
   {
     receiveCollapseStates,
   }
-)(PlotApplication) : React$AbstractComponent<OwnProps, mixed>);
+)(PlotApplication): React$ComponentType<OwnProps>);

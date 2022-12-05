@@ -1,5 +1,6 @@
 // @flow
 import type {Action, Attributes, Methods} from '../types';
+import type {PlotSearch} from '../plotSearch/types';
 
 export type PlotApplicationsState = {
   attributes: Attributes,
@@ -15,8 +16,9 @@ export type PlotApplicationsState = {
   collapseStates: Object,
   isFormValidById: Object,
   subTypes: ?Array<Object>,
+  isFetchingSubTypes: boolean,
   isFetchingAttachments: boolean,
-  fieldTypeMapping: Object,
+  fieldTypeMapping: { [id: number]: string },
   pendingUploads: Array<Object>,
   isFetchingPendingUploads: boolean,
   isPerformingFileOperation: boolean,
@@ -28,10 +30,15 @@ export type PlotApplicationsState = {
   isFetchingInfoCheckAttributes: boolean,
   infoCheckAttributes: Attributes,
   isUpdatingInfoCheck: { [id: number]: boolean },
-  lastInfoCheckUpdateSuccessful: { [id: number]: boolean }
+  lastInfoCheckUpdateSuccessful: { [id: number]: boolean },
+  isSaveClicked: boolean,
+  isFetchingForm: boolean,
+  form: ?Object,
+  isFetchingPlotSearch: boolean,
+  plotSearch: ?PlotSearch
 };
 
-export type PlotApplicationFormValue = string | Array<string> | boolean;
+export type PlotApplicationFormValue = string | Array<string> | Array<UploadedFileMeta> | boolean;
 
 export type PlotApplicationsList = Object;
 export type PlotApplication = Object;
@@ -53,6 +60,26 @@ export type ApplicationFormState = {
   targets: Array<number>,
   formEntries: { [identifier: string]: ApplicationFormSection } | null
 }
+
+export type SavedApplicationFormField = {
+  value: PlotApplicationFormValue | null,
+  extra_value: string
+}
+
+export type SavedApplicationFormSection = {
+  fields: { [identifier: string]: SavedApplicationFormField},
+  sections: { [identifier: string]: SavedApplicationFormSection | Array<SavedApplicationFormSection> },
+  metadata?: { [key: string]: mixed },
+}
+
+export type UploadedFileMeta = {
+  id: number;
+  attachment: string;
+  name: string;
+  field: number;
+  created_at: string;
+  answer: number | null;
+};
 
 export type FetchAttributesAction = Action<'mvj/plotApplications/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/plotApplications/RECEIVE_ATTRIBUTES', Attributes>;
@@ -104,7 +131,7 @@ export type InitializeFormEntriesForApplicationAction = Action<'mvj/plotApplicat
 export type FetchPendingUploadsAction = Action<'mvj/plotApplications/FETCH_PENDING_UPLOADS', void>;
 export type ReceivePendingUploadsAction = Action<'mvj/plotApplications/RECEIVE_PENDING_UPLOADS', Object>;
 export type PendingUploadsNotFoundAction = Action<'mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND', void>;
-export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', number>;
+export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', Object>;
 export type UploadFileAction = Action<'mvj/plotApplications/UPLOAD_FILE', Object>;
 export type ReceiveFileOperationFinishedAction = Action<'mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED', void>;
 

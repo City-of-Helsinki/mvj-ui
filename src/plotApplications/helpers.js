@@ -2,28 +2,28 @@
 
 import get from 'lodash/get';
 import _ from 'lodash';
-import {getFieldAttributes, displayUIMessage, getApiResponseResults} from "../util/helpers";
-import {formValueSelector} from "redux-form";
+import {getFieldAttributes, displayUIMessage, getApiResponseResults} from '../util/helpers';
+import {formValueSelector} from 'redux-form';
 
-import createUrl from "../api/createUrl";
+import createUrl from '../api/createUrl';
 import {store} from '../root/startApp';
-import {FormNames} from "../enums";
+import {FormNames} from '../enums';
 import {
   getApplicationInfoCheckData,
   getCurrentEditorTargets,
   getPendingUploads,
-} from "./selectors";
+} from './selectors';
 import {
   APPLICANT_MAIN_IDENTIFIERS,
   APPLICANT_SECTION_IDENTIFIER,
-  TARGET_SECTION_IDENTIFIER
-} from "./constants";
+  TARGET_SECTION_IDENTIFIER,
+} from './constants';
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
-import {ApplicantInfoCheckTypes, ApplicantTypes, PlotApplicationInfoCheckExternalTypes} from "./enums";
-import type {RootState} from "../root/types";
-import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState} from "./types";
-import type {Form, FormSection} from "../plotSearch/types";
-import type {Attributes} from "../types";
+import {ApplicantInfoCheckTypes, ApplicantTypes, PlotApplicationInfoCheckExternalTypes} from './enums';
+import type {RootState} from '../root/types';
+import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState} from './types';
+import type {Form, FormSection} from '../plotSearch/types';
+import type {Attributes} from '../types';
 
 /**
  * Get plotApplication list results
@@ -72,7 +72,7 @@ export const getApplicationTargetFeatures = (applications: Array<Object>): Array
       features.push({
         type: 'Feature',
         geometry: {
-          ...target.geometry
+          ...target.geometry,
         },
         properties: {
           id: application.id,
@@ -109,7 +109,7 @@ export const reshapeSavedApplicationObject = (
 ): Object => {
   const getEmptySection = (): Object => ({
     sections: {},
-    fields: {}
+    fields: {},
   });
 
   const fieldTypes = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
@@ -120,7 +120,7 @@ export const reshapeSavedApplicationObject = (
     const data = getEmptySection();
 
     if (answersNode.metadata) {
-      data.metadata = { ...answersNode.metadata };
+      data.metadata = {...answersNode.metadata};
     }
 
     section.subsections.forEach((subsection) => {
@@ -128,12 +128,12 @@ export const reshapeSavedApplicationObject = (
     });
 
     section.fields.forEach((field) => {
-      let { value, extra_value } = answersNode.fields[field.identifier] || {};
+      let {value, extra_value} = answersNode.fields[field.identifier] || {};
 
       switch (fieldTypes?.find((fieldType) => fieldType.value === field.type)?.display_name) {
         case 'radiobutton':
         case 'radiobuttoninline':
-          value = value !== null && value !== undefined ? value : null;
+          value = value !== null && value !== undefined ? value.toString() : null;
           break;
         case 'checkbox':
         case 'dropdown':
@@ -149,12 +149,12 @@ export const reshapeSavedApplicationObject = (
 
       data.fields[field.identifier] = {
         value,
-        extra_value
+        extra_value,
       };
-    })
+    });
 
     return data;
-  }
+  };
 
   const reshapeArrayOrSingleSection = (section, parentResultNode, answersNode) => {
     if (section.add_new_allowed) {
@@ -172,7 +172,7 @@ export const reshapeSavedApplicationObject = (
       }, []).filter((item) => item !== undefined);
 
       sectionAnswers.forEach((answer) => {
-        parentResultNode.sections[section.identifier].push(reshapeSingleSectionData(section, answer))
+        parentResultNode.sections[section.identifier].push(reshapeSingleSectionData(section, answer));
       });
 
 
@@ -193,16 +193,16 @@ export const getAttachmentLink = (id: number): string => createUrl(`attachment/$
 
 export const getInitialApplication = (): ApplicationFormState => {
   return {
-    //plotSearch: null,
     formId: null,
     targets: [],
-    formEntries: null
-  }
+    formEntries: null,
+  };
 };
 
 export const getInitialApplicationForm = (
   fieldTypes: { [id: number]: string },
-  form?: Form
+  form?: Form,
+  existingValues?: Object | null
 ): Object | null => {
   if (!form) {
     return null;
@@ -211,74 +211,110 @@ export const getInitialApplicationForm = (
   const root = {
     sections: {},
     sectionTemplates: {},
-    fileFieldIds: []
+    fileFieldIds: [],
+  };
+
+  const buildSectionItem = (section, parent, sectionAnswer) => {
+    const workingItem: ApplicationFormSection = {
+      sections: {},
+      fields: {},
+      sectionRestrictions: {},
+    };
+
+    if (section.identifier === APPLICANT_SECTION_IDENTIFIER) {
+      workingItem.metadata = {
+        applicantType: null,
+      };
+
+      section.subsections.forEach((subsection) => {
+        workingItem.sectionRestrictions[subsection.identifier] = subsection.applicant_type;
+      });
+    }
+
+    section.subsections.forEach((subsection) =>
+      buildSection(subsection, workingItem.sections, sectionAnswer?.sections?.[subsection.identifier])
+    );
+    section.fields.forEach((field) => buildField(field, workingItem.fields, sectionAnswer?.fields?.[field.identifier]));
+
+    if (sectionAnswer?.metadata) {
+      workingItem.metadata = {
+        ...(workingItem.metadata || {}),
+        ...sectionAnswer.metadata,
+      };
+    }
+
+    return workingItem;
   };
 
   const buildSection = (
     section,
-    parent = root.sections
+    parent,
+    sectionAnswers
   ): void => {
     if (!section.visible) {
       return;
     }
 
-    const workingItem: ApplicationFormSection = {
-      sections: {},
-      fields: {},
-      sectionRestrictions: {}
-    };
-
-    if (section.identifier === APPLICANT_SECTION_IDENTIFIER) {
-      workingItem.metadata = {
-        applicantType: null
-      };
-
-      section.subsections.forEach((subsection) => {
-        workingItem.sectionRestrictions[subsection.identifier] = subsection.applicant_type;
-      })
+    if (section.add_new_allowed && !root.sectionTemplates[section.identifier]) {
+      root.sectionTemplates[section.identifier] = buildSectionItem(section, parent);
     }
 
-    section.subsections.forEach((subsection) =>
-      buildSection(subsection, workingItem.sections)
-    );
-    section.fields.forEach((field) => buildField(field, workingItem.fields));
-
-    if (section.add_new_allowed) {
-      root.sectionTemplates[section.identifier] = { ...workingItem };
-
-      if (section.identifier === TARGET_SECTION_IDENTIFIER) {
-        parent[section.identifier] = [];
+    if (sectionAnswers) {
+      if (section.add_new_allowed) {
+        if (!(sectionAnswers instanceof Array)) {
+          console.error('type mismatch', section, sectionAnswers);
+        }
+        parent[section.identifier] = sectionAnswers.map((sectionAnswer) => buildSectionItem(section, parent, sectionAnswer));
       } else {
-        parent[section.identifier] = [workingItem];
+        parent[section.identifier] = buildSectionItem(section, parent, sectionAnswers);
       }
     } else {
-      parent[section.identifier] = workingItem;
+      const defaultItem = buildSectionItem(section, parent);
+      if (section.add_new_allowed && section.identifier === TARGET_SECTION_IDENTIFIER) {
+        parent[section.identifier] = [];
+      } else if (section.add_new_allowed) {
+        parent[section.identifier] = [defaultItem];
+      } else {
+        parent[section.identifier] = defaultItem;
+      }
     }
   };
 
-  const buildField = (field, parent): void => {
+  const buildField = (field, parent, answer): void => {
     if (!field.enabled) {
       return;
+    }
+
+    let reformattedAnswer;
+    if (answer) {
+      reformattedAnswer = {
+        value: answer.value,
+        extraValue: answer.extra_value,
+      };
     }
 
     let initialValue;
     switch (fieldTypes[field.type]) {
       case 'uploadfiles':
         // handled outside redux-form
-        root.fileFieldIds.push(field.id);
+        if (!root.fileFieldIds.includes(field.id)) {
+          root.fileFieldIds.push(field.id);
+        }
         break;
       case 'dropdown':
       case 'radiobutton':
       case 'radiobuttoninline':
-        initialValue = {
-          value: '', //null,
+        initialValue = reformattedAnswer || {
+          value: '',
           extraValue: '',
         };
         break;
       case 'checkbox':
-        if (field.choices?.length > 1) {
+        if (reformattedAnswer) {
+          initialValue = reformattedAnswer;
+        } else if (field.choices?.length > 1) {
           initialValue = {
-            value: [],
+            value: ([]: Array<string>),
             extraValue: '',
           };
         } else {
@@ -291,7 +327,7 @@ export const getInitialApplicationForm = (
       case 'textbox':
       case 'textarea':
       default:
-        initialValue = {
+        initialValue = reformattedAnswer || {
           value: '',
           extraValue: '',
         };
@@ -303,7 +339,7 @@ export const getInitialApplicationForm = (
     }
   };
 
-  form.sections.forEach((section) => buildSection(section));
+  form.sections.forEach((section) => buildSection(section, root.sections, existingValues?.sections?.[section.identifier]));
 
   return root;
 };
@@ -359,7 +395,7 @@ export const prepareApplicationForSubmission = (): Object | null => {
                 applicant.metadata.identifier = identifier.value;
               } catch (e) {
                 // sectionWithIdentifier or the value itself was not found, or something else went unexpectedly wrong
-                displayUIMessage({title: '', body: 'Hakijan henkilö- tai Y-tunnuksen käsittely epäonnistui!'}, { type: 'error' });
+                displayUIMessage({title: '', body: 'Hakijan henkilö- tai Y-tunnuksen käsittely epäonnistui!'}, {type: 'error'});
                 throw e;
               }
             });
@@ -367,7 +403,7 @@ export const prepareApplicationForSubmission = (): Object | null => {
           case TARGET_SECTION_IDENTIFIER:
             section.forEach((target) => {
               target.metadata = {
-                identifier: target.metadata.identifier
+                identifier: target.metadata.identifier,
               };
             });
             break;
@@ -375,7 +411,7 @@ export const prepareApplicationForSubmission = (): Object | null => {
       });
 
       return rootLevelSections;
-    }
+    };
 
     const purgeUIFields = (node) => {
       _.each(node, (section) => {
@@ -383,7 +419,7 @@ export const prepareApplicationForSubmission = (): Object | null => {
           section.forEach((item) => {
             delete item.sectionRestrictions;
             purgeUIFields(item.sections);
-          })
+          });
         } else {
           delete section.sectionRestrictions;
           purgeUIFields(section.sections);
@@ -401,7 +437,7 @@ export const prepareApplicationForSubmission = (): Object | null => {
       targets: selector(state, 'targets'),
       attachments: getPendingUploads(state)
         .filter((file) => fileFieldIds.includes(file.field))
-        .map((file) => file.id)
+        .map((file) => file.id),
     };
   } catch (e) {
     console.log(e);
@@ -420,7 +456,7 @@ export const getSectionTargetFromMeta = (field: string): string => {
   else {
     return '';
   }
-}
+};
 
 export const getApplicationAttachmentDownloadLink = (id: number): string => createUrl(`attachment/${id}/download`);
 
@@ -431,50 +467,50 @@ export const getApplicantInfoCheckItems = (state: RootState, identifier: string)
       label: 'Kaupparekisteriote',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.CREDITWORTHINESS,
       label: 'Luottokelpoisuustodistus / luottotiedot',
       useIfCompany: true,
       useIfPerson: true,
-      external: PlotApplicationInfoCheckExternalTypes.CREDIT_INQUIRY
+      external: PlotApplicationInfoCheckExternalTypes.CREDIT_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.PENSION_CONTRIBUTIONS,
       label: 'Selvitys työeläkemaksujen maksamisesta',
       useIfCompany: true,
       useIfPerson: true,
-      external: null
+      external: null,
     },
     {
       type: ApplicantInfoCheckTypes.VAT_REGISTER,
       label: 'Todistus arvonlisärekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.ADVANCE_PAYMENT,
       label: 'Todistus ennakkoperintärekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.TAX_DEBT,
       label: 'Verovelkatodistus',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.EMPLOYER_REGISTER,
       label: 'Todistus työnantajarekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY
-    }
+      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+    },
   ];
 
   const existingData = getApplicationInfoCheckData(state).filter((item) => item.entry === identifier);
@@ -487,11 +523,11 @@ export const getApplicantInfoCheckItems = (state: RootState, identifier: string)
     }
 
     return {
-      kind: { ...item },
-      data: { ...existingItem }
-    }
+      kind: {...item},
+      data: {...existingItem},
+    };
   }).filter((item) => !!item);
-}
+};
 
 export const prepareInfoCheckForSubmission = (infoCheck: Object): Object => {
   return {
@@ -499,8 +535,8 @@ export const prepareInfoCheckForSubmission = (infoCheck: Object): Object => {
     preparer: infoCheck.preparer?.id,
     comment: infoCheck.comment,
     state: infoCheck.state,
-    mark_all: infoCheck.mark_all
-  }
+    mark_all: infoCheck.mark_all,
+  };
 };
 
 export const valueToApplicantType = (value: PlotApplicationFormValue): string | null => {
@@ -512,7 +548,7 @@ export const valueToApplicantType = (value: PlotApplicationFormValue): string | 
   }
 
   return ApplicantTypes.UNKNOWN;
-}
+};
 
 export const getSectionApplicantType = (state: RootState, section: FormSection, reduxFormPath: string): string => {
   if (section.identifier !== APPLICANT_SECTION_IDENTIFIER) {

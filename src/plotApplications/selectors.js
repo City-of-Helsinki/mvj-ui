@@ -8,6 +8,7 @@ import type {
   PlotApplicationsList,
   PlotApplication,
 } from './types';
+import type {PlotSearch} from '../plotSearch/types';
 
 export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
   state.plotApplications.listByBBox;
@@ -65,15 +66,15 @@ export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState):
 
 export const getIsFetchingApplicationRelatedForm: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingForm;
 
-export const getApplicationRelatedForm: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.form;
+export const getApplicationRelatedForm: Selector<Object | null, void> = (state: RootState): Object | null => state.plotApplications.form;
 
 export const getIsFetchingApplicationRelatedPlotSearch: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingPlotSearch;
 
-export const getApplicationRelatedPlotSearch: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.plotSearch;
+export const getApplicationRelatedPlotSearch: Selector<PlotSearch | null, void> = (state: RootState): PlotSearch | null => state.plotApplications.plotSearch;
 
 export const getIsFetchingApplicationRelatedAttachments: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingAttachments;
 
-export const getApplicationRelatedAttachments: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.attachments;
+export const getApplicationRelatedAttachments: Selector<Array<Object>, void> = (state: RootState): Array<Object> => state.plotApplications.attachments || [];
 
 export const getFieldTypeMapping: Selector<Object, void> = (state: RootState): Object =>
   state.plotApplications.fieldTypeMapping;
@@ -111,8 +112,12 @@ export const getInfoCheckAttributes: Selector<Attributes, void> = (state: RootSt
 export const getApplicationInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
   state.plotApplications.current?.information_checks;
 
-export const getIsUpdatingInfoCheckData: Selector<boolean, void> = (state: RootState): Record<number, boolean> =>
+export const getIsUpdatingInfoCheckData: Selector<{ [id: number]: boolean }, void> = (state: RootState): { [id: number]: boolean } =>
   state.plotApplications.isUpdatingInfoCheck;
 
-export const getWasLastInfoCheckUpdateSuccessfulData: Selector<boolean, void> = (state: RootState): Record<number, boolean> =>
+export const getWasLastInfoCheckUpdateSuccessfulData: Selector<{ [id: number]: boolean }, void> = (state: RootState): { [id: number]: boolean } =>
   state.plotApplications.lastInfoCheckUpdateSuccessful;
+
+export const getExistingUploads = (state: RootState, identifier: string): Array<Object> => {
+  return getApplicationRelatedAttachments(state).filter((attachment) => attachment.field === identifier);
+};

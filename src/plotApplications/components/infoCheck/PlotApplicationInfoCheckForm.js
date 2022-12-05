@@ -1,21 +1,21 @@
 //@flow
 import React, {Component} from 'react';
-import {getFormValues, reduxForm} from "redux-form";
-import {Column, Row} from "react-foundation";
-import get from "lodash/get";
+import {getFormValues, reduxForm} from 'redux-form';
+import {Column, Row} from 'react-foundation';
+import get from 'lodash/get';
 import flowRight from 'lodash/flowRight';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 
-import {FieldTypes, FormNames} from "../../../enums";
+import {FieldTypes, FormNames} from '../../../enums';
 import {ButtonColors} from '$components/enums';
-import {getInfoCheckAttributes} from "../../selectors";
-import type {Attributes} from "../../../types";
-import FormField from "../../../components/form/FormField";
-import ModalButtonWrapper from "../../../components/modal/ModalButtonWrapper";
-import Button from "../../../components/button/Button";
-import {prepareInfoCheckForSubmission} from "../../helpers";
-import {getUserFullName} from "../../../users/helpers";
-import {PlotApplicationInfoCheckFieldPaths, PlotApplicationInfoCheckFieldTitles} from "../../enums";
+import {getInfoCheckAttributes} from '../../selectors';
+import type {Attributes} from '../../../types';
+import FormField from '../../../components/form/FormField';
+import ModalButtonWrapper from '../../../components/modal/ModalButtonWrapper';
+import Button from '../../../components/button/Button';
+import {prepareInfoCheckForSubmission} from '../../helpers';
+import {getUserFullName} from '../../../users/helpers';
+import {PlotApplicationInfoCheckFieldPaths, PlotApplicationInfoCheckFieldTitles} from '../../enums';
 
 type OwnProps = {
   infoCheck: Object,
@@ -41,14 +41,14 @@ class PlotApplicationInfoCheckForm extends Component<Props> {
       return;
     }
 
-    const { preparer, ...rest } = infoCheck.data;
+    const {preparer, ...rest} = infoCheck.data;
 
     this.props.initialize({
       ...rest,
       preparer: preparer ? {
         value: preparer.id,
-        label: getUserFullName(preparer)
-      } : null
+        label: getUserFullName(preparer),
+      } : null,
     });
   }
 
@@ -74,7 +74,7 @@ class PlotApplicationInfoCheckForm extends Component<Props> {
     const {
       attributes,
       valid,
-      onClose
+      onClose,
     } = this.props;
 
     return (
@@ -97,7 +97,7 @@ class PlotApplicationInfoCheckForm extends Component<Props> {
               name={PlotApplicationInfoCheckFieldPaths.STATE}
               overrideValues={{
                 label: PlotApplicationInfoCheckFieldTitles.STATE,
-                required: true
+                required: true,
               }}
             />
           </Column>
@@ -107,7 +107,7 @@ class PlotApplicationInfoCheckForm extends Component<Props> {
               name={PlotApplicationInfoCheckFieldPaths.MARK_ALL}
               overrideValues={{
                 label: PlotApplicationInfoCheckFieldTitles.MARK_ALL,
-                required: false
+                required: false,
               }}
             />
           </Column>
@@ -151,9 +151,9 @@ export default (flowRight(
     }),
     null,
     null,
-    { forwardRef: true }
+    {forwardRef: true}
   ),
   reduxForm({
     form: FormNames.PLOT_APPLICATION_INFO_CHECK,
   })
-)(PlotApplicationInfoCheckForm) : React$AbstractComponent<OwnProps, mixed>);
+)(PlotApplicationInfoCheckForm): React$ComponentType<OwnProps>);

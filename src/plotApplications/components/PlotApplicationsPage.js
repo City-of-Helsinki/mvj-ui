@@ -6,7 +6,7 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import {initialize, isDirty, destroy, getFormValues} from 'redux-form';
-import type {ContextRouter} from "react-router";
+import type {ContextRouter} from 'react-router';
 
 import {FormNames} from '$src/enums';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -59,14 +59,14 @@ import type {Attributes, Methods as MethodsType} from '$src/types';
 import PlotApplicationInfo from './PlotApplicationInfo';
 import PlotApplication from './PlotApplication';
 import PlotApplicationEdit from './PlotApplicationEdit';
-import {fetchPlotSearchList} from "../../plotSearch/actions";
+import {fetchPlotSearchList} from '../../plotSearch/actions';
 import {
   getPlotSearchList,
   getIsFetching as getIsFetchingPlotSearchList,
-} from "../../plotSearch/selectors";
-import {createPlotApplication} from "../actions";
-import {prepareApplicationForSubmission} from "../helpers";
-import {getIsPerformingFileOperation, getIsSaving} from "../selectors";
+} from '../../plotSearch/selectors';
+import {createPlotApplication} from '../actions';
+import {prepareApplicationForSubmission} from '../helpers';
+import {getIsPerformingFileOperation, getIsSaving} from '../selectors';
 
 type OwnProps = {
   ...ContextRouter
@@ -128,7 +128,7 @@ class PlotApplicationsPage extends Component<Props, State> {
       match: {params: {plotApplicationId}},
       location: {search},
       receiveIsSaveClicked,
-      fetchPlotSearchList
+      fetchPlotSearchList,
     } = this.props;
 
     const query = getUrlParams(search);
@@ -158,6 +158,10 @@ class PlotApplicationsPage extends Component<Props, State> {
       fetchSinglePlotApplication(plotApplicationId);
       setPageTitle('Hakemus');
     }
+  }
+
+  componentWillUnmount() {
+    this.props.hideEditMode();
   }
 
   handleShowEditMode = () => {
@@ -204,7 +208,7 @@ class PlotApplicationsPage extends Component<Props, State> {
   }
 
   getAreFormsValid = () => {
-    const { isApplicationFormValid } = this.props;
+    const {isApplicationFormValid} = this.props;
 
     return (
       isApplicationFormValid
@@ -258,14 +262,14 @@ class PlotApplicationsPage extends Component<Props, State> {
     return plotApplicationId === 'new';
   }
 
-  componentDidUpdate(prevProps:Props, prevState: State) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const {
       location: {search},
       currentPlotApplication,
       match: {params: {plotApplicationId}},
       isEditMode,
       isFetching,
-      fetchPlotSearchList
+      fetchPlotSearchList,
     } = this.props;
     const {activeTab} = this.state;
     const query = getUrlParams(search);
@@ -290,7 +294,10 @@ class PlotApplicationsPage extends Component<Props, State> {
 
     if (prevProps.isEditMode !== isEditMode) {
       if (isEditMode) {
-        fetchPlotSearchList();
+        // existing plot searches can't have their plot search/form changed
+        if (this.isNewEditor()) {
+          fetchPlotSearchList();
+        }
       } else {
         if (plotApplicationId) {
           fetchSinglePlotApplication(Number(plotApplicationId));
@@ -307,7 +314,7 @@ class PlotApplicationsPage extends Component<Props, State> {
     const {
       editPlotApplication,
       createPlotApplication,
-      receiveIsSaveClicked
+      receiveIsSaveClicked,
     } = this.props;
 
     receiveIsSaveClicked(true);
@@ -390,18 +397,22 @@ class PlotApplicationsPage extends Component<Props, State> {
       isApplicationFormValid,
       isFetchingPlotSearchList,
       isPerformingFileOperation,
-      isSaving
+      isSaving,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
 
-    if(isFetching || isFetchingUsersPermissions || isFetchingPlotApplicationsAttributes || isFetchingPlotSearchList) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (isFetching || isFetchingUsersPermissions || isFetchingPlotApplicationsAttributes || isFetchingPlotSearchList) {
+      return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    }
 
-    if(!plotApplicationsAttributes || isEmpty(usersPermissions)) return null;
+    if (!plotApplicationsAttributes || !plotApplicationsMethods || isEmpty(usersPermissions)) {
+      return null;
+    }
 
-    if(!plotApplicationsMethods) return null;
-
-    if(!isMethodAllowed(plotApplicationsMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS} /></PageContainer>;
+    if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
+      return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS}/></PageContainer>;
+    }
 
     return(
       <FullWidthContainer>
@@ -456,7 +467,7 @@ class PlotApplicationsPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 {isEditMode
-                  ? <PlotApplicationEdit/>
+                  ? <PlotApplicationEdit isNew={this.isNewEditor()}/>
                   : <PlotApplication/>
                 }
               </ContentContainer>
@@ -508,7 +519,7 @@ export default (flowRight(
       receiveFormValidFlags,
       editPlotApplication,
       fetchPlotSearchList,
-      createPlotApplication
+      createPlotApplication,
     }
   ),
-)(PlotApplicationsPage) : React$AbstractComponent<OwnProps, mixed>);
+)(PlotApplicationsPage): React$ComponentType<OwnProps>);

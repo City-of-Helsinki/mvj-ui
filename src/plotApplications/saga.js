@@ -1,7 +1,7 @@
 // @flow
 
 import {all, fork, put, takeLatest, takeEvery, call, select} from 'redux-saga/effects';
-import {SubmissionError} from "redux-form";
+import {SubmissionError} from 'redux-form';
 
 
 import {displayUIMessage} from '$src/util/helpers';
@@ -13,7 +13,6 @@ import {
   hideEditMode,
   notFoundByBBox,
   receivePlotApplicationsByBBox,
-  receiveIsSaveClicked,
   attributesNotFound,
   applicationsNotFound,
   plotSearchSubtypesNotFound,
@@ -41,7 +40,7 @@ import {
   receiveInfoCheckAttributes,
   infoCheckAttributesNotFound,
   receiveUpdatedInfoCheckItem,
-  infoCheckUpdateFailed
+  infoCheckUpdateFailed,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 
@@ -58,19 +57,19 @@ import {
   fetchPendingUploadsRequest,
   fetchAttachmentAttributesRequest,
   fetchInfoCheckAttributesRequest,
-  editInfoCheckItemRequest
+  editInfoCheckItemRequest,
 } from './requests';
 import {
   fetchFormRequest,
-  fetchSinglePlotSearch
-} from "../plotSearch/requests";
+  fetchSinglePlotSearch,
+} from '../plotSearch/requests';
 import {
   fetchFormAttributes,
-} from "../plotSearch/actions";
-import {push} from "react-router-redux";
-import {getRouteById, Routes} from "../root/routes";
-import type {DeleteUploadAction, UploadFileAction} from "./types";
-import {getCurrentPlotApplication} from "./selectors";
+} from '../plotSearch/actions';
+import {push} from 'react-router-redux';
+import {getRouteById, Routes} from '../root/routes';
+import type {DeleteUploadAction, PlotApplication, UploadFileAction} from './types';
+import {getCurrentPlotApplication} from './selectors';
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
@@ -159,39 +158,51 @@ function* createPlotApplicationSaga({payload: plotApplication}): Generator<any, 
       case 201:
         yield put(receivePlotApplicationSaved(bodyAsJson.id));
         yield put(push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${bodyAsJson.id}`));
-        yield put(hideEditMode());
         yield put(fetchSinglePlotApplication(bodyAsJson.id));
+        yield put(hideEditMode());
         displayUIMessage({title: '', body: 'Hakemus luotu'});
         break;
       default:
         yield put(receivePlotApplicationSaveFailed());
-        displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, { type: 'error' });
+        displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, {type: 'error'});
     }
   } catch(e) {
     yield put(receivePlotApplicationSaveFailed());
     console.log(e);
-    displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, { type: 'error' });
+    displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, {type: 'error'});
   }
 }
 
 function* editPlotApplicationSaga({payload: plotApplication}): Generator<any, any, any> {
+  const handleFail = function*() {
+    yield put(receivePlotApplicationSaveFailed());
+    displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, {type: 'error'});
+  };
+
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotApplicationRequest, plotApplication);
+    const currentPlotApplication: ?PlotApplication = yield select(getCurrentPlotApplication);
+    if (!currentPlotApplication) {
+      yield handleFail();
+      return;
+    }
+
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotApplicationRequest, currentPlotApplication?.id, plotApplication);
 
     switch (statusCode) {
       case 200:
       case 201:
         yield put(receivePlotApplicationSaved(bodyAsJson.id));
-        yield put(push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${bodyAsJson.id}`));
+        yield put(receiveSinglePlotApplication(bodyAsJson));
+        yield put(fetchApplicationRelatedAttachments(bodyAsJson.id));
+        yield put(hideEditMode());
         displayUIMessage({title: '', body: 'Hakemus tallennettu'});
         break;
       default:
-        yield put(receivePlotApplicationSaveFailed());
-        displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, { type: 'error' });
+        yield handleFail();
     }
-  } catch {
-    yield put(receivePlotApplicationSaveFailed());
-    displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, { type: 'error' });
+  } catch (e) {
+    console.log(e);
+    yield handleFail();
   }
 }
 
@@ -219,7 +230,7 @@ function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchApplicationRelatedFormSaga({ payload: id }): Generator<any, any, any> {
+function* fetchApplicationRelatedFormSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchFormRequest, id);
 
@@ -230,11 +241,11 @@ function* fetchApplicationRelatedFormSaga({ payload: id }): Generator<any, any, 
         break;
       default:
         yield put(applicationRelatedFormNotFound());
-        displayUIMessage({title: '', body: 'Hakemukseen liittyvää lomaketta ei löytynyt!'}, { type: 'error' });
+        displayUIMessage({title: '', body: 'Hakemukseen liittyvää lomaketta ei löytynyt!'}, {type: 'error'});
     }
   } catch {
     yield put(applicationRelatedFormNotFound());
-    displayUIMessage({title: '', body: 'Hakemukseen liittyvää lomaketta ei löytynyt!'}, { type: 'error' });
+    displayUIMessage({title: '', body: 'Hakemukseen liittyvää lomaketta ei löytynyt!'}, {type: 'error'});
   }
 }
 
@@ -260,7 +271,7 @@ function* fetchApplicationRelatedPlotSearchSaga({payload: id}): Generator<any, a
   }
 }
 
-function* fetchApplicationRelatedAttachmentsSaga({ payload: id }): Generator<any, any, any> {
+function* fetchApplicationRelatedAttachmentsSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSinglePlotApplicationAttachments, id);
 
@@ -270,18 +281,18 @@ function* fetchApplicationRelatedAttachmentsSaga({ payload: id }): Generator<any
         break;
       default:
         yield put(applicationRelatedAttachmentsNotFound());
-        displayUIMessage({title: '', body: 'Hakemuksen liitteitä ei löytynyt!'}, { type: 'error' });
+        displayUIMessage({title: '', body: 'Hakemuksen liitteitä ei löytynyt!'}, {type: 'error'});
     }
   } catch (e) {
     yield put(applicationRelatedAttachmentsNotFound());
-    displayUIMessage({title: '', body: 'Hakemuksen liitteitä ei löytynyt!'}, { type: 'error' });
+    displayUIMessage({title: '', body: 'Hakemuksen liitteitä ei löytynyt!'}, {type: 'error'});
   }
 }
 
 
 function* fetchPendingUploadsSaga(): Generator<any, any, any> {
   try {
-    const { response, bodyAsJson } = yield call(fetchPendingUploadsRequest);
+    const {response, bodyAsJson} = yield call(fetchPendingUploadsRequest);
 
     switch (response.status) {
       case 200:
@@ -298,12 +309,16 @@ function* fetchPendingUploadsSaga(): Generator<any, any, any> {
   }
 }
 
-function* deleteUploadSaga({ payload }: DeleteUploadAction): Generator<any, any, any> {
+function* deleteUploadSaga({payload}: DeleteUploadAction): Generator<any, any, any> {
   try {
-    yield call(deleteUploadRequest, payload);
+    yield call(deleteUploadRequest, payload.id);
 
     yield put(receiveFileOperationFinished());
-    yield put(fetchPendingUploads());
+    if (payload.answer) {
+      yield put(fetchApplicationRelatedAttachments(payload.answer));
+    } else {
+      yield put(fetchPendingUploads());
+    }
   } catch (e) {
     console.error(e);
     yield put(pendingUploadsNotFound());
@@ -311,12 +326,16 @@ function* deleteUploadSaga({ payload }: DeleteUploadAction): Generator<any, any,
   }
 }
 
-function* uploadFileSaga({ payload }: UploadFileAction): Generator<any, any, any> {
+function* uploadFileSaga({payload}: UploadFileAction): Generator<any, any, any> {
   try {
     yield call(uploadFileRequest, payload);
 
     yield put(receiveFileOperationFinished());
-    yield put(fetchPendingUploads());
+    if (payload.answer) {
+      yield put(fetchApplicationRelatedAttachments(payload.answer));
+    } else {
+      yield put(fetchPendingUploads());
+    }
   } catch (e) {
     console.log(e);
     yield put(pendingUploadsNotFound());
@@ -385,12 +404,12 @@ function* editInfoCheckItemSaga({payload: infoCheck}): Generator<any, any, any> 
         break;
       default:
         yield put(infoCheckUpdateFailed(infoCheck.id));
-        displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, { type: 'error' });
+        displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
     }
   } catch(e) {
     yield put(infoCheckUpdateFailed(infoCheck.id));
     console.log(e);
-    displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, { type: 'error' });
+    displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
   }
 }
 
