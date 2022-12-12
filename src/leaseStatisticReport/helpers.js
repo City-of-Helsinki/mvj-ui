@@ -133,6 +133,9 @@ export const getOutputFields = (options: Object): Array<Object> => {
       return {
         key: key,
         label: value.label,
+        choices: value.choices,
+        format: value.format,
+        isNumeric: value.is_numeric,
       };
     });
   else
