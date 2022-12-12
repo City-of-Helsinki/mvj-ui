@@ -553,7 +553,7 @@ const BasisOfRent = ({
           <Column small={6} medium={4} large={2}>{renderBaseYearRentFormField()}</Column>
         </Row>}
 
-        {calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022 && <>
+        {(calculatorType === CalculatorTypes.LEASE || calculatorType === CalculatorTypes.LEASE2022) && <>
           {(basisOfRent.subvention_type === SubventionTypes.FORM_OF_MANAGEMENT || basisOfRent.subvention_type === SubventionTypes.RE_LEASE) && <Row>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
