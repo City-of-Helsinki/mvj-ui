@@ -153,11 +153,13 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
       reportData,
       payload,
       reports,
+      reportOptions,
     } = this.props;
 
     const dev = false;
     const columns = this.getColumns();
     const reportTypeOptions = getReportTypeOptions(reports);
+    const isSortable = !reportOptions.is_already_sorted;
 
     if(isFetchingReportData) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
@@ -181,7 +183,7 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
           style={{marginBottom: 10}}
           defaultSortKey='lease_id'
           defaultSortOrder={TableSortOrder.ASCENDING}
-          sortable={true}
+          sortable={isSortable}
         />
       </Fragment>
     );
