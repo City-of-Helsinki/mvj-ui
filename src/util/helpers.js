@@ -395,10 +395,14 @@ export const sortStringAsc = (a: ?string, b: ?string): number => {
  * @returns {number}
  */
 export const sortStringByKeyAsc = (a: Object, b: Object, key: string): number => {
-  const valA = (get(a, key) || '').toLowerCase();
-  const valB = (get(b, key) || '').toLowerCase();
+  const valA = (get(a, key) || '');
+  const valB = (get(b, key) || '');
 
-  return sortStringAsc(valA, valB);
+  // Check if the value is actually a string before trying to convert it to lowercase
+  const finalValA = String(valA) === valA ? valA.toLowerCase() : '';
+  const finalValB = String(valB) === valB ? valB.toLowerCase() : '';
+
+  return sortStringAsc(finalValA, finalValB);
 };
 
 /**
@@ -419,10 +423,14 @@ export const sortStringDesc = (a: ?string, b: ?string): number => {
  * @returns {number}
  */
 export const sortStringByKeyDesc = (a: Object, b: Object, key: string): number => {
-  const valA = (get(a, key) || '').toLowerCase();
-  const valB = (get(b, key) || '').toLowerCase();
+  const valA = (get(a, key) || '');
+  const valB = (get(b, key) || '');
 
-  return sortStringDesc(valA, valB);
+  // Check if the value is actually a string before trying to convert it to lowercase
+  const finalValA = String(valA) === valA ? valA.toLowerCase() : '';
+  const finalValB = String(valB) === valB ? valB.toLowerCase() : '';
+
+  return sortStringDesc(finalValA, finalValB);
 };
 
 /**
