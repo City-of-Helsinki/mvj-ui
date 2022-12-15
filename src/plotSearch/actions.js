@@ -33,6 +33,13 @@ import type {
   ReceivePlanUnitAttributesAction,
   PlanUnit,
   PlanUnitNotFoundAction,
+  CustomDetailedPlan,
+  CustomDetailedPlanAttributesNotFoundAction,
+  ReceiveCustomDetailedPlanAttributesAction,
+  ReceiveSingleCustomDetailedPlanAction,
+  FetchCustomDetailedPlanAction,
+  FetchCustomDetailedPlanAttributesAction,
+  CustomDetailedPlanNotFoundAction,
   FetchPlotSearchSubtypesAction,
   PlotSearchSubtypesNotFoundAction,
   ReceivePlotSearchSubtypesAction,
@@ -50,7 +57,9 @@ import type {
   AddPlanUnitDecisionsAction,
   ResetPlanUnitDecisionsAction,
   EditFormAction,
-  FetchPlotSearchStagesAction, ReceivePlotSearchStagesAction, PlotSearchStagesNotFoundAction,
+  FetchPlotSearchStagesAction,
+  ReceivePlotSearchStagesAction,
+  PlotSearchStagesNotFoundAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -127,6 +136,24 @@ export const planUnitAttributesNotFound = (): PlanUnitAttributesNotFoundAction =
 
 export const receivePlanUnitAttributes = (attributes: Attributes): ReceivePlanUnitAttributesAction =>
   createAction('mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES')(attributes);
+
+export const customDetailedPlanNotFound = (): CustomDetailedPlanNotFoundAction =>
+  createAction('mvj/plotSearch/CUSTOM_DETAILED_PLAN_NOT_FOUND')();
+
+export const fetchCustomDetailedPlan = (payload: Object): FetchCustomDetailedPlanAction =>
+  createAction('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN')(payload);
+
+export const receiveSingleCustomDetailedPlan = (customDetailedPlan: CustomDetailedPlan): ReceiveSingleCustomDetailedPlanAction =>
+  createAction('mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN')(customDetailedPlan);
+
+export const fetchCustomDetailedPlanAttributes = (payload: Object): FetchCustomDetailedPlanAttributesAction =>
+  createAction('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES')(payload);
+
+export const customDetailedPlanAttributesNotFound = (): CustomDetailedPlanAttributesNotFoundAction =>
+  createAction('mvj/plotSearch/CUSTOM_DETAILED_PLAN_ATTRIBUTES_NOT_FOUND')();
+
+export const receiveCustomDetailedPlanAttributes = (attributes: Attributes): ReceiveCustomDetailedPlanAttributesAction =>
+  createAction('mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN_ATTRIBUTES')(attributes);
 
 export const fetchPlotSearchSubtypes = (payload: Object): FetchPlotSearchSubtypesAction =>
   createAction('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES')(payload);

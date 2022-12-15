@@ -28,7 +28,7 @@ type State = {
 class AsyncSelect extends Component<Props, State> {
   select: any
 
-  setSelectRef: ((el: any) => void) = (el: any) => {
+  setSelectRef: ((el: any) => void) = (el) => {
     const {setRef} = this.props;
 
     this.select = el;
@@ -55,13 +55,13 @@ class AsyncSelect extends Component<Props, State> {
     }
   };
 
-  handleChange: ((value: any) => void) = (value: Object) => {
+  handleChange: ((value: Object) => void) = (value) => {
     const {input: {onChange}} = this.props;
 
     onChange(value);
   }
 
-  handleInputChange: ((value: string, meta: any) => void) = (value: string, meta: Object) => {
+  handleInputChange: ((value: string, meta: any) => void) = (value, meta) => {
     const {action} = meta;
     switch (action) {
       case 'input-change':
@@ -91,7 +91,7 @@ class AsyncSelect extends Component<Props, State> {
     }
   }
 
-  loadOptions: ((inputValue: string, callback: any) => void) = (inputValue: string, callback: Function) => {
+  loadOptions: ((inputValue: string, callback: Function) => void) = (inputValue, callback) => {
     const {getOptions} = this.props;
     const {menuOpened} = this.state;
 
@@ -102,7 +102,7 @@ class AsyncSelect extends Component<Props, State> {
     }
   };
 
-  render(): React$Element<"div"> {
+  render(): React$Node {
     const {
       disabled,
       displayError,

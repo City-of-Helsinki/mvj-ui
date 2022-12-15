@@ -2,7 +2,7 @@
 import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {FieldArray, formValueSelector, reduxForm, change} from 'redux-form';
+import {FieldArray, reduxForm, change} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 

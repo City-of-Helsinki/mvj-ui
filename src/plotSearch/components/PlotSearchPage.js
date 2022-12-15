@@ -35,7 +35,7 @@ import {
   getForm,
   getIsFetchingAnyPlanUnits,
   getIsFetchingPlanUnitAttributes,
-  areTargetsAllowedToHaveType, isLockedForModifications, isFetchingStages, getIsFetchingSubtypes
+  areTargetsAllowedToHaveType, isLockedForModifications, isFetchingStages, getIsFetchingSubtypes,
 } from '../selectors';
 import {
   editPlotSearch,
@@ -64,7 +64,7 @@ import {
   getContentApplication,
   clearUnsavedChanges,
   cleanTargets,
-  cleanDecisions
+  cleanDecisions,
 } from '$src/plotSearch/helpers';
 
 import PlotSearchInfo from './plotSearchSections/plotSearchInfo/PlotSearchInfo';
@@ -74,12 +74,13 @@ import Application from './plotSearchSections/application/Application';
 import ApplicationEdit from './plotSearchSections/application/ApplicationEdit';
 import ApplicationMap from './plotSearchSections/map/ApplicationMap';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
-import {FIELDS_LOCKED_FOR_EDITING} from "../constants";
+import {FIELDS_LOCKED_FOR_EDITING} from '../constants';
 
 type Props = {
   applicationFormValues: Object,
   basicInformationFormValues: Object,
   currentPlotSearch: PlotSearch,
+  plotSearchForm: Object,
   clearFormValidFlags: Function,
   change: Function,
   destroy: Function,
@@ -97,7 +98,12 @@ type Props = {
   isFetching: boolean,
   isSaveClicked: boolean,
   isFetchingUsersPermissions: boolean,
+  isFetchingAnyPlanUnits: boolean,
+  isFetchingPlanUnitAttributes: boolean,
+  isFetchingStages: boolean,
+  isFetchingSubtypes: boolean,
   isFormValidFlags: boolean,
+  isLockedForModifications: boolean,
   location: Object,
   match: {
     params: Object,
@@ -166,7 +172,7 @@ class PlotSearchPage extends Component<Props, State> {
     window.addEventListener('popstate', this.handlePopState);
   }
 
-  componentDidUpdate(prevProps:Props, prevState: State) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const {
       currentPlotSearch,
       location: {search},
@@ -249,7 +255,7 @@ class PlotSearchPage extends Component<Props, State> {
   }
 
   setPageTitle = (name) => {
-    setPageTitle(`${name ? `${name} | ` : ''}Tonttihaku`)
+    setPageTitle(`${name ? `${name} | ` : ''}Tonttihaku`);
   };
 
   isAnyFormDirty = () => {
@@ -292,7 +298,7 @@ class PlotSearchPage extends Component<Props, State> {
     initialize(FormNames.PLOT_SEARCH_BASIC_INFORMATION, getContentBasicInformation(plotSearch));
     initialize(FormNames.PLOT_SEARCH_APPLICATION, getContentApplication(plotSearch, plotSearchForm));
     initialize(FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING, {
-      section: {}
+      section: {},
     });
     initialize(FormNames.PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM, {});
   }
@@ -346,7 +352,7 @@ class PlotSearchPage extends Component<Props, State> {
       isBasicInformationFormDirty,
       isApplicationFormDirty,
       areTargetsAllowedToHaveType,
-      isLockedForModifications
+      isLockedForModifications,
     } = this.props;
     receiveIsSaveClicked(true);
 
@@ -355,12 +361,12 @@ class PlotSearchPage extends Component<Props, State> {
     if (areFormsValid) {
       //TODO: Add helper functions to save plotSearch to DB when API is ready
       let payload: Object = {
-        basicInfo: { ...currentPlotSearch },
-        form: null
+        basicInfo: {...currentPlotSearch},
+        form: null,
       };
 
       if (isApplicationFormDirty || !!currentPlotSearch.form && applicationFormValues.form) {
-        payload.form = { ...applicationFormValues.form };
+        payload.form = {...applicationFormValues.form};
       }
 
       if (isBasicInformationFormDirty || payload.form && currentPlotSearch.form !== payload.form) {
@@ -444,7 +450,7 @@ class PlotSearchPage extends Component<Props, State> {
       currentPlotSearch,
       receiveFormValidFlags,
       showEditMode,
-      plotSearchForm
+      plotSearchForm,
     } = this.props;
 
     showEditMode();
@@ -522,9 +528,9 @@ class PlotSearchPage extends Component<Props, State> {
       currentPlotSearch,
       plotSearchMethods,
       isFetchingAnyPlanUnits,
-      isFetchingAnyPlanUnitAttributes,
+      isFetchingPlanUnitAttributes,
       isFetchingStages,
-      isFetchingSubtypes
+      isFetchingSubtypes,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
@@ -547,7 +553,7 @@ class PlotSearchPage extends Component<Props, State> {
                 allowEdit={isMethodAllowed(plotSearchMethods, Methods.PATCH)}
                 isCancelDisabled={false}
                 isCopyDisabled={true}
-                isEditDisabled={isFetchingAnyPlanUnits || isFetchingAnyPlanUnitAttributes}
+                isEditDisabled={isFetchingAnyPlanUnits || isFetchingPlanUnitAttributes}
                 isEditMode={isEditMode}
                 isSaveDisabled={isSaveClicked && !areFormsValid}
                 onCancel={this.cancelChanges}
@@ -598,7 +604,7 @@ class PlotSearchPage extends Component<Props, State> {
         <PageContainer className='with-control-bar-and-tabs' hasTabs>
           <ConfirmationModal
             confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
-            isOpen={isRestoreModalOpen && !isFetchingAnyPlanUnits && !isFetchingAnyPlanUnitAttributes}
+            isOpen={isRestoreModalOpen && !isFetchingAnyPlanUnits && !isFetchingPlanUnitAttributes}
             label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
             onCancel={this.cancelRestoreUnsavedChanges}
             onClose={this.cancelRestoreUnsavedChanges}
@@ -643,7 +649,7 @@ class PlotSearchPage extends Component<Props, State> {
 }
 
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   withPlotSearchAttributes,
   withUiDataList,
@@ -665,11 +671,11 @@ export default flowRight(
         isFormValidFlags: getIsFormValidFlags(state),
         plotSearchForm: getForm(state),
         isFetchingAnyPlanUnits: getIsFetchingAnyPlanUnits(state),
-        isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+        isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
         areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state),
         isLockedForModifications: isLockedForModifications(state),
         isFetchingStages: isFetchingStages(state),
-        isFetchingSubtypes: getIsFetchingSubtypes(state)
+        isFetchingSubtypes: getIsFetchingSubtypes(state),
       };
     },
     {
@@ -688,4 +694,4 @@ export default flowRight(
       deletePlotSearch,
     }
   ),
-)(PlotSearchPage);
+)(PlotSearchPage): React$AbstractComponent<Props, mixed>);

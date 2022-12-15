@@ -36,9 +36,14 @@ import type {PlotSearch} from '$src/plotSearch/types';
 import {
   fetchPlanUnit,
   fetchPlanUnitAttributes,
+  fetchCustomDetailedPlanAttributes,
 } from '$src/plotSearch/actions';
-import {getRouteById, Routes} from "../../../../root/routes";
-import PlotSearchTargetListing from "./PlotSearchTargetListing";
+import {getRouteById, Routes} from '../../../../root/routes';
+import PlotSearchTargetListing from './PlotSearchTargetListing';
+
+type OwnProps = {
+  
+}
 
 type Props = {
   usersPermissions: UsersPermissionsType,
@@ -48,6 +53,7 @@ type Props = {
   currentPlotSearch: PlotSearch,
   fetchPlanUnit: Function,
   fetchPlanUnitAttributes: Function,
+  fetchCustomDetailedPlanAttributes: Function,
   planUnit: Object,
 }
 
@@ -57,6 +63,12 @@ type State = {
 
 class BasicInfo extends PureComponent<Props, State> {
   state = {
+  }
+
+  componentDidMount() {
+    const {fetchCustomDetailedPlanAttributes, fetchPlanUnitAttributes} = this.props;
+    fetchCustomDetailedPlanAttributes();
+    fetchPlanUnitAttributes();
   }
 
   handleBasicInfoCollapseToggle = (val: boolean) => {
@@ -112,7 +124,7 @@ class BasicInfo extends PureComponent<Props, State> {
                     <FormTextTitle uiDataKey={getUiDataPlotSearchKey('preparers')}>
                       {PlotSearchFieldTitles.PREPARERS}
                     </FormTextTitle>
-                    <FormText>{plotSearch.preparers?.map(getUserFullName).join(", ") || '-'}</FormText>
+                    <FormText>{plotSearch.preparers?.map(getUserFullName).join(', ') || '-'}</FormText>
                   </Column>
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, 'search_class')}>
@@ -256,7 +268,7 @@ class BasicInfo extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
+export default (connect(
   (state) => {
     return {
       usersPermissions: getUsersPermissions(state),
@@ -270,6 +282,7 @@ export default connect(
   {
     receiveCollapseStates,
     fetchPlanUnitAttributes,
+    fetchCustomDetailedPlanAttributes,
     fetchPlanUnit,
   }
-)(BasicInfo);
+)(BasicInfo): React$AbstractComponent<OwnProps, mixed>);

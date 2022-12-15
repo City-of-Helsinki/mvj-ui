@@ -3,15 +3,16 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import {getContentUser} from '$src/users/helpers';
-import type {PlotSearch, Form} from './types';
+import type {PlotSearch, Form, PlotSearchState} from './types';
 import {removeSessionStorageItem} from '$util/storage';
 import {FormNames} from '$src/enums';
 import {
   getApiResponseResults,
 } from '$util/helpers';
-import {formatDate} from "../util/helpers";
-import {formValueSelector} from "redux-form";
-import {PlotSearchTargetType} from "./enums";
+import {formatDate} from '../util/helpers';
+import {formValueSelector} from 'redux-form';
+import {PlotSearchTargetType} from './enums';
+import type {Attributes} from '../types';
 
 /**
  * Get plotSearch basic information content
@@ -34,14 +35,15 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     search_class: plotSearch.search_class,
     plot_search_targets: plotSearch.plot_search_targets?.map((target) => ({
       ...target,
-      plan_unit_id: target.plan_unit?.id
+      plan_unit_id: target.plan_unit_id,
+      custom_detailed_plan_id: target.custom_detailed_plan_id,
     })),
     decisions: plotSearch.decisions?.map((decision) => {
       // Detailed target objects are not available in a search result, only when fetching a single plot search,
       // so the decisions might not always be available.
       const matchingTarget = plotSearch.plot_search_targets?.find((target) => target.decisions?.find((targetDecision) => targetDecision.id === decision.id));
       return annotatePlanUnitDecision(decision, matchingTarget?.plan_unit);
-    })
+    }),
   };
 };
 
@@ -51,11 +53,11 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
  * @param {Object} plotSearchForm
  * @return {Object}
  */
-export const getContentApplication = (plotSearch: PlotSearch, plotSearchForm: Form): Object => {
+export const getContentApplication = (plotSearch: PlotSearch, plotSearchForm: Form | null = null): Object => {
   return {
     template: null,
-    useExistingForm: !!plotSearch.form ? "1" : "0",
-    form: plotSearchForm
+    useExistingForm: plotSearch.form ? '1' : '0',
+    form: plotSearchForm,
   };
 };
 
@@ -77,7 +79,7 @@ export const getContentPlotSearchListItem = (plotSearch: PlotSearch): Object => 
   return {
     id: plotSearch.id,
     basicInformation: getContentBasicInformation(plotSearch),
-    application: getContentApplication(plotSearch),
+    application: getContentApplication(plotSearch), 
     ...getContentBasicInformation(plotSearch),
   };
 };
@@ -130,9 +132,9 @@ export const getPlanUnitFromObjectKeys = (planUnit: Object, index: any): ?Object
 export const cleanTargets = (payload: Object, shouldFixTargetType: boolean): Object => {
   const plot_search_targets = payload.plot_search_targets.map(target => ({
     id: target.id,
-    plan_unit_id: target.plan_unit_id,
     target_type: shouldFixTargetType ? PlotSearchTargetType.SEARCHABLE : target.target_type,
-    info_links: target.info_links
+    info_links: target.info_links,
+    ...(target.plan_unit_id ? {plan_unit_id: target.plan_unit_id} : {custom_detailed_plan_id: target.custom_detailed_plan_id}),
   }));
   return {...payload, plot_search_targets};
 };
@@ -147,7 +149,7 @@ export const cleanDecisions = (payload: Object): Object => {
     ...payload,
     decisions: payload.decisions
       .filter((decision) => !!decision.id && !!decision.relatedPlanUnitId)
-      .map((decision) => decision.id)
+      .map((decision) => decision.id),
   };
 };
 
@@ -168,17 +170,17 @@ export const filterSubTypes = (subTypes: Object, type: string): Object => {
   return subTypesAsOptions;
 };
 
-export const hasMinimumRequiredFieldsFilled = (state) => {
+export const hasMinimumRequiredFieldsFilled = (state: PlotSearchState): boolean => {
   return [
     'name',
     'preparers',
     'stage',
     'type',
-    'subtype'
+    'subtype',
   ].every((fieldName) => !!formValueSelector(FormNames.PLOT_SEARCH_BASIC_INFORMATION)(state, fieldName));
 };
 
-export const formatDecisionName = (decision: Object) => {
+export const formatDecisionName = (decision: Object): string => {
   const textsFromFields = [
     decision.relatedPlanUnitIdentifier && `(${decision.relatedPlanUnitIdentifier})`,
     decision.reference_number,
@@ -188,16 +190,21 @@ export const formatDecisionName = (decision: Object) => {
     decision.type?.name,
     decision.conditions?.length > 0
       ? `(${decision.conditions.length} ehto${decision.conditions.length === 1 ? '' : 'a'})`
-      : null
+      : null,
   ].filter((text) => !!text);
 
   return textsFromFields.join('\u00a0\u00a0');
 };
 
-export const annotatePlanUnitDecision = (decision: Object, plotUnit: Object) => {
+export const annotatePlanUnitDecision = (decision: Object, plotUnit: Object): Object => {
   return {
     ...decision,
     relatedPlanUnitIdentifier: plotUnit?.identifier || decision.relatedPlanUnitIdentifier,
-    relatedPlanUnitId: plotUnit?.id || decision.relatedPlanUnitId
+    relatedPlanUnitId: plotUnit?.id || decision.relatedPlanUnitId,
   };
-}
+};
+
+export const getInfoLinkLanguageDisplayText = (key: string, attributes: Attributes): string => {
+  const languages = get(attributes, 'plot_search_targets.child.children.info_links.child.children.language.choices');
+  return languages?.find((language) => language.value === key)?.display_name || key;
+};

@@ -97,7 +97,7 @@ export const getRouteById = (id: string): string => {
 };
 
 export default
-<App>
+(<App>
   <Switch>
     <Redirect exact from="/" to={getRouteById(Routes.LEASES)} />
     <Route exact path={getRouteById(Routes.LEASES)} component={LeaseListPage} />
@@ -130,4 +130,4 @@ export default
     <Route exact path={getRouteById(Routes.CREDIT_DECISION)} component={CreditDecisionSearchPage} />
     <Route component={ErrorPage} />
   </Switch>
-</App>;
+</App>: React$Node);

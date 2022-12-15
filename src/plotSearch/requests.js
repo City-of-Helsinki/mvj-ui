@@ -38,12 +38,20 @@ export const deletePlotSearch = (id: any): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`plot_search/${id}/`), {method: 'DELETE'}));
 };
 
-export const fetchPlanUnitAttributes = (id: any): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`plan_unit/${id}/`), {method: 'OPTIONS'}));
+export const fetchPlanUnitAttributes = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`plan_unit/1/`), {method: 'OPTIONS'}));
 };
 
 export const fetchPlanUnit = (id: any): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`plan_unit/${id}/`)));
+};
+
+export const fetchCustomDetailedPlanAttributes = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`custom_detailed_plan/1/`), {method: 'OPTIONS'}));
+};
+
+export const fetchCustomDetailedPlan = (id: any): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`custom_detailed_plan/${id}/`)));
 };
 
 export const fetchPlotSearchSubtypesRequest = (): Generator<any, any, any> => {

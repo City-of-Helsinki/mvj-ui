@@ -45,6 +45,33 @@ export const PlotSearchFieldTitles = {
   INFO_LINK_DESCRIPTION: 'Lisätietolinkin kuvaus',
   INFO_LINK_URL: 'Lisätietolinkki',
   INFO_LINK_LANGUAGE: 'Kieli',
+  USAGE_DISTRIBUTION: 'Käyttöjakauma',
+  USAGE_DISTRIBUTION_BUILD_PERMISSION: 'Rakennusoikeus',
+  USAGE_DISTRIBUTION_NOTE: 'Huomautus',
+  LEASE_IDENTIFIER: 'Vuokraustunnus',
+  CUSTOM_DETAILED_PLAN_INTENDED_USE: 'Kaavayksikön käyttötarkoitus',
+  AREA: 'Kokonaisalue',
+  ADDRESS: 'Osoite',
+  DETAILED_PLAN: 'Asemakaava',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE: 'Asemakaavan viimeisin käsittelypvm',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE: 'Asemakaavan viimeisin käsittelypvm. selite',
+  STATE: 'Kaavayksikön olotila',
+  CUSTOM_DETAILED_PLAN_TYPE: 'Kaavayksikön laji',
+  RENT_BUILD_PERMISSION: 'Kokonaisrakennusoikeus',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'Arvioitu rakentamisen valmius',
+  TARGET_IDENTIFIER: 'Kohteen tunnus',
+  TARGET_TYPE: 'Kohteen tyyppi',
+  LEASE_HITAS: 'Hitas',
+  SECTION_AREA: 'Leikkausala',
+  PLOT_DIVISION_STATE: 'Tonttijaon olotila',
+  PLOT_DIVISION_INDENTIFIER: 'Tonttijaon tunnus',
+  PLOT_DIVISION_EFFECTIVE_DATE: 'Tonttijaon voimaantulopvm',
+  PLOT_DIVISION_DATE_OF_APPROVAL: 'Tonttijaon hyväksymispvm',
+  PLAN_UNIT_TYPE: 'Kaavayksikön laji',
+  PLAN_UNIT_STATE: 'Kaavayksikön olotila',
+  IN_CONTRACT: 'Sopimushetkellä',
+  PLAN_UNIT_INTENDED_USE: 'Kaavayksikön käyttötarkoitus',
+  
 };
 
 /**
@@ -71,13 +98,18 @@ export const ApplicationFieldTitles = {
 export const PlotSearchTargetType = {
   SEARCHABLE: 'searchable',
   PROCEDURAL: 'procedural_reservation',
-  DIRECT: 'direct_reservation'
-}
+  DIRECT: 'direct_reservation',
+};
 
 export const PlotSearchStageTypes = {
   IN_PREPARATION: 'in_preparation',
   IN_ACTION: 'in_action',
   PROCESSING: 'processing',
   DECISION: 'decision',
-  SETTLED: 'settled'
-}
+  SETTLED: 'settled',
+};
+
+export const TargetIdentifierTypes = {
+  PLAN_UNIT: 'plan_unit',
+  CUSTOM_DETAILED_PLAN: 'custom_detailed_plan',
+};

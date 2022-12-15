@@ -11,7 +11,7 @@ import Authorization from '$components/authorization/Authorization';
 import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
-import ErrorField from "../../../../components/form/ErrorField";
+import ErrorField from '../../../../components/form/ErrorField';
 import BasicInfoDecisionEdit from './BasicInfoDecisionEdit';
 import {ButtonColors} from '$components/enums';
 import Collapse from '$components/collapse/Collapse';
@@ -33,7 +33,9 @@ import {
   receiveCollapseStates,
   receiveIsSaveClicked,
   receiveFormValidFlags,
-  removePlanUnitDecisions
+  removePlanUnitDecisions,
+  fetchCustomDetailedPlanAttributes,
+  fetchPlanUnitAttributes,
 } from '$src/plotSearch/actions';
 import {
   getAttributes,
@@ -41,7 +43,7 @@ import {
   getIsSaveClicked,
   getErrorsByFormName,
   getPlotSearchSubTypes,
-  getDecisionCandidates
+  getDecisionCandidates,
 } from '$src/plotSearch/selectors';
 import {
   filterSubTypes,
@@ -50,12 +52,12 @@ import {
 import PlotSearchSiteEdit from './PlotSearchSiteEdit';
 
 import type {Attributes} from '$src/types';
-import {hasMinimumRequiredFieldsFilled} from "../../../helpers";
-import WarningField from "../../../../components/form/WarningField";
-import {getCurrentPlotSearch, getCurrentPlotSearchStage, getStages, isLockedForModifications} from "../../../selectors";
-import PlotSearchTargetListing from "./PlotSearchTargetListing";
-import {AUTOMATIC_PLOT_SEARCH_STAGES} from "../../../constants";
-import {PlotSearchStageTypes} from "../../../enums";
+import {hasMinimumRequiredFieldsFilled} from '$src/plotSearch/helpers';
+import WarningField from '$components/form/WarningField';
+import {getCurrentPlotSearch, getCurrentPlotSearchStage, getStages, isLockedForModifications} from '$src/plotSearch/selectors';
+import PlotSearchTargetListing from './PlotSearchTargetListing';
+import {AUTOMATIC_PLOT_SEARCH_STAGES} from '$src/plotSearch/constants';
+import {PlotSearchStageTypes} from '$src/plotSearch/enums';
 
 type DecisionsProps = {
   attributes: Attributes,
@@ -102,7 +104,7 @@ const renderDecisions = ({
 
       return false;
     });
-  }
+  };
 
   const cacheKey = decisionCandidates.map((item) => item.id).join(',');
 
@@ -163,7 +165,7 @@ const renderDecisions = ({
               })}
 
               <ErrorField showError={hasUnidentifiedDecisions} meta={{
-                error: 'Kunkin päätöksen on liityttävä johonkin valituista kohteista. Kohteiden ulkopuoliset päätökset poistetaan tallennettaessa.'
+                error: 'Kunkin päätöksen on liityttävä johonkin valituista kohteista. Kohteiden ulkopuoliset päätökset poistetaan tallennettaessa.',
               }} />
 
               {!disabled &&
@@ -200,7 +202,7 @@ const renderPlotSearchSites = ({
   formName,
   form,
   change,
-  onRemove
+  onRemove,
   // usersPermissions,
 }: PlotSearchSitesProps): Element<*> => {
   const handleAdd = () => {
@@ -217,7 +219,7 @@ const renderPlotSearchSites = ({
                 dispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
-                    const id = fields.get(index)?.plan_unit?.id;
+                    const id = fields.get(index)?.plan_unit_id || fields.get(index)?.custom_detailed_plan_id;
                     fields.remove(index);
 
                     if (id) {
@@ -231,7 +233,7 @@ const renderPlotSearchSites = ({
                 });
               };
 
-              const handleChange = (oldId, newId) => {
+              const handleChange = (oldId) => {
                 if (oldId) {
                   onRemove(oldId);
                 }
@@ -293,7 +295,9 @@ type Props = {
   removeTargetDecisions: Function,
   isLockedForModifications: boolean,
   stages: Array<Object>,
-  currentStage: string | null
+  currentStage: string | null,
+  fetchCustomDetailedPlanAttributes: Function,
+  fetchPlanUnitAttributes: Function,
 }
 
 type State = {
@@ -305,7 +309,9 @@ class BasicInfoEdit extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { currentStage, change, stages } = this.props;
+    const {currentStage, change, stages, fetchCustomDetailedPlanAttributes, fetchPlanUnitAttributes} = this.props;
+    fetchCustomDetailedPlanAttributes();
+    fetchPlanUnitAttributes();
     if (!currentStage) {
       const initialStage = stages.find((stage) => stage.stage === PlotSearchStageTypes.IN_PREPARATION);
       if (initialStage) {
@@ -360,12 +366,12 @@ class BasicInfoEdit extends PureComponent<Props, State> {
           selectedMissingIds[candidate.id].relatedPlanUnitIdentifier = candidate.relatedPlanUnitIdentifier;
           selectedMissingIds[candidate.id].relatedPlanUnitId = candidate.relatedPlanUnitId;
         }
-      })
+      });
     }
   }
 
   onTargetRemoved = (id) => {
-    const { targets, removeTargetDecisions } = this.props;
+    const {targets, removeTargetDecisions} = this.props;
 
     // If there's more than one target with the same plan unit, the decisions should not be removed
     // from the candidate list.
@@ -391,7 +397,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       change,
       currentPlotSearch,
       isLockedForModifications,
-      stages
+      stages,
     } = this.props;
     const subTypeOptions = filterSubTypes(plotSearchSubTypes, type);
 
@@ -405,8 +411,8 @@ class BasicInfoEdit extends PureComponent<Props, State> {
         choices: stages.filter((stage) => !AUTOMATIC_PLOT_SEARCH_STAGES.includes(stage.stage)
         ).map((stage) => ({
           display_name: stage.name,
-          value: stage.id
-        }))
+          value: stage.id,
+        })),
       };
     }
 
@@ -447,7 +453,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                         fieldType: FieldTypes.USER,
                         label: PlotSearchFieldTitles.PREPARERS,
                         required: true,
-                        multiSelect: true
+                        multiSelect: true,
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('preparers')}
@@ -463,7 +469,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       overrideValues={{
                         label: PlotSearchFieldTitles.SEARCH_CLASS,
                         required: true,
-                        allowEdit: !isLockedForModifications
+                        allowEdit: !isLockedForModifications,
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('search_class')}
@@ -479,7 +485,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       overrideValues={{
                         label: PlotSearchFieldTitles.TYPE,
                         required: true,
-                        allowEdit: !isLockedForModifications
+                        allowEdit: !isLockedForModifications,
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('type')}
@@ -496,7 +502,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                         label: PlotSearchFieldTitles.SUBTYPE,
                         options: subTypeOptions,
                         required: true,
-                        allowEdit: !isLockedForModifications
+                        allowEdit: !isLockedForModifications,
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('subtype')}
@@ -512,7 +518,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       overrideValues={{
                         label: 'Alkupvm ja klo',
                         fieldType: FieldTypeOptions.TIME,
-                        allowEdit: !isLockedForModifications
+                        allowEdit: !isLockedForModifications,
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('begin_at')}
@@ -528,7 +534,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       overrideValues={{
                         label: 'Loppupvm ja klo',
                         fieldType: FieldTypeOptions.TIME,
-                        allowEdit: !isLockedForModifications
+                        allowEdit: !isLockedForModifications,
                       }}
                       enableUiDataEdit
                       uiDataKey={getUiDataPlotSearchKey('end_at')}
@@ -544,7 +550,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                       overrideValues={{
                         label: PlotSearchFieldTitles.STAGE,
                         required: true,
-                        allowEdit: canEditStage
+                        allowEdit: canEditStage,
                       }}
                     />
                   </Column>
@@ -568,7 +574,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   KOHTEET
                 </SubTitle>
                 <WarningField showWarning={!hasMinimumRequiredFieldsFilled} meta={{
-                  warning: "Ole hyvä ja täytä ensin pakolliset perustiedot."
+                  warning: 'Ole hyvä ja täytä ensin pakolliset perustiedot.',
                 }} />
                 <FieldArray
                   component={renderPlotSearchSites}
@@ -612,19 +618,21 @@ export default (flowRight(
         currentPlotSearch: getCurrentPlotSearch(state),
         isLockedForModifications: isLockedForModifications(state),
         stages: getStages(state),
-        currentStage: getCurrentPlotSearchStage(state)
+        currentStage: getCurrentPlotSearchStage(state),
       };
     },
     {
       receiveCollapseStates,
       receiveIsSaveClicked,
       receiveFormValidFlags,
-      removeTargetDecisions: removePlanUnitDecisions
+      removeTargetDecisions: removePlanUnitDecisions,
+      fetchCustomDetailedPlanAttributes,
+      fetchPlanUnitAttributes,
     }
   ),
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
-    change
+    change,
   }),
-)(BasicInfoEdit) : React$AbstractComponent<OwnProps, mixed>);
+)(BasicInfoEdit): React$AbstractComponent<OwnProps, mixed>);

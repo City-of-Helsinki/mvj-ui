@@ -18,6 +18,10 @@ import {
   planUnitAttributesNotFound,
   receiveSinglePlanUnit,
   planUnitNotFound,
+  customDetailedPlanAttributesNotFound,
+  customDetailedPlanNotFound,
+  receiveCustomDetailedPlanAttributes,
+  receiveSingleCustomDetailedPlan,
   receivePlotSearchSubtype,
   plotSearchSubtypesNotFound,
   nullPlanUnits,
@@ -48,6 +52,8 @@ import {
   deletePlotSearch,
   fetchPlanUnitAttributes,
   fetchPlanUnit,
+  fetchCustomDetailedPlanAttributes,
+  fetchCustomDetailedPlan,
   fetchPlotSearchSubtypesRequest,
   fetchFormRequest,
   fetchFormAttributesRequest,
@@ -63,7 +69,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         const attributes = {
-          ...bodyAsJson.fields
+          ...bodyAsJson.fields,
         };
         const methods = bodyAsJson.methods;
 
@@ -109,7 +115,7 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSinglePlotSearch, id);
     switch (statusCode) {
       case 200:
-        yield put(receiveSinglePlotSearch({...bodyAsJson }));
+        yield put(receiveSinglePlotSearch({...bodyAsJson}));
         yield put(fetchTemplateForms());
         yield put(fetchStages());
         if (bodyAsJson.form) {
@@ -120,7 +126,9 @@ function* fetchSinglePlotSearchSaga({payload: id}): Generator<any, any, any> {
         }
         yield put(resetPlanUnitDecisions());
         for (const target of bodyAsJson.plot_search_targets) {
-          yield put(addPlanUnitDecisions(target.plan_unit));
+          if(target.plan_unit) {
+            yield put(addPlanUnitDecisions(target.plan_unit));
+          }
         }
         break;
       case 404:
@@ -300,22 +308,21 @@ function* deletePlotSearchSaga({payload: id}): Generator<any, any, any> {
   }
 }
 
-function* fetchPlanUnitAttributesSaga({payload: value}): Generator<any, any, any> {
-  const id = value?.value;
+function* fetchPlanUnitAttributesSaga(): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnitAttributes, id);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlanUnitAttributes);
     switch (statusCode) {
       case 200:
         const attributes = bodyAsJson.fields;
-        yield put(receivePlanUnitAttributes({[id]: attributes}));
+        yield put(receivePlanUnitAttributes(attributes));
         break;
       default:
-        yield put(planUnitAttributesNotFound(id));
+        yield put(planUnitAttributesNotFound());
         break;
     }
   } catch (error) {
     console.error('Failed to fetch plan unit attributes with error "%s"', error);
-    yield put(planUnitAttributesNotFound(id));
+    yield put(planUnitAttributesNotFound());
     yield put(receiveError(error));
   }
 }
@@ -330,16 +337,58 @@ function* fetchPlanUnitSaga({payload: value}): Generator<any, any, any> {
         yield put(addPlanUnitDecisions(bodyAsJson));
         break;
       case 404:
-        yield put(planUnitNotFound(id));
+        yield put(planUnitNotFound());
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
       default:
-        yield put(planUnitNotFound(id));
+        yield put(planUnitNotFound());
         break;
     }
   } catch (error) {
     console.error('Failed to fetch planUnit with error "%s"', error);
-    yield put(planUnitNotFound(id));
+    yield put(planUnitNotFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchCustomDetailedPlanAttributesSaga(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchCustomDetailedPlanAttributes);
+    switch (statusCode) {
+      case 200:
+        const attributes = bodyAsJson.fields;
+        yield put(receiveCustomDetailedPlanAttributes(attributes));
+        break;
+      default:
+        yield put(customDetailedPlanAttributesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch custom detailed plan attributes with error "%s"', error);
+    yield put(customDetailedPlanAttributesNotFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchCustomDetailedPlanSaga({payload: value}): Generator<any, any, any> {
+  const id = value?.value;
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchCustomDetailedPlan, id);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleCustomDetailedPlan({[id]: bodyAsJson}));
+        break;
+      case 404:
+        yield put(customDetailedPlanNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      default:
+        yield put(customDetailedPlanNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch custom detailed plan with error "%s"', error);
+    yield put(customDetailedPlanNotFound());
     yield put(receiveError(error));
   }
 }
@@ -466,6 +515,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotSearch/FETCH_TEMPLATE_FORMS', fetchTemplateFormsSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
+      yield takeEvery('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN', fetchCustomDetailedPlanSaga);
+      yield takeEvery('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES', fetchCustomDetailedPlanAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_FORM_ATTRIBUTES', fetchFormAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_FORM', fetchFormSaga);
       yield takeEvery('mvj/plotSearch/EDIT_FORM', editFormSaga);
