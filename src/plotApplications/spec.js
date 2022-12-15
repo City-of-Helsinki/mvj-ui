@@ -17,11 +17,11 @@ import {
   receiveFormValidFlags,
   clearFormValidFlags,
   editPlotApplication,
-} from './actions';
+} from '$src/plotApplications/actions';
 
-import plotApplicationReducer from './reducer';
+import plotApplicationReducer from '$src/plotApplications/reducer';
 
-import type {PlotApplicationsState} from './types';
+import type {PlotApplicationsState} from '$src/plotApplications/types';
 
 const baseState: PlotApplicationsState = {
   attachmentAttributes: null,
@@ -55,10 +55,14 @@ const baseState: PlotApplicationsState = {
   subTypes: null,
   pendingUploads: [],
   plotSearch: null,
-  isFetchingInfoCheckAttributes: false,
-  infoCheckAttributes: null,
-  isUpdatingInfoCheck: {},
-  lastInfoCheckUpdateSuccessful: {},
+  isFetchingApplicantInfoCheckAttributes: false,
+  applicantInfoCheckAttributes: null,
+  isUpdatingApplicantInfoCheck: {},
+  lastApplicantInfoCheckUpdateSuccessful: {},
+  isUpdatingTargetInfoCheck: {},
+  lastTargetInfoCheckUpdateSuccessful: {},
+  isFetchingTargetInfoCheckAttributes: false,
+  targetInfoCheckAttributes: null,
 };
 
 // $FlowFixMe

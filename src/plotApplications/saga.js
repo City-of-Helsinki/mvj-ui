@@ -2,7 +2,7 @@
 
 import {all, fork, put, takeLatest, takeEvery, call, select} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
-
+import {push} from 'react-router-redux';
 
 import {displayUIMessage} from '$src/util/helpers';
 import {
@@ -36,12 +36,16 @@ import {
   fetchApplicationRelatedPlotSearch,
   receiveApplicationRelatedPlotSearch,
   applicationRelatedPlotSearchNotFound,
-  fetchInfoCheckAttributes,
-  receiveInfoCheckAttributes,
-  infoCheckAttributesNotFound,
-  receiveUpdatedInfoCheckItem,
-  infoCheckUpdateFailed,
-} from './actions';
+  fetchApplicantInfoCheckAttributes,
+  receiveApplicantInfoCheckAttributes,
+  applicantInfoCheckAttributesNotFound,
+  receiveUpdatedApplicantInfoCheckItem,
+  applicantInfoCheckUpdateFailed,
+  receiveUpdatedTargetInfoCheckItem,
+  targetInfoCheckUpdateFailed,
+  targetInfoCheckMeetingMemoUploadFailed,
+  receiveTargetInfoCheckMeetingMemoUploaded,
+} from '$src/plotApplications/actions';
 import {receiveError} from '$src/api/actions';
 
 import {
@@ -56,20 +60,28 @@ import {
   deleteUploadRequest,
   fetchPendingUploadsRequest,
   fetchAttachmentAttributesRequest,
-  fetchInfoCheckAttributesRequest,
-  editInfoCheckItemRequest,
-} from './requests';
+  fetchApplicantInfoCheckAttributesRequest,
+  editApplicantInfoCheckItemRequest,
+  editTargetInfoCheckItemRequest,
+  createMeetingMemoRequest,
+  deleteMeetingMemoRequest,
+} from '$src/plotApplications/requests';
 import {
   fetchFormRequest,
   fetchSinglePlotSearch,
-} from '../plotSearch/requests';
+} from '$src/plotSearch/requests';
 import {
   fetchFormAttributes,
-} from '../plotSearch/actions';
-import {push} from 'react-router-redux';
-import {getRouteById, Routes} from '../root/routes';
-import type {DeleteUploadAction, PlotApplication, UploadFileAction} from './types';
-import {getCurrentPlotApplication} from './selectors';
+} from '$src/plotSearch/actions';
+import {getRouteById, Routes} from '$src/root/routes';
+import type {
+  DeleteTargetInfoCheckMeetingMemoAction,
+  DeleteUploadAction,
+  PlotApplication,
+  UploadFileAction,
+  UploadTargetInfoCheckMeetingMemoAction,
+} from '$src/plotApplications/types';
+import {getCurrentPlotApplication} from '$src/plotApplications/selectors';
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
@@ -117,7 +129,7 @@ function* fetchSinglePlotApplicationSaga({payload: id}): Generator<any, any, any
         yield put(fetchApplicationRelatedForm(bodyAsJson.form));
         yield put(fetchApplicationRelatedAttachments(id));
         yield put(fetchFormAttributes(bodyAsJson.form));
-        yield put(fetchInfoCheckAttributes());
+        yield put(fetchApplicantInfoCheckAttributes());
         break;
     }
   } catch (e) {
@@ -373,9 +385,9 @@ function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchInfoCheckAttributesSaga(): Generator<any, any, any> {
+function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchInfoCheckAttributesRequest);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchApplicantInfoCheckAttributesRequest);
 
     switch(statusCode) {
       case 200:
@@ -383,39 +395,119 @@ function* fetchInfoCheckAttributesSaga(): Generator<any, any, any> {
           ...bodyAsJson.fields,
         };
 
-        yield put(receiveInfoCheckAttributes(attributes));
+        yield put(receiveApplicantInfoCheckAttributes(attributes));
         break;
       default:
-        yield put(infoCheckAttributesNotFound());
+        yield put(applicantInfoCheckAttributesNotFound());
     }
   } catch (error) {
     console.error('Failed to fetch info check attributes with error "%s"', error);
-    yield put(infoCheckAttributesNotFound());
+    yield put(applicantInfoCheckAttributesNotFound());
     yield put(receiveError(error));
   }
 }
 
-function* editInfoCheckItemSaga({payload: infoCheck}): Generator<any, any, any> {
+function* editApplicantInfoCheckItemSaga({payload: infoCheck}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editInfoCheckItemRequest, infoCheck);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editApplicantInfoCheckItemRequest, infoCheck);
 
     switch (statusCode) {
       case 200:
       case 201:
         const currentPlotApplication = yield select(getCurrentPlotApplication);
 
-        yield put(receiveUpdatedInfoCheckItem(bodyAsJson));
+        yield put(receiveUpdatedApplicantInfoCheckItem(bodyAsJson));
         yield put(fetchSinglePlotApplication(currentPlotApplication.id));
         displayUIMessage({title: '', body: 'Käsittelytieto tallennettu'});
         break;
       default:
-        yield put(infoCheckUpdateFailed(infoCheck.id));
+        yield put(applicantInfoCheckUpdateFailed(infoCheck.id));
         displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
     }
   } catch(e) {
-    yield put(infoCheckUpdateFailed(infoCheck.id));
+    yield put(applicantInfoCheckUpdateFailed(infoCheck.id));
     console.log(e);
     displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
+  }
+}
+
+function* editTargetInfoCheckItemSaga({payload: infoCheck}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editTargetInfoCheckItemRequest, infoCheck);
+
+    switch (statusCode) {
+      case 200:
+      case 201:
+        const currentPlotApplication = yield select(getCurrentPlotApplication);
+
+        yield put(receiveUpdatedTargetInfoCheckItem(bodyAsJson));
+        yield put(fetchSinglePlotApplication(currentPlotApplication.id));
+        displayUIMessage({title: '', body: 'Käsittelytieto tallennettu'});
+        break;
+      default:
+        yield put(targetInfoCheckUpdateFailed(infoCheck.id));
+        displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
+    }
+  } catch(e) {
+    yield put(targetInfoCheckUpdateFailed(infoCheck.id));
+    console.log(e);
+    displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
+  }
+}
+
+function* uploadMeetingMemoSaga({payload}: UploadTargetInfoCheckMeetingMemoAction): Generator<any, any, any> {
+  try {
+    const {fileData, targetInfoCheck, callback} = payload;
+
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createMeetingMemoRequest, {
+      file: fileData,
+      name: fileData.name,
+      targetInfoCheck,
+    });
+
+    switch (statusCode) {
+      case 201:
+        yield put(receiveTargetInfoCheckMeetingMemoUploaded());
+        if (callback) {
+          callback(bodyAsJson);
+        }
+        displayUIMessage({title: '', body: 'Kokousmuistio lisätty'});
+        break;
+      default:
+        yield put(targetInfoCheckMeetingMemoUploadFailed());
+        displayUIMessage({title: '', body: 'Kokousmuistion tallennus epäonnistui'}, {type: 'error'});
+    }
+  } catch (e) {
+    console.log(e);
+    yield put(targetInfoCheckMeetingMemoUploadFailed());
+    displayUIMessage({title: '', body: 'Kokousmuistion tallennus epäonnistui'}, {type: 'error'});
+    throw e;
+  }
+}
+
+function* deleteMeetingMemoSaga({payload}: DeleteTargetInfoCheckMeetingMemoAction): Generator<any, any, any> {
+  try {
+    const {file, callback} = payload;
+    const {response: {status: statusCode}} = yield call(deleteMeetingMemoRequest, file.id);
+
+    switch (statusCode) {
+      case 200:
+      case 204:
+        yield put(receiveFileOperationFinished());
+        if (callback) {
+          callback();
+        }
+        displayUIMessage({title: '', body: 'Kokousmuistio poistettu'});
+        break;
+      default:
+        yield put(pendingUploadsNotFound());
+        displayUIMessage({title: '', body: 'Kokousmuistion poistaminen epäonnistui'}, {type: 'error'});
+    }
+  } catch (e) {
+    console.error(e);
+    yield put(pendingUploadsNotFound());
+    displayUIMessage({title: '', body: 'Kokousmuistion poistaminen epäonnistui'}, {type: 'error'});
+    throw e;
   }
 }
 
@@ -433,11 +525,14 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH', fetchApplicationRelatedPlotSearchSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENTS', fetchApplicationRelatedAttachmentsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', fetchAttachmentAttributesSaga);
-      yield takeLatest('mvj/plotApplications/FETCH_INFO_CHECK_ATTRIBUTES', fetchInfoCheckAttributesSaga);
-      yield takeLatest('mvj/plotApplications/UPLOAD_FILE', uploadFileSaga);
+      yield takeLatest('mvj/plotApplications/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES', fetchApplicantInfoCheckAttributesSaga);
       yield takeLatest('mvj/plotApplications/FETCH_PENDING_UPLOADS', fetchPendingUploadsSaga);
-      yield takeLatest('mvj/plotApplications/DELETE_UPLOAD', deleteUploadSaga);
-      yield takeEvery('mvj/plotApplications/EDIT_INFO_CHECK_ITEM', editInfoCheckItemSaga);
+      yield takeEvery('mvj/plotApplications/UPLOAD_FILE', uploadFileSaga);
+      yield takeEvery('mvj/plotApplications/DELETE_UPLOAD', deleteUploadSaga);
+      yield takeEvery('mvj/plotApplications/UPLOAD_MEETING_MEMO', uploadMeetingMemoSaga);
+      yield takeEvery('mvj/plotApplications/DELETE_MEETING_MEMO', deleteMeetingMemoSaga);
+      yield takeEvery('mvj/plotApplications/EDIT_APPLICANT_INFO_CHECK_ITEM', editApplicantInfoCheckItemSaga);
+      yield takeEvery('mvj/plotApplications/EDIT_TARGET_INFO_CHECK_ITEM', editTargetInfoCheckItemSaga);
     }),
   ]);
 }

@@ -2,27 +2,26 @@
 
 import get from 'lodash/get';
 import _ from 'lodash';
-import {getFieldAttributes, displayUIMessage, getApiResponseResults} from '../util/helpers';
 import {formValueSelector} from 'redux-form';
+import {getFieldAttributes, displayUIMessage, getApiResponseResults} from '$util/helpers';
 
-import createUrl from '../api/createUrl';
-import {store} from '../root/startApp';
-import {FormNames} from '../enums';
+import createUrl from '$src/api/createUrl';
+import {store} from '$src/root/startApp';
+import {FormNames} from '$src/enums';
 import {
-  getApplicationInfoCheckData,
+  getApplicationApplicantInfoCheckData, getApplicationRelatedPlotSearch, getApplicationTargetInfoCheckData,
   getCurrentEditorTargets,
-} from './selectors';
+} from '$src/plotApplications/selectors';
 import {
   APPLICANT_MAIN_IDENTIFIERS,
   APPLICANT_SECTION_IDENTIFIER,
   TARGET_SECTION_IDENTIFIER,
-} from './constants';
-import type {LeafletFeature, LeafletGeoJson} from '$src/types';
-import {ApplicantInfoCheckTypes, ApplicantTypes, PlotApplicationInfoCheckExternalTypes} from './enums';
-import type {RootState} from '../root/types';
-import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState} from './types';
-import type {Form, FormSection} from '../plotSearch/types';
-import type {Attributes} from '../types';
+} from '$src/plotApplications/constants';
+import type {LeafletFeature, LeafletGeoJson, Attributes} from '$src/types';
+import {ApplicantInfoCheckTypes, ApplicantTypes, PlotApplicationApplicantInfoCheckExternalTypes} from '$src/plotApplications/enums';
+import type {RootState} from '$src/root/types';
+import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState, UploadedFileMeta} from '$src/plotApplications/types';
+import type {Form, FormSection} from '$src/plotSearch/types';
 
 /**
  * Get plotApplication list results
@@ -305,7 +304,7 @@ export const getInitialApplicationForm = (
         }
 
         initialValue = {
-          value: reformattedAnswer?.value?.map((file) => file.id) || [],
+          value: reformattedAnswer?.value?.map((file) => file.id) || ([]: Array<UploadedFileMeta>),
           extraValue: '',
         };
         break;
@@ -469,14 +468,14 @@ export const getApplicantInfoCheckItems = (state: RootState, identifier: string)
       label: 'Kaupparekisteriote',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.CREDITWORTHINESS,
       label: 'Luottokelpoisuustodistus / luottotiedot',
       useIfCompany: true,
       useIfPerson: true,
-      external: PlotApplicationInfoCheckExternalTypes.CREDIT_INQUIRY,
+      external: PlotApplicationApplicantInfoCheckExternalTypes.CREDIT_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.PENSION_CONTRIBUTIONS,
@@ -490,32 +489,32 @@ export const getApplicantInfoCheckItems = (state: RootState, identifier: string)
       label: 'Todistus arvonlisärekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.ADVANCE_PAYMENT,
       label: 'Todistus ennakkoperintärekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.TAX_DEBT,
       label: 'Verovelkatodistus',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
     {
       type: ApplicantInfoCheckTypes.EMPLOYER_REGISTER,
       label: 'Todistus työnantajarekisteriin lisäämisestä',
       useIfCompany: true,
       useIfPerson: false,
-      external: PlotApplicationInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
     },
   ];
 
-  const existingData = getApplicationInfoCheckData(state).filter((item) => item.entry === identifier);
+  const existingData = getApplicationApplicantInfoCheckData(state).filter((item) => item.entry === identifier);
 
   return definitions.map((item) => {
     const existingItem = existingData.find((existingItem) => existingItem.name === item.type);
@@ -531,7 +530,7 @@ export const getApplicantInfoCheckItems = (state: RootState, identifier: string)
   }).filter((item) => !!item);
 };
 
-export const prepareInfoCheckForSubmission = (infoCheck: Object): Object => {
+export const prepareApplicantInfoCheckForSubmission = (infoCheck: Object): Object => {
   return {
     id: infoCheck.id,
     preparer: infoCheck.preparer?.id,
@@ -564,3 +563,35 @@ export const getFieldFileIds = (state: RootState, fieldPath: string): Array<numb
   const fieldValue = formValueSelector(FormNames.PLOT_APPLICATION)(state, fieldPath);
   return fieldValue?.value || [];
 };
+
+export const getInitialTargetInfoCheckValues = (state: RootState, id: number): Object | null => {
+  const target = getApplicationRelatedPlotSearch(state)?.plot_search_targets.find((target) => target.id === id);
+  if (!target) {
+    return null;
+  }
+
+  const infoCheck = getApplicationTargetInfoCheckData(state).find((infoCheck) => infoCheck.identifier === target.plan_unit.identifier);
+
+  if (!infoCheck) {
+    return null;
+  }
+
+  return [
+    'id',
+    'reserved',
+    'counsel_date',
+    'share_of_rental_denominator',
+    'share_of_rental_indicator',
+    'added_target_to_applicant',
+    'decline_reason',
+    'proposed_managements',
+    'reservation_conditions',
+    'arguments',
+    'meeting_memos',
+  ].reduce((acc, key) => {
+    acc[key] = infoCheck[key];
+    return acc;
+  }, {});
+};
+
+export const getMeetingMemoDownloadLink = (id: number): string => createUrl(`meeting_memo/${id}/download`);

@@ -1,14 +1,15 @@
 // @flow
 import get from 'lodash/get';
-import type {Attributes, Selector, Methods} from '../types';
-import type {RootState} from '$src/root/types';
 import isEmpty from 'lodash/isEmpty';
+
+import type {Attributes, Selector, Methods} from '$src/types';
+import type {RootState} from '$src/root/types';
 
 import type {
   PlotApplicationsList,
   PlotApplication,
-} from './types';
-import type {PlotSearch} from '../plotSearch/types';
+} from '$src/plotApplications/types';
+import type {PlotSearch} from '$src/plotSearch/types';
 
 export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
   state.plotApplications.listByBBox;
@@ -103,20 +104,23 @@ export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean 
 export const getCurrentEditorTargets: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
   state.plotApplications.currentEditorTargets;
 
-export const getIsFetchingInfoCheckAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
-  state.plotApplications.isFetchingInfoCheckAttributes;
+export const getIsFetchingApplicantInfoCheckAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotApplications.isFetchingApplicantInfoCheckAttributes;
 
-export const getInfoCheckAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
-  state.plotApplications.infoCheckAttributes;
+export const getApplicantInfoCheckAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotApplications.applicantInfoCheckAttributes;
 
-export const getApplicationInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
+export const getApplicationApplicantInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
   state.plotApplications.current?.information_checks;
 
-export const getIsUpdatingInfoCheckData: Selector<{ [id: number]: boolean }, void> = (state: RootState): { [id: number]: boolean } =>
-  state.plotApplications.isUpdatingInfoCheck;
+export const getApplicationTargetInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
+  state.plotApplications.current?.target_statuses;
 
-export const getWasLastInfoCheckUpdateSuccessfulData: Selector<{ [id: number]: boolean }, void> = (state: RootState): { [id: number]: boolean } =>
-  state.plotApplications.lastInfoCheckUpdateSuccessful;
+export const getIsUpdatingApplicantInfoCheckData: Selector<{ [id: number]: boolean }, void> = (state: RootState): { [id: number]: boolean } =>
+  state.plotApplications.isUpdatingApplicantInfoCheck;
+
+export const getWasLastApplicantInfoCheckUpdateSuccessfulData: Selector<{ [id: number]: boolean }, void> = (state: RootState): { [id: number]: boolean } =>
+  state.plotApplications.lastApplicantInfoCheckUpdateSuccessful;
 
 export const getExistingUploads = (state: RootState, identifier: string): Array<Object> => {
   return getApplicationRelatedAttachments(state).filter((attachment) => attachment.field === identifier);

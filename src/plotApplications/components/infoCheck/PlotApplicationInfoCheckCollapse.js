@@ -1,8 +1,9 @@
 //@flow
 
 import React from 'react';
-import Collapse from '../../../components/collapse/Collapse';
 import classNames from 'classnames';
+
+import Collapse from '$src/components/collapse/Collapse';
 
 type Props = {
   children?: ?React$Node,

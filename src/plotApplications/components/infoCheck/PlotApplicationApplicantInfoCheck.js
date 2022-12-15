@@ -1,21 +1,21 @@
 // @flow
 import React, {PureComponent} from 'react';
-
 import {Column, Row} from 'react-foundation';
-import {getApplicantInfoCheckItems} from '../../helpers';
-import PlotApplicationApplicantInfoCheckModal from './PlotApplicationApplicantInfoCheckModal';
-import PlotApplicationInfoCheckCollapse from './PlotApplicationInfoCheckCollapse';
 import {connect} from 'react-redux';
+
+import {getFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getUserFullName} from '$src/users/helpers';
+import type {Attributes} from '$src/types';
+import {getApplicantInfoCheckItems} from '$src/plotApplications/helpers';
+import PlotApplicationApplicantInfoCheckModal from '$src/plotApplications/components/infoCheck/PlotApplicationApplicantInfoCheckModal';
+import PlotApplicationInfoCheckCollapse from '$src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse';
 import {
-  getInfoCheckAttributes,
-  getIsUpdatingInfoCheckData,
-  getWasLastInfoCheckUpdateSuccessfulData,
-} from '../../selectors';
-import {getFieldOptions, getLabelOfOption} from '../../../util/helpers';
-import {editInfoCheckItem} from '../../actions';
-import {getUserFullName} from '../../../users/helpers';
-import type {Attributes} from '../../../types';
-import {ApplicantTypes} from '../../enums';
+  getApplicantInfoCheckAttributes,
+  getIsUpdatingApplicantInfoCheckData,
+  getWasLastApplicantInfoCheckUpdateSuccessfulData,
+} from '$src/plotApplications/selectors';
+import {editApplicantInfoCheckItem} from '$src/plotApplications/actions';
+import {ApplicantTypes} from '$src/plotApplications/enums';
 
 type OwnProps = {
   section: Object,
@@ -137,10 +137,10 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props, State> {
 }
 
 export default (connect((state, props) => ({
-  infoCheckAttributes: getInfoCheckAttributes(state),
+  infoCheckAttributes: getApplicantInfoCheckAttributes(state),
   infoCheckData: getApplicantInfoCheckItems(state, props.identifier),
-  wasUpdateSuccessful: getWasLastInfoCheckUpdateSuccessfulData(state),
-  isUpdating: getIsUpdatingInfoCheckData(state),
+  wasUpdateSuccessful: getWasLastApplicantInfoCheckUpdateSuccessfulData(state),
+  isUpdating: getIsUpdatingApplicantInfoCheckData(state),
 }), {
-  editInfoCheckItem,
+  editInfoCheckItem: editApplicantInfoCheckItem,
 })(PlotApplicationApplicantInfoCheck): React$ComponentType<OwnProps>);
