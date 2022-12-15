@@ -13,31 +13,37 @@ import {
 } from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import DecisionSelectInput from "../../../../components/form/DecisionSelectInput";
-import {formatDecisionName} from "../../../helpers";
+import DecisionSelectInput from '../../../../components/form/DecisionSelectInput';
+import {formatDecisionName} from '../../../helpers';
 
-type Props = {
-  attributes: Attributes,
-  currentAmountPerArea: number,
+type OwnProps = {
   disabled: boolean,
   field: any,
   formName: string,
+  onRemove: Function,
+  onChange: Function,
+  attributes: Attributes,
+  getPlotUnitDecisions: Function,
+  cacheKey: string,
+}
+type Props = {
+  ...OwnProps,
+  currentAmountPerArea: number,
   initialYearRent: number,
   isSaveClicked: boolean,
-  onRemove: Function,
   getPlotUnitDecisions: Function,
   usersPermissions: UsersPermissionsType,
+  initialValue: Object,
 }
 
 const BasicInfoDecisionEdit = ({
   disabled,
   field,
-  attributes,
   onRemove,
   initialValue,
   onChange,
   getPlotUnitDecisions,
-  cacheKey
+  cacheKey,
 }: Props) => {
   return (
     <Row>
@@ -45,7 +51,7 @@ const BasicInfoDecisionEdit = ({
         <DecisionSelectInput
           value={initialValue?.id ? {
             id: initialValue.id,
-            label: formatDecisionName(initialValue)
+            label: formatDecisionName(initialValue),
           } : null}
           onChange={onChange}
           name={field}
@@ -83,7 +89,7 @@ const BasicInfoDecisionEdit = ({
   );
 };
 
-export default connect(
+export default (connect(
   (state, props: Props) => {
     const formName = props.formName;
     const selector = formValueSelector(formName);
@@ -93,7 +99,7 @@ export default connect(
       isSaveClicked: getIsSaveClicked(state),
       decisionToList: selector(state, `${props.field}.decision_to_list`),
       initialValue: selector(state, `${props.field}`),
-      usersPermissions: getUsersPermissions(state)
+      usersPermissions: getUsersPermissions(state),
     };
   },
-)(BasicInfoDecisionEdit);
+)(BasicInfoDecisionEdit): React$AbstractComponent<OwnProps, mixed>);

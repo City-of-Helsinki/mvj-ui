@@ -1,12 +1,12 @@
 // @flow
 import {TableSortOrder} from '$src/enums';
-import {PlotSearchStageTypes} from "./enums";
+import {PlotSearchStageTypes} from './enums';
 
 /**
  * Default plotSearch states value for plotSearch list search
  * @const {string[]}
  */
-export const DEFAULT_PLOT_SEARCH_STATES = [];
+export const DEFAULT_PLOT_SEARCH_STATES: Array<string> = [];
 
 /**
  * Default sort key for lease list table
@@ -30,7 +30,7 @@ export const plotSearchStateFilterOptions = [
 
 export const AUTOMATIC_PLOT_SEARCH_STAGES = [
   PlotSearchStageTypes.IN_PREPARATION,
-  PlotSearchStageTypes.IN_ACTION
+  PlotSearchStageTypes.IN_ACTION,
 ];
 
 export const FIELDS_LOCKED_FOR_EDITING = [
@@ -42,5 +42,5 @@ export const FIELDS_LOCKED_FOR_EDITING = [
   'end_at',
   'created_at',
   'modified_at',
-  'form'
-]
+  'form',
+];

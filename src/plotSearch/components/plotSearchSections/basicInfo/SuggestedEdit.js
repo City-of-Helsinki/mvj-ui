@@ -19,15 +19,18 @@ import {
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
-type Props = {
-  attributes: Attributes,
-  currentAmountPerArea: number,
+type OwnProps = {
   disabled: boolean,
   field: any,
   formName: string,
-  initialYearRent: number,
-  isSaveClicked: boolean,
   onRemove: Function,
+  attributes: Attributes,
+  isSaveClicked: boolean,
+}
+type Props = {
+  ...OwnProps,
+  currentAmountPerArea: number,
+  initialYearRent: number,
   subventionAmount: string,
   usersPermissions: UsersPermissionsType,
 }
@@ -89,7 +92,7 @@ const SuggestedEdit = ({
   );
 };
 
-export default connect(
+export default (connect(
   (state, props: Props) => {
     const formName = props.formName;
     const selector = formValueSelector(formName);
@@ -102,4 +105,4 @@ export default connect(
       usersPermissions: getUsersPermissions(state),
     };
   },
-)(SuggestedEdit);
+)(SuggestedEdit): React$AbstractComponent<OwnProps, mixed>);
