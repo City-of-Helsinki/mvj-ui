@@ -1,6 +1,14 @@
-import type {Reports} from '$src/types';
 import get from 'lodash/get';
 import format from 'date-fns/format';
+
+import {
+  formatDate,
+  formatNumber,
+} from '$util/helpers';
+import {
+  LeaseStatisticReportFormatOptions,
+} from '$src/leaseStatisticReport/enums';
+import type {Reports} from '$src/types';
 
 /**
  * Get report type options
@@ -53,23 +61,43 @@ export const getPayload = (query: string, url: string, reportType: string): Obje
 };
 
 /**
- * Get invoice state
- * @param {string} state
+ * Get display name from choices
+ * @param {Object[]} choices
+ * @param {string} value
+ * @return {string}
  */
-export const getInvoiceState = (state: string): string => {
-  switch(state) {
-    case 'open':
-      return 'Avoin';
-    case 'paid':
-      return 'Maksettu';
-    case 'refunded':
-      return 'Hyvitetty';
+export const getDisplayName = (choices: Array<Object>, value: string): string => {
+  let displayName = value;
+  const matchingName = choices.find((choice) => choice.value === value)?.display_name;
+  if (matchingName) {
+    displayName = matchingName;
+  }
+  return displayName;
+}
+
+/**
+ * Get formatted value
+ * @param {string} formatType
+ * @param {string} value
+ * @return {string}
+ */
+export const getFormattedValue = (formatType: string, value: string): string => {
+  switch (formatType) {
+    case LeaseStatisticReportFormatOptions.DATE:
+      return formatDate(value, 'dd.MM.yyyy');
+    case LeaseStatisticReportFormatOptions.MONEY:
+    case LeaseStatisticReportFormatOptions.BOLD_MONEY:
+      return `${formatNumber(value)} €`;
+    case LeaseStatisticReportFormatOptions.PERCENTAGE:
+      return `${formatNumber(value)} %`;
+    case LeaseStatisticReportFormatOptions.AREA:
+      return `${formatNumber(value)} m²`;
     default:
-      return state;
+      return value;
   }
 };
 
-/* 
+/*
 * Get fields
 * @param {object} options
 */
@@ -77,7 +105,7 @@ export const getFields = (options: Object): Array => {
   return get(options, 'actions.GET');
 };
 
-/* 
+/*
 * Get Query parameters
 * @param {object} formValues
 */
@@ -88,7 +116,7 @@ export const getQueryParams = (formValues: Object): Array => {
       if(key.includes('date')){
         query += `${key}=${format(value, 'yyyy-MM-dd')}&`;
       }
-      else 
+      else
         query += `${key}=${value}&`;
     });
   return query.slice(0, -1);
@@ -105,6 +133,9 @@ export const getOutputFields = (options: Object): Array<Object> => {
       return {
         key: key,
         label: value.label,
+        choices: value.choices,
+        format: value.format,
+        isNumeric: value.is_numeric,
       };
     });
   else

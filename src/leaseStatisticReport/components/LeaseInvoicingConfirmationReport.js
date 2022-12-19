@@ -14,19 +14,22 @@ import FormText from '$components/form/FormText';
 import ExcelLink from '$components/excel/ExcelLink';
 import {
   getApiResponseResults,
-  formatDate,
-  formatNumber,
   hasPermissions,
   getLabelOfOption,
+  sortNumberByKeyAsc,
+  sortNumberByKeyDesc,
+  sortStringByKeyAsc,
+  sortStringByKeyDesc,
 } from '$util/helpers';
 import {
-  LeaseInvoicingReportPaths,
+  LeaseStatisticReportFormatOptions,
 } from '$src/leaseStatisticReport/enums';
 import {
+  getDisplayName,
+  getFormattedValue,
   getOutputFields,
-  getInvoiceState,
   getReportTypeOptions,
-} from '$src/leaseStatisticReport/helpers'; 
+} from '$src/leaseStatisticReport/helpers';
 import {getIsFetchingLeaseInvoicingConfirmationReport, getLeaseInvoicingConfirmationReport, getPayload} from '$src/leaseStatisticReport/selectors';
 import type {Attributes, Reports} from '$src/types';
 import type {LeaseInvoicingConfirmationReport as LeaseInvoicingConfirmationReportsType} from '$src/leaseStatisticReport/types';
@@ -81,66 +84,31 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
 
     const columns = [];
     const outputFields = getOutputFields(reportOptions);
+
     outputFields.map(field => {
-      if(field.key === LeaseInvoicingReportPaths.SUPERVISION_DATE ||
-         field.key === LeaseInvoicingReportPaths.START_DATE ||
-         field.key === LeaseInvoicingReportPaths.END_DATE || 
-         field.key === LeaseInvoicingReportPaths.PAID_DATE || 
-         field.key === LeaseInvoicingReportPaths.DUE_DATE || 
-         field.key === LeaseInvoicingReportPaths.RETURNED_DATE || 
-         field.key === LeaseInvoicingReportPaths.SEND_DATE){
-        columns.push({
-          key: field.key,
-          text: field.label,
-          renderer: (date) => date
-            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{formatDate(date, 'dd.MM.yyyy')}</FormText> 
-            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
-        });
-      } else if (field.key === LeaseInvoicingReportPaths.AREA) {
-        columns.push({
-          key: field.key,
-          text: field.label,
-          sortable: false,
-          renderer: (area) => area
-            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{`${formatNumber(area)} m²`}</FormText> 
-            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
-        });
-      } else if(field.key === LeaseInvoicingReportPaths.LEASE_ID){
-        columns.push({
-          key: field.key,
-          text: field.label,
-          renderer: (identifier) => identifier
-            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{identifier}</FormText> 
-            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
-        });
-      } else if(field.key === LeaseInvoicingReportPaths.STATE){
-        columns.push({
-          key: field.key,
-          text: field.label,
-          renderer: (state) => state
-            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{getInvoiceState(state)}</FormText> 
-            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
-        });
-      } else if(field.key === LeaseInvoicingReportPaths.TOTAL_AMOUNT ||
-        field.key === LeaseInvoicingReportPaths.BILLED_AMOUNT ||
-        field.key === LeaseInvoicingReportPaths.OUTSTANDING_AMOUNT ||
-        field.key === LeaseInvoicingReportPaths.RENT ||
-        field.key === LeaseInvoicingReportPaths.PAID_AMOUNT) {
-        columns.push({
-          key: field.key,
-          text: field.label,
-          sortable: false,
-          renderer: (amount) => amount
-            ? <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>{`${formatNumber(amount)} €`}</FormText> 
-            : <FormText className='no-margin' style={{whiteSpace: 'nowrap'}}>-</FormText>,
-        });
-      } else {
-        columns.push({
-          key: field.key,
-          text: field.label,
-          sortable: false,
-        });
-      }
+      columns.push({
+        key: field.key,
+        text: field.label,
+        renderer: (value) => {
+          let isBold = false;
+          let outputValue = value || '-';
+
+          if (field.choices && value) {
+            outputValue = getDisplayName(field.choices, value);
+          } else if (field.format && value) {
+            outputValue = getFormattedValue(field.format, value);
+            isBold = field.format === LeaseStatisticReportFormatOptions.BOLD || field.format === LeaseStatisticReportFormatOptions.BOLD_MONEY;
+          }
+
+          return (
+            <FormText className='no-margin' style={{ whiteSpace: 'nowrap' }}>
+              {isBold ? <strong>{outputValue}</strong> : outputValue}
+            </FormText>
+          );
+        },
+        ascSortFunction: field.isNumeric ? sortNumberByKeyAsc : sortStringByKeyAsc,
+        descSortFunction: field.isNumeric ? sortNumberByKeyDesc : sortStringByKeyDesc,
+      });
     });
 
     return columns;
@@ -153,11 +121,13 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
       reportData,
       payload,
       reports,
+      reportOptions,
     } = this.props;
 
     const dev = false;
     const columns = this.getColumns();
     const reportTypeOptions = getReportTypeOptions(reports);
+    const isSortable = !reportOptions.is_already_sorted;
 
     if(isFetchingReportData) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
 
@@ -181,7 +151,7 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
           style={{marginBottom: 10}}
           defaultSortKey='lease_id'
           defaultSortOrder={TableSortOrder.ASCENDING}
-          sortable={true}
+          sortable={isSortable}
         />
       </Fragment>
     );

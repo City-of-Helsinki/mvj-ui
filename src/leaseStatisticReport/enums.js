@@ -129,3 +129,18 @@ export const LeaseInvoicingReportTypes = {
   RENT_FORECAST: 'rent_forecast',
   LEASE_STATISTIC: 'lease_statistic',
 };
+
+/**
+ * Lease statistics report value format enumerable
+ * @readonly
+ * @enum {string}
+ */
+export const LeaseStatisticReportFormatOptions = {
+  AREA: 'area',
+  BOLD: 'bold',
+  BOLD_MONEY: 'bold_money',
+  BOOLEAN: 'boolean',
+  DATE: 'date',
+  MONEY: 'money',
+  PERCENTAGE: 'percentage',
+};
