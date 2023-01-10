@@ -9,10 +9,11 @@ import type {
   PlotSearch,
   PlotSearchList,
   PlanUnit,
+  CustomDetailedPlan,
 } from './types';
-import {formValueSelector} from "redux-form";
-import {FormNames} from "../enums";
-import {PlotSearchStageTypes} from "./enums";
+import {formValueSelector} from 'redux-form';
+import {FormNames} from '../enums';
+import {PlotSearchStageTypes} from './enums';
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.plotSearch.attributes;
@@ -62,17 +63,26 @@ export const getPlanUnitAttributes: Selector<Attributes, void> = (state: RootSta
 export const getPlanUnit: Selector<PlotSearch, void> = (state: RootState): PlanUnit =>
   state.plotSearch.planUnit;
 
+export const getCustomDetailedPlan: Selector<CustomDetailedPlan, void> = (state: RootState): CustomDetailedPlan =>
+  state.plotSearch.customDetailedPlan;
+
+export const getCustomDetailedPlanAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.plotSearch.customDetailedPlanAttributes;
+
+export const getIsFetchingCustomDetailedPlanAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingCustomDetailedPlanAttributes;
+
+export const getIsFetchingCustomDetailedPlan: Selector<boolean, number> = (state: RootState, id: number): boolean =>
+  state.plotSearch.pendingCustomDetailedPlanFetches.includes(id);
+
 export const getIsFetchingPlanUnit: Selector<boolean, number> = (state: RootState, id: number): boolean =>
   state.plotSearch.pendingPlanUnitFetches.includes(id);
 
 export const getIsFetchingAnyPlanUnits: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotSearch.pendingPlanUnitFetches.length > 0;
 
-export const getIsFetchingPlanUnitAttributes: Selector<boolean, number> = (state: RootState, id: number): boolean =>
-  state.plotSearch.pendingPlanUnitAttributeFetches.includes(id);
-
-export const getIsFetchingAnyPlanUnitAttributes: Selector<boolean, void> = (state: RootState): boolean =>
-  state.plotSearch.pendingPlanUnitAttributeFetches.length > 0;
+export const getIsFetchingPlanUnitAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingPlanUnitAttributes;
 
 export const getIsFetchingSubtypes: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotSearch.isFetchingSubtypes;
@@ -111,12 +121,12 @@ export const areTargetsAllowedToHaveType: Selector<boolean, void> = (state: Root
   const subtypes = getPlotSearchSubTypes(state);
 
   return subtypes?.find((subtype) => subtype.id === selected)?.target_selection === true;
-}
+};
 
 export const isLockedForModifications: Selector<boolean, void> = (state: RootState): boolean => {
   const stage = getCurrentPlotSearchStage(state);
   return stage ? stage !== PlotSearchStageTypes.IN_PREPARATION : false;
-}
+};
 
 export const isFetchingStages: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotSearch.isFetchingStages;

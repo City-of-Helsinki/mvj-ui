@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
+import type {Fields} from 'redux-form/lib/FieldArrayProps.types';
 
 import Loader from '$components/loader/Loader';
 import ExternalLink from '$components/links/ExternalLink';
@@ -28,10 +29,11 @@ import {
   receiveCollapseStates,
   receiveIsSaveClicked,
   fetchPlanUnit,
-  fetchPlanUnitAttributes,
+  fetchCustomDetailedPlan,
 } from '$src/plotSearch/actions';
 import {
-  PlotSearchFieldTitles
+  PlotSearchFieldTitles,
+  TargetIdentifierTypes,
 } from '$src/plotSearch/enums';
 import {
   formatDate,
@@ -39,15 +41,17 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 import {
-  getPlanUnitFromObjectKeys,
-} from '$src/plotSearch/helpers';
-import {
+  areTargetsAllowedToHaveType,
   getAttributes,
   getIsSaveClicked,
   getCollapseStateByKey,
   getErrorsByFormName,
   getPlanUnitAttributes,
   getPlanUnit,
+  getCustomDetailedPlan,
+  getCustomDetailedPlanAttributes,
+  getIsFetchingCustomDetailedPlanAttributes,
+  getIsFetchingCustomDetailedPlan,
   getIsFetchingPlanUnit,
   getIsFetchingPlanUnitAttributes,
   getCurrentPlotSearch,
@@ -55,15 +59,16 @@ import {
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import SuggestedEdit from './SuggestedEdit';
-import RemoveButton from "../../../../components/form/RemoveButton";
-import {areTargetsAllowedToHaveType} from "../../../selectors";
+import RemoveButton from '$src/components/form/RemoveButton';
+import PlotSearchSiteEditCustomDetailedPlan from './PlotSearchSiteEditCustomDetailedPlan';
+
 
 type SuggestedProps = {
   attributes: Attributes,
   disabled: boolean,
-  fields: any,
+  fields: Fields,
   formName: string,
-  isSaveClicked: Boolean,
+  isSaveClicked: boolean,
 }
 
 const renderSuggested = ({
@@ -139,20 +144,26 @@ const renderSuggested = ({
   );
 };
 
+type InfoLinksProps = {
+  disabled: boolean,
+  fields: any,
+  attributes: Object,
+  isSaveClicked: boolean,
+}
+
 const renderInfoLinks = ({
-   disabled,
-   fields,
-   formName,
-   attributes,
-   isSaveClicked,
- }): Element<*> => {
+  disabled,
+  fields,
+  attributes,
+  isSaveClicked,
+}: InfoLinksProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({dispatch}) => {
         return <div>
           <FormTextTitle>
             Lisätietolinkit
@@ -197,7 +208,7 @@ const renderInfoLinks = ({
                     name={`${field}.description`}
                     invisibleLabel
                     overrideValues={{
-                      label: PlotSearchFieldTitles.INFO_LINK_DESCRIPTION
+                      label: PlotSearchFieldTitles.INFO_LINK_DESCRIPTION,
                     }}
                     disabled={disabled}
                     disableTouched={isSaveClicked}
@@ -209,7 +220,7 @@ const renderInfoLinks = ({
                     name={`${field}.url`}
                     invisibleLabel
                     overrideValues={{
-                      label: PlotSearchFieldTitles.INFO_LINK_URL
+                      label: PlotSearchFieldTitles.INFO_LINK_URL,
                     }}
                     disabled={disabled}
                     disableTouched={isSaveClicked}
@@ -221,7 +232,7 @@ const renderInfoLinks = ({
                     name={`${field}.language`}
                     invisibleLabel
                     overrideValues={{
-                      label: PlotSearchFieldTitles.INFO_LINK_LANGUAGE
+                      label: PlotSearchFieldTitles.INFO_LINK_LANGUAGE,
                     }}
                     disabled={disabled}
                     disableTouched={isSaveClicked}
@@ -254,41 +265,54 @@ const renderInfoLinks = ({
     </AppConsumer>);
 };
 
-type Props = {
-  currentAmountPerArea: number,
-  field: any,
+type OwnProps = {
   index: any,
+  disabled: boolean,
+  field: any,
+  form: string,
   formName: string,
+  change: Function,
+  onRemove: Function,
+  onReplace: Function,
+}
+
+type Props = {
+  ...OwnProps,
+  currentAmountPerArea: number,
   initialYearRent: number,
   errors: ?Object,
   plotSearchSiteId: number,
   receiveCollapseStates: Function,
   isSaveClicked: boolean,
   attributes: Attributes,
-  onRemove: Function,
-  onReplace: Function,
   usersPermissions: UsersPermissionsType,
   targetIdentifier: string,
   collapseState: boolean,
-  fetchPlanUnitAttributes: Function,
   fetchPlanUnit: Function,
+  fetchCustomDetailedPlan: Function,
   isFetchingPlanUnitAttributes: boolean,
   isFetchingPlanUnit: boolean,
+  isFetchingCustomDetailedPlan: boolean,
+  isFetchingCustomDetailedPlanAttributes: boolean,
   planUnitAttributes: Attributes,
   planUnitMap: Object,
-  change: Function,
+  customDetailedPlanAttributes: Attributes,
+  customDetailedPlanMap: Object,
+  plotSearchSite: Object,
   currentPlotSearch: Object,
   areTargetsAllowedToHaveType: boolean
 }
 
 type State = {
   planUnitNew: Object,
+  customDetailedPlanNew: Object,
 }
 
 class PlotSearchSiteEdit extends Component<Props, State> {
 
   state = {
     planUnitNew: null,
+    customDetailedPlanNew: null,
   };
 
   handleCollapseToggle = (val: boolean) => {
@@ -315,29 +339,40 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const {
       plotSearchSite,
       planUnitMap,
-      fetchPlanUnitAttributes,
-      fetchPlanUnit
+      customDetailedPlanMap,
+      fetchPlanUnit,
+      fetchCustomDetailedPlan,
     } = this.props;
 
-    const id = plotSearchSite.plan_unit_id;
-    if (!id) {
+    const planUnitId = plotSearchSite.plan_unit_id;
+    const customDetailedPlanId = plotSearchSite.custom_detailed_plan_id;
+    if (!planUnitId && !customDetailedPlanId) {
       // If there's no id, the entry should be a fresh item with no plan unit selected yet
       // (either by the user just clicking the new button, or from loading previously unsaved changes)
       return;
     }
 
-    const payload = {
-      value: plotSearchSite.plan_unit_id,
-      label: plotSearchSite.plan_unit?.identifier || ''
+    const planUnitPayload = {
+      value: planUnitId,
+      label: plotSearchSite.plan_unit?.identifier || '',
+    };
+
+    const customDetailedPlanPayload = {
+      value: customDetailedPlanId,
+      label: plotSearchSite.custom_detailed_plan?.identifier || '',
     };
 
     this.setState({
-      planUnitNew: payload
+      planUnitNew: planUnitPayload,
+      customDetailedPlanNew: customDetailedPlanPayload,
     });
 
-    if (!planUnitMap[plotSearchSite.plan_unit_id]) {
-      fetchPlanUnitAttributes(payload);
-      fetchPlanUnit(payload);
+    if (get(plotSearchSite, 'plan_unit_id') && !get(planUnitMap, planUnitId)) {
+      fetchPlanUnit(planUnitPayload);
+    }
+
+    if (get(plotSearchSite, 'custom_detailed_plan_id') && !get(customDetailedPlanMap, customDetailedPlanId)) {
+      fetchCustomDetailedPlan(customDetailedPlanPayload);
     }
   }
 
@@ -346,11 +381,15 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       [
         'plotSearchSite',
         'planUnitMap',
+        'customDetailedPlanMap',
         'isFetchingPlanUnit',
-        'isFetchingPlanUnitAttributes'
+        'isFetchingPlanUnitAttributes',
+        'isFetchingCustomDetailedPlan',
+        'isFetchingCustomDetailedPlanAttributes',
       ].some((key) => this.props[key] !== prevProps[key])
     ) {
       this.getPlanUnitData();
+      this.getCustomDetailedPlanData();
     }
   }
 
@@ -364,7 +403,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       return;
     }
 
-    const planUnit = planUnitMap[plotSearchSite.plan_unit_id];
+    const planUnit = get(planUnitMap, plotSearchSite.plan_unit_id);
 
     if (planUnit) {
       const payload = {
@@ -377,26 +416,68 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       this.changePlanUnitValue(payload);
     } else {
       const payload = {
-        value: plotSearchSite.plan_unit_id
+        value: plotSearchSite.plan_unit_id,
       };
 
-      fetchPlanUnitAttributes(payload);
       fetchPlanUnit(payload);
+    }
+  }
+
+  getCustomDetailedPlanData() {
+    const {
+      customDetailedPlanMap,
+      plotSearchSite,
+    } = this.props;
+
+    if (!plotSearchSite) {
+      return;
+    }
+
+    const customDetailedPlan = get(customDetailedPlanMap, plotSearchSite.custom_detailed_plan_id);
+
+    if (customDetailedPlan) {
+      const payload = {
+        value: plotSearchSite.custom_detailed_plan_id,
+        label: customDetailedPlan.identifier,
+      };
+      this.setState({
+        customDetailedPlanNew: payload,
+      });
+      this.changeCustomDetailedPlanValue(payload);
+    } else {
+      const payload = {
+        value: plotSearchSite.custom_detailed_plan_id,
+        label: 'Oma muu alue',
+      };
+
+      fetchCustomDetailedPlan(payload);
     }
   }
 
   handleNew = (toPlotSearch: Object) => {
     const {
-      fetchPlanUnitAttributes,
       fetchPlanUnit,
+      fetchCustomDetailedPlan,
     } = this.props;
 
-    this.setState({
-      planUnitNew: toPlotSearch,
-    });
-    this.changePlanUnitValue(toPlotSearch);
-    fetchPlanUnitAttributes(toPlotSearch);
-    fetchPlanUnit(toPlotSearch);
+    if (toPlotSearch && toPlotSearch.identifierType === TargetIdentifierTypes.PLAN_UNIT) {
+      this.setState({
+        planUnitNew: toPlotSearch,
+        customDetailedPlanNew: null,
+      });
+ 
+      fetchPlanUnit(toPlotSearch);
+      this.changePlanUnitValue(toPlotSearch);
+      return;
+    } else {
+      this.setState({
+        customDetailedPlanNew: toPlotSearch,
+        planUnitNew: null,
+      });
+      
+      fetchCustomDetailedPlan(toPlotSearch);
+      this.changeCustomDetailedPlanValue(toPlotSearch);
+    }
   }
 
   changePlanUnitValue = (toPlotSearch: Object) => {
@@ -405,10 +486,10 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       field,
       plotSearchSite,
       planUnitMap,
-      onReplace
+      onReplace,
     } = this.props;
 
-    const planUnitOldValue = plotSearchSite?.plan_unit?.id;
+    const planUnitOldValue = plotSearchSite?.plan_unit_id;
     const planUnitNewValue = get(toPlotSearch, 'value');
 
     if (planUnitOldValue !== planUnitNewValue) {
@@ -416,20 +497,47 @@ class PlotSearchSiteEdit extends Component<Props, State> {
 
       change(`${field}.plan_unit`, plan_unit);
       change(`${field}.plan_unit_id`, planUnitNewValue);
-      onReplace(planUnitOldValue, planUnitNewValue);
+      change(`${field}.custom_detailed_plan`, null);
+      change(`${field}.custom_detailed_plan_id`, null);
+      onReplace(planUnitOldValue);
     }
   }
 
-  updatePlanUnit = () => {
+  changeCustomDetailedPlanValue = (toPlotSearch: Object) => {
+    const {
+      change,
+      field,
+      plotSearchSite,
+      customDetailedPlanMap,
+      onReplace,
+    } = this.props;
+
+    const customDetailedPlanOldValue = plotSearchSite?.custom_detailed_plan_id;
+    const customDetailedPlanNewValue = get(toPlotSearch, 'value');
+
+    if (customDetailedPlanOldValue !== customDetailedPlanNewValue) {
+      const customDetailedPlan = get(customDetailedPlanMap, customDetailedPlanNewValue);
+
+      change(`${field}.custom_detailed_plan`, customDetailedPlan);
+      change(`${field}.custom_detailed_plan_id`, customDetailedPlanNewValue);
+      change(`${field}.plan_unit`, null);
+      change(`${field}.plan_unit_id`, null);
+      onReplace(customDetailedPlanOldValue, customDetailedPlanNewValue);
+    }
+  }
+
+  updatePlanUnit = (toPlotSearch: Object) => {
     const {
       currentPlotSearch,
       index,
-      fetchPlanUnitAttributes,
       fetchPlanUnit,
       planUnitMap,
       field,
       change,
+      onReplace,
     } = this.props;
+
+    const {planUnitNew} = this.state;
 
     const currentTarget = currentPlotSearch.plot_search_targets[index];
     const masterPlanUnitId = get(currentTarget, 'master_plan_unit_id');
@@ -441,7 +549,6 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     this.setState({
       planUnitNew: payload,
     });
-    fetchPlanUnitAttributes(payload);
     fetchPlanUnit(payload);
 
     const planUnitNewValue = get(toPlotSearch, 'value');
@@ -462,32 +569,59 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       isFetchingPlanUnitAttributes,
       isFetchingPlanUnit,
       planUnitMap,
+      customDetailedPlanMap,
       planUnitAttributes,
+      customDetailedPlanAttributes,
       currentPlotSearch,
       index,
       disabled,
-      areTargetsAllowedToHaveType
+      areTargetsAllowedToHaveType,
+      isFetchingCustomDetailedPlanAttributes,
+      isFetchingCustomDetailedPlan,
     } = this.props;
+
     const {
       planUnitNew,
+      customDetailedPlanNew,
     } = this.state;
 
     const plotSearchSiteErrors = get(errors, field);
     const planUnitNewValue = get(planUnitNew, 'value');
     const planUnitByValue = get(planUnitMap, planUnitNewValue);
-    const planUnitAttributesByValue = get(planUnitAttributes, planUnitNewValue);
-    const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_intended_use');
-    const planUnitStateOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_state');
-    const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
-    const plotDivisionStateOptions = getFieldOptions(planUnitAttributesByValue, 'plot_division_state');
+    const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributes, 'plan_unit_intended_use');
+    const planUnitStateOptions = getFieldOptions(planUnitAttributes, 'plan_unit_state');
+    const planUnitTypeOptions = getFieldOptions(planUnitAttributes, 'plan_unit_type');
+    const plotDivisionStateOptions = getFieldOptions(planUnitAttributes, 'plot_division_state');
+
+    const customDetailedPlanNewValue = get(customDetailedPlanNew, 'value');
+    const customDetailedPlanByValue = get(customDetailedPlanMap, customDetailedPlanNewValue);
 
     const currentTarget = currentPlotSearch.plot_search_targets[index];
     const isDeleted = get(currentTarget, 'is_master_plan_unit_deleted');
     const isNewer = get(currentTarget, 'is_master_plan_unit_newer');
     const label = get(currentTarget, 'message_label');
 
-    const planUnitTitle = !!get(planUnitNew, 'label') ? `${get(planUnitNew, 'label') || ''} ${get(planUnitByValue, 'plan_unit_status') || ''}` : 'Uusi kohde';
-
+    const planUnitTitle = get(planUnitNew, 'label') ? `${get(planUnitNew, 'label') || ''} ${get(planUnitByValue, 'plan_unit_status') || ''}` : 'Uusi kohde';
+    
+    if (customDetailedPlanByValue) {
+      return <PlotSearchSiteEditCustomDetailedPlan
+        handleNew={this.handleNew}
+        field={field}
+        isSaveClicked={isSaveClicked}
+        areTargetsAllowedToHaveType={areTargetsAllowedToHaveType}
+        attributes={attributes}
+        collapseState={collapseState}
+        onRemove={onRemove}
+        currentTarget={customDetailedPlanByValue}
+        customDetailedPlanNew={customDetailedPlanNew}
+        disabled={disabled}
+        handleCollapseToggle={this.handleCollapseToggle}
+        plotSearchSiteErrors={plotSearchSiteErrors}
+        customDetailedPlanAttributes={customDetailedPlanAttributes}
+        isFetchingCustomDetailedPlan={isFetchingCustomDetailedPlan}
+        isFetchingCustomDetailedPlanAttributes={isFetchingCustomDetailedPlanAttributes}
+      />;
+    }
     return (
       <Collapse
         className='collapse__secondary greenCollapse'
@@ -499,7 +633,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
       >
         <Row style={{marginBottom: 10}}>
           {(isNewer) && <WarningContainer style={{marginLeft: 5, marginTop: 1, marginBottom: 1}}> {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
-            <a onClick={this.updatePlanUnit}>
+            <a onClick={() => this.updatePlanUnit(currentTarget)}>
               <WarningField
                 meta={{warning: label + ' Päivitä tiedot'}}
                 showWarning={(isDeleted || isNewer)}
@@ -530,6 +664,11 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'plot_search_targets.child.children.plan_unit_id')}
                 name={`${field}.plan_unit_id`}
+              />
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'plot_search_targets.child.children.custom_detailed_plan_id')}
+                name={`${field}.custom_detailed_plan_id`}
               />
             </div>
             {areTargetsAllowedToHaveType && <>
@@ -675,7 +814,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
 }
 
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state, props: Props) => {
       const formName = props.formName;
@@ -689,7 +828,8 @@ export default flowRight(
       const planUnitId = plotSearchSite?.plan_unit_id;
 
       const planUnitMap = getPlanUnit(state);
-
+      const customDetailedPlanMap = getCustomDetailedPlan(state);
+      const customDetailedPlanId = plotSearchSite?.custom_detailed_plan_id;
       return {
         attributes: getAttributes(state),
         isSaveClicked: getIsSaveClicked(state),
@@ -701,19 +841,23 @@ export default flowRight(
         usersPermissions: getUsersPermissions(state),
         errors: getErrorsByFormName(state, formName),
         plotSearchSiteId: id,
-        planUnitAttributes: getPlanUnitAttributes(state),
         planUnitMap: planUnitMap,
+        customDetailedPlanMap: customDetailedPlanMap,
+        planUnitAttributes: getPlanUnitAttributes(state),
+        customDetailedPlanAttributes: getCustomDetailedPlanAttributes(state),
+        isFetchingCustomDetailedPlanAttributes: getIsFetchingCustomDetailedPlanAttributes(state, customDetailedPlanId),
+        isFetchingCustomDetailedPlan: getIsFetchingCustomDetailedPlan(state, customDetailedPlanId),
         isFetchingPlanUnit: getIsFetchingPlanUnit(state, planUnitId),
         isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state, planUnitId),
         currentPlotSearch: getCurrentPlotSearch(state),
-        areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state)
+        areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state),
       };
     },
     {
       receiveCollapseStates,
       receiveIsSaveClicked,
       fetchPlanUnit,
-      fetchPlanUnitAttributes,
+      fetchCustomDetailedPlan,
     }
   ),
-)(PlotSearchSiteEdit);
+)(PlotSearchSiteEdit): React$AbstractComponent<OwnProps, mixed>);

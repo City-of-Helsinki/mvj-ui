@@ -15,6 +15,7 @@ import ExternalLink from '$components/links/ExternalLink';
 import WarningContainer from '$components/content/WarningContainer';
 import WarningField from '$components/form/WarningField';
 import {createPaikkatietovipunenUrl} from '$util/helpers';
+import {Routes, getRouteById} from '../../../../root/routes';
 import {
   formatDate,
   getFieldOptions,
@@ -23,26 +24,25 @@ import {
 import {
   getAttributes,
   getCollapseStateByKey,
-  getPlanUnitAttributes,
-  getPlanUnit,
-  getIsFetchingPlanUnit,
   getIsFetchingPlanUnitAttributes,
 } from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import {
-  fetchPlanUnit,
-  fetchPlanUnitAttributes,
-} from '$src/plotSearch/actions';
-import {
-  PlotSearchFieldTitles
+  PlotSearchFieldTitles,
 } from '$src/plotSearch/enums';
 
+
+type OwnProps = {
+  plotSearchSite: Object,
+  index: number,
+  planUnitAttributes: Attributes,
+}
 type Props = {
+  ...OwnProps,
   attributes: Attributes,
   plotSearchSite: Object,
   receiveCollapseStates: Function,
   fetchPlanUnitAttributes: Function,
-  fetchPlanUnit: Function,
   collapseState: Boolean,
   isFetchingPlanUnitAttributes: boolean,
   isFetchingPlanUnit: boolean,
@@ -54,7 +54,7 @@ type State = {
   update: number,
 }
 
-class PlotSearchSite extends PureComponent<Props, State> {
+class PlotSearchSitePlanUnit extends PureComponent<Props, State> {
   state = {
     update: 0,
   }
@@ -76,7 +76,6 @@ class PlotSearchSite extends PureComponent<Props, State> {
   };
 
   componentDidMount(){
-    this.getPlanUnitData();
     this.startTimer();
   }
 
@@ -104,19 +103,6 @@ class PlotSearchSite extends PureComponent<Props, State> {
     clearInterval(this.timer);
   }
 
-  getPlanUnitData(){
-    const {
-      fetchPlanUnitAttributes,
-      fetchPlanUnit,
-      plotSearchSite,
-    } = this.props;
-    const payload = {
-      value: plotSearchSite.plan_unit.id,
-    };
-    fetchPlanUnitAttributes(payload);
-    fetchPlanUnit(payload);
-  }
-
   render(){
 
     const {
@@ -124,16 +110,14 @@ class PlotSearchSite extends PureComponent<Props, State> {
       collapseState,
       plotSearchSite,
       isFetchingPlanUnitAttributes,
-      isFetchingPlanUnit,
-      planUnit,
       planUnitAttributes,
     } = this.props;
-    const planUnitAttributesByValue = get(planUnitAttributes, plotSearchSite.plan_unit.id);
-    const currentPlanUnit = get(planUnit, plotSearchSite.plan_unit.id);
-    const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_intended_use');
-    const planUnitStateOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_state');
-    const planUnitTypeOptions = getFieldOptions(planUnitAttributesByValue, 'plan_unit_type');
-    const plotDivisionStateOptions = getFieldOptions(planUnitAttributesByValue, 'plot_division_state');
+
+    const currentPlanUnit = get(plotSearchSite, 'plan_unit');
+    const planUnitIntendedUseOptions = getFieldOptions(planUnitAttributes, 'plan_unit_intended_use');
+    const planUnitStateOptions = getFieldOptions(planUnitAttributes, 'plan_unit_state');
+    const planUnitTypeOptions = getFieldOptions(planUnitAttributes, 'plan_unit_type');
+    const plotDivisionStateOptions = getFieldOptions(planUnitAttributes, 'plot_division_state');
     const isDeleted = get(plotSearchSite, 'is_master_plan_unit_deleted');
     const isNewer = get(plotSearchSite, 'is_master_plan_unit_newer');
     const label = get(plotSearchSite, 'message_label');
@@ -147,7 +131,8 @@ class PlotSearchSite extends PureComponent<Props, State> {
     const getInfoLinkLanguageDisplayText = (key) => {
       const languages = get(attributes, 'plot_search_targets.child.children.info_links.child.children.language.choices');
       return languages?.find((language) => language.value === key)?.display_name || key;
-    }
+    };
+
 
     return (
       <Column large={12}>
@@ -158,7 +143,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
           onToggle={this.handleCollapseToggle}
         >
           <Row style={{marginBottom: 10}}>
-            {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
+            {isFetchingPlanUnitAttributes &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
             }
             {(isNewer) && <WarningContainer style={{marginLeft: 5, marginBottom: 5}}> {/* style={{position: 'absolute', right: '15px', top: '-5px'}}> */}
@@ -173,21 +158,21 @@ class PlotSearchSite extends PureComponent<Props, State> {
                 showWarning={(isDeleted || isNewer)}
               />
             </WarningContainer>}
-            {(currentPlanUnit) && <Fragment>
+            {currentPlanUnit && <Fragment>
               {(isDeleted || isNewer) && <Column small={12} medium={12} large={12} />}
               <Column small={6} medium={3} large={3}>
                 <FormTextTitle>
-                  {'Vuokraustunnus'}
+                  {PlotSearchFieldTitles.LEASE_IDENTIFIER}
                 </FormTextTitle>
                 <FormText>
                   <ExternalLink
                     className='no-margin'
-                    href={`/vuokraukset?search=${leaseIdentifier}`}
+                    href={`${getRouteById(Routes.LEASES)}?search=${leaseIdentifier}`}
                     text={leaseIdentifier || '-'}
                   />
                 </FormText>
                 <FormTextTitle>
-                  {'Osoite'}
+                  {PlotSearchFieldTitles.ADDRESS}
                 </FormTextTitle>
                 <FormText>{address || '-'}</FormText>
                 {/* <FormTextTitle>
@@ -197,13 +182,13 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Kaavayksikön käyttötarkoitus'}
+                  {PlotSearchFieldTitles.PLAN_UNIT_INTENDED_USE}
                 </FormTextTitle>
                 <FormText>{currentPlanUnit && getLabelOfOption(planUnitIntendedUseOptions, currentPlanUnit.plan_unit_intended_use) || '-'}</FormText>
               </Column>
               <Column small={6} medium={3} large={2}>
                 <FormTextTitle>
-                  {'Kokonaisala neliömetreissä'}
+                  {PlotSearchFieldTitles.AREA}
                 </FormTextTitle>
                 <FormText>
                   {`${get(currentPlanUnit, 'area')} m²` || '-'}
@@ -211,7 +196,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={3} large={2}>
                 <FormTextTitle>
-                  {'Asemakaava'}
+                  {PlotSearchFieldTitles.DETAILED_PLAN}
                 </FormTextTitle>
                 {get(currentPlanUnit, 'detailed_plan_identifier')
                   ? <ExternalLink
@@ -223,7 +208,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={4} large={3}>
                 <FormTextTitle>
-                  {'Asemakaavan viimeisin käsittelypvm'}
+                  {PlotSearchFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}
                 </FormTextTitle>
                 <FormText>
                   {formatDate(get(currentPlanUnit, 'detailed_plan_latest_processing_date')) || '-'}
@@ -231,7 +216,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={4} large={3}>
                 <FormTextTitle>
-                  {'Asemakaavan viimeisin käsittelypvm. selite'}
+                  {PlotSearchFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}
                 </FormTextTitle>
                 <FormText>
                   {get(currentPlanUnit, 'detailed_plan_latest_processing_date_note') || '-'}
@@ -239,7 +224,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Sopimushetkellä'}
+                  {PlotSearchFieldTitles.IN_CONTRACT}
                 </FormTextTitle>
                 <FormText>
                   {get(currentPlanUnit, 'in_contract') || '-'}
@@ -247,19 +232,19 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Kaavayksikön olotila'}
+                  {PlotSearchFieldTitles.PLAN_UNIT_STATE}
                 </FormTextTitle>
                 <FormText>{currentPlanUnit && getLabelOfOption(planUnitStateOptions, currentPlanUnit.plan_unit_state) || '-'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Kaavayksikön laji'}
+                  {PlotSearchFieldTitles.PLAN_UNIT_TYPE}
                 </FormTextTitle>
                 <FormText>{currentPlanUnit && getLabelOfOption(planUnitTypeOptions, currentPlanUnit.plan_unit_type) || '-'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Tonttijaon hyväksymispvm'}
+                  {PlotSearchFieldTitles.PLOT_DIVISION_DATE_OF_APPROVAL}
                 </FormTextTitle>
                 <FormText>
                   {formatDate(get(currentPlanUnit, 'plot_division_date_of_approval')) || '-'}
@@ -267,7 +252,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={4} large={3}>
                 <FormTextTitle>
-                  {'Tonttijaon voimaantulopvm'}
+                  {PlotSearchFieldTitles.PLOT_DIVISION_EFFECTIVE_DATE}
                 </FormTextTitle>
                 <FormText>
                   {formatDate(get(currentPlanUnit, 'plot_division_effective_date')) || '-'}
@@ -275,7 +260,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Tonttijaon tunnus'}
+                  {PlotSearchFieldTitles.PLOT_DIVISION_INDENTIFIER}
                 </FormTextTitle>
                 <FormText>
                   {get(currentPlanUnit, 'plot_division_identifier') || '-'}
@@ -283,13 +268,13 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Tonttijaon olotila'}
+                  {PlotSearchFieldTitles.PLOT_DIVISION_STATE}
                 </FormTextTitle>
                 <FormText>{currentPlanUnit && getLabelOfOption(plotDivisionStateOptions, currentPlanUnit.plot_division_state) || '-'}</FormText>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Leikkausala'}
+                  {PlotSearchFieldTitles.SECTION_AREA}
                 </FormTextTitle>
                 <FormText>
                   {`${get(currentPlanUnit, 'section_area')} m²` || '-'}
@@ -297,7 +282,7 @@ class PlotSearchSite extends PureComponent<Props, State> {
               </Column>
               {leaseHitas && <Column small={6} medium={4} large={2}>
                 <FormTextTitle>
-                  {'Hitas'}
+                  {PlotSearchFieldTitles.LEASE_HITAS}
                 </FormTextTitle>
                 <FormText>
                   {leaseHitas || '-'}
@@ -347,22 +332,16 @@ class PlotSearchSite extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
+export default (connect(
   (state, props) => {
     const id = props.plotSearchSite.id;
-    const planUnitId = props.plotSearchSite.plan_unit?.id;
     return {
       attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.plotSearch_site.${id}`),
-      planUnitAttributes: getPlanUnitAttributes(state),
-      planUnit: getPlanUnit(state),
-      isFetchingPlanUnit: getIsFetchingPlanUnit(state, planUnitId),
-      isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state, planUnitId)
+      isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
     };
   },
   {
     receiveCollapseStates,
-    fetchPlanUnitAttributes,
-    fetchPlanUnit,
   }
-)(PlotSearchSite);
+)(PlotSearchSitePlanUnit): React$AbstractComponent<OwnProps, mixed>);

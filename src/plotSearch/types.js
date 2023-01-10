@@ -14,8 +14,12 @@ export type PlotSearchState = {
   methods: Object,
   planUnitAttributes: Attributes,
   planUnit: Object,
+  customDetailedPlanAttributes: Attributes,
+  customDetailedPlan: CustomDetailedPlan,
+  pendingCustomDetailedPlanFetches: Array<number>,
+  isFetchingCustomDetailedPlanAttributes: boolean,
   pendingPlanUnitFetches: Array<number>,
-  pendingPlanUnitAttributeFetches: Array<number>,
+  isFetchingPlanUnitAttributes: boolean,
   isFetchingSubtypes: boolean,
   subTypes: Object,
   isFetchingFormAttributes: boolean,
@@ -26,9 +30,10 @@ export type PlotSearchState = {
   templateForms: Object,
   isFetchingStages: boolean,
   stages: Array<Object>,
-  decisionCandidates: Array<Object>
+  decisionCandidates: Object
 };
 
+export type CustomDetailedPlan = Object;
 export type PlotSearchId = number;
 export type PlotSearch = Object;
 export type PlanUnit = Object;
@@ -117,6 +122,13 @@ export type FetchPlanUnitAttributesAction = Action<'mvj/plotSearch/FETCH_PLAN_UN
 export type PlanUnitAttributesNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND', void>;
 export type PlanUnitNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_NOT_FOUND', void>;
 export type ReceivePlanUnitAttributesAction = Action<'mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES', Attributes>;
+
+export type FetchCustomDetailedPlanAction = Action<'mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN', Object>;
+export type ReceiveSingleCustomDetailedPlanAction = Action<'mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN', CustomDetailedPlan>;
+export type FetchCustomDetailedPlanAttributesAction = Action<'mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES', Object>;
+export type CustomDetailedPlanAttributesNotFoundAction = Action<'mvj/plotSearch/CUSTOM_DETAILED_PLAN_ATTRIBUTES_NOT_FOUND', void>;
+export type CustomDetailedPlanNotFoundAction = Action<'mvj/plotSearch/CUSTOM_DETAILED_PLAN_NOT_FOUND', void>;
+export type ReceiveCustomDetailedPlanAttributesAction = Action<'mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN_ATTRIBUTES', Attributes>;
 
 export type FetchPlotSearchSubtypesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
 export type ReceivePlotSearchSubtypesAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;

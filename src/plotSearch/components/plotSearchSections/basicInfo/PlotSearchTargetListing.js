@@ -1,21 +1,30 @@
 //@flow
 
 import React from 'react';
-import {Row} from "react-foundation";
-import {connect} from "react-redux";
+import {Row} from 'react-foundation';
+import {connect} from 'react-redux';
 
-import PlotSearchSite from "./PlotSearchSite";
-import {getCurrentPlotSearch} from "../../../selectors";
-import type {PlotSearch} from "../../../types";
-import WhiteBox from "../../../../components/content/WhiteBox";
-import SubTitle from "../../../../components/content/SubTitle";
-import {PlotSearchTargetType} from "../../../enums";
+import {
+  getCurrentPlotSearch,
+  getPlanUnitAttributes,
+  getCustomDetailedPlanAttributes,
+} from '$src/plotSearch/selectors';
+import type {PlotSearch} from '$src/plotSearch/types';
+import WhiteBox from '$src/components/content/WhiteBox';
+import SubTitle from '$src/components/content/SubTitle';
+import {PlotSearchTargetType} from '$src/plotSearch/enums';
+import type {Attributes} from '$src/types';
+import PlotSearchSitePlanUnit from './PlotSearchSitePlanUnit';
+import PlotSearchSiteCustomDetailedPlan from './PlotSearchSiteCustomDetailedPlan';
 
+type OwnProps = {};
 type Props = {
-  plotSearch: PlotSearch
+  plotSearch: PlotSearch,
+  planUnitAttributes: Attributes,
+  customDetailedPlanAttributes: Attributes,
 };
 
-const PlotSearchTargetListing = ({ plotSearch}: Props) => {
+const PlotSearchTargetListing = ({plotSearch, planUnitAttributes, customDetailedPlanAttributes}: Props) => {
   if (!plotSearch?.plot_search_targets) {
     return null;
   }
@@ -35,10 +44,19 @@ const PlotSearchTargetListing = ({ plotSearch}: Props) => {
           </SubTitle>
           {searchableTargets.map((target, index) =>
             <Row key={index}>
-              <PlotSearchSite
-                plotSearchSite={target}
-                index={index}
-              />
+              {target.plan_unit ? 
+                <PlotSearchSitePlanUnit
+                  plotSearchSite={target}
+                  index={index}
+                  planUnitAttributes={planUnitAttributes}
+                />
+                :
+                <PlotSearchSiteCustomDetailedPlan
+                  plotSearchSite={target}
+                  index={index}
+                  customDetailedPlanAttributes={customDetailedPlanAttributes}
+                />
+              }
             </Row>
           )}
         </WhiteBox>
@@ -50,10 +68,19 @@ const PlotSearchTargetListing = ({ plotSearch}: Props) => {
           </SubTitle>
           {proceduralReservationTargets.map((target, index) =>
             <Row key={index}>
-              <PlotSearchSite
-                plotSearchSite={target}
-                index={index}
-              />
+              {target.plan_unit ? 
+                <PlotSearchSitePlanUnit
+                  plotSearchSite={target}
+                  index={index}
+                  planUnitAttributes={planUnitAttributes}
+                />
+                :
+                <PlotSearchSiteCustomDetailedPlan
+                  plotSearchSite={target}
+                  index={index}
+                  customDetailedPlanAttributes={customDetailedPlanAttributes}
+                />
+              }
             </Row>
           )}
         </WhiteBox>
@@ -65,10 +92,19 @@ const PlotSearchTargetListing = ({ plotSearch}: Props) => {
           </SubTitle>
           {directReservationTargets.map((target, index) =>
             <Row key={index}>
-              <PlotSearchSite
-                plotSearchSite={target}
-                index={index}
-              />
+              {target.plan_unit ? 
+                <PlotSearchSitePlanUnit
+                  plotSearchSite={target}
+                  index={index}
+                  planUnitAttributes={planUnitAttributes}
+                />
+                :
+                <PlotSearchSiteCustomDetailedPlan
+                  plotSearchSite={target}
+                  index={index}
+                  customDetailedPlanAttributes={customDetailedPlanAttributes}
+                />
+              }
             </Row>
           )}
         </WhiteBox>
@@ -77,6 +113,8 @@ const PlotSearchTargetListing = ({ plotSearch}: Props) => {
   );
 };
 
-export default connect((state) => ({
-  plotSearch: getCurrentPlotSearch(state)
-}))(PlotSearchTargetListing);
+export default (connect((state) => ({
+  plotSearch: getCurrentPlotSearch(state),
+  planUnitAttributes: getPlanUnitAttributes(state),
+  customDetailedPlanAttributes: getCustomDetailedPlanAttributes(state),
+}))(PlotSearchTargetListing): React$AbstractComponent<OwnProps, mixed>);

@@ -5,11 +5,13 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import type {Attributes, Reducer, Methods} from '$src/types';
 import {FormNames} from '$src/enums';
+import type {Action, CombinedReducer} from 'redux';
 
 import type {
   ReceiveIsSaveClickedAction,
   PlotSearch,
   PlotSearchList,
+  CustomDetailedPlan,
   ReceiveAttributesAction,
   ReceiveCollapseStatesAction,
   ReceivePlotSearchListAction,
@@ -17,17 +19,17 @@ import type {
   ReceiveFormValidFlagsAction,
   ReceiveMethodsAction,
   PlanUnit,
+  ReceivePlotSearchSubtypesAction,
   ReceiveFormAttributesAction,
   ReceiveFormAction,
   ReceiveTemplateFormsAction,
   AddPlanUnitDecisionsAction,
   ReceivePlotSearchStagesAction,
   RemovePlanUnitDecisionsAction,
-  ReceivePlotSearchSubtypesAction,
-  PlotSearchState
+  ReceiveSingleCustomDetailedPlanAction,
+  PlotSearchState,
 } from './types';
-import {annotatePlanUnitDecision} from "./helpers";
-import type {CombinedReducer} from "redux";
+import {annotatePlanUnitDecision} from './helpers';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -67,21 +69,14 @@ const pendingPlanUnitFetchesReducer: Reducer<Array<number>> = handleActions({
     return [...state, id];
   },
   ['mvj/plotSearch/PLAN_UNIT_NOT_FOUND']: (state: Array<number>, {payload: id}) => state.filter((item) => item === id),
-  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: Array<number>, {payload: result}) => state.filter((item) => !result[item])
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT']: (state: Array<number>, {payload: result}) => state.filter((item) => !result[item]),
 }, []);
 
-const pendingPlanUnitAttributeFetchesReducer: Reducer<Array<number>> = handleActions({
-  ['mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES']: (state: Array<number>, {payload: value}) => {
-    const id = value.value;
-    if (state.includes(id)) {
-      return state;
-    }
-
-    return [...state, id];
-  },
-  ['mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND']: (state: Array<number>, {payload: id}) => state.filter((item) => item === id),
-  ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: (state: Array<number>, {payload: result}) => state.filter((item) => !result[item])
-}, []);
+const isFetchingPlanUnitAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES']: () => true,
+  ['mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: () => false,
+}, false);
 
 const planUnitAttributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -96,6 +91,39 @@ const planUnitReducer: Reducer<PlanUnit> = handleActions({
   },
   ['mvj/plotSearch/NULL_PLAN_UNITS']: () => null,
 }, {});
+
+const customDetailedPlanAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
+    return merge(state, attributes);
+  },
+}, null);
+
+const customDetailedPlanReducer: Reducer<CustomDetailedPlan> = handleActions({
+  ['mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN']: (state: CustomDetailedPlan, {payload: customDetailedPlan}: ReceiveSingleCustomDetailedPlanAction) =>
+  {
+    return merge(state, customDetailedPlan);
+  },
+  ['mvj/plotSearch/NULL_CUSTOM_DETAILED_PLANS']: () => null,
+}, {});
+
+const pendingCustomDetailedPlanFetchesReducer: Reducer<Array<number>> = handleActions({
+  ['mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN']: (state: Array<number>, {payload: value}) => {
+    const id = value.value;
+    if (state.includes(id)) {
+      return state;
+    }
+
+    return [...state, id];
+  },
+  ['mvj/plotSearch/CUSTOM_DETAILED_PLAN_NOT_FOUND']: (state: Array<number>, {payload: id}) => state.filter((item) => item === id),
+  ['mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN']: (state: Array<number>, {payload: result}) => state.filter((item) => !result[item]),
+}, []);
+
+const isFetchingCustomDetailedPlanAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES']: () => true,
+  ['mvj/plotSearch/CUSTOM_DETAILED_PLAN_ATTRIBUTES_NOT_FOUND']: () => false,
+  ['mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN_ATTRIBUTES']: () => false,
+}, false);
 
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/FETCH_ATTRIBUTES']: () => true,
@@ -190,7 +218,7 @@ const formReducer: Reducer<Object> = handleActions({
   },
 }, null);
 
-const decisionCandidateReducer: Reducer<{ [planUnit: number]: Array<Object> }> = handleActions({
+const decisionCandidateReducer: Reducer<Object> = handleActions({
   ['mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS']: (state: Object, {payload: planUnit}: AddPlanUnitDecisionsAction) => {
     if (!planUnit.decisions) {
       return state;
@@ -198,7 +226,7 @@ const decisionCandidateReducer: Reducer<{ [planUnit: number]: Array<Object> }> =
 
     return {
       ...state,
-      [planUnit.id]: planUnit.decisions?.map((decision) => annotatePlanUnitDecision(decision, planUnit)) || []
+      [planUnit.id]: planUnit.decisions?.map((decision) => annotatePlanUnitDecision(decision, planUnit)) || [],
     };
   },
   ['mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS']: (state: Object, {payload: planUnitId}: RemovePlanUnitDecisionsAction) => {
@@ -207,16 +235,16 @@ const decisionCandidateReducer: Reducer<{ [planUnit: number]: Array<Object> }> =
     }
 
     const newState = {
-      ...state
+      ...state,
     };
 
     delete newState[planUnitId];
 
     return newState;
   },
-  ['mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS']: (state: Object) => {
+  ['mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS']: () => {
     return {};
-  }
+  },
 }, {});
 
 const stagesReducer: Reducer<Array<Object>> = handleActions({
@@ -232,7 +260,7 @@ const isFetchingStagesReducer: Reducer<boolean> = handleActions({
 }, false);
 
 
-export default (combineReducers<Object, mixed>({
+export default (combineReducers<Object, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
   current: currentPlotSearchReducer,
@@ -244,10 +272,14 @@ export default (combineReducers<Object, mixed>({
   isSaveClicked: isSaveClickedReducer,
   list: plotSearchListReducer,
   methods: methodsReducer,
+  customDetailedPlan: customDetailedPlanReducer,
+  customDetailedPlanAttributes: customDetailedPlanAttributesReducer,
+  pendingCustomDetailedPlanFetches: pendingCustomDetailedPlanFetchesReducer,
+  isFetchingCustomDetailedPlanAttributes: isFetchingCustomDetailedPlanAttributesReducer,
   planUnitAttributes: planUnitAttributesReducer,
   planUnit: planUnitReducer,
   pendingPlanUnitFetches: pendingPlanUnitFetchesReducer,
-  pendingPlanUnitAttributeFetches: pendingPlanUnitAttributeFetchesReducer,
+  isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
   subTypes: subTypesReducer,
   isFetchingFormAttributes: isFetchingFormAttributesReducer,
   isFetchingTemplateForms: isFetchingTemplateFormsReducer,
@@ -257,5 +289,5 @@ export default (combineReducers<Object, mixed>({
   form: formReducer,
   decisionCandidates: decisionCandidateReducer,
   stages: stagesReducer,
-  isFetchingStages: isFetchingStagesReducer
-}) : CombinedReducer<PlotSearchState, mixed>);
+  isFetchingStages: isFetchingStagesReducer,
+}): CombinedReducer<PlotSearchState, Action<any>>);

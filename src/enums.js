@@ -68,12 +68,12 @@ export const ConfirmationModalTexts = {
   },
   CANCEL_CHANGES: {
     BUTTON: 'Poistu tallentamatta',
-    LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>,
+    LABEL: (<span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>: React$Element<"span">),
     TITLE: 'Poistu tallentamatta',
   },
   CLOSE_COMMENT_PANEL: {
     BUTTON: 'Sulje kommentointi',
-    LABEL: <span>Kaikkia muutoksia ei ole tallennettu.<br /> Haluatko varmasti sulkea kommentoinnin?</span>,
+    LABEL: (<span>Kaikkia muutoksia ei ole tallennettu.<br /> Haluatko varmasti sulkea kommentoinnin?</span>: React$Element<"span">),
     TITLE: 'Sulje kommentointi',
   },
   COPY_AREAS_TO_CONTRACT: {
@@ -83,7 +83,7 @@ export const ConfirmationModalTexts = {
   },
   CREATE_CONTACT: {
     BUTTON: 'Luo asiakas',
-    LABEL: <span>Tunnuksella on jo olemassa asiakas.<br />Haluatko luoda asiakkaan?</span>,
+    LABEL: (<span>Tunnuksella on jo olemassa asiakas.<br />Haluatko luoda asiakkaan?</span>: React$Element<"span">),
     TITLE: 'Luo asiakas',
   },
   DELETE_ADDRESS: {
@@ -473,6 +473,7 @@ export const FormNames = {
   PLOT_SEARCH_BASIC_INFORMATION: 'plot-search-basic-information-form',
   PLOT_SEARCH_APPLICATION: 'plot-search-application-form',
   PLOT_SEARCH_APPLICATION_SECTION_STAGING: 'plot-search-application-form-section-staging',
+  PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM: 'plot-search-application-preview-mock-form',
   PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',

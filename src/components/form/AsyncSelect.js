@@ -16,7 +16,7 @@ type Props = {
   placeholder?: string,
   setRef?: Function,
   initialValues?: Object,
-  cacheOptions: any,
+  cacheOptions?: any,
   multiSelect?: boolean
 }
 
@@ -28,7 +28,7 @@ type State = {
 class AsyncSelect extends Component<Props, State> {
   select: any
 
-  setSelectRef = (el: any) => {
+  setSelectRef: ((el: any) => void) = (el) => {
     const {setRef} = this.props;
 
     this.select = el;
@@ -37,17 +37,17 @@ class AsyncSelect extends Component<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: { disabled: boolean, value: string, ... } = {
     disabled: false,
     value: '',
   };
 
-  state = {
+  state: State = {
     inputValue: '',
     menuOpened: false,
   }
 
-  handleBlur = () => {
+  handleBlur: (() => void) = () => {
     const {input: {onBlur, value}} = this.props;
 
     if(onBlur) {
@@ -55,13 +55,13 @@ class AsyncSelect extends Component<Props, State> {
     }
   };
 
-  handleChange = (value: Object) => {
+  handleChange: ((value: Object) => void) = (value) => {
     const {input: {onChange}} = this.props;
 
     onChange(value);
   }
 
-  handleInputChange = (value: string, meta: Object) => {
+  handleInputChange: ((value: string, meta: any) => void) = (value, meta) => {
     const {action} = meta;
     switch (action) {
       case 'input-change':
@@ -70,7 +70,7 @@ class AsyncSelect extends Component<Props, State> {
     }
   }
 
-  handleMenuOpen = () => {
+  handleMenuOpen: (() => void) = () => {
     const {inputValue, menuOpened} = this.state;
 
     if(!menuOpened) {
@@ -91,7 +91,7 @@ class AsyncSelect extends Component<Props, State> {
     }
   }
 
-  loadOptions = (inputValue: string, callback: Function) => {
+  loadOptions: ((inputValue: string, callback: Function) => void) = (inputValue, callback) => {
     const {getOptions} = this.props;
     const {menuOpened} = this.state;
 
@@ -102,7 +102,7 @@ class AsyncSelect extends Component<Props, State> {
     }
   };
 
-  render() {
+  render(): React$Node {
     const {
       disabled,
       displayError,
@@ -111,7 +111,7 @@ class AsyncSelect extends Component<Props, State> {
       placeholder,
       initialValues,
       cacheOptions = true,
-      multiSelect
+      multiSelect,
     } = this.props;
 
     return(
