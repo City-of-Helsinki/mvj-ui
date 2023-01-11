@@ -9,6 +9,17 @@ import {connect} from 'react-redux';
 import type {Fields} from 'redux-form/lib/FieldArrayProps.types';
 import {Column, Row} from 'react-foundation';
 
+import AddButton from '$components/form/AddButton';
+import RemoveButton from '$components/form/RemoveButton';
+import FormField from '$components/form/FormField';
+import AddFileButton from '$components/form/AddFileButton';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormText from '$components/form/FormText';
+import Authorization from '$components/authorization/Authorization';
+import FileDownloadLink from '$components/file/FileDownloadLink';
+import LoadingIndicator from '$components/multi-select/LoadingIndicator';
+import {ButtonColors} from '$components/enums';
+import FormHintText from '$components/form/FormHintText';
 import {
   getAttachmentAttributes,
   getAttachmentMethods,
@@ -20,30 +31,22 @@ import {
   getCurrentPlotApplication,
   getIsFetchingApplicationRelatedAttachments,
   getIsFetchingAttachmentAttributes,
-} from '../selectors';
+} from '$src/plotApplications/selectors';
 import {
-  getApplicationAttachmentDownloadLink, getFieldFileIds, getSectionApplicantType,
+  getApplicationAttachmentDownloadLink,
+  getFieldFileIds,
+  getSectionApplicantType,
   getSectionTargetFromMeta,
-  getSectionTemplate, valueToApplicantType,
-} from '../helpers';
-import AddButton from '../../components/form/AddButton';
-import RemoveButton from '../../components/form/RemoveButton';
-import FormField from '../../components/form/FormField';
-import AddFileButton from '../../components/form/AddFileButton';
-import {deleteUploadedAttachment, uploadAttachment} from '../actions';
-import FormTextTitle from '../../components/form/FormTextTitle';
-import FormText from '../../components/form/FormText';
-import Authorization from '../../components/authorization/Authorization';
-import FileDownloadLink from '../../components/file/FileDownloadLink';
-import {formatDate, isFieldAllowedToRead} from '../../util/helpers';
-import LoadingIndicator from '../../components/multi-select/LoadingIndicator';
-import {ConfirmationModalTexts, FormNames} from '../../enums';
-import {ButtonColors} from '../../components/enums';
-import {ActionTypes, AppConsumer} from '../../app/AppContext';
-import FormHintText from '../../components/form/FormHintText';
-import {APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '../constants';
-import type {PlotApplicationFormValue, UploadedFileMeta} from '../types';
-import {ApplicantTypes} from '../enums';
+  getSectionTemplate,
+  valueToApplicantType,
+} from '$src/plotApplications/helpers';
+import {deleteUploadedAttachment, uploadAttachment} from '$src/plotApplications/actions';
+import {formatDate, isFieldAllowedToRead} from '$util/helpers';
+import {ConfirmationModalTexts, FormNames} from '$src/enums';
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import {APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
+import {ApplicantTypes} from '$src/plotApplications/enums';
+import type {PlotApplicationFormValue, UploadedFileMeta} from '$src/plotApplications/types';
 
 const ApplicationSectionKeys = {
   Subsections: 'sections',

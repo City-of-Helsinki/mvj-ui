@@ -1,495 +1,93 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {Row, Column} from 'react-foundation';
-import {reduxForm, initialize, change, getFormValues} from 'redux-form';
-import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
-import get from 'lodash/get';
 
-import Authorization from '$components/authorization/Authorization';
-import {FormNames, ViewModes} from '$src/enums';
-import Collapse from '$components/collapse/Collapse';
-import Divider from '$components/content/Divider';
-import {getUsersPermissions} from '$src/usersPermissions/selectors';
-import Title from '$components/content/Title';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import FormField from '$components/form/FormField';
 import {
-  receiveCollapseStates,
-  receiveIsSaveClicked,
-} from '$src/plotApplications/actions';
-import {
-  getAttributes,
-  getCollapseStateByKey,
-  getIsSaveClicked,
-  getErrorsByFormName,
+  getApplicationRelatedAttachments,
+  getApplicationRelatedForm, getApplicationRelatedPlotSearch,
+  getCurrentPlotApplication, getIsFetchingApplicationRelatedAttachments, getIsFetchingApplicationRelatedPlotSearch,
 } from '$src/plotApplications/selectors';
-
+import type {RootState} from '$src/root/types';
+import type {PlotApplication} from '$src/plotApplications/types';
+import {reshapeSavedApplicationObject} from '$src/plotApplications/helpers';
+import {getFieldAttributes} from '$util/helpers';
+import {getFormAttributes, getIsFetchingForm, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
-import {
-  getInitialApplication,
-  getInitialApplicationForm,
-  getSectionTemplate,
-  reshapeSavedApplicationObject,
-} from '../helpers';
-import {
-  getFormAttributes,
-  getIsFetching as getIsFetchingPlotSearchList, getIsFetchingForm,
-  getIsFetchingFormAttributes,
-  getPlotSearchList,
-} from '../../plotSearch/selectors';
-import {fetchFormAttributes} from '../../plotSearch/actions';
-import {
-  getApplicationRelatedAttachments, getApplicationRelatedPlotSearch,
-  getCurrentEditorTargets, getCurrentPlotApplication,
-  getFieldTypeMapping,
-  getIsFetchingApplicationRelatedAttachments, getIsFetchingApplicationRelatedPlotSearch,
-  getIsFetchingAttachmentAttributes, getIsFetchingApplicantInfoCheckAttributes,
-} from '../selectors';
-import PlotApplicationSubsection from './PlotApplicationSubsection';
-import {
-  fetchAttachmentAttributes,
-  fetchPendingUploads, receiveApplicationRelatedAttachments,
-  receiveFormValidFlags, receiveSinglePlotApplication,
-  setCurrentEditorTargets,
-} from '../actions';
-import Loader from '../../components/loader/Loader';
-import {TARGET_SECTION_IDENTIFIER} from '../constants';
-import type {PlotSearch, PlotSearchList} from '../../plotSearch/types';
-import type {PlotApplication} from '../types';
+import {orderBy} from 'lodash';
+import PlotApplicationSectionData from '$src/plotApplications/components/PlotApplicationSectionData';
+import Loader from '$components/loader/Loader';
+import Title from '$components/content/Title';
+import Divider from '$components/content/Divider';
 
-type OwnProps = {
-  isNew: boolean
-};
+type OwnProps = {};
 
 type Props = {
   ...OwnProps,
-  attributes: Attributes,
-  collapseStateCommon: boolean,
-  receiveCollapseStates: Function,
-  usersPermissions: UsersPermissionsType,
-  errors: ?Object,
-  preparer: ?string,
-  formName: string,
-  isSaveClicked: boolean,
-  initialize: Function,
-  change: Function,
-  plotSearches: PlotSearchList,
-  fetchPendingUploads: Function,
-  fetchFormAttributes: Function,
-  fetchAttachmentAttributes: Function,
+  currentPlotApplication: PlotApplication,
   isFetchingFormAttributes: boolean,
-  isFetchingAttachmentAttributes: boolean,
-  isFetchingPlotSearchList: boolean,
-  array: { [key: string]: Function },
-  fieldTypeMapping: Object,
-  valid: boolean,
-  receiveFormValidFlags: Function,
-  formValues: Object,
-  currentEditorTargets: Array<Object>,
-  setCurrentEditorTargets: Function,
-  isFetchingApplicantInfoCheckAttributes: boolean,
-  retrievingData: boolean,
-  currentPlotApplication?: PlotApplication,
+  isFetchingForm: boolean,
+  isFetchingAttachments: boolean,
+  isFetchingPlotSearch: boolean,
+  form: Object,
   formAttributes: Attributes,
   attachments: Array<Object>,
-  isFetchingAttachments: boolean,
-  currentPlotSearch?: PlotSearch,
-  isFetchingApplicationRelatedPlotSearch: boolean,
-  receiveSinglePlotApplication: Function,
-  receiveApplicationRelatedAttachments: Function
-}
+  plotSearch: ?Object,
+};
 
-type State = {
-  form: Object,
-  isFormFixed: boolean,
-}
-
-class PlotApplicationEdit extends PureComponent<Props, State> {
-  state = {
-    form: null,
-    isFormFixed: false,
-  }
-
-  componentDidMount() {
-    const {
-      fetchFormAttributes,
-      fetchAttachmentAttributes,
-      fetchPendingUploads,
-      initialize,
-      valid,
-      isNew,
-      retrievingData,
-      receiveSinglePlotApplication,
-      receiveApplicationRelatedAttachments,
-    } = this.props;
-
-
-    fetchPendingUploads();
-    fetchFormAttributes(1);
-    fetchAttachmentAttributes();
-
-    if (isNew) {
-      initialize(getInitialApplication());
-
-      // remove single application view data if that view had been visited during the same session
-      receiveSinglePlotApplication({});
-      receiveApplicationRelatedAttachments([]);
-    } else {
-      if (!isNew && !retrievingData) {
-        this.setupEditMode();
-      }
-    }
-
-    receiveFormValidFlags({
-      [FormNames.PLOT_APPLICATION]: valid,
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      receiveFormValidFlags,
-      isNew,
-      retrievingData,
-      isFetchingAttachments,
-    } = this.props;
-
-    if(prevProps.valid !== this.props.valid) {
-      receiveFormValidFlags({
-        [FormNames.PLOT_APPLICATION]: this.props.valid,
-      });
-    }
-
-    if (!isNew && !retrievingData && !isFetchingAttachments && prevProps.retrievingData && !this.state.isFormFixed) {
-      this.setupEditMode();
-    }
-  }
-
-  handleCollapseToggle = (key: string, val: boolean) => {
-    const {receiveCollapseStates} = this.props;
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.PLOT_APPLICATION]: {
-          common: val,
-        },
-      },
-    });
-  }
-
-  handleCommonFieldsCollapseToggle = (val: boolean) => {
-    this.handleCollapseToggle('common', val);
-  }
-
-  setupEditMode = () => {
+class PlotApplicationEdit extends PureComponent<Props> {
+  render() {
     const {
       currentPlotApplication,
-      currentPlotSearch,
-      formAttributes,
+      form,
+      isFetchingForm,
+      isFetchingFormAttributes,
+      isFetchingAttachments,
+      isFetchingPlotSearch,
       attachments,
-      initialize,
-      setCurrentEditorTargets,
+      formAttributes,
+      plotSearch,
     } = this.props;
 
-    if (currentPlotApplication) {
-      if (!currentPlotSearch) {
-        throw new Error('base plot search not found');
-      }
+    const plotApplication = currentPlotApplication;
+    const isLoading = !form || isFetchingForm || isFetchingFormAttributes || isFetchingAttachments || !plotSearch?.id || isFetchingPlotSearch;
 
-      const reshapedData = reshapeSavedApplicationObject(
-        currentPlotApplication.entries_data,
-        currentPlotSearch.form,
-        formAttributes,
-        attachments
-      );
-
-      initialize({
-        formId: currentPlotApplication.form,
-        targets: currentPlotApplication.targets,
-        formEntries: getInitialApplicationForm(
-          this.props.fieldTypeMapping,
-          currentPlotSearch.form,
-          reshapedData
-        ),
-      });
-      setCurrentEditorTargets(currentPlotSearch.plot_search_targets);
-
-      this.setState(() => ({
-        isFormFixed: true,
-        form: currentPlotSearch.form,
-      }));
-    }
-  }
-
-  initializeFormValues = (formId) => {
-    const {setCurrentEditorTargets} = this.props;
-
-    const matchingSearch = this.props.plotSearches.results?.find((search) => search.form?.id === formId);
-
-    this.props.change('formEntries', getInitialApplicationForm(
-      this.props.fieldTypeMapping,
-      matchingSearch?.form,
-      null
-    ));
-    this.props.change('targets', []);
-
-    this.setState(() => ({
-      form: matchingSearch?.form,
-    }));
-
-    setCurrentEditorTargets(matchingSearch?.plot_search_targets);
-  }
-
-  updateTargetSections = (newTargetIds, _, oldTargetIds) => {
-    const {array, formValues} = this.props;
-
-    const deleted = oldTargetIds.filter((id) => !newTargetIds.includes(id));
-    const added = newTargetIds.filter((id) => !oldTargetIds.includes(id));
-
-    const targetSectionsArrayPath = `formEntries.sections.${TARGET_SECTION_IDENTIFIER}`;
-    const oldValues = get(formValues, targetSectionsArrayPath);
-
-    // Create a new section for every previously missing target ID
-    added.forEach((id) => {
-      array.push(targetSectionsArrayPath, {
-        ...getSectionTemplate(TARGET_SECTION_IDENTIFIER),
-        metadata: {
-          identifier: id,
-        },
-      });
-    });
-
-    // Remove all sections for no longer existing target IDs
-    // (sorted descending by index, so we can remove them all in one sweep
-    //  without the indices changing halfway)
-    const deletedIndices = deleted.map((id) => oldValues
-      .findIndex((item) => item.metadata?.identifier === id))
-      .sort((a, b) => a < b ? 1 : -1);
-    deletedIndices.forEach((index) =>
-      array.remove(targetSectionsArrayPath, index));
-  }
-
-  render (){
-    const {
-      collapseStateCommon,
-      isSaveClicked,
-      attributes,
-      errors,
-      plotSearches,
-      currentEditorTargets,
-      currentPlotSearch,
-      retrievingData,
-      isNew,
-    } = this.props;
-
-    const {
-      isFormFixed,
-    } = this.state;
-
-    if (retrievingData) {
-      return <Loader isLoading={true} />;
+    let answerData;
+    if (!isLoading) {
+      answerData = reshapeSavedApplicationObject(plotApplication.entries_data, form, formAttributes, attachments);
     }
 
-    const plotSearchCandidates = isNew
-      ? (plotSearches.results || [])
-      : (currentPlotSearch && [currentPlotSearch] || []);
-    const plotSearchChoices = plotSearchCandidates.filter((option) => option.form).map((option) => ({
-      display_name: option.name,
-      value: option.form.id,
-    }));
+    const fieldTypes = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
 
     return (
-      <form className="PlotApplicationEdit">
+      <div className="PlotApplication">
         <Title>
           Hakemus
         </Title>
         <Divider />
-        <Row className='summary__content-wrapper'>
-          <Column small={12}>
-            <Collapse
-              defaultOpen={collapseStateCommon !== undefined ? collapseStateCommon : true}
-              hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle='Hakemus'
-              onToggle={this.handleCommonFieldsCollapseToggle}
-            >
-              <Row>
-                <Authorization allow={true}>
-                  <Column small={12} medium={6} large={4}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={{
-                        ...get(attributes, 'form'),
-                        label: 'Tonttihaku',
-                        choices: plotSearchChoices,
-                      }}
-                      overrideValues={{
-                        allowEdit: !isFormFixed,
-                      }}
-                      name='formId'
-                      onChange={this.initializeFormValues}
-                    />
-                  </Column>
-                </Authorization>
-                {/*
-                <Authorization allow={isFieldAllowedToRead(attributes, 'id')}>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'arrival_time')}
-                      name='arrival_time'
-                    />
-                  </Column>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, 'id')}>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'time')}
-                      name='time'
-                    />
-                  </Column>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, 'id')}>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'saver')}
-                      name='saver'
-                    />
-                  </Column>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, 'id')}>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'disapproval_reason')}
-                      name='disapproval_reason'
-                    />
-                  </Column>
-                </Authorization>
-                <Authorization allow={isFieldAllowedToRead(attributes, 'id')}>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'notice')}
-                      name='notice'
-                    />
-                  </Column>
-                </Authorization>
-                */}
-                <Authorization allow={true}>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'id')}
-                      name='id'
-                      disabled
-                    />
-                  </Column>
-                </Authorization>
-              </Row>
-            </Collapse>
-
-            {this.state.form && <>
-
-              <Row>
-                <Column small={12}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={{
-                      ...get(attributes, 'targets'),
-                      type: 'multiselect',
-                      label: 'Haettavat kohteet',
-                    }}
-                    overrideValues={{
-                      options: currentEditorTargets.map((target) => ({
-                        value: target.id,
-                        label: `${target.lease_address?.address || '-'} (${target.lease_identifier})`,
-                      })),
-                    }}
-                    name='targets'
-                    onChange={this.updateTargetSections}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column small={12}>
-                  {this.state.form.sections.map((section) => (
-                    <PlotApplicationSubsection
-                      path={['formEntries.sections']}
-                      section={section}
-                      headerTag="h2"
-                      key={section.id}
-                    />
-                  ))}
-                </Column>
-              </Row>
-            </>}
-          </Column>
-        </Row>
-      </form>
+        <Loader isLoading={isLoading} />
+        {!isLoading && fieldTypes && orderBy(form.sections, 'order').filter((section) => section.visible).map((section) =>
+          <PlotApplicationSectionData
+            section={section}
+            answer={answerData.sections[section.identifier]}
+            topLevel
+            fieldTypes={fieldTypes}
+            key={section.identifier}
+            plotSearch={plotSearch}
+            editMode={true}
+          />)}
+      </div>
     );
   }
 }
 
-const formName = FormNames.PLOT_APPLICATION;
-
-export default (flowRight(
-  connect(
-    (state, props) => {
-
-      const isFetchingPlotSearchList = getIsFetchingPlotSearchList(state);
-      const isFetchingFormAttributes = getIsFetchingFormAttributes(state);
-      const isFetchingAttachmentAttributes = getIsFetchingAttachmentAttributes(state);
-      const isFetchingAttachments = getIsFetchingApplicationRelatedAttachments(state);
-      const isFetchingApplicantInfoCheckAttributes = getIsFetchingApplicantInfoCheckAttributes(state);
-      const isFetchingForm = getIsFetchingForm(state);
-      const isFetchingApplicationRelatedPlotSearch = getIsFetchingApplicationRelatedPlotSearch(state);
-
-      const isRetrievingCommonData = isFetchingFormAttributes || isFetchingAttachmentAttributes || isFetchingApplicantInfoCheckAttributes || isFetchingForm;
-      const isRetrievingCreateModeData = isFetchingPlotSearchList;
-      const isRetrievingEditModeData = isFetchingApplicationRelatedPlotSearch;
-
-      return {
-        attributes: getAttributes(state),
-        usersPermissions: getUsersPermissions(state),
-        collapseStateCommon: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.common`),
-        isSaveClicked: getIsSaveClicked(state),
-        errors: getErrorsByFormName(state, formName),
-        plotSearches: getPlotSearchList(state),
-        fieldTypeMapping: getFieldTypeMapping(state),
-        isFetchingPlotSearchList,
-        isFetchingFormAttributes,
-        isFetchingAttachmentAttributes,
-        isFetchingAttachments,
-        isFetchingApplicantInfoCheckAttributes,
-        isFetchingForm,
-        isFetchingApplicationRelatedPlotSearch,
-        formValues: getFormValues(formName)(state),
-        currentEditorTargets: getCurrentEditorTargets(state),
-        currentPlotApplication: getCurrentPlotApplication(state),
-        formAttributes: getFormAttributes(state),
-        retrievingData: isRetrievingCommonData || (props.isNew ? isRetrievingCreateModeData : isRetrievingEditModeData),
-        attachments: getApplicationRelatedAttachments(state),
-        currentPlotSearch: getApplicationRelatedPlotSearch(state),
-      };
-    },
-    {
-      receiveCollapseStates,
-      receiveIsSaveClicked,
-      receiveFormValidFlags,
-      initialize,
-      change,
-      fetchFormAttributes,
-      fetchPendingUploads,
-      fetchAttachmentAttributes,
-      setCurrentEditorTargets,
-      receiveSinglePlotApplication,
-      receiveApplicationRelatedAttachments,
-    }
-  ),
-  reduxForm({
-    form: formName,
-  }),
-)(PlotApplicationEdit): React$ComponentType<OwnProps>);
+export default (connect((state: RootState) => ({
+  currentPlotApplication: getCurrentPlotApplication(state),
+  form: getApplicationRelatedForm(state),
+  formAttributes: getFormAttributes(state),
+  isFetchingForm: getIsFetchingForm(state),
+  isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+  attachments: getApplicationRelatedAttachments(state),
+  isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
+  isFetchingPlotSearch: getIsFetchingApplicationRelatedPlotSearch(state),
+  plotSearch: getApplicationRelatedPlotSearch(state),
+}))(PlotApplicationEdit): React$ComponentType<OwnProps>);

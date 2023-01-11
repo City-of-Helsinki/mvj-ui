@@ -54,16 +54,17 @@ import type {
   FetchApplicantInfoCheckAttributesAction,
   ReceiveApplicantInfoCheckAttributesAction,
   ApplicantInfoCheckAttributesNotFoundAction,
-  EditApplicantInfoCheckItemAction,
   ReceiveUpdatedApplicantInfoCheckItemAction,
-  ApplicantInfoCheckUpdateFailedAction,
   ReceiveUpdatedTargetInfoCheckItemAction,
-  EditTargetInfoCheckItemAction,
-  TargetInfoCheckItemUpdateFailedAction,
   DeleteTargetInfoCheckMeetingMemoAction,
   UploadTargetInfoCheckMeetingMemoAction,
   ReceiveTargetInfoCheckMeetingMemoUploadedAction,
   TargetInfoCheckMeetingMemoUploadFailedAction,
+  InfoCheckBatchEditData,
+  BatchEditPlotApplicationInfoChecksAction,
+  InfoCheckBatchEditErrors,
+  ReceivePlotApplicationInfoCheckBatchEditSuccessAction,
+  ReceivePlotApplicationInfoCheckBatchEditFailureAction,
 } from '$src/plotApplications/types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -213,23 +214,11 @@ export const receiveApplicantInfoCheckAttributes = (payload: Object): ReceiveApp
 export const applicantInfoCheckAttributesNotFound = (): ApplicantInfoCheckAttributesNotFoundAction =>
   createAction('mvj/plotApplications/APPLICANT_INFO_CHECK_ATTRIBUTES_NOT_FOUND')();
 
-export const editApplicantInfoCheckItem = (payload: Object): EditApplicantInfoCheckItemAction =>
-  createAction('mvj/plotApplications/EDIT_APPLICANT_INFO_CHECK_ITEM')(payload);
-
 export const receiveUpdatedApplicantInfoCheckItem = (payload: Object): ReceiveUpdatedApplicantInfoCheckItemAction =>
   createAction('mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM')(payload);
 
-export const applicantInfoCheckUpdateFailed = (payload: number): ApplicantInfoCheckUpdateFailedAction =>
-  createAction('mvj/plotApplications/APPLICANT_INFO_CHECK_UPDATE_FAILED')(payload);
-
-export const editTargetInfoCheckItem = (payload: Object): EditTargetInfoCheckItemAction =>
-  createAction('mvj/plotApplications/EDIT_TARGET_INFO_CHECK_ITEM')(payload);
-
 export const receiveUpdatedTargetInfoCheckItem = (payload: Object): ReceiveUpdatedTargetInfoCheckItemAction =>
   createAction('mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM')(payload);
-
-export const targetInfoCheckUpdateFailed = (payload: number): TargetInfoCheckItemUpdateFailedAction =>
-  createAction('mvj/plotApplications/TARGET_INFO_CHECK_ITEM_UPDATE_FAILED')(payload);
 
 export const deleteTargetInfoCheckMeetingMemo = (payload: Object): DeleteTargetInfoCheckMeetingMemoAction =>
   createAction('mvj/plotApplications/DELETE_MEETING_MEMO')(payload);
@@ -242,3 +231,12 @@ export const receiveTargetInfoCheckMeetingMemoUploaded = (): ReceiveTargetInfoCh
 
 export const targetInfoCheckMeetingMemoUploadFailed = (): TargetInfoCheckMeetingMemoUploadFailedAction =>
   createAction('mvj/plotApplications/MEETING_MEMO_UPLOAD_FAILED')();
+
+export const batchEditApplicationInfoChecks = (payload: InfoCheckBatchEditData): BatchEditPlotApplicationInfoChecksAction =>
+  createAction('mvj/plotApplications/BATCH_EDIT_INFO_CHECKS')(payload);
+
+export const receiveBatchInfoCheckEditSuccess = (): ReceivePlotApplicationInfoCheckBatchEditSuccessAction =>
+  createAction('mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS')();
+
+export const receiveBatchInfoCheckEditFailure = (payload: InfoCheckBatchEditErrors): ReceivePlotApplicationInfoCheckBatchEditFailureAction =>
+  createAction('mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE')(payload);

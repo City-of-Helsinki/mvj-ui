@@ -26,12 +26,13 @@ import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
 import PlotSearchListPage from '$src/plotSearch/components/PlotSearchListPage';
 import PlotApplicationsListPage from '$src/plotApplications/components/PlotApplicationsListPage';
 import PlotSearchPage from '$src/plotSearch/components/PlotSearchPage';
-import PlotApplicationsPage from '$src/plotApplications/components/PlotApplicationsPage';
+import PlotApplicationsPage from '$src/plotApplications/components/PlotApplicationPage';
 import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
 import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
 import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage';
 import LeaseStatisticReport from '$src/leaseStatisticReport/components/LeaseStatisticReportPage';
 import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegisterSearchPage';
+import PlotApplicationCreatePage from '$src/plotApplications/components/PlotApplicationCreatePage';
 
 /**
  * Routes enumerate
@@ -96,8 +97,7 @@ export const getRouteById = (id: string): string => {
   return routes[id] ? routes[id] : '';
 };
 
-export default
-(<App>
+export default (<App>
   <Switch>
     <Redirect exact from="/" to={getRouteById(Routes.LEASES)} />
     <Route exact path={getRouteById(Routes.LEASES)} component={LeaseListPage} />
@@ -126,6 +126,7 @@ export default
     <Route exact path={getRouteById(Routes.PLOT_SEARCH)} component={PlotSearchListPage} />
     <Route exact path={`${getRouteById(Routes.PLOT_SEARCH)}/:plotSearchId`} component={PlotSearchPage} />
     <Route exact path={getRouteById(Routes.PLOT_APPLICATIONS)} component={PlotApplicationsListPage} />
+    <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/uusi`} component={PlotApplicationCreatePage} />
     <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotApplicationId`} component={PlotApplicationsPage} />
     <Route exact path={getRouteById(Routes.CREDIT_DECISION)} component={CreditDecisionSearchPage} />
     <Route component={ErrorPage} />

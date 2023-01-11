@@ -493,7 +493,8 @@ export const FormNames = {
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
   PLOT_APPLICATION_PREVIEW: 'plot-application-preview',
-  PLOT_APPLICATION_INFO_CHECK: 'plot-application-info-check',
+  PLOT_APPLICATION_APPLICANT_INFO_CHECK: 'plot-application-applicant-info-check',
+  PLOT_APPLICATION_TARGET_INFO_CHECK: 'plot-application-target-info-check',
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
   LAND_USE_CONTRACT_INVOICE_EDIT: 'land-use-contract-invoice-edit',
 };

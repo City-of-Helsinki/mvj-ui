@@ -1,7 +1,7 @@
 // @flow
 
 import {all, fork, put, takeLatest, takeEvery, call, select} from 'redux-saga/effects';
-import {SubmissionError} from 'redux-form';
+import {SubmissionError, initialize, getFormValues} from 'redux-form';
 import {push} from 'react-router-redux';
 
 import {displayUIMessage} from '$src/util/helpers';
@@ -40,11 +40,11 @@ import {
   receiveApplicantInfoCheckAttributes,
   applicantInfoCheckAttributesNotFound,
   receiveUpdatedApplicantInfoCheckItem,
-  applicantInfoCheckUpdateFailed,
   receiveUpdatedTargetInfoCheckItem,
-  targetInfoCheckUpdateFailed,
   targetInfoCheckMeetingMemoUploadFailed,
   receiveTargetInfoCheckMeetingMemoUploaded,
+  receiveBatchInfoCheckEditSuccess,
+  receiveBatchInfoCheckEditFailure,
 } from '$src/plotApplications/actions';
 import {receiveError} from '$src/api/actions';
 
@@ -75,13 +75,20 @@ import {
 } from '$src/plotSearch/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import type {
+  BatchEditPlotApplicationInfoChecksAction,
   DeleteTargetInfoCheckMeetingMemoAction,
   DeleteUploadAction,
+  InfoCheckBatchEditErrors,
   PlotApplication,
+  ReceiveUpdatedTargetInfoCheckItemAction,
   UploadFileAction,
   UploadTargetInfoCheckMeetingMemoAction,
 } from '$src/plotApplications/types';
 import {getCurrentPlotApplication} from '$src/plotApplications/selectors';
+import {
+  getApplicantInfoCheckFormName,
+} from '$src/plotApplications/helpers';
+import {getContentUser} from '$src/users/helpers';
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
@@ -407,54 +414,6 @@ function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* editApplicantInfoCheckItemSaga({payload: infoCheck}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editApplicantInfoCheckItemRequest, infoCheck);
-
-    switch (statusCode) {
-      case 200:
-      case 201:
-        const currentPlotApplication = yield select(getCurrentPlotApplication);
-
-        yield put(receiveUpdatedApplicantInfoCheckItem(bodyAsJson));
-        yield put(fetchSinglePlotApplication(currentPlotApplication.id));
-        displayUIMessage({title: '', body: 'Käsittelytieto tallennettu'});
-        break;
-      default:
-        yield put(applicantInfoCheckUpdateFailed(infoCheck.id));
-        displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
-    }
-  } catch(e) {
-    yield put(applicantInfoCheckUpdateFailed(infoCheck.id));
-    console.log(e);
-    displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
-  }
-}
-
-function* editTargetInfoCheckItemSaga({payload: infoCheck}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editTargetInfoCheckItemRequest, infoCheck);
-
-    switch (statusCode) {
-      case 200:
-      case 201:
-        const currentPlotApplication = yield select(getCurrentPlotApplication);
-
-        yield put(receiveUpdatedTargetInfoCheckItem(bodyAsJson));
-        yield put(fetchSinglePlotApplication(currentPlotApplication.id));
-        displayUIMessage({title: '', body: 'Käsittelytieto tallennettu'});
-        break;
-      default:
-        yield put(targetInfoCheckUpdateFailed(infoCheck.id));
-        displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
-    }
-  } catch(e) {
-    yield put(targetInfoCheckUpdateFailed(infoCheck.id));
-    console.log(e);
-    displayUIMessage({title: '', body: 'Käsittelytiedon tallennus epäonnistui'}, {type: 'error'});
-  }
-}
-
 function* uploadMeetingMemoSaga({payload}: UploadTargetInfoCheckMeetingMemoAction): Generator<any, any, any> {
   try {
     const {fileData, targetInfoCheck, callback} = payload;
@@ -511,6 +470,101 @@ function* deleteMeetingMemoSaga({payload}: DeleteTargetInfoCheckMeetingMemoActio
   }
 }
 
+function* receiveUpdatedTargetInfoCheckItemSaga({payload}: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
+  yield put(initialize(payload.targetForm, payload.data));
+}
+
+function* receiveUpdatedApplicantInfoCheckItemSaga({payload}: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
+  const formName = getApplicantInfoCheckFormName(payload.id);
+
+  const oldValues = yield select(getFormValues(formName));
+  yield put(initialize(formName, {
+    ...oldValues,
+    data: {
+      ...payload.data,
+      preparer: getContentUser(payload.data.preparer),
+    },
+  }));
+}
+
+function* batchEditInfoChecksSaga({payload}: BatchEditPlotApplicationInfoChecksAction): Generator<any, any, any> {
+  const errors: InfoCheckBatchEditErrors = {
+    target: [],
+    applicant: [],
+  };
+
+  yield all(payload.target.map((target) => call(function* ({id, targetForm, data}) {
+    try {
+      const {response: {status: statusCode}, bodyAsJson} = yield call(editTargetInfoCheckItemRequest, data);
+
+      switch (statusCode) {
+        case 200:
+        case 204:
+          yield put(receiveUpdatedTargetInfoCheckItem({
+            targetForm,
+            data: bodyAsJson,
+          }));
+          break;
+        default:
+          console.error(bodyAsJson);
+          errors.target.push({
+            id,
+            error: bodyAsJson,
+          });
+      }
+    } catch (e) {
+      console.error(e);
+      errors.target.push({
+        id,
+        error: e,
+      });
+    }
+  }, target)));
+  yield all(payload.applicant.map((applicant) => call(function* ({id, kind, data}) {
+    try {
+      const {response: {status: statusCode}, bodyAsJson} = yield call(editApplicantInfoCheckItemRequest, data);
+
+      switch (statusCode) {
+        case 200:
+        case 204:
+          yield put(receiveUpdatedApplicantInfoCheckItem({
+            id: data.id,
+            data: bodyAsJson,
+          }));
+          break;
+        default:
+          console.error(bodyAsJson);
+          console.log(kind);
+          errors.applicant.push({
+            id,
+            kind,
+            error: bodyAsJson,
+          });
+      }
+    } catch (e) {
+      console.error(e);
+      errors.applicant.push({
+        id,
+        kind,
+        error: e,
+      });
+    }
+  }, applicant)));
+
+  const errorCount = errors.target.length + errors.applicant.length;
+  if (errorCount === 0) {
+    const currentPlotApplication = yield select(getCurrentPlotApplication);
+
+    yield put(receiveBatchInfoCheckEditSuccess());
+    yield put(fetchSinglePlotApplication(currentPlotApplication.id));
+    yield put(hideEditMode());
+    displayUIMessage({title: '', body: 'Käsittelytiedot päivitetty'});
+  } else {
+    yield put(receiveBatchInfoCheckEditFailure(errors));
+    displayUIMessage({title: '', body: `${errorCount} käsittelytiedon päivitys epäonnistui!`}, {type: 'error'});
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -531,8 +585,9 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/plotApplications/DELETE_UPLOAD', deleteUploadSaga);
       yield takeEvery('mvj/plotApplications/UPLOAD_MEETING_MEMO', uploadMeetingMemoSaga);
       yield takeEvery('mvj/plotApplications/DELETE_MEETING_MEMO', deleteMeetingMemoSaga);
-      yield takeEvery('mvj/plotApplications/EDIT_APPLICANT_INFO_CHECK_ITEM', editApplicantInfoCheckItemSaga);
-      yield takeEvery('mvj/plotApplications/EDIT_TARGET_INFO_CHECK_ITEM', editTargetInfoCheckItemSaga);
+      yield takeEvery('mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM', receiveUpdatedTargetInfoCheckItemSaga);
+      yield takeEvery('mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM', receiveUpdatedApplicantInfoCheckItemSaga);
+      yield takeLatest('mvj/plotApplications/BATCH_EDIT_INFO_CHECKS', batchEditInfoChecksSaga);
     }),
   ]);
 }

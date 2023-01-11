@@ -12,7 +12,6 @@ import {FormNames} from '$src/enums';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import PageContainer from '$components/content/PageContainer';
-import {ButtonColors} from '$components/enums';
 import Loader from '$components/loader/Loader';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
@@ -26,15 +25,16 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import {withPlotApplicationsAttributes} from '$components/attributes/PlotApplicationsAttributes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById, Routes} from '$src/root/routes';
-import {ConfirmationModalTexts, Methods, PermissionMissingTexts} from '$src/enums';
+import {Methods, PermissionMissingTexts} from '$src/enums';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {
   getIsFetching,
   getCurrentPlotApplication,
-  getIsEditMode,
   getIsSaveClicked,
   getIsFormValidById,
   getIsFormValidFlags,
+  getIsPerformingFileOperation,
+  getIsSaving,
 } from '$src/plotApplications/selectors';
 import {
   fetchSinglePlotApplication,
@@ -44,6 +44,7 @@ import {
   clearFormValidFlags,
   receiveFormValidFlags,
   editPlotApplication,
+  createPlotApplication,
 } from '$src/plotApplications/actions';
 import type {
   PlotApplication as PlotApplicationType,
@@ -56,17 +57,14 @@ import {
   scrollToTopPage,
 } from '$util/helpers';
 import type {Attributes, Methods as MethodsType} from '$src/types';
-import PlotApplicationInfo from './PlotApplicationInfo';
-import PlotApplication from './PlotApplication';
-import PlotApplicationEdit from './PlotApplicationEdit';
-import {fetchPlotSearchList} from '../../plotSearch/actions';
+import PlotApplicationInfo from '$src/plotApplications/components/PlotApplicationInfo';
+import {fetchPlotSearchList} from '$src/plotSearch/actions';
 import {
   getPlotSearchList,
   getIsFetching as getIsFetchingPlotSearchList,
-} from '../../plotSearch/selectors';
-import {createPlotApplication} from '../actions';
-import {prepareApplicationForSubmission} from '../helpers';
-import {getIsPerformingFileOperation, getIsSaving} from '../selectors';
+} from '$src/plotSearch/selectors';
+import {prepareApplicationForSubmission} from '$src/plotApplications/helpers';
+import PlotApplicationCreate from '$src/plotApplications/components/PlotApplicationCreate';
 
 type OwnProps = {
   ...ContextRouter
@@ -89,7 +87,6 @@ type Props = {
   usersPermissions: UsersPermissionsType,
   isFetchingUsersPermissions: boolean,
   isFetching: boolean,
-  isEditMode: boolean,
   isSaveClicked: boolean,
   receiveIsSaveClicked: Function,
   isApplicationFormDirty: boolean,
@@ -124,8 +121,6 @@ class PlotApplicationsPage extends Component<Props, State> {
     const {
       clearFormValidFlags,
       receiveTopNavigationSettings,
-      fetchSinglePlotApplication,
-      match: {params: {plotApplicationId}},
       location: {search},
       receiveIsSaveClicked,
       fetchPlotSearchList,
@@ -150,23 +145,12 @@ class PlotApplicationsPage extends Component<Props, State> {
       this.setState({activeTab: query.tab});
     }
 
-    if (this.isNewEditor()) {
-      this.handleShowEditMode();
-      fetchPlotSearchList();
-      setPageTitle('Uusi hakemus');
-    } else {
-      fetchSinglePlotApplication(plotApplicationId);
-      setPageTitle('Hakemus');
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.hideEditMode();
+    fetchPlotSearchList();
+    setPageTitle('Uusi hakemus');
   }
 
   handleShowEditMode = () => {
-    const {showEditMode, receiveIsSaveClicked, currentPlotApplication} = this.props;
-    receiveIsSaveClicked(false);
+    const {showEditMode, currentPlotApplication} = this.props;
     clearFormValidFlags();
     showEditMode();
     this.destroyAllForms();
@@ -186,7 +170,6 @@ class PlotApplicationsPage extends Component<Props, State> {
       basicInformationFormValues,
       isApplicationFormDirty,
       isFormValidFlags,
-      match: {params: {plotApplicationId}},
     } = this.props;
 
     let isDirty = false;
@@ -198,12 +181,10 @@ class PlotApplicationsPage extends Component<Props, State> {
       removeSessionStorageItem(FormNames.PLOT_APPLICATION);
     }
 
-    if(isDirty) {
-      setSessionStorageItem('plotApplicationId', plotApplicationId);
-      setSessionStorageItem('plotApplicationValidity', isFormValidFlags);
+    if (isDirty) {
+      setSessionStorageItem('newPlotApplicationValidity', isFormValidFlags);
     } else {
-      removeSessionStorageItem('plotApplicationId');
-      removeSessionStorageItem('plotApplicationValidity');
+      removeSessionStorageItem('newPlotApplicationValidity');
     }
   }
 
@@ -216,13 +197,9 @@ class PlotApplicationsPage extends Component<Props, State> {
   }
 
   cancelChanges = () => {
-    const {hideEditMode} = this.props;
+    const {history} = this.props;
 
-    if (this.isNewEditor()) {
-      this.handleBack();
-    } else {
-      hideEditMode();
-    }
+    history.push(getRouteById(Routes.PLOT_APPLICATIONS));
   }
 
   handleBack = () => {
@@ -231,8 +208,6 @@ class PlotApplicationsPage extends Component<Props, State> {
 
     // Remove page specific url parameters when moving to application list page
     delete query.tab;
-    delete query.opened_invoice;
-
 
     return history.push({
       pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}`,
@@ -254,22 +229,11 @@ class PlotApplicationsPage extends Component<Props, State> {
     });
   };
 
-  isNewEditor = () => {
-    const {
-      match: {params: {plotApplicationId}},
-    } = this.props;
-
-    return plotApplicationId === 'new';
-  }
-
   componentDidUpdate(prevProps: Props, prevState: State) {
     const {
       location: {search},
       currentPlotApplication,
       match: {params: {plotApplicationId}},
-      isEditMode,
-      isFetching,
-      fetchPlotSearchList,
     } = this.props;
     const {activeTab} = this.state;
     const query = getUrlParams(search);
@@ -291,24 +255,10 @@ class PlotApplicationsPage extends Component<Props, State> {
         // this.setState({isRestoreModalOpen: true});
       }
     }
-
-    if (prevProps.isEditMode !== isEditMode) {
-      if (isEditMode) {
-        // existing plot searches can't have their plot search/form changed
-        if (this.isNewEditor()) {
-          fetchPlotSearchList();
-        }
-      }
-    }
-
-    if (!isFetching && prevProps.isFetching) {
-      setPageTitle(`Hakemus ${currentPlotApplication.id}`);
-    }
   }
 
   saveChanges = () => {
     const {
-      editPlotApplication,
       createPlotApplication,
       receiveIsSaveClicked,
     } = this.props;
@@ -327,11 +277,7 @@ class PlotApplicationsPage extends Component<Props, State> {
         return;
       }
 
-      if (this.isNewEditor()) {
-        createPlotApplication(data);
-      } else {
-        editPlotApplication(data);
-      }
+      createPlotApplication(data);
     }
   }
 
@@ -387,7 +333,6 @@ class PlotApplicationsPage extends Component<Props, State> {
       usersPermissions,
       isFetchingUsersPermissions,
       isFetching,
-      isEditMode,
       isSaveClicked,
       isApplicationFormDirty,
       isApplicationFormValid,
@@ -416,25 +361,18 @@ class PlotApplicationsPage extends Component<Props, State> {
           <ControlButtonBar
             buttonComponent={
               <ControlButtons
-                allowDelete={isMethodAllowed(plotApplicationsMethods, Methods.DELETE)}
+                allowDelete={false}
                 allowEdit={isMethodAllowed(plotApplicationsMethods, Methods.PATCH)}
                 isCancelDisabled={isPerformingFileOperation || isSaving}
                 isCopyDisabled={true}
                 isEditDisabled={false}
-                isEditMode={isEditMode}
+                isEditMode={true}
                 isSaveDisabled={isPerformingFileOperation || isSaving || isSaveClicked && !areFormsValid}
                 onCancel={this.cancelChanges}
                 onEdit={this.handleShowEditMode}
                 onSave={this.saveChanges}
                 showCommentButton={false}
                 showCopyButton={false}
-                onDelete={()=>{}} // this.handleDelete
-                deleteModalTexts={{
-                  buttonClassName: ButtonColors.ALERT,
-                  buttonText: ConfirmationModalTexts.DELETE_PLOT_APPLICATION.BUTTON,
-                  label: ConfirmationModalTexts.DELETE_PLOT_APPLICATION.LABEL,
-                  title: ConfirmationModalTexts.DELETE_PLOT_APPLICATION.TITLE,
-                }}
               />
             }
             infoComponent={<PlotApplicationInfo title={currentPlotApplication.plot_search}/>}
@@ -442,7 +380,7 @@ class PlotApplicationsPage extends Component<Props, State> {
           />
           <Tabs
             active={activeTab}
-            isEditMode={isEditMode}
+            isEditMode={true}
             tabs={[
               {
                 label: 'Hakemus',
@@ -462,10 +400,7 @@ class PlotApplicationsPage extends Component<Props, State> {
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
-                {isEditMode
-                  ? <PlotApplicationEdit isNew={this.isNewEditor()}/>
-                  : <PlotApplication/>
-                }
+                <PlotApplicationCreate />
               </ContentContainer>
             </TabPane>
 
@@ -492,7 +427,6 @@ export default (flowRight(
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         usersPermissions: getUsersPermissions(state),
         isFetching: getIsFetching(state),
-        isEditMode: getIsEditMode(state),
         isSaveClicked: getIsSaveClicked(state),
         isApplicationFormDirty: isDirty(FormNames.PLOT_APPLICATION)(state),
         isApplicationFormValid: getIsFormValidById(state, FormNames.PLOT_APPLICATION),

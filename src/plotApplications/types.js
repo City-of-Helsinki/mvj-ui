@@ -29,13 +29,12 @@ export type PlotApplicationsState = {
   currentEditorTargets: Array<Object>,
   isFetchingApplicantInfoCheckAttributes: boolean,
   applicantInfoCheckAttributes: Attributes,
-  isUpdatingApplicantInfoCheck: { [id: number]: boolean },
-  lastApplicantInfoCheckUpdateSuccessful: { [id: number]: boolean },
   isSaveClicked: boolean,
   isFetchingForm: boolean,
   form: ?Object,
   isFetchingPlotSearch: boolean,
   plotSearch: ?PlotSearch,
+  infoCheckBatchEditErrors: InfoCheckBatchEditErrors,
 };
 
 export type PlotApplicationFormValue = string | Array<string> | Array<UploadedFileMeta> | boolean;
@@ -150,13 +149,9 @@ export type SetCurrentEditorTargetsAction = Action<'mvj/plotApplications/SET_CUR
 export type FetchApplicantInfoCheckAttributesAction = Action<'mvj/plotApplications/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES', void>;
 export type ReceiveApplicantInfoCheckAttributesAction = Action<'mvj/plotApplications/RECEIVE_APPLICANT_INFO_CHECK_ATTRIBUTES', Attributes>;
 export type ApplicantInfoCheckAttributesNotFoundAction = Action<'mvj/plotApplications/APPLICANT_INFO_CHECK_ATTRIBUTES_NOT_FOUND', void>;
-export type EditApplicantInfoCheckItemAction = Action<'mvj/plotApplications/EDIT_APPLICANT_INFO_CHECK_ITEM', Object>;
-export type ReceiveUpdatedApplicantInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM', Object>;
-export type ApplicantInfoCheckUpdateFailedAction = Action<'mvj/plotApplications/APPLICANT_INFO_CHECK_UPDATE_FAILED', number>;
 
-export type EditTargetInfoCheckItemAction = Action<'mvj/plotApplications/EDIT_TARGET_INFO_CHECK_ITEM', Object>;
+export type ReceiveUpdatedApplicantInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM', Object>;
 export type ReceiveUpdatedTargetInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM', Object>;
-export type TargetInfoCheckItemUpdateFailedAction = Action<'mvj/plotApplications/TARGET_INFO_CHECK_ITEM_UPDATE_FAILED', number>;
 
 export type DeleteTargetInfoCheckMeetingMemoAction = Action<'mvj/plotApplications/DELETE_MEETING_MEMO', Object>;
 export type UploadTargetInfoCheckMeetingMemoAction = Action<'mvj/plotApplications/UPLOAD_MEETING_MEMO', {
@@ -166,3 +161,31 @@ export type UploadTargetInfoCheckMeetingMemoAction = Action<'mvj/plotApplication
 }>;
 export type ReceiveTargetInfoCheckMeetingMemoUploadedAction = Action<'mvj/plotApplications/RECEIVE_MEETING_MEMO_UPLOADED', void>;
 export type TargetInfoCheckMeetingMemoUploadFailedAction = Action<'mvj/plotApplications/MEETING_MEMO_UPLOAD_FAILED', void>;
+
+export type InfoCheckBatchEditData = {
+  target: Array<{
+    id: number,
+    targetForm: string,
+    data: Object,
+  }>,
+  applicant: Array<{
+    id: number,
+    kind: Object,
+    data: Object,
+  }>,
+};
+
+export type InfoCheckBatchEditErrorsItem = {
+  id: number,
+  kind?: Object,
+  error: Object | Array<Object> | Error | string,
+};
+
+export type InfoCheckBatchEditErrors = {
+  target: Array<InfoCheckBatchEditErrorsItem>,
+  applicant: Array<InfoCheckBatchEditErrorsItem>,
+};
+
+export type BatchEditPlotApplicationInfoChecksAction = Action<'mvj/plotApplications/BATCH_EDIT_INFO_CHECKS', InfoCheckBatchEditData>;
+export type ReceivePlotApplicationInfoCheckBatchEditSuccessAction = Action<'mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS', void>;
+export type ReceivePlotApplicationInfoCheckBatchEditFailureAction = Action<'mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE', InfoCheckBatchEditErrors>;
