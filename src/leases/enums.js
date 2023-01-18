@@ -206,6 +206,7 @@ export const RentDueDateTypes = {
  */
 export const RentTypes = {
   INDEX: 'index',
+  INDEX2022: 'index2022',
   ONE_TIME: 'one_time',
   FIXED: 'fixed',
   FREE: 'free',
