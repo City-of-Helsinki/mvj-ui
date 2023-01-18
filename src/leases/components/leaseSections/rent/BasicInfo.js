@@ -65,7 +65,7 @@ type Props = {
   rentType: ?string,
 }
 
-const BasicInfoIndex = ({leaseAttributes, rent}: Props) => {
+const BasicInfoIndexOrManual = ({leaseAttributes, rent}: Props) => {
   const areOldInfoVisible = () => {
     return !isEmptyValue(rent.elementary_index) ||
       !isEmptyValue(rent.index_rounding) ||
@@ -478,8 +478,10 @@ const BasicInfo = ({leaseAttributes, rent, rentType}: Props) => {
       {!rentType &&
         <FormText>Vuokralajia ei ole valittu</FormText>
       }
-      {rentType === RentTypes.INDEX &&
-        <BasicInfoIndex
+      {(rentType === RentTypes.INDEX ||
+        rentType === RentTypes.INDEX2022 ||
+        rentType === RentTypes.MANUAL) &&
+        <BasicInfoIndexOrManual
           leaseAttributes={leaseAttributes}
           rent={rent}
           rentType={rentType}
@@ -501,13 +503,6 @@ const BasicInfo = ({leaseAttributes, rent, rentType}: Props) => {
       }
       {rentType === RentTypes.FREE &&
         <BasicInfoFree
-          leaseAttributes={leaseAttributes}
-          rent={rent}
-          rentType={rentType}
-        />
-      }
-      {rentType === RentTypes.MANUAL &&
-        <BasicInfoIndex
           leaseAttributes={leaseAttributes}
           rent={rent}
           rentType={rentType}
