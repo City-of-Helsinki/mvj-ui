@@ -295,29 +295,29 @@ const BasicInfoEmpty = ({isSaveClicked, leaseAttributes}: BasicInfoEmptyProps) =
   );
 };
 
-type BasicInfoIndexProps = {
+type BasicInfoIndexOrManualProps = {
   cycle: ?string,
   dueDates: Array<Object>,
   dueDatesType: ?string,
   field: string,
-  isIndex: boolean,
+  rentType: string,
   isSaveClicked: boolean,
   leaseAttributes: Attributes,
   usersPermissions: UsersPermissionsType,
   yearlyDueDates: Array<Object>,
 }
 
-const BasicInfoIndex = ({
+const BasicInfoIndexOrManual = ({
   cycle,
   dueDates,
   dueDatesType,
   field,
-  isIndex,
+  rentType,
   isSaveClicked,
   leaseAttributes,
   usersPermissions,
   yearlyDueDates,
-}: BasicInfoIndexProps) => {
+}: BasicInfoIndexOrManualProps) => {
   return (
     <Fragment>
       <Row>
@@ -370,7 +370,8 @@ const BasicInfoIndex = ({
           </Authorization>
         </Column>
 
-        {isIndex &&
+        {rentType === RentTypes.INDEX &&
+          // Not needed for INDEX2022
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE)}>
               <FormField
@@ -442,7 +443,7 @@ const BasicInfoIndex = ({
         }
       </Row>
 
-      {!isIndex &&
+      {rentType === RentTypes.MANUAL &&
         <Row>
           {(cycle === RentCycles.JANUARY_TO_DECEMBER || cycle === RentCycles.APRIL_TO_MARCH) &&
             <Column small={6} medium={4} large={2}>
@@ -840,13 +841,15 @@ const BasicInfoEdit = ({
           leaseAttributes={leaseAttributes}
         />
       }
-      {rentType === RentTypes.INDEX &&
-        <BasicInfoIndex
+      {(rentType === RentTypes.INDEX ||
+        rentType === RentTypes.INDEX2022 ||
+        rentType === RentTypes.MANUAL) &&
+        <BasicInfoIndexOrManual
           cycle={cycle}
           dueDates={dueDates}
           dueDatesType={dueDatesType}
           field={field}
-          isIndex={true}
+          rentType={rentType}
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
           usersPermissions={usersPermissions}
@@ -877,19 +880,6 @@ const BasicInfoEdit = ({
         <BasicInfoFree
           isSaveClicked={isSaveClicked}
           leaseAttributes={leaseAttributes}
-        />
-      }
-      {rentType === RentTypes.MANUAL &&
-        <BasicInfoIndex
-          cycle={cycle}
-          dueDates={dueDates}
-          dueDatesType={dueDatesType}
-          field={field}
-          isIndex={false}
-          isSaveClicked={isSaveClicked}
-          leaseAttributes={leaseAttributes}
-          usersPermissions={usersPermissions}
-          yearlyDueDates={yearlyDueDates}
         />
       }
     </Fragment>
