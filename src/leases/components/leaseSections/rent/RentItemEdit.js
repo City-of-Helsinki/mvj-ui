@@ -44,7 +44,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   hasPermissions,
-  isActive, 
+  isActive,
   isArchived,
   isEmptyValue,
   isFieldAllowedToRead,
@@ -173,7 +173,9 @@ class RentItemEdit extends PureComponent<Props, State> {
   clearContractRentPeriodIfNeeded = () => {
     const {change, contractRents, field, rentType} = this.props;
 
-    if(rentType === RentTypes.INDEX && contractRents && contractRents.length) {
+    if((rentType === RentTypes.INDEX || rentType === RentTypes.INDEX2022) &&
+        contractRents &&
+        contractRents.length){
       contractRents.forEach((item, index) => {
         if(!isEmptyValue(item.period) && item.period !== ContractRentPeriods.PER_YEAR) {
           change(formName, `${field}.contract_rents[${index}].period`, '');
@@ -285,6 +287,11 @@ class RentItemEdit extends PureComponent<Props, State> {
       typeOptions,
     } = this.state;
 
+    const rentTypeIsIndex = rentType === RentTypes.INDEX,
+      rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
+      rentTypeIsManual = rentType === RentTypes.MANUAL,
+      rentTypeIsFixed = rentType === RentTypes.FIXED;
+
     return (
       <Collapse
         archived={archived}
@@ -318,8 +325,7 @@ class RentItemEdit extends PureComponent<Props, State> {
         </FormSection>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
-          {(rentType === RentTypes.INDEX ||
-            rentType === RentTypes.MANUAL) &&
+          {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsManual) &&
             <Collapse
               className='collapse__secondary'
               defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true}
@@ -339,9 +345,7 @@ class RentItemEdit extends PureComponent<Props, State> {
         </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
-          {(rentType === RentTypes.INDEX ||
-            rentType === RentTypes.FIXED ||
-            rentType === RentTypes.MANUAL) &&
+          {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsFixed || rentTypeIsManual) &&
             <Collapse
               className='collapse__secondary'
               defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true}
@@ -363,8 +367,7 @@ class RentItemEdit extends PureComponent<Props, State> {
         </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseIndexAdjustedRentsFieldPaths.INDEX_ADJUSTED_RENTS)}>
-          {!!indexAdjustedRents.length &&
-            (rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
+          {!!indexAdjustedRents.length && (rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsManual) &&
             <Collapse
               className='collapse__secondary'
               defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
@@ -379,9 +382,7 @@ class RentItemEdit extends PureComponent<Props, State> {
         </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS)}>
-          {(rentType === RentTypes.INDEX ||
-            rentType === RentTypes.FIXED ||
-            rentType === RentTypes.MANUAL) &&
+          {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsFixed || rentTypeIsManual) &&
             <Collapse
               className='collapse__secondary'
               defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
@@ -401,8 +402,7 @@ class RentItemEdit extends PureComponent<Props, State> {
         </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePayableRentsFieldPaths.PAYABLE_RENTS)}>
-          {!!payableRents.length &&
-            (rentType === RentTypes.INDEX || rentType === RentTypes.FIXED || rentType === RentTypes.MANUAL) &&
+          {!!payableRents.length && (rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsFixed || rentTypeIsManual) &&
             <Collapse
               className='collapse__secondary'
               defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
