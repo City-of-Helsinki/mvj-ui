@@ -955,6 +955,7 @@ export const LeaseRentContractRentsFieldPaths = {
   BASE_AMOUNT_PERIOD: 'rents.child.children.contract_rents.child.children.base_amount_period',
   BASE_YEAR_RENT: 'rents.child.children.contract_rents.child.children.base_year_rent',
   END_DATE: 'rents.child.children.contract_rents.child.children.end_date',
+  INDEX: 'rents.child.children.contract_rents.child.children.index',
   INTENDED_USE: 'rents.child.children.contract_rents.child.children.intended_use',
   START_DATE: 'rents.child.children.contract_rents.child.children.start_date',
 };
@@ -968,11 +969,13 @@ export const LeaseRentContractRentsFieldTitles = {
   CONTRACT_RENTS: 'Sopimusvuokra',
   AMOUNT: 'Perusvuosivuokra',
   AMOUNT_FIXED_RENT: 'Sopimusvuokra',
+  AMOUNT_INITIAL_YEAR_RENT: 'Alkuvuosivuokra',
   PERIOD: 'Yksikkö',
   BASE_AMOUNT: 'Vuokranlaskennan perusteena oleva vuokra',
   BASE_AMOUNT_PERIOD: 'Yksikkö',
   BASE_YEAR_RENT: 'Uusi perusvuosivuokra',
   END_DATE: 'Loppupvm',
+  INDEX: 'Indeksi',
   INTENDED_USE: 'Käyttötarkoitus',
   START_DATE: 'Alkupvm',
 };
