@@ -1691,6 +1691,7 @@ export const getContentContractRents = (rent: Object): Array<Object> =>
         id: item.id,
         amount: item.amount,
         period: item.period,
+        index: get(item, 'index.id') || item.index,
         intended_use: get(item, 'intended_use.id') || item.intended_use,
         base_amount: item.base_amount,
         base_amount_period: item.base_amount_period,
@@ -2726,6 +2727,11 @@ export const getPayloadContractRents = (rent: Object, rentType: string): Array<O
       contractRentData.base_year_rent = convertStrToDecimalNumber(item.base_year_rent);
     }
 
+    // Patch index data only if rent type is index2022
+    if (rent.type === RentTypes.INDEX2022) {
+      contractRentData.index = item.index;
+    }
+
     return contractRentData;
   });
 
@@ -2886,11 +2892,17 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
       }
     }
 
-    // Patch cycle, index type, fixed initial year rents and contract rents data only if rent type is index or manual
-    if(rent.type === RentTypes.INDEX || rent.type === RentTypes.MANUAL) {
+    // Patch cycle and fixed initial year rents data only if rent type is index, index2022 or manual
+    if(rent.type === RentTypes.INDEX ||
+       rent.type === RentTypes.INDEX2022 ||
+       rent.type === RentTypes.MANUAL) {
       rentData.cycle = rent.cycle;
-      rentData.index_type = rent.index_type;
       rentData.fixed_initial_year_rents = getPayloadFixedInitialYearRents(rent);
+    }
+
+    // Patch index type data only if rent type is index or manual
+    if(rent.type === RentTypes.INDEX || rent.type === RentTypes.MANUAL) {
+      rentData.index_type = rent.index_type;
     }
 
     if(rent.type === RentTypes.MANUAL) {
@@ -2905,8 +2917,11 @@ export const addRentsFormValuesToPayload = (payload: Object, formValues: Object,
       }
     }
 
-    // Patch seosonal dates and rent adjustments data only if rent type is index, fixed or manual
-    if(rent.type === RentTypes.INDEX || rent.type === RentTypes.FIXED || rent.type === RentTypes.MANUAL) {
+    // Patch seasonal dates, contract rents and rent adjustments data only if rent type is index, index2022, fixed or manual
+    if(rent.type === RentTypes.INDEX ||
+       rent.type === RentTypes.INDEX2022 ||
+       rent.type === RentTypes.FIXED ||
+       rent.type === RentTypes.MANUAL) {
       rentData.seasonal_start_day = rent.seasonal_start_day || null;
       rentData.seasonal_start_month = rent.seasonal_start_month || null;
       rentData.seasonal_end_day = rent.seasonal_end_day || null;
