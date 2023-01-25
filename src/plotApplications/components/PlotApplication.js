@@ -136,10 +136,11 @@ const SingleSectionItem = ({section, answer, fieldTypes, plotSearch, topLevel, i
       <SectionData section={subsection} answer={answer.sections[subsection.identifier]} key={subsection.identifier}
         fieldTypes={fieldTypes} plotSearch={plotSearch} />)}
     {topLevel && section.identifier === TARGET_SECTION_IDENTIFIER &&
-      <PlotApplicationTargetInfoCheck
+      (answer.metadata?.identifier ? <PlotApplicationTargetInfoCheck
         section={section}
         identifier={identifier}
-      />}
+        targetId={(answer.metadata.identifier: any)}
+      /> : <Loader isLoading={true} />)}
     {topLevel && section.identifier === APPLICANT_SECTION_IDENTIFIER &&
       <PlotApplicationApplicantInfoCheck
         section={section}

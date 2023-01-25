@@ -386,6 +386,21 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa kentän?',
     TITLE: 'Poista kenttä',
   },
+  DELETE_APPLICATION_TARGET_PROPOSED_MANAGEMENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa hallinta- ja rahoitusmuotoehdotuksen?',
+    TITLE: 'Poista ehdotettu hallinta- ja rahoitusmuoto',
+  },
+  DELETE_APPLICATION_TARGET_CONDITION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa varausehdon?',
+    TITLE: 'Poista varausehto',
+  },
+  DELETE_APPLICATION_TARGET_MEETING_MEMO: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kokousmuistion?',
+    TITLE: 'Poista kokousmuistio',
+  },
 };
 
 /**

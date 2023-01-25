@@ -45,7 +45,7 @@ import {
   getCurrentEditorTargets, getCurrentPlotApplication,
   getFieldTypeMapping,
   getIsFetchingApplicationRelatedAttachments, getIsFetchingApplicationRelatedPlotSearch,
-  getIsFetchingAttachmentAttributes, getIsFetchingInfoCheckAttributes,
+  getIsFetchingAttachmentAttributes, getIsFetchingApplicantInfoCheckAttributes,
 } from '../selectors';
 import PlotApplicationSubsection from './PlotApplicationSubsection';
 import {
@@ -89,7 +89,7 @@ type Props = {
   formValues: Object,
   currentEditorTargets: Array<Object>,
   setCurrentEditorTargets: Function,
-  isFetchingInfoCheckAttributes: boolean,
+  isFetchingApplicantInfoCheckAttributes: boolean,
   retrievingData: boolean,
   currentPlotApplication?: PlotApplication,
   formAttributes: Attributes,
@@ -443,11 +443,11 @@ export default (flowRight(
       const isFetchingFormAttributes = getIsFetchingFormAttributes(state);
       const isFetchingAttachmentAttributes = getIsFetchingAttachmentAttributes(state);
       const isFetchingAttachments = getIsFetchingApplicationRelatedAttachments(state);
-      const isFetchingInfoCheckAttributes = getIsFetchingInfoCheckAttributes(state);
+      const isFetchingApplicantInfoCheckAttributes = getIsFetchingApplicantInfoCheckAttributes(state);
       const isFetchingForm = getIsFetchingForm(state);
       const isFetchingApplicationRelatedPlotSearch = getIsFetchingApplicationRelatedPlotSearch(state);
 
-      const isRetrievingCommonData = isFetchingFormAttributes || isFetchingAttachmentAttributes || isFetchingInfoCheckAttributes || isFetchingForm;
+      const isRetrievingCommonData = isFetchingFormAttributes || isFetchingAttachmentAttributes || isFetchingApplicantInfoCheckAttributes || isFetchingForm;
       const isRetrievingCreateModeData = isFetchingPlotSearchList;
       const isRetrievingEditModeData = isFetchingApplicationRelatedPlotSearch;
 
@@ -463,7 +463,7 @@ export default (flowRight(
         isFetchingFormAttributes,
         isFetchingAttachmentAttributes,
         isFetchingAttachments,
-        isFetchingInfoCheckAttributes,
+        isFetchingApplicantInfoCheckAttributes,
         isFetchingForm,
         isFetchingApplicationRelatedPlotSearch,
         formValues: getFormValues(formName)(state),

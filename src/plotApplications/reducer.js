@@ -1,8 +1,9 @@
 // @flow
 import merge from 'lodash/merge';
-
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
+import type {Action, CombinedReducer} from 'redux';
+
 import type {Attributes, Reducer, Methods} from '$src/types';
 import {FormNames} from '$src/enums';
 
@@ -23,11 +24,10 @@ import type {
   ReceiveApplicationRelatedPlotSearchAction,
   ReceiveAttachmentAttributesAction,
   ReceiveAttachmentMethodsAction,
-  ReceiveInfoCheckAttributesAction,
+  ReceiveApplicantInfoCheckAttributesAction,
   PlotApplicationsState,
-} from './types';
-import type {Action, CombinedReducer} from 'redux';
-import type {ReceiveFormAttributesAction} from '../plotSearch/types';
+} from '$src/plotApplications/types';
+import type {ReceiveFormAttributesAction} from '$src/plotSearch/types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
@@ -79,7 +79,7 @@ const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/RECEIVE_METHODS']: () => false,
 }, false);
 
-const currentplotApplicationReducer: Reducer<PlotApplication> = handleActions({
+const currentPlotApplicationReducer: Reducer<PlotApplication> = handleActions({
   ['mvj/plotApplications/RECEIVE_SINGLE']: (state: PlotApplication, {payload: plotApplications}: ReceiveSinglePlotApplicationAction) => plotApplications,
 }, {});
 
@@ -195,7 +195,10 @@ const isFetchingPendingUploadsReducer: Reducer<boolean> = handleActions({
 const isPerformingFileOperationReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/UPLOAD_FILE']: () => true,
   ['mvj/plotApplications/DELETE_UPLOAD']: () => true,
+  ['mvj/plotApplications/UPLOAD_MEETING_MEMO']: () => true,
+  ['mvj/plotApplications/DELETE_MEETING_MEMO']: () => true,
   ['mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED']: () => false,
+  ['mvj/plotApplications/RECEIVE_MEETING_MEMO_UPLOADED']: () => false,
 }, false);
 
 const attachmentAttributesReducer: Reducer<Attributes> = handleActions({
@@ -219,31 +222,31 @@ const currentEditorTargetsReducer: Reducer<Array<Object>> = handleActions({
   ['mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS']: (state, {payload: targets}) => targets,
 }, []);
 
-const infoCheckAttributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/plotApplications/RECEIVE_INFO_CHECK_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveInfoCheckAttributesAction) => attributes,
-  ['mvj/plotApplications/INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => null,
+const applicantInfoCheckAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotApplications/RECEIVE_APPLICANT_INFO_CHECK_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveApplicantInfoCheckAttributesAction) => attributes,
+  ['mvj/plotApplications/APPLICANT_INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => null,
 }, null);
 
-const isFetchingInfoCheckAttributesReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotApplications/FETCH_INFO_CHECK_ATTRIBUTES']: () => true,
-  ['mvj/plotApplications/RECEIVE_INFO_CHECK_ATTRIBUTES']: () => false,
-  ['mvj/plotApplications/INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => false,
+const isFetchingApplicantInfoCheckAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES']: () => true,
+  ['mvj/plotApplications/RECEIVE_APPLICANT_INFO_CHECK_ATTRIBUTES']: () => false,
+  ['mvj/plotApplications/APPLICANT_INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => false,
 }, false);
 
-const isUpdatingInfoCheckReducer: Reducer<{ [id: number]: boolean }> = handleActions({
-  ['mvj/plotApplications/EDIT_INFO_CHECK_ITEM']: (state: { [id: number]: boolean }, {payload}) => {
+const isUpdatingApplicantInfoCheckReducer: Reducer<{ [id: number]: boolean }> = handleActions({
+  ['mvj/plotApplications/EDIT_APPLICANT_INFO_CHECK_ITEM']: (state: { [id: number]: boolean }, {payload}) => {
     return {
       ...state,
       [payload.id]: true,
     };
   },
-  ['mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM']: (state: { [id: number]: boolean }, {payload}) => {
+  ['mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM']: (state: { [id: number]: boolean }, {payload}) => {
     return {
       ...state,
       [payload.id]: false,
     };
   },
-  ['mvj/plotApplications/INFO_CHECK_UPDATE_FAILED']: (state: { [id: number]: boolean }, {payload: id}) => {
+  ['mvj/plotApplications/APPLICANT_INFO_CHECK_UPDATE_FAILED']: (state: { [id: number]: boolean }, {payload: id}) => {
     return {
       ...state,
       [id]: false,
@@ -251,20 +254,73 @@ const isUpdatingInfoCheckReducer: Reducer<{ [id: number]: boolean }> = handleAct
   },
 }, {});
 
-const lastInfoCheckUpdateSuccessfulReducer: Reducer<{ [id: number]: (boolean | null) }> = handleActions({
-  ['mvj/plotApplications/EDIT_INFO_CHECK_ITEM']: (state: { [id: number]: boolean | null }, {payload}) => {
+const lastApplicantInfoCheckUpdateSuccessfulReducer: Reducer<{ [id: number]: (boolean | null) }> = handleActions({
+  ['mvj/plotApplications/EDIT_APPLICANT_INFO_CHECK_ITEM']: (state: { [id: number]: boolean | null }, {payload}) => {
     return {
       ...state,
       [payload.id]: null,
     };
   },
-  ['mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM']: (state: { [id: number]: boolean | null }, {payload}) => {
+  ['mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM']: (state: { [id: number]: boolean | null }, {payload}) => {
     return {
       ...state,
       [payload.id]: true,
     };
   },
-  ['mvj/plotApplications/INFO_CHECK_UPDATE_FAILED']: (state: { [id: number]: boolean | null }, {payload: id}) => {
+  ['mvj/plotApplications/APPLICANT_INFO_CHECK_UPDATE_FAILED']: (state: { [id: number]: boolean | null }, {payload: id}) => {
+    return {
+      ...state,
+      [id]: false,
+    };
+  },
+}, {});
+
+const targetInfoCheckAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/plotApplications/RECEIVE_TARGET_INFO_CHECK_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveApplicantInfoCheckAttributesAction) => attributes,
+  ['mvj/plotApplications/TARGET_INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => null,
+}, null);
+
+const isFetchingTargetInfoCheckAttributesReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_TARGET_INFO_CHECK_ATTRIBUTES']: () => true,
+  ['mvj/plotApplications/RECEIVE_TARGET_INFO_CHECK_ATTRIBUTES']: () => false,
+  ['mvj/plotApplications/TARGET_INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => false,
+}, false);
+
+const isUpdatingTargetInfoCheckReducer: Reducer<{ [id: number]: boolean }> = handleActions({
+  ['mvj/plotApplications/EDIT_TARGET_INFO_CHECK_ITEM']: (state: { [id: number]: boolean }, {payload}) => {
+    return {
+      ...state,
+      [payload.id]: true,
+    };
+  },
+  ['mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM']: (state: { [id: number]: boolean }, {payload}) => {
+    return {
+      ...state,
+      [payload.id]: false,
+    };
+  },
+  ['mvj/plotApplications/TARGET_INFO_CHECK_UPDATE_FAILED']: (state: { [id: number]: boolean }, {payload: id}) => {
+    return {
+      ...state,
+      [id]: false,
+    };
+  },
+}, {});
+
+const lastTargetInfoCheckUpdateSuccessfulReducer: Reducer<{ [id: number]: (boolean | null) }> = handleActions({
+  ['mvj/plotApplications/EDIT_TARGET_INFO_CHECK_ITEM']: (state: { [id: number]: boolean | null }, {payload}) => {
+    return {
+      ...state,
+      [payload.id]: null,
+    };
+  },
+  ['mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM']: (state: { [id: number]: boolean | null }, {payload}) => {
+    return {
+      ...state,
+      [payload.id]: true,
+    };
+  },
+  ['mvj/plotApplications/TARGET_INFO_CHECK_UPDATE_FAILED']: (state: { [id: number]: boolean | null }, {payload: id}) => {
     return {
       ...state,
       [id]: false,
@@ -280,7 +336,7 @@ export default (combineReducers<Object, Action<any>>({
   attributes: attributesReducer,
   methods: methodsReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
-  current: currentplotApplicationReducer,
+  current: currentPlotApplicationReducer,
   isEditMode: isEditModeReducer,
   isSaveClicked: isSaveClickedReducer,
   collapseStates: collapseStatesReducer,
@@ -302,8 +358,12 @@ export default (combineReducers<Object, Action<any>>({
   attachmentAttributes: attachmentAttributesReducer,
   attachmentMethods: attachmentMethodsReducer,
   currentEditorTargets: currentEditorTargetsReducer,
-  isFetchingInfoCheckAttributes: isFetchingInfoCheckAttributesReducer,
-  infoCheckAttributes: infoCheckAttributesReducer,
-  isUpdatingInfoCheck: isUpdatingInfoCheckReducer,
-  lastInfoCheckUpdateSuccessful: lastInfoCheckUpdateSuccessfulReducer,
+  isFetchingApplicantInfoCheckAttributes: isFetchingApplicantInfoCheckAttributesReducer,
+  applicantInfoCheckAttributes: applicantInfoCheckAttributesReducer,
+  isUpdatingApplicantInfoCheck: isUpdatingApplicantInfoCheckReducer,
+  lastApplicantInfoCheckUpdateSuccessful: lastApplicantInfoCheckUpdateSuccessfulReducer,
+  isFetchingTargetInfoCheckAttributes: isFetchingTargetInfoCheckAttributesReducer,
+  targetInfoCheckAttributes: targetInfoCheckAttributesReducer,
+  isUpdatingTargetInfoCheck: isUpdatingTargetInfoCheckReducer,
+  lastTargetInfoCheckUpdateSuccessful: lastTargetInfoCheckUpdateSuccessfulReducer,
 }): CombinedReducer<PlotApplicationsState, Action<any>>);

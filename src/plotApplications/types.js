@@ -1,6 +1,6 @@
 // @flow
-import type {Action, Attributes, Methods} from '../types';
-import type {PlotSearch} from '../plotSearch/types';
+import type {Action, Attributes, Methods} from '$src/types';
+import type {PlotSearch} from '$src/plotSearch/types';
 
 export type PlotApplicationsState = {
   attributes: Attributes,
@@ -27,15 +27,15 @@ export type PlotApplicationsState = {
   isFetchingAttachmentAttributes: boolean,
   attachments: ?Array<Object>,
   currentEditorTargets: Array<Object>,
-  isFetchingInfoCheckAttributes: boolean,
-  infoCheckAttributes: Attributes,
-  isUpdatingInfoCheck: { [id: number]: boolean },
-  lastInfoCheckUpdateSuccessful: { [id: number]: boolean },
+  isFetchingApplicantInfoCheckAttributes: boolean,
+  applicantInfoCheckAttributes: Attributes,
+  isUpdatingApplicantInfoCheck: { [id: number]: boolean },
+  lastApplicantInfoCheckUpdateSuccessful: { [id: number]: boolean },
   isSaveClicked: boolean,
   isFetchingForm: boolean,
   form: ?Object,
   isFetchingPlotSearch: boolean,
-  plotSearch: ?PlotSearch
+  plotSearch: ?PlotSearch,
 };
 
 export type PlotApplicationFormValue = string | Array<string> | Array<UploadedFileMeta> | boolean;
@@ -135,7 +135,7 @@ export type PendingUploadsNotFoundAction = Action<'mvj/plotApplications/PENDING_
 export type DeleteUploadAction = Action<'mvj/plotApplications/DELETE_UPLOAD', Object>;
 export type UploadFileAction = Action<'mvj/plotApplications/UPLOAD_FILE', {
   fileData: Object,
-  callback?: (UploadedFileMeta) => void,
+  callback?: (path: string, fileData: UploadedFileMeta) => void,
   path: string
 }>;
 export type ReceiveFileOperationFinishedAction = Action<'mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED', void>;
@@ -147,9 +147,22 @@ export type AttachmentAttributesNotFoundAction = Action<'mvj/plotApplications/AT
 
 export type SetCurrentEditorTargetsAction = Action<'mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS', Array<Object>>;
 
-export type FetchInfoCheckAttributesAction = Action<'mvj/plotApplications/FETCH_INFO_CHECK_ATTRIBUTES', void>;
-export type ReceiveInfoCheckAttributesAction = Action<'mvj/plotApplications/RECEIVE_INFO_CHECK_ATTRIBUTES', Attributes>;
-export type InfoCheckAttributesNotFoundAction = Action<'mvj/plotApplications/INFO_CHECK_ATTRIBUTES_NOT_FOUND', void>;
-export type EditInfoCheckItemAction = Action<'mvj/plotApplications/EDIT_INFO_CHECK_ITEM', Object>;
-export type ReceiveUpdatedInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_INFO_CHECK_ITEM', Object>;
-export type InfoCheckUpdateFailed = Action<'mvj/plotApplications/INFO_CHECK_UPDATE_FAILED', number>;
+export type FetchApplicantInfoCheckAttributesAction = Action<'mvj/plotApplications/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES', void>;
+export type ReceiveApplicantInfoCheckAttributesAction = Action<'mvj/plotApplications/RECEIVE_APPLICANT_INFO_CHECK_ATTRIBUTES', Attributes>;
+export type ApplicantInfoCheckAttributesNotFoundAction = Action<'mvj/plotApplications/APPLICANT_INFO_CHECK_ATTRIBUTES_NOT_FOUND', void>;
+export type EditApplicantInfoCheckItemAction = Action<'mvj/plotApplications/EDIT_APPLICANT_INFO_CHECK_ITEM', Object>;
+export type ReceiveUpdatedApplicantInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM', Object>;
+export type ApplicantInfoCheckUpdateFailedAction = Action<'mvj/plotApplications/APPLICANT_INFO_CHECK_UPDATE_FAILED', number>;
+
+export type EditTargetInfoCheckItemAction = Action<'mvj/plotApplications/EDIT_TARGET_INFO_CHECK_ITEM', Object>;
+export type ReceiveUpdatedTargetInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM', Object>;
+export type TargetInfoCheckItemUpdateFailedAction = Action<'mvj/plotApplications/TARGET_INFO_CHECK_ITEM_UPDATE_FAILED', number>;
+
+export type DeleteTargetInfoCheckMeetingMemoAction = Action<'mvj/plotApplications/DELETE_MEETING_MEMO', Object>;
+export type UploadTargetInfoCheckMeetingMemoAction = Action<'mvj/plotApplications/UPLOAD_MEETING_MEMO', {
+  fileData: Object,
+  targetInfoCheck: number,
+  callback?: (Object) => void,
+}>;
+export type ReceiveTargetInfoCheckMeetingMemoUploadedAction = Action<'mvj/plotApplications/RECEIVE_MEETING_MEMO_UPLOADED', void>;
+export type TargetInfoCheckMeetingMemoUploadFailedAction = Action<'mvj/plotApplications/MEETING_MEMO_UPLOAD_FAILED', void>;
