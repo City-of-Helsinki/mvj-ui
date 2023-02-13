@@ -436,7 +436,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     } = this.state;
 
     if (!plotApplicationsMethods && !plotApplicationsAttributes) {
-      return null;
+      return <PageContainer><Loader isLoading /></PageContainer>;
     }
 
     if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
