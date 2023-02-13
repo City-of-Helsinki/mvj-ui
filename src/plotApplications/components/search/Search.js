@@ -25,8 +25,8 @@ import {
 } from '$src/plotSearch/enums';
 import type {PlotSearchList} from '$src/plotSearch/types';
 import type {Attributes} from '$src/types';
-import {fetchPlotSearchSubtypes} from '../../actions';
-import {getPlotSearchSubTypes} from '../../selectors';
+import {fetchPlotSearchSubtypes} from '$src/plotApplications/actions';
+import {getPlotSearchSubTypes} from '$src/plotApplications/selectors';
 
 type OwnProps = {
   isSearchInitialized: boolean,

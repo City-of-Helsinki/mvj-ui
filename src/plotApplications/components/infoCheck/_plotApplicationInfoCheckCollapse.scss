@@ -5,6 +5,14 @@
     }
   }
 
+  &.PlotApplicationApplicantInfoCheck {
+    .collapse__content {
+      .row {
+        line-height: 1.5rem;
+      }
+    }
+  }
+
   .modal__wrapper {
     overflow: visible;
   }
@@ -14,4 +22,11 @@
   // Fix cut-off dropdowns
   // The original rule in the collapse component is itself marked as important.
   overflow: visible !important;
+}
+
+
+.PlotApplicationApplicantInfoCheckEdit__item--dirty {
+  .column:nth-child(2) > * {
+    background-color: darken($is-dirty-color, 5%);
+  }
 }

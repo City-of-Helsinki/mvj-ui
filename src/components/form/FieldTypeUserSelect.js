@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-// $FlowFixMe
 import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
@@ -25,7 +24,7 @@ const FieldTypeUserSelect = ({
   isDirty,
   onChange,
   placeholder,
-  multiSelect
+  multiSelect,
 }: Props) => {
   const getUsers = debounce(async(inputValue: string, callback: Function) => {
     const contacts = await fetchUsers({

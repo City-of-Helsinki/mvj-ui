@@ -57,12 +57,12 @@ const baseState: PlotApplicationsState = {
   plotSearch: null,
   isFetchingApplicantInfoCheckAttributes: false,
   applicantInfoCheckAttributes: null,
-  isUpdatingApplicantInfoCheck: {},
-  lastApplicantInfoCheckUpdateSuccessful: {},
-  isUpdatingTargetInfoCheck: {},
-  lastTargetInfoCheckUpdateSuccessful: {},
   isFetchingTargetInfoCheckAttributes: false,
   targetInfoCheckAttributes: null,
+  infoCheckBatchEditErrors: {
+    applicant: [],
+    target: [],
+  },
 };
 
 // $FlowFixMe

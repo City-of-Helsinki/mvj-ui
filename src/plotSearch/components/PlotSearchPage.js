@@ -308,6 +308,8 @@ class PlotSearchPage extends Component<Props, State> {
 
     destroy(FormNames.PLOT_SEARCH_BASIC_INFORMATION);
     destroy(FormNames.PLOT_SEARCH_APPLICATION);
+    destroy(FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING);
+    destroy(FormNames.PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM);
   }
 
   handleTabClick = (tabId) => {

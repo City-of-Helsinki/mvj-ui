@@ -5,7 +5,7 @@ import Modal from '$components/modal/Modal';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import Button from '$components/button/Button';
 import PlotApplicationApplicantInfoCheckForm from '$src/plotApplications/components/infoCheck/PlotApplicationApplicantInfoCheckForm';
-// import TradeRegisterTemplate from "$src/tradeRegister/components/TradeRegisterTemplate";
+import TradeRegisterTemplate from '$src/tradeRegister/components/TradeRegisterTemplate';
 import CreditDecisionTemplate from '$src/creditDecision/components/CreditDecisionTemplate';
 import {ContactTypes} from '$src/contacts/enums';
 import {PlotApplicationApplicantInfoCheckExternalTypes} from '$src/plotApplications/enums';
@@ -76,7 +76,9 @@ class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
               {personId && <CreditDecisionTemplate nin={personId} contactType={ContactTypes.PERSON} />}
             </>}
             {infoCheck.kind.external === PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY && <>
-              <div className="alert">Kaupparekisteri-integraatiota ei ole vielä toteutettu.</div>
+              {businessId
+                ? <TradeRegisterTemplate businessId={businessId} />
+                : <div className="alert">Kaupparekisteriotetta ei voi hakea henkilöhakijalle.</div>}
             </>}
             {!businessId && !personId && <div className="alert">Hakemuksen osiosta ei löytynyt hakijan tunnistetietoa!</div>}
             <ModalButtonWrapper>

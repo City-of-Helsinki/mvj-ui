@@ -10,6 +10,7 @@ import type {
   PlotApplication,
 } from '$src/plotApplications/types';
 import type {PlotSearch} from '$src/plotSearch/types';
+import type {InfoCheckBatchEditErrorsItem} from '$src/plotApplications/types';
 
 export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
   state.plotApplications.listByBBox;
@@ -116,12 +117,29 @@ export const getApplicationApplicantInfoCheckData: Selector<Object, void> = (sta
 export const getApplicationTargetInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
   state.plotApplications.current?.target_statuses;
 
-export const getIsUpdatingApplicantInfoCheckData: Selector<{ [id: number]: boolean }, void> = (state: RootState): { [id: number]: boolean } =>
-  state.plotApplications.isUpdatingApplicantInfoCheck;
-
-export const getWasLastApplicantInfoCheckUpdateSuccessfulData: Selector<{ [id: number]: boolean }, void> = (state: RootState): { [id: number]: boolean } =>
-  state.plotApplications.lastApplicantInfoCheckUpdateSuccessful;
-
 export const getExistingUploads = (state: RootState, identifier: string): Array<Object> => {
   return getApplicationRelatedAttachments(state).filter((attachment) => attachment.field === identifier);
+};
+
+export const getInfoCheckSubmissionErrors = (errors: Array<InfoCheckBatchEditErrorsItem>, id: ?number): ?InfoCheckBatchEditErrorsItem => {
+  return errors.find((item) => item.id === id);
+};
+export const getTargetInfoCheckSubmissionErrors = (state: RootState, id: ?number): ?Object => {
+  return getInfoCheckSubmissionErrors(state.plotApplications.infoCheckBatchEditErrors.target, id)?.error;
+};
+export const getApplicantInfoCheckSubmissionErrors = (state: RootState, checkDataIds: Array<number>): Array<{
+  id: number,
+  kind: ?Object,
+  error: ?Object | ?Array<Object>,
+}> => {
+  return checkDataIds
+    ?.map((id) => {
+      const errors = getInfoCheckSubmissionErrors(state.plotApplications.infoCheckBatchEditErrors.applicant, id);
+      return ({
+        id,
+        kind: errors?.kind,
+        error: errors?.error,
+      });
+    })
+    .filter((item) => item.error !== undefined);
 };

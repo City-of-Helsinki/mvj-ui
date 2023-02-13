@@ -9,7 +9,6 @@ import createUrl from '$src/api/createUrl';
 import {store} from '$src/root/startApp';
 import {FormNames} from '$src/enums';
 import {
-  getApplicationApplicantInfoCheckData, getApplicationRelatedPlotSearch, getApplicationTargetInfoCheckData,
   getCurrentEditorTargets,
 } from '$src/plotApplications/selectors';
 import {
@@ -21,7 +20,8 @@ import type {LeafletFeature, LeafletGeoJson, Attributes} from '$src/types';
 import {ApplicantInfoCheckTypes, ApplicantTypes, PlotApplicationApplicantInfoCheckExternalTypes} from '$src/plotApplications/enums';
 import type {RootState} from '$src/root/types';
 import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState, UploadedFileMeta} from '$src/plotApplications/types';
-import type {Form, FormSection} from '$src/plotSearch/types';
+import type {Form, FormSection, PlotSearch} from '$src/plotSearch/types';
+import {getContentUser} from '$src/users/helpers';
 
 /**
  * Get plotApplication list results
@@ -461,62 +461,60 @@ export const getSectionTargetFromMeta = (field: string): string => {
 
 export const getApplicationAttachmentDownloadLink = (id: number): string => createUrl(`attachment/${id}/download`);
 
-export const getApplicantInfoCheckItems = (state: RootState, identifier: string): Array<Object> => {
-  const definitions = [
-    {
-      type: ApplicantInfoCheckTypes.TRADE_REGISTER,
-      label: 'Kaupparekisteriote',
-      useIfCompany: true,
-      useIfPerson: false,
-      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-    },
-    {
-      type: ApplicantInfoCheckTypes.CREDITWORTHINESS,
-      label: 'Luottokelpoisuustodistus / luottotiedot',
-      useIfCompany: true,
-      useIfPerson: true,
-      external: PlotApplicationApplicantInfoCheckExternalTypes.CREDIT_INQUIRY,
-    },
-    {
-      type: ApplicantInfoCheckTypes.PENSION_CONTRIBUTIONS,
-      label: 'Selvitys työeläkemaksujen maksamisesta',
-      useIfCompany: true,
-      useIfPerson: true,
-      external: null,
-    },
-    {
-      type: ApplicantInfoCheckTypes.VAT_REGISTER,
-      label: 'Todistus arvonlisärekisteriin lisäämisestä',
-      useIfCompany: true,
-      useIfPerson: false,
-      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-    },
-    {
-      type: ApplicantInfoCheckTypes.ADVANCE_PAYMENT,
-      label: 'Todistus ennakkoperintärekisteriin lisäämisestä',
-      useIfCompany: true,
-      useIfPerson: false,
-      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-    },
-    {
-      type: ApplicantInfoCheckTypes.TAX_DEBT,
-      label: 'Verovelkatodistus',
-      useIfCompany: true,
-      useIfPerson: false,
-      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-    },
-    {
-      type: ApplicantInfoCheckTypes.EMPLOYER_REGISTER,
-      label: 'Todistus työnantajarekisteriin lisäämisestä',
-      useIfCompany: true,
-      useIfPerson: false,
-      external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-    },
-  ];
+const APPLICATION_INFO_CHECK_DEFINITIONS = [
+  {
+    type: ApplicantInfoCheckTypes.TRADE_REGISTER,
+    label: 'Kaupparekisteriote',
+    useIfCompany: true,
+    useIfPerson: false,
+    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+  },
+  {
+    type: ApplicantInfoCheckTypes.CREDITWORTHINESS,
+    label: 'Luottokelpoisuustodistus / luottotiedot',
+    useIfCompany: true,
+    useIfPerson: true,
+    external: PlotApplicationApplicantInfoCheckExternalTypes.CREDIT_INQUIRY,
+  },
+  {
+    type: ApplicantInfoCheckTypes.PENSION_CONTRIBUTIONS,
+    label: 'Selvitys työeläkemaksujen maksamisesta',
+    useIfCompany: true,
+    useIfPerson: true,
+    external: null,
+  },
+  {
+    type: ApplicantInfoCheckTypes.VAT_REGISTER,
+    label: 'Todistus arvonlisärekisteriin lisäämisestä',
+    useIfCompany: true,
+    useIfPerson: false,
+    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+  },
+  {
+    type: ApplicantInfoCheckTypes.ADVANCE_PAYMENT,
+    label: 'Todistus ennakkoperintärekisteriin lisäämisestä',
+    useIfCompany: true,
+    useIfPerson: false,
+    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+  },
+  {
+    type: ApplicantInfoCheckTypes.TAX_DEBT,
+    label: 'Verovelkatodistus',
+    useIfCompany: true,
+    useIfPerson: false,
+    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+  },
+  {
+    type: ApplicantInfoCheckTypes.EMPLOYER_REGISTER,
+    label: 'Todistus työnantajarekisteriin lisäämisestä',
+    useIfCompany: true,
+    useIfPerson: false,
+    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
+  },
+];
 
-  const existingData = getApplicationApplicantInfoCheckData(state).filter((item) => item.entry === identifier);
-
-  return definitions.map((item) => {
+export const getApplicantInfoCheckItems = (existingData: Array<Object>): Array<Object> => {
+  return APPLICATION_INFO_CHECK_DEFINITIONS.map((item) => {
     const existingItem = existingData.find((existingItem) => existingItem.name === item.type);
 
     if (!existingItem) {
@@ -525,7 +523,10 @@ export const getApplicantInfoCheckItems = (state: RootState, identifier: string)
 
     return {
       kind: {...item},
-      data: {...existingItem},
+      data: {
+        ...existingItem,
+        preparer: getContentUser(existingItem.preparer),
+      },
     };
   }).filter((item) => !!item);
 };
@@ -564,13 +565,13 @@ export const getFieldFileIds = (state: RootState, fieldPath: string): Array<numb
   return fieldValue?.value || [];
 };
 
-export const getInitialTargetInfoCheckValues = (state: RootState, id: number): Object | null => {
-  const target = getApplicationRelatedPlotSearch(state)?.plot_search_targets.find((target) => target.id === id);
+export const getInitialTargetInfoCheckValues = (plotSearch: PlotSearch, infoCheckData: Array<Object>, id: number): Object | null => {
+  const target = plotSearch?.plot_search_targets.find((target) => target.id === id);
   if (!target) {
     return null;
   }
 
-  const infoCheck = getApplicationTargetInfoCheckData(state).find((infoCheck) => infoCheck.identifier === target.plan_unit.identifier);
+  const infoCheck = infoCheckData.find((infoCheck) => infoCheck.identifier === target.plan_unit.identifier);
 
   if (!infoCheck) {
     return null;
@@ -595,3 +596,9 @@ export const getInitialTargetInfoCheckValues = (state: RootState, id: number): O
 };
 
 export const getMeetingMemoDownloadLink = (id: number): string => createUrl(`meeting_memo/${id}/download`);
+
+export const getApplicantInfoCheckFormName = (infoCheckId: number): string =>
+  `${FormNames.PLOT_APPLICATION_APPLICANT_INFO_CHECK}--${infoCheckId}`;
+
+export const getTargetInfoCheckFormName = (targetId: number): string =>
+  `${FormNames.PLOT_APPLICATION_TARGET_INFO_CHECK}--${targetId}`;

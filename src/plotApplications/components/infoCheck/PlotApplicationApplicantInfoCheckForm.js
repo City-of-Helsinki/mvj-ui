@@ -13,8 +13,6 @@ import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import Button from '$components/button/Button';
 import {getApplicantInfoCheckAttributes} from '$src/plotApplications/selectors';
 import type {Attributes} from '$src/types';
-import {prepareApplicantInfoCheckForSubmission} from '$src/plotApplications/helpers';
-import {getUserFullName} from '$src/users/helpers';
 import {PlotApplicationApplicantInfoCheckFieldPaths, PlotApplicationApplicantInfoCheckFieldTitles} from '$src/plotApplications/enums';
 
 type OwnProps = {
@@ -28,7 +26,8 @@ type Props = {
   initialize: Function,
   attributes: Attributes,
   valid: boolean,
-  formValues: Object
+  formValues: Object,
+  isPreparerDirty: boolean,
 };
 
 class PlotApplicationApplicantInfoCheckForm extends Component<Props> {
@@ -45,10 +44,7 @@ class PlotApplicationApplicantInfoCheckForm extends Component<Props> {
 
     this.props.initialize({
       ...rest,
-      preparer: preparer ? {
-        value: preparer.id,
-        label: getUserFullName(preparer),
-      } : null,
+      preparer,
     });
   }
 
@@ -65,9 +61,10 @@ class PlotApplicationApplicantInfoCheckForm extends Component<Props> {
   handleSave = (): void => {
     const {
       onSubmit,
+      formValues,
     } = this.props;
 
-    onSubmit(prepareApplicantInfoCheckForSubmission(this.props.formValues));
+    onSubmit(formValues);
   };
 
   render(): React$Node {
@@ -97,7 +94,6 @@ class PlotApplicationApplicantInfoCheckForm extends Component<Props> {
               name={PlotApplicationApplicantInfoCheckFieldPaths.STATE}
               overrideValues={{
                 label: PlotApplicationApplicantInfoCheckFieldTitles.STATE,
-                required: true,
               }}
             />
           </Column>
@@ -147,13 +143,13 @@ export default (flowRight(
   connect(
     (state) => ({
       attributes: getApplicantInfoCheckAttributes(state),
-      formValues: getFormValues(FormNames.PLOT_APPLICATION_INFO_CHECK)(state),
+      formValues: getFormValues(FormNames.PLOT_APPLICATION_APPLICANT_INFO_CHECK)(state),
     }),
     null,
     null,
     {forwardRef: true}
   ),
   reduxForm({
-    form: FormNames.PLOT_APPLICATION_INFO_CHECK,
+    form: FormNames.PLOT_APPLICATION_APPLICANT_INFO_CHECK,
   })
 )(PlotApplicationApplicantInfoCheckForm): React$ComponentType<OwnProps>);

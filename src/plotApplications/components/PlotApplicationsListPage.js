@@ -62,7 +62,7 @@ import {
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import {fetchPlotSearchList, fetchAttributes as fetchPlotSearchAttributes} from '$src/plotSearch/actions';
 import ApplicationListMap from '$src/plotApplications/components/map/ApplicationListMap';
-import {getPlotApplicationsListByBBox} from '../selectors';
+import {getPlotApplicationsListByBBox} from '$src/plotApplications/selectors';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -284,7 +284,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     const {history} = this.props;
 
     history.push({
-      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/new`,
+      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/uusi`,
     });
   }
 
