@@ -6,7 +6,7 @@ import CheckboxInput from '$components/inputs/CheckboxInput';
 
 type Props = {
   alignFiltersRight?: boolean,
-  amountText: string,
+  amountText: React$Node,
   filterOptions: Array<Object>,
   filterValue: Array<string>,
   onFilterChange?: Function,
@@ -17,7 +17,7 @@ const TableFilters = ({
   filterOptions,
   filterValue,
   onFilterChange,
-}: Props) => {
+}: Props): React$Node => {
   const handleFilterChange = (values: Array<Object>) => {
     if(onFilterChange) {
       onFilterChange(values);

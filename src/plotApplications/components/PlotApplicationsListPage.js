@@ -42,7 +42,6 @@ import {
   isMethodAllowed,
   getUrlParams,
   setPageTitle,
-  getFieldOptions,
   getApiResponseCount,
   getApiResponseMaxPage,
   getSearchQuery,
@@ -420,6 +419,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       plotApplicationsMethods,
       plotApplicationsAttributes,
       plotApplicationsMapData,
+      plotApplicationsListData,
       location: {search},
     } = this.props;
 
@@ -446,12 +446,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     const isTable = visualizationType === VisualizationTypes.TABLE;
     const isMap = visualizationType === VisualizationTypes.MAP;
 
-    const plotApplicationStateFilterOptions = getFieldOptions(plotApplicationsAttributes, 'state', false);
-    const filteredApplications = selectedStates.length
-      ? (applications.filter((application) => selectedStates.indexOf(application.state) !== -1))
-      : applications;
-
-    const count = isMap ? getApiResponseCount(plotApplicationsMapData) : filteredApplications.length;
+    const count = getApiResponseCount(isMap ? plotApplicationsMapData : plotApplicationsListData);
     const columns = this.getColumns();
 
     let amountText;
@@ -459,7 +454,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       amountText = 'Ladataan...';
     } else {
       if (isMap && Number(getUrlParams(search)?.zoom || 0) < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) {
-        amountText = '';
+        amountText = <>&nbsp;</>;
       } else {
         amountText = `Löytyi ${count} kpl`;
       }
@@ -490,7 +485,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
           filterComponent={
             <TableFilters
               amountText={amountText}
-              filterOptions={plotApplicationStateFilterOptions}
+              filterOptions={[]}
               filterValue={plotApplicationStates}
               onFilterChange={() => { }}
             />
@@ -517,7 +512,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
             <Fragment>
               <SortableTable
                 columns={columns}
-                data={filteredApplications}
+                data={applications}
                 listTable
                 onRowClick={this.handleRowClick}
                 onSortingChange={() => { }} // this.handleSortingChange
