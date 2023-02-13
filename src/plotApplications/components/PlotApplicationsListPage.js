@@ -52,8 +52,6 @@ import {
   getIsFetchingByBBox,
 } from '$src/plotApplications/selectors';
 import {
-  DEFAULT_SORT_KEY,
-  DEFAULT_SORT_ORDER,
   DEFAULT_PLOT_APPLICATIONS_STATES,
   BOUNDING_BOX_FOR_SEARCH_QUERY,
   MAX_ZOOM_LEVEL_TO_FETCH_LEASES,
@@ -92,8 +90,6 @@ type Props = {
   receiveTopNavigationSettings: Function,
   plotApplicationsListData: Object,
   plotApplicationsMapData: Object,
-  sortKey: string,
-  sortOrder: string,
   initialize: Function,
 }
 
@@ -106,8 +102,6 @@ type State = {
   isSearchInitialized: boolean,
   maxPage: number,
   selectedStates: Array<string>,
-  sortKey: string,
-  sortOrder: string,
 }
 
 class PlotApplicationsListPage extends PureComponent<Props, State> {
@@ -120,8 +114,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     visualizationType: VisualizationTypes.TABLE,
     isSearchInitialized: false,
     plotApplicationStates: DEFAULT_PLOT_APPLICATIONS_STATES,
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
     maxPage: 0,
     activePage: 1,
   }
@@ -181,9 +173,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
           break;
       }
 
-      delete searchQuery.sort_key;
-      delete searchQuery.sort_order;
-
       if(!Object.keys(searchQuery).length) {
         this.setSearchFormValues();
       }
@@ -212,8 +201,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     delete searchQuery.page;
     delete searchQuery.visualization;
     delete searchQuery.zoom;
-    delete searchQuery.sort_key;
-    delete searchQuery.sort_order;
 
     fetchPlotApplicationsByBBox(searchQuery);
   }
@@ -231,8 +218,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       const initialValues = {...searchQuery};
       delete initialValues.page;
       delete initialValues.state;
-      delete initialValues.sort_key;
-      delete initialValues.sort_order;
       await initialize(FormNames.PLOT_APPLICATIONS_SEARCH, initialValues);
     };
 
@@ -431,8 +416,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       selectedStates,
       visualizationType,
       plotApplicationStates,
-      sortKey,
-      sortOrder,
     } = this.state;
 
     if (!plotApplicationsMethods && !plotApplicationsAttributes) {
@@ -515,12 +498,8 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
                 data={applications}
                 listTable
                 onRowClick={this.handleRowClick}
-                onSortingChange={() => { }} // this.handleSortingChange
                 serverSideSorting
                 showCollapseArrowColumn
-                sortable
-                sortKey={sortKey}
-                sortOrder={sortOrder}
               />
               <Pagination
                 activePage={activePage}
