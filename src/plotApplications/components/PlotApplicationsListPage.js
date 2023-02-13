@@ -290,8 +290,8 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'plot_search',
       text: 'Haku',
       sortable: false,
-      renderer: (id) => id
-        ? <ExternalLink href={'/tonttihaku/'} text={id}/> // getReferenceNumberLink(id)
+      renderer: ({name, id}) => name
+        ? <ExternalLink href={`${getRouteById(Routes.PLOT_SEARCH)}/${id}`} text={name} />
         : null,
     });
 
@@ -317,8 +317,10 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'target_identifier',
       text: 'Kohteen hakemustunnus',
       sortable: false,
-      renderer: (id) => id
-        ? <ExternalLink href={'/'} text={id}/> // getReferenceNumberLink(id)
+      renderer: ({identifier, application}) => identifier
+        ? <ExternalLink
+          href={`${getRouteById(Routes.PLOT_APPLICATIONS)}/${application}`}
+          text={identifier} />
         : null,
     });
 
