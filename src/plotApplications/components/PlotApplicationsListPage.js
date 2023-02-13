@@ -341,6 +341,24 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     return columns;
   }
 
+  handlePageClick = (page: number) => {
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    if (page > 1) {
+      query.page = page;
+    } else {
+      delete query.page;
+    }
+
+    this.setState({activePage: page});
+
+    return history.push({
+      pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+      search: getSearchQuery(query),
+    });
+  }
+
   handleRowClick = (id) => {
     const {history, location: {search}} = this.props;
 
@@ -512,7 +530,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
               <Pagination
                 activePage={activePage}
                 maxPage={maxPage}
-                onPageClick={() => { }} // this.handlePageClick(page)
+                onPageClick={(page) => this.handlePageClick(page)}
               />
             </Fragment>
           }
