@@ -101,7 +101,6 @@ type Props = {
 type State = {
   activePage: number,
   applications: Array<Object>,
-  isModalOpen: boolean,
   count: number,
   visualizationType: string,
   plotApplicationStates: Array<Object>,
@@ -118,7 +117,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   state = {
     applications: [],
     selectedStates: [],
-    isModalOpen: false,
     count: 0,
     visualizationType: VisualizationTypes.TABLE,
     isSearchInitialized: false,
@@ -219,19 +217,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     delete searchQuery.sort_order;
 
     fetchPlotApplicationsByBBox(searchQuery);
-  }
-
-  hideCreatePlotApplicationsModal = () => {
-    this.setState({isModalOpen: false});
-  }
-
-  handleCreatePlotApplications = () => {
-    const {history, location: {search}} = this.props;
-
-    return history.push({
-      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/1`,
-      search: search,
-    });
   }
 
   setSearchFormValues = () => {
