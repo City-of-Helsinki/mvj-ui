@@ -22,6 +22,8 @@ import type {RootState} from '$src/root/types';
 import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState, UploadedFileMeta} from '$src/plotApplications/types';
 import type {Form, FormSection, PlotSearch} from '$src/plotSearch/types';
 import {getContentUser} from '$src/users/helpers';
+import {getTargetTitle, getTargetType} from '$src/plotSearch/helpers';
+import {TargetIdentifierTypes} from '$src/plotSearch/enums';
 
 /**
  * Get plotApplication list results
@@ -51,8 +53,8 @@ export const getContentApplicationListItem = (plotApplication: Object): Object =
       identifier: target.identifier,
       application: plotApplication.id,
     })),
-    target_address: plotApplication.targets.map(target => target.address.address),
-    target_reserved: plotApplication.targets.map(target => target.reserved),
+    target_address: plotApplication.targets.map((target) => target.address?.address),
+    target_reserved: plotApplication.targets.map((target) => target.reserved),
   };
 };
 
@@ -459,7 +461,7 @@ export const getSectionTargetFromMeta = (field: string): string => {
 
   if (meta) {
     const target = getCurrentEditorTargets(state).find((target) => target.id === meta.identifier);
-    return target ? `${target.lease_address.address} (${target.lease_identifier})` : '';
+    return target ? getTargetTitle(target) : '';
   }
   else {
     return '';
@@ -578,7 +580,17 @@ export const getInitialTargetInfoCheckValues = (plotSearch: PlotSearch, infoChec
     return null;
   }
 
-  const infoCheck = infoCheckData.find((infoCheck) => infoCheck.identifier === target.plan_unit.identifier);
+  const targetType = getTargetType(target);
+  let targetIdentifier;
+  if (targetType === TargetIdentifierTypes.PLAN_UNIT) {
+    targetIdentifier = target.plan_unit.identifier;
+  } else if (targetType === TargetIdentifierTypes.CUSTOM_DETAILED_PLAN) {
+    targetIdentifier = target.custom_detailed_plan.identifier;
+  } else {
+    return null;
+  }
+
+  const infoCheck = infoCheckData.find((infoCheck) => infoCheck.identifier === targetIdentifier);
 
   if (!infoCheck) {
     return null;
