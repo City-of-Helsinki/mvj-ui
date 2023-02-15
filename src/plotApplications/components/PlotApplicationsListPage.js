@@ -42,7 +42,6 @@ import {
   isMethodAllowed,
   getUrlParams,
   setPageTitle,
-  getFieldOptions,
   getApiResponseCount,
   getApiResponseMaxPage,
   getSearchQuery,
@@ -53,8 +52,6 @@ import {
   getIsFetchingByBBox,
 } from '$src/plotApplications/selectors';
 import {
-  DEFAULT_SORT_KEY,
-  DEFAULT_SORT_ORDER,
   DEFAULT_PLOT_APPLICATIONS_STATES,
   BOUNDING_BOX_FOR_SEARCH_QUERY,
   MAX_ZOOM_LEVEL_TO_FETCH_LEASES,
@@ -93,23 +90,18 @@ type Props = {
   receiveTopNavigationSettings: Function,
   plotApplicationsListData: Object,
   plotApplicationsMapData: Object,
-  sortKey: string,
-  sortOrder: string,
   initialize: Function,
 }
 
 type State = {
   activePage: number,
   applications: Array<Object>,
-  isModalOpen: boolean,
   count: number,
   visualizationType: string,
   plotApplicationStates: Array<Object>,
   isSearchInitialized: boolean,
   maxPage: number,
   selectedStates: Array<string>,
-  sortKey: string,
-  sortOrder: string,
 }
 
 class PlotApplicationsListPage extends PureComponent<Props, State> {
@@ -118,13 +110,10 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   state = {
     applications: [],
     selectedStates: [],
-    isModalOpen: false,
     count: 0,
     visualizationType: VisualizationTypes.TABLE,
     isSearchInitialized: false,
     plotApplicationStates: DEFAULT_PLOT_APPLICATIONS_STATES,
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
     maxPage: 0,
     activePage: 1,
   }
@@ -184,9 +173,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
           break;
       }
 
-      delete searchQuery.sort_key;
-      delete searchQuery.sort_order;
-
       if(!Object.keys(searchQuery).length) {
         this.setSearchFormValues();
       }
@@ -215,23 +201,8 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     delete searchQuery.page;
     delete searchQuery.visualization;
     delete searchQuery.zoom;
-    delete searchQuery.sort_key;
-    delete searchQuery.sort_order;
 
     fetchPlotApplicationsByBBox(searchQuery);
-  }
-
-  hideCreatePlotApplicationsModal = () => {
-    this.setState({isModalOpen: false});
-  }
-
-  handleCreatePlotApplications = () => {
-    const {history, location: {search}} = this.props;
-
-    return history.push({
-      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/1`,
-      search: search,
-    });
   }
 
   setSearchFormValues = () => {
@@ -247,8 +218,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       const initialValues = {...searchQuery};
       delete initialValues.page;
       delete initialValues.state;
-      delete initialValues.sort_key;
-      delete initialValues.sort_order;
       await initialize(FormNames.PLOT_APPLICATIONS_SEARCH, initialValues);
     };
 
@@ -305,8 +274,8 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'plot_search',
       text: 'Haku',
       sortable: false,
-      renderer: (id) => id
-        ? <ExternalLink href={'/tonttihaku/'} text={id}/> // getReferenceNumberLink(id)
+      renderer: ({name, id}) => name
+        ? <ExternalLink href={`${getRouteById(Routes.PLOT_SEARCH)}/${id}`} text={name} />
         : null,
     });
 
@@ -332,8 +301,10 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'target_identifier',
       text: 'Kohteen hakemustunnus',
       sortable: false,
-      renderer: (id) => id
-        ? <ExternalLink href={'/'} text={id}/> // getReferenceNumberLink(id)
+      renderer: ({identifier, application}) => identifier
+        ? <ExternalLink
+          href={`${getRouteById(Routes.PLOT_APPLICATIONS)}/${application}`}
+          text={identifier} />
         : null,
     });
 
@@ -352,6 +323,24 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
 
 
     return columns;
+  }
+
+  handlePageClick = (page: number) => {
+    const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    if (page > 1) {
+      query.page = page;
+    } else {
+      delete query.page;
+    }
+
+    this.setState({activePage: page});
+
+    return history.push({
+      pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+      search: getSearchQuery(query),
+    });
   }
 
   handleRowClick = (id) => {
@@ -415,6 +404,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       plotApplicationsMethods,
       plotApplicationsAttributes,
       plotApplicationsMapData,
+      plotApplicationsListData,
       location: {search},
     } = this.props;
 
@@ -426,12 +416,10 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       selectedStates,
       visualizationType,
       plotApplicationStates,
-      sortKey,
-      sortOrder,
     } = this.state;
 
     if (!plotApplicationsMethods && !plotApplicationsAttributes) {
-      return null;
+      return <PageContainer><Loader isLoading /></PageContainer>;
     }
 
     if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
@@ -441,12 +429,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     const isTable = visualizationType === VisualizationTypes.TABLE;
     const isMap = visualizationType === VisualizationTypes.MAP;
 
-    const plotApplicationStateFilterOptions = getFieldOptions(plotApplicationsAttributes, 'state', false);
-    const filteredApplications = selectedStates.length
-      ? (applications.filter((application) => selectedStates.indexOf(application.state) !== -1))
-      : applications;
-
-    const count = isMap ? getApiResponseCount(plotApplicationsMapData) : filteredApplications.length;
+    const count = getApiResponseCount(isMap ? plotApplicationsMapData : plotApplicationsListData);
     const columns = this.getColumns();
 
     let amountText;
@@ -454,7 +437,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       amountText = 'Ladataan...';
     } else {
       if (isMap && Number(getUrlParams(search)?.zoom || 0) < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) {
-        amountText = '';
+        amountText = <>&nbsp;</>;
       } else {
         amountText = `Löytyi ${count} kpl`;
       }
@@ -485,7 +468,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
           filterComponent={
             <TableFilters
               amountText={amountText}
-              filterOptions={plotApplicationStateFilterOptions}
+              filterOptions={[]}
               filterValue={plotApplicationStates}
               onFilterChange={() => { }}
             />
@@ -512,20 +495,16 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
             <Fragment>
               <SortableTable
                 columns={columns}
-                data={filteredApplications}
+                data={applications}
                 listTable
                 onRowClick={this.handleRowClick}
-                onSortingChange={() => { }} // this.handleSortingChange
                 serverSideSorting
                 showCollapseArrowColumn
-                sortable
-                sortKey={sortKey}
-                sortOrder={sortOrder}
               />
               <Pagination
                 activePage={activePage}
                 maxPage={maxPage}
-                onPageClick={() => { }} // this.handlePageClick(page)
+                onPageClick={(page) => this.handlePageClick(page)}
               />
             </Fragment>
           }

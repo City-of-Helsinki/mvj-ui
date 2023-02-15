@@ -39,11 +39,18 @@ export const getContentPlotApplicationsListResults = (content: Object): Array<Ob
 export const getContentApplicationListItem = (plotApplication: Object): Object => {
   return {
     id: plotApplication.id,
-    plot_search: plotApplication.plot_search,
+    plot_search: {
+      name: plotApplication.plot_search,
+      id: plotApplication.plot_search_id,
+    },
     applicants: plotApplication.applicants,
     plot_search_type: plotApplication.plot_search_type,
     plot_search_subtype: plotApplication.plot_search_subtype,
-    target_identifier: plotApplication.targets.map(target => target.identifier),
+    target_identifier: plotApplication.targets.map(target => ({
+      // TODO: use the dedicated text form ID of the application target when it's done
+      identifier: target.identifier,
+      application: plotApplication.id,
+    })),
     target_address: plotApplication.targets.map(target => target.address.address),
     target_reserved: plotApplication.targets.map(target => target.reserved),
   };
