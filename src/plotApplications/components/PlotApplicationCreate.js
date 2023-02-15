@@ -58,6 +58,7 @@ import Loader from '$components/loader/Loader';
 import {TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
 import type {PlotSearchList} from '$src/plotSearch/types';
 import type {PlotApplication} from '$src/plotApplications/types';
+import {getTargetTitle} from '$src/plotSearch/helpers';
 
 type OwnProps = {};
 
@@ -231,6 +232,11 @@ class PlotApplicationCreate extends PureComponent<Props, State> {
       value: option.form.id,
     }));
 
+    const targetOptions = currentEditorTargets.map((target) => ({
+      value: target.id,
+      label: getTargetTitle(target),
+    }));
+
     return (
       <form className="PlotApplicationEdit">
         <Title>
@@ -288,10 +294,7 @@ class PlotApplicationCreate extends PureComponent<Props, State> {
                       label: 'Haettavat kohteet',
                     }}
                     overrideValues={{
-                      options: currentEditorTargets.map((target) => ({
-                        value: target.id,
-                        label: `${target.lease_address?.address || '-'} (${target.lease_identifier})`,
-                      })),
+                      options: targetOptions,
                     }}
                     name='targets'
                     onChange={this.updateTargetSections}

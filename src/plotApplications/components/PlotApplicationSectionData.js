@@ -23,6 +23,7 @@ import {
 import Loader from '$components/loader/Loader';
 import Collapse from '$components/collapse/Collapse';
 import SubTitle from '$components/content/SubTitle';
+import {getTargetTitle} from '$src/plotSearch/helpers';
 
 type SingleSectionItemProps = {
   section: FormSection,
@@ -152,7 +153,7 @@ const SectionData = ({section, answer, topLevel = false, fieldTypes, plotSearch,
         if (section.identifier === TARGET_SECTION_IDENTIFIER && singleAnswer?.metadata?.identifier) {
           const target = plotSearch?.plot_search_targets.find((target) => target.id === singleAnswer.metadata?.identifier);
           if (target) {
-            subtitle = `${target.lease_address.address || '-'} (${target.lease_identifier})`;
+            subtitle = getTargetTitle(target);
           }
         }
         if (section.identifier === APPLICANT_SECTION_IDENTIFIER) {

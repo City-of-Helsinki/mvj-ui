@@ -11,7 +11,7 @@ import {
 } from '$util/helpers';
 import {formatDate} from '../util/helpers';
 import {formValueSelector} from 'redux-form';
-import {PlotSearchTargetType} from './enums';
+import {PlotSearchTargetType, TargetIdentifierTypes} from './enums';
 import type {Attributes} from '../types';
 
 /**
@@ -79,7 +79,7 @@ export const getContentPlotSearchListItem = (plotSearch: PlotSearch): Object => 
   return {
     id: plotSearch.id,
     basicInformation: getContentBasicInformation(plotSearch),
-    application: getContentApplication(plotSearch), 
+    application: getContentApplication(plotSearch),
     ...getContentBasicInformation(plotSearch),
   };
 };
@@ -207,4 +207,27 @@ export const annotatePlanUnitDecision = (decision: Object, plotUnit: Object): Ob
 export const getInfoLinkLanguageDisplayText = (key: string, attributes: Attributes): string => {
   const languages = get(attributes, 'plot_search_targets.child.children.info_links.child.children.language.choices');
   return languages?.find((language) => language.value === key)?.display_name || key;
+};
+
+export const getTargetType = (target: Object): string | null => {
+  if (target.plan_unit) {
+    return TargetIdentifierTypes.PLAN_UNIT;
+  }
+  if (target.custom_detailed_plan) {
+    return TargetIdentifierTypes.CUSTOM_DETAILED_PLAN;
+  }
+
+  return null;
+};
+
+export const getTargetTitle = (target: Object): string => {
+  const targetType = getTargetType(target);
+
+  if (targetType === TargetIdentifierTypes.PLAN_UNIT) {
+    return `${target.lease_address?.address || '-'} (${target.lease_identifier})`;
+  } else if (targetType === TargetIdentifierTypes.CUSTOM_DETAILED_PLAN) {
+    return `${target.custom_detailed_plan?.address || '-'} (${target.custom_detailed_plan?.identifier})`;
+  } else {
+    return '?';
+  }
 };
