@@ -354,7 +354,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
               />
             </Authorization>
           </ActionButtonWrapper>
-          <Row> 
+          <Row>
             {/* Kohteen tunnus */}
             <Column small={12} medium={4} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER)}>
@@ -589,4 +589,4 @@ export default (flowRight(
     destroyOnUnmount: false,
     change,
   }),
-)(CustomDetailedPlanEdit): React$AbstractComponent<OwnProps, mixed>);
+)(CustomDetailedPlanEdit): React$ComponentType<OwnProps>);

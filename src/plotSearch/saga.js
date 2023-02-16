@@ -39,7 +39,7 @@ import {
   receiveStages,
   stagesNotFound,
   fetchStages,
-} from './actions';
+} from '$src/plotSearch/actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 
@@ -60,7 +60,7 @@ import {
   fetchTemplateFormsRequest,
   editFormRequest,
   fetchStagesRequest,
-} from './requests';
+} from '$src/plotSearch/requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {

@@ -7,7 +7,7 @@ import isString from 'lodash/isString';
  * @param {string} key
  * @returns {*}
  */
-export const getStorageItem = (key: string) => {
+export const getStorageItem = (key: string): string | null => {
   const [root, ...rest] = key.split('.');
   const item = localStorage.getItem(buildStorageKey(root)) || '';
   const value = isJson(item) ? JSON.parse(item) : item;
@@ -116,7 +116,7 @@ const isJson = (value: any) => {
  * Get redirect address stored to session storage
  * @returns {string}
  */
-export const getRedirectUrlFromSessionStorage = () => {
+export const getRedirectUrlFromSessionStorage = (): any => {
   return getSessionStorageItem('redirectURL');
 };
 

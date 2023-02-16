@@ -11,8 +11,8 @@ import Authorization from '$components/authorization/Authorization';
 import {ConfirmationModalTexts, FieldTypes, FormNames, ViewModes} from '$src/enums';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
-import ErrorField from '../../../../components/form/ErrorField';
-import BasicInfoDecisionEdit from './BasicInfoDecisionEdit';
+import ErrorField from '$components/form/ErrorField';
+import BasicInfoDecisionEdit from '$src/plotSearch/components/plotSearchSections/basicInfo/BasicInfoDecisionEdit';
 import {ButtonColors} from '$components/enums';
 import Collapse from '$components/collapse/Collapse';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -49,13 +49,13 @@ import {
   filterSubTypes,
 } from '$src/plotSearch/helpers';
 
-import PlotSearchSiteEdit from './PlotSearchSiteEdit';
+import PlotSearchSiteEdit from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSiteEdit';
 
 import type {Attributes} from '$src/types';
 import {hasMinimumRequiredFieldsFilled} from '$src/plotSearch/helpers';
 import WarningField from '$components/form/WarningField';
 import {getCurrentPlotSearch, getCurrentPlotSearchStage, getStages, isLockedForModifications} from '$src/plotSearch/selectors';
-import PlotSearchTargetListing from './PlotSearchTargetListing';
+import PlotSearchTargetListing from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchTargetListing';
 import {AUTOMATIC_PLOT_SEARCH_STAGES} from '$src/plotSearch/constants';
 import {PlotSearchStageTypes} from '$src/plotSearch/enums';
 
@@ -635,4 +635,4 @@ export default (flowRight(
     destroyOnUnmount: false,
     change,
   }),
-)(BasicInfoEdit): React$AbstractComponent<OwnProps, mixed>);
+)(BasicInfoEdit): React$ComponentType<OwnProps>);

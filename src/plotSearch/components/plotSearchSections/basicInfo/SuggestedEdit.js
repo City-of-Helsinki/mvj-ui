@@ -59,7 +59,7 @@ const SuggestedEdit = ({
           invisibleLabel
         />
       </Column>
-      <Column large={1.5}> 
+      <Column large={1.5}>
         <FormField
           disableTouched={isSaveClicked}
           fieldAttributes={get(attributes, 'plotSearch_sites.child.children.suggested.child.children.share_numerator')}
@@ -105,4 +105,4 @@ export default (connect(
       usersPermissions: getUsersPermissions(state),
     };
   },
-)(SuggestedEdit): React$AbstractComponent<OwnProps, mixed>);
+)(SuggestedEdit): React$ComponentType<OwnProps>);

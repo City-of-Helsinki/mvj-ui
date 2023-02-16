@@ -1,5 +1,5 @@
 // @flow
-import type {Action, Attributes, Methods} from '../types';
+import type {Action, Attributes, Methods} from '$src/types';
 
 export type PlotSearchState = {
   attributes: Attributes,
@@ -88,7 +88,7 @@ export type FormFieldChoice = {
 
 export type FetchSinglePlotSearchAfterEditPayload = {
   id: any,
-  callbackFuntions?: Array<Object | Function>,
+  callbackFunctions?: Array<Object | Function>,
 }
 
 export type FetchAttributesAction = Action<'mvj/plotSearch/FETCH_ATTRIBUTES', void>;

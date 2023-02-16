@@ -15,7 +15,7 @@ import ExternalLink from '$components/links/ExternalLink';
 import WarningContainer from '$components/content/WarningContainer';
 import WarningField from '$components/form/WarningField';
 import {createPaikkatietovipunenUrl} from '$util/helpers';
-import {Routes, getRouteById} from '../../../../root/routes';
+import {Routes, getRouteById} from '$src/root/routes';
 import {
   formatDate,
   getFieldOptions,
@@ -344,4 +344,4 @@ export default (connect(
   {
     receiveCollapseStates,
   }
-)(PlotSearchSitePlanUnit): React$AbstractComponent<OwnProps, mixed>);
+)(PlotSearchSitePlanUnit): React$ComponentType<OwnProps>);

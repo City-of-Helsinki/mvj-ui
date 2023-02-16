@@ -36,7 +36,7 @@ import {
   getIsFetchingAnyPlanUnits,
   getIsFetchingPlanUnitAttributes,
   areTargetsAllowedToHaveType, isLockedForModifications, isFetchingStages, getIsFetchingSubtypes,
-} from '../selectors';
+} from '$src/plotSearch/selectors';
 import {
   editPlotSearch,
   hideEditMode,
@@ -67,16 +67,21 @@ import {
   cleanDecisions,
 } from '$src/plotSearch/helpers';
 
-import PlotSearchInfo from './plotSearchSections/plotSearchInfo/PlotSearchInfo';
-import BasicInfo from './plotSearchSections/basicInfo/BasicInfo';
-import BasicInfoEdit from './plotSearchSections/basicInfo/BasicInfoEdit';
-import Application from './plotSearchSections/application/Application';
-import ApplicationEdit from './plotSearchSections/application/ApplicationEdit';
-import ApplicationMap from './plotSearchSections/map/ApplicationMap';
+import PlotSearchInfo from '$src/plotSearch/components/plotSearchSections/plotSearchInfo/PlotSearchInfo';
+import BasicInfo from '$src/plotSearch/components/plotSearchSections/basicInfo/BasicInfo';
+import BasicInfoEdit from '$src/plotSearch/components/plotSearchSections/basicInfo/BasicInfoEdit';
+import Application from '$src/plotSearch/components/plotSearchSections/application/Application';
+import ApplicationEdit from '$src/plotSearch/components/plotSearchSections/application/ApplicationEdit';
+import ApplicationMap from '$src/plotSearch/components/plotSearchSections/map/ApplicationMap';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
-import {FIELDS_LOCKED_FOR_EDITING} from '../constants';
+import {FIELDS_LOCKED_FOR_EDITING} from '$src/plotSearch/constants';
+
+type OwnProps = {
+
+};
 
 type Props = {
+  ...OwnProps,
   applicationFormValues: Object,
   basicInformationFormValues: Object,
   currentPlotSearch: PlotSearch,
@@ -696,4 +701,4 @@ export default (flowRight(
       deletePlotSearch,
     }
   ),
-)(PlotSearchPage): React$AbstractComponent<Props, mixed>);
+)(PlotSearchPage): React$ComponentType<OwnProps>);

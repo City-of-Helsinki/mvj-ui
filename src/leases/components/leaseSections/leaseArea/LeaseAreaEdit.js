@@ -560,7 +560,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
       usersPermissions,
       custom_detailed_plan,
     } = this.props;
-    
+
     const mapLinkUrl = this.getMapLinkUrl();
 
     return (
@@ -798,4 +798,4 @@ export default (flowRight(
       receiveCollapseStates,
     }
   ),
-)(LeaseAreaEdit): React$AbstractComponent<OwnProps, mixed>);
+)(LeaseAreaEdit): React$ComponentType<OwnProps>);

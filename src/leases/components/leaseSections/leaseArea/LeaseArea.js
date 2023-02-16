@@ -353,7 +353,7 @@ const LeaseArea = ({
           </Column>
         </Row>
       </Authorization>
-      
+
       {/* Custom detailed plan (Oma muu alue) */}
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.CUSTOM_DETAILED_PLAN)}>
         <Row>
@@ -407,4 +407,4 @@ export default (flowRight(
       receiveCollapseStates,
     }
   ),
-)(LeaseArea): React$AbstractComponent<Props, mixed>);
+)(LeaseArea): React$ComponentType<Props>);

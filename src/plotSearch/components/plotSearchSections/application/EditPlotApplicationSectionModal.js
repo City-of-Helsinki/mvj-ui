@@ -2,12 +2,13 @@
 import React, {Component} from 'react';
 
 import Modal from '$components/modal/Modal';
-import EditPlotApplicationSectionForm from './EditPlotApplicationSectionForm';
+import EditPlotApplicationSectionForm from '$src/plotSearch/components/plotSearchSections/application/EditPlotApplicationSectionForm';
 
 type Props = {
   isOpen: boolean,
   onClose: Function,
   onSubmit: Function,
+  sectionIndex: number,
 }
 
 class EditPlotApplicationSectionModal extends Component<Props> {
@@ -19,16 +20,16 @@ class EditPlotApplicationSectionModal extends Component<Props> {
     }
   }
 
-  setRefForForm = (element: any) => {
+  setRefForForm: Function = (element: any): void => {
     this.form = element;
   }
 
-  render () {
+  render(): React$Node {
     const {
       isOpen,
       onClose,
       onSubmit,
-      ...rest
+      sectionIndex,
     } = this.props;
 
     return (
@@ -41,7 +42,7 @@ class EditPlotApplicationSectionModal extends Component<Props> {
           ref={this.setRefForForm}
           onClose={onClose}
           onSubmit={onSubmit}
-          {...rest}
+          sectionIndex={sectionIndex}
         />
       </Modal>
     );

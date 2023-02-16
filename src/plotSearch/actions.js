@@ -60,7 +60,7 @@ import type {
   FetchPlotSearchStagesAction,
   ReceivePlotSearchStagesAction,
   PlotSearchStagesNotFoundAction,
-} from './types';
+} from '$src/plotSearch/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/plotSearch/FETCH_ATTRIBUTES')();

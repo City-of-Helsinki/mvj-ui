@@ -9,7 +9,7 @@ import type {ContextRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import {initialize} from 'redux-form';
 
-import Search from './search/Search';
+import Search from '$src/plotApplications/components/search/Search';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {
   fetchPlotApplicationsList,

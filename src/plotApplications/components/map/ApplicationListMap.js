@@ -6,7 +6,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
-import TargetListLayer from './TargetListLayer';
+import TargetListLayer from '$src/plotApplications/components/map/TargetListLayer';
 import {DEFAULT_ZOOM, MAP_COLORS} from '$src/constants';
 import {MAX_ZOOM_LEVEL_TO_FETCH_LEASES} from '$src/leases/constants';
 import {getApplicationTargetGeoJson} from '$src/plotApplications/helpers';

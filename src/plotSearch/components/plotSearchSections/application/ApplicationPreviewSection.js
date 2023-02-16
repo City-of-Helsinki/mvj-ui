@@ -1,35 +1,41 @@
 // @flow
 import React, {Fragment, PureComponent} from 'react';
 import {Row, Column} from 'react-foundation';
-import {reduxForm} from "redux-form";
-import flowRight from "lodash/flowRight";
-import get from "lodash/get";
+import {reduxForm} from 'redux-form';
+import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 import classNames from 'classnames';
-import {connect} from "react-redux";
+import {connect} from 'react-redux';
 
-import {FormNames} from "$src/enums";
+import {FormNames} from '$src/enums';
 import SubTitle from '$components/content/SubTitle';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormField from "$components/form/FormField";
-import FormHintText from "$components/form/FormHintText";
-import AddButtonThird from "$components/form/AddButtonThird";
-import Collapse from "$components/collapse/Collapse";
-import {getFormAttributes} from "../../../selectors";
-import Button from "../../../../components/button/Button";
-import {ButtonColors} from "../../../../components/enums";
+import FormField from '$components/form/FormField';
+import FormHintText from '$components/form/FormHintText';
+import AddButtonThird from '$components/form/AddButtonThird';
+import Collapse from '$components/collapse/Collapse';
+import {getFormAttributes} from '$src/plotSearch/selectors';
+import Button from '$components/button/Button';
+import {ButtonColors} from '$components/enums';
+import type {Attributes} from '$src/types';
+
+type OwnProps = {
+  section: Object,
+  handleToggle: Function,
+  defaultOpen?: boolean,
+  openEditPlotApplicationSectionModal?: Function,
+  disabled?: boolean,
+}
 
 type Props = {
-  section: Object,
-  handleToggle: function,
-  defaultOpen?: boolean,
-  openEditPlotApplicationSectionModal?: function,
-  disabled?: boolean
+  ...OwnProps,
+  attributes: Attributes,
 };
 
 class ApplicationPreviewSection extends PureComponent<Props> {
   static defaultProps = {
-    defaultOpen: true
+    defaultOpen: true,
   }
 
   renderSection = (section: Object, isFirstLevel: boolean) => {
@@ -64,13 +70,13 @@ class ApplicationPreviewSection extends PureComponent<Props> {
   }
 
   renderField = (field: Object) => {
-    const { attributes } = this.props;
+    const {attributes} = this.props;
     const fakeFieldId = `fakeField${field.id}`;
     let fieldSpecificComponents = [];
     let columnWidths = {
       small: 12,
       medium: 12,
-      large: 12
+      large: 12,
     };
 
     const typeMapping = get(attributes, 'sections.child.children.fields.child.children.type.choices');
@@ -79,32 +85,32 @@ class ApplicationPreviewSection extends PureComponent<Props> {
     switch (matchingType) {
       case 'checkbox':
         fieldSpecificComponents = <FormField name={fakeFieldId} fieldAttributes={{
-          type: "checkbox",
+          type: 'checkbox',
           required: false,
           read_only: false,
-          label: get(field, 'label')
+          label: get(field, 'label'),
         }} overrideValues={{
           options: get(field, 'choices')?.map((choice) => ({
             label: choice.has_text_input ? <>
               {choice.text}
-              { " " }
+              { ' ' }
               <FormField name={`${fakeFieldId}_input`} fieldAttributes={{
-                type: "string",
+                type: 'string',
                 required: false,
                 read_only: false,
-                label: ''
+                label: '',
               }} invisibleLabel disabled />
             </> : choice.text,
-            value: choice.value
-          }))
+            value: choice.value,
+          })),
         }} disabled />;
         break;
       case 'textarea':
         fieldSpecificComponents = <FormField name={fakeFieldId} fieldAttributes={{
-          type: "textarea",
+          type: 'textarea',
           required: false,
           read_only: false,
-          label: get(field, 'label')
+          label: get(field, 'label'),
         }} disabled />;
         break;
       case 'radiobutton':
@@ -113,10 +119,10 @@ class ApplicationPreviewSection extends PureComponent<Props> {
           <FormField
             name={fakeFieldId}
             fieldAttributes={{
-            type: "radio-with-field",
-            required: false,
-            read_only: false,
-            label: get(field, 'label')
+              type: 'radio-with-field',
+              required: false,
+              read_only: false,
+              label: get(field, 'label'),
             }}
             overrideValues={{
               options: get(field, 'choices')?.map((choice) => ({
@@ -124,13 +130,13 @@ class ApplicationPreviewSection extends PureComponent<Props> {
                 value: choice.value,
                 field: choice.has_text_input
                   ? <FormField name={`${fakeFieldId}_input`} fieldAttributes={{
-                      type: "string",
-                      required: false,
-                      read_only: false,
-                      label: ''
-                    }} invisibleLabel disabled />
-                  : null
-              }))
+                    type: 'string',
+                    required: false,
+                    read_only: false,
+                    label: '',
+                  }} invisibleLabel disabled />
+                  : null,
+              })),
             }}
             disabled
             className={field.type === 'radiobuttoninline' ? 'form-field__radio-button-inline' : ''}
@@ -139,30 +145,30 @@ class ApplicationPreviewSection extends PureComponent<Props> {
         break;
       case 'dropdown':
         fieldSpecificComponents = <FormField name={fakeFieldId} fieldAttributes={{
-          type: "choice",
+          type: 'choice',
           required: false,
           read_only: false,
           label: get(field, 'label'),
-          choices: []
+          choices: [],
         }} disabled />;
         break;
       case 'uploadfiles':
         fieldSpecificComponents = <>
           <FormTextTitle>{get(field, 'label')}</FormTextTitle>
-          <AddButtonThird label={"Liitä tiedosto"} onClick={() => {}} disabled />
+          <AddButtonThird label={'Liitä tiedosto'} onClick={() => {}} disabled />
         </>;
         break;
       case 'textbox':
         fieldSpecificComponents = <FormField name={fakeFieldId} fieldAttributes={{
-          type: "string",
+          type: 'string',
           required: false,
           read_only: false,
-          label: get(field, 'label')
+          label: get(field, 'label'),
         }} disabled />;
         columnWidths = {
           small: 6,
           medium: 4,
-          large: 3
+          large: 3,
         };
         break;
       default:
@@ -180,7 +186,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
   }
 
   render() {
-    const { section, handleToggle, defaultOpen, openEditPlotApplicationSectionModal, disabled } = this.props;
+    const {section, handleToggle, defaultOpen, openEditPlotApplicationSectionModal, disabled} = this.props;
 
     return <Row className='summary__content-wrapper'>
       <Column small={12} style={{marginTop: 15}}>
@@ -200,7 +206,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
         >
           {section.visible
             ? this.renderSection(section, true)
-            : <div style={{ marginBottom: 15 }}>
+            : <div style={{marginBottom: 15}}>
               <em>Osio on piilotettu kokonaisuudessaan.</em></div>}
         </Collapse>
       </Column>
@@ -208,15 +214,15 @@ class ApplicationPreviewSection extends PureComponent<Props> {
   }
 }
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state) => {
       return {
-        attributes: getFormAttributes(state)
-      }
+        attributes: getFormAttributes(state),
+      };
     }
   ),
   reduxForm({
-    form: FormNames.PLOT_APPLICATION_PREVIEW
+    form: FormNames.PLOT_APPLICATION_PREVIEW,
   })
-)(ApplicationPreviewSection);
+)(ApplicationPreviewSection): React$ComponentType<OwnProps>);

@@ -19,7 +19,7 @@ import MapIcon from '$components/icons/MapIcon';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import Search from './search/Search';
+import Search from '$src/plotSearch/components/search/Search';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
@@ -29,7 +29,7 @@ import TableIcon from '$components/icons/TableIcon';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {
-  createPlotSearch, 
+  createPlotSearch,
   fetchPlotSearchList,
 } from '$src/plotSearch/actions';
 import {
@@ -57,7 +57,7 @@ import {
   getContentPlotSearchListResults,
 } from '$src/plotSearch/helpers';
 import type {PlotSearch, PlotSearchList} from '$src/plotSearch/types';
-import CreatePlotSearchModal from './CreatePlotSearchModal';
+import CreatePlotSearchModal from '$src/plotSearch/components/CreatePlotSearchModal';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
 
@@ -73,7 +73,12 @@ const visualizationTypeOptions = [
   {value: VisualizationTypes.MAP, label: 'Kartta', icon: <MapIcon className='icon-medium' />},
 ];
 
+type OwnProps = {
+
+};
+
 type Props = {
+  ...OwnProps,
   history: Object,
   location: Object,
   createPlotSearch: Function,
@@ -158,7 +163,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
   }
 
   getColumns = () => {
-    const {plotSearchAttributes} = this.props;    
+    const {plotSearchAttributes} = this.props;
     const columns = [];
     const typeOptions = getFieldOptions(plotSearchAttributes, 'type');
     const subtypeOptions = getFieldOptions(plotSearchAttributes, 'subtype');
@@ -176,7 +181,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
       sortable: false,
       renderer: (val) => getLabelOfOption(typeOptions, val),
     });
-  
+
     columns.push({
       key: 'subtype',
       text: 'Haun alatyyppi',
@@ -192,33 +197,33 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     });
 
     columns.push({
-      key: 'begin_at', 
-      text: 'Alkupvm', 
+      key: 'begin_at',
+      text: 'Alkupvm',
       sortable: false,
       renderer: (val) => formatDate(val),
     });
 
     columns.push({
-      key: 'end_at', 
-      text: 'Loppupvm', 
+      key: 'end_at',
+      text: 'Loppupvm',
       sortable: false,
       renderer: (val) => formatDate(val),
     });
-    
+
     columns.push({
-      key: 'latest_decicion', 
-      text: 'Viimeisin päätös', 
+      key: 'latest_decicion',
+      text: 'Viimeisin päätös',
       sortable: false,
-      renderer: (id) => id 
+      renderer: (id) => id
         ? <ExternalLink href={'/'} text={id}/> // getReferenceNumberLink(id)
         : null,
     });
-    
+
     columns.push({
-      key: 'id', 
-      text: 'Kohteen tunnus', 
+      key: 'id',
+      text: 'Kohteen tunnus',
       sortable: false,
-      renderer: (id) => id 
+      renderer: (id) => id
         ? <ExternalLink href={'/'} text={id}/> // getReferenceNumberLink(id)
         : null,
     });
@@ -234,7 +239,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     if(page > 1) {
       searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
-    
+
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
 
@@ -301,7 +306,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
 
   handleSearchChange = (query: Object, resetActivePage?: boolean = true) => {
     const {history} = this.props;
-    
+
     if(resetActivePage) {
       this.setState({activePage: 1});
       delete query.page;
@@ -426,6 +431,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
               states={selectedStates}
+              handleSubmit={() => {}}
             />
           </Column>
         </Row>
@@ -438,7 +444,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
               filterValue={plotSearchStates}
               onFilterChange={this.handlePlotSearchStatesChange}
             />
-            
+
           }
           visualizationComponent={
             <VisualisationTypeWrapper>
@@ -485,7 +491,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
   }
 }
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   withPlotSearchAttributes,
   connect(
@@ -503,4 +509,4 @@ export default flowRight(
       fetchPlotSearchList,
     },
   ),
-)(PlotSearchListPage);
+)(PlotSearchListPage): React$ComponentType<OwnProps>);
