@@ -15,7 +15,7 @@ export type LandUseContractState = {
 
 export type FetchSingleLandUseContractAfterEditPayload = {
   id: any,
-  callbackFuntions?: Array<Object | Function>,
+  callbackFunctions?: Array<Object | Function>,
 }
 
 export type InvoiceListMap = Object;

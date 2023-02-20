@@ -277,4 +277,4 @@ class PlotSearchSiteEditCustomDetailedPlan extends Component<Props, State> {
   }
 }
 
-export default (PlotSearchSiteEditCustomDetailedPlan: React$AbstractComponent<Props, mixed>);
+export default (PlotSearchSiteEditCustomDetailedPlan: React$ComponentType<Props>);

@@ -9,33 +9,29 @@ import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {
-  getAttributes,
   getCollapseStateByKey,
-  getCurrentPlotSearch,
   getIsFetchingFormAttributes,
   getIsFetchingForm,
-  getFormAttributes,
   getForm,
-  getIsFetchingTemplateForms
+  getIsFetchingTemplateForms,
 } from '$src/plotSearch/selectors';
 import {receiveCollapseStates} from '$src/plotSearch/actions';
-import {getContentApplication} from '$src/plotSearch/helpers';
 import {ApplicationFieldTitles} from '$src/plotSearch/enums';
-import {
-  getFieldOptions,
-} from '$util/helpers';
+import ApplicationPreviewSection from '$src/plotSearch/components/plotSearchSections/application/ApplicationPreviewSection';
+import FormText from '$components/form/FormText';
 
-import type {Attributes} from '$src/types';
-import type {PlotSearch} from '$src/plotSearch/types';
-import ApplicationPreviewSection from "./ApplicationPreviewSection";
-import FormText from "../../../../components/form/FormText";
+type OwnProps = {
+
+};
 
 type Props = {
+  ...OwnProps,
   usersPermissions: UsersPermissionsType,
-  applicationCollapseState: Boolean,
+  applicationCollapseState: boolean,
   receiveCollapseStates: Function,
-  isFetchingFormAttributes: Boolean,
-  ifFetchingForm: Boolean,
+  isFetchingFormAttributes: boolean,
+  isFetchingForm: boolean,
+  isFetchingTemplateForms: boolean,
   form: Object,
 }
 
@@ -77,12 +73,12 @@ class Application extends PureComponent<Props, State> {
         </Title>
         <Divider />
         {form && form.sections.filter((section) => section.visible).map((section, index) =>
-            <ApplicationPreviewSection
-              section={section}
-              key={index}
-              handleToggle={() => this.handleBasicInfoCollapseToggle(index)}
-              defaultOpen={applicationCollapseState}
-            />
+          <ApplicationPreviewSection
+            section={section}
+            key={index}
+            handleToggle={() => this.handleBasicInfoCollapseToggle(index)}
+            defaultOpen={applicationCollapseState}
+          />
         )}
         {!form && <FormText>Hakemuslomaketta ei ole vielä määritetty.</FormText>}
       </Fragment>
@@ -90,7 +86,7 @@ class Application extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
+export default (connect(
   (state) => {
     return {
       usersPermissions: getUsersPermissions(state),
@@ -104,4 +100,4 @@ export default connect(
   {
     receiveCollapseStates,
   }
-)(Application);
+)(Application): React$ComponentType<OwnProps>);

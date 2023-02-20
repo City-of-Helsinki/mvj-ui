@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {FormNames, ViewModes} from '$src/enums';
-import {Routes, getRouteById} from '../../../../root/routes';
+import {Routes, getRouteById} from '$src/root/routes';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import Collapse from '$components/collapse/Collapse';
@@ -102,7 +102,7 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
             {isFetchingCustomDetailedPlanAttributes &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
             }
-            {currentCustomDetailedPlan && 
+            {currentCustomDetailedPlan &&
             <Fragment>
               <Column small={6} medium={4} large={3}>
                 <FormTextTitle>
@@ -290,4 +290,4 @@ export default (connect(
   {
     receiveCollapseStates,
   }
-)(PlotSearchSiteCustomDetailedPlan): React$AbstractComponent<OwnProps, mixed>);
+)(PlotSearchSiteCustomDetailedPlan): React$ComponentType<OwnProps>);

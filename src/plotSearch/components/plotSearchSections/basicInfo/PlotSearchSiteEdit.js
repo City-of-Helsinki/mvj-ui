@@ -58,9 +58,9 @@ import {
 } from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import SuggestedEdit from './SuggestedEdit';
+import SuggestedEdit from '$src/plotSearch/components/plotSearchSections/basicInfo/SuggestedEdit';
 import RemoveButton from '$src/components/form/RemoveButton';
-import PlotSearchSiteEditCustomDetailedPlan from './PlotSearchSiteEditCustomDetailedPlan';
+import PlotSearchSiteEditCustomDetailedPlan from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSiteEditCustomDetailedPlan';
 
 
 type SuggestedProps = {
@@ -465,16 +465,15 @@ class PlotSearchSiteEdit extends Component<Props, State> {
         planUnitNew: toPlotSearch,
         customDetailedPlanNew: null,
       });
- 
+
       fetchPlanUnit(toPlotSearch);
       this.changePlanUnitValue(toPlotSearch);
-      return;
     } else {
       this.setState({
         customDetailedPlanNew: toPlotSearch,
         planUnitNew: null,
       });
-      
+
       fetchCustomDetailedPlan(toPlotSearch);
       this.changeCustomDetailedPlanValue(toPlotSearch);
     }
@@ -602,7 +601,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const label = get(currentTarget, 'message_label');
 
     const planUnitTitle = get(planUnitNew, 'label') ? `${get(planUnitNew, 'label') || ''} ${get(planUnitByValue, 'plan_unit_status') || ''}` : 'Uusi kohde';
-    
+
     if (customDetailedPlanByValue) {
       return <PlotSearchSiteEditCustomDetailedPlan
         handleNew={this.handleNew}
@@ -860,4 +859,4 @@ export default (flowRight(
       fetchCustomDetailedPlan,
     }
   ),
-)(PlotSearchSiteEdit): React$AbstractComponent<OwnProps, mixed>);
+)(PlotSearchSiteEdit): React$ComponentType<OwnProps>);

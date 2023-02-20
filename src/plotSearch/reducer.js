@@ -28,8 +28,8 @@ import type {
   RemovePlanUnitDecisionsAction,
   ReceiveSingleCustomDetailedPlanAction,
   PlotSearchState,
-} from './types';
-import {annotatePlanUnitDecision} from './helpers';
+} from '$src/plotSearch/types';
+import {annotatePlanUnitDecision} from '$src/plotSearch/helpers';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {

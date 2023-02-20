@@ -38,11 +38,11 @@ import {
   fetchPlanUnitAttributes,
   fetchCustomDetailedPlanAttributes,
 } from '$src/plotSearch/actions';
-import {getRouteById, Routes} from '../../../../root/routes';
-import PlotSearchTargetListing from './PlotSearchTargetListing';
+import {getRouteById, Routes} from '$src/root/routes';
+import PlotSearchTargetListing from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchTargetListing';
 
 type OwnProps = {
-  
+
 }
 
 type Props = {
@@ -285,4 +285,4 @@ export default (connect(
     fetchCustomDetailedPlanAttributes,
     fetchPlanUnit,
   }
-)(BasicInfo): React$AbstractComponent<OwnProps, mixed>);
+)(BasicInfo): React$ComponentType<OwnProps>);

@@ -13,8 +13,8 @@ import {
 } from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import DecisionSelectInput from '../../../../components/form/DecisionSelectInput';
-import {formatDecisionName} from '../../../helpers';
+import DecisionSelectInput from '$components/form/DecisionSelectInput';
+import {formatDecisionName} from '$src/plotSearch/helpers';
 
 type OwnProps = {
   disabled: boolean,
@@ -102,4 +102,4 @@ export default (connect(
       usersPermissions: getUsersPermissions(state),
     };
   },
-)(BasicInfoDecisionEdit): React$AbstractComponent<OwnProps, mixed>);
+)(BasicInfoDecisionEdit): React$ComponentType<OwnProps>);

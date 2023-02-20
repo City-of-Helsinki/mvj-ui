@@ -1,6 +1,6 @@
 // @flow
 import {TableSortOrder} from '$src/enums';
-import {ApplicantTypes} from './enums';
+import {ApplicantTypes} from '$src/plotApplications/enums';
 
 /**
  * Default plotApplications states value for plotSearch list search

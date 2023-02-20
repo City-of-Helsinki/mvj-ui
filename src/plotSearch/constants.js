@@ -1,6 +1,6 @@
 // @flow
 import {TableSortOrder} from '$src/enums';
-import {PlotSearchStageTypes} from './enums';
+import {PlotSearchStageTypes} from '$src/plotSearch/enums';
 
 /**
  * Default plotSearch states value for plotSearch list search

@@ -3,16 +3,16 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import {getContentUser} from '$src/users/helpers';
-import type {PlotSearch, Form, PlotSearchState} from './types';
+import type {PlotSearch, Form, PlotSearchState} from '$src/plotSearch/types';
 import {removeSessionStorageItem} from '$util/storage';
 import {FormNames} from '$src/enums';
 import {
   getApiResponseResults,
 } from '$util/helpers';
-import {formatDate} from '../util/helpers';
+import {formatDate} from '$util/helpers';
 import {formValueSelector} from 'redux-form';
-import {PlotSearchTargetType, TargetIdentifierTypes} from './enums';
-import type {Attributes} from '../types';
+import {PlotSearchTargetType, TargetIdentifierTypes} from '$src/plotSearch/enums';
+import type {Attributes} from '$src/types';
 
 /**
  * Get plotSearch basic information content

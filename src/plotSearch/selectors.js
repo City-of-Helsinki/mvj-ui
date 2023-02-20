@@ -2,7 +2,7 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import type {Attributes, Selector, Methods} from '../types';
+import type {Attributes, Selector, Methods} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 import type {
@@ -10,10 +10,10 @@ import type {
   PlotSearchList,
   PlanUnit,
   CustomDetailedPlan,
-} from './types';
+} from '$src/plotSearch/types';
 import {formValueSelector} from 'redux-form';
-import {FormNames} from '../enums';
-import {PlotSearchStageTypes} from './enums';
+import {FormNames} from '$src/enums';
+import {PlotSearchStageTypes} from '$src/plotSearch/enums';
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.plotSearch.attributes;

@@ -377,7 +377,7 @@ const ApplicationFormSubsectionFieldArray = ({
 }: {
   fields: Fields,
   section: Object,
-  headerTag: string | React$AbstractComponent<{ children?: React$Node }, null>
+  headerTag: string | React$ComponentType<{ children?: React$Node }>
 }): React$Node => {
   return (
     <div className="ApplicationFormSubsectionFieldArray">
@@ -422,7 +422,7 @@ const PlotApplicationSubsection = ({
 }: {
   path: Array<string>,
   section: Object,
-  headerTag?: string | React$AbstractComponent<{ children?: React$Node }, null>,
+  headerTag?: string | React$ComponentType<{ children?: React$Node }>,
   parentApplicantType?: string | null
 }): React$Node => {
   if (!section.visible) {

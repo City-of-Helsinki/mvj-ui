@@ -14,8 +14,8 @@ import WhiteBox from '$src/components/content/WhiteBox';
 import SubTitle from '$src/components/content/SubTitle';
 import {PlotSearchTargetType} from '$src/plotSearch/enums';
 import type {Attributes} from '$src/types';
-import PlotSearchSitePlanUnit from './PlotSearchSitePlanUnit';
-import PlotSearchSiteCustomDetailedPlan from './PlotSearchSiteCustomDetailedPlan';
+import PlotSearchSitePlanUnit from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSitePlanUnit';
+import PlotSearchSiteCustomDetailedPlan from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSiteCustomDetailedPlan';
 
 type OwnProps = {};
 type Props = {
@@ -44,7 +44,7 @@ const PlotSearchTargetListing = ({plotSearch, planUnitAttributes, customDetailed
           </SubTitle>
           {searchableTargets.map((target, index) =>
             <Row key={index}>
-              {target.plan_unit ? 
+              {target.plan_unit ?
                 <PlotSearchSitePlanUnit
                   plotSearchSite={target}
                   index={index}
@@ -68,7 +68,7 @@ const PlotSearchTargetListing = ({plotSearch, planUnitAttributes, customDetailed
           </SubTitle>
           {proceduralReservationTargets.map((target, index) =>
             <Row key={index}>
-              {target.plan_unit ? 
+              {target.plan_unit ?
                 <PlotSearchSitePlanUnit
                   plotSearchSite={target}
                   index={index}
@@ -92,7 +92,7 @@ const PlotSearchTargetListing = ({plotSearch, planUnitAttributes, customDetailed
           </SubTitle>
           {directReservationTargets.map((target, index) =>
             <Row key={index}>
-              {target.plan_unit ? 
+              {target.plan_unit ?
                 <PlotSearchSitePlanUnit
                   plotSearchSite={target}
                   index={index}
@@ -117,4 +117,4 @@ export default (connect((state) => ({
   plotSearch: getCurrentPlotSearch(state),
   planUnitAttributes: getPlanUnitAttributes(state),
   customDetailedPlanAttributes: getCustomDetailedPlanAttributes(state),
-}))(PlotSearchTargetListing): React$AbstractComponent<OwnProps, mixed>);
+}))(PlotSearchTargetListing): React$ComponentType<OwnProps>);

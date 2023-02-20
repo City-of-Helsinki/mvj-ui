@@ -4,28 +4,28 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
-import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
-import RemoveButton from '$components/form/RemoveButton';
 import {
   getFormAttributes,
 } from '$src/plotSearch/selectors';
 
 import type {Attributes} from '$src/types';
 
-type Props = {
+type OwnProps = {
+
   disabled: boolean,
   field: any,
-  formName: string,
+};
+
+type Props = {
+  ...OwnProps,
   attributes: Attributes,
-  onRemove: Function,
 }
 
 const SectionField = ({
   disabled,
   field,
   attributes,
-  change,
 }: Props) => {
   return (
     <Fragment>
@@ -35,17 +35,19 @@ const SectionField = ({
             fieldAttributes={get(attributes, 'sections.child.children.fields.child.children.enabled')}
             name={`${field}.enabled`}
             overrideValues={{
-              fieldType: 'checkbox'
+              fieldType: 'checkbox',
             }}
             invisibleLabel
+            disabled={disabled}
           />
           <FormField
             fieldAttributes={get(attributes, 'sections.child.children.fields.child.children.label')}
             name={`${field}.label`}
             overrideValues={{
-              allowEdit: false
+              allowEdit: false,
             }}
             invisibleLabel
+            disabled={disabled}
           />
         </Column>
         <Column large={3}>
@@ -57,12 +59,13 @@ const SectionField = ({
               options: [
                 {
                   label: 'Pakollinen tieto',
-                  value: true
-                }
-              ]
+                  value: true,
+                },
+              ],
             }}
             className="edit-plot-application-section-form__field-required-field"
             invisibleLabel
+            disabled={disabled}
           />
         </Column>
       </Row>
@@ -70,10 +73,10 @@ const SectionField = ({
   );
 };
 
-export default connect(
+export default (connect(
   (state) => {
     return {
       attributes: getFormAttributes(state),
     };
   }
-)(SectionField);
+)(SectionField): React$ComponentType<OwnProps>);

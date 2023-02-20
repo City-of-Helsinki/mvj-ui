@@ -1,23 +1,24 @@
 // @flow
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, getFormValues} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import classNames from 'classnames';
-
 import {FieldArray} from 'redux-form';
+
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {getFormAttributes} from '$src/plotSearch/selectors';
-import SectionField from './SectionField';
-import Collapse from "../../../../components/collapse/Collapse";
+import SectionField from '$src/plotSearch/components/plotSearchSections/application/SectionField';
+import Collapse from '$src/components/collapse/Collapse';
 import type {Attributes} from '$src/types';
-import SubTitle from "../../../../components/content/SubTitle";
+import SubTitle from '$src/components/content/SubTitle';
+import type {FormSection} from '$src/plotSearch/types';
 
 type SectionFieldProps = {
   disabled: boolean,
@@ -60,7 +61,7 @@ const EditPlotApplicationSectionFormSectionSubsections = ({
   form,
   attributes,
   level,
-  stagedSectionValues
+  stagedSectionValues,
 }: SectionSubsectionProps): React$Element<*> => {
   return fields.map(
     (ss, i) => <EditPlotApplicationSectionFormSubsection
@@ -71,17 +72,25 @@ const EditPlotApplicationSectionFormSectionSubsections = ({
       attributes={attributes}
       key={i}
     />);
-}
+};
 
 type SubsectionProps = {
   attributes: Attributes,
   level: number,
   sectionPath: string,
   form: string,
-  stagedSectionValues: Object
+  stagedSectionValues: Object,
 }
 
-const EditPlotApplicationSectionFormSubsectionFirstLevelWrapper = ({children, level}) => <div className={classNames(
+type SubsectionWrapperProps = {
+  level: number,
+  attributes: Attributes,
+  sectionPath: string,
+  subsection: FormSection,
+  children: React$Node,
+}
+
+const EditPlotApplicationSectionFormSubsectionFirstLevelWrapper = ({children, level}: SubsectionWrapperProps) => <div className={classNames(
   'edit-plot-application-section-form__section',
   `edit-plot-application-section-form__section--level-${level}`
 )}>{children}</div>;
@@ -91,8 +100,8 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
   attributes,
   sectionPath,
   level,
-  subsection
-}) => <Collapse
+  subsection,
+}: SubsectionWrapperProps) => <Collapse
   defaultOpen
   headerTitle={subsection.title}
   headerExtras={<div className="edit-plot-application-section-form__subsection-header-options">
@@ -100,7 +109,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
       fieldAttributes={get(attributes, 'sections.child.children.visible')}
       name={`${sectionPath}.visible`}
       overrideValues={{
-        label: 'Lohko käytössä'
+        label: 'Lohko käytössä',
       }}
       className="edit-plot-application-section-form__subsection-header-visible-field"
     />
@@ -112,9 +121,9 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
         options: [
           {
             label: 'Monistettava lohko',
-            value: true
-          }
-        ]
+            value: true,
+          },
+        ],
       }}
       className="edit-plot-application-section-form__subsection-header-add-new-allowed-field"
       invisibleLabel
@@ -125,7 +134,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
     `edit-plot-application-section-form__section--level-${level}`,
     {
       'collapse__secondary': level === 2,
-      'collapse__third': level > 2
+      'collapse__third': level > 2,
     }
   )}
 >{children}</Collapse>;
@@ -135,7 +144,7 @@ const EditPlotApplicationSectionFormSubsection: React$ComponentType<SubsectionPr
   level,
   form,
   attributes,
-  stagedSectionValues
+  stagedSectionValues,
 }: SubsectionProps) => {
   const subsection = get(stagedSectionValues, sectionPath);
 
@@ -160,15 +169,19 @@ const EditPlotApplicationSectionFormSubsection: React$ComponentType<SubsectionPr
       stagedSectionValues={stagedSectionValues}
     />
   </Wrapper>;
-}
+};
 
-type Props = {
-  attributes: Attributes,
+type OwnProps = {
   onClose: Function,
   onSubmit: Function,
+  sectionIndex: number,
+};
+
+type Props = {
+  ...OwnProps,
+  attributes: Attributes,
   valid: boolean,
   name: string,
-  sectionIndex: number,
   section: Object,
   parentFormSection: Object,
   initialize: Function,
@@ -193,11 +206,11 @@ class EditPlotApplicationSectionForm extends Component<Props> {
     const {
       sectionIndex,
       parentFormSection,
-      initialize
+      initialize,
     } = this.props;
     if (sectionIndex !== undefined) {
       initialize({
-        section: parentFormSection
+        section: parentFormSection,
       });
     }
   }
@@ -206,11 +219,11 @@ class EditPlotApplicationSectionForm extends Component<Props> {
     const {
       sectionIndex,
       parentFormSection,
-      initialize
+      initialize,
     } = this.props;
     if (sectionIndex !== prevProps.sectionIndex) {
       initialize({
-        section: parentFormSection
+        section: parentFormSection,
       });
     }
   }
@@ -219,7 +232,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
     const {
       onSubmit,
       onClose,
-      stagedSectionValues
+      stagedSectionValues,
     } = this.props;
     onSubmit(stagedSectionValues.section);
     onClose();
@@ -250,7 +263,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
               fieldAttributes={get(attributes, 'sections.child.children.visible')}
               name={'section.visible'}
               overrideValues={{
-                label: 'Osio käytössä'
+                label: 'Osio käytössä',
               }}
             />
           </Column>
@@ -259,7 +272,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
               fieldAttributes={get(attributes, 'sections.child.children.add_new_allowed')}
               name={'section.add_new_allowed'}
               overrideValues={{
-                label: 'Monistettava osio'
+                label: 'Monistettava osio',
               }}
             />
           </Column>
@@ -293,13 +306,13 @@ const parentSelector = formValueSelector(parentFormName);
 
 const formName = FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING;
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state, props: Props) => {
       return {
         attributes: getFormAttributes(state),
         parentFormSection: parentSelector(state, `form.sections[${props.sectionIndex}]`),
-        stagedSectionValues: getFormValues(formName)(state)
+        stagedSectionValues: getFormValues(formName)(state),
       };
     },
     null,
@@ -309,4 +322,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(EditPlotApplicationSectionForm);
+)(EditPlotApplicationSectionForm): React$ComponentType<OwnProps>);

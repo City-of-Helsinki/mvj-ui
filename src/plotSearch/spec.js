@@ -39,17 +39,17 @@ import {
   addPlanUnitDecisions,
   resetPlanUnitDecisions,
   receiveFormAttributes,
-} from './actions';
+} from '$src/plotSearch/actions';
 
-import mockData from './mock-data.json';
-import mockAttributes from './attributes-mock-data.json';
-import mockFormAttributes from './form-attributes-mock-data.json';
+import mockData from '$src/plotSearch/mock-data.json';
+import mockAttributes from '$src/plotSearch/attributes-mock-data.json';
+import mockFormAttributes from '$src/plotSearch/form-attributes-mock-data.json';
 
-import plotSearchReducer from './reducer';
+import plotSearchReducer from '$src/plotSearch/reducer';
 
-import type {PlotSearchState} from './types';
-import {isLockedForModifications} from './selectors';
-import {getTestRootState} from '../util/testUtil';
+import type {PlotSearchState} from '$src/plotSearch/types';
+import {isLockedForModifications} from '$src/plotSearch/selectors';
+import {getTestRootState} from '$util/testUtil';
 
 const mockForm = mockData[0].form;
 

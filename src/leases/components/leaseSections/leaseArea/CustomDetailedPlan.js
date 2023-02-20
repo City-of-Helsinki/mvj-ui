@@ -45,7 +45,7 @@ const CustomDetailedPlan = ({
   attributes,
   customDetailedPlan,
 }: Props) => {
-  
+
   const stateOptions = getFieldOptions(attributes, LeaseAreaCustomDetailedPlanFieldPaths.STATE);
   const typeOptions = getFieldOptions(attributes, LeaseAreaCustomDetailedPlanFieldPaths.TYPE);
   const intendedUseOptions = getFieldOptions(attributes, LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE);
@@ -196,7 +196,7 @@ const CustomDetailedPlan = ({
       </Fragment>
       }
       {/* Info Links (Lisätietolinkit) */}
-      {customDetailedPlan.info_links.length > 0 && 
+      {customDetailedPlan.info_links.length > 0 &&
       <Fragment>
         <SubTitle>
           {LeaseAreaCustomDetailedPlanFieldTitles.INFO_LINKS}
@@ -252,4 +252,4 @@ export default (flowRight(
       };
     }
   ),
-)(CustomDetailedPlan): React$AbstractComponent<OwnProps, mixed>);
+)(CustomDetailedPlan): React$ComponentType<OwnProps>);

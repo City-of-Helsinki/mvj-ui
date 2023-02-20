@@ -8,6 +8,7 @@ import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
+import type {ContextRouter} from 'react-router';
 
 import {getFieldOptions, getUrlParams} from '$util/helpers';
 import {getAttributes} from '$src/plotSearch/selectors';
@@ -26,16 +27,19 @@ import {
 
 import type {Attributes} from '$src/types';
 
-type Props = {
-  formValues: Object,
+type OwnProps = {|
   handleSubmit: Function,
   isSearchInitialized: boolean,
   onSearch: Function,
   states: Array<Object>,
+|}
+
+type Props = {
+  ...OwnProps,
+  ...ContextRouter,
+  formValues: Object,
   attributes: Attributes,
-  location: Object,
-  router: Object,
-}
+};
 
 type State = {
   isBasicSearch: boolean,
@@ -74,7 +78,8 @@ class Search extends Component<Props, State> {
 
     const keys = Object.keys(searchQuery);
 
-    if(!keys.length || (keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search'))) {
+    // $FlowFixMe[method-unbinding] https://github.com/facebook/flow/issues/8689
+    if (!keys.length || (keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search'))) {
       return true;
     }
 
@@ -277,7 +282,7 @@ class Search extends Component<Props, State> {
 
 const formName = FormNames.PLOT_SEARCH_SEARCH;
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   connect(
     state => {
@@ -290,4 +295,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(Search);
+)(Search): React$ComponentType<OwnProps>);

@@ -1,6 +1,6 @@
 // @flow
-import callApi from '../api/callApi';
-import createUrl from '../api/createUrl';
+import callApi from '$src/api/callApi';
+import createUrl from '$src/api/createUrl';
 
 import type {PlotSearch} from '$src/plotSearch/types';
 
@@ -64,12 +64,12 @@ export const fetchTemplateFormsRequest = (): Generator<any, any, any> => {
   })));
 };
 
-export const fetchFormRequest = (id: any): Generator<any, any, any> => {
+export const fetchFormRequest = (id: number): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`form/${id}/`)));
 };
 
-export const fetchFormAttributesRequest = (id: any): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`form/${id}/`), {method: 'OPTIONS'}));
+export const fetchFormAttributesRequest = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`form/1/`), {method: 'OPTIONS'}));
 };
 
 export const editFormRequest = (form: Object): Generator<any, any, any> => {
@@ -81,4 +81,10 @@ export const editFormRequest = (form: Object): Generator<any, any, any> => {
 
 export const fetchStagesRequest = (params: ?Object): Generator<any, any, any> => {
   return callApi(new Request(createUrl('plot_search_stage/', params)));
+};
+
+export const fetchPlotSearchApplicationsRequest = (id: number): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('answer/', {
+    plot_search_id: id,
+  })));
 };

@@ -464,4 +464,4 @@ export default (flowRight(
   reduxForm({
     form: formName,
   }),
-)(Search): React$AbstractComponent<OwnProps, mixed>);
+)(Search): React$ComponentType<OwnProps>);
