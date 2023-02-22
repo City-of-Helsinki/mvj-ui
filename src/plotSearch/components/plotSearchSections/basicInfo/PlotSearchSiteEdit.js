@@ -170,22 +170,22 @@ const renderInfoLinks = ({
           </FormTextTitle>
           <div role="table">
             <Row>
-              <Column large={4} role="columnheader">
+              <Column small={4} medium={4} large={4} role="columnheader">
                 <FormTextTitle>
                   {PlotSearchFieldTitles.INFO_LINK_DESCRIPTION}
                 </FormTextTitle>
               </Column>
-              <Column large={5} role="columnheader">
+              <Column small={5} medium={5} large={5} role="columnheader">
                 <FormTextTitle>
                   {PlotSearchFieldTitles.INFO_LINK_URL}
                 </FormTextTitle>
               </Column>
-              <Column large={2} role="columnheader">
+              <Column small={2} medium={2} large={2} role="columnheader">
                 <FormTextTitle>
                   {PlotSearchFieldTitles.INFO_LINK_LANGUAGE}
                 </FormTextTitle>
               </Column>
-              <Column large={1} />
+              <Column small={1} medium={1} large={1} />
             </Row>
             {!!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
@@ -202,7 +202,7 @@ const renderInfoLinks = ({
               };
 
               return <Row role="row" key={index}>
-                <Column role="cell" large={4}>
+                <Column role="cell" small={4} medium={4} large={4}>
                   <FormField
                     fieldAttributes={get(attributes, 'plot_search_targets.child.children.info_links.child.children.description')}
                     name={`${field}.description`}
@@ -214,7 +214,7 @@ const renderInfoLinks = ({
                     disableTouched={isSaveClicked}
                   />
                 </Column>
-                <Column role="cell" large={5}>
+                <Column role="cell" small={5} medium={5} large={5}>
                   <FormField
                     fieldAttributes={get(attributes, 'plot_search_targets.child.children.info_links.child.children.url')}
                     name={`${field}.url`}
@@ -226,7 +226,7 @@ const renderInfoLinks = ({
                     disableTouched={isSaveClicked}
                   />
                 </Column>
-                <Column role="cell" large={2}>
+                <Column role="cell" small={2} medium={2} large={2}>
                   <FormField
                     fieldAttributes={get(attributes, 'plot_search_targets.child.children.info_links.child.children.language')}
                     name={`${field}.language`}
@@ -238,7 +238,7 @@ const renderInfoLinks = ({
                     disableTouched={isSaveClicked}
                   />
                 </Column>
-                <Column role="cell" large={1}>
+                <Column role="cell" small={1} medium={1} large={1}>
                   <RemoveButton
                     className='third-level'
                     onClick={(...rest) => handleRemove(index, ...rest)}
@@ -648,164 +648,174 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             </a>
           </WarningContainer>}
           {(isDeleted || isNewer) && <Column small={12} medium={12} large={12} />}
-          <Column small={6} medium={3} large={3}>
-            <FormTextTitle>
-              {'Kohteen tunnus'}
-            </FormTextTitle>
-            <PlanUnitSelectInput
-              value={planUnitNew}
-              onChange={this.handleNew}
-              disabled={disabled}
-              name={`plan-unit`}
-            />
-            <div style={{display: 'none'}}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plot_search_targets.child.children.plan_unit_id')}
-                name={`${field}.plan_unit_id`}
-              />
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plot_search_targets.child.children.custom_detailed_plan_id')}
-                name={`${field}.custom_detailed_plan_id`}
-              />
-            </div>
-            {areTargetsAllowedToHaveType && <>
-              <FormTextTitle>
-                {'Kohteen tyyppi'}
-              </FormTextTitle>
-              <FormField
-                disableTouched={isSaveClicked}
-                invisibleLabel={true}
-                fieldAttributes={get(attributes, 'plot_search_targets.child.children.target_type')}
-                name={`${field}.target_type`}
-                disabled={disabled}
-              />
-            </>}
-            {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
-              <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
-            }
-          </Column>
-          {(planUnitByValue) && <Fragment>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Kaavayksikön käyttötarkoitus'}
-              </FormTextTitle>
-              <FormText>{planUnitByValue && getLabelOfOption(planUnitIntendedUseOptions, planUnitByValue.plan_unit_intended_use) || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTextTitle>
-                {'Kokonaisala neliömetreissä'}
-              </FormTextTitle>
-              <FormText>
-                {`${get(planUnitByValue, 'area')} m²` || '-'}
-              </FormText>
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTextTitle>
-                {'Asemakaava'}
-              </FormTextTitle>
-              {planUnitByValue
-                ? <ExternalLink
-                  href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(planUnitByValue, 'detailed_plan_identifier')}`)}
-                  text={get(planUnitByValue, 'detailed_plan_identifier')}
+          <Column small={12} medium={12} large={2}>
+            <Row>
+              <Column small={6} medium={6} large={12}>
+                <FormTextTitle>
+                  {PlotSearchFieldTitles.TARGET_IDENTIFIER}
+                </FormTextTitle>
+                <PlanUnitSelectInput
+                  value={planUnitNew}
+                  onChange={this.handleNew}
+                  disabled={disabled}
+                  name={`plan-unit`}
                 />
-                : <FormText>-</FormText>
-              }
-            </Column>
-            <Column small={6} medium={4} large={3}>
-              <FormTextTitle>
-                {'Asemakaavan viimeisin käsittelypvm'}
-              </FormTextTitle>
-              <FormText>
-                {formatDate(get(planUnitByValue, 'detailed_plan_latest_processing_date')) || '-'}
-              </FormText>
-            </Column>
-            <Column small={6} medium={4} large={3}>
-              <FormTextTitle>
-                {'Asemakaavan viimeisin käsittelypvm. selite'}
-              </FormTextTitle>
-              <FormText>
-                {get(planUnitByValue, 'detailed_plan_latest_processing_date_note') || '-'}
-              </FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Sopimushetkellä'}
-              </FormTextTitle>
-              <FormText>
-                {get(planUnitByValue, 'in_contract') || '-'}
-              </FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Kaavayksikön olotila'}
-              </FormTextTitle>
-              <FormText>{planUnitByValue && getLabelOfOption(planUnitStateOptions, planUnitByValue.plan_unit_state) || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Kaavayksikön laji'}
-              </FormTextTitle>
-              <FormText>{planUnitByValue && getLabelOfOption(planUnitTypeOptions, planUnitByValue.plan_unit_type) || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Tonttijaon hyväksymispvm'}
-              </FormTextTitle>
-              <FormText>
-                {formatDate(get(planUnitByValue, 'plot_division_date_of_approval')) || '-'}
-              </FormText>
-            </Column>
-            <Column small={6} medium={4} large={3}>
-              <FormTextTitle>
-                {'Tonttijaon voimaantulopvm'}
-              </FormTextTitle>
-              <FormText>
-                {formatDate(get(planUnitByValue, 'plot_division_effective_date')) || '-'}
-              </FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Tonttijaon tunnus'}
-              </FormTextTitle>
-              <FormText>
-                {get(planUnitByValue, 'plot_division_identifier') || '-'}
-              </FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Tonttijaon olotila'}
-              </FormTextTitle>
-              <FormText>{planUnitByValue && getLabelOfOption(plotDivisionStateOptions, planUnitByValue.plot_division_state) || '-'}</FormText>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormTextTitle>
-                {'Leikkausala'}
-              </FormTextTitle>
-              <FormText>
-                {`${get(planUnitByValue, 'section_area')} m²` || '-'}
-              </FormText>
-            </Column>
-            <Column small={12} medium={12} large={12}>
-              <FieldArray
-                component={renderInfoLinks}
-                attributes={attributes}
-                isSaveClicked={isSaveClicked}
-                disabled={disabled}
-                formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
-                name={`${field}.info_links`}
-              />
-            </Column>
-            <FieldArray
-              component={renderSuggested}
-              attributes={attributes}
-              isSaveClicked={isSaveClicked}
-              disabled={true}
-              formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
-              name={`${field}.suggested`}
-            />
-          </Fragment>}
+                <div style={{display: 'none'}}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'plot_search_targets.child.children.plan_unit_id')}
+                    name={`${field}.plan_unit_id`}
+                  />
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'plot_search_targets.child.children.custom_detailed_plan_id')}
+                    name={`${field}.custom_detailed_plan_id`}
+                  />
+                </div>
+                {areTargetsAllowedToHaveType && <>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.TARGET_TYPE}
+                  </FormTextTitle>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    invisibleLabel={true}
+                    fieldAttributes={get(attributes, 'plot_search_targets.child.children.target_type')}
+                    name={`${field}.target_type`}
+                    disabled={disabled}
+                  />
+                </>}
+                {(isFetchingPlanUnitAttributes || isFetchingPlanUnit) &&
+                  <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
+                }
+              </Column>
+            </Row>
+          </Column>
+          <Column small={12} medium={12} large={10}>
+            <Row>
+              {(planUnitByValue) && <Fragment>
+                <Column small={6} medium={4} large={6}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.PLAN_UNIT_INTENDED_USE}
+                  </FormTextTitle>
+                  <FormText>{planUnitByValue && getLabelOfOption(planUnitIntendedUseOptions, planUnitByValue.plan_unit_intended_use) || '-'}</FormText>
+                </Column>
+                <Column small={6} medium={8} large={6} />
+
+                <Column small={6} medium={4} large={3}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.DETAILED_PLAN}
+                  </FormTextTitle>
+                  {planUnitByValue
+                    ? <ExternalLink
+                      href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(planUnitByValue, 'detailed_plan_identifier')}`)}
+                      text={get(planUnitByValue, 'detailed_plan_identifier')}
+                    />
+                    : <FormText>-</FormText>
+                  }
+                </Column>
+                <Column small={6} medium={4} large={3}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.PLAN_UNIT_STATE}
+                  </FormTextTitle>
+                  <FormText>{planUnitByValue && getLabelOfOption(planUnitStateOptions, planUnitByValue.plan_unit_state) || '-'}</FormText>
+                </Column>
+                <Column small={6} medium={4} large={3}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.AREA}
+                  </FormTextTitle>
+                  <FormText>
+                    {get(planUnitByValue, 'area') ? `${get(planUnitByValue, 'area')} m²` : '-'}
+                  </FormText>
+                </Column>
+                <Column small={6} medium={4} large={3}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.SECTION_AREA}
+                  </FormTextTitle>
+                  <FormText>
+                    {get(planUnitByValue, 'section_area') ? `${get(planUnitByValue, 'section_area')} m²` : '-'}
+                  </FormText>
+                </Column>
+                <Column small={6} medium={4} large={6}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}
+                  </FormTextTitle>
+                  <FormText>
+                    {formatDate(get(planUnitByValue, 'detailed_plan_latest_processing_date')) || '-'}
+                  </FormText>
+                </Column>
+                <Column small={6} medium={4} large={6}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}
+                  </FormTextTitle>
+                  <FormText>
+                    {get(planUnitByValue, 'detailed_plan_latest_processing_date_note') || '-'}
+                  </FormText>
+                </Column>
+                <Column small={6} medium={4} large={4}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.IN_CONTRACT}
+                  </FormTextTitle>
+                  <FormText>
+                    {get(planUnitByValue, 'in_contract') || '-'}
+                  </FormText>
+                </Column>
+                <Column small={6} medium={4} large={4}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.PLAN_UNIT_TYPE}
+                  </FormTextTitle>
+                  <FormText>{planUnitByValue && getLabelOfOption(planUnitTypeOptions, planUnitByValue.plan_unit_type) || '-'}</FormText>
+                </Column>
+                <Column small={6} medium={4} large={4}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.PLOT_DIVISION_DATE_OF_APPROVAL}
+                  </FormTextTitle>
+                  <FormText>
+                    {formatDate(get(planUnitByValue, 'plot_division_date_of_approval')) || '-'}
+                  </FormText>
+                </Column>
+                <Column small={6} medium={4} large={4}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.PLOT_DIVISION_EFFECTIVE_DATE}
+                  </FormTextTitle>
+                  <FormText>
+                    {formatDate(get(planUnitByValue, 'plot_division_effective_date')) || '-'}
+                  </FormText>
+                </Column>
+                <Column small={6} medium={4} large={4}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.PLOT_DIVISION_IDENTIFIER}
+                  </FormTextTitle>
+                  <FormText>
+                    {get(planUnitByValue, 'plot_division_identifier') || '-'}
+                  </FormText>
+                </Column>
+                <Column small={6} medium={4} large={4}>
+                  <FormTextTitle>
+                    {PlotSearchFieldTitles.PLOT_DIVISION_STATE}
+                  </FormTextTitle>
+                  <FormText>{planUnitByValue && getLabelOfOption(plotDivisionStateOptions, planUnitByValue.plot_division_state) || '-'}</FormText>
+                </Column>
+                <Column small={12} medium={12} large={12}>
+                  <FieldArray
+                    component={renderInfoLinks}
+                    attributes={attributes}
+                    isSaveClicked={isSaveClicked}
+                    disabled={disabled}
+                    formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
+                    name={`${field}.info_links`}
+                  />
+                </Column>
+                <FieldArray
+                  component={renderSuggested}
+                  attributes={attributes}
+                  isSaveClicked={isSaveClicked}
+                  disabled={true}
+                  formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
+                  name={`${field}.suggested`}
+                />
+              </Fragment>}
+            </Row>
+          </Column>
         </Row>
       </Collapse>
     );

@@ -90,6 +90,25 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
     const infoLinks = get(currentCustomDetailedPlan, 'info_links');
     const usageDistributions = get(currentCustomDetailedPlan, 'usage_distributions');
 
+    // TODO: mock
+    const suggestedApplicants = [
+      {
+        id: 1,
+        applicant: 'Mallivarauksensaaja 1',
+        share_of_rent: '1/4',
+      },
+      {
+        id: 2,
+        applicant: 'Tosipitkäniminen mallivarauksensaaja',
+        share_of_rent: '1/8',
+      },
+      {
+        id: 3,
+        applicant: 'Kolmas mallivarauksensaaja',
+        share_of_rent: '5/8',
+      },
+    ];
+
     return (
       <Column large={12}>
         <Collapse
@@ -102,174 +121,224 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
             {isFetchingCustomDetailedPlanAttributes &&
               <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
             }
-            {currentCustomDetailedPlan &&
-            <Fragment>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.LEASE_IDENTIFIER}
-                </FormTextTitle>
-                <FormText>
-                  {leaseIdentifier ?
-                    <ExternalLink
-                      className='no-margin'
-                      href={`${getRouteById(Routes.LEASES)}?search=${leaseIdentifier}`}
-                      text={leaseIdentifier || '-'}
-                    />:<FormText>
-                  -
-                    </FormText>
-                  }
-                </FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.CUSTOM_DETAILED_PLAN_INTENDED_USE}
-                </FormTextTitle>
-                <FormText>{currentCustomDetailedPlan && getLabelOfOption(customDetailedPlanIntendedUseOptions, currentCustomDetailedPlan.intended_use.id) || '-'}</FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.AREA}
-                </FormTextTitle>
-                <FormText>
-                  {`${get(currentCustomDetailedPlan, 'area')} m²` || '-'}
-                </FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.ADDRESS}
-                </FormTextTitle>
-                <FormText>
-                  {get(currentCustomDetailedPlan, 'address') || '-'}
-                </FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.DETAILED_PLAN}
-                </FormTextTitle>
-                {get(currentCustomDetailedPlan, 'detailed_plan')
-                  ? <ExternalLink
-                    href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(currentCustomDetailedPlan, 'detailed_plan')}`)}
-                    text={get(currentCustomDetailedPlan, 'detailed_plan')}
-                  />
-                  : <FormText>-</FormText>
-                }
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}
-                </FormTextTitle>
-                <FormText>
-                  {formatDate(get(currentCustomDetailedPlan, 'detailed_plan_latest_processing_date')) || '-'}
-                </FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}
-                </FormTextTitle>
-                <FormText>
-                  {get(currentCustomDetailedPlan, 'detailed_plan_latest_processing_date_note') || '-'}
-                </FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.STATE}
-                </FormTextTitle>
-                <FormText>{currentCustomDetailedPlan && getLabelOfOption(customDetailedPlanStateOptions, currentCustomDetailedPlan.state.id) || '-'}</FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.CUSTOM_DETAILED_PLAN_TYPE}
-                </FormTextTitle>
-                <FormText>{currentCustomDetailedPlan && getLabelOfOption(customDetailedPlanTypeOptions, currentCustomDetailedPlan.type.id) || '-'}</FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.RENT_BUILD_PERMISSION}
-                </FormTextTitle>
-                <FormText>
-                  {get(currentCustomDetailedPlan, 'rent_build_permission') || '-'}
-                </FormText>
-              </Column>
-              <Column small={6} medium={4} large={3}>
-                <FormTextTitle>
-                  {PlotSearchFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT}
-                </FormTextTitle>
-                <FormText>
-                  {get(currentCustomDetailedPlan, 'preconstruction_estimated_construction_readiness_moment') || '-'}
-                </FormText>
-              </Column>
-              {infoLinks.length > 0 && (<Column small={12} medium={12} large={12} className="plot_search_target__info-links">
+            {currentCustomDetailedPlan && <Fragment>
+              <Column small={12} medium={12} large={2}>
                 <Row>
-                  <Column small={12} medium={4} large={4}>
+                  <Column small={4} medium={4} large={12}>
                     <FormTextTitle>
-                      {PlotSearchFieldTitles.INFO_LINK_DESCRIPTION}
+                      {'Kohteen tunnus'}
                     </FormTextTitle>
+                    <FormText>
+                      {currentCustomDetailedPlan.identifier}
+                    </FormText>
                   </Column>
-                  <Column small={8} medium={6} large={6}>
+                  <Column small={8} medium={8} large={12}>
                     <FormTextTitle>
-                      {PlotSearchFieldTitles.INFO_LINK_URL}
+                      {PlotSearchFieldTitles.LEASE_IDENTIFIER}
                     </FormTextTitle>
-                  </Column>
-                  <Column small={4} medium={2} large={2}>
-                    <FormTextTitle>
-                      {PlotSearchFieldTitles.INFO_LINK_LANGUAGE}
-                    </FormTextTitle>
+                    <FormText>
+                      {leaseIdentifier ?
+                        <ExternalLink
+                          className='no-margin'
+                          href={`${getRouteById(Routes.LEASES)}?search=${leaseIdentifier}`}
+                          text={leaseIdentifier || '-'}
+                        />:<FormText>
+                          -
+                        </FormText>
+                      }
+                    </FormText>
                   </Column>
                 </Row>
-                {infoLinks.map((infoLink) => <Row key={infoLink.id}>
-                  <Column small={12} medium={4} large={4}>
-                    <FormText>
-                      {infoLink.description}
-                    </FormText>
-                  </Column>
-                  <Column small={8} medium={6} large={6}>
-                    <FormText>
-                      <ExternalLink href={infoLink.url} text={infoLink.url} />
-                    </FormText>
-                  </Column>
-                  <Column small={4} medium={2} large={2}>
-                    <FormText>
-                      {getInfoLinkLanguageDisplayText(infoLink.language, attributes)}
-                    </FormText>
-                  </Column>
-                </Row>)}
-              </Column>)}
-              {usageDistributions.length > 0 && (<Column small={12} medium={12} large={12} className="plot_search_target__info-links">
+              </Column>
+              <Column small={12} medium={12} large={7}>
                 <Row>
-                  <Column small={12} medium={4} large={4}>
+                  <Column small={6} medium={4} large={6}>
                     <FormTextTitle>
-                      {PlotSearchFieldTitles.USAGE_DISTRIBUTION}
+                      {PlotSearchFieldTitles.CUSTOM_DETAILED_PLAN_INTENDED_USE}
                     </FormTextTitle>
+                    <FormText>{currentCustomDetailedPlan && getLabelOfOption(customDetailedPlanIntendedUseOptions, currentCustomDetailedPlan.intended_use.id) || '-'}</FormText>
                   </Column>
-                  <Column small={8} medium={6} large={6}>
+                  <Column small={6} medium={4} large={6}>
                     <FormTextTitle>
-                      {PlotSearchFieldTitles.USAGE_DISTRIBUTION_BUILD_PERMISSION}
+                      {PlotSearchFieldTitles.ADDRESS}
                     </FormTextTitle>
+                    <FormText>
+                      {get(currentCustomDetailedPlan, 'address') || '-'}
+                    </FormText>
                   </Column>
-                  <Column small={4} medium={2} large={2}>
+                  <Column small={6} medium={4} large={3}>
                     <FormTextTitle>
-                      {PlotSearchFieldTitles.USAGE_DISTRIBUTION_NOTE}
+                      {PlotSearchFieldTitles.DETAILED_PLAN}
                     </FormTextTitle>
+                    {get(currentCustomDetailedPlan, 'detailed_plan')
+                      ? <ExternalLink
+                        href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(currentCustomDetailedPlan, 'detailed_plan')}`)}
+                        text={get(currentCustomDetailedPlan, 'detailed_plan')}
+                      />
+                      : <FormText>-</FormText>
+                    }
+                  </Column>
+                  <Column small={6} medium={4} large={3}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.STATE}
+                    </FormTextTitle>
+                    <FormText>{currentCustomDetailedPlan && getLabelOfOption(customDetailedPlanStateOptions, currentCustomDetailedPlan.state.id) || '-'}</FormText>
+                  </Column>
+                  <Column small={6} medium={4} large={6}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.AREA}
+                    </FormTextTitle>
+                    <FormText>
+                      {get(currentCustomDetailedPlan, 'area') ? `${get(currentCustomDetailedPlan, 'area')} m²` : '-'}
+                    </FormText>
+                  </Column>
+                  <Column small={6} medium={4} large={6}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}
+                    </FormTextTitle>
+                    <FormText>
+                      {formatDate(get(currentCustomDetailedPlan, 'detailed_plan_latest_processing_date')) || '-'}
+                    </FormText>
+                  </Column>
+                  <Column small={6} medium={4} large={6}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}
+                    </FormTextTitle>
+                    <FormText>
+                      {get(currentCustomDetailedPlan, 'detailed_plan_latest_processing_date_note') || '-'}
+                    </FormText>
+                  </Column>
+                  <Column small={6} medium={4} large={4}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.CUSTOM_DETAILED_PLAN_TYPE}
+                    </FormTextTitle>
+                    <FormText>{currentCustomDetailedPlan && getLabelOfOption(customDetailedPlanTypeOptions, currentCustomDetailedPlan.type.id) || '-'}</FormText>
+                  </Column>
+                  <Column small={6} medium={4} large={4}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.RENT_BUILD_PERMISSION}
+                    </FormTextTitle>
+                    <FormText>
+                      {get(currentCustomDetailedPlan, 'rent_build_permission') ? `${get(currentCustomDetailedPlan, 'rent_build_permission')} m²` : '-'}
+                    </FormText>
+                  </Column>
+                  <Column small={6} medium={4} large={4}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT}
+                    </FormTextTitle>
+                    <FormText>
+                      {get(currentCustomDetailedPlan, 'preconstruction_estimated_construction_readiness_moment') || '-'}
+                    </FormText>
+                  </Column>
+                  {infoLinks.length > 0 && (<Column small={12} medium={12} large={12} className="plot_search_target__info-links">
+                    <Row>
+                      <Column small={12} medium={4} large={4}>
+                        <FormTextTitle>
+                          {PlotSearchFieldTitles.INFO_LINK_DESCRIPTION}
+                        </FormTextTitle>
+                      </Column>
+                      <Column small={8} medium={6} large={6}>
+                        <FormTextTitle>
+                          {PlotSearchFieldTitles.INFO_LINK_URL}
+                        </FormTextTitle>
+                      </Column>
+                      <Column small={4} medium={2} large={2}>
+                        <FormTextTitle>
+                          {PlotSearchFieldTitles.INFO_LINK_LANGUAGE}
+                        </FormTextTitle>
+                      </Column>
+                    </Row>
+                    {infoLinks.map((infoLink) => <Row key={infoLink.id}>
+                      <Column small={12} medium={4} large={4}>
+                        <FormText>
+                          {infoLink.description}
+                        </FormText>
+                      </Column>
+                      <Column small={8} medium={6} large={6}>
+                        <FormText>
+                          <ExternalLink href={infoLink.url} text={infoLink.url} />
+                        </FormText>
+                      </Column>
+                      <Column small={4} medium={2} large={2}>
+                        <FormText>
+                          {getInfoLinkLanguageDisplayText(infoLink.language, attributes)}
+                        </FormText>
+                      </Column>
+                    </Row>)}
+                  </Column>)}
+                  {usageDistributions.length > 0 && (<Column small={12} medium={12} large={12} className="plot_search_target__info-links">
+                    <Row>
+                      <Column small={12} medium={4} large={4}>
+                        <FormTextTitle>
+                          {PlotSearchFieldTitles.USAGE_DISTRIBUTION}
+                        </FormTextTitle>
+                      </Column>
+                      <Column small={8} medium={6} large={6}>
+                        <FormTextTitle>
+                          {PlotSearchFieldTitles.USAGE_DISTRIBUTION_BUILD_PERMISSION}
+                        </FormTextTitle>
+                      </Column>
+                      <Column small={4} medium={2} large={2}>
+                        <FormTextTitle>
+                          {PlotSearchFieldTitles.USAGE_DISTRIBUTION_NOTE}
+                        </FormTextTitle>
+                      </Column>
+                    </Row>
+                    {usageDistributions.map((usageDistribution) => <Row key={usageDistribution.distribution}>
+                      <Column small={12} medium={4} large={4}>
+                        <FormText>
+                          {usageDistribution.distribution}
+                        </FormText>
+                      </Column>
+                      <Column small={8} medium={6} large={6}>
+                        <FormText>
+                          {`${usageDistribution.build_permission} m²`}
+                        </FormText>
+                      </Column>
+                      <Column small={4} medium={2} large={2}>
+                        <FormText>
+                          {usageDistribution.note}
+                        </FormText>
+                      </Column>
+                    </Row>)}
+                  </Column>)}
+                </Row>
+              </Column>
+              <Column small={12} medium={12} large={3}>
+                <Row>
+                  <Column small={4} medium={4} large={12}>
+                    <FormText>
+                      <ExternalLink href={`${getRouteById(Routes.PLOT_APPLICATIONS)}?target_plan_unit=${currentCustomDetailedPlan.id}`} text={'Hakemukset (?)'} />
+                    </FormText>
+                  </Column>
+                  <Column small={8} medium={8} large={12}>
+                    <Row>
+                      <Column small={9} medium={9} large={8}>
+                        <FormTextTitle>
+                          Ehdotettu varauksensaaja
+                        </FormTextTitle>
+                      </Column>
+                      <Column small={3} medium={3} large={4}>
+                        <FormTextTitle>
+                          Osuus
+                        </FormTextTitle>
+                      </Column>
+                      {suggestedApplicants.map((applicant) => <Fragment key={applicant.id}>
+                        <Column small={9} medium={9} large={8}>
+                          <FormText>
+                            {applicant.applicant}
+                          </FormText>
+                        </Column>
+                        <Column small={3} medium={3} large={4}>
+                          <FormText>
+                            {applicant.share_of_rent}
+                          </FormText>
+                        </Column>
+                      </Fragment>)}
+                    </Row>
                   </Column>
                 </Row>
-                {usageDistributions.map((usageDistribution) => <Row key={usageDistribution.distribution}>
-                  <Column small={12} medium={4} large={4}>
-                    <FormText>
-                      {usageDistribution.distribution}
-                    </FormText>
-                  </Column>
-                  <Column small={8} medium={6} large={6}>
-                    <FormText>
-                      {usageDistribution.build_permission}
-                    </FormText>
-                  </Column>
-                  <Column small={4} medium={2} large={2}>
-                    <FormText>
-                      {usageDistribution.note}
-                    </FormText>
-                  </Column>
-                </Row>)}
-              </Column>)}
+              </Column>
             </Fragment>}
           </Row>
         </Collapse>
