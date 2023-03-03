@@ -73,6 +73,8 @@ export const PlotSearchFieldTitles = {
   PLAN_UNIT_STATE: 'Kaavayksikön olotila',
   IN_CONTRACT: 'Sopimushetkellä',
   PLAN_UNIT_INTENDED_USE: 'Kaavayksikön käyttötarkoitus',
+  RESERVATION_RECIPIENT: 'Ehdotettu varauksensaaja',
+  RESERVATION_RECIPIENT_SHARE_OF_RENTAL: 'Osuus',
 };
 
 /**

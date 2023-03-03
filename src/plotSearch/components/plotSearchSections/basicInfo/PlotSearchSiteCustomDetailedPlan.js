@@ -29,6 +29,8 @@ import {
   PlotSearchFieldTitles,
 } from '$src/plotSearch/enums';
 import {getInfoLinkLanguageDisplayText} from '$src/plotSearch/helpers';
+import PlotSearchReservationRecipients
+  from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchReservationRecipients';
 
 
 type OwnProps = {
@@ -90,25 +92,6 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
     const infoLinks = get(currentCustomDetailedPlan, 'info_links');
     const usageDistributions = get(currentCustomDetailedPlan, 'usage_distributions');
 
-    // TODO: mock
-    const suggestedApplicants = [
-      {
-        id: 1,
-        applicant: 'Mallivarauksensaaja 1',
-        share_of_rent: '1/4',
-      },
-      {
-        id: 2,
-        applicant: 'Tosipitkäniminen mallivarauksensaaja',
-        share_of_rent: '1/8',
-      },
-      {
-        id: 3,
-        applicant: 'Kolmas mallivarauksensaaja',
-        share_of_rent: '5/8',
-      },
-    ];
-
     return (
       <Column large={12}>
         <Collapse
@@ -126,7 +109,7 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
                 <Row>
                   <Column small={4} medium={4} large={12}>
                     <FormTextTitle>
-                      {'Kohteen tunnus'}
+                      {PlotSearchFieldTitles.TARGET_IDENTIFIER}
                     </FormTextTitle>
                     <FormText>
                       {currentCustomDetailedPlan.identifier}
@@ -312,30 +295,7 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
                     </FormText>
                   </Column>
                   <Column small={8} medium={8} large={12}>
-                    <Row>
-                      <Column small={9} medium={9} large={8}>
-                        <FormTextTitle>
-                          Ehdotettu varauksensaaja
-                        </FormTextTitle>
-                      </Column>
-                      <Column small={3} medium={3} large={4}>
-                        <FormTextTitle>
-                          Osuus
-                        </FormTextTitle>
-                      </Column>
-                      {suggestedApplicants.map((applicant) => <Fragment key={applicant.id}>
-                        <Column small={9} medium={9} large={8}>
-                          <FormText>
-                            {applicant.applicant}
-                          </FormText>
-                        </Column>
-                        <Column small={3} medium={3} large={4}>
-                          <FormText>
-                            {applicant.share_of_rent}
-                          </FormText>
-                        </Column>
-                      </Fragment>)}
-                    </Row>
+                    <PlotSearchReservationRecipients reservationRecipients={get(plotSearchSite, 'reservation_recipients')} />
                   </Column>
                 </Row>
               </Column>
