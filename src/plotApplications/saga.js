@@ -44,7 +44,7 @@ import {
   targetInfoCheckMeetingMemoUploadFailed,
   receiveTargetInfoCheckMeetingMemoUploaded,
   receiveBatchInfoCheckEditSuccess,
-  receiveBatchInfoCheckEditFailure,
+  receiveBatchInfoCheckEditFailure, receiveTargetInfoChecksForPlotSearch, targetInfoChecksForPlotSearchNotFound,
 } from '$src/plotApplications/actions';
 import {receiveError} from '$src/api/actions';
 
@@ -64,7 +64,7 @@ import {
   editApplicantInfoCheckItemRequest,
   editTargetInfoCheckItemRequest,
   createMeetingMemoRequest,
-  deleteMeetingMemoRequest,
+  deleteMeetingMemoRequest, fetchTargetInfoChecksForPlotSearchRequest,
 } from '$src/plotApplications/requests';
 import {
   fetchFormRequest,
@@ -414,6 +414,24 @@ function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
   }
 }
 
+function* fetchTargetInfoChecksForPlotSearchSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchTargetInfoChecksForPlotSearchRequest, id);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveTargetInfoChecksForPlotSearch(bodyAsJson.results));
+        break;
+      default:
+        yield put(targetInfoChecksForPlotSearchNotFound());
+        displayUIMessage({title: '', body: 'Hakuun liittyvien hakemusten tietojen lataaminen epäonnistui!'}, {type: 'error'});
+    }
+  } catch (e) {
+    yield put(targetInfoChecksForPlotSearchNotFound());
+    displayUIMessage({title: '', body: 'Hakuun liittyvien hakemusten tietojen lataaminen epäonnistui!'}, {type: 'error'});
+  }
+}
+
 function* uploadMeetingMemoSaga({payload}: UploadTargetInfoCheckMeetingMemoAction): Generator<any, any, any> {
   try {
     const {fileData, targetInfoCheck, callback} = payload;
@@ -581,6 +599,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', fetchAttachmentAttributesSaga);
       yield takeLatest('mvj/plotApplications/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES', fetchApplicantInfoCheckAttributesSaga);
       yield takeLatest('mvj/plotApplications/FETCH_PENDING_UPLOADS', fetchPendingUploadsSaga);
+      yield takeLatest('mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH', fetchTargetInfoChecksForPlotSearchSaga);
       yield takeEvery('mvj/plotApplications/UPLOAD_FILE', uploadFileSaga);
       yield takeEvery('mvj/plotApplications/DELETE_UPLOAD', deleteUploadSaga);
       yield takeEvery('mvj/plotApplications/UPLOAD_MEETING_MEMO', uploadMeetingMemoSaga);

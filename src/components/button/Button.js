@@ -14,7 +14,7 @@ type Props = {
 
 }
 
-const Button = ({className, disabled, innerRef, onClick, style, text, title, type = 'button'}: Props) => {
+const Button = ({className, disabled, innerRef, onClick, style, text, title, type = 'button'}: Props): React$Node => {
   return (
     <button
       ref={innerRef}

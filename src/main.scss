@@ -72,6 +72,7 @@
 @import "plotApplications/components/plotApplication";
 @import "plotApplications/components/plotApplicationEdit";
 @import "src/plotApplications/components/infoCheck/plotApplicationInfoCheckCollapse";
+@import "src/plotApplications/components/exportModal/PlotSearchExportModal";
 
 @import "foundation/styles";
 
@@ -105,6 +106,8 @@ abbr[title] {
   color: $black;
 }
 
+// Safari-specific fix for hiding contact information autofill buttons
+//noinspection CssInvalidPseudoSelector
 input::-webkit-contacts-auto-fill-button {
   visibility: hidden;
   display: none !important;

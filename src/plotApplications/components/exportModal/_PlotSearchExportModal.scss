@@ -1,0 +1,32 @@
+.PlotSearchExportModal {
+  .PlotSearchExportModalTargetTable {
+    ul {
+      margin: 0;
+      padding: 0;
+
+      li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        white-space: nowrap;
+      }
+    }
+
+    .form-field {
+      // TODO: This makes the checkboxes to stay in line with the column texts,
+      //  but might be a bit fragile or browser specific.
+      margin-bottom: 0;
+      max-height: 1.4rem;
+      line-height: 1.6rem;
+
+      .form-field__checkbox input {
+        margin: 0;
+      }
+    }
+  }
+
+  .PlotSearchExportModal__loader {
+    position: relative;
+    min-height: 4rem;
+  }
+}
