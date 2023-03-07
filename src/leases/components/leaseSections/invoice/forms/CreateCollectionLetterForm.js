@@ -27,6 +27,7 @@ import {PenaltyInterestFieldPaths, PenaltyInterestFieldTitles} from '$src/penalt
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {getUiDataCreateCollectionLetterKey, getUiDataPenaltyInterestKey} from '$src/uiData/helpers';
 import {
+  convertStrToDecimalNumber,
   formatDate,
   formatDateRange,
   getFieldAttributes,
@@ -45,14 +46,14 @@ import type {Lease} from '$src/leases/types';
 type InvoicesProps = {
   disableDirty?: boolean,
   fields: any,
-  invoiceIds: Array<Object>,
+  selectedInvoices: Array<Object>,
   invoiceOptions: Array<Object>,
 }
 
 const renderInvoices = ({
   disableDirty = false,
   fields,
-  invoiceIds,
+  selectedInvoices,
   invoiceOptions,
 }: InvoicesProps): Element<*> => {
   const handleAdd = () => {
@@ -125,15 +126,20 @@ const renderInvoices = ({
           <Divider className='invoice-divider' />
         </Column>
       </Row>
-      <CollectionLetterTotalRow fields={fields} invoiceIds={invoiceIds}/>
+      <CollectionLetterTotalRow fields={fields} selectedInvoices={selectedInvoices}/>
     </Fragment>
   );
 };
 
+type OwnProps = {
+
+}
+
 type Props = {
+  ...OwnProps,
   createCollectionLetterAttributes: Attributes,
   invoices: Array<Object>,
-  invoiceIds: Array<number>,
+  selectedInvoices: Array<Object>,
   lease: Lease,
   template: string,
   tenants: Array<number>,
@@ -185,7 +191,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
   render() {
     const {
       createCollectionLetterAttributes,
-      invoiceIds,
+      selectedInvoices,
       lease,
       template,
       tenants,
@@ -245,7 +251,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                 {CreateCollectionLetterFieldTitles.INVOICES}
               </SubTitle>
               <FieldArray
-                invoiceIds={invoiceIds}
+                selectedInvoices={selectedInvoices}
                 disableDirty
                 component={renderInvoices}
                 invoiceOptions={invoiceOptions}
@@ -261,7 +267,10 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                 lease: lease.id,
                 template: template,
                 tenants: tenants,
-                invoices: invoiceIds,
+                invoices: selectedInvoices?.map((invoice) => ({
+                  ...invoice,
+                  collection_charge: convertStrToDecimalNumber(invoice.collection_charge)}
+                )),
               }}
               url={createUrl(`lease_create_collection_letter/`)}
             />
@@ -275,7 +284,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
 const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
 const selector = formValueSelector(formName);
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
@@ -283,7 +292,7 @@ export default flowRight(
       return {
         createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
         invoices: getInvoicesByLease(state, currentLease.id),
-        invoiceIds: selector(state, 'invoice'),
+        selectedInvoices: selector(state, 'invoice'),
         lease: getCurrentLease(state),
         template: selector(state, 'template'),
         tenants: selector(state, 'tenants'),
@@ -293,7 +302,7 @@ export default flowRight(
   reduxForm({
     form: formName,
     initialValues: {
-      invoice_ids: [{}],
+      selectedInvoices: [{}],
     },
   }),
-)(CreateCollectionLetterForm);
+)(CreateCollectionLetterForm): React$ComponentType<OwnProps>);

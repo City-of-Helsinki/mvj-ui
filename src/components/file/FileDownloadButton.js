@@ -6,15 +6,21 @@ import {saveAs} from 'file-saver';
 
 import Button from '$components/button/Button';
 import {ButtonColors} from '$components/enums';
-import {convertStrToDecimalNumber, displayUIMessage, getFileNameFromResponse} from '$util/helpers';
+import {displayUIMessage, getFileNameFromResponse} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
-type Props = {
-  apiToken: string,
+type OwnProps = {
   disabled: boolean,
   label: string,
-  payload: Object,
+  payload?: Object,
   url: string,
+  onSuccess?: () => void,
+  onFailure?: () => void,
+};
+
+type Props = {
+  ...OwnProps,
+  apiToken: string,
 }
 
 const FileDownloadButton = ({
@@ -23,28 +29,35 @@ const FileDownloadButton = ({
   label,
   payload,
   url,
+  onFailure,
+  onSuccess,
 }: Props) => {
 
   const fetchFile = async() => {
     try {
-      const formatedCollectionCharge = {...payload, invoices: payload.invoices.map(invoice=>({...invoice, collection_charge: convertStrToDecimalNumber(invoice.collection_charge)}))};
-      const body = JSON.stringify(formatedCollectionCharge);
-      const request = new Request(url, {
-        method: 'POST',
-        body,
-      });
+      let request;
+      if (payload) {
+        const body = JSON.stringify(payload);
+        request = new Request(url, {
+          method: 'POST',
+          body,
+        });
+        request.headers.set('Content-Type', 'application/json');
+      } else {
+        request = new Request(url);
+      }
       if (apiToken) {
         request.headers.set('Authorization', `Bearer ${apiToken}`);
       }
-      request.headers.set('Content-Type', 'application/json');
 
       const response = await fetch(request);
-      switch(response.status) {
+      switch (response.status) {
         case 200:
           const blob = await response.blob();
           const filename = getFileNameFromResponse(response);
 
           saveAs(blob, filename);
+          onSuccess && onSuccess();
           break;
         default:
           const errors = await response.json();
@@ -54,12 +67,14 @@ const FileDownloadButton = ({
           } else {
             displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
           }
+          onFailure && onFailure();
 
           break;
       }
     } catch(e) {
       console.error(`Failed to download file with error ${e}`);
       displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
+      onFailure && onFailure();
     }
   };
 
@@ -75,10 +90,10 @@ const FileDownloadButton = ({
   );
 };
 
-export default connect(
+export default (connect(
   (state) => {
     return {
       apiToken: getApiToken(state),
     };
   }
-)(FileDownloadButton);
+)(FileDownloadButton): React$ComponentType<OwnProps>);
