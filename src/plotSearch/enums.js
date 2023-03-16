@@ -61,17 +61,20 @@ export const PlotSearchFieldTitles = {
   PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'Arvioitu rakentamisen valmius',
   TARGET_IDENTIFIER: 'Kohteen tunnus',
   TARGET_TYPE: 'Kohteen tyyppi',
+  LEASE_MANAGEMENT: 'Hallintamuoto',
+  LEASE_FINANCING: 'Rahoitusmuoto',
   LEASE_HITAS: 'Hitas',
   SECTION_AREA: 'Leikkausala',
   PLOT_DIVISION_STATE: 'Tonttijaon olotila',
-  PLOT_DIVISION_INDENTIFIER: 'Tonttijaon tunnus',
+  PLOT_DIVISION_IDENTIFIER: 'Tonttijaon tunnus',
   PLOT_DIVISION_EFFECTIVE_DATE: 'Tonttijaon voimaantulopvm',
   PLOT_DIVISION_DATE_OF_APPROVAL: 'Tonttijaon hyväksymispvm',
   PLAN_UNIT_TYPE: 'Kaavayksikön laji',
   PLAN_UNIT_STATE: 'Kaavayksikön olotila',
   IN_CONTRACT: 'Sopimushetkellä',
   PLAN_UNIT_INTENDED_USE: 'Kaavayksikön käyttötarkoitus',
-  
+  RESERVATION_RECIPIENT: 'Ehdotettu varauksensaaja',
+  RESERVATION_RECIPIENT_SHARE_OF_RENTAL: 'Osuus',
 };
 
 /**
