@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
-import AddressSearchInput from '$components/address-search/AddressSearchInput';
 import classNames from 'classnames';
+
+import AddressSearchInput from '$components/address-search/AddressSearchInput';
 
 type Props = {
   autoComplete: string,
@@ -20,7 +21,7 @@ const FieldTypeAddress = ({
   input: {name, onBlur, onChange, value},
   isDirty,
   valueSelectedCallback,
-}: Props) => {
+}: Props): React$Node => {
   return (
     <div className={classNames('form-field__address', {'has-error': displayError}, {'is-dirty': isDirty})}>
       <AddressSearchInput

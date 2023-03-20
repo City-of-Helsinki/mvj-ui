@@ -13,7 +13,7 @@ type Props = {
   title?: string,
 }
 
-const AddButtonThird = ({className, disabled = false, label, onClick, style, title}: Props) =>
+const AddButtonThird = ({className, disabled = false, label, onClick, style, title}: Props): React$Node =>
   <button
     className={classNames('form__add-button third-level', className)}
     disabled={disabled}

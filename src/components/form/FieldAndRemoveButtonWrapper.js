@@ -12,7 +12,7 @@ const FieldAndRemoveButtonWrapper = ({
   className,
   field,
   removeButton,
-}: Props) =>
+}: Props): React$Node =>
   <div className={classNames('form__field-and-remove-button-wrapper', className)}>
     {field}
     <div className='form__field-and-remove-button-wrapper_button'>

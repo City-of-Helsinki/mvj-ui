@@ -1,10 +1,9 @@
 // @flow
 import React from 'react';
-// $FlowFixMe
 import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
-import {getContentContact} from '../../contacts/helpers';
+import {getContentContact} from '$src/contacts/helpers';
 import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchContacts} from '$src/contacts/requestsAsync';
 
@@ -24,7 +23,7 @@ const FieldTypeContactSelect = ({
   isDirty,
   onChange,
   placeholder,
-}: Props) => {
+}: Props): React$Node => {
   const getContacts = debounce(async(inputValue: string, callback: Function) => {
     const contacts = await fetchContacts({
       search: inputValue,

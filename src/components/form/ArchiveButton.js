@@ -12,7 +12,7 @@ type Props = {
   type?: string,
 }
 
-const ArchiveButton = ({className, disabled, onClick, title, type = 'button'}: Props) =>
+const ArchiveButton = ({className, disabled, onClick, title, type = 'button'}: Props): React$Node =>
   <button
     className={classNames('form__archive-button', className)}
     disabled={disabled}

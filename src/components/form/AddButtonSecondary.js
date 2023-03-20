@@ -13,7 +13,7 @@ type Props = {
   title?: string,
 }
 
-const AddButtonSecondary = ({className, disabled = false, label, onClick, style, title}: Props) =>
+const AddButtonSecondary = ({className, disabled = false, label, onClick, style, title}: Props): React$Node =>
   <button
     className={classNames('form__add-button secondary', className)}
     disabled={disabled}

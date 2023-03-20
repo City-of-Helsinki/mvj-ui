@@ -25,7 +25,7 @@ const FieldTypeUserSelect = ({
   onChange,
   placeholder,
   multiSelect,
-}: Props) => {
+}: Props): React$Node => {
   const getUsers = debounce(async(inputValue: string, callback: Function) => {
     const contacts = await fetchUsers({
       search: inputValue,

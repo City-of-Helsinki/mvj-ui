@@ -23,7 +23,7 @@ const FieldTypeLessorSelect = ({
   isDirty,
   onChange,
   placeholder,
-}: Props) => {
+}: Props): React$Node => {
   const getLessors = debounce(async(inputValue: string, callback: Function) => {
     const lessors = await fetchContacts({
       is_lessor: true,

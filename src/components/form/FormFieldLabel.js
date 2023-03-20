@@ -23,11 +23,11 @@ type State = {
 class FormFieldLabel extends PureComponent<Props, State> {
   timer: any;
 
-  state = {
+  state: State = {
     showAddButton: false,
   }
 
-  static defaultProps = {
+  static defaultProps: $Shape<Props> = {
     enableUiDataEdit: false,
     required: false,
   }
@@ -36,7 +36,7 @@ class FormFieldLabel extends PureComponent<Props, State> {
     this.stopTimer();
   }
 
-  startTimer = () => {
+  startTimer: () => void = () => {
     this.timer = setInterval(
       () => {
         this.showAddButton();
@@ -46,16 +46,16 @@ class FormFieldLabel extends PureComponent<Props, State> {
     );
   }
 
-  stopTimer = () => {
+  stopTimer: () => void = () => {
     clearInterval(this.timer);
   }
 
-  handleMouseEnter = () => {
+  handleMouseEnter: () => void = () => {
     this.startTimer();
   }
 
-  handleMouseLeave = (event: any) => {
-    const target = event.target,
+  handleMouseLeave: (SyntheticFocusEvent<HTMLLabelElement>) => void = (event) => {
+    const target = event.currentTarget,
       el = ReactDOM.findDOMNode(this);
 
     if (el && (target === el || el.contains(target))) {
@@ -64,20 +64,20 @@ class FormFieldLabel extends PureComponent<Props, State> {
     }
   }
 
-  handleTooltipClose = () => {
+  handleTooltipClose: () => void = () => {
     this.stopTimer();
     this.hideAddButton();
   }
 
-  hideAddButton = () => {
+  hideAddButton: () => void = () => {
     this.setState({showAddButton: false});
   }
 
-  showAddButton = () => {
+  showAddButton: () => void = () => {
     this.setState({showAddButton: true});
   }
 
-  render() {
+  render(): React$Node {
     const {
       children,
       className,

@@ -12,7 +12,7 @@ type Props = {
   type?: string,
 }
 
-const AttachButton = ({className, disabled, onClick, title, type = 'button'}: Props) =>
+const AttachButton = ({className, disabled, onClick, title, type = 'button'}: Props): React$Node =>
   <button
     className={classNames('form__attach-button', className)}
     disabled={disabled}

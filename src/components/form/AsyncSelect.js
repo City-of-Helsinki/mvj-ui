@@ -1,6 +1,6 @@
 // @flow
 import React, {Component} from 'react';
-// $FlowFixMe
+// $FlowFixMe[cannot-resolve-module]
 import Async from 'react-select/async';
 import classNames from 'classnames';
 

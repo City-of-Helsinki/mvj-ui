@@ -1,11 +1,11 @@
 // @flow
 import React from 'react';
 
-import {createClassName, generalClassNames, GeneralPropTypes} from '../../foundation/utils';
+import {createClassName, generalClassNames, GeneralPropTypes} from '$src/foundation/utils';
 import TrashIcon from '$components/icons/TrashIcon';
 
 type Props = {
-  ...GeneralPropTypes,
+  ...typeof GeneralPropTypes,
   className?: string,
   disabled?: boolean,
   onClick: Function,
@@ -14,7 +14,7 @@ type Props = {
   type?: string,
 }
 
-const RemoveButton = (props: Props) => {
+const RemoveButton = (props: Props): React$Node => {
   const {className, disabled, onClick, style, title, type = 'button'} = props;
 
   const createdClassName = createClassName(

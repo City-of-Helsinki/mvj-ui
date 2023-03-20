@@ -12,12 +12,12 @@ type Props = {
   type?: string,
 }
 
-const CopyToClipboardButton = (props: Props) => {
+const CopyToClipboardButton = (props: Props): React$Node => {
   const {
-    className, 
+    className,
     disabled,
-    onClick, 
-    title, 
+    onClick,
+    title,
     type = 'button',
   } = props;
 

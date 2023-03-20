@@ -22,7 +22,7 @@ const FieldTypeTime = ({
   isDirty = false,
   placeholder,
   setRefForField,
-}: Props) => {
+}: Props): React$Node => {
   const handleSetReference = (element: any) => {
     if(setRefForField) {
       setRefForField(element);
