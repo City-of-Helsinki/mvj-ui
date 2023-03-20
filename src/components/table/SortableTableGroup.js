@@ -28,25 +28,25 @@ type State = {
 }
 
 class SortableTableGroup extends PureComponent<Props, State> {
-  state = {
+  state: $Shape<State> = {
     collapse: false,
   }
 
 
-  handleCollapseArrowIconClick = () => {
+  handleCollapseArrowIconClick: () => void = () => {
     this.setState({
       collapse: !this.state.collapse,
     });
   }
 
-  handleCollapseArrowIconKeyDown = (e: any) => {
+  handleCollapseArrowIconKeyDown: (KeyboardEvent) => void = (e: any) => {
     if(e.keyCode === 13) {
       e.preventDefault();
       this.handleCollapseArrowIconClick();
     }
   };
 
-  shouldShowCollapseArrowIcon = () => {
+  shouldShowCollapseArrowIcon: () => boolean = () => {
     const {columns, row} = this.props;
     let showIcon = false;
 
@@ -60,11 +60,11 @@ class SortableTableGroup extends PureComponent<Props, State> {
     return showIcon;
   }
 
-  forceUpdateHandler = () => {
+  forceUpdateHandler: () => void = () => {
     this.forceUpdate();
   }
 
-  render() {
+  render(): React$Node {
     const {
       columns,
       id,

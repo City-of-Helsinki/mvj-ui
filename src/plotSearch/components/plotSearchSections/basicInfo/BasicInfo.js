@@ -41,9 +41,11 @@ import {
 import {getRouteById, Routes} from '$src/root/routes';
 import PlotSearchTargetListing from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchTargetListing';
 import DocumentsButton from '$components/form/DocumentsButton';
+import Button from '$components/button/Button';
 
 type OwnProps = {
   openExportModal: Function,
+  openReservationIdentifiersModal: Function,
 }
 
 type Props = {
@@ -85,13 +87,14 @@ class BasicInfo extends PureComponent<Props, State> {
     });
   }
 
-  render (){
+  render() {
     const {
       // usersPermissions,
       basicInformationCollapseState,
       attributes,
       currentPlotSearch,
       openExportModal,
+      openReservationIdentifiersModal,
     } = this.props;
 
     const plotSearch = getContentBasicInformation(currentPlotSearch);
@@ -102,7 +105,10 @@ class BasicInfo extends PureComponent<Props, State> {
 
     return (
       <Fragment>
-        <DocumentsButton style={{float: 'right'}} onClick={openExportModal} label="Tulosta kaikki hakemukset" />
+        <div className="plot_search__basic-info-header-buttons">
+          <Button onClick={openReservationIdentifiersModal} text="Luo varaustunnukset" />
+          <DocumentsButton onClick={openExportModal} label="Tulosta kaikki hakemukset" />
+        </div>
         <Title>
           {PlotSearchFieldTitles.BASIC_INFO}
         </Title>
@@ -278,7 +284,6 @@ export default (connect(
       usersPermissions: getUsersPermissions(state),
       basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.basic_information`),
       attributes: getAttributes(state),
-      pl: getAttributes(state),
       planUnit: getPlanUnit(state),
       currentPlotSearch: getCurrentPlotSearch(state),
     };

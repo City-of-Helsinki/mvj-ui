@@ -2,7 +2,7 @@
 import {call, select} from 'redux-saga/effects';
 
 import {getApiToken} from '$src/auth/selectors';
-import {UI_ACCEPT_LANGUAGE_VALUE} from "./constants";
+import {UI_ACCEPT_LANGUAGE_VALUE} from '$src/api/constants';
 
 function* callApi(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);

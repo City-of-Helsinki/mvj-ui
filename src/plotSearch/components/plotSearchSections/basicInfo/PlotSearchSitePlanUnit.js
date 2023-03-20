@@ -129,6 +129,7 @@ class PlotSearchSitePlanUnit extends PureComponent<Props, State> {
     const leaseIdentifier = get(plotSearchSite, 'lease_identifier');
     const leaseHitas = get(plotSearchSite, 'lease_hitas');
     const infoLinks = get(plotSearchSite, 'info_links');
+    const reservationIdentifier = get(plotSearchSite, 'reservation_readable_identifier');
 
     const getInfoLinkLanguageDisplayText = (key) => {
       const languages = get(attributes, 'plot_search_targets.child.children.info_links.child.children.language.choices');
@@ -364,6 +365,18 @@ class PlotSearchSitePlanUnit extends PureComponent<Props, State> {
                   <Column small={4} medium={4} large={12}>
                     <FormText>
                       <ExternalLink href={`${getRouteById(Routes.PLOT_APPLICATIONS)}?target_plan_unit=${currentPlanUnit.id}`} text={'Hakemukset (?)'} />
+                    </FormText>
+                  </Column>
+                  <Column small={4} medium={4} large={12}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.RESERVATION_IDENTIFIER}
+                    </FormTextTitle>
+                    <FormText>
+                      {reservationIdentifier ? <ExternalLink
+                        className='no-margin'
+                        href={`${getRouteById(Routes.LEASES)}?search=${reservationIdentifier}`}
+                        text={reservationIdentifier}
+                      /> : '-'}
                     </FormText>
                   </Column>
                   <Column small={8} medium={8} large={12}>

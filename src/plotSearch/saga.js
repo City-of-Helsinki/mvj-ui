@@ -39,6 +39,9 @@ import {
   receiveStages,
   stagesNotFound,
   fetchStages,
+  reservationIdentifiersCreated,
+  reservationIdentifiersCreationFailed,
+  reservationIdentifierUnitListsNotFound, receiveReservationIdentifierUnitLists,
 } from '$src/plotSearch/actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -59,8 +62,11 @@ import {
   fetchFormAttributesRequest,
   fetchTemplateFormsRequest,
   editFormRequest,
-  fetchStagesRequest,
+  fetchStagesRequest, editTargetPlotSearchRelationRequest, fetchAllMunicipalitiesRequest, fetchAllDistrictsRequest,
 } from '$src/plotSearch/requests';
+import {createLease} from '$src/leases/requests';
+import {RelationTypes} from '$src/leases/enums';
+import {fetchLeaseTypes} from '$src/leaseType/requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -501,6 +507,79 @@ function* fetchStagesSaga(): Generator<any, any, any> {
   }
 }
 
+function* batchCreateReservationIdentifiersSaga({payload}): Generator<any, any, any> {
+  const errors: Array<any> = [];
+
+  yield all(payload.data.map((row) => call(function* (row) {
+    try {
+      const {response: {status: statusCode}, bodyAsJson} = yield call(createLease, {
+        type: row.type,
+        state: row.state,
+        municipality: row.municipality,
+        district: row.district,
+        relate_to: row.leaseId,
+        relation_type: RelationTypes.TRANSFER,
+      });
+
+      switch (statusCode) {
+        case 200:
+        case 201:
+          const {response: {status: targetRelationEditStatusCode}, bodyAsJson: targetRelationEditBodyAsJson} =
+            yield call(editTargetPlotSearchRelationRequest, {
+              id: row.targetId,
+              reservation_identifier: bodyAsJson.id,
+            });
+
+          if (targetRelationEditStatusCode !== 200) {
+            errors.push({
+              id: row.targetId,
+              error: targetRelationEditBodyAsJson,
+            });
+          }
+          break;
+        default:
+          console.error(bodyAsJson);
+          errors.push({
+            id: row.targetId,
+            error: bodyAsJson,
+          });
+      }
+    } catch (e) {
+      console.error(e);
+      errors.push({
+        id: row.targetId,
+        error: e,
+      });
+    }
+  }, row)));
+
+  if (errors.length > 0) {
+    yield put(reservationIdentifiersCreationFailed(errors));
+    displayUIMessage({title: '', body: 'Vuokratunnusten luonti keskeytyi virheeseen!'}, {type: 'error'});
+  } else {
+    yield put(reservationIdentifiersCreated());
+    displayUIMessage({title: '', body: 'Varaustunnukset luotu'});
+    if (payload.callback) {
+      payload.callback();
+    }
+  }
+}
+
+function* fetchReservationIdentifierUnitListsSaga(): Generator<any, any, any> {
+  const {response: typeResponse, bodyAsJson: typeBody} = yield call(fetchLeaseTypes);
+  const {response: municipalityResponse, bodyAsJson: municipalityBody} = yield call(fetchAllMunicipalitiesRequest);
+  const {response: districtResponse, bodyAsJson: districtBody} = yield call(fetchAllDistrictsRequest);
+
+  if (typeResponse.status !== 200 || municipalityResponse.status !== 200 || districtResponse.status !== 200) {
+    yield put(reservationIdentifierUnitListsNotFound());
+  } else {
+    yield put(receiveReservationIdentifierUnitLists({
+      types: typeBody.results,
+      municipalities: municipalityBody.results,
+      districts: districtBody.results,
+    }));
+  }
+}
 
 export default function*(): Generator<any, any, any> {
   yield all([
@@ -520,8 +599,10 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/plotSearch/FETCH_FORM_ATTRIBUTES', fetchFormAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_FORM', fetchFormSaga);
       yield takeEvery('mvj/plotSearch/EDIT_FORM', editFormSaga);
-      yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);
-      yield takeEvery('mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES', fetchStagesSaga);
+      yield takeLatest('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);
+      yield takeLatest('mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES', fetchStagesSaga);
+      yield takeLatest('mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS', batchCreateReservationIdentifiersSaga);
+      yield takeLatest('mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS', fetchReservationIdentifierUnitListsSaga);
     }),
   ]);
 }

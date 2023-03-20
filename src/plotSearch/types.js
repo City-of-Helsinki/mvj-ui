@@ -30,7 +30,11 @@ export type PlotSearchState = {
   templateForms: Object,
   isFetchingStages: boolean,
   stages: Array<Object>,
-  decisionCandidates: Object
+  decisionCandidates: Object,
+  isBatchCreatingReservationIdentifiers: boolean,
+  lastBatchReservationCreationError: any,
+  isFetchingReservationIdentifierUnitLists: boolean,
+  reservationIdentifierUnitLists: null | Object,
 };
 
 export type CustomDetailedPlan = Object;
@@ -157,3 +161,10 @@ export type FetchPlotSearchStagesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEAR
 export type ReceivePlotSearchStagesAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_STAGES', Array<Object>>;
 export type PlotSearchStagesNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_STAGES_NOT_FOUND', void>;
 
+export type BatchCreateReservationIdentifiersAction = Action<'mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS', Object>;
+export type ReservationIdentifiersCreatedAction = Action<'mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATED', void>;
+export type ReservationIdentifiersCreationFailedAction = Action<'mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATION_FAILED', any>;
+
+export type FetchReservationIdentifierUnitListsAction = Action<'mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS', void>;
+export type ReceiveReservationIdentifierUnitListsAction = Action<'mvj/plotSearch/RECEIVE_RESERVATION_IDENTIFIER_UNIT_LISTS', Object>;
+export type ReservationIdentifierUnitListsNotFoundAction = Action<'mvj/plotSearch/RESERVATION_IDENTIFIER_UNIT_LISTS_NOT_FOUND', void>;

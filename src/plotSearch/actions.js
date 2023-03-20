@@ -60,6 +60,12 @@ import type {
   FetchPlotSearchStagesAction,
   ReceivePlotSearchStagesAction,
   PlotSearchStagesNotFoundAction,
+  BatchCreateReservationIdentifiersAction,
+  ReservationIdentifiersCreatedAction,
+  ReservationIdentifiersCreationFailedAction,
+  FetchReservationIdentifierUnitListsAction,
+  ReceiveReservationIdentifierUnitListsAction,
+  ReservationIdentifierUnitListsNotFoundAction,
 } from '$src/plotSearch/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -214,3 +220,21 @@ export const receiveStages = (payload: Array<Object>): ReceivePlotSearchStagesAc
 
 export const stagesNotFound = (): PlotSearchStagesNotFoundAction =>
   createAction('mvj/plotSearch/PLOT_SEARCH_STAGES_NOT_FOUND')();
+
+export const batchCreateReservationIdentifiers = (payload: Array<Object>): BatchCreateReservationIdentifiersAction =>
+  createAction('mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS')(payload);
+
+export const reservationIdentifiersCreated = (): ReservationIdentifiersCreatedAction =>
+  createAction('mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATED')();
+
+export const reservationIdentifiersCreationFailed = (payload: any): ReservationIdentifiersCreationFailedAction =>
+  createAction('mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATION_FAILED')(payload);
+
+export const fetchReservationIdentifierUnitLists = (): FetchReservationIdentifierUnitListsAction =>
+  createAction('mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS')();
+
+export const receiveReservationIdentifierUnitLists = (payload: Object): ReceiveReservationIdentifierUnitListsAction =>
+  createAction('mvj/plotSearch/RECEIVE_RESERVATION_IDENTIFIER_UNIT_LISTS')(payload);
+
+export const reservationIdentifierUnitListsNotFound = (): ReservationIdentifierUnitListsNotFoundAction =>
+  createAction('mvj/plotSearch/RESERVATION_IDENTIFIER_UNIT_LISTS_NOT_FOUND')();

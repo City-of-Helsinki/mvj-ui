@@ -91,6 +91,7 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
     const leaseIdentifier = get(plotSearchSite, 'lease_identifier');
     const infoLinks = get(currentCustomDetailedPlan, 'info_links');
     const usageDistributions = get(currentCustomDetailedPlan, 'usage_distributions');
+    const reservationIdentifier = get(plotSearchSite, 'reservation_readable_identifier');
 
     return (
       <Column large={12}>
@@ -292,6 +293,18 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
                   <Column small={4} medium={4} large={12}>
                     <FormText>
                       <ExternalLink href={`${getRouteById(Routes.PLOT_APPLICATIONS)}?target_plan_unit=${currentCustomDetailedPlan.id}`} text={'Hakemukset (?)'} />
+                    </FormText>
+                  </Column>
+                  <Column small={4} medium={4} large={12}>
+                    <FormTextTitle>
+                      {PlotSearchFieldTitles.RESERVATION_IDENTIFIER}
+                    </FormTextTitle>
+                    <FormText>
+                      {reservationIdentifier ? <ExternalLink
+                        className='no-margin'
+                        href={`${getRouteById(Routes.LEASES)}?search=${reservationIdentifier}`}
+                        text={reservationIdentifier}
+                      /> : '-'}
                     </FormText>
                   </Column>
                   <Column small={8} medium={8} large={12}>

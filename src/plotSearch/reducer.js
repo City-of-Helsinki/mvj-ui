@@ -259,6 +259,29 @@ const isFetchingStagesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_STAGES']: () => false,
 }, false);
 
+const isBatchCreatingReservationIdentifiersReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS']: () => true,
+  ['mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATED']: () => false,
+  ['mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATION_FAILED']: () => false,
+}, false);
+
+const lastBatchReservationCreationErrorReducer: Reducer<any> = handleActions({
+  ['mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS']: () => null,
+  ['mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATION_FAILED']: (state, {payload: errors}) => errors,
+}, null);
+
+const isFetchingReservationIdentifierUnitListsReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS']: () => true,
+  ['mvj/plotSearch/RECEIVE_RESERVATION_IDENTIFIER_UNIT_LISTS']: () => false,
+  ['mvj/plotSearch/RESERVATION_IDENTIFIER_UNIT_LISTS_NOT_FOUND']: () => false,
+}, false);
+
+const reservationIdentifierUnitListsReducer: Reducer<Object | null> = handleActions({
+  ['mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS']: () => null,
+  ['mvj/plotSearch/RECEIVE_RESERVATION_IDENTIFIER_UNIT_LISTS']: (state, {payload}) => payload,
+  ['mvj/plotSearch/RESERVATION_IDENTIFIER_UNIT_LISTS_NOT_FOUND']: () => null,
+}, null);
+
 
 export default (combineReducers<Object, any>({
   attributes: attributesReducer,
@@ -290,4 +313,8 @@ export default (combineReducers<Object, any>({
   decisionCandidates: decisionCandidateReducer,
   stages: stagesReducer,
   isFetchingStages: isFetchingStagesReducer,
+  isBatchCreatingReservationIdentifiers: isBatchCreatingReservationIdentifiersReducer,
+  lastBatchReservationCreationError: lastBatchReservationCreationErrorReducer,
+  isFetchingReservationIdentifierUnitLists: isFetchingReservationIdentifierUnitListsReducer,
+  reservationIdentifierUnitLists: reservationIdentifierUnitListsReducer,
 }): CombinedReducer<PlotSearchState, Action<any>>);

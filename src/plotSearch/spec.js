@@ -86,6 +86,10 @@ const baseState: PlotSearchState = {
   stages: [],
   isFetchingStages: false,
   isFetchingSubtypes: false,
+  isBatchCreatingReservationIdentifiers: false,
+  lastBatchReservationCreationError: null,
+  isFetchingReservationIdentifierUnitLists: false,
+  reservationIdentifierUnitLists: null,
 };
 
 

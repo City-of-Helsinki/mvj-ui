@@ -14,6 +14,7 @@ type Props = {
   filterOption?: Function,
   input: Object,
   isDirty: boolean,
+  isLoading?: boolean,
   options: ?Array<any>,
   placeholder: String,
   setRefForField: Function,
@@ -84,6 +85,7 @@ class FieldTypeSelect extends PureComponent<Props, State> {
       filterOption,
       input: {name, value},
       isDirty,
+      isLoading,
       options,
       placeholder,
     } = this.props;
@@ -106,7 +108,8 @@ class FieldTypeSelect extends PureComponent<Props, State> {
           isDisabled={disabled}
           filterOption={filterOption}
           id={name}
-          onBlue={this.handleBlur}
+          isLoading={isLoading}
+          onBlur={this.handleBlur}
           onChange={this.handleChange}
           noOptionsMessage={() => 'Ei tuloksia'}
           onInputChange={this.handleInputChange}
