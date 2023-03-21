@@ -202,7 +202,7 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
                       {PlotSearchFieldTitles.RENT_BUILD_PERMISSION}
                     </FormTextTitle>
                     <FormText>
-                      {get(currentCustomDetailedPlan, 'rent_build_permission') ? `${get(currentCustomDetailedPlan, 'rent_build_permission')} m²` : '-'}
+                      {get(currentCustomDetailedPlan, 'rent_build_permission') ? `${get(currentCustomDetailedPlan, 'rent_build_permission')} k-m²` : '-'}
                     </FormText>
                   </Column>
                   <Column small={6} medium={4} large={4}>
@@ -275,7 +275,7 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
                       </Column>
                       <Column small={8} medium={6} large={6}>
                         <FormText>
-                          {`${usageDistribution.build_permission} m²`}
+                          {`${usageDistribution.build_permission} k-m²`}
                         </FormText>
                       </Column>
                       <Column small={4} medium={2} large={2}>

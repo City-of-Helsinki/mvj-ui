@@ -138,7 +138,7 @@ const CustomDetailedPlan = ({
               {LeaseAreaCustomDetailedPlanFieldTitles.RENT_BUILD_PERMISSION}
             </FormTextTitle>
             <FormText>
-              {!isEmptyValue(customDetailedPlan.rent_build_permission) ? `${formatNumber(customDetailedPlan.rent_build_permission)} m²` : '-'}
+              {!isEmptyValue(customDetailedPlan.rent_build_permission) ? `${formatNumber(customDetailedPlan.rent_build_permission)} k-m²` : '-'}
             </FormText>
           </Authorization>
         </Column>
@@ -183,7 +183,7 @@ const CustomDetailedPlan = ({
             </Column>
             <Column small={4} medium={4} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.BUILD_PERMISSION)}>
-                <FormText>{!isEmptyValue(usage_distribution.build_permission) ? `${formatNumber(usage_distribution.build_permission)} m²` : '-'}</FormText>
+                <FormText>{!isEmptyValue(usage_distribution.build_permission) ? `${formatNumber(usage_distribution.build_permission)} k-m²` : '-'}</FormText>
               </Authorization>
             </Column>
             <Column small={4} medium={4} large={4}>

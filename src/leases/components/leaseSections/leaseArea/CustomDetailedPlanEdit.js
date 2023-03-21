@@ -131,7 +131,7 @@ const renderUsageDistributions = ({
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(attributes,  LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.BUILD_PERMISSION)}
                                 name={`${usageDistribution}.build_permission`}
-                                unit='m²'
+                                unit='k-m²'
                                 overrideValues={{
                                   label: LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles.BUILD_PERMISSION,
                                 }}
@@ -502,7 +502,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(attributes,  LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION)}
                   name={`${field}.rent_build_permission`}
-                  unit='m²'
+                  unit='k-m²'
                   overrideValues={{
                     label: LeaseAreaCustomDetailedPlanFieldTitles.RENT_BUILD_PERMISSION,
                   }}
