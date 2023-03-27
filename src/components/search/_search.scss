@@ -19,6 +19,15 @@
     color: $dark-gray;
   }
 
+  &__subtitle-label-column {
+    font-weight: bold;
+    line-height: rem-calc(20px);
+    margin: 0;
+    display: block;
+    font-size: rem-calc(14px);
+    margin-bottom: rem-calc(10px);
+  }
+
   &__change-type-link {
     font-weight: $semibold !important;
   }

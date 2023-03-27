@@ -43,15 +43,12 @@ function PlotSearchAttributes(WrappedComponent: any) {
         fetchPlotSearchSubtypes,
         plotSearchSubTypes,
         isFetching,
-        isFetchingFormAttributes,
-        formAttributes,
-        fetchFormAttributes,
       } = this.props;
 
-      if(!isFetchingPlotSearchAttributes && !plotSearchAttributes) {
+      if (!isFetchingPlotSearchAttributes && !plotSearchAttributes) {
         fetchPlotSearchAttributes();
       }
-      if(!isFetching && !plotSearchSubTypes) {
+      if (!isFetching && !plotSearchSubTypes) {
         fetchPlotSearchSubtypes();
       }
     }
@@ -62,10 +59,10 @@ function PlotSearchAttributes(WrappedComponent: any) {
   };
 }
 
-const withPlotSearchAttributes = flowRight(
+const withPlotSearchAttributes = (flowRight(
   connect(
     (state) => {
-      return{
+      return {
         plotSearchAttributes: getPlotSearchAttributes(state),
         isFetchingPlotSearchAttributes: getIsFetchingPlotSearchAttributes(state),
         plotSearchMethods: getPlotSearchMethods(state),
@@ -82,6 +79,6 @@ const withPlotSearchAttributes = flowRight(
     },
   ),
   PlotSearchAttributes,
-);
+): (React$ComponentType<any>) => React$ComponentType<any>);
 
 export {withPlotSearchAttributes};

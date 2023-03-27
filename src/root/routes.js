@@ -33,6 +33,7 @@ import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage'
 import LeaseStatisticReport from '$src/leaseStatisticReport/components/LeaseStatisticReportPage';
 import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegisterSearchPage';
 import PlotApplicationCreatePage from '$src/plotApplications/components/PlotApplicationCreatePage';
+import AreaSearchApplicationListPage from '$src/areaSearch/components/AreaSearchApplicationListPage';
 
 /**
  * Routes enumerate
@@ -40,6 +41,7 @@ import PlotApplicationCreatePage from '$src/plotApplications/components/PlotAppl
  */
 export const Routes = {
   AREA_NOTES: 'area_notes',
+  AREA_SEARCH: 'area_search',
   BASIS_OF_RENT_CALCULATOR: 'basis_of_rent_calculator',
   BATCH_RUN: 'batch_jobs',
   CALLBACK: 'callback',
@@ -71,6 +73,7 @@ export const Routes = {
 export const getRouteById = (id: string): string => {
   const routes = {
     [Routes.AREA_NOTES]: '/muistettavatehdot',
+    [Routes.AREA_SEARCH]: '/aluehaut',
     [Routes.BASIS_OF_RENT_CALCULATOR]: '/vuokralaskuri',
     [Routes.BATCH_RUN]: '/eraajot',
     [Routes.CALLBACK]: '/callback',
@@ -128,6 +131,7 @@ export default (<App>
     <Route exact path={getRouteById(Routes.PLOT_APPLICATIONS)} component={PlotApplicationsListPage} />
     <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/uusi`} component={PlotApplicationCreatePage} />
     <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotApplicationId`} component={PlotApplicationsPage} />
+    <Route exact path={getRouteById(Routes.AREA_SEARCH)} component={AreaSearchApplicationListPage} />
     <Route exact path={getRouteById(Routes.CREDIT_DECISION)} component={CreditDecisionSearchPage} />
     <Route component={ErrorPage} />
   </Switch>
