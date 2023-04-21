@@ -65,6 +65,9 @@ import type {
   InfoCheckBatchEditErrors,
   ReceivePlotApplicationInfoCheckBatchEditSuccessAction,
   ReceivePlotApplicationInfoCheckBatchEditFailureAction,
+  FetchTargetInfoChecksForPlotSearchAction,
+  ReceiveTargetInfoChecksForPlotSearchAction,
+  TargetInfoChecksForPlotSearchNotFoundAction,
 } from '$src/plotApplications/types';
 
 export const fetchPlotApplicationsList = (search: string): FetchPlotApplicationsListAction =>
@@ -240,3 +243,12 @@ export const receiveBatchInfoCheckEditSuccess = (): ReceivePlotApplicationInfoCh
 
 export const receiveBatchInfoCheckEditFailure = (payload: InfoCheckBatchEditErrors): ReceivePlotApplicationInfoCheckBatchEditFailureAction =>
   createAction('mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE')(payload);
+
+export const fetchTargetInfoChecksForPlotSearch = (payload: number): FetchTargetInfoChecksForPlotSearchAction =>
+  createAction('mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH')(payload);
+
+export const receiveTargetInfoChecksForPlotSearch = (payload: Array<Object>): ReceiveTargetInfoChecksForPlotSearchAction =>
+  createAction('mvj/plotApplications/RECEIVE_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH')(payload);
+
+export const targetInfoChecksForPlotSearchNotFound = (): TargetInfoChecksForPlotSearchNotFoundAction =>
+  createAction('mvj/plotApplications/TARGET_INFO_CHECKS_FOR_PLOT_SEARCH_NOT_FOUND')();

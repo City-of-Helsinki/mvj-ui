@@ -35,6 +35,8 @@ export type PlotApplicationsState = {
   isFetchingPlotSearch: boolean,
   plotSearch: ?PlotSearch,
   infoCheckBatchEditErrors: InfoCheckBatchEditErrors,
+  targetInfoChecksForCurrentPlotSearch: Array<Object>,
+  isFetchingTargetInfoChecksForCurrentPlotSearch: boolean,
 };
 
 export type PlotApplicationFormValue = string | Array<string> | Array<UploadedFileMeta> | boolean;
@@ -189,3 +191,7 @@ export type InfoCheckBatchEditErrors = {
 export type BatchEditPlotApplicationInfoChecksAction = Action<'mvj/plotApplications/BATCH_EDIT_INFO_CHECKS', InfoCheckBatchEditData>;
 export type ReceivePlotApplicationInfoCheckBatchEditSuccessAction = Action<'mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS', void>;
 export type ReceivePlotApplicationInfoCheckBatchEditFailureAction = Action<'mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE', InfoCheckBatchEditErrors>;
+
+export type FetchTargetInfoChecksForPlotSearchAction = Action<'mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH', number>;
+export type ReceiveTargetInfoChecksForPlotSearchAction = Action<'mvj/plotApplications/RECEIVE_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH', Array<Object>>;
+export type TargetInfoChecksForPlotSearchNotFoundAction = Action<'mvj/plotApplications/TARGET_INFO_CHECKS_FOR_PLOT_SEARCH_NOT_FOUND', void>;

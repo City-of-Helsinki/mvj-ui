@@ -6,26 +6,26 @@ import get from 'lodash/get';
 
 import ErrorBlock from './ErrorBlock';
 import ExternalLink from '$components/links/ExternalLink';
-import FieldTypeAddress from './FieldTypeAddress';
-import FieldTypeBasic from './FieldTypeBasic';
-import FieldTypeBoolean from './FieldTypeBoolean';
-import FieldTypeCheckbox from './FieldTypeCheckbox';
-import FieldTypeCheckboxDateTime from './FieldTypeCheckboxDateTime';
-import FieldTypeContactSelect from './FieldTypeContactSelect';
-import FieldTypeDatePicker from './FieldTypeDatePicker';
-import FieldTypeDecimal from './FieldTypeDecimal';
-import FieldTypeLeaseSelect from './FieldTypeLeaseSelect';
-import FieldTypeLessorSelect from './FieldTypeLessorSelect';
-import FieldTypeMultiSelect from './FieldTypeMultiSelect';
-import FieldTypeRadioWithField from './FieldTypeRadioWithField';
-import FieldTypeSearch from './FieldTypeSearch';
-import FieldTypeSelect from './FieldTypeSelect';
-import FieldTypeTextArea from './FieldTypeTextArea';
-import FieldTypeUserSelect from './FieldTypeUserSelect';
-import FormFieldLabel from './FormFieldLabel';
-import FieldTypeTime from './FieldTypeTime';
-import FormText from './FormText';
-import FormTextTitle from './FormTextTitle';
+import FieldTypeAddress from '$components/form/FieldTypeAddress';
+import FieldTypeBasic from '$components/form/FieldTypeBasic';
+import FieldTypeBoolean from '$components/form/FieldTypeBoolean';
+import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
+import FieldTypeCheckboxDateTime from '$components/form/FieldTypeCheckboxDateTime';
+import FieldTypeContactSelect from '$components/form/FieldTypeContactSelect';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeDecimal from '$components/form/FieldTypeDecimal';
+import FieldTypeLeaseSelect from '$components/form/FieldTypeLeaseSelect';
+import FieldTypeLessorSelect from '$components/form/FieldTypeLessorSelect';
+import FieldTypeMultiSelect from '$components/form/FieldTypeMultiSelect';
+import FieldTypeRadioWithField from '$components/form/FieldTypeRadioWithField';
+import FieldTypeSearch from '$components/form/FieldTypeSearch';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
+import FieldTypeUserSelect from '$components/form/FieldTypeUserSelect';
+import FormFieldLabel from '$components/form/FormFieldLabel';
+import FieldTypeTime from '$components/form/FieldTypeTime';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import {FieldTypes as FieldTypeOptions} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
@@ -37,10 +37,10 @@ import {
   getReferenceNumberLink,
 } from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {genericNormalizer} from './normalizers';
+import {genericNormalizer} from '$components/form/normalizers';
 import {getRouteById, Routes} from '$src/root/routes';
-import {genericValidator} from '../form/validations';
-import {getHoursAndMinutes} from "../../util/date";
+import {genericValidator} from '$components/form/validations';
+import {getHoursAndMinutes} from '$util/date';
 
 const FieldTypes = {
   [FieldTypeOptions.ADDRESS]: FieldTypeAddress,
@@ -73,9 +73,12 @@ const Types = {
   [FieldTypeOptions.TEXTAREA]: 'text',
 };
 
+// $FlowFixMe[method-unbinding] https://github.com/facebook/flow/issues/8689
 const resolveFieldType = (type: string): Object => Object.prototype.hasOwnProperty.call(FieldTypes, type)
   ? FieldTypes[type]
   : FieldTypeBasic;
+
+// $FlowFixMe[method-unbinding] https://github.com/facebook/flow/issues/8689
 const resolveType = (type: string): ?string => Object.prototype.hasOwnProperty.call(Types, type)
   ? Types[type]
   : null;
@@ -276,6 +279,7 @@ type Props = {
   isLoading?: boolean,
   language?: string,
   name: string,
+  onBlur?: Function,
   onChange?: Function,
   optionLabel?: string,
   overrideValues?: Object,
@@ -302,7 +306,7 @@ type State = {
 }
 
 class FormField extends PureComponent<Props, State> {
-  state = {
+  state: State = {
     allowEdit: false,
     allowRead: true,
     fieldAttributes: null,
@@ -311,7 +315,7 @@ class FormField extends PureComponent<Props, State> {
     options: [],
     required: false,
   }
-  static defaultProps = {
+  static defaultProps: $Shape<Props> = {
     autoBlur: false,
     disabled: false,
     disableDirty: false,
@@ -323,7 +327,7 @@ class FormField extends PureComponent<Props, State> {
     onChange: () => {},
   };
 
-  static getDerivedStateFromProps(props: Props, state: State) {
+  static getDerivedStateFromProps(props: Props, state: State): $Shape<State> | null {
     const overrideableBoolean = (fieldName) => {
       return get(props.overrideValues, fieldName) !== undefined
         ? !!get(props.overrideValues, fieldName) : !!get(props.fieldAttributes, fieldName);
@@ -343,8 +347,9 @@ class FormField extends PureComponent<Props, State> {
     return null;
   }
 
-  handleGenericNormalize = (value: any) => {
+  handleGenericNormalize: (any) => any = (value) => {
     const {fieldAttributes} = this.props;
+    // eslint-disable-next-line no-unused-vars
     const {fieldAttributes: _, ...rest} = this.state;
 
     return genericNormalizer(value, {
@@ -353,8 +358,9 @@ class FormField extends PureComponent<Props, State> {
     });
   }
 
-  handleGenericValidate = (value: any) => {
+  handleGenericValidate: (any) => any = (value) => {
     const {fieldAttributes} = this.props;
+    // eslint-disable-next-line no-unused-vars
     const {fieldAttributes: _, ...rest} = this.state;
 
     return genericValidator(value, {
@@ -363,13 +369,15 @@ class FormField extends PureComponent<Props, State> {
     });
   }
 
-  handleValidate = (value: any) => {
+  handleValidate: (value: any) => ?string = (value) => {
     const {validate} = this.props;
-    if(!validate) {return undefined;}
+    if (!validate) {
+      return undefined;
+    }
     return validate(value);
   }
 
-  render() {
+  render(): React$Node {
     const {
       autoBlur,
       autoComplete,
@@ -384,6 +392,7 @@ class FormField extends PureComponent<Props, State> {
       isLoading,
       language,
       name,
+      onBlur,
       onChange,
       optionLabel,
       overrideValues,
@@ -427,6 +436,7 @@ class FormField extends PureComponent<Props, State> {
         language={language}
         name={name}
         normalize={this.handleGenericNormalize}
+        onBlur={onBlur}
         onChange={onChange}
         optionLabel={optionLabel}
         options={options}
@@ -439,7 +449,7 @@ class FormField extends PureComponent<Props, State> {
         tooltipStyle={tooltipStyle}
         validate={allowEdit
           ? [this.handleGenericValidate, this.handleValidate]
-          : null
+          : []
         }
         valueSelectedCallback={valueSelectedCallback}
         uiDataKey={uiDataKey}

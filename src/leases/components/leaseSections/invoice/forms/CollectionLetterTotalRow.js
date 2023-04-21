@@ -10,14 +10,18 @@ import {FormNames} from '$src/enums';
 import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
 
+type OwnProps = {
+  selectedInvoices: Array<Object>,
+};
+
 type Props = {
+  ...OwnProps,
   fields: any,
-  invoiceIds: Array<Object>,
   penaltyInterestArray: Array<Object>,
 }
 
 const CollectionLetterTotalRow = ({
-  invoiceIds,
+  selectedInvoices,
   penaltyInterestArray,
 }: Props) => {
   const getTotalOutstandingAmount = () => {
@@ -38,10 +42,11 @@ const CollectionLetterTotalRow = ({
 
   const getTotalCollectionCharge = () => {
     let total = 0;
-    if(invoiceIds) {
-      invoiceIds.forEach(invoice=>{
-        if(invoice.collection_charge)
-          total+=convertStrToDecimalNumber(invoice.collection_charge);
+    if (selectedInvoices) {
+      selectedInvoices.forEach((invoice) => {
+        if (invoice.collection_charge) {
+          total += (convertStrToDecimalNumber(invoice.collection_charge) || 0);
+        }
       });
     }
     return total;
@@ -76,13 +81,13 @@ const CollectionLetterTotalRow = ({
 const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
 const selector = formValueSelector(formName);
 
-export default connect(
+export default (connect(
   (state, props) => {
     const penaltyInterestArray = [];
     props.fields.forEach((field) => {
       const invoice = selector(state, field),
         penaltyInterest = getPenaltyInterestByInvoice(state, invoice.invoice);
-      if(!isEmpty(penaltyInterest)) {
+      if (!isEmpty(penaltyInterest)) {
         penaltyInterestArray.push(penaltyInterest);
       }
     });
@@ -91,4 +96,4 @@ export default connect(
       penaltyInterestArray: penaltyInterestArray,
     };
   },
-)(CollectionLetterTotalRow);
+)(CollectionLetterTotalRow): React$ComponentType<OwnProps>);

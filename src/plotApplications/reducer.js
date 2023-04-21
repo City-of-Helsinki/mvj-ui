@@ -25,9 +25,13 @@ import type {
   ReceiveAttachmentAttributesAction,
   ReceiveAttachmentMethodsAction,
   ReceiveApplicantInfoCheckAttributesAction,
-  PlotApplicationsState, InfoCheckBatchEditErrors,
+  PlotApplicationsState,
+  InfoCheckBatchEditErrors,
+  ReceiveTargetInfoChecksForPlotSearchAction,
+  ReceivePlotApplicationInfoCheckBatchEditFailureAction,
 } from '$src/plotApplications/types';
 import type {ReceiveFormAttributesAction} from '$src/plotSearch/types';
+import {sortBy} from 'lodash/collection';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
@@ -256,11 +260,25 @@ const infoCheckBatchEditErrorsReducer: Reducer<InfoCheckBatchEditErrors> = handl
     target: [],
     applicant: [],
   }),
-  ['mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE']: (state, {payload}: {payload: InfoCheckBatchEditErrors}) => payload,
+  ['mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE']: (state, {payload}: ReceivePlotApplicationInfoCheckBatchEditFailureAction) => payload,
 }, {
   target: [],
   applicant: [],
 });
+
+const targetInfoChecksForCurrentPlotSearchReducer: Reducer<Array<Object>> = handleActions({
+  ['mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH']: () => [],
+  ['mvj/plotApplications/RECEIVE_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH']:
+    (state: Attributes, {payload: infoChecks}: ReceiveTargetInfoChecksForPlotSearchAction) =>
+      sortBy(infoChecks, 'application_identifier'),
+  ['mvj/plotApplications/TARGET_INFO_CHECKS_FOR_PLOT_SEARCH_NOT_FOUND']: () => [],
+}, []);
+
+const isFetchingTargetInfoChecksForCurrentPlotSearchReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH']: () => true,
+  ['mvj/plotApplications/RECEIVE_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH']: () => false,
+  ['mvj/plotApplications/TARGET_INFO_CHECKS_FOR_PLOT_SEARCH_NOT_FOUND']: () => false,
+}, false);
 
 export default (combineReducers<Object, Action<any>>({
   isFetching: isFetchingReducer,
@@ -297,4 +315,6 @@ export default (combineReducers<Object, Action<any>>({
   isFetchingTargetInfoCheckAttributes: isFetchingTargetInfoCheckAttributesReducer,
   targetInfoCheckAttributes: targetInfoCheckAttributesReducer,
   infoCheckBatchEditErrors: infoCheckBatchEditErrorsReducer,
+  targetInfoChecksForCurrentPlotSearch: targetInfoChecksForCurrentPlotSearchReducer,
+  isFetchingTargetInfoChecksForCurrentPlotSearch: isFetchingTargetInfoChecksForCurrentPlotSearchReducer,
 }): CombinedReducer<PlotApplicationsState, Action<any>>);

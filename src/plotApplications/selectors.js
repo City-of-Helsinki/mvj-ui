@@ -143,3 +143,10 @@ export const getApplicantInfoCheckSubmissionErrors = (state: RootState, checkDat
     })
     .filter((item) => item.error !== undefined);
 };
+
+export const getTargetInfoChecksForCurrentPlotSearch = (state: RootState): Array<Object> =>
+  state.plotApplications.targetInfoChecksForCurrentPlotSearch;
+
+export const getIsFetchingTargetInfoChecksForCurrentPlotSearch = (state: RootState): boolean =>
+  state.plotApplications.isFetchingTargetInfoChecksForCurrentPlotSearch;
+

@@ -113,3 +113,9 @@ export const deleteMeetingMemoRequest = (id: number): Generator<any, any, any> =
 export const fetchMeetingMemoAttributesRequest = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('meeting_memo/1/'), {method: 'OPTIONS'}));
 };
+
+export const fetchTargetInfoChecksForPlotSearchRequest = (id: number): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('target_status', {
+    plot_search: id,
+  })));
+};

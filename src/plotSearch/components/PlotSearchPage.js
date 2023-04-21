@@ -75,6 +75,7 @@ import ApplicationEdit from '$src/plotSearch/components/plotSearchSections/appli
 import ApplicationMap from '$src/plotSearch/components/plotSearchSections/map/ApplicationMap';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
 import {FIELDS_LOCKED_FOR_EDITING} from '$src/plotSearch/constants';
+import PlotSearchExportModal from '$src/plotApplications/components/exportModal/PlotSearchExportModal';
 
 type OwnProps = {
 
@@ -128,12 +129,14 @@ type Props = {
 type State = {
   activeTab: number,
   isRestoreModalOpen: boolean,
+  isExportModalOpen: boolean,
 }
 
 class PlotSearchPage extends Component<Props, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
+    isExportModalOpen: false,
   }
 
   static contextTypes = {
@@ -550,6 +553,10 @@ class PlotSearchPage extends Component<Props, State> {
 
     if(!isMethodAllowed(plotSearchMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
 
+    const openExportModal = () => this.setState(() => ({
+      isExportModalOpen: true,
+    }));
+
     return(
       <FullWidthContainer>
         <PageNavigationWrapper>
@@ -618,12 +625,19 @@ class PlotSearchPage extends Component<Props, State> {
             onSave={this.restoreUnsavedChanges}
             title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
           />
+          <PlotSearchExportModal
+            isOpen={this.state.isExportModalOpen}
+            onClose={() => this.setState(() => ({
+              isExportModalOpen: false,
+            }))}
+            plotSearchId={currentPlotSearch.id || null}
+          />
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
                 {isEditMode
                   ? <BasicInfoEdit />
-                  : <BasicInfo />
+                  : <BasicInfo openExportModal={openExportModal} />
                 }
               </ContentContainer>
             </TabPane>

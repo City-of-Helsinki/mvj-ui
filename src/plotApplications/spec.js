@@ -63,6 +63,8 @@ const baseState: PlotApplicationsState = {
     applicant: [],
     target: [],
   },
+  targetInfoChecksForCurrentPlotSearch: [],
+  isFetchingTargetInfoChecksForCurrentPlotSearch: false,
 };
 
 // $FlowFixMe

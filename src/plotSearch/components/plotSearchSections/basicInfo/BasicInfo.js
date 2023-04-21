@@ -40,12 +40,14 @@ import {
 } from '$src/plotSearch/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import PlotSearchTargetListing from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchTargetListing';
+import DocumentsButton from '$components/form/DocumentsButton';
 
 type OwnProps = {
-
+  openExportModal: Function,
 }
 
 type Props = {
+  ...OwnProps,
   usersPermissions: UsersPermissionsType,
   basicInformationCollapseState: Boolean,
   receiveCollapseStates: Function,
@@ -89,6 +91,7 @@ class BasicInfo extends PureComponent<Props, State> {
       basicInformationCollapseState,
       attributes,
       currentPlotSearch,
+      openExportModal,
     } = this.props;
 
     const plotSearch = getContentBasicInformation(currentPlotSearch);
@@ -99,6 +102,7 @@ class BasicInfo extends PureComponent<Props, State> {
 
     return (
       <Fragment>
+        <DocumentsButton style={{float: 'right'}} onClick={openExportModal} label="Tulosta kaikki hakemukset" />
         <Title>
           {PlotSearchFieldTitles.BASIC_INFO}
         </Title>

@@ -56,7 +56,7 @@ type Props = {
   plotSearch: ?Object,
 }
 
-class PlotApplication extends PureComponent<Props, void> {
+class PlotApplication extends PureComponent<Props> {
   handleBasicInfoCollapseToggle = (val: boolean) => {
     const {receiveCollapseStates} = this.props;
 
