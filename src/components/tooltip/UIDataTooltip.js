@@ -31,18 +31,22 @@ import type {Attributes} from '$src/types';
 import type {UiDataList} from '$src/uiData/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
-type Props = {
-  createUiData: Function,
-  deleteUiData: Function,
-  enableUiDataEdit: boolean,
-  editUiData: Function,
+type OwnProps = {
+  relativeTo?: any,
+  enableUiDataEdit?: boolean,
   innerRef?: Function,
   onTooltipClose: Function,
-  relativeTo?: any,
   style?: Object,
+  uiDataKey: ?string,
+};
+
+type Props = {
+  ...OwnProps,
+  createUiData: Function,
+  deleteUiData: Function,
+  editUiData: Function,
   uiDataAttributes: Attributes,
   uiDataList: UiDataList,
-  uiDataKey: ?string,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -61,7 +65,7 @@ type State = {
   usersPermissions: UsersPermissionsType,
 }
 
-class Tooltip extends PureComponent<Props, State> {
+class UIDataTooltip extends PureComponent<Props, State> {
   state = {
     allowToAddUiData: false,
     allowToDeleteUiData: false,
@@ -110,9 +114,9 @@ class Tooltip extends PureComponent<Props, State> {
       newState.allowToEditUiData = hasPermissions(props.usersPermissions, UsersPermissions.EDIT_GLOBAL_UI_DATA);
     }
 
-    if(props.uiDataList !== state.uiDataList || props.uiDataKey !== state.uiDataKey) {
-      newState.uiDataList = props.uiDataList,
-      newState.uiDataKey = props.uiDataKey,
+    if (props.uiDataList !== state.uiDataList || props.uiDataKey !== state.uiDataKey) {
+      newState.uiDataList = props.uiDataList;
+      newState.uiDataKey = props.uiDataKey;
       newState.uiData = getUiDataByKey(props.uiDataList, props.uiDataKey || '');
     }
 
@@ -272,7 +276,9 @@ class Tooltip extends PureComponent<Props, State> {
     const text = uiData ? uiData.value || '' : '';
     const name = `${uiDataKey || ''}__input`;
 
-    if(!uiDataKey && !enableUiDataEdit) return null;
+    if (!uiDataKey && !enableUiDataEdit) {
+      return null;
+    }
 
     return(
       <AppConsumer>
@@ -364,7 +370,7 @@ class Tooltip extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
+export default (connect(
   (state) => {
     return {
       uiDataAttributes: getUiDataAttributes(state),
@@ -377,4 +383,4 @@ export default connect(
     deleteUiData,
     editUiData,
   }
-)(Tooltip);
+)(UIDataTooltip): React$ComponentType<OwnProps>);

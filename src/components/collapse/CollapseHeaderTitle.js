@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
-import Tooltip from '$components/tooltip/Tooltip';
+import UIDataTooltip from '$components/tooltip/UIDataTooltip';
 
 type Props = {
   children?: any,
@@ -94,7 +94,7 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
     >
       <span>{children}</span>
       {(!!uiDataKey || enableUiDataEdit) &&
-        <Tooltip
+        <UIDataTooltip
           innerRef={tooltipRef}
           enableUiDataEdit={enableUiDataEdit}
           onTooltipClose={this.handleTooltipClose}

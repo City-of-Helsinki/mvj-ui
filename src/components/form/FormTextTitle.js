@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
-import Tooltip from '$components/tooltip/Tooltip';
+import UIDataTooltip from '$components/tooltip/UIDataTooltip';
 
 type Props = {
   children?: any,
@@ -99,7 +99,7 @@ class FormTextTitle extends PureComponent<Props, State> {
       {children || title}
       {required && <i className='required'> *</i>}
       {(!!uiDataKey || enableUiDataEdit) &&
-        <Tooltip
+        <UIDataTooltip
           enableUiDataEdit={enableUiDataEdit}
           onTooltipClose={this.handleTooltipClose}
           relativeTo={relativeTo}
