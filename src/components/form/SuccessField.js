@@ -7,7 +7,7 @@ type Props = {
   style?: Object,
 };
 
-const SuccessField = ({meta: {warning}, showWarning = true, style}: Props) => {
+const SuccessField = ({meta: {warning}, showWarning = true, style}: Props): React$Node => {
   return (showWarning && warning)
     ? <span className="form-field__success-field" role="alert" style={style}>{warning}</span>
     : null;

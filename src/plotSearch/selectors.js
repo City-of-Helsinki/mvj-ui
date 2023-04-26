@@ -136,3 +136,15 @@ export const getStages: Selector<Array<Object>, void> = (state: RootState): Arra
 
 export const getCurrentPlotSearchStage: Selector<string | null, void> = (state: RootState): string | null =>
   getCurrentPlotSearch(state)?.stage?.stage || null;
+
+export const getIsBatchCreatingReservationIdentifiers: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isBatchCreatingReservationIdentifiers;
+
+export const getLastBatchReservationCreationError: Selector<any, void> = (state: RootState): any =>
+  state.plotSearch.lastBatchReservationCreationError;
+
+export const getIsFetchingReservationIdentifierUnitLists: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingReservationIdentifierUnitLists;
+
+export const getReservationIdentifierUnitLists: Selector<Object, void> = (state: RootState): null | Object =>
+  state.plotSearch.reservationIdentifierUnitLists;

@@ -30,7 +30,7 @@ const SortableTableHeader = ({
   sortable,
   sortKey,
   sortOrder,
-}: Props) => {
+}: Props): React$Node => {
   const setTheadRef = (el: any) => {
     if(getRef) {
       getRef(el);
@@ -72,11 +72,11 @@ const SortableTableHeader = ({
             }
           };
 
-          const isSortable = (sortable && column.sortable !== false) ? true : false,
-            sortIcon = getSortIcon(column, isSortable),
-            columnStyle = columnStyles && (columnStyles.length > (index))
-              ? columnStyles[index]
-              : {};
+          const isSortable = !!(sortable && column.sortable !== false);
+          const sortIcon = getSortIcon(column, isSortable);
+          const columnStyle = columnStyles && (columnStyles.length > (index))
+            ? columnStyles[index]
+            : {};
 
           return(
             <th

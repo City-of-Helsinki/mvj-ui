@@ -1,0 +1,26 @@
+.ReservationIdentifiersModal {
+  .modal__wrapper {
+    width: 98%;
+
+    .sortable-table {
+      table-layout: fixed;
+
+      td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .loader__wrapper {
+    margin-right: .5em;
+  }
+
+  &--row-edit {
+    .modal__wrapper {
+      // Let the type/municipality/district dropdowns cross outside the modal boundaries,
+      // since they're otherwise a bit annoying to use.
+      overflow: visible;
+    }
+  }
+}

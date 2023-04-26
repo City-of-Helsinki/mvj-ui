@@ -3,8 +3,8 @@ import React from 'react';
 import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
-import {fetchDecisions} from "../../leases/requestsAsync";
-import {formatDecisionName} from "../../plotSearch/helpers";
+import {fetchDecisions} from '$src/leases/requestsAsync';
+import {formatDecisionName} from '$src/plotSearch/helpers';
 
 type Props = {
   disabled?: boolean,
@@ -13,7 +13,9 @@ type Props = {
   placeholder?: string,
   onChange: Function,
   value?: Object,
-  getOptions?: Function
+  getOptions?: Function,
+  cacheOptions?: any,
+  hasError: boolean,
 }
 
 const DecisionSelectInput = ({
@@ -25,15 +27,15 @@ const DecisionSelectInput = ({
   value,
   getOptions,
   cacheOptions,
-  hasError
-}: Props) => {
+  hasError,
+}: Props): React$Node => {
   const getDecisionOptions = (decisionList: Array<Object>): Array<Object> =>
     decisionList
       .map((decision) => {
         return {
           value: decision.id,
           label: formatDecisionName(decision),
-          data: decision
+          data: decision,
         };
       });
 

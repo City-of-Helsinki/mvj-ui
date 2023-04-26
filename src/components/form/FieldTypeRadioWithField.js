@@ -20,9 +20,9 @@ const FieldTypeRadioWithField = ({
   isDirty,
   label,
   options,
-}: Props) => {
+}: Props): React$Node => {
   const handleChange = (e: any) =>  {
-    if(autoBlur) {
+    if (autoBlur) {
       onBlur(e.target.value);
     } else {
       onChange(e.target.value);

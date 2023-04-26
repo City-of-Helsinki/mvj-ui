@@ -220,13 +220,26 @@ export const getTargetType = (target: Object): string | null => {
   return null;
 };
 
-export const getTargetTitle = (target: Object): string => {
+export const getTargetIdentifier = (target: Object): string => {
   const targetType = getTargetType(target);
 
   if (targetType === TargetIdentifierTypes.PLAN_UNIT) {
-    return `${target.lease_address?.address || '-'} (${target.lease_identifier})`;
+    return target.lease_identifier;
   } else if (targetType === TargetIdentifierTypes.CUSTOM_DETAILED_PLAN) {
-    return `${target.custom_detailed_plan?.address || '-'} (${target.custom_detailed_plan?.identifier})`;
+    return target.custom_detailed_plan?.identifier || '';
+  } else {
+    return '';
+  }
+};
+
+export const getTargetTitle = (target: Object): string => {
+  const targetType = getTargetType(target);
+  const targetIdentifier = getTargetIdentifier(target);
+
+  if (targetType === TargetIdentifierTypes.PLAN_UNIT) {
+    return `${target.lease_address?.address || '-'} (${targetIdentifier})`;
+  } else if (targetType === TargetIdentifierTypes.CUSTOM_DETAILED_PLAN) {
+    return `${target.custom_detailed_plan?.address || '-'} (${targetIdentifier})`;
   } else {
     return '?';
   }

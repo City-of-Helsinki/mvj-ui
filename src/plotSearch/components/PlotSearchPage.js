@@ -76,6 +76,7 @@ import ApplicationMap from '$src/plotSearch/components/plotSearchSections/map/Ap
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
 import {FIELDS_LOCKED_FOR_EDITING} from '$src/plotSearch/constants';
 import PlotSearchExportModal from '$src/plotApplications/components/exportModal/PlotSearchExportModal';
+import ReservationIdentifiersModal from '$src/plotSearch/components/reservationIdentifiers/ReservationIdentifiersModal';
 
 type OwnProps = {
 
@@ -130,6 +131,7 @@ type State = {
   activeTab: number,
   isRestoreModalOpen: boolean,
   isExportModalOpen: boolean,
+  isReservationIdentifiersModalOpen: boolean,
 }
 
 class PlotSearchPage extends Component<Props, State> {
@@ -137,6 +139,7 @@ class PlotSearchPage extends Component<Props, State> {
     activeTab: 0,
     isRestoreModalOpen: false,
     isExportModalOpen: false,
+    isReservationIdentifiersModalOpen: false,
   }
 
   static contextTypes = {
@@ -557,6 +560,10 @@ class PlotSearchPage extends Component<Props, State> {
       isExportModalOpen: true,
     }));
 
+    const openReservationIdentifiersModal = () => this.setState(() => ({
+      isReservationIdentifiersModalOpen: true,
+    }));
+
     return(
       <FullWidthContainer>
         <PageNavigationWrapper>
@@ -632,12 +639,20 @@ class PlotSearchPage extends Component<Props, State> {
             }))}
             plotSearchId={currentPlotSearch.id || null}
           />
+          <ReservationIdentifiersModal
+            isOpen={this.state.isReservationIdentifiersModalOpen}
+            onClose={() => this.setState(() => ({
+              isReservationIdentifiersModalOpen: false,
+            }))} />
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
                 {isEditMode
                   ? <BasicInfoEdit />
-                  : <BasicInfo openExportModal={openExportModal} />
+                  : <BasicInfo
+                    openExportModal={openExportModal}
+                    openReservationIdentifiersModal={openReservationIdentifiersModal}
+                  />
                 }
               </ContentContainer>
             </TabPane>

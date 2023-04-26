@@ -20,7 +20,7 @@ const FieldTypeBoolean = ({
   isDirty = false,
   label,
 
-}: Props) => {
+}: Props): React$Node => {
   const options = [
     {value: false, label: 'Ei'},
     {value: true, label: 'Kyllä'},
@@ -28,9 +28,9 @@ const FieldTypeBoolean = ({
 
   const handleChange = (e: any) =>  {
     if(autoBlur) {
-      onBlur(e.target.value === 'true' ? true : false);
+      onBlur(e.target.value === 'true');
     } else {
-      onChange(e.target.value === 'true' ? true : false);
+      onChange(e.target.value === 'true');
     }
   };
 

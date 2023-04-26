@@ -28,7 +28,7 @@ export type Column = {
   renderer?: Function,
   sortable?: boolean,
   style?: Object,
-  text: string,
+  text: React$Node,
 }
 
 type Props = {

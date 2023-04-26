@@ -9,7 +9,7 @@ type Props = {
   onChange: Function,
 }
 
-const AddFileButton = ({label, name, onChange}: Props) => {
+const AddFileButton = ({label, name, onChange}: Props): React$Node => {
   let input: any;
 
   const handleKeyDown = (e: any) => {

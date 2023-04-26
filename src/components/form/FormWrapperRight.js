@@ -5,7 +5,7 @@ type Props = {
   children?: any,
 }
 
-const FormWrapperRight = ({children}: Props) =>
+const FormWrapperRight = ({children}: Props): React$Node =>
   <div className='form-wrapper__right'>{children}</div>;
 
 export default FormWrapperRight;

@@ -88,3 +88,20 @@ export const fetchPlotSearchApplicationsRequest = (id: number): Generator<any, a
     plot_search_id: id,
   })));
 };
+
+export const editTargetPlotSearchRelationRequest = (payload: Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`plot_search_target/${payload.id}/`), {
+    method: 'PATCH',
+    body: JSON.stringify({
+      reservation_identifier: payload.reservation_identifier,
+    }),
+  }));
+};
+
+export const fetchAllMunicipalitiesRequest = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('municipality/?limit=10000')));
+};
+
+export const fetchAllDistrictsRequest = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('district/?limit=10000')));
+};

@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 
-import FormText from './FormText';
-import FormTextTitle from './FormTextTitle';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 
 type Props = {
   text: any,
@@ -14,7 +14,7 @@ const FormTitleAndText = ({
   text,
   textClassName,
   title,
-}: Props) => {
+}: Props): React$Node => {
   return(
     <div>
       <FormTextTitle title={title} />

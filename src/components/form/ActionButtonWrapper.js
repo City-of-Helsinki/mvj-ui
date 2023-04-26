@@ -5,7 +5,7 @@ type Props = {
   children: any,
 }
 
-const ActionButtonWrapper = ({children}: Props) =>
+const ActionButtonWrapper = ({children}: Props): React$Node =>
   <div className='form__action-button-wrapper'>{children}</div>;
 
 export default ActionButtonWrapper;

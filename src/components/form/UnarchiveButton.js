@@ -12,7 +12,7 @@ type Props = {
   type?: string,
 }
 
-const UnarchiveButton = ({className, disabled, onClick, title, type = 'button'}: Props) =>
+const UnarchiveButton = ({className, disabled, onClick, title, type = 'button'}: Props): React$Node =>
   <button
     className={classNames('form__unarchive-button', className)}
     disabled={disabled}

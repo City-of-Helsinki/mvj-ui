@@ -18,30 +18,45 @@ import {getDistrictOptions} from '$src/district/helpers';
 import {getPayloadCreateLease} from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
-import {getDistrictsByMunicipality} from '$src/district/selectors';
+import {getDistrictsByMunicipality, getIsFetching as getIsFetchingDistricts} from '$src/district/selectors';
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/types';
 import type {DistrictList} from '$src/district/types';
 
+type OwnProps = {
+  onClose: Function,
+  onSubmit: Function,
+  allowToChangeRelateTo?: boolean,
+  allowToChangeReferenceNumberAndNote?: boolean,
+  confirmButtonLabel?: string,
+};
 
 type Props = {
-  allowToChangeRelateTo: boolean,
+  ...OwnProps,
   change: Function,
   districts: DistrictList,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
   leaseAttributes: Attributes,
   municipality: string,
-  onClose: Function,
-  onSubmit: Function,
   setRefForFirstField?: Function,
   valid: boolean,
+  district: number | string,
+  isFetchingDistricts: boolean,
 }
 
 class CreateLeaseForm extends Component<Props> {
   firstField: any
+
+  componentDidMount() {
+    const {municipality, fetchDistrictsByMunicipality} = this.props;
+
+    if (municipality) {
+      fetchDistrictsByMunicipality(parseInt(municipality));
+    }
+  }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if(this.props.municipality !== nextProps.municipality) {
@@ -78,10 +93,13 @@ class CreateLeaseForm extends Component<Props> {
   render() {
     const {
       allowToChangeRelateTo,
+      allowToChangeReferenceNumberAndNote,
       districts,
+      isFetchingDistricts,
       leaseAttributes,
       onClose,
       valid,
+      confirmButtonLabel,
     } = this.props;
 
     const districtOptions = getDistrictOptions(districts);
@@ -137,11 +155,12 @@ class CreateLeaseForm extends Component<Props> {
                 }}
                 enableUiDataEdit
                 uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.DISTRICT)}
+                isLoading={isFetchingDistricts}
               />
             </Authorization>
           </Column>
         </Row>
-        <Row>
+        {allowToChangeReferenceNumberAndNote && <Row>
           <Column small={4}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.REFERENCE_NUMBER)}>
               <FormField
@@ -168,7 +187,7 @@ class CreateLeaseForm extends Component<Props> {
               />
             </Authorization>
           </Column>
-        </Row>
+        </Row>}
         {allowToChangeRelateTo &&
           <Row>
             <Column small={4}>
@@ -196,9 +215,9 @@ class CreateLeaseForm extends Component<Props> {
           />
           <Button
             className={ButtonColors.SUCCESS}
-            disabled={!valid}
+            disabled={!valid || isFetchingDistricts}
             onClick={this.handleCreate}
-            text='Luo tunnus'
+            text={confirmButtonLabel || 'Luo tunnus'}
           />
         </ModalButtonWrapper>
       </div>
@@ -209,7 +228,7 @@ class CreateLeaseForm extends Component<Props> {
 const formName = FormNames.LEASE_CREATE_MODAL;
 const selector = formValueSelector(formName);
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state) => {
       const municipality = selector(state, 'municipality');
@@ -224,6 +243,7 @@ export default flowRight(
         reference_number: selector(state, 'reference_number'),
         state: selector(state, 'state'),
         type: selector(state, 'type'),
+        isFetchingDistricts: getIsFetchingDistricts(state),
       };
     },
     {
@@ -236,4 +256,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(CreateLeaseForm);
+)(CreateLeaseForm): React$ComponentType<OwnProps>);

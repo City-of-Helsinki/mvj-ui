@@ -1,10 +1,11 @@
 // @flow
 import React from 'react';
 import DatePicker, {registerLocale} from 'react-datepicker';
-import {isValidDate} from '$util/date';
 import parse from 'date-fns/parse';
 import fi from 'date-fns/locale/fi';
 import classNames from 'classnames';
+
+import {isValidDate} from '$util/date';
 
 registerLocale('fi', fi);
 
@@ -24,14 +25,14 @@ const FieldTypeDatePicker = ({
   isDirty = false,
   placeholder,
   setRefForField,
-}: Props) => {
+}: Props): React$Node => {
   const handleSetReference = (element: any) => {
     if(setRefForField) {
       setRefForField(element);
     }
   };
 
-  const isShortDateStr = (value: string) => value.length == 8 && /^[0-9.]+$/.test(value);
+  const isShortDateStr = (value: string) => value.length === 8 && /^[0-9.]+$/.test(value);
 
   const getDateStr = (value: string) => [
     value.substring(0, 2),
@@ -53,7 +54,7 @@ const FieldTypeDatePicker = ({
       onChange(parsedDate);
     } else if (isShortDateStr(value)) {
       const dateStr = getDateStr(value);
-      
+
       parsedDate = getParsedDate(dateStr);
 
       if(isValidDate(parsedDate)) {

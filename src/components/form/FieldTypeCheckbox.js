@@ -14,7 +14,6 @@ type Props = {
 const FieldTypeCheckbox = ({
   disabled = false,
   displayError = false,
-  input,
   input: {name, onBlur, value},
   isDirty = false,
   label,
@@ -36,6 +35,7 @@ const FieldTypeCheckbox = ({
       return onBlur(newValue);
     }
 
+    // noinspection RedundantConditionalExpressionJS
     return onBlur(!!value && value !== 'false' ? false : true);
   };
 
