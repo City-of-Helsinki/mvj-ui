@@ -20,11 +20,11 @@ type State = {
 class SubTitle extends PureComponent<Props, State> {
   timer: any;
 
-  state = {
+  state: State = {
     showAddButton: false,
   }
 
-  static defaultProps = {
+  static defaultProps: $Shape<Props> = {
     enableUiDataEdit: false,
   }
 
@@ -32,7 +32,7 @@ class SubTitle extends PureComponent<Props, State> {
     this.stopTimer();
   }
 
-  startTimer = () => {
+  startTimer: () => void = () => {
     this.timer = setInterval(
       () => {
         this.showAddButton();
@@ -42,17 +42,17 @@ class SubTitle extends PureComponent<Props, State> {
     );
   }
 
-  stopTimer = () => {
+  stopTimer: () => void = () => {
     clearInterval(this.timer);
   }
 
-  handleMouseEnter = () => {
+  handleMouseEnter: () => void = () => {
     this.startTimer();
   }
 
-  handleMouseLeave = (event: any) => {
-    const target = event.target,
-      el = ReactDOM.findDOMNode(this);
+  handleMouseLeave: (SyntheticMouseEvent<HTMLHeadingElement>) => void = (event) => {
+    const target = event.currentTarget;
+    const el = ReactDOM.findDOMNode(this);
 
     if (el && (target === el || el.contains(target))) {
       this.stopTimer();
@@ -60,20 +60,20 @@ class SubTitle extends PureComponent<Props, State> {
     }
   }
 
-  handleTooltipClose = () => {
+  handleTooltipClose: () => void = () => {
     this.stopTimer();
     this.hideAddButton();
   }
 
-  hideAddButton = () => {
+  hideAddButton: () => void = () => {
     this.setState({showAddButton: false});
   }
 
-  showAddButton = () => {
+  showAddButton: () => void = () => {
     this.setState({showAddButton: true});
   }
 
-  render() {
+  render(): React$Node {
     const {
       children,
       enableUiDataEdit,
