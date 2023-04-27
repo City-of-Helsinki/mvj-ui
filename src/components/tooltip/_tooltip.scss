@@ -33,16 +33,21 @@
     z-index: 1010;
     width: 350px;
 
+    .modal-wrapper & {
+      z-index: 1090;
+    }
 
-    &_wrapper {
+    &-wrapper {
       background-color: $white;
       padding: rem-calc(15px);
       box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.4);
       display: inline-block;
       max-width: 350px;
       text-align: left;
+    }
 
-      &.edit-container {
+    &.edit-tooltip {
+      .tooltip__text-container-wrapper {
         width: 350px;
       }
     }
@@ -55,7 +60,7 @@
       border-style: solid;
     }
 
-    &.position-bottom-left {
+    &.tooltip__text-container--position-bottom-left {
       top: 27px;
       right: -15px;
       text-align: right;
@@ -67,7 +72,7 @@
       }
     }
 
-    &.position-bottom-right {
+    &.tooltip__text-container--position-bottom-right {
       top: 27px;
       left: -15px;
       text-align: left;
@@ -79,7 +84,7 @@
       }
     }
 
-    &.position-top-left {
+    &.tooltip__text-container--position-top-left {
       bottom: 27px;
       right: -15px;
       text-align: right;
@@ -91,7 +96,7 @@
       }
     }
 
-    &.position-top-right {
+    &.tooltip__text-container--position-top-right {
       bottom: 27px;
       top: unset;
       left: -15px;

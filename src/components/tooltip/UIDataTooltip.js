@@ -1,14 +1,11 @@
 // @flow
-import React, {Fragment, PureComponent} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import ReactDOM from 'react-dom';
-import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddIcon from '$components/icons/AddIcon';
 import Button from '$components/button/Button';
-import CloseButton from '$components/button/CloseButton';
 import ErrorBlock from '$components/form/ErrorBlock';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import InfoIcon from '$components/icons/InfoIcon';
@@ -30,9 +27,12 @@ import {genericValidator} from '$components/form/validations';
 import type {Attributes} from '$src/types';
 import type {UiDataList} from '$src/uiData/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import Tooltip from '$components/tooltip/Tooltip';
+import TooltipWrapper from '$components/tooltip/TooltipWrapper';
+import TooltipToggleButton from '$components/tooltip/TooltipToggleButton';
 
 type OwnProps = {
-  relativeTo?: any,
+  relativeTo?: Element,
   enableUiDataEdit?: boolean,
   innerRef?: Function,
   onTooltipClose: Function,
@@ -58,7 +58,6 @@ type State = {
   error: ?string,
   isOpen: boolean,
   isSaveClicked: boolean,
-  position: 'position-top-left' | 'position-top-right' | 'position-bottom-left' | 'position-bottom-right';
   uiData: ?Object,
   uiDataKey: ?string,
   uiDataList: UiDataList,
@@ -74,23 +73,14 @@ class UIDataTooltip extends PureComponent<Props, State> {
     error: undefined,
     isOpen: false,
     isSaveClicked: false,
-    position: 'position-bottom-right',
     uiData: null,
     uiDataKey: null,
     uiDataList: [],
     usersPermissions: [],
   }
 
-  componentDidMount() {
-    const {uiDataKey} = this.props;
-
-    if(uiDataKey) {
-      window.addEventListener('click', this.onDocumentClick);
-    }
-  }
-
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if(!prevState.isOpen && this.state.isOpen) {
+    if (!prevState.isOpen && this.state.isOpen) {
       const {uiData} = this.state;
       const editedText = uiData
         ? uiData.value || ''
@@ -123,29 +113,6 @@ class UIDataTooltip extends PureComponent<Props, State> {
     return !isEmpty(newState) ? newState : null;
   }
 
-  componentWillUnmount() {
-    const {uiDataKey} = this.props;
-
-    if(uiDataKey) {
-      window.removeEventListener('click', this.onDocumentClick);
-    }
-  }
-
-  onDocumentClick = (event: any) => {
-    const {isOpen} = this.state;
-    const target = event.target,
-      el = ReactDOM.findDOMNode(this);
-
-    if (isOpen) {
-      event.stopPropagation();
-      event.preventDefault();
-    }
-
-    if (isOpen && el && target !== el && !el.contains(target)) {
-      this.closeTooltip(event);
-    }
-  };
-
   handleTextChange = (e: any) => {
     const value = e.target.value;
 
@@ -155,27 +122,16 @@ class UIDataTooltip extends PureComponent<Props, State> {
     });
   }
 
-  closeTooltip = (e: any) => {
+  closeTooltip = () => {
     const {onTooltipClose} = this.props;
-
-    if(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
 
     this.setState({isOpen: false});
     onTooltipClose();
   }
 
-  openTooltip = (e: any) => {
-    if(e) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
-
+  openTooltip = () => {
     this.setState({
       isOpen: true,
-      position: this.calculatePosition(),
     });
   }
 
@@ -188,52 +144,16 @@ class UIDataTooltip extends PureComponent<Props, State> {
     }
   }
 
-  calculatePosition = () => {
-    const {relativeTo} = this.props;
-    let {innerHeight: height, innerWidth: width} = window;
-    const el = ReactDOM.findDOMNode(this);
-
-    if(el) {
-      // $FlowFixMe
-      let {x, y} = el.getBoundingClientRect();
-
-      if(relativeTo) {
-        const {x: x2, y: y2, height: height2, width: width2} = relativeTo.getBoundingClientRect();
-        x -= x2;
-        y -= y2;
-        height = height2;
-        width = width2;
-      }
-
-      const top = !!(y > height - y);
-      const left = !!(x > width - x);
-
-      if(top) {
-        if(left) {
-          return 'position-top-left';
-        } else {
-          return 'position-top-right';
-        }
-      } else {
-        if(left) {
-          return 'position-bottom-left';
-        } else {
-          return 'position-bottom-right';
-        }
-      }
-    }
-
-    return 'position-bottom-right';
-  }
-
   handleSave = (e: any) => {
     const {createUiData, editUiData, uiDataKey} = this.props;
     const {editedText, error, uiData} = this.state;
 
-    if(e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
 
-    if(!error) {
-      if(uiData) {
+    if (!error) {
+      if (uiData) {
         editUiData({
           id: uiData.id,
           key: uiData.key,
@@ -260,7 +180,13 @@ class UIDataTooltip extends PureComponent<Props, State> {
   }
 
   render() {
-    const {enableUiDataEdit, innerRef, style, uiDataKey} = this.props;
+    const {
+      enableUiDataEdit,
+      innerRef,
+      style,
+      uiDataKey,
+      relativeTo,
+    } = this.props;
     const {
       allowToAddUiData,
       allowToDeleteUiData,
@@ -269,9 +195,9 @@ class UIDataTooltip extends PureComponent<Props, State> {
       error,
       isOpen,
       isSaveClicked,
-      position,
       uiData,
     } = this.state;
+
     const showEditContainer = enableUiDataEdit && (uiData && allowToEditUiData) || (!uiData && allowToAddUiData);
     const text = uiData ? uiData.value || '' : '';
     const name = `${uiDataKey || ''}__input`;
@@ -299,70 +225,64 @@ class UIDataTooltip extends PureComponent<Props, State> {
             });
           };
 
-          return(
-            <div className='tooltip__component' ref={innerRef} style={style}>
-              <div className='tooltip__container'>
-                {enableUiDataEdit && allowToAddUiData && !uiData &&
-                  <button className='tooltip__add-button' onClick={this.openTooltip} style={{display: isOpen ? 'inherit' : null}} type='button'>
-                    <AddIcon />
-                  </button>
-                }
-                {!!uiData &&
-                  <button className='tooltip__open-button' onClick={this.openTooltip} type='button'>
-                    <InfoIcon />
-                  </button>
-                }
-                {isOpen &&
-                  <Fragment>
-                    {showEditContainer &&
-                      <div className={classNames('tooltip__text-container', position)}>
-                        <div className='tooltip__text-container_wrapper edit-container'>
-                          <CloseButton onClick={this.closeTooltip} />
+          return (
+            <TooltipWrapper innerRef={innerRef} style={{style}}>
+              {enableUiDataEdit && allowToAddUiData && !uiData &&
+                <TooltipToggleButton
+                  onClick={this.openTooltip}
+                  className='tooltip__add-button'
+                  style={{display: isOpen ? 'inherit' : null}}>
+                  <AddIcon />
+                </TooltipToggleButton>
+              }
+              {!!uiData &&
+                <TooltipToggleButton className='tooltip__open-button' onClick={this.openTooltip}>
+                  <InfoIcon />
+                </TooltipToggleButton>
+              }
+              <Tooltip
+                isOpen={isOpen}
+                className={showEditContainer ? 'edit-tooltip' : undefined}
+                onClose={this.closeTooltip}
+                relativeTo={relativeTo}
+              >
+                {showEditContainer
+                  ? <>
+                    <FormFieldLabel htmlFor={name}>Ohjeteksti</FormFieldLabel>
+                    <TextAreaInput
+                      id={name}
+                      name={name}
+                      onChange={this.handleTextChange}
+                      rows={4}
+                      value={editedText}
+                    />
+                    {isSaveClicked && !!error && <ErrorBlock error={error} />}
 
-                          <FormFieldLabel htmlFor={name}>Ohjeteksti</FormFieldLabel>
-                          <TextAreaInput
-                            id={name}
-                            name={name}
-                            onChange={this.handleTextChange}
-                            rows={4}
-                            value={editedText}
-                          />
-                          {isSaveClicked && !!error && <ErrorBlock error={error} />}
-
-                          <ModalButtonWrapper>
-                            {allowToDeleteUiData && !!uiData &&
-                              <Button
-                                className={ButtonColors.ALERT}
-                                onClick={handleDelete}
-                                text='Poista'
-                              />
-                            }
-                            <Button
-                              className={ButtonColors.SECONDARY}
-                              onClick={this.closeTooltip}
-                              text='Peruuta'
-                            />
-                            <Button
-                              className={ButtonColors.SUCCESS}
-                              disabled={isSaveClicked && !!error}
-                              onClick={this.handleSave}
-                              text='Tallenna'
-                            />
-                          </ModalButtonWrapper>
-                        </div>
-                      </div>
-                    }
-                    {!showEditContainer &&
-                      <div className={classNames('tooltip__text-container', position)}>
-                        <div className='tooltip__text-container_wrapper'>
-                          <p>{text}</p>
-                        </div>
-                      </div>
-                    }
-                  </Fragment>
+                    <ModalButtonWrapper>
+                      {allowToDeleteUiData && !!uiData &&
+                        <Button
+                          className={ButtonColors.ALERT}
+                          onClick={handleDelete}
+                          text='Poista'
+                        />
+                      }
+                      <Button
+                        className={ButtonColors.SECONDARY}
+                        onClick={this.closeTooltip}
+                        text='Peruuta'
+                      />
+                      <Button
+                        className={ButtonColors.SUCCESS}
+                        disabled={isSaveClicked && !!error}
+                        onClick={this.handleSave}
+                        text='Tallenna'
+                      />
+                    </ModalButtonWrapper>
+                  </>
+                  : <p>{text}</p>
                 }
-              </div>
-            </div>
+              </Tooltip>
+            </TooltipWrapper>
           );
         }}
       </AppConsumer>
