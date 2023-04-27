@@ -110,6 +110,13 @@
     .form__text {
       margin-bottom: 0;
     }
+
+    .tooltip__component {
+      position: relative;
+      margin-left: rem-calc(8px);
+      right: unset;
+      top: unset;
+    }
   }
 
   .edit-plot-application-section-form__subsection-header-options {
