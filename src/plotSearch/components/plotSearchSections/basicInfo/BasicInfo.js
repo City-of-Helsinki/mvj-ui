@@ -51,7 +51,7 @@ type OwnProps = {
 type Props = {
   ...OwnProps,
   usersPermissions: UsersPermissionsType,
-  basicInformationCollapseState: Boolean,
+  basicInformationCollapseState: boolean,
   receiveCollapseStates: Function,
   attributes: Attributes,
   currentPlotSearch: PlotSearch,
