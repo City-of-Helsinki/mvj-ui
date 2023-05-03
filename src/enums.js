@@ -429,6 +429,8 @@ export const FieldTypes = {
   TEXTAREA: 'textarea',
   USER: 'user',
   TIME: 'time',
+  HIDDEN: 'hidden',
+  FRACTIONAL: 'fractional',
 };
 
 /**

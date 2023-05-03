@@ -24,6 +24,8 @@ import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
 import FieldTypeUserSelect from '$components/form/FieldTypeUserSelect';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import FieldTypeTime from '$components/form/FieldTypeTime';
+import FieldTypeHidden from '$components/form/FieldTypeHidden';
+import FieldTypeFractional from '$components/form/FieldTypeFractional';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import {FieldTypes as FieldTypeOptions} from '$src/enums';
@@ -63,6 +65,8 @@ const FieldTypes = {
   [FieldTypeOptions.TEXTAREA]: FieldTypeTextArea,
   [FieldTypeOptions.USER]: FieldTypeUserSelect,
   [FieldTypeOptions.TIME]: FieldTypeTime,
+  [FieldTypeOptions.FRACTIONAL]: FieldTypeFractional,
+  [FieldTypeOptions.HIDDEN]: FieldTypeHidden,
 };
 
 const Types = {
@@ -165,6 +169,8 @@ const FormFieldInput = ({
       case FieldTypeOptions.ADDRESS:
       case FieldTypeOptions.INTEGER:
       case FieldTypeOptions.STRING:
+      case FieldTypeOptions.HIDDEN:
+      case FieldTypeOptions.FRACTIONAL:
         return value;
       case FieldTypeOptions.REFERENCE_NUMBER:
         return value
@@ -214,7 +220,7 @@ const FormFieldInput = ({
             {label}
           </FormTextTitle>
         }
-        {label && fieldType !== FieldTypeOptions.BOOLEAN &&
+        {label && fieldType !== FieldTypeOptions.BOOLEAN && fieldType !== FieldTypeOptions.HIDDEN &&
           <FormFieldLabel
             className={invisibleLabel ? 'invisible' : ''}
             htmlFor={input.name}
@@ -303,6 +309,7 @@ type State = {
   label: ?string,
   options: Array<Object>,
   required: boolean,
+  value: ?string,
 }
 
 class FormField extends PureComponent<Props, State> {
@@ -314,6 +321,7 @@ class FormField extends PureComponent<Props, State> {
     label: null,
     options: [],
     required: false,
+    value: null,
   }
   static defaultProps: $Shape<Props> = {
     autoBlur: false,
@@ -340,6 +348,7 @@ class FormField extends PureComponent<Props, State> {
         fieldAttributes: props.fieldAttributes,
         fieldType: get(props.fieldAttributes, 'type'),
         label: get(props.overrideValues, 'label') || get(props.fieldAttributes, 'label'),
+        value: get(props.overrideValues, 'value'),
         options: getFieldAttributeOptions(props.fieldAttributes),
         required: overrideableBoolean('required'),
       };
@@ -413,6 +422,7 @@ class FormField extends PureComponent<Props, State> {
       label,
       options,
       required,
+      value,
     } = this.state;
 
     return(
@@ -454,6 +464,7 @@ class FormField extends PureComponent<Props, State> {
         valueSelectedCallback={valueSelectedCallback}
         uiDataKey={uiDataKey}
         unit={unit}
+        value={value}
         {...overrideValues}
       />
     );

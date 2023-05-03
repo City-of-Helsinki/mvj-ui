@@ -260,6 +260,7 @@ const ApplicationFormSubsectionFields = connect(
 
       switch (fieldType) {
         case 'textbox':
+        case 'fractional':
           break;
         case 'textarea':
           columnWidths = {
@@ -274,6 +275,14 @@ const ApplicationFormSubsectionFields = connect(
               display_name: option.label,
               value: option.value,
             })),
+          };
+          break;
+        case 'hidden':
+          if(field.identifier === APPLICANT_TYPE_FIELD_IDENTIFIER) {
+            change(FormNames.PLOT_APPLICATION, `${identifier}.metadata.applicantType`, valueToApplicantType(field.default_value));
+          }
+          extraAttributes = {
+            type: 'hidden',
           };
           break;
         case 'checkbox':

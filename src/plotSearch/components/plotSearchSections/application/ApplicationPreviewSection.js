@@ -158,6 +158,19 @@ class ApplicationPreviewSection extends PureComponent<Props> {
           <AddButtonThird label={'Liitä tiedosto'} onClick={() => {}} disabled />
         </>;
         break;
+      case 'fractional':
+        fieldSpecificComponents = <FormField name={fakeFieldId} fieldAttributes={{
+          type: 'fractional',
+          required: false,
+          read_only: false,
+          label: get(field, 'label'),
+        }} disabled />;
+        columnWidths = {
+          small: 6,
+          medium: 4,
+          large: 3,
+        };
+        break;
       case 'textbox':
         fieldSpecificComponents = <FormField name={fakeFieldId} fieldAttributes={{
           type: 'string',
@@ -170,6 +183,31 @@ class ApplicationPreviewSection extends PureComponent<Props> {
           medium: 4,
           large: 3,
         };
+        break;
+      case 'hidden':
+        fieldSpecificComponents = <FormField
+          name={fakeFieldId}
+          fieldAttributes={{
+            type: 'hidden',
+            required: false,
+            read_only: true,
+            value: field.default_value,
+            label: get(field, 'label'),
+          }}
+          readOnlyValueRenderer={() => {
+            if(field.default_value == null) {
+              return '-';
+            }
+
+            if(!field.choices) {
+              return field.default_value;
+            }
+
+            return field.choices.find(choice => choice.value === field.default_value).text;
+            
+          }}
+          disabled
+        />;
         break;
       default:
         console.error(`Form field type ${matchingType} (${field?.type}) is not implemented`);

@@ -80,6 +80,7 @@ export type FormField = {
   sort_order: number;
   choices: Array<FormFieldChoice>;
   section_id: number;
+  default_value: string | boolean;
 };
 
 export type FormFieldChoice = {
