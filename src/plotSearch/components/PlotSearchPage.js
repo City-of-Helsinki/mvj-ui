@@ -78,9 +78,9 @@ import {FIELDS_LOCKED_FOR_EDITING} from '$src/plotSearch/constants';
 import PlotSearchExportModal from '$src/plotApplications/components/exportModal/PlotSearchExportModal';
 import ReservationIdentifiersModal from '$src/plotSearch/components/reservationIdentifiers/ReservationIdentifiersModal';
 
-type OwnProps = {
+type OwnProps = {|
 
-};
+|};
 
 type Props = {
   ...OwnProps,
