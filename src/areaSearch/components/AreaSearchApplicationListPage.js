@@ -5,12 +5,12 @@ import flowRight from 'lodash/flowRight';
 import isArray from 'lodash/isArray';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {initialize} from 'redux-form';
+import {formValueSelector, initialize, reduxForm} from 'redux-form';
 import {withRouter} from 'react-router';
 import debounce from 'lodash/debounce';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
-import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
+import {FieldTypes, FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -63,6 +63,7 @@ import Button from '$components/button/Button';
 import EditAreaSearchPreparerModal from '$src/areaSearch/components/EditAreaSearchPreparerModal';
 import Authorization from '$components/authorization/Authorization';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import FormField from '$components/form/FormField';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ApiResponse} from '$src/types';
@@ -93,6 +94,7 @@ type Props = {
   isFetchingAreaSearchListAttributes: boolean,
   isFetching: boolean,
   initialize: Function,
+  initializeForm: Function,
   isFetchingByBBox: boolean,
   fetchAreaSearchList: Function,
   fetchAreaSearchListByBBox: Function,
@@ -101,6 +103,8 @@ type Props = {
   editAreaSearch: Function,
   isEditingAreaSearch: boolean,
   lastEditError: any,
+  change: Function,
+  selectedSearches: Object,
 }
 
 type State = {
@@ -198,10 +202,38 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   getColumns = () => {
-    const {areaSearchListAttributes} = this.props;
+    const {areaSearchListAttributes, selectedSearches} = this.props;
     const columns = [];
     const intendedUseOptions = getFieldOptions(areaSearchListAttributes, 'intended_use');
     const stateOptions = getFieldOptions(areaSearchListAttributes, 'state');
+
+    columns.push({
+      key: 'checkbox',
+      text: 'Tulosta',
+      sortable: false,
+      renderer: (_, item) => <div onMouseDown={(e) => {
+        e.stopPropagation();
+      }}>
+        <FormField
+          name={`selectedSearches.${item.id}`}
+          fieldAttributes={{
+            type: FieldTypes.CHECKBOX,
+            label: 'Valitse hakemus ' + item.identifier,
+            read_only: false,
+          }}
+          autoBlur
+          disableDirty
+          invisibleLabel
+          overrideValues={{
+            options: [{value: true, label: ''}],
+          }}
+          onBlur={(_, value) => this.updateAllSearchesSelected({
+            ...selectedSearches,
+            [item.id]: value,
+          })}
+        />
+      </div>,
+    });
 
     columns.push({
       key: 'identifier',
@@ -397,12 +429,14 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   updateTableData = () => {
-    const {areaSearches} = this.props;
+    const {areaSearches, change} = this.props;
 
     this.setState({
       count: getApiResponseCount(areaSearches),
       maxPage: getApiResponseMaxPage(areaSearches, LIST_TABLE_PAGE_SIZE),
     });
+    change('selectedSearches', {});
+    change('allSelected', false);
   }
 
   handleSearchChange = (query: Object, resetActivePage?: boolean = true) => {
@@ -497,7 +531,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   setSearchFormValues = () => {
-    const {location: {search}, initialize} = this.props;
+    const {location: {search}, initializeForm} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     const states = this.getSearchStates(searchQuery);
@@ -516,7 +550,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       delete initialValues.visualization;
       delete initialValues.zoom;
 
-      await initialize(FormNames.AREA_SEARCH_SEARCH, initialValues);
+      await initializeForm(FormNames.AREA_SEARCH_SEARCH, initialValues);
     };
 
     this.setState({
@@ -538,7 +572,23 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     history.push({
       pathname: `${getRouteById(Routes.AREA_SEARCH)}/uusi`,
     });
-  }
+  };
+
+  selectAllSearches = (event: SyntheticFocusEvent<HTMLInputElement>, value: boolean) => {
+    const {change, areaSearches} = this.props;
+
+    change('selectedSearches', areaSearches?.results.reduce((acc, result) => {
+      acc[result.id] = value;
+      return acc;
+    }, {}));
+  };
+
+  updateAllSearchesSelected = (selectedSearches: Object) => {
+    const {change, areaSearches} = this.props;
+
+    const isAllSelected = areaSearches?.results.every((search) => selectedSearches[search.id] === true);
+    change('allSelected', isAllSelected);
+  };
 
   render() {
     const {
@@ -661,6 +711,27 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
                 sortable
                 sortKey={sortKey}
                 sortOrder={sortOrder}
+                footer={({columnCount}: {columnCount: number}) => <tr>
+                  <td />
+                  <td colSpan={columnCount - 1}>
+                    <FormField
+                      name={`allSelected`}
+                      fieldAttributes={{
+                        type: FieldTypes.CHECKBOX,
+                        label: '',
+                        read_only: false,
+                      }}
+                      autoBlur
+                      disableDirty
+                      invisibleLabel
+                      overrideValues={{
+                        options: [{value: true, label: 'Valitse kaikki suodatuksen mukaan'}],
+                      }}
+                      onBlur={this.selectAllSearches}
+                      onChange={this.selectAllSearches}
+                    />
+                  </td>
+                </tr>}
               />
 
               <Pagination
@@ -689,6 +760,9 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 }
 
+const FORM_NAME = FormNames.AREA_SEARCH_EXPORT;
+const selector = formValueSelector(FORM_NAME);
+
 export default (flowRight(
   withRouter,
   withAreaSearchAttributes,
@@ -702,14 +776,23 @@ export default (flowRight(
         areaSearchesByBBox: getAreaSearchListByBBox(state),
         isEditingAreaSearch: getIsEditingAreaSearch(state),
         lastEditError: getLastAreaSearchEditError(state),
+        selectedSearches: selector(state, 'selectedSearches'),
       };
     },
     {
       receiveTopNavigationSettings,
-      initialize,
+      // initialize bound to the row selection form is set by reduxForm
+      initializeForm: initialize,
       fetchAreaSearchList,
       fetchAreaSearchListByBBox,
       editAreaSearch,
     },
   ),
+  reduxForm({
+    form: FORM_NAME,
+    initialValues: {
+      mode: null,
+      selectedSearches: [],
+    },
+  })
 )(AreaSearchApplicationListPage): React$ComponentType<OwnProps>);

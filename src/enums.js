@@ -505,6 +505,7 @@ export const FormNames = {
   AREA_SEARCH_CREATE_SPECS: 'area-search-create-specs',
   AREA_SEARCH_CREATE_FORM: 'area-search-create-form',
   AREA_SEARCH_PREPARER: 'area-search-preparer',
+  AREA_SEARCH_EXPORT: 'area-search-export',
 };
 
 /**

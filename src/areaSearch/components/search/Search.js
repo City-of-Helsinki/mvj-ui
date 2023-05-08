@@ -156,6 +156,7 @@ class Search extends Component<Props, State> {
   render() {
     const {
       handleSubmit,
+      formValues,
     } = this.props;
 
     const {

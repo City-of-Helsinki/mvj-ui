@@ -53,6 +53,9 @@ type Props = {
   sortable?: boolean,
   style?: Object,
   className?: string,
+  footer?: ({|
+    columnCount: number,
+  |}) => React$Node,
 }
 
 type State = {
@@ -407,6 +410,7 @@ class SortableTable extends Component<Props, State> {
       sortable,
       style,
       className,
+      footer,
     } = this.props;
     const {
       scrollHeaderColumnStyles,
@@ -520,6 +524,11 @@ class SortableTable extends Component<Props, State> {
                   />;
               })}
             </tbody>
+            {footer && <tfoot>
+              {footer({
+                columnCount: columns.length + (showCollapseArrowColumn ? 1 : 0),
+              })}
+            </tfoot>}
           </table>
         </div>
       </div>
