@@ -14,5 +14,11 @@ export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootStat
 export const getAreaSearchList: Selector<ApiResponse | null, void> = (state: RootState): ApiResponse | null =>
   state.areaSearch.areaSearchList;
 
+export const getAreaSearchListByBBox: Selector<ApiResponse | null, void> = (state: RootState): ApiResponse | null =>
+  state.areaSearch.areaSearchListByBBox;
+
 export const getIsFetchingAreaSearchList: Selector<boolean, void> = (state: RootState): boolean =>
   state.areaSearch.isFetchingAreaSearchList;
+
+export const getIsFetchingAreaSearchListByBBox: Selector<boolean, void> = (state: RootState): boolean =>
+  state.areaSearch.isFetchingAreaSearchListByBBox;

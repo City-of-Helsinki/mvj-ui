@@ -6,7 +6,9 @@ export type AreaSearchState = {
   methods: Methods,
   isFetchingAttributes: boolean,
   areaSearchList: ApiResponse | null,
+  areaSearchListByBBox: ApiResponse | null,
   isFetchingAreaSearchList: boolean,
+  isFetchingAreaSearchListByBBox: boolean,
 };
 
 export type AreaSearch = Object;
@@ -17,5 +19,8 @@ export type ReceiveMethodsAction = Action<'mvj/areaSearch/RECEIVE_METHODS', Meth
 export type AttributesNotFoundAction = Action<'mvj/areaSearch/ATTRIBUTES_NOT_FOUND', void>;
 
 export type FetchAreaSearchListAction = Action<'mvj/areaSearch/FETCH_ALL', Object>;
+export type FetchAreaSearchListByBBoxAction = Action<'mvj/areaSearch/FETCH_ALL_BY_BBOX', Object>;
 export type ReceiveAreaSearchListAction = Action<'mvj/areaSearch/RECEIVE_ALL', Object>;
+export type ReceiveAreaSearchListByBBoxAction = Action<'mvj/areaSearch/RECEIVE_ALL_BY_BBOX', Object>;
 export type AreaSearchesNotFoundAction = Action<'mvj/areaSearch/NOT_FOUND', void>;
+export type AreaSearchesByBBoxNotFoundAction = Action<'mvj/areaSearch/NOT_FOUND_BY_BBOX', void>;

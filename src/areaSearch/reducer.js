@@ -39,10 +39,24 @@ const isFetchingAreaSearchListReducer: Reducer<boolean> = handleActions({
   ['mvj/areaSearch/AREA_SEARCHES_NOT_FOUND']: () => false,
 }, false);
 
+const areaSearchListByBBoxReducer: Reducer<ApiResponse | null> = handleActions({
+  ['mvj/areaSearch/RECEIVE_ALL_BY_BBOX']: (state: ApiResponse | null, {payload: response}: ReceiveAreaSearchListAction) => {
+    return response || null;
+  },
+}, null);
+
+const isFetchingAreaSearchByBBoxListReducer: Reducer<boolean> = handleActions({
+  ['mvj/areaSearch/FETCH_ALL_BY_BBOX']: () => true,
+  ['mvj/areaSearch/RECEIVE_ALL_BY_BBOX']: () => false,
+  ['mvj/areaSearch/AREA_SEARCHES_BY_BBOX_NOT_FOUND']: () => false,
+}, false);
+
 export default (combineReducers<Object, Action<any>>({
   attributes: attributesReducer,
   methods: methodsReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   areaSearchList: areaSearchListReducer,
   isFetchingAreaSearchList: isFetchingAreaSearchListReducer,
+  areaSearchListByBBox: areaSearchListByBBoxReducer,
+  isFetchingAreaSearchListByBBox: isFetchingAreaSearchByBBoxListReducer,
 }): CombinedReducer<AreaSearchState, Action<any>>);
