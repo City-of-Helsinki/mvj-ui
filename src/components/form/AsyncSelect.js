@@ -12,12 +12,14 @@ type Props = {
   displayError: boolean,
   getOptions: Function,
   input: Object,
+  isLoading?: boolean,
   isDirty: boolean,
   placeholder?: string,
   setRef?: Function,
   initialValues?: Object,
   cacheOptions?: any,
-  multiSelect?: boolean
+  multiSelect?: boolean,
+  onChange?: Function,
 }
 
 type State = {
@@ -50,15 +52,18 @@ class AsyncSelect extends Component<Props, State> {
   handleBlur: (() => void) = () => {
     const {input: {onBlur, value}} = this.props;
 
-    if(onBlur) {
+    if (onBlur) {
       onBlur(value);
     }
   };
 
   handleChange: ((value: Object) => void) = (value) => {
-    const {input: {onChange}} = this.props;
+    const {input: {onChange: inputOnChange}, onChange} = this.props;
 
-    onChange(value);
+    inputOnChange(value);
+    if (onChange) {
+      onChange(value);
+    }
   }
 
   handleInputChange: ((value: string, meta: any) => void) = (value, meta) => {
@@ -108,6 +113,7 @@ class AsyncSelect extends Component<Props, State> {
       displayError,
       input: {name, value},
       isDirty,
+      isLoading,
       placeholder,
       initialValues,
       cacheOptions = true,
@@ -133,6 +139,7 @@ class AsyncSelect extends Component<Props, State> {
           defaultOptions
           id={name}
           isDisabled={disabled}
+          isLoading={isLoading}
           isMulti={multiSelect}
           loadingMessage={() => 'Ladataan...'}
           loadOptions={this.loadOptions}
@@ -144,7 +151,7 @@ class AsyncSelect extends Component<Props, State> {
           options={[]}
           placeholder={placeholder || 'Valitse...'}
           value={value}
-          defaultInputValue={initialValues ? initialValues.estate_id : ''}
+          defaultInputValue={initialValues ? initialValues : ''}
         />
       </div>
     );

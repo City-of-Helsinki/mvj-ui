@@ -22,7 +22,12 @@ import {withUsersPermissions} from '$components/attributes/UsersPermissions';
 
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
+type OwnProps = {
+
+};
+
 type Props = {
+  ...OwnProps,
   history: Object,
   isFetchingUsersPermissions: boolean,
   isOpen: boolean,
@@ -216,6 +221,12 @@ class SideMenu extends Component<Props, State> {
                         text: 'Tonttihakemukset',
                         to: getRouteById(Routes.PLOT_APPLICATIONS),
                       },
+                      {
+                        allow: true,
+                        onClick: handleClick,
+                        text: 'Aluehaut',
+                        to: getRouteById(Routes.AREA_SEARCH),
+                      },
                     ]}
                     menuKey='plot'
                     onHeaderClick={this.handleHeaderClick}
@@ -296,7 +307,7 @@ class SideMenu extends Component<Props, State> {
   }
 }
 
-export default flowRight(
+export default (flowRight(
   withUsersPermissions,
   withRouter,
-)(SideMenu);
+)(SideMenu): React$ComponentType<OwnProps>);
