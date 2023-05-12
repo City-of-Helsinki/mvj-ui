@@ -340,6 +340,12 @@ export const getInitialApplicationForm = (
           };
         }
         break;
+      case 'hidden':
+        initialValue = {
+          value: field.default_value,
+          extraValue: '',
+        };
+        break;
       case 'textbox':
       case 'textarea':
       default:

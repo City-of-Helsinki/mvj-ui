@@ -84,6 +84,14 @@ const SingleSectionItem = ({section, answer, fieldTypes, plotSearch, topLevel, i
                 />
               </li>)}</ul> : null;
               break;
+            case 'hidden':
+              if(!field.choices) {
+                displayValue = field.default_value;
+                break;
+              }
+
+              displayValue = field.choices.find(choice => choice.value === field.default_value)?.text;
+              break;
           }
         }
 
