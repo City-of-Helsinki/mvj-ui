@@ -22,8 +22,8 @@ import {FormNames} from '$src/enums';
 import {
   LeaseAreaCustomDetailedPlanFieldPaths,
   LeaseAreaCustomDetailedPlanFieldTitles,
-  LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths,
-  LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles,
+  LeaseAreaUsageDistributionFieldPaths,
+  LeaseAreaUsageDistributionFieldTitles,
   LeaseAreaCustomDetailedPlanInfoLinksFieldPaths,
   LeaseAreaCustomDetailedPlanInfoLinksFieldTitles,
 } from '$src/leases/enums';
@@ -111,47 +111,47 @@ const renderUsageDistributions = ({
                         <Row>
                           {/* Käyttöjakauma */}
                           <Column small={4} medium={4} large={4}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.DISTRIBUTION) }>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION) }>
                               <FormField
                                 disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes,  LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.DISTRIBUTION)}
+                                fieldAttributes={getFieldAttributes(attributes,  LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION)}
                                 name={`${usageDistribution}.distribution`}
                                 overrideValues={{
-                                  label: LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles.DISTRIBUTION,
+                                  label: LeaseAreaUsageDistributionFieldTitles.DISTRIBUTION,
                                 }}
                                 enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.DISTRIBUTION)}
+                                uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION)}
                               />
                             </Authorization>
                           </Column>
                           {/* Rakennusoikeus */}
                           <Column small={4} medium={4} large={4}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.BUILD_PERMISSION) }>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION) }>
                               <FormField
                                 disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes,  LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.BUILD_PERMISSION)}
+                                fieldAttributes={getFieldAttributes(attributes,  LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION)}
                                 name={`${usageDistribution}.build_permission`}
                                 unit='k-m²'
                                 overrideValues={{
-                                  label: LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles.BUILD_PERMISSION,
+                                  label: LeaseAreaUsageDistributionFieldTitles.BUILD_PERMISSION,
                                 }}
                                 enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.BUILD_PERMISSION)}
+                                uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION)}
                               />
                             </Authorization>
                           </Column>
                           {/* huomautus */}
                           <Column small={4} medium={4} large={4}>
-                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.NOTE) }>
+                            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.NOTE) }>
                               <FormField
                                 disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(attributes,  LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.NOTE)}
+                                fieldAttributes={getFieldAttributes(attributes,  LeaseAreaUsageDistributionFieldPaths.NOTE)}
                                 name={`${usageDistribution}.note`}
                                 overrideValues={{
-                                  label: LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles.NOTE,
+                                  label: LeaseAreaUsageDistributionFieldTitles.NOTE,
                                 }}
                                 enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.NOTE)}
+                                uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.NOTE)}
                               />
                             </Authorization>
                           </Column>

@@ -503,6 +503,7 @@ export const getContentPlanUnits = (area: Object): Array<Object> =>
       plan_unit_state: get(planunit, 'plan_unit_state.id') || planunit.plan_unit_state,
       plan_unit_intended_use: get(planunit, 'plan_unit_intended_use.id') || planunit.plan_unit_intended_use,
       is_master: get(planunit, 'is_master') || planunit.is_master,
+      usage_distributions: get(planunit, 'usage_distributions') || [],
     };
   });
 
@@ -1828,7 +1829,7 @@ export const getContentBasisOfRents = (lease: Object): Array<Object> => {
     if (!children.length) return [];
 
     return [...children].sort((a, b) => a.id - b.id);
-  }
+  };
 
   return get(lease, 'basis_of_rents', []).filter(item => !allChildren.includes(item.id)).map((item) => {
     return {

@@ -267,7 +267,7 @@ export const DueDatesPositions = {
  *
  * @type {{}}
  */
-export const FixedDueDates = {
+export const FixedDueDates: Object = {
   [DueDatesPositions.START_OF_MONTH]: {
     '1': [getDayMonth(2, 1)],
     '2': [getDayMonth(2, 1), getDayMonth(1, 7)],
@@ -574,22 +574,22 @@ export const LeaseAreaCustomDetailedPlanFieldPaths = {
 };
 
 /**
- * Lease area custom detailed plan usage distribution field paths enumerable
+ * Lease area usage distribution field paths enumerable
  *
  * @type {{}}
  */
-export const LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths = {
+export const LeaseAreaUsageDistributionFieldPaths = {
   DISTRIBUTION: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.distribution',
   BUILD_PERMISSION: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.build_permission',
   NOTE: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.note',
 };
 
 /**
- * Lease area custom detailed plan usage distribution field titles enumerable
+ * Lease area usage distribution field titles enumerable
  *
  * @type {{}}
  */
-export const LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles = {
+export const LeaseAreaUsageDistributionFieldTitles = {
   DISTRIBUTION: 'Käyttöjakauma',
   BUILD_PERMISSION: 'Rakennusoikeus',
   NOTE: 'Huomautus',
@@ -683,6 +683,7 @@ export const LeasePlanUnitsFieldTitles = {
   PLOT_DIVISION_STATE: 'Tonttijaon olotila',
   SECTION_AREA: 'Leikkausala',
   IS_MASTER: 'Onko alkuperäinen?',
+  USAGE_DISTRIBUTIONS: 'Käyttöjakaumat',
 };
 
 /**

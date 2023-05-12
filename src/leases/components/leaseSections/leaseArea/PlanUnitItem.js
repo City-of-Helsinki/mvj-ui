@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {Link} from 'react-router-dom';
@@ -12,7 +13,12 @@ import BoxItem from '$components/content/BoxItem';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import {LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles} from '$src/leases/enums';
+import {
+  LeasePlanUnitsFieldPaths,
+  LeasePlanUnitsFieldTitles,
+  LeaseAreaUsageDistributionFieldPaths,
+  LeaseAreaUsageDistributionFieldTitles,
+} from '$src/leases/enums';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
   formatDate,
@@ -28,12 +34,18 @@ import {getAttributes} from '$src/leases/selectors';
 import {createPaikkatietovipunenUrl} from '$util/helpers';
 
 import type {Attributes} from '$src/types';
+import SubTitle from '$src/components/content/SubTitle';
+
+type OwnProps = {
+  areaArchived: boolean,
+  planUnit: Object,
+  
+}
 
 type Props = {
-  areaArchived: boolean,
+  ...OwnProps,
   attributes: Attributes,
   location: Object,
-  planUnit: Object,
 }
 
 const PlanUnitItem = ({
@@ -199,11 +211,56 @@ const PlanUnitItem = ({
           </Authorization>
         </Column>
       </Row>
+      
+      {/* Usage distributions (Käyttöjakaumat) */}
+      {planUnit.usage_distributions.length > 0 &&
+      <Fragment>
+        <SubTitle>
+          {LeasePlanUnitsFieldTitles.USAGE_DISTRIBUTIONS}
+        </SubTitle>
+        <Row>
+          <Column small={4} medium={4} large={4}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION)}>
+              {LeaseAreaUsageDistributionFieldTitles.DISTRIBUTION}
+            </FormTextTitle>
+          </Column>
+          <Column small={4} medium={4} large={4}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION)}>
+              {LeaseAreaUsageDistributionFieldTitles.BUILD_PERMISSION}
+            </FormTextTitle>
+          </Column>
+          <Column small={4} medium={4} large={4}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.NOTE)}>
+              {LeaseAreaUsageDistributionFieldTitles.NOTE}
+            </FormTextTitle>
+          </Column>
+        </Row>
+        {planUnit.usage_distributions.map((usage_distribution) => (
+          <Row key={usage_distribution.distribution}>
+            <Column small={4} medium={4} large={4}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION)}>
+                <FormText>{usage_distribution.distribution || '-'}</FormText>
+              </Authorization>
+            </Column>
+            <Column small={4} medium={4} large={4}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION)}>
+                <FormText>{!isEmptyValue(usage_distribution.build_permission) ? `${formatNumber(usage_distribution.build_permission)} k-m²` : '-'}</FormText>
+              </Authorization>
+            </Column>
+            <Column small={4} medium={4} large={4}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.NOTE)}>
+                <FormText>{usage_distribution.note || '-'}</FormText>
+              </Authorization>
+            </Column>
+          </Row>
+        ))}
+      </Fragment>
+      }
     </BoxItem>
   );
 };
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   connect(
     (state) => {
@@ -212,4 +269,4 @@ export default flowRight(
       };
     }
   ),
-)(PlanUnitItem);
+)(PlanUnitItem): React$ComponentType<OwnProps>);

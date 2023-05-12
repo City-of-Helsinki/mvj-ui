@@ -44,7 +44,7 @@ type Props = {
   plotSearchSite: Object,
   receiveCollapseStates: Function,
   fetchCustomDetailedPlanAttributes: Function,
-  collapseState: Boolean,
+  collapseState: boolean,
   isFetchingCustomDetailedPlanAttributes: boolean,
   isFetchingCustomDetailedPlan: boolean,
   customDetailedPlan: Object,
