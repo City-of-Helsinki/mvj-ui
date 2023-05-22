@@ -4,12 +4,45 @@ import {createAction} from 'redux-actions';
 import type {
   AreaSearchesByBBoxNotFoundAction,
   AreaSearchesNotFoundAction,
-  AttributesNotFoundAction, FetchAreaSearchListAction, FetchAreaSearchListByBBoxAction,
-  FetchAttributesAction, ReceiveAreaSearchListAction, ReceiveAreaSearchListByBBoxAction,
+  AttributesNotFoundAction,
+  FetchAreaSearchListAction,
+  FetchAreaSearchListByBBoxAction,
+  FetchAttributesAction,
+  FetchSingleAreaSearchAction,
+  ReceiveAreaSearchListAction,
+  ReceiveAreaSearchListByBBoxAction,
   ReceiveAttributesAction,
   ReceiveMethodsAction,
+  ReceiveSingleAreaSearchAction,
+  SingleAreaSearchNotFoundAction,
+  ClearFormValidFlagsAction,
+  HideEditModeAction,
+  ReceiveCollapseStatesAction,
+  ReceiveFormValidFlagsAction,
+  ReceiveIsSaveClickedAction,
+  ShowEditModeAction,
 } from '$src/areaSearch/types';
 import type {Attributes, Methods} from '$src/types';
+import type {
+} from '$src/plotSearch/types';
+
+export const hideEditMode = (): HideEditModeAction =>
+  createAction('mvj/areaSearch/HIDE_EDIT')();
+
+export const showEditMode = (): ShowEditModeAction =>
+  createAction('mvj/areaSearch/SHOW_EDIT')();
+
+export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesAction =>
+  createAction('mvj/areaSearch/RECEIVE_COLLAPSE_STATES')(status);
+
+export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
+  createAction('mvj/areaSearch/RECEIVE_SAVE_CLICKED')(isClicked);
+
+export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
+  createAction('mvj/areaSearch/RECEIVE_FORM_VALID_FLAGS')(valid);
+
+export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
+  createAction('mvj/areaSearch/CLEAR_FORM_VALID_FLAGS')();
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/areaSearch/FETCH_ATTRIBUTES')();
@@ -40,3 +73,12 @@ export const areaSearchesNotFound = (): AreaSearchesNotFoundAction =>
 
 export const areaSearchesByBBoxNotFound = (): AreaSearchesByBBoxNotFoundAction =>
   createAction('mvj/areaSearch/NOT_FOUND_BY_BBOX')();
+
+export const fetchSingleAreaSearch = (id: number): FetchSingleAreaSearchAction =>
+  createAction('mvj/areaSearch/FETCH_SINGLE')(id);
+
+export const receiveSingleAreaSearch = (payload: Object): ReceiveSingleAreaSearchAction =>
+  createAction('mvj/areaSearch/RECEIVE_SINGLE')(payload);
+
+export const singleAreaSearchNotFound = (): SingleAreaSearchNotFoundAction =>
+  createAction('mvj/areaSearch/SINGLE_NOT_FOUND')();

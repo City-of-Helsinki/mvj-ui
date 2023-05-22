@@ -35,11 +35,15 @@ import type {RootState} from '$src/root/types';
 const url = window.location.toString();
 const IS_DEVELOPMENT_URL = url.includes('ninja') || url.includes('localhost');
 
+type OwnProps = {
+  children: React$Node,
+};
+
 type Props = {
+  ...OwnProps,
   apiError: ApiError,
   apiToken: ApiToken,
   apiTokenExpires: number,
-  children: any,
   clearApiToken: Function,
   clearError: typeof clearError,
   closeReveal: Function,
@@ -321,4 +325,4 @@ export default (flowRight(
     },
   ),
   revealContext(),
-)(App): React$ComponentType<void>);
+)(App): React$ComponentType<OwnProps>);

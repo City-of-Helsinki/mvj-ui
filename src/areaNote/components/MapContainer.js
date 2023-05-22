@@ -38,21 +38,24 @@ type Props = {
   onMapDidMount?: Function,
   onViewportChanged?: Function,
   overlayLayers?: Array<Object>,
-  zoom: Number,
+  zoom: number,
+  enableSearch?: boolean,
+  onMapRefAvailable?: Function,
 };
 
 class MapContainer extends Component<Props> {
   map: any
 
-  static contextTypes = {
+  static contextTypes: Object = {
     router: PropTypes.object,
   };
 
-  setMapRef = (el: any) => {
+  setMapRef: (any) => void = (el) => {
     this.map = el;
+    this.props.onMapRefAvailable?.(el);
   }
 
-  componentDidMount = () => {
+  componentDidMount: () => void = () => {
     const {onMapDidMount} = this.props;
 
     if(this.map && onMapDidMount) {
@@ -60,7 +63,7 @@ class MapContainer extends Component<Props> {
     }
   }
 
-  handleViewportChanged = () => {
+  handleViewportChanged: () => void = () => {
     const {onViewportChanged} = this.props;
 
     if(this.map && onViewportChanged) {
@@ -68,15 +71,23 @@ class MapContainer extends Component<Props> {
     }
   }
 
-  getMapValues = () => {
+  getMapValues: () => Object = () => {
     return {
       bBox: this.map.leafletElement.getBounds().toBBoxString(),
       zoom: this.map.leafletElement.getZoom(),
     };
   }
 
-  render() {
-    const {bounds, center, children, isLoading, overlayLayers, zoom} = this.props;
+  render(): React$Node {
+    const {
+      bounds,
+      center,
+      children,
+      isLoading,
+      overlayLayers,
+      zoom,
+      enableSearch = true,
+    } = this.props;
 
     return (
       <Map
@@ -130,7 +141,7 @@ class MapContainer extends Component<Props> {
           )}
         </LayersControl>
 
-        <GeoSearch />
+        {enableSearch && <GeoSearch />}
         <FullscreenControl
           position="topright"
           title='Koko näytön tila'

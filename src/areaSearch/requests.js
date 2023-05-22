@@ -12,3 +12,7 @@ export const fetchAreaSearchesRequest = (params: ?Object): Generator<any, any, a
   return callApi(new Request(createUrl('area_search/', params)));
 };
 
+export const fetchSingleAreaSearchRequest = (id: number): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`area_search/${id}`)));
+};
+

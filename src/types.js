@@ -1,6 +1,6 @@
 // @flow
 
-import type {RootState} from './root/types';
+import type {RootState} from '$src/root/types';
 
 export type Action<Type: string, Payload> = {
   type: Type,
@@ -26,11 +26,13 @@ export type ApiResponse = ?{
 
 type Coordinate = Array<number>;
 
+export type LeafletFeatureGeometry = {
+  coordinates: Array<Coordinate>,
+  type: string,
+};
+
 export type LeafletFeature = {
-  geometry: {
-    coordinates: Array<Coordinate>,
-    type: string,
-  },
+  geometry: LeafletFeatureGeometry,
   properties: Object,
   type: 'Feature',
 };

@@ -14,10 +14,17 @@ import {getFieldAttributes} from '$util/helpers';
 import {getFormAttributes, getIsFetchingForm, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import {orderBy} from 'lodash';
-import PlotApplicationSectionData from '$src/plotApplications/components/PlotApplicationSectionData';
+import ApplicationAnswersSection from '$src/application/ApplicationAnswersSection';
 import Loader from '$components/loader/Loader';
 import Title from '$components/content/Title';
 import Divider from '$components/content/Divider';
+import type {SectionExtraComponentProps} from '$src/application/types';
+import PlotApplicationTargetInfoCheckEdit
+  from '$src/plotApplications/components/infoCheck/PlotApplicationTargetInfoCheckEdit';
+import PlotApplicationApplicantInfoCheckEdit
+  from '$src/plotApplications/components/infoCheck/PlotApplicationApplicantInfoCheckEdit';
+import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
+import {transformApplicantSectionTitle, transformTargetSectionTitle} from '$src/application/helpers';
 
 type OwnProps = {};
 
@@ -34,6 +41,27 @@ type Props = {
   plotSearch: ?Object,
 };
 
+const PlotApplicationEditSectionExtras = ({
+  section,
+  identifier,
+  answer,
+  topLevel,
+}: SectionExtraComponentProps) => {
+  return <>
+    {topLevel && section.identifier === TARGET_SECTION_IDENTIFIER &&
+      (answer.metadata?.identifier ? <PlotApplicationTargetInfoCheckEdit
+        section={section}
+        identifier={identifier}
+        targetId={(answer.metadata.identifier: any)}
+      /> : <Loader isLoading={true} />)}
+    {topLevel && section.identifier === APPLICANT_SECTION_IDENTIFIER &&
+      <PlotApplicationApplicantInfoCheckEdit
+        section={section}
+        identifier={identifier}
+        answer={answer}
+      />}
+  </>;
+};
 class PlotApplicationEdit extends PureComponent<Props> {
   render() {
     const {
@@ -66,14 +94,18 @@ class PlotApplicationEdit extends PureComponent<Props> {
         <Divider />
         <Loader isLoading={isLoading} />
         {!isLoading && fieldTypes && orderBy(form.sections, 'order').filter((section) => section.visible).map((section) =>
-          <PlotApplicationSectionData
+          <ApplicationAnswersSection
             section={section}
             answer={answerData.sections[section.identifier]}
             topLevel
             fieldTypes={fieldTypes}
             key={section.identifier}
             plotSearch={plotSearch}
-            editMode={true}
+            sectionExtraComponent={PlotApplicationEditSectionExtras}
+            sectionTitleTransformers={[
+              transformTargetSectionTitle(plotSearch),
+              transformApplicantSectionTitle,
+            ]}
           />)}
       </div>
     );

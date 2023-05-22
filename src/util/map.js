@@ -1,12 +1,12 @@
 // @flow
 import isArray from 'lodash/isArray';
-import L from 'leaflet';
 
 /**
  * Translate leaflet draw literals in Finnish
  */
 /* istanbul ignore next */
 export const localizeMap = () => {
+  const L = require('leaflet');
   L.drawLocal.draw.handlers.circle.tooltip.start = 'Klikkaa ja raahaa piirtääksesi ympyrän';
   L.drawLocal.draw.handlers.circle.radius = 'Säde';
   L.drawLocal.draw.handlers.polygon.tooltip.start = 'Aloita alueen piirtäminen klikkaamalla.';
@@ -200,4 +200,34 @@ export const getCenterFromCoordinates = (coordinates: Array<any>): [number, numb
     lng = maxLon - ((maxLon - minLon) / 2);
 
   return [lng, lat];
+};
+
+export const getAreaFromGeoJSON = (geometry: Object): number => {
+  const L = require('leaflet');
+  let area = 0;
+
+  switch (geometry.type) {
+    case 'GeometryCollection':
+      geometry.geometries.forEach((geometry) => {
+        area += getAreaFromGeoJSON(geometry);
+      });
+      break;
+    case 'MultiPolygon':
+      L.GeoJSON.coordsToLatLngs(geometry.coordinates, 2).forEach((latLngs) => {
+        latLngs.forEach((latLng) => {
+          const polygonArea = L.GeometryUtil.geodesicArea(latLng);
+          area += polygonArea;
+        });
+      });
+      break;
+    case 'Polygon':
+      L.GeoJSON.coordsToLatLngs(geometry.coordinates, 1).forEach((latLng) => {
+        area = L.GeometryUtil.geodesicArea(latLng);
+      });
+      break;
+    default:
+      break;
+  }
+
+  return area;
 };
