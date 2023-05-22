@@ -87,7 +87,9 @@ export const UsersPermissions = {
   DELETE_USAGEDISTRIBUTION: 'delete_usagedistribution',
   EDIT_GLOBAL_UI_DATA: 'edit_global_ui_data',
   SEND_CREDITDECISION_INQUIRY: 'send_creditdecision_inquiry',
+  VIEW_ANSWER: 'view_answer',
   VIEW_AREANOTE: 'view_areanote',
+  VIEW_AREASEARCH: 'view_areasearch',
   VIEW_BASISOFRENT: 'view_basisofrent',
   VIEW_COLLECTIONCOURTDECISION: 'view_collectioncourtdecision',
   VIEW_COLLECTIONLETTER: 'view_collectionletter',
@@ -108,6 +110,7 @@ export const UsersPermissions = {
   VIEW_LEASE: 'view_lease',
   VIEW_LEASEHOLDTRANSFER: 'view_leaseholdtransfer',
   VIEW_LEASETYPE: 'view_leasetype',
+  VIEW_PLOTSEARCH: 'view_plotsearch',
   VIEW_SCHEDULEDJOB: 'view_scheduledjob',
   VIEW_VAT: 'view_vat',
 };
