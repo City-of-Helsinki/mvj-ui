@@ -1,4 +1,4 @@
-// @ flow
+// @flow
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import L from 'leaflet';
@@ -77,7 +77,7 @@ class MapContainer extends Component<Props> {
 
   render() {
     const {bounds, center, children, isLoading, overlayLayers, zoom} = this.props;
-    
+
     return (
       <Map
         ref={this.setMapRef}

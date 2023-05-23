@@ -1,4 +1,4 @@
-// @ flow
+// @flow
 import {MapControl, withLeaflet} from 'react-leaflet';
 import {GeoSearchControl} from 'leaflet-geosearch';
 import HelsinkiProvider from './HelsinkiProvider';

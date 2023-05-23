@@ -1,13 +1,13 @@
 // @flow
 import React, {Component} from 'react';
 
-import Button from '../button/Button';
-import Modal from './Modal';
+import Button from '$components/button/Button';
+import Modal from '$components/modal/Modal';
 import {ButtonColors} from '$components/enums';
 
 type Props = {
-  confirmButtonClassName?: string,
-  confirmButtonLabel?: string,
+  confirmButtonClassName?: ?string,
+  confirmButtonLabel?: ?string,
   isOpen: boolean,
   label: any,
   onCancel: Function,
@@ -17,9 +17,9 @@ type Props = {
 }
 
 class ConfirmationModal extends Component<Props> {
-  cancelButton: any
+  cancelButton: any;
 
-  setCancelButtonRef = (element: any) => {
+  setCancelButtonRef: (any) => void = (element) => {
     this.cancelButton = element;
   }
 
@@ -31,7 +31,7 @@ class ConfirmationModal extends Component<Props> {
     }
   }
 
-  render() {
+  render(): React$Node {
     const {
       confirmButtonClassName,
       confirmButtonLabel = 'Tallenna',
@@ -62,7 +62,7 @@ class ConfirmationModal extends Component<Props> {
             <Button
               className={confirmButtonClassName || ButtonColors.SUCCESS}
               onClick={onSave}
-              text={confirmButtonLabel}
+              text={confirmButtonLabel || ''}
             />
           </div>
         </Modal>
