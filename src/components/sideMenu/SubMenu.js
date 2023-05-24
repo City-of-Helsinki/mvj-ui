@@ -27,38 +27,38 @@ class SubMenu extends PureComponent<Props> {
     window.removeEventListener('keydown', this.onDocumentKeyDown);
   }
 
-  onDocumentClick = (event: any) => {
+  onDocumentClick: (MouseEvent) => void = (event) => {
     const {isOpen, onHeaderClick} = this.props;
-    const target = event.target,
-      el = ReactDOM.findDOMNode(this);
+    const target = event.target;
+    const el = ReactDOM.findDOMNode(this);
 
-    if (isOpen && el && target !== el && !el.contains(target)) {
+    if (isOpen && el && target !== el && target instanceof Node && !el.contains(target)) {
       onHeaderClick('');
     }
   };
 
-  onDocumentKeyDown = (event: any) => {
+  onDocumentKeyDown: (KeyboardEvent) => void = (event) => {
     const {isOpen, onHeaderClick} = this.props;
 
-    if(isOpen && event.keyCode === KeyCodes.ESC){
+    if (isOpen && event.keyCode === KeyCodes.ESC) {
       onHeaderClick('');
     }
   }
 
-  handleHeaderClick = () => {
+  handleHeaderClick: () => void = () => {
     const {isOpen, menuKey, onHeaderClick} = this.props;
 
     onHeaderClick(isOpen ? '' : menuKey);
   };
 
-  handleHeaderKeyDown = (e: any) => {
-    if(e.keyCode === KeyCodes.ENTER){
+  handleHeaderKeyDown: (SyntheticKeyboardEvent<HTMLAnchorElement>) => void = (e) => {
+    if (e.keyCode === KeyCodes.ENTER) {
       e.preventDefault();
       this.handleHeaderClick();
     }
   };
 
-  render() {
+  render(): React$Node {
     const {
       header,
       isOpen,

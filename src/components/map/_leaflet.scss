@@ -483,6 +483,11 @@
     margin: 0;
     vertical-align: text-top;
   }
+
+  &.title a {
+    font-size: 16px;
+    font-weight: inherit;
+  }
 }
 .leaflet-popup-tip-container {
   width: 40px;

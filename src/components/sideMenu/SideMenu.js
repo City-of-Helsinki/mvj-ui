@@ -210,27 +210,25 @@ class SideMenu extends Component<Props, State> {
                     isOpen={subMenuKey === 'plot'}
                     items={[
                       {
-                        allow: true,
+                        allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_PLOTSEARCH),
                         onClick: handleClick,
                         text: 'Tonttihaut',
                         to: getRouteById(Routes.PLOT_SEARCH),
                       },
                       {
-                        allow: true,
+                        allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_ANSWER),
                         onClick: handleClick,
                         text: 'Tonttihakemukset',
                         to: getRouteById(Routes.PLOT_APPLICATIONS),
-                      },
-                      {
-                        allow: true,
-                        onClick: handleClick,
-                        text: 'Aluehaut',
-                        to: getRouteById(Routes.AREA_SEARCH),
                       },
                     ]}
                     menuKey='plot'
                     onHeaderClick={this.handleHeaderClick}
                   />
+
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_AREASEARCH)}>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_SEARCH)}>Aluehaut</Link></li>
+                  </Authorization>
 
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||

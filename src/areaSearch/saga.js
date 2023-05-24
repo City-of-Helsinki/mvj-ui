@@ -8,7 +8,11 @@ import {
 import {
   receiveAttributes,
   receiveMethods,
-  attributesNotFound, receiveAreaSearchList, areaSearchesNotFound,
+  attributesNotFound,
+  receiveAreaSearchList,
+  areaSearchesNotFound,
+  areaSearchesByBBoxNotFound,
+  receiveAreaSearchByBBoxList,
 } from '$src/areaSearch/actions';
 import {fetchAreaSearchAttributesRequest, fetchAreaSearchesRequest} from '$src/areaSearch/requests';
 
@@ -54,11 +58,33 @@ function* fetchAreaSearchListSaga({payload: query}): Generator<any, any, any> {
   }
 }
 
+function* fetchAreaSearchesByBBoxSaga({payload: query}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAreaSearchesRequest, query);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveAreaSearchByBBoxList(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        yield put(areaSearchesByBBoxNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch leases with error "%s"', error);
+    yield put(areaSearchesByBBoxNotFound());
+    yield put(receiveError(error));
+  }
+}
+
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/areaSearch/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/areaSearch/FETCH_ALL', fetchAreaSearchListSaga);
+      yield takeLatest('mvj/areaSearch/FETCH_ALL_BY_BBOX', fetchAreaSearchesByBBoxSaga);
     }),
   ]);
 }

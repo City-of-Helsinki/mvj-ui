@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {initialize} from 'redux-form';
 import {withRouter} from 'react-router';
+import debounce from 'lodash/debounce';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
@@ -22,6 +23,9 @@ import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableFilterWrapper from '$components/table/TableFilterWrapper';
 import TableWrapper from '$components/table/TableWrapper';
+import IconRadioButtons from '$components/button/IconRadioButtons';
+import TableIcon from '$components/icons/TableIcon';
+import MapIcon from '$components/icons/MapIcon';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
@@ -36,7 +40,11 @@ import {
   isMethodAllowed,
 } from '$util/helpers';
 import {withAreaSearchAttributes} from '$components/attributes/AreaSearchAttributes';
-import {getAreaSearchList, getIsFetchingAreaSearchList} from '$src/areaSearch/selectors';
+import {
+  getAreaSearchList, getAreaSearchListByBBox,
+  getIsFetchingAreaSearchList,
+  getIsFetchingAreaSearchListByBBox,
+} from '$src/areaSearch/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import {
@@ -44,10 +52,23 @@ import {
   DEFAULT_SORT_KEY,
   DEFAULT_SORT_ORDER,
 } from '$src/areaSearch/constants';
-import {fetchAreaSearchList} from '$src/areaSearch/actions';
+import {fetchAreaSearchList, fetchAreaSearchListByBBox} from '$src/areaSearch/actions';
 import {getUserFullName} from '$src/users/helpers';
 import type {ApiResponse} from '$src/types';
 import {areaSearchSearchFilters} from '$src/areaSearch/helpers';
+import {BOUNDING_BOX_FOR_SEARCH_QUERY, MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES} from '$src/areaSearch/constants';
+import AreaSearchMap from '$src/areaSearch/components/map/AreaSearchMap';
+import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
+
+const VisualizationTypes = {
+  MAP: 'map',
+  TABLE: 'table',
+};
+
+const visualizationTypeOptions = [
+  {value: VisualizationTypes.TABLE, label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
+  {value: VisualizationTypes.MAP, label: 'Kartta', icon: <MapIcon className='icon-medium' />},
+];
 
 type OwnProps = {|
 
@@ -64,8 +85,11 @@ type Props = {
   isFetchingAreaSearchAttributes: boolean,
   isFetching: boolean,
   initialize: Function,
+  isFetchingByBBox: boolean,
   fetchAreaSearchList: Function,
+  fetchAreaSearchListByBBox: Function,
   areaSearches: ApiResponse,
+  areaSearchesByBBox: ApiResponse,
 }
 
 type State = {
@@ -77,6 +101,7 @@ type State = {
   sortOrder: string,
   maxPage: number,
   selectedStates: Array<string>,
+  visualizationType: string,
 }
 
 class AreaSearchApplicationListPage extends PureComponent<Props, State> {
@@ -91,6 +116,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     isSearchInitialized: false,
     maxPage: 0,
     selectedStates: DEFAULT_AREA_SEARCH_STATES,
+    visualizationType: VisualizationTypes.TABLE,
   }
 
   static contextTypes = {
@@ -100,7 +126,10 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   componentDidMount() {
     const {
       receiveTopNavigationSettings,
+      location: {search},
     } = this.props;
+    const searchQuery = getUrlParams(search);
+
     setPageTitle('Aluehaun hakemukset');
 
     receiveTopNavigationSettings({
@@ -109,12 +138,37 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       showSearch: false,
     });
 
-    this.search();
+    if(searchQuery.visualization === VisualizationTypes.MAP) {
+      this.setState({visualizationType: VisualizationTypes.MAP});
+      this.searchByBBox();
+    } else {
+      this.search();
+    }
 
     this.setSearchFormValues();
 
     window.addEventListener('popstate', this.handlePopState);
     this._isMounted = true;
+  }
+
+  handleVisualizationTypeChange = (value: string) => {
+    this.setState({visualizationType: value}, () => {
+      const {history, location: {search}} = this.props;
+      const searchQuery = getUrlParams(search);
+
+      if (value === VisualizationTypes.MAP) {
+        searchQuery.visualization = VisualizationTypes.MAP;
+      } else {
+        delete searchQuery.visualization;
+        delete searchQuery.in_bbox;
+        delete searchQuery.zoom;
+      }
+
+      return history.push({
+        pathname: getRouteById(Routes.AREA_SEARCH),
+        search: getSearchQuery(searchQuery),
+      });
+    });
   }
 
   handleAreaSearchStatesChange = (values: Array<string>) => {
@@ -210,8 +264,36 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
+    delete searchQuery.in_bbox;
+    delete searchQuery.visualization;
+    delete searchQuery.zoom;
 
     fetchAreaSearchList(areaSearchSearchFilters(searchQuery));
+  }
+
+  searchByBBox = () => {
+    const {fetchAreaSearchListByBBox, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+    const leaseStates = this.getSearchStates(searchQuery);
+
+    if (searchQuery && searchQuery.search && searchQuery.search.length > 6) {
+      searchQuery.in_bbox = BOUNDING_BOX_FOR_SEARCH_QUERY;
+    } else if (!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES) {
+      return;
+    }
+
+    if (leaseStates.length) {
+      searchQuery.lease_state = leaseStates;
+    }
+
+    searchQuery.limit = 10000;
+    delete searchQuery.page;
+    delete searchQuery.visualization;
+    delete searchQuery.zoom;
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
+
+    fetchAreaSearchListByBBox(areaSearchSearchFilters(searchQuery));
   }
 
   handleRowClick = (id) => {
@@ -269,11 +351,22 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   handleSearchChange = (query: Object, resetActivePage?: boolean = true) => {
-    const {history} = this.props;
+    const {history, location: {search}} = this.props;
+    const urlQuery = getUrlParams(search);
 
     if (resetActivePage) {
       this.setState({activePage: 1});
       delete query.page;
+    }
+
+    if (urlQuery.visualization) {
+      query.visualization = urlQuery.visualization;
+    }
+    if (urlQuery.in_bbox) {
+      query.in_bbox = urlQuery.in_bbox;
+    }
+    if (urlQuery.zoom) {
+      query.zoom = urlQuery.zoom;
     }
 
     return history.push({
@@ -285,10 +378,18 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   componentDidUpdate(prevProps) {
     const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const {visualizationType} = this.state;
     const searchQuery = getUrlParams(currentSearch);
 
     if (currentSearch !== prevSearch) {
-      this.search();
+      switch (visualizationType) {
+        case VisualizationTypes.MAP:
+          this.searchByBBox();
+          break;
+        case VisualizationTypes.TABLE:
+          this.search();
+          break;
+      }
 
       delete searchQuery.sort_key;
       delete searchQuery.sort_order;
@@ -311,6 +412,19 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   handlePopState = () => {
     this.setSearchFormValues();
   }
+
+  handleMapViewportChanged = debounce((mapOptions: Object) => {
+    const {history, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    searchQuery.in_bbox = mapOptions.bBox.split(',');
+    searchQuery.zoom = mapOptions.zoom;
+
+    return history.push({
+      pathname: getRouteById(Routes.AREA_SEARCH),
+      search: getSearchQuery(searchQuery),
+    });
+  }, 1000);
 
   getSearchStates = (query: Object) => {
     if (isArray(query.state)) {
@@ -340,6 +454,10 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       delete initialValues.state;
       delete initialValues.sort_key;
       delete initialValues.sort_order;
+      delete initialValues.in_bbox;
+      delete initialValues.visualization;
+      delete initialValues.zoom;
+
       await initialize(FormNames.AREA_SEARCH_SEARCH, initialValues);
     };
 
@@ -360,9 +478,12 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     const {
       areaSearchMethods,
       areaSearches,
+      areaSearchesByBBox,
       areaSearchAttributes,
       isFetching,
+      isFetchingByBBox,
       isFetchingAreaSearchAttributes,
+      location: {search},
     } = this.props;
 
     const {
@@ -372,12 +493,14 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       isSearchInitialized,
       maxPage,
       selectedStates,
+      visualizationType,
     } = this.state;
+    const searchQuery = getUrlParams(search);
 
     const columns = this.getColumns();
     const stateOptions = getFieldOptions(areaSearchAttributes, 'state', false);
 
-    if (isFetchingAreaSearchAttributes || !areaSearches) {
+    if (isFetchingAreaSearchAttributes || (visualizationType === VisualizationTypes.TABLE && !areaSearches)) {
       return <PageContainer>
         <Loader isLoading={true}/>
       </PageContainer>;
@@ -391,6 +514,22 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       return <PageContainer>
         <AuthorizationError text={PermissionMissingTexts.AREA_SEARCH} />
       </PageContainer>;
+    }
+
+    let amountText = '';
+    switch (visualizationType) {
+      case VisualizationTypes.MAP:
+        if (searchQuery.zoom && searchQuery.zoom >= MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES) {
+          amountText = (isFetchingByBBox || areaSearchesByBBox?.count === undefined)
+            ? 'Ladataan...'
+            : `Löytyi ${areaSearchesByBBox.count} kpl`;
+        }
+        break;
+      case VisualizationTypes.TABLE:
+      default:
+        amountText = (isFetching || areaSearches?.count === undefined)
+          ? 'Ladataan...'
+          : `Löytyi ${areaSearches.count} kpl`;
     }
 
     return (
@@ -410,39 +549,58 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
         {<TableFilterWrapper
           filterComponent={
             <TableFilters
-              amountText={isFetching ? 'Ladataan...' : `Löytyi ${areaSearches?.count} kpl`}
+              amountText={amountText}
               filterOptions={stateOptions}
               filterValue={selectedStates}
               onFilterChange={this.handleAreaSearchStatesChange}
             />
 
           }
+          visualizationComponent={
+            <VisualisationTypeWrapper>
+              {<IconRadioButtons
+                legend={'Kartta/taulukko'}
+                onChange={this.handleVisualizationTypeChange}
+                options={visualizationTypeOptions}
+                radioName='visualization-type-radio'
+                value={visualizationType}
+              />}
+            </VisualisationTypeWrapper>
+          }
         />}
-
         <TableWrapper>
           {isFetching &&
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
           }
+          {visualizationType === 'table' &&
+            <Fragment>
+              <SortableTable
+                columns={columns}
+                data={areaSearches?.results || []}
+                listTable
+                onRowClick={this.handleRowClick}
+                onSortingChange={this.handleSortingChange}
+                serverSideSorting
+                showCollapseArrowColumn
+                sortable
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+              />
 
-          <Fragment>
-            <SortableTable
-              columns={columns}
-              data={areaSearches?.results || []}
-              listTable
-              onRowClick={this.handleRowClick}
-              onSortingChange={this.handleSortingChange}
-              serverSideSorting
-              showCollapseArrowColumn
-              sortable
-              sortKey={sortKey}
-              sortOrder={sortOrder}
+              <Pagination
+                activePage={activePage}
+                maxPage={maxPage}
+                onPageClick={(page) => this.handlePageClick(page)}
+              />
+            </Fragment>
+          }
+          {visualizationType === 'map' &&
+            <AreaSearchMap
+              allowToEdit={false}
+              isLoading={isFetchingByBBox}
+              onViewportChanged={this.handleMapViewportChanged}
             />
-            <Pagination
-              activePage={activePage}
-              maxPage={maxPage}
-              onPageClick={(page) => this.handlePageClick(page)}
-            />
-          </Fragment>
+          }
         </TableWrapper>
       </PageContainer>
     );
@@ -457,13 +615,16 @@ export default (flowRight(
       return {
         usersPermissions: getUsersPermissions(state),
         isFetching: getIsFetchingAreaSearchList(state),
+        isFetchingByBBox: getIsFetchingAreaSearchListByBBox(state),
         areaSearches: getAreaSearchList(state),
+        areaSearchesByBBox: getAreaSearchListByBBox(state),
       };
     },
     {
       receiveTopNavigationSettings,
       initialize,
       fetchAreaSearchList,
+      fetchAreaSearchListByBBox,
     },
   ),
 )(AreaSearchApplicationListPage): React$ComponentType<OwnProps>);
