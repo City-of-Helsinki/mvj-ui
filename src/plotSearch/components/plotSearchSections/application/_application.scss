@@ -91,6 +91,10 @@
     margin-bottom: rem-calc(8px);
   }
 
+  .collapse.collapse__third.open:not(.is-expanding) > .collapse__content {
+    overflow: visible !important;
+  }
+
   .collapse.collapse__third .edit-plot-application-form__section-fields-container {
     margin-bottom: 0;
   }
