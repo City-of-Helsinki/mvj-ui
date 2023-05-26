@@ -591,7 +591,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const planUnitStateOptions = getFieldOptions(planUnitAttributes, 'plan_unit_state');
     const planUnitTypeOptions = getFieldOptions(planUnitAttributes, 'plan_unit_type');
     const plotDivisionStateOptions = getFieldOptions(planUnitAttributes, 'plot_division_state');
-
+    const usageDistributions = get(planUnitByValue, 'usage_distributions') || [];
     const customDetailedPlanNewValue = get(customDetailedPlanNew, 'value');
     const customDetailedPlanByValue = get(customDetailedPlanMap, customDetailedPlanNewValue);
 
@@ -599,7 +599,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const isDeleted = get(currentTarget, 'is_master_plan_unit_deleted');
     const isNewer = get(currentTarget, 'is_master_plan_unit_newer');
     const label = get(currentTarget, 'message_label');
-
+    
     const planUnitTitle = get(planUnitNew, 'label') ? `${get(planUnitNew, 'label') || ''} ${get(planUnitByValue, 'plan_unit_status') || ''}` : 'Uusi kohde';
 
     if (customDetailedPlanByValue) {
@@ -813,6 +813,42 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                   formName={FormNames.PLOT_SEARCH_BASIC_INFORMATION}
                   name={`${field}.suggested`}
                 />
+                {usageDistributions.length > 0 && (<Column small={12} medium={12} large={12} className="plot_search_target__usage-distributions">
+                  <Row>
+                    <Column small={4} medium={4} large={4}>
+                      <FormTextTitle>
+                        {PlotSearchFieldTitles.USAGE_DISTRIBUTION}
+                      </FormTextTitle>
+                    </Column>
+                    <Column small={5} medium={5} large={5}>
+                      <FormTextTitle>
+                        {PlotSearchFieldTitles.USAGE_DISTRIBUTION_BUILD_PERMISSION}
+                      </FormTextTitle>
+                    </Column>
+                    <Column small={3} medium={3} large={3}>
+                      <FormTextTitle>
+                        {PlotSearchFieldTitles.USAGE_DISTRIBUTION_NOTE}
+                      </FormTextTitle>
+                    </Column>
+                  </Row>
+                  {usageDistributions.map((usageDistribution, index) => <Row key={`${usageDistribution.distribution}-${index}`}>
+                    <Column small={12} medium={4} large={4}>
+                      <FormText>
+                        {usageDistribution.distribution}
+                      </FormText>
+                    </Column>
+                    <Column small={8} medium={6} large={6}>
+                      <FormText>
+                        {usageDistribution.build_permission ? `${usageDistribution.build_permission} k-m²` : '-'}
+                      </FormText>
+                    </Column>
+                    <Column small={4} medium={2} large={2}>
+                      <FormText>
+                        {usageDistribution.note}
+                      </FormText>
+                    </Column>
+                  </Row>)}
+                </Column>)}
               </Fragment>}
             </Row>
           </Column>

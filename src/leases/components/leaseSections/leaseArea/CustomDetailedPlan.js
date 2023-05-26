@@ -13,8 +13,8 @@ import ExternalLink from '$components/links/ExternalLink';
 import {
   LeaseAreaCustomDetailedPlanFieldPaths,
   LeaseAreaCustomDetailedPlanFieldTitles,
-  LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles,
-  LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths,
+  LeaseAreaUsageDistributionFieldTitles,
+  LeaseAreaUsageDistributionFieldPaths,
   LeaseAreaCustomDetailedPlanInfoLinksFieldPaths,
   LeaseAreaCustomDetailedPlanInfoLinksFieldTitles,
 } from '$src/leases/enums';
@@ -159,35 +159,35 @@ const CustomDetailedPlan = ({
         </SubTitle>
         <Row>
           <Column small={4} medium={4} large={4}>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.DISTRIBUTION)}>
-              {LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles.DISTRIBUTION}
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION)}>
+              {LeaseAreaUsageDistributionFieldTitles.DISTRIBUTION}
             </FormTextTitle>
           </Column>
           <Column small={4} medium={4} large={4}>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.BUILD_PERMISSION)}>
-              {LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles.BUILD_PERMISSION}
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION)}>
+              {LeaseAreaUsageDistributionFieldTitles.BUILD_PERMISSION}
             </FormTextTitle>
           </Column>
           <Column small={4} medium={4} large={4}>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.NOTE)}>
-              {LeaseAreaCustomDetailedPlanUsageDistributionFieldTitles.NOTE}
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaUsageDistributionFieldPaths.NOTE)}>
+              {LeaseAreaUsageDistributionFieldTitles.NOTE}
             </FormTextTitle>
           </Column>
         </Row>
         {customDetailedPlan.usage_distributions.map((usage_distribution) => (
           <Row key={usage_distribution.distribution}>
             <Column small={4} medium={4} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.DISTRIBUTION)}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION)}>
                 <FormText>{usage_distribution.distribution || '-'}</FormText>
               </Authorization>
             </Column>
             <Column small={4} medium={4} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.BUILD_PERMISSION)}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION)}>
                 <FormText>{!isEmptyValue(usage_distribution.build_permission) ? `${formatNumber(usage_distribution.build_permission)} k-m²` : '-'}</FormText>
               </Authorization>
             </Column>
             <Column small={4} medium={4} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanUsageDistributionFieldPaths.NOTE)}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaUsageDistributionFieldPaths.NOTE)}>
                 <FormText>{usage_distribution.distribution || '-'}</FormText>
               </Authorization>
             </Column>
