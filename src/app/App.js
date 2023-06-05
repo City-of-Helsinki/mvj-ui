@@ -6,40 +6,44 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
-import {Sizes} from '../foundation/enums';
-import {revealContext} from '../foundation/reveal';
+import {Sizes} from '$src/foundation/enums';
+import {revealContext} from '$src/foundation/reveal';
 
-import {ActionTypes, AppConsumer, AppProvider} from './AppContext';
-import ApiErrorModal from '../api/ApiErrorModal';
+import {ActionTypes, AppConsumer, AppProvider} from '$src/app/AppContext';
+import ApiErrorModal from '$src/api/ApiErrorModal';
 import ConfirmationModal from '$src/components/modal/ConfirmationModal';
 import Loader from '$components/loader/Loader';
-import LoginPage from '../auth/components/LoginPage';
+import LoginPage from '$src/auth/components/LoginPage';
 import SideMenu from '$components/sideMenu/SideMenu';
 import TopNavigation from '$components/topNavigation/TopNavigation';
-import userManager from '../auth/util/user-manager';
-import {Routes, getRouteById} from '../root/routes';
-import {clearError} from '../api/actions';
-import {clearApiToken, fetchApiToken} from '../auth/actions';
+import userManager from '$src/auth/util/user-manager';
+import {Routes, getRouteById} from '$src/root/routes';
+import {clearError} from '$src/api/actions';
+import {clearApiToken, fetchApiToken} from '$src/auth/actions';
 import {getEpochTime} from '$util/helpers';
-import {getError} from '../api/selectors';
-import {getApiToken, getApiTokenExpires, getIsFetching, getLoggedInUser} from '../auth/selectors';
+import {getError} from '$src/api/selectors';
+import {getApiToken, getApiTokenExpires, getIsFetching, getLoggedInUser} from '$src/auth/selectors';
 import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
 import {getUserGroups} from '$src/usersPermissions/selectors';
 import {setRedirectUrlToSessionStorage} from '$util/storage';
 
-import type {ApiError} from '../api/types';
-import type {ApiToken} from '../auth/types';
+import type {ApiError} from '$src/api/types';
+import type {ApiToken} from '$src/auth/types';
 import type {UserGroups} from '$src/usersPermissions/types';
-import type {RootState} from '../root/types';
+import type {RootState} from '$src/root/types';
 
 const url = window.location.toString();
 const IS_DEVELOPMENT_URL = url.includes('ninja') || url.includes('localhost');
 
+type OwnProps = {
+  children: React$Node,
+};
+
 type Props = {
+  ...OwnProps,
   apiError: ApiError,
   apiToken: ApiToken,
   apiTokenExpires: number,
-  children: any,
   clearApiToken: Function,
   clearError: typeof clearError,
   closeReveal: Function,
@@ -219,7 +223,7 @@ class App extends Component<Props, State> {
             dispatch,
           }) => {
             const handleConfirmation = () => {
-              confirmationFunction();
+              confirmationFunction?.();
               handleHideConfirmationModal();
             };
 
@@ -227,7 +231,7 @@ class App extends Component<Props, State> {
               dispatch({type: ActionTypes.HIDE_CONFIRMATION_MODAL});
             };
 
-            return(
+            return (
               <div className={appStyle}>
                 <ApiErrorModal size={Sizes.LARGE}
                   data={apiError}
@@ -243,7 +247,7 @@ class App extends Component<Props, State> {
                   onCancel={handleHideConfirmationModal}
                   onClose={handleHideConfirmationModal}
                   onSave={handleConfirmation}
-                  title={confirmationModalTitle}
+                  title={confirmationModalTitle || ''}
                 />
 
                 <ReduxToastr
@@ -310,7 +314,7 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   connect(
     mapStateToProps,
@@ -321,4 +325,4 @@ export default flowRight(
     },
   ),
   revealContext(),
-)(App);
+)(App): React$ComponentType<OwnProps>);

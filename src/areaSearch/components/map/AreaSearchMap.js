@@ -84,7 +84,7 @@ class AreaSearchMap extends PureComponent<Props, State> {
 
     if (JSON.stringify(props.searchData) !== JSON.stringify(state.searchData)) {
       newState.searchData = props.searchData;
-      newState.searchGeoJson = getAreaSearchGeoJson(getApiResponseResults(props.searchData));
+      newState.searchGeoJson = getAreaSearchGeoJson(getApiResponseResults(props.searchData) || []);
     }
 
     return !isEmpty(newState) ? newState : null;

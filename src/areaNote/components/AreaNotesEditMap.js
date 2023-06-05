@@ -1,4 +1,4 @@
-// @ flow
+// @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import L from 'leaflet';
@@ -6,7 +6,7 @@ import {FeatureGroup} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
 import 'leaflet-measure-path';
 import isEmpty from 'lodash/isEmpty';
-import throttle from "lodash/throttle";
+import throttle from 'lodash/throttle';
 
 import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';

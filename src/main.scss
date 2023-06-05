@@ -72,8 +72,10 @@
 @import "plotSearch/components/reservationIdentifiers/reservation-identifiers-modal";
 @import "plotApplications/components/plotApplication";
 @import "plotApplications/components/plotApplicationEdit";
-@import "src/plotApplications/components/infoCheck/plotApplicationInfoCheckCollapse";
-@import "src/plotApplications/components/exportModal/PlotSearchExportModal";
+@import "plotApplications/components/infoCheck/plotApplicationInfoCheckCollapse";
+@import "plotApplications/components/exportModal/PlotSearchExportModal";
+@import "areaSearch/components/area-search-application";
+@import "areaSearch/components/map/area-search-selected-area-mini-map";
 
 @import "foundation/styles";
 

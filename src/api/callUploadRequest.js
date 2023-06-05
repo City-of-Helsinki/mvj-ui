@@ -1,10 +1,10 @@
 // @flow
 
 import {call, put, select} from 'redux-saga/effects';
-import {receiveError} from './actions';
 
+import {receiveError} from '$src/api/actions';
 import {getApiToken} from '$src/auth/selectors';
-import {UI_ACCEPT_LANGUAGE_VALUE} from "./constants";
+import {UI_ACCEPT_LANGUAGE_VALUE} from '$src/api/constants';
 
 function* callUploadRequest(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);

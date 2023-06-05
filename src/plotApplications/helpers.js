@@ -19,7 +19,13 @@ import {
 import type {LeafletFeature, LeafletGeoJson, Attributes} from '$src/types';
 import {ApplicantInfoCheckTypes, ApplicantTypes, PlotApplicationApplicantInfoCheckExternalTypes} from '$src/plotApplications/enums';
 import type {RootState} from '$src/root/types';
-import type {PlotApplicationFormValue, ApplicationFormSection, ApplicationFormState, UploadedFileMeta} from '$src/plotApplications/types';
+import type {
+  PlotApplicationFormValue,
+  ApplicationFormSection,
+  ApplicationFormState,
+  UploadedFileMeta,
+  SavedApplicationFormSection,
+} from '$src/plotApplications/types';
 import type {Form, FormSection, PlotSearch} from '$src/plotSearch/types';
 import {getContentUser} from '$src/users/helpers';
 import {getTargetTitle, getTargetType} from '$src/plotSearch/helpers';

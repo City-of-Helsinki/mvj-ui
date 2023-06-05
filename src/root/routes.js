@@ -34,6 +34,7 @@ import LeaseStatisticReport from '$src/leaseStatisticReport/components/LeaseStat
 import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegisterSearchPage';
 import PlotApplicationCreatePage from '$src/plotApplications/components/PlotApplicationCreatePage';
 import AreaSearchApplicationListPage from '$src/areaSearch/components/AreaSearchApplicationListPage';
+import AreaSearchApplicationPage from '$src/areaSearch/components/AreaSearchApplicationPage';
 
 /**
  * Routes enumerate
@@ -132,6 +133,7 @@ export default (<App>
     <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/uusi`} component={PlotApplicationCreatePage} />
     <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotApplicationId`} component={PlotApplicationsPage} />
     <Route exact path={getRouteById(Routes.AREA_SEARCH)} component={AreaSearchApplicationListPage} />
+    <Route exact path={`${getRouteById(Routes.AREA_SEARCH)}/:areaSearchId`} component={AreaSearchApplicationPage} />
     <Route exact path={getRouteById(Routes.CREDIT_DECISION)} component={CreditDecisionSearchPage} />
     <Route component={ErrorPage} />
   </Switch>

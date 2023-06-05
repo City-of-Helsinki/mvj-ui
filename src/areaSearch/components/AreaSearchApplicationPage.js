@@ -3,13 +3,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {groupBy} from 'lodash/collection';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import {initialize, isDirty, destroy, getFormValues, isValid, change} from 'redux-form';
 import type {ContextRouter} from 'react-router';
 
-import {FormNames} from '$src/enums';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import FullWidthContainer from '$components/content/FullWidthContainer';
 import PageContainer from '$components/content/PageContainer';
@@ -24,34 +22,29 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
-import {withPlotApplicationsAttributes} from '$components/attributes/PlotApplicationsAttributes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import {ConfirmationModalTexts, Methods, PermissionMissingTexts} from '$src/enums';
-import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
+/*import {
+  getSessionStorageItem,
+  removeSessionStorageItem,
+  setSessionStorageItem,
+} from '$util/storage';*/
 import {
-  getIsFetching,
-  getCurrentPlotApplication,
   getIsEditMode,
   getIsSaveClicked,
   getIsFormValidFlags,
-  getIsPerformingFileOperation,
-  getIsSaving,
-  getApplicationRelatedPlotSearch,
-  getApplicationApplicantInfoCheckData,
-  getApplicationTargetInfoCheckData,
-} from '$src/plotApplications/selectors';
+  getCurrentAreaSearch,
+  getIsFetchingCurrentAreaSearch,
+} from '$src/areaSearch/selectors';
 import {
-  fetchSinglePlotApplication,
   showEditMode,
   receiveIsSaveClicked,
   hideEditMode,
   clearFormValidFlags,
-  receiveFormValidFlags, batchEditApplicationInfoChecks,
-} from '$src/plotApplications/actions';
-import type {
-  PlotApplication as PlotApplicationType,
-} from '$src/plotApplications/types';
+  receiveFormValidFlags,
+  fetchSingleAreaSearch,
+} from '$src/areaSearch/actions';
 import {
   getUrlParams,
   setPageTitle,
@@ -60,23 +53,12 @@ import {
   scrollToTopPage,
 } from '$util/helpers';
 import type {Attributes, Methods as MethodsType} from '$src/types';
-import PlotApplicationInfo from '$src/plotApplications/components/PlotApplicationInfo';
-import PlotApplication from '$src/plotApplications/components/PlotApplication';
-import PlotApplicationEdit from '$src/plotApplications/components/PlotApplicationEdit';
-import {
-  getPlotSearchList,
-} from '$src/plotSearch/selectors';
-import {
-  getApplicantInfoCheckFormName,
-  getApplicantInfoCheckItems,
-  getInitialTargetInfoCheckValues,
-  getTargetInfoCheckFormName,
-  prepareApplicantInfoCheckForSubmission,
-} from '$src/plotApplications/helpers';
-import type {PlotSearch} from '$src/plotSearch/types';
-import type {InfoCheckBatchEditData} from '$src/plotApplications/types';
 import {clearUnsavedChanges} from '$src/contacts/helpers';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
+import AreaSearchApplication from '$src/areaSearch/components/AreaSearchApplication';
+import {withAreaSearchAttributes} from '$components/attributes/AreaSearchAttributes';
+import {getFormAttributes, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
+import {fetchFormAttributes} from '$src/plotSearch/actions';
 
 type OwnProps = {|
 
@@ -86,15 +68,15 @@ type Props = {
   ...ContextRouter,
   ...OwnProps,
   clearFormValidFlags: Function,
-  currentPlotApplication: PlotApplicationType,
-  fetchSinglePlotApplication: Function,
+  currentAreaSearch: ?Object,
+  fetchSingleAreaSearch: Function,
   basicInformationFormValues: Object,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
   hideEditMode: Function,
-  plotApplicationsMethods: MethodsType,
-  plotApplicationsAttributes: Attributes,
-  isFetchingPlotApplicationsAttributes: boolean,
+  areaSearchAttributes: Attributes,
+  areaSearchMethods: MethodsType,
+  isFetchingAttributes: boolean,
   usersPermissions: UsersPermissionsType,
   isFetchingUsersPermissions: boolean,
   isFetching: boolean,
@@ -107,29 +89,26 @@ type Props = {
   isFormValidFlags: boolean,
   receiveFormValidFlags: Function,
   isPerformingFileOperation: boolean,
-  isSaving: boolean,
-  currentPlotSearch: ?PlotSearch,
   applicantInfoChecks: Array<Object>,
   targetInfoChecks: Array<Object>,
   isFormDirty: (string, ?Array<string>) => boolean,
   isFormValid: (string) => boolean,
   getValuesForForm: (string) => Object,
   batchEditApplicationInfoChecks: Function,
+  isFetchingFormAttributes: boolean,
+  formAttributes: Attributes,
+  fetchFormAttributes: Function,
 }
 
 type State = {
   activeTab: number,
   isRestoreModalOpen: boolean,
-  applicantInfoCheckFormNames: Array<string>,
-  targetInfoCheckFormNames: Array<string>,
 }
 
-class PlotApplicationPage extends Component<Props, State> {
+class AreaSearchApplicationPage extends Component<Props, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
-    applicantInfoCheckFormNames: [],
-    targetInfoCheckFormNames: [],
   }
 
   static contextTypes = {
@@ -142,10 +121,11 @@ class PlotApplicationPage extends Component<Props, State> {
     const {
       clearFormValidFlags,
       receiveTopNavigationSettings,
-      fetchSinglePlotApplication,
-      match: {params: {plotApplicationId}},
+      fetchSingleAreaSearch,
+      match: {params: {areaSearchId}},
       location: {search},
       receiveIsSaveClicked,
+      fetchFormAttributes,
     } = this.props;
 
     const query = getUrlParams(search);
@@ -158,8 +138,8 @@ class PlotApplicationPage extends Component<Props, State> {
     receiveIsSaveClicked(false);
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.PLOT_APPLICATIONS),
-      pageTitle: 'Tonttihakemukset',
+      linkUrl: getRouteById(Routes.AREA_SEARCH),
+      pageTitle: 'Aluehaun hakemukset',
       showSearch: true,
     });
 
@@ -167,7 +147,8 @@ class PlotApplicationPage extends Component<Props, State> {
       this.setState({activeTab: query.tab});
     }
 
-    fetchSinglePlotApplication(plotApplicationId);
+    fetchSingleAreaSearch(areaSearchId);
+    fetchFormAttributes();
     setPageTitle('Hakemus');
   }
 
@@ -182,7 +163,6 @@ class PlotApplicationPage extends Component<Props, State> {
     clearFormValidFlags();
     showEditMode();
     this.destroyAllForms();
-    this.initializeInfoCheckForms();
     this.startAutoSaveTimer();
   }
 
@@ -198,32 +178,7 @@ class PlotApplicationPage extends Component<Props, State> {
   }
 
   saveUnsavedChanges = () => {
-    const {
-      currentPlotApplication,
-      isFormDirty,
-      getValuesForForm,
-    } = this.props;
 
-    const {
-      targetInfoCheckFormNames,
-      applicantInfoCheckFormNames,
-    } = this.state;
-
-    let dirtyForms = {};
-
-    [...targetInfoCheckFormNames, ...applicantInfoCheckFormNames].forEach((formName) => {
-      if (isFormDirty(formName)) {
-        dirtyForms[formName] = getValuesForForm(formName);
-      }
-    });
-
-    if (Object.keys(dirtyForms).length > 0) {
-      setSessionStorageItem('plotApplicationId', currentPlotApplication.id);
-      setSessionStorageItem('plotApplicationInfoChecks', dirtyForms);
-    } else {
-      removeSessionStorageItem('plotApplicationId');
-      removeSessionStorageItem('plotApplicationInfoChecks');
-    }
   }
 
   cancelRestoreUnsavedChanges = () => {
@@ -232,31 +187,20 @@ class PlotApplicationPage extends Component<Props, State> {
   }
 
   getAreFormsValid = () => {
-    const {
-      isFormValid,
-    } = this.props;
-
-    const {
-      targetInfoCheckFormNames,
-    } = this.state;
-
-    // Applicant forms are considered to be valid by default
-    // because they're already validated in their own popup editor,
-    // which doesn't let you proceed if any validation errors are present.
-    return targetInfoCheckFormNames.every((name) => isFormValid(name));
+    return true;
   }
 
   cancelChanges = () => {
     const {
       hideEditMode,
-      fetchSinglePlotApplication,
-      match: {params: {plotApplicationId}},
+      fetchSingleAreaSearch,
+      match: {params: {areaSearchId}},
     } = this.props;
 
     // Reload all data in case we tried and managed to save some but not all info check data.
     // These could be patched to the current plot application directly upon receiving success too,
     // but that's a more complicated operation with minor gains over a refetch.
-    fetchSinglePlotApplication(plotApplicationId);
+    fetchSingleAreaSearch(areaSearchId);
     hideEditMode();
     this.stopAutoSaveTimer();
     this.destroyAllForms();
@@ -270,7 +214,7 @@ class PlotApplicationPage extends Component<Props, State> {
     delete query.tab;
 
     return history.push({
-      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}`,
+      pathname: `${getRouteById(Routes.AREA_SEARCH)}`,
       search: getSearchQuery(query),
     });
   }
@@ -292,8 +236,8 @@ class PlotApplicationPage extends Component<Props, State> {
   componentDidUpdate(prevProps: Props, prevState: State) {
     const {
       location: {search},
-      currentPlotApplication,
-      match: {params: {plotApplicationId}},
+      currentAreaSearch,
+      //match: {params: {areaSearchId}},
       isFetching,
       isEditMode,
     } = this.props;
@@ -302,24 +246,26 @@ class PlotApplicationPage extends Component<Props, State> {
     const tab = query.tab ? Number(query.tab) : 0;
 
 
-    if(tab !== activeTab) {
+    if (tab !== activeTab) {
       this.setState({activeTab: tab});
     }
 
-    if(prevState.activeTab !== activeTab) {
+    if (prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
 
-    if(isEmpty(prevProps.currentPlotApplication) && !isEmpty(currentPlotApplication)) {
-      const storedPlotApplicationId = getSessionStorageItem('plotApplicationId');
+    /*
+    if (isEmpty(prevProps.currentAreaSearch) && !isEmpty(currentAreaSearch)) {
+      const storedAreaSearchId = getSessionStorageItem('areaSearchId');
 
-      if(Number(plotApplicationId) === storedPlotApplicationId) {
+      if(Number(areaSearchId) === storedAreaSearchId) {
         this.setState({isRestoreModalOpen: true});
       }
     }
+     */
 
     if (!isFetching && prevProps.isFetching) {
-      setPageTitle(`Hakemus ${currentPlotApplication.id}`);
+      setPageTitle(`Hakemus ${currentAreaSearch?.identifier || ''}`);
     }
 
     if (!isEditMode && prevProps.isEditMode) {
@@ -327,139 +273,36 @@ class PlotApplicationPage extends Component<Props, State> {
     }
   }
 
-  initializeInfoCheckForms = () => {
-    const {
-      currentPlotApplication,
-      initialize,
-      currentPlotSearch,
-      targetInfoChecks,
-      applicantInfoChecks,
-    } = this.props;
-    let applicantInfoCheckFormNames = [];
-    let targetInfoCheckFormNames = [];
-
-    currentPlotApplication.targets.forEach((target) => {
-      initialize(
-        getTargetInfoCheckFormName(target),
-        getInitialTargetInfoCheckValues(
-          currentPlotSearch,
-          targetInfoChecks,
-          target
-        ));
-      targetInfoCheckFormNames.push(getTargetInfoCheckFormName(target));
-    });
-
-    const applicantInfoChecksByApplicantId = groupBy(applicantInfoChecks, 'entry');
-
-    Object.keys(applicantInfoChecksByApplicantId).forEach((key) => {
-      const infoChecks = getApplicantInfoCheckItems(applicantInfoChecksByApplicantId[key]);
-
-      infoChecks.forEach((infoCheck) => {
-        initialize(
-          getApplicantInfoCheckFormName(infoCheck.data.id),
-          infoCheck
-        );
-        applicantInfoCheckFormNames.push(getApplicantInfoCheckFormName(infoCheck.data.id));
-      });
-    });
-
-    this.setState(() => ({
-      applicantInfoCheckFormNames,
-      targetInfoCheckFormNames,
-    }));
-  }
-
   saveChanges = () => {
     const {
       receiveIsSaveClicked,
-      isFormDirty,
-      getValuesForForm,
-      batchEditApplicationInfoChecks,
     } = this.props;
-
-    const {
-      targetInfoCheckFormNames,
-      applicantInfoCheckFormNames,
-    } = this.state;
 
     receiveIsSaveClicked(true);
 
     const areFormsValid = this.getAreFormsValid();
-    const operations: InfoCheckBatchEditData = {
-      target: [],
-      applicant: [],
-    };
 
     if (areFormsValid) {
-      targetInfoCheckFormNames.forEach((target) => {
-        const data = getValuesForForm(target);
-
-        if (isFormDirty(target)) {
-          operations.target.push({
-            id: data.id,
-            targetForm: target,
-            data: {
-              ...data,
-              meeting_memos: undefined,
-              decline_reason: data.decline_reason || null,
-            },
-          });
-        }
-      });
-
-      applicantInfoCheckFormNames.forEach((target) => {
-        const infoCheck = getValuesForForm(target);
-
-        if (isFormDirty(target)) {
-          operations.applicant.push({
-            id: infoCheck.data.id,
-            kind: infoCheck.kind,
-            data: prepareApplicantInfoCheckForSubmission(infoCheck.data),
-          });
-        }
-      });
-
-      batchEditApplicationInfoChecks(operations);
+      // TODO
     }
   }
 
   restoreUnsavedChanges = () => {
     const {
       showEditMode,
-      change,
     } = this.props;
 
     showEditMode();
     clearFormValidFlags();
 
     this.destroyAllForms();
-    this.initializeInfoCheckForms();
-
-    const storedInfoCheckData = getSessionStorageItem('plotApplicationInfoChecks');
-    Object.keys(storedInfoCheckData).forEach((formName) => {
-      Object.keys(storedInfoCheckData[formName]).forEach((field) => {
-        change(formName, field, storedInfoCheckData[formName][field]);
-      });
-    });
 
     this.startAutoSaveTimer();
     this.setState({isRestoreModalOpen: false});
   }
 
   destroyAllForms = () => {
-    const {destroy} = this.props;
-    const {
-      applicantInfoCheckFormNames,
-      targetInfoCheckFormNames,
-    } = this.state;
 
-    destroy(FormNames.PLOT_APPLICATION);
-    applicantInfoCheckFormNames.map((name) => destroy(name));
-    targetInfoCheckFormNames.map((name) => destroy(name));
-    this.setState(() => ({
-      applicantInfoCheckFormNames: [],
-      targetInfoCheckFormNames: [],
-    }));
   }
 
   render() {
@@ -469,30 +312,29 @@ class PlotApplicationPage extends Component<Props, State> {
     } = this.state;
 
     const {
-      currentPlotApplication,
-      isFetchingPlotApplicationsAttributes,
-      plotApplicationsMethods,
-      plotApplicationsAttributes,
+      currentAreaSearch,
+      isFetchingAttributes,
+      areaSearchMethods,
+      areaSearchAttributes,
       usersPermissions,
       isFetchingUsersPermissions,
       isFetching,
       isEditMode,
       isSaveClicked,
       isPerformingFileOperation,
-      isSaving,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
 
-    if (isFetching || isFetchingUsersPermissions || isFetchingPlotApplicationsAttributes) {
+    if (isFetching || isFetchingUsersPermissions || isFetchingAttributes) {
       return <PageContainer><Loader isLoading={true} /></PageContainer>;
     }
 
-    if (!plotApplicationsAttributes || !plotApplicationsMethods || isEmpty(usersPermissions)) {
+    if (!areaSearchAttributes || !areaSearchMethods || isEmpty(usersPermissions)) {
       return null;
     }
 
-    if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
+    if (!isMethodAllowed(areaSearchMethods, Methods.GET)) {
       return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS}/></PageContainer>;
     }
 
@@ -503,12 +345,11 @@ class PlotApplicationPage extends Component<Props, State> {
             buttonComponent={
               <ControlButtons
                 allowDelete={false}
-                allowEdit={isMethodAllowed(plotApplicationsMethods, Methods.PATCH)}
-                isCancelDisabled={isPerformingFileOperation || isSaving}
+                allowEdit={isMethodAllowed(areaSearchMethods, Methods.PATCH)}
                 isCopyDisabled={true}
                 isEditDisabled={false}
                 isEditMode={isEditMode}
-                isSaveDisabled={isPerformingFileOperation || isSaving || isSaveClicked && !areFormsValid}
+                isSaveDisabled={isPerformingFileOperation || isSaveClicked && !areFormsValid}
                 onCancel={this.cancelChanges}
                 onEdit={this.handleShowEditMode}
                 onSave={this.saveChanges}
@@ -522,7 +363,7 @@ class PlotApplicationPage extends Component<Props, State> {
                 }}
               />
             }
-            infoComponent={<PlotApplicationInfo title={currentPlotApplication.plot_search}/>}
+            infoComponent={<h1>{currentAreaSearch?.identifier}</h1>}
             onBack={this.handleBack}
           />
           <Tabs
@@ -537,6 +378,10 @@ class PlotApplicationPage extends Component<Props, State> {
               },
               {
                 label: 'Muutoshistoria',
+                allow: true,
+              },
+              {
+                label: 'Kartta',
                 allow: true,
               },
             ]}
@@ -557,8 +402,8 @@ class PlotApplicationPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 {isEditMode
-                  ? <PlotApplicationEdit />
-                  : <PlotApplication />
+                  ? <div />
+                  : <AreaSearchApplication />
                 }
               </ContentContainer>
             </TabPane>
@@ -566,6 +411,12 @@ class PlotApplicationPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 {'Muutoshistoria'}
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                {'Kartta'}
               </ContentContainer>
             </TabPane>
           </TabContent>
@@ -577,24 +428,19 @@ class PlotApplicationPage extends Component<Props, State> {
 
 export default (flowRight(
   withRouter,
-  withPlotApplicationsAttributes,
+  withAreaSearchAttributes,
   connect(
     (state) => {
       return {
-        basicInformationFormValues: getFormValues(FormNames.PLOT_APPLICATION)(state),
-        currentPlotApplication: getCurrentPlotApplication(state),
+        currentAreaSearch: getCurrentAreaSearch(state),
         isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
         usersPermissions: getUsersPermissions(state),
-        isFetching: getIsFetching(state),
+        isFetching: getIsFetchingCurrentAreaSearch(state),
         isEditMode: getIsEditMode(state),
         isSaveClicked: getIsSaveClicked(state),
         isFormValidFlags: getIsFormValidFlags(state),
-        isPerformingFileOperation: getIsPerformingFileOperation(state),
-        plotSearches: getPlotSearchList(state),
-        isSaving: getIsSaving(state),
-        currentPlotSearch: getApplicationRelatedPlotSearch(state),
-        applicantInfoChecks: getApplicationApplicantInfoCheckData(state),
-        targetInfoChecks: getApplicationTargetInfoCheckData(state),
+        formAttributes: getFormAttributes(state),
+        isFetchingFormAttributes: getIsFetchingFormAttributes(state),
         isFormDirty: (formName, fields) => {
           // isDirty doesn't ignore the second parameter even if it's undefined, and always returns false in that case,
           // so branching is required to use this with both form-specific and field-specific queries.
@@ -610,7 +456,8 @@ export default (flowRight(
     },
     {
       destroy,
-      fetchSinglePlotApplication,
+      fetchSingleAreaSearch,
+      fetchFormAttributes,
       receiveTopNavigationSettings,
       showEditMode,
       hideEditMode,
@@ -619,7 +466,6 @@ export default (flowRight(
       change,
       clearFormValidFlags,
       receiveFormValidFlags,
-      batchEditApplicationInfoChecks,
     }
   ),
-)(PlotApplicationPage): React$ComponentType<OwnProps>);
+)(AreaSearchApplicationPage): React$ComponentType<OwnProps>);

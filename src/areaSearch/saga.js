@@ -12,9 +12,13 @@ import {
   receiveAreaSearchList,
   areaSearchesNotFound,
   areaSearchesByBBoxNotFound,
-  receiveAreaSearchByBBoxList,
+  receiveAreaSearchByBBoxList, receiveSingleAreaSearch, singleAreaSearchNotFound,
 } from '$src/areaSearch/actions';
-import {fetchAreaSearchAttributesRequest, fetchAreaSearchesRequest} from '$src/areaSearch/requests';
+import {
+  fetchAreaSearchAttributesRequest,
+  fetchAreaSearchesRequest,
+  fetchSingleAreaSearchRequest,
+} from '$src/areaSearch/requests';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -72,8 +76,26 @@ function* fetchAreaSearchesByBBoxSaga({payload: query}): Generator<any, any, any
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leases with error "%s"', error);
+    console.error('Failed to fetch area searches by bbox with error "%s"', error);
     yield put(areaSearchesByBBoxNotFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchCurrentAreaSearchSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleAreaSearchRequest, id);
+
+    switch(statusCode) {
+      case 200:
+        yield put(receiveSingleAreaSearch(bodyAsJson));
+        break;
+      default:
+        yield put(singleAreaSearchNotFound());
+    }
+  } catch (error) {
+    console.error('Failed to fetch current area search with error "%s"', error);
+    yield put(singleAreaSearchNotFound());
     yield put(receiveError(error));
   }
 }
@@ -85,6 +107,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/areaSearch/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/areaSearch/FETCH_ALL', fetchAreaSearchListSaga);
       yield takeLatest('mvj/areaSearch/FETCH_ALL_BY_BBOX', fetchAreaSearchesByBBoxSaga);
+      yield takeLatest('mvj/areaSearch/FETCH_SINGLE', fetchCurrentAreaSearchSaga);
     }),
   ]);
 }

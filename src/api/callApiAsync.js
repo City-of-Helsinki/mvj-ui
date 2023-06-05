@@ -1,9 +1,9 @@
 // @flow
 import {store} from '$src/root/startApp';
 import {getApiToken} from '$src/auth/selectors';
-import {UI_ACCEPT_LANGUAGE_VALUE} from "./constants";
+import {UI_ACCEPT_LANGUAGE_VALUE} from '$src/api/constants';
 
-const callApiAsync = async(request: Request) => {
+const callApiAsync = async (request: Request): Promise<Object> => {
   const apiToken = await getApiToken(store.getState());
 
   if (apiToken) {

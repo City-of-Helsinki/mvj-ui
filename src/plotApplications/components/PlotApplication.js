@@ -36,13 +36,19 @@ import {
 } from '$src/plotSearch/selectors';
 import {getFieldAttributes} from '$util/helpers';
 import {getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch} from '$src/plotApplications/selectors';
-import PlotApplicationSectionData from '$src/plotApplications/components/PlotApplicationSectionData';
+import ApplicationAnswersSection from '$src/application/ApplicationAnswersSection';
+import PlotApplicationTargetInfoCheck from '$src/plotApplications/components/infoCheck/PlotApplicationTargetInfoCheck';
+import PlotApplicationApplicantInfoCheck
+  from '$src/plotApplications/components/infoCheck/PlotApplicationApplicantInfoCheck';
+import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
+import type {SectionExtraComponentProps} from '$src/application/types';
+import {transformApplicantSectionTitle, transformTargetSectionTitle} from '$src/application/helpers';
 
 type OwnProps = {};
 
 type Props = {
   usersPermissions: UsersPermissionsType,
-  applicationCollapseState: Boolean,
+  applicationCollapseState: boolean,
   receiveCollapseStates: Function,
   attributes: Attributes,
   currentPlotApplication: PlotApplicationType,
@@ -55,6 +61,28 @@ type Props = {
   isFetchingPlotSearch: boolean,
   plotSearch: ?Object,
 }
+
+const PlotApplicationSectionExtras = ({
+  section,
+  identifier,
+  answer,
+  topLevel,
+}: SectionExtraComponentProps) => {
+  return <>
+    {topLevel && section.identifier === TARGET_SECTION_IDENTIFIER &&
+      (answer.metadata?.identifier ? <PlotApplicationTargetInfoCheck
+        section={section}
+        identifier={identifier}
+        targetId={(answer.metadata.identifier: any)}
+      /> : <Loader isLoading={true} />)}
+    {topLevel && section.identifier === APPLICANT_SECTION_IDENTIFIER &&
+      <PlotApplicationApplicantInfoCheck
+        section={section}
+        identifier={identifier}
+        answer={answer}
+      />}
+  </>;
+};
 
 class PlotApplication extends PureComponent<Props> {
   handleBasicInfoCollapseToggle = (val: boolean) => {
@@ -160,7 +188,7 @@ class PlotApplication extends PureComponent<Props> {
               </Row>
             </Collapse>
             {!isLoading && fieldTypes && orderBy(form.sections, 'order').filter((section) => section.visible).map((section) =>
-              <PlotApplicationSectionData
+              <ApplicationAnswersSection
                 section={section}
                 answer={answerData.sections[section.identifier]}
                 topLevel
@@ -168,6 +196,11 @@ class PlotApplication extends PureComponent<Props> {
                 key={section.identifier}
                 plotSearch={plotSearch}
                 editMode={false}
+                sectionExtraComponent={PlotApplicationSectionExtras}
+                sectionTitleTransformers={[
+                  transformTargetSectionTitle(plotSearch),
+                  transformApplicantSectionTitle,
+                ]}
               />)}
           </Column>
         </Row>
