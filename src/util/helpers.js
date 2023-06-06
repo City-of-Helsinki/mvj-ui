@@ -711,7 +711,7 @@ export const getApiResponseMaxPage = (response: ApiResponse, size: number): numb
  * @param {Object} response
  * @returns {Object[]}
  */
-export const getApiResponseResults = (response: ApiResponse): ?Object =>
+export const getApiResponseResults = (response: ApiResponse): Array<Object> =>
   get(response, 'results', []);
 
 /**

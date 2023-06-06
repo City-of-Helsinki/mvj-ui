@@ -55,8 +55,6 @@ const baseState: PlotApplicationsState = {
   subTypes: null,
   pendingUploads: [],
   plotSearch: null,
-  isFetchingApplicantInfoCheckAttributes: false,
-  applicantInfoCheckAttributes: null,
   isFetchingTargetInfoCheckAttributes: false,
   targetInfoCheckAttributes: null,
   infoCheckBatchEditErrors: {

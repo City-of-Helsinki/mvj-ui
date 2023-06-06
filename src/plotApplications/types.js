@@ -27,8 +27,6 @@ export type PlotApplicationsState = {
   isFetchingAttachmentAttributes: boolean,
   attachments: ?Array<Object>,
   currentEditorTargets: Array<Object>,
-  isFetchingApplicantInfoCheckAttributes: boolean,
-  applicantInfoCheckAttributes: Attributes,
   isSaveClicked: boolean,
   isFetchingForm: boolean,
   form: ?Object,
@@ -148,11 +146,10 @@ export type AttachmentAttributesNotFoundAction = Action<'mvj/plotApplications/AT
 
 export type SetCurrentEditorTargetsAction = Action<'mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS', Array<Object>>;
 
-export type FetchApplicantInfoCheckAttributesAction = Action<'mvj/plotApplications/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES', void>;
-export type ReceiveApplicantInfoCheckAttributesAction = Action<'mvj/plotApplications/RECEIVE_APPLICANT_INFO_CHECK_ATTRIBUTES', Attributes>;
-export type ApplicantInfoCheckAttributesNotFoundAction = Action<'mvj/plotApplications/APPLICANT_INFO_CHECK_ATTRIBUTES_NOT_FOUND', void>;
+export type FetchTargetInfoCheckAttributesAction = Action<'mvj/plotApplications/FETCH_TARGET_INFO_CHECK_ATTRIBUTES', void>;
+export type ReceiveTargetInfoCheckAttributesAction = Action<'mvj/plotApplications/RECEIVE_TARGET_INFO_CHECK_ATTRIBUTES', Attributes>;
+export type TargetInfoCheckAttributesNotFoundAction = Action<'mvj/plotApplications/TARGET_INFO_CHECK_ATTRIBUTES_NOT_FOUND', void>;
 
-export type ReceiveUpdatedApplicantInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM', Object>;
 export type ReceiveUpdatedTargetInfoCheckItemAction = Action<'mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM', Object>;
 
 export type DeleteTargetInfoCheckMeetingMemoAction = Action<'mvj/plotApplications/DELETE_MEETING_MEMO', Object>;

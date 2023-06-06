@@ -3,33 +3,24 @@
 import get from 'lodash/get';
 import _ from 'lodash';
 import {formValueSelector} from 'redux-form';
-import {getFieldAttributes, displayUIMessage, getApiResponseResults} from '$util/helpers';
+import {displayUIMessage, getApiResponseResults, getFieldAttributes} from '$util/helpers';
 
 import createUrl from '$src/api/createUrl';
 import {store} from '$src/root/startApp';
 import {FormNames} from '$src/enums';
-import {
-  getCurrentEditorTargets,
-} from '$src/plotApplications/selectors';
+import {getCurrentEditorTargets} from '$src/plotApplications/selectors';
 import {
   APPLICANT_MAIN_IDENTIFIERS,
   APPLICANT_SECTION_IDENTIFIER,
   TARGET_SECTION_IDENTIFIER,
 } from '$src/plotApplications/constants';
-import type {LeafletFeature, LeafletGeoJson, Attributes} from '$src/types';
-import {ApplicantInfoCheckTypes, ApplicantTypes, PlotApplicationApplicantInfoCheckExternalTypes} from '$src/plotApplications/enums';
+import type {Attributes, LeafletFeature, LeafletGeoJson} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {
-  PlotApplicationFormValue,
-  ApplicationFormSection,
-  ApplicationFormState,
-  UploadedFileMeta,
-  SavedApplicationFormSection,
-} from '$src/plotApplications/types';
-import type {Form, FormSection, PlotSearch} from '$src/plotSearch/types';
-import {getContentUser} from '$src/users/helpers';
+import type {ApplicationFormSection, ApplicationFormState, UploadedFileMeta} from '$src/plotApplications/types';
+import type {Form, PlotSearch} from '$src/plotSearch/types';
 import {getTargetTitle, getTargetType} from '$src/plotSearch/helpers';
 import {TargetIdentifierTypes} from '$src/plotSearch/enums';
+import {ApplicantTypes} from '$src/application/enums';
 
 /**
  * Get plotApplication list results
@@ -482,105 +473,6 @@ export const getSectionTargetFromMeta = (field: string): string => {
 
 export const getApplicationAttachmentDownloadLink = (id: number): string => createUrl(`attachment/${id}/download`);
 
-const APPLICATION_INFO_CHECK_DEFINITIONS = [
-  {
-    type: ApplicantInfoCheckTypes.TRADE_REGISTER,
-    label: 'Kaupparekisteriote',
-    useIfCompany: true,
-    useIfPerson: false,
-    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-  },
-  {
-    type: ApplicantInfoCheckTypes.CREDITWORTHINESS,
-    label: 'Luottokelpoisuustodistus / luottotiedot',
-    useIfCompany: true,
-    useIfPerson: true,
-    external: PlotApplicationApplicantInfoCheckExternalTypes.CREDIT_INQUIRY,
-  },
-  {
-    type: ApplicantInfoCheckTypes.PENSION_CONTRIBUTIONS,
-    label: 'Selvitys työeläkemaksujen maksamisesta',
-    useIfCompany: true,
-    useIfPerson: true,
-    external: null,
-  },
-  {
-    type: ApplicantInfoCheckTypes.VAT_REGISTER,
-    label: 'Todistus arvonlisärekisteriin lisäämisestä',
-    useIfCompany: true,
-    useIfPerson: false,
-    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-  },
-  {
-    type: ApplicantInfoCheckTypes.ADVANCE_PAYMENT,
-    label: 'Todistus ennakkoperintärekisteriin lisäämisestä',
-    useIfCompany: true,
-    useIfPerson: false,
-    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-  },
-  {
-    type: ApplicantInfoCheckTypes.TAX_DEBT,
-    label: 'Verovelkatodistus',
-    useIfCompany: true,
-    useIfPerson: false,
-    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-  },
-  {
-    type: ApplicantInfoCheckTypes.EMPLOYER_REGISTER,
-    label: 'Todistus työnantajarekisteriin lisäämisestä',
-    useIfCompany: true,
-    useIfPerson: false,
-    external: PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY,
-  },
-];
-
-export const getApplicantInfoCheckItems = (existingData: Array<Object>): Array<Object> => {
-  return APPLICATION_INFO_CHECK_DEFINITIONS.map((item) => {
-    const existingItem = existingData.find((existingItem) => existingItem.name === item.type);
-
-    if (!existingItem) {
-      return null;
-    }
-
-    return {
-      kind: {...item},
-      data: {
-        ...existingItem,
-        preparer: getContentUser(existingItem.preparer),
-      },
-    };
-  }).filter((item) => !!item);
-};
-
-export const prepareApplicantInfoCheckForSubmission = (infoCheck: Object): Object => {
-  return {
-    id: infoCheck.id,
-    preparer: infoCheck.preparer?.id,
-    comment: infoCheck.comment,
-    state: infoCheck.state,
-    mark_all: infoCheck.mark_all,
-  };
-};
-
-export const valueToApplicantType = (value: PlotApplicationFormValue): string | null => {
-  if (value === '1') {
-    return ApplicantTypes.COMPANY;
-  }
-  if (value === '2') {
-    return ApplicantTypes.PERSON;
-  }
-
-  return ApplicantTypes.UNKNOWN;
-};
-
-export const getSectionApplicantType = (state: RootState, section: FormSection, reduxFormPath: string): string => {
-  if (section.identifier !== APPLICANT_SECTION_IDENTIFIER) {
-    return ApplicantTypes.NOT_APPLICABLE;
-  }
-
-  return formValueSelector(FormNames.PLOT_APPLICATION)(state, `${reduxFormPath}.metadata.applicantType`) || ApplicantTypes.UNSELECTED;
-};
-
 export const getFieldFileIds = (state: RootState, fieldPath: string): Array<number> => {
   const fieldValue = formValueSelector(FormNames.PLOT_APPLICATION)(state, fieldPath);
   return fieldValue?.value || [];
@@ -627,9 +519,6 @@ export const getInitialTargetInfoCheckValues = (plotSearch: PlotSearch, infoChec
 };
 
 export const getMeetingMemoDownloadLink = (id: number): string => createUrl(`meeting_memo/${id}/download`);
-
-export const getApplicantInfoCheckFormName = (infoCheckId: number): string =>
-  `${FormNames.PLOT_APPLICATION_APPLICANT_INFO_CHECK}--${infoCheckId}`;
 
 export const getTargetInfoCheckFormName = (targetId: number): string =>
   `${FormNames.PLOT_APPLICATION_TARGET_INFO_CHECK}--${targetId}`;

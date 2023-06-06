@@ -35,10 +35,6 @@ export const fetchAttachmentAttributesRequest = (): Generator<any, any, any> => 
   return callApi(new Request(createUrl('attachment/'), {method: 'OPTIONS'}));
 };
 
-export const fetchApplicantInfoCheckAttributesRequest = (): Generator<any, any, any> => {
-  return callApi(new Request(createUrl('information_check/'), {method: 'OPTIONS'}));
-};
-
 export const uploadFileRequest = ({field, file, answer}: {
   field: number;
   file: File;

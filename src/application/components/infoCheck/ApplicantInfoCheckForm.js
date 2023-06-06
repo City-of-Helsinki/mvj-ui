@@ -11,9 +11,12 @@ import {ButtonColors} from '$components/enums';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import Button from '$components/button/Button';
-import {getApplicantInfoCheckAttributes} from '$src/plotApplications/selectors';
 import type {Attributes} from '$src/types';
-import {PlotApplicationApplicantInfoCheckFieldPaths, PlotApplicationApplicantInfoCheckFieldTitles} from '$src/plotApplications/enums';
+import {
+  ApplicantInfoCheckFieldPaths,
+  ApplicantInfoCheckFieldTitles,
+} from '$src/application/enums';
+import {getApplicantInfoCheckAttributes} from '$src/application/selectors';
 
 type OwnProps = {
   infoCheck: Object,
@@ -30,7 +33,7 @@ type Props = {
   isPreparerDirty: boolean,
 };
 
-class PlotApplicationApplicantInfoCheckForm extends Component<Props> {
+class ApplicantInfoCheckForm extends Component<Props> {
   firstField: ?HTMLInputElement
 
   componentDidMount(): void {
@@ -80,29 +83,29 @@ class PlotApplicationApplicantInfoCheckForm extends Component<Props> {
           <Column small={4}>
             <FormField
               setRefForField={this.setRefForFirstField}
-              fieldAttributes={get(attributes, PlotApplicationApplicantInfoCheckFieldPaths.PREPARER)}
-              name={PlotApplicationApplicantInfoCheckFieldPaths.PREPARER}
+              fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.PREPARER)}
+              name={ApplicantInfoCheckFieldPaths.PREPARER}
               overrideValues={{
                 fieldType: FieldTypes.USER,
-                label: PlotApplicationApplicantInfoCheckFieldTitles.PREPARER,
+                label: ApplicantInfoCheckFieldTitles.PREPARER,
               }}
             />
           </Column>
           <Column small={4}>
             <FormField
-              fieldAttributes={get(attributes, PlotApplicationApplicantInfoCheckFieldPaths.STATE)}
-              name={PlotApplicationApplicantInfoCheckFieldPaths.STATE}
+              fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.STATE)}
+              name={ApplicantInfoCheckFieldPaths.STATE}
               overrideValues={{
-                label: PlotApplicationApplicantInfoCheckFieldTitles.STATE,
+                label: ApplicantInfoCheckFieldTitles.STATE,
               }}
             />
           </Column>
           <Column small={4}>
             <FormField
-              fieldAttributes={get(attributes, PlotApplicationApplicantInfoCheckFieldPaths.MARK_ALL)}
-              name={PlotApplicationApplicantInfoCheckFieldPaths.MARK_ALL}
+              fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.MARK_ALL)}
+              name={ApplicantInfoCheckFieldPaths.MARK_ALL}
               overrideValues={{
-                label: PlotApplicationApplicantInfoCheckFieldTitles.MARK_ALL,
+                label: ApplicantInfoCheckFieldTitles.MARK_ALL,
                 required: false,
               }}
             />
@@ -111,11 +114,11 @@ class PlotApplicationApplicantInfoCheckForm extends Component<Props> {
         <Row>
           <Column small={12}>
             <FormField
-              fieldAttributes={get(attributes, PlotApplicationApplicantInfoCheckFieldPaths.COMMENT)}
-              name={PlotApplicationApplicantInfoCheckFieldPaths.COMMENT}
+              fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.COMMENT)}
+              name={ApplicantInfoCheckFieldPaths.COMMENT}
               overrideValues={{
                 fieldType: FieldTypes.TEXTAREA,
-                label: PlotApplicationApplicantInfoCheckFieldTitles.COMMENT,
+                label: ApplicantInfoCheckFieldTitles.COMMENT,
               }}
             />
           </Column>
@@ -143,13 +146,13 @@ export default (flowRight(
   connect(
     (state) => ({
       attributes: getApplicantInfoCheckAttributes(state),
-      formValues: getFormValues(FormNames.PLOT_APPLICATION_APPLICANT_INFO_CHECK)(state),
+      formValues: getFormValues(FormNames.APPLICANT_INFO_CHECK)(state),
     }),
     null,
     null,
     {forwardRef: true}
   ),
   reduxForm({
-    form: FormNames.PLOT_APPLICATION_APPLICANT_INFO_CHECK,
+    form: FormNames.APPLICANT_INFO_CHECK,
   })
-)(PlotApplicationApplicantInfoCheckForm): React$ComponentType<OwnProps>);
+)(ApplicantInfoCheckForm): React$ComponentType<OwnProps>);

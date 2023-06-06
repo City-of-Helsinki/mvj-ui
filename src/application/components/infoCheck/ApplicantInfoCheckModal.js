@@ -4,11 +4,11 @@ import React, {Component} from 'react';
 import Modal from '$components/modal/Modal';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import Button from '$components/button/Button';
-import PlotApplicationApplicantInfoCheckForm from '$src/plotApplications/components/infoCheck/PlotApplicationApplicantInfoCheckForm';
+import ApplicantInfoCheckForm from '$src/application/components/infoCheck/ApplicantInfoCheckForm';
 import TradeRegisterTemplate from '$src/tradeRegister/components/TradeRegisterTemplate';
 import CreditDecisionTemplate from '$src/creditDecision/components/CreditDecisionTemplate';
 import {ContactTypes} from '$src/contacts/enums';
-import {PlotApplicationApplicantInfoCheckExternalTypes} from '$src/plotApplications/enums';
+import {ApplicantInfoCheckExternalTypes} from '$src/application/enums';
 
 type Props = {
   isOpen: boolean,
@@ -25,9 +25,9 @@ type State = {
   stage: number
 };
 
-class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
+class ApplicantInfoCheckModal extends Component<Props, State> {
   // TODO: Not entirely the correct type, as wrappedInstance isn't resolved below correctly.
-  form: ?typeof PlotApplicationApplicantInfoCheckForm;
+  form: ?typeof ApplicantInfoCheckForm;
 
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen || prevProps.modalPage !== this.props.modalPage) {
@@ -71,11 +71,11 @@ class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
       >
         {
           infoCheck && modalPage === 1 && <div>
-            {infoCheck.kind.external === PlotApplicationApplicantInfoCheckExternalTypes.CREDIT_INQUIRY && <>
+            {infoCheck.kind.external === ApplicantInfoCheckExternalTypes.CREDIT_INQUIRY && <>
               {businessId && <CreditDecisionTemplate businessId={businessId} contactType={ContactTypes.BUSINESS} />}
               {personId && <CreditDecisionTemplate nin={personId} contactType={ContactTypes.PERSON} />}
             </>}
-            {infoCheck.kind.external === PlotApplicationApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY && <>
+            {infoCheck.kind.external === ApplicantInfoCheckExternalTypes.TRADE_REGISTER_INQUIRY && <>
               {businessId
                 ? <TradeRegisterTemplate businessId={businessId} />
                 : <div className="alert">Kaupparekisteriotetta ei voi hakea henkilöhakijalle.</div>}
@@ -88,7 +88,7 @@ class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
         }
         {
           infoCheck && modalPage === 2 && <div>
-            <PlotApplicationApplicantInfoCheckForm
+            <ApplicantInfoCheckForm
               onSubmit={onSubmit}
               onClose={onClose}
               infoCheck={infoCheck}
@@ -100,4 +100,4 @@ class PlotApplicationApplicantInfoCheckModal extends Component<Props, State> {
   }
 }
 
-export default PlotApplicationApplicantInfoCheckModal;
+export default ApplicantInfoCheckModal;

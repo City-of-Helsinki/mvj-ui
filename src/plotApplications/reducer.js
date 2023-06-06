@@ -24,14 +24,14 @@ import type {
   ReceiveApplicationRelatedPlotSearchAction,
   ReceiveAttachmentAttributesAction,
   ReceiveAttachmentMethodsAction,
-  ReceiveApplicantInfoCheckAttributesAction,
   PlotApplicationsState,
   InfoCheckBatchEditErrors,
   ReceiveTargetInfoChecksForPlotSearchAction,
-  ReceivePlotApplicationInfoCheckBatchEditFailureAction,
+  ReceivePlotApplicationInfoCheckBatchEditFailureAction, ReceiveTargetInfoCheckAttributesAction,
 } from '$src/plotApplications/types';
 import type {ReceiveFormAttributesAction} from '$src/plotSearch/types';
 import {sortBy} from 'lodash/collection';
+import type {ReceiveApplicantInfoCheckAttributesAction} from '$src/application/types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
@@ -229,19 +229,8 @@ const currentEditorTargetsReducer: Reducer<Array<Object>> = handleActions({
   ['mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS']: (state, {payload: targets}) => targets,
 }, []);
 
-const applicantInfoCheckAttributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/plotApplications/RECEIVE_APPLICANT_INFO_CHECK_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveApplicantInfoCheckAttributesAction) => attributes,
-  ['mvj/plotApplications/APPLICANT_INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => null,
-}, null);
-
-const isFetchingApplicantInfoCheckAttributesReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotApplications/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES']: () => true,
-  ['mvj/plotApplications/RECEIVE_APPLICANT_INFO_CHECK_ATTRIBUTES']: () => false,
-  ['mvj/plotApplications/APPLICANT_INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => false,
-}, false);
-
 const targetInfoCheckAttributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/plotApplications/RECEIVE_TARGET_INFO_CHECK_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveApplicantInfoCheckAttributesAction) => attributes,
+  ['mvj/plotApplications/RECEIVE_TARGET_INFO_CHECK_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveTargetInfoCheckAttributesAction) => attributes,
   ['mvj/plotApplications/TARGET_INFO_CHECK_ATTRIBUTES_NOT_FOUND']: () => null,
 }, null);
 
@@ -310,8 +299,6 @@ export default (combineReducers<Object, Action<any>>({
   attachmentAttributes: attachmentAttributesReducer,
   attachmentMethods: attachmentMethodsReducer,
   currentEditorTargets: currentEditorTargetsReducer,
-  isFetchingApplicantInfoCheckAttributes: isFetchingApplicantInfoCheckAttributesReducer,
-  applicantInfoCheckAttributes: applicantInfoCheckAttributesReducer,
   isFetchingTargetInfoCheckAttributes: isFetchingTargetInfoCheckAttributesReducer,
   targetInfoCheckAttributes: targetInfoCheckAttributesReducer,
   infoCheckBatchEditErrors: infoCheckBatchEditErrorsReducer,

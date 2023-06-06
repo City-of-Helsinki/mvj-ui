@@ -7,7 +7,7 @@ import orderBy from 'lodash/orderBy';
 import {Column, Row} from 'react-foundation';
 
 import {getAttributes, getCurrentAreaSearch} from '$src/areaSearch/selectors';
-import ApplicationAnswersSection from '$src/application/ApplicationAnswersSection';
+import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
 import {getFormAttributes, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
 import {
   formatDate,

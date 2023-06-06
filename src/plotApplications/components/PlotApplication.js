@@ -36,7 +36,7 @@ import {
 } from '$src/plotSearch/selectors';
 import {getFieldAttributes} from '$util/helpers';
 import {getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch} from '$src/plotApplications/selectors';
-import ApplicationAnswersSection from '$src/application/ApplicationAnswersSection';
+import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
 import PlotApplicationTargetInfoCheck from '$src/plotApplications/components/infoCheck/PlotApplicationTargetInfoCheck';
 import PlotApplicationApplicantInfoCheck
   from '$src/plotApplications/components/infoCheck/PlotApplicationApplicantInfoCheck';

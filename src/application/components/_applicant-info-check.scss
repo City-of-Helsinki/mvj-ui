@@ -1,0 +1,22 @@
+.ApplicantInfoCheck {
+  &, span, a {
+    font-size: $font-small;
+  }
+
+  .row {
+    line-height: 1.5rem;
+  }
+}
+
+.ApplicantInfoCheckEdit {
+  &, span, a {
+    font-size: $font-small;
+  }
+
+  .ApplicantInfoCheckEditItem--dirty {
+    .column:nth-child(2) > * {
+      background-color: darken($is-dirty-color, 5%);
+    }
+  }
+}
+

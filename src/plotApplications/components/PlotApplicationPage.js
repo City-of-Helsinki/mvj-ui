@@ -67,16 +67,19 @@ import {
   getPlotSearchList,
 } from '$src/plotSearch/selectors';
 import {
-  getApplicantInfoCheckFormName,
-  getApplicantInfoCheckItems,
   getInitialTargetInfoCheckValues,
   getTargetInfoCheckFormName,
-  prepareApplicantInfoCheckForSubmission,
+
 } from '$src/plotApplications/helpers';
 import type {PlotSearch} from '$src/plotSearch/types';
 import type {InfoCheckBatchEditData} from '$src/plotApplications/types';
 import {clearUnsavedChanges} from '$src/contacts/helpers';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
+import {
+  getApplicantInfoCheckFormName,
+  getApplicantInfoCheckItems,
+  prepareApplicantInfoCheckForSubmission,
+} from '$src/application/helpers';
 
 type OwnProps = {|
 

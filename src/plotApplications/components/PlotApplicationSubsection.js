@@ -35,18 +35,18 @@ import {
 import {
   getApplicationAttachmentDownloadLink,
   getFieldFileIds,
-  getSectionApplicantType,
   getSectionTargetFromMeta,
   getSectionTemplate,
-  valueToApplicantType,
+
 } from '$src/plotApplications/helpers';
 import {deleteUploadedAttachment, uploadAttachment} from '$src/plotApplications/actions';
 import {formatDate, isFieldAllowedToRead} from '$util/helpers';
 import {ConfirmationModalTexts, FormNames} from '$src/enums';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
-import {ApplicantTypes} from '$src/plotApplications/enums';
 import type {PlotApplicationFormValue, UploadedFileMeta} from '$src/plotApplications/types';
+import {ApplicantTypes} from '$src/application/enums';
+import {getSectionApplicantType, valueToApplicantType} from '$src/application/helpers';
 
 const ApplicationSectionKeys = {
   Subsections: 'sections',
