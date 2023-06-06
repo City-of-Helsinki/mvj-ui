@@ -4,6 +4,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import orderBy from 'lodash/orderBy';
+import get from 'lodash/get';
 import {Column, Row} from 'react-foundation';
 
 import {getAttributes, getCurrentAreaSearch} from '$src/areaSearch/selectors';
@@ -37,6 +38,12 @@ import {reduxForm} from 'redux-form';
 import {APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
 import AreaSearchApplicationPropertyIdentifiers
   from '$src/areaSearch/components/AreaSearchApplicationPropertyIdentifiers';
+import AreaSearchApplicantInfoCheckEdit from '$src/areaSearch/components/AreaSearchApplicantInfoCheckEdit';
+import {FieldTypes, FormNames} from '$src/enums';
+import {getInitialAreaSearch, transformApplicantInfoCheckTitle} from '$src/areaSearch/helpers';
+import FormField from '$components/form/FormField';
+import TitleH3 from '$components/content/TitleH3';
+import AreaSearchStatusNoteHistory from '$src/areaSearch/components/AreaSearchStatusNoteHistory';
 
 type OwnProps = {
 
@@ -48,6 +55,7 @@ type Props = {
   isFetchingFormAttributes: boolean,
   formAttributes: Attributes,
   areaSearchAttributes: Attributes,
+  initialize: Function,
 };
 
 type State = {
@@ -63,6 +71,26 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
   state: $Shape<State> = {
     selectedAreaSectionRefreshKey: 0,
   };
+
+  componentDidMount() {
+    this.initializeForm();
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.areaSearch && !prevProps.areaSearch) {
+      this.initializeForm();
+    }
+  }
+
+  initializeForm = () => {
+    const {areaSearch, initialize} = this.props;
+
+    if (!areaSearch) {
+      return;
+    }
+
+    initialize(getInitialAreaSearch(areaSearch));
+  }
 
   render(): React$Node {
     const {
@@ -113,6 +141,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       {form && answer && areaSearch && fieldTypes && !isFetchingFormAttributes && <>
         <Collapse
           headerTitle="Hakemuksen käsittelytiedot"
+          defaultOpen
         >
           <Row>
             <Column small={6} medium={3} large={2}>
@@ -150,6 +179,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
               }));
             }
           }}
+          defaultOpen
         >
           <AreaSearchSelectedAreaMiniMap geometry={areaSearch.geometry} key={selectedAreaSectionRefreshKey} />
           <Row>
@@ -201,7 +231,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
               transformApplicantSectionTitle,
             ]}
           />)}
-        <Collapse headerTitle="Liitteet">
+        <Collapse headerTitle="Liitteet" defaultOpen>
           {areaSearch.area_search_attachments.map((file, index) => <Row key={file.id}>
             <Column small={3}>Liite {index + 1}</Column>
             <Column small={9}>
@@ -211,17 +241,94 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
               />
             </Column>
           </Row>)}
+          {areaSearch.area_search_attachments.length === 0 && <p>
+            Hakemuksella ei ole liitteitä.
+          </p>}
         </Collapse>
-        <Collapse headerTitle="Hakemuksen käsittely">
+
+        <Collapse headerTitle="Hakemuksen käsittely" defaultOpen>
+          <TitleH3>Tarkistettavat dokumentit</TitleH3>
           {answer.sections[APPLICANT_SECTION_IDENTIFIER].map((applicant, index) =>
             <Fragment key={applicant.metadata.identifier}>
-              <SubTitle>(identifier:{applicant.metadata.identifier})</SubTitle>
+              <SubTitle>{transformApplicantInfoCheckTitle(applicant)}</SubTitle>
               <AreaSearchApplicantInfoCheckEdit
                 answer={applicant}
                 identifier={`${APPLICANT_SECTION_IDENTIFIER}[${index}]`}
                 section={applicantSection}
               />
             </Fragment>)}
+          <TitleH3>Käsittelytiedot</TitleH3>
+          <Row>
+            <Column small={6} medium={4} large={3}>
+              <FormField
+                name='state'
+                fieldAttributes={get(areaSearchAttributes, 'state')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.STATE,
+                }}
+              />
+            </Column>
+            <Column small={6} medium={4} large={3}>
+              <FormField
+                name='lessor'
+                fieldAttributes={get(areaSearchAttributes, 'lessor')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.LESSOR,
+                }}
+              />
+            </Column>
+            <Column small={6} medium={4} large={3}>
+              <FormField
+                name='preparer'
+                fieldAttributes={get(areaSearchAttributes, 'preparer')}
+                overrideValues={{
+                  fieldType: FieldTypes.USER,
+                  label: AreaSearchFieldTitles.PREPARER,
+                }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column small={6} medium={4} large={3}>
+              <FormField
+                name='decline_reason'
+                fieldAttributes={get(areaSearchAttributes, 'area_search_status.children.decline_reason')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.DECLINE_REASON,
+                }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column small={12} medium={12} large={12}>
+              <FormField
+                name='preparer_note'
+                fieldAttributes={get(areaSearchAttributes, 'area_search_status.children.preparer_note')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.PREPARER_NOTE,
+                  fieldType: FieldTypes.TEXTAREA,
+                }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column small={12} medium={12} large={12}>
+              <FormField
+                name='status_notes'
+                fieldAttributes={get(areaSearchAttributes, 'area_search_status.children.status_notes.child.children.note')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.STATUS_NOTES,
+                  fieldType: FieldTypes.TEXTAREA,
+                  required: false,
+                }}
+              />
+            </Column>
+            <Column small={12} medium={12} large={12}>
+              <AreaSearchStatusNoteHistory
+                statusNotes={areaSearch.area_search_status?.status_notes}
+              />
+            </Column>
+          </Row>
         </Collapse>
       </>}
     </div>;
@@ -236,6 +343,6 @@ export default (flowRight(
     isFetchingFormAttributes: getIsFetchingFormAttributes(state),
   })),
   reduxForm({
-    formName: 'foo',
+    form: FormNames.AREA_SEARCH,
   }),
 )(AreaSearchApplicationEdit): React$ComponentType<OwnProps>);

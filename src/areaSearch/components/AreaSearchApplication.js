@@ -35,6 +35,11 @@ import {getAreaFromGeoJSON} from '$util/map';
 import AreaSearchSelectedAreaMiniMap from '$src/areaSearch/components/map/AreaSearchSelectedAreaMiniMap';
 import AreaSearchApplicationPropertyIdentifiers
   from '$src/areaSearch/components/AreaSearchApplicationPropertyIdentifiers';
+import {APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
+import AreaSearchApplicantInfoCheck from '$src/areaSearch/components/AreaSearchApplicantInfoCheck';
+import {transformApplicantInfoCheckTitle} from '$src/areaSearch/helpers';
+import TitleH3 from '$components/content/TitleH3';
+import AreaSearchStatusNoteHistory from '$src/areaSearch/components/AreaSearchStatusNoteHistory';
 
 type OwnProps = {
 
@@ -99,6 +104,7 @@ class AreaSearchApplication extends Component<Props, State> {
     const stateOptions = getFieldOptions(areaSearchAttributes, 'state', false);
     const lessorOptions = getFieldOptions(areaSearchAttributes, 'lessor', false);
     const intendedUseOptions = getFieldOptions(areaSearchAttributes, 'intended_use', false);
+    const declineReasonOptions = getFieldOptions(areaSearchAttributes, 'area_search_status.children.decline_reason', false);
 
     return <div className="AreaSearchApplication">
       <Title>
@@ -109,6 +115,7 @@ class AreaSearchApplication extends Component<Props, State> {
       {form && answer && areaSearch && fieldTypes && !isFetchingFormAttributes && <>
         <Collapse
           headerTitle="Hakemuksen käsittelytiedot"
+          defaultOpen
         >
           <Row>
             <Column small={6} medium={3} large={2}>
@@ -146,6 +153,7 @@ class AreaSearchApplication extends Component<Props, State> {
               }));
             }
           }}
+          defaultOpen
         >
           <AreaSearchSelectedAreaMiniMap geometry={areaSearch.geometry} key={selectedAreaSectionRefreshKey} />
           <Row>
@@ -197,7 +205,7 @@ class AreaSearchApplication extends Component<Props, State> {
               transformApplicantSectionTitle,
             ]}
           />)}
-        <Collapse headerTitle="Liitteet">
+        <Collapse headerTitle="Liitteet" defaultOpen>
           {areaSearch.area_search_attachments.map((file, index) => <Row key={file.id}>
             <Column small={3}>Liite {index + 1}</Column>
             <Column small={9}>
@@ -207,6 +215,65 @@ class AreaSearchApplication extends Component<Props, State> {
               />
             </Column>
           </Row>)}
+          {areaSearch.area_search_attachments.length === 0 && <p>
+            Hakemuksella ei ole liitteitä.
+          </p>}
+        </Collapse>
+
+        <Collapse headerTitle="Hakemuksen käsittely" defaultOpen>
+          <TitleH3>Tarkistettavat dokumentit</TitleH3>
+          {answer.sections[APPLICANT_SECTION_IDENTIFIER].map((applicant, index) => <Fragment key={index}>
+            <SubTitle>{transformApplicantInfoCheckTitle(applicant)}</SubTitle>
+            <AreaSearchApplicantInfoCheck
+              infoCheckData={areaSearch.answer.information_checks.filter((check) => check.entry === `${APPLICANT_SECTION_IDENTIFIER}[${index}]`)}
+              key={applicant.metadata.identifier}
+            />
+          </Fragment>)}
+          <TitleH3>Käsittelytiedot</TitleH3>
+          <Row>
+            <Column small={6} medium={4} large={3}>
+              <FormTextTitle>
+                {AreaSearchFieldTitles.STATE}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(stateOptions, areaSearch.state)}</FormText>
+            </Column>
+            <Column small={6} medium={4} large={3}>
+              <FormTextTitle>
+                {AreaSearchFieldTitles.LESSOR}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(lessorOptions, areaSearch.lessor) || '-'}</FormText>
+            </Column>
+            <Column small={6} medium={4} large={3}>
+              <FormTextTitle>
+                {AreaSearchFieldTitles.PREPARER}
+              </FormTextTitle>
+              <FormText>{getUserFullName(areaSearch.preparer) || '-'}</FormText>
+            </Column>
+          </Row>
+          <Row>
+            <Column small={6} medium={4} large={3}>
+              <FormTextTitle>
+                {AreaSearchFieldTitles.DECLINE_REASON}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(declineReasonOptions, areaSearch.area_search_status?.decline_reason) || '-'}</FormText>
+            </Column>
+          </Row>
+          <Row>
+            <Column small={12} medium={12} large={12}>
+              <FormTextTitle>
+                {AreaSearchFieldTitles.PREPARER_NOTE}
+              </FormTextTitle>
+              <FormText>{areaSearch.area_search_status?.preparer_note || '-'}</FormText>
+            </Column>
+          </Row>
+          {(areaSearch.area_search_status?.status_notes?.length > 0) && <Row>
+            <Column small={12} medium={12} large={12}>
+              <FormTextTitle>
+                {AreaSearchFieldTitles.STATUS_NOTES}
+              </FormTextTitle>
+              <AreaSearchStatusNoteHistory statusNotes={areaSearch.area_search_status?.status_notes} />
+            </Column>
+          </Row>}
         </Collapse>
       </>}
     </div>;

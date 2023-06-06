@@ -80,9 +80,9 @@ type Props = {
   location: Object,
   usersPermissions: UsersPermissionsType,
   receiveTopNavigationSettings: Function,
-  areaSearchAttributes: Attributes,
-  areaSearchMethods: MethodsType,
-  isFetchingAreaSearchAttributes: boolean,
+  areaSearchListAttributes: Attributes,
+  areaSearchListMethods: MethodsType,
+  isFetchingAreaSearchListAttributes: boolean,
   isFetching: boolean,
   initialize: Function,
   isFetchingByBBox: boolean,
@@ -183,10 +183,10 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   getColumns = () => {
-    const {areaSearchAttributes} = this.props;
+    const {areaSearchListAttributes} = this.props;
     const columns = [];
-    const intendedUseOptions = getFieldOptions(areaSearchAttributes, 'intended_use');
-    const stateOptions = getFieldOptions(areaSearchAttributes, 'state');
+    const intendedUseOptions = getFieldOptions(areaSearchListAttributes, 'intended_use');
+    const stateOptions = getFieldOptions(areaSearchListAttributes, 'state');
 
     columns.push({
       key: 'identifier',
@@ -476,13 +476,13 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 
   render() {
     const {
-      areaSearchMethods,
+      areaSearchListMethods,
       areaSearches,
       areaSearchesByBBox,
-      areaSearchAttributes,
+      areaSearchListAttributes,
       isFetching,
       isFetchingByBBox,
-      isFetchingAreaSearchAttributes,
+      isFetchingAreaSearchListAttributes,
       location: {search},
     } = this.props;
 
@@ -498,19 +498,19 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     const searchQuery = getUrlParams(search);
 
     const columns = this.getColumns();
-    const stateOptions = getFieldOptions(areaSearchAttributes, 'state', false);
+    const stateOptions = getFieldOptions(areaSearchListAttributes, 'state', false);
 
-    if (isFetchingAreaSearchAttributes || (visualizationType === VisualizationTypes.TABLE && !areaSearches)) {
+    if (isFetchingAreaSearchListAttributes || (visualizationType === VisualizationTypes.TABLE && !areaSearches)) {
       return <PageContainer>
         <Loader isLoading={true}/>
       </PageContainer>;
     }
 
-    if (!areaSearchMethods) {
+    if (!areaSearchListMethods) {
       return null;
     }
 
-    if (!isMethodAllowed(areaSearchMethods, Methods.GET)) {
+    if (!isMethodAllowed(areaSearchListMethods, Methods.GET)) {
       return <PageContainer>
         <AuthorizationError text={PermissionMissingTexts.AREA_SEARCH} />
       </PageContainer>;

@@ -5,6 +5,9 @@ export type AreaSearchState = {
   attributes: Attributes,
   methods: Methods,
   isFetchingAttributes: boolean,
+  listAttributes: Attributes,
+  listMethods: Methods,
+  isFetchingListAttributes: boolean,
   areaSearchList: ApiResponse,
   areaSearchListByBBox: ApiResponse,
   isFetchingAreaSearchList: boolean,
@@ -15,9 +18,15 @@ export type AreaSearchState = {
   isSaveClicked: boolean,
   collapseStates: Object,
   isFormValidById: Object,
+  isBatchEditingAreaSearchInfoChecks: boolean,
 };
 
 export type AreaSearch = Object;
+
+export type FetchListAttributesAction = Action<'mvj/areaSearch/FETCH_LIST_ATTRIBUTES', void>;
+export type ReceiveListAttributesAction = Action<'mvj/areaSearch/RECEIVE_LIST_ATTRIBUTES', Attributes>;
+export type ReceiveListMethodsAction = Action<'mvj/areaSearch/RECEIVE_LIST_METHODS', Methods>;
+export type ListAttributesNotFoundAction = Action<'mvj/areaSearch/LIST_ATTRIBUTES_NOT_FOUND', void>;
 
 export type FetchAttributesAction = Action<'mvj/areaSearch/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/areaSearch/RECEIVE_ATTRIBUTES', Attributes>;
@@ -41,3 +50,16 @@ export type ClearFormValidFlagsAction = Action<'mvj/areaSearch/CLEAR_FORM_VALID_
 export type HideEditModeAction = Action<'mvj/areaSearch/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/areaSearch/SHOW_EDIT', void>;
 export type ReceiveCollapseStatesAction = Action<'mvj/areaSearch/RECEIVE_COLLAPSE_STATES', Object>;
+
+export type InfoCheckBatchEditData = {
+  areaSearch: Object,
+  applicant: Array<{
+    id: number,
+    kind: Object,
+    data: Object,
+  }>,
+};
+
+export type BatchEditAreaSearchInfoChecksAction = Action<'mvj/areaSearch/BATCH_EDIT_INFO_CHECKS', InfoCheckBatchEditData>;
+export type ReceiveAreaSearchInfoCheckBatchEditSuccessAction = Action<'mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS', void>;
+export type ReceiveAreaSearchInfoCheckBatchEditFailureAction = Action<'mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE', Object>;

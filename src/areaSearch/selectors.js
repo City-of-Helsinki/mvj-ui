@@ -2,6 +2,7 @@
 import type {ApiResponse, Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 import get from 'lodash/get';
+import {getInfoCheckSubmissionErrors} from '$src/plotApplications/selectors';
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.areaSearch.attributes;
@@ -11,6 +12,15 @@ export const getMethods: Selector<Methods, void> = (state: RootState): Methods =
 
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
   state.areaSearch.isFetchingAttributes;
+
+export const getListAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
+  state.areaSearch.listAttributes;
+
+export const getListMethods: Selector<Methods, void> = (state: RootState): Methods =>
+  state.areaSearch.listMethods;
+
+export const getIsFetchingListAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.areaSearch.isFetchingListAttributes;
 
 export const getAreaSearchList: Selector<ApiResponse, void> = (state: RootState): ApiResponse =>
   state.areaSearch.areaSearchList;
@@ -45,3 +55,24 @@ export const getIsFormValidById: Selector<boolean, string> = (state: RootState, 
 
 export const getIsFormValidFlags: Selector<Object, void> = (state: RootState): Object =>
   state.areaSearch.isFormValidById;
+
+export const getApplicationApplicantInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
+  state.areaSearch.currentAreaSearch?.answer.information_checks;
+
+export const getApplicantInfoCheckSubmissionErrors = (state: RootState, checkDataIds: Array<number>): Array<{
+  id: number,
+  kind: ?Object,
+  error: ?Object | ?Array<Object>,
+}> => {
+  return checkDataIds
+    ?.map((id) => {
+      //const errors = state.application.applicantBatchEditErrors.find((item) => item.id === id);
+      const errors = null;
+      return ({
+        id,
+        kind: errors?.kind,
+        error: errors?.error,
+      });
+    })
+    .filter((item) => item.error !== undefined);
+};

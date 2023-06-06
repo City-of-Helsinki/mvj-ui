@@ -24,7 +24,7 @@ import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById, Routes} from '$src/root/routes';
-import {ConfirmationModalTexts, Methods, PermissionMissingTexts} from '$src/enums';
+import {ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 /*import {
   getSessionStorageItem,
   removeSessionStorageItem,
@@ -43,7 +43,7 @@ import {
   hideEditMode,
   clearFormValidFlags,
   receiveFormValidFlags,
-  fetchSingleAreaSearch,
+  fetchSingleAreaSearch, batchEditAreaSearchInfoChecks,
 } from '$src/areaSearch/actions';
 import {
   getUrlParams,
@@ -59,6 +59,18 @@ import AreaSearchApplication from '$src/areaSearch/components/AreaSearchApplicat
 import {withAreaSearchAttributes} from '$components/attributes/AreaSearchAttributes';
 import {getFormAttributes, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
 import {fetchFormAttributes} from '$src/plotSearch/actions';
+import AreaSearchApplicationEdit from '$src/areaSearch/components/AreaSearchApplicationEdit';
+import {fetchApplicantInfoCheckAttributes} from '$src/application/actions';
+import {getIsFetchingApplicantInfoCheckAttributes} from '$src/application/selectors';
+import {getApplicationApplicantInfoCheckData} from '$src/areaSearch/selectors';
+import {groupBy} from 'lodash/collection';
+import {
+  getApplicantInfoCheckFormName,
+  getApplicantInfoCheckItems,
+  prepareApplicantInfoCheckForSubmission,
+} from '$src/application/helpers';
+import type {InfoCheckBatchEditData} from '$src/areaSearch/types';
+import {prepareAreaSearchForSubmission} from '$src/areaSearch/helpers';
 
 type OwnProps = {|
 
@@ -83,32 +95,35 @@ type Props = {
   isEditMode: boolean,
   isSaveClicked: boolean,
   receiveIsSaveClicked: Function,
-  initialize: Function,
+  initialize: typeof initialize,
   change: Function,
   destroy: Function,
   isFormValidFlags: boolean,
   receiveFormValidFlags: Function,
   isPerformingFileOperation: boolean,
   applicantInfoChecks: Array<Object>,
-  targetInfoChecks: Array<Object>,
   isFormDirty: (string, ?Array<string>) => boolean,
   isFormValid: (string) => boolean,
   getValuesForForm: (string) => Object,
-  batchEditApplicationInfoChecks: Function,
   isFetchingFormAttributes: boolean,
   formAttributes: Attributes,
   fetchFormAttributes: Function,
+  isFetchingApplicantInfoCheckAttributes: boolean,
+  fetchApplicantInfoCheckAttributes: Function,
+  batchEditAreaSearchInfoChecks: Function,
 }
 
 type State = {
   activeTab: number,
   isRestoreModalOpen: boolean,
+  applicantInfoCheckFormNames: Array<string>,
 }
 
 class AreaSearchApplicationPage extends Component<Props, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
+    applicantInfoCheckFormNames: [],
   }
 
   static contextTypes = {
@@ -126,6 +141,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       location: {search},
       receiveIsSaveClicked,
       fetchFormAttributes,
+      fetchApplicantInfoCheckAttributes,
     } = this.props;
 
     const query = getUrlParams(search);
@@ -149,6 +165,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
 
     fetchSingleAreaSearch(areaSearchId);
     fetchFormAttributes();
+    fetchApplicantInfoCheckAttributes();
     setPageTitle('Hakemus');
   }
 
@@ -163,6 +180,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
     clearFormValidFlags();
     showEditMode();
     this.destroyAllForms();
+    this.initializeInfoCheckForms();
     this.startAutoSaveTimer();
   }
 
@@ -171,6 +189,32 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       () => this.saveUnsavedChanges(),
       5000
     );
+  }
+
+  initializeInfoCheckForms = () => {
+    const {
+      initialize,
+      applicantInfoChecks,
+    } = this.props;
+    let applicantInfoCheckFormNames = [];
+
+    const applicantInfoChecksByApplicantId = groupBy(applicantInfoChecks, 'entry');
+
+    Object.keys(applicantInfoChecksByApplicantId).forEach((key) => {
+      const infoChecks = getApplicantInfoCheckItems(applicantInfoChecksByApplicantId[key]);
+
+      infoChecks.forEach((infoCheck) => {
+        initialize(
+          getApplicantInfoCheckFormName(infoCheck.data.id),
+          infoCheck
+        );
+        applicantInfoCheckFormNames.push(getApplicantInfoCheckFormName(infoCheck.data.id));
+      });
+    });
+
+    this.setState(() => ({
+      applicantInfoCheckFormNames,
+    }));
   }
 
   stopAutoSaveTimer = () => {
@@ -237,14 +281,14 @@ class AreaSearchApplicationPage extends Component<Props, State> {
     const {
       location: {search},
       currentAreaSearch,
-      //match: {params: {areaSearchId}},
+      match: {params: {areaSearchId}},
       isFetching,
       isEditMode,
+      fetchSingleAreaSearch,
     } = this.props;
     const {activeTab} = this.state;
     const query = getUrlParams(search);
     const tab = query.tab ? Number(query.tab) : 0;
-
 
     if (tab !== activeTab) {
       this.setState({activeTab: tab});
@@ -271,19 +315,53 @@ class AreaSearchApplicationPage extends Component<Props, State> {
     if (!isEditMode && prevProps.isEditMode) {
       this.stopAutoSaveTimer();
     }
+
+    if (areaSearchId && (areaSearchId !== prevProps.match.params?.areaSearchId)) {
+      fetchSingleAreaSearch(areaSearchId);
+    }
   }
 
   saveChanges = () => {
     const {
       receiveIsSaveClicked,
+      batchEditAreaSearchInfoChecks,
+      getValuesForForm,
+      isFormDirty,
+      match: {params: {areaSearchId}},
     } = this.props;
+
+    const {
+      applicantInfoCheckFormNames,
+    } = this.state;
 
     receiveIsSaveClicked(true);
 
     const areFormsValid = this.getAreFormsValid();
 
     if (areFormsValid) {
-      // TODO
+      const operations: InfoCheckBatchEditData = {
+        areaSearch: {},
+        applicant: [],
+      };
+
+      applicantInfoCheckFormNames.forEach((target) => {
+        const infoCheck = getValuesForForm(target);
+
+        if (isFormDirty(target)) {
+          operations.applicant.push({
+            id: infoCheck.data.id,
+            kind: infoCheck.kind,
+            data: prepareApplicantInfoCheckForSubmission(infoCheck.data),
+          });
+        }
+      });
+
+      operations.areaSearch = prepareAreaSearchForSubmission({
+        ...getValuesForForm(FormNames.AREA_SEARCH),
+        id: areaSearchId,
+      });
+
+      batchEditAreaSearchInfoChecks(operations);
     }
   }
 
@@ -322,11 +400,17 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       isEditMode,
       isSaveClicked,
       isPerformingFileOperation,
+      isFetchingApplicantInfoCheckAttributes,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
 
-    if (isFetching || isFetchingUsersPermissions || isFetchingAttributes) {
+    if (
+      isFetching ||
+      isFetchingUsersPermissions ||
+      isFetchingAttributes ||
+      isFetchingApplicantInfoCheckAttributes
+    ) {
       return <PageContainer><Loader isLoading={true} /></PageContainer>;
     }
 
@@ -336,6 +420,12 @@ class AreaSearchApplicationPage extends Component<Props, State> {
 
     if (!isMethodAllowed(areaSearchMethods, Methods.GET)) {
       return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS}/></PageContainer>;
+    }
+
+    if (!isFetching && !currentAreaSearch) {
+      return <PageContainer>
+        <AuthorizationError text="Aluehakua ei löytynyt." />
+      </PageContainer>;
     }
 
     return(
@@ -402,7 +492,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 {isEditMode
-                  ? <div />
+                  ? <AreaSearchApplicationEdit />
                   : <AreaSearchApplication />
                 }
               </ContentContainer>
@@ -441,6 +531,8 @@ export default (flowRight(
         isFormValidFlags: getIsFormValidFlags(state),
         formAttributes: getFormAttributes(state),
         isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+        isFetchingApplicantInfoCheckAttributes: getIsFetchingApplicantInfoCheckAttributes(state),
+        applicantInfoChecks: getApplicationApplicantInfoCheckData(state),
         isFormDirty: (formName, fields) => {
           // isDirty doesn't ignore the second parameter even if it's undefined, and always returns false in that case,
           // so branching is required to use this with both form-specific and field-specific queries.
@@ -458,6 +550,7 @@ export default (flowRight(
       destroy,
       fetchSingleAreaSearch,
       fetchFormAttributes,
+      fetchApplicantInfoCheckAttributes,
       receiveTopNavigationSettings,
       showEditMode,
       hideEditMode,
@@ -466,6 +559,7 @@ export default (flowRight(
       change,
       clearFormValidFlags,
       receiveFormValidFlags,
+      batchEditAreaSearchInfoChecks,
     }
   ),
 )(AreaSearchApplicationPage): React$ComponentType<OwnProps>);

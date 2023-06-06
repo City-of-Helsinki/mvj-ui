@@ -25,6 +25,9 @@ import type {
   ReceiveListAttributesAction,
   ReceiveListMethodsAction,
   ListAttributesNotFoundAction,
+  ReceiveAreaSearchInfoCheckBatchEditSuccessAction,
+  ReceiveAreaSearchInfoCheckBatchEditFailureAction,
+  BatchEditAreaSearchInfoChecksAction,
 } from '$src/areaSearch/types';
 import type {Attributes, Methods} from '$src/types';
 import type {
@@ -98,3 +101,12 @@ export const receiveSingleAreaSearch = (payload: Object): ReceiveSingleAreaSearc
 
 export const singleAreaSearchNotFound = (): SingleAreaSearchNotFoundAction =>
   createAction('mvj/areaSearch/SINGLE_NOT_FOUND')();
+
+export const batchEditAreaSearchInfoChecks = (payload: Object): BatchEditAreaSearchInfoChecksAction =>
+  createAction('mvj/areaSearch/BATCH_EDIT_INFO_CHECKS')(payload);
+
+export const receiveAreaSearchInfoChecksBatchEditSuccess = (): ReceiveAreaSearchInfoCheckBatchEditSuccessAction =>
+  createAction('mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS')();
+
+export const receiveAreaSearchInfoChecksBatchEditFailure = (payload: Object): ReceiveAreaSearchInfoCheckBatchEditFailureAction =>
+  createAction('mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE')(payload);

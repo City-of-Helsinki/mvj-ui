@@ -3,8 +3,14 @@
 import isArray from 'lodash/isArray';
 import get from 'lodash/get';
 
-import {TableSortOrder} from '$src/enums';
+import {FormNames, TableSortOrder} from '$src/enums';
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
+import type {FormSection} from '$src/plotSearch/types';
+import type {SavedApplicationFormSection} from '$src/plotApplications/types';
+import {APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
+import {store} from '$src/root/startApp';
+import {getAttributes} from '$src/areaSearch/selectors';
+import {getUserFullName} from '$src/users/helpers';
 
 export const areaSearchSearchFilters = (query: Object): Object => {
   const searchQuery = {...query};
@@ -69,5 +75,54 @@ export const getAreaSearchGeoJson = (searches: Array<Object>): LeafletGeoJson =>
   return {
     type: 'FeatureCollection',
     features: features,
+  };
+};
+
+export const getInitialAreaSearch = (areaSearch: Object): Object => {
+  return {
+    preparer: areaSearch.preparer ? {
+      label: getUserFullName(areaSearch.preparer),
+      value: areaSearch.preparer.id,
+    } : null,
+    state: areaSearch.state || null,
+    lessor: areaSearch.lessor || null,
+    decline_reason: areaSearch.area_search_status?.decline_reason || null,
+    status_note: areaSearch.area_search_status?.status_note || '',
+    preparer_note: areaSearch.area_search_status?.preparer_note || '',
+  };
+};
+
+export const transformApplicantInfoCheckTitle = (answer: SavedApplicationFormSection): string => {
+  if (answer?.metadata?.identifier) {
+    if (answer?.metadata?.applicantType) {
+      const identifiers = APPLICANT_MAIN_IDENTIFIERS[String(answer?.metadata?.applicantType)];
+      const sectionsWithIdentifier = answer.sections[identifiers?.DATA_SECTION];
+      const sectionWithIdentifier = sectionsWithIdentifier instanceof Array ? sectionsWithIdentifier[0] : sectionsWithIdentifier;
+
+      const typeText = identifiers?.LABEL || 'Hakija';
+      const nameText = identifiers?.NAME_FIELDS?.map((field) => {
+        return sectionWithIdentifier.fields[field]?.value || '';
+      }).join(' ') || '-';
+
+      return `${nameText}, ${typeText}`;
+    }
+  }
+
+  return 'Hakija';
+};
+
+export const prepareAreaSearchForSubmission = (data: Object): Object => {
+  return {
+    id: data.id,
+    state: data.state,
+    lessor: data.lessor,
+    preparer: data.preparer?.id,
+    area_search_status: {
+      decline_reason: data.decline_reason,
+      status_notes: data.status_notes ? [{
+        note: data.status_notes,
+      }] : undefined,
+      preparer_note: data.preparer_note,
+    },
   };
 };

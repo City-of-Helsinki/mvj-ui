@@ -500,6 +500,7 @@ export const FormNames = {
   PLOT_APPLICATION_TARGET_INFO_CHECK: 'plot-application-target-info-check',
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
   LAND_USE_CONTRACT_INVOICE_EDIT: 'land-use-contract-invoice-edit',
+  AREA_SEARCH: 'area-search',
 };
 
 /**
