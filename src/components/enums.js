@@ -10,6 +10,7 @@ export const ButtonColors = {
   ALERT: 'alert',
   NEUTRAL: 'neutral',
   SECONDARY: 'secondary',
+  LINK: 'link',
 };
 
 /**

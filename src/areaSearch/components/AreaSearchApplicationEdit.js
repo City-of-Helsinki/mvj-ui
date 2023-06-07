@@ -33,6 +33,8 @@ import SubTitle from '$components/content/SubTitle';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import {getAreaFromGeoJSON} from '$util/map';
 import AreaSearchSelectedAreaMiniMap from '$src/areaSearch/components/map/AreaSearchSelectedAreaMiniMap';
+import {reduxForm} from 'redux-form';
+import {APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
 import AreaSearchApplicationPropertyIdentifiers
   from '$src/areaSearch/components/AreaSearchApplicationPropertyIdentifiers';
 
@@ -57,7 +59,7 @@ type State = {
   selectedAreaSectionRefreshKey: number,
 };
 
-class AreaSearchApplication extends Component<Props, State> {
+class AreaSearchApplicationEdit extends Component<Props, State> {
   state: $Shape<State> = {
     selectedAreaSectionRefreshKey: 0,
   };
@@ -99,6 +101,8 @@ class AreaSearchApplication extends Component<Props, State> {
     const stateOptions = getFieldOptions(areaSearchAttributes, 'state', false);
     const lessorOptions = getFieldOptions(areaSearchAttributes, 'lessor', false);
     const intendedUseOptions = getFieldOptions(areaSearchAttributes, 'intended_use', false);
+
+    const applicantSection = form?.sections.find((section) => section.identifier === APPLICANT_SECTION_IDENTIFIER);
 
     return <div className="AreaSearchApplication">
       <Title>
@@ -208,6 +212,17 @@ class AreaSearchApplication extends Component<Props, State> {
             </Column>
           </Row>)}
         </Collapse>
+        <Collapse headerTitle="Hakemuksen käsittely">
+          {answer.sections[APPLICANT_SECTION_IDENTIFIER].map((applicant, index) =>
+            <Fragment key={applicant.metadata.identifier}>
+              <SubTitle>(identifier:{applicant.metadata.identifier})</SubTitle>
+              <AreaSearchApplicantInfoCheckEdit
+                answer={applicant}
+                identifier={`${APPLICANT_SECTION_IDENTIFIER}[${index}]`}
+                section={applicantSection}
+              />
+            </Fragment>)}
+        </Collapse>
       </>}
     </div>;
   }
@@ -220,4 +235,7 @@ export default (flowRight(
     formAttributes: getFormAttributes(state),
     isFetchingFormAttributes: getIsFetchingFormAttributes(state),
   })),
-)(AreaSearchApplication): React$ComponentType<OwnProps>);
+  reduxForm({
+    formName: 'foo',
+  }),
+)(AreaSearchApplicationEdit): React$ComponentType<OwnProps>);
