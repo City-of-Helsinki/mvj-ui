@@ -6,20 +6,27 @@ import areaSearchReducer from '$src/areaSearch/reducer';
 import {
   areaSearchesByBBoxNotFound,
   areaSearchesNotFound,
-  attributesNotFound, batchEditAreaSearchInfoChecks,
+  attributesNotFound,
+  batchEditAreaSearchInfoChecks,
+  editAreaSearch,
   fetchAreaSearchList,
   fetchAreaSearchListByBBox,
   fetchAttributes,
   fetchListAttributes,
-  fetchSingleAreaSearch, hideEditMode,
+  fetchSingleAreaSearch,
+  hideEditMode,
   listAttributesNotFound,
   receiveAreaSearchByBBoxList,
+  receiveAreaSearchEdited,
+  receiveAreaSearchEditFailed,
   receiveAreaSearchList,
   receiveAttributes,
   receiveListAttributes,
   receiveListMethods,
   receiveMethods,
-  receiveSingleAreaSearch, showEditMode, singleAreaSearchNotFound,
+  receiveSingleAreaSearch,
+  showEditMode,
+  singleAreaSearchNotFound,
 } from '$src/areaSearch/actions';
 import type {AreaSearchState} from '$src/areaSearch/types';
 
@@ -41,6 +48,8 @@ const defaultState: AreaSearchState = {
   collapseStates: {},
   isFormValidById: {},
   isBatchEditingAreaSearchInfoChecks: false,
+  isEditingAreaSearch: false,
+  lastAreaSearchEditError: null,
 };
 
 describe('AreaSearch', () => {
@@ -181,7 +190,6 @@ describe('AreaSearch', () => {
         expect(state).to.deep.equal(newState);
       });
 
-
       it('should update current area search', () => {
         const dummySearch = {
           id: 1,
@@ -235,6 +243,32 @@ describe('AreaSearch', () => {
           areaSearch: {},
           applicant: [],
         }));
+        expect(state).to.deep.equal(newState);
+      });
+
+
+      it('should set edit flag when updating an area search', () => {
+        const newState = {...defaultState, isEditingAreaSearch: true};
+
+        const state = areaSearchReducer({}, editAreaSearch({}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should unset edit flag when an area search was updated', () => {
+        const newState = {...defaultState, isEditingAreaSearch: false};
+
+        const state = areaSearchReducer({
+          isEditingAreaSearch: true,
+        }, receiveAreaSearchEdited());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should unset edit flag and store the error when an area search could not be updated', () => {
+        const newState = {...defaultState, isEditingAreaSearch: false, lastAreaSearchEditError: 'test error'};
+
+        const state = areaSearchReducer({
+          isEditingAreaSearch: true,
+        }, receiveAreaSearchEditFailed('test error'));
         expect(state).to.deep.equal(newState);
       });
     });

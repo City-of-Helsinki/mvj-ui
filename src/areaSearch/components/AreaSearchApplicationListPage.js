@@ -41,9 +41,11 @@ import {
 } from '$util/helpers';
 import {withAreaSearchAttributes} from '$components/attributes/AreaSearchAttributes';
 import {
-  getAreaSearchList, getAreaSearchListByBBox,
+  getAreaSearchList,
+  getAreaSearchListByBBox,
+  getIsEditingAreaSearch,
   getIsFetchingAreaSearchList,
-  getIsFetchingAreaSearchListByBBox,
+  getIsFetchingAreaSearchListByBBox, getLastAreaSearchEditError,
 } from '$src/areaSearch/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
@@ -52,13 +54,16 @@ import {
   DEFAULT_SORT_KEY,
   DEFAULT_SORT_ORDER,
 } from '$src/areaSearch/constants';
-import {fetchAreaSearchList, fetchAreaSearchListByBBox} from '$src/areaSearch/actions';
+import {editAreaSearch, fetchAreaSearchList, fetchAreaSearchListByBBox} from '$src/areaSearch/actions';
 import {getUserFullName} from '$src/users/helpers';
 import type {ApiResponse} from '$src/types';
 import {areaSearchSearchFilters} from '$src/areaSearch/helpers';
 import {BOUNDING_BOX_FOR_SEARCH_QUERY, MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES} from '$src/areaSearch/constants';
 import AreaSearchMap from '$src/areaSearch/components/map/AreaSearchMap';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
+import {ButtonColors} from '$components/enums';
+import Button from '$components/button/Button';
+import EditAreaSearchPreparerModal from '$src/areaSearch/components/EditAreaSearchPreparerModal';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -90,6 +95,9 @@ type Props = {
   fetchAreaSearchListByBBox: Function,
   areaSearches: ApiResponse,
   areaSearchesByBBox: ApiResponse,
+  editAreaSearch: Function,
+  isEditingAreaSearch: boolean,
+  lastEditError: any,
 }
 
 type State = {
@@ -102,6 +110,8 @@ type State = {
   maxPage: number,
   selectedStates: Array<string>,
   visualizationType: string,
+  isEditModalOpen: boolean,
+  editModalTargetAreaSearch: ?number,
 }
 
 class AreaSearchApplicationListPage extends PureComponent<Props, State> {
@@ -117,6 +127,8 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     maxPage: 0,
     selectedStates: DEFAULT_AREA_SEARCH_STATES,
     visualizationType: VisualizationTypes.TABLE,
+    isEditModalOpen: false,
+    editModalTargetAreaSearch: null,
   }
 
   static contextTypes = {
@@ -242,16 +254,56 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     columns.push({
       key: 'lessor',
       text: 'Vuokranantaja',
+      renderer: (val, row) => <span onMouseUp={(e) => e.stopPropagation()}>
+        <Button
+          className={ButtonColors.LINK}
+          onClick={() => this.openAreaSearchEditModal(row.id)}
+          text={val} />
+      </span>,
     });
 
     columns.push({
       key: 'preparer',
       text: 'Käsittelijä',
-      renderer: (val) => getUserFullName(val),
+      renderer: (val, row) => <span onMouseUp={(e) => e.stopPropagation()}>
+        <Button
+          className={ButtonColors.LINK}
+          onClick={() => this.openAreaSearchEditModal(row.id)}
+          text={getUserFullName(val) || 'Avoin'} />
+      </span>,
     });
 
     return columns;
   }
+
+  openAreaSearchEditModal = (id: number) => {
+    this.setState(() => ({
+      isEditModalOpen: true,
+      editModalTargetAreaSearch: id,
+    }));
+  };
+
+  closeAreaSearchEditModal = () => {
+    this.setState(() => ({
+      isEditModalOpen: false,
+      editModalTargetAreaSearch: null,
+    }));
+  };
+
+  submitAreaSearchEditModal = (data: Object) => {
+    const {editAreaSearch} = this.props;
+
+    editAreaSearch({
+      id: data.id,
+      preparer: data.preparer?.id,
+      lessor: data.lessor,
+      area_search_status: {
+        status_notes: data.status_notes ? [
+          {note: data.status_notes},
+        ] : undefined,
+      },
+    });
+  };
 
   search = () => {
     const {fetchAreaSearchList, location: {search}} = this.props;
@@ -376,12 +428,15 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}} = this.props;
+    const {location: {search: currentSearch}, isEditingAreaSearch, lastEditError} = this.props;
     const {location: {search: prevSearch}} = prevProps;
     const {visualizationType} = this.state;
     const searchQuery = getUrlParams(currentSearch);
 
-    if (currentSearch !== prevSearch) {
+    if ((currentSearch !== prevSearch) ||
+      (!isEditingAreaSearch && !lastEditError && prevProps.isEditingAreaSearch)) {
+      this.closeAreaSearchEditModal();
+
       switch (visualizationType) {
         case VisualizationTypes.MAP:
           this.searchByBBox();
@@ -494,6 +549,8 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       maxPage,
       selectedStates,
       visualizationType,
+      isEditModalOpen,
+      editModalTargetAreaSearch,
     } = this.state;
     const searchQuery = getUrlParams(search);
 
@@ -533,7 +590,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     }
 
     return (
-      <PageContainer>
+      <PageContainer className="AreaSearchApplicationListPage">
         <Row>
           <Column small={12} medium={4} large={4} />
           <Column small={12} medium={8} large={8}>
@@ -602,6 +659,12 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
             />
           }
         </TableWrapper>
+        <EditAreaSearchPreparerModal
+          isOpen={isEditModalOpen}
+          onClose={this.closeAreaSearchEditModal}
+          onSubmit={this.submitAreaSearchEditModal}
+          areaSearchId={editModalTargetAreaSearch}
+        />
       </PageContainer>
     );
   }
@@ -618,6 +681,8 @@ export default (flowRight(
         isFetchingByBBox: getIsFetchingAreaSearchListByBBox(state),
         areaSearches: getAreaSearchList(state),
         areaSearchesByBBox: getAreaSearchListByBBox(state),
+        isEditingAreaSearch: getIsEditingAreaSearch(state),
+        lastEditError: getLastAreaSearchEditError(state),
       };
     },
     {
@@ -625,6 +690,7 @@ export default (flowRight(
       initialize,
       fetchAreaSearchList,
       fetchAreaSearchListByBBox,
+      editAreaSearch,
     },
   ),
 )(AreaSearchApplicationListPage): React$ComponentType<OwnProps>);

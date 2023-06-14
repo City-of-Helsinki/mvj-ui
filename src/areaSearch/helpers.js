@@ -80,6 +80,7 @@ export const getAreaSearchGeoJson = (searches: Array<Object>): LeafletGeoJson =>
 
 export const getInitialAreaSearch = (areaSearch: Object): Object => {
   return {
+    id: areaSearch.id,
     preparer: areaSearch.preparer ? {
       label: getUserFullName(areaSearch.preparer),
       value: areaSearch.preparer.id,
