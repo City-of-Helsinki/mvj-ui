@@ -61,7 +61,7 @@ const areaSearchListReducer: Reducer<ApiResponse> = handleActions({
 const isFetchingAreaSearchListReducer: Reducer<boolean> = handleActions({
   ['mvj/areaSearch/FETCH_ALL']: () => true,
   ['mvj/areaSearch/RECEIVE_ALL']: () => false,
-  ['mvj/areaSearch/AREA_SEARCHES_NOT_FOUND']: () => false,
+  ['mvj/areaSearch/NOT_FOUND']: () => false,
 }, false);
 
 const areaSearchListByBBoxReducer: Reducer<ApiResponse> = handleActions({
@@ -73,7 +73,7 @@ const areaSearchListByBBoxReducer: Reducer<ApiResponse> = handleActions({
 const isFetchingAreaSearchByBBoxListReducer: Reducer<boolean> = handleActions({
   ['mvj/areaSearch/FETCH_ALL_BY_BBOX']: () => true,
   ['mvj/areaSearch/RECEIVE_ALL_BY_BBOX']: () => false,
-  ['mvj/areaSearch/AREA_SEARCHES_BY_BBOX_NOT_FOUND']: () => false,
+  ['mvj/areaSearch/NOT_FOUND_BY_BBOX']: () => false,
 }, false);
 
 const currentAreaSearchReducer: Reducer<Object | null> = handleActions({
@@ -85,7 +85,7 @@ const currentAreaSearchReducer: Reducer<Object | null> = handleActions({
 const isFetchingCurrentAreaSearchReducer: Reducer<boolean> = handleActions({
   ['mvj/areaSearch/FETCH_SINGLE']: () => true,
   ['mvj/areaSearch/RECEIVE_SINGLE']: () => false,
-  ['mvj/areaSearch/SINGLE_AREA_SEARCH_NOT_FOUND']: () => false,
+  ['mvj/areaSearch/SINGLE_NOT_FOUND']: () => false,
 }, false);
 
 const collapseStatesReducer: Reducer<Object> = handleActions({
