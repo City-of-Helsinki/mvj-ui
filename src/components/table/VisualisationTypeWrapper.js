@@ -7,7 +7,7 @@ type Props = {
 
 const VisualisationTypeWrapper = ({
   children,
-}: Props) =>
+}: Props): React$Node =>
   <div className='table__visualisation-type-wrapper'>{children}</div>;
 
 export default VisualisationTypeWrapper;

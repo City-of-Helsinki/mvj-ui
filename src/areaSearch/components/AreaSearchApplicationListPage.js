@@ -73,9 +73,21 @@ const VisualizationTypes = {
   TABLE: 'table',
 };
 
+const QueueTypes = {
+  SELF: 'self',
+  UNIT: 'unit',
+  ALL: 'all',
+};
+
 const visualizationTypeOptions = [
   {value: VisualizationTypes.TABLE, label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
   {value: VisualizationTypes.MAP, label: 'Kartta', icon: <MapIcon className='icon-medium' />},
+];
+
+const queueTypeOptions = [
+  {value: QueueTypes.SELF, label: 'Oma työjono', icon: null},
+  {value: QueueTypes.UNIT, label: 'Oma yksikkö', icon: null},
+  {value: QueueTypes.ALL, label: 'Kaikki hakemukset', icon: null},
 ];
 
 type OwnProps = {|
@@ -113,6 +125,7 @@ type State = {
   maxPage: number,
   selectedStates: Array<string>,
   visualizationType: string,
+  queueType: string,
   isEditModalOpen: boolean,
   editModalTargetAreaSearch: ?number,
 }
@@ -130,6 +143,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     maxPage: 0,
     selectedStates: DEFAULT_AREA_SEARCH_STATES,
     visualizationType: VisualizationTypes.TABLE,
+    queueType: QueueTypes.ALL,
     isEditModalOpen: false,
     editModalTargetAreaSearch: null,
   }
@@ -153,7 +167,12 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       showSearch: false,
     });
 
-    if(searchQuery.visualization === VisualizationTypes.MAP) {
+
+    if (searchQuery.queue) {
+      this.setState({queueType: searchQuery.queue});
+    }
+
+    if (searchQuery.visualization === VisualizationTypes.MAP) {
       this.setState({visualizationType: VisualizationTypes.MAP});
       this.searchByBBox();
     } else {
@@ -178,6 +197,21 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
         delete searchQuery.in_bbox;
         delete searchQuery.zoom;
       }
+
+      return history.push({
+        pathname: getRouteById(Routes.AREA_SEARCH),
+        search: getSearchQuery(searchQuery),
+      });
+    });
+  }
+
+  handleQueueTypeChange = (value: string) => {
+    const {history, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    this.setState(() => ({queueType: value}), () => {
+      delete searchQuery.page;
+      searchQuery.queue = value;
 
       return history.push({
         pathname: getRouteById(Routes.AREA_SEARCH),
@@ -414,6 +448,9 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       delete query.page;
     }
 
+    if (urlQuery.queue) {
+      query.queue = urlQuery.queue;
+    }
     if (urlQuery.visualization) {
       query.visualization = urlQuery.visualization;
     }
@@ -560,6 +597,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       maxPage,
       selectedStates,
       visualizationType,
+      queueType,
       isEditModalOpen,
       editModalTargetAreaSearch,
     } = this.state;
@@ -622,7 +660,16 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
           </Column>
         </Row>
 
-        {<TableFilterWrapper
+        <div className="AreaSearchApplicationListPage__queue-select">
+          <IconRadioButtons
+            legend='Suodatus työjonon mukaan'
+            onChange={this.handleQueueTypeChange}
+            options={queueTypeOptions}
+            radioName='queue-type-radio'
+            value={queueType}
+          />
+        </div>
+        <TableFilterWrapper
           filterComponent={
             <TableFilters
               amountText={amountText}
@@ -630,7 +677,6 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
               filterValue={selectedStates}
               onFilterChange={this.handleAreaSearchStatesChange}
             />
-
           }
           visualizationComponent={
             <VisualisationTypeWrapper>
@@ -643,7 +689,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
               />}
             </VisualisationTypeWrapper>
           }
-        />}
+        />
         <TableWrapper>
           {isFetching &&
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>

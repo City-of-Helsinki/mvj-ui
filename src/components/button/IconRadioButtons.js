@@ -10,7 +10,7 @@ type Props = {
 }
 
 class IconRadioButtons extends Component<Props> {
-  render () {
+  render(): React$Node {
     const {legend, options, radioName, value} = this.props;
 
     return (

@@ -2,4 +2,16 @@
   .list-table .mvj-button.link {
     height: auto;
   }
+
+  &__queue-select {
+    .icon-radio-buttons .option-label {
+      padding-bottom: rem-calc(4px);
+      border-bottom: rem-calc(5px) solid transparent;
+    }
+
+    .icon-radio-buttons .radio:checked + .option-label {
+      color: $blue;
+      border-bottom: rem-calc(5px) solid $blue;
+    }
+  }
 }

@@ -8,7 +8,7 @@ type Props = {
 const TableFilterWrapper = ({
   filterComponent,
   visualizationComponent,
-}: Props) => {
+}: Props): React$Node => {
   return (
     <div className='table__table-filter-wrapper'>
       {visualizationComponent &&
