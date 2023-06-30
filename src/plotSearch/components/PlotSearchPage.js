@@ -77,6 +77,7 @@ import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttribu
 import {FIELDS_LOCKED_FOR_EDITING} from '$src/plotSearch/constants';
 import PlotSearchExportModal from '$src/plotApplications/components/exportModal/PlotSearchExportModal';
 import ReservationIdentifiersModal from '$src/plotSearch/components/reservationIdentifiers/ReservationIdentifiersModal';
+import DirectReservationLinkModal from '$src/plotSearch/components/directReservationLinkModal/DirectReservationLinkModal';
 
 type OwnProps = {|
 
@@ -132,6 +133,7 @@ type State = {
   isRestoreModalOpen: boolean,
   isExportModalOpen: boolean,
   isReservationIdentifiersModalOpen: boolean,
+  isDirectReservationLinkModalOpen: boolean,
 }
 
 class PlotSearchPage extends Component<Props, State> {
@@ -140,6 +142,7 @@ class PlotSearchPage extends Component<Props, State> {
     isRestoreModalOpen: false,
     isExportModalOpen: false,
     isReservationIdentifiersModalOpen: false,
+    isDirectReservationLinkModalOpen: false,
   }
 
   static contextTypes = {
@@ -564,6 +567,10 @@ class PlotSearchPage extends Component<Props, State> {
       isReservationIdentifiersModalOpen: true,
     }));
 
+    const openDirectReservationLinkModal = () => this.setState(() => ({
+      isDirectReservationLinkModalOpen: true,
+    }));
+
     return(
       <FullWidthContainer>
         <PageNavigationWrapper>
@@ -632,6 +639,13 @@ class PlotSearchPage extends Component<Props, State> {
             onSave={this.restoreUnsavedChanges}
             title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
           />
+          <DirectReservationLinkModal
+            isOpen={this.state.isDirectReservationLinkModalOpen}
+            onClose={() => this.setState(() => ({
+              isDirectReservationLinkModalOpen: false,
+            }))}
+            targets={currentPlotSearch.plot_search_targets || null}
+          />
           <PlotSearchExportModal
             isOpen={this.state.isExportModalOpen}
             onClose={() => this.setState(() => ({
@@ -652,6 +666,7 @@ class PlotSearchPage extends Component<Props, State> {
                   : <BasicInfo
                     openExportModal={openExportModal}
                     openReservationIdentifiersModal={openReservationIdentifiersModal}
+                    openDirectReservationLinkModal={openDirectReservationLinkModal}
                   />
                 }
               </ContentContainer>

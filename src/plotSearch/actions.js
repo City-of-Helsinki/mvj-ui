@@ -66,6 +66,9 @@ import type {
   FetchReservationIdentifierUnitListsAction,
   ReceiveReservationIdentifierUnitListsAction,
   ReservationIdentifierUnitListsNotFoundAction,
+  CreateDirectReservationLinkAction,
+  DirectReservationLinkCreatedAction,
+  DirectReservationLinkCreationFailedAction,
 } from '$src/plotSearch/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -238,3 +241,12 @@ export const receiveReservationIdentifierUnitLists = (payload: Object): ReceiveR
 
 export const reservationIdentifierUnitListsNotFound = (): ReservationIdentifierUnitListsNotFoundAction =>
   createAction('mvj/plotSearch/RESERVATION_IDENTIFIER_UNIT_LISTS_NOT_FOUND')();
+
+export const createDirectReservationLink = (payload: {data: Object, callBack: Function}): CreateDirectReservationLinkAction =>
+  createAction('mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK')(payload);
+
+export const directReservationLinkCreated = (): DirectReservationLinkCreatedAction =>
+  createAction('mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATED')();
+
+export const directReservationLinkCreationFailed = (payload: any): DirectReservationLinkCreationFailedAction =>
+  createAction('mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED')(payload);

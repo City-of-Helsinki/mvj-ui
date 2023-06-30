@@ -282,6 +282,12 @@ const reservationIdentifierUnitListsReducer: Reducer<Object | null> = handleActi
   ['mvj/plotSearch/RESERVATION_IDENTIFIER_UNIT_LISTS_NOT_FOUND']: () => null,
 }, null);
 
+const isCreatingDirectReservationLinkReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK']: () => true,
+  ['mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATED']: () => false,
+  ['mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED']: () => false,
+}, false);
+
 
 export default (combineReducers<Object, any>({
   attributes: attributesReducer,
@@ -317,4 +323,5 @@ export default (combineReducers<Object, any>({
   lastBatchReservationCreationError: lastBatchReservationCreationErrorReducer,
   isFetchingReservationIdentifierUnitLists: isFetchingReservationIdentifierUnitListsReducer,
   reservationIdentifierUnitLists: reservationIdentifierUnitListsReducer,
+  isCreatingDirectReservationLink: isCreatingDirectReservationLinkReducer,
 }): CombinedReducer<PlotSearchState, Action<any>>);

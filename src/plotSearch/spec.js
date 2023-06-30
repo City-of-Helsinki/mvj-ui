@@ -90,6 +90,7 @@ const baseState: PlotSearchState = {
   lastBatchReservationCreationError: null,
   isFetchingReservationIdentifierUnitLists: false,
   reservationIdentifierUnitLists: null,
+  isCreatingDirectReservationLink: false,
 };
 
 

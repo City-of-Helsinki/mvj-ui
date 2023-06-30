@@ -41,7 +41,10 @@ import {
   fetchStages,
   reservationIdentifiersCreated,
   reservationIdentifiersCreationFailed,
-  reservationIdentifierUnitListsNotFound, receiveReservationIdentifierUnitLists,
+  reservationIdentifierUnitListsNotFound,
+  receiveReservationIdentifierUnitLists,
+  directReservationLinkCreated,
+  directReservationLinkCreationFailed,
 } from '$src/plotSearch/actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -62,7 +65,11 @@ import {
   fetchFormAttributesRequest,
   fetchTemplateFormsRequest,
   editFormRequest,
-  fetchStagesRequest, editTargetPlotSearchRelationRequest, fetchAllMunicipalitiesRequest, fetchAllDistrictsRequest,
+  fetchStagesRequest,
+  editTargetPlotSearchRelationRequest,
+  fetchAllMunicipalitiesRequest,
+  fetchAllDistrictsRequest,
+  createDirectReservationLinkRequest,
 } from '$src/plotSearch/requests';
 import {createLease} from '$src/leases/requests';
 import {RelationTypes} from '$src/leases/enums';
@@ -581,6 +588,29 @@ function* fetchReservationIdentifierUnitListsSaga(): Generator<any, any, any> {
   }
 }
 
+function* createDirectReservationLinkSaga({payload}): Generator<any, any, any> {
+  try {
+    const {data, callBack} = payload;
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createDirectReservationLinkRequest, data);
+
+    switch (statusCode) {
+      case 200:
+      case 201:
+        yield put(directReservationLinkCreated());
+        displayUIMessage({title: 'Suoravarauslinkki lähetetty', body: `Suoravarauslinkki: ${bodyAsJson.url}`});
+        callBack();
+        break;
+      default:
+        yield put(directReservationLinkCreationFailed());
+        displayUIMessage({title: '', body: 'Suoravarauslinkin lähetys epäonnistui'}, {type: 'error'});
+    }
+  } catch(e) {
+    yield put(directReservationLinkCreationFailed());
+    console.log(e);
+    displayUIMessage({title: '', body: 'Suoravarauslinkin lähetys epäonnistui'}, {type: 'error'});
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -603,6 +633,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES', fetchStagesSaga);
       yield takeLatest('mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS', batchCreateReservationIdentifiersSaga);
       yield takeLatest('mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS', fetchReservationIdentifierUnitListsSaga);
+      yield takeLatest('mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK', createDirectReservationLinkSaga);
     }),
   ]);
 }

@@ -17,6 +17,15 @@ export const createPlotSearch = (plotSearch: PlotSearch): Generator<any, any, an
   }));
 };
 
+export const createDirectReservationLinkRequest = (payload: Object): Generator<any, any, any> => {
+  const body = JSON.stringify(payload);
+
+  return callApi(new Request(createUrl('direct_reservation_link/'), {
+    method: 'POST',
+    body,
+  }));
+};
+
 export const fetchPlotSearches = (params: ?Object): Generator<any, any, any> => {
   return callApi(new Request(createUrl('plot_search/', params)));
 };
