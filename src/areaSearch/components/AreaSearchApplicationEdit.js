@@ -4,6 +4,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import orderBy from 'lodash/orderBy';
+import get from 'lodash/get';
 import {Column, Row} from 'react-foundation';
 
 import {getAttributes, getCurrentAreaSearch} from '$src/areaSearch/selectors';
@@ -33,11 +34,14 @@ import SubTitle from '$components/content/SubTitle';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import {getAreaFromGeoJSON} from '$util/map';
 import AreaSearchSelectedAreaMiniMap from '$src/areaSearch/components/map/AreaSearchSelectedAreaMiniMap';
+import {reduxForm} from 'redux-form';
+import {APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
 import AreaSearchApplicationPropertyIdentifiers
   from '$src/areaSearch/components/AreaSearchApplicationPropertyIdentifiers';
-import {APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
-import AreaSearchApplicantInfoCheck from '$src/areaSearch/components/AreaSearchApplicantInfoCheck';
-import {transformApplicantInfoCheckTitle} from '$src/areaSearch/helpers';
+import AreaSearchApplicantInfoCheckEdit from '$src/areaSearch/components/AreaSearchApplicantInfoCheckEdit';
+import {FieldTypes, FormNames} from '$src/enums';
+import {getInitialAreaSearch, transformApplicantInfoCheckTitle} from '$src/areaSearch/helpers';
+import FormField from '$components/form/FormField';
 import TitleH3 from '$components/content/TitleH3';
 import AreaSearchStatusNoteHistory from '$src/areaSearch/components/AreaSearchStatusNoteHistory';
 
@@ -51,6 +55,7 @@ type Props = {
   isFetchingFormAttributes: boolean,
   formAttributes: Attributes,
   areaSearchAttributes: Attributes,
+  initialize: Function,
 };
 
 type State = {
@@ -62,10 +67,30 @@ type State = {
   selectedAreaSectionRefreshKey: number,
 };
 
-class AreaSearchApplication extends Component<Props, State> {
+class AreaSearchApplicationEdit extends Component<Props, State> {
   state: $Shape<State> = {
     selectedAreaSectionRefreshKey: 0,
   };
+
+  componentDidMount() {
+    this.initializeForm();
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.areaSearch && !prevProps.areaSearch) {
+      this.initializeForm();
+    }
+  }
+
+  initializeForm = () => {
+    const {areaSearch, initialize} = this.props;
+
+    if (!areaSearch) {
+      return;
+    }
+
+    initialize(getInitialAreaSearch(areaSearch));
+  }
 
   render(): React$Node {
     const {
@@ -104,7 +129,8 @@ class AreaSearchApplication extends Component<Props, State> {
     const stateOptions = getFieldOptions(areaSearchAttributes, 'state', false);
     const lessorOptions = getFieldOptions(areaSearchAttributes, 'lessor', false);
     const intendedUseOptions = getFieldOptions(areaSearchAttributes, 'intended_use', false);
-    const declineReasonOptions = getFieldOptions(areaSearchAttributes, 'area_search_status.children.decline_reason', false);
+
+    const applicantSection = form?.sections.find((section) => section.identifier === APPLICANT_SECTION_IDENTIFIER);
 
     return <div className="AreaSearchApplication">
       <Title>
@@ -222,58 +248,87 @@ class AreaSearchApplication extends Component<Props, State> {
 
         <Collapse headerTitle="Hakemuksen käsittely" defaultOpen>
           <TitleH3>Tarkistettavat dokumentit</TitleH3>
-          {answer.sections[APPLICANT_SECTION_IDENTIFIER].map((applicant, index) => <Fragment key={index}>
-            <SubTitle>{transformApplicantInfoCheckTitle(applicant)}</SubTitle>
-            <AreaSearchApplicantInfoCheck
-              infoCheckData={areaSearch.answer.information_checks.filter((check) => check.entry === `${APPLICANT_SECTION_IDENTIFIER}[${index}]`)}
-              key={applicant.metadata.identifier}
-            />
-          </Fragment>)}
+          {answer.sections[APPLICANT_SECTION_IDENTIFIER].map((applicant, index) =>
+            <Fragment key={applicant.metadata.identifier}>
+              <SubTitle>{transformApplicantInfoCheckTitle(applicant)}</SubTitle>
+              <AreaSearchApplicantInfoCheckEdit
+                answer={applicant}
+                identifier={`${APPLICANT_SECTION_IDENTIFIER}[${index}]`}
+                section={applicantSection}
+              />
+            </Fragment>)}
           <TitleH3>Käsittelytiedot</TitleH3>
           <Row>
             <Column small={6} medium={4} large={3}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.STATE}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(stateOptions, areaSearch.state)}</FormText>
+              <FormField
+                name='state'
+                fieldAttributes={get(areaSearchAttributes, 'state')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.STATE,
+                }}
+              />
             </Column>
             <Column small={6} medium={4} large={3}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.LESSOR}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(lessorOptions, areaSearch.lessor) || '-'}</FormText>
+              <FormField
+                name='lessor'
+                fieldAttributes={get(areaSearchAttributes, 'lessor')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.LESSOR,
+                }}
+              />
             </Column>
             <Column small={6} medium={4} large={3}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.PREPARER}
-              </FormTextTitle>
-              <FormText>{getUserFullName(areaSearch.preparer) || '-'}</FormText>
+              <FormField
+                name='preparer'
+                fieldAttributes={get(areaSearchAttributes, 'preparer')}
+                overrideValues={{
+                  fieldType: FieldTypes.USER,
+                  label: AreaSearchFieldTitles.PREPARER,
+                }}
+              />
             </Column>
           </Row>
           <Row>
             <Column small={6} medium={4} large={3}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.DECLINE_REASON}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(declineReasonOptions, areaSearch.area_search_status?.decline_reason) || '-'}</FormText>
+              <FormField
+                name='decline_reason'
+                fieldAttributes={get(areaSearchAttributes, 'area_search_status.children.decline_reason')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.DECLINE_REASON,
+                }}
+              />
             </Column>
           </Row>
           <Row>
             <Column small={12} medium={12} large={12}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.PREPARER_NOTE}
-              </FormTextTitle>
-              <FormText>{areaSearch.area_search_status?.preparer_note || '-'}</FormText>
+              <FormField
+                name='preparer_note'
+                fieldAttributes={get(areaSearchAttributes, 'area_search_status.children.preparer_note')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.PREPARER_NOTE,
+                  fieldType: FieldTypes.TEXTAREA,
+                }}
+              />
             </Column>
           </Row>
-          {(areaSearch.area_search_status?.status_notes?.length > 0) && <Row>
+          <Row>
             <Column small={12} medium={12} large={12}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.STATUS_NOTES}
-              </FormTextTitle>
-              <AreaSearchStatusNoteHistory statusNotes={areaSearch.area_search_status?.status_notes} />
+              <FormField
+                name='status_notes'
+                fieldAttributes={get(areaSearchAttributes, 'area_search_status.children.status_notes.child.children.note')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.STATUS_NOTES,
+                  fieldType: FieldTypes.TEXTAREA,
+                  required: false,
+                }}
+              />
             </Column>
-          </Row>}
+            <Column small={12} medium={12} large={12}>
+              <AreaSearchStatusNoteHistory
+                statusNotes={areaSearch.area_search_status?.status_notes}
+              />
+            </Column>
+          </Row>
         </Collapse>
       </>}
     </div>;
@@ -287,4 +342,7 @@ export default (flowRight(
     formAttributes: getFormAttributes(state),
     isFetchingFormAttributes: getIsFetchingFormAttributes(state),
   })),
-)(AreaSearchApplication): React$ComponentType<OwnProps>);
+  reduxForm({
+    form: FormNames.AREA_SEARCH,
+  }),
+)(AreaSearchApplicationEdit): React$ComponentType<OwnProps>);

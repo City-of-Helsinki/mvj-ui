@@ -14,7 +14,7 @@ import {getFieldAttributes} from '$util/helpers';
 import {getFormAttributes, getIsFetchingForm, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import {orderBy} from 'lodash';
-import ApplicationAnswersSection from '$src/application/ApplicationAnswersSection';
+import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
 import Loader from '$components/loader/Loader';
 import Title from '$components/content/Title';
 import Divider from '$components/content/Divider';

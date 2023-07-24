@@ -21,6 +21,13 @@ import type {
   ReceiveFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
   ShowEditModeAction,
+  FetchListAttributesAction,
+  ReceiveListAttributesAction,
+  ReceiveListMethodsAction,
+  ListAttributesNotFoundAction,
+  ReceiveAreaSearchInfoCheckBatchEditSuccessAction,
+  ReceiveAreaSearchInfoCheckBatchEditFailureAction,
+  BatchEditAreaSearchInfoChecksAction,
 } from '$src/areaSearch/types';
 import type {Attributes, Methods} from '$src/types';
 import type {
@@ -43,6 +50,18 @@ export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsActio
 
 export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
   createAction('mvj/areaSearch/CLEAR_FORM_VALID_FLAGS')();
+
+export const fetchListAttributes = (): FetchListAttributesAction =>
+  createAction('mvj/areaSearch/FETCH_LIST_ATTRIBUTES')();
+
+export const receiveListAttributes = (attributes: Attributes): ReceiveListAttributesAction =>
+  createAction('mvj/areaSearch/RECEIVE_LIST_ATTRIBUTES')(attributes);
+
+export const receiveListMethods = (methods: Methods): ReceiveListMethodsAction =>
+  createAction('mvj/areaSearch/RECEIVE_LIST_METHODS')(methods);
+
+export const listAttributesNotFound = (): ListAttributesNotFoundAction =>
+  createAction('mvj/areaSearch/LIST_ATTRIBUTES_NOT_FOUND')();
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/areaSearch/FETCH_ATTRIBUTES')();
@@ -82,3 +101,12 @@ export const receiveSingleAreaSearch = (payload: Object): ReceiveSingleAreaSearc
 
 export const singleAreaSearchNotFound = (): SingleAreaSearchNotFoundAction =>
   createAction('mvj/areaSearch/SINGLE_NOT_FOUND')();
+
+export const batchEditAreaSearchInfoChecks = (payload: Object): BatchEditAreaSearchInfoChecksAction =>
+  createAction('mvj/areaSearch/BATCH_EDIT_INFO_CHECKS')(payload);
+
+export const receiveAreaSearchInfoChecksBatchEditSuccess = (): ReceiveAreaSearchInfoCheckBatchEditSuccessAction =>
+  createAction('mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS')();
+
+export const receiveAreaSearchInfoChecksBatchEditFailure = (payload: Object): ReceiveAreaSearchInfoCheckBatchEditFailureAction =>
+  createAction('mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE')(payload);

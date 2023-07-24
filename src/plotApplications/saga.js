@@ -1,78 +1,71 @@
 // @flow
 
-import {all, fork, put, takeLatest, takeEvery, call, select} from 'redux-saga/effects';
-import {SubmissionError, initialize, getFormValues} from 'redux-form';
+import {all, call, fork, put, select, takeEvery, takeLatest} from 'redux-saga/effects';
+import {initialize, SubmissionError} from 'redux-form';
 import {push} from 'react-router-redux';
 
 import {displayUIMessage} from '$src/util/helpers';
 import {
-  receivePlotApplicationsList,
-  receiveMethods,
-  receiveAttributes,
-  receiveSinglePlotApplication,
+  applicationRelatedAttachmentsNotFound,
+  applicationRelatedFormNotFound,
+  applicationRelatedPlotSearchNotFound,
+  applicationsNotFound,
+  attachmentAttributesNotFound,
+  attributesNotFound,
+  fetchApplicationRelatedAttachments,
+  fetchApplicationRelatedForm,
+  fetchApplicationRelatedPlotSearch,
+  fetchPendingUploads,
+  fetchSinglePlotApplication,
   hideEditMode,
   notFoundByBBox,
-  receivePlotApplicationsByBBox,
-  attributesNotFound,
-  applicationsNotFound,
-  plotSearchSubtypesNotFound,
-  receivePlotSearchSubtypes,
-  fetchApplicationRelatedForm,
-  receiveApplicationRelatedForm,
-  applicationRelatedFormNotFound,
-  applicationRelatedAttachmentsNotFound,
-  fetchApplicationRelatedAttachments,
-  receiveApplicationRelatedAttachments,
-  receivePlotApplicationSaved,
-  receivePlotApplicationSaveFailed,
-  fetchSinglePlotApplication,
-  receiveFileOperationFinished,
-  fetchPendingUploads,
   pendingUploadsNotFound,
-  receivePendingUploads,
+  plotSearchSubtypesNotFound,
+  receiveApplicationRelatedAttachments,
+  receiveApplicationRelatedForm,
+  receiveApplicationRelatedPlotSearch,
   receiveAttachmentAttributes,
   receiveAttachmentMethods,
-  attachmentAttributesNotFound,
-  fetchApplicationRelatedPlotSearch,
-  receiveApplicationRelatedPlotSearch,
-  applicationRelatedPlotSearchNotFound,
-  fetchApplicantInfoCheckAttributes,
-  receiveApplicantInfoCheckAttributes,
-  applicantInfoCheckAttributesNotFound,
-  receiveUpdatedApplicantInfoCheckItem,
+  receiveAttributes,
+  receiveBatchInfoCheckEditFailure,
+  receiveBatchInfoCheckEditSuccess,
+  receiveFileOperationFinished,
+  receiveMethods,
+  receivePendingUploads,
+  receivePlotApplicationSaved,
+  receivePlotApplicationSaveFailed,
+  receivePlotApplicationsByBBox,
+  receivePlotApplicationsList,
+  receivePlotSearchSubtypes,
+  receiveSinglePlotApplication,
+  receiveTargetInfoCheckMeetingMemoUploaded,
+  receiveTargetInfoChecksForPlotSearch,
   receiveUpdatedTargetInfoCheckItem,
   targetInfoCheckMeetingMemoUploadFailed,
-  receiveTargetInfoCheckMeetingMemoUploaded,
-  receiveBatchInfoCheckEditSuccess,
-  receiveBatchInfoCheckEditFailure, receiveTargetInfoChecksForPlotSearch, targetInfoChecksForPlotSearchNotFound,
+  targetInfoChecksForPlotSearchNotFound,
 } from '$src/plotApplications/actions';
 import {receiveError} from '$src/api/actions';
 
 import {
-  fetchPlotApplications,
-  fetchSinglePlotApplication as fetchSinglePlotApplicationRequest,
-  fetchAttributes,
-  fetchPlotSearchSubtypesRequest,
-  fetchSinglePlotApplicationAttachments,
-  createPlotApplicationRequest,
-  editPlotApplicationRequest,
-  uploadFileRequest,
-  deleteUploadRequest,
-  fetchPendingUploadsRequest,
-  fetchAttachmentAttributesRequest,
-  fetchApplicantInfoCheckAttributesRequest,
-  editApplicantInfoCheckItemRequest,
-  editTargetInfoCheckItemRequest,
   createMeetingMemoRequest,
-  deleteMeetingMemoRequest, fetchTargetInfoChecksForPlotSearchRequest,
+  createPlotApplicationRequest,
+  deleteMeetingMemoRequest,
+  deleteUploadRequest,
+  editApplicantInfoCheckItemRequest,
+  editPlotApplicationRequest,
+  editTargetInfoCheckItemRequest,
+  fetchAttachmentAttributesRequest,
+  fetchAttributes,
+  fetchPendingUploadsRequest,
+  fetchPlotApplications,
+  fetchPlotSearchSubtypesRequest,
+  fetchSinglePlotApplication as fetchSinglePlotApplicationRequest,
+  fetchSinglePlotApplicationAttachments,
+  fetchTargetInfoChecksForPlotSearchRequest,
+  uploadFileRequest,
 } from '$src/plotApplications/requests';
-import {
-  fetchFormRequest,
-  fetchSinglePlotSearch,
-} from '$src/plotSearch/requests';
-import {
-  fetchFormAttributes,
-} from '$src/plotSearch/actions';
+import {fetchFormRequest, fetchSinglePlotSearch} from '$src/plotSearch/requests';
+import {fetchFormAttributes} from '$src/plotSearch/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import type {
   BatchEditPlotApplicationInfoChecksAction,
@@ -85,10 +78,7 @@ import type {
   UploadTargetInfoCheckMeetingMemoAction,
 } from '$src/plotApplications/types';
 import {getCurrentPlotApplication} from '$src/plotApplications/selectors';
-import {
-  getApplicantInfoCheckFormName,
-} from '$src/plotApplications/helpers';
-import {getContentUser} from '$src/users/helpers';
+import {fetchApplicantInfoCheckAttributes, receiveUpdatedApplicantInfoCheckItem} from '$src/application/actions';
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
@@ -392,28 +382,6 @@ function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchApplicantInfoCheckAttributesRequest);
-
-    switch(statusCode) {
-      case 200:
-        const attributes = {
-          ...bodyAsJson.fields,
-        };
-
-        yield put(receiveApplicantInfoCheckAttributes(attributes));
-        break;
-      default:
-        yield put(applicantInfoCheckAttributesNotFound());
-    }
-  } catch (error) {
-    console.error('Failed to fetch info check attributes with error "%s"', error);
-    yield put(applicantInfoCheckAttributesNotFound());
-    yield put(receiveError(error));
-  }
-}
-
 function* fetchTargetInfoChecksForPlotSearchSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchTargetInfoChecksForPlotSearchRequest, id);
@@ -490,19 +458,6 @@ function* deleteMeetingMemoSaga({payload}: DeleteTargetInfoCheckMeetingMemoActio
 
 function* receiveUpdatedTargetInfoCheckItemSaga({payload}: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
   yield put(initialize(payload.targetForm, payload.data));
-}
-
-function* receiveUpdatedApplicantInfoCheckItemSaga({payload}: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
-  const formName = getApplicantInfoCheckFormName(payload.id);
-
-  const oldValues = yield select(getFormValues(formName));
-  yield put(initialize(formName, {
-    ...oldValues,
-    data: {
-      ...payload.data,
-      preparer: getContentUser(payload.data.preparer),
-    },
-  }));
 }
 
 function* batchEditInfoChecksSaga({payload}: BatchEditPlotApplicationInfoChecksAction): Generator<any, any, any> {
@@ -597,7 +552,6 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH', fetchApplicationRelatedPlotSearchSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENTS', fetchApplicationRelatedAttachmentsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', fetchAttachmentAttributesSaga);
-      yield takeLatest('mvj/plotApplications/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES', fetchApplicantInfoCheckAttributesSaga);
       yield takeLatest('mvj/plotApplications/FETCH_PENDING_UPLOADS', fetchPendingUploadsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH', fetchTargetInfoChecksForPlotSearchSaga);
       yield takeEvery('mvj/plotApplications/UPLOAD_FILE', uploadFileSaga);
@@ -605,7 +559,6 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/plotApplications/UPLOAD_MEETING_MEMO', uploadMeetingMemoSaga);
       yield takeEvery('mvj/plotApplications/DELETE_MEETING_MEMO', deleteMeetingMemoSaga);
       yield takeEvery('mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM', receiveUpdatedTargetInfoCheckItemSaga);
-      yield takeEvery('mvj/plotApplications/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM', receiveUpdatedApplicantInfoCheckItemSaga);
       yield takeLatest('mvj/plotApplications/BATCH_EDIT_INFO_CHECKS', batchEditInfoChecksSaga);
     }),
   ]);

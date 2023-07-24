@@ -9,7 +9,7 @@ import FileDownloadLink from '$components/file/FileDownloadLink';
 import {getApplicationAttachmentDownloadLink} from '$src/plotApplications/helpers';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormText from '$components/form/FormText';
-import ApplicationAnswersSection from '$src/application/ApplicationAnswersSection';
+import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
 
 type Props = {
   section: FormSection,

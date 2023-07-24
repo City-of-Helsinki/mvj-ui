@@ -44,7 +44,7 @@ import {
   getCurrentPlotApplication,
   getFieldTypeMapping,
   getIsFetchingAttachmentAttributes,
-  getIsFetchingApplicantInfoCheckAttributes,
+
 } from '$src/plotApplications/selectors';
 import PlotApplicationSubsection from '$src/plotApplications/components/PlotApplicationSubsection';
 import {
@@ -59,6 +59,7 @@ import {TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
 import type {PlotSearchList} from '$src/plotSearch/types';
 import type {PlotApplication} from '$src/plotApplications/types';
 import {getTargetTitle} from '$src/plotSearch/helpers';
+import {getIsFetchingApplicantInfoCheckAttributes} from '$src/application/selectors';
 
 type OwnProps = {};
 

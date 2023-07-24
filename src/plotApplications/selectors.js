@@ -2,15 +2,11 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import type {Attributes, Selector, Methods} from '$src/types';
+import type {Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 
-import type {
-  PlotApplicationsList,
-  PlotApplication,
-} from '$src/plotApplications/types';
+import type {InfoCheckBatchEditErrorsItem, PlotApplication, PlotApplicationsList} from '$src/plotApplications/types';
 import type {PlotSearch} from '$src/plotSearch/types';
-import type {InfoCheckBatchEditErrorsItem} from '$src/plotApplications/types';
 
 export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
   state.plotApplications.listByBBox;
@@ -104,12 +100,6 @@ export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean 
 
 export const getCurrentEditorTargets: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
   state.plotApplications.currentEditorTargets;
-
-export const getIsFetchingApplicantInfoCheckAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
-  state.plotApplications.isFetchingApplicantInfoCheckAttributes;
-
-export const getApplicantInfoCheckAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
-  state.plotApplications.applicantInfoCheckAttributes;
 
 export const getApplicationApplicantInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
   state.plotApplications.current?.information_checks;

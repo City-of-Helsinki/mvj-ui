@@ -5,17 +5,18 @@ import flowRight from 'lodash/flowRight';
 
 import {
   getAttributes,
-  getIsFetchingAttributes,
+  getIsFetchingAttributes, getIsFetchingListAttributes, getListAttributes, getListMethods,
   getMethods,
 } from '$src/areaSearch/selectors';
 
 import type {Attributes, Methods} from '$src/types';
-import {fetchAttributes} from '$src/areaSearch/actions';
+import {fetchAttributes, fetchListAttributes} from '$src/areaSearch/actions';
 import type {RootState} from '$src/root/types';
 
 function AreaSearchAttributes(WrappedComponent: React$ComponentType<any>) {
   type Props = {
     fetchAttributes: Function,
+    fetchListAttributes: Function,
     areaSearchAttributes: Attributes,
     areaSearchMethods: Methods,
     isFetchingAttributes: boolean,
@@ -25,12 +26,14 @@ function AreaSearchAttributes(WrappedComponent: React$ComponentType<any>) {
     componentDidMount() {
       const {
         fetchAttributes,
+        fetchListAttributes,
         areaSearchAttributes,
         isFetchingAttributes,
       } = this.props;
 
       if (!isFetchingAttributes && !areaSearchAttributes) {
         fetchAttributes();
+        fetchListAttributes();
       }
     }
     render() {
@@ -44,12 +47,16 @@ const withAreaSearchAttributes = (flowRight(
     (state: RootState) => {
       return {
         areaSearchAttributes: getAttributes(state),
+        areaSearchListAttributes: getListAttributes(state),
         isFetchingAttributes: getIsFetchingAttributes(state),
+        isFetchingListAttributes: getIsFetchingListAttributes(state),
         areaSearchMethods: getMethods(state),
+        areaSearchListMethods: getListMethods(state),
       };
     },
     {
       fetchAttributes,
+      fetchListAttributes,
     },
   ),
   AreaSearchAttributes,

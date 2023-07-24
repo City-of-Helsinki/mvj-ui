@@ -6,7 +6,7 @@ import type {SavedApplicationFormSection} from '$src/plotApplications/types';
 import Collapse from '$components/collapse/Collapse';
 import SubTitle from '$components/content/SubTitle';
 import type {SectionExtraComponentProps} from '$src/application/types';
-import ApplicationAnswersField from '$src/application/ApplicationAnswersField';
+import ApplicationAnswersField from '$src/application/components/ApplicationAnswersField';
 
 type Props = {
   section: FormSection,

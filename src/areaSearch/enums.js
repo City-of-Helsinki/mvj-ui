@@ -16,4 +16,7 @@ export const AreaSearchFieldTitles = {
   DESCRIPTION_AREA: 'Alueen kuvaus',
   AREA: 'Pinta-ala',
   PROPERTY_IDENTIFIER: 'Kiinteistötunnus',
+  DECLINE_REASON: 'Hylkäämisen syy',
+  PREPARER_NOTE: 'Käsittelytietojen huomautus',
+  STATUS_NOTES: 'Käsittelijän muistiinpanot',
 };
