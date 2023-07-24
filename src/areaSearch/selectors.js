@@ -76,3 +76,9 @@ export const getApplicantInfoCheckSubmissionErrors = (state: RootState, checkDat
     })
     .filter((item) => item.error !== undefined);
 };
+
+export const getIsEditingAreaSearch = (state: RootState): boolean =>
+  state.areaSearch.isEditingAreaSearch;
+
+export const getLastAreaSearchEditError = (state: RootState): any =>
+  state.areaSearch.lastAreaSearchEditError;

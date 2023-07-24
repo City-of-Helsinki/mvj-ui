@@ -19,7 +19,7 @@ import {
   receiveListMethods,
   receiveAreaSearchInfoChecksBatchEditFailure,
   receiveAreaSearchInfoChecksBatchEditSuccess,
-  hideEditMode, fetchSingleAreaSearch,
+  hideEditMode, fetchSingleAreaSearch, receiveAreaSearchEdited, receiveAreaSearchEditFailed,
 } from '$src/areaSearch/actions';
 import {
   editSingleAreaSearchRequest,
@@ -201,9 +201,30 @@ function* batchEditAreaSearchInfoChecksSaga({payload}): Generator<any, any, any>
     yield put(receiveAreaSearchInfoChecksBatchEditFailure(errors));
     displayUIMessage({title: '', body: `${errorCount} käsittelytiedon päivitys epäonnistui!`}, {type: 'error'});
   }
-
 }
 
+function* editAreaSearchSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(
+      editSingleAreaSearchRequest, payload.id, payload
+    );
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveAreaSearchEdited());
+        displayUIMessage({title: '', body: 'Käsittelijä ja vuokranantaja päivitetty'});
+        break;
+      default:
+        console.error(bodyAsJson);
+        yield put(receiveAreaSearchEditFailed(bodyAsJson));
+        displayUIMessage({title: '', body: 'Tietojen päivitys epäonnistui!'}, {type: 'error'});
+    }
+  } catch (e) {
+    console.error(e);
+    yield put(receiveAreaSearchEditFailed(e));
+    displayUIMessage({title: '', body: 'Tietojen päivitys epäonnistui!'}, {type: 'error'});
+  }
+}
 
 export default function*(): Generator<any, any, any> {
   yield all([
@@ -214,6 +235,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/areaSearch/FETCH_ALL_BY_BBOX', fetchAreaSearchesByBBoxSaga);
       yield takeLatest('mvj/areaSearch/FETCH_SINGLE', fetchCurrentAreaSearchSaga);
       yield takeLatest('mvj/areaSearch/BATCH_EDIT_INFO_CHECKS', batchEditAreaSearchInfoChecksSaga);
+      yield takeLatest('mvj/areaSearch/EDIT', editAreaSearchSaga);
     }),
   ]);
 }

@@ -19,6 +19,8 @@ export type AreaSearchState = {
   collapseStates: Object,
   isFormValidById: Object,
   isBatchEditingAreaSearchInfoChecks: boolean,
+  isEditingAreaSearch: boolean,
+  lastAreaSearchEditError: any,
 };
 
 export type AreaSearch = Object;
@@ -63,3 +65,7 @@ export type InfoCheckBatchEditData = {
 export type BatchEditAreaSearchInfoChecksAction = Action<'mvj/areaSearch/BATCH_EDIT_INFO_CHECKS', InfoCheckBatchEditData>;
 export type ReceiveAreaSearchInfoCheckBatchEditSuccessAction = Action<'mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS', void>;
 export type ReceiveAreaSearchInfoCheckBatchEditFailureAction = Action<'mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE', Object>;
+
+export type EditAreaSearchAction = Action<'mvj/areaSearch/EDIT', Object>;
+export type ReceiveAreaSearchEditedAction = Action<'mvj/areaSearch/RECEIVE_EDITED', void>;
+export type ReceiveAreaSearchEditFailedAction = Action<'mvj/areaSearch/RECEIVE_EDIT_FAILED', Object>;

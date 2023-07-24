@@ -1,0 +1,11 @@
+.EditAreaSearchPreparerModal {
+  .modal__wrapper {
+    // Let the type/municipality/district dropdowns cross outside the modal boundaries,
+    // since they're otherwise a bit annoying to use.
+    overflow: visible;
+  }
+
+  .AreaSearchStatusNoteHistory {
+    background-color: transparent;
+  }
+}

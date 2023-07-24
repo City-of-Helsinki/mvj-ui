@@ -28,10 +28,10 @@ import type {
   ReceiveAreaSearchInfoCheckBatchEditSuccessAction,
   ReceiveAreaSearchInfoCheckBatchEditFailureAction,
   BatchEditAreaSearchInfoChecksAction,
+  EditAreaSearchAction,
+  ReceiveAreaSearchEditedAction, ReceiveAreaSearchEditFailedAction,
 } from '$src/areaSearch/types';
 import type {Attributes, Methods} from '$src/types';
-import type {
-} from '$src/plotSearch/types';
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/areaSearch/HIDE_EDIT')();
@@ -110,3 +110,12 @@ export const receiveAreaSearchInfoChecksBatchEditSuccess = (): ReceiveAreaSearch
 
 export const receiveAreaSearchInfoChecksBatchEditFailure = (payload: Object): ReceiveAreaSearchInfoCheckBatchEditFailureAction =>
   createAction('mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE')(payload);
+
+export const editAreaSearch = (payload: Object): EditAreaSearchAction =>
+  createAction('mvj/areaSearch/EDIT')(payload);
+
+export const receiveAreaSearchEdited = (): ReceiveAreaSearchEditedAction =>
+  createAction('mvj/areaSearch/RECEIVE_EDITED')();
+
+export const receiveAreaSearchEditFailed = (payload: Object): ReceiveAreaSearchEditFailedAction =>
+  createAction('mvj/areaSearch/RECEIVE_EDIT_FAILED')(payload);

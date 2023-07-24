@@ -5,7 +5,7 @@ import {handleActions} from 'redux-actions';
 
 import type {Attributes, Methods, Reducer} from '$src/types';
 import type {
-  AreaSearchState,
+  AreaSearchState, ReceiveAreaSearchEditFailedAction,
   ReceiveAreaSearchListAction, ReceiveCollapseStatesAction,
   ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction,
   ReceiveSingleAreaSearchAction,
@@ -123,6 +123,17 @@ const isBatchEditingAreaSearchInfoChecksReducer: Reducer<boolean> = handleAction
   ['mvj/areaSearch/RECEIVE_INFO_CHECKS_BATCH_EDIT_FAILURE']: () => false,
 }, false);
 
+const isEditingAreaSearchReducer: Reducer<boolean> = handleActions({
+  ['mvj/areaSearch/EDIT']: () => true,
+  ['mvj/areaSearch/RECEIVE_EDITED']: () => false,
+  ['mvj/areaSearch/RECEIVE_EDIT_FAILED']: () => false,
+}, false);
+
+const lastAreaSearchEditErrorReducer: Reducer<any> = handleActions({
+  ['mvj/areaSearch/EDIT']: () => null,
+  ['mvj/areaSearch/RECEIVE_EDIT_FAILED']: (state, {payload: error}: ReceiveAreaSearchEditFailedAction) => error,
+}, null);
+
 export default (combineReducers<Object, Action<any>>({
   attributes: attributesReducer,
   methods: methodsReducer,
@@ -141,4 +152,6 @@ export default (combineReducers<Object, Action<any>>({
   collapseStates: collapseStatesReducer,
   isSaveClicked: isSaveClickedReducer,
   isBatchEditingAreaSearchInfoChecks: isBatchEditingAreaSearchInfoChecksReducer,
+  isEditingAreaSearch: isEditingAreaSearchReducer,
+  lastAreaSearchEditError: lastAreaSearchEditErrorReducer,
 }): CombinedReducer<AreaSearchState, Action<any>>);
