@@ -489,6 +489,7 @@ export const FormNames = {
   RENT_CALCULATOR: 'rent-calculator-form',
   TRADE_REGISTER_SEARCH: 'trade-register-search-form',
   PLOT_SEARCH_BASIC_INFORMATION: 'plot-search-basic-information-form',
+  PLOT_SEARCH_DIRECT_RESERVATION_LINK: 'plot-search-direct-reservation-link',
   PLOT_SEARCH_APPLICATION: 'plot-search-application-form',
   PLOT_SEARCH_APPLICATION_SECTION_STAGING: 'plot-search-application-form-section-staging',
   PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM: 'plot-search-application-preview-mock-form',

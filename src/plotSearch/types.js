@@ -1,6 +1,7 @@
 // @flow
 import type {Action, Attributes, Methods} from '$src/types';
 
+
 export type PlotSearchState = {
   attributes: Attributes,
   current: PlotSearch,
@@ -35,6 +36,7 @@ export type PlotSearchState = {
   lastBatchReservationCreationError: any,
   isFetchingReservationIdentifierUnitLists: boolean,
   reservationIdentifierUnitLists: null | Object,
+  isCreatingDirectReservationLink: boolean,
 };
 
 export type CustomDetailedPlan = Object;
@@ -169,3 +171,7 @@ export type ReservationIdentifiersCreationFailedAction = Action<'mvj/plotSearch/
 export type FetchReservationIdentifierUnitListsAction = Action<'mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS', void>;
 export type ReceiveReservationIdentifierUnitListsAction = Action<'mvj/plotSearch/RECEIVE_RESERVATION_IDENTIFIER_UNIT_LISTS', Object>;
 export type ReservationIdentifierUnitListsNotFoundAction = Action<'mvj/plotSearch/RESERVATION_IDENTIFIER_UNIT_LISTS_NOT_FOUND', void>;
+
+export type CreateDirectReservationLinkAction = Action<'mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK', {data: Object, callBack: Function}>;
+export type DirectReservationLinkCreatedAction = Action<'mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATED', void>;
+export type DirectReservationLinkCreationFailedAction = Action<'mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED', any>;

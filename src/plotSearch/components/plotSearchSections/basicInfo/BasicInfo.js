@@ -46,6 +46,7 @@ import Button from '$components/button/Button';
 type OwnProps = {
   openExportModal: Function,
   openReservationIdentifiersModal: Function,
+  openDirectReservationLinkModal: Function,
 }
 
 type Props = {
@@ -95,6 +96,7 @@ class BasicInfo extends PureComponent<Props, State> {
       currentPlotSearch,
       openExportModal,
       openReservationIdentifiersModal,
+      openDirectReservationLinkModal,
     } = this.props;
 
     const plotSearch = getContentBasicInformation(currentPlotSearch);
@@ -106,6 +108,7 @@ class BasicInfo extends PureComponent<Props, State> {
     return (
       <Fragment>
         <div className="plot_search__basic-info-header-buttons">
+          <Button onClick={openDirectReservationLinkModal} text="Lähetä hakemuslinkki" />
           <Button onClick={openReservationIdentifiersModal} text="Luo varaustunnukset" />
           <DocumentsButton onClick={openExportModal} label="Tulosta kaikki hakemukset" />
         </div>

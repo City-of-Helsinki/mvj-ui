@@ -148,3 +148,6 @@ export const getIsFetchingReservationIdentifierUnitLists: Selector<boolean, void
 
 export const getReservationIdentifierUnitLists: Selector<Object, void> = (state: RootState): null | Object =>
   state.plotSearch.reservationIdentifierUnitLists;
+
+export const getIsCreatingDirectReservationLink: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isCreatingDirectReservationLink;
