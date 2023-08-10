@@ -502,6 +502,7 @@ export const FormNames = {
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
   LAND_USE_CONTRACT_INVOICE_EDIT: 'land-use-contract-invoice-edit',
   AREA_SEARCH: 'area-search',
+  AREA_SEARCH_CREATE: 'area-search-create',
   AREA_SEARCH_PREPARER: 'area-search-preparer',
 };
 

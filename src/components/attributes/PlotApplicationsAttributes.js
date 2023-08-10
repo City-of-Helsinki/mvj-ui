@@ -3,14 +3,13 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
-import {fetchAttributes as fetchPlotApplicationsAttributes} from '$src/plotApplications/actions';
+import type {Attributes, Methods} from '$src/types';
+import {fetchAttributes as fetchPlotApplicationsAttributes} from '$src/application/actions';
 import {
   getAttributes as getPlotApplicationsAttributes,
   getIsFetchingAttributes as getIsFetchingPlotApplicationsAttributes,
-  getPlotApplicationsMethods,
-} from '$src/plotApplications/selectors';
-
-import type {Attributes, Methods} from '$src/types';
+  getMethods,
+} from '$src/application/selectors';
 
 function PlotApplicationsAttributes(WrappedComponent: any) {
   type Props = {
@@ -45,7 +44,7 @@ const withPlotApplicationsAttributes = flowRight(
       return{
         plotApplicationsAttributes: getPlotApplicationsAttributes(state),
         isFetchingPlotApplicationsAttributes: getIsFetchingPlotApplicationsAttributes(state),
-        plotApplicationsMethods: getPlotApplicationsMethods(state),
+        plotApplicationsMethods: getMethods(state),
       };
     },
     {

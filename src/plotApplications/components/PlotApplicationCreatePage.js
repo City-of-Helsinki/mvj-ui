@@ -18,7 +18,6 @@ import TabPane from '$components/tabs/TabPane';
 import Tabs from '$components/tabs/Tabs';
 import ContentContainer from '$components/content/ContentContainer';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
@@ -46,9 +45,6 @@ import {
   editPlotApplication,
   createPlotApplication,
 } from '$src/plotApplications/actions';
-import type {
-  PlotApplication as PlotApplicationType,
-} from '$src/plotApplications/types';
 import {
   getUrlParams,
   setPageTitle,
@@ -56,15 +52,20 @@ import {
   getSearchQuery,
   scrollToTopPage,
 } from '$util/helpers';
-import type {Attributes, Methods as MethodsType} from '$src/types';
 import PlotApplicationInfo from '$src/plotApplications/components/PlotApplicationInfo';
 import {fetchPlotSearchList} from '$src/plotSearch/actions';
 import {
   getPlotSearchList,
   getIsFetching as getIsFetchingPlotSearchList,
 } from '$src/plotSearch/selectors';
-import {prepareApplicationForSubmission} from '$src/plotApplications/helpers';
+import {preparePlotApplicationForSubmission} from '$src/plotApplications/helpers';
 import PlotApplicationCreate from '$src/plotApplications/components/PlotApplicationCreate';
+
+import type {
+  PlotApplication as PlotApplicationType,
+} from '$src/plotApplications/types';
+import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type OwnProps = {
   ...ContextRouter
@@ -268,7 +269,7 @@ class PlotApplicationsPage extends Component<Props, State> {
     const areFormsValid = this.getAreFormsValid();
 
     if(areFormsValid) {
-      const data = prepareApplicationForSubmission();
+      const data = preparePlotApplicationForSubmission();
 
       if (!data) {
         // an error occurred

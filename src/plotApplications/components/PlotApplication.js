@@ -12,37 +12,43 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {
-  getAttributes,
   getCollapseStateByKey,
   getCurrentPlotApplication,
   getIsFetchingApplicationRelatedForm,
   getApplicationRelatedForm,
-  getApplicationRelatedAttachments,
-  getIsFetchingApplicationRelatedAttachments,
+
 } from '$src/plotApplications/selectors';
 import {receiveCollapseStates} from '$src/plotApplications/actions';
 import {
   isFieldAllowedToRead,
 } from '$util/helpers';
-import type {Attributes} from '$src/types';
-import type {PlotApplication as PlotApplicationType} from '$src/plotApplications/types';
 import Loader from '$components/loader/Loader';
 import {reshapeSavedApplicationObject} from '$src/plotApplications/helpers';
-import {
-  getFormAttributes,
-  getIsFetchingFormAttributes,
-} from '$src/plotSearch/selectors';
 import {getFieldAttributes} from '$util/helpers';
-import {getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch} from '$src/plotApplications/selectors';
+import {
+  getApplicationRelatedPlotSearch,
+  getIsFetchingApplicationRelatedPlotSearch,
+} from '$src/plotApplications/selectors';
 import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
 import PlotApplicationTargetInfoCheck from '$src/plotApplications/components/infoCheck/PlotApplicationTargetInfoCheck';
 import PlotApplicationApplicantInfoCheck
   from '$src/plotApplications/components/infoCheck/PlotApplicationApplicantInfoCheck';
-import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
+import {
+  transformApplicantSectionTitle,
+  transformTargetSectionTitle,
+} from '$src/application/helpers';
+import {
+  getApplicationRelatedAttachments, getAttributes,
+  getFormAttributes, getIsFetchingApplicationRelatedAttachments,
+  getIsFetchingFormAttributes,
+} from '$src/application/selectors';
+import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/application/constants';
+
+import type {Attributes} from '$src/types';
+import type {PlotApplication as PlotApplicationType} from '$src/plotApplications/types';
 import type {SectionExtraComponentProps} from '$src/application/types';
-import {transformApplicantSectionTitle, transformTargetSectionTitle} from '$src/application/helpers';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type OwnProps = {};
 

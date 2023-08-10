@@ -24,7 +24,6 @@ import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {
   getIsEditMode,
   getCurrentPlotSearch,
@@ -35,7 +34,10 @@ import {
   getForm,
   getIsFetchingAnyPlanUnits,
   getIsFetchingPlanUnitAttributes,
-  areTargetsAllowedToHaveType, isLockedForModifications, isFetchingStages, getIsFetchingSubtypes,
+  areTargetsAllowedToHaveType,
+  isLockedForModifications,
+  isFetchingStages,
+  getIsFetchingSubtypes,
 } from '$src/plotSearch/selectors';
 import {
   editPlotSearch,
@@ -57,8 +59,6 @@ import {
   scrollToTopPage,
   isMethodAllowed,
 } from '$util/helpers';
-import type {Attributes, Methods as MethodType} from '$src/types';
-import type {PlotSearch, Form} from '$src/plotSearch/types';
 import {
   getContentBasicInformation,
   getContentApplication,
@@ -66,7 +66,6 @@ import {
   cleanTargets,
   cleanDecisions,
 } from '$src/plotSearch/helpers';
-
 import PlotSearchInfo from '$src/plotSearch/components/plotSearchSections/plotSearchInfo/PlotSearchInfo';
 import BasicInfo from '$src/plotSearch/components/plotSearchSections/basicInfo/BasicInfo';
 import BasicInfoEdit from '$src/plotSearch/components/plotSearchSections/basicInfo/BasicInfoEdit';
@@ -78,6 +77,11 @@ import {FIELDS_LOCKED_FOR_EDITING} from '$src/plotSearch/constants';
 import PlotSearchExportModal from '$src/plotApplications/components/exportModal/PlotSearchExportModal';
 import ReservationIdentifiersModal from '$src/plotSearch/components/reservationIdentifiers/ReservationIdentifiersModal';
 import DirectReservationLinkModal from '$src/plotSearch/components/directReservationLinkModal/DirectReservationLinkModal';
+
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {Attributes, Methods as MethodType} from '$src/types';
+import type {PlotSearch} from '$src/plotSearch/types';
+import type {Form} from '$src/application/types';
 
 type OwnProps = {|
 

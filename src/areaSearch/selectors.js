@@ -1,8 +1,8 @@
 // @flow
+import get from 'lodash/get';
+
 import type {ApiResponse, Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
-import get from 'lodash/get';
-import {getInfoCheckSubmissionErrors} from '$src/plotApplications/selectors';
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.areaSearch.attributes;

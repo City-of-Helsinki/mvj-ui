@@ -18,13 +18,14 @@ import PlotApplicationInfoCheckCollapse from '$src/plotApplications/components/i
 import {
   getApplicationRelatedPlotSearch,
   getApplicationTargetInfoCheckData,
-  getAttributes,
+
 } from '$src/plotApplications/selectors';
 import {PlotApplicationTargetInfoCheckFieldPaths, PlotApplicationTargetInfoCheckFieldTitles} from '$src/plotApplications/enums';
 import {
   getInitialTargetInfoCheckValues,
   getMeetingMemoDownloadLink,
 } from '$src/plotApplications/helpers';
+import {getAttributes} from '$src/application/selectors';
 
 type TargetSubFieldSetProps = {
   values: any,

@@ -11,12 +11,13 @@ import {ButtonColors} from '$components/enums';
 import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import Button from '$components/button/Button';
-import type {Attributes} from '$src/types';
 import {
   ApplicantInfoCheckFieldPaths,
   ApplicantInfoCheckFieldTitles,
 } from '$src/application/enums';
 import {getApplicantInfoCheckAttributes} from '$src/application/selectors';
+
+import type {Attributes} from '$src/types';
 
 type OwnProps = {
   infoCheck: Object,

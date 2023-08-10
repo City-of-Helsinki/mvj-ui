@@ -6,7 +6,6 @@ import flowRight from 'lodash/flowRight';
 import {
   fetchAttributes as fetchPlotSearchAttributes,
   fetchPlotSearchSubtypes,
-  fetchFormAttributes,
 } from '$src/plotSearch/actions';
 import {
   getAttributes as getPlotSearchAttributes,
@@ -14,9 +13,12 @@ import {
   getPlotSearchMethods,
   getPlotSearchSubTypes,
   getIsFetching,
-  getIsFetchingFormAttributes,
-  getFormAttributes,
 } from '$src/plotSearch/selectors';
+import {
+  getFormAttributes,
+  getIsFetchingFormAttributes,
+} from '$src/application/selectors';
+import {fetchFormAttributes} from '$src/application/actions';
 
 import type {Attributes, Methods} from '$src/types';
 

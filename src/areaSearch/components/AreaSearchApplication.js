@@ -8,7 +8,6 @@ import {Column, Row} from 'react-foundation';
 
 import {getAttributes, getCurrentAreaSearch} from '$src/areaSearch/selectors';
 import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
-import {getFormAttributes, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
 import {
   formatDate,
   formatDateRange,
@@ -18,7 +17,6 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 import type {Attributes} from '$src/types';
-import type {Form} from '$src/plotSearch/types';
 import {reshapeSavedApplicationObject} from '$src/plotApplications/helpers';
 import {transformApplicantSectionTitle} from '$src/application/helpers';
 import Title from '$components/content/Title';
@@ -35,11 +33,13 @@ import {getAreaFromGeoJSON} from '$util/map';
 import AreaSearchSelectedAreaMiniMap from '$src/areaSearch/components/map/AreaSearchSelectedAreaMiniMap';
 import AreaSearchApplicationPropertyIdentifiers
   from '$src/areaSearch/components/AreaSearchApplicationPropertyIdentifiers';
-import {APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
 import AreaSearchApplicantInfoCheck from '$src/areaSearch/components/AreaSearchApplicantInfoCheck';
 import {transformApplicantInfoCheckTitle} from '$src/areaSearch/helpers';
 import TitleH3 from '$components/content/TitleH3';
 import AreaSearchStatusNoteHistory from '$src/areaSearch/components/AreaSearchStatusNoteHistory';
+import {getFormAttributes, getIsFetchingFormAttributes} from '$src/application/selectors';
+import {APPLICANT_SECTION_IDENTIFIER} from '$src/application/constants';
+import type {Form} from '$src/application/types';
 
 type OwnProps = {
 

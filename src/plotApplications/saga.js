@@ -1,37 +1,25 @@
 // @flow
 
 import {all, call, fork, put, select, takeEvery, takeLatest} from 'redux-saga/effects';
-import {initialize, SubmissionError} from 'redux-form';
+import {SubmissionError} from 'redux-form';
 import {push} from 'react-router-redux';
 
 import {displayUIMessage} from '$src/util/helpers';
 import {
-  applicationRelatedAttachmentsNotFound,
   applicationRelatedFormNotFound,
   applicationRelatedPlotSearchNotFound,
   applicationsNotFound,
-  attachmentAttributesNotFound,
-  attributesNotFound,
-  fetchApplicationRelatedAttachments,
   fetchApplicationRelatedForm,
   fetchApplicationRelatedPlotSearch,
-  fetchPendingUploads,
   fetchSinglePlotApplication,
   hideEditMode,
   notFoundByBBox,
-  pendingUploadsNotFound,
   plotSearchSubtypesNotFound,
-  receiveApplicationRelatedAttachments,
   receiveApplicationRelatedForm,
   receiveApplicationRelatedPlotSearch,
-  receiveAttachmentAttributes,
-  receiveAttachmentMethods,
-  receiveAttributes,
   receiveBatchInfoCheckEditFailure,
   receiveBatchInfoCheckEditSuccess,
   receiveFileOperationFinished,
-  receiveMethods,
-  receivePendingUploads,
   receivePlotApplicationSaved,
   receivePlotApplicationSaveFailed,
   receivePlotApplicationsByBBox,
@@ -40,45 +28,43 @@ import {
   receiveSinglePlotApplication,
   receiveTargetInfoCheckMeetingMemoUploaded,
   receiveTargetInfoChecksForPlotSearch,
-  receiveUpdatedTargetInfoCheckItem,
+  targetInfoCheckMeetingMemoDeleteFailed,
   targetInfoCheckMeetingMemoUploadFailed,
   targetInfoChecksForPlotSearchNotFound,
 } from '$src/plotApplications/actions';
 import {receiveError} from '$src/api/actions';
-
 import {
   createMeetingMemoRequest,
-  createPlotApplicationRequest,
   deleteMeetingMemoRequest,
-  deleteUploadRequest,
   editApplicantInfoCheckItemRequest,
-  editPlotApplicationRequest,
   editTargetInfoCheckItemRequest,
-  fetchAttachmentAttributesRequest,
-  fetchAttributes,
-  fetchPendingUploadsRequest,
   fetchPlotApplications,
   fetchPlotSearchSubtypesRequest,
   fetchSinglePlotApplication as fetchSinglePlotApplicationRequest,
-  fetchSinglePlotApplicationAttachments,
   fetchTargetInfoChecksForPlotSearchRequest,
-  uploadFileRequest,
 } from '$src/plotApplications/requests';
 import {fetchFormRequest, fetchSinglePlotSearch} from '$src/plotSearch/requests';
-import {fetchFormAttributes} from '$src/plotSearch/actions';
 import {getRouteById, Routes} from '$src/root/routes';
+import {getCurrentPlotApplication} from '$src/plotApplications/selectors';
+import {
+  fetchApplicantInfoCheckAttributes,
+  fetchApplicationRelatedAttachments,
+  fetchFormAttributes,
+  receiveUpdatedApplicantInfoCheckItem,
+  receiveUpdatedTargetInfoCheckItem,
+} from '$src/application/actions';
+import {
+  createApplicationRequest,
+  editApplicationRequest,
+} from '$src/application/requests';
+
 import type {
   BatchEditPlotApplicationInfoChecksAction,
   DeleteTargetInfoCheckMeetingMemoAction,
-  DeleteUploadAction,
   InfoCheckBatchEditErrors,
   PlotApplication,
-  ReceiveUpdatedTargetInfoCheckItemAction,
-  UploadFileAction,
   UploadTargetInfoCheckMeetingMemoAction,
 } from '$src/plotApplications/types';
-import {getCurrentPlotApplication} from '$src/plotApplications/selectors';
-import {fetchApplicantInfoCheckAttributes, receiveUpdatedApplicantInfoCheckItem} from '$src/application/actions';
 
 function* fetchPlotApplicationsSaga({payload: query}): Generator<any, any, any> {
   try {
@@ -134,33 +120,9 @@ function* fetchSinglePlotApplicationSaga({payload: id}): Generator<any, any, any
   }
 }
 
-function* fetchAttributesSaga(): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
-
-    switch(statusCode) {
-      case 200:
-        const attributes = {
-          ...bodyAsJson.fields,
-        };
-        const methods = bodyAsJson.methods;
-
-        yield put(receiveAttributes(attributes));
-        yield put(receiveMethods(methods));
-        break;
-      default:
-        yield put(attributesNotFound());
-    }
-  } catch (error) {
-    console.error('Failed to fetch attributes with error "%s"', error);
-    yield put(attributesNotFound());
-    yield put(receiveError(error));
-  }
-}
-
 function* createPlotApplicationSaga({payload: plotApplication}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(createPlotApplicationRequest, plotApplication);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createApplicationRequest, plotApplication);
 
     switch (statusCode) {
       case 200:
@@ -195,7 +157,7 @@ function* editPlotApplicationSaga({payload: plotApplication}): Generator<any, an
       return;
     }
 
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotApplicationRequest, currentPlotApplication?.id, plotApplication);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editApplicationRequest, currentPlotApplication?.id, plotApplication);
 
     switch (statusCode) {
       case 200:
@@ -280,108 +242,6 @@ function* fetchApplicationRelatedPlotSearchSaga({payload: id}): Generator<any, a
   }
 }
 
-function* fetchApplicationRelatedAttachmentsSaga({payload: id}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSinglePlotApplicationAttachments, id);
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveApplicationRelatedAttachments(bodyAsJson));
-        break;
-      default:
-        yield put(applicationRelatedAttachmentsNotFound());
-        displayUIMessage({title: '', body: 'Hakemuksen liitteitä ei löytynyt!'}, {type: 'error'});
-    }
-  } catch (e) {
-    yield put(applicationRelatedAttachmentsNotFound());
-    displayUIMessage({title: '', body: 'Hakemuksen liitteitä ei löytynyt!'}, {type: 'error'});
-  }
-}
-
-
-function* fetchPendingUploadsSaga(): Generator<any, any, any> {
-  try {
-    const {response, bodyAsJson} = yield call(fetchPendingUploadsRequest);
-
-    switch (response.status) {
-      case 200:
-        yield put(receivePendingUploads(bodyAsJson.results));
-        break;
-      default:
-        yield put(pendingUploadsNotFound());
-        break;
-    }
-  } catch (e) {
-    console.error(e);
-    yield put(pendingUploadsNotFound());
-    throw e;
-  }
-}
-
-function* deleteUploadSaga({payload}: DeleteUploadAction): Generator<any, any, any> {
-  try {
-    yield call(deleteUploadRequest, payload.id);
-
-    yield put(receiveFileOperationFinished());
-    if (payload.answer) {
-      yield put(fetchApplicationRelatedAttachments(payload.answer));
-    } else {
-      yield put(fetchPendingUploads());
-    }
-  } catch (e) {
-    console.error(e);
-    yield put(pendingUploadsNotFound());
-    throw e;
-  }
-}
-
-function* uploadFileSaga({payload}: UploadFileAction): Generator<any, any, any> {
-  try {
-    const {path, callback, fileData} = payload;
-
-    const result = yield call(uploadFileRequest, fileData);
-
-    yield put(receiveFileOperationFinished());
-    if (fileData.answer) {
-      yield put(fetchApplicationRelatedAttachments(fileData.answer));
-    } else {
-      yield put(fetchPendingUploads());
-    }
-
-    if (callback) {
-      callback(path, result.bodyAsJson);
-    }
-  } catch (e) {
-    console.log(e);
-    yield put(pendingUploadsNotFound());
-    throw e;
-  }
-}
-
-function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttachmentAttributesRequest);
-
-    switch(statusCode) {
-      case 200:
-        const attributes = {
-          ...bodyAsJson.fields,
-        };
-        const methods = bodyAsJson.methods;
-
-        yield put(receiveAttachmentAttributes(attributes));
-        yield put(receiveAttachmentMethods(methods));
-        break;
-      default:
-        yield put(attachmentAttributesNotFound());
-    }
-  } catch (error) {
-    console.error('Failed to fetch attachment attributes with error "%s"', error);
-    yield put(attachmentAttributesNotFound());
-    yield put(receiveError(error));
-  }
-}
-
 function* fetchTargetInfoChecksForPlotSearchSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchTargetInfoChecksForPlotSearchRequest, id);
@@ -445,19 +305,15 @@ function* deleteMeetingMemoSaga({payload}: DeleteTargetInfoCheckMeetingMemoActio
         displayUIMessage({title: '', body: 'Kokousmuistio poistettu'});
         break;
       default:
-        yield put(pendingUploadsNotFound());
+        yield put(targetInfoCheckMeetingMemoDeleteFailed());
         displayUIMessage({title: '', body: 'Kokousmuistion poistaminen epäonnistui'}, {type: 'error'});
     }
   } catch (e) {
     console.error(e);
-    yield put(pendingUploadsNotFound());
+    yield put(targetInfoCheckMeetingMemoDeleteFailed());
     displayUIMessage({title: '', body: 'Kokousmuistion poistaminen epäonnistui'}, {type: 'error'});
     throw e;
   }
-}
-
-function* receiveUpdatedTargetInfoCheckItemSaga({payload}: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
-  yield put(initialize(payload.targetForm, payload.data));
 }
 
 function* batchEditInfoChecksSaga({payload}: BatchEditPlotApplicationInfoChecksAction): Generator<any, any, any> {
@@ -544,21 +400,14 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_ALL', fetchPlotApplicationsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_SINGLE', fetchSinglePlotApplicationSaga);
       yield takeLatest('mvj/plotApplications/FETCH_BY_BBOX', fetchPlotApplicationsByBBoxSaga);
-      yield takeLatest('mvj/plotApplications/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/plotApplications/CREATE', createPlotApplicationSaga);
       yield takeLatest('mvj/plotApplications/EDIT', editPlotApplicationSaga);
       yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);
       yield takeLatest('mvj/plotApplications/FETCH_FORM', fetchApplicationRelatedFormSaga);
       yield takeLatest('mvj/plotApplications/FETCH_PLOT_SEARCH', fetchApplicationRelatedPlotSearchSaga);
-      yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENTS', fetchApplicationRelatedAttachmentsSaga);
-      yield takeLatest('mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES', fetchAttachmentAttributesSaga);
-      yield takeLatest('mvj/plotApplications/FETCH_PENDING_UPLOADS', fetchPendingUploadsSaga);
       yield takeLatest('mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH', fetchTargetInfoChecksForPlotSearchSaga);
-      yield takeEvery('mvj/plotApplications/UPLOAD_FILE', uploadFileSaga);
-      yield takeEvery('mvj/plotApplications/DELETE_UPLOAD', deleteUploadSaga);
       yield takeEvery('mvj/plotApplications/UPLOAD_MEETING_MEMO', uploadMeetingMemoSaga);
       yield takeEvery('mvj/plotApplications/DELETE_MEETING_MEMO', deleteMeetingMemoSaga);
-      yield takeEvery('mvj/plotApplications/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM', receiveUpdatedTargetInfoCheckItemSaga);
       yield takeLatest('mvj/plotApplications/BATCH_EDIT_INFO_CHECKS', batchEditInfoChecksSaga);
     }),
   ]);

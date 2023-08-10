@@ -41,3 +41,7 @@ export const ApplicantTypes = {
   UNSELECTED: 'unselected',
   NOT_APPLICABLE: 'not applicable',
 };
+export const TargetIdentifierTypes = {
+  PLAN_UNIT: 'plan_unit',
+  CUSTOM_DETAILED_PLAN: 'custom_detailed_plan',
+};

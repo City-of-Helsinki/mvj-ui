@@ -3,14 +3,12 @@
 import isArray from 'lodash/isArray';
 import get from 'lodash/get';
 
-import {FormNames, TableSortOrder} from '$src/enums';
-import type {LeafletFeature, LeafletGeoJson} from '$src/types';
-import type {FormSection} from '$src/plotSearch/types';
-import type {SavedApplicationFormSection} from '$src/plotApplications/types';
-import {APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
-import {store} from '$src/root/startApp';
-import {getAttributes} from '$src/areaSearch/selectors';
+import {TableSortOrder} from '$src/enums';
+import {APPLICANT_MAIN_IDENTIFIERS} from '$src/application/constants';
 import {getUserFullName} from '$src/users/helpers';
+
+import type {LeafletFeature, LeafletGeoJson} from '$src/types';
+import type {SavedApplicationFormSection} from '$src/application/types';
 
 export const areaSearchSearchFilters = (query: Object): Object => {
   const searchQuery = {...query};
@@ -78,7 +76,7 @@ export const getAreaSearchGeoJson = (searches: Array<Object>): LeafletGeoJson =>
   };
 };
 
-export const getInitialAreaSearch = (areaSearch: Object): Object => {
+export const getInitialAreaSearchEditForm = (areaSearch: Object): Object => {
   return {
     id: areaSearch.id,
     preparer: areaSearch.preparer ? {

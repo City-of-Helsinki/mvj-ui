@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
+import {groupBy} from 'lodash/collection';
 import {initialize, isDirty, destroy, getFormValues, isValid, change} from 'redux-form';
 import type {ContextRouter} from 'react-router';
 
@@ -17,8 +18,10 @@ import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import Tabs from '$components/tabs/Tabs';
 import ContentContainer from '$components/content/ContentContainer';
-import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions
+} from '$src/usersPermissions/selectors';
 import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
@@ -43,7 +46,8 @@ import {
   hideEditMode,
   clearFormValidFlags,
   receiveFormValidFlags,
-  fetchSingleAreaSearch, batchEditAreaSearchInfoChecks,
+  fetchSingleAreaSearch,
+  batchEditAreaSearchInfoChecks,
 } from '$src/areaSearch/actions';
 import {
   getUrlParams,
@@ -52,25 +56,28 @@ import {
   getSearchQuery,
   scrollToTopPage,
 } from '$util/helpers';
-import type {Attributes, Methods as MethodsType} from '$src/types';
 import {clearUnsavedChanges} from '$src/contacts/helpers';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import AreaSearchApplication from '$src/areaSearch/components/AreaSearchApplication';
 import {withAreaSearchAttributes} from '$components/attributes/AreaSearchAttributes';
-import {getFormAttributes, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
-import {fetchFormAttributes} from '$src/plotSearch/actions';
 import AreaSearchApplicationEdit from '$src/areaSearch/components/AreaSearchApplicationEdit';
-import {fetchApplicantInfoCheckAttributes} from '$src/application/actions';
-import {getIsFetchingApplicantInfoCheckAttributes} from '$src/application/selectors';
+import {fetchApplicantInfoCheckAttributes, fetchFormAttributes} from '$src/application/actions';
+import {
+  getFormAttributes,
+  getIsFetchingApplicantInfoCheckAttributes,
+  getIsFetchingFormAttributes,
+} from '$src/application/selectors';
 import {getApplicationApplicantInfoCheckData} from '$src/areaSearch/selectors';
-import {groupBy} from 'lodash/collection';
 import {
   getApplicantInfoCheckFormName,
   getApplicantInfoCheckItems,
   prepareApplicantInfoCheckForSubmission,
 } from '$src/application/helpers';
-import type {InfoCheckBatchEditData} from '$src/areaSearch/types';
 import {prepareAreaSearchForSubmission} from '$src/areaSearch/helpers';
+
+import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {InfoCheckBatchEditData} from '$src/areaSearch/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type OwnProps = {|
 

@@ -1,37 +1,31 @@
 // @flow
 import merge from 'lodash/merge';
+import type {Action, CombinedReducer} from 'redux';
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
-import type {Action, CombinedReducer} from 'redux';
+import {sortBy} from 'lodash/collection';
 
-import type {Attributes, Reducer, Methods} from '$src/types';
 import {FormNames} from '$src/enums';
 
+import type {Attributes, Reducer} from '$src/types';
 import type {
-  ReceivePlotApplicationsListAction,
-  PlotApplicationsList,
-  ReceiveAttributesAction,
-  ReceiveMethodsAction,
-  ReceiveSinglePlotApplicationAction,
+  InfoCheckBatchEditErrors,
   PlotApplication,
-  ReceiveIsSaveClickedAction,
+  PlotApplicationsList,
+  PlotApplicationsState,
+  ReceiveApplicationRelatedFormAction,
+  ReceiveApplicationRelatedPlotSearchAction,
   ReceiveCollapseStatesAction,
   ReceiveFormValidFlagsAction,
+  ReceiveIsSaveClickedAction,
+  ReceivePlotApplicationInfoCheckBatchEditFailureAction,
   ReceivePlotApplicationsByBBoxAction,
-  ReceiveApplicationRelatedFormAction,
-  ReceiveApplicationRelatedAttachmentsAction,
+  ReceivePlotApplicationsListAction,
   ReceivePlotSearchSubtypesAction,
-  ReceiveApplicationRelatedPlotSearchAction,
-  ReceiveAttachmentAttributesAction,
-  ReceiveAttachmentMethodsAction,
-  PlotApplicationsState,
-  InfoCheckBatchEditErrors,
+  ReceiveSinglePlotApplicationAction,
+  ReceiveTargetInfoCheckAttributesAction,
   ReceiveTargetInfoChecksForPlotSearchAction,
-  ReceivePlotApplicationInfoCheckBatchEditFailureAction, ReceiveTargetInfoCheckAttributesAction,
 } from '$src/plotApplications/types';
-import type {ReceiveFormAttributesAction} from '$src/plotSearch/types';
-import {sortBy} from 'lodash/collection';
-import type {ReceiveApplicantInfoCheckAttributesAction} from '$src/application/types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
@@ -63,25 +57,6 @@ const listByBBoxReducer: Reducer<PlotApplicationsList> = handleActions({
 const plotApplicationsListReducer: Reducer<PlotApplicationsList> = handleActions({
   ['mvj/plotApplications/RECEIVE_ALL']: (state: PlotApplicationsList, {payload: list}: ReceivePlotApplicationsListAction) => list,
 }, {});
-
-const attributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/plotApplications/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
-    return attributes;
-  },
-}, null);
-
-const methodsReducer: Reducer<Methods> = handleActions({
-  ['mvj/plotApplications/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
-    return methods;
-  },
-}, null);
-
-const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotApplications/FETCH_ATTRIBUTES']: () => true,
-  ['mvj/plotApplications/RECEIVE_ATTRIBUTES']: () => false,
-  ['mvj/plotApplications/ATTRIBUTES_NOT_FOUND']: () => false,
-  ['mvj/plotApplications/RECEIVE_METHODS']: () => false,
-}, false);
 
 const currentPlotApplicationReducer: Reducer<PlotApplication> = handleActions({
   ['mvj/plotApplications/RECEIVE_SINGLE']: (state: PlotApplication, {payload: plotApplications}: ReceiveSinglePlotApplicationAction) => plotApplications,
@@ -153,31 +128,6 @@ const isFetchingPlotSearchReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/PLOT_SEARCH_NOT_FOUND']: () => false,
 }, false);
 
-const attachmentReducer: Reducer<Object> = handleActions({
-  ['mvj/plotApplications/FETCH_ATTACHMENTS']: () => null,
-  ['mvj/plotApplications/RECEIVE_ATTACHMENTS']: (state: Object, {payload: attachments}: ReceiveApplicationRelatedAttachmentsAction) => {
-    return attachments;
-  },
-}, null);
-
-const isFetchingAttachmentsReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotApplications/FETCH_ATTACHMENTS']: () => true,
-  ['mvj/plotApplications/RECEIVE_ATTACHMENTS']: () => false,
-  ['mvj/plotApplications/ATTACHMENTS_NOT_FOUND']: () => false,
-}, false);
-
-const fieldTypeMappingReducer: Reducer<{ [id: number]: string }> = handleActions({
-  ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: (state: { [id: number]: string }, {payload: attributes}: ReceiveFormAttributesAction) => {
-    return attributes?.sections?.child?.children.fields?.child?.children.type?.choices?.reduce(
-      (acc, choice) => {
-        acc[choice.value] = choice.display_name;
-        return acc;
-      },
-      {}
-    ) || {};
-  },
-}, {});
-
 const isSavingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/CREATE']: () => true,
   ['mvj/plotApplications/EDIT']: () => true,
@@ -188,41 +138,11 @@ const isSavingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE']: () => false,
 }, false);
 
-const pendingUploadsReducer: Reducer<Array<Object>> = handleActions({
-  ['mvj/plotApplications/FETCH_PENDING_UPLOADS']: () => [],
-  ['mvj/plotApplications/RECEIVE_PENDING_UPLOADS']: (state, {payload}) => payload,
-}, []);
-
-const isFetchingPendingUploadsReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotApplications/FETCH_PENDING_UPLOADS']: () => true,
-  ['mvj/plotApplications/RECEIVE_PENDING_UPLOADS']: () => false,
-  ['mvj/plotApplications/PENDING_UPLOADS_NOT_FOUND']: () => false,
-}, false);
-
 const isPerformingFileOperationReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotApplications/UPLOAD_FILE']: () => true,
-  ['mvj/plotApplications/DELETE_UPLOAD']: () => true,
   ['mvj/plotApplications/UPLOAD_MEETING_MEMO']: () => true,
   ['mvj/plotApplications/DELETE_MEETING_MEMO']: () => true,
   ['mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED']: () => false,
   ['mvj/plotApplications/RECEIVE_MEETING_MEMO_UPLOADED']: () => false,
-}, false);
-
-const attachmentAttributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/plotApplications/RECEIVE_ATTACHMENT_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttachmentAttributesAction) => attributes,
-  ['mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND']: () => null,
-}, null);
-
-const attachmentMethodsReducer: Reducer<Methods> = handleActions({
-  ['mvj/plotApplications/RECEIVE_ATTACHMENT_METHODS']: (state: Methods, {payload: methods}: ReceiveAttachmentMethodsAction) => methods,
-  ['mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND']: () => null,
-}, null);
-
-const isFetchingAttachmentAttributesReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotApplications/FETCH_ATTACHMENT_ATTRIBUTES']: () => true,
-  ['mvj/plotApplications/RECEIVE_ATTACHMENT_ATTRIBUTES']: () => false,
-  ['mvj/plotApplications/ATTACHMENT_ATTRIBUTES_NOT_FOUND']: () => false,
-  ['mvj/plotApplications/RECEIVE_ATTACHMENT_METHODS']: () => false,
 }, false);
 
 const currentEditorTargetsReducer: Reducer<Array<Object>> = handleActions({
@@ -274,9 +194,6 @@ export default (combineReducers<Object, Action<any>>({
   isFetchingByBBox: isFetchingByBBoxReducer,
   listByBBox: listByBBoxReducer,
   list: plotApplicationsListReducer,
-  attributes: attributesReducer,
-  methods: methodsReducer,
-  isFetchingAttributes: isFetchingAttributesReducer,
   current: currentPlotApplicationReducer,
   isEditMode: isEditModeReducer,
   isSaveClicked: isSaveClickedReducer,
@@ -288,16 +205,8 @@ export default (combineReducers<Object, Action<any>>({
   plotSearch: plotSearchReducer,
   isFetchingForm: isFetchingFormReducer,
   isFetchingPlotSearch: isFetchingPlotSearchReducer,
-  attachments: attachmentReducer,
-  isFetchingAttachments: isFetchingAttachmentsReducer,
-  fieldTypeMapping: fieldTypeMappingReducer,
   isSaving: isSavingReducer,
-  pendingUploads: pendingUploadsReducer,
-  isFetchingPendingUploads: isFetchingPendingUploadsReducer,
   isPerformingFileOperation: isPerformingFileOperationReducer,
-  isFetchingAttachmentAttributes: isFetchingAttachmentAttributesReducer,
-  attachmentAttributes: attachmentAttributesReducer,
-  attachmentMethods: attachmentMethodsReducer,
   currentEditorTargets: currentEditorTargetsReducer,
   isFetchingTargetInfoCheckAttributes: isFetchingTargetInfoCheckAttributesReducer,
   targetInfoCheckAttributes: targetInfoCheckAttributesReducer,

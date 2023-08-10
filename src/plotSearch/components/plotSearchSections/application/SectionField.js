@@ -3,19 +3,17 @@ import React, {Fragment, useState} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import {formValueSelector} from 'redux-form';
 
 import FormField from '$components/form/FormField';
-import {
-  getFormAttributes,
-} from '$src/plotSearch/selectors';
-
-import type {Attributes} from '$src/types';
 import InfoIcon from '$components/icons/InfoIcon';
 import Tooltip from '$components/tooltip/Tooltip';
 import {FormNames} from '$src/enums';
-import {formValueSelector} from 'redux-form';
 import TooltipToggleButton from '$components/tooltip/TooltipToggleButton';
 import TooltipWrapper from '$components/tooltip/TooltipWrapper';
+import {getFormAttributes} from '$src/application/selectors';
+
+import type {Attributes} from '$src/types';
 
 type OwnProps = {
   disabled: boolean,

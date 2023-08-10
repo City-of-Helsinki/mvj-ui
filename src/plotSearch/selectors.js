@@ -2,15 +2,10 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import type {Attributes, Selector, Methods} from '$src/types';
+import type {Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 
-import type {
-  PlotSearch,
-  PlotSearchList,
-  PlanUnit,
-  CustomDetailedPlan,
-} from '$src/plotSearch/types';
+import type {CustomDetailedPlan, PlanUnit, PlotSearch, PlotSearchList} from '$src/plotSearch/types';
 import {formValueSelector} from 'redux-form';
 import {FormNames} from '$src/enums';
 import {PlotSearchStageTypes} from '$src/plotSearch/enums';
@@ -90,17 +85,11 @@ export const getIsFetchingSubtypes: Selector<boolean, void> = (state: RootState)
 export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
   state.plotSearch.subTypes;
 
-export const getIsFetchingFormAttributes: Selector<boolean, void> = (state: RootState): boolean =>
-  state.plotSearch.isFetchingFormAttributes;
-
 export const getIsFetchingTemplateForms: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotSearch.isFetchingTemplateForms;
 
 export const getIsFetchingForm: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotSearch.isFetchingForm;
-
-export const getFormAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
-  state.plotSearch.formAttributes;
 
 export const getTemplateForms: Selector<Object, void> = (state: RootState): Object =>
   state.plotSearch.templateForms;

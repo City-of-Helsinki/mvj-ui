@@ -15,33 +15,35 @@ import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {ApplicationFieldPaths, ApplicationFieldTitles} from '$src/plotSearch/enums';
 import Title from '$components/content/Title';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {FormNames, ViewModes} from '$src/enums';
 import FormField from '$components/form/FormField';
 import {
   receiveCollapseStates,
-  fetchFormAttributes,
+
 } from '$src/plotSearch/actions';
 import {
   getAttributes,
   getCollapseStateByKey,
   getIsSaveClicked,
   getErrorsByFormName,
-  getFormAttributes,
   getIsFetchingTemplateForms,
   getTemplateForms,
   getCurrentPlotSearch,
   getForm,
-  getIsFetchingFormAttributes,
   isLockedForModifications,
 } from '$src/plotSearch/selectors';
 import EditPlotApplicationSectionModal from '$src/plotSearch/components/plotSearchSections/application/EditPlotApplicationSectionModal';
-import type {Attributes} from '$src/types';
 import Loader from '$components/loader/Loader';
 import ApplicationPreviewSection from '$src/plotSearch/components/plotSearchSections/application/ApplicationPreviewSection';
 import {hasMinimumRequiredFieldsFilled} from '$src/plotSearch/helpers';
 import WarningField from '$components/form/WarningField';
-import type {Form, PlotSearch} from '$src/plotSearch/types';
+import {getFormAttributes, getIsFetchingFormAttributes} from '$src/application/selectors';
+import {fetchFormAttributes} from '$src/application/actions';
+
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {Attributes} from '$src/types';
+import type {PlotSearch} from '$src/plotSearch/types';
+import type {Form} from '$src/application/types';
 
 type OwnProps = {
 

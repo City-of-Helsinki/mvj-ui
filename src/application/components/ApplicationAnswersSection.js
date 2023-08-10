@@ -1,12 +1,16 @@
 // @flow
 
 import React from 'react';
-import type {FormSection} from '$src/plotSearch/types';
-import type {SavedApplicationFormSection} from '$src/plotApplications/types';
+
 import Collapse from '$components/collapse/Collapse';
 import SubTitle from '$components/content/SubTitle';
-import type {SectionExtraComponentProps} from '$src/application/types';
 import ApplicationAnswersField from '$src/application/components/ApplicationAnswersField';
+
+import type {
+  FormSection,
+  SavedApplicationFormSection,
+  SectionExtraComponentProps,
+} from '$src/application/types';
 
 type Props = {
   section: FormSection,

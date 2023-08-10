@@ -1,15 +1,20 @@
 // @flow
 
 import React from 'react';
-import type {FormSection} from '$src/plotSearch/types';
-import type {SavedApplicationFormSection, UploadedFileMeta} from '$src/plotApplications/types';
-import type {SectionExtraComponentProps} from '$src/application/types';
 import {Column, Row} from 'react-foundation';
+
 import FileDownloadLink from '$components/file/FileDownloadLink';
-import {getApplicationAttachmentDownloadLink} from '$src/plotApplications/helpers';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormText from '$components/form/FormText';
 import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
+import {getApplicationAttachmentDownloadLink} from '$src/application/helpers';
+
+import type {
+  FormSection,
+  SavedApplicationFormSection,
+  SectionExtraComponentProps,
+  UploadedFileMeta,
+} from '$src/application/types';
 
 type Props = {
   section: FormSection,
