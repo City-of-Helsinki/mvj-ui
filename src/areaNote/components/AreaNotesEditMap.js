@@ -23,16 +23,10 @@ const SHAPE_COLOR = '#9c27b0';
 const SHAPE_FILL_OPACITY = 0.5;
 const SHAPE_ERROR_COLOR = '#bd2719';
 
-type Props = {
+type OwnProps = {
   allowToEdit: boolean,
   bounds?: Object,
   center?: Array<number>,
-  createAreaNote: Function,
-  deleteAreaNote: Function,
-  editAreaNote: Function,
-  hideEditMode: Function,
-  initialValues: Object,
-  isEditMode: boolean;
   isLoading?: boolean,
   onHideEdit?: Function,
   onMapDidMount?: Function,
@@ -41,6 +35,16 @@ type Props = {
   showZoomLevelWarning?: boolean,
   zoom?: number,
   zoomLevelWarningText?: string,
+};
+
+type Props = {
+  ...OwnProps,
+  createAreaNote: Function,
+  deleteAreaNote: Function,
+  editAreaNote: Function,
+  hideEditMode: Function,
+  initialValues: Object,
+  isEditMode: boolean;
 }
 
 type State = {
@@ -53,9 +57,8 @@ class AreaNotesEditMap extends Component<Props, State> {
   featureGroup: ?Object
   saveConditionPanel: ?Object
 
-  state = {
+  state: State = {
     id: -1,
-    isDeleteModalOpen: false,
     isNew: true,
     isValid: false,
   }
@@ -80,7 +83,7 @@ class AreaNotesEditMap extends Component<Props, State> {
         featuresGeoJSON.eachLayer( (layer) => {
           layer.options.color = SHAPE_COLOR;
           layer.options.fillOpacity = SHAPE_FILL_OPACITY;
-          this.featureGroup.leafletElement.addLayer(layer);
+          this.featureGroup?.leafletElement.addLayer(layer);
           layer.showMeasurements();
         });
         this.setState({isValid: true});
@@ -89,7 +92,7 @@ class AreaNotesEditMap extends Component<Props, State> {
       }
 
       // Initialize note field value when opening edit mode
-      this.saveConditionPanel.setNoteField(initialValues.note);
+      this.saveConditionPanel?.setNoteField(initialValues.note);
 
       this.setState({
         id: initialValues.id,
@@ -98,25 +101,25 @@ class AreaNotesEditMap extends Component<Props, State> {
     }
 
     if(!this.props.isEditMode && prevProps.isEditMode) {
-      this.featureGroup.leafletElement.eachLayer((layer) => {
-        this.featureGroup.leafletElement.removeLayer(layer);
+      this.featureGroup?.leafletElement.eachLayer((layer) => {
+        this.featureGroup?.leafletElement.removeLayer(layer);
       });
     }
   }
 
   updateAllFeatures = throttle(() => {
-    this.featureGroup.leafletElement?.eachLayer((layer) => {
+    this.featureGroup?.leafletElement?.eachLayer((layer) => {
       layer.showMeasurements();
       layer.updateMeasurements();
     });
   }, 1000 / 60, {
     leading: true,
-    trailing: true
+    trailing: true,
   });
 
   handleAction = () => {
     this.setState({
-      isValid: !!Object.keys(this.featureGroup.leafletElement._layers).length,
+      isValid: !!this.featureGroup && !!Object.keys(this.featureGroup.leafletElement._layers).length,
     });
   }
 
@@ -124,7 +127,7 @@ class AreaNotesEditMap extends Component<Props, State> {
     const {layer} = e;
     layer.showMeasurements();
     this.setState({
-      isValid: !!Object.keys(this.featureGroup.leafletElement._layers).length,
+      isValid: !!this.featureGroup && !!Object.keys(this.featureGroup.leafletElement._layers).length,
     });
   }
 
@@ -142,7 +145,7 @@ class AreaNotesEditMap extends Component<Props, State> {
     const {createAreaNote} = this.props;
     const features = [];
 
-    this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
+    this.featureGroup?.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
 
     const payload = convertFeatureCollectionToFeature(features);
     payload.note = note;
@@ -155,7 +158,7 @@ class AreaNotesEditMap extends Component<Props, State> {
     const {id} = this.state;
     const features = [];
 
-    this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
+    this.featureGroup?.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
 
     const payload = convertFeatureCollectionToFeature(features);
     payload.note = note;
@@ -253,7 +256,7 @@ class AreaNotesEditMap extends Component<Props, State> {
 
           {zoomLevelWarningText &&
             <ZoomLevelWarning
-              isOpen={showZoomLevelWarning}
+              isOpen={showZoomLevelWarning || false}
               text={zoomLevelWarningText}
             />
           }
@@ -263,7 +266,7 @@ class AreaNotesEditMap extends Component<Props, State> {
   }
 }
 
-export default connect(
+export default (connect(
   (state) => {
     return {
       initialValues: getInitialAreaNote(state),
@@ -276,4 +279,4 @@ export default connect(
     editAreaNote,
     hideEditMode,
   }
-)(AreaNotesEditMap);
+)(AreaNotesEditMap): React$ComponentType<OwnProps>);

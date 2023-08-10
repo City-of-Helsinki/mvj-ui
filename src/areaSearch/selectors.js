@@ -82,3 +82,12 @@ export const getIsEditingAreaSearch = (state: RootState): boolean =>
 
 export const getLastAreaSearchEditError = (state: RootState): any =>
   state.areaSearch.lastAreaSearchEditError;
+
+export const getIsSubmittingAreaSearchSpecs = (state: RootState): boolean =>
+  state.areaSearch.isSubmittingAreaSearchSpecs;
+
+export const getIsSubmittingAreaSearchApplication = (state: RootState): boolean =>
+  state.areaSearch.isSubmittingAreaSearchApplication;
+
+export const getIsPerformingFileOperation = (state: RootState): boolean =>
+  state.areaSearch.isPerformingFileOperation;

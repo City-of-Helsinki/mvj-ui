@@ -50,6 +50,10 @@ const defaultState: AreaSearchState = {
   isBatchEditingAreaSearchInfoChecks: false,
   isEditingAreaSearch: false,
   lastAreaSearchEditError: null,
+  isSubmittingAreaSearchSpecs: false,
+  isSubmittingAreaSearchApplication: false,
+  isPerformingFileOperation: false,
+  lastFileOperationError: null,
 };
 
 describe('AreaSearch', () => {

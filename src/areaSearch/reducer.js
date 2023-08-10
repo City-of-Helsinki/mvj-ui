@@ -80,6 +80,8 @@ const currentAreaSearchReducer: Reducer<Object | null> = handleActions({
   ['mvj/areaSearch/RECEIVE_SINGLE']: (state: Object, {payload: response}: ReceiveSingleAreaSearchAction) => {
     return response || null;
   },
+  ['mvj/areaSearch/CREATE_SPECS']: () => null,
+  ['mvj/areaSearch/RECEIVE_SPECS_CREATED']: (state, {payload: result}) => result,
 }, null);
 
 const isFetchingCurrentAreaSearchReducer: Reducer<boolean> = handleActions({
@@ -89,13 +91,13 @@ const isFetchingCurrentAreaSearchReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const collapseStatesReducer: Reducer<Object> = handleActions({
-  ['mvj/plotSearch/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
+  ['mvj/areaSearch/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
     return merge(state, states);
   },
 }, {});
 
 const isSaveClickedReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotSearch/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
+  ['mvj/areaSearch/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
     return isClicked;
   },
 }, false);
@@ -134,6 +136,31 @@ const lastAreaSearchEditErrorReducer: Reducer<any> = handleActions({
   ['mvj/areaSearch/RECEIVE_EDIT_FAILED']: (state, {payload: error}: ReceiveAreaSearchEditFailedAction) => error,
 }, null);
 
+const isSubmittingAreaSearchSpecsReducer: Reducer<boolean> = handleActions({
+  ['mvj/areaSearch/CREATE_SPECS']: () => true,
+  ['mvj/areaSearch/RECEIVE_SPECS_CREATED']: () => false,
+  ['mvj/areaSearch/RECEIVE_SPECS_CREATE_FAILED']: () => false,
+}, false);
+
+const isSubmittingAreaSearchApplicationReducer: Reducer<boolean> = handleActions({
+  ['mvj/areaSearch/CREATE_APPLICATION']: () => true,
+  ['mvj/areaSearch/RECEIVE_APPLICATION_CREATED']: () => false,
+  ['mvj/areaSearch/RECEIVE_APPLICATION_CREATE_FAILED']: () => false,
+}, false);
+
+const isPerformingFileOperationReducer: Reducer<boolean> = handleActions({
+  ['mvj/areaSearch/DELETE_ATTACHMENT']: () => true,
+  ['mvj/areaSearch/UPLOAD_ATTACHMENT']: () => true,
+  ['mvj/areaSearch/RECEIVE_FILE_OPERATION_FINISHED']: () => false,
+  ['mvj/areaSearch/RECEIVE_FILE_OPERATION_FAILED']: () => false,
+}, false);
+
+const lastFileOperationErrorReducer: Reducer<any> = handleActions({
+  ['mvj/areaSearch/DELETE_ATTACHMENT']: () => null,
+  ['mvj/areaSearch/UPLOAD_ATTACHMENT']: () => null,
+  ['mvj/areaSearch/RECEIVE_FILE_OPERATION_FAILED']: () => false,
+}, null);
+
 export default (combineReducers<Object, Action<any>>({
   attributes: attributesReducer,
   methods: methodsReducer,
@@ -152,6 +179,10 @@ export default (combineReducers<Object, Action<any>>({
   collapseStates: collapseStatesReducer,
   isSaveClicked: isSaveClickedReducer,
   isBatchEditingAreaSearchInfoChecks: isBatchEditingAreaSearchInfoChecksReducer,
+  isSubmittingAreaSearchApplication: isSubmittingAreaSearchApplicationReducer,
   isEditingAreaSearch: isEditingAreaSearchReducer,
   lastAreaSearchEditError: lastAreaSearchEditErrorReducer,
+  isSubmittingAreaSearchSpecs: isSubmittingAreaSearchSpecsReducer,
+  isPerformingFileOperation: isPerformingFileOperationReducer,
+  lastFileOperationError: lastFileOperationErrorReducer,
 }): CombinedReducer<AreaSearchState, Action<any>>);

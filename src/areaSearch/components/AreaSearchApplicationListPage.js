@@ -61,6 +61,8 @@ import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper
 import {ButtonColors} from '$components/enums';
 import Button from '$components/button/Button';
 import EditAreaSearchPreparerModal from '$src/areaSearch/components/EditAreaSearchPreparerModal';
+import Authorization from '$components/authorization/Authorization';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ApiResponse} from '$src/types';
@@ -530,6 +532,14 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     });
   }
 
+  openCreateAreaSearch = () => {
+    const {history} = this.props;
+
+    history.push({
+      pathname: `${getRouteById(Routes.AREA_SEARCH)}/uusi`,
+    });
+  }
+
   render() {
     const {
       areaSearchListMethods,
@@ -593,7 +603,15 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     return (
       <PageContainer className="AreaSearchApplicationListPage">
         <Row>
-          <Column small={12} medium={4} large={4} />
+          <Column small={12} medium={4} large={4}>
+            <Authorization allow={isMethodAllowed(areaSearchListMethods, Methods.POST)}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo aluehakemus'
+                onClick={this.openCreateAreaSearch}
+              />
+            </Authorization>
+          </Column>
           <Column small={12} medium={8} large={8}>
             <Search
               isSearchInitialized={isSearchInitialized}

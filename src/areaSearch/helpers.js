@@ -2,10 +2,14 @@
 
 import isArray from 'lodash/isArray';
 import get from 'lodash/get';
+import {formValueSelector, getFormValues} from 'redux-form';
 
-import {TableSortOrder} from '$src/enums';
+import {FormNames, TableSortOrder} from '$src/enums';
 import {APPLICANT_MAIN_IDENTIFIERS} from '$src/application/constants';
 import {getUserFullName} from '$src/users/helpers';
+import {store} from '$src/root/startApp';
+import {getCurrentAreaSearch} from '$src/areaSearch/selectors';
+import {prepareApplicationForSubmission} from '$src/application/helpers';
 
 import type {LeafletFeature, LeafletGeoJson} from '$src/types';
 import type {SavedApplicationFormSection} from '$src/application/types';
@@ -122,6 +126,61 @@ export const prepareAreaSearchForSubmission = (data: Object): Object => {
         note: data.status_notes,
       }] : undefined,
       preparer_note: data.preparer_note,
+    },
+  };
+};
+
+export const getInitialAreaSearchCreateForm = (): Object => {
+  return {
+    intended_use: null,
+    start_date: null,
+    end_date: null,
+    geometry: null,
+    description_area: '',
+    description_intended_use: '',
+  };
+};
+
+export const getSectionTemplate = (identifier: string): Object => {
+  const state = store.getState();
+  const templates = formValueSelector(FormNames.AREA_SEARCH_CREATE_SPECS)(
+    state,
+    'form.sectionTemplates',
+  );
+
+  return templates[identifier] || {};
+};
+
+export const prepareAreaSearchDataForSubmission = (): Object | null => {
+  const state = store.getState();
+  const specValues = getFormValues(FormNames.AREA_SEARCH_CREATE_SPECS)(state);
+  const applicationValues = getFormValues(FormNames.AREA_SEARCH_CREATE_FORM)(state);
+  const savedAreaSearch = getCurrentAreaSearch(state);
+
+  const sections = applicationValues.form.sections;
+  const currentAreaSearch = getCurrentAreaSearch(state);
+
+  const applicationData = prepareApplicationForSubmission(sections);
+  if (!applicationData) {
+    return null;
+  }
+
+  return {
+    specs: {
+      ...specValues,
+      id: savedAreaSearch.id,
+      area_search_status: {
+        decline_reason: null,
+        preparer_note: '',
+      },
+    },
+    application: {
+      form: currentAreaSearch.form.id,
+      entries: {
+        sections: applicationData,
+      },
+      attachments: applicationValues.form.attachments,
+      area_search: currentAreaSearch.id,
     },
   };
 };

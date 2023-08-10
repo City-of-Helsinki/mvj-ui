@@ -1,5 +1,6 @@
 // @flow
 import type {Action, ApiResponse, Attributes, Methods} from '$src/types';
+import type {UploadedFileMeta} from '$src/application/types';
 
 export type AreaSearchState = {
   attributes: Attributes,
@@ -21,6 +22,9 @@ export type AreaSearchState = {
   isBatchEditingAreaSearchInfoChecks: boolean,
   isEditingAreaSearch: boolean,
   lastAreaSearchEditError: any,
+  isSubmittingAreaSearchSpecs: boolean,
+  isSubmittingAreaSearchApplication: boolean,
+  isPerformingFileOperation: boolean,
 };
 
 export type AreaSearch = Object;
@@ -69,3 +73,23 @@ export type ReceiveAreaSearchInfoCheckBatchEditFailureAction = Action<'mvj/areaS
 export type EditAreaSearchAction = Action<'mvj/areaSearch/EDIT', Object>;
 export type ReceiveAreaSearchEditedAction = Action<'mvj/areaSearch/RECEIVE_EDITED', void>;
 export type ReceiveAreaSearchEditFailedAction = Action<'mvj/areaSearch/RECEIVE_EDIT_FAILED', Object>;
+
+export type CreateAreaSearchSpecsAction = Action<'mvj/areaSearch/CREATE_SPECS', Object>;
+export type ReceiveAreaSearchSpecsCreatedAction = Action<'mvj/areaSearch/RECEIVE_SPECS_CREATED', Object>;
+export type ReceiveAreaSearchSpecsCreateFailedAction = Action<'mvj/areaSearch/RECEIVE_SPECS_CREATE_FAILED', void>;
+
+export type CreateAreaSearchApplicationAction = Action<'mvj/areaSearch/CREATE_APPLICATION', Object>;
+export type ReceiveAreaSearchApplicationCreatedAction = Action<'mvj/areaSearch/RECEIVE_APPLICATION_CREATED', Object>;
+export type ReceiveAreaSearchApplicationCreateFailedAction = Action<'mvj/areaSearch/RECEIVE_APPLICATION_CREATE_FAILED', void>;
+
+export type DeleteAreaSearchAttachmentAction = Action<'mvj/areaSearch/DELETE_ATTACHMENT', {
+  id: number,
+  callback?: () => void,
+}>;
+export type UploadAreaSearchAttachmentAction = Action<'mvj/areaSearch/UPLOAD_ATTACHMENT', {
+  fileData: Object,
+  callback?: (fileData: UploadedFileMeta) => void,
+  areaSearch?: number,
+}>;
+export type ReceiveFileOperationFinishedAction = Action<'mvj/areaSearch/RECEIVE_FILE_OPERATION_FINISHED', void>;
+export type ReceiveFileOperationFailedAction = Action<'mvj/areaSearch/RECEIVE_FILE_OPERATION_FAILED', any>;

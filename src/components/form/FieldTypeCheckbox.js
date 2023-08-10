@@ -70,6 +70,16 @@ const FieldTypeCheckbox = ({
         );
       }
       )}
+      {options?.length === 0 && <label className='option-label'>
+        <input
+          type='checkbox'
+          checked={!!value}
+          name={name}
+          onChange={(event) => handleChange(event, !value)}
+          value={value}
+        />
+        <span>Kyllä</span>
+      </label>}
     </fieldset>
   );
 };

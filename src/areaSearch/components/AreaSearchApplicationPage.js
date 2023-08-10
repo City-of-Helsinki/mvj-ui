@@ -28,11 +28,6 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById, Routes} from '$src/root/routes';
 import {ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts} from '$src/enums';
-/*import {
-  getSessionStorageItem,
-  removeSessionStorageItem,
-  setSessionStorageItem,
-} from '$util/storage';*/
 import {
   getIsEditMode,
   getIsSaveClicked,

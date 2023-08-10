@@ -34,6 +34,7 @@ type Props = {
   onSave: Function,
   showCommentButton?: boolean,
   showCopyButton?: boolean,
+  saveButtonText?: string,
 }
 
 const ControlButtons = ({
@@ -56,9 +57,10 @@ const ControlButtons = ({
   onSave,
   showCommentButton = true,
   showCopyButton = false,
-}: Props) => {
+  saveButtonText = 'Tallenna',
+}: Props): React$Node => {
   const handleComment = () => {
-    if(onComment) onComment();
+    onComment?.();
   };
 
   return (
@@ -148,7 +150,7 @@ const ControlButtons = ({
                   className={ButtonColors.SUCCESS}
                   disabled={!allowEdit || isSaveDisabled}
                   onClick={onSave}
-                  text='Tallenna'
+                  text={saveButtonText}
                 />
               </div>
             }

@@ -19,7 +19,15 @@ import {
   receiveListMethods,
   receiveAreaSearchInfoChecksBatchEditFailure,
   receiveAreaSearchInfoChecksBatchEditSuccess,
-  hideEditMode, fetchSingleAreaSearch, receiveAreaSearchEdited, receiveAreaSearchEditFailed,
+  hideEditMode,
+  fetchSingleAreaSearch,
+  receiveAreaSearchEdited,
+  receiveAreaSearchEditFailed,
+  receiveAreaSearchSpecsCreated,
+  receiveAreaSearchSpecsCreateFailed,
+  receiveAreaSearchApplicationCreated,
+  receiveAreaSearchApplicationCreateFailed,
+  receiveFileOperationFailed, receiveFileOperationFinished,
 } from '$src/areaSearch/actions';
 import {
   editSingleAreaSearchRequest,
@@ -27,10 +35,15 @@ import {
   fetchAreaSearchesRequest,
   fetchAreaSearchListAttributesRequest,
   fetchSingleAreaSearchRequest,
+  createAreaSearchSpecsRequest, deleteAreaSearchAttachmentRequest, uploadAreaSearchAttachmentRequest,
 } from '$src/areaSearch/requests';
 import {editApplicantInfoCheckItemRequest} from '$src/plotApplications/requests';
 import {receiveUpdatedApplicantInfoCheckItem} from '$src/application/actions';
 import {displayUIMessage} from '$util/helpers';
+import {push} from 'react-router-redux';
+import {getRouteById, Routes} from '$src/root/routes';
+import {createApplicationRequest} from '$src/application/requests';
+import type {DeleteAreaSearchAttachmentAction, UploadAreaSearchAttachmentAction} from '$src/areaSearch/types';
 
 function* fetchListAttributesSaga(): Generator<any, any, any> {
   try {
@@ -226,6 +239,104 @@ function* editAreaSearchSaga({payload}): Generator<any, any, any> {
   }
 }
 
+function* createAreaSearchSpecsSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(
+      createAreaSearchSpecsRequest, payload
+    );
+
+    switch (statusCode) {
+      case 200:
+      case 201:
+        yield put(receiveAreaSearchSpecsCreated(bodyAsJson));
+        break;
+      default:
+        console.error(bodyAsJson);
+        yield put(receiveAreaSearchSpecsCreateFailed());
+        displayUIMessage({title: '', body: 'Aluehaun tallennus epäonnistui!'}, {type: 'error'});
+    }
+  } catch (e) {
+    console.error(e);
+    yield put(receiveAreaSearchSpecsCreateFailed());
+    displayUIMessage({title: '', body: 'Aluehaun tallennus epäonnistui!'}, {type: 'error'});
+  }
+}
+
+function* createAreaSearchApplicationSaga({payload: {application, specs}}): Generator<any, any, any> {
+  try {
+    const {
+      response: {status: applicationStatusCode},
+      bodyAsJson: applicationBody,
+    } = yield call(createApplicationRequest, application);
+
+    if (![200, 201].includes(applicationStatusCode)) {
+      // noinspection ExceptionCaughtLocallyJS
+      throw new Error(`Could not save application: ${JSON.stringify(applicationBody)}`);
+    }
+
+    const {
+      response: {status: areaSearchStatusCode},
+      bodyAsJson: areaSearchBody,
+    } = yield call(editSingleAreaSearchRequest, specs.id, specs);
+
+    switch (areaSearchStatusCode) {
+      case 200:
+      case 201:
+        yield put(receiveAreaSearchApplicationCreated());
+        yield put(receiveSingleAreaSearch(null));
+        yield put(push(`${getRouteById(Routes.AREA_SEARCH)}/${application.area_search}`));
+        yield put(hideEditMode());
+        displayUIMessage({title: '', body: 'Hakemus luotu'});
+        break;
+      default:
+        // noinspection ExceptionCaughtLocallyJS
+        throw new Error(`Could not save area search: ${JSON.stringify(areaSearchBody)}`);
+    }
+  } catch(e) {
+    yield put(receiveAreaSearchApplicationCreateFailed());
+    console.log(e);
+    displayUIMessage({title: '', body: 'Hakemuksen tallennus epäonnistui'}, {type: 'error'});
+  }
+}
+
+function* uploadAttachmentSaga({payload}: UploadAreaSearchAttachmentAction): Generator<any, any, any> {
+  try {
+    const {areaSearch, fileData, callback} = payload;
+
+    const result = yield call(uploadAreaSearchAttachmentRequest, {
+      file: fileData,
+      areaSearch,
+    });
+
+    yield put(receiveFileOperationFinished());
+
+    if (callback) {
+      callback(result.bodyAsJson);
+    }
+  } catch (e) {
+    console.log(e);
+    yield put(receiveFileOperationFailed(e));
+    throw e;
+  }
+}
+
+function* deleteAttachmentSaga({payload}: DeleteAreaSearchAttachmentAction): Generator<any, any, any> {
+  try {
+    yield call(deleteAreaSearchAttachmentRequest, payload.id);
+
+    yield put(receiveFileOperationFinished());
+
+    if (payload.callback) {
+      payload.callback();
+    }
+  } catch (e) {
+    console.error(e);
+    yield put(receiveFileOperationFailed(e));
+    throw e;
+  }
+}
+
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -236,6 +347,10 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/areaSearch/FETCH_SINGLE', fetchCurrentAreaSearchSaga);
       yield takeLatest('mvj/areaSearch/BATCH_EDIT_INFO_CHECKS', batchEditAreaSearchInfoChecksSaga);
       yield takeLatest('mvj/areaSearch/EDIT', editAreaSearchSaga);
+      yield takeLatest('mvj/areaSearch/CREATE_SPECS', createAreaSearchSpecsSaga);
+      yield takeLatest('mvj/areaSearch/CREATE_APPLICATION', createAreaSearchApplicationSaga);
+      yield takeLatest('mvj/areaSearch/UPLOAD_ATTACHMENT', uploadAttachmentSaga);
+      yield takeLatest('mvj/areaSearch/DELETE_ATTACHMENT', deleteAttachmentSaga);
     }),
   ]);
 }

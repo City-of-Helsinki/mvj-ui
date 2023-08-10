@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {FeatureGroup} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
 import throttle from 'lodash/throttle';
+import classNames from 'classnames';
 
 import MapContainer from '$src/areaNote/components/MapContainer';
 import {DEFAULT_CENTER, DEFAULT_ZOOM} from '$src/constants';
@@ -14,6 +15,7 @@ const SHAPE_ERROR_COLOR = '#bd2719';
 
 type Props = {
   change: Function,
+  hasError: boolean,
 };
 
 type State = {
@@ -72,49 +74,55 @@ class AreaSearchMap extends Component<Props, State> {
   }
 
   render(): React$Node {
+    const {hasError} = this.props;
+
     return (
-      <div className='map'>
-        <MapContainer
-          center={DEFAULT_CENTER}
-          zoom={DEFAULT_ZOOM}
-        >
-          <FeatureGroup ref={this.setFeatureGroupRef}>
-            <EditControl
-              position='topright'
-              onCreated={this.handleCreated}
-              onDeleted={this.handleAction}
-              onEdited={this.handleAction}
-              onEditMove={this.handleNonCommittedChange}
-              onEditVertex={this.handleNonCommittedChange}
-              onEditStop={this.handleNonCommittedChange}
-              onDeleteStop={this.handleNonCommittedChange}
-              draw={{
-                circlemarker: false,
-                circle: false,
-                marker: false,
-                polyline: false,
-                polygon: {
-                  allowIntersection: false,
-                  showArea: true,
-                  drawError: {
-                    color: SHAPE_ERROR_COLOR,
-                    timeout: 1000,
+      <div className={classNames('AreaSearchMap', {
+        'AreaSearchMap--has-error': hasError,
+      })}>
+        <div className="map">
+          <MapContainer
+            center={DEFAULT_CENTER}
+            zoom={DEFAULT_ZOOM}
+          >
+            <FeatureGroup ref={this.setFeatureGroupRef}>
+              <EditControl
+                position='topright'
+                onCreated={this.handleCreated}
+                onDeleted={this.handleAction}
+                onEdited={this.handleAction}
+                onEditMove={this.handleNonCommittedChange}
+                onEditVertex={this.handleNonCommittedChange}
+                onEditStop={this.handleNonCommittedChange}
+                onDeleteStop={this.handleNonCommittedChange}
+                draw={{
+                  circlemarker: false,
+                  circle: false,
+                  marker: false,
+                  polyline: false,
+                  polygon: {
+                    allowIntersection: false,
+                    showArea: true,
+                    drawError: {
+                      color: SHAPE_ERROR_COLOR,
+                      timeout: 1000,
+                    },
+                    shapeOptions: {
+                      color: SHAPE_COLOR,
+                      fillOpacity: SHAPE_FILL_OPACITY,
+                    },
                   },
-                  shapeOptions: {
-                    color: SHAPE_COLOR,
-                    fillOpacity: SHAPE_FILL_OPACITY,
+                  rectangle: {
+                    shapeOptions: {
+                      color: SHAPE_COLOR,
+                      fillOpacity: SHAPE_FILL_OPACITY,
+                    },
                   },
-                },
-                rectangle: {
-                  shapeOptions: {
-                    color: SHAPE_COLOR,
-                    fillOpacity: SHAPE_FILL_OPACITY,
-                  },
-                },
-              }}
-            />
-          </FeatureGroup>
-        </MapContainer>
+                }}
+              />
+            </FeatureGroup>
+          </MapContainer>
+        </div>
       </div>
     );
   }
