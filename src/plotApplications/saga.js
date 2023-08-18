@@ -128,8 +128,8 @@ function* createPlotApplicationSaga({payload: plotApplication}): Generator<any, 
       case 200:
       case 201:
         yield put(receivePlotApplicationSaved(bodyAsJson.id));
-        yield put(push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${bodyAsJson.id}`));
         yield put(fetchSinglePlotApplication(bodyAsJson.id));
+        yield put(push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${bodyAsJson.id}`));
         yield put(hideEditMode());
         displayUIMessage({title: '', body: 'Hakemus luotu'});
         break;

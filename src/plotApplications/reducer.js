@@ -146,7 +146,7 @@ const isPerformingFileOperationReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const currentEditorTargetsReducer: Reducer<Array<Object>> = handleActions({
-  ['mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS']: (state, {payload: targets}) => targets,
+  ['mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS']: (state, {payload: targets}) => targets || [],
 }, []);
 
 const targetInfoCheckAttributesReducer: Reducer<Attributes> = handleActions({
