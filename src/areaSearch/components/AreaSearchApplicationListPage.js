@@ -68,6 +68,7 @@ import FormField from '$components/form/FormField';
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ApiResponse} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import AreaSearchExportModal from '$src/areaSearch/components/AreaSearchExportModal';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -118,6 +119,7 @@ type State = {
   selectedStates: Array<string>,
   visualizationType: string,
   isEditModalOpen: boolean,
+  isExportModalOpen: boolean,
   editModalTargetAreaSearch: ?number,
 }
 
@@ -135,6 +137,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     selectedStates: DEFAULT_AREA_SEARCH_STATES,
     visualizationType: VisualizationTypes.TABLE,
     isEditModalOpen: false,
+    isExportModalOpen: false,
     editModalTargetAreaSearch: null,
   }
 
@@ -322,6 +325,18 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     this.setState(() => ({
       isEditModalOpen: false,
       editModalTargetAreaSearch: null,
+    }));
+  };
+
+  openExportModal = () => {
+    this.setState(() => ({
+      isExportModalOpen: true,
+    }));
+  };
+
+  closeExportModal = () => {
+    this.setState(() => ({
+      isExportModalOpen: false,
     }));
   };
 
@@ -600,6 +615,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       isFetchingByBBox,
       isFetchingAreaSearchListAttributes,
       location: {search},
+      selectedSearches = {},
     } = this.props;
 
     const {
@@ -611,6 +627,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       selectedStates,
       visualizationType,
       isEditModalOpen,
+      isExportModalOpen,
       editModalTargetAreaSearch,
     } = this.state;
     const searchQuery = getUrlParams(search);
@@ -749,11 +766,16 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
             />
           }
         </TableWrapper>
+        <Button onClick={this.openExportModal} text="Tulosta" disabled={selectedSearches.length === 0} />
         <EditAreaSearchPreparerModal
           isOpen={isEditModalOpen}
           onClose={this.closeAreaSearchEditModal}
           onSubmit={this.submitAreaSearchEditModal}
           areaSearchId={editModalTargetAreaSearch}
+        />
+        <AreaSearchExportModal
+          isOpen={isExportModalOpen}
+          onClose={this.closeExportModal}
         />
       </PageContainer>
     );
@@ -792,7 +814,7 @@ export default (flowRight(
     form: FORM_NAME,
     initialValues: {
       mode: null,
-      selectedSearches: [],
+      selectedSearches: {},
     },
   })
 )(AreaSearchApplicationListPage): React$ComponentType<OwnProps>);
