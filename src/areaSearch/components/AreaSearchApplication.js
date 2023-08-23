@@ -30,7 +30,7 @@ import {getUserFullName} from '$src/users/helpers';
 import SubTitle from '$components/content/SubTitle';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import {getAreaFromGeoJSON} from '$util/map';
-import AreaSearchSelectedAreaMiniMap from '$src/areaSearch/components/map/AreaSearchSelectedAreaMiniMap';
+import SingleAreaSearchMap from '$src/areaSearch/components/map/SingleAreaSearchMap';
 import AreaSearchApplicationPropertyIdentifiers
   from '$src/areaSearch/components/AreaSearchApplicationPropertyIdentifiers';
 import AreaSearchApplicantInfoCheck from '$src/areaSearch/components/AreaSearchApplicantInfoCheck';
@@ -161,7 +161,7 @@ class AreaSearchApplication extends Component<Props, State> {
           }}
           defaultOpen
         >
-          <AreaSearchSelectedAreaMiniMap geometry={areaSearch.geometry} key={selectedAreaSectionRefreshKey} />
+          <SingleAreaSearchMap geometry={areaSearch.geometry} key={selectedAreaSectionRefreshKey} minimap />
           <Row>
             <Column small={6} medium={3} large={2}>
               <FormTextTitle>
