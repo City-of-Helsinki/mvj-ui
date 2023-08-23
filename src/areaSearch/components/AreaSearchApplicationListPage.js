@@ -26,7 +26,6 @@ import TableWrapper from '$components/table/TableWrapper';
 import IconRadioButtons from '$components/button/IconRadioButtons';
 import TableIcon from '$components/icons/TableIcon';
 import MapIcon from '$components/icons/MapIcon';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   formatDate,
@@ -45,10 +44,9 @@ import {
   getAreaSearchListByBBox,
   getIsEditingAreaSearch,
   getIsFetchingAreaSearchList,
-  getIsFetchingAreaSearchListByBBox, getLastAreaSearchEditError,
+  getIsFetchingAreaSearchListByBBox,
+  getLastAreaSearchEditError,
 } from '$src/areaSearch/selectors';
-
-import type {Attributes, Methods as MethodsType} from '$src/types';
 import {
   DEFAULT_AREA_SEARCH_STATES,
   DEFAULT_SORT_KEY,
@@ -56,14 +54,19 @@ import {
 } from '$src/areaSearch/constants';
 import {editAreaSearch, fetchAreaSearchList, fetchAreaSearchListByBBox} from '$src/areaSearch/actions';
 import {getUserFullName} from '$src/users/helpers';
-import type {ApiResponse} from '$src/types';
 import {areaSearchSearchFilters} from '$src/areaSearch/helpers';
 import {BOUNDING_BOX_FOR_SEARCH_QUERY, MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES} from '$src/areaSearch/constants';
-import AreaSearchMap from '$src/areaSearch/components/map/AreaSearchMap';
+import AreaSearchListMap from '$src/areaSearch/components/map/AreaSearchListMap';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {ButtonColors} from '$components/enums';
 import Button from '$components/button/Button';
 import EditAreaSearchPreparerModal from '$src/areaSearch/components/EditAreaSearchPreparerModal';
+import Authorization from '$components/authorization/Authorization';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+
+import type {Attributes, Methods as MethodsType} from '$src/types';
+import type {ApiResponse} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -529,6 +532,14 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     });
   }
 
+  openCreateAreaSearch = () => {
+    const {history} = this.props;
+
+    history.push({
+      pathname: `${getRouteById(Routes.AREA_SEARCH)}/uusi`,
+    });
+  }
+
   render() {
     const {
       areaSearchListMethods,
@@ -592,7 +603,15 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     return (
       <PageContainer className="AreaSearchApplicationListPage">
         <Row>
-          <Column small={12} medium={4} large={4} />
+          <Column small={12} medium={4} large={4}>
+            <Authorization allow={isMethodAllowed(areaSearchListMethods, Methods.POST)}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo aluehakemus'
+                onClick={this.openCreateAreaSearch}
+              />
+            </Authorization>
+          </Column>
           <Column small={12} medium={8} large={8}>
             <Search
               isSearchInitialized={isSearchInitialized}
@@ -652,7 +671,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
             </Fragment>
           }
           {visualizationType === 'map' &&
-            <AreaSearchMap
+            <AreaSearchListMap
               allowToEdit={false}
               isLoading={isFetchingByBBox}
               onViewportChanged={this.handleMapViewportChanged}

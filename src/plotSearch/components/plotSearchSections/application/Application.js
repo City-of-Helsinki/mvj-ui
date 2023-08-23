@@ -7,10 +7,8 @@ import Loader from '$components/loader/Loader';
 import {FormNames, ViewModes} from '$src/enums';
 import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {
   getCollapseStateByKey,
-  getIsFetchingFormAttributes,
   getIsFetchingForm,
   getForm,
   getIsFetchingTemplateForms,
@@ -19,6 +17,9 @@ import {receiveCollapseStates} from '$src/plotSearch/actions';
 import {ApplicationFieldTitles} from '$src/plotSearch/enums';
 import ApplicationPreviewSection from '$src/plotSearch/components/plotSearchSections/application/ApplicationPreviewSection';
 import FormText from '$components/form/FormText';
+import {getIsFetchingFormAttributes} from '$src/application/selectors';
+
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type OwnProps = {
 

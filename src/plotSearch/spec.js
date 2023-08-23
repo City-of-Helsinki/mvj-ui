@@ -38,12 +38,11 @@ import {
   removePlanUnitDecisions,
   addPlanUnitDecisions,
   resetPlanUnitDecisions,
-  receiveFormAttributes,
+
 } from '$src/plotSearch/actions';
 
 import mockData from '$src/plotSearch/mock-data.json';
 import mockAttributes from '$src/plotSearch/attributes-mock-data.json';
-import mockFormAttributes from '$src/plotSearch/form-attributes-mock-data.json';
 
 import plotSearchReducer from '$src/plotSearch/reducer';
 
@@ -76,10 +75,8 @@ const baseState: PlotSearchState = {
   pendingCustomDetailedPlanFetches: [],
   isFetchingCustomDetailedPlanAttributes: false,
   subTypes: null,
-  isFetchingFormAttributes: false,
   isFetchingForm: false,
   isFetchingTemplateForms: false,
-  formAttributes: null,
   form: null,
   templateForms: [],
   decisionCandidates: {},
@@ -493,16 +490,6 @@ describe('PlotSearch', () => {
         state = plotSearchReducer(state, resetPlanUnitDecisions());
 
         expect(state.decisionCandidates).to.deep.equal({});
-      });
-
-      it('should update form attributes', () => {
-        const newState = {...baseState, formAttributes: mockFormAttributes, isFetchingFormAttributes: false};
-
-        const state = plotSearchReducer({
-          ...baseState,
-          isFetchingFormAttributes: true,
-        }, receiveFormAttributes(mockFormAttributes));
-        expect(state).to.deep.equal(newState);
       });
 
       it('should disallow editing most fields if the plot search has become public', () => {

@@ -23,10 +23,8 @@ export type PlotSearchState = {
   isFetchingPlanUnitAttributes: boolean,
   isFetchingSubtypes: boolean,
   subTypes: Object,
-  isFetchingFormAttributes: boolean,
   isFetchingForm: boolean,
   isFetchingTemplateForms: boolean,
-  formAttributes: Object,
   form: Object,
   templateForms: Object,
   isFetchingStages: boolean,
@@ -44,54 +42,6 @@ export type PlotSearchId = number;
 export type PlotSearch = Object;
 export type PlanUnit = Object;
 export type PlotSearchList = Object;
-
-export type Form = {
-  name: string,
-  title: string,
-  id: number,
-  is_template: boolean,
-  sections: Array<FormSection>
-};
-
-export type FormSection = {
-  id: number;
-  identifier: string;
-  title: string;
-  visible: boolean;
-  sort_order: number;
-  add_new_allowed: boolean;
-  add_new_text?: string;
-  subsections: Array<FormSection>;
-  fields: Array<FormField>;
-  form_id: number;
-  parent_id: number | null;
-  show_duplication_check: boolean;
-  applicant_type: string;
-};
-
-export type FormField = {
-  id: number;
-  identifier: string;
-  type: number;
-  label: string;
-  hint_text?: string;
-  enabled: boolean;
-  required: boolean;
-  validation?: string | null;
-  action?: string | null;
-  sort_order: number;
-  choices: Array<FormFieldChoice>;
-  section_id: number;
-  default_value: string | boolean;
-};
-
-export type FormFieldChoice = {
-  id: number;
-  text: string;
-  value: string;
-  action?: string | null;
-  has_text_input: boolean;
-};
 
 export type FetchSinglePlotSearchAfterEditPayload = {
   id: any,
@@ -142,10 +92,6 @@ export type ReceivePlotSearchSubtypesAction = Action<'mvj/plotSearch/RECEIVE_PLO
 export type PlotSearchSubtypesNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;
 
 export type NullPlanUnitsAction = Action<'mvj/plotSearch/NULL_PLAN_UNITS', void>;
-
-export type FetchFormAttributesAction = Action<'mvj/plotSearch/FETCH_FORM_ATTRIBUTES', Object>;
-export type FormAttributesNotFoundAction = Action<'mvj/plotSearch/FORM_ATTRIBUTES_NOT_FOUND', void>;
-export type ReceiveFormAttributesAction = Action<'mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES', Attributes>;
 
 export type FormNotFoundAction = Action<'mvj/plotSearch/FORM_NOT_FOUND', Object>;
 export type FetchFormAction = Action<'mvj/plotSearch/FETCH_FORM', void>;

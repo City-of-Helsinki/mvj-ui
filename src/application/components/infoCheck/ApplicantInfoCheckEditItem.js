@@ -7,10 +7,11 @@ import {getFormValues, reduxForm} from 'redux-form';
 import {Column, Row} from 'react-foundation';
 import classNames from 'classnames';
 
-import type {Attributes} from '$src/types';
 import {getApplicantInfoCheckAttributes} from '$src/application/selectors';
 import {getFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
+
+import type {Attributes} from '$src/types';
 
 type OwnProps = {
   openModal: Function,

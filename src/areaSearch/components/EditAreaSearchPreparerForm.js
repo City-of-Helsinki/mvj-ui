@@ -4,19 +4,21 @@ import React, {Component} from 'react';
 import {flowRight} from 'lodash/util';
 import {getFormValues, reduxForm} from 'redux-form';
 import {connect} from 'react-redux';
-import {editAreaSearch} from '$src/areaSearch/actions';
 import {Column, Row} from 'react-foundation';
+import get from 'lodash/get';
+
+import {editAreaSearch} from '$src/areaSearch/actions';
 import FormField from '$components/form/FormField';
 import {getAttributes} from '$src/areaSearch/selectors';
-import type {Attributes} from '$src/types';
-import get from 'lodash/get';
 import {AreaSearchFieldTitles} from '$src/areaSearch/enums';
 import {FieldTypes, FormNames} from '$src/enums';
 import Button from '$components/button/Button';
 import {ButtonColors} from '$components/enums';
-import {getInitialAreaSearch} from '$src/areaSearch/helpers';
+import {getInitialAreaSearchEditForm} from '$src/areaSearch/helpers';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import AreaSearchStatusNoteHistory from '$src/areaSearch/components/AreaSearchStatusNoteHistory';
+
+import type {Attributes} from '$src/types';
 
 type OwnProps = {
   onClose: Function,
@@ -39,7 +41,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
     const {areaSearchData, initialize} = this.props;
 
     if (areaSearchData?.id && areaSearchData.id !== prevProps.areaSearchData?.id) {
-      initialize(getInitialAreaSearch(areaSearchData));
+      initialize(getInitialAreaSearchEditForm(areaSearchData));
     }
   }
 

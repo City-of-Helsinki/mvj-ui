@@ -6,10 +6,6 @@ import {
   receivePlotApplicationsList,
   fetchSinglePlotApplication,
   receiveSinglePlotApplication,
-  fetchAttributes,
-  receiveMethods,
-  attributesNotFound,
-  receiveAttributes,
   hideEditMode,
   showEditMode,
   receiveIsSaveClicked,
@@ -18,34 +14,23 @@ import {
   clearFormValidFlags,
   editPlotApplication,
 } from '$src/plotApplications/actions';
-
 import plotApplicationReducer from '$src/plotApplications/reducer';
 
 import type {PlotApplicationsState} from '$src/plotApplications/types';
 
 const baseState: PlotApplicationsState = {
-  attachmentAttributes: null,
-  attachmentMethods: null,
-  attachments: null,
-  attributes: null,
   currentEditorTargets: [],
-  fieldTypeMapping: {},
   form: null,
   isFetching: false,
-  isFetchingAttachmentAttributes: false,
-  isFetchingAttachments: false,
-  isFetchingAttributes: false,
   isFetchingByBBox: false,
   isFetchingPlotSearch: false,
   listByBBox: null,
   isFetchingForm: false,
-  isFetchingPendingUploads: false,
   isPerformingFileOperation: false,
   isSaving: false,
   isSaveClicked: false,
   isFetchingSubTypes: false,
   list: {},
-  methods: null,
   current: {},
   isEditMode: false,
   collapseStates: {},
@@ -53,7 +38,6 @@ const baseState: PlotApplicationsState = {
     'plot-application': true,
   },
   subTypes: null,
-  pendingUploads: [],
   plotSearch: null,
   isFetchingTargetInfoCheckAttributes: false,
   targetInfoCheckAttributes: null,
@@ -73,28 +57,6 @@ describe('PlotApplication', () => {
 
     // $FlowFixMe
     describe('plotApplicationReducer', () => {
-
-      // $FlowFixMe
-      it('should update isFetchingAttributes flag to true', () => {
-        const newState = {...baseState, isFetchingAttributes: true};
-
-        const state = plotApplicationReducer({}, fetchAttributes());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update attributes', () => {
-        const dummyAttributes = {
-          id: 1,
-          label: 'Foo',
-          name: 'Bar',
-        };
-
-        const newState = {...baseState, attributes: dummyAttributes, isFetchingAttributes: false};
-
-        const state = plotApplicationReducer({}, receiveAttributes(dummyAttributes));
-        expect(state).to.deep.equal(newState);
-      });
-
       it('should update isFetching flag to true when fetching plotApplication list', () => {
         const newState = {...baseState};
         newState.isFetching = true;
@@ -136,30 +98,6 @@ describe('PlotApplication', () => {
         newState.current = dummyPlotApplication;
 
         const state = plotApplicationReducer({}, receiveSinglePlotApplication(dummyPlotApplication));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update methods', () => {
-        const dummyMethods = {
-          PATCH: true,
-          DELETE: true,
-          GET: true,
-          HEAD: true,
-          POST: true,
-          OPTIONS: true,
-          PUT: true,
-        };
-        const newState = {...baseState, methods: dummyMethods};
-
-        const state = plotApplicationReducer({}, receiveMethods(dummyMethods));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
-        const newState = {...baseState, isFetchingAttributes: false};
-
-        let state = plotApplicationReducer({}, fetchAttributes());
-        state = plotApplicationReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
 

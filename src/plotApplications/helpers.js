@@ -3,24 +3,19 @@
 import get from 'lodash/get';
 import _ from 'lodash';
 import {formValueSelector} from 'redux-form';
-import {displayUIMessage, getApiResponseResults, getFieldAttributes} from '$util/helpers';
+import {getApiResponseResults, getFieldAttributes} from '$util/helpers';
 
 import createUrl from '$src/api/createUrl';
 import {store} from '$src/root/startApp';
 import {FormNames} from '$src/enums';
 import {getCurrentEditorTargets} from '$src/plotApplications/selectors';
-import {
-  APPLICANT_MAIN_IDENTIFIERS,
-  APPLICANT_SECTION_IDENTIFIER,
-  TARGET_SECTION_IDENTIFIER,
-} from '$src/plotApplications/constants';
+import {getTargetTitle, getTargetType, prepareApplicationForSubmission} from '$src/application/helpers';
+import {TargetIdentifierTypes} from '$src/application/enums';
+
 import type {Attributes, LeafletFeature, LeafletGeoJson} from '$src/types';
-import type {RootState} from '$src/root/types';
-import type {ApplicationFormSection, ApplicationFormState, UploadedFileMeta} from '$src/plotApplications/types';
-import type {Form, PlotSearch} from '$src/plotSearch/types';
-import {getTargetTitle, getTargetType} from '$src/plotSearch/helpers';
-import {TargetIdentifierTypes} from '$src/plotSearch/enums';
-import {ApplicantTypes} from '$src/application/enums';
+import type {ApplicationFormState} from '$src/plotApplications/types';
+import type {PlotSearch} from '$src/plotSearch/types';
+import type {Form} from '$src/application/types';
 
 /**
  * Get plotApplication list results
@@ -203,259 +198,20 @@ export const getInitialApplication = (): ApplicationFormState => {
   };
 };
 
-export const getInitialApplicationForm = (
-  fieldTypes: { [id: number]: string },
-  form?: Form,
-  existingValues?: Object | null
-): Object | null => {
-  if (!form) {
-    return null;
-  }
-
-  const root = {
-    sections: {},
-    sectionTemplates: {},
-    fileFieldIds: [],
-    attachments: [],
-  };
-
-  const buildSectionItem = (section, parent, sectionAnswer) => {
-    const workingItem: ApplicationFormSection = {
-      sections: {},
-      fields: {},
-      sectionRestrictions: {},
-    };
-
-    if (section.identifier === APPLICANT_SECTION_IDENTIFIER) {
-      workingItem.metadata = {
-        applicantType: null,
-      };
-
-      section.subsections.forEach((subsection) => {
-        workingItem.sectionRestrictions[subsection.identifier] = subsection.applicant_type;
-      });
-    }
-
-    section.subsections.forEach((subsection) =>
-      buildSection(subsection, workingItem.sections, sectionAnswer?.sections?.[subsection.identifier])
-    );
-    section.fields.forEach((field) => buildField(field, workingItem.fields, sectionAnswer?.fields?.[field.identifier]));
-
-    if (sectionAnswer?.metadata) {
-      workingItem.metadata = {
-        ...(workingItem.metadata || {}),
-        ...sectionAnswer.metadata,
-      };
-    }
-
-    return workingItem;
-  };
-
-  const buildSection = (
-    section,
-    parent,
-    sectionAnswers
-  ): void => {
-    if (!section.visible) {
-      return;
-    }
-
-    if (section.add_new_allowed && !root.sectionTemplates[section.identifier]) {
-      root.sectionTemplates[section.identifier] = buildSectionItem(section, parent);
-    }
-
-    if (sectionAnswers) {
-      if (section.add_new_allowed) {
-        if (!(sectionAnswers instanceof Array)) {
-          console.error('type mismatch', section, sectionAnswers);
-        }
-        parent[section.identifier] = sectionAnswers.map((sectionAnswer) => buildSectionItem(section, parent, sectionAnswer));
-      } else {
-        parent[section.identifier] = buildSectionItem(section, parent, sectionAnswers);
-      }
-    } else {
-      const defaultItem = buildSectionItem(section, parent);
-      if (section.add_new_allowed && section.identifier === TARGET_SECTION_IDENTIFIER) {
-        parent[section.identifier] = [];
-      } else if (section.add_new_allowed) {
-        parent[section.identifier] = [defaultItem];
-      } else {
-        parent[section.identifier] = defaultItem;
-      }
-    }
-  };
-
-  const buildField = (field, parent, answer): void => {
-    if (!field.enabled) {
-      return;
-    }
-
-    let reformattedAnswer;
-    if (answer) {
-      reformattedAnswer = {
-        value: answer.value,
-        extraValue: answer.extra_value,
-      };
-    }
-
-    let initialValue;
-    switch (fieldTypes[field.type]) {
-      case 'uploadfiles':
-        if (!root.fileFieldIds.includes(field.id)) {
-          root.fileFieldIds.push(field.id);
-        }
-
-        if (reformattedAnswer) {
-          root.attachments.push(...reformattedAnswer.value.map((file) => file.id));
-        }
-
-        initialValue = {
-          value: reformattedAnswer?.value?.map((file) => file.id) || ([]: Array<UploadedFileMeta>),
-          extraValue: '',
-        };
-        break;
-      case 'dropdown':
-      case 'radiobutton':
-      case 'radiobuttoninline':
-        initialValue = reformattedAnswer || {
-          value: '',
-          extraValue: '',
-        };
-        break;
-      case 'checkbox':
-        if (reformattedAnswer) {
-          initialValue = reformattedAnswer;
-        } else if (field.choices?.length > 1) {
-          initialValue = {
-            value: ([]: Array<string>),
-            extraValue: '',
-          };
-        } else {
-          initialValue = {
-            value: false,
-            extraValue: '',
-          };
-        }
-        break;
-      case 'hidden':
-        initialValue = {
-          value: field.default_value,
-          extraValue: '',
-        };
-        break;
-      case 'textbox':
-      case 'textarea':
-      default:
-        initialValue = reformattedAnswer || {
-          value: '',
-          extraValue: '',
-        };
-        break;
-    }
-
-    if (initialValue) {
-      parent[field.identifier] = initialValue;
-    }
-  };
-
-  form.sections.forEach((section) => buildSection(section, root.sections, existingValues?.sections?.[section.identifier]));
-
-  return root;
-};
-
-export const getSectionTemplate = (identifier: string): Object => {
-  const state = store.getState();
-  const templates = formValueSelector(FormNames.PLOT_APPLICATION)(
-    state,
-    'formEntries.sectionTemplates'
-  );
-
-  return templates[identifier] || {};
-};
-
-export const prepareApplicationForSubmission = (): Object | null => {
+export const preparePlotApplicationForSubmission = (): Object | null => {
   const state = store.getState();
   const selector = formValueSelector(FormNames.PLOT_APPLICATION);
 
   const sections = selector(state, 'formEntries.sections');
 
-  try {
-    const attachMeta = (rootLevelSections) => {
-      Object.keys(rootLevelSections).forEach((sectionName) => {
-        const section = rootLevelSections[sectionName];
-
-        switch (sectionName) {
-          case APPLICANT_SECTION_IDENTIFIER:
-            section.forEach((applicant) => {
-              const applicantType = applicant.metadata.applicantType;
-
-              applicant.sections = _.pickBy(
-                _.cloneDeep(applicant.sections),
-                (subsection, sectionIdentifier: string) => [ApplicantTypes.BOTH, applicant.metadata.applicantType].includes(
-                  applicant.sectionRestrictions[sectionIdentifier]
-                )
-              );
-
-              try {
-                const identifiers = APPLICANT_MAIN_IDENTIFIERS[applicantType];
-
-                const sectionWithIdentifier = applicant.sections[identifiers?.DATA_SECTION];
-                const identifier = sectionWithIdentifier?.fields[identifiers?.IDENTIFIER_FIELD]
-                  || sectionWithIdentifier[0]?.fields[identifiers?.IDENTIFIER_FIELD];
-
-                if (!identifier?.value) {
-                  // noinspection ExceptionCaughtLocallyJS
-                  throw new Error(`no identifier of type ${applicant.metadata?.applicantType || 'unknown'} found for applicant section`);
-                }
-                applicant.metadata.identifier = identifier.value;
-              } catch (e) {
-                // sectionWithIdentifier or the value itself was not found, or something else went unexpectedly wrong
-                displayUIMessage({title: '', body: 'Hakijan henkilö- tai Y-tunnuksen käsittely epäonnistui!'}, {type: 'error'});
-                throw e;
-              }
-            });
-            break;
-          case TARGET_SECTION_IDENTIFIER:
-            section.forEach((target) => {
-              target.metadata = {
-                identifier: target.metadata.identifier,
-              };
-            });
-            break;
-        }
-      });
-
-      return rootLevelSections;
-    };
-
-    const purgeUIFields = (node) => {
-      _.each(node, (section) => {
-        if (section instanceof Array) {
-          section.forEach((item) => {
-            delete item.sectionRestrictions;
-            purgeUIFields(item.sections);
-          });
-        } else {
-          delete section.sectionRestrictions;
-          purgeUIFields(section.sections);
-        }
-      });
-
-      return node;
-    };
-
-    return {
-      form: selector(state, 'formId'),
-      entries: {
-        sections: purgeUIFields(attachMeta(sections)),
-      },
-      targets: selector(state, 'targets'),
-      attachments: selector(state, 'formEntries.attachments'),
-    };
-  } catch (e) {
-    console.log(e);
-    return null;
-  }
+  return {
+    form: selector(state, 'formId'),
+    entries: {
+      sections: prepareApplicationForSubmission(sections),
+    },
+    targets: selector(state, 'targets'),
+    attachments: selector(state, 'formEntries.attachments'),
+  };
 };
 
 export const getSectionTargetFromMeta = (field: string): string => {
@@ -469,13 +225,6 @@ export const getSectionTargetFromMeta = (field: string): string => {
   else {
     return '';
   }
-};
-
-export const getApplicationAttachmentDownloadLink = (id: number): string => createUrl(`attachment/${id}/download`);
-
-export const getFieldFileIds = (state: RootState, fieldPath: string): Array<number> => {
-  const fieldValue = formValueSelector(FormNames.PLOT_APPLICATION)(state, fieldPath);
-  return fieldValue?.value || [];
 };
 
 export const getInitialTargetInfoCheckValues = (plotSearch: PlotSearch, infoCheckData: Array<Object>, id: number): Object | null => {

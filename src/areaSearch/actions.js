@@ -29,7 +29,18 @@ import type {
   ReceiveAreaSearchInfoCheckBatchEditFailureAction,
   BatchEditAreaSearchInfoChecksAction,
   EditAreaSearchAction,
-  ReceiveAreaSearchEditedAction, ReceiveAreaSearchEditFailedAction,
+  ReceiveAreaSearchEditedAction,
+  ReceiveAreaSearchEditFailedAction,
+  CreateAreaSearchSpecsAction,
+  ReceiveAreaSearchSpecsCreateFailedAction,
+  ReceiveAreaSearchSpecsCreatedAction,
+  CreateAreaSearchApplicationAction,
+  ReceiveAreaSearchApplicationCreatedAction,
+  ReceiveAreaSearchApplicationCreateFailedAction,
+  DeleteAreaSearchAttachmentAction,
+  UploadAreaSearchAttachmentAction,
+  ReceiveFileOperationFinishedAction,
+  ReceiveFileOperationFailedAction,
 } from '$src/areaSearch/types';
 import type {Attributes, Methods} from '$src/types';
 
@@ -119,3 +130,33 @@ export const receiveAreaSearchEdited = (): ReceiveAreaSearchEditedAction =>
 
 export const receiveAreaSearchEditFailed = (payload: Object): ReceiveAreaSearchEditFailedAction =>
   createAction('mvj/areaSearch/RECEIVE_EDIT_FAILED')(payload);
+
+export const createAreaSearchSpecs = (payload: Object): CreateAreaSearchSpecsAction =>
+  createAction('mvj/areaSearch/CREATE_SPECS')(payload);
+
+export const receiveAreaSearchSpecsCreated = (payload: Object): ReceiveAreaSearchSpecsCreatedAction =>
+  createAction('mvj/areaSearch/RECEIVE_SPECS_CREATED')(payload);
+
+export const receiveAreaSearchSpecsCreateFailed = (): ReceiveAreaSearchSpecsCreateFailedAction =>
+  createAction('mvj/areaSearch/RECEIVE_SPECS_CREATE_FAILED')();
+
+export const createAreaSearchApplication = (payload: Object): CreateAreaSearchApplicationAction =>
+  createAction('mvj/areaSearch/CREATE_APPLICATION')(payload);
+
+export const receiveAreaSearchApplicationCreated = (): ReceiveAreaSearchApplicationCreatedAction =>
+  createAction('mvj/areaSearch/RECEIVE_APPLICATION_CREATED')();
+
+export const receiveAreaSearchApplicationCreateFailed = (): ReceiveAreaSearchApplicationCreateFailedAction =>
+  createAction('mvj/areaSearch/RECEIVE_APPLICATION_CREATE_FAILED')();
+
+export const deleteUploadedAttachment = (payload: Object): DeleteAreaSearchAttachmentAction =>
+  createAction('mvj/areaSearch/DELETE_ATTACHMENT')(payload);
+
+export const uploadAttachment = (payload: Object): UploadAreaSearchAttachmentAction =>
+  createAction('mvj/areaSearch/UPLOAD_ATTACHMENT')(payload);
+
+export const receiveFileOperationFinished = (): ReceiveFileOperationFinishedAction =>
+  createAction('mvj/areaSearch/RECEIVE_FILE_OPERATION_FINISHED')();
+
+export const receiveFileOperationFailed = (error: any): ReceiveFileOperationFailedAction =>
+  createAction('mvj/areaSearch/RECEIVE_FILE_OPERATION_FAILED')(error);

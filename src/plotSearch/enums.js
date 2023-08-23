@@ -113,7 +113,3 @@ export const PlotSearchStageTypes = {
   SETTLED: 'settled',
 };
 
-export const TargetIdentifierTypes = {
-  PLAN_UNIT: 'plan_unit',
-  CUSTOM_DETAILED_PLAN: 'custom_detailed_plan',
-};

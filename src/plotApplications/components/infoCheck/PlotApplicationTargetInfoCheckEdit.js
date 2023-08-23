@@ -25,7 +25,6 @@ import {ConfirmationModalTexts, FieldTypes} from '$src/enums';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import PlotApplicationInfoCheckCollapse from '$src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse';
 import {
-  getAttributes,
   getIsPerformingFileOperation,
   getIsSaveClicked,
   getIsSaving,
@@ -42,6 +41,7 @@ import {
 } from '$src/plotApplications/actions';
 import LoaderWrapper from '$src/components/loader/LoaderWrapper';
 import Loader from '$src/components/loader/Loader';
+import {getAttributes} from '$src/application/selectors';
 
 type TargetSubFieldSetProps = {
   fields: any,

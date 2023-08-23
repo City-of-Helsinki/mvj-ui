@@ -77,10 +77,6 @@ export const fetchFormRequest = (id: number): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`form/${id}/`)));
 };
 
-export const fetchFormAttributesRequest = (): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`form/1/`), {method: 'OPTIONS'}));
-};
-
 export const editFormRequest = (form: Object): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`form/${form.id}/`), {
     method: 'PATCH',

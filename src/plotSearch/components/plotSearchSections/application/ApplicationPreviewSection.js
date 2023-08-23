@@ -15,9 +15,10 @@ import FormField from '$components/form/FormField';
 import FormHintText from '$components/form/FormHintText';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
-import {getFormAttributes} from '$src/plotSearch/selectors';
 import Button from '$components/button/Button';
 import {ButtonColors} from '$components/enums';
+import {getFormAttributes} from '$src/application/selectors';
+
 import type {Attributes} from '$src/types';
 
 type OwnProps = {
@@ -204,7 +205,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
             }
 
             return field.choices.find(choice => choice.value === field.default_value).text;
-            
+
           }}
           disabled
         />;

@@ -1,10 +1,6 @@
 // @flow
-import React, {useCallback, Fragment} from 'react';
-import {
-  FieldArray,
-  change,
-  formValueSelector,
-} from 'redux-form';
+import React, {Fragment, useCallback} from 'react';
+import {change, FieldArray, formValueSelector} from 'redux-form';
 import {connect} from 'react-redux';
 import type {Fields} from 'redux-form/lib/FieldArrayProps.types';
 import {Column, Row} from 'react-foundation';
@@ -20,53 +16,62 @@ import FileDownloadLink from '$components/file/FileDownloadLink';
 import LoadingIndicator from '$components/multi-select/LoadingIndicator';
 import {ButtonColors} from '$components/enums';
 import FormHintText from '$components/form/FormHintText';
-import {
-  getAttachmentAttributes,
-  getAttachmentMethods,
-  getFieldTypeMapping,
-  getIsFetchingPendingUploads,
-  getIsPerformingFileOperation,
-  getPendingUploads,
-  getExistingUploads,
-  getCurrentPlotApplication,
-  getIsFetchingApplicationRelatedAttachments,
-  getIsFetchingAttachmentAttributes,
-} from '$src/plotApplications/selectors';
+import {formatDate, isFieldAllowedToRead} from '$util/helpers';
+import {ConfirmationModalTexts} from '$src/enums';
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import {ApplicantTypes} from '$src/application/enums';
 import {
   getApplicationAttachmentDownloadLink,
   getFieldFileIds,
-  getSectionTargetFromMeta,
+  getSectionApplicantType,
   getSectionTemplate,
+  valueToApplicantType,
+} from '$src/application/helpers';
+import {
+  getAttachmentAttributes,
+  getAttachmentMethods,
+  getExistingUploads,
+  getFieldTypeMapping,
+  getIsFetchingApplicationRelatedAttachments,
+  getIsFetchingAttachmentAttributes,
+  getIsFetchingPendingUploads,
+  getIsPerformingFileOperation,
+  getPendingUploads,
+} from '$src/application/selectors';
+import {ApplicationSectionKeys} from '$src/application/components/enums';
+import {
+  APPLICANT_SECTION_IDENTIFIER,
+  APPLICANT_TYPE_FIELD_IDENTIFIER,
+  TARGET_SECTION_IDENTIFIER,
+} from '$src/application/constants';
+import {
+  deleteUploadedAttachment,
+  uploadAttachment,
+} from '$src/application/actions';
 
-} from '$src/plotApplications/helpers';
-import {deleteUploadedAttachment, uploadAttachment} from '$src/plotApplications/actions';
-import {formatDate, isFieldAllowedToRead} from '$util/helpers';
-import {ConfirmationModalTexts, FormNames} from '$src/enums';
-import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import {APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
-import type {PlotApplicationFormValue, UploadedFileMeta} from '$src/plotApplications/types';
-import {ApplicantTypes} from '$src/application/enums';
-import {getSectionApplicantType, valueToApplicantType} from '$src/application/helpers';
-
-const ApplicationSectionKeys = {
-  Subsections: 'sections',
-  Fields: 'fields',
-};
+import type {
+  FormSection,
+  PlotApplicationFormValue,
+  UploadedFileMeta,
+} from '$src/application/types';
 
 const ApplicationFormFileField = connect(
-  (state, props) => ({
-    pendingUploads: getPendingUploads(state),
-    existingUploads: getExistingUploads(state, props.field.identifier),
-    attachmentMethods: getAttachmentMethods(state),
-    attachmentAttributes: getAttachmentAttributes(state),
-    isFetchingPendingUploads: getIsFetchingPendingUploads(state),
-    isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
-    isFetchingAttachmentAttributes: getIsFetchingAttachmentAttributes(state),
-    isPerformingFileOperation: getIsPerformingFileOperation(state),
-    currentPlotApplication: getCurrentPlotApplication(state),
-    fieldFileIds: getFieldFileIds(state, props.fieldName),
-    attachmentIds: formValueSelector(FormNames.PLOT_APPLICATION)(state, 'formEntries.attachments'),
-  }),
+  (state, props) => {
+    const {formName, formPath, field, fieldName} = props;
+
+    return ({
+      pendingUploads: getPendingUploads(state),
+      existingUploads: getExistingUploads(state, field.identifier),
+      attachmentMethods: getAttachmentMethods(state),
+      attachmentAttributes: getAttachmentAttributes(state),
+      isFetchingPendingUploads: getIsFetchingPendingUploads(state),
+      isFetchingAttachments: getIsFetchingApplicationRelatedAttachments(state),
+      isFetchingAttachmentAttributes: getIsFetchingAttachmentAttributes(state),
+      isPerformingFileOperation: getIsPerformingFileOperation(state),
+      fieldFileIds: getFieldFileIds(state, formName, fieldName),
+      attachmentIds: formValueSelector(formName)(state, (formPath ? `${formPath}.` : '') + 'attachments'),
+    });
+  },
   {
     uploadAttachment,
     deleteUploadedAttachment,
@@ -86,25 +91,27 @@ const ApplicationFormFileField = connect(
   isPerformingFileOperation,
   field,
   fieldName,
-  currentPlotApplication,
   change,
   fieldFileIds,
   attachmentIds,
+  formName,
+  formPath,
+  answerId,
 }) => {
   return (
     <AppConsumer>
       {({dispatch}) => {
-        const isNew = !currentPlotApplication?.id;
+        const isNew = !answerId;
         const pathWithinForm = fieldName.split('.').slice(1).join('.');
 
         const addId = (newId: number) => {
-          change(FormNames.PLOT_APPLICATION, `${fieldName}.value`, [...fieldFileIds, newId]);
-          change(FormNames.PLOT_APPLICATION, 'formEntries.attachments', [...attachmentIds, newId]);
+          change(formName, `${fieldName}.value`, [...fieldFileIds, newId]);
+          change(formName, (formPath ? `${formPath}.` : '') + 'attachments', [...attachmentIds, newId]);
         };
 
         const removeId = (newId: number) => {
-          change(FormNames.PLOT_APPLICATION, `${fieldName}.value`, fieldFileIds.filter((id) => id !== newId));
-          change(FormNames.PLOT_APPLICATION, 'formEntries.attachments', attachmentIds.filter((id) => id !== newId));
+          change(formName, `${fieldName}.value`, fieldFileIds.filter((id) => id !== newId));
+          change(formName, (formPath ? `${formPath}.` : '') + 'attachments', attachmentIds.filter((id) => id !== newId));
         };
 
         const submitFile = (fieldId, e) => {
@@ -112,7 +119,7 @@ const ApplicationFormFileField = connect(
             fileData: {
               field: fieldId,
               file: e.target.files[0],
-              answer: currentPlotApplication?.id || undefined,
+              answer: answerId || undefined,
             },
             callback: (path: string, uploadedFile: UploadedFileMeta) => {
               addId(uploadedFile.id);
@@ -219,7 +226,7 @@ const ApplicationFormFileField = connect(
 const ApplicationFormSubsectionFields = connect(
   (state, props) => ({
     fieldTypeMapping: getFieldTypeMapping(state),
-    sectionApplicantType: getSectionApplicantType(state, props.section, props.identifier),
+    sectionApplicantType: getSectionApplicantType(state, props.formName, props.section, props.identifier),
   }), {
     change,
   }
@@ -230,6 +237,10 @@ const ApplicationFormSubsectionFields = connect(
     identifier,
     change,
     sectionApplicantType,
+    formName,
+    formPath,
+    sectionTitleTransformers,
+    answerId,
   }) => {
     const renderField = useCallback((pathName, field) => {
       if (!field.enabled) {
@@ -247,7 +258,11 @@ const ApplicationFormSubsectionFields = connect(
       if (fieldType === 'uploadfiles') {
         return <ApplicationFormFileField
           field={field}
-          fieldName={fieldName} />;
+          fieldName={fieldName}
+          formName={formName}
+          formPath={formPath}
+          answerId={answerId}
+        />;
       }
 
       let extraAttributes = {};
@@ -279,7 +294,7 @@ const ApplicationFormSubsectionFields = connect(
           break;
         case 'hidden':
           if(field.identifier === APPLICANT_TYPE_FIELD_IDENTIFIER) {
-            change(FormNames.PLOT_APPLICATION, `${identifier}.metadata.applicantType`, valueToApplicantType(field.default_value));
+            change(formName, `${identifier}.metadata.applicantType`, valueToApplicantType(field.default_value));
           }
           extraAttributes = {
             type: 'hidden',
@@ -357,7 +372,7 @@ const ApplicationFormSubsectionFields = connect(
 
     const checkSpecialValues = useCallback((field: Object, newValue: PlotApplicationFormValue): void => {
       if (field.identifier === APPLICANT_TYPE_FIELD_IDENTIFIER && section.identifier === APPLICANT_SECTION_IDENTIFIER) {
-        change(FormNames.PLOT_APPLICATION, `${identifier}.metadata.applicantType`, valueToApplicantType(newValue));
+        change(formName, `${identifier}.metadata.applicantType`, valueToApplicantType(newValue));
       }
     }, []);
 
@@ -367,11 +382,15 @@ const ApplicationFormSubsectionFields = connect(
           {section.fields.map((field) => <Fragment key={field.id}>{renderField(identifier, field)}</Fragment>)}
         </Row>
         {section.subsections.map((subsection) => (
-          <PlotApplicationSubsection
+          <ApplicationSubsection
             path={[identifier, ApplicationSectionKeys.Subsections]}
             section={subsection}
             key={subsection.id}
             parentApplicantType={sectionApplicantType}
+            formName={formName}
+            formPath={formPath}
+            sectionTitleTransformers={sectionTitleTransformers}
+            answerId={answerId}
           />
         ))}
       </>
@@ -383,56 +402,78 @@ const ApplicationFormSubsectionFieldArray = ({
   fields,
   section,
   headerTag: HeaderTag,
+  formName,
+  formPath,
+  sectionTitleTransformers,
+  answerId,
 }: {
   fields: Fields,
   section: Object,
-  headerTag: string | React$ComponentType<{ children?: React$Node }>
+  headerTag: string | React$ComponentType<{ children?: React$Node }>,
+  formName: string,
+  formPath: string,
+  sectionTitleTransformers: Array<(string, FormSection, string) => string>,
+  answerId: number | null,
 }): React$Node => {
   return (
     <div className="ApplicationFormSubsectionFieldArray">
-      {fields.map((identifier, i) => (
-        <div
-          className="ApplicationFormSubsectionFieldArray__item"
-          key={identifier}
-        >
-          <div className="ApplicationFormSubsectionFieldArray__item-content">
-            <HeaderTag>
+      {fields.map((identifier, i) => {
+        const subtitle: string = (sectionTitleTransformers || []).reduce(
+          (title, transformer) => transformer(title, section, identifier), `${section.title} (${i + 1})`);
+
+        return (
+          <div
+            className="ApplicationFormSubsectionFieldArray__item"
+            key={identifier}
+          >
+            <div className="ApplicationFormSubsectionFieldArray__item-content">
               {fields.length > 1 && section.identifier !== TARGET_SECTION_IDENTIFIER && (
                 <RemoveButton
                   onClick={() => fields.remove(i)}
                   style={{float: 'right'}}
                 />
               )}
-              {section.identifier === TARGET_SECTION_IDENTIFIER
-                ? <>{section.title} ({getSectionTargetFromMeta(identifier)})</>
-                : <>{section.title} ({i + 1})</>
-              }
-            </HeaderTag>
-            <ApplicationFormSubsectionFields
-              section={section}
-              identifier={identifier}
-            />
+              <HeaderTag>
+                {subtitle}
+              </HeaderTag>
+              <ApplicationFormSubsectionFields
+                section={section}
+                identifier={identifier}
+                formName={formName}
+                formPath={formPath}
+                sectionTitleTransformers={sectionTitleTransformers}
+                answerId={answerId}
+              />
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       {section.identifier !== TARGET_SECTION_IDENTIFIER && <AddButton
-        onClick={() => fields.push(getSectionTemplate(section.identifier))}
+        onClick={() => fields.push(getSectionTemplate(formName, formPath, section.identifier))}
         label={section.add_new_text || 'Lisää uusi'}
       />}
     </div>
   );
 };
 
-const PlotApplicationSubsection = ({
+const ApplicationSubsection = ({
   path,
   section,
   headerTag: HeaderTag = 'h3',
   parentApplicantType,
+  formName,
+  formPath = '',
+  sectionTitleTransformers,
+  answerId,
 }: {
   path: Array<string>,
   section: Object,
   headerTag?: string | React$ComponentType<{ children?: React$Node }>,
-  parentApplicantType?: string | null
+  parentApplicantType?: string | null,
+  formName: string,
+  formPath: ?string,
+  sectionTitleTransformers: Array<(string, FormSection, string) => string>,
+  answerId: number | null,
 }): React$Node => {
   if (!section.visible) {
     return null;
@@ -453,20 +494,26 @@ const PlotApplicationSubsection = ({
   const isArray = section.add_new_allowed;
   const pathName = [...path, section.identifier].join('.');
 
+  const title = section.title || '(tuntematon osio)';
+
   return (
     <div className="ApplicationFormSubsection">
       {isArray ? (
         <FieldArray
           name={pathName}
           component={ApplicationFormSubsectionFieldArray}
-          props={{section, headerTag: HeaderTag}}
+          props={{section, headerTag: HeaderTag, formName, formPath, sectionTitleTransformers, answerId}}
         />
       ) : (
         <div className="ApplicationFormSubsection__content">
-          <HeaderTag>{section.title}</HeaderTag>
+          <HeaderTag>{title}</HeaderTag>
           <ApplicationFormSubsectionFields
             section={section}
             identifier={pathName}
+            formName={formName}
+            formPath={formPath}
+            sectionTitleTransformers={sectionTitleTransformers}
+            answerId={answerId}
           />
         </div>
       )}
@@ -474,4 +521,4 @@ const PlotApplicationSubsection = ({
   );
 };
 
-export default PlotApplicationSubsection;
+export default ApplicationSubsection;

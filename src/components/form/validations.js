@@ -12,6 +12,10 @@ const decimalPlaces = (n) => {
 
 export const required = (value: any, error?: string): ?string => {
   let val = value;
+
+  if (value instanceof Date) {
+    return !isNaN(value.valueOf()) ? undefined : (error ? error : 'Virheellinen arvo');
+  }
   if (isArray(value)) {
     return value.length ? undefined : (error ? error : 'Pakollinen kenttä');
   }

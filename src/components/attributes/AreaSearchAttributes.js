@@ -18,8 +18,10 @@ function AreaSearchAttributes(WrappedComponent: React$ComponentType<any>) {
     fetchAttributes: Function,
     fetchListAttributes: Function,
     areaSearchAttributes: Attributes,
+    areaSearchListAttributes: Attributes,
     areaSearchMethods: Methods,
     isFetchingAttributes: boolean,
+    isFetchingListAttributes: boolean,
   }
 
   return class PlotSearchAttributes extends PureComponent<Props> {
@@ -28,11 +30,15 @@ function AreaSearchAttributes(WrappedComponent: React$ComponentType<any>) {
         fetchAttributes,
         fetchListAttributes,
         areaSearchAttributes,
+        areaSearchListAttributes,
         isFetchingAttributes,
+        isFetchingListAttributes,
       } = this.props;
 
       if (!isFetchingAttributes && !areaSearchAttributes) {
         fetchAttributes();
+      }
+      if (!isFetchingListAttributes && !areaSearchListAttributes) {
         fetchListAttributes();
       }
     }

@@ -1,166 +1,131 @@
 // @flow
-import React, {Fragment, PureComponent} from 'react';
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router';
-import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
+import React, {Component} from 'react';
+import {FeatureGroup} from 'react-leaflet';
+import {EditControl} from 'react-leaflet-draw';
+import throttle from 'lodash/throttle';
+import classNames from 'classnames';
 
-import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
-import {DEFAULT_ZOOM, MAP_COLORS} from '$src/constants';
-import {
-  getApiResponseResults,
-  getUrlParams,
-} from '$util/helpers';
-import {getBoundsFromBBox, getBoundsFromFeatures} from '$util/map';
-import {getAreaNoteList} from '$src/areaNote/selectors';
-import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import MapContainer from '$src/areaNote/components/MapContainer';
+import {DEFAULT_CENTER, DEFAULT_ZOOM} from '$src/constants';
+import {convertFeatureCollectionToFeature} from '$src/areaNote/helpers';
 
-import type {ApiResponse, LeafletGeoJson} from '$src/types';
-import type {AreaNoteList} from '$src/areaNote/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import AreaSearchLayer from '$src/areaSearch/components/map/AreaSearchLayer';
-import {getAreaSearchListByBBox} from '$src/areaSearch/selectors';
-import {getAreaSearchGeoJson} from '$src/areaSearch/helpers';
-import {MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES} from '$src/areaSearch/constants';
-
-const getMapBounds = () => {
-  const {search} = location;
-  const searchQuery = getUrlParams(search);
-
-  return getBoundsFromBBox(searchQuery.in_bbox);
-};
-
-const getMapCenter = () => {
-  const bounds = getMapBounds();
-
-  return bounds ? bounds.getCenter() : null;
-};
-
-const getMapZoom = () => {
-  const {search} = location;
-  const searchQuery = getUrlParams(search);
-
-  return searchQuery.zoom || DEFAULT_ZOOM;
-};
-
-type OwnProps = {
-  allowToEdit: boolean,
-  isLoading: boolean,
-  onViewportChanged: Function,
-};
+const SHAPE_COLOR = '#9c27b0';
+const SHAPE_FILL_OPACITY = 0.5;
+const SHAPE_ERROR_COLOR = '#bd2719';
 
 type Props = {
-  ...OwnProps,
-  areaNotes: AreaNoteList,
-  searchData: ApiResponse,
-  location: Object,
-  usersPermissions: UsersPermissionsType,
-}
+  change: Function,
+  hasError: boolean,
+};
 
 type State = {
-  bounds: ?Object,
-  center: ?Object,
-  searchData: ApiResponse,
-  searchGeoJson: LeafletGeoJson,
-  stateOptions: Array<Object>,
-  zoom: number,
-}
+  isValid: boolean,
+};
 
-class AreaSearchMap extends PureComponent<Props, State> {
-  state = {
-    bounds: getMapBounds(),
-    center: getMapCenter(),
-    searchData: null,
-    searchGeoJson: {
-      features: [],
-      type: 'FeatureCollection',
-    },
-    stateOptions: [],
-    zoom: getMapZoom(),
+class AreaSearchMap extends Component<Props, State> {
+  featureGroup: ?Object;
+
+  state: State = {
+    isValid: false,
+  };
+
+  setFeatureGroupRef: (el: ?Object) => void = (el) => {
+    this.featureGroup = el;
   }
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
-
-    if (JSON.stringify(props.searchData) !== JSON.stringify(state.searchData)) {
-      newState.searchData = props.searchData;
-      newState.searchGeoJson = getAreaSearchGeoJson(getApiResponseResults(props.searchData) || []);
-    }
-
-    return !isEmpty(newState) ? newState : null;
-  }
-
-  getOverlayLayers = () => {
-    const layers = [];
-    const {searchGeoJson, stateOptions} = this.state;
-
-    layers.push({
-      checked: true,
-      component: <AreaSearchLayer
-        key='plot_search_targets'
-        color={MAP_COLORS[0]}
-        areaSearchesGeoJson={searchGeoJson}
-        stateOptions={stateOptions}
-      />,
-      name: 'Kohteet',
+  updateAllFeatures: () => void = throttle(() => {
+    this.featureGroup?.leafletElement?.eachLayer((layer) => {
+      layer.showMeasurements();
+      layer.updateMeasurements();
     });
+  }, 1000 / 60, {
+    leading: true,
+    trailing: true,
+  });
 
-    return layers;
+  handleNonCommittedChange: () => void = () => {
+    this.updateAllFeatures();
   }
 
-  getBounds() {
-    const {bounds, searchGeoJson} = this.state;
-    const {location: {search}} = this.props;
-    const searchQuery = getUrlParams(search);
+  handleAction: () => void = () => {
+    const {change} = this.props;
 
-    if (searchQuery && searchQuery.search) {
-      return getBoundsFromFeatures(searchGeoJson);
-    } else {
-      return bounds;
-    }
+    const features = [];
+    this.featureGroup?.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
+
+    this.setState({
+      isValid: features.length > 0,
+    });
+    change(convertFeatureCollectionToFeature(features).geometry);
   }
 
-  handleViewportChanged = (mapOptions: Object) => {
-    const {onViewportChanged} = this.props;
-    this.setState({zoom: mapOptions.zoom});
+  handleCreated: (Object) => void = (e) => {
+    const {change} = this.props;
+    const {layer} = e;
+    layer.showMeasurements();
 
-    onViewportChanged(mapOptions);
+    const features = [];
+    this.featureGroup?.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
+
+    this.setState({
+      isValid: features.length > 0,
+    });
+    change(convertFeatureCollectionToFeature(features).geometry);
   }
 
+  render(): React$Node {
+    const {hasError} = this.props;
 
-  render() {
-    const {isLoading} = this.props;
-    const {center, zoom} = this.state;
-    const overlayLayers = this.getOverlayLayers();
-    const bounds = this.getBounds();
-
-    return(
-      <Fragment>
-        <AreaNotesEditMap
-          allowToEdit={false}
-          bounds={bounds}
-          center={center}
-          isLoading={isLoading}
-          onViewportChanged={this.handleViewportChanged}
-          overlayLayers={overlayLayers}
-          showZoomLevelWarning={zoom < MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES}
-          zoom={zoom}
-          zoomLevelWarningText='Tarkenna lähemmäksi kartalla hakeaksesi hakemusten kohteet'
-        />
-      </Fragment>
+    return (
+      <div className={classNames('AreaSearchMap', {
+        'AreaSearchMap--has-error': hasError,
+      })}>
+        <div className="map">
+          <MapContainer
+            center={DEFAULT_CENTER}
+            zoom={DEFAULT_ZOOM}
+          >
+            <FeatureGroup ref={this.setFeatureGroupRef}>
+              <EditControl
+                position='topright'
+                onCreated={this.handleCreated}
+                onDeleted={this.handleAction}
+                onEdited={this.handleAction}
+                onEditMove={this.handleNonCommittedChange}
+                onEditVertex={this.handleNonCommittedChange}
+                onEditStop={this.handleNonCommittedChange}
+                onDeleteStop={this.handleNonCommittedChange}
+                draw={{
+                  circlemarker: false,
+                  circle: false,
+                  marker: false,
+                  polyline: false,
+                  polygon: {
+                    allowIntersection: false,
+                    showArea: true,
+                    drawError: {
+                      color: SHAPE_ERROR_COLOR,
+                      timeout: 1000,
+                    },
+                    shapeOptions: {
+                      color: SHAPE_COLOR,
+                      fillOpacity: SHAPE_FILL_OPACITY,
+                    },
+                  },
+                  rectangle: {
+                    shapeOptions: {
+                      color: SHAPE_COLOR,
+                      fillOpacity: SHAPE_FILL_OPACITY,
+                    },
+                  },
+                }}
+              />
+            </FeatureGroup>
+          </MapContainer>
+        </div>
+      </div>
     );
   }
 }
 
-export default (flowRight(
-  withRouter,
-  connect(
-    (state) => {
-      return {
-        searchData: getAreaSearchListByBBox(state),
-        areaNotes: getAreaNoteList(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-  ),
-)(AreaSearchMap): React$ComponentType<OwnProps>);
+export default AreaSearchMap;

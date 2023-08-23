@@ -13,53 +13,56 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import Title from '$components/content/Title';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import FormField from '$components/form/FormField';
 import {
   receiveCollapseStates,
   receiveIsSaveClicked,
 } from '$src/plotApplications/actions';
 import {
-  getAttributes,
   getCollapseStateByKey,
   getIsSaveClicked,
   getErrorsByFormName,
 } from '$src/plotApplications/selectors';
-
-import type {Attributes} from '$src/types';
 import {
   getInitialApplication,
-  getInitialApplicationForm,
-  getSectionTemplate,
+  getSectionTargetFromMeta,
 } from '$src/plotApplications/helpers';
 import {
-  getFormAttributes,
-  getIsFetching as getIsFetchingPlotSearchList, getIsFetchingForm,
-  getIsFetchingFormAttributes,
+  getIsFetching as getIsFetchingPlotSearchList,
+  getIsFetchingForm,
   getPlotSearchList,
 } from '$src/plotSearch/selectors';
-import {fetchFormAttributes} from '$src/plotSearch/actions';
 import {
   getCurrentEditorTargets,
   getCurrentPlotApplication,
-  getFieldTypeMapping,
-  getIsFetchingAttachmentAttributes,
-
 } from '$src/plotApplications/selectors';
-import PlotApplicationSubsection from '$src/plotApplications/components/PlotApplicationSubsection';
+import ApplicationSubsection from '$src/application/components/ApplicationSubsection';
 import {
-  fetchAttachmentAttributes,
-  fetchPendingUploads,
   receiveFormValidFlags,
   receiveSinglePlotApplication,
   setCurrentEditorTargets,
 } from '$src/plotApplications/actions';
 import Loader from '$components/loader/Loader';
-import {TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
+import {
+  getAttributes,
+  getFieldTypeMapping,
+  getFormAttributes,
+  getIsFetchingApplicantInfoCheckAttributes,
+  getIsFetchingAttachmentAttributes,
+  getIsFetchingFormAttributes,
+} from '$src/application/selectors';
+import {
+  getInitialApplicationForm,
+  getSectionTemplate,
+  getTargetTitle,
+} from '$src/application/helpers';
+import {fetchAttachmentAttributes, fetchFormAttributes, fetchPendingUploads} from '$src/application/actions';
+import {TARGET_SECTION_IDENTIFIER} from '$src/application/constants';
+
+import type {Attributes} from '$src/types';
 import type {PlotSearchList} from '$src/plotSearch/types';
 import type {PlotApplication} from '$src/plotApplications/types';
-import {getTargetTitle} from '$src/plotSearch/helpers';
-import {getIsFetchingApplicantInfoCheckAttributes} from '$src/application/selectors';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type OwnProps = {};
 
@@ -191,7 +194,7 @@ class PlotApplicationCreate extends PureComponent<Props, State> {
     // Create a new section for every previously missing target ID
     added.forEach((id) => {
       array.push(targetSectionsArrayPath, {
-        ...getSectionTemplate(TARGET_SECTION_IDENTIFIER),
+        ...getSectionTemplate(FormNames.PLOT_APPLICATION, 'formEntries', TARGET_SECTION_IDENTIFIER),
         metadata: {
           identifier: id,
         },
@@ -216,6 +219,7 @@ class PlotApplicationCreate extends PureComponent<Props, State> {
       errors,
       plotSearches,
       currentEditorTargets,
+      currentPlotApplication,
       retrievingData,
     } = this.props;
 
@@ -305,11 +309,17 @@ class PlotApplicationCreate extends PureComponent<Props, State> {
               <Row>
                 <Column small={12}>
                   {this.state.form.sections.map((section) => (
-                    <PlotApplicationSubsection
+                    <ApplicationSubsection
                       path={['formEntries.sections']}
                       section={section}
                       headerTag="h2"
                       key={section.id}
+                      formName={FormNames.PLOT_APPLICATION}
+                      formPath='formEntries'
+                      sectionTitleTransformers={[
+                        (title, section, identifier) => getSectionTargetFromMeta(identifier) || title,
+                      ]}
+                      answerId={currentPlotApplication?.id || null}
                     />
                   ))}
                 </Column>

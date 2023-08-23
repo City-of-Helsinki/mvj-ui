@@ -27,9 +27,6 @@ import {
   nullPlanUnits,
   receiveForm,
   formNotFound,
-  receiveFormAttributes,
-  formAttributesNotFound,
-  fetchFormAttributes,
   fetchTemplateForms,
   receiveTemplateForms,
   templateFormsNotFound,
@@ -62,7 +59,6 @@ import {
   fetchCustomDetailedPlan,
   fetchPlotSearchSubtypesRequest,
   fetchFormRequest,
-  fetchFormAttributesRequest,
   fetchTemplateFormsRequest,
   editFormRequest,
   fetchStagesRequest,
@@ -74,6 +70,7 @@ import {
 import {createLease} from '$src/leases/requests';
 import {RelationTypes} from '$src/leases/enums';
 import {fetchLeaseTypes} from '$src/leaseType/requests';
+import {fetchFormAttributes} from '$src/application/actions';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -472,25 +469,6 @@ function* editFormSaga({payload: form}): Generator<any, any, any> {
   }
 }
 
-function* fetchFormAttributesSaga({payload: id}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchFormAttributesRequest, id);
-    switch (statusCode) {
-      case 200:
-        const attributes = bodyAsJson.fields;
-        yield put(receiveFormAttributes(attributes));
-        break;
-      default:
-        yield put(formAttributesNotFound());
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch form attributes with error "%s"', error);
-    yield put(formAttributesNotFound());
-    yield put(receiveError(error));
-  }
-}
-
 function* fetchStagesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchStagesRequest);
@@ -626,7 +604,6 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
       yield takeEvery('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN', fetchCustomDetailedPlanSaga);
       yield takeEvery('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES', fetchCustomDetailedPlanAttributesSaga);
-      yield takeEvery('mvj/plotSearch/FETCH_FORM_ATTRIBUTES', fetchFormAttributesSaga);
       yield takeEvery('mvj/plotSearch/FETCH_FORM', fetchFormSaga);
       yield takeEvery('mvj/plotSearch/EDIT_FORM', editFormSaga);
       yield takeLatest('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);

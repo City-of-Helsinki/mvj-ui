@@ -1,0 +1,5 @@
+.AreaSearchMap {
+  &--has-error .map {
+    border: 1px solid $input-error-color;
+  }
+}

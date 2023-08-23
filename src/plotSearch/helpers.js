@@ -1,18 +1,17 @@
 // @flow
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+import {formValueSelector} from 'redux-form';
 
 import {getContentUser} from '$src/users/helpers';
-import type {PlotSearch, Form, PlotSearchState} from '$src/plotSearch/types';
 import {removeSessionStorageItem} from '$util/storage';
 import {FormNames} from '$src/enums';
-import {
-  getApiResponseResults,
-} from '$util/helpers';
-import {formatDate} from '$util/helpers';
-import {formValueSelector} from 'redux-form';
-import {PlotSearchTargetType, TargetIdentifierTypes} from '$src/plotSearch/enums';
+import {formatDate, getApiResponseResults} from '$util/helpers';
+import {PlotSearchTargetType} from '$src/plotSearch/enums';
+
+import type {PlotSearch, PlotSearchState} from '$src/plotSearch/types';
 import type {Attributes} from '$src/types';
+import type {Form} from '$src/application/types';
 
 /**
  * Get plotSearch basic information content
@@ -209,38 +208,3 @@ export const getInfoLinkLanguageDisplayText = (key: string, attributes: Attribut
   return languages?.find((language) => language.value === key)?.display_name || key;
 };
 
-export const getTargetType = (target: Object): string | null => {
-  if (target.plan_unit) {
-    return TargetIdentifierTypes.PLAN_UNIT;
-  }
-  if (target.custom_detailed_plan) {
-    return TargetIdentifierTypes.CUSTOM_DETAILED_PLAN;
-  }
-
-  return null;
-};
-
-export const getTargetIdentifier = (target: Object): string => {
-  const targetType = getTargetType(target);
-
-  if (targetType === TargetIdentifierTypes.PLAN_UNIT) {
-    return target.lease_identifier;
-  } else if (targetType === TargetIdentifierTypes.CUSTOM_DETAILED_PLAN) {
-    return target.custom_detailed_plan?.identifier || '';
-  } else {
-    return '';
-  }
-};
-
-export const getTargetTitle = (target: Object): string => {
-  const targetType = getTargetType(target);
-  const targetIdentifier = getTargetIdentifier(target);
-
-  if (targetType === TargetIdentifierTypes.PLAN_UNIT) {
-    return `${target.lease_address?.address || '-'} (${targetIdentifier})`;
-  } else if (targetType === TargetIdentifierTypes.CUSTOM_DETAILED_PLAN) {
-    return `${target.custom_detailed_plan?.address || '-'} (${targetIdentifier})`;
-  } else {
-    return '?';
-  }
-};

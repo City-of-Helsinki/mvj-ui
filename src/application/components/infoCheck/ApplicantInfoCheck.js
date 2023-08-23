@@ -1,7 +1,8 @@
 // @flow
 import React, {Component} from 'react';
-import {getLabelOfOption} from '$util/helpers';
 import {Column, Row} from 'react-foundation';
+
+import {getLabelOfOption} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 
 type Props = {

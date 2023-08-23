@@ -6,10 +6,10 @@ import flowRight from 'lodash/flowRight';
 import orderBy from 'lodash/orderBy';
 import get from 'lodash/get';
 import {Column, Row} from 'react-foundation';
+import {reduxForm} from 'redux-form';
 
 import {getAttributes, getCurrentAreaSearch} from '$src/areaSearch/selectors';
 import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
-import {getFormAttributes, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
 import {
   formatDate,
   formatDateRange,
@@ -19,7 +19,6 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 import type {Attributes} from '$src/types';
-import type {Form} from '$src/plotSearch/types';
 import {reshapeSavedApplicationObject} from '$src/plotApplications/helpers';
 import {transformApplicantSectionTitle} from '$src/application/helpers';
 import Title from '$components/content/Title';
@@ -34,16 +33,17 @@ import SubTitle from '$components/content/SubTitle';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import {getAreaFromGeoJSON} from '$util/map';
 import AreaSearchSelectedAreaMiniMap from '$src/areaSearch/components/map/AreaSearchSelectedAreaMiniMap';
-import {reduxForm} from 'redux-form';
-import {APPLICANT_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
 import AreaSearchApplicationPropertyIdentifiers
   from '$src/areaSearch/components/AreaSearchApplicationPropertyIdentifiers';
 import AreaSearchApplicantInfoCheckEdit from '$src/areaSearch/components/AreaSearchApplicantInfoCheckEdit';
 import {FieldTypes, FormNames} from '$src/enums';
-import {getInitialAreaSearch, transformApplicantInfoCheckTitle} from '$src/areaSearch/helpers';
+import {getInitialAreaSearchEditForm, transformApplicantInfoCheckTitle} from '$src/areaSearch/helpers';
 import FormField from '$components/form/FormField';
 import TitleH3 from '$components/content/TitleH3';
 import AreaSearchStatusNoteHistory from '$src/areaSearch/components/AreaSearchStatusNoteHistory';
+import {getFormAttributes, getIsFetchingFormAttributes} from '$src/application/selectors';
+import {APPLICANT_SECTION_IDENTIFIER} from '$src/application/constants';
+import type {Form} from '$src/application/types';
 
 type OwnProps = {
 
@@ -89,7 +89,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       return;
     }
 
-    initialize(getInitialAreaSearch(areaSearch));
+    initialize(getInitialAreaSearchEditForm(areaSearch));
   }
 
   render(): React$Node {

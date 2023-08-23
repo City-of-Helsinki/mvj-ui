@@ -1,35 +1,34 @@
 // @flow
 import merge from 'lodash/merge';
-
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
-import type {Attributes, Reducer, Methods} from '$src/types';
-import {FormNames} from '$src/enums';
 import type {Action, CombinedReducer} from 'redux';
 
+import {FormNames} from '$src/enums';
+import {annotatePlanUnitDecision} from '$src/plotSearch/helpers';
+
 import type {
-  ReceiveIsSaveClickedAction,
+  AddPlanUnitDecisionsAction,
+  CustomDetailedPlan,
+  PlanUnit,
   PlotSearch,
   PlotSearchList,
-  CustomDetailedPlan,
+  PlotSearchState,
   ReceiveAttributesAction,
   ReceiveCollapseStatesAction,
-  ReceivePlotSearchListAction,
-  ReceiveSinglePlotSearchAction,
-  ReceiveFormValidFlagsAction,
-  ReceiveMethodsAction,
-  PlanUnit,
-  ReceivePlotSearchSubtypesAction,
-  ReceiveFormAttributesAction,
   ReceiveFormAction,
-  ReceiveTemplateFormsAction,
-  AddPlanUnitDecisionsAction,
+  ReceiveFormValidFlagsAction,
+  ReceiveIsSaveClickedAction,
+  ReceiveMethodsAction,
+  ReceivePlotSearchListAction,
   ReceivePlotSearchStagesAction,
-  RemovePlanUnitDecisionsAction,
+  ReceivePlotSearchSubtypesAction,
   ReceiveSingleCustomDetailedPlanAction,
-  PlotSearchState,
+  ReceiveSinglePlotSearchAction,
+  ReceiveTemplateFormsAction,
+  RemovePlanUnitDecisionsAction,
 } from '$src/plotSearch/types';
-import {annotatePlanUnitDecision} from '$src/plotSearch/helpers';
+import type {Attributes, Methods, Reducer} from '$src/types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -182,12 +181,6 @@ const subTypesReducer: Reducer<Object> = handleActions({
   },
 }, null);
 
-const isFetchingFormAttributesReducer: Reducer<boolean> = handleActions({
-  ['mvj/plotSearch/FETCH_FORM_ATTRIBUTES']: () => true,
-  ['mvj/plotSearch/FORM_ATTRIBUTES_NOT_FOUND']: () => false,
-  ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: () => false,
-}, false);
-
 const isFetchingTemplateFormsReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/FETCH_TEMPLATE_FORMS']: () => true,
   ['mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND']: () => false,
@@ -199,12 +192,6 @@ const isFetchingFormReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/FORM_NOT_FOUND']: () => false,
   ['mvj/plotSearch/RECEIVE_FORM']: () => false,
 }, false);
-
-const formAttributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveFormAttributesAction) => {
-    return attributes;
-  },
-}, null);
 
 const templateFormsReducer: Reducer<Object> = handleActions({
   ['mvj/plotSearch/RECEIVE_TEMPLATE_FORMS']: (state: Object, {payload: forms}: ReceiveTemplateFormsAction) => {
@@ -310,10 +297,8 @@ export default (combineReducers<Object, any>({
   pendingPlanUnitFetches: pendingPlanUnitFetchesReducer,
   isFetchingPlanUnitAttributes: isFetchingPlanUnitAttributesReducer,
   subTypes: subTypesReducer,
-  isFetchingFormAttributes: isFetchingFormAttributesReducer,
   isFetchingTemplateForms: isFetchingTemplateFormsReducer,
   isFetchingForm: isFetchingFormReducer,
-  formAttributes: formAttributesReducer,
   templateForms: templateFormsReducer,
   form: formReducer,
   decisionCandidates: decisionCandidateReducer,

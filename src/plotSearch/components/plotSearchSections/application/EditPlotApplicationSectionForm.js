@@ -13,12 +13,13 @@ import FormField from '$components/form/FormField';
 import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {FormNames} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {getFormAttributes} from '$src/plotSearch/selectors';
 import SectionField from '$src/plotSearch/components/plotSearchSections/application/SectionField';
 import Collapse from '$src/components/collapse/Collapse';
-import type {Attributes} from '$src/types';
 import SubTitle from '$src/components/content/SubTitle';
-import type {FormSection} from '$src/plotSearch/types';
+import {getFormAttributes} from '$src/application/selectors';
+
+import type {Attributes} from '$src/types';
+import type {FormSection} from '$src/application/types';
 
 type SectionFieldProps = {
   disabled: boolean,

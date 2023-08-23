@@ -1,19 +1,18 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
+import {orderBy} from 'lodash';
 
 import {
-  getApplicationRelatedAttachments,
-  getApplicationRelatedForm, getApplicationRelatedPlotSearch,
-  getCurrentPlotApplication, getIsFetchingApplicationRelatedAttachments, getIsFetchingApplicationRelatedPlotSearch,
+  getApplicationRelatedForm,
+  getApplicationRelatedPlotSearch,
+  getCurrentPlotApplication,
+  getIsFetchingApplicationRelatedPlotSearch,
 } from '$src/plotApplications/selectors';
-import type {RootState} from '$src/root/types';
-import type {PlotApplication} from '$src/plotApplications/types';
 import {reshapeSavedApplicationObject} from '$src/plotApplications/helpers';
 import {getFieldAttributes} from '$util/helpers';
-import {getFormAttributes, getIsFetchingForm, getIsFetchingFormAttributes} from '$src/plotSearch/selectors';
+import {getIsFetchingForm} from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
-import {orderBy} from 'lodash';
 import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
 import Loader from '$components/loader/Loader';
 import Title from '$components/content/Title';
@@ -23,8 +22,16 @@ import PlotApplicationTargetInfoCheckEdit
   from '$src/plotApplications/components/infoCheck/PlotApplicationTargetInfoCheckEdit';
 import PlotApplicationApplicantInfoCheckEdit
   from '$src/plotApplications/components/infoCheck/PlotApplicationApplicantInfoCheckEdit';
-import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/plotApplications/constants';
 import {transformApplicantSectionTitle, transformTargetSectionTitle} from '$src/application/helpers';
+import {
+  getApplicationRelatedAttachments,
+  getFormAttributes, getIsFetchingApplicationRelatedAttachments,
+  getIsFetchingFormAttributes,
+} from '$src/application/selectors';
+import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/application/constants';
+
+import type {RootState} from '$src/root/types';
+import type {PlotApplication} from '$src/plotApplications/types';
 
 type OwnProps = {};
 

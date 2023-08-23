@@ -33,7 +33,7 @@ import {
 } from '$src/plotSearch/actions';
 import {
   PlotSearchFieldTitles,
-  TargetIdentifierTypes,
+
 } from '$src/plotSearch/enums';
 import {
   formatDate,
@@ -56,12 +56,13 @@ import {
   getIsFetchingPlanUnitAttributes,
   getCurrentPlotSearch,
 } from '$src/plotSearch/selectors';
-import type {Attributes} from '$src/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import SuggestedEdit from '$src/plotSearch/components/plotSearchSections/basicInfo/SuggestedEdit';
 import RemoveButton from '$src/components/form/RemoveButton';
 import PlotSearchSiteEditCustomDetailedPlan from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSiteEditCustomDetailedPlan';
+import {TargetIdentifierTypes} from '$src/application/enums';
 
+import type {Attributes} from '$src/types';
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
 type SuggestedProps = {
   attributes: Attributes,
@@ -599,7 +600,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
     const isDeleted = get(currentTarget, 'is_master_plan_unit_deleted');
     const isNewer = get(currentTarget, 'is_master_plan_unit_newer');
     const label = get(currentTarget, 'message_label');
-    
+
     const planUnitTitle = get(planUnitNew, 'label') ? `${get(planUnitNew, 'label') || ''} ${get(planUnitByValue, 'plan_unit_status') || ''}` : 'Uusi kohde';
 
     if (customDetailedPlanByValue) {
