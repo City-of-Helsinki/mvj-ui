@@ -118,29 +118,35 @@ class AreaSearchApplication extends Component<Props, State> {
           defaultOpen
         >
           <Row>
-            <Column small={6} medium={3} large={2}>
+            <Column small={4} medium={4} large={2}>
               <FormTextTitle>
                 {AreaSearchFieldTitles.RECEIVED_DATE}
               </FormTextTitle>
               <FormText>{formatDate(areaSearch.received_date, 'dd.MM.yyyy H.mm')}</FormText>
             </Column>
-            <Column small={6} medium={2} large={1}>
+            <Column small={4} medium={4} large={2}>
               <FormTextTitle>
                 {AreaSearchFieldTitles.STATE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(stateOptions, areaSearch.state)}</FormText>
             </Column>
-            <Column small={6} medium={3} large={3}>
+            <Column small={4} medium={4} large={3}>
               <FormTextTitle>
                 {AreaSearchFieldTitles.LESSOR}
               </FormTextTitle>
               <FormText>{getLabelOfOption(lessorOptions, areaSearch.lessor) || '-'}</FormText>
             </Column>
-            <Column small={6} medium={4} large={6}>
+            <Column small={6} medium={6} large={3}>
               <FormTextTitle>
                 {AreaSearchFieldTitles.PREPARER}
               </FormTextTitle>
               <FormText>{getUserFullName(areaSearch.preparer) || '-'}</FormText>
+            </Column>
+            <Column small={6} medium={6} large={2}>
+              <FormTextTitle>
+                {AreaSearchFieldTitles.DECLINE_REASON}
+              </FormTextTitle>
+              <FormText>{getLabelOfOption(declineReasonOptions, areaSearch.area_search_status?.decline_reason) || '-'}</FormText>
             </Column>
           </Row>
         </Collapse>

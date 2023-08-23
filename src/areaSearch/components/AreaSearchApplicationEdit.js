@@ -126,8 +126,6 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       ].filter((part) => !!part).join(', ') || selectedAreaTitle;
     }
 
-    const stateOptions = getFieldOptions(areaSearchAttributes, 'state', false);
-    const lessorOptions = getFieldOptions(areaSearchAttributes, 'lessor', false);
     const intendedUseOptions = getFieldOptions(areaSearchAttributes, 'intended_use', false);
 
     const applicantSection = form?.sections.find((section) => section.identifier === APPLICANT_SECTION_IDENTIFIER);
@@ -144,29 +142,48 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
           defaultOpen
         >
           <Row>
-            <Column small={6} medium={3} large={2}>
+            <Column small={4} medium={4} large={2}>
               <FormTextTitle>
                 {AreaSearchFieldTitles.RECEIVED_DATE}
               </FormTextTitle>
               <FormText>{formatDate(areaSearch.received_date, 'dd.MM.yyyy H.mm')}</FormText>
             </Column>
-            <Column small={6} medium={2} large={1}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.STATE}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(stateOptions, areaSearch.state)}</FormText>
+            <Column small={4} medium={4} large={2}>
+              <FormField
+                name='state'
+                fieldAttributes={get(areaSearchAttributes, 'state')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.STATE,
+                }}
+              />
             </Column>
-            <Column small={6} medium={3} large={3}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.LESSOR}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(lessorOptions, areaSearch.lessor) || '-'}</FormText>
+            <Column small={4} medium={4} large={3}>
+              <FormField
+                name='lessor'
+                fieldAttributes={get(areaSearchAttributes, 'lessor')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.LESSOR,
+                }}
+              />
             </Column>
-            <Column small={6} medium={4} large={6}>
-              <FormTextTitle>
-                {AreaSearchFieldTitles.PREPARER}
-              </FormTextTitle>
-              <FormText>{getUserFullName(areaSearch.preparer) || '-'}</FormText>
+            <Column small={6} medium={6} large={3}>
+              <FormField
+                name='preparer'
+                fieldAttributes={get(areaSearchAttributes, 'preparer')}
+                overrideValues={{
+                  fieldType: FieldTypes.USER,
+                  label: AreaSearchFieldTitles.PREPARER,
+                }}
+              />
+            </Column>
+            <Column small={6} medium={6} large={2}>
+              <FormField
+                name='decline_reason'
+                fieldAttributes={get(areaSearchAttributes, 'area_search_status.children.decline_reason')}
+                overrideValues={{
+                  label: AreaSearchFieldTitles.DECLINE_REASON,
+                }}
+              />
             </Column>
           </Row>
         </Collapse>
