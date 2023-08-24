@@ -88,7 +88,7 @@ const planUnitReducer: Reducer<PlanUnit> = handleActions({
   {
     return merge(state, planUnit);
   },
-  ['mvj/plotSearch/NULL_PLAN_UNITS']: () => null,
+  ['mvj/plotSearch/NULL_PLAN_UNITS']: () => ({}),
 }, {});
 
 const customDetailedPlanAttributesReducer: Reducer<Attributes> = handleActions({
