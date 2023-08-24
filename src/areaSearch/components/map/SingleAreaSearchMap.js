@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {FeatureGroup, GeoJSON} from 'react-leaflet';
+import classNames from 'classnames';
 
 import {DEFAULT_CENTER, DEFAULT_ZOOM} from '$src/constants';
 import MapContainer from '$src/areaNote/components/MapContainer';
@@ -10,9 +11,10 @@ import {getAreaSearchFeatures} from '$src/areaSearch/helpers';
 
 type Props = {
   geometry: LeafletFeatureGeometry,
+  minimap?: boolean,
 };
 
-class AreaSearchSelectedAreaMiniMap extends Component<Props> {
+class SingleAreaSearchMap extends Component<Props> {
   featureGroup: any = null;
   mapInstance: any = null;
 
@@ -60,12 +62,17 @@ class AreaSearchSelectedAreaMiniMap extends Component<Props> {
   };
 
   render(): React$Node {
-    const {geometry} = this.props;
+    const {geometry, minimap = false} = this.props;
     const center = this.getMapCenter();
     const bounds = this.getMapBounds();
 
     return (
-      <div className="AreaSearchSelectedAreaMiniMap">
+      <div className={classNames(
+        'SingleAreaSearchMap',
+        {
+          'map': !minimap,
+          'SingleAreaSearchMap--minimap': minimap,
+        })}>
         <MapContainer
           bounds={bounds}
           center={center ?? DEFAULT_CENTER}
@@ -85,4 +92,4 @@ class AreaSearchSelectedAreaMiniMap extends Component<Props> {
   }
 }
 
-export default AreaSearchSelectedAreaMiniMap;
+export default SingleAreaSearchMap;

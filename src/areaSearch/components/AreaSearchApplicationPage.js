@@ -20,7 +20,7 @@ import Tabs from '$components/tabs/Tabs';
 import ContentContainer from '$components/content/ContentContainer';
 import {
   getIsFetching as getIsFetchingUsersPermissions,
-  getUsersPermissions
+  getUsersPermissions,
 } from '$src/usersPermissions/selectors';
 import PageNavigationWrapper from '$components/content/PageNavigationWrapper';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -73,6 +73,7 @@ import {prepareAreaSearchForSubmission} from '$src/areaSearch/helpers';
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {InfoCheckBatchEditData} from '$src/areaSearch/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import SingleAreaSearchMap from '$src/areaSearch/components/map/SingleAreaSearchMap';
 
 type OwnProps = {|
 
@@ -508,7 +509,9 @@ class AreaSearchApplicationPage extends Component<Props, State> {
 
             <TabPane>
               <ContentContainer>
-                {'Kartta'}
+                {currentAreaSearch &&
+                  <SingleAreaSearchMap geometry={currentAreaSearch.geometry} />
+                }
               </ContentContainer>
             </TabPane>
           </TabContent>
