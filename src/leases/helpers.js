@@ -1079,6 +1079,55 @@ export const getContentEqualizedRents = (rent: Object): Array<Object> =>
     });
 
 /**
+ * Check if subvention data has changed for rent adjustments.
+ * If current props are undefined, they are not considered changed.
+ * @param {Object} props
+ * @param {Object} prevProps
+ * @return {boolean}
+ */
+export const hasSubventionDataChanged = (prevProps: Object, props: Object): boolean => {
+  const {
+      subventionType,
+      subventionBasePercent,
+      subventionGraduatedPercent,
+      managementSubventions,
+      temporarySubventions,
+  } = props
+  
+  if (
+      typeof subventionType === "undefined" ||
+      typeof subventionBasePercent === "undefined" ||
+      typeof subventionGraduatedPercent === "undefined" ||
+      typeof managementSubventions === "undefined" ||
+      typeof temporarySubventions === "undefined"
+  ) {
+      return false
+  }
+  
+  const {
+      subventionType: prevSubventionType = null,
+      subventionBasePercent: prevSubventionBasePercent = null,
+      subventionGraduatedPercent: prevSubventionGraduatedPercent = null,
+      managementSubventions: prevManagementSubventions = null,
+      temporarySubventions: prevTemporarySubventions = null,
+  } = prevProps
+
+  if (
+      subventionType !== prevSubventionType ||
+      subventionBasePercent !== prevSubventionBasePercent ||
+      subventionGraduatedPercent !== prevSubventionGraduatedPercent ||
+      managementSubventions !== prevManagementSubventions ||
+      temporarySubventions !== prevTemporarySubventions
+  ) {
+      return true
+
+  } else {
+      return false
+
+  }
+};
+
+/**
  * Calculate re-lease discount percent for rent adjustment subvention
  * @param {string} subventionBasePercent
  * @param {string} subventionGraduatedPercent

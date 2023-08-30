@@ -40,6 +40,7 @@ import {
   calculateReLeaseDiscountPercent,
   calculateRentAdjustmentSubventionPercentCumulative,
   getDecisionById,
+  hasSubventionDataChanged,
 } from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
@@ -270,11 +271,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if(this.props.subventionType !== prevProps.subventionType ||
-      this.props.subventionBasePercent !== prevProps.subventionBasePercent ||
-      this.props.subventionGraduatedPercent !== prevProps.subventionGraduatedPercent ||
-      this.props.managementSubventions !== prevProps.managementSubventions ||
-      this.props.temporarySubventions !== prevProps.temporarySubventions) {
+    if (typeof this.props !== "undefined" && hasSubventionDataChanged(prevProps, this.props)) {
       const {change, field} = this.props;
 
       change(formName, `${field}.full_amount`, formatNumber(this.calculateTotalSubventionPercent())); // TODO 
