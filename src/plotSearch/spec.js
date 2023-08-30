@@ -429,9 +429,15 @@ describe('PlotSearch', () => {
       });
 
       it('should null PlanUnits', () => {
-        const newState = {...baseState, planUnit: null};
+        const newState = {...baseState, planUnit: {}};
 
-        const state = plotSearchReducer({}, nullPlanUnits());
+        const state = plotSearchReducer({
+          planUnit: {
+            '12345': {
+              id: 12345,
+            },
+          },
+        }, nullPlanUnits());
         expect(state).to.deep.equal(newState);
       });
 
