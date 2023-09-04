@@ -1081,28 +1081,18 @@ export const getContentEqualizedRents = (rent: Object): Array<Object> =>
 /**
  * Check if subvention data has changed for rent adjustments.
  * If current props are undefined, they are not considered changed.
- * @param {Object} props
  * @param {Object} prevProps
+ * @param {Object} props
  * @return {boolean}
  */
 export const hasSubventionDataChanged = (prevProps: Object, props: Object): boolean => {
   const {
-      subventionType,
-      subventionBasePercent,
-      subventionGraduatedPercent,
-      managementSubventions,
-      temporarySubventions,
-  } = props
-  
-  if (
-      typeof subventionType === "undefined" ||
-      typeof subventionBasePercent === "undefined" ||
-      typeof subventionGraduatedPercent === "undefined" ||
-      typeof managementSubventions === "undefined" ||
-      typeof temporarySubventions === "undefined"
-  ) {
-      return false
-  }
+      subventionType = null,
+      subventionBasePercent = null,
+      subventionGraduatedPercent = null,
+      managementSubventions = null,
+      temporarySubventions = null,
+  } = props;
   
   const {
       subventionType: prevSubventionType = null,
@@ -1110,21 +1100,13 @@ export const hasSubventionDataChanged = (prevProps: Object, props: Object): bool
       subventionGraduatedPercent: prevSubventionGraduatedPercent = null,
       managementSubventions: prevManagementSubventions = null,
       temporarySubventions: prevTemporarySubventions = null,
-  } = prevProps
+  } = prevProps;
 
-  if (
-      subventionType !== prevSubventionType ||
+  return subventionType !== prevSubventionType ||
       subventionBasePercent !== prevSubventionBasePercent ||
       subventionGraduatedPercent !== prevSubventionGraduatedPercent ||
       managementSubventions !== prevManagementSubventions ||
-      temporarySubventions !== prevTemporarySubventions
-  ) {
-      return true
-
-  } else {
-      return false
-
-  }
+      temporarySubventions !== prevTemporarySubventions;
 };
 
 /**
