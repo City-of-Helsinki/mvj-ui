@@ -261,19 +261,12 @@ type Props = {
   usersPermissions: UsersPermissionsType,
 }
 
-type State = {
-  showSubventions: boolean,
-}
-
-class RentAdjustmentsEdit extends PureComponent<Props, State> {
-  state = {
-    showSubventions: this.props.subventionType ? true : false,
-  }
+class RentAdjustmentsEdit extends PureComponent<Props> {
 
   componentDidUpdate(prevProps: Props) {
-    if (typeof this.props !== "undefined" && hasSubventionDataChanged(prevProps, this.props)) {
+    if (this.props && hasSubventionDataChanged(prevProps, this.props)) {
       const {change, field} = this.props;
-
+      
       change(formName, `${field}.full_amount`, formatNumber(this.calculateTotalSubventionPercent())); // TODO 
     }
   }
@@ -296,7 +289,10 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
   };
 
   handleAddSubventions = () => {
-    this.setState({showSubventions: true});
+    const {change, field} = this.props;
+
+    // To make the subvention form visible: null => ""
+    change(formName, `${field}.subvention_type`, "");
   }
 
   handleRemoveSubventions = () => {
@@ -304,9 +300,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
 
     change(formName, `${field}.subvention_type`, null);
     change(formName, `${field}.management_subventions`, []);
-    change(formName, `${field}.temporary_subventions`, []);
-    
-    this.setState({showSubventions: false});
+    change(formName, `${field}.temporary_subventions`, []);    
   }
 
   calculateReLeaseDiscountPercent = () => {
@@ -338,7 +332,7 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
       type,
       usersPermissions,
     } = this.props;
-    const {showSubventions} = this.state;
+    const showSubventions = typeof subventionType === "string"
     const totalSubventionPercent = this.calculateTotalSubventionPercent();
 
     return (
