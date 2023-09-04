@@ -1086,27 +1086,21 @@ export const getContentEqualizedRents = (rent: Object): Array<Object> =>
  * @return {boolean}
  */
 export const hasSubventionDataChanged = (prevProps: Object, props: Object): boolean => {
-  const {
-      subventionType = null,
-      subventionBasePercent = null,
-      subventionGraduatedPercent = null,
-      managementSubventions = null,
-      temporarySubventions = null,
-  } = props;
+  if (
+    typeof props.subventionType === "undefined" ||
+    typeof props.subventionBasePercent === "undefined" ||
+    typeof props.subventionGraduatedPercent === "undefined" ||
+    typeof props.managementSubventions === "undefined" ||
+    typeof props.temporarySubventions === "undefined"
+  ) {
+    return false
+  }
   
-  const {
-      subventionType: prevSubventionType = null,
-      subventionBasePercent: prevSubventionBasePercent = null,
-      subventionGraduatedPercent: prevSubventionGraduatedPercent = null,
-      managementSubventions: prevManagementSubventions = null,
-      temporarySubventions: prevTemporarySubventions = null,
-  } = prevProps;
-
-  return subventionType !== prevSubventionType ||
-      subventionBasePercent !== prevSubventionBasePercent ||
-      subventionGraduatedPercent !== prevSubventionGraduatedPercent ||
-      managementSubventions !== prevManagementSubventions ||
-      temporarySubventions !== prevTemporarySubventions;
+  return props.subventionType !== prevProps.subventionType ||
+      props.subventionBasePercent !== prevProps.subventionBasePercent ||
+      props.subventionGraduatedPercent !== prevProps.subventionGraduatedPercent ||
+      props.managementSubventions !== prevProps.managementSubventions ||
+      props.temporarySubventions !== prevProps.temporarySubventions
 };
 
 /**
