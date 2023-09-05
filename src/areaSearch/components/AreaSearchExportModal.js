@@ -25,6 +25,8 @@ type Props = {
   change: Function,
   selectedMode: ?string,
   selectedSearches: {[key: string]: boolean},
+  includeInformationChecks: boolean,
+  includeAttachments: boolean,
 };
 
 export const ExportModes = {
@@ -39,11 +41,20 @@ class AreaSearchExportModal extends Component<Props> {
 
     if (isOpen && !prevProps.isOpen) {
       change('mode', null);
+      change('includePreparerInformation', false);
+      change('includeAttachments', false);
     }
   }
 
   render(): React$Node {
-    const {isOpen, onClose, selectedMode, selectedSearches} = this.props;
+    const {
+      isOpen,
+      onClose,
+      selectedMode,
+      selectedSearches,
+      includeInformationChecks,
+      includeAttachments,
+    } = this.props;
 
     const selectedSearchIds = Object.keys(selectedSearches).reduce((acc, key) => {
       if (selectedSearches[key]) {
@@ -58,11 +69,24 @@ class AreaSearchExportModal extends Component<Props> {
     switch (selectedMode) {
       case ExportModes.APPLICATIONS_PDF:
         guideText = 'Tulostus sisältää valitut hakemukset .pdf-muodossa.';
-        downloadUrl = createUrl(`area_search/get_answers_pdf/?ids=${selectedSearchIds.join(',')}`);
+
+        const params: {[key: string]: string} = {
+          ids: selectedSearchIds.join(','),
+        };
+        if (includeInformationChecks) {
+          params.show_information_check = '1';
+        }
+        if (includeAttachments) {
+          params.show_attachments = '1';
+        }
+
+        downloadUrl = createUrl('area_search_pdf/', params);
         break;
       case ExportModes.APPLICATIONS_XLS:
         guideText = 'Tulostus sisältää valitut hakemukset .xls-muodossa.';
-        downloadUrl = createUrl(`area_search/get_answers_xlsx/?ids=${selectedSearchIds.join(',')}`);
+        downloadUrl = createUrl('area_search/get_answers_xlsx/', {
+          ids: selectedSearchIds.join(','),
+        });
         break;
     }
 
@@ -71,7 +95,7 @@ class AreaSearchExportModal extends Component<Props> {
         isOpen={isOpen}
         onClose={onClose}
         title="Tulosta tiedostoon"
-        className="PlotSearchExportModal"
+        className="AreaSearchExportModal"
       >
 
         <FormField
@@ -94,7 +118,47 @@ class AreaSearchExportModal extends Component<Props> {
           }}
           disableDirty
         />
-        {guideText}
+        <span className="AreaSearchExportModal__guide-text">{guideText}</span>
+        {selectedMode === ExportModes.APPLICATIONS_PDF && <>
+          <FormField
+            name="includeInformationChecks"
+            fieldAttributes={{
+              type: FieldTypes.CHECKBOX,
+              required: false,
+              read_only: false,
+              label: 'Sisällytä tulostukseen käsittelytiedot',
+            }}
+            overrideValues={{
+              options: [
+                {
+                  value: true,
+                  label: 'Sisällytä tulostukseen käsittelytiedot',
+                },
+              ],
+            }}
+            disableDirty
+            invisibleLabel
+          />
+          <FormField
+            name="includeAttachments"
+            fieldAttributes={{
+              type: FieldTypes.CHECKBOX,
+              required: false,
+              read_only: false,
+              label: 'Sisällytä tulostukseen liitteet',
+            }}
+            overrideValues={{
+              options: [
+                {
+                  value: true,
+                  label: 'Sisällytä tulostukseen liitteet',
+                },
+              ],
+            }}
+            disableDirty
+            invisibleLabel
+          />
+        </>}
         <ModalButtonWrapper>
           <Button
             className={ButtonColors.SECONDARY}
@@ -114,11 +178,14 @@ class AreaSearchExportModal extends Component<Props> {
 }
 
 const formName = FormNames.AREA_SEARCH_EXPORT;
+const selector = formValueSelector(formName);
 
 export default (flowRight(
   connect((state: RootState) => ({
-    selectedMode: formValueSelector(formName)(state, 'mode'),
-    selectedSearches: formValueSelector(formName)(state, 'selectedSearches'),
+    selectedMode: selector(state, 'mode'),
+    selectedSearches: selector(state, 'selectedSearches'),
+    includeInformationChecks: selector(state, 'includeInformationChecks'),
+    includeAttachments: selector(state, 'includeAttachments'),
   })),
   reduxForm({
     form: formName,

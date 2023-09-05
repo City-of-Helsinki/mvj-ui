@@ -815,6 +815,8 @@ export default (flowRight(
     initialValues: {
       mode: null,
       selectedSearches: {},
+      includeInformationChecks: false,
+      includeAttachments: false,
     },
   })
 )(AreaSearchApplicationListPage): React$ComponentType<OwnProps>);
