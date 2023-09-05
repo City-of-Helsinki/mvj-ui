@@ -1532,6 +1532,19 @@ export const calculateSubventionDiscountTotal = (initialYearRent: number, manage
 };
 
 /**
+ * Check if subventions have values for calculation
+ * @param {number} initialYearRent
+ * @param {Object[]} managementSubventions
+ * @param {number} currentAmountPerArea
+ * @return {number}
+ */
+export const hasSubventionValues = (managementSubventions: ?Array<Object>, temporarySubventions: ?Array<Object>): boolean => {
+  let msWithValues = managementSubventions.filter((subvention) => !!subvention.subvention_amount)
+  let tsWithValues = temporarySubventions.filter((subvention) => !!subvention.subvention_percent)
+  return !!(msWithValues.length || tsWithValues.length)
+};
+
+/**
  * Calculate basis of rent subvention percent
  * @param {number} initialYearRent
  * @param {number} reLeaseDiscountPercent
