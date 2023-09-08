@@ -15,16 +15,6 @@ const SERVICE_MAP_URL = 'https://api.hel.fi/servicemap/v2';
 type Language = 'fi' | 'sv';
 const MINIMUM_SEARCH_STRING = 4
 
-type Street = {
-  id: number,
-  language: Language,
-  municipality: string,
-  name: {
-    fi: string,
-    sv: string,
-  },
-}
-
 type Address = {
   object_type: string,
   name: {
@@ -71,7 +61,6 @@ type State = {
   isLoading: boolean,
   menuOpen: boolean,
   selectedAddress: ?Address,
-  streets: Array<Street>,
   value: ?string,
 }
 
@@ -87,7 +76,6 @@ class AddressSearchInput extends Component<Props, State> {
     isLoading: false,
     menuOpen: false,
     selectedAddress: null,
-    streets: [],
     value: '',
   }
 
@@ -184,17 +172,6 @@ class AddressSearchInput extends Component<Props, State> {
         case KeyCodes.ENTER:
           if(focusedValue) {
             this.handleAddressItemClick(focusedValue);
-
-          } else {
-            const {addresses, selectedAddress, value} = this.state;
-
-            if(selectedAddress) {
-              const address = addresses.find((address) => this.getAddressText(address).toLowerCase() === (value ? value.toLowerCase() : ''));
-
-              if(address) {
-                this.handleAddressItemClick(address);
-              }
-            }
           }
           break;
         case KeyCodes.ESC:
@@ -254,7 +231,7 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   searchByKeyword = debounce((input: string) => {
-    const fetchByKeyword = (language: 'fi' | 'sv') => {
+    const fetchByKeyword = (language: Language) => {
       const url = `${SERVICE_MAP_URL}/search/?${stringifyQuery({
         page_size: 4,
         type: 'address',
@@ -274,8 +251,8 @@ class AddressSearchInput extends Component<Props, State> {
       // const svResults = await svResponse.json();
 
       return [
-        ...fiResults.results.map((street) => ({...street, language: 'fi'})),
-        // ...svResults.results.map((street) => ({...street, language: 'sv'})),
+        ...fiResults.results.map((address) => ({...address, language: 'fi'})),
+        // ...svResults.results.map((address) => ({...address, language: 'sv'})),
       ];
     };
 
@@ -299,15 +276,6 @@ class AddressSearchInput extends Component<Props, State> {
         console.error(`Failed to fetch by keyword with error ${error}`);
       });
   }, 750)
-
-  sortStreets = (a: Street, b: Street) => {
-    const aStreet = a.name[a.language] ? a.name[a.language].toLowerCase() : '';
-    const bStreet = b.name[b.language] ? b.name[b.language].toLowerCase() : '';
-
-    if(aStreet < bStreet) return -1;
-    if(aStreet > bStreet) return 1;
-    return 0;
-  }
 
   handleOnChange = (e: any) => {
     const {onChange} = this.props;
@@ -333,23 +301,6 @@ class AddressSearchInput extends Component<Props, State> {
     }
   }
 
-  getStreetText = (street: Street) => `${street.name[street.language]}`;
-
-  getFullStreetText = (street: Street) => `${street.name[street.language]}, ${capitalize(street.municipality)}`;
-
-  sortAddresses = (a: Address, b: Address) => {
-    if(a.number === b.number) {
-      const aLetter = a.letter ? a.letter : '';
-      const bLetter = b.letter ? b.letter : '';
-
-      if(aLetter < bLetter) return -1;
-      if(aLetter > bLetter) return 1;
-      return 0;
-    }
-
-    return Number(a.number) - Number(b.number);
-  }
-
   handleAddressItemClick = (address: Address) => {
     const {onChange} = this.props,
       newValue = address.name.fi;
@@ -367,13 +318,6 @@ class AddressSearchInput extends Component<Props, State> {
       this.input.focus();
     }
   }
-
-  getAddressText = (address: Address) => {
-    const {selectedStreet} = this.state;
-    const numberText = `${address.number}${address.letter || ''}${address.number_end ? ` - ${address.number_end}` : ''}`;
-
-    return selectedStreet ? `${this.getStreetText(selectedStreet)} ${numberText}` : '';
-  };
 
   fetchAddressDetails = (address: Address) => {
     const {addressDetailsCallBack} = this.props;
@@ -419,7 +363,7 @@ class AddressSearchInput extends Component<Props, State> {
 
   render() {
     const {id, name, selected} = this.props;
-    const {addresses, focusedValue, isLoading, menuOpen, selectedAddress, streets, value} = this.state;
+    const {addresses, focusedValue, isLoading, menuOpen, selectedAddress, value} = this.state;
     
 
     return(
