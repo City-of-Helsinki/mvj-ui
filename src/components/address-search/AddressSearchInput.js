@@ -9,10 +9,11 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {stringifyQuery} from '$src/api/createUrl';
 import {KeyCodes} from '$src/enums';
-import {findFromOcdString, hasNumber} from '$util/helpers';
+import {findFromOcdString} from '$util/helpers';
 
 const SERVICE_MAP_URL = 'https://api.hel.fi/servicemap/v2';
 type Language = 'fi' | 'sv';
+const MINIMUM_SEARCH_STRING = 4
 
 type Street = {
   id: number,
@@ -25,18 +26,36 @@ type Street = {
 }
 
 type Address = {
-  number: string,
-  number_end: ?string,
-  letter: ?string,
-  location: {
-    coordinates: Array<number>
+  object_type: string,
+  name: {
+      fi: string,
+      sv: string,
+      en: string
   },
-  street: Street,
-}
+  number: string,
+  number_end: string,
+  letter: string,
+  modified_at: string,
+  municipality: {
+      id: string,
+      name: {
+          fi: string,
+          sv: string
+      }
+  },
+  street: {
+      name: {
+          fi: string,
+          sv: string
+      }
+  },
+  location: {
+      type: string,
+      coordinates: Array<number>
+  }}
 
 type Props = {
   addressDetailsCallBack?: Function,
-  autoComplete: string,
   id?: string,
   name?: string,
   onBlur?: Function,
@@ -47,12 +66,11 @@ type Props = {
 type State = {
   addresses: Array<Address>,
   filteredAddresses: Array<Address>,
-  focusedType: 'street' | 'address' | null,
   focusedValue: ?Object,
   hasFocus: boolean,
   isLoading: boolean,
   menuOpen: boolean,
-  selectedStreet: ?Street,
+  selectedAddress: ?Address,
   streets: Array<Street>,
   value: ?string,
 }
@@ -64,12 +82,11 @@ class AddressSearchInput extends Component<Props, State> {
   state = {
     addresses: [],
     filteredAddresses: [],
-    focusedType: null,
     focusedValue: null,
     hasFocus: false,
     isLoading: false,
     menuOpen: false,
-    selectedStreet: null,
+    selectedAddress: null,
     streets: [],
     value: '',
   }
@@ -92,13 +109,6 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if(prevState.addresses !== this.state.addresses ||
-      prevState.value !== this.state.value) {
-      this.setState({
-        filteredAddresses: this.filterAddresses(),
-      });
-    }
-
     if(prevState.focusedValue !== this.state.focusedValue) {
       this.scrollToFocusedItem();
     }
@@ -131,12 +141,6 @@ class AddressSearchInput extends Component<Props, State> {
     }
   }
 
-  filterAddresses = (): Array<Address> => {
-    const {addresses, value} = this.state;
-
-    return addresses.filter((address) => this.getAddressText(address).toLowerCase().startsWith(value ? value.toLowerCase() : ''));
-  }
-
   onDocumentClick = (event: any) => {
     const {menuOpen} = this.state;
     const target = event.target,
@@ -157,14 +161,13 @@ class AddressSearchInput extends Component<Props, State> {
 
   closeMenu = () => {
     this.setState({
-      focusedType: null,
       focusedValue: null,
       menuOpen: false,
     });
   }
 
   onKeyDown = (e: any) => {
-    const {focusedType, focusedValue, hasFocus} = this.state;
+    const {focusedValue, hasFocus} = this.state;
 
     if(hasFocus) {
       switch(e.keyCode) {
@@ -180,19 +183,13 @@ class AddressSearchInput extends Component<Props, State> {
           break;
         case KeyCodes.ENTER:
           if(focusedValue) {
-            switch (focusedType) {
-              case 'address':
-                this.handleAddressItemClick(focusedValue);
-                break;
-              case 'street':
-                this.handleStreetItemClick(focusedValue);
-                break;
-            }
-          } else {
-            const {filteredAddresses, selectedStreet, value} = this.state;
+            this.handleAddressItemClick(focusedValue);
 
-            if(selectedStreet) {
-              const address = filteredAddresses.find((address) => this.getAddressText(address).toLowerCase() === (value ? value.toLowerCase() : ''));
+          } else {
+            const {addresses, selectedAddress, value} = this.state;
+
+            if(selectedAddress) {
+              const address = addresses.find((address) => this.getAddressText(address).toLowerCase() === (value ? value.toLowerCase() : ''));
 
               if(address) {
                 this.handleAddressItemClick(address);
@@ -204,16 +201,7 @@ class AddressSearchInput extends Component<Props, State> {
           this.closeMenu();
           break;
         case KeyCodes.TAB:
-          const {filteredAddresses, selectedStreet, value} = this.state;
-
-          if(selectedStreet) {
-            const address = filteredAddresses.find((address) => this.getAddressText(address).toLowerCase() === (value ? value.toLowerCase() : ''));
-
-            if(address) {
-              this.handleAddressItemClick(address);
-            }
-          }
-
+          e.preventDefault();
           this.closeMenu();
           break;
       }
@@ -240,60 +228,32 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   focusValue = (direction: 'next' | 'previous') => {
-    const {focusedValue, selectedStreet} = this.state;
+    const {focusedValue} = this.state;
+    
+    const {addresses} = this.state;
+    const index = addresses.findIndex((address) => focusedValue === address);
 
-    if(!selectedStreet) {
-      const {streets} = this.state;
-      const index = streets.findIndex((street) => focusedValue === street);
-
-      switch(direction) {
-        case 'next':
-          if(index < (streets.length - 1)) {
-            this.setState({
-              focusedType: 'street',
-              focusedValue: streets[index + 1],
-              menuOpen: true,
-            });
-          }
-          break;
-        case 'previous':
-          if(index > (0)) {
-            this.setState({
-              focusedType: 'street',
-              focusedValue: streets[index - 1],
-              menuOpen: true,
-            });
-          }
-          break;
-      }
-    } else {
-      const {filteredAddresses} = this.state;
-      const index = filteredAddresses.findIndex((address) => focusedValue === address);
-
-      switch(direction) {
-        case 'next':
-          if(index < (filteredAddresses.length - 1)) {
-            this.setState({
-              focusedType: 'address',
-              focusedValue: filteredAddresses[index + 1],
-              menuOpen: true,
-            });
-          }
-          break;
-        case 'previous':
-          if(index) {
-            this.setState({
-              focusedType: 'address',
-              focusedValue: filteredAddresses[index - 1],
-              menuOpen: true,
-            });
-          }
-          break;
-      }
+    switch(direction) {
+      case 'next':
+        if(index < (addresses.length - 1)) {
+          this.setState({
+            focusedValue: addresses[index + 1],
+            menuOpen: true,
+          });
+        }
+        break;
+      case 'previous':
+        if(index > (0)) {
+          this.setState({
+            focusedValue: addresses[index - 1],
+            menuOpen: true,
+          });
+        }
+        break;
     }
   }
 
-  searchByKeyword = (input: string) => {
+  searchByKeyword = debounce((input: string) => {
     const fetchByKeyword = (language: 'fi' | 'sv') => {
       const url = `${SERVICE_MAP_URL}/search/?${stringifyQuery({
         page_size: 4,
@@ -308,14 +268,14 @@ class AddressSearchInput extends Component<Props, State> {
 
     const fetchResults = async() => {
       const fiResponse = await fetchByKeyword('fi');
-      const svResponse = await fetchByKeyword('sv');
+      // const svResponse = await fetchByKeyword('sv');
 
       const fiResults = await fiResponse.json();
-      const svResults = await svResponse.json();
+      // const svResults = await svResponse.json();
 
       return [
         ...fiResults.results.map((street) => ({...street, language: 'fi'})),
-        ...svResults.results.map((street) => ({...street, language: 'sv'})),
+        // ...svResults.results.map((street) => ({...street, language: 'sv'})),
       ];
     };
 
@@ -324,12 +284,12 @@ class AddressSearchInput extends Component<Props, State> {
     fetchResults()
       .then((results) => {
         if(results.length) {
-          const street = {
-            ...results[0].street,
-            language: results[0].language,
-          };
+          this.setState({
+            addresses: results,
+            selectedAddress: results[0],
+          });
 
-          this.searchAddresses(street);
+          this.setState({isLoading: false});
         } else {
           this.setState({isLoading: false});
         }
@@ -338,7 +298,7 @@ class AddressSearchInput extends Component<Props, State> {
         this.setState({isLoading: false});
         console.error(`Failed to fetch by keyword with error ${error}`);
       });
-  }
+  }, 750)
 
   sortStreets = (a: Street, b: Street) => {
     const aStreet = a.name[a.language] ? a.name[a.language].toLowerCase() : '';
@@ -349,68 +309,18 @@ class AddressSearchInput extends Component<Props, State> {
     return 0;
   }
 
-  searchStreets = debounce((input: string) => {
-    const fetchStreets = (language: 'fi' | 'sv') => {
-      const url = `${SERVICE_MAP_URL}/street/?${stringifyQuery({
-        page_size: 4,
-        input: input,
-        language: language,
-      })}`;
-      const request = new Request(url);
-
-      return fetch(request);
-    };
-
-    const fetchAllStreets = async() => {
-      const fiResponse = await fetchStreets('fi');
-      const svResponse = await fetchStreets('sv');
-
-      const fiResults = await fiResponse.json();
-      const svResults = await svResponse.json();
-
-      return [
-        ...fiResults.results.map((street) => ({...street, language: 'fi'})),
-        ...svResults.results.map((street) => ({...street, language: 'sv'})),
-      ];
-    };
-
-    this.setState({isLoading: true});
-
-    fetchAllStreets()
-      .then((results) => {
-        const streets = results.sort(this.sortStreets),
-          newState: any = {streets: streets};
-
-        if(streets.length === 1) {
-          const {selectedStreet} = this.state;
-
-          if(!selectedStreet || (streets[0].id !== selectedStreet.id)) {
-            newState.selectedStreet = streets[0];
-            this.searchAddresses(streets[0]);
-          }
-        } else {
-          newState.selectedStreet = null;
-          newState.addresses = [];
-        }
-
-        newState.isLoading = false;
-        this.setState(newState);
-      })
-      .catch((error) => {
-        this.setState({isLoading: false});
-        console.error(`Failed to fetch streets with error ${error}`);
-      });
-  }, 300);
-
   handleOnChange = (e: any) => {
     const {onChange} = this.props;
-    const {selectedStreet} = this.state;
     const newValue = e.target.value;
 
-    if(!selectedStreet && hasNumber(newValue)) {
+    if(newValue && newValue?.length >= MINIMUM_SEARCH_STRING) {
       this.searchByKeyword(newValue);
-    } else if(!selectedStreet || (selectedStreet && !newValue.startsWith(selectedStreet.name[selectedStreet.language]))) {
-      this.searchStreets(newValue);
+    }
+
+    if (!newValue || newValue?.length < MINIMUM_SEARCH_STRING) {
+      this.setState({
+        addresses: []
+      })
     }
 
     this.setState({
@@ -440,44 +350,14 @@ class AddressSearchInput extends Component<Props, State> {
     return Number(a.number) - Number(b.number);
   }
 
-  searchAddresses = (street: Street) => {
-    const url = `${SERVICE_MAP_URL}/address/?${stringifyQuery({
-      page: 1,
-      page_size: 200,
-      street: street.id,
-      language: street.language,
-    })}`;
-    const request = new Request(url);
-
-    this.setState({isLoading: true});
-
-    fetch(request)
-      .then((response) => response.json())
-      .then((results) => {
-        this.setState({
-          addresses: results.results.sort(this.sortAddresses),
-          selectedStreet: street,
-        });
-
-        this.setState({isLoading: false});
-      })
-      .catch((error) => {
-        this.setState({isLoading: false});
-        console.error(`Failed to fetch addresses with error ${error}`);
-      });
-  };
-
-  handleStreetItemClick = (street: Street) => {
+  handleAddressItemClick = (address: Address) => {
     const {onChange} = this.props,
-      newValue = `${this.getStreetText(street)} `;
+      newValue = address.name.fi;
 
-    this.searchAddresses(street);
+    this.setState({value: newValue});
+    this.closeMenu();
+    this.fetchAddressDetails(address);
 
-    this.setState({
-      focusedType: null,
-      focusedValue: null,
-      value: newValue,
-    });
 
     if(onChange) {
       onChange(newValue);
@@ -494,33 +374,6 @@ class AddressSearchInput extends Component<Props, State> {
 
     return selectedStreet ? `${this.getStreetText(selectedStreet)} ${numberText}` : '';
   };
-
-  getFullAddressText = (address: Address) => {
-    const {selectedStreet} = this.state;
-    const numberText = `${address.number}${address.letter || ''}${address.number_end ? ` - ${address.number_end}` : ''}`;
-
-    return selectedStreet
-      ? `${this.getStreetText(selectedStreet)} ${numberText}, ${capitalize(address.street.municipality)}`
-      : '';
-  };
-
-  handleAddressItemClick = (address: Address) => {
-    const {onChange} = this.props,
-      newValue = `${this.getAddressText(address)}`;
-
-    this.setState({value: newValue});
-    this.closeMenu();
-    this.fetchAddressDetails(address);
-
-
-    if(onChange) {
-      onChange(newValue);
-    }
-
-    if(this.input) {
-      this.input.focus();
-    }
-  }
 
   fetchAddressDetails = (address: Address) => {
     const {addressDetailsCallBack} = this.props;
@@ -551,7 +404,7 @@ class AddressSearchInput extends Component<Props, State> {
           if(addressDetailsCallBack) {
             addressDetailsCallBack({
               postalCode,
-              city: address.street.municipality ? capitalize(address.street.municipality) : '',
+              city: address.municipality.name.fi ? capitalize(address.municipality.name.fi) : '',
               country,
             });
           }
@@ -565,8 +418,9 @@ class AddressSearchInput extends Component<Props, State> {
   };
 
   render() {
-    const {autoComplete, id, name, selected} = this.props;
-    const {addresses, filteredAddresses, focusedValue, isLoading, menuOpen, selectedStreet, streets, value} = this.state;
+    const {id, name, selected} = this.props;
+    const {addresses, focusedValue, isLoading, menuOpen, selectedAddress, streets, value} = this.state;
+    
 
     return(
       <div className={classNames('address-search-input', {'open': menuOpen})}>
@@ -575,7 +429,7 @@ class AddressSearchInput extends Component<Props, State> {
         }
         <input
           ref={this.setInputRef}
-          autoComplete={autoComplete}
+          autoComplete="off"
           id={id}
           name={name}
           onBlur={this.handleBlur}
@@ -586,31 +440,15 @@ class AddressSearchInput extends Component<Props, State> {
         />
         <div className={classNames('address-search-input__dropdown', {'open': menuOpen})}>
           <ul ref={this.refMenuListRef}>
-            {!selectedStreet && !streets.length &&
-              <li className='no-result-item'>Ei katuja</li>
+            {selectedAddress && !addresses.length &&
+              <li className='no-result-item'>Ei osoitteita.</li>
             }
-            {(!selectedStreet || !addresses.length) && !!streets.length && streets.map((street, index) => {
-              const handleClick = () => {
-                this.handleStreetItemClick(street);
-              };
-
-              const text = this.getFullStreetText(street);
-
-              return <li
-                key={index}
-                onClick={handleClick}
-                className={classNames('list-item', {'is-focused': focusedValue === street})}
-              >{text}</li>;
-            })}
-            {selectedStreet && !!addresses.length && !filteredAddresses.length &&
-              <li className='no-result-item'>Ei osoitteita</li>
-            }
-            {selectedStreet && !!filteredAddresses.length && filteredAddresses.map((address, index) => {
+            {selectedAddress && !!addresses.length && addresses.map((address, index) => {
               const handleClick = () => {
                 this.handleAddressItemClick(address);
               };
 
-              const text = this.getFullAddressText(address);
+              const text = `${address.name.fi}, ${address.municipality.name.fi}`;
 
               return <li key={index} onClick={handleClick} className={classNames('list-item', {'is-focused': focusedValue === address})}>
                 {text}
