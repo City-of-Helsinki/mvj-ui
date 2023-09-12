@@ -13,7 +13,8 @@ import {findFromOcdString} from '$util/helpers';
 
 const SERVICE_MAP_URL = 'https://api.hel.fi/servicemap/v2';
 type Language = 'fi' | 'sv';
-const MINIMUM_SEARCH_STRING = 4
+const MINIMUM_SEARCH_STRING = 3
+const DEBOUNCE_TIME_MILLISECONDS = 500
 
 type Address = {
   object_type: string,
@@ -245,14 +246,11 @@ class AddressSearchInput extends Component<Props, State> {
 
     const fetchResults = async() => {
       const fiResponse = await fetchByKeyword('fi');
-      // const svResponse = await fetchByKeyword('sv');
 
       const fiResults = await fiResponse.json();
-      // const svResults = await svResponse.json();
 
       return [
         ...fiResults.results.map((address) => ({...address, language: 'fi'})),
-        // ...svResults.results.map((address) => ({...address, language: 'sv'})),
       ];
     };
 
@@ -275,7 +273,7 @@ class AddressSearchInput extends Component<Props, State> {
         this.setState({isLoading: false});
         console.error(`Failed to fetch by keyword with error ${error}`);
       });
-  }, 750)
+  }, DEBOUNCE_TIME_MILLISECONDS)
 
   handleOnChange = (e: any) => {
     const {onChange} = this.props;
