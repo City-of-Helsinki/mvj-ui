@@ -233,7 +233,7 @@ class AddressSearchInput extends Component<Props, State> {
   searchByKeyword = debounce((input: string) => {
     const fetchByKeyword = (language: Language) => {
       const url = `${SERVICE_MAP_URL}/search/?${stringifyQuery({
-        page_size: 4,
+        page_size: 25,
         type: 'address',
         input: input,
         language: language,
