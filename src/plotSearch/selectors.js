@@ -140,3 +140,6 @@ export const getReservationIdentifierUnitLists: Selector<Object, void> = (state:
 
 export const getIsCreatingDirectReservationLink: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotSearch.isCreatingDirectReservationLink;
+
+export const getSectionEditorCollapseStates: Selector<{[key: string]: boolean}, void> = (state: RootState): {[key: string]: boolean} =>
+  state.plotSearch.sectionEditorCollapseStates;

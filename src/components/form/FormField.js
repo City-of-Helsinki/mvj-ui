@@ -283,6 +283,7 @@ type Props = {
   filterOption?: Function,
   invisibleLabel?: boolean,
   isLoading?: boolean,
+  isMulti?: boolean,
   language?: string,
   name: string,
   onBlur?: Function,

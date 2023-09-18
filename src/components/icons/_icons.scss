@@ -43,6 +43,18 @@
     stroke: none !important;
   }
 
+  &.icons__move-up,
+  &.icons__move-down {
+    width: rem-calc(16px);
+
+    &.icon-medium {
+      width: rem-calc(12px);
+    }
+    &.icon-small {
+      width: rem-calc(9px);
+    }
+  }
+
   &.icon-medium {
     height: rem-calc(20px);
     width: rem-calc(20px);
