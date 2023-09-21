@@ -32,9 +32,9 @@ export const ApplicantInfoCheckExternalTypes = {
   TRADE_REGISTER_INQUIRY: 'trade_register_inquiry',
 };
 export const ApplicantTypes = {
-  PERSON: 'Person',
-  COMPANY: 'Company',
-  BOTH: 'Both',
+  PERSON: 'person',
+  COMPANY: 'company',
+  BOTH: 'both',
   UNKNOWN: null,
 
   // UI only states
