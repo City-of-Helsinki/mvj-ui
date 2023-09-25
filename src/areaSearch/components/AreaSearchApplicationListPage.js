@@ -5,12 +5,12 @@ import flowRight from 'lodash/flowRight';
 import isArray from 'lodash/isArray';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {initialize} from 'redux-form';
+import {formValueSelector, initialize, reduxForm} from 'redux-form';
 import {withRouter} from 'react-router';
 import debounce from 'lodash/debounce';
 
 import AuthorizationError from '$components/authorization/AuthorizationError';
-import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
+import {FieldTypes, FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -63,10 +63,12 @@ import Button from '$components/button/Button';
 import EditAreaSearchPreparerModal from '$src/areaSearch/components/EditAreaSearchPreparerModal';
 import Authorization from '$components/authorization/Authorization';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import FormField from '$components/form/FormField';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ApiResponse} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import AreaSearchExportModal from '$src/areaSearch/components/AreaSearchExportModal';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -93,6 +95,7 @@ type Props = {
   isFetchingAreaSearchListAttributes: boolean,
   isFetching: boolean,
   initialize: Function,
+  initializeForm: Function,
   isFetchingByBBox: boolean,
   fetchAreaSearchList: Function,
   fetchAreaSearchListByBBox: Function,
@@ -101,6 +104,8 @@ type Props = {
   editAreaSearch: Function,
   isEditingAreaSearch: boolean,
   lastEditError: any,
+  change: Function,
+  selectedSearches: Object,
 }
 
 type State = {
@@ -114,6 +119,7 @@ type State = {
   selectedStates: Array<string>,
   visualizationType: string,
   isEditModalOpen: boolean,
+  isExportModalOpen: boolean,
   editModalTargetAreaSearch: ?number,
 }
 
@@ -131,6 +137,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     selectedStates: DEFAULT_AREA_SEARCH_STATES,
     visualizationType: VisualizationTypes.TABLE,
     isEditModalOpen: false,
+    isExportModalOpen: false,
     editModalTargetAreaSearch: null,
   }
 
@@ -198,10 +205,38 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   getColumns = () => {
-    const {areaSearchListAttributes} = this.props;
+    const {areaSearchListAttributes, selectedSearches} = this.props;
     const columns = [];
     const intendedUseOptions = getFieldOptions(areaSearchListAttributes, 'intended_use');
     const stateOptions = getFieldOptions(areaSearchListAttributes, 'state');
+
+    columns.push({
+      key: 'checkbox',
+      text: 'Tulosta',
+      sortable: false,
+      renderer: (_, item) => <div onMouseDown={(e) => {
+        e.stopPropagation();
+      }}>
+        <FormField
+          name={`selectedSearches.${item.id}`}
+          fieldAttributes={{
+            type: FieldTypes.CHECKBOX,
+            label: 'Valitse hakemus ' + item.identifier,
+            read_only: false,
+          }}
+          autoBlur
+          disableDirty
+          invisibleLabel
+          overrideValues={{
+            options: [{value: true, label: ''}],
+          }}
+          onBlur={(_, value) => this.updateAllSearchesSelected({
+            ...selectedSearches,
+            [item.id]: value,
+          })}
+        />
+      </div>,
+    });
 
     columns.push({
       key: 'identifier',
@@ -290,6 +325,18 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     this.setState(() => ({
       isEditModalOpen: false,
       editModalTargetAreaSearch: null,
+    }));
+  };
+
+  openExportModal = () => {
+    this.setState(() => ({
+      isExportModalOpen: true,
+    }));
+  };
+
+  closeExportModal = () => {
+    this.setState(() => ({
+      isExportModalOpen: false,
     }));
   };
 
@@ -397,12 +444,14 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   updateTableData = () => {
-    const {areaSearches} = this.props;
+    const {areaSearches, change} = this.props;
 
     this.setState({
       count: getApiResponseCount(areaSearches),
       maxPage: getApiResponseMaxPage(areaSearches, LIST_TABLE_PAGE_SIZE),
     });
+    change('selectedSearches', {});
+    change('allSelected', false);
   }
 
   handleSearchChange = (query: Object, resetActivePage?: boolean = true) => {
@@ -497,7 +546,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   setSearchFormValues = () => {
-    const {location: {search}, initialize} = this.props;
+    const {location: {search}, initializeForm} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     const states = this.getSearchStates(searchQuery);
@@ -516,7 +565,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       delete initialValues.visualization;
       delete initialValues.zoom;
 
-      await initialize(FormNames.AREA_SEARCH_SEARCH, initialValues);
+      await initializeForm(FormNames.AREA_SEARCH_SEARCH, initialValues);
     };
 
     this.setState({
@@ -538,7 +587,23 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     history.push({
       pathname: `${getRouteById(Routes.AREA_SEARCH)}/uusi`,
     });
-  }
+  };
+
+  selectAllSearches = (event: SyntheticFocusEvent<HTMLInputElement>, value: boolean) => {
+    const {change, areaSearches} = this.props;
+
+    change('selectedSearches', areaSearches?.results.reduce((acc, result) => {
+      acc[result.id] = value;
+      return acc;
+    }, {}));
+  };
+
+  updateAllSearchesSelected = (selectedSearches: Object) => {
+    const {change, areaSearches} = this.props;
+
+    const isAllSelected = areaSearches?.results.every((search) => selectedSearches[search.id] === true);
+    change('allSelected', isAllSelected);
+  };
 
   render() {
     const {
@@ -550,6 +615,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       isFetchingByBBox,
       isFetchingAreaSearchListAttributes,
       location: {search},
+      selectedSearches = {},
     } = this.props;
 
     const {
@@ -561,6 +627,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       selectedStates,
       visualizationType,
       isEditModalOpen,
+      isExportModalOpen,
       editModalTargetAreaSearch,
     } = this.state;
     const searchQuery = getUrlParams(search);
@@ -661,6 +728,27 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
                 sortable
                 sortKey={sortKey}
                 sortOrder={sortOrder}
+                footer={({columnCount}: {columnCount: number}) => <tr>
+                  <td />
+                  <td colSpan={columnCount - 1}>
+                    <FormField
+                      name={`allSelected`}
+                      fieldAttributes={{
+                        type: FieldTypes.CHECKBOX,
+                        label: '',
+                        read_only: false,
+                      }}
+                      autoBlur
+                      disableDirty
+                      invisibleLabel
+                      overrideValues={{
+                        options: [{value: true, label: 'Valitse kaikki suodatuksen mukaan'}],
+                      }}
+                      onBlur={this.selectAllSearches}
+                      onChange={this.selectAllSearches}
+                    />
+                  </td>
+                </tr>}
               />
 
               <Pagination
@@ -678,16 +766,24 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
             />
           }
         </TableWrapper>
+        <Button onClick={this.openExportModal} text="Tulosta" disabled={selectedSearches.length === 0} />
         <EditAreaSearchPreparerModal
           isOpen={isEditModalOpen}
           onClose={this.closeAreaSearchEditModal}
           onSubmit={this.submitAreaSearchEditModal}
           areaSearchId={editModalTargetAreaSearch}
         />
+        <AreaSearchExportModal
+          isOpen={isExportModalOpen}
+          onClose={this.closeExportModal}
+        />
       </PageContainer>
     );
   }
 }
+
+const FORM_NAME = FormNames.AREA_SEARCH_EXPORT;
+const selector = formValueSelector(FORM_NAME);
 
 export default (flowRight(
   withRouter,
@@ -702,14 +798,25 @@ export default (flowRight(
         areaSearchesByBBox: getAreaSearchListByBBox(state),
         isEditingAreaSearch: getIsEditingAreaSearch(state),
         lastEditError: getLastAreaSearchEditError(state),
+        selectedSearches: selector(state, 'selectedSearches'),
       };
     },
     {
       receiveTopNavigationSettings,
-      initialize,
+      // initialize bound to the row selection form is set by reduxForm
+      initializeForm: initialize,
       fetchAreaSearchList,
       fetchAreaSearchListByBBox,
       editAreaSearch,
     },
   ),
+  reduxForm({
+    form: FORM_NAME,
+    initialValues: {
+      mode: null,
+      selectedSearches: {},
+      includeInformationChecks: false,
+      includeAttachments: false,
+    },
+  })
 )(AreaSearchApplicationListPage): React$ComponentType<OwnProps>);

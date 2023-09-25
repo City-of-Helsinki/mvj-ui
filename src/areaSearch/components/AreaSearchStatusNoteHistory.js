@@ -21,7 +21,7 @@ class AreaSearchStatusNoteHistory extends Component<Props> {
       defaultOpen
       className="AreaSearchStatusNoteHistory"
       headerTitle="Historia">
-      {statusNotes.map((note) => <div className="AreaSearchStatusNoteHistory__item" key={note.id}>
+      {statusNotes.map((note) => <div className="AreaSearchStatusNoteHistory__item" key={note.time_stamp}>
         <strong>Käsittelijä: </strong>
         {getUserFullName(note.preparer)} {formatDate(note.time_stamp, 'dd.MM.yyyy H.mm')}
         <p>
