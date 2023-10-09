@@ -39,6 +39,11 @@ const ApplicationAnswersField = ({
     <Row>
       {section.fields.filter((field) => field.enabled).map((field) => {
         const fieldAnswer = answer.fields[field.identifier];
+        const fieldType = fieldTypes?.find((fieldType) => fieldType.value === field.type)?.display_name;
+
+        if (fieldType === 'hidden') {
+          return null;
+        }
 
         const getChoiceName = (id) => {
           if (!id) {
@@ -57,7 +62,7 @@ const ApplicationAnswersField = ({
 
         let displayValue = fieldAnswer?.value;
         if (displayValue !== undefined && displayValue !== null) {
-          switch (fieldTypes?.find((fieldType) => fieldType.value === field.type)?.display_name) {
+          switch (fieldType) {
             case 'radiobutton':
             case 'radiobuttoninline':
               displayValue = getChoiceName(displayValue);
@@ -85,12 +90,6 @@ const ApplicationAnswersField = ({
               </li>)}</ul> : null;
               break;
             case 'hidden':
-              if(!field.choices) {
-                displayValue = field.default_value;
-                break;
-              }
-
-              displayValue = field.choices.find(choice => choice.value === field.default_value)?.text;
               break;
           }
         }

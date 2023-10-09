@@ -299,7 +299,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
 
     columns.push({
       key: 'target_identifier',
-      text: 'Kohteen hakemustunnus',
+      text: 'Kohteen tunnus',
       sortable: false,
       renderer: ({identifier, application}) => identifier
         ? <ExternalLink

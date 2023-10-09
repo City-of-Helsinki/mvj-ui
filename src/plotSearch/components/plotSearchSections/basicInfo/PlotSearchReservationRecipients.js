@@ -22,7 +22,7 @@ const PlotSearchReservationRecipients = ({reservationRecipients}: Props): React$
           {PlotSearchFieldTitles.RESERVATION_RECIPIENT_SHARE_OF_RENTAL}
         </FormTextTitle>
       </Column>
-      {reservationRecipients.length === 0 && <Column small="12">
+      {reservationRecipients.length === 0 && <Column small={12}>
         <FormText>
           Ei ehdotettuja varauksensaajia.
         </FormText>

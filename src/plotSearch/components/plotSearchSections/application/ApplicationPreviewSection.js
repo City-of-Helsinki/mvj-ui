@@ -83,6 +83,10 @@ class ApplicationPreviewSection extends PureComponent<Props> {
     const typeMapping = get(attributes, 'sections.child.children.fields.child.children.type.choices');
     const matchingType = typeMapping.find((type) => type.value === field.type)?.display_name;
 
+    if (matchingType === 'hidden') {
+      return null;
+    }
+
     switch (matchingType) {
       case 'checkbox':
         fieldSpecificComponents = <FormField name={fakeFieldId} fieldAttributes={{
@@ -186,29 +190,6 @@ class ApplicationPreviewSection extends PureComponent<Props> {
         };
         break;
       case 'hidden':
-        fieldSpecificComponents = <FormField
-          name={fakeFieldId}
-          fieldAttributes={{
-            type: 'hidden',
-            required: false,
-            read_only: true,
-            value: field.default_value,
-            label: get(field, 'label'),
-          }}
-          readOnlyValueRenderer={() => {
-            if(field.default_value == null) {
-              return '-';
-            }
-
-            if(!field.choices) {
-              return field.default_value;
-            }
-
-            return field.choices.find(choice => choice.value === field.default_value).text;
-
-          }}
-          disabled
-        />;
         break;
       default:
         console.error(`Form field type ${matchingType} (${field?.type}) is not implemented`);
