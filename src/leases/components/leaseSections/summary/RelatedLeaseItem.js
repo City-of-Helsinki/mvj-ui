@@ -38,8 +38,11 @@ const RelatedLeaseItem = ({
   onDelete,
   stateOptions,
   usersPermissions,
+  start_date,
+  end_date,
+  state
 }: Props) => {
-  const identifier = getContentLeaseIdentifier(lease);
+  const identifier = state ? lease : getContentLeaseIdentifier(lease);
 
   return (
     <AppConsumer>
@@ -72,14 +75,13 @@ const RelatedLeaseItem = ({
                   {active
                     ? identifier
                     : <ExternalLink
-                      href={`${getRouteById(Routes.LEASES)}/${lease.id}`}
+                      href={state ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}` : `${getRouteById(Routes.LEASES)}/${lease.id}`}
                       text={identifier || ''}
                     />
                   }
                 </p>
-                <FormText>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</FormText>
-                <FormText className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</FormText>
-
+                <FormText>{start_date ? start_date : formatDate(lease.start_date)} - {end_date ? end_date : formatDate(lease.end_date)}</FormText>
+                <FormText className="type">{state ? state : getLabelOfOption(stateOptions, lease.state) || '-'}</FormText>
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
                   {onDelete &&
                     <RemoveButton

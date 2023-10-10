@@ -109,6 +109,7 @@ export const LeaseState = {
   RYA: 'rya',
   APPLICATION: 'application',
   TRANSFERRED: 'transferred',
+  PLOTSEARCH: 'plotsearch',
 };
 
 /**

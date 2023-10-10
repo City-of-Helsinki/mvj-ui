@@ -89,15 +89,28 @@ class RelatedLeases extends PureComponent<Props, State> {
             />
           }
           {!!relatedLeasesFrom && !!relatedLeasesFrom.length && relatedLeasesFrom.map((lease, index) => {
-            return (
-              <RelatedLeaseItem
-                key={index}
-                active={false}
-                id={lease.id}
-                lease={lease.lease}
-                stateOptions={stateOptions}
-              />
-            );
+            const tmpArray = [] 
+            lease.lease && lease.lease.target_statuses.length && lease.lease.target_statuses.forEach((plotSearch) => {
+              tmpArray.push(<RelatedLeaseItem
+              key={plotSearch.plot_search_name}
+              active={false}
+              id={plotSearch.plot_search_id}
+              lease={plotSearch.plot_search_name}
+              stateOptions={stateOptions}
+              start_date={new Date()}
+              end_date={new Date()}
+              state={plotSearch.state}
+            />)
+              })
+            tmpArray.push(<RelatedLeaseItem
+              key={index}
+              active={false}
+              id={lease.id}
+              lease={lease.lease}
+              stateOptions={stateOptions}
+            />)
+            console.log(tmpArray)
+            return tmpArray.map((item) => { return item })
           })}
         </div>
       </div>
