@@ -10,7 +10,7 @@ import Authorization from '$components/authorization/Authorization';
 import CreateLeaseModal from '$src/leases/components/createLease/CreateLeaseModal';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
-import RelatedLeaseItem from './RelatedLeaseItem';
+import LeaseHistoryItem from './LeaseHistoryItem';
 import TitleH3 from '$components/content/TitleH3';
 import {createLease, hideCreateModal, showCreateModal} from '$src/leases/actions';
 import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
@@ -53,20 +53,20 @@ type State = {
   currentLease: Lease,
   leaseAttributes: Attributes,
   newLease: ?Object,
-  relatedLeasesAll: Array<Object>,
-  relatedLeasesFrom: Array<Object>,
-  relatedLeasesTo: Array<Object>,
+  leaseHistoryItemsAll: Array<Object>,
+  leaseHistoryItemsFrom: Array<Object>,
+  leaseHistoryItemsTo: Array<Object>,
   stateOptions: Array<Object>,
 }
 
-class RelatedLeasesEdit extends Component<Props, State> {
+class LeaseHistoryEdit extends Component<Props, State> {
   state = {
     currentLease: {},
     leaseAttributes: null,
     newLease: null,
-    relatedLeasesAll: [],
-    relatedLeasesFrom: [],
-    relatedLeasesTo: [],
+    leaseHistoryItemsAll: [],
+    leaseHistoryItemsFrom: [],
+    leaseHistoryItemsTo: [],
     stateOptions: [],
   }
 
@@ -79,21 +79,21 @@ class RelatedLeasesEdit extends Component<Props, State> {
     }
 
     if(props.currentLease !== state.currentLease) {
-      const relatedLeasesFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
-      const relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
-      const relatedLeasesAll = [...relatedLeasesFrom, {lease: props.currentLease}, ...relatedLeasesTo];
+      const leaseHistoryItemsFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
+      const leaseHistoryItemsTo = getContentRelatedLeasesTo(props.currentLease);
+      const leaseHistoryItemsAll = [...leaseHistoryItemsFrom, {lease: props.currentLease}, ...leaseHistoryItemsTo];
 
       newState.currentLease = props.currentLease;
-      newState.relatedLeasesAll = relatedLeasesAll;
-      newState.relatedLeasesFrom = relatedLeasesFrom;
-      newState.relatedLeasesTo = relatedLeasesTo;
+      newState.leaseHistoryItemsAll = leaseHistoryItemsAll;
+      newState.leaseHistoryItemsFrom = leaseHistoryItemsFrom;
+      newState.leaseHistoryItemsTo = leaseHistoryItemsTo;
     }
 
     return newState;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.state.relatedLeasesTo !== prevState.relatedLeasesTo) {
+    if(this.state.leaseHistoryItemsTo !== prevState.leaseHistoryItemsTo) {
       this.clearNewLease();
     }
   }
@@ -156,9 +156,9 @@ class RelatedLeasesEdit extends Component<Props, State> {
     } = this.props;
     const {
       newLease,
-      relatedLeasesAll,
-      relatedLeasesFrom,
-      relatedLeasesTo,
+      leaseHistoryItemsAll,
+      leaseHistoryItemsFrom,
+      leaseHistoryItemsTo,
       stateOptions,
     } = this.state;
 
@@ -209,7 +209,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
                         disabled={!!newLease}
                         name='related-lease'
                         onChange={this.handleCreate}
-                        relatedLeases={relatedLeasesAll}
+                        leaseHistoryItems={leaseHistoryItemsAll}
                         value={newLease}
                       />
                     </Column>
@@ -226,37 +226,57 @@ class RelatedLeasesEdit extends Component<Props, State> {
 
               <div className="summary__related-leases_items">
                 <div className="summary__related-leases_items_border-left" />
-                {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {
+                {!!leaseHistoryItemsTo && !!leaseHistoryItemsTo.length && leaseHistoryItemsTo.map((lease, index) => {
                   return (
-                    <RelatedLeaseItem
+                    <LeaseHistoryItem
                       key={index}
                       active={false}
                       id={lease.id}
                       indented
                       onDelete={this.handleDelete}
                       lease={lease.lease}
+                      startDate={lease.lease.start_date}
+                      endDate={lease.lease.end_date}
                       stateOptions={stateOptions}
                     />
                   );
                 })}
                 {!!currentLease &&
-                  <RelatedLeaseItem
+                  <LeaseHistoryItem
                     active={true}
                     lease={currentLease}
+                    startDate={currentLease.start_date}
+                    endDate={currentLease.end_date}
                     stateOptions={stateOptions}
                   />
                 }
-                {!!relatedLeasesFrom && !!relatedLeasesFrom.length && relatedLeasesFrom.map((lease, index) => {
-                  return (
-                    <RelatedLeaseItem
-                      key={index}
-                      active={false}
-                      id={lease.id}
-                      onDelete={this.handleDelete}
-                      lease={lease.lease}
-                      stateOptions={stateOptions}
-                    />
-                  );
+                {!!leaseHistoryItemsFrom && !!leaseHistoryItemsFrom.length && leaseHistoryItemsFrom.map((lease, index) => {
+                  const historyItems = []
+                  if (lease.lease && lease.lease.target_statuses.length) {
+                    lease.lease.target_statuses.forEach((plotSearch) => {
+                      historyItems.push({
+                        key: plotSearch.plot_search_name,
+                        id: plotSearch.plot_search_id,
+                        itemTitle: plotSearch.plot_search_name,
+                        startDate: plotSearch.start_date,
+                        endDate: plotSearch.end_date,
+                        // join plotsearch__plotsearchsubtype__plotsearchtype
+                        plotSearchType: "Search Type",
+                        plotSearchSubtype: "Search Subtype",
+                        itemType: "plotsearch",
+                        stateOptions: stateOptions,
+                      })
+                    })
+                  }
+                  historyItems.push({
+                    key: index,
+                    id: lease.id,
+                    lease: lease.lease,
+                    startDate: lease.lease.start_date,
+                    endDate: lease.lease.end_date,
+                    stateOptions: stateOptions
+                  })
+                  return historyItems.map((item) => { return <LeaseHistoryItem {...item} />})
                 })}
               </div>
             </div>
@@ -286,4 +306,4 @@ export default connect(
     initialize,
     showCreateModal,
   }
-)(RelatedLeasesEdit);
+)(LeaseHistoryEdit);

@@ -12,7 +12,7 @@ type Props = {
   onBlur?: Function,
   onChange: Function,
   placeholder?: string,
-  relatedLeases: Array<Object>,
+  leaseHistoryItems: Array<Object>,
   value?: Object,
 }
 
@@ -22,12 +22,12 @@ const LeaseSelectInput = ({
   onBlur,
   onChange,
   placeholder,
-  relatedLeases,
+  leaseHistoryItems,
   value,
 }: Props) => {
   const getLeaseOptions = (leases: Array<Object>): Array<Object> =>
     leases
-      .filter((lease) => relatedLeases.find((relatedLease) => lease.id === relatedLease.lease.id) ? false : true)
+      .filter((lease) => leaseHistoryItems.find((leaseHistoryItem) => lease.id === leaseHistoryItem.lease.id) ? false : true)
       .map((lease) => {
         return {
           value: lease.id,

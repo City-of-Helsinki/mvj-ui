@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 
-import RelatedLeaseItem from './RelatedLeaseItem';
+import LeaseHistoryItem from './LeaseHistoryItem';
 import TitleH3 from '$components/content/TitleH3';
 import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom} from '$src/leases/helpers';
@@ -24,17 +24,17 @@ type Props = {
 type State = {
   currentLease: Lease,
   leaseAttributes: Attributes,
-  relatedLeasesFrom: Array<Object>,
-  relatedLeasesTo: Array<Object>,
+  leaseHistoryItemsFrom: Array<Object>,
+  leaseHistoryItemsTo: Array<Object>,
   stateOptions: Array<Object>,
 }
 
-class RelatedLeases extends PureComponent<Props, State> {
+class LeaseHistory extends PureComponent<Props, State> {
   state = {
     currentLease: {},
     leaseAttributes: null,
-    relatedLeasesFrom: [],
-    relatedLeasesTo: [],
+    leaseHistoryItemsFrom: [],
+    leaseHistoryItemsTo: [],
     stateOptions: [],
   }
 
@@ -48,8 +48,8 @@ class RelatedLeases extends PureComponent<Props, State> {
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.relatedLeasesFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
-      newState.relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
+      newState.leaseHistoryItemsFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
+      newState.leaseHistoryItemsTo = getContentRelatedLeasesTo(props.currentLease);
     }
 
     return newState;
@@ -58,8 +58,8 @@ class RelatedLeases extends PureComponent<Props, State> {
   render() {
     const {currentLease} = this.props;
     const {
-      relatedLeasesFrom,
-      relatedLeasesTo,
+      leaseHistoryItemsFrom,
+      leaseHistoryItemsTo,
       stateOptions,
     } = this.state;
     return (
@@ -69,48 +69,56 @@ class RelatedLeases extends PureComponent<Props, State> {
         </TitleH3>
         <div className="summary__related-leases_items">
           <div className="summary__related-leases_items_border-left" />
-          {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {
+          {!!leaseHistoryItemsTo && !!leaseHistoryItemsTo.length && leaseHistoryItemsTo.map((lease, index) => {
             return (
-              <RelatedLeaseItem
+              <LeaseHistoryItem
                 key={index}
                 active={false}
                 id={lease.id}
                 indented
                 lease={lease.lease}
+                startDate={lease.lease.start_date}
+                endDate={lease.lease.end_date}
                 stateOptions={stateOptions}
               />
             );
           })}
           {!!currentLease &&
-            <RelatedLeaseItem
+            <LeaseHistoryItem
               active={true}
               lease={currentLease}
+              startDate={currentLease.start_date}
+              endDate={currentLease.end_date}
               stateOptions={stateOptions}
             />
           }
-          {!!relatedLeasesFrom && !!relatedLeasesFrom.length && relatedLeasesFrom.map((lease, index) => {
-            const tmpArray = [] 
-            lease.lease && lease.lease.target_statuses.length && lease.lease.target_statuses.forEach((plotSearch) => {
-              tmpArray.push(<RelatedLeaseItem
-              key={plotSearch.plot_search_name}
-              active={false}
-              id={plotSearch.plot_search_id}
-              lease={plotSearch.plot_search_name}
-              stateOptions={stateOptions}
-              start_date={new Date()}
-              end_date={new Date()}
-              state={plotSearch.state}
-            />)
+          {!!leaseHistoryItemsFrom && !!leaseHistoryItemsFrom.length && leaseHistoryItemsFrom.map((lease, index) => {
+            const historyItems = []
+            if (lease.lease && lease.lease.target_statuses.length) {
+              lease.lease.target_statuses.forEach((plotSearch) => {
+                historyItems.push({
+                  key: plotSearch.plot_search_name,
+                  id: plotSearch.plot_search_id,
+                  itemTitle: plotSearch.plot_search_name,
+                  startDate: plotSearch.start_date,
+                  endDate: plotSearch.end_date,
+                  // join plotsearch__plotsearchsubtype__plotsearchtype
+                  plotSearchType: "Search Type",
+                  plotSearchSubtype: "Search Subtype",
+                  itemType: "plotsearch",
+                  stateOptions: stateOptions,
+                })
               })
-            tmpArray.push(<RelatedLeaseItem
-              key={index}
-              active={false}
-              id={lease.id}
-              lease={lease.lease}
-              stateOptions={stateOptions}
-            />)
-            console.log(tmpArray)
-            return tmpArray.map((item) => { return item })
+            }
+            historyItems.push({
+              key: index,
+              id: lease.id,
+              lease: lease.lease,
+              startDate: lease.lease.start_date,
+              endDate: lease.lease.end_date,
+              stateOptions: stateOptions
+            })
+            return historyItems.map((item) => { return <LeaseHistoryItem {...item} />})
           })}
         </div>
       </div>
@@ -125,4 +133,4 @@ export default connect(
       leaseAttributes: getLeaseAttributes(state),
     };
   }
-)(RelatedLeases);
+)(LeaseHistory);

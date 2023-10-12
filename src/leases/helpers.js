@@ -391,12 +391,12 @@ export const getContentRelatedLease = (content: Object, path: string = 'from_lea
  */
 export const getContentRelatedLeasesFrom = (lease: Object): Array<Object> =>
   get(lease, 'related_leases.related_from', [])
-    .map((relatedLease) => {
+    .map((leaseHistoryItem) => {
       return {
         head: lease.id,
-        id: relatedLease.id,
-        lease: getContentRelatedLease(relatedLease, 'from_lease'),
-        to_lease: relatedLease.to_lease,
+        id: leaseHistoryItem.id,
+        lease: getContentRelatedLease(leaseHistoryItem, 'from_lease'),
+        to_lease: leaseHistoryItem.to_lease,
       };
     });
 
@@ -407,23 +407,23 @@ export const getContentRelatedLeasesFrom = (lease: Object): Array<Object> =>
  */
 export const sortRelatedLeasesFrom = (leases: Object[]): Array<Object> => {
   let current;
-  let relatedLeasesFromSorted = [];
+  let leaseHistoryItemsFromSorted = [];
   leases.forEach(lease=>{
     if(lease.to_lease===lease.head){
-      relatedLeasesFromSorted.push(lease);
+      leaseHistoryItemsFromSorted.push(lease);
       current=lease.lease.id;
     }
   });
   leases.forEach(()=>{
     leases.forEach(lease=>{
       if(lease.to_lease===current){
-        relatedLeasesFromSorted.push(lease);
+        leaseHistoryItemsFromSorted.push(lease);
         current=lease.lease.id;
         return;
       }
     });
   });
-  return relatedLeasesFromSorted;
+  return leaseHistoryItemsFromSorted;
 };
 
 /**
@@ -433,10 +433,10 @@ export const sortRelatedLeasesFrom = (leases: Object[]): Array<Object> => {
  */
 export const getContentRelatedLeasesTo = (lease: Object): Array<Object> =>
   get(lease, 'related_leases.related_to', [])
-    .map((relatedLease) => {
+    .map((leaseHistoryItem) => {
       return {
-        id: relatedLease.id,
-        lease: getContentRelatedLease(relatedLease, 'to_lease'),
+        id: leaseHistoryItem.id,
+        lease: getContentRelatedLease(leaseHistoryItem, 'to_lease'),
       };
     })
     .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));

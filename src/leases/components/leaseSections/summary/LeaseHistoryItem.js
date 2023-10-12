@@ -22,27 +22,45 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 
 type Props = {
   active?: boolean,
-  id?: number,
   indented?: boolean,
-  lease: Lease,
+  lease?: Lease,
+  id?: number,
+  itemTitle?: string,
+  plotSearchName?: string,
+  startDate?: string,
+  endDate?: string,
+  plotSearchType?: string,
+  plotSearchSubtype?: string,
+  itemType?: string,
   onDelete?: Function,
   stateOptions: Array<Object>,
   usersPermissions: UsersPermissionsType,
 }
 
-const RelatedLeaseItem = ({
-  active = false,
-  id,
-  indented = false,
-  lease,
-  onDelete,
-  stateOptions,
-  usersPermissions,
-  start_date,
-  end_date,
-  state
-}: Props) => {
-  const identifier = state ? lease : getContentLeaseIdentifier(lease);
+const LeaseHistoryItem = (
+  {
+    active = false,
+    indented = false,
+    lease,
+    id,
+    itemTitle = '',
+    startDate,
+    endDate,
+    plotSearchType,
+    plotSearchSubtype,
+    itemType = '',
+    onDelete,
+    stateOptions,
+    usersPermissions
+  }: Props,
+) => {
+  const title = lease ? getContentLeaseIdentifier(lease) : itemTitle;
+  const externalLinkHref = lease ? `${getRouteById(Routes.LEASES)}/${lease.id}`
+    : itemType === 'plotsearch' && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
+    : null
+  // TODO: Add permissions for deleting plot searches and plot applications
+  // TODO: implement usersPermissions properly
+  const permissions = hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)
 
   return (
     <AppConsumer>
@@ -73,15 +91,19 @@ const RelatedLeaseItem = ({
               <div className={classNames('related-leases-item_info')}>
                 <p className="identifier">
                   {active
-                    ? identifier
-                    : <ExternalLink
-                      href={state ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}` : `${getRouteById(Routes.LEASES)}/${lease.id}`}
-                      text={identifier || ''}
-                    />
+                    ? title
+                    : externalLinkHref
+                    ? <ExternalLink
+                        href={externalLinkHref}
+                        text={title || ''}
+                      />
+                    : title
                   }
                 </p>
-                <FormText>{start_date ? start_date : formatDate(lease.start_date)} - {end_date ? end_date : formatDate(lease.end_date)}</FormText>
-                <FormText className="type">{state ? state : getLabelOfOption(stateOptions, lease.state) || '-'}</FormText>
+                <FormText>{formatDate(startDate)} - {formatDate(endDate)}</FormText>
+                {plotSearchType && <FormText>{plotSearchType}</FormText>}
+                {plotSearchSubtype && <FormText>{plotSearchSubtype}</FormText>}
+                <FormText className="type">{lease ? getLabelOfOption(stateOptions, lease.state) : itemType}</FormText>
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
                   {onDelete &&
                     <RemoveButton
@@ -107,4 +129,4 @@ export default connect(
       usersPermissions: getUsersPermissions(state),
     };
   }
-)(RelatedLeaseItem);
+)(LeaseHistoryItem);
