@@ -43,7 +43,7 @@ const MultiSelect = ({
   hasSelectAll = true,
   onSelectedChanged,
   valueRenderer,
-}: Props) => {
+}: Props): React$Node => {
   const getSelectedText = () => {
     const selectedOptions = selected
       .map(s => options.find(o => o.value === s));

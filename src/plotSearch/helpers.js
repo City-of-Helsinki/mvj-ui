@@ -1,6 +1,8 @@
 // @flow
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+import {kebabCase} from 'lodash/string';
+import {cloneDeep} from 'lodash/lang';
 import {formValueSelector} from 'redux-form';
 
 import {getContentUser} from '$src/users/helpers';
@@ -8,10 +10,15 @@ import {removeSessionStorageItem} from '$util/storage';
 import {FormNames} from '$src/enums';
 import {formatDate, getApiResponseResults} from '$util/helpers';
 import {PlotSearchTargetType} from '$src/plotSearch/enums';
+import {
+  FIELD_TYPE_FEATURES_BY_FIELD_TYPE_NAME,
+  FieldTypeFeatures,
+  PROTECTED_FORM_PATHS,
+} from '$src/plotSearch/constants';
 
-import type {PlotSearch, PlotSearchState} from '$src/plotSearch/types';
+import type {PlotSearch, PlotSearchState, ProtectedFormPathsSectionNode} from '$src/plotSearch/types';
 import type {Attributes} from '$src/types';
-import type {Form} from '$src/application/types';
+import type {Form, FormField, FormSection} from '$src/application/types';
 
 /**
  * Get plotSearch basic information content
@@ -208,3 +215,232 @@ export const getInfoLinkLanguageDisplayText = (key: string, attributes: Attribut
   return languages?.find((language) => language.value === key)?.display_name || key;
 };
 
+class UniqueTemporaryIdFactory {
+  i;
+
+  constructor() {
+    this.i = 0;
+  }
+
+  next() {
+    this.i++;
+    return 't' + this.i.toString();
+  }
+}
+
+const uniqueTemporaryIdFactory = new UniqueTemporaryIdFactory();
+const getUniqueTemporaryId: () => string = () => uniqueTemporaryIdFactory.next();
+
+export const getDefaultNewFormSection = (peerIdentifiers: Array<string>): Object => ({
+  temporary_id: getUniqueTemporaryId(),
+  identifier: generateSectionIdentifierFromName('', peerIdentifiers),
+  title: '',
+  title_en: '',
+  title_sv: '',
+  visible: true,
+  required: false,
+  add_new_allowed: false,
+  show_duplication_check: true,
+  fields: [],
+  subsections: [],
+  auto_fill_identifier: true,
+  is_protected: false,
+});
+
+export const getDefaultNewFormField = (peerIdentifiers: Array<string>): Object => ({
+  temporary_id: getUniqueTemporaryId(),
+  identifier: generateFieldIdentifierFromName('', peerIdentifiers),
+  label: '',
+  label_en: '',
+  label_sv: '',
+  hint_text: '',
+  hint_text_en: '',
+  hint_text_sv: '',
+  enabled: true,
+  required: false,
+  type: null,
+  default_value: '',
+  choices: [],
+  auto_fill_identifier: true,
+  is_protected: false,
+  protected_values: [],
+});
+
+export const getInitialFormSectionEditorData = (fieldTypeMapping: Object, section: FormSection): Object => {
+  const protectedPathsRoot = PROTECTED_FORM_PATHS;
+
+  const collapseInitialState = {};
+
+  const addUIPropertiesToField = (
+    field: FormField,
+    peerFieldIdentifiers: Array<string>,
+    isProtected: boolean,
+    protectedValues: Array<string>,
+  ): Object => {
+    let defaultValue = field.default_value;
+    const fieldFeatures = FIELD_TYPE_FEATURES_BY_FIELD_TYPE_NAME[fieldTypeMapping[field.type]] || [];
+    let temporaryId;
+
+    if (field.id) {
+      collapseInitialState[`field-${field.id}`] = false;
+    } else {
+      temporaryId = getUniqueTemporaryId();
+      collapseInitialState[`field-${temporaryId}`] = false;
+    }
+
+    if (typeof defaultValue === 'string' && fieldFeatures.includes(FieldTypeFeatures.MULTIPLE_SELECTION_OPTIONS)) {
+      try {
+        defaultValue = JSON.parse(defaultValue);
+        if (!(defaultValue instanceof Array)) {
+          defaultValue = [defaultValue];
+        }
+      } catch {
+        defaultValue = [defaultValue];
+      }
+    }
+    return {
+      ...cloneDeep(field),
+      temporary_id: temporaryId,
+      auto_fill_identifier:
+        generateFieldIdentifierFromName(field.label, peerFieldIdentifiers) === field.identifier,
+      auto_fill_choice_values:
+        protectedValues.length === 0 && field.choices.every(
+          (choice, index) => choice.value.toString() === (index + 1).toString()
+        ),
+      is_protected: isProtected,
+      protected_values: protectedValues,
+      default_value: defaultValue,
+    };
+  };
+  const addUIPropertiesToSection = (
+    section: FormSection,
+    peerSectionIdentifiers: Array<string>,
+    protectedPaths: ProtectedFormPathsSectionNode,
+  ): Object => {
+    const subsectionIdentifiers = section.subsections.map((subsection) => subsection.identifier);
+    const fieldIdentifiers = section.fields.map((field) => field.identifier);
+    let temporaryId;
+
+    if (section.id) {
+      collapseInitialState[`section-${section.id}`] = true;
+    } else {
+      temporaryId = getUniqueTemporaryId();
+      collapseInitialState[`section-${temporaryId}`] = true;
+    }
+
+    return {
+      ...cloneDeep(section),
+      temporary_id: temporaryId,
+      is_protected: !!protectedPaths.fields || !!protectedPaths.subsections,
+      subsections: section.subsections.map(
+        (subsection, index) => addUIPropertiesToSection(
+          subsection,
+          subsectionIdentifiers.filter((_, i) => i !== index),
+          protectedPaths?.subsections?.[subsection.identifier] || {},
+        )),
+      fields: section.fields.map(
+        (field, index) => addUIPropertiesToField(
+          field,
+          fieldIdentifiers.filter((_, i) => i !== index),
+          protectedPaths?.fields?.includes(field.identifier) || false,
+          protectedPaths?.fieldChoices?.[field.identifier] || [],
+        )),
+      auto_fill_identifier:
+        generateFieldIdentifierFromName(
+          section.title,
+          peerSectionIdentifiers,
+        ) === section.identifier,
+    };
+  };
+
+  return {
+    sectionData: addUIPropertiesToSection(section, [], protectedPathsRoot[section.identifier] || {}),
+    collapseInitialState,
+  };
+};
+
+export const generateIdentifierFromName = (name: string, peerIdentifiers: Array<string>, emptyBaseName: string): string => {
+  const baseAutoName = kebabCase(name.length > 0 ? name : emptyBaseName);
+  let autoName = baseAutoName;
+  let idx = 0;
+
+  while (peerIdentifiers.includes(autoName)) {
+    if (idx > 1e5) {
+      throw new Error('too many fields with the same label');
+    }
+
+    ++idx;
+    autoName = `${baseAutoName}-${idx}`;
+  }
+
+  return autoName;
+};
+
+export const generateSectionIdentifierFromName = (name: string, peerIdentifiers: Array<string>): string =>
+  generateIdentifierFromName(name, peerIdentifiers, 'Uusi osio');
+
+export const generateFieldIdentifierFromName = (name: string, peerIdentifiers: Array<string>): string =>
+  generateIdentifierFromName(name, peerIdentifiers, 'Uusi kenttä');
+
+export const transformCommittedFormSectionEditorData = (section: Object): FormSection => {
+  const transformChoice = (choice: Object, index: number): Object => {
+    const {
+      text,
+      default_value,
+      ...rest
+    } = choice;
+
+    return {
+      ...cloneDeep(rest),
+      sort_order: index,
+      text,
+      default_value: default_value instanceof Array ? JSON.stringify(default_value) : default_value,
+      text_fi: text,
+    };
+  };
+  const transformField = (field: Object, index: number): Object => {
+    const {
+      // UI fields to be removed
+      // eslint-disable-next-line no-unused-vars
+      auto_fill_identifier, auto_fill_choice_values, is_protected, protected_values, temporary_id,
+
+      choices,
+      label,
+      ...rest
+    } = field;
+
+    return {
+      ...cloneDeep(rest),
+      sort_order: index,
+      choices: choices?.map(transformChoice) || null,
+      label,
+      label_fi: label,
+    };
+  };
+  const transformSection = (section: Object, index: number): Object => {
+    const {
+      // UI fields to be removed
+      // eslint-disable-next-line no-unused-vars
+      auto_fill_identifier, sort_order, is_protected, temporary_id,
+
+      subsections,
+      fields,
+      label,
+      help_text,
+      ...rest
+    } = section;
+
+    return {
+      ...cloneDeep(rest),
+      subsections: subsections.map(transformSection),
+      fields: fields.map(transformField),
+      sort_order: index,
+      label,
+      help_text,
+      label_fi: label,
+      help_text_fi: help_text,
+    };
+  };
+
+  return transformSection(section, section.sort_order);
+};

@@ -32,6 +32,10 @@ class EditPlotApplicationSectionModal extends Component<Props> {
       sectionIndex,
     } = this.props;
 
+    if (sectionIndex === -1) {
+      return null;
+    }
+
     return (
       <Modal
         isOpen={isOpen}
@@ -43,6 +47,7 @@ class EditPlotApplicationSectionModal extends Component<Props> {
           onClose={onClose}
           onSubmit={onSubmit}
           sectionIndex={sectionIndex}
+          isOpen={isOpen}
         />
       </Modal>
     );

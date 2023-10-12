@@ -275,6 +275,18 @@ const isCreatingDirectReservationLinkReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED']: () => false,
 }, false);
 
+const sectionEditorCollapseStatesReducer: Reducer<{[key: string]: boolean}> = handleActions({
+  ['mvj/plotSearch/CLEAR_SECTION_EDITOR_COLLAPSE_STATES']: () => ({}),
+  ['mvj/plotSearch/SET_SECTION_EDITOR_COLLAPSE_STATE']: (state: {[key: string]: boolean}, {payload}) => ({
+    ...state,
+    [payload.key]: payload.state,
+  }),
+  ['mvj/plotSearch/INITIALIZE_SECTION_EDITOR_COLLAPSE_STATES']: (state, {payload}) => ({
+    ...state,
+    ...payload,
+  }),
+}, {});
+
 
 export default (combineReducers<Object, any>({
   attributes: attributesReducer,
@@ -309,4 +321,5 @@ export default (combineReducers<Object, any>({
   isFetchingReservationIdentifierUnitLists: isFetchingReservationIdentifierUnitListsReducer,
   reservationIdentifierUnitLists: reservationIdentifierUnitListsReducer,
   isCreatingDirectReservationLink: isCreatingDirectReservationLinkReducer,
+  sectionEditorCollapseStates: sectionEditorCollapseStatesReducer,
 }): CombinedReducer<PlotSearchState, Action<any>>);

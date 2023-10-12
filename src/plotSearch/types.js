@@ -35,6 +35,7 @@ export type PlotSearchState = {
   isFetchingReservationIdentifierUnitLists: boolean,
   reservationIdentifierUnitLists: null | Object,
   isCreatingDirectReservationLink: boolean,
+  sectionEditorCollapseStates: {[key: string]: boolean},
 };
 
 export type CustomDetailedPlan = Object;
@@ -47,6 +48,14 @@ export type FetchSinglePlotSearchAfterEditPayload = {
   id: any,
   callbackFunctions?: Array<Object | Function>,
 }
+
+export type ProtectedFormPathsSections = {[key: string]: ProtectedFormPathsSectionNode};
+
+export type ProtectedFormPathsSectionNode = {
+  subsections?: ProtectedFormPathsSections,
+  fields?: Array<string>,
+  fieldChoices?: {[key: string]: Array<string>},
+};
 
 export type FetchAttributesAction = Action<'mvj/plotSearch/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/plotSearch/RECEIVE_ATTRIBUTES', Attributes>;
@@ -121,3 +130,7 @@ export type ReservationIdentifierUnitListsNotFoundAction = Action<'mvj/plotSearc
 export type CreateDirectReservationLinkAction = Action<'mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK', {data: Object, callBack: Function}>;
 export type DirectReservationLinkCreatedAction = Action<'mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATED', void>;
 export type DirectReservationLinkCreationFailedAction = Action<'mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED', any>;
+
+export type ClearSectionEditorCollapseStatesAction = Action<'mvj/plotSearch/CLEAR_SECTION_EDITOR_COLLAPSE_STATES', void>;
+export type SetSectionEditorCollapseStateAction = Action<'mvj/plotSearch/SET_SECTION_EDITOR_COLLAPSE_STATE', {key: string, state: boolean}>;
+export type InitializeSectionEditorCollapseStatesAction = Action<'mvj/plotSearch/INITIALIZE_SECTION_EDITOR_COLLAPSE_STATES', {[key: string]: boolean}>;

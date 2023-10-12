@@ -66,6 +66,9 @@ import type {
   ResetPlanUnitDecisionsAction,
   ShowEditModeAction,
   TemplateFormsNotFoundAction,
+  ClearSectionEditorCollapseStatesAction,
+  SetSectionEditorCollapseStateAction,
+  InitializeSectionEditorCollapseStatesAction,
 } from '$src/plotSearch/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -238,3 +241,12 @@ export const directReservationLinkCreated = (): DirectReservationLinkCreatedActi
 
 export const directReservationLinkCreationFailed = (payload: any): DirectReservationLinkCreationFailedAction =>
   createAction('mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED')(payload);
+
+export const clearSectionEditorCollapseStates = (): ClearSectionEditorCollapseStatesAction =>
+  createAction('mvj/plotSearch/CLEAR_SECTION_EDITOR_COLLAPSE_STATES')();
+
+export const setSectionEditorCollapseState = (key: string, isOpen: boolean): SetSectionEditorCollapseStateAction =>
+  createAction('mvj/plotSearch/SET_SECTION_EDITOR_COLLAPSE_STATE')({key, state: isOpen});
+
+export const initializeSectionEditorCollapseStates = (states: {[key: string]: boolean}): InitializeSectionEditorCollapseStatesAction =>
+  createAction('mvj/plotSearch/INITIALIZE_SECTION_EDITOR_COLLAPSE_STATES')(states);
