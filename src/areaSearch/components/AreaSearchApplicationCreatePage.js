@@ -193,6 +193,7 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
       createAreaSearchSpecs({
         area_search_attachments: attachments.map((attachment) => attachment.id),
         ...specsFormValues,
+        end_date: specsFormValues.end_date || null,
       });
     }
   };

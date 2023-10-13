@@ -106,6 +106,8 @@ type InputProps = {
   label: ?string,
   language?: string,
   meta: Object,
+  minDate?: Date,
+  maxDate?: Date,
   multiSelect?: boolean,
   optionLabel?: string,
   options: ?Array<Object>,
@@ -140,6 +142,8 @@ const FormFieldInput = ({
   label,
   language,
   meta,
+  minDate,
+  maxDate,
   multiSelect,
   optionLabel,
   options,
@@ -234,7 +238,7 @@ const FormFieldInput = ({
           </FormFieldLabel>
         }
         <div className={classNames('form-field__component', {'has-unit': unit})}>
-          {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, multiSelect, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
+          {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, minDate, maxDate, multiSelect, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
           {unit && <span className='form-field__unit'>{unit}</span>}
         </div>
         {displayError && <ErrorComponent {...meta}/>}
@@ -285,6 +289,8 @@ type Props = {
   isLoading?: boolean,
   isMulti?: boolean,
   language?: string,
+  minDate?: Date,
+  maxDate?: Date,
   name: string,
   onBlur?: Function,
   onChange?: Function,
@@ -401,6 +407,8 @@ class FormField extends PureComponent<Props, State> {
       invisibleLabel,
       isLoading,
       language,
+      minDate,
+      maxDate,
       name,
       onBlur,
       onChange,
@@ -445,6 +453,8 @@ class FormField extends PureComponent<Props, State> {
         isLoading={isLoading}
         label={label}
         language={language}
+        minDate={minDate}
+        maxDate={maxDate}
         name={name}
         normalize={this.handleGenericNormalize}
         onBlur={onBlur}
