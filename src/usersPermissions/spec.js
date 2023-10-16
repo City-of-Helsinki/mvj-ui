@@ -11,9 +11,11 @@ import usersPermissionsReducer from './reducer';
 import type {UsersPermissionsState} from './types';
 
 const defaultState: UsersPermissionsState = {
+  activeServiceUnit: null,
   groups: [],
   isFetching: false,
   permissions: [],
+  serviceUnits: [],
 };
 
 // $FlowFixMe
