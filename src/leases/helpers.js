@@ -151,6 +151,22 @@ export const getFullAddress = (item: Object): ?string => {
 };
 
 /**
+ * Get a lease history item title text that is truncated when it is long
+ * @param {?string} text
+ * @param {number} MAX_TITLE_LENGTH
+ * @returns {string}
+ */
+
+export const getTitleText = (text: ?string, maxLength: number) => {
+  if (text) {
+    return text.length > maxLength ? text.substr(0, maxLength) + "..." : text
+  } else {
+    return ''
+  }
+}
+
+
+/**
  * Get content lease identifiers
  * @param {Object} lease
  * @returns {string}

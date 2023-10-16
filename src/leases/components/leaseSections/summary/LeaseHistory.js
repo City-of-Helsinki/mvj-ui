@@ -84,7 +84,8 @@ class LeaseHistory extends PureComponent<Props, State> {
         historyItems.push({
           key: plotSearch.plot_search_name,
           id: plotSearch.plot_search_id,
-          itemTitle: plotSearch.plot_search_name,
+          itemTitle: "A title that might be too long to display in full",
+          // itemTitle: plotSearch.plot_search_name,
           startDate: plotSearch.begin_at,
           endDate: plotSearch.end_at,
           plotSearchType: plotSearch.plot_search_type,

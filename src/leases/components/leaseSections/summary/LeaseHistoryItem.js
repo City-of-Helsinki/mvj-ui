@@ -12,7 +12,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getContentLeaseIdentifier} from '$src/leases/helpers';
+import {getContentLeaseIdentifier, getTitleText} from '$src/leases/helpers';
 import {formatDate, getLabelOfOption, hasPermissions} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -56,7 +56,9 @@ const LeaseHistoryItem = (
     usersPermissions
   }: Props,
 ) => {
-  const title = lease ? getContentLeaseIdentifier(lease) : itemTitle;
+  const titleString = lease ? getContentLeaseIdentifier(lease) : itemTitle;
+  const MAX_TITLE_LENGTH = 16
+  const title = getTitleText(titleString, MAX_TITLE_LENGTH)
   const externalLinkHref = lease ? `${getRouteById(Routes.LEASES)}/${lease.id}`
     : itemType === 'Haku' && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
     : itemType === 'Hakemus' && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
