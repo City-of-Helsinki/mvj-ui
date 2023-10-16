@@ -24,8 +24,8 @@ type Props = {
 type State = {
   currentLease: Lease,
   leaseAttributes: Attributes,
-  leaseHistoryItemsFrom: Array<Object>,
-  leaseHistoryItemsTo: Array<Object>,
+  relatedLeasesFrom: Array<Object>,
+  relatedLeasesTo: Array<Object>,
   stateOptions: Array<Object>,
 }
 
@@ -33,8 +33,8 @@ class LeaseHistory extends PureComponent<Props, State> {
   state = {
     currentLease: {},
     leaseAttributes: null,
-    leaseHistoryItemsFrom: [],
-    leaseHistoryItemsTo: [],
+    relatedLeasesFrom: [],
+    relatedLeasesTo: [],
     stateOptions: [],
   }
 
@@ -48,8 +48,8 @@ class LeaseHistory extends PureComponent<Props, State> {
 
     if(props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.leaseHistoryItemsFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
-      newState.leaseHistoryItemsTo = getContentRelatedLeasesTo(props.currentLease);
+      newState.relatedLeasesFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
+      newState.relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
     }
 
     return newState;
@@ -57,11 +57,62 @@ class LeaseHistory extends PureComponent<Props, State> {
 
   render() {
     const {currentLease} = this.props;
+    console.log({currentLease})
     const {
-      leaseHistoryItemsFrom,
-      leaseHistoryItemsTo,
+      relatedLeasesFrom,
+      relatedLeasesTo,
       stateOptions,
     } = this.state;
+
+    const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
+      const historyItems = []
+      console.log(lease)
+      if (lease && lease.target_statuses.length) {
+        lease.target_statuses.forEach((plotApplication) => {
+          console.log({plotApplication})
+          historyItems.push({
+            key: plotApplication.application_identifier,
+            id: plotApplication.id,
+            itemTitle: plotApplication.application_identifier,
+            receivedAt: plotApplication.received_at,
+            itemType: "Hakemus",
+          })
+        })
+      }
+      if (lease && lease.plot_search_target) {
+        const { plot_search_target: plotSearch } = lease
+        historyItems.push({
+          key: plotSearch.plot_search_name,
+          id: plotSearch.plot_search_id,
+          itemTitle: plotSearch.plot_search_name,
+          startDate: plotSearch.begin_at,
+          endDate: plotSearch.end_at,
+          plotSearchType: plotSearch.plot_search_type,
+          plotSearchSubtype: plotSearch.plot_search_subtype,
+          itemType: "Haku",
+        })
+      }
+      let leaseProps: any = {
+        key: lease.id,
+        id: lease.id,
+        lease: lease,
+        startDate: lease.start_date,
+        endDate: lease.end_date,
+      }
+      // active will be a number when used in a map function
+      if (typeof active === "boolean") {
+        leaseProps.active = true
+      }
+      historyItems.push(leaseProps)
+      return historyItems.map((item) => { return <LeaseHistoryItem {...item} stateOptions={this.state.stateOptions} />})
+    }
+    const restructureLease = (lease) => {
+      let destructuredLease = lease.lease
+      return {
+        id: lease.id,
+        ...destructuredLease
+      }
+    }
     return (
       <div className="summary__related-leases">
         <TitleH3 uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}>
@@ -69,57 +120,17 @@ class LeaseHistory extends PureComponent<Props, State> {
         </TitleH3>
         <div className="summary__related-leases_items">
           <div className="summary__related-leases_items_border-left" />
-          {!!leaseHistoryItemsTo && !!leaseHistoryItemsTo.length && leaseHistoryItemsTo.map((lease, index) => {
-            return (
-              <LeaseHistoryItem
-                key={index}
-                active={false}
-                id={lease.id}
-                indented
-                lease={lease.lease}
-                startDate={lease.lease.start_date}
-                endDate={lease.lease.end_date}
-                stateOptions={stateOptions}
-              />
-            );
-          })}
-          {!!currentLease &&
-            <LeaseHistoryItem
-              active={true}
-              lease={currentLease}
-              startDate={currentLease.start_date}
-              endDate={currentLease.end_date}
-              stateOptions={stateOptions}
-            />
-          }
-          {!!leaseHistoryItemsFrom && !!leaseHistoryItemsFrom.length && leaseHistoryItemsFrom.map((lease, index) => {
-            const historyItems = []
-            if (lease.lease && lease.lease.target_statuses.length) {
-              lease.lease.target_statuses.forEach((plotSearch) => {
-                historyItems.push({
-                  key: plotSearch.plot_search_name,
-                  id: plotSearch.plot_search_id,
-                  itemTitle: plotSearch.plot_search_name,
-                  startDate: plotSearch.start_date,
-                  endDate: plotSearch.end_date,
-                  // join plotsearch__plotsearchsubtype__plotsearchtype
-                  plotSearchType: "Search Type",
-                  plotSearchSubtype: "Search Subtype",
-                  itemType: "plotsearch",
-                  stateOptions: stateOptions,
-                })
-              })
-            }
-            historyItems.push({
-              key: index,
-              id: lease.id,
-              lease: lease.lease,
-              startDate: lease.lease.start_date,
-              endDate: lease.lease.end_date,
-              stateOptions: stateOptions
-            })
-            return historyItems.map((item) => { return <LeaseHistoryItem {...item} />})
-          })}
+          {!!relatedLeasesTo && !!relatedLeasesTo.length && 
+            relatedLeasesTo
+              .map(restructureLease)
+              .map(renderLeaseWithPlotSearchesAndApplications)}
+
+          {!!currentLease && renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
+
+          {!!relatedLeasesFrom && !!relatedLeasesFrom.length && 
+            relatedLeasesFrom
+              .map(restructureLease)
+              .map(renderLeaseWithPlotSearchesAndApplications)}
         </div>
       </div>
     );

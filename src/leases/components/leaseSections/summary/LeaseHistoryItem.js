@@ -29,6 +29,7 @@ type Props = {
   plotSearchName?: string,
   startDate?: string,
   endDate?: string,
+  receivedAt?: string,
   plotSearchType?: string,
   plotSearchSubtype?: string,
   itemType?: string,
@@ -46,6 +47,7 @@ const LeaseHistoryItem = (
     itemTitle = '',
     startDate,
     endDate,
+    receivedAt,
     plotSearchType,
     plotSearchSubtype,
     itemType = '',
@@ -56,7 +58,8 @@ const LeaseHistoryItem = (
 ) => {
   const title = lease ? getContentLeaseIdentifier(lease) : itemTitle;
   const externalLinkHref = lease ? `${getRouteById(Routes.LEASES)}/${lease.id}`
-    : itemType === 'plotsearch' && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
+    : itemType === 'Haku' && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
+    : itemType === 'Hakemus' && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
     : null
   // TODO: Add permissions for deleting plot searches and plot applications
   // TODO: implement usersPermissions properly
@@ -100,7 +103,8 @@ const LeaseHistoryItem = (
                     : title
                   }
                 </p>
-                <FormText>{formatDate(startDate)} - {formatDate(endDate)}</FormText>
+                {receivedAt && <FormText>Hakemus saapunut {formatDate(receivedAt)}</FormText>}
+                {startDate && endDate && <FormText>{formatDate(startDate)} - {formatDate(endDate)}</FormText>}
                 {plotSearchType && <FormText>{plotSearchType}</FormText>}
                 {plotSearchSubtype && <FormText>{plotSearchSubtype}</FormText>}
                 <FormText className="type">{lease ? getLabelOfOption(stateOptions, lease.state) : itemType}</FormText>
