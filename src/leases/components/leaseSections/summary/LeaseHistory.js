@@ -101,7 +101,7 @@ class LeaseHistory extends PureComponent<Props, State> {
       }
       // active will be a number when used in a map function
       if (typeof active === "boolean") {
-        leaseProps.active = true
+        leaseProps.active = active
       }
       historyItems.push(leaseProps)
       return historyItems.map((item) => { return <LeaseHistoryItem {...item} stateOptions={this.state.stateOptions} />})
