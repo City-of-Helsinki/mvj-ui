@@ -67,6 +67,18 @@ class LeaseHistory extends PureComponent<Props, State> {
     const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
       const historyItems = []
       console.log(lease)
+
+      // Mock area search
+      historyItems.push({
+        key: "MOCK-23-00001",
+        id: 999999999,
+        itemTitle: "MOCK-23-00001",
+        // INVALID: receivedAt: "2023-10-13 10:59:31.510 +0300",
+        receivedAt: "2023-10-13 10:59:31.510",
+        applicantName: "Harri Hakija",
+        itemType: "Aluehaku",
+      })
+
       if (lease && lease.target_statuses.length) {
         lease.target_statuses.forEach((plotApplication) => {
           console.log({plotApplication})
@@ -80,12 +92,11 @@ class LeaseHistory extends PureComponent<Props, State> {
         })
       }
       if (lease && lease.plot_search_target) {
-        const { plot_search_target: plotSearch } = lease
+        const { plot_search_initial_target: plotSearch } = lease
         historyItems.push({
           key: plotSearch.plot_search_name,
           id: plotSearch.plot_search_id,
-          itemTitle: "A title that might be too long to display in full",
-          // itemTitle: plotSearch.plot_search_name,
+          itemTitle: plotSearch.plot_search_name,
           startDate: plotSearch.begin_at,
           endDate: plotSearch.end_at,
           plotSearchType: plotSearch.plot_search_type,

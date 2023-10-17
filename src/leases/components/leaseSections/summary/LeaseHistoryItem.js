@@ -32,6 +32,7 @@ type Props = {
   receivedAt?: string,
   plotSearchType?: string,
   plotSearchSubtype?: string,
+  applicantName?: string,
   itemType?: string,
   onDelete?: Function,
   stateOptions: Array<Object>,
@@ -50,6 +51,7 @@ const LeaseHistoryItem = (
     receivedAt,
     plotSearchType,
     plotSearchSubtype,
+    applicantName,
     itemType = '',
     onDelete,
     stateOptions,
@@ -62,6 +64,7 @@ const LeaseHistoryItem = (
   const externalLinkHref = lease ? `${getRouteById(Routes.LEASES)}/${lease.id}`
     : itemType === 'Haku' && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
     : itemType === 'Hakemus' && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
+    : itemType === 'Aluehaku' && id ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
     : null
   // TODO: Add permissions for deleting plot searches and plot applications
   // TODO: implement usersPermissions properly
@@ -105,10 +108,11 @@ const LeaseHistoryItem = (
                     : title
                   }
                 </p>
-                {receivedAt && <FormText>Hakemus saapunut {formatDate(receivedAt)}</FormText>}
+                {receivedAt && <FormText>Saapunut {formatDate(receivedAt)}</FormText>}
                 {startDate && endDate && <FormText>{formatDate(startDate)} - {formatDate(endDate)}</FormText>}
                 {plotSearchType && <FormText>{plotSearchType}</FormText>}
                 {plotSearchSubtype && <FormText>{plotSearchSubtype}</FormText>}
+                {applicantName && <FormText>{applicantName}</FormText>}
                 <FormText className="type">{lease ? getLabelOfOption(stateOptions, lease.state) : itemType}</FormText>
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
                   {onDelete &&
