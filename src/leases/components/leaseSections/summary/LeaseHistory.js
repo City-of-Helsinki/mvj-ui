@@ -91,7 +91,7 @@ class LeaseHistory extends PureComponent<Props, State> {
           })
         })
       }
-      if (lease && lease.plot_search_target) {
+      if (lease && lease.plot_search_initial_target) {
         const { plot_search_initial_target: plotSearch } = lease
         historyItems.push({
           key: plotSearch.plot_search_name,
