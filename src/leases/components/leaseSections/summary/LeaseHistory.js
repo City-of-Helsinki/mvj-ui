@@ -72,7 +72,7 @@ class LeaseHistory extends PureComponent<Props, State> {
         lease.target_statuses.forEach((plotApplication) => {
           console.log({plotApplication})
           historyItems.push({
-            key: `area-application-${plotApplication.application_identifier}`,
+            key: `plot-application-${plotApplication.application_identifier}`,
             id: plotApplication.id,
             itemTitle: plotApplication.application_identifier,
             receivedAt: plotApplication.received_at,
