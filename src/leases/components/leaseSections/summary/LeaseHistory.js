@@ -95,6 +95,19 @@ class LeaseHistory extends PureComponent<Props, State> {
         })
       }
 
+      if (lease.area_searches) {
+        lease.area_searches.forEach((areaSearch) => {
+          historyItems.push({
+            key: `area-search-${areaSearch.identifier}`,
+            id: areaSearch.id,
+            itemTitle: areaSearch.identifier,
+            receivedAt: areaSearch.received_date,
+            applicantName: "[MOCK] Harri Hakija",
+            itemType: "Aluehaku",
+          })
+        })
+      }
+
       let leaseProps: any = {
         key: `lease-${lease.id}`,
         id: lease.id,
