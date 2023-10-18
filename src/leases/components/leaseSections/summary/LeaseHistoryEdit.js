@@ -54,8 +54,8 @@ type State = {
   leaseAttributes: Attributes,
   newLease: ?Object,
   leaseHistoryItemsAll: Array<Object>,
-  leaseHistoryItemsFrom: Array<Object>,
-  leaseHistoryItemsTo: Array<Object>,
+  relatedLeasesFrom: Array<Object>,
+  relatedLeasesTo: Array<Object>,
   stateOptions: Array<Object>,
 }
 
@@ -65,8 +65,8 @@ class LeaseHistoryEdit extends Component<Props, State> {
     leaseAttributes: null,
     newLease: null,
     leaseHistoryItemsAll: [],
-    leaseHistoryItemsFrom: [],
-    leaseHistoryItemsTo: [],
+    relatedLeasesFrom: [],
+    relatedLeasesTo: [],
     stateOptions: [],
   }
 
@@ -79,21 +79,21 @@ class LeaseHistoryEdit extends Component<Props, State> {
     }
 
     if(props.currentLease !== state.currentLease) {
-      const leaseHistoryItemsFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
-      const leaseHistoryItemsTo = getContentRelatedLeasesTo(props.currentLease);
-      const leaseHistoryItemsAll = [...leaseHistoryItemsFrom, {lease: props.currentLease}, ...leaseHistoryItemsTo];
+      const relatedLeasesFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
+      const relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
+      const leaseHistoryItemsAll = [...relatedLeasesFrom, {lease: props.currentLease}, ...relatedLeasesTo];
 
       newState.currentLease = props.currentLease;
       newState.leaseHistoryItemsAll = leaseHistoryItemsAll;
-      newState.leaseHistoryItemsFrom = leaseHistoryItemsFrom;
-      newState.leaseHistoryItemsTo = leaseHistoryItemsTo;
+      newState.relatedLeasesFrom = relatedLeasesFrom;
+      newState.relatedLeasesTo = relatedLeasesTo;
     }
 
     return newState;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.state.leaseHistoryItemsTo !== prevState.leaseHistoryItemsTo) {
+    if(this.state.relatedLeasesTo !== prevState.relatedLeasesTo) {
       this.clearNewLease();
     }
   }
@@ -157,10 +157,78 @@ class LeaseHistoryEdit extends Component<Props, State> {
     const {
       newLease,
       leaseHistoryItemsAll,
-      leaseHistoryItemsFrom,
-      leaseHistoryItemsTo,
+      relatedLeasesFrom,
+      relatedLeasesTo,
       stateOptions,
     } = this.state;
+
+    const handleDelete = this.handleDelete
+
+    const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
+      const historyItems = []
+
+      if (lease.target_statuses.length) {
+        lease.target_statuses.forEach((plotApplication) => {
+          historyItems.push({
+            key: `plot-application-${plotApplication.application_identifier}`,
+            id: plotApplication.id,
+            itemTitle: plotApplication.application_identifier,
+            receivedAt: plotApplication.received_at,
+            itemType: "Hakemus",
+          })
+        })
+      }
+
+      if (lease.plot_search_initial_target) {
+        const { plot_search_initial_target: plotSearch } = lease
+        historyItems.push({
+          key: `plot-search-${plotSearch.plot_search_name}`,
+          id: plotSearch.plot_search_id,
+          itemTitle: plotSearch.plot_search_name,
+          startDate: plotSearch.begin_at,
+          endDate: plotSearch.end_at,
+          plotSearchType: plotSearch.plot_search_type,
+          plotSearchSubtype: plotSearch.plot_search_subtype,
+          itemType: "Haku",
+        })
+      }
+
+      if (lease.area_searches) {
+        lease.area_searches.forEach((areaSearch) => {
+          historyItems.push({
+            key: `area-search-${areaSearch.identifier}`,
+            id: areaSearch.id,
+            itemTitle: areaSearch.identifier,
+            receivedAt: areaSearch.received_date,
+            applicantName: "[MOCK] Harri Hakija",
+            itemType: "Aluehaku",
+          })
+        })
+      }
+
+      let leaseProps: any = {
+        key: `lease-${lease.id}`,
+        id: lease.id,
+        lease: lease,
+        startDate: lease.start_date,
+        endDate: lease.end_date,
+        onDelete: handleDelete
+      }
+
+      // active will be a number when used in a map function
+      if (typeof active === "boolean") {
+        leaseProps.active = active
+      }
+      historyItems.push(leaseProps)
+      return historyItems.map((item) => { return <LeaseHistoryItem {...item} stateOptions={this.state.stateOptions} />})
+    }
+    const restructureLease = (lease) => {
+      let destructuredLease = lease.lease
+      return {
+        id: lease.id,
+        ...destructuredLease
+      }
+    }
 
     return (
       <AppConsumer>
@@ -226,58 +294,17 @@ class LeaseHistoryEdit extends Component<Props, State> {
 
               <div className="summary__related-leases_items">
                 <div className="summary__related-leases_items_border-left" />
-                {!!leaseHistoryItemsTo && !!leaseHistoryItemsTo.length && leaseHistoryItemsTo.map((lease, index) => {
-                  return (
-                    <LeaseHistoryItem
-                      key={index}
-                      active={false}
-                      id={lease.id}
-                      indented
-                      onDelete={this.handleDelete}
-                      lease={lease.lease}
-                      startDate={lease.lease.start_date}
-                      endDate={lease.lease.end_date}
-                      stateOptions={stateOptions}
-                    />
-                  );
-                })}
-                {!!currentLease &&
-                  <LeaseHistoryItem
-                    active={true}
-                    lease={currentLease}
-                    startDate={currentLease.start_date}
-                    endDate={currentLease.end_date}
-                    stateOptions={stateOptions}
-                  />
-                }
-                {!!leaseHistoryItemsFrom && !!leaseHistoryItemsFrom.length && leaseHistoryItemsFrom.map((lease, index) => {
-                  const historyItems = []
-                  if (lease.lease && lease.lease.target_statuses.length) {
-                    lease.lease.target_statuses.forEach((plotSearch) => {
-                      historyItems.push({
-                        key: plotSearch.plot_search_name,
-                        id: plotSearch.plot_search_id,
-                        itemTitle: plotSearch.plot_search_name,
-                        startDate: plotSearch.start_date,
-                        endDate: plotSearch.end_date,
-                        // join plotsearch__plotsearchsubtype__plotsearchtype
-                        plotSearchType: "Search Type",
-                        plotSearchSubtype: "Search Subtype",
-                        itemType: "plotsearch",
-                        stateOptions: stateOptions,
-                      })
-                    })
-                  }
-                  historyItems.push({
-                    key: index,
-                    id: lease.id,
-                    lease: lease.lease,
-                    startDate: lease.lease.start_date,
-                    endDate: lease.lease.end_date,
-                    stateOptions: stateOptions
-                  })
-                  return historyItems.map((item) => { return <LeaseHistoryItem {...item} />})
-                })}
+                {!!relatedLeasesTo && !!relatedLeasesTo.length && 
+            relatedLeasesTo
+              .map(restructureLease)
+              .map(renderLeaseWithPlotSearchesAndApplications)}
+
+          {!!currentLease && renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
+
+          {!!relatedLeasesFrom && !!relatedLeasesFrom.length && 
+            relatedLeasesFrom
+              .map(restructureLease)
+              .map(renderLeaseWithPlotSearchesAndApplications)}
               </div>
             </div>
           );

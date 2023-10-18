@@ -57,7 +57,6 @@ class LeaseHistory extends PureComponent<Props, State> {
 
   render() {
     const {currentLease} = this.props;
-    console.log({currentLease})
     const {
       relatedLeasesFrom,
       relatedLeasesTo,
@@ -66,11 +65,9 @@ class LeaseHistory extends PureComponent<Props, State> {
 
     const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
       const historyItems = []
-      console.log(lease)
 
       if (lease.target_statuses.length) {
         lease.target_statuses.forEach((plotApplication) => {
-          console.log({plotApplication})
           historyItems.push({
             key: `plot-application-${plotApplication.application_identifier}`,
             id: plotApplication.id,
