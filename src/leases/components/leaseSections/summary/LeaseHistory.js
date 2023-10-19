@@ -15,6 +15,7 @@ import {
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
+import { restructureLease } from "../../../helpers";
 
 type Props = {
   currentLease: Lease,
@@ -78,28 +79,30 @@ class LeaseHistory extends PureComponent<Props, State> {
         })
       }
 
-      if (lease.plot_search_initial_target) {
-        const { plot_search_initial_target: plotSearch } = lease
-        historyItems.push({
-          key: `plot-search-${plotSearch.plot_search_name}`,
-          id: plotSearch.plot_search_id,
-          itemTitle: plotSearch.plot_search_name,
-          startDate: plotSearch.begin_at,
-          endDate: plotSearch.end_at,
-          plotSearchType: plotSearch.plot_search_type,
-          plotSearchSubtype: plotSearch.plot_search_subtype,
-          itemType: "Haku",
+      if (lease.plot_searches) {
+        lease.plot_searches.forEach((plotSearch) => {
+          historyItems.push({
+            key: `plot-search-${plotSearch.name}`,
+            id: plotSearch.id,
+            itemTitle: plotSearch.name,
+            startDate: plotSearch.begin_at,
+            endDate: plotSearch.end_at,
+            plotSearchType: plotSearch.type,
+            plotSearchSubtype: plotSearch.subtype,
+            itemType: "Haku",
+          })
         })
       }
 
       if (lease.area_searches) {
+        console.log(lease.area_searches)
         lease.area_searches.forEach((areaSearch) => {
           historyItems.push({
             key: `area-search-${areaSearch.identifier}`,
             id: areaSearch.id,
             itemTitle: areaSearch.identifier,
             receivedAt: areaSearch.received_date,
-            applicantName: "[MOCK] Harri Hakija",
+            applicantName: `${areaSearch.applicant_first_name} ${areaSearch.applicant_last_name}`,
             itemType: "Aluehaku",
           })
         })
@@ -120,13 +123,7 @@ class LeaseHistory extends PureComponent<Props, State> {
       historyItems.push(leaseProps)
       return historyItems.map((item) => { return <LeaseHistoryItem {...item} stateOptions={this.state.stateOptions} />})
     }
-    const restructureLease = (lease) => {
-      let destructuredLease = lease.lease
-      return {
-        id: lease.id,
-        ...destructuredLease
-      }
-    }
+
     return (
       <div className="summary__related-leases">
         <TitleH3 uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}>

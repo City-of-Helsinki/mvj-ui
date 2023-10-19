@@ -3134,3 +3134,16 @@ export const clearUnsavedChanges = () => {
 export const getLeasesWithContractNumber = (leasesForContractNumbers: LeaseList): boolean => {
   return (get(leasesForContractNumbers, 'count') > 0);
 };
+
+/**
+ * Destructures a nested lease object in a related lease.
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const restructureLease = (lease: Object): Object => {
+  let destructuredLease = lease.lease
+  return {
+    id: lease.id,
+    ...destructuredLease
+  }
+}

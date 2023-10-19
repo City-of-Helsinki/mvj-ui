@@ -33,6 +33,7 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import { restructureLease } from "../../../helpers";
 
 type Props = {
   createLease: Function,
@@ -179,17 +180,19 @@ class LeaseHistoryEdit extends Component<Props, State> {
         })
       }
 
-      if (lease.plot_search_initial_target) {
-        const { plot_search_initial_target: plotSearch } = lease
-        historyItems.push({
-          key: `plot-search-${plotSearch.plot_search_name}`,
-          id: plotSearch.plot_search_id,
-          itemTitle: plotSearch.plot_search_name,
-          startDate: plotSearch.begin_at,
-          endDate: plotSearch.end_at,
-          plotSearchType: plotSearch.plot_search_type,
-          plotSearchSubtype: plotSearch.plot_search_subtype,
-          itemType: "Haku",
+      if (lease.plot_searches) {
+        console.log(lease.plot_searches)
+        lease.plot_searches.forEach((plotSearch) => {
+          historyItems.push({
+            key: `plot-search-${plotSearch.name}`,
+            id: plotSearch.id,
+            itemTitle: plotSearch.name,
+            startDate: plotSearch.begin_at,
+            endDate: plotSearch.end_at,
+            plotSearchType: plotSearch.type,
+            plotSearchSubtype: plotSearch.subtype,
+            itemType: "Haku",
+          })
         })
       }
 
@@ -200,7 +203,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
             id: areaSearch.id,
             itemTitle: areaSearch.identifier,
             receivedAt: areaSearch.received_date,
-            applicantName: "[MOCK] Harri Hakija",
+            applicantName: `${areaSearch.applicant_first_name} ${areaSearch.applicant_last_name}`,
             itemType: "Aluehaku",
           })
         })
@@ -221,13 +224,6 @@ class LeaseHistoryEdit extends Component<Props, State> {
       }
       historyItems.push(leaseProps)
       return historyItems.map((item) => { return <LeaseHistoryItem {...item} stateOptions={this.state.stateOptions} />})
-    }
-    const restructureLease = (lease) => {
-      let destructuredLease = lease.lease
-      return {
-        id: lease.id,
-        ...destructuredLease
-      }
     }
 
     return (
@@ -295,16 +291,16 @@ class LeaseHistoryEdit extends Component<Props, State> {
               <div className="summary__related-leases_items">
                 <div className="summary__related-leases_items_border-left" />
                 {!!relatedLeasesTo && !!relatedLeasesTo.length && 
-            relatedLeasesTo
-              .map(restructureLease)
-              .map(renderLeaseWithPlotSearchesAndApplications)}
+                  relatedLeasesTo
+                    .map(restructureLease)
+                    .map(renderLeaseWithPlotSearchesAndApplications)}
 
-          {!!currentLease && renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
+                {!!currentLease && renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
 
-          {!!relatedLeasesFrom && !!relatedLeasesFrom.length && 
-            relatedLeasesFrom
-              .map(restructureLease)
-              .map(renderLeaseWithPlotSearchesAndApplications)}
+                {!!relatedLeasesFrom && !!relatedLeasesFrom.length && 
+                  relatedLeasesFrom
+                    .map(restructureLease)
+                    .map(renderLeaseWithPlotSearchesAndApplications)}
               </div>
             </div>
           );
