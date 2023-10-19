@@ -95,7 +95,6 @@ class LeaseHistory extends PureComponent<Props, State> {
       }
 
       if (lease.area_searches) {
-        console.log(lease.area_searches)
         lease.area_searches.forEach((areaSearch) => {
           historyItems.push({
             key: `area-search-${areaSearch.identifier}`,

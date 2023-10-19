@@ -181,7 +181,6 @@ class LeaseHistoryEdit extends Component<Props, State> {
       }
 
       if (lease.plot_searches) {
-        console.log(lease.plot_searches)
         lease.plot_searches.forEach((plotSearch) => {
           historyItems.push({
             key: `plot-search-${plotSearch.name}`,
