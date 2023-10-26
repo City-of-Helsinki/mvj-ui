@@ -40,8 +40,10 @@ import {
 } from '$src/application/selectors';
 import {ApplicationSectionKeys} from '$src/application/components/enums';
 import {
+  APPLICANT_MAIN_IDENTIFIERS,
   APPLICANT_SECTION_IDENTIFIER,
   APPLICANT_TYPE_FIELD_IDENTIFIER,
+  EMAIL_FIELD_IDENTIFIER,
   TARGET_SECTION_IDENTIFIER,
 } from '$src/application/constants';
 import {
@@ -54,6 +56,7 @@ import type {
   PlotApplicationFormValue,
   UploadedFileMeta,
 } from '$src/application/types';
+import {companyIdentifierValidator, emailValidator, personalIdentifierValidator} from '$src/application/formValidation';
 
 const ApplicationFormFileField = connect(
   (state, props) => {
@@ -351,6 +354,19 @@ const ApplicationFormSubsectionFields = connect(
           break;
       }
 
+      let validator;
+      switch (fieldName.substring(fieldName.lastIndexOf('.') + 1)) {
+        case APPLICANT_MAIN_IDENTIFIERS[ApplicantTypes.PERSON].IDENTIFIER_FIELD:
+          validator = personalIdentifierValidator;
+          break;
+        case APPLICANT_MAIN_IDENTIFIERS[ApplicantTypes.COMPANY].IDENTIFIER_FIELD:
+          validator = companyIdentifierValidator;
+          break;
+        case EMAIL_FIELD_IDENTIFIER:
+          validator = emailValidator;
+          break;
+      }
+
       return (
         <Column {...columnWidths} className="ApplicationFormField__container">
           <FormField
@@ -365,6 +381,7 @@ const ApplicationFormSubsectionFields = connect(
             }}
             overrideValues={fieldOverrides}
             onChange={(newValue) => checkSpecialValues(field, newValue)}
+            validate={validator}
           />
         </Column>
       );
