@@ -79,6 +79,18 @@ class LeaseHistory extends PureComponent<Props, State> {
         })
       }
 
+      if (lease.related_plot_applications.length) {
+        lease.related_plot_applications.forEach((relatedPlotApplication) => {
+          historyItems.push({
+            key: `related-plot-application-${relatedPlotApplication.id}`,
+            id: relatedPlotApplication.id,
+            itemTitle: relatedPlotApplication.application_identifier,
+            receivedAt: relatedPlotApplication.received_at,
+            itemType: "Hakemus",
+          })
+        })
+      }
+
       if (lease.plot_searches) {
         lease.plot_searches.forEach((plotSearch) => {
           historyItems.push({
