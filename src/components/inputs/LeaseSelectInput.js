@@ -8,7 +8,11 @@ import {fetchLeases} from '$src/leases/requestsAsync';
 import {
   fetchAreaSearches,
   fetchTargetStatuses,
-} from "../../leases/requestsAsync";
+} from "$src/leases/requestsAsync";
+import { getLabelOfOption, getFieldOptions } from "$src/util/helpers";
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
+import {store} from '$src/root/startApp';
+import { LeaseFieldPaths } from "$src/leases/enums";
 
 type Props = {
   disabled?: boolean,
@@ -29,14 +33,16 @@ const LeaseSelectInput = ({
   leaseHistoryItems,
   value,
 }: Props) => {
-  const getLeaseOptions = (leases: Array<Object>, plotSearches: Array<Object>, areaSearches: Array<Object>): Array<Object> => {
-    const filterOutExisting = (item) => lease.id === leaseHistoryItem.lease.id ? false : true
+  const leaseAttributes = getLeaseAttributes(store.getState());
+  const getHistoryItemOptions = (leases: Array<Object>, plotSearches: Array<Object>, areaSearches: Array<Object>): Array<Object> => {
+    const filterOutExisting = (item) => leaseHistoryItems.find((leaseHistoryItem) => item.id === leaseHistoryItem.lease.id) ? false : true
     leases = leases
       .filter(filterOutExisting)
       .map((lease) => {
+        const stateOptions = getFieldOptions(leaseAttributes, LeaseFieldPaths.STATE)
         return {
           value: lease.id,
-          label: getContentLeaseIdentifier(lease),
+          label: `${getContentLeaseIdentifier(lease) || ''}, ${getLabelOfOption(stateOptions, lease.state) || ''}`,
         };
       });
 
@@ -45,18 +51,20 @@ const LeaseSelectInput = ({
       .map((plotSearch) => {
         return {
           value: plotSearch.id,
-          label: plotSearch.application_identifier,
+          label: `${plotSearch.application_identifier}, Haku`,
         };
       });
 
-    plotSearches = plotSearches
+    areaSearches = areaSearches
       .filter(filterOutExisting)
-      .map((plotSearch) => {
+      .map((areaSearch) => {
         return {
-          value: plotSearch.id,
-          label: plotSearch.application_identifier,
+          value: areaSearch.id,
+          label: `${areaSearch.identifier}, Hakemus`,
         };
       });
+
+      return [...leases, ...plotSearches, ...areaSearches].sort((a, b) => (a.label && b.label) && a.label > b.label ? 1 : -1).slice(0,10)
   }
 
   const getLeases = debounce(async(inputValue: string, callback: Function) => {
@@ -67,14 +75,16 @@ const LeaseSelectInput = ({
     });
     
     const plotSearches = await fetchTargetStatuses({
+      identifier: inputValue,
       limit: 10,
     });
-
+    
     const areaSearches = await fetchAreaSearches({
+      identifier: inputValue,
       limit: 10,
     });
 
-    callback(getLeaseOptions(leases));
+    callback(getHistoryItemOptions(leases, plotSearches, areaSearches));
   }, 500);
 
   const input = {
