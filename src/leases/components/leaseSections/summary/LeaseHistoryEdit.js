@@ -197,6 +197,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
       let leaseProps: any = {
         key: `lease-${lease.id}`,
         id: lease.id,
+        deleteId: lease.related_lease_id,
         lease: lease,
         startDate: lease.start_date,
         endDate: lease.end_date,

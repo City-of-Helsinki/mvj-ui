@@ -3143,7 +3143,7 @@ export const getLeasesWithContractNumber = (leasesForContractNumbers: LeaseList)
 export const restructureLease = (lease: Object): Object => {
   let destructuredLease = lease.lease
   return {
-    id: lease.id,
+    related_lease_id: lease.id,
     ...destructuredLease
   }
 }

@@ -25,6 +25,7 @@ type Props = {
   indented?: boolean,
   lease?: Lease,
   id?: number,
+  deleteId?: number,
   itemTitle?: string,
   plotSearchName?: string,
   startDate?: string,
@@ -45,6 +46,7 @@ const LeaseHistoryItem = (
     indented = false,
     lease,
     id,
+    deleteId,
     itemTitle = '',
     startDate,
     endDate,
@@ -78,7 +80,7 @@ const LeaseHistoryItem = (
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               if(onDelete) {
-                onDelete(id);
+                onDelete(deleteId);
               }
             },
             confirmationModalButtonClassName: ButtonColors.ALERT,
@@ -115,7 +117,7 @@ const LeaseHistoryItem = (
                 {applicantName && <FormText>{applicantName}</FormText>}
                 <FormText className="type">{lease ? getLabelOfOption(stateOptions, lease.state) : itemType}</FormText>
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
-                  {onDelete &&
+                  {onDelete && deleteId &&
                     <RemoveButton
                       className='related-leases-item_remove-button'
                       onClick={handleDelete}
