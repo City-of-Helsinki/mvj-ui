@@ -13,7 +13,7 @@ import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
 import LeaseHistoryItem from './LeaseHistoryItem';
 import TitleH3 from '$components/content/TitleH3';
 import {createLease, hideCreateModal, showCreateModal} from '$src/leases/actions';
-import {createReleatedLease, deleteReleatedLease} from '$src/relatedLease/actions';
+import {createReleatedLease, deleteReleatedLease, createRelatedPlotApplication, deleteRelatedPlotApplication} from '$src/relatedLease/actions';
 import {ConfirmationModalTexts, FormNames, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {LeaseFieldPaths, LeaseFieldTitles, RelationTypes} from '$src/leases/enums';
@@ -33,13 +33,16 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import { restructureLease } from "../../../helpers";
+import { restructureLease } from "$src/leases/helpers";
+import PlotApplication from "$src/plotApplications/components/PlotApplication";
 
 type Props = {
   createLease: Function,
   createReleatedLease: Function,
+  createRelatedPlotApplication: Function,
   currentLease: Lease,
   deleteReleatedLease: Function,
+  deleteRelatedPlotApplication: Function,
   hasAnyDirtyForms: boolean,
   hideCreateModal: Function,
   initialize: Function,
@@ -105,23 +108,41 @@ class LeaseHistoryEdit extends Component<Props, State> {
     });
   }
 
-  handleCreate = (toLease: Object) => {
-    const {createReleatedLease, currentLease} = this.props;
+  handleCreate = (newHistoryItem: Object) => {
+    const {createReleatedLease, createRelatedPlotApplication, currentLease} = this.props;
 
     this.setState({
-      newLease: toLease,
+      newLease: newHistoryItem,
     });
 
-    createReleatedLease({
-      from_lease: currentLease.id,
-      to_lease: toLease.value,
-    });
+    switch (newHistoryItem.type) {
+      case 'lease':
+        createReleatedLease({
+          from_lease: currentLease.id,
+          to_lease: newHistoryItem.value,
+        });
+        break;
+      case 'related_plot_application':
+        createRelatedPlotApplication({
+          object_id: newHistoryItem.value,
+          content_type: newHistoryItem.content_type,
+          lease: currentLease.id,
+        })
+        break;
+    }
+
   }
 
   handleDelete = (id: number) => {
     const {currentLease, deleteReleatedLease} = this.props;
 
     deleteReleatedLease({id: id, leaseId: currentLease.id});
+  }
+
+  handleDeleteRelatedPlotApplication = (id: number) => {
+    const {currentLease, deleteRelatedPlotApplication} = this.props;
+
+    deleteRelatedPlotApplication({id: id, leaseId: currentLease.id});
   }
 
   showCreateLeaseModal = () => {
@@ -164,31 +185,90 @@ class LeaseHistoryEdit extends Component<Props, State> {
     } = this.state;
 
     const handleDelete = this.handleDelete
+    const handleDeleteRelatedPlotApplication = this.handleDeleteRelatedPlotApplication
 
     const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
       const historyItems = []
 
+      if (lease.plot_searches.length) {
+        lease.plot_searches.forEach((plotSearch) => {
+          historyItems.push({
+            key: `plot-search-${plotSearch.name}`,
+            id: plotSearch.id,
+            itemTitle: plotSearch.name,
+            startDate: plotSearch.begin_at,
+            endDate: plotSearch.end_at,
+            plotSearchType: plotSearch.type,
+            plotSearchSubtype: plotSearch.subtype,
+            itemType: "Haku",
+          })
+        })
+      }
+
+      if (lease.target_statuses.length) {
+        lease.target_statuses.forEach((plotApplication) => {
+          historyItems.push({
+            key: `plot-application-${plotApplication.application_identifier}`,
+            id: plotApplication.id,
+            itemTitle: plotApplication.application_identifier,
+            receivedAt: plotApplication.received_at,
+            itemType: "Hakemus",
+          })
+        })
+      }
+
+      if (lease.area_searches) {
+        lease.area_searches.forEach((areaSearch) => {
+          historyItems.push({
+            key: `area-search-${areaSearch.identifier}`,
+            id: areaSearch.id,
+            itemTitle: areaSearch.identifier,
+            receivedAt: areaSearch.received_date,
+            applicantName: `${areaSearch.applicant_first_name} ${areaSearch.applicant_last_name}`,
+            itemType: "Aluehakemus",
+          })
+        })
+      }
+
       if (lease.related_plot_applications.length) {
         lease.related_plot_applications.forEach((relatedPlotApplication) => {
+          if (relatedPlotApplication.content_type?.model === "plotsearch") {
+            const { content_object } = relatedPlotApplication
+            historyItems.push({
+              key: `related-plot-application-plotsearch-${content_object.id}`,
+              id: content_object.id,
+              itemTitle: content_object.application_identifier,
+              startDate: content_object.begin_at,
+              endDate: content_object.end_at,
+              plotSearchType: content_object.type,
+              plotSearchSubtype: content_object.subtype,
+              itemType: "Haku",
+              onDelete: handleDeleteRelatedPlotApplication
+            })
+          }
           if (relatedPlotApplication.content_type?.model === "targetstatus") {
             const { content_object } = relatedPlotApplication
             historyItems.push({
-              key: `related-plot-application-${content_object.id}`,
+              key: `related-plot-application-targetstatus-${content_object.id}`,
               id: content_object.id,
+              deleteId: relatedPlotApplication.id,
               itemTitle: content_object.application_identifier,
               receivedAt: content_object.received_at,
               itemType: "Hakemus",
+              onDelete: handleDeleteRelatedPlotApplication
             })
           }
           else if (relatedPlotApplication.content_type?.model === "areasearch") {
             const { content_object } = relatedPlotApplication
             historyItems.push({
-              key: `related-plot-application-${content_object.id}`,
+              key: `related-plot-application-areasearch-${content_object.id}`,
               id: content_object.id,
+              deleteId: relatedPlotApplication.id,
               itemTitle: content_object.identifier,
               applicantName: `${content_object.applicant_first_name} ${content_object.applicant_last_name}`,
               receivedAt: content_object.received_date,
-              itemType: "Aluehaku",
+              itemType: "Aluehakemus",
+              onDelete: handleDeleteRelatedPlotApplication
             })
           }
         })
@@ -310,7 +390,9 @@ export default connect(
   {
     createLease,
     createReleatedLease,
+    createRelatedPlotApplication,
     deleteReleatedLease,
+    deleteRelatedPlotApplication,
     hideCreateModal,
     initialize,
     showCreateModal,

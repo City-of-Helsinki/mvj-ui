@@ -66,7 +66,7 @@ const LeaseHistoryItem = (
   const externalLinkHref = lease ? `${getRouteById(Routes.LEASES)}/${lease.id}`
     : itemType === 'Haku' && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
     : itemType === 'Hakemus' && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
-    : itemType === 'Aluehaku' && id ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
+    : itemType === 'Aluehakemus' && id ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
     : null
   // TODO: Add permissions for deleting plot searches and plot applications
   // TODO: implement usersPermissions properly

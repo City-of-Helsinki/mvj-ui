@@ -12,5 +12,18 @@ export type DeleteRelatedLeasePayload = {
   leaseId: number,
 }
 
+export type CreateRelatedPlotApplicationPayload = {
+  object_id: number,
+  content_type: number,
+  lease: number,
+}
+
+export type DeleteRelatedPlotApplicationPayload = {
+  id: number,
+  leaseId: number,
+}
+
 export type CreateRelatedLeaseAction = Action<'mvj/relatedLease/CREATE', CreateRelatedLeasePayload>;
 export type DeleteRelatedLeaseAction = Action<'mvj/relatedLease/DELETE', DeleteRelatedLeasePayload>;
+export type CreateRelatedPlotApplicationAction = Action<'mvj/relatedLease/CREATE_PLOT_APPLICATION', CreateRelatedPlotApplicationPayload>;
+export type DeleteRelatedPlotApplicationAction = Action<'mvj/relatedLease/DELETE_PLOT_APPLICATION', DeleteRelatedPlotApplicationPayload>;

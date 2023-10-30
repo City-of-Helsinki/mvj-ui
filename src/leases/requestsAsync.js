@@ -26,6 +26,18 @@ export const fetchAreaSearches = async(query?: Object) => {
   }
 };
 
+export const fetchPlotSearches = async(query?: Object) => {
+  const {response: {status}, bodyAsJson} = await callApiAsync(new Request(createUrl('plot_search/', query)));
+
+  switch (status) {
+    case 200:
+      return bodyAsJson.results;
+    default:
+      console.error('Failed to fetch target statuses');
+      return [];
+  }
+};
+
 export const fetchTargetStatuses = async(query?: Object) => {
   const {response: {status}, bodyAsJson} = await callApiAsync(new Request(createUrl('target_status/', query)));
 

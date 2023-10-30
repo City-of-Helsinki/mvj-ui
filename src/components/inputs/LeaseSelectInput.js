@@ -34,8 +34,12 @@ const LeaseSelectInput = ({
   value,
 }: Props) => {
   const leaseAttributes = getLeaseAttributes(store.getState());
-  const getHistoryItemOptions = (leases: Array<Object>, plotSearches: Array<Object>, areaSearches: Array<Object>): Array<Object> => {
+  const getHistoryItemOptions = (leases: Array<Object>, plotApplications: Array<Object>, areaSearches: Array<Object>): Array<Object> => {
     const filterOutExisting = (item) => leaseHistoryItems.find((leaseHistoryItem) => item.id === leaseHistoryItem.lease.id) ? false : true
+    
+    console.log(plotApplications)
+    console.log(areaSearches)
+    
     leases = leases
       .filter(filterOutExisting)
       .map((lease) => {
@@ -43,15 +47,18 @@ const LeaseSelectInput = ({
         return {
           value: lease.id,
           label: `${getContentLeaseIdentifier(lease) || ''}, ${getLabelOfOption(stateOptions, lease.state) || ''}`,
+          type: 'lease'
         };
       });
 
-    plotSearches = plotSearches
+    plotApplications = plotApplications
       .filter(filterOutExisting)
-      .map((plotSearch) => {
+      .map((plotApplication) => {
         return {
-          value: plotSearch.id,
-          label: `${plotSearch.application_identifier}, Haku`,
+          value: plotApplication.id,
+          label: `${plotApplication.application_identifier}, Hakemus`,
+          type: 'related_plot_application',
+          content_type: 186 // TODO: change to "plotapplication" when backend is ready
         };
       });
 
@@ -60,11 +67,13 @@ const LeaseSelectInput = ({
       .map((areaSearch) => {
         return {
           value: areaSearch.id,
-          label: `${areaSearch.identifier}, Hakemus`,
+          label: `${areaSearch.identifier}, Aluehakemus`,
+          type: 'related_plot_application',
+          content_type: 182 // TODO: change to "areasearch" when backend is ready
         };
       });
 
-      return [...leases, ...plotSearches, ...areaSearches].sort((a, b) => (a.label && b.label) && a.label > b.label ? 1 : -1).slice(0,10)
+      return [...leases, ...plotApplications, ...areaSearches].sort((a, b) => (a.label && b.label) && a.label > b.label ? 1 : -1).slice(0,10)
   }
 
   const getLeases = debounce(async(inputValue: string, callback: Function) => {
@@ -73,9 +82,9 @@ const LeaseSelectInput = ({
       identifier: inputValue,
       limit: 10,
     });
-    
-    const plotSearches = await fetchTargetStatuses({
-      identifier: inputValue,
+        
+    const plotApplications = await fetchTargetStatuses({
+      application_identifier: inputValue,
       limit: 10,
     });
     
@@ -84,7 +93,7 @@ const LeaseSelectInput = ({
       limit: 10,
     });
 
-    callback(getHistoryItemOptions(leases, plotSearches, areaSearches));
+    callback(getHistoryItemOptions(leases, plotApplications, areaSearches));
   }, 500);
 
   const input = {
