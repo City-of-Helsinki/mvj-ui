@@ -58,7 +58,7 @@ const LeaseSelectInput = ({
           value: plotApplication.id,
           label: `${plotApplication.application_identifier}, Hakemus`,
           type: 'related_plot_application',
-          content_type: 186 // TODO: change to "plotapplication" when backend is ready
+          content_type_model: "targetstatus"
         };
       });
 
@@ -69,14 +69,14 @@ const LeaseSelectInput = ({
           value: areaSearch.id,
           label: `${areaSearch.identifier}, Aluehakemus`,
           type: 'related_plot_application',
-          content_type: 182 // TODO: change to "areasearch" when backend is ready
+          content_type_model: "areasearch"
         };
       });
 
       return [...leases, ...plotApplications, ...areaSearches].sort((a, b) => (a.label && b.label) && a.label > b.label ? 1 : -1).slice(0,10)
   }
 
-  const getLeases = debounce(async(inputValue: string, callback: Function) => {
+  const getHistoryItems = debounce(async(inputValue: string, callback: Function) => {
     const leases = await fetchLeases({
       succinct: true,
       identifier: inputValue,
@@ -107,7 +107,7 @@ const LeaseSelectInput = ({
     <AsyncSelect
       disabled={disabled}
       displayError={false}
-      getOptions={getLeases}
+      getOptions={getHistoryItems}
       input={input}
       isDirty={false}
       placeholder={placeholder}

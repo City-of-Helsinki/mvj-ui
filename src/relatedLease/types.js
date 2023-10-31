@@ -14,7 +14,7 @@ export type DeleteRelatedLeasePayload = {
 
 export type CreateRelatedPlotApplicationPayload = {
   object_id: number,
-  content_type: number,
+  content_type_model: number,
   lease: number,
 }
 

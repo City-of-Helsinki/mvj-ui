@@ -138,7 +138,7 @@ class LeaseHistory extends PureComponent<Props, State> {
               key: `related-plot-application-areasearch-${content_object.id}`,
               id: content_object.id,
               itemTitle: content_object.identifier,
-              applicantName: `${content_object.applicant_first_name} ${content_object.applicant_last_name}`,
+              applicantName: `${content_object.applicant_names.join(" ")}`,
               receivedAt: content_object.received_date,
               itemType: "Aluehakemus",
             })

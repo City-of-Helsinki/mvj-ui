@@ -125,7 +125,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
       case 'related_plot_application':
         createRelatedPlotApplication({
           object_id: newHistoryItem.value,
-          content_type: newHistoryItem.content_type,
+          content_type_model: newHistoryItem.content_type_model,
           lease: currentLease.id,
         })
         break;
@@ -259,13 +259,14 @@ class LeaseHistoryEdit extends Component<Props, State> {
             })
           }
           else if (relatedPlotApplication.content_type?.model === "areasearch") {
+            console.log(relatedPlotApplication)
             const { content_object } = relatedPlotApplication
             historyItems.push({
               key: `related-plot-application-areasearch-${content_object.id}`,
               id: content_object.id,
               deleteId: relatedPlotApplication.id,
               itemTitle: content_object.identifier,
-              applicantName: `${content_object.applicant_first_name} ${content_object.applicant_last_name}`,
+              applicantName: `${content_object.applicant_names.join(" ")}`,
               receivedAt: content_object.received_date,
               itemType: "Aluehakemus",
               onDelete: handleDeleteRelatedPlotApplication
