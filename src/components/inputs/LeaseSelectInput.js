@@ -8,6 +8,7 @@ import {fetchLeases} from '$src/leases/requestsAsync';
 import {
   fetchAreaSearches,
   fetchTargetStatuses,
+  fetchPlotSearches,
 } from "$src/leases/requestsAsync";
 import { getLabelOfOption, getFieldOptions } from "$src/util/helpers";
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
@@ -34,12 +35,9 @@ const LeaseSelectInput = ({
   value,
 }: Props) => {
   const leaseAttributes = getLeaseAttributes(store.getState());
-  const getHistoryItemOptions = (leases: Array<Object>, plotApplications: Array<Object>, areaSearches: Array<Object>): Array<Object> => {
+  const getHistoryItemOptions = (leases: Array<Object>, plotSearches: Array<Object>,plotApplications: Array<Object>, areaSearches: Array<Object>): Array<Object> => {
     const filterOutExisting = (item) => leaseHistoryItems.find((leaseHistoryItem) => item.id === leaseHistoryItem.lease.id) ? false : true
-    
-    console.log(plotApplications)
-    console.log(areaSearches)
-    
+        
     leases = leases
       .filter(filterOutExisting)
       .map((lease) => {
@@ -48,6 +46,19 @@ const LeaseSelectInput = ({
           value: lease.id,
           label: `${getContentLeaseIdentifier(lease) || ''}, ${getLabelOfOption(stateOptions, lease.state) || ''}`,
           type: 'lease'
+        };
+      });
+
+    plotSearches = plotSearches
+      .filter(filterOutExisting)
+      .map((plotSearch) => {
+        const maxLength = 24
+        const displayName = plotSearch.name.length > maxLength ? plotSearch.name.substr(0,maxLength) + "..." : plotSearch.name
+        return {
+          value: plotSearch.id,
+          label: `${displayName}, Haku`,
+          type: 'related_plot_application',
+          content_type_model: "plotsearch"
         };
       });
 
@@ -73,7 +84,7 @@ const LeaseSelectInput = ({
         };
       });
 
-      return [...leases, ...plotApplications, ...areaSearches].sort((a, b) => (a.label && b.label) && a.label > b.label ? 1 : -1).slice(0,10)
+      return [...leases, ...plotSearches, ...plotApplications, ...areaSearches].sort((a, b) => (a.label && b.label) && a.label > b.label ? 1 : -1).slice(0,10)
   }
 
   const getHistoryItems = debounce(async(inputValue: string, callback: Function) => {
@@ -82,9 +93,15 @@ const LeaseSelectInput = ({
       identifier: inputValue,
       limit: 10,
     });
+    
+
+    const plotSearches = await fetchPlotSearches({
+      name: inputValue,
+      limit: 10,
+    });
         
     const plotApplications = await fetchTargetStatuses({
-      application_identifier: inputValue,
+      identifier: inputValue,
       limit: 10,
     });
     
@@ -93,7 +110,7 @@ const LeaseSelectInput = ({
       limit: 10,
     });
 
-    callback(getHistoryItemOptions(leases, plotApplications, areaSearches));
+    callback(getHistoryItemOptions(leases, plotSearches, plotApplications, areaSearches));
   }, 500);
 
   const input = {
