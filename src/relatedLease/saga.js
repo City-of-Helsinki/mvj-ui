@@ -67,7 +67,7 @@ function* createRelatedPlotApplicationSaga({payload}): Generator<any, any, any> 
         yield put(fetchSingleLeaseAfterEdit({
           leaseId: payload.lease,
           callbackFunctions: [
-            () => displayUIMessage({title: '', body: 'Vuokraustunnusten välinen liitos poistettu'}),
+            () => displayUIMessage({title: '', body: 'Liitos luotu'}),
           ],
         }));
         break;
@@ -90,7 +90,7 @@ function* deleteRelatedPlotApplicationSaga({payload}): Generator<any, any, any> 
         yield put(fetchSingleLeaseAfterEdit({
           leaseId: payload.leaseId,
           callbackFunctions: [
-            () => displayUIMessage({title: '', body: 'Vuokraustunnusten välinen liitos poistettu'}),
+            () => displayUIMessage({title: '', body: 'Liitos poistettu'}),
           ],
         }));
         break;

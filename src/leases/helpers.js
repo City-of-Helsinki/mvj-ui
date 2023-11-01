@@ -3147,3 +3147,26 @@ export const restructureLease = (lease: Object): Object => {
     ...destructuredLease
   }
 }
+
+/**
+ * Sorts related leases and other items 
+ * by comparing start dates or received dates.
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const sortRelatedHistoryItems = (a: Object, b: Object): Object => {
+  let aTime = a.startDate || a.receivedAt || null
+  let bTime = b.startDate || b.receivedAt || null
+
+  if (aTime && bTime && aTime != bTime) {
+
+    if (aTime < bTime) {
+      return 1
+    } else {
+      return -1
+    }
+  
+  } else {
+    return 0
+  }
+}
