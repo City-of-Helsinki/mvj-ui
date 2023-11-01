@@ -9,6 +9,7 @@ import {getInitialApplicationForm} from '$src/application/helpers';
 import {getFieldTypeMapping} from '$src/application/selectors';
 import {FormNames} from '$src/enums';
 import {receiveFormValidFlags} from '$src/areaSearch/actions';
+import {validateApplicationForm} from '$src/application/formValidation';
 
 type OwnProps = {
   formData: Object,
@@ -96,5 +97,6 @@ export default (flowRight(
   reduxForm({
     form: FormNames.AREA_SEARCH_CREATE_FORM,
     destroyOnUnmount: false,
+    validate: validateApplicationForm('form'),
   }),
 )(AreaSearchApplicationCreateForm): React$ComponentType<OwnProps>);

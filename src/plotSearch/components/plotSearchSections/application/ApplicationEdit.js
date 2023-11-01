@@ -80,7 +80,7 @@ type State = {
 class ApplicationEdit extends PureComponent<Props, State> {
   state = {
     isModalOpen: false,
-    modalSectionIndex: 0,
+    modalSectionIndex: -1,
   }
 
   componentDidMount() {
@@ -271,18 +271,6 @@ class ApplicationEdit extends PureComponent<Props, State> {
                         uiDataKey={getUiDataLeaseKey(ApplicationFieldPaths.NAME)}
                       />
                     </TitleH3>
-                    {/* <FieldArray
-                      component={renderApplicant}
-                      disabled={false}
-                      formName={FormNames.PLOT_SEARCH_APPLICATION}
-                      name={'applicants'}
-                    />
-                    <FieldArray
-                      component={renderTarget}
-                      disabled={false}
-                      formName={FormNames.PLOT_SEARCH_APPLICATION}
-                      name={'targets'}
-                    />*/}
                   </WhiteBox>
                 </Collapse>
                 {formData.sections.map((section, index) =>

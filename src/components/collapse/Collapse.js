@@ -32,6 +32,7 @@ type Props = {
   showTitleOnOpen?: boolean,
   tooltipStyle?: Object,
   uiDataKey?: ?string,
+  isOpen?: boolean,
 }
 
 type State = {
@@ -53,10 +54,13 @@ class Collapse extends PureComponent<Props, State> {
   };
 
   state: State = {
-    contentHeight: this.props.defaultOpen ? null : 0,
+    contentHeight: (this.props.isOpen !== undefined
+      ? this.props.isOpen
+      : this.props.defaultOpen
+    ) ? null : 0,
     isCollapsing: false,
     isExpanding: false,
-    isOpen: this.props.defaultOpen,
+    isOpen: this.props.isOpen !== undefined ? this.props.isOpen : this.props.defaultOpen,
   };
 
   setComponentRef: (any) => void = (el) => {
@@ -76,6 +80,10 @@ class Collapse extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Object, prevState: Object) {
+    if (this.props.isOpen !== undefined && this.props.isOpen !== this.state.isOpen) {
+      this.handleToggleStateChange(this.props.isOpen);
+    }
+
     if ((this.state.isOpen && !this.state.contentHeight) ||
       (this.state.isOpen !== prevState.isOpen)) {
       this.calculateHeight();
@@ -101,35 +109,43 @@ class Collapse extends PureComponent<Props, State> {
   }
 
   handleToggle: (SyntheticEvent<HTMLAnchorElement>) => void = (e) => {
-    const {onToggle} = this.props;
+    const {onToggle, isOpen: externalIsOpen} = this.props;
     const {isOpen} = this.state;
     const target = e.currentTarget;
     const tooltipEl = ReactDOM.findDOMNode(this.tooltip);
 
+    const isExternallyControlled = externalIsOpen !== undefined;
+
     if (!tooltipEl ||
       (tooltipEl && target !== tooltipEl && !tooltipEl.contains(target))) {
-      if(isOpen) {
-        this.setState({
-          isCollapsing: true,
-          isExpanding: false,
-          isOpen: false,
-        });
-      } else {
-        this.setState({
-          isCollapsing: false,
-          isExpanding: true,
-          isOpen: true,
-        });
+      if (!isExternallyControlled) {
+        this.handleToggleStateChange(!isOpen);
       }
 
-      if(onToggle) {
+      if (onToggle) {
         onToggle(!isOpen);
       }
     }
   };
 
+  handleToggleStateChange: (boolean) => void = (newIsOpen) => {
+    if (newIsOpen) {
+      this.setState({
+        isCollapsing: false,
+        isExpanding: true,
+        isOpen: true,
+      });
+    } else {
+      this.setState({
+        isCollapsing: true,
+        isExpanding: false,
+        isOpen: false,
+      });
+    }
+  }
+
   handleKeyDown: (SyntheticKeyboardEvent<HTMLAnchorElement>) => void = (e) => {
-    if(e.keyCode === 13) {
+    if (e.keyCode === 13) {
       e.preventDefault();
       this.handleToggle(e);
     }

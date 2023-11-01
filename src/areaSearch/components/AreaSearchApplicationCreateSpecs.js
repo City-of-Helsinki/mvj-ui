@@ -25,6 +25,7 @@ import AddFileButton from '$components/form/AddFileButton';
 import RemoveButton from '$components/form/RemoveButton';
 import type {UploadedFileMeta} from '$src/application/types';
 import {nonEmptyGeometry} from '$src/areaSearch/validators';
+import {startOfToday} from 'date-fns';
 
 type OwnProps = {
   onFileAdded: Function,
@@ -95,6 +96,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
     }
 
     const geometryHasError = geometryError && (isSaveClicked || formMeta.geometry?.touched);
+    const today = startOfToday();
 
     return (
       <div className="AreaSearchApplicationCreate">
@@ -128,6 +130,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
                   label: 'Vuokra-ajan alkupvm',
                   read_only: false,
                 }}
+                minDate={today}
               />
             </Column>
           </Authorization>
@@ -139,11 +142,11 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
                 fieldAttributes={get(attributes, 'end_date')}
                 name='end_date'
                 overrideValues={{
-                  required: true,
                   fieldType: FieldTypes.DATE,
                   label: 'Vuokra-ajan loppupvm',
                   read_only: false,
                 }}
+                minDate={today}
               />
             </Column>
           </Authorization>
@@ -252,7 +255,7 @@ export default (flowRight(
     validate: (values) => {
       const errors = {};
 
-      if (values.start_date && values.end_date && values.start_date >= values.end_date) {
+      if (values.start_date && values.end_date && values.start_date > values.end_date) {
         errors.start_date = 'Alkupäivämäärän on oltava ennen loppupäivämäärää';
         errors.end_date = 'Loppupäivämäärän on oltava ennen alkupäivämäärää';
       }

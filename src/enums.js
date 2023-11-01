@@ -386,6 +386,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa kentän?',
     TITLE: 'Poista kenttä',
   },
+  DELETE_SECTION_SUBSECTION: {
+    BUTTON: 'Poista aliosio',
+    LABEL: 'Haluatko varmasti poistaa aliosion?',
+    TITLE: 'Poista aliosio',
+  },
   DELETE_APPLICATION_TARGET_PROPOSED_MANAGEMENT: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa hallinta- ja rahoitusmuotoehdotuksen?',

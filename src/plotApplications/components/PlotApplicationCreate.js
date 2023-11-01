@@ -63,6 +63,7 @@ import type {Attributes} from '$src/types';
 import type {PlotSearchList} from '$src/plotSearch/types';
 import type {PlotApplication} from '$src/plotApplications/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import {validateApplicationForm} from '$src/application/formValidation';
 
 type OwnProps = {};
 
@@ -381,5 +382,6 @@ export default (flowRight(
   ),
   reduxForm({
     form: formName,
+    validate: validateApplicationForm('formEntries'),
   }),
 )(PlotApplicationCreate): React$ComponentType<OwnProps>);

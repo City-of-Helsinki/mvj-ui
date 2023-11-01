@@ -14,6 +14,8 @@ type Props = {
   displayError: boolean,
   input: Object,
   isDirty: boolean,
+  minDate?: Date,
+  maxDate?: Date,
   placeholder?: string,
   setRefForField?: Function,
 }
@@ -23,6 +25,8 @@ const FieldTypeDatePicker = ({
   displayError = false,
   input: {name, onChange, value},
   isDirty = false,
+  minDate,
+  maxDate,
   placeholder,
   setRefForField,
 }: Props): React$Node => {
@@ -77,6 +81,8 @@ const FieldTypeDatePicker = ({
         onChangeRaw={handleChange}
         onSelect={handleSelect}
         placeholderText={placeholder}
+        minDate={minDate}
+        maxDate={maxDate}
       />
     </div>
   );

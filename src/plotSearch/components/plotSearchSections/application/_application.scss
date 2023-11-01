@@ -58,6 +58,8 @@
 }
 
 .edit-plot-application-section-form__section {
+  border-bottom: 1px solid $gray-separator;
+
   .section-field {
     padding: .75rem 0;
     margin-right: rem-calc(-10px);
@@ -72,6 +74,11 @@
       justify-content: flex-start;
     }
 
+    > .form-field__error-block {
+      display: block;
+      margin: rem-calc(10px) rem-calc(15px);
+    }
+
     + .section-field {
       border-top: 0;
     }
@@ -81,9 +88,33 @@
     }
   }
 
+  .section-editor,
+  .section-field-editor {
+    padding: .75rem 0;
+    margin-right: rem-calc(-10px);
+    margin-left: rem-calc(-10px);
+    border-bottom: 1px solid $gray-separator;
+
+    > * {
+      .row .form-field {
+        margin-left: 0;
+      }
+
+      > .form-field__error-block {
+        display: block;
+        margin: rem-calc(10px) rem-calc(15px);
+      }
+    }
+  }
+  .section-editor {
+    background-color: $light-gray;
+  }
+  .section-field-editor {
+    background-color: $white;
+  }
+
   .collapse__header {
     background-color: $light-gray;
-    border-bottom: 1px solid $gray-separator;
   }
 
   .collapse.collapse__secondary > .collapse__content > .collapse__content-wrapper,
@@ -181,8 +212,22 @@
         }
       }
 
-      > .collapse__content > .collapse__content-wrapper > .edit-plot-application-form__section-fields-container .columns:first-child .form-field {
-        margin-left: ($level - 1) * $section-indent-amount;
+      > .collapse__content > .collapse__content-wrapper {
+        > .edit-plot-application-form__section-fields-container {
+          > .section-field .columns:first-child {
+            .form-field, .mvj-button {
+              margin-left: ($level - 1) * $section-indent-amount;
+            }
+          }
+
+          > .section-field-editor {
+            padding-left: ($level - 1) * $section-indent-amount;
+          }
+        }
+
+        > .section-editor {
+          padding-left: ($level - 1) * $section-indent-amount;
+        }
       }
     }
   }
@@ -194,5 +239,27 @@
 
   .edit-plot-application-section-form__field-required-field {
     margin-right: rem-calc(2px);
+  }
+
+  .icon-button-component {
+    .icons__move-up {
+      margin-left: rem-calc(4px);
+    }
+
+    .icons, .icons__trash #Artboard {
+      fill: $black;
+    }
+
+    &:hover {
+      .icons, .icons__trash #Artboard {
+        fill: $blue;
+      }
+    }
+
+    &:disabled {
+      .icons, .icons__trash #Artboard {
+        fill: $medium-gray !important;
+      }
+    }
   }
 }

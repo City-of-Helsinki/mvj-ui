@@ -32,7 +32,7 @@ const FieldTypeMultiSelect = ({
         options={options}
         onBlur={handleBlur}
         onSelectedChanged={onChange}
-        selected={value}
+        selected={value instanceof Array ? value : []}
         disabled={disabled}
         isLoading={isLoading}
       />
