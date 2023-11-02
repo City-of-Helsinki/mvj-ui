@@ -190,7 +190,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
     const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
       const historyItems = []
 
-      if (lease.plot_searches.length) {
+      if (lease.plot_searches?.length) {
         lease.plot_searches.forEach((plotSearch) => {
           historyItems.push({
             key: `plot-search-${plotSearch.name}-${Math.random().toString()}`,
@@ -205,7 +205,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
         })
       }
 
-      if (lease.target_statuses.length) {
+      if (lease.target_statuses?.length) {
         lease.target_statuses.forEach((plotApplication) => {
           historyItems.push({
             key: `plot-application-${plotApplication.application_identifier}-${Math.random().toString()}`,
@@ -217,7 +217,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
         })
       }
 
-      if (lease.area_searches) {
+      if (lease.area_searches?.length) {
         lease.area_searches.forEach((areaSearch) => {
           historyItems.push({
             key: `area-search-${areaSearch.identifier}-${Math.random().toString()}`,
@@ -230,7 +230,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
         })
       }
 
-      if (lease.related_plot_applications.length) {
+      if (lease.related_plot_applications?.length) {
         lease.related_plot_applications.forEach((relatedPlotApplication) => {
           if (relatedPlotApplication.content_type?.model === "plotsearch") {
             const { content_object } = relatedPlotApplication
