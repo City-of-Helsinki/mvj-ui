@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import LeaseHistoryItem from './LeaseHistoryItem';
 import TitleH3 from '$components/content/TitleH3';
-import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryItemTypes } from '$src/leases/enums';
+import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, LeaseHistoryItemTypes } from '$src/leases/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom} from '$src/leases/helpers';
 import {getFieldOptions} from '$src/util/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -109,7 +109,7 @@ class LeaseHistory extends PureComponent<Props, State> {
       
       if (lease.related_plot_applications?.length) {
         lease.related_plot_applications.forEach((relatedPlotApplication) => {
-          if (relatedPlotApplication.content_type?.model === "plotsearch") {
+          if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.PLOTSEARCH) {
             const { content_object } = relatedPlotApplication
             historyItems.push({
               key: `related-plot-application-plotsearch-${content_object.id}-${Math.random().toString()}`,
@@ -122,7 +122,7 @@ class LeaseHistory extends PureComponent<Props, State> {
               itemType: LeaseHistoryItemTypes.PLOTSEARCH,
             })
           }
-          if (relatedPlotApplication.content_type?.model === "targetstatus") {
+          if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.TARGET_STATUS) {
             const { content_object } = relatedPlotApplication
             historyItems.push({
               key: `related-plot-application-targetstatus-${content_object.id}-${Math.random().toString()}`,
@@ -132,7 +132,7 @@ class LeaseHistory extends PureComponent<Props, State> {
               itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
             })
           }
-          else if (relatedPlotApplication.content_type?.model === "areasearch") {
+          else if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.AREA_SEARCH) {
             const { content_object } = relatedPlotApplication
             historyItems.push({
               key: `related-plot-application-areasearch-${content_object.id}-${Math.random().toString()}`,

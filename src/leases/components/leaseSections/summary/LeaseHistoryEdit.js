@@ -16,7 +16,7 @@ import {createLease, hideCreateModal, showCreateModal} from '$src/leases/actions
 import {createReleatedLease, deleteReleatedLease, createRelatedPlotApplication, deleteRelatedPlotApplication} from '$src/relatedLease/actions';
 import {ConfirmationModalTexts, FormNames, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryItemTypes, RelationTypes} from '$src/leases/enums';
+import {LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, LeaseHistoryItemTypes, RelationTypes} from '$src/leases/enums';
 import {RelatedLeasePaths} from '$src/relatedLease/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, isAnyLeaseFormDirty, sortRelatedLeasesFrom} from '$src/leases/helpers';
@@ -232,7 +232,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
 
       if (lease.related_plot_applications?.length) {
         lease.related_plot_applications.forEach((relatedPlotApplication) => {
-          if (relatedPlotApplication.content_type?.model === "plotsearch") {
+          if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.PLOTSEARCH) {
             const { content_object } = relatedPlotApplication
             historyItems.push({
               key: `related-plot-application-plotsearch-${content_object.id}-${Math.random().toString()}`,
@@ -247,7 +247,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
               onDelete: handleDeleteRelatedPlotApplication
             })
           }
-          if (relatedPlotApplication.content_type?.model === "targetstatus") {
+          if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.TARGET_STATUS) {
             const { content_object } = relatedPlotApplication
             historyItems.push({
               key: `related-plot-application-targetstatus-${content_object.id}-${Math.random().toString()}`,
@@ -259,7 +259,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
               onDelete: handleDeleteRelatedPlotApplication
             })
           }
-          else if (relatedPlotApplication.content_type?.model === "areasearch") {
+          else if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.AREA_SEARCH) {
             const { content_object } = relatedPlotApplication
             historyItems.push({
               key: `related-plot-application-areasearch-${content_object.id}-${Math.random().toString()}`,

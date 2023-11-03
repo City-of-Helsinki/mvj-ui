@@ -13,7 +13,7 @@ import {
 import { getLabelOfOption, getFieldOptions } from "$src/util/helpers";
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {store} from '$src/root/startApp';
-import { LeaseFieldPaths, LeaseHistoryItemTypes } from "$src/leases/enums";
+import { LeaseFieldPaths, LeaseHistoryItemTypes, LeaseHistoryContentTypes } from "$src/leases/enums";
 
 type Props = {
   disabled?: boolean,
@@ -58,7 +58,7 @@ const LeaseSelectInput = ({
           value: plotSearch.id,
           label: `${displayName}, ${LeaseHistoryItemTypes.PLOTSEARCH}`,
           type: 'related_plot_application',
-          content_type_model: "plotsearch"
+          content_type_model: LeaseHistoryContentTypes.PLOTSEARCH
         };
       });
 
@@ -69,7 +69,7 @@ const LeaseSelectInput = ({
           value: plotApplication.id,
           label: `${plotApplication.application_identifier}, ${LeaseHistoryItemTypes.PLOT_APPLICATION}`,
           type: 'related_plot_application',
-          content_type_model: "targetstatus"
+          content_type_model: LeaseHistoryContentTypes.TARGET_STATUS
         };
       });
 
@@ -80,7 +80,7 @@ const LeaseSelectInput = ({
           value: areaSearch.id,
           label: `${areaSearch.identifier}, ${LeaseHistoryItemTypes.AREA_SEARCH}`,
           type: 'related_plot_application',
-          content_type_model: "areasearch"
+          content_type_model: LeaseHistoryContentTypes.AREA_SEARCH
         };
       });
 

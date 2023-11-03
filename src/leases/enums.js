@@ -109,7 +109,6 @@ export const LeaseState = {
   RYA: 'rya',
   APPLICATION: 'application',
   TRANSFERRED: 'transferred',
-  PLOTSEARCH: 'plotsearch',
 };
 
 /**
@@ -433,6 +432,17 @@ export const LeaseHistoryItemTypes = {
   PLOTSEARCH: 'Haku',
   PLOT_APPLICATION: 'Hakemus',
   AREA_SEARCH: 'Aluehakemus',
+};
+
+/**
+ * Lease field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseHistoryContentTypes = {
+  PLOTSEARCH: 'plotsearch',
+  TARGET_STATUS: 'targetstatus',
+  AREA_SEARCH: 'areasearch',
 };
 
 /**
