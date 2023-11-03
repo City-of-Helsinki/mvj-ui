@@ -425,6 +425,17 @@ export const LeaseFieldTitles = {
 };
 
 /**
+ * Lease field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseHistoryItemTypes = {
+  PLOTSEARCH: 'Haku',
+  PLOT_APPLICATION: 'Hakemus',
+  AREA_SEARCH: 'Aluehakemus',
+};
+
+/**
  * Lease areas field paths enumerable.
  *
  * @type {{}}

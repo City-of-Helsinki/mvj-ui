@@ -16,7 +16,7 @@ import {createLease, hideCreateModal, showCreateModal} from '$src/leases/actions
 import {createReleatedLease, deleteReleatedLease, createRelatedPlotApplication, deleteRelatedPlotApplication} from '$src/relatedLease/actions';
 import {ConfirmationModalTexts, FormNames, Methods} from '$src/enums';
 import {ButtonColors} from '$components/enums';
-import {LeaseFieldPaths, LeaseFieldTitles, RelationTypes} from '$src/leases/enums';
+import {LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryItemTypes, RelationTypes} from '$src/leases/enums';
 import {RelatedLeasePaths} from '$src/relatedLease/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, isAnyLeaseFormDirty, sortRelatedLeasesFrom} from '$src/leases/helpers';
@@ -200,7 +200,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
             endDate: plotSearch.end_at,
             plotSearchType: plotSearch.type,
             plotSearchSubtype: plotSearch.subtype,
-            itemType: "Haku",
+            itemType: LeaseHistoryItemTypes.PLOTSEARCH,
           })
         })
       }
@@ -212,7 +212,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
             id: plotApplication.id,
             itemTitle: plotApplication.application_identifier,
             receivedAt: plotApplication.received_at,
-            itemType: "Hakemus",
+            itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
           })
         })
       }
@@ -225,7 +225,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
             itemTitle: areaSearch.identifier,
             receivedAt: areaSearch.received_date,
             applicantName: `${areaSearch.applicant_first_name} ${areaSearch.applicant_last_name}`,
-            itemType: "Aluehakemus",
+            itemType: LeaseHistoryItemTypes.AREA_SEARCH,
           })
         })
       }
@@ -243,7 +243,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
               endDate: content_object.end_at,
               plotSearchType: content_object.type,
               plotSearchSubtype: content_object.subtype,
-              itemType: "Haku",
+              itemType: LeaseHistoryItemTypes.PLOTSEARCH,
               onDelete: handleDeleteRelatedPlotApplication
             })
           }
@@ -255,7 +255,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
               deleteId: relatedPlotApplication.id,
               itemTitle: content_object.application_identifier,
               receivedAt: content_object.received_at,
-              itemType: "Hakemus",
+              itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
               onDelete: handleDeleteRelatedPlotApplication
             })
           }
@@ -268,7 +268,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
               itemTitle: content_object.identifier,
               applicantName: `${content_object.applicant_names.join(" ")}`,
               receivedAt: content_object.received_date,
-              itemType: "Aluehakemus",
+              itemType: LeaseHistoryItemTypes.AREA_SEARCH,
               onDelete: handleDeleteRelatedPlotApplication
             })
           }

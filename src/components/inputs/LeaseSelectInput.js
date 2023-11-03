@@ -13,7 +13,7 @@ import {
 import { getLabelOfOption, getFieldOptions } from "$src/util/helpers";
 import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {store} from '$src/root/startApp';
-import { LeaseFieldPaths } from "$src/leases/enums";
+import { LeaseFieldPaths, LeaseHistoryItemTypes } from "$src/leases/enums";
 
 type Props = {
   disabled?: boolean,
@@ -56,7 +56,7 @@ const LeaseSelectInput = ({
         const displayName = plotSearch.name.length > maxLength ? plotSearch.name.substr(0,maxLength) + "..." : plotSearch.name
         return {
           value: plotSearch.id,
-          label: `${displayName}, Haku`,
+          label: `${displayName}, ${LeaseHistoryItemTypes.PLOTSEARCH}`,
           type: 'related_plot_application',
           content_type_model: "plotsearch"
         };
@@ -67,7 +67,7 @@ const LeaseSelectInput = ({
       .map((plotApplication) => {
         return {
           value: plotApplication.id,
-          label: `${plotApplication.application_identifier}, Hakemus`,
+          label: `${plotApplication.application_identifier}, ${LeaseHistoryItemTypes.PLOT_APPLICATION}`,
           type: 'related_plot_application',
           content_type_model: "targetstatus"
         };
@@ -78,7 +78,7 @@ const LeaseSelectInput = ({
       .map((areaSearch) => {
         return {
           value: areaSearch.id,
-          label: `${areaSearch.identifier}, Aluehakemus`,
+          label: `${areaSearch.identifier}, ${LeaseHistoryItemTypes.AREA_SEARCH}`,
           type: 'related_plot_application',
           content_type_model: "areasearch"
         };

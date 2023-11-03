@@ -10,6 +10,7 @@ import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import RemoveButton from '$components/form/RemoveButton';
 import {ConfirmationModalTexts} from '$src/enums';
+import {LeaseHistoryItemTypes} from '$src/leases/enums';
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getContentLeaseIdentifier, getTitleText} from '$src/leases/helpers';
@@ -64,9 +65,9 @@ const LeaseHistoryItem = (
   const MAX_TITLE_LENGTH = 16
   const title = getTitleText(titleString, MAX_TITLE_LENGTH)
   const externalLinkHref = lease ? `${getRouteById(Routes.LEASES)}/${lease.id}`
-    : itemType === 'Haku' && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
-    : itemType === 'Hakemus' && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
-    : itemType === 'Aluehakemus' && id ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
+    : itemType === LeaseHistoryItemTypes.PLOTSEARCH && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
+    : itemType === LeaseHistoryItemTypes.PLOT_APPLICATION && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
+    : itemType === LeaseHistoryItemTypes.AREA_SEARCH && id ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
     : null
   // TODO: Add permissions for deleting plot searches and plot applications
   // TODO: implement usersPermissions properly

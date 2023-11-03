@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import LeaseHistoryItem from './LeaseHistoryItem';
 import TitleH3 from '$components/content/TitleH3';
-import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
+import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryItemTypes } from '$src/leases/enums';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom} from '$src/leases/helpers';
 import {getFieldOptions} from '$src/util/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -77,7 +77,7 @@ class LeaseHistory extends PureComponent<Props, State> {
             endDate: plotSearch.end_at,
             plotSearchType: plotSearch.type,
             plotSearchSubtype: plotSearch.subtype,
-            itemType: "Haku",
+            itemType: LeaseHistoryItemTypes.PLOTSEARCH,
           })
         })
       }
@@ -89,7 +89,7 @@ class LeaseHistory extends PureComponent<Props, State> {
             id: plotApplication.id,
             itemTitle: plotApplication.application_identifier,
             receivedAt: plotApplication.received_at,
-            itemType: "Hakemus",
+            itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
           })
         })
       }
@@ -102,7 +102,7 @@ class LeaseHistory extends PureComponent<Props, State> {
             itemTitle: areaSearch.identifier,
             receivedAt: areaSearch.received_date,
             applicantName: `${areaSearch.applicant_first_name} ${areaSearch.applicant_last_name}`,
-            itemType: "Aluehaku",
+            itemType: LeaseHistoryItemTypes.AREA_SEARCH,
           })
         })
       }
@@ -119,7 +119,7 @@ class LeaseHistory extends PureComponent<Props, State> {
               endDate: content_object.end_at,
               plotSearchType: content_object.type,
               plotSearchSubtype: content_object.subtype,
-              itemType: "Haku",
+              itemType: LeaseHistoryItemTypes.PLOTSEARCH,
             })
           }
           if (relatedPlotApplication.content_type?.model === "targetstatus") {
@@ -129,7 +129,7 @@ class LeaseHistory extends PureComponent<Props, State> {
               id: content_object.id,
               itemTitle: content_object.application_identifier,
               receivedAt: content_object.received_at,
-              itemType: "Hakemus",
+              itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
             })
           }
           else if (relatedPlotApplication.content_type?.model === "areasearch") {
@@ -140,7 +140,7 @@ class LeaseHistory extends PureComponent<Props, State> {
               itemTitle: content_object.identifier,
               applicantName: `${content_object.applicant_names.join(" ")}`,
               receivedAt: content_object.received_date,
-              itemType: "Aluehakemus",
+              itemType: LeaseHistoryItemTypes.AREA_SEARCH,
             })
           }
         })
