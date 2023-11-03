@@ -84,7 +84,7 @@ const LeaseSelectInput = ({
         };
       });
 
-      return [...leases, ...plotSearches, ...plotApplications, ...areaSearches].sort((a, b) => (a.label && b.label) && a.label > b.label ? 1 : -1).slice(0,10)
+      return [...leases, ...plotSearches, ...plotApplications, ...areaSearches].sort((a, b) => (a.label && b.label) && a.label > b.label ? 1 : -1)
   }
 
   const getHistoryItems = debounce(async(inputValue: string, callback: Function) => {
