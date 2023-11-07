@@ -88,27 +88,30 @@ const LeaseSelectInput = ({
   }
 
   const getHistoryItems = debounce(async(inputValue: string, callback: Function) => {
-    const leases = await fetchLeases({
-      succinct: true,
-      identifier: inputValue,
-      limit: 10,
-    });
     
-
-    const plotSearches = await fetchPlotSearches({
-      name: inputValue,
-      limit: 10,
-    });
-        
-    const plotApplications = await fetchTargetStatuses({
-      identifier: inputValue,
-      limit: 10,
-    });
-    
-    const areaSearches = await fetchAreaSearches({
-      identifier: inputValue,
-      limit: 10,
-    });
+    const [
+      leases,
+      plotSearches,
+      plotApplications,
+      areaSearches,
+    ] = await Promise.all([
+      fetchLeases({
+        succinct: true,
+        identifier: inputValue,
+        limit: 10,
+      }),
+      fetchPlotSearches({
+        name: inputValue,
+        limit: 10,
+      }),
+      fetchTargetStatuses({
+        identifier: inputValue,
+        limit: 10,
+      }),
+      fetchAreaSearches({
+        identifier: inputValue,
+        limit: 10,
+      })])
 
     callback(getHistoryItemOptions(leases, plotSearches, plotApplications, areaSearches));
   }, 500);
