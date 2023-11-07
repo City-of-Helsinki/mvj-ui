@@ -285,7 +285,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
         onDelete: handleDelete
       }
 
-      // active will be a number when used in a map function
+      // used for highlighting the current lease
       if (typeof active === "boolean") {
         leaseProps.active = active
       }
