@@ -198,21 +198,15 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     };
 
     if(userActiveServiceUnit) {
-      if(userActiveServiceUnit !== prevUserActiveServiceUnit) {
-        if(!this._hasFetchedInvoices) { // No search has been done yet
-          handleSearch();
-          this._hasFetchedInvoices = true;
-        } else {
-          // Search again after changing user active service unit only if not explicitly setting the service unit filter
-          if (!currentSearch.includes('service_unit')) {
-            handleSearch();
-          }
-        }
-      } else {
-        if(!this._hasFetchedInvoices) { // No search has been done yet
-          handleSearch();
-          this._hasFetchedInvoices = true;
-        }
+      
+      if(!this._hasFetchedInvoices) { // No search has been done yet
+        handleSearch();
+        this._hasFetchedInvoices = true;
+
+      } else if(userActiveServiceUnit !== prevUserActiveServiceUnit 
+          && !currentSearch.includes('service_unit')) {
+        // Search again after changing user active service unit only if not explicitly setting the service unit filter
+        handleSearch();
       }
     }
 
