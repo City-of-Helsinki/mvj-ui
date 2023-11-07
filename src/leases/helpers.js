@@ -157,7 +157,7 @@ export const getFullAddress = (item: Object): ?string => {
  * @returns {string}
  */
 
-export const getTitleText = (text: ?string, maxLength: number) => {
+export const getTitleText = (text: ?string, maxLength: number): string => {
   if (text) {
     return text.length > maxLength ? text.substr(0, maxLength) + "..." : text
   } else {
