@@ -213,21 +213,15 @@ class LeaseListPage extends PureComponent<Props, State> {
     };
 
     if(userActiveServiceUnit) {
-      if(userActiveServiceUnit !== prevUserActiveServiceUnit) {
-        if(!this._hasFetchedLeases) {
-          initializeSearch();
-          this._hasFetchedLeases = true;
-        } else {
-          // Search again after changing user active service unit only if not explicitly setting the service unit filter
-          if (!currentSearch.includes('service_unit')) {
-            searchByType();
-          }
-        }
-      } else {
-        if(!this._hasFetchedLeases) {
-          initializeSearch();
-          this._hasFetchedLeases = true;
-        }
+      
+      if(!this._hasFetchedLeases) { // No search has been done yet
+        initializeSearch();
+        this._hasFetchedLeases = true;
+
+      } else if(userActiveServiceUnit !== prevUserActiveServiceUnit 
+          && !currentSearch.includes('service_unit')) {
+        // Search again after changing user active service unit only if not explicitly setting the service unit filter
+        searchByType();
       }
     }
 
