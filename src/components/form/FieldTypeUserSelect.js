@@ -69,7 +69,7 @@ const FieldTypeUserSelect = ({
   const getUsers = debounce(async(inputValue: string, callback: Function) => {
     const contacts = await fetchUsers({
       search: inputValue,
-      service_unit: serviceUnit ? serviceUnit.id : '',
+      service_unit: serviceUnit?.id || "",
     });
 
     callback(addEmptyOption(contacts.map((lessor) => getContentUser(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
