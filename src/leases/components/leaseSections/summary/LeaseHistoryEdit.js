@@ -328,7 +328,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
                 {LeaseFieldTitles.HISTORY }
               </TitleH3>
 
-              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RELATEDLEASE)}>
+              <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASE_HISTORY_ITEM)}>
                 <div className="summary__related-leases_input-wrapper">
                   <FormFieldLabel
                     htmlFor='related-lease'

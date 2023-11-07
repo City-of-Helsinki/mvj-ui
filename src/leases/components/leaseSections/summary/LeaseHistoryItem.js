@@ -71,7 +71,7 @@ const LeaseHistoryItem = (
     : null
   // TODO: Add permissions for deleting plot searches and plot applications
   // TODO: implement usersPermissions properly
-  const permissions = hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)
+  const permissions = hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASE_HISTORY_ITEM)
 
   return (
     <AppConsumer>
@@ -117,7 +117,7 @@ const LeaseHistoryItem = (
                 {plotSearchSubtype && <FormText>{plotSearchSubtype}</FormText>}
                 {applicantName && <FormText>{applicantName}</FormText>}
                 <FormText className="type">{lease ? getLabelOfOption(stateOptions, lease.state) : itemType}</FormText>
-                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
+                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASE_HISTORY_ITEM)}>
                   {onDelete && deleteId &&
                     <RemoveButton
                       className='related-leases-item_remove-button'
