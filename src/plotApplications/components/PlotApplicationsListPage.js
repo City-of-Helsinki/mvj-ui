@@ -60,6 +60,7 @@ import type {Attributes, Methods as MethodsType} from '$src/types';
 import {fetchPlotSearchList, fetchAttributes as fetchPlotSearchAttributes} from '$src/plotSearch/actions';
 import ApplicationListMap from '$src/plotApplications/components/map/ApplicationListMap';
 import {getPlotApplicationsListByBBox} from '$src/plotApplications/selectors';
+import PlotApplicationsListOpeningModal from '$src/plotApplications/components/PlotApplicationsListOpeningModal';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -91,6 +92,7 @@ type Props = {
   plotApplicationsListData: Object,
   plotApplicationsMapData: Object,
   initialize: Function,
+  plotSearchSubtypes: Object,
 }
 
 type State = {
@@ -102,6 +104,7 @@ type State = {
   isSearchInitialized: boolean,
   maxPage: number,
   selectedStates: Array<string>,
+  openingRecordPopupTarget: ?Object,
 }
 
 class PlotApplicationsListPage extends PureComponent<Props, State> {
@@ -116,6 +119,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     plotApplicationStates: DEFAULT_PLOT_APPLICATIONS_STATES,
     maxPage: 0,
     activePage: 1,
+    openingRecordPopupTarget: null,
   }
 
   static contextTypes = {
@@ -289,6 +293,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'plot_search_subtype',
       text: 'Haun alatyyppi',
       sortable: false,
+      renderer: (subtype) => subtype?.name,
     });
 
     columns.push({
@@ -343,14 +348,22 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     });
   }
 
-  handleRowClick = (id) => {
+  handleRowClick = (id: number, row: Object) => {
     const {history, location: {search}} = this.props;
 
-    return history.push({
-      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`,
-      search: search,
-    });
-  }
+    const requiresOpening = !row.has_opening_record && row.plot_search_subtype.require_opening_record;
+
+    if (requiresOpening) {
+      this.setState(() => ({
+        openingRecordPopupTarget: row,
+      }));
+    } else {
+      return history.push({
+        pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`,
+        search: search,
+      });
+    }
+  };
 
   handleSearchUpdated = (query: Object, resetActivePage?: boolean = true) => {
     const {history} = this.props;
@@ -397,6 +410,12 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     });
   }, 1000);
 
+  closeOpeningModal = () => {
+    this.setState(() => ({
+      openingRecordPopupTarget: null,
+    }));
+  }
+
   render() {
     const {
       isFetching,
@@ -416,6 +435,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       selectedStates,
       visualizationType,
       plotApplicationStates,
+      openingRecordPopupTarget,
     } = this.state;
 
     if (!plotApplicationsMethods && !plotApplicationsAttributes) {
@@ -516,6 +536,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
             />
           }
         </TableWrapper>
+        <PlotApplicationsListOpeningModal isOpen={!!openingRecordPopupTarget} data={openingRecordPopupTarget} onClose={this.closeOpeningModal} />
       </PageContainer>
     );
   }

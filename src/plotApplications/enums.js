@@ -43,3 +43,19 @@ export const PlotApplicationTargetInfoCheckFieldTitles = {
   MEETING_MEMO_UPLOAD_DATE: 'Tallennuspäivämäärä',
   MEETING_MEMO_UPLOADED_BY: 'Lähettäjä',
 };
+
+export const PlotApplicationOpeningRecordPaths = {
+  PLOT_SEARCH_TIMESTAMP: 'plot_search_opening_time_stamp',
+  TIMESTAMP: 'opening_record.children.time_stamp',
+  CREATED_BY: 'opening_record.children.created_by',
+  OPENERS: 'opening_record.children.openers',
+  NOTE: 'opening_record.children.note',
+};
+
+export const PlotApplicationOpeningRecordLabels = {
+  PLOT_SEARCH_TIMESTAMP: 'Hakemukset avattu ja avauspöytäkirja luotu',
+  TIMESTAMP: 'Hakemus avattu',
+  CREATED_BY: 'Kilpailun järjestäjä',
+  OPENERS: 'Avaustilaisuudessa mukana olleet',
+  NOTE: 'Huomautus',
+};

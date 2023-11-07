@@ -103,6 +103,7 @@ export type InfoCheckBatchEditData = {
     kind: Object,
     data: Object,
   }>,
+  opening_record: null | Object,
 };
 
 export type InfoCheckBatchEditErrorsItem = {
@@ -114,12 +115,15 @@ export type InfoCheckBatchEditErrorsItem = {
 export type InfoCheckBatchEditErrors = {
   target: Array<InfoCheckBatchEditErrorsItem>,
   applicant: Array<InfoCheckBatchEditErrorsItem>,
+  openingRecord: Error | string | null,
 };
 
-export type BatchEditPlotApplicationInfoChecksAction = Action<'mvj/plotApplications/BATCH_EDIT_INFO_CHECKS', InfoCheckBatchEditData>;
+export type BatchEditPlotApplicationModelsAction = Action<'mvj/plotApplications/BATCH_EDIT_RELATED_MODELS', InfoCheckBatchEditData>;
 export type ReceivePlotApplicationInfoCheckBatchEditSuccessAction = Action<'mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS', void>;
 export type ReceivePlotApplicationInfoCheckBatchEditFailureAction = Action<'mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE', InfoCheckBatchEditErrors>;
 
 export type FetchTargetInfoChecksForPlotSearchAction = Action<'mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH', number>;
 export type ReceiveTargetInfoChecksForPlotSearchAction = Action<'mvj/plotApplications/RECEIVE_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH', Array<Object>>;
 export type TargetInfoChecksForPlotSearchNotFoundAction = Action<'mvj/plotApplications/TARGET_INFO_CHECKS_FOR_PLOT_SEARCH_NOT_FOUND', void>;
+
+export type CreatePlotApplicationOpeningRecordAction = Action<'mvj/plotApplications/CREATE_OPENING_RECORD', number>;

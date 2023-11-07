@@ -5,8 +5,9 @@ import type {
   ApplicationRelatedFormNotFoundAction,
   ApplicationRelatedPlotSearchNotFoundAction,
   ApplicationsNotFoundAction,
-  BatchEditPlotApplicationInfoChecksAction,
+  BatchEditPlotApplicationModelsAction,
   ClearFormValidFlagsAction,
+  CreatePlotApplicationOpeningRecordAction,
   CreatePlotApplicationAction,
   DeleteTargetInfoCheckMeetingMemoAction,
   EditPlotApplicationAction,
@@ -154,8 +155,8 @@ export const targetInfoCheckMeetingMemoUploadFailed = (): TargetInfoCheckMeeting
 export const targetInfoCheckMeetingMemoDeleteFailed = (): TargetInfoCheckMeetingMemoDeleteFailedAction =>
   createAction('mvj/plotApplications/MEETING_MEMO_DELETE_FAILED')();
 
-export const batchEditApplicationInfoChecks = (payload: InfoCheckBatchEditData): BatchEditPlotApplicationInfoChecksAction =>
-  createAction('mvj/plotApplications/BATCH_EDIT_INFO_CHECKS')(payload);
+export const batchEditApplicationModels = (payload: InfoCheckBatchEditData): BatchEditPlotApplicationModelsAction =>
+  createAction('mvj/plotApplications/BATCH_EDIT_RELATED_MODELS')(payload);
 
 export const receiveBatchInfoCheckEditSuccess = (): ReceivePlotApplicationInfoCheckBatchEditSuccessAction =>
   createAction('mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS')();
@@ -171,3 +172,6 @@ export const receiveTargetInfoChecksForPlotSearch = (payload: Array<Object>): Re
 
 export const targetInfoChecksForPlotSearchNotFound = (): TargetInfoChecksForPlotSearchNotFoundAction =>
   createAction('mvj/plotApplications/TARGET_INFO_CHECKS_FOR_PLOT_SEARCH_NOT_FOUND')();
+
+export const createPlotApplicationOpeningRecord = (id: number): CreatePlotApplicationOpeningRecordAction =>
+  createAction('mvj/plotApplications/CREATE_OPENING_RECORD')(id);

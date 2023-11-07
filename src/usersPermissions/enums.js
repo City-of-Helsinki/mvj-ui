@@ -6,6 +6,7 @@
  * @enum {string}
  */
 export const UsersPermissions = {
+  ADD_ANSWEROPENINGRECORD: 'add_answeropeningrecord',
   ADD_BASISOFRENTDECISION: 'add_basisofrentdecision',
   ADD_BASISOFRENTPROPERTYIDENTIFIER: 'add_basisofrentpropertyidentifier',
   ADD_BASISOFRENTRATE: 'add_basisofrentrate',

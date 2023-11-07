@@ -133,7 +133,7 @@ const isSavingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/EDIT']: () => true,
   ['mvj/plotApplications/RECEIVE_SAVED']: () => false,
   ['mvj/plotApplications/RECEIVE_SAVE_FAILED']: () => false,
-  ['mvj/plotApplications/BATCH_EDIT_INFO_CHECKS']: () => true,
+  ['mvj/plotApplications/BATCH_EDIT_RELATED_MODELS']: () => true,
   ['mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS']: () => false,
   ['mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE']: () => false,
 }, false);
@@ -161,7 +161,7 @@ const isFetchingTargetInfoCheckAttributesReducer: Reducer<boolean> = handleActio
 }, false);
 
 const infoCheckBatchEditErrorsReducer: Reducer<InfoCheckBatchEditErrors> = handleActions({
-  ['mvj/plotApplications/BATCH_EDIT_INFO_CHECKS']: () => ({
+  ['mvj/plotApplications/BATCH_EDIT_RELATED_MODELS']: () => ({
     target: [],
     applicant: [],
   }),

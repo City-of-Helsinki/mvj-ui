@@ -502,6 +502,7 @@ export const FormNames = {
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
   PLOT_APPLICATION_PREVIEW: 'plot-application-preview',
+  PLOT_APPLICATION_OPENING: 'plot-application-opening',
   APPLICANT_INFO_CHECK: 'applicant-info-check',
   PLOT_APPLICATION_TARGET_INFO_CHECK: 'plot-application-target-info-check',
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
