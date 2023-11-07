@@ -32,7 +32,7 @@ const FieldTypeContactSelect = ({
     const contacts = await fetchContacts({
       search: inputValue,
       limit: 20,
-      service_unit: serviceUnit ? serviceUnit.id : '',
+      service_unit: serviceUnit?.id || "",
     });
 
     callback(addEmptyOption(contacts.map((lessor) => getContentContact(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));

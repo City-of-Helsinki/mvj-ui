@@ -33,7 +33,7 @@ const FieldTypeLeaseSelect = ({
       succinct: true,
       identifier: inputValue,
       limit: 15,
-      service_unit: serviceUnit ? serviceUnit.id : '',
+      service_unit: serviceUnit?.id || "",
     });
 
     callback(addEmptyOption(leases.map((lease) => getContentLeaseOption(lease)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));

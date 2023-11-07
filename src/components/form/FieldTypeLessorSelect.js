@@ -32,7 +32,7 @@ const FieldTypeLessorSelect = ({
     const lessors = await fetchContacts({
       is_lessor: true,
       search: inputValue,
-      service_unit: serviceUnit ? serviceUnit.id : '',
+      service_unit: serviceUnit?.id || "",
     });
 
     callback(addEmptyOption(lessors.map((lessor) => getContentLessor(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
