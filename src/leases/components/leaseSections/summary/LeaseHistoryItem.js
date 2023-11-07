@@ -69,8 +69,6 @@ const LeaseHistoryItem = (
     : itemType === LeaseHistoryItemTypes.PLOT_APPLICATION && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
     : itemType === LeaseHistoryItemTypes.AREA_SEARCH && id ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
     : null
-  // TODO: Add permissions for deleting plot searches and plot applications
-  // TODO: implement usersPermissions properly
   const permissions = hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASE_HISTORY_ITEM)
 
   return (
