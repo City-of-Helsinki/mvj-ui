@@ -224,7 +224,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
             id: areaSearch.id,
             itemTitle: areaSearch.identifier,
             receivedAt: areaSearch.received_date,
-            applicantName: `${areaSearch.applicant_first_name} ${areaSearch.applicant_last_name}`,
+            applicantName: `${areaSearch.applicant_names.join(" ")}`,
             itemType: LeaseHistoryItemTypes.AREA_SEARCH,
           })
         })
