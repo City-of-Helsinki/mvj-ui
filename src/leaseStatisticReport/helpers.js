@@ -9,6 +9,7 @@ import {
   LeaseStatisticReportFormatOptions,
 } from '$src/leaseStatisticReport/enums';
 import type {Reports} from '$src/types';
+import {FieldTypes} from '$src/enums';
 
 /**
  * Get report type options
@@ -148,5 +149,11 @@ export const getOutputFields = (options: Object): Array<Object> => {
  * @return {string}
  */
 export const formatType = (value: Object): string => {
-  return get(value, 'type').replace('Model', '').replace('Field', '').replace('Null', '').toLowerCase();
+  const formattedValue = get(value, 'type').replace('Model', '').replace('Field', '').replace('Null', '').toLowerCase()
+  switch (formattedValue) {
+    case "multiplechoice":
+      return FieldTypes.MULTISELECT
+    default:
+      return formattedValue
+  }
 };
