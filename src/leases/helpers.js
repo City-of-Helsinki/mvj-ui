@@ -151,6 +151,22 @@ export const getFullAddress = (item: Object): ?string => {
 };
 
 /**
+ * Get a lease history item title text that is truncated when it is long
+ * @param {?string} text
+ * @param {number} MAX_TITLE_LENGTH
+ * @returns {string}
+ */
+
+export const getTitleText = (text: ?string, maxLength: number): string => {
+  if (text) {
+    return text.length > maxLength ? text.substr(0, maxLength) + "..." : text
+  } else {
+    return ''
+  }
+}
+
+
+/**
  * Get content lease identifiers
  * @param {Object} lease
  * @returns {string}
@@ -391,12 +407,12 @@ export const getContentRelatedLease = (content: Object, path: string = 'from_lea
  */
 export const getContentRelatedLeasesFrom = (lease: Object): Array<Object> =>
   get(lease, 'related_leases.related_from', [])
-    .map((relatedLease) => {
+    .map((leaseHistoryItem) => {
       return {
         head: lease.id,
-        id: relatedLease.id,
-        lease: getContentRelatedLease(relatedLease, 'from_lease'),
-        to_lease: relatedLease.to_lease,
+        id: leaseHistoryItem.id,
+        lease: getContentRelatedLease(leaseHistoryItem, 'from_lease'),
+        to_lease: leaseHistoryItem.to_lease,
       };
     });
 
@@ -407,23 +423,23 @@ export const getContentRelatedLeasesFrom = (lease: Object): Array<Object> =>
  */
 export const sortRelatedLeasesFrom = (leases: Object[]): Array<Object> => {
   let current;
-  let relatedLeasesFromSorted = [];
+  let leaseHistoryItemsFromSorted = [];
   leases.forEach(lease=>{
     if(lease.to_lease===lease.head){
-      relatedLeasesFromSorted.push(lease);
+      leaseHistoryItemsFromSorted.push(lease);
       current=lease.lease.id;
     }
   });
   leases.forEach(()=>{
     leases.forEach(lease=>{
       if(lease.to_lease===current){
-        relatedLeasesFromSorted.push(lease);
+        leaseHistoryItemsFromSorted.push(lease);
         current=lease.lease.id;
         return;
       }
     });
   });
-  return relatedLeasesFromSorted;
+  return leaseHistoryItemsFromSorted;
 };
 
 /**
@@ -433,10 +449,10 @@ export const sortRelatedLeasesFrom = (leases: Object[]): Array<Object> => {
  */
 export const getContentRelatedLeasesTo = (lease: Object): Array<Object> =>
   get(lease, 'related_leases.related_to', [])
-    .map((relatedLease) => {
+    .map((leaseHistoryItem) => {
       return {
-        id: relatedLease.id,
-        lease: getContentRelatedLease(relatedLease, 'to_lease'),
+        id: leaseHistoryItem.id,
+        lease: getContentRelatedLease(leaseHistoryItem, 'to_lease'),
       };
     })
     .sort((a, b) => sortByStartAndEndDateDesc(a, b, 'lease.start_date', 'lease.end_date'));
@@ -3118,3 +3134,39 @@ export const clearUnsavedChanges = () => {
 export const getLeasesWithContractNumber = (leasesForContractNumbers: LeaseList): boolean => {
   return (get(leasesForContractNumbers, 'count') > 0);
 };
+
+/**
+ * Destructures a nested lease object in a related lease.
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const restructureLease = (lease: Object): Object => {
+  let destructuredLease = lease.lease
+  return {
+    related_lease_id: lease.id,
+    ...destructuredLease
+  }
+}
+
+/**
+ * Sorts related leases and other items 
+ * by comparing start dates or received dates.
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const sortRelatedHistoryItems = (a: Object, b: Object): Object => {
+  let aTime = a.startDate || a.receivedAt || null
+  let bTime = b.startDate || b.receivedAt || null
+
+  if (aTime && bTime && aTime != bTime) {
+
+    if (aTime < bTime) {
+      return 1
+    } else {
+      return -1
+    }
+  
+  } else {
+    return 0
+  }
+}

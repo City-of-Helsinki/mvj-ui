@@ -10,9 +10,10 @@ import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import RemoveButton from '$components/form/RemoveButton';
 import {ConfirmationModalTexts} from '$src/enums';
+import {LeaseHistoryItemTypes} from '$src/leases/enums';
 import {ButtonColors} from '$components/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getContentLeaseIdentifier} from '$src/leases/helpers';
+import {getContentLeaseIdentifier, getTitleText} from '$src/leases/helpers';
 import {formatDate, getLabelOfOption, hasPermissions} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -22,24 +23,53 @@ import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissio
 
 type Props = {
   active?: boolean,
-  id?: number,
   indented?: boolean,
-  lease: Lease,
+  lease?: Lease,
+  id?: number,
+  deleteId?: number,
+  itemTitle?: string,
+  plotSearchName?: string,
+  startDate?: string,
+  endDate?: string,
+  receivedAt?: string,
+  plotSearchType?: string,
+  plotSearchSubtype?: string,
+  applicantName?: string,
+  itemType?: string,
   onDelete?: Function,
   stateOptions: Array<Object>,
   usersPermissions: UsersPermissionsType,
 }
 
-const RelatedLeaseItem = ({
-  active = false,
-  id,
-  indented = false,
-  lease,
-  onDelete,
-  stateOptions,
-  usersPermissions,
-}: Props) => {
-  const identifier = getContentLeaseIdentifier(lease);
+const LeaseHistoryItem = (
+  {
+    active = false,
+    indented = false,
+    lease,
+    id,
+    deleteId,
+    itemTitle = '',
+    startDate,
+    endDate,
+    receivedAt,
+    plotSearchType,
+    plotSearchSubtype,
+    applicantName,
+    itemType = '',
+    onDelete,
+    stateOptions,
+    usersPermissions
+  }: Props,
+) => {
+  const titleString = lease ? getContentLeaseIdentifier(lease) : itemTitle;
+  const MAX_TITLE_LENGTH = 16
+  const title = getTitleText(titleString, MAX_TITLE_LENGTH)
+  const externalLinkHref = lease ? `${getRouteById(Routes.LEASES)}/${lease.id}`
+    : itemType === LeaseHistoryItemTypes.PLOTSEARCH && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
+    : itemType === LeaseHistoryItemTypes.PLOT_APPLICATION && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
+    : itemType === LeaseHistoryItemTypes.AREA_SEARCH && id ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
+    : null
+  const permissions = hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASE_HISTORY_ITEM)
 
   return (
     <AppConsumer>
@@ -49,7 +79,7 @@ const RelatedLeaseItem = ({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               if(onDelete) {
-                onDelete(id);
+                onDelete(deleteId);
               }
             },
             confirmationModalButtonClassName: ButtonColors.ALERT,
@@ -70,18 +100,23 @@ const RelatedLeaseItem = ({
               <div className={classNames('related-leases-item_info')}>
                 <p className="identifier">
                   {active
-                    ? identifier
-                    : <ExternalLink
-                      href={`${getRouteById(Routes.LEASES)}/${lease.id}`}
-                      text={identifier || ''}
-                    />
+                    ? title
+                    : externalLinkHref
+                    ? <ExternalLink
+                        href={externalLinkHref}
+                        text={title || ''}
+                      />
+                    : title
                   }
                 </p>
-                <FormText>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</FormText>
-                <FormText className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</FormText>
-
-                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_RELATEDLEASE)}>
-                  {onDelete &&
+                {receivedAt && <FormText>Saapunut {formatDate(receivedAt)}</FormText>}
+                {startDate && endDate && <FormText>{formatDate(startDate)} - {formatDate(endDate)}</FormText>}
+                {plotSearchType && <FormText>{plotSearchType}</FormText>}
+                {plotSearchSubtype && <FormText>{plotSearchSubtype}</FormText>}
+                {applicantName && <FormText>{applicantName}</FormText>}
+                <FormText className="type">{lease ? getLabelOfOption(stateOptions, lease.state) : itemType}</FormText>
+                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASE_HISTORY_ITEM)}>
+                  {onDelete && deleteId &&
                     <RemoveButton
                       className='related-leases-item_remove-button'
                       onClick={handleDelete}
@@ -105,4 +140,4 @@ export default connect(
       usersPermissions: getUsersPermissions(state),
     };
   }
-)(RelatedLeaseItem);
+)(LeaseHistoryItem);
