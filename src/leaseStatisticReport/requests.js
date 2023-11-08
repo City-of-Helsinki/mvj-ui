@@ -1,6 +1,9 @@
 // @flow
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
+import {parseServiceUnitQuery} from './helpers'
+
+import get from "lodash/get";
 
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`lease_create_collection_letter/`), {method: 'OPTIONS'}));
@@ -19,7 +22,8 @@ export const fetchReports = (): Generator<any, any, any> => {
 };
 
 export const fetchReportData = (payload: Object): Generator<any, any, any> => {
-  return callApi(new Request(`${payload.url}?${payload.query}`));
+  const parsedQuery = parseServiceUnitQuery(payload.query) || ''
+  return callApi(new Request(`${payload.url}?${parsedQuery}`));
 };
 
 export const sendReportToMail = (payload: Object): Generator<any, any, any> => {

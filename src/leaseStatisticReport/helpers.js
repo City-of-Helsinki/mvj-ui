@@ -157,3 +157,22 @@ export const formatType = (value: Object): string => {
       return formattedValue
   }
 };
+
+/**
+ * Parses the query params from service_unit=num1,num2 format
+ * into service_unit=num1&service_unit=num2 format
+ * @param {string} query
+ * @return {string}
+ */
+export const parseServiceUnitQuery = (query: string): string => {
+  const queryArray = query.split('&')
+  const serviceUnitIndex = queryArray.findIndex((item: string) => item.includes("service_unit"))
+  if (serviceUnitIndex !== -1) {
+    const serviceUnitQuery = queryArray.splice(serviceUnitIndex, 1)
+    const serviceUnitIds = serviceUnitQuery[0].split('=')[1].split(',')
+    serviceUnitIds.forEach(id => {if (id) queryArray.push(`service_unit=${id}`)})
+    return queryArray.join('&')
+  } else {
+    return query
+  }
+};
