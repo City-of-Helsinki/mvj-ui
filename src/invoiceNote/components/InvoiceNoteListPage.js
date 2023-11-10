@@ -180,22 +180,16 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
       this.search();
     };
 
-    if (userActiveServiceUnit) {
-      if (userActiveServiceUnit !== prevUserActiveServiceUnit) {
-        if (!this._hasFetchedInvoiceNotes) { // No search has been done yet
-          handleSearch();
-          this._hasFetchedInvoiceNotes = true;
-        } else {
-          // Search again after changing user active service unit only if not explicitly setting the service unit filter
-          if (!currentSearch.includes('service_unit')) {
-            handleSearch();
-          }
-        }
-      } else {
-        if (!this._hasFetchedInvoiceNotes) { // No search has been done yet
-          handleSearch();
-          this._hasFetchedInvoiceNotes = true;
-        }
+    if(userActiveServiceUnit) {
+      
+      if(!this._hasFetchedInvoiceNotes) { // No search has been done yet
+        handleSearch();
+        this._hasFetchedInvoiceNotes = true;
+
+      } else if(userActiveServiceUnit !== prevUserActiveServiceUnit 
+          && !currentSearch.includes('service_unit')) {
+        // Search again after changing user active service unit only if not explicitly setting the service unit filter
+        handleSearch();
       }
     }
 
