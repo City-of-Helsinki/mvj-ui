@@ -69,6 +69,9 @@ import type {
   ClearSectionEditorCollapseStatesAction,
   SetSectionEditorCollapseStateAction,
   InitializeSectionEditorCollapseStatesAction,
+  ReceivePlotSearchRelatedApplicationsAction,
+  FetchPlotSearchRelatedApplicationsAction,
+  PlotSearchRelatedApplicationsNotFoundAction,
 } from '$src/plotSearch/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -250,3 +253,12 @@ export const setSectionEditorCollapseState = (key: string, isOpen: boolean): Set
 
 export const initializeSectionEditorCollapseStates = (states: {[key: string]: boolean}): InitializeSectionEditorCollapseStatesAction =>
   createAction('mvj/plotSearch/INITIALIZE_SECTION_EDITOR_COLLAPSE_STATES')(states);
+
+export const fetchPlotSearchRelatedApplications = (id: number): FetchPlotSearchRelatedApplicationsAction =>
+  createAction('mvj/plotSearch/FETCH_RELATED_APPLICATIONS')(id);
+
+export const receivePlotSearchRelatedApplications = (applications: Array<Object>): ReceivePlotSearchRelatedApplicationsAction =>
+  createAction('mvj/plotSearch/RECEIVE_RELATED_APPLICATIONS')(applications);
+
+export const plotSearchRelatedApplicationsNotFound = (error: any): PlotSearchRelatedApplicationsNotFoundAction =>
+  createAction('mvj/plotSearch/RELATED_APPLICATIONS_NOT_FOUND')(error);

@@ -14,9 +14,15 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import Title from '$components/content/Title';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
-import {getAttributes, getCollapseStateByKey, getCurrentPlotSearch, getPlanUnit} from '$src/plotSearch/selectors';
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getCurrentPlotSearch,
+  getPlanUnit,
+  getPlotSearchSubTypes, getRelatedApplications,
+} from '$src/plotSearch/selectors';
 import {receiveCollapseStates} from '$src/plotSearch/actions';
-import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
+import {PlotSearchFieldTitles, PlotSearchStageTypes} from '$src/plotSearch/enums';
 import {getContentBasicInformation, formatDecisionName} from '$src/plotSearch/helpers';
 import {getUiDataPlotSearchKey} from '$src/uiData/helpers';
 import {
@@ -47,6 +53,7 @@ type OwnProps = {
   openExportModal: Function,
   openReservationIdentifiersModal: Function,
   openDirectReservationLinkModal: Function,
+  showEditMode: Function,
 }
 
 type Props = {
@@ -60,6 +67,8 @@ type Props = {
   fetchPlanUnitAttributes: Function,
   fetchCustomDetailedPlanAttributes: Function,
   planUnit: Object,
+  subtypes: Array<Object>,
+  relatedApplications: Array<Object>,
 }
 
 type State = {
@@ -97,6 +106,9 @@ class BasicInfo extends PureComponent<Props, State> {
       openExportModal,
       openReservationIdentifiersModal,
       openDirectReservationLinkModal,
+      showEditMode,
+      subtypes,
+      relatedApplications,
     } = this.props;
 
     const plotSearch = getContentBasicInformation(currentPlotSearch);
@@ -105,11 +117,24 @@ class BasicInfo extends PureComponent<Props, State> {
     const stageOptions = getFieldOptions(attributes, PlotSearchFieldPaths.STAGE);
     const searchClassOptions = getFieldOptions(attributes, PlotSearchFieldPaths.SEARCH_CLASS);
 
+    const isInProcessing = [
+      PlotSearchStageTypes.PROCESSING,
+      PlotSearchStageTypes.DECISION,
+    ].includes(plotSearch.stageType);
+
+    const requiresOpeningRecord =
+      subtypes.find((type) => type.id === plotSearch.subtype)?.require_opening_record;
+
     return (
       <Fragment>
         <div className="plot_search__basic-info-header-buttons">
-          <Button onClick={openDirectReservationLinkModal} text="Lähetä hakemuslinkki" />
-          <Button onClick={openReservationIdentifiersModal} text="Luo varaustunnukset" />
+          {isInProcessing && requiresOpeningRecord &&
+            relatedApplications.some((application) => application.opening_record === null) &&
+              <Button onClick={() => showEditMode(true)} text="Avaa hakemukset" />}
+          {plotSearch.stageType === PlotSearchStageTypes.IN_ACTION &&
+            <Button onClick={openDirectReservationLinkModal} text="Lähetä hakemuslinkki" />}
+          {isInProcessing &&
+            <Button onClick={openReservationIdentifiersModal} text="Luo varaustunnukset" />}
           <DocumentsButton onClick={openExportModal} label="Tulosta kaikki hakemukset" />
         </div>
         <Title>
@@ -233,45 +258,53 @@ class BasicInfo extends PureComponent<Props, State> {
                   </Column>
                 </Authorization>
               </Row>
-              <div>
-                <Row>
-                  <Column small={12} medium={6} large={6}>
-                    <FormTextTitle id="plotSearchDecisionTable__decision-header">
-                      {PlotSearchFieldTitles.DECISION}
-                    </FormTextTitle>
+              <Row>
+                <Column small={12} medium={4} large={3}>
+                  <FormTextTitle id="plotSearchDecisionTable__applications-header">
+                    <ExternalLink
+                      href={`${getRouteById(Routes.PLOT_APPLICATIONS)}?plot_search=${plotSearch.id}`}
+                      text={`${PlotSearchFieldTitles.APPLICATIONS} (${relatedApplications.length})`}
+                    />
+                  </FormTextTitle>
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={6}>
+                  <FormTextTitle id="plotSearchDecisionTable__decision-header">
+                    {PlotSearchFieldTitles.DECISION}
+                  </FormTextTitle>
+                </Column>
+                {/*<Column small={6} medium={4} large={4}>
+                  <FormTextTitle id="plotSearchDecisionTable__to-list-header">
+                    {PlotSearchFieldTitles.DECISION_TO_LIST}
+                  </FormTextTitle>
+                </Column>*/}
+              </Row>
+              {(!plotSearch.decisions || plotSearch.decisions.length === 0) && <FormText>Ei valittuja päätöksiä.</FormText>}
+              {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
+                <Row key={index}>
+                  <Column small={12} medium={6} large={6} aria-labelledby="plotSearchDecisionTable__decision-header">
+                    <FormText key={index}>
+                      <ExternalLink
+                        className='no-margin'
+                        href={`${getRouteById(Routes.LEASES)}/${decision.lease}?tab=4`}
+                        text={formatDecisionName(decision)}
+                      />
+                    </FormText>
                   </Column>
-                  {/*<Column small={6} medium={4} large={4}>
-                    <FormTextTitle id="plotSearchDecisionTable__to-list-header">
-                      {PlotSearchFieldTitles.DECISION_TO_LIST}
-                    </FormTextTitle>
+                  {/*<Column small={6} medium={4} large={4} aria-labelledby="plotSearchDecisionTable__to-list-header">
+                    <SingleRadioInput
+                        name={''}
+                        label={''}
+                        checked={!!decision.decision_to_list}
+                        onChange={()=>{}}
+                        onClick={()=>{}}
+                        onKeyDown={()=>{}}
+                        disabled
+                      />
                   </Column>*/}
                 </Row>
-                {(!plotSearch.decisions || plotSearch.decisions.length === 0) && <FormText>Ei valittuja päätöksiä.</FormText>}
-                {!!plotSearch.decisions && plotSearch.decisions.map((decision, index) =>
-                  <Row key={index}>
-                    <Column small={12} medium={6} large={6} aria-labelledby="plotSearchDecisionTable__decision-header">
-                      <FormText key={index}>
-                        <ExternalLink
-                          className='no-margin'
-                          href={`${getRouteById(Routes.LEASES)}/${decision.lease}?tab=4`}
-                          text={formatDecisionName(decision)}
-                        />
-                      </FormText>
-                    </Column>
-                    {/*<Column small={6} medium={4} large={4} aria-labelledby="plotSearchDecisionTable__to-list-header">
-                      <SingleRadioInput
-                          name={''}
-                          label={''}
-                          checked={!!decision.decision_to_list}
-                          onChange={()=>{}}
-                          onClick={()=>{}}
-                          onKeyDown={()=>{}}
-                          disabled
-                        />
-                    </Column>*/}
-                  </Row>
-                )}
-              </div>
+              )}
               <PlotSearchTargetListing />
             </Collapse>
           </Column>
@@ -289,6 +322,8 @@ export default (connect(
       attributes: getAttributes(state),
       planUnit: getPlanUnit(state),
       currentPlotSearch: getCurrentPlotSearch(state),
+      subtypes: getPlotSearchSubTypes(state),
+      relatedApplications: getRelatedApplications(state),
     };
   },
   {

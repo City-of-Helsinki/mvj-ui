@@ -36,6 +36,7 @@ export const getContentBasicInformation = (plotSearch: PlotSearch): Object => {
     modified_at: plotSearch.modified_at,
     preparers: plotSearch.preparers?.map(getContentUser),
     stage: get(plotSearch.stage, 'id'),
+    stageType: get(plotSearch.stage, 'stage'),
     subtype: get(plotSearch.subtype, 'id'),
     type: get(plotSearch.type, 'id'),
     search_class: plotSearch.search_class,

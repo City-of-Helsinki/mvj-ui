@@ -42,6 +42,9 @@ import {
   receiveReservationIdentifierUnitLists,
   directReservationLinkCreated,
   directReservationLinkCreationFailed,
+  receivePlotSearchRelatedApplications,
+  plotSearchRelatedApplicationsNotFound,
+  fetchPlotSearchRelatedApplications,
 } from '$src/plotSearch/actions';
 import {receiveError} from '$src/api/actions';
 import {getRouteById, Routes} from '$src/root/routes';
@@ -65,7 +68,7 @@ import {
   editTargetPlotSearchRelationRequest,
   fetchAllMunicipalitiesRequest,
   fetchAllDistrictsRequest,
-  createDirectReservationLinkRequest,
+  createDirectReservationLinkRequest, fetchPlotSearchApplicationsRequest, createPlotSearchApplicationsOpeningRecords,
 } from '$src/plotSearch/requests';
 import {createLease} from '$src/leases/requests';
 import {RelationTypes} from '$src/leases/enums';
@@ -205,7 +208,7 @@ function* createPlotSearchSaga({payload: plotSearch}): Generator<any, any, any> 
   }
 }
 
-function* editPlotSearchSaga({payload: {basicInfo, form}}): Generator<any, any, any> {
+function* editPlotSearchSaga({payload: {basicInfo, form, openingRecord}}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(editPlotSearchRequest, basicInfo);
     switch (statusCode) {
@@ -219,10 +222,21 @@ function* editPlotSearchSaga({payload: {basicInfo, form}}): Generator<any, any, 
           }
         }
 
+        if (openingRecord) {
+          const {response: {status: openingRecordStatus}, bodyAsJson: openingRecordBody} = yield call(createPlotSearchApplicationsOpeningRecords, basicInfo.id, openingRecord);
+
+          if (![200, 201, 204].includes(openingRecordStatus)) {
+            yield put(receiveError(new SubmissionError({post: 'open_answers', ...openingRecordBody})));
+            yield receiveIsSaveClicked(false);
+            break;
+          }
+        }
+
         yield put(fetchSinglePlotSearchAfterEdit({
           id: basicInfo.id,
           callbackFunctions: [
             hideEditMode(),
+            fetchPlotSearchRelatedApplications(basicInfo.id),
             receiveIsSaveClicked(false),
             () => displayUIMessage({title: '', body: 'Tonttihaku tallennettu'}),
             nullPlanUnits(),
@@ -589,6 +603,29 @@ function* createDirectReservationLinkSaga({payload}): Generator<any, any, any> {
   }
 }
 
+function* fetchRelatedApplicationsSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchPlotSearchApplicationsRequest, id);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receivePlotSearchRelatedApplications(bodyAsJson.results));
+        break;
+      case 403:
+        yield put(plotSearchRelatedApplicationsNotFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, get: 'answer'})));
+        break;
+      default:
+        yield put(plotSearchRelatedApplicationsNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch plot search related applications with error "%s"', error);
+    yield put(plotSearchRelatedApplicationsNotFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -611,6 +648,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS', batchCreateReservationIdentifiersSaga);
       yield takeLatest('mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS', fetchReservationIdentifierUnitListsSaga);
       yield takeLatest('mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK', createDirectReservationLinkSaga);
+      yield takeLatest('mvj/plotSearch/FETCH_RELATED_APPLICATIONS', fetchRelatedApplicationsSaga);
     }),
   ]);
 }

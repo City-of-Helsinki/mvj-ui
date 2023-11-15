@@ -90,7 +90,7 @@ export const fetchStagesRequest = (params: ?Object): Generator<any, any, any> =>
 
 export const fetchPlotSearchApplicationsRequest = (id: number): Generator<any, any, any> => {
   return callApi(new Request(createUrl('answer/', {
-    plot_search_id: id,
+    plot_search: id,
   })));
 };
 
@@ -109,4 +109,14 @@ export const fetchAllMunicipalitiesRequest = (): Generator<any, any, any> => {
 
 export const fetchAllDistrictsRequest = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('district/?limit=10000')));
+};
+
+export const createPlotSearchApplicationsOpeningRecords = (id: number, data: Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`plot_search/${id}/open_answers/`), {
+    method: 'POST',
+    body: JSON.stringify({
+      note: data.note,
+      openers: data.openers,
+    }),
+  }));
 };

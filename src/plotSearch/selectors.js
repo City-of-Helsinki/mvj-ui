@@ -143,3 +143,9 @@ export const getIsCreatingDirectReservationLink: Selector<boolean, void> = (stat
 
 export const getSectionEditorCollapseStates: Selector<{[key: string]: boolean}, void> = (state: RootState): {[key: string]: boolean} =>
   state.plotSearch.sectionEditorCollapseStates;
+
+export const getRelatedApplications: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
+  state.plotSearch.relatedApplications;
+
+export const getIsFetchingRelatedApplications: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotSearch.isFetchingRelatedApplications;

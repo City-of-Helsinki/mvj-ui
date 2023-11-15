@@ -22,7 +22,7 @@ import {
 import {
   getAttributes,
   getCollapseStateByKey,
-  getIsFetchingCustomDetailedPlanAttributes,
+  getIsFetchingCustomDetailedPlanAttributes, getRelatedApplications,
 } from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import {
@@ -48,6 +48,7 @@ type Props = {
   isFetchingCustomDetailedPlanAttributes: boolean,
   isFetchingCustomDetailedPlan: boolean,
   customDetailedPlan: Object,
+  relatedApplications: Array<Object>,
 }
 
 type State = {
@@ -81,6 +82,7 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
       plotSearchSite,
       isFetchingCustomDetailedPlanAttributes,
       customDetailedPlanAttributes,
+      relatedApplications,
     } = this.props;
 
     const currentCustomDetailedPlan = get(plotSearchSite, 'custom_detailed_plan');
@@ -92,6 +94,8 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
     const infoLinks = get(currentCustomDetailedPlan, 'info_links');
     const usageDistributions = get(currentCustomDetailedPlan, 'usage_distributions');
     const reservationIdentifier = get(plotSearchSite, 'reservation_readable_identifier');
+
+    const applicationCount = relatedApplications.filter((application) => application.targets.some((target) => target.identifier === currentCustomDetailedPlan.identifier)).length;
 
     return (
       <Column large={12}>
@@ -292,7 +296,8 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
                 <Row>
                   <Column small={4} medium={4} large={12}>
                     <FormText>
-                      <ExternalLink href={`${getRouteById(Routes.PLOT_APPLICATIONS)}?target_plan_unit=${currentCustomDetailedPlan.id}`} text={'Hakemukset (?)'} />
+                      {/* TODO: add a link here if a by-target filter is implemented for the application list view */}
+                      Hakemukset ({applicationCount})
                     </FormText>
                   </Column>
                   <Column small={4} medium={4} large={12}>
@@ -327,6 +332,7 @@ export default (connect(
       attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.plotSearch_site.${id}`),
       isFetchingCustomDetailedPlanAttributes: getIsFetchingCustomDetailedPlanAttributes(state),
+      relatedApplications: getRelatedApplications(state),
     };
   },
   {

@@ -36,6 +36,8 @@ export type PlotSearchState = {
   reservationIdentifierUnitLists: null | Object,
   isCreatingDirectReservationLink: boolean,
   sectionEditorCollapseStates: {[key: string]: boolean},
+  relatedApplications: Array<Object>,
+  isFetchingRelatedApplications: boolean,
 };
 
 export type CustomDetailedPlan = Object;
@@ -134,3 +136,7 @@ export type DirectReservationLinkCreationFailedAction = Action<'mvj/plotSearch/D
 export type ClearSectionEditorCollapseStatesAction = Action<'mvj/plotSearch/CLEAR_SECTION_EDITOR_COLLAPSE_STATES', void>;
 export type SetSectionEditorCollapseStateAction = Action<'mvj/plotSearch/SET_SECTION_EDITOR_COLLAPSE_STATE', {key: string, state: boolean}>;
 export type InitializeSectionEditorCollapseStatesAction = Action<'mvj/plotSearch/INITIALIZE_SECTION_EDITOR_COLLAPSE_STATES', {[key: string]: boolean}>;
+
+export type FetchPlotSearchRelatedApplicationsAction = Action<'mvj/plotSearch/FETCH_RELATED_APPLICATIONS', number>;
+export type ReceivePlotSearchRelatedApplicationsAction = Action<'mvj/plotSearch/RECEIVE_RELATED_APPLICATIONS', Array<Object>>;
+export type PlotSearchRelatedApplicationsNotFoundAction = Action<'mvj/plotSearch/RELATED_APPLICATIONS_NOT_FOUND', any>;

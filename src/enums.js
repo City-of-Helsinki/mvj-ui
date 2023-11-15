@@ -498,6 +498,7 @@ export const FormNames = {
   PLOT_SEARCH_APPLICATION: 'plot-search-application-form',
   PLOT_SEARCH_APPLICATION_SECTION_STAGING: 'plot-search-application-form-section-staging',
   PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM: 'plot-search-application-preview-mock-form',
+  PLOT_SEARCH_APPLICATIONS_OPENING: 'plot-search-applications-opening',
   PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',

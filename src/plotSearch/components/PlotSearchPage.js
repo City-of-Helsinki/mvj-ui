@@ -38,6 +38,7 @@ import {
   isLockedForModifications,
   isFetchingStages,
   getIsFetchingSubtypes,
+  getIsFetchingRelatedApplications,
 } from '$src/plotSearch/selectors';
 import {
   editPlotSearch,
@@ -49,6 +50,7 @@ import {
   receiveSinglePlotSearch,
   receiveFormValidFlags,
   deletePlotSearch,
+  fetchPlotSearchRelatedApplications,
 } from '$src/plotSearch/actions';
 import {FormNames, ConfirmationModalTexts, Methods, PermissionMissingTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
@@ -77,6 +79,8 @@ import {FIELDS_LOCKED_FOR_EDITING} from '$src/plotSearch/constants';
 import PlotSearchExportModal from '$src/plotApplications/components/exportModal/PlotSearchExportModal';
 import ReservationIdentifiersModal from '$src/plotSearch/components/reservationIdentifiers/ReservationIdentifiersModal';
 import DirectReservationLinkModal from '$src/plotSearch/components/directReservationLinkModal/DirectReservationLinkModal';
+import {fetchAttributes as fetchApplicationAttributes} from '$src/application/actions';
+import {getIsFetchingAttributes as getIsFetchingApplicationAttributes} from '$src/application/selectors';
 
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import type {Attributes, Methods as MethodType} from '$src/types';
@@ -129,7 +133,13 @@ type Props = {
   receiveFormValidFlags: Function,
   deletePlotSearch: Function,
   plotSearchMethods: MethodType,
-  areTargetsAllowedToHaveType: boolean
+  areTargetsAllowedToHaveType: boolean,
+  fetchApplicationAttributes: Function,
+  isFetchingApplicationAttributes: boolean,
+  fetchPlotSearchRelatedApplications: Function,
+  relatedApplications: Array<Object>,
+  isFetchingRelatedApplications: boolean,
+  applicationOpeningFormValues: Object,
 }
 
 type State = {
@@ -164,6 +174,8 @@ class PlotSearchPage extends Component<Props, State> {
       location: {search},
       receiveIsSaveClicked,
       hideEditMode,
+      fetchApplicationAttributes,
+      fetchPlotSearchRelatedApplications,
     } = this.props;
 
     const query = getUrlParams(search);
@@ -181,6 +193,8 @@ class PlotSearchPage extends Component<Props, State> {
     }
 
     fetchSinglePlotSearch(plotSearchId);
+    fetchApplicationAttributes();
+    fetchPlotSearchRelatedApplications(plotSearchId);
 
     clearFormValidFlags();
     receiveIsSaveClicked(false);
@@ -292,7 +306,7 @@ class PlotSearchPage extends Component<Props, State> {
     hideEditMode();
   }
 
-  handleShowEditMode = () => {
+  handleShowEditMode = (showOpeningSection: boolean) => {
     const {clearFormValidFlags, currentPlotSearch, receiveIsSaveClicked, showEditMode, plotSearchForm} = this.props;
 
     receiveIsSaveClicked(false);
@@ -300,7 +314,7 @@ class PlotSearchPage extends Component<Props, State> {
 
     showEditMode();
     this.destroyAllForms();
-    this.initializeForms(currentPlotSearch, plotSearchForm);
+    this.initializeForms(currentPlotSearch, plotSearchForm, showOpeningSection);
     this.startAutoSaveTimer();
   }
 
@@ -311,7 +325,7 @@ class PlotSearchPage extends Component<Props, State> {
     );
   }
 
-  initializeForms = (plotSearch: PlotSearch, plotSearchForm: Form) => {
+  initializeForms = (plotSearch: PlotSearch, plotSearchForm: Form, showOpeningSection: boolean) => {
     const {initialize} = this.props;
     initialize(FormNames.PLOT_SEARCH_BASIC_INFORMATION, getContentBasicInformation(plotSearch));
     initialize(FormNames.PLOT_SEARCH_APPLICATION, getContentApplication(plotSearch, plotSearchForm));
@@ -319,6 +333,12 @@ class PlotSearchPage extends Component<Props, State> {
       section: {},
     });
     initialize(FormNames.PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM, {});
+    initialize(FormNames.PLOT_SEARCH_APPLICATIONS_OPENING, {
+      opening_record: showOpeningSection ? {
+        openers: [],
+        note: '',
+      } : null,
+    });
   }
 
   destroyAllForms = () => {
@@ -373,6 +393,7 @@ class PlotSearchPage extends Component<Props, State> {
       isApplicationFormDirty,
       areTargetsAllowedToHaveType,
       isLockedForModifications,
+      applicationOpeningFormValues,
     } = this.props;
     receiveIsSaveClicked(true);
 
@@ -400,6 +421,13 @@ class PlotSearchPage extends Component<Props, State> {
         if (isLockedForModifications) {
           FIELDS_LOCKED_FOR_EDITING.forEach((field) => delete payload.basicInfo[field]);
         }
+      }
+
+      if (applicationOpeningFormValues.opening_record !== null) {
+        payload.openingRecord = {
+          note: applicationOpeningFormValues.opening_record.note,
+          openers: applicationOpeningFormValues.opening_record.openers.map((opener) => opener.id),
+        };
       }
 
       editPlotSearch(payload);
@@ -477,7 +505,7 @@ class PlotSearchPage extends Component<Props, State> {
     clearFormValidFlags();
 
     this.destroyAllForms();
-    this.initializeForms(currentPlotSearch, plotSearchForm);
+    this.initializeForms(currentPlotSearch, plotSearchForm, false);
 
     const storedBasicInformationFormValues = getSessionStorageItem(FormNames.PLOT_SEARCH_BASIC_INFORMATION);
     if(storedBasicInformationFormValues) {
@@ -551,17 +579,35 @@ class PlotSearchPage extends Component<Props, State> {
       isFetchingPlanUnitAttributes,
       isFetchingStages,
       isFetchingSubtypes,
+      isFetchingApplicationAttributes,
+      isFetchingRelatedApplications,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
 
-    if(isFetchingPlotSearchAttributes || isFetchingUsersPermissions || isFetching || isFetchingSubtypes || isFetchingStages) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (
+      isFetchingPlotSearchAttributes ||
+      isFetchingUsersPermissions ||
+      isFetching ||
+      isFetchingSubtypes ||
+      isFetchingStages ||
+      isFetchingApplicationAttributes ||
+      isFetchingRelatedApplications
+    ) {
+      return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    }
 
-    if(!plotSearchAttributes || isEmpty(usersPermissions)) return null;
+    if (!plotSearchAttributes || isEmpty(usersPermissions)) {
+      return null;
+    }
 
-    if(!plotSearchMethods) return null;
+    if (!plotSearchMethods) {
+      return null;
+    }
 
-    if(!isMethodAllowed(plotSearchMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    if (!isMethodAllowed(plotSearchMethods, Methods.GET)) {
+      return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    }
 
     const openExportModal = () => this.setState(() => ({
       isExportModalOpen: true,
@@ -671,6 +717,7 @@ class PlotSearchPage extends Component<Props, State> {
                     openExportModal={openExportModal}
                     openReservationIdentifiersModal={openReservationIdentifiersModal}
                     openDirectReservationLinkModal={openDirectReservationLinkModal}
+                    showEditMode={this.handleShowEditMode}
                   />
                 }
               </ContentContainer>
@@ -731,6 +778,9 @@ export default (flowRight(
         isLockedForModifications: isLockedForModifications(state),
         isFetchingStages: isFetchingStages(state),
         isFetchingSubtypes: getIsFetchingSubtypes(state),
+        isFetchingApplicationAttributes: getIsFetchingApplicationAttributes(state),
+        isFetchingRelatedApplications: getIsFetchingRelatedApplications(state),
+        applicationOpeningFormValues: getFormValues(FormNames.PLOT_SEARCH_APPLICATIONS_OPENING)(state),
       };
     },
     {
@@ -744,6 +794,8 @@ export default (flowRight(
       receiveIsSaveClicked,
       showEditMode,
       fetchSinglePlotSearch,
+      fetchApplicationAttributes,
+      fetchPlotSearchRelatedApplications,
       receiveSinglePlotSearch,
       receiveFormValidFlags,
       deletePlotSearch,
