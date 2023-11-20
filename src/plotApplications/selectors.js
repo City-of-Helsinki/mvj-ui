@@ -16,6 +16,9 @@ export const getIsFetching: Selector<boolean, void> = (state: RootState): boolea
 export const getIsFetchingByBBox: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotApplications.isFetchingByBBox;
 
+export const getIsSingleAllowed: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isSingleAllowed;
+
 export const getPlotApplicationsList: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
   state.plotApplications.list;
 

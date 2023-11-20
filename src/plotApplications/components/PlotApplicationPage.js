@@ -37,6 +37,7 @@ import {
   getIsFormValidFlags,
   getIsPerformingFileOperation,
   getIsSaving,
+  getIsSingleAllowed,
   getApplicationRelatedPlotSearch,
   getApplicationApplicantInfoCheckData,
   getApplicationTargetInfoCheckData,
@@ -47,7 +48,8 @@ import {
   receiveIsSaveClicked,
   hideEditMode,
   clearFormValidFlags,
-  receiveFormValidFlags, batchEditApplicationModels,
+  receiveFormValidFlags,
+  batchEditApplicationModels,
 } from '$src/plotApplications/actions';
 import type {
   PlotApplication as PlotApplicationType,
@@ -118,6 +120,7 @@ type Props = {
   isFormValid: (string) => boolean,
   getValuesForForm: (string) => Object,
   batchEditApplicationModels: Function,
+  isSingleAllowed: boolean,
 }
 
 type State = {
@@ -520,6 +523,7 @@ class PlotApplicationPage extends Component<Props, State> {
       isSaveClicked,
       isPerformingFileOperation,
       isSaving,
+      isSingleAllowed,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
@@ -533,10 +537,26 @@ class PlotApplicationPage extends Component<Props, State> {
     }
 
     if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
-      return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS}/></PageContainer>;
+      return <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS} />
+      </PageContainer>;
     }
 
-    return(
+    if (!isFetching && !isSingleAllowed) {
+      return <PageContainer>
+        <AuthorizationError
+          text="Sinulla ei tällä hetkellä ole oikeutta nähdä tätä hakemusta. Mikäli hakemukseen liittyvä haku on päättynyt, valmistelija voi avata hakemuksen listanäkymän kautta." />
+      </PageContainer>;
+    }
+
+    if (!isFetching && !currentPlotApplication.id) {
+      return <PageContainer>
+        <AuthorizationError
+          text="Hakemusta ei löydy." />
+      </PageContainer>;
+    }
+
+    return (
       <FullWidthContainer>
         <PageNavigationWrapper>
           <ControlButtonBar
@@ -630,6 +650,7 @@ export default (flowRight(
         isSaveClicked: getIsSaveClicked(state),
         isFormValidFlags: getIsFormValidFlags(state),
         isPerformingFileOperation: getIsPerformingFileOperation(state),
+        isSingleAllowed: getIsSingleAllowed(state),
         plotSearches: getPlotSearchList(state),
         isSaving: getIsSaving(state),
         currentPlotSearch: getApplicationRelatedPlotSearch(state),

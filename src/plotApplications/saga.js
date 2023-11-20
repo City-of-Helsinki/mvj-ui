@@ -27,7 +27,10 @@ import {
   receivePlotSearchSubtypes,
   receiveSinglePlotApplication,
   receiveTargetInfoCheckMeetingMemoUploaded,
-  receiveTargetInfoChecksForPlotSearch, showEditMode,
+  receiveTargetInfoChecksForPlotSearch,
+  showEditMode,
+  singlePlotApplicationNotAllowed,
+  singlePlotApplicationNotFound,
   targetInfoCheckMeetingMemoDeleteFailed,
   targetInfoCheckMeetingMemoUploadFailed,
   targetInfoChecksForPlotSearchNotFound,
@@ -114,9 +117,16 @@ function* fetchSinglePlotApplicationSaga({payload: id}): Generator<any, any, any
         yield put(fetchFormAttributes(bodyAsJson.form));
         yield put(fetchApplicantInfoCheckAttributes());
         break;
+      case 401:
+      case 403:
+        yield put(singlePlotApplicationNotAllowed());
+        break;
+      default:
+        yield put(singlePlotApplicationNotFound());
     }
   } catch (e) {
     console.error(e);
+    yield put(singlePlotApplicationNotFound());
   }
 }
 
