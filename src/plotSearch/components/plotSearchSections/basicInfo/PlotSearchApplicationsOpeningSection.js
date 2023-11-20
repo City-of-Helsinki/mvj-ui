@@ -107,7 +107,7 @@ export default (flowRight(
   connect((state: RootState) => ({
     applicationAttributes: getAttributes(state),
     plotSearch: getCurrentPlotSearch(state),
-    enabled: formValueSelector(FormNames.PLOT_SEARCH_APPLICATIONS_OPENING)(state, 'openingRecord') !== null,
+    enabled: formValueSelector(FormNames.PLOT_SEARCH_APPLICATIONS_OPENING)(state, 'opening_record') !== null,
   })),
   reduxForm({
     form: FormNames.PLOT_SEARCH_APPLICATIONS_OPENING,
