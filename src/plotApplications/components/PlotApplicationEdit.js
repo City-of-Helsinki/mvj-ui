@@ -12,12 +12,10 @@ import {
 import {reshapeSavedApplicationObject} from '$src/plotApplications/helpers';
 import {getFieldAttributes} from '$util/helpers';
 import {getIsFetchingForm} from '$src/plotSearch/selectors';
-import type {Attributes} from '$src/types';
 import ApplicationAnswersSection from '$src/application/components/ApplicationAnswersSection';
 import Loader from '$components/loader/Loader';
 import Title from '$components/content/Title';
 import Divider from '$components/content/Divider';
-import type {SectionExtraComponentProps} from '$src/application/types';
 import PlotApplicationTargetInfoCheckEdit
   from '$src/plotApplications/components/infoCheck/PlotApplicationTargetInfoCheckEdit';
 import PlotApplicationApplicantInfoCheckEdit
@@ -29,9 +27,13 @@ import {
   getIsFetchingFormAttributes,
 } from '$src/application/selectors';
 import {APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER} from '$src/application/constants';
+import Collapse from '$components/collapse/Collapse';
+import PlotApplicationOpeningRecordForm from '$src/plotApplications/components/PlotApplicationOpeningRecordForm';
 
 import type {RootState} from '$src/root/types';
 import type {PlotApplication} from '$src/plotApplications/types';
+import type {SectionExtraComponentProps} from '$src/application/types';
+import type {Attributes} from '$src/types';
 
 type OwnProps = {};
 
@@ -100,20 +102,28 @@ class PlotApplicationEdit extends PureComponent<Props> {
         </Title>
         <Divider />
         <Loader isLoading={isLoading} />
-        {!isLoading && fieldTypes && orderBy(form.sections, 'order').filter((section) => section.visible).map((section) =>
-          <ApplicationAnswersSection
-            section={section}
-            answer={answerData.sections[section.identifier]}
-            topLevel
-            fieldTypes={fieldTypes}
-            key={section.identifier}
-            plotSearch={plotSearch}
-            sectionExtraComponent={PlotApplicationEditSectionExtras}
-            sectionTitleTransformers={[
-              transformTargetSectionTitle(plotSearch),
-              transformApplicantSectionTitle,
-            ]}
-          />)}
+        {!isLoading && fieldTypes && <>
+          {currentPlotApplication.opening_record && <Collapse
+            defaultOpen={true}
+            headerTitle='Hakemuksen avaaminen'
+          >
+            <PlotApplicationOpeningRecordForm />
+          </Collapse>}
+          {orderBy(form.sections, 'order').filter((section) => section.visible).map((section) =>
+            <ApplicationAnswersSection
+              section={section}
+              answer={answerData.sections[section.identifier]}
+              topLevel
+              fieldTypes={fieldTypes}
+              key={section.identifier}
+              plotSearch={plotSearch}
+              sectionExtraComponent={PlotApplicationEditSectionExtras}
+              sectionTitleTransformers={[
+                transformTargetSectionTitle(plotSearch),
+                transformApplicantSectionTitle,
+              ]}
+            />)}
+        </>}
       </div>
     );
   }

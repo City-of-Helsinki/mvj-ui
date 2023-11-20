@@ -89,6 +89,8 @@ const baseState: PlotSearchState = {
   reservationIdentifierUnitLists: null,
   isCreatingDirectReservationLink: false,
   sectionEditorCollapseStates: {},
+  isFetchingRelatedApplications: false,
+  relatedApplications: [],
 };
 
 

@@ -36,6 +36,7 @@ export const getContentApplicationListItem = (plotApplication: Object): Object =
     plot_search: {
       name: plotApplication.plot_search,
       id: plotApplication.plot_search_id,
+      end_date: plotApplication.plot_search_end_date,
     },
     applicants: plotApplication.applicants,
     plot_search_type: plotApplication.plot_search_type,
@@ -47,6 +48,7 @@ export const getContentApplicationListItem = (plotApplication: Object): Object =
     })),
     target_address: plotApplication.targets.map((target) => target.address?.address),
     target_reserved: plotApplication.targets.map((target) => target.reserved),
+    has_opening_record: !!plotApplication.opening_record,
   };
 };
 

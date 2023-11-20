@@ -27,16 +27,16 @@ import {
   receivePlotSearchSubtypes,
   receiveSinglePlotApplication,
   receiveTargetInfoCheckMeetingMemoUploaded,
-  receiveTargetInfoChecksForPlotSearch,
+  receiveTargetInfoChecksForPlotSearch, showEditMode,
   targetInfoCheckMeetingMemoDeleteFailed,
   targetInfoCheckMeetingMemoUploadFailed,
   targetInfoChecksForPlotSearchNotFound,
 } from '$src/plotApplications/actions';
 import {receiveError} from '$src/api/actions';
 import {
-  createMeetingMemoRequest,
+  createMeetingMemoRequest, createOpeningRecordRequest,
   deleteMeetingMemoRequest,
-  editApplicantInfoCheckItemRequest,
+  editApplicantInfoCheckItemRequest, editOpeningRecordRequest,
   editTargetInfoCheckItemRequest,
   fetchPlotApplications,
   fetchPlotSearchSubtypesRequest,
@@ -59,7 +59,7 @@ import {
 } from '$src/application/requests';
 
 import type {
-  BatchEditPlotApplicationInfoChecksAction,
+  BatchEditPlotApplicationModelsAction,
   DeleteTargetInfoCheckMeetingMemoAction,
   InfoCheckBatchEditErrors,
   PlotApplication,
@@ -316,10 +316,11 @@ function* deleteMeetingMemoSaga({payload}: DeleteTargetInfoCheckMeetingMemoActio
   }
 }
 
-function* batchEditInfoChecksSaga({payload}: BatchEditPlotApplicationInfoChecksAction): Generator<any, any, any> {
+function* batchEditPlotApplicationModelsSaga({payload}: BatchEditPlotApplicationModelsAction): Generator<any, any, any> {
   const errors: InfoCheckBatchEditErrors = {
     target: [],
     applicant: [],
+    openingRecord: null,
   };
 
   yield all(payload.target.map((target) => call(function* ({id, targetForm, data}) {
@@ -363,7 +364,6 @@ function* batchEditInfoChecksSaga({payload}: BatchEditPlotApplicationInfoChecksA
           break;
         default:
           console.error(bodyAsJson);
-          console.log(kind);
           errors.applicant.push({
             id,
             kind,
@@ -380,7 +380,27 @@ function* batchEditInfoChecksSaga({payload}: BatchEditPlotApplicationInfoChecksA
     }
   }, applicant)));
 
-  const errorCount = errors.target.length + errors.applicant.length;
+  if (payload.opening_record) {
+    yield call(function* () {
+      try {
+        const {response: {status: statusCode}, bodyAsJson} = yield call(editOpeningRecordRequest, payload.opening_record);
+
+        switch (statusCode) {
+          case 200:
+          case 204:
+            break;
+          default:
+            console.error(bodyAsJson);
+            errors.openingRecord = bodyAsJson;
+        }
+      } catch (e) {
+        console.error(e);
+        errors.openingRecord = e;
+      }
+    });
+  }
+
+  const errorCount = errors.target.length + errors.applicant.length + (errors.openingRecord ? 1 : 0);
   if (errorCount === 0) {
     const currentPlotApplication = yield select(getCurrentPlotApplication);
 
@@ -391,6 +411,28 @@ function* batchEditInfoChecksSaga({payload}: BatchEditPlotApplicationInfoChecksA
   } else {
     yield put(receiveBatchInfoCheckEditFailure(errors));
     displayUIMessage({title: '', body: `${errorCount} käsittelytiedon päivitys epäonnistui!`}, {type: 'error'});
+  }
+}
+
+function* createOpeningRecordSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}} = yield call(createOpeningRecordRequest, id);
+
+    switch (statusCode) {
+      case 200:
+      case 201:
+        yield put(push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`));
+        yield put(showEditMode());
+        displayUIMessage({title: '', body: 'Hakemus avattu'});
+        break;
+      default:
+        yield put(receivePlotApplicationSaveFailed());
+        displayUIMessage({title: '', body: 'Hakemuksen avaaminen epäonnistui'}, {type: 'error'});
+    }
+  } catch(e) {
+    yield put(receivePlotApplicationSaveFailed());
+    console.log(e);
+    displayUIMessage({title: '', body: 'Hakemuksen avaaminen epäonnistui'}, {type: 'error'});
   }
 }
 
@@ -408,7 +450,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/plotApplications/FETCH_TARGET_INFO_CHECKS_FOR_PLOT_SEARCH', fetchTargetInfoChecksForPlotSearchSaga);
       yield takeEvery('mvj/plotApplications/UPLOAD_MEETING_MEMO', uploadMeetingMemoSaga);
       yield takeEvery('mvj/plotApplications/DELETE_MEETING_MEMO', deleteMeetingMemoSaga);
-      yield takeLatest('mvj/plotApplications/BATCH_EDIT_INFO_CHECKS', batchEditInfoChecksSaga);
+      yield takeLatest('mvj/plotApplications/BATCH_EDIT_RELATED_MODELS', batchEditPlotApplicationModelsSaga);
+      yield takeLatest('mvj/plotApplications/CREATE_OPENING_RECORD', createOpeningRecordSaga);
     }),
   ]);
 }

@@ -59,3 +59,24 @@ export const fetchTargetInfoChecksForPlotSearchRequest = (id: number): Generator
     plot_search: id,
   })));
 };
+
+export const createOpeningRecordRequest = (id: number): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`answer_opening_record/`), {
+    method: 'POST',
+    body: JSON.stringify({
+      openers: [],
+      answer: id,
+      note: '',
+    }),
+  }));
+};
+
+export const editOpeningRecordRequest = (data: Object): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`answer_opening_record/${data.id}/`), {
+    method: 'PATCH',
+    body: JSON.stringify({
+      note: data.note,
+      openers: data.openers,
+    }),
+  }));
+};

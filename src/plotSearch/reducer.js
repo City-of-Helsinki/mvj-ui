@@ -287,6 +287,17 @@ const sectionEditorCollapseStatesReducer: Reducer<{[key: string]: boolean}> = ha
   }),
 }, {});
 
+const relatedApplicationsReducer: Reducer<Array<Object>> = handleActions({
+  ['mvj/plotSearch/FETCH_RELATED_APPLICATIONS']: () => [],
+  ['mvj/plotSearch/RECEIVE_RELATED_APPLICATIONS']: (state: Array<Object>, {payload}) => payload,
+  ['mvj/plotSearch/RELATED_APPLICATIONS_NOT_FOUND']: () => [],
+}, []);
+
+const isFetchingRelatedApplicationsReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotSearch/FETCH_RELATED_APPLICATIONS']: () => true,
+  ['mvj/plotSearch/RECEIVE_RELATED_APPLICATIONS']: () => false,
+  ['mvj/plotSearch/RELATED_APPLICATIONS_NOT_FOUND']: () => false,
+}, false);
 
 export default (combineReducers<Object, any>({
   attributes: attributesReducer,
@@ -322,4 +333,6 @@ export default (combineReducers<Object, any>({
   reservationIdentifierUnitLists: reservationIdentifierUnitListsReducer,
   isCreatingDirectReservationLink: isCreatingDirectReservationLinkReducer,
   sectionEditorCollapseStates: sectionEditorCollapseStatesReducer,
+  relatedApplications: relatedApplicationsReducer,
+  isFetchingRelatedApplications: isFetchingRelatedApplicationsReducer,
 }): CombinedReducer<PlotSearchState, Action<any>>);

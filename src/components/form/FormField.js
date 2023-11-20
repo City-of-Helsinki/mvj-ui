@@ -169,7 +169,10 @@ const FormFieldInput = ({
       case FieldTypeOptions.DATE:
         return formatDate(value);
       case FieldTypeOptions.TIME:
-        return formatDate(value) + ', ' + getHoursAndMinutes(value);
+        if (value) {
+          return formatDate(value) + ', ' + getHoursAndMinutes(value);
+        }
+        return '-';
       case FieldTypeOptions.ADDRESS:
       case FieldTypeOptions.INTEGER:
       case FieldTypeOptions.STRING:

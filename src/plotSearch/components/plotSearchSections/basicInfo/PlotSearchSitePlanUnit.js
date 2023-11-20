@@ -24,7 +24,7 @@ import {
 import {
   getAttributes,
   getCollapseStateByKey,
-  getIsFetchingPlanUnitAttributes,
+  getIsFetchingPlanUnitAttributes, getRelatedApplications,
 } from '$src/plotSearch/selectors';
 import type {Attributes} from '$src/types';
 import {
@@ -50,6 +50,7 @@ type Props = {
   isFetchingPlanUnit: boolean,
   planUnitAttributes: Attributes,
   planUnit: Object,
+  relatedApplications: Array<Object>,
 }
 
 type State = {
@@ -113,6 +114,7 @@ class PlotSearchSitePlanUnit extends PureComponent<Props, State> {
       plotSearchSite,
       isFetchingPlanUnitAttributes,
       planUnitAttributes,
+      relatedApplications,
     } = this.props;
 
     const currentPlanUnit = get(plotSearchSite, 'plan_unit');
@@ -131,6 +133,8 @@ class PlotSearchSitePlanUnit extends PureComponent<Props, State> {
     const infoLinks = get(plotSearchSite, 'info_links');
     const reservationIdentifier = get(plotSearchSite, 'reservation_readable_identifier');
     const usageDistributions = get(currentPlanUnit, 'usage_distributions');
+
+    const applicationCount = relatedApplications.filter((application) => application.targets.some((target) => target.identifier === currentPlanUnit.identifier)).length;
 
     const getInfoLinkLanguageDisplayText = (key) => {
       const languages = get(attributes, 'plot_search_targets.child.children.info_links.child.children.language.choices');
@@ -401,7 +405,8 @@ class PlotSearchSitePlanUnit extends PureComponent<Props, State> {
                 <Row>
                   <Column small={4} medium={4} large={12}>
                     <FormText>
-                      <ExternalLink href={`${getRouteById(Routes.PLOT_APPLICATIONS)}?target_plan_unit=${currentPlanUnit.id}`} text={'Hakemukset (?)'} />
+                      {/* TODO: add a link here if a by-target filter is implemented for the application list view */}
+                      Hakemukset ({applicationCount})
                     </FormText>
                   </Column>
                   <Column small={4} medium={4} large={12}>
@@ -436,6 +441,7 @@ export default (connect(
       attributes: getAttributes(state),
       collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_BASIC_INFORMATION}.plotSearch_site.${id}`),
       isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+      relatedApplications: getRelatedApplications(state),
     };
   },
   {

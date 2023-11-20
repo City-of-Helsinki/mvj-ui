@@ -21,6 +21,7 @@ import {
 } from '$src/plotApplications/selectors';
 import {receiveCollapseStates} from '$src/plotApplications/actions';
 import {
+  formatDate,
   isFieldAllowedToRead,
 } from '$util/helpers';
 import Loader from '$components/loader/Loader';
@@ -49,6 +50,9 @@ import type {Attributes} from '$src/types';
 import type {PlotApplication as PlotApplicationType} from '$src/plotApplications/types';
 import type {SectionExtraComponentProps} from '$src/application/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import {PlotApplicationOpeningRecordLabels, PlotApplicationOpeningRecordPaths} from '$src/plotApplications/enums';
+import {getHoursAndMinutes} from '$util/date';
+import {getContentUser} from '$src/users/helpers';
 
 type OwnProps = {};
 
@@ -137,6 +141,58 @@ class PlotApplication extends PureComponent<Props> {
         <Loader isLoading={isLoading} />
         <Row className='summary__content-wrapper'>
           <Column small={12}>
+            {plotApplication.opening_record && <Collapse
+              defaultOpen={true}
+              headerTitle='Hakemuksen avaaminen'
+            >
+              <Row>
+
+                <Authorization allow={isFieldAllowedToRead(attributes, PlotApplicationOpeningRecordPaths.PLOT_SEARCH_TIMESTAMP)}>
+                  <Column small={12} medium={6} large={4}>
+                    <FormTextTitle>
+                      {PlotApplicationOpeningRecordLabels.PLOT_SEARCH_TIMESTAMP}
+                    </FormTextTitle>
+                    <FormText>{formatDate(plotApplication.plot_search_opening_time_stamp)}{', '}
+                      {getHoursAndMinutes(plotApplication.plot_search_opening_time_stamp)}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, PlotApplicationOpeningRecordPaths.TIMESTAMP)}>
+                  <Column small={6} medium={3} large={2}>
+                    <FormTextTitle>
+                      {PlotApplicationOpeningRecordLabels.TIMESTAMP}
+                    </FormTextTitle>
+                    <FormText>{formatDate(plotApplication.opening_record.time_stamp)}{', '}
+                      {getHoursAndMinutes(plotApplication.opening_record.time_stamp)}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, PlotApplicationOpeningRecordPaths.CREATED_BY)}>
+                  <Column small={6} medium={3} large={2}>
+                    <FormTextTitle>
+                      {PlotApplicationOpeningRecordLabels.CREATED_BY}
+                    </FormTextTitle>
+                    <FormText>{plotApplication.opening_record.created_by}</FormText>
+                  </Column>
+                </Authorization>
+                <Authorization allow={isFieldAllowedToRead(attributes, PlotApplicationOpeningRecordPaths.OPENERS)}>
+                  <Column small={12} medium={12} large={4}>
+                    <FormTextTitle>
+                      {PlotApplicationOpeningRecordLabels.OPENERS}
+                    </FormTextTitle>
+                    <FormText>{plotApplication.opening_record.openers.map((opener) => getContentUser(opener)?.label).join(', ')}</FormText>
+                  </Column>
+                </Authorization>
+              </Row>
+              <Row>
+                <Authorization allow={isFieldAllowedToRead(attributes, PlotApplicationOpeningRecordPaths.NOTE)}>
+                  <Column small={12}>
+                    <FormTextTitle>
+                      {PlotApplicationOpeningRecordLabels.NOTE}
+                    </FormTextTitle>
+                    <FormText>{plotApplication.opening_record.note}</FormText>
+                  </Column>
+                </Authorization>
+              </Row>
+            </Collapse>}
             <Collapse
               defaultOpen={applicationCollapseState !== undefined ? applicationCollapseState : true}
               headerTitle='Hakemuksen käsittelytiedot'

@@ -47,7 +47,7 @@ import {
   receiveIsSaveClicked,
   hideEditMode,
   clearFormValidFlags,
-  receiveFormValidFlags, batchEditApplicationInfoChecks,
+  receiveFormValidFlags, batchEditApplicationModels,
 } from '$src/plotApplications/actions';
 import type {
   PlotApplication as PlotApplicationType,
@@ -117,7 +117,7 @@ type Props = {
   isFormDirty: (string, ?Array<string>) => boolean,
   isFormValid: (string) => boolean,
   getValuesForForm: (string) => Object,
-  batchEditApplicationInfoChecks: Function,
+  batchEditApplicationModels: Function,
 }
 
 type State = {
@@ -212,20 +212,35 @@ class PlotApplicationPage extends Component<Props, State> {
       applicantInfoCheckFormNames,
     } = this.state;
 
-    let dirtyForms = {};
-
-    [...targetInfoCheckFormNames, ...applicantInfoCheckFormNames].forEach((formName) => {
+    let dirtyInfoCheckForms = {};
+    [
+      ...targetInfoCheckFormNames,
+      ...applicantInfoCheckFormNames,
+    ].forEach((formName) => {
       if (isFormDirty(formName)) {
-        dirtyForms[formName] = getValuesForForm(formName);
+        dirtyInfoCheckForms[formName] = getValuesForForm(formName);
       }
     });
 
-    if (Object.keys(dirtyForms).length > 0) {
+    const anyInfoCheckFormsDirty = Object.keys(dirtyInfoCheckForms).length > 0;
+    const anyOtherFormsDirty = isFormDirty(FormNames.PLOT_APPLICATION_OPENING);
+
+    if (anyInfoCheckFormsDirty) {
+      setSessionStorageItem('plotApplicationInfoChecks', dirtyInfoCheckForms);
+    } else {
+      removeSessionStorageItem('plotApplicationInfoChecks');
+    }
+
+    if (anyOtherFormsDirty) {
+      setSessionStorageItem('plotApplicationOpeningRecord', getValuesForForm(FormNames.PLOT_APPLICATION_OPENING));
+    } else {
+      removeSessionStorageItem('plotApplicationOpeningRecord');
+    }
+
+    if (anyInfoCheckFormsDirty || anyOtherFormsDirty) {
       setSessionStorageItem('plotApplicationId', currentPlotApplication.id);
-      setSessionStorageItem('plotApplicationInfoChecks', dirtyForms);
     } else {
       removeSessionStorageItem('plotApplicationId');
-      removeSessionStorageItem('plotApplicationInfoChecks');
     }
   }
 
@@ -246,7 +261,10 @@ class PlotApplicationPage extends Component<Props, State> {
     // Applicant forms are considered to be valid by default
     // because they're already validated in their own popup editor,
     // which doesn't let you proceed if any validation errors are present.
-    return targetInfoCheckFormNames.every((name) => isFormValid(name));
+    return [
+      ...targetInfoCheckFormNames,
+      FormNames.PLOT_APPLICATION_OPENING,
+    ].every((name) => isFormValid(name));
   }
 
   cancelChanges = () => {
@@ -299,24 +317,29 @@ class PlotApplicationPage extends Component<Props, State> {
       match: {params: {plotApplicationId}},
       isFetching,
       isEditMode,
+      getValuesForForm,
     } = this.props;
     const {activeTab} = this.state;
     const query = getUrlParams(search);
     const tab = query.tab ? Number(query.tab) : 0;
 
 
-    if(tab !== activeTab) {
+    if (tab !== activeTab) {
       this.setState({activeTab: tab});
     }
 
-    if(prevState.activeTab !== activeTab) {
+    if (prevState.activeTab !== activeTab) {
       scrollToTopPage();
     }
 
-    if(isEmpty(prevProps.currentPlotApplication) && !isEmpty(currentPlotApplication)) {
+    if (isEmpty(prevProps.currentPlotApplication) && !isEmpty(currentPlotApplication)) {
       const storedPlotApplicationId = getSessionStorageItem('plotApplicationId');
 
-      if(Number(plotApplicationId) === storedPlotApplicationId) {
+      if (isEditMode && !getValuesForForm('id')) {
+        this.handleShowEditMode();
+      }
+
+      if (Number(plotApplicationId) === storedPlotApplicationId) {
         this.setState({isRestoreModalOpen: true});
       }
     }
@@ -377,7 +400,7 @@ class PlotApplicationPage extends Component<Props, State> {
       receiveIsSaveClicked,
       isFormDirty,
       getValuesForForm,
-      batchEditApplicationInfoChecks,
+      batchEditApplicationModels,
     } = this.props;
 
     const {
@@ -391,6 +414,7 @@ class PlotApplicationPage extends Component<Props, State> {
     const operations: InfoCheckBatchEditData = {
       target: [],
       applicant: [],
+      opening_record: null,
     };
 
     if (areFormsValid) {
@@ -422,7 +446,15 @@ class PlotApplicationPage extends Component<Props, State> {
         }
       });
 
-      batchEditApplicationInfoChecks(operations);
+      if (isFormDirty(FormNames.PLOT_APPLICATION_OPENING)) {
+        const openingRecordValues = getValuesForForm(FormNames.PLOT_APPLICATION_OPENING).opening_record;
+        operations.opening_record = {
+          ...openingRecordValues,
+          openers: openingRecordValues.openers.map((opener) => opener.id),
+        };
+      }
+
+      batchEditApplicationModels(operations);
     }
   }
 
@@ -444,6 +476,11 @@ class PlotApplicationPage extends Component<Props, State> {
         change(formName, field, storedInfoCheckData[formName][field]);
       });
     });
+
+    const storedOpeningRecordData = getSessionStorageItem('plotApplicationOpeningRecord');
+    if (storedOpeningRecordData) {
+      change(FormNames.PLOT_APPLICATION_OPENING, 'opening_record', storedOpeningRecordData.opening_record);
+    }
 
     this.startAutoSaveTimer();
     this.setState({isRestoreModalOpen: false});
@@ -622,7 +659,7 @@ export default (flowRight(
       change,
       clearFormValidFlags,
       receiveFormValidFlags,
-      batchEditApplicationInfoChecks,
+      batchEditApplicationModels,
     }
   ),
 )(PlotApplicationPage): React$ComponentType<OwnProps>);

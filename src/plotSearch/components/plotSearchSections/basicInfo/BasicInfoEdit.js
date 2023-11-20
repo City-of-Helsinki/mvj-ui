@@ -58,6 +58,8 @@ import {getCurrentPlotSearch, getCurrentPlotSearchStage, getStages, isLockedForM
 import PlotSearchTargetListing from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchTargetListing';
 import {AUTOMATIC_PLOT_SEARCH_STAGES} from '$src/plotSearch/constants';
 import {PlotSearchStageTypes} from '$src/plotSearch/enums';
+import PlotSearchApplicationsOpeningSection
+  from '$src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchApplicationsOpeningSection';
 
 type DecisionsProps = {
   attributes: Attributes,
@@ -424,6 +426,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
         <Divider />
         <Row className='summary__content-wrapper'>
           <Column small={12}>
+            <PlotSearchApplicationsOpeningSection />
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
