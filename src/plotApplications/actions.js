@@ -42,6 +42,8 @@ import type {
   ReceiveSinglePlotApplicationAction,
   ReceiveTargetInfoCheckMeetingMemoUploadedAction,
   ReceiveTargetInfoChecksForPlotSearchAction,
+  SinglePlotApplicationNotAllowedAction,
+  SinglePlotApplicationNotFoundAction,
   SetCurrentEditorTargetsAction,
   ShowEditModeAction,
   TargetInfoCheckMeetingMemoDeleteFailedAction,
@@ -61,6 +63,12 @@ export const fetchSinglePlotApplication = (id: number): FetchSinglePlotApplicati
 
 export const receiveSinglePlotApplication = (plotApplication: PlotApplication): ReceiveSinglePlotApplicationAction =>
   createAction('mvj/plotApplications/RECEIVE_SINGLE')(plotApplication);
+
+export const singlePlotApplicationNotFound = (): SinglePlotApplicationNotFoundAction =>
+  createAction('mvj/plotApplications/SINGLE_NOT_FOUND')();
+
+export const singlePlotApplicationNotAllowed = (): SinglePlotApplicationNotAllowedAction =>
+  createAction('mvj/plotApplications/SINGLE_NOT_ALLOWED')();
 
 export const fetchPlotApplicationsByBBox = (params: Object): FetchPlotApplicationsByBBoxAction =>
   createAction('mvj/plotApplications/FETCH_BY_BBOX')(params);

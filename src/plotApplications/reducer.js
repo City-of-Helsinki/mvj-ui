@@ -30,12 +30,20 @@ import type {
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
   ['mvj/plotApplications/RECEIVE_ALL']: () => false,
+  ['mvj/plotApplications/APPLICATIONS_NOT_FOUND']: () => false,
   ['mvj/plotApplications/FETCH_SINGLE']: () => true,
   ['mvj/plotApplications/RECEIVE_SINGLE']: () => false,
+  ['mvj/plotApplications/SINGLE_NOT_FOUND']: () => false,
+  ['mvj/plotApplications/SINGLE_NOT_ALLOWED']: () => false,
   ['mvj/plotApplications/EDIT']: () => true,
   ['mvj/plotApplications/RECEIVE_SAVED']: () => false,
-  ['mvj/plotApplications/APPLICATIONS_NOT_FOUND']: () => false,
 }, false);
+
+const isSingleAllowedReducer: Reducer<boolean> = handleActions({
+  ['mvj/plotApplications/RECEIVE_SINGLE']: () => true,
+  ['mvj/plotApplications/SINGLE_NOT_FOUND']: () => true,
+  ['mvj/plotApplications/SINGLE_NOT_ALLOWED']: () => false,
+}, true);
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/plotApplications/HIDE_EDIT': () => false,
@@ -164,15 +172,18 @@ const infoCheckBatchEditErrorsReducer: Reducer<InfoCheckBatchEditErrors> = handl
   ['mvj/plotApplications/BATCH_EDIT_RELATED_MODELS']: () => ({
     target: [],
     applicant: [],
+    openingRecord: null,
   }),
   ['mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS']: () => ({
     target: [],
     applicant: [],
+    openingRecord: null,
   }),
   ['mvj/plotApplications/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE']: (state, {payload}: ReceivePlotApplicationInfoCheckBatchEditFailureAction) => payload,
 }, {
   target: [],
   applicant: [],
+  openingRecord: null,
 });
 
 const targetInfoChecksForCurrentPlotSearchReducer: Reducer<Array<Object>> = handleActions({
@@ -192,6 +203,7 @@ const isFetchingTargetInfoChecksForCurrentPlotSearchReducer: Reducer<boolean> = 
 export default (combineReducers<Object, Action<any>>({
   isFetching: isFetchingReducer,
   isFetchingByBBox: isFetchingByBBoxReducer,
+  isSingleAllowed: isSingleAllowedReducer,
   listByBBox: listByBBoxReducer,
   list: plotApplicationsListReducer,
   current: currentPlotApplicationReducer,

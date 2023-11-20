@@ -44,9 +44,11 @@ const baseState: PlotApplicationsState = {
   infoCheckBatchEditErrors: {
     applicant: [],
     target: [],
+    openingRecord: null,
   },
   targetInfoChecksForCurrentPlotSearch: [],
   isFetchingTargetInfoChecksForCurrentPlotSearch: false,
+  isSingleAllowed: true,
 };
 
 // $FlowFixMe

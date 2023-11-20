@@ -635,7 +635,7 @@ class PlotSearchPage extends Component<Props, State> {
                 isEditMode={isEditMode}
                 isSaveDisabled={isSaveClicked && !areFormsValid}
                 onCancel={this.cancelChanges}
-                onEdit={this.handleShowEditMode}
+                onEdit={() => this.handleShowEditMode(false)}
                 onSave={this.saveChanges}
                 showCommentButton={false}
                 showCopyButton={false}

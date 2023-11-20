@@ -25,6 +25,7 @@ export type PlotApplicationsState = {
   infoCheckBatchEditErrors: InfoCheckBatchEditErrors,
   targetInfoChecksForCurrentPlotSearch: Array<Object>,
   isFetchingTargetInfoChecksForCurrentPlotSearch: boolean,
+  isSingleAllowed: boolean,
 };
 
 export type PlotApplicationsList = Object;
@@ -45,6 +46,8 @@ export type NotFoundByBBoxAction = Action<'mvj/plotApplications/NOT_FOUND_BY_BBO
 
 export type FetchSinglePlotApplicationAction = Action<'mvj/plotApplications/FETCH_SINGLE', number>;
 export type ReceiveSinglePlotApplicationAction = Action<'mvj/plotApplications/RECEIVE_SINGLE', PlotApplication>;
+export type SinglePlotApplicationNotFoundAction = Action<'mvj/plotApplications/SINGLE_NOT_FOUND', void>;
+export type SinglePlotApplicationNotAllowedAction = Action<'mvj/plotApplications/SINGLE_NOT_ALLOWED', void>;
 
 export type HideEditModeAction = Action<'mvj/plotApplications/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/plotApplications/SHOW_EDIT', void>;
