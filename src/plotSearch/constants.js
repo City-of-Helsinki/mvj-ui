@@ -110,6 +110,7 @@ export const PROTECTED_FORM_PATHS: ProtectedFormPathsSections = {
           'etunimi',
           'Sukunimi',
           'henkilotunnus',
+          'sahkoposti'
         ],
       },
       'yrityksen-tiedot': {
@@ -117,6 +118,7 @@ export const PROTECTED_FORM_PATHS: ProtectedFormPathsSections = {
         fields: [
           'yrityksen-nimi',
           'y-tunnus',
+          'sahkoposti',
         ],
       },
     },
