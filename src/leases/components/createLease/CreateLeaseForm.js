@@ -79,10 +79,10 @@ class CreateLeaseForm extends Component<Props> {
   componentDidUpdate() {
     const {change, formValues, userActiveServiceUnit} = this.props;
 
-    if (userActiveServiceUnit) {
-      if (formValues && !formValues.service_unit) {
-        change('service_unit', userActiveServiceUnit.id);
-      }
+    if (userActiveServiceUnit 
+      && formValues 
+      && !formValues.service_unit) {
+      change('service_unit', userActiveServiceUnit.id);
     }
   }
 
