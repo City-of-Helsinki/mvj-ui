@@ -856,10 +856,7 @@ class LeasePage extends Component<Props, State> {
     const areFormsValid = this.validateForms();
 
     const isServiceUnitSameAsActiveServiceUnit = () => {
-      if (userActiveServiceUnit && currentLease.service_unit) {
-        return userActiveServiceUnit.id === currentLease.service_unit.id;
-      }
-      return false;
+      return userActiveServiceUnit?.id === currentLease?.service_unit?.id;
     };
 
     if(isFetching || isFetchingLeasePageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;

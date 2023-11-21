@@ -380,10 +380,7 @@ class ContactPage extends Component<Props, State> {
     const nameInfo = getContactFullName(contact);
 
     const isServiceUnitSameAsActiveServiceUnit = () => {
-      if (userActiveServiceUnit && contact.service_unit) {
-        return userActiveServiceUnit.id === contact.service_unit.id;
-      }
-      return false;
+      return userActiveServiceUnit?.id === contact?.service_unit?.id;
     };
 
     if(isFetching || isFetchingContactAttributes) {

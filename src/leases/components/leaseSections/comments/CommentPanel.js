@@ -217,10 +217,7 @@ class CommentPanel extends PureComponent<Props, State> {
     const filteredComments = this.getFilteredComments();
 
     const isServiceUnitSameAsActiveServiceUnit = () => {
-      if (userActiveServiceUnit && currentLease.service_unit) {
-        return userActiveServiceUnit.id === currentLease.service_unit.id;
-      }
-      return false;
+      return userActiveServiceUnit?.id === currentLease?.service_unit?.id;
     };
 
     return (
