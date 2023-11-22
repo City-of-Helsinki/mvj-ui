@@ -26,7 +26,7 @@ class UserServiceUnitSelectInput extends Component<Props, State> {
       userServiceUnits,
     } = this.props;
 
-    const selected = userServiceUnits.filter((u) => u.id === val?.value)[0];
+    const selected = userServiceUnits.find((u) => u.id === val?.value);
 
     if (selected) {
       setUserActiveServiceUnit(selected);
