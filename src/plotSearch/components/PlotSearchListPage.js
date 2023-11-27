@@ -73,9 +73,9 @@ const visualizationTypeOptions = [
   {value: VisualizationTypes.MAP, label: 'Kartta', icon: <MapIcon className='icon-medium' />},
 ];
 
-type OwnProps = {
+type OwnProps = {|
 
-};
+|};
 
 type Props = {
   ...OwnProps,
