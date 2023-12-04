@@ -47,7 +47,7 @@ const renderTargets = ({
   formValues,
 }: RenderTargetProps): React$Node => <Fragment>
   {!!targets && targets.map((target) => {
-    const targetIdentifier = target.plan_unit.identifier || target.custom_detailed_plan.identifier;
+    const targetIdentifier = target.plan_unit && target.plan_unit.identifier || target.custom_detailed_plan && target.custom_detailed_plan.identifier;
 
     let isChecked = false;
     if (formValues) {
