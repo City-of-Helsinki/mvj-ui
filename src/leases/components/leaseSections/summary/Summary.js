@@ -455,6 +455,16 @@ class Summary extends PureComponent<Props, State> {
                   }
                 </Column>
               </Row>
+              <Row>
+                <Column small={12} medium={6} large={8}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTERNAL_ORDER)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTERNAL_ORDER)}>
+                      {LeaseFieldTitles.INTERNAL_ORDER}
+                    </FormTextTitle>
+                    <ShowMore text={summary.internal_order || '-'} />
+                  </Authorization>
+                </Column>
+              </Row>
 
               <SummaryLeaseInfo />
             </Collapse>
