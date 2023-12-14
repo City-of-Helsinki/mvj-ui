@@ -497,6 +497,16 @@ class SummaryEdit extends PureComponent<Props, State> {
                   }
                 </Column>
               </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTERNAL_ORDER)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTERNAL_ORDER)}>
+                      {LeaseFieldTitles.INTERNAL_ORDER}
+                    </FormTextTitle>
+                    <FormText>{summary.internal_order || '-'}</FormText>
+                  </Authorization>
+                </Column>
+              </Row>
 
               <SummaryLeaseInfo />
             </Collapse>
