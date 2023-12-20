@@ -136,7 +136,7 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
         fetchLeaseCreateChargeAttributes();
       }
 
-      if(!isFetchingReceivableTypes && !receivableTypes) {
+      if(!isFetchingReceivableTypes) {
         fetchReceivableTypes();
       }
     }
