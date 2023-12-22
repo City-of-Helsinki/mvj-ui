@@ -398,26 +398,20 @@ const EditPlotApplicationSectionFieldForm = ({
       change(
         FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
         `${field}.default_value`,
-        JSON.stringify( // default_value must be a string
-          fieldValues.default_value?.[0] || ''
-        ),
+        fieldValues.default_value?.[0] || ''
       );
     } else if (newIsMultiSelect && !prevIsMultiSelect) {
       if (fieldValues.choices.length > 0) {
         change(
           FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
           `${field}.default_value`,
-          JSON.stringify( // default_value must be a string
-            fieldValues.default_value ? [fieldValues.default_value] : []
-          ),
+          fieldValues.default_value ? [fieldValues.default_value] : []
         );
       } else {
         change(
           FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
           `${field}.default_value`,
-          JSON.stringify( // default_value must be a string
-            false
-          ),
+          false
         );
       }
     }
@@ -429,27 +423,21 @@ const EditPlotApplicationSectionFieldForm = ({
         change(
           FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
           `${field}.default_value`,
-          JSON.stringify( // default_value must be a string
-            false
-          ),
+          false,
         );
       } else {
         if (fieldValues.default_value instanceof Array) {
           change(
             FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
             `${field}.default_value`,
-            JSON.stringify( // default_value must be a string
-              fieldValues.default_value.map((choiceValue) => dataMap[choiceValue])
-                .filter((choiceValue) => choiceValue !== null) || []
-            ),
+            fieldValues.default_value.map((choiceValue) => dataMap[choiceValue])
+              .filter((choiceValue) => choiceValue !== null) || [],
           );
         } else {
           change(
             FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
             `${field}.default_value`,
-            JSON.stringify( // default_value must be a string
-              []
-            ),
+            [],
           );
         }
       }
@@ -458,9 +446,7 @@ const EditPlotApplicationSectionFieldForm = ({
         change(
           FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
           `${field}.default_value`,
-          JSON.stringify( // default_value must be a string
-            dataMap[fieldValues.default_value]
-          ),
+          dataMap[fieldValues.default_value],
         );
       }
     }
