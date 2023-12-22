@@ -398,20 +398,26 @@ const EditPlotApplicationSectionFieldForm = ({
       change(
         FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
         `${field}.default_value`,
-        fieldValues.default_value?.[0] || ''
+        JSON.stringify( // default_value must be a string
+          fieldValues.default_value?.[0] || ''
+        ),
       );
     } else if (newIsMultiSelect && !prevIsMultiSelect) {
       if (fieldValues.choices.length > 0) {
         change(
           FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
           `${field}.default_value`,
-          fieldValues.default_value ? [fieldValues.default_value] : []
+          JSON.stringify( // default_value must be a string
+            fieldValues.default_value ? [fieldValues.default_value] : []
+          ),
         );
       } else {
         change(
           FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
           `${field}.default_value`,
-          false
+          JSON.stringify( // default_value must be a string
+            false
+          ),
         );
       }
     }
