@@ -423,21 +423,27 @@ const EditPlotApplicationSectionFieldForm = ({
         change(
           FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
           `${field}.default_value`,
-          false,
+          JSON.stringify( // default_value must be a string
+            false
+          ),
         );
       } else {
         if (fieldValues.default_value instanceof Array) {
           change(
             FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
             `${field}.default_value`,
-            fieldValues.default_value.map((choiceValue) => dataMap[choiceValue])
-              .filter((choiceValue) => choiceValue !== null) || [],
+            JSON.stringify( // default_value must be a string
+              fieldValues.default_value.map((choiceValue) => dataMap[choiceValue])
+                .filter((choiceValue) => choiceValue !== null) || []
+            ),
           );
         } else {
           change(
             FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
             `${field}.default_value`,
-            [],
+            JSON.stringify( // default_value must be a string
+              []
+            ),
           );
         }
       }
@@ -446,7 +452,9 @@ const EditPlotApplicationSectionFieldForm = ({
         change(
           FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING,
           `${field}.default_value`,
-          dataMap[fieldValues.default_value],
+          JSON.stringify( // default_value must be a string
+            dataMap[fieldValues.default_value]
+          ),
         );
       }
     }
