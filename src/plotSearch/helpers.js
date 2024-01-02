@@ -289,10 +289,10 @@ export const getInitialFormSectionEditorData = (fieldTypeMapping: Object, sectio
       collapseInitialState[`field-${temporaryId}`] = false;
     }
 
-    if (typeof defaultValue === 'string' && fieldFeatures.includes(FieldTypeFeatures.MULTIPLE_SELECTION_OPTIONS)) {
+    if (fieldFeatures.includes(FieldTypeFeatures.MULTIPLE_SELECTION_OPTIONS)) {
       try {
         defaultValue = JSON.parse(defaultValue);
-        if (!(defaultValue instanceof Array)) {
+        if (!(defaultValue instanceof Array) && !(typeof defaultValue === 'boolean')) {
           defaultValue = [defaultValue];
         }
       } catch {
@@ -387,7 +387,6 @@ export const transformCommittedFormSectionEditorData = (section: Object): FormSe
   const transformChoice = (choice: Object, index: number): Object => {
     const {
       text,
-      default_value,
       ...rest
     } = choice;
 
@@ -395,7 +394,6 @@ export const transformCommittedFormSectionEditorData = (section: Object): FormSe
       ...cloneDeep(rest),
       sort_order: index,
       text,
-      default_value: default_value instanceof Array ? JSON.stringify(default_value) : default_value,
       text_fi: text,
     };
   };
@@ -405,6 +403,7 @@ export const transformCommittedFormSectionEditorData = (section: Object): FormSe
       // eslint-disable-next-line no-unused-vars
       auto_fill_identifier, auto_fill_choice_values, is_protected, protected_values, temporary_id,
 
+      default_value,
       choices,
       label,
       ...rest
@@ -414,6 +413,7 @@ export const transformCommittedFormSectionEditorData = (section: Object): FormSe
       ...cloneDeep(rest),
       sort_order: index,
       choices: choices?.map(transformChoice) || null,
+      default_value: typeof default_value === 'string' ? default_value : (JSON.stringify(default_value) || ''),
       label,
       label_fi: label,
     };
