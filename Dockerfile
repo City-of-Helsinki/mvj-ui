@@ -1,6 +1,15 @@
 # ===============================================
-FROM helsinkitest/node:10-slim as appbase
+FROM node:14-slim AS appbase
 # ===============================================
+
+RUN groupadd -g 1001 appuser \
+  && useradd --create-home --no-log-init -u 1001 -g 1001 appuser
+
+RUN mkdir /app
+RUN chown -R appuser:appuser /app
+
+WORKDIR /app
+
 # Offical image has npm log verbosity as info. More info - https://github.com/nodejs/docker-node#verbosity
 ENV NPM_CONFIG_LOGLEVEL warn
 
@@ -27,14 +36,18 @@ COPY package*.json *yarn* ./
 ENV PATH /app/node_modules/.bin:$PATH
 
 USER root
-RUN bash /tools/apt-install.sh build-essential
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends build-essential python3
 
 USER appuser
 RUN yarn config set network-timeout 300000
 RUN yarn && yarn cache clean --force
 
 USER root
-RUN bash /tools/apt-cleanup.sh build-essential
+RUN apt-get remove -y build-essential
+RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+RUN rm -rf /var/lib/apt/lists/*
+RUN rm -rf /var/cache/apt/archives
 
 # =============================
 FROM appbase as development
@@ -58,7 +71,7 @@ COPY . /app
 RUN yarn compile
 
 # =============================
-FROM registry.access.redhat.com/ubi8/nginx-118 as production
+FROM registry.access.redhat.com/ubi8/nginx-120 as production
 # =============================
 
 USER root
