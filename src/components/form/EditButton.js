@@ -12,7 +12,7 @@ type Props = {
   type?: string,
 }
 
-const EditButton = ({className, disabled, onClick, title, type = 'button'}: Props) =>
+const EditButton = ({className, disabled, onClick, title, type = 'button'}: Props): React$Node =>
   <button
     className={classNames('form__edit-button', className)}
     disabled={disabled}

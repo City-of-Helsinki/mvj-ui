@@ -16,11 +16,15 @@ import {PlotSearchFieldTitles} from '$src/plotSearch/enums';
 
 import type {Attributes} from '$src/types';
 
-type Props = {
-  attributes: Attributes,
-  change: Function,
+type OwnProps = {
   onClose: Function,
   onSubmit: Function,
+};
+
+type Props = {
+  ...OwnProps,
+  attributes: Attributes,
+  change: Function,
   valid: boolean,
   name: string,
 }
@@ -65,7 +69,7 @@ class CreatePlotSearchForm extends Component<Props> {
               fieldAttributes={get(attributes, 'name')}
               name='name'
               overrideValues={{
-                label: PlotSearchFieldTitles.NAME
+                label: PlotSearchFieldTitles.NAME,
               }}
             />
           </Column>
@@ -91,7 +95,7 @@ class CreatePlotSearchForm extends Component<Props> {
 const formName = FormNames.PLOT_SEARCH_CREATE;
 const selector = formValueSelector(formName);
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state) => {
       return {
@@ -108,4 +112,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(CreatePlotSearchForm);
+)(CreatePlotSearchForm): React$ComponentType<OwnProps>);

@@ -1,0 +1,11 @@
+.DirectReservationLinkModal {
+  .option-label {
+    display: flex;
+    align-items: center;
+
+    input[type=checkbox] {
+      margin: 0;
+      margin-right: 5px;
+    }
+  }
+}

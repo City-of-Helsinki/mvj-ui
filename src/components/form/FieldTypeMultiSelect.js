@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
-import MultiSelect from '../multi-select/MultiSelect';
 import classNames from 'classnames';
+
+import MultiSelect from '$components/multi-select/MultiSelect';
 
 type Props = {
   disabled: Boolean,
@@ -20,7 +21,7 @@ const FieldTypeMultiSelect = ({
   isDirty,
   isLoading = false,
   options,
-}: Props) => {
+}: Props): React$Node => {
   const handleBlur = (selected: Array<string>) => onBlur(selected);
 
   return (
@@ -31,7 +32,7 @@ const FieldTypeMultiSelect = ({
         options={options}
         onBlur={handleBlur}
         onSelectedChanged={onChange}
-        selected={value}
+        selected={value instanceof Array ? value : []}
         disabled={disabled}
         isLoading={isLoading}
       />

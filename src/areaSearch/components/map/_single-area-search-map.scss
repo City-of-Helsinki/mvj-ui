@@ -1,0 +1,13 @@
+.SingleAreaSearchMap--minimap {
+  display: inline-flex;
+  float: right;
+  width: 300px;
+  height: 300px;
+  margin-bottom: rem-calc(12px);
+
+  > .leaflet-container {
+    flex: 1;
+    width: 300px;
+    height: 300px;
+  }
+}

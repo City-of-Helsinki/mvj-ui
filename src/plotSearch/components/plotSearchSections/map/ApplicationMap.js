@@ -12,13 +12,17 @@ import {
   hasPermissions,
 } from '$util/helpers';
 import {getAreaNoteList} from '$src/areaNote/selectors';
-import {getAttributes as getRentBasisAttributes, getRentBasis} from '$src/rentbasis/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
+type OwnProps = {
+
+};
+
 type Props = {
+  ...OwnProps,
   areaNotes: AreaNoteList,
   fetchAreaNoteList: Function,
   usersPermissions: UsersPermissionsType,
@@ -66,13 +70,11 @@ class ApplicationMap extends Component<Props> {
   }
 }
 
-export default flowRight(
+export default (flowRight(
   connect(
     (state) => {
       return {
         areaNotes: getAreaNoteList(state),
-        rentBasis: getRentBasis(state),
-        rentBasisAttributes: getRentBasisAttributes(state),
         usersPermissions: getUsersPermissions(state),
       };
     },
@@ -80,4 +82,4 @@ export default flowRight(
       fetchAreaNoteList,
     }
   )
-)(ApplicationMap);
+)(ApplicationMap): React$ComponentType<OwnProps>);

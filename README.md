@@ -3,7 +3,7 @@
 
 
 
-# MVJ UI 
+# MVJ UI
 City of Helsinki ground rental system UI
 
 Based on [React Boilerplate](https://github.com/nordsoftware/react-boilerplate).
@@ -54,20 +54,29 @@ Make sure you have [Yarn](https://yarnpkg.com/en/docs/install) installed globall
 ```bash
 yarn
 ```
+#### 3. Setup Flow typing definitions for dependencies
 
-#### 3. Add .env file
+```bash
+flow-typed install
+```
+If the tool cannot be found as is, you can invoke it from
+the node binary folder manually (i.e.
+`./node_modules/.bin/flow-typed`) instead of just
+`flow-typed`).
+
+#### 4. Add .env file
 
 ```bash
 cp .env.example .env
 ```
 
-#### 4. Start the development server
+#### 5. Start the development server
 
 ```bash
 yarn start
 ```
 
-#### 5. Compile the distribution build
+#### 6. Compile the distribution build
 
 ```bash
 yarn run compile

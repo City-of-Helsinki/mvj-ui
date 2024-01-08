@@ -153,7 +153,11 @@ const getFixedInitialYearRentsErrors = (rent: Object, fixedInitialYearRents: Arr
   fixedInitialYearRents.forEach((item, index) => {
     let endDateError = dateGreaterOrEqual(item.end_date, item.start_date);
 
-    if(!endDateError && rent.type === RentTypes.INDEX || rent.type === RentTypes.MANUAL) {
+    if(!endDateError && (
+      rent.type === RentTypes.INDEX ||
+      rent.type === RentTypes.INDEX2022 ||
+      rent.type === RentTypes.MANUAL
+    )) {
       switch(rent.cycle) {
         case RentCycles.JANUARY_TO_DECEMBER:
           endDateError = item.end_date

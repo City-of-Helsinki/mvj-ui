@@ -41,11 +41,15 @@ import type {UsersPermissionsState} from '$src/usersPermissions/types';
 import type {VatState} from '$src/vat/types';
 import type {LandUseInvoicesState} from '$src/landUseInvoices/types';
 import type {LandUseAgreementAttachmentState} from '$src/landUseAgreementAttachment/types';
+import type {AreaSearchState} from '$src/areaSearch/types';
+import type {ApplicationState} from '$src/application/types';
 
 export type RootState = {
   api: ApiState,
   apiToken: AuthState,
+  application: ApplicationState,
   areaNote: AreaNoteState,
+  areaSearch: AreaSearchState,
   auditLog: AuditLogState,
   batchrun: BatchRunState,
   billingPeriod: BillingPeriodState,

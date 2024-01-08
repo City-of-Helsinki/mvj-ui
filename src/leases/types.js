@@ -34,7 +34,7 @@ export type CreateChargePayload = {
 
 export type FetchSingleLeaseAfterEditPayload = {
   leaseId: LeaseId,
-  callbackFuntions?: Array<Object | Function>,
+  callbackFunctions?: Array<Object | Function>,
 }
 
 export type SendEmailPayload = {

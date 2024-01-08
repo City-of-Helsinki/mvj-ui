@@ -15,7 +15,7 @@ type Props = {
 class CreateLease extends Component<Props> {
   form: any
 
-  static defaultProps = {
+  static defaultProps: $Shape<Props> = {
     allowToChangeRelateTo: true,
   }
 
@@ -25,11 +25,11 @@ class CreateLease extends Component<Props> {
     }
   }
 
-  setRefForForm = (element: any) => {
+  setRefForForm: (any) => void = (element) => {
     this.form = element;
   }
 
-  render () {
+  render(): React$Node {
     const {
       allowToChangeRelateTo,
       isOpen,
@@ -46,6 +46,7 @@ class CreateLease extends Component<Props> {
         <CreateLeaseForm
           ref={this.setRefForForm}
           allowToChangeRelateTo={allowToChangeRelateTo}
+          allowToChangeReferenceNumberAndNote
           onClose={onClose}
           onSubmit={onSubmit}
         />

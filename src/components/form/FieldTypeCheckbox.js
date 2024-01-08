@@ -14,13 +14,12 @@ type Props = {
 const FieldTypeCheckbox = ({
   disabled = false,
   displayError = false,
-  input,
   input: {name, onBlur, value},
   isDirty = false,
   label,
   options,
 
-}: Props) => {
+}: Props): React$Node => {
   const hasMultipleValues = options && options.length > 1;
 
   const handleChange = (event: any, optionValue) => {
@@ -36,6 +35,7 @@ const FieldTypeCheckbox = ({
       return onBlur(newValue);
     }
 
+    // noinspection RedundantConditionalExpressionJS
     return onBlur(!!value && value !== 'false' ? false : true);
   };
 
@@ -70,6 +70,16 @@ const FieldTypeCheckbox = ({
         );
       }
       )}
+      {options?.length === 0 && <label className='option-label'>
+        <input
+          type='checkbox'
+          checked={!!value}
+          name={name}
+          onChange={(event) => handleChange(event, !value)}
+          value={value}
+        />
+        <span>Kyllä</span>
+      </label>}
     </fieldset>
   );
 };

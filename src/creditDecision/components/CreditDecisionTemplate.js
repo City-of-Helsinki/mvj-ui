@@ -6,13 +6,13 @@ import CreditDecisionHistory from '$src/creditDecision/components/CreditDecision
 import {ContactTypes} from '$src/contacts/enums';
 
 type Props = {
-  businessId?: String,
-  contactId?: String,
-  contactType: String,
-  nin?: String,
+  businessId?: string,
+  contactId?: string,
+  contactType: string,
+  nin?: string,
 }
 
-const CreditDecisionTemplate = ({ businessId, contactId, contactType, nin }: Props) => (
+const CreditDecisionTemplate = ({ businessId, contactId, contactType, nin }: Props): React$Node => (
   <Fragment>
     <CreditDecisionRequest contactType={contactType} contactId={contactId} businessId={businessId} nin={nin} />
 

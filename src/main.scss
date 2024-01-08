@@ -68,6 +68,22 @@
 @import "leases/components/leaseSections/tenant/tenant-edit";
 @import "rentbasis/components/rent-basis-page";
 @import "plotSearch/components/plotSearchSections/application/application";
+@import "plotSearch/components/plotSearchSections/basicInfo/basic-info";
+@import "plotSearch/components/reservationIdentifiers/reservation-identifiers-modal";
+@import "plotSearch/components/directReservationLinkModal/direct-reservation-link-modal";
+@import "plotApplications/components/plotApplication";
+@import "plotApplications/components/plotApplicationEdit";
+@import "plotApplications/components/infoCheck/plotApplicationInfoCheckCollapse";
+@import "plotApplications/components/exportModal/PlotSearchExportModal";
+@import "areaSearch/components/area-search-application";
+@import "areaSearch/components/area-search-application-create";
+@import "areaSearch/components/area-search-application-list-page";
+@import "areaSearch/components/area-search-export-modal";
+@import "areaSearch/components/area-search-status-note-history";
+@import "areaSearch/components/edit-area-search-preparer-modal";
+@import "areaSearch/components/map/area-search-map";
+@import "areaSearch/components/map/single-area-search-map";
+@import "application/components/applicant-info-check";
 
 @import "foundation/styles";
 
@@ -101,6 +117,8 @@ abbr[title] {
   color: $black;
 }
 
+// Safari-specific fix for hiding contact information autofill buttons
+//noinspection CssInvalidPseudoSelector
 input::-webkit-contacts-auto-fill-button {
   visibility: hidden;
   display: none !important;

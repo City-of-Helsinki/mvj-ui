@@ -2,15 +2,16 @@
 import React, {Component, Fragment} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
-import {getFormValues, reduxForm} from 'redux-form';
+import {formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
+import type {ContextRouter} from 'react-router';
 
 import {getFieldOptions, getUrlParams} from '$util/helpers';
-import {getAttributes} from '$src/plotSearch/selectors';
+import {getAttributes, getPlotSearchSubTypes} from '$src/plotSearch/selectors';
 import FormField from '$components/form/FormField';
 import SearchChangeTypeLink from '$components/search/SearchChangeTypeLink';
 import SearchClearLink from '$components/search/SearchClearLink';
@@ -26,16 +27,22 @@ import {
 
 import type {Attributes} from '$src/types';
 
-type Props = {
-  formValues: Object,
+type OwnProps = {|
   handleSubmit: Function,
   isSearchInitialized: boolean,
   onSearch: Function,
   states: Array<Object>,
+|}
+
+type Props = {
+  ...OwnProps,
+  ...ContextRouter,
+  formValues: Object,
   attributes: Attributes,
-  location: Object,
-  router: Object,
-}
+  plotSearchSubtypes: Object,
+  selectedMainType: ?(number | string),
+  change: Function,
+};
 
 type State = {
   isBasicSearch: boolean,
@@ -57,6 +64,8 @@ class Search extends Component<Props, State> {
   componentDidMount() {
     this._isMounted = true;
     this.setState({isBasicSearch: this.isSearchBasicMode()});
+
+    this.updateSubtypes();
   }
 
   isSearchBasicMode = () => {
@@ -74,7 +83,7 @@ class Search extends Component<Props, State> {
 
     const keys = Object.keys(searchQuery);
 
-    if(!keys.length || (keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search'))) {
+    if (keys.length === 0 || (keys.length === 1 && searchQuery.q !== undefined)) {
       return true;
     }
 
@@ -87,9 +96,34 @@ class Search extends Component<Props, State> {
   componentDidUpdate(prevProps: Object) {
     const {isSearchInitialized} = this.props;
 
-    if(isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
+    if (isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
       this.onSearchChange();
     }
+
+    if (this.props.plotSearchSubtypes !== prevProps.plotSearchSubtypes) {
+      this.updateSubtypes();
+    }
+  }
+
+  updateSubtypes = () => {
+    this.setState(() => ({
+      subtypeOptions: [
+        {
+          value: '',
+          label: '',
+          parent: null,
+        },
+        ...(this.props.plotSearchSubtypes?.map((subtype) => ({
+          value: subtype.id,
+          label: subtype.name,
+          parent: subtype.plot_search_type.id,
+        })) || []),
+      ],
+    }));
+  }
+
+  resetSelectedSubtype = () => {
+    this.props.change('subtype', '');
   }
 
   onSearchChange = debounce(() => {
@@ -117,17 +151,21 @@ class Search extends Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
-    if(props.attributes !== state.attributes) {
+    if (props.attributes !== state.attributes) {
       newState.typeOptions = getFieldOptions(props.attributes, PlotSearchFieldPaths.TYPE);
-      newState.subtypeOptions = getFieldOptions(props.attributes, PlotSearchFieldPaths.SUBTYPE);
     }
 
     return !isEmpty(newState) ? newState : null;
   }
 
   render () {
-    const {handleSubmit} = this.props;
+    const {handleSubmit, selectedMainType} = this.props;
     const {isBasicSearch, typeOptions, subtypeOptions} = this.state;
+
+    const filteredSubtypeOptions = subtypeOptions?.filter(
+      (type) => type.parent === Number(selectedMainType) || type.parent === null
+    ) || [];
+
     return (
       <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
@@ -140,7 +178,7 @@ class Search extends Component<Props, State> {
                 read_only: false,
               }}
               invisibleLabel
-              name='search'
+              name='q'
             />
           </Column>
         </Row>
@@ -155,7 +193,6 @@ class Search extends Component<Props, State> {
                   </SearchLabelColumn>
                   <SearchInputColumn>
                     <FormField
-                      autoBlur
                       disableDirty
                       fieldAttributes={{
                         type: FieldTypes.CHOICE,
@@ -164,6 +201,7 @@ class Search extends Component<Props, State> {
                       invisibleLabel
                       name='type'
                       overrideValues={{options: typeOptions}}
+                      onChange={this.resetSelectedSubtype}
                     />
                   </SearchInputColumn>
                 </SearchRow>
@@ -176,7 +214,6 @@ class Search extends Component<Props, State> {
                   </SearchLabelColumn>
                   <SearchInputColumn>
                     <FormField
-                      autoBlur
                       disableDirty
                       fieldAttributes={{
                         type: FieldTypes.CHOICE,
@@ -184,7 +221,10 @@ class Search extends Component<Props, State> {
                       }}
                       invisibleLabel
                       name='subtype'
-                      overrideValues={{options: subtypeOptions}}
+                      overrideValues={{
+                        options: filteredSubtypeOptions,
+                        disabled: filteredSubtypeOptions.length <= 1 || !selectedMainType,
+                      }}
                     />
                   </SearchInputColumn>
                 </SearchRow>
@@ -205,7 +245,7 @@ class Search extends Component<Props, State> {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name='plot_search_start_date_start'
+                          name='begin_at_after'
                         />
                       </Column>
                       <Column small={6}>
@@ -217,7 +257,7 @@ class Search extends Component<Props, State> {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name='plot_search_start_date_end'
+                          name='begin_at_before'
                         />
                       </Column>
                     </Row>
@@ -240,7 +280,7 @@ class Search extends Component<Props, State> {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name='plot_search_end_date_start'
+                          name='end_at_after'
                         />
                       </Column>
                       <Column small={6}>
@@ -252,7 +292,7 @@ class Search extends Component<Props, State> {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name='plot_search_end_date_end'
+                          name='end_at_before'
                         />
                       </Column>
                     </Row>
@@ -277,17 +317,19 @@ class Search extends Component<Props, State> {
 
 const formName = FormNames.PLOT_SEARCH_SEARCH;
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   connect(
     state => {
       return {
         formValues: getFormValues(formName)(state),
         attributes: getAttributes(state),
+        plotSearchSubtypes: getPlotSearchSubTypes(state),
+        selectedMainType: formValueSelector(formName)(state, 'type'),
       };
     },
   ),
   reduxForm({
     form: formName,
   }),
-)(Search);
+)(Search): React$ComponentType<OwnProps>);

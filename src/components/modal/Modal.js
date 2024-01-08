@@ -20,7 +20,7 @@ type State = {
 class Modal extends Component<Props, State> {
   component: any
 
-  state = {
+  state: State = {
     isClosing: false,
     isOpening: false,
   }
@@ -45,18 +45,18 @@ class Modal extends Component<Props, State> {
     }
   }
 
-  setComponentRef = (element: any) => {
+  setComponentRef: (any) => void = (element) => {
     this.component = element;
   }
 
-  transitionEnds = () => {
+  transitionEnds: () => void = () => {
     this.setState({
       isClosing: false,
       isOpening: false,
     });
   }
 
-  render() {
+  render(): React$Node {
     const {
       children,
       className,

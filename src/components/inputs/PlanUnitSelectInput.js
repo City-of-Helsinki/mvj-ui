@@ -4,7 +4,7 @@ import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
 import {getContentPlanUnitIdentifier} from '$src/plotSearch/helpers';
-import {fetchPlanUnitListWithIdentifiersList} from '$src/plotSearch/requestsAsync';
+import {fetchPlanUnitListWithIdentifiersList, fetchCustomDetailedPlanListWithIdentifiersList} from '$src/plotSearch/requestsAsync';
 
 type Props = {
   disabled?: boolean,
@@ -22,23 +22,31 @@ const PlanUnitSelectInput = ({
   onBlur,
   placeholder,
   value,
-}: Props) => {
-  const getPlanUnitOptions = (planUnitList: Array<Object>): Array<Object> =>
-    planUnitList
-      .map((plan_unit) => {
+}: Props): React$Node => {
+  const getPlanUnitOptions = (planUnitList: Array<Object>, customDetailedPlanList: Array<Object>): Array<Object> => {
+    return [...planUnitList, ...customDetailedPlanList]
+      .map((planUnit) => {
         return {
-          value: plan_unit.id,
-          label: getContentPlanUnitIdentifier(plan_unit),
+          value: planUnit.id,
+          label: getContentPlanUnitIdentifier(planUnit),
+          identifierType: planUnit.identifier_type,
         };
       });
+  };
+    
 
   const getPlanUnitList = debounce(async(inputValue: string, callback: Function) => {
     const planUnitList = await fetchPlanUnitListWithIdentifiersList({
-      search: inputValue,
       limit: 10,
+      search: inputValue,
     });
 
-    callback(getPlanUnitOptions(planUnitList));
+    const customDetailedPlanList = await fetchCustomDetailedPlanListWithIdentifiersList({
+      limit: 10,
+      search: inputValue,
+    });
+
+    callback(getPlanUnitOptions(planUnitList, customDetailedPlanList));
   }, 500);
   
   const input = {
@@ -52,7 +60,7 @@ const PlanUnitSelectInput = ({
     <AsyncSelect
       disabled={disabled}
       displayError={false}
-      getOptions={getPlanUnitList}
+      getOptions={(inputValue, callBack) => getPlanUnitList(inputValue, callBack)}
       input={input}
       isDirty={false}
       placeholder={placeholder}

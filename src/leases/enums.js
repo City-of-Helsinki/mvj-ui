@@ -17,6 +17,7 @@ export const AreaLocation = {
  * @type {{}}
  */
 export const CalculatorTypes = {
+  LEASE2022: 'lease2022',
   LEASE: 'lease',
   TEMPORARY: 'temporary',
   ADDITIONAL_YARD: 'additional_yard',
@@ -205,6 +206,7 @@ export const RentDueDateTypes = {
  */
 export const RentTypes = {
   INDEX: 'index',
+  INDEX2022: 'index2022',
   ONE_TIME: 'one_time',
   FIXED: 'fixed',
   FREE: 'free',
@@ -265,7 +267,7 @@ export const DueDatesPositions = {
  *
  * @type {{}}
  */
-export const FixedDueDates = {
+export const FixedDueDates: Object = {
   [DueDatesPositions.START_OF_MONTH]: {
     '1': [getDayMonth(2, 1)],
     '2': [getDayMonth(2, 1), getDayMonth(1, 7)],
@@ -422,6 +424,28 @@ export const LeaseFieldTitles = {
 };
 
 /**
+ * Lease field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseHistoryItemTypes = {
+  PLOTSEARCH: 'Haku',
+  PLOT_APPLICATION: 'Hakemus',
+  AREA_SEARCH: 'Aluehakemus',
+};
+
+/**
+ * Lease field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseHistoryContentTypes = {
+  PLOTSEARCH: 'plotsearch',
+  TARGET_STATUS: 'targetstatus',
+  AREA_SEARCH: 'areasearch',
+};
+
+/**
  * Lease areas field paths enumerable.
  *
  * @type {{}}
@@ -550,6 +574,93 @@ export const LeaseAreaAddressesFieldTitles = {
 };
 
 /**
+ * Lease area custom detailed plan field paths enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanFieldPaths = {
+  CUSTOM_DETAILED_PLAN: 'lease_areas.child.children.custom_detailed_plan',
+  IDENTIFIER: 'lease_areas.child.children.custom_detailed_plan.children.identifier',
+  INTENDED_USE: 'lease_areas.child.children.custom_detailed_plan.children.intended_use',
+  ADDRESS: 'lease_areas.child.children.custom_detailed_plan.children.address',
+  AREA: 'lease_areas.child.children.custom_detailed_plan.children.area',
+  STATE: 'lease_areas.child.children.custom_detailed_plan.children.state',
+  TYPE: 'lease_areas.child.children.custom_detailed_plan.children.type',
+  DETAILED_PLAN: 'lease_areas.child.children.custom_detailed_plan.children.detailed_plan',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE: 'lease_areas.child.children.custom_detailed_plan.children.detailed_plan_latest_processing_date',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE: 'lease_areas.child.children.custom_detailed_plan.children.detailed_plan_latest_processing_date_note',
+  RENT_BUILD_PERMISSION: 'lease_areas.child.children.custom_detailed_plan.children.rent_build_permission',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'lease_areas.child.children.custom_detailed_plan.children.preconstruction_estimated_construction_readiness_moment',
+  USAGE_DISTRIBUTIONS: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions',
+  INFO_LINKS: 'lease_areas.child.children.custom_detailed_plan.children.info_links',
+};
+
+/**
+ * Lease area usage distribution field paths enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaUsageDistributionFieldPaths = {
+  DISTRIBUTION: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.distribution',
+  BUILD_PERMISSION: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.build_permission',
+  NOTE: 'lease_areas.child.children.custom_detailed_plan.children.usage_distributions.child.children.note',
+};
+
+/**
+ * Lease area usage distribution field titles enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaUsageDistributionFieldTitles = {
+  DISTRIBUTION: 'Käyttöjakauma',
+  BUILD_PERMISSION: 'Rakennusoikeus',
+  NOTE: 'Huomautus',
+};
+
+/**
+ * Lease area custom detailed plan usage distribution field paths enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanInfoLinksFieldPaths = {
+  URL: 'lease_areas.child.children.custom_detailed_plan.children.info_links.child.children.url',
+  DESCRIPTION: 'lease_areas.child.children.custom_detailed_plan.children.info_links.child.children.description',
+  LANGUAGE: 'lease_areas.child.children.custom_detailed_plan.children.info_links.child.children.language',
+};
+
+/**
+ * Lease area custom detailed plan usage distribution field titles enumerable
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanInfoLinksFieldTitles = {
+  URL: 'Lisätietolinkki',
+  DESCRIPTION: 'Lisätietolinkin kuvaus',
+  LANGUAGE: 'Kieli',
+};
+
+/**
+ * Lease area custom detailed plan field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreaCustomDetailedPlanFieldTitles = {
+  IDENTIFIER: 'Kohteen tunnus',
+  INTENDED_USE: 'Kaavayksikön käyttötarkoitus',
+  ADDRESS: 'Osoite',
+  AREA: 'Kokonaisalue',
+  STATE: 'Kaavayksikön olotila',
+  TYPE: 'Kaavayksikön laji',
+  DETAILED_PLAN: 'Asemakaava',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE: 'Asemakaavan viim. käsittelypvm',
+  DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE: 'Asemak. käsittelypvm huomautus',
+  RENT_BUILD_PERMISSION: 'Kokonaisrakennusoikeus',
+  PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT: 'Arvioitu rakentamisen valmius',
+  INFO_LINKS: 'Lisätietolinkit',
+  USAGE_DISTRIBUTIONS: 'Käyttöjakaumat',
+};
+
+/**
  * Lease area plan units field paths enumerable.
  *
  * @type {{}}
@@ -594,6 +705,7 @@ export const LeasePlanUnitsFieldTitles = {
   PLOT_DIVISION_STATE: 'Tonttijaon olotila',
   SECTION_AREA: 'Leikkausala',
   IS_MASTER: 'Onko alkuperäinen?',
+  USAGE_DISTRIBUTIONS: 'Käyttöjakaumat',
 };
 
 /**
@@ -612,6 +724,7 @@ export const LeasePlotsFieldPaths = {
   REPEAL_DATE: 'lease_areas.child.children.plots.child.children.repeal_date',
   SECTION_AREA: 'lease_areas.child.children.plots.child.children.section_area',
   TYPE: 'lease_areas.child.children.plots.child.children.type',
+  CUSTOM_DETAILED_PLAN: 'lease_areas.child.children.custom_detailed_plan',
 };
 
 /**
@@ -866,6 +979,7 @@ export const LeaseRentContractRentsFieldPaths = {
   BASE_AMOUNT_PERIOD: 'rents.child.children.contract_rents.child.children.base_amount_period',
   BASE_YEAR_RENT: 'rents.child.children.contract_rents.child.children.base_year_rent',
   END_DATE: 'rents.child.children.contract_rents.child.children.end_date',
+  INDEX: 'rents.child.children.contract_rents.child.children.index',
   INTENDED_USE: 'rents.child.children.contract_rents.child.children.intended_use',
   START_DATE: 'rents.child.children.contract_rents.child.children.start_date',
 };
@@ -879,11 +993,13 @@ export const LeaseRentContractRentsFieldTitles = {
   CONTRACT_RENTS: 'Sopimusvuokra',
   AMOUNT: 'Perusvuosivuokra',
   AMOUNT_FIXED_RENT: 'Sopimusvuokra',
+  AMOUNT_INITIAL_YEAR_RENT: 'Alkuvuosivuokra',
   PERIOD: 'Yksikkö',
   BASE_AMOUNT: 'Vuokranlaskennan perusteena oleva vuokra',
   BASE_AMOUNT_PERIOD: 'Yksikkö',
   BASE_YEAR_RENT: 'Uusi perusvuosivuokra',
   END_DATE: 'Loppupvm',
+  INDEX: 'Indeksi',
   INTENDED_USE: 'Käyttötarkoitus',
   START_DATE: 'Alkupvm',
 };
@@ -1127,11 +1243,13 @@ export const LeaseBasisOfRentsFieldTitles = {
   INITIAL_YEAR_RENT: 'Alkuvuosivuokra (ind)',
   INITIAL_YEAR_RENT_TOTAL: 'Alkuvuosivuokra (ind) yhteensä',
   INTENDED_USE: 'Käyttötarkoitus',
-  LOCKED_AT: 'Laskelma lukittu',
+  LOCKED_AT: 'Laskuri lukittu',
   PLANS_INSPECTED_AT: 'Piirustukset tarkastettu',
   PRICE: 'Hinta',
   PROFIT_MARGIN_PERCENTAGE: 'Tuottoprosentti',
   RENT: 'Vuokra',
+  RENT_PER_YEAR: 'Vuokra/vuosi',
+  RENT_PER_MONTH: 'Vuokra/kk',
   SUBVENTION_BASE_PERCENT: 'Markkinavuokran subventio',
   SUBVENTION_GRADUATED_PERCENT: 'Siirtymäajan subventio',
   SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT: 'Subventio euroa/vuosi',
@@ -1463,7 +1581,8 @@ export const LeaseInvoiceNotesFieldTitles = {
  * @type {{}}
  */
 export const calculatorTypeOptions = [
-  {value: 'lease', label: 'Vuokra'},
+  {value: 'lease2022', label: 'Vuokra'},
+  {value: 'lease', label: 'Vuokra (Vanha)'},
   {value: 'temporary', label: 'Tilapäiset'},
   {value: 'additional_yard', label: 'Lisäpihat'},
   {value: 'field', label: 'Pelto'},

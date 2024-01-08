@@ -43,14 +43,14 @@ const EstateIdSelectInput = ({
 
     callback(getEstateIdOptions(EstateIdList));
   }, 500);
-  
+
   const input = {
     name,
     onBlur,
     onChange,
     value,
   };
-  
+
   return(
     <AsyncSelect
       disabled={disabled}
@@ -59,7 +59,7 @@ const EstateIdSelectInput = ({
       input={input}
       isDirty={false}
       placeholder={placeholder}
-      initialValues={initialValues}
+      initialValues={initialValues?.estate_id}
     />
   );
 };

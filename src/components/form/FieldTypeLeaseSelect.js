@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-// $FlowFixMe
 import debounce from 'lodash/debounce';
 
 import AsyncSelect from '$components/form/AsyncSelect';
@@ -24,7 +23,7 @@ const FieldTypeLeaseSelect = ({
   isDirty,
   onChange,
   placeholder,
-}: Props) => {
+}: Props): React$Node => {
   const getLeases = debounce(async(inputValue: string, callback: Function) => {
     const leases = await fetchLeases({
       succinct: true,

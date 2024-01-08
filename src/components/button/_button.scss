@@ -61,6 +61,22 @@
     }
   }
 
+  &.link {
+    background-color: transparent;
+    color: $blue;
+    border: none;
+    box-shadow: none;
+    text-transform: none;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+
+    &:hover {
+      text-decoration: underline;
+      color: $blue-hover;
+    }
+  }
+
   &.button-xs {
     height: rem-calc(26px);
   }

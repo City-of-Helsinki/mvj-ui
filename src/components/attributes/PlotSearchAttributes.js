@@ -14,6 +14,11 @@ import {
   getPlotSearchSubTypes,
   getIsFetching,
 } from '$src/plotSearch/selectors';
+import {
+  getFormAttributes,
+  getIsFetchingFormAttributes,
+} from '$src/application/selectors';
+import {fetchFormAttributes} from '$src/application/actions';
 
 import type {Attributes, Methods} from '$src/types';
 
@@ -21,8 +26,11 @@ function PlotSearchAttributes(WrappedComponent: any) {
   type Props = {
     fetchPlotSearchAttributes: Function,
     fetchPlotSearchSubtypes: Function,
+    fetchFormAttributes: Function,
     isFetchingPlotSearchAttributes: boolean,
     isFetching: boolean,
+    formAttributes: Attributes,
+    isFetchingFormAttributes: boolean,
     plotSearchAttributes: Attributes,
     plotSearchMethods: Methods,
     plotSearchSubTypes: Object,
@@ -39,10 +47,10 @@ function PlotSearchAttributes(WrappedComponent: any) {
         isFetching,
       } = this.props;
 
-      if(!isFetchingPlotSearchAttributes && !plotSearchAttributes) {
+      if (!isFetchingPlotSearchAttributes && !plotSearchAttributes) {
         fetchPlotSearchAttributes();
       }
-      if(!isFetching && !plotSearchSubTypes) {
+      if (!isFetching && !plotSearchSubTypes) {
         fetchPlotSearchSubtypes();
       }
     }
@@ -53,23 +61,26 @@ function PlotSearchAttributes(WrappedComponent: any) {
   };
 }
 
-const withPlotSearchAttributes = flowRight(
+const withPlotSearchAttributes = (flowRight(
   connect(
     (state) => {
-      return{
+      return {
         plotSearchAttributes: getPlotSearchAttributes(state),
         isFetchingPlotSearchAttributes: getIsFetchingPlotSearchAttributes(state),
         plotSearchMethods: getPlotSearchMethods(state),
         plotSearchSubTypes: getPlotSearchSubTypes(state),
         isFetching: getIsFetching(state),
+        isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+        formAttributes: getFormAttributes(state),
       };
     },
     {
       fetchPlotSearchAttributes,
       fetchPlotSearchSubtypes,
+      fetchFormAttributes,
     },
   ),
   PlotSearchAttributes,
-);
+): (React$ComponentType<any>) => React$ComponentType<any>);
 
 export {withPlotSearchAttributes};

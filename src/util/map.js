@@ -7,7 +7,6 @@ import isArray from 'lodash/isArray';
 /* istanbul ignore next */
 export const localizeMap = () => {
   const L = require('leaflet');
- 
   L.drawLocal.draw.handlers.circle.tooltip.start = 'Klikkaa ja raahaa piirtääksesi ympyrän';
   L.drawLocal.draw.handlers.circle.radius = 'Säde';
   L.drawLocal.draw.handlers.polygon.tooltip.start = 'Aloita alueen piirtäminen klikkaamalla.';
@@ -54,8 +53,8 @@ export const localizeMap = () => {
   * @param  geometry
   * @returns {Object[]}
   */
-export const getCoordinatesOfGeometry = (geometry: any) => {
-  if(!geometry) {
+export const getCoordinatesOfGeometry = (geometry: any): Array<[number, number]> => {
+  if (!geometry) {
     return [];
   }
 
@@ -81,7 +80,7 @@ export const getCoordinatesOfGeometry = (geometry: any) => {
  * @returns {Object}
  */
 /* istanbul ignore next */
-export const formatCoordsToLatLng = (geojson: ?Object) => {
+export const formatCoordsToLatLng = (geojson: ?Object): ?Object | null => {
   const L = require('leaflet');
 
   let crs;
@@ -108,8 +107,8 @@ export const formatCoordsToLatLng = (geojson: ?Object) => {
  * @returns {Object}
  */
 /* istanbul ignore next */
-export const getBoundsFromBBox = (bbox: Array<Object>) => {
-  const L = require('leaflet'); 
+export const getBoundsFromBBox = (bbox: Array<Object>): Object => {
+  const L = require('leaflet');
 
   if(!bbox || !isArray(bbox) || bbox.length < 4) return null;
 
@@ -126,7 +125,7 @@ export const getBoundsFromBBox = (bbox: Array<Object>) => {
  * @returns Object
  */
 /* istanbul ignore next */
-export const getBoundsFromCoordinates = (coordinates: Array<any>) => {
+export const getBoundsFromCoordinates = (coordinates: Array<any>): Object => {
   const L = require('leaflet');
 
   const lats = [],
@@ -152,12 +151,12 @@ export const getBoundsFromCoordinates = (coordinates: Array<any>) => {
  * @param {Object[]} leasesGeoJson
  * @returns Object
  */
-export const getBoundsFromFeatures = (leasesGeoJson: Object) => {
+export const getBoundsFromFeatures = (leasesGeoJson: Object): Object => {
   const L = require('leaflet');
 
   const lats = [],
     lons = [];
-  
+
   if(leasesGeoJson && leasesGeoJson.features)
     leasesGeoJson.features.forEach(feature => {
       if(feature.geometry && feature.geometry.coordinates)
@@ -166,7 +165,7 @@ export const getBoundsFromFeatures = (leasesGeoJson: Object) => {
           lons.push(coordinate[1]);
         })));
     });
-  
+
   if(lats.length < 1 || lons.length < 1) return null;
 
   const minLat = Math.min(...lats),
@@ -184,7 +183,7 @@ export const getBoundsFromFeatures = (leasesGeoJson: Object) => {
  * @param {Object[]} coordinates
  * @returns Object
  */
-export const getCenterFromCoordinates = (coordinates: Array<any>) => {
+export const getCenterFromCoordinates = (coordinates: Array<any>): [number, number] => {
   const lats = [],
     lons = [];
 
@@ -201,4 +200,34 @@ export const getCenterFromCoordinates = (coordinates: Array<any>) => {
     lng = maxLon - ((maxLon - minLon) / 2);
 
   return [lng, lat];
+};
+
+export const getAreaFromGeoJSON = (geometry: Object): number => {
+  const L = require('leaflet');
+  let area = 0;
+
+  switch (geometry.type) {
+    case 'GeometryCollection':
+      geometry.geometries.forEach((geometry) => {
+        area += getAreaFromGeoJSON(geometry);
+      });
+      break;
+    case 'MultiPolygon':
+      L.GeoJSON.coordsToLatLngs(geometry.coordinates, 2).forEach((latLngs) => {
+        latLngs.forEach((latLng) => {
+          const polygonArea = L.GeometryUtil.geodesicArea(latLng);
+          area += polygonArea;
+        });
+      });
+      break;
+    case 'Polygon':
+      L.GeoJSON.coordsToLatLngs(geometry.coordinates, 1).forEach((latLng) => {
+        area = L.GeometryUtil.geodesicArea(latLng);
+      });
+      break;
+    default:
+      break;
+  }
+
+  return area;
 };

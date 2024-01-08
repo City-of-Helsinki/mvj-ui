@@ -35,6 +35,7 @@ import {
   LeaseAreasFieldTitles,
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
+  LeaseAreaCustomDetailedPlanFieldPaths,
 } from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
@@ -57,6 +58,7 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import CustomDetailedPlanEdit from './CustomDetailedPlanEdit';
 
 type PlanUnitsProps = {
   attributes: Attributes,
@@ -464,12 +466,18 @@ const AddressItems = ({attributes, change, fields, isSaveClicked, usersPermissio
   );
 };
 
+type OwnProps = {
+  field: string,
+  index: number,
+  savedArea: Object,
+}
+
 type Props = {
+  ...OwnProps,
   areaId: number,
   attributes: Attributes,
   change: Function,
   errors: ?Object,
-  field: string,
   geometry: ?Object,
   isSaveClicked: boolean,
   location: Object,
@@ -477,9 +485,10 @@ type Props = {
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
   plotsCurrentCollapseState: boolean,
+  customDetailedPlanCollapseState: boolean,
   receiveCollapseStates: Function,
-  savedArea: Object,
   usersPermissions: UsersPermissionsType,
+  custom_detailed_plan: Object,
 }
 
 class LeaseAreaEdit extends PureComponent<Props> {
@@ -505,6 +514,10 @@ class LeaseAreaEdit extends PureComponent<Props> {
 
   handlePlanUnitCurrentCollapseToggle = (val: boolean) => {
     this.handleCollapseToggle('plan_units_current', val);
+  };
+
+  handleCustomDetailedPlanCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle('custom_detailed_plan', val);
   };
 
   handlePlotsContractCollapseToggle = (val: boolean) => {
@@ -540,11 +553,14 @@ class LeaseAreaEdit extends PureComponent<Props> {
       isSaveClicked,
       planUnitsContractCollapseState,
       planUnitsCurrentCollapseState,
+      customDetailedPlanCollapseState,
       plotsContractCollapseState,
       plotsCurrentCollapseState,
       savedArea,
       usersPermissions,
+      custom_detailed_plan,
     } = this.props;
+
     const mapLinkUrl = this.getMapLinkUrl();
 
     return (
@@ -694,9 +710,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                 usersPermissions={usersPermissions}
               />
             </Column>
-            <Column small={0} large={6}>
-              {/* Silence is golden */}
-            </Column>
+            <Column small={0} large={6} /> {/* Force next column to right */}
             <Column small={12} large={6}>
               <FieldArray
                 attributes={attributes}
@@ -714,6 +728,42 @@ class LeaseAreaEdit extends PureComponent<Props> {
             </Column>
           </Row>
         </Authorization>
+        <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.CUSTOM_DETAILED_PLAN) }>
+          <Row>
+            <Column small={12} large={6} /> {/* Force next column to right */}
+            <Column small={12} large={6}>
+              <Collapse
+                className='collapse__secondary'
+                defaultOpen={customDetailedPlanCollapseState !== undefined ? customDetailedPlanCollapseState : true}
+                hasErrors={isSaveClicked && !isEmpty(customDetailedPlanCollapseState)}
+                headerTitle={'Oma muu alue'}
+                onToggle={(val) => this.handleCustomDetailedPlanCollapseToggle(val)}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.CUSTOM_DETAILED_PLAN)}
+              >
+                {custom_detailed_plan &&
+                  <BoxItemContainer>
+                    <CustomDetailedPlanEdit
+                      field={`${field}.custom_detailed_plan`}
+                      onRemove={() => change(formName, `${field}.custom_detailed_plan`, null)}
+                    />
+                  </BoxItemContainer>
+                }
+                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CUSTOMDETAILEDPLAN) && !custom_detailed_plan}>
+                  <Row>
+                    <Column>
+                      <AddButtonSecondary
+                        className={'no-top-margin'}
+                        label={'Lisää oma muu alue'}
+                        onClick={() => change(formName, `${field}.custom_detailed_plan`, {})}
+                      />
+                    </Column>
+                  </Row>
+                </Authorization>
+              </Collapse>
+            </Column>
+          </Row>
+        </Authorization>
       </Fragment>
     );
   }
@@ -722,7 +772,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   connect(
     (state, props) => {
@@ -733,11 +783,13 @@ export default flowRight(
         attributes: getAttributes(state),
         errors: getErrorsByFormName(state, formName),
         geometry: selector(state, `${props.field}.geometry`),
+        custom_detailed_plan: selector(state, `${props.field}.custom_detailed_plan`),
         isSaveClicked: getIsSaveClicked(state),
         planUnitsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.plan_units_contract`),
         planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.plan_units_current`),
         plotsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.plots_contract`),
         plotsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.plots_current`),
+        customDetailedPlanCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.custom_detailed_plan`),
         usersPermissions: getUsersPermissions(state),
       };
     },
@@ -746,4 +798,4 @@ export default flowRight(
       receiveCollapseStates,
     }
   ),
-)(LeaseAreaEdit);
+)(LeaseAreaEdit): React$ComponentType<OwnProps>);

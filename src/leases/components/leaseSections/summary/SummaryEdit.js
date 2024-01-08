@@ -16,7 +16,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
-import RelatedLeasesEdit from './RelatedLeasesEdit';
+import LeaseHistoryEdit from './LeaseHistoryEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import Title from '$components/content/Title';
 import WarningContainer from '$components/content/WarningContainer';
@@ -604,7 +604,7 @@ class SummaryEdit extends PureComponent<Props, State> {
           </Column>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RELATED_LEASES)}>
             <Column small={12} medium={4} large={3}>
-              <RelatedLeasesEdit />
+              <LeaseHistoryEdit />
             </Column>
           </Authorization>
         </Row>

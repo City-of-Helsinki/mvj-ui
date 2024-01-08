@@ -38,6 +38,27 @@
     align-self: flex-start;
   }
 
+  &__fractional {
+    display: inline-flex;
+    input {
+      font-family: $font-family-source;
+      padding: 0 rem-calc(5px);
+      height: rem-calc(20px);
+      font-size: rem-calc(14px);
+      line-height: normal;
+      color: $black;
+      width: 45%;
+      margin-bottom: 0;
+      border: 1px solid $medium-gray;
+      box-shadow: none;
+    }
+    &-divider {
+      display: flex;
+      flex-grow: 1;
+      justify-content: center;
+    }
+  }
+
   &__label {
     overflow: visible;
     max-width: 100%;
@@ -393,6 +414,20 @@
         .select-input__menu {
           border-color: $red;
         }
+      }
+    }
+
+    .select-input__multi-value {
+      border-radius: 0;
+
+      &__label {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      &__remove {
+        height: auto !important;
+        margin-left: 3px !important;
       }
     }
   }

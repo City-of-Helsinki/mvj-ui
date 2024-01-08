@@ -1,6 +1,6 @@
 // @flow
 import React, {PureComponent} from 'react';
-// $FlowFixMe
+// $FlowFixMe[cannot-resolve-module]
 import Select from 'react-select';
 import classNames from 'classnames';
 
@@ -14,6 +14,7 @@ type Props = {
   filterOption?: Function,
   input: Object,
   isDirty: boolean,
+  isLoading?: boolean,
   options: ?Array<any>,
   placeholder: String,
   setRefForField: Function,
@@ -25,23 +26,23 @@ type State = {
 class FieldTypeSelect extends PureComponent<Props, State> {
   select: any
 
-  state = {
+  state: State = {
     inputValue: '',
   }
 
-  handleBlur = () => {
+  handleBlur: () => void = () => {
     const {input: {onBlur, value}} = this.props;
 
     onBlur(value);
   };
 
-  handleChange = (val: any) => {
+  handleChange: () => void = (val: any) => {
     const {autoBlur, input: {onBlur, onChange}} = this.props;
 
-    if(val) {
+    if (val) {
       const {value} = val;
 
-      if(autoBlur) {
+      if (autoBlur) {
         onBlur(value);
       } else {
         onChange(value);
@@ -49,7 +50,7 @@ class FieldTypeSelect extends PureComponent<Props, State> {
     }
   };
 
-  handleInputChange = (value: string, meta: Object) => {
+  handleInputChange: (string, Object) => void = (value, meta) => {
     const {action} = meta;
 
     switch (action) {
@@ -59,15 +60,15 @@ class FieldTypeSelect extends PureComponent<Props, State> {
     }
   }
 
-  handleMenuOpen = () => {
+  handleMenuOpen: () => void = () => {
     const {inputValue} = this.state;
 
-    if(this.select.state.inputValue !== inputValue) {
+    if (this.select.state.inputValue !== inputValue) {
       this.select.select.onInputChange(inputValue, {action: 'input-change'});
     }
   }
 
-  setRef = (element: any) => {
+  setRef: (any) => void = (element) => {
     const {setRefForField} = this.props;
 
     this.select = element;
@@ -77,13 +78,14 @@ class FieldTypeSelect extends PureComponent<Props, State> {
     }
   };
 
-  render() {
+  render(): React$Node {
     const {
       disabled,
       displayError,
       filterOption,
       input: {name, value},
       isDirty,
+      isLoading,
       options,
       placeholder,
     } = this.props;
@@ -106,7 +108,8 @@ class FieldTypeSelect extends PureComponent<Props, State> {
           isDisabled={disabled}
           filterOption={filterOption}
           id={name}
-          onBlue={this.handleBlur}
+          isLoading={isLoading}
+          onBlur={this.handleBlur}
           onChange={this.handleChange}
           noOptionsMessage={() => 'Ei tuloksia'}
           onInputChange={this.handleInputChange}

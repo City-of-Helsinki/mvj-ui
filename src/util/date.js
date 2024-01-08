@@ -13,7 +13,7 @@ import getMinutes from 'date-fns/getMinutes';
  * @param {number} date
  * @returns {boolean}
  */
-export const isValidDate = (date: any): boolean => 
+export const isValidDate = (date: any): boolean =>
   isValid(date) && isAfter(date, new Date('1000-01-01'));
 
 /**
@@ -22,13 +22,16 @@ export const isValidDate = (date: any): boolean =>
  * @param {number} month
  * @returns {Object}
  */
-export const getDayMonth = (day: number, month: number) => ({day, month});
+export const getDayMonth = (day: number, month: number): {
+  day: number,
+  month: number
+} => ({day, month});
 
 /**
  * Get current year as string
  * @returns {string}
  */
-export const getCurrentYear = () => new Date().getFullYear().toString();
+export const getCurrentYear = (): string => new Date().getFullYear().toString();
 
 /**
  * Sort to ascending order by start and end date
@@ -38,7 +41,12 @@ export const getCurrentYear = () => new Date().getFullYear().toString();
  * @param {string} endDatePath
  * @returns {number}
  */
-export const sortByStartAndEndDateAsc = (a: Object, b: Object, startDatePath?: string = 'start_date', endDatePath?: string = 'end_date') => {
+export const sortByStartAndEndDateAsc = (
+  a: Object,
+  b: Object,
+  startDatePath?: string = 'start_date',
+  endDatePath?: string = 'end_date'
+): Object => {
   const startA = get(a, startDatePath) || '0000-01-01',
     endA = get(a, endDatePath) || '9999-12-31',
     startB = get(b, startDatePath) || '0000-01-01',
@@ -59,7 +67,12 @@ export const sortByStartAndEndDateAsc = (a: Object, b: Object, startDatePath?: s
  * @param {string} endDatePath
  * @returns {number}
  */
-export const sortByStartAndEndDateDesc = (a: Object, b: Object, startDatePath?: string = 'start_date', endDatePath?: string = 'end_date') => {
+export const sortByStartAndEndDateDesc = (
+  a: Object,
+  b: Object,
+  startDatePath?: string = 'start_date',
+  endDatePath?: string = 'end_date'
+): Object => {
   const startA = get(a, startDatePath) || '0000-01-01',
     endA = get(a, endDatePath) || '9999-12-31',
     startB = get(b, startDatePath) || '0000-01-01',
@@ -138,7 +151,7 @@ export  const splitDateRanges = (a: Object, b: Object): Array<Object> => {
         start_date: item0.start_date,
         end_date: format(subDays(new Date(item1.start_date), 1), 'yyyy-MM-dd'),
       });
-      
+
       if(end0 < end1) {
         dateRanges.push({
           start_date: item1.start_date,
@@ -189,7 +202,7 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
         return; // No test covers this case. Happens in some cases when too many tenants
       if(isDateRangesCollapsing({start_date: get(item, startDatePath), end_date: get(item, endDatePath)}, dateRanges[i])) {
         const splittedRanges = splitDateRanges({start_date: get(item, startDatePath), end_date: get(item, endDatePath)}, dateRanges[i]);
-        
+
         dateRanges.splice(i, 1);
         dateRanges.push(...splittedRanges);
         isAdded = true;
@@ -203,7 +216,7 @@ export  const getSplittedDateRanges = (items: Array<Object>, startDatePath?: str
       });
     }
   });
-  
+
   // Filter out all collapsing date ranges until all date ranges are separate
   let valid = false;
   let loopCount = 0;
@@ -273,18 +286,18 @@ export const getHoursAndMinutes = (date: any): string => {
   if(!date)
     return '-';
   const dateObject = new Date(date);
-  
-  const hours = getHours(dateObject) ? 
-    (getHours(dateObject) < 10) ? 
-      `0${getHours(dateObject)}` : 
-      getHours(dateObject) 
-    : '00'; 
 
-  const minutes = getMinutes(dateObject) ? 
-    (getMinutes(dateObject) < 10) ? 
-      `0${getMinutes(dateObject)}` : 
+  const hours = getHours(dateObject) ?
+    (getHours(dateObject) < 10) ?
+      `0${getHours(dateObject)}` :
+      getHours(dateObject)
+    : '00';
+
+  const minutes = getMinutes(dateObject) ?
+    (getMinutes(dateObject) < 10) ?
+      `0${getMinutes(dateObject)}` :
       getMinutes(dateObject) :
-    '00'; 
-  
+    '00';
+
   return `${hours}:${minutes}`;
 };

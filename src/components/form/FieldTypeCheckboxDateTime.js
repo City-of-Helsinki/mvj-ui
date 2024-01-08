@@ -15,11 +15,11 @@ type State = {
 }
 
 class FieldTypeCheckboxDateTime extends PureComponent<Props, State> {
-  state = {
+  state: State = {
     defaultValue: this.props.input.value,
   }
 
-  handleChange = () => {
+  handleChange: () => void = () => {
     const {input: {onBlur, value}} = this.props;
     const {defaultValue} = this.state;
 
@@ -29,11 +29,10 @@ class FieldTypeCheckboxDateTime extends PureComponent<Props, State> {
 
   }
 
-  render() {
+  render(): React$Node {
     const {
       disabled = false,
       displayError = false,
-      input,
       input: {name, value},
       isDirty = false,
       label,

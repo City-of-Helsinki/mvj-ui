@@ -1,199 +1,84 @@
 // @flow
-import React, {Fragment, PureComponent} from 'react';
-import {connect} from 'react-redux';
-import ReactDOM from 'react-dom';
+import React, {Component, Fragment} from 'react';
 import classNames from 'classnames';
-import isEmpty from 'lodash/isEmpty';
-
-import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import AddIcon from '$components/icons/AddIcon';
-import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
-import ErrorBlock from '$components/form/ErrorBlock';
-import FormFieldLabel from '$components/form/FormFieldLabel';
-import InfoIcon from '$components/icons/InfoIcon';
-import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
-import TextAreaInput from '$components/inputs/TextAreaInput';
-import {createUiData, deleteUiData, editUiData} from '$src/uiData/actions';
-import {ConfirmationModalTexts} from '$src/enums';
-import {ButtonColors} from '$components/enums';
-import {UsersPermissions} from '$src/usersPermissions/enums';
-import {getFieldAttributes, hasPermissions} from '$util/helpers';
-import {getUiDataByKey} from '$src/uiData/helpers';
-import {
-  getAttributes as getUiDataAttributes,
-  getUiDataList,
-} from '$src/uiData/selectors';
-import {getUsersPermissions} from '$src/usersPermissions/selectors';
-import {genericValidator} from '$components/form/validations';
-
-import type {Attributes} from '$src/types';
-import type {UiDataList} from '$src/uiData/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {TooltipPosition} from '$components/tooltip/types';
+import ReactDOM from 'react-dom';
 
 type Props = {
-  createUiData: Function,
-  deleteUiData: Function,
-  enableUiDataEdit: boolean,
-  editUiData: Function,
-  innerRef?: Function,
-  onTooltipClose: Function,
-  relativeTo?: any,
-  style?: Object,
-  uiDataAttributes: Attributes,
-  uiDataList: UiDataList,
-  uiDataKey: ?string,
-  usersPermissions: UsersPermissionsType,
+  isOpen: boolean,
+  className?: string | Object,
+  onClose: (Event) => void,
+  children: React$Node,
+  relativeTo?: Element,
 }
 
 type State = {
-  allowToAddUiData: boolean,
-  allowToDeleteUiData: boolean,
-  allowToEditUiData: boolean,
-  editedText: string,
-  error: ?string,
-  isOpen: boolean,
-  isSaveClicked: boolean,
-  position: 'position-top-left' | 'position-top-right' | 'position-bottom-left' | 'position-bottom-right';
-  uiData: ?Object,
-  uiDataKey: ?string,
-  uiDataList: UiDataList,
-  usersPermissions: UsersPermissionsType,
-}
+  position: TooltipPosition,
+};
 
-class Tooltip extends PureComponent<Props, State> {
-  state = {
-    allowToAddUiData: false,
-    allowToDeleteUiData: false,
-    allowToEditUiData: false,
-    editedText: '',
-    error: undefined,
-    isOpen: false,
-    isSaveClicked: false,
-    position: 'position-bottom-right',
-    uiData: null,
-    uiDataKey: null,
-    uiDataList: [],
-    usersPermissions: [],
-  }
+class Tooltip extends Component<Props, State> {
+  state: State = {
+    position: 'bottom-left',
+  };
 
   componentDidMount() {
-    const {uiDataKey} = this.props;
-
-    if(uiDataKey) {
-      window.addEventListener('click', this.onDocumentClick);
-    }
+    window.addEventListener('click', this.onDocumentClick);
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if(!prevState.isOpen && this.state.isOpen) {
-      const {uiData} = this.state;
-      const editedText = uiData
-        ? uiData.value || ''
-        : '';
+  componentWillUnmount() {
+    window.removeEventListener('click', this.onDocumentClick);
+  }
 
-      this.setState({
-        editedText: editedText,
-        error: this.validate(editedText),
-        isSaveClicked: false,
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.isOpen && !prevProps.isOpen) {
+      this.setState(() => {
+        return ({
+          position: this.calculatePosition(),
+        });
       });
     }
   }
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+  onDocumentClick: (Event) => void = (event) => {
+    const {isOpen} = this.props;
 
-    if(props.usersPermissions !== state.usersPermissions) {
-      newState.usersPermissions = props.usersPermissions;
-      newState.allowToAddUiData = hasPermissions(props.usersPermissions, UsersPermissions.EDIT_GLOBAL_UI_DATA);
-      newState.allowToDeleteUiData = hasPermissions(props.usersPermissions, UsersPermissions.EDIT_GLOBAL_UI_DATA);
-      newState.allowToEditUiData = hasPermissions(props.usersPermissions, UsersPermissions.EDIT_GLOBAL_UI_DATA);
-    }
-
-    if(props.uiDataList !== state.uiDataList || props.uiDataKey !== state.uiDataKey) {
-      newState.uiDataList = props.uiDataList,
-      newState.uiDataKey = props.uiDataKey,
-      newState.uiData = getUiDataByKey(props.uiDataList, props.uiDataKey || '');
-    }
-
-    return !isEmpty(newState) ? newState : null;
-  }
-
-  componentWillUnmount() {
-    const {uiDataKey} = this.props;
-
-    if(uiDataKey) {
-      window.removeEventListener('click', this.onDocumentClick);
-    }
-  }
-
-  onDocumentClick = (event: any) => {
-    const {isOpen} = this.state;
-    const target = event.target,
-      el = ReactDOM.findDOMNode(this);
+    const target = event.target;
+    const el = ReactDOM.findDOMNode(this);
 
     if (isOpen) {
       event.stopPropagation();
       event.preventDefault();
     }
 
-    if (isOpen && el && target !== el && !el.contains(target)) {
-      this.closeTooltip(event);
+    if (isOpen && el && target !== el && (!(target instanceof Node) || !el.contains(target))) {
+      this.onClose(event);
     }
   };
 
-  handleTextChange = (e: any) => {
-    const value = e.target.value;
+  onClose: (Event) => void = (event) => {
+    const {onClose} = this.props;
 
-    this.setState({
-      editedText: value,
-      error: this.validate(value),
-    });
-  }
 
-  closeTooltip = (e: any) => {
-    const {onTooltipClose} = this.props;
-
-    if(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
-    this.setState({isOpen: false});
-    onTooltipClose();
-  }
-
-  openTooltip = (e: any) => {
-    if(e) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
-
-    this.setState({
-      isOpen: true,
-      position: this.calculatePosition(),
-    });
-  }
-
-  handleDelete = () => {
-    const {deleteUiData} = this.props;
-    const {uiData} = this.state;
-
-    if(uiData) {
-      deleteUiData(uiData.id);
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      onClose(event);
     }
   }
 
-  calculatePosition = () => {
+  calculatePosition: () => TooltipPosition = () => {
     const {relativeTo} = this.props;
     let {innerHeight: height, innerWidth: width} = window;
-    const el = ReactDOM.findDOMNode(this);
+    const el = ReactDOM.findDOMNode(this)?.parentNode;
 
-    if(el) {
+    if (el) {
+      // x and y are defined for DOMRect, but not recognised by Flow.
       // $FlowFixMe
       let {x, y} = el.getBoundingClientRect();
 
-      if(relativeTo) {
+      if (relativeTo) {
+        // $FlowFixMe
         const {x: x2, y: y2, height: height2, width: width2} = relativeTo.getBoundingClientRect();
         x -= x2;
         y -= y2;
@@ -201,180 +86,48 @@ class Tooltip extends PureComponent<Props, State> {
         width = width2;
       }
 
-      const top = !!(y > height - y);
-      const left = !!(x > width - x);
+      const top = y > height - y;
+      const left = x > width - x;
 
-      if(top) {
-        if(left) {
-          return 'position-top-left';
+      if (top) {
+        if (left) {
+          return 'top-left';
         } else {
-          return 'position-top-right';
+          return 'top-right';
         }
       } else {
-        if(left) {
-          return 'position-bottom-left';
+        if (left) {
+          return 'bottom-left';
         } else {
-          return 'position-bottom-right';
+          return 'bottom-right';
         }
       }
     }
 
-    return 'position-bottom-right';
+    return 'bottom-right';
   }
 
-  handleSave = (e: any) => {
-    const {createUiData, editUiData, uiDataKey} = this.props;
-    const {editedText, error, uiData} = this.state;
-
-    if(e) e.preventDefault();
-
-    if(!error) {
-      if(uiData) {
-        editUiData({
-          id: uiData.id,
-          key: uiData.key,
-          value: editedText,
-        });
-      } else {
-        createUiData({
-          key: uiDataKey,
-          value: editedText,
-          user: null,
-        });
-      }
-
-      this.closeTooltip();
-    }
-
-    this.setState({isSaveClicked: true});
-  }
-
-  validate = (value: ?string) => {
-    const {uiDataAttributes} = this.props;
-
-    return genericValidator(value, getFieldAttributes(uiDataAttributes, 'value'));
-  }
-
-  render() {
-    const {enableUiDataEdit, innerRef, style, uiDataKey} = this.props;
+  render(): React$Node {
     const {
-      allowToAddUiData,
-      allowToDeleteUiData,
-      allowToEditUiData,
-      editedText,
-      error,
       isOpen,
-      isSaveClicked,
+      className,
+      children,
+    } = this.props;
+
+    const {
       position,
-      uiData,
     } = this.state;
-    const showEditContainer = enableUiDataEdit && (uiData && allowToEditUiData) || (!uiData && allowToAddUiData);
-    const text = uiData ? uiData.value || '' : '';
-    const name = `${uiDataKey || ''}__input`;
 
-    if(!uiDataKey && !enableUiDataEdit) return null;
-
-    return(
-      <AppConsumer>
-        {({dispatch}) => {
-          const handleDelete = (e: any) => {
-            e.preventDefault();
-
-            this.closeTooltip();
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                this.handleDelete();
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: ConfirmationModalTexts.DELETE_UI_DATA.BUTTON,
-              confirmationModalLabel: ConfirmationModalTexts.DELETE_UI_DATA.BUTTON,
-              confirmationModalTitle: ConfirmationModalTexts.DELETE_UI_DATA.TITLE,
-            });
-          };
-
-          return(
-            <div className='tooltip__component' ref={innerRef} style={style}>
-              <div className='tooltip__container'>
-                {enableUiDataEdit && allowToAddUiData && !uiData &&
-                  <button className='tooltip__add-button' onClick={this.openTooltip} style={{display: isOpen ? 'inherit' : null}} type='button'>
-                    <AddIcon />
-                  </button>
-                }
-                {!!uiData &&
-                  <button className='tooltip__open-button' onClick={this.openTooltip} type='button'>
-                    <InfoIcon />
-                  </button>
-                }
-                {isOpen &&
-                  <Fragment>
-                    {showEditContainer &&
-                      <div className={classNames('tooltip__text-container', position)}>
-                        <div className='tooltip__text-container_wrapper edit-container'>
-                          <CloseButton onClick={this.closeTooltip} />
-
-                          <FormFieldLabel htmlFor={name}>Ohjeteksti</FormFieldLabel>
-                          <TextAreaInput
-                            id={name}
-                            name={name}
-                            onChange={this.handleTextChange}
-                            rows={4}
-                            value={editedText}
-                          />
-                          {isSaveClicked && !!error && <ErrorBlock error={error} />}
-
-                          <ModalButtonWrapper>
-                            {allowToDeleteUiData && !!uiData &&
-                              <Button
-                                className={ButtonColors.ALERT}
-                                onClick={handleDelete}
-                                text='Poista'
-                              />
-                            }
-                            <Button
-                              className={ButtonColors.SECONDARY}
-                              onClick={this.closeTooltip}
-                              text='Peruuta'
-                            />
-                            <Button
-                              className={ButtonColors.SUCCESS}
-                              disabled={isSaveClicked && !!error}
-                              onClick={this.handleSave}
-                              text='Tallenna'
-                            />
-                          </ModalButtonWrapper>
-                        </div>
-                      </div>
-                    }
-                    {!showEditContainer &&
-                      <div className={classNames('tooltip__text-container', position)}>
-                        <div className='tooltip__text-container_wrapper'>
-                          <p>{text}</p>
-                        </div>
-                      </div>
-                    }
-                  </Fragment>
-                }
-              </div>
-            </div>
-          );
-        }}
-      </AppConsumer>
-    );
+    return <Fragment>
+      {isOpen && <div className={classNames('tooltip__text-container',
+        `tooltip__text-container--position-${position}`, className)}>
+        <div className={classNames('tooltip__text-container-wrapper')}>
+          <CloseButton onClick={this.onClose} />
+          {children}
+        </div>
+      </div>}
+    </Fragment>;
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      uiDataAttributes: getUiDataAttributes(state),
-      uiDataList: getUiDataList(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    createUiData,
-    deleteUiData,
-    editUiData,
-  }
-)(Tooltip);
+export default Tooltip;

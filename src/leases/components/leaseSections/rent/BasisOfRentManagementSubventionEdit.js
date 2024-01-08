@@ -11,7 +11,7 @@ import FormText from '$components/form/FormText';
 import RemoveButton from '$components/form/RemoveButton';
 import {BasisOfRentManagementSubventionsFieldPaths, BasisOfRentManagementSubventionsFieldTitles} from '$src/leases/enums';
 import {UsersPermissions} from '$src/usersPermissions/enums';
-import {calculateBasisOfRentSubventionAmount, calculateBasisOfRentSubventionPercantage, calculateSubventionAmountFromPercantage} from '$src/leases/helpers';
+import {calculateBasisOfRentSubventionAmount, calculateBasisOfRentSubventionPercentage, calculateSubventionAmountFromPercantage} from '$src/leases/helpers';
 import {formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes} from '$util/helpers';
 import {getAttributes as getLeaseAttributes, getIsSaveClicked} from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -40,19 +40,27 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
 
   componentDidMount() {
     const {change, currentAmountPerArea, formName, field, subventionAmount} = this.props;
-    const subventionPercent = calculateBasisOfRentSubventionPercantage(subventionAmount, currentAmountPerArea).toFixed(2);
+    const subventionPercent = calculateBasisOfRentSubventionPercentage(subventionAmount, currentAmountPerArea);
     change(formName, `${field}.subvention_percent`, subventionPercent);
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const {change, currentAmountPerArea, formName, field, subventionAmount} = this.props;
+    if(currentAmountPerArea !== prevProps.currentAmountPerArea) {
+      const subventionPercent = calculateBasisOfRentSubventionPercentage(subventionAmount, currentAmountPerArea);
+      change(formName, `${field}.subvention_percent`, subventionPercent);
+    }
   }
 
   onChangeCurrentSubventionAmount = (value: any) => {
     const {change, currentAmountPerArea, formName, field} = this.props;
-    const subventionAmount = calculateSubventionAmountFromPercantage(value, currentAmountPerArea).toFixed(2);
+    const subventionAmount = calculateSubventionAmountFromPercantage(value, currentAmountPerArea);
     change(formName, `${field}.subvention_amount`, subventionAmount);
   };
 
   onChangeCurrentSubventionPercent = (value: any) => {
     const {change, currentAmountPerArea, formName, field} = this.props;
-    const subventionPercent = calculateBasisOfRentSubventionPercantage(value, currentAmountPerArea).toFixed(2);
+    const subventionPercent = calculateBasisOfRentSubventionPercentage(value, currentAmountPerArea);
     change(formName, `${field}.subvention_percent`, subventionPercent);
   };
 
@@ -70,7 +78,7 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
     } = this.props;
 
     /* Use current amount per area to calculate percantage */
-    const subventionPercent = calculateBasisOfRentSubventionPercantage(subventionAmount, currentAmountPerArea);
+    const subventionPercent = calculateBasisOfRentSubventionPercentage(subventionAmount, currentAmountPerArea);
 
     /* Use initial year rent to calculate subvention total */
     const subventionTotal = calculateBasisOfRentSubventionAmount(initialYearRent, subventionPercent);
@@ -128,7 +136,7 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
           <FieldAndRemoveButtonWrapper
             field={
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT)}>
-                <FormText className='full-width'>{formatNumber(subventionTotal)} €</FormText>
+                <FormText className='full-width'>{formatNumber(subventionTotal, 3)} €</FormText>
               </Authorization>
             }
             removeButton={

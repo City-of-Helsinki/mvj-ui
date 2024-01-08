@@ -1,5 +1,6 @@
 // @flow
-import type {Action, Attributes, Methods} from '../types';
+import type {Action, Attributes, Methods} from '$src/types';
+
 
 export type PlotSearchState = {
   attributes: Attributes,
@@ -14,34 +15,49 @@ export type PlotSearchState = {
   methods: Object,
   planUnitAttributes: Attributes,
   planUnit: Object,
+  customDetailedPlanAttributes: Attributes,
+  customDetailedPlan: CustomDetailedPlan,
+  pendingCustomDetailedPlanFetches: Array<number>,
+  isFetchingCustomDetailedPlanAttributes: boolean,
   pendingPlanUnitFetches: Array<number>,
-  pendingPlanUnitAttributeFetches: Array<number>,
+  isFetchingPlanUnitAttributes: boolean,
+  isFetchingSubtypes: boolean,
   subTypes: Object,
-  isFetchingFormAttributes: boolean,
   isFetchingForm: boolean,
   isFetchingTemplateForms: boolean,
-  formAttributes: Object,
   form: Object,
-  templateForms: Object
+  templateForms: Object,
+  isFetchingStages: boolean,
+  stages: Array<Object>,
+  decisionCandidates: Object,
+  isBatchCreatingReservationIdentifiers: boolean,
+  lastBatchReservationCreationError: any,
+  isFetchingReservationIdentifierUnitLists: boolean,
+  reservationIdentifierUnitLists: null | Object,
+  isCreatingDirectReservationLink: boolean,
+  sectionEditorCollapseStates: {[key: string]: boolean},
+  relatedApplications: Array<Object>,
+  isFetchingRelatedApplications: boolean,
 };
 
+export type CustomDetailedPlan = Object;
 export type PlotSearchId = number;
 export type PlotSearch = Object;
 export type PlanUnit = Object;
 export type PlotSearchList = Object;
 
-export type Form = {
-  name: string,
-  title: string,
-  id: number,
-  is_template: boolean,
-  sections: Object
-};
-
 export type FetchSinglePlotSearchAfterEditPayload = {
   id: any,
-  callbackFuntions?: Array<Object | Function>,
+  callbackFunctions?: Array<Object | Function>,
 }
+
+export type ProtectedFormPathsSections = {[key: string]: ProtectedFormPathsSectionNode};
+
+export type ProtectedFormPathsSectionNode = {
+  subsections?: ProtectedFormPathsSections,
+  fields?: Array<string>,
+  fieldChoices?: {[key: string]: Array<string>},
+};
 
 export type FetchAttributesAction = Action<'mvj/plotSearch/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/plotSearch/RECEIVE_ATTRIBUTES', Attributes>;
@@ -75,19 +91,23 @@ export type PlanUnitAttributesNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_
 export type PlanUnitNotFoundAction = Action<'mvj/plotSearch/PLAN_UNIT_NOT_FOUND', void>;
 export type ReceivePlanUnitAttributesAction = Action<'mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES', Attributes>;
 
+export type FetchCustomDetailedPlanAction = Action<'mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN', Object>;
+export type ReceiveSingleCustomDetailedPlanAction = Action<'mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN', CustomDetailedPlan>;
+export type FetchCustomDetailedPlanAttributesAction = Action<'mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES', Object>;
+export type CustomDetailedPlanAttributesNotFoundAction = Action<'mvj/plotSearch/CUSTOM_DETAILED_PLAN_ATTRIBUTES_NOT_FOUND', void>;
+export type CustomDetailedPlanNotFoundAction = Action<'mvj/plotSearch/CUSTOM_DETAILED_PLAN_NOT_FOUND', void>;
+export type ReceiveCustomDetailedPlanAttributesAction = Action<'mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN_ATTRIBUTES', Attributes>;
+
 export type FetchPlotSearchSubtypesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', void>;
-export type ReceivePlotSearchSubtypeAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
-export type PlotSearchSubtypeNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;
+export type ReceivePlotSearchSubtypesAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES', Object>;
+export type PlotSearchSubtypesNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND', void>;
 
 export type NullPlanUnitsAction = Action<'mvj/plotSearch/NULL_PLAN_UNITS', void>;
-
-export type FetchFormAttributesAction = Action<'mvj/plotSearch/FETCH_FORM_ATTRIBUTES', Object>;
-export type FormAttributesNotFoundAction = Action<'mvj/plotSearch/FORM_ATTRIBUTES_NOT_FOUND', void>;
-export type ReceiveFormAttributesAction = Action<'mvj/plotSearch/RECEIVE_FORM_ATTRIBUTES', Attributes>;
 
 export type FormNotFoundAction = Action<'mvj/plotSearch/FORM_NOT_FOUND', Object>;
 export type FetchFormAction = Action<'mvj/plotSearch/FETCH_FORM', void>;
 export type ReceiveFormAction = Action<'mvj/plotSearch/RECEIVE_FORM', Object>;
+export type EditFormAction = Action<'mvj/plotSearch/EDIT_FORM', Object>;
 
 export type TemplateFormsNotFoundAction = Action<'mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND', Object>;
 export type FetchTemplateFormsAction = Action<'mvj/plotSearch/FETCH_TEMPLATE_FORMS', void>;
@@ -96,3 +116,27 @@ export type ReceiveTemplateFormsAction = Action<'mvj/plotSearch/RECEIVE_TEMPLATE
 export type AddPlanUnitDecisionsAction = Action<'mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS', Object>;
 export type RemovePlanUnitDecisionsAction = Action<'mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS', number>;
 export type ResetPlanUnitDecisionsAction = Action<'mvj/plotSearch/RESET_PLAN_UNIT_DECISIONS', void>;
+
+export type FetchPlotSearchStagesAction = Action<'mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES', Object>;
+export type ReceivePlotSearchStagesAction = Action<'mvj/plotSearch/RECEIVE_PLOT_SEARCH_STAGES', Array<Object>>;
+export type PlotSearchStagesNotFoundAction = Action<'mvj/plotSearch/PLOT_SEARCH_STAGES_NOT_FOUND', void>;
+
+export type BatchCreateReservationIdentifiersAction = Action<'mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS', Object>;
+export type ReservationIdentifiersCreatedAction = Action<'mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATED', void>;
+export type ReservationIdentifiersCreationFailedAction = Action<'mvj/plotSearch/RESERVATION_IDENTIFIERS_CREATION_FAILED', any>;
+
+export type FetchReservationIdentifierUnitListsAction = Action<'mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS', void>;
+export type ReceiveReservationIdentifierUnitListsAction = Action<'mvj/plotSearch/RECEIVE_RESERVATION_IDENTIFIER_UNIT_LISTS', Object>;
+export type ReservationIdentifierUnitListsNotFoundAction = Action<'mvj/plotSearch/RESERVATION_IDENTIFIER_UNIT_LISTS_NOT_FOUND', void>;
+
+export type CreateDirectReservationLinkAction = Action<'mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK', {data: Object, callBack: Function}>;
+export type DirectReservationLinkCreatedAction = Action<'mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATED', void>;
+export type DirectReservationLinkCreationFailedAction = Action<'mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED', any>;
+
+export type ClearSectionEditorCollapseStatesAction = Action<'mvj/plotSearch/CLEAR_SECTION_EDITOR_COLLAPSE_STATES', void>;
+export type SetSectionEditorCollapseStateAction = Action<'mvj/plotSearch/SET_SECTION_EDITOR_COLLAPSE_STATE', {key: string, state: boolean}>;
+export type InitializeSectionEditorCollapseStatesAction = Action<'mvj/plotSearch/INITIALIZE_SECTION_EDITOR_COLLAPSE_STATES', {[key: string]: boolean}>;
+
+export type FetchPlotSearchRelatedApplicationsAction = Action<'mvj/plotSearch/FETCH_RELATED_APPLICATIONS', number>;
+export type ReceivePlotSearchRelatedApplicationsAction = Action<'mvj/plotSearch/RECEIVE_RELATED_APPLICATIONS', Array<Object>>;
+export type PlotSearchRelatedApplicationsNotFoundAction = Action<'mvj/plotSearch/RELATED_APPLICATIONS_NOT_FOUND', any>;

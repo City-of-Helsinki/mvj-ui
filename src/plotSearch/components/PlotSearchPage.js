@@ -6,7 +6,6 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import {change, getFormValues, initialize, destroy, isDirty} from 'redux-form';
-import get from "lodash/get";
 
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -25,7 +24,6 @@ import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import {
   getIsEditMode,
   getCurrentPlotSearch,
@@ -35,7 +33,12 @@ import {
   getIsFetching,
   getForm,
   getIsFetchingAnyPlanUnits,
-  getIsFetchingPlanUnitAttributes
+  getIsFetchingPlanUnitAttributes,
+  areTargetsAllowedToHaveType,
+  isLockedForModifications,
+  isFetchingStages,
+  getIsFetchingSubtypes,
+  getIsFetchingRelatedApplications,
 } from '$src/plotSearch/selectors';
 import {
   editPlotSearch,
@@ -47,6 +50,7 @@ import {
   receiveSinglePlotSearch,
   receiveFormValidFlags,
   deletePlotSearch,
+  fetchPlotSearchRelatedApplications,
 } from '$src/plotSearch/actions';
 import {FormNames, ConfirmationModalTexts, Methods, PermissionMissingTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
@@ -57,28 +61,42 @@ import {
   scrollToTopPage,
   isMethodAllowed,
 } from '$util/helpers';
-import type {Attributes, Methods as MethodType} from '$src/types';
-import type {PlotSearch, Form} from '$src/plotSearch/types';
 import {
   getContentBasicInformation,
   getContentApplication,
   clearUnsavedChanges,
   cleanTargets,
-  cleanDecisions
+  cleanDecisions,
 } from '$src/plotSearch/helpers';
-
-import PlotSearchInfo from './plotSearchSections/plotSearchInfo/PlotSearchInfo';
-import BasicInfo from './plotSearchSections/basicInfo/BasicInfo';
-import BasicInfoEdit from './plotSearchSections/basicInfo/BasicInfoEdit';
-import Application from './plotSearchSections/application/Application';
-import ApplicationEdit from './plotSearchSections/application/ApplicationEdit';
-import ApplicationMap from './plotSearchSections/map/ApplicationMap';
+import PlotSearchInfo from '$src/plotSearch/components/plotSearchSections/plotSearchInfo/PlotSearchInfo';
+import BasicInfo from '$src/plotSearch/components/plotSearchSections/basicInfo/BasicInfo';
+import BasicInfoEdit from '$src/plotSearch/components/plotSearchSections/basicInfo/BasicInfoEdit';
+import Application from '$src/plotSearch/components/plotSearchSections/application/Application';
+import ApplicationEdit from '$src/plotSearch/components/plotSearchSections/application/ApplicationEdit';
+import ApplicationMap from '$src/plotSearch/components/plotSearchSections/map/ApplicationMap';
 import {withPlotSearchAttributes} from '$components/attributes/PlotSearchAttributes';
+import {FIELDS_LOCKED_FOR_EDITING} from '$src/plotSearch/constants';
+import PlotSearchExportModal from '$src/plotApplications/components/exportModal/PlotSearchExportModal';
+import ReservationIdentifiersModal from '$src/plotSearch/components/reservationIdentifiers/ReservationIdentifiersModal';
+import DirectReservationLinkModal from '$src/plotSearch/components/directReservationLinkModal/DirectReservationLinkModal';
+import {fetchAttributes as fetchApplicationAttributes} from '$src/application/actions';
+import {getIsFetchingAttributes as getIsFetchingApplicationAttributes} from '$src/application/selectors';
+
+import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {Attributes, Methods as MethodType} from '$src/types';
+import type {PlotSearch} from '$src/plotSearch/types';
+import type {Form} from '$src/application/types';
+
+type OwnProps = {|
+
+|};
 
 type Props = {
+  ...OwnProps,
   applicationFormValues: Object,
   basicInformationFormValues: Object,
   currentPlotSearch: PlotSearch,
+  plotSearchForm: Object,
   clearFormValidFlags: Function,
   change: Function,
   destroy: Function,
@@ -96,7 +114,12 @@ type Props = {
   isFetching: boolean,
   isSaveClicked: boolean,
   isFetchingUsersPermissions: boolean,
+  isFetchingAnyPlanUnits: boolean,
+  isFetchingPlanUnitAttributes: boolean,
+  isFetchingStages: boolean,
+  isFetchingSubtypes: boolean,
   isFormValidFlags: boolean,
+  isLockedForModifications: boolean,
   location: Object,
   match: {
     params: Object,
@@ -110,17 +133,30 @@ type Props = {
   receiveFormValidFlags: Function,
   deletePlotSearch: Function,
   plotSearchMethods: MethodType,
+  areTargetsAllowedToHaveType: boolean,
+  fetchApplicationAttributes: Function,
+  isFetchingApplicationAttributes: boolean,
+  fetchPlotSearchRelatedApplications: Function,
+  relatedApplications: Array<Object>,
+  isFetchingRelatedApplications: boolean,
+  applicationOpeningFormValues: Object,
 }
 
 type State = {
   activeTab: number,
   isRestoreModalOpen: boolean,
+  isExportModalOpen: boolean,
+  isReservationIdentifiersModalOpen: boolean,
+  isDirectReservationLinkModalOpen: boolean,
 }
 
 class PlotSearchPage extends Component<Props, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
+    isExportModalOpen: false,
+    isReservationIdentifiersModalOpen: false,
+    isDirectReservationLinkModalOpen: false,
   }
 
   static contextTypes = {
@@ -138,6 +174,8 @@ class PlotSearchPage extends Component<Props, State> {
       location: {search},
       receiveIsSaveClicked,
       hideEditMode,
+      fetchApplicationAttributes,
+      fetchPlotSearchRelatedApplications,
     } = this.props;
 
     const query = getUrlParams(search);
@@ -155,6 +193,8 @@ class PlotSearchPage extends Component<Props, State> {
     }
 
     fetchSinglePlotSearch(plotSearchId);
+    fetchApplicationAttributes();
+    fetchPlotSearchRelatedApplications(plotSearchId);
 
     clearFormValidFlags();
     receiveIsSaveClicked(false);
@@ -164,7 +204,7 @@ class PlotSearchPage extends Component<Props, State> {
     window.addEventListener('popstate', this.handlePopState);
   }
 
-  componentDidUpdate(prevProps:Props, prevState: State) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const {
       currentPlotSearch,
       location: {search},
@@ -247,7 +287,7 @@ class PlotSearchPage extends Component<Props, State> {
   }
 
   setPageTitle = (name) => {
-    setPageTitle(`${name ? `${name} | ` : ''}Tonttihaku`)
+    setPageTitle(`${name ? `${name} | ` : ''}Tonttihaku`);
   };
 
   isAnyFormDirty = () => {
@@ -266,7 +306,7 @@ class PlotSearchPage extends Component<Props, State> {
     hideEditMode();
   }
 
-  handleShowEditMode = () => {
+  handleShowEditMode = (showOpeningSection: boolean) => {
     const {clearFormValidFlags, currentPlotSearch, receiveIsSaveClicked, showEditMode, plotSearchForm} = this.props;
 
     receiveIsSaveClicked(false);
@@ -274,7 +314,7 @@ class PlotSearchPage extends Component<Props, State> {
 
     showEditMode();
     this.destroyAllForms();
-    this.initializeForms(currentPlotSearch, plotSearchForm);
+    this.initializeForms(currentPlotSearch, plotSearchForm, showOpeningSection);
     this.startAutoSaveTimer();
   }
 
@@ -285,11 +325,20 @@ class PlotSearchPage extends Component<Props, State> {
     );
   }
 
-  initializeForms = (plotSearch: PlotSearch, plotSearchForm: Form) => {
+  initializeForms = (plotSearch: PlotSearch, plotSearchForm: Form, showOpeningSection: boolean) => {
     const {initialize} = this.props;
     initialize(FormNames.PLOT_SEARCH_BASIC_INFORMATION, getContentBasicInformation(plotSearch));
     initialize(FormNames.PLOT_SEARCH_APPLICATION, getContentApplication(plotSearch, plotSearchForm));
+    initialize(FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING, {
+      section: {},
+    });
     initialize(FormNames.PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM, {});
+    initialize(FormNames.PLOT_SEARCH_APPLICATIONS_OPENING, {
+      opening_record: showOpeningSection ? {
+        openers: [],
+        note: '',
+      } : null,
+    });
   }
 
   destroyAllForms = () => {
@@ -297,6 +346,8 @@ class PlotSearchPage extends Component<Props, State> {
 
     destroy(FormNames.PLOT_SEARCH_BASIC_INFORMATION);
     destroy(FormNames.PLOT_SEARCH_APPLICATION);
+    destroy(FormNames.PLOT_SEARCH_APPLICATION_SECTION_STAGING);
+    destroy(FormNames.PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM);
   }
 
   handleTabClick = (tabId) => {
@@ -332,35 +383,55 @@ class PlotSearchPage extends Component<Props, State> {
   }
 
   saveChanges = () => {
-    const {receiveIsSaveClicked} = this.props;
+    const {
+      receiveIsSaveClicked,
+      applicationFormValues,
+      basicInformationFormValues,
+      currentPlotSearch,
+      editPlotSearch,
+      isBasicInformationFormDirty,
+      isApplicationFormDirty,
+      areTargetsAllowedToHaveType,
+      isLockedForModifications,
+      applicationOpeningFormValues,
+    } = this.props;
     receiveIsSaveClicked(true);
 
     const areFormsValid = this.getAreFormsValid();
 
-    if(areFormsValid) {
-      const {
-        applicationFormValues,
-        basicInformationFormValues,
-        currentPlotSearch,
-        editPlotSearch,
-        isBasicInformationFormDirty,
-        isApplicationFormDirty,
-      } = this.props;
-
+    if (areFormsValid) {
       //TODO: Add helper functions to save plotSearch to DB when API is ready
-      let payload: Object = {...currentPlotSearch};
+      let payload: Object = {
+        basicInfo: {...currentPlotSearch},
+        form: null,
+      };
 
-      // TODO: Temporary fix, bug can't save when no basic invormation values are dirty
-      if(isBasicInformationFormDirty || !isBasicInformationFormDirty) {
-        payload = {...payload, ...basicInformationFormValues};
+      if (isApplicationFormDirty || !!currentPlotSearch.form && applicationFormValues.form) {
+        payload.form = {...applicationFormValues.form};
       }
-      if(isApplicationFormDirty || !!currentPlotSearch.form) {
-        payload = {...payload, form: applicationFormValues.form.id};
+
+      if (isBasicInformationFormDirty || payload.form && currentPlotSearch.form !== payload.form) {
+        payload.basicInfo = {...payload.basicInfo, ...basicInformationFormValues};
+
+        payload.basicInfo = cleanTargets(payload.basicInfo, !areTargetsAllowedToHaveType);
+        payload.basicInfo = cleanDecisions(payload.basicInfo);
+        payload.basicInfo.identifier = currentPlotSearch.identifier;
+        payload.basicInfo.form = applicationFormValues.form?.id;
+
+        if (isLockedForModifications) {
+          FIELDS_LOCKED_FOR_EDITING.forEach((field) => delete payload.basicInfo[field]);
+        }
       }
-      payload = cleanTargets(payload);
-      payload = cleanDecisions(payload);
-      payload.identifier = currentPlotSearch.identifier;
+
+      if (applicationOpeningFormValues.opening_record !== null) {
+        payload.openingRecord = {
+          note: applicationOpeningFormValues.opening_record.note,
+          openers: applicationOpeningFormValues.opening_record.openers.map((opener) => opener.id),
+        };
+      }
+
       editPlotSearch(payload);
+
       this.setPageTitle(basicInformationFormValues.name);
     }
   }
@@ -427,14 +498,14 @@ class PlotSearchPage extends Component<Props, State> {
       currentPlotSearch,
       receiveFormValidFlags,
       showEditMode,
-      plotSearchForm
+      plotSearchForm,
     } = this.props;
 
     showEditMode();
     clearFormValidFlags();
 
     this.destroyAllForms();
-    this.initializeForms(currentPlotSearch, plotSearchForm);
+    this.initializeForms(currentPlotSearch, plotSearchForm, false);
 
     const storedBasicInformationFormValues = getSessionStorageItem(FormNames.PLOT_SEARCH_BASIC_INFORMATION);
     if(storedBasicInformationFormValues) {
@@ -505,18 +576,50 @@ class PlotSearchPage extends Component<Props, State> {
       currentPlotSearch,
       plotSearchMethods,
       isFetchingAnyPlanUnits,
-      isFetchingAnyPlanUnitAttributes
+      isFetchingPlanUnitAttributes,
+      isFetchingStages,
+      isFetchingSubtypes,
+      isFetchingApplicationAttributes,
+      isFetchingRelatedApplications,
     } = this.props;
 
     const areFormsValid = this.getAreFormsValid();
 
-    if(isFetchingPlotSearchAttributes || isFetchingUsersPermissions || isFetching) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (
+      isFetchingPlotSearchAttributes ||
+      isFetchingUsersPermissions ||
+      isFetching ||
+      isFetchingSubtypes ||
+      isFetchingStages ||
+      isFetchingApplicationAttributes ||
+      isFetchingRelatedApplications
+    ) {
+      return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    }
 
-    if(!plotSearchAttributes || isEmpty(usersPermissions)) return null;
+    if (!plotSearchAttributes || isEmpty(usersPermissions)) {
+      return null;
+    }
 
-    if(!plotSearchMethods) return null;
+    if (!plotSearchMethods) {
+      return null;
+    }
 
-    if(!isMethodAllowed(plotSearchMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    if (!isMethodAllowed(plotSearchMethods, Methods.GET)) {
+      return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    }
+
+    const openExportModal = () => this.setState(() => ({
+      isExportModalOpen: true,
+    }));
+
+    const openReservationIdentifiersModal = () => this.setState(() => ({
+      isReservationIdentifiersModalOpen: true,
+    }));
+
+    const openDirectReservationLinkModal = () => this.setState(() => ({
+      isDirectReservationLinkModalOpen: true,
+    }));
 
     return(
       <FullWidthContainer>
@@ -528,11 +631,11 @@ class PlotSearchPage extends Component<Props, State> {
                 allowEdit={isMethodAllowed(plotSearchMethods, Methods.PATCH)}
                 isCancelDisabled={false}
                 isCopyDisabled={true}
-                isEditDisabled={isFetchingAnyPlanUnits || isFetchingAnyPlanUnitAttributes}
+                isEditDisabled={isFetchingAnyPlanUnits || isFetchingPlanUnitAttributes}
                 isEditMode={isEditMode}
                 isSaveDisabled={isSaveClicked && !areFormsValid}
                 onCancel={this.cancelChanges}
-                onEdit={this.handleShowEditMode}
+                onEdit={() => this.handleShowEditMode(false)}
                 onSave={this.saveChanges}
                 showCommentButton={false}
                 showCopyButton={false}
@@ -579,19 +682,43 @@ class PlotSearchPage extends Component<Props, State> {
         <PageContainer className='with-control-bar-and-tabs' hasTabs>
           <ConfirmationModal
             confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
-            isOpen={isRestoreModalOpen && !isFetchingAnyPlanUnits && !isFetchingAnyPlanUnitAttributes}
+            isOpen={isRestoreModalOpen && !isFetchingAnyPlanUnits && !isFetchingPlanUnitAttributes}
             label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
             onCancel={this.cancelRestoreUnsavedChanges}
             onClose={this.cancelRestoreUnsavedChanges}
             onSave={this.restoreUnsavedChanges}
             title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
           />
+          <DirectReservationLinkModal
+            isOpen={this.state.isDirectReservationLinkModalOpen}
+            onClose={() => this.setState(() => ({
+              isDirectReservationLinkModalOpen: false,
+            }))}
+            targets={currentPlotSearch.plot_search_targets || null}
+          />
+          <PlotSearchExportModal
+            isOpen={this.state.isExportModalOpen}
+            onClose={() => this.setState(() => ({
+              isExportModalOpen: false,
+            }))}
+            plotSearchId={currentPlotSearch.id || null}
+          />
+          <ReservationIdentifiersModal
+            isOpen={this.state.isReservationIdentifiersModalOpen}
+            onClose={() => this.setState(() => ({
+              isReservationIdentifiersModalOpen: false,
+            }))} />
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
                 {isEditMode
                   ? <BasicInfoEdit />
-                  : <BasicInfo />
+                  : <BasicInfo
+                    openExportModal={openExportModal}
+                    openReservationIdentifiersModal={openReservationIdentifiersModal}
+                    openDirectReservationLinkModal={openDirectReservationLinkModal}
+                    showEditMode={this.handleShowEditMode}
+                  />
                 }
               </ContentContainer>
             </TabPane>
@@ -624,7 +751,7 @@ class PlotSearchPage extends Component<Props, State> {
 }
 
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   withPlotSearchAttributes,
   withUiDataList,
@@ -646,7 +773,14 @@ export default flowRight(
         isFormValidFlags: getIsFormValidFlags(state),
         plotSearchForm: getForm(state),
         isFetchingAnyPlanUnits: getIsFetchingAnyPlanUnits(state),
-        isFetchingAnyPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state)
+        isFetchingPlanUnitAttributes: getIsFetchingPlanUnitAttributes(state),
+        areTargetsAllowedToHaveType: areTargetsAllowedToHaveType(state),
+        isLockedForModifications: isLockedForModifications(state),
+        isFetchingStages: isFetchingStages(state),
+        isFetchingSubtypes: getIsFetchingSubtypes(state),
+        isFetchingApplicationAttributes: getIsFetchingApplicationAttributes(state),
+        isFetchingRelatedApplications: getIsFetchingRelatedApplications(state),
+        applicationOpeningFormValues: getFormValues(FormNames.PLOT_SEARCH_APPLICATIONS_OPENING)(state),
       };
     },
     {
@@ -660,9 +794,11 @@ export default flowRight(
       receiveIsSaveClicked,
       showEditMode,
       fetchSinglePlotSearch,
+      fetchApplicationAttributes,
+      fetchPlotSearchRelatedApplications,
       receiveSinglePlotSearch,
       receiveFormValidFlags,
       deletePlotSearch,
     }
   ),
-)(PlotSearchPage);
+)(PlotSearchPage): React$ComponentType<OwnProps>);

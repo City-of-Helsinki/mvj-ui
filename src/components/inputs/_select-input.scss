@@ -29,6 +29,10 @@
       font-size: rem-calc(14px);
       color: $black;
 
+      &--is-multi {
+        padding-right: rem-calc(36px);
+      }
+
       div:last-of-type {
         height: rem-calc(18px);
         margin: 0;

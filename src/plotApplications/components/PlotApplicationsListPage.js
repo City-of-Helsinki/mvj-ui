@@ -2,20 +2,25 @@
 import React, {Fragment, PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
+import debounce from 'lodash/debounce';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
+import type {ContextRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
+import {initialize} from 'redux-form';
 
-import Search from './search/Search';
+import Search from '$src/plotApplications/components/search/Search';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {
   fetchPlotApplicationsList,
+  fetchPlotApplicationsByBBox,
 } from '$src/plotApplications/actions';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
 import IconRadioButtons from '$components/button/IconRadioButtons';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import ExternalLink from '$components/links/ExternalLink';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableFilterWrapper from '$components/table/TableFilterWrapper';
@@ -24,11 +29,10 @@ import TableIcon from '$components/icons/TableIcon';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {getRouteById, Routes} from '$src/root/routes';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import PageContainer from '$components/content/PageContainer';
 import {withPlotApplicationsAttributes} from '$components/attributes/PlotApplicationsAttributes';
 import Pagination from '$components/table/Pagination';
-import CreatePlotApplicationsModal from './CreatePlotApplicationsModal';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import MapIcon from '$components/icons/MapIcon';
 import {
@@ -38,57 +42,69 @@ import {
   isMethodAllowed,
   getUrlParams,
   setPageTitle,
-  getFieldOptions,
   getApiResponseCount,
   getApiResponseMaxPage,
+  getSearchQuery,
 } from '$util/helpers';
 import {
   getIsFetching,
   getPlotApplicationsList,
+  getIsFetchingByBBox,
 } from '$src/plotApplications/selectors';
 import {
-  DEFAULT_SORT_KEY,
-  DEFAULT_SORT_ORDER,
   DEFAULT_PLOT_APPLICATIONS_STATES,
+  BOUNDING_BOX_FOR_SEARCH_QUERY,
+  MAX_ZOOM_LEVEL_TO_FETCH_LEASES,
 } from '$src/plotApplications/constants';
 import type {Attributes, Methods as MethodsType} from '$src/types';
+import {fetchPlotSearchList, fetchAttributes as fetchPlotSearchAttributes} from '$src/plotSearch/actions';
+import ApplicationListMap from '$src/plotApplications/components/map/ApplicationListMap';
+import {getPlotApplicationsListByBBox} from '$src/plotApplications/selectors';
+import PlotApplicationsListOpeningModal from '$src/plotApplications/components/PlotApplicationsListOpeningModal';
 
 const VisualizationTypes = {
   MAP: 'map',
   TABLE: 'table',
 };
 
+const MIN_QUERY_LENGTH = 6;
+
 const visualizationTypeOptions = [
   {value: VisualizationTypes.TABLE, label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
   {value: VisualizationTypes.MAP, label: 'Kartta', icon: <MapIcon className='icon-medium' />},
 ];
 
+type OwnProps = {
+  ...ContextRouter
+};
 
 type Props = {
-  history: Object,
+  ...OwnProps,
   plotApplicationsMethods: MethodsType,
   plotApplicationsAttributes: Attributes,
   isFetching: boolean,
+  isFetchingByBBox: boolean,
   fetchPlotApplicationsList: Function,
-  location: Object,
+  fetchPlotApplicationsByBBox: Function,
+  fetchPlotSearchAttributes: Function,
+  fetchPlotSearchList: Function,
   receiveTopNavigationSettings: Function,
   plotApplicationsListData: Object,
-  sortKey: string,
-  sortOrder: string,
+  plotApplicationsMapData: Object,
+  initialize: Function,
+  plotSearchSubtypes: Object,
 }
 
 type State = {
   activePage: number,
   applications: Array<Object>,
-  isModalOpen: boolean,
   count: number,
   visualizationType: string,
   plotApplicationStates: Array<Object>,
   isSearchInitialized: boolean,
   maxPage: number,
   selectedStates: Array<string>,
-  sortKey: string,
-  sortOrder: string,
+  openingRecordPopupTarget: ?Object,
 }
 
 class PlotApplicationsListPage extends PureComponent<Props, State> {
@@ -97,15 +113,13 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   state = {
     applications: [],
     selectedStates: [],
-    isModalOpen: false,
     count: 0,
     visualizationType: VisualizationTypes.TABLE,
     isSearchInitialized: false,
     plotApplicationStates: DEFAULT_PLOT_APPLICATIONS_STATES,
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
     maxPage: 0,
     activePage: 1,
+    openingRecordPopupTarget: null,
   }
 
   static contextTypes = {
@@ -115,50 +129,111 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   componentDidMount() {
     const {
       receiveTopNavigationSettings,
+      fetchPlotSearchAttributes,
+      fetchPlotSearchList,
+      location: {search},
     } = this.props;
+    const searchQuery = getUrlParams(search);
     setPageTitle('Tonttihakemukset');
+
+    if(searchQuery.visualization === VisualizationTypes.MAP) {
+      this.setState({visualizationType: VisualizationTypes.MAP});
+      this.searchByBBox();
+    } else {
+      this.search();
+    }
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.PLOT_APPLICATIONS),
       pageTitle: 'Tonttihakemukset',
       showSearch: false,
     });
-
-    this.search();
+    fetchPlotSearchAttributes();
+    fetchPlotSearchList();
+    this.setSearchFormValues();
+    this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
     const {location: {search: currentSearch}} = this.props;
     const {location: {search: prevSearch}} = prevProps;
+    const {visualizationType} = this.state;
+
+    const prevSearchQuery = getUrlParams(prevSearch);
     const searchQuery = getUrlParams(currentSearch);
 
-    if(currentSearch !== prevSearch) {
-      this.search();
-
-      delete searchQuery.sort_key;
-      delete searchQuery.sort_order;
-
-      // TODO
-      /* if(!Object.keys(searchQuery).length) {
+    if (currentSearch !== prevSearch) {
+      if (searchQuery.visualization && searchQuery.visualization !== prevSearchQuery.visualization) {
         this.setSearchFormValues();
-      } */
+        this.handleVisualizationTypeChange(searchQuery.visualization);
+      }
+
+      switch(visualizationType) {
+        case VisualizationTypes.MAP:
+          this.searchByBBox();
+          break;
+        case VisualizationTypes.TABLE:
+          this.search();
+          break;
+      }
+
+      if(!Object.keys(searchQuery).length) {
+        this.setSearchFormValues();
+      }
     }
 
-    if(prevProps.plotApplicationsListData !== this.props.plotApplicationsListData) {
+    if (prevProps.plotApplicationsListData !== this.props.plotApplicationsListData) {
       this.updateTableData();
     }
   }
 
-  hideCreatePlotApplicationsModal = () => {
-    this.setState({isModalOpen: false});
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
-  handleCreatePlotApplications = () => {
-    const {history, location: {search}} = this.props;
+  searchByBBox = () => {
+    const {fetchPlotApplicationsByBBox, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
 
-    return history.push({
-      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/1`,
-      search: search,
+    if (searchQuery && searchQuery.search && searchQuery.search.length > MIN_QUERY_LENGTH) {
+      searchQuery.in_bbox = BOUNDING_BOX_FOR_SEARCH_QUERY;
+    } else if (!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) {
+      return;
+    }
+
+    searchQuery.limit = 10000;
+    delete searchQuery.page;
+    delete searchQuery.visualization;
+    delete searchQuery.zoom;
+
+    fetchPlotApplicationsByBBox(searchQuery);
+  }
+
+  setSearchFormValues = () => {
+    const {location: {search}, initialize} = this.props;
+    const searchQuery = getUrlParams(search);
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      const initialValues = {...searchQuery};
+      delete initialValues.page;
+      delete initialValues.state;
+      await initialize(FormNames.PLOT_APPLICATIONS_SEARCH, initialValues);
+    };
+
+    this.setState({
+      activePage: page,
+      isSearchInitialized: false,
+    }, async() => {
+      await initializeSearchForm();
+
+      if(this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 
@@ -167,18 +242,23 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
-    if(page > 1) {
+    if (page > 1) {
       searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
-    
+
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
-
+    delete searchQuery.in_bbox;
+    delete searchQuery.zoom;
     fetchPlotApplicationsList(searchQuery);
   }
 
-  openModalhandleCreatePlotApplication = () => {
-    this.setState({isModalOpen: true});
+  openCreatePlotApplication = () => {
+    const {history} = this.props;
+
+    history.push({
+      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/uusi`,
+    });
   }
 
   updateTableData = () => {
@@ -198,94 +278,227 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       key: 'plot_search',
       text: 'Haku',
       sortable: false,
+      renderer: ({name, id}) => name
+        ? <ExternalLink href={`${getRouteById(Routes.PLOT_SEARCH)}/${id}`} text={name} />
+        : null,
     });
+
+    columns.push({
+      key: 'plot_search_type',
+      text: 'Hakutyyppi',
+      sortable: false,
+    });
+
+    columns.push({
+      key: 'plot_search_subtype',
+      text: 'Haun alatyyppi',
+      sortable: false,
+      renderer: (subtype) => subtype?.name,
+    });
+
+    columns.push({
+      key: 'applicants',
+      text: 'Hakija',
+      sortable: false,
+    });
+
+    columns.push({
+      key: 'target_identifier',
+      text: 'Kohteen tunnus',
+      sortable: false,
+      renderer: ({identifier, application}) => identifier
+        ? <ExternalLink
+          href={`${getRouteById(Routes.PLOT_APPLICATIONS)}/${application}`}
+          text={identifier} />
+        : null,
+    });
+
+    columns.push({
+      key: 'target_address',
+      text: 'Haetun kohteen osoite',
+      sortable: false,
+    });
+
+    columns.push({
+      key: 'target_reserved',
+      text: 'Varaus',
+      sortable: false,
+      renderer: (isReserved) => isReserved ? 'Kyllä' : 'Ei',
+    });
+
 
     return columns;
   }
 
-  handleRowClick = (id) => {
+  handlePageClick = (page: number) => {
     const {history, location: {search}} = this.props;
+    const query = getUrlParams(search);
+
+    if (page > 1) {
+      query.page = page;
+    } else {
+      delete query.page;
+    }
+
+    this.setState({activePage: page});
 
     return history.push({
-      pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`,
-      search: search,
+      pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+      search: getSearchQuery(query),
     });
+  }
+
+  handleRowClick = (id: number, row: Object) => {
+    const {history, location: {search}} = this.props;
+
+    const requiresOpening = !row.has_opening_record && row.plot_search_subtype.require_opening_record;
+
+    if (requiresOpening) {
+      this.setState(() => ({
+        openingRecordPopupTarget: row,
+      }));
+    } else {
+      return history.push({
+        pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`,
+        search: search,
+      });
+    }
+  };
+
+  handleSearchUpdated = (query: Object, resetActivePage?: boolean = true) => {
+    const {history} = this.props;
+
+    if (resetActivePage) {
+      this.setState({activePage: 1});
+      delete query.page;
+    }
+
+    return history.push({
+      pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+      search: getSearchQuery(query),
+    });
+  }
+
+  handleVisualizationTypeChange = (value: string) => {
+    this.setState({visualizationType: value}, () => {
+      const {history, location: {search}} = this.props;
+      const searchQuery = getUrlParams(search);
+
+      if (value === VisualizationTypes.MAP) {
+        searchQuery.visualization = VisualizationTypes.MAP;
+      } else {
+        delete searchQuery.visualization;
+      }
+
+      return history.push({
+        pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+        search: getSearchQuery(searchQuery),
+      });
+    });
+  }
+
+  handleMapViewportChanged = debounce((mapOptions: Object) => {
+    const {history, location: {search}} = this.props;
+    const searchQuery = getUrlParams(search);
+
+    searchQuery.in_bbox = mapOptions.bBox.split(',');
+    searchQuery.zoom = mapOptions.zoom;
+
+    return history.push({
+      pathname: getRouteById(Routes.PLOT_APPLICATIONS),
+      search: getSearchQuery(searchQuery),
+    });
+  }, 1000);
+
+  closeOpeningModal = () => {
+    this.setState(() => ({
+      openingRecordPopupTarget: null,
+    }));
   }
 
   render() {
     const {
       isFetching,
+      isFetchingByBBox,
       plotApplicationsMethods,
       plotApplicationsAttributes,
+      plotApplicationsMapData,
+      plotApplicationsListData,
+      location: {search},
     } = this.props;
 
     const {
-      isModalOpen,
-      activePage, 
-      isSearchInitialized, 
-      applications, 
-      maxPage, 
+      activePage,
+      isSearchInitialized,
+      applications,
+      maxPage,
       selectedStates,
       visualizationType,
       plotApplicationStates,
-      sortKey,
-      sortOrder,
+      openingRecordPopupTarget,
     } = this.state;
 
-    const plotApplicationStateFilterOptions = getFieldOptions(plotApplicationsAttributes, 'state', false);
-    const filteredApplications = selectedStates.length
-      ? (applications.filter((application) => selectedStates.indexOf(application.state)  !== -1))
-      : applications;
-    const count = filteredApplications.length;
+    if (!plotApplicationsMethods && !plotApplicationsAttributes) {
+      return <PageContainer><Loader isLoading /></PageContainer>;
+    }
+
+    if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
+      return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    }
+
+    const isTable = visualizationType === VisualizationTypes.TABLE;
+    const isMap = visualizationType === VisualizationTypes.MAP;
+
+    const count = getApiResponseCount(isMap ? plotApplicationsMapData : plotApplicationsListData);
     const columns = this.getColumns();
 
-    if(!plotApplicationsMethods && !plotApplicationsAttributes) return null;
-
-    if(!isMethodAllowed(plotApplicationsMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
+    let amountText;
+    if (isMap && isFetchingByBBox || isTable && isFetching) {
+      amountText = 'Ladataan...';
+    } else {
+      if (isMap && Number(getUrlParams(search)?.zoom || 0) < MAX_ZOOM_LEVEL_TO_FETCH_LEASES) {
+        amountText = <>&nbsp;</>;
+      } else {
+        amountText = `Löytyi ${count} kpl`;
+      }
+    }
 
     return (
       <PageContainer>
-        <Authorization allow={isMethodAllowed(plotApplicationsMethods, Methods.POST)}>
-          <CreatePlotApplicationsModal
-            isOpen={isModalOpen}
-            onClose={this.hideCreatePlotApplicationsModal}
-            onSubmit={this.handleCreatePlotApplications}
-          />
-        </Authorization>
         <Row>
           <Column small={12} large={4}>
             <Authorization allow={isMethodAllowed(plotApplicationsMethods, Methods.POST)}>
               <AddButtonSecondary
                 className='no-top-margin'
                 label='Luo tonttihakemus'
-                onClick={this.openModalhandleCreatePlotApplication}
+                onClick={this.openCreatePlotApplication}
               />
             </Authorization>
           </Column>
           <Column small={12} large={8}>
             <Search
               isSearchInitialized={isSearchInitialized}
-              onSearch={()=>{}}
-              states={[]}
+              onSearch={this.handleSearchUpdated}
+              states={selectedStates}
+              context={visualizationType}
             />
           </Column>
         </Row>
-
         <TableFilterWrapper
           filterComponent={
             <TableFilters
-              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-              filterOptions={plotApplicationStateFilterOptions}
+              amountText={amountText}
+              filterOptions={[]}
               filterValue={plotApplicationStates}
-              onFilterChange={()=>{}}
+              onFilterChange={() => { }}
             />
-            
+
           }
           visualizationComponent={
             <VisualisationTypeWrapper>
               <IconRadioButtons
                 legend={'Kartta/taulukko'}
-                onChange={()=>{}} // this.handleVisualizationTypeChange
+                onChange={(value) => this.handleVisualizationTypeChange(value)}
                 options={visualizationTypeOptions}
                 radioName='visualization-type-radio'
                 value={visualizationType}
@@ -293,52 +506,61 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
             </VisualisationTypeWrapper>
           }
         />
-
         <TableWrapper>
           {isFetching &&
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>
           }
 
-          {visualizationType === 'table' &&
+          {isTable &&
             <Fragment>
               <SortableTable
                 columns={columns}
-                data={filteredApplications}
+                data={applications}
                 listTable
                 onRowClick={this.handleRowClick}
-                onSortingChange={()=>{}} // this.handleSortingChange
                 serverSideSorting
                 showCollapseArrowColumn
-                sortable
-                sortKey={sortKey}
-                sortOrder={sortOrder}
               />
               <Pagination
                 activePage={activePage}
                 maxPage={maxPage}
-                onPageClick={()=>{}} // this.handlePageClick(page)
+                onPageClick={(page) => this.handlePageClick(page)}
               />
             </Fragment>
           }
+          {isMap &&
+            <ApplicationListMap
+              allowToEdit={false}
+              isLoading={isFetching}
+              onViewportChanged={this.handleMapViewportChanged}
+            />
+          }
         </TableWrapper>
+        <PlotApplicationsListOpeningModal isOpen={!!openingRecordPopupTarget} data={openingRecordPopupTarget} onClose={this.closeOpeningModal} />
       </PageContainer>
     );
   }
 }
 
-export default flowRight(
+export default (flowRight(
   withRouter,
   withPlotApplicationsAttributes,
   connect(
     (state) => {
       return {
         isFetching: getIsFetching(state),
+        isFetchingByBBox: getIsFetchingByBBox(state),
         plotApplicationsListData: getPlotApplicationsList(state),
+        plotApplicationsMapData: getPlotApplicationsListByBBox(state),
       };
     },
     {
       receiveTopNavigationSettings,
+      fetchPlotApplicationsByBBox,
       fetchPlotApplicationsList,
+      fetchPlotSearchList,
+      fetchPlotSearchAttributes,
+      initialize,
     }
   ),
-)(PlotApplicationsListPage);
+)(PlotApplicationsListPage): React$ComponentType<OwnProps>);

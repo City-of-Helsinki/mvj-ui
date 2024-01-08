@@ -7,7 +7,7 @@ type Props = {
   style?: Object,
 };
 
-const ErrorField = ({meta: {error}, showError = false, style}: Props) =>
+const ErrorField = ({meta: {error}, showError = false, style}: Props): React$Node =>
   (showError && error) ? <span className="form-field__error-field" role="alert" style={style}>{error}</span> : null;
 
 export default ErrorField;

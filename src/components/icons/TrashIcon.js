@@ -6,7 +6,7 @@ type Props = {
   className?: string,
 }
 
-const TrashIcon = ({className}: Props) =>
+const TrashIcon = ({className}: Props): React$Element<'svg'> =>
   <svg className={classNames('icons', 'icons__trash', className)} viewBox="0 0 20 20">
     <title>Poista</title>
     <g stroke="none" strokeWidth="1" fill="none">

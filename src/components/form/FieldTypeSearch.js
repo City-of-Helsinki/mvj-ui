@@ -23,7 +23,7 @@ const FieldTypeSearch = ({
   isDirty,
   placeholder,
   type = 'text',
-}: Props) => {
+}: Props): React$Node => {
   const handleChange = (e: any) => {
     if(autoBlur) {
       onBlur(e.target.value);

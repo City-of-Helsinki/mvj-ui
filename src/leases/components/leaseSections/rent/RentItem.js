@@ -123,7 +123,11 @@ const RentItem = ({
     rentAdjustments = get(rent, 'rent_adjustments', []),
     payableRents = get(rent, 'payable_rents', []),
     equalizedRents = get(rent, 'equalized_rents', []),
-    typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
+    typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE),
+    rentTypeIsIndex = rentType === RentTypes.INDEX,
+    rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
+    rentTypeIsManual = rentType === RentTypes.MANUAL,
+    rentTypeIsFixed = rentType === RentTypes.FIXED;
 
   return (
     <Collapse
@@ -151,8 +155,7 @@ const RentItem = ({
       />
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
-        {(rentType === RentTypes.INDEX ||
-          rentType === RentTypes.MANUAL) &&
+        {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsManual) &&
           <Collapse
             className='collapse__secondary'
             defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true}
@@ -166,9 +169,7 @@ const RentItem = ({
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
-        {(rentType === RentTypes.INDEX ||
-          rentType === RentTypes.FIXED ||
-          rentType === RentTypes.MANUAL) &&
+        {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsFixed || rentTypeIsManual) &&
           <Collapse
             className='collapse__secondary'
             defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true}
@@ -185,8 +186,7 @@ const RentItem = ({
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseIndexAdjustedRentsFieldPaths.INDEX_ADJUSTED_RENTS)}>
-        {!!indexAdjustedRents.length &&
-          (rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
+        {!!indexAdjustedRents.length && (rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsManual) &&
           <Collapse
             className='collapse__secondary'
             defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
@@ -200,9 +200,7 @@ const RentItem = ({
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS)}>
-        {(rentType === RentTypes.INDEX ||
-          rentType === RentTypes.FIXED ||
-          rentType === RentTypes.MANUAL) &&
+        {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsFixed || rentTypeIsManual) &&
           <Collapse
             className='collapse__secondary'
             defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
@@ -216,8 +214,7 @@ const RentItem = ({
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePayableRentsFieldPaths.PAYABLE_RENTS)}>
-        {!!payableRents.length &&
-          (rentType === RentTypes.INDEX || rentType === RentTypes.FIXED || rentType === RentTypes.MANUAL) &&
+        {!!payableRents.length && (rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsFixed || rentTypeIsManual) &&
           <Collapse
             className='collapse__secondary'
             defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}

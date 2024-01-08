@@ -26,12 +26,16 @@ import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
 import PlotSearchListPage from '$src/plotSearch/components/PlotSearchListPage';
 import PlotApplicationsListPage from '$src/plotApplications/components/PlotApplicationsListPage';
 import PlotSearchPage from '$src/plotSearch/components/PlotSearchPage';
-import PlotApplicationsPage from '$src/plotApplications/components/PlotApplicationsPage';
+import PlotApplicationsPage from '$src/plotApplications/components/PlotApplicationPage';
 import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
 import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
 import SapInvoicesListPage from '$src/sapInvoice/components/SapInvoicesListPage';
 import LeaseStatisticReport from '$src/leaseStatisticReport/components/LeaseStatisticReportPage';
 import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegisterSearchPage';
+import PlotApplicationCreatePage from '$src/plotApplications/components/PlotApplicationCreatePage';
+import AreaSearchApplicationListPage from '$src/areaSearch/components/AreaSearchApplicationListPage';
+import AreaSearchApplicationPage from '$src/areaSearch/components/AreaSearchApplicationPage';
+import AreaSearchApplicationCreatePage from '$src/areaSearch/components/AreaSearchApplicationCreatePage';
 
 /**
  * Routes enumerate
@@ -39,6 +43,7 @@ import TradeRegisterSearchPage from '$src/tradeRegister/components/TradeRegister
  */
 export const Routes = {
   AREA_NOTES: 'area_notes',
+  AREA_SEARCH: 'area_search',
   BASIS_OF_RENT_CALCULATOR: 'basis_of_rent_calculator',
   BATCH_RUN: 'batch_jobs',
   CALLBACK: 'callback',
@@ -70,6 +75,7 @@ export const Routes = {
 export const getRouteById = (id: string): string => {
   const routes = {
     [Routes.AREA_NOTES]: '/muistettavatehdot',
+    [Routes.AREA_SEARCH]: '/aluehaut',
     [Routes.BASIS_OF_RENT_CALCULATOR]: '/vuokralaskuri',
     [Routes.BATCH_RUN]: '/eraajot',
     [Routes.CALLBACK]: '/callback',
@@ -96,8 +102,7 @@ export const getRouteById = (id: string): string => {
   return routes[id] ? routes[id] : '';
 };
 
-export default
-<App>
+export default (<App>
   <Switch>
     <Redirect exact from="/" to={getRouteById(Routes.LEASES)} />
     <Route exact path={getRouteById(Routes.LEASES)} component={LeaseListPage} />
@@ -126,8 +131,12 @@ export default
     <Route exact path={getRouteById(Routes.PLOT_SEARCH)} component={PlotSearchListPage} />
     <Route exact path={`${getRouteById(Routes.PLOT_SEARCH)}/:plotSearchId`} component={PlotSearchPage} />
     <Route exact path={getRouteById(Routes.PLOT_APPLICATIONS)} component={PlotApplicationsListPage} />
+    <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/uusi`} component={PlotApplicationCreatePage} />
     <Route exact path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotApplicationId`} component={PlotApplicationsPage} />
+    <Route exact path={getRouteById(Routes.AREA_SEARCH)} component={AreaSearchApplicationListPage} />
+    <Route exact path={`${getRouteById(Routes.AREA_SEARCH)}/uusi`} component={AreaSearchApplicationCreatePage} />
+    <Route exact path={`${getRouteById(Routes.AREA_SEARCH)}/:areaSearchId`} component={AreaSearchApplicationPage} />
     <Route exact path={getRouteById(Routes.CREDIT_DECISION)} component={CreditDecisionSearchPage} />
     <Route component={ErrorPage} />
   </Switch>
-</App>;
+</App>: React$Node);

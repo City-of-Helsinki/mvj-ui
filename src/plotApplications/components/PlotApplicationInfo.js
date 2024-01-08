@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 type Props = {
@@ -9,7 +8,7 @@ type Props = {
 
 const PlotApplicationInfo = ({
   title,
-}: Props) => {
+}: Props): React$Node => {
 
   return (
     <div className='lease-info'>
@@ -22,5 +21,4 @@ const PlotApplicationInfo = ({
   );
 };
 
-export default connect(
-)(PlotApplicationInfo);
+export default PlotApplicationInfo;

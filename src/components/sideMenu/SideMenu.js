@@ -22,7 +22,12 @@ import {withUsersPermissions} from '$components/attributes/UsersPermissions';
 
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 
+type OwnProps = {
+
+};
+
 type Props = {
+  ...OwnProps,
   history: Object,
   isFetchingUsersPermissions: boolean,
   isOpen: boolean,
@@ -199,19 +204,19 @@ class SideMenu extends Component<Props, State> {
                   </Authorization>
 
                   <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
-
-                  <SubMenu
+                  
+                  { process.env.NODE_ENV !== 'production' && <SubMenu
                     header='Tonttihaut ja kilpailut'
                     isOpen={subMenuKey === 'plot'}
                     items={[
                       {
-                        allow: true,
+                        allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_PLOTSEARCH),
                         onClick: handleClick,
                         text: 'Tonttihaut',
                         to: getRouteById(Routes.PLOT_SEARCH),
                       },
                       {
-                        allow: true,
+                        allow: hasPermissions(usersPermissions, UsersPermissions.VIEW_ANSWER),
                         onClick: handleClick,
                         text: 'Tonttihakemukset',
                         to: getRouteById(Routes.PLOT_APPLICATIONS),
@@ -219,7 +224,10 @@ class SideMenu extends Component<Props, State> {
                     ]}
                     menuKey='plot'
                     onHeaderClick={this.handleHeaderClick}
-                  />
+                  />}
+                  { process.env.NODE_ENV !== 'production' && <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_AREASEARCH)}>
+                    <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_SEARCH)}>Aluehaut</Link></li>
+                  </Authorization>}
 
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
@@ -296,7 +304,7 @@ class SideMenu extends Component<Props, State> {
   }
 }
 
-export default flowRight(
+export default (flowRight(
   withUsersPermissions,
   withRouter,
-)(SideMenu);
+)(SideMenu): React$ComponentType<OwnProps>);

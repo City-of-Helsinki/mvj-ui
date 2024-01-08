@@ -20,12 +20,12 @@ import type {UsersPermissions} from '$src/usersPermissions/types';
 /**
  * Compose page title
  * @param {string} title
- * @param {boolean} presend
+ * @param {boolean} prepend
  * @returns {string}
  */
 export const composePageTitle = (title: string = '', prepend?: boolean = true): string => {
-  return prepend 
-    ? `${title ? `${title} | ` : ''}Maanvuokrausjärjestelmä | Helsingin Kaupunki` 
+  return prepend
+    ? `${title ? `${title} | ` : ''}Maanvuokrausjärjestelmä | Helsingin Kaupunki`
     : title;
 };
 
@@ -142,7 +142,7 @@ export const getSearchQuery = (filters: any): string => {
 
 /**
  * Get url parameters from search string
- * @param {string} string
+ * @param {string} search
  * @returns {Object}
  */
 export const getUrlParams = (search: string = ''): Object => {
@@ -176,7 +176,7 @@ export const getUrlParams = (search: string = ''): Object => {
  * @param {Object} opts - Options
  */
 /* istanbul ignore next */
-export const displayUIMessage = (message: Object, opts?: Object = {type: 'success'}) => {
+export const displayUIMessage = (message: Object, opts?: Object = {type: 'success'}): void => {
   const {title, body} = message;
   const icon = <ToastrIcons name={opts.type} />;
 
@@ -231,7 +231,7 @@ export const formatNumberWithThousandSeparator = (x: any, separator?: string = '
   if(isDecimalNumber) {
     const decimalSeparator = x.toString().includes('.') ? '.' : ',';
     const parts = x.toString().split(decimalSeparator);
-    
+
     return parts[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator) +
       decimalSeparator +
       parts[1];
@@ -239,26 +239,28 @@ export const formatNumberWithThousandSeparator = (x: any, separator?: string = '
 
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 };
-  
+
 
 /**
  * Format decimal number
  * @param {number} x
+ * @param {number} decimals
  * @returns {string}
  */
-export const formatDecimalNumber = (x: ?number): ?string => 
-  !isEmptyValue(x) 
-    ? parseFloat(x).toFixed(2).toString().replace('.', ',') 
+export const formatDecimalNumber = (x: ?number, decimals: ?number = 2): ?string =>
+  !isEmptyValue(x)
+    ? parseFloat(x).toFixed(decimals || undefined).toString().replace('.', ',')
     : null;
 
 /**
  * Format number to show on UI
  * @param {*} x
+ * @param {number} decimals
  * @returns {string}
  */
-export const formatNumber = (x: any): string => 
-  !isEmptyValue(x) 
-    ? formatNumberWithThousandSeparator(formatDecimalNumber(x)) 
+export const formatNumber = (x: any, decimals: ?number = 2): string =>
+  !isEmptyValue(x)
+    ? formatNumberWithThousandSeparator(formatDecimalNumber(x, decimals))
     : '';
 
 /**
@@ -266,7 +268,7 @@ export const formatNumber = (x: any): string =>
  * @param {*} value
  * @returns {boolean}
  */
-export const isDecimalNumberStr = (value: any): boolean => 
+export const isDecimalNumberStr = (value: any): boolean =>
   (!isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')));
 
 /**
@@ -274,8 +276,8 @@ export const isDecimalNumberStr = (value: any): boolean =>
  * @param {*} x
  * @returns {number}
  */
-export const convertStrToDecimalNumber = (x: any): ?number => 
-  isDecimalNumberStr(x) 
+export const convertStrToDecimalNumber = (x: any): ?number =>
+  isDecimalNumberStr(x)
     ? Number(x.toString().replace(',', '.').replace(/\s+/g, ''))
     : null;
 
@@ -314,7 +316,7 @@ export const formatDateRange = (startDate: any, endDate: any): string => {
  * @returns {string}
  */
 /* istanbul ignore next */
-export const getApiUrlWithOutVersionSuffix = () => {
+export const getApiUrlWithOutVersionSuffix = (): string => {
   return process.env.API_URL ? process.env.API_URL.split('/v1')[0] : '';
 };
 
@@ -335,8 +337,8 @@ export const getReferenceNumberLink = (referenceNumber: ?string): ?string => {
  * @param {number} id
  * @returns {Object}
  */
-export const findItemById = (collection: Array<Object>, id: number): ?Object => 
-  collection.find((item) => item.id == id);
+export const findItemById = (collection: Array<Object>, id: number): ?Object =>
+  collection.find((item) => item.id === id);
 
 /**
  * Get label of an option
@@ -344,16 +346,16 @@ export const findItemById = (collection: Array<Object>, id: number): ?Object =>
  * @param {*} value
  * @returns {string}
  */
-export const getLabelOfOption = (options: Array<Object>, value: any): ?string => 
+export const getLabelOfOption = (options: Array<Object>, value: any): ?string =>
   (options && value != null)
-    ? get(options.find(x => x.value == value), 'label', null)
+    ? get(options.find(x => x.value === value), 'label', null)
     : null;
 
 /**
  * Sort objects in ascending numerical order by key
  * @param {Object} a
  * @param {Object} b
- * @param {key} string
+ * @param {string} key
  * @returns {number}
  */
 export const sortNumberByKeyAsc = (a: Object, b: Object, key: string): number => {
@@ -367,7 +369,7 @@ export const sortNumberByKeyAsc = (a: Object, b: Object, key: string): number =>
  * Sort objects in descending numerical order by key
  * @param {Object} a
  * @param {Object} b
- * @param {key} string
+ * @param {string} key
  * @returns {number}
  */
 export const sortNumberByKeyDesc = (a: Object, b: Object, key: string): number => {
@@ -391,14 +393,18 @@ export const sortStringAsc = (a: ?string, b: ?string): number => {
  * Sort objects in ascending order by key
  * @param {Object} a
  * @param {Object} b
- * @param {key} string
+ * @param {string} key
  * @returns {number}
  */
 export const sortStringByKeyAsc = (a: Object, b: Object, key: string): number => {
-  const valA = (get(a, key) || '').toLowerCase();
-  const valB = (get(b, key) || '').toLowerCase();
+  const valA = (get(a, key) || '');
+  const valB = (get(b, key) || '');
 
-  return sortStringAsc(valA, valB);
+  // Check if the value is actually a string before trying to convert it to lowercase
+  const finalValA = String(valA) === valA ? valA.toLowerCase() : '';
+  const finalValB = String(valB) === valB ? valB.toLowerCase() : '';
+
+  return sortStringAsc(finalValA, finalValB);
 };
 
 /**
@@ -415,21 +421,25 @@ export const sortStringDesc = (a: ?string, b: ?string): number => {
  * Sort objects in descending order by key
  * @param {Object} a
  * @param {Object} b
- * @param {key} string
+ * @param {string} key
  * @returns {number}
  */
 export const sortStringByKeyDesc = (a: Object, b: Object, key: string): number => {
-  const valA = (get(a, key) || '').toLowerCase();
-  const valB = (get(b, key) || '').toLowerCase();
+  const valA = (get(a, key) || '');
+  const valB = (get(b, key) || '');
 
-  return sortStringDesc(valA, valB);
+  // Check if the value is actually a string before trying to convert it to lowercase
+  const finalValA = String(valA) === valA ? valA.toLowerCase() : '';
+  const finalValB = String(valB) === valB ? valB.toLowerCase() : '';
+
+  return sortStringDesc(finalValA, finalValB);
 };
 
 /**
  * Sort objects in ascending order by key
  * @param {Object} a
  * @param {Object} b
- * @param {key} string
+ * @param {string} key
  * @param {Object[]} options
  * @returns {number}
  */
@@ -444,11 +454,11 @@ export const sortByOptionsAsc = (a: Object, b: Object, key: string, options: Arr
  * Sort objects in descending order by key
  * @param {Object} a
  * @param {Object} b
- * @param {key} string
+ * @param {string} key
  * @param {Object[]} options
  * @returns {number}
  */
-export const sortByOptionsDesc = (a: Object, b: Object, key: string, options: Array<Object>) => {
+export const sortByOptionsDesc = (a: Object, b: Object, key: string, options: Array<Object>): number => {
   const valA = a[key] ? getLabelOfOption(options, a[key]) || '' : '',
     valB = b[key] ? getLabelOfOption(options, b[key]) || '' : '';
 
@@ -479,7 +489,7 @@ const getFilenameFromContentDisposition = (contentDisposition: any): ?string => 
  * @returns {string | null}
  */
 /* istanbul ignore next */
-export const getFileNameFromResponse = (response: any) => 
+export const getFileNameFromResponse = (response: any): ?string =>
   getFilenameFromContentDisposition(response.headers.get('content-disposition'));
 
 /**
@@ -488,7 +498,7 @@ export const getFileNameFromResponse = (response: any) =>
  */
 /* istanbul ignore next */
 const selectElementContents = (el) => {
-  if (document.createRange && window.getSelection) {
+  if (window.document.createRange && window.getSelection) {
     const range = document.createRange();
     const sel = window.getSelection();
     sel.removeAllRanges();
@@ -509,7 +519,7 @@ const selectElementContents = (el) => {
  * @returns {boolean}
  */
 /* istanbul ignore next */
-export const copyElementContentsToClipboard = (el: any) => {
+export const copyElementContentsToClipboard = (el: any): boolean => {
   const selection = document.getSelection(),
     selected = selection && selection.rangeCount > 0
       ? selection.getRangeAt(0)
@@ -535,7 +545,7 @@ export const copyElementContentsToClipboard = (el: any) => {
  * @param {Object[]} options
  * @returns {Object[]}
  */
-export const addEmptyOption = (options: Array<Object>): Array<Object> => 
+export const addEmptyOption = (options: Array<Object>): Array<Object> =>
   [{value: '', label: ''}, ...options];
 
 /**
@@ -545,7 +555,7 @@ export const addEmptyOption = (options: Array<Object>): Array<Object> =>
  * @returns {boolean}
  */
 export const isFieldRequired = (attributes: Attributes, field: string): boolean =>
-  get(attributes, `${field}.required`) ? true : false;
+  !!get(attributes, `${field}.required`);
 
 /**
  * Test has user edit permissions to field
@@ -554,7 +564,7 @@ export const isFieldRequired = (attributes: Attributes, field: string): boolean 
  * @returns {boolean}
  */
 export const isFieldAllowedToEdit = (attributes: Attributes, field: string): boolean =>
-  get(attributes, `${field}.read_only`) === false ? true : false;
+  get(attributes, `${field}.read_only`) === false;
 
 /**
  * Test has user read permissions to field
@@ -563,7 +573,7 @@ export const isFieldAllowedToEdit = (attributes: Attributes, field: string): boo
  * @returns {boolean}
  */
 export const isFieldAllowedToRead = (attributes: Attributes, field: string): boolean =>
-  get(attributes, field) ? true : false;
+  !!get(attributes, field);
 
 /**
  * Test has user permission to a method
@@ -572,7 +582,7 @@ export const isFieldAllowedToRead = (attributes: Attributes, field: string): boo
  * @returns {boolean}
  */
 export const isMethodAllowed = (methods: Methods, method: string): boolean =>
-  get(methods, method) ? true : false;
+  !!get(methods, method);
 
 /**
  * Check has user permission to do action
@@ -581,7 +591,7 @@ export const isMethodAllowed = (methods: Methods, method: string): boolean =>
  * @returns {boolean}
  */
 export const hasPermissions = (permissions: UsersPermissions, key: string): boolean =>
-  permissions && permissions.find((permission) => permission.codename === key) ? true : false;
+  permissions && !!permissions.find((permission) => permission.codename === key);
 
 /**
  * Get options for attribute field
@@ -626,7 +636,7 @@ export const getFieldOptions = (attributes: Attributes, path: string, addEmpty: 
  * @returns {Object}
  */
 
-export const getFieldAttributes = (attributes: Attributes, path: string): ?Object => 
+export const getFieldAttributes = (attributes: Attributes, path: string): ?Object =>
   get(attributes, path);
 
 /**
@@ -648,7 +658,7 @@ export const humanReadableByteCount = (bytes: number): string => {
  * @param {string} text
  * @returns {boolean}
  */
-export const hasNumber = (text: string): boolean => 
+export const hasNumber = (text: string): boolean =>
   /\d/.test(text);
 
 /**
@@ -657,7 +667,7 @@ export const hasNumber = (text: string): boolean =>
  * @param {string} key
  * @returns {string | null}
  */
-export const findFromOcdString = (ocd: string, key: string) => {
+export const findFromOcdString = (ocd: string, key: string): ?string => {
   const property = ocd.split('/')
     .map((item) => item.split(':'))
     .find((item) => item[0] === key);
@@ -672,7 +682,7 @@ export const findFromOcdString = (ocd: string, key: string) => {
  * @param {string} url
  * @returns {string}
  */
-export const createPaikkatietovipunenUrl = (url: string): string => 
+export const createPaikkatietovipunenUrl = (url: string): string =>
   `${PAIKKATIETOVIPUNEN_URL}/${url}`;
 
 
@@ -681,7 +691,7 @@ export const createPaikkatietovipunenUrl = (url: string): string =>
  * @param {Object} response
  * @returns {number}
  */
-export const getApiResponseCount = (response: ApiResponse): number => 
+export const getApiResponseCount = (response: ApiResponse): number =>
   get(response, 'count', 0);
 
 /**
@@ -701,7 +711,7 @@ export const getApiResponseMaxPage = (response: ApiResponse, size: number): numb
  * @param {Object} response
  * @returns {Object[]}
  */
-export const  getApiResponseResults = (response: ApiResponse) => 
+export const getApiResponseResults = (response: ApiResponse): Array<Object> =>
   get(response, 'results', []);
 
 /**
@@ -740,7 +750,8 @@ export const isActive = (item: ?Object): boolean => {
   const startDate = get(item, 'start_date') || '0000-01-01';
   const endDate = get(item, 'end_date') || '9999-12-31';
 
-  if((startDate && isFuture(new Date(startDate))) || (endDate && isPast(new Date(endDate)))) {
+  // noinspection RedundantIfStatementJS
+  if ((startDate && isFuture(new Date(startDate))) || (endDate && isPast(new Date(endDate)))) {
     return false;
   }
 
@@ -756,11 +767,12 @@ export const isActiveOrFuture = (item: ?Object): boolean => {
   const startDate = get(item, 'start_date') || '0000-01-01';
   const endDate = get(item, 'end_date') || '9999-12-31';
 
-  if((startDate && isFuture(new Date(startDate)))) {
+  if ((startDate && isFuture(new Date(startDate)))) {
     return true;
   }
 
-  if((endDate && isPast(new Date(endDate)))) {
+  // noinspection RedundantIfStatementJS
+  if (endDate && isPast(new Date(endDate))) {
     return false;
   }
 
@@ -775,7 +787,8 @@ export const isActiveOrFuture = (item: ?Object): boolean => {
 export const isArchived = (item: ?Object): boolean => {
   const endDate = get(item, 'end_date') || '9999-12-31';
 
-  if(isPast(new Date(endDate))) {
+  // noinspection RedundantIfStatementJS
+  if (isPast(new Date(endDate))) {
     return true;
   }
 

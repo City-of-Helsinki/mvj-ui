@@ -1,11 +1,11 @@
 // @flow
 type Props = {
   allow: boolean,
-  children?: any,
-  errorComponent?: any,
+  children?: React$Node,
+  errorComponent?: React$Node,
 }
 
-const Authorization = ({allow, children, errorComponent}: Props) =>
+const Authorization = ({allow, children, errorComponent}: Props): React$Node =>
   allow
     ? children || null
     : errorComponent ? errorComponent : null;

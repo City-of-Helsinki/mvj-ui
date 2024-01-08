@@ -75,7 +75,7 @@ export const rentCustomDateOptions = [
  * Default lease states value for lease list search
  * @const {string[]}
  */
-export const DEFAULT_LEASE_STATES = [];
+export const DEFAULT_LEASE_STATES: Array<Object> = [];
 
 /**
  * Default only_active_leases value for lease list search
@@ -106,4 +106,3 @@ export const MAX_ZOOM_LEVEL_TO_FETCH_LEASES = 7;
  * @const {string[]}
  */
 export const BOUNDING_BOX_FOR_SEARCH_QUERY = ['24.681112147072024', '60.102173950499285', '25.388881322490807', '60.31481365757164'];
-

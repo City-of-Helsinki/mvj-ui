@@ -28,7 +28,7 @@ export type Column = {
   renderer?: Function,
   sortable?: boolean,
   style?: Object,
-  text: string,
+  text: React$Node,
 }
 
 type Props = {
@@ -52,6 +52,10 @@ type Props = {
   sortOrder?: string,
   sortable?: boolean,
   style?: Object,
+  className?: string,
+  footer?: ({|
+    columnCount: number,
+  |}) => React$Node,
 }
 
 type State = {
@@ -157,7 +161,7 @@ class SortableTable extends Component<Props, State> {
   thead: any
   _isMounted: boolean
 
-  state = {
+  state: State = {
     collapse: true,
     columns: [],
     data: [],
@@ -169,34 +173,33 @@ class SortableTable extends Component<Props, State> {
     theadStyle: {},
   }
 
-  static defaultProps = {
+  static defaultProps: $Shape<Props> = {
     fixedHeader: false,
     noDataText: 'Ei tuloksia',
-    showRadioButton: false,
     sortable: false,
   }
 
-  setContainerRef = (el: any) => {
+  setContainerRef: (any) => void = (el) => {
     this.container = el;
   }
 
-  setScrollBodyTableRef = (el: any) => {
+  setScrollBodyTableRef: (any) => void = (el) => {
     this.scrollBodyTable = el;
   }
 
-  setScrollBodyWrapperRef = (el: any) => {
+  setScrollBodyWrapperRef: (any) => void = (el) => {
     this.scrollBodyWrapper = el;
   }
 
-  setScrollHeaderWrapperRef = (el: any) => {
+  setScrollHeaderWrapperRef: (any) => void = (el) => {
     this.scrollHeaderWrapper = el;
   }
 
-  setTheadRef = (el: any) => {
+  setTheadRef: (any) => void = (el) => {
     this.thead = el;
   }
 
-  static getDerivedStateFromProps(props: Props, state: State) {
+  static getDerivedStateFromProps(props: Props, state: State): $Shape<State> | null {
     const newState = {};
     if(props.data !== state.data || props.columns !== state.columns) {
       newState.data = props.data;
@@ -246,7 +249,7 @@ class SortableTable extends Component<Props, State> {
     }
   }
 
-  handleResize = debounce(() => {
+  handleResize: () => void = debounce(() => {
     const {fixedHeader} = this.props;
 
     if(fixedHeader) {
@@ -254,20 +257,22 @@ class SortableTable extends Component<Props, State> {
     }
   }, 100)
 
-  updateHeaderPosition = debounce(() => {
+  updateHeaderPosition: () => void = debounce(() => {
     const scrollLeft = this.scrollBodyWrapper.scrollLeft;
     this.scrollHeaderWrapper.scrollLeft = scrollLeft;
   }, 1)
 
-  updateBodyPosition = () => {
+  updateBodyPosition: () => void = () => {
     const scrollLeft = this.scrollHeaderWrapper.scrollLeft;
     this.scrollBodyWrapper.scrollLeft = scrollLeft;
   }
 
-  setTableScrollHeaderColumnStyles = () => {
-    if(!this._isMounted) return;
+  setTableScrollHeaderColumnStyles: () => void = () => {
+    if (!this._isMounted) {
+      return;
+    }
 
-    const ths = [].slice.call(this.thead.querySelectorAll('th'));
+    const ths = Array.from(this.thead.querySelectorAll('th'));
 
     const scrollHeaderColumnStyles = ths.map((th) => {
       const rect = th.getBoundingClientRect();
@@ -291,7 +296,7 @@ class SortableTable extends Component<Props, State> {
     });
   }
 
-  onSortingChange = (column: Column) => {
+  onSortingChange: (Column) => void = (column) => {
     const {columns, data, onSortingChange, serverSideSorting} = this.props;
     const sortKey = serverSideSorting ? this.props.sortKey : this.state.sortKey;
     const sortOrder = serverSideSorting ? this.props.sortOrder : this.state.sortOrder;
@@ -327,10 +332,10 @@ class SortableTable extends Component<Props, State> {
     }
   }
 
-  selectNext = () => {
+  selectNext: () => void = () => {
     const {onSelectNext, selectedRow} = this.props;
 
-    if(!selectedRow || !onSelectNext) {
+    if (!selectedRow || !onSelectNext) {
       return;
     }
 
@@ -342,10 +347,10 @@ class SortableTable extends Component<Props, State> {
     }
   }
 
-  selectPrevious = () => {
+  selectPrevious: () => void = () => {
     const {onSelectPrevious, selectedRow} = this.props;
 
-    if(!selectedRow || !onSelectPrevious) {
+    if (!selectedRow || !onSelectPrevious) {
       return;
     }
 
@@ -357,7 +362,7 @@ class SortableTable extends Component<Props, State> {
     }
   }
 
-  getRowsFromSortedData = () => {
+  getRowsFromSortedData: () => Array<Object> = () => {
     const {sortedData} = this.state;
     let rows = [];
 
@@ -371,26 +376,28 @@ class SortableTable extends Component<Props, State> {
     return rows;
   }
 
-  calculateMaxHeight = () => {
+  calculateMaxHeight: () => ?number = () => {
     const {fixedHeader, maxHeight} = this.props;
 
-    if(!maxHeight || !fixedHeader || !this.scrollHeaderWrapper) {
+    if (!maxHeight || !fixedHeader || !this.scrollHeaderWrapper) {
       return maxHeight;
     }
     const {clientHeight: headerHeight} = this.scrollHeaderWrapper;
     return maxHeight - headerHeight;
   }
 
-  getNoDataColSpan = () => {
+  getNoDataColSpan: () => number = () => {
     const {columns, showCollapseArrowColumn} = this.props;
     let colSpan = columns.length;
 
-    if(showCollapseArrowColumn) colSpan++;
+    if (showCollapseArrowColumn) {
+      colSpan++;
+    }
 
     return colSpan;
   }
 
-  render() {
+  render(): React$Node {
     const {
       columns,
       fixedHeader,
@@ -402,6 +409,8 @@ class SortableTable extends Component<Props, State> {
       showCollapseArrowColumn,
       sortable,
       style,
+      className,
+      footer,
     } = this.props;
     const {
       scrollHeaderColumnStyles,
@@ -419,7 +428,11 @@ class SortableTable extends Component<Props, State> {
     return (
       <div
         ref={this.setContainerRef}
-        className={classNames('sortable-table__container', {'fixed-table-container': fixedHeader})}
+        className={classNames(
+          'sortable-table__container',
+          {'fixed-table-container': fixedHeader},
+          className
+        )}
         style={style}
       >
         {fixedHeader &&
@@ -511,6 +524,11 @@ class SortableTable extends Component<Props, State> {
                   />;
               })}
             </tbody>
+            {footer && <tfoot>
+              {footer({
+                columnCount: columns.length + (showCollapseArrowColumn ? 1 : 0),
+              })}
+            </tfoot>}
           </table>
         </div>
       </div>

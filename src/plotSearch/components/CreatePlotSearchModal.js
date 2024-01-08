@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 
-import CreatePlotSearchForm from './CreatePlotSearchForm';
+import CreatePlotSearchForm from '$src/plotSearch/components/CreatePlotSearchForm';
 import Modal from '$components/modal/Modal';
 
 
@@ -20,11 +20,11 @@ class CreatePlotSearchModal extends Component<Props> {
     }
   }
 
-  setRefForForm = (element: any) => {
+  setRefForForm: Function = (element: any): void => {
     this.form = element;
   }
 
-  render () {
+  render(): React$Node {
     const {
       isOpen,
       onClose,

@@ -17,7 +17,7 @@ import {hasPermissions, setPageTitle} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
   getReportTypeOptions,
-} from '$src/leaseStatisticReport/helpers'; 
+} from '$src/leaseStatisticReport/helpers';
 import LeaseStatisticReportForm from './LeaseStatisticReportForm';
 import LeaseInvoicingConfirmationReport from './LeaseInvoicingConfirmationReport';
 import {getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions} from '$src/usersPermissions/selectors';
@@ -26,13 +26,10 @@ import type {Reports} from '$src/types';
 import GreenBox from '$components/content/GreenBox';
 import SubTitle from '$components/content/SubTitle';
 import {
-  getIsFetchingReportData, 
-  getPayload, 
+  getIsFetchingReportData,
+  getPayload,
   getReports,
 } from '$src/leaseStatisticReport/selectors';
-import {
-  LeaseStatisticReportTitles,
-} from '$src/leaseStatisticReport/enums';
 import {
   getReportData,
 } from '$src/leaseStatisticReport/selectors';
@@ -74,9 +71,9 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
 
   render() {
     const {
-      isFetchingUsersPermissions, 
-      usersPermissions, 
-      reportData, 
+      isFetchingUsersPermissions,
+      usersPermissions,
+      reportData,
       isFetchingReportData,
       payload,
       reports,
@@ -94,9 +91,6 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
           <h2>RAPORTIT</h2>
           <Divider />
           <GreenBox>
-            <SubTitle style={{textTransform: 'uppercase'}} >
-              {LeaseStatisticReportTitles.LEASE_STATISTICS_REPORT}
-            </SubTitle>
             <LeaseStatisticReportForm/>
           </GreenBox>
           {(!!reportData || isFetchingReportData) && <GreenBox className='with-top-margin'>

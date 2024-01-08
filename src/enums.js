@@ -68,12 +68,12 @@ export const ConfirmationModalTexts = {
   },
   CANCEL_CHANGES: {
     BUTTON: 'Poistu tallentamatta',
-    LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>,
+    LABEL: (<span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>: React$Element<"span">),
     TITLE: 'Poistu tallentamatta',
   },
   CLOSE_COMMENT_PANEL: {
     BUTTON: 'Sulje kommentointi',
-    LABEL: <span>Kaikkia muutoksia ei ole tallennettu.<br /> Haluatko varmasti sulkea kommentoinnin?</span>,
+    LABEL: (<span>Kaikkia muutoksia ei ole tallennettu.<br /> Haluatko varmasti sulkea kommentoinnin?</span>: React$Element<"span">),
     TITLE: 'Sulje kommentointi',
   },
   COPY_AREAS_TO_CONTRACT: {
@@ -83,7 +83,7 @@ export const ConfirmationModalTexts = {
   },
   CREATE_CONTACT: {
     BUTTON: 'Luo asiakas',
-    LABEL: <span>Tunnuksella on jo olemassa asiakas.<br />Haluatko luoda asiakkaan?</span>,
+    LABEL: (<span>Tunnuksella on jo olemassa asiakas.<br />Haluatko luoda asiakkaan?</span>: React$Element<"span">),
     TITLE: 'Luo asiakas',
   },
   DELETE_ADDRESS: {
@@ -151,6 +151,16 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa kohteen?',
     TITLE: 'Poista kohde',
   },
+  DELETE_CUSTOM_DETAILED_PLAN: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Halutako varmasti poistaa oman muun alueen?',
+    TITLE: 'Poista oma muu alue',
+  },
+  DELETE_INFO_LINKS: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Halutako varmasti poistaa lisätietolinkin?',
+    TITLE: 'Poista lisätietolinkki',
+  },
   DELETE_SUGGESTION: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa ehdotuksen?',
@@ -175,6 +185,11 @@ export const ConfirmationModalTexts = {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
     LABEL: 'Haluatko varmasti poistaa vuokrauksen täydennysrakentamiskorvauksesta?',
     TITLE: 'Poista vuokraus täydennysrakentamiskorvauksesta',
+  },
+  DELETE_INFO_LINK: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa lisätietolinkin?',
+    TITLE: 'Poista lisätietolinkki',
   },
   DELETE_INSPECTION: {
     BUTTON: DELETE_MODAL_BUTTON_TEXT,
@@ -316,6 +331,11 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa ohjetekstin',
     TITLE: 'Poista ohjeteksti',
   },
+  DELETE_USAGE_DISTRIBUTIONS: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa käyttöjakauman?',
+    TITLE: 'Poista käyttöjakauma',
+  },
   RESTORE_CHANGES: {
     BUTTON: 'Palauta muutokset',
     LABEL: 'Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?',
@@ -361,6 +381,31 @@ export const ConfirmationModalTexts = {
     LABEL: 'Haluatko varmasti poistaa tonttihakemuksen?',
     TITLE: 'Poista tonttihakemus',
   },
+  DELETE_SECTION_FIELD: {
+    BUTTON: 'Poista kenttä',
+    LABEL: 'Haluatko varmasti poistaa kentän?',
+    TITLE: 'Poista kenttä',
+  },
+  DELETE_SECTION_SUBSECTION: {
+    BUTTON: 'Poista aliosio',
+    LABEL: 'Haluatko varmasti poistaa aliosion?',
+    TITLE: 'Poista aliosio',
+  },
+  DELETE_APPLICATION_TARGET_PROPOSED_MANAGEMENT: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa hallinta- ja rahoitusmuotoehdotuksen?',
+    TITLE: 'Poista ehdotettu hallinta- ja rahoitusmuoto',
+  },
+  DELETE_APPLICATION_TARGET_CONDITION: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa varausehdon?',
+    TITLE: 'Poista varausehto',
+  },
+  DELETE_APPLICATION_TARGET_MEETING_MEMO: {
+    BUTTON: DELETE_MODAL_BUTTON_TEXT,
+    LABEL: 'Haluatko varmasti poistaa kokousmuistion?',
+    TITLE: 'Poista kokousmuistio',
+  },
 };
 
 /**
@@ -389,6 +434,8 @@ export const FieldTypes = {
   TEXTAREA: 'textarea',
   USER: 'user',
   TIME: 'time',
+  HIDDEN: 'hidden',
+  FRACTIONAL: 'fractional',
 };
 
 /**
@@ -398,6 +445,7 @@ export const FieldTypes = {
  */
 export const FormNames = {
   AREA_NOTE_SEARCH: 'area-note-search-form',
+  AREA_SEARCH_SEARCH: 'area-search-search-form',
   BASIS_OF_RENT_CALCULATOR: 'basis-of-rent-calculator-form',
   CONTACT: 'contact-form',
   CONTACT_SEARCH: 'contact-search-form',
@@ -446,13 +494,25 @@ export const FormNames = {
   RENT_CALCULATOR: 'rent-calculator-form',
   TRADE_REGISTER_SEARCH: 'trade-register-search-form',
   PLOT_SEARCH_BASIC_INFORMATION: 'plot-search-basic-information-form',
+  PLOT_SEARCH_DIRECT_RESERVATION_LINK: 'plot-search-direct-reservation-link',
   PLOT_SEARCH_APPLICATION: 'plot-search-application-form',
+  PLOT_SEARCH_APPLICATION_SECTION_STAGING: 'plot-search-application-form-section-staging',
+  PLOT_SEARCH_APPLICATION_PREVIEW_MOCK_FORM: 'plot-search-application-preview-mock-form',
+  PLOT_SEARCH_APPLICATIONS_OPENING: 'plot-search-applications-opening',
   PLOT_APPLICATIONS_CREATE: 'plot-application-create-form',
   PLOT_APPLICATIONS_SEARCH: 'plot-application-search',
   PLOT_APPLICATION: 'plot-application',
   PLOT_APPLICATION_PREVIEW: 'plot-application-preview',
+  PLOT_APPLICATION_OPENING: 'plot-application-opening',
+  APPLICANT_INFO_CHECK: 'applicant-info-check',
+  PLOT_APPLICATION_TARGET_INFO_CHECK: 'plot-application-target-info-check',
   LAND_USE_CONTRACT_CONDITIONS: 'land-use-contract-conditions',
   LAND_USE_CONTRACT_INVOICE_EDIT: 'land-use-contract-invoice-edit',
+  AREA_SEARCH: 'area-search',
+  AREA_SEARCH_CREATE_SPECS: 'area-search-create-specs',
+  AREA_SEARCH_CREATE_FORM: 'area-search-create-form',
+  AREA_SEARCH_PREPARER: 'area-search-preparer',
+  AREA_SEARCH_EXPORT: 'area-search-export',
 };
 
 /**
@@ -462,6 +522,7 @@ export const FormNames = {
  */
 export const PermissionMissingTexts = {
   AREA_NOTE: 'Ei oikeuksia muistettaviin ehtoihiin',
+  AREA_SEARCH: 'Ei oikeuksia aluehakuihin',
   BASIS_OF_RENT_CALCULATOR: 'Ei oikeuksia vuokralaskuriin',
   BATCHRUN: 'Ei oikeuksia eräajoihin',
   CONTACT: 'Ei oikeuksia asiakkaisiin',
@@ -478,6 +539,6 @@ export const PermissionMissingTexts = {
   STATISTICS_AND_REPORTS: 'Ei oikeuksia tilastoihin ja raportteihin',
   TRADE_REGISTER: 'Ei oikeuksia kaupparekisteriotteisiin',
   PLOT_SEARCH: 'Ei oikeuksia tonttihakuun',
-  PLOT_APPLICATIONS: 'Ei oikeuksia tonttihakekemusiin',
+  PLOT_APPLICATIONS: 'Ei oikeuksia tonttihakemuksiin',
   LAND_USE_CONTRACTS: 'Ei oikeuksia maankäyttösopimuksiin',
 };

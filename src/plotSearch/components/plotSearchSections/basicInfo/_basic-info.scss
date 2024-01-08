@@ -1,0 +1,13 @@
+.plot_search__basic-info-header-buttons {
+  float: right;
+  display: inline-flex;
+}
+
+.plot_search__basic-info {
+  .plot_search_target__info-links {
+    .form__text, .links__external-link {
+      margin-bottom: 0;
+    }
+    margin-bottom: 10px;
+  }
+}

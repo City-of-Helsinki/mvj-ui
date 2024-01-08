@@ -8,7 +8,7 @@ type Props = {
   style?: Object,
 }
 
-const FormText = (props: Props) => {
+const FormText = (props: Props): React$Node => {
   const {
     children,
     className,

@@ -12,7 +12,7 @@ import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
-import RelatedLeases from './RelatedLeases';
+import LeaseHistory from './LeaseHistory';
 import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import Title from '$components/content/Title';
@@ -532,7 +532,7 @@ class Summary extends PureComponent<Props, State> {
 
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RELATED_LEASES)}>
             <Column small={12} medium={4} large={3}>
-              <RelatedLeases />
+              <LeaseHistory />
             </Column>
           </Authorization>
         </Row>

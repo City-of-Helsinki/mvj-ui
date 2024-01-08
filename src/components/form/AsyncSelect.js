@@ -1,6 +1,6 @@
 // @flow
 import React, {Component} from 'react';
-// $FlowFixMe
+// $FlowFixMe[cannot-resolve-module]
 import Async from 'react-select/async';
 import classNames from 'classnames';
 
@@ -12,11 +12,14 @@ type Props = {
   displayError: boolean,
   getOptions: Function,
   input: Object,
+  isLoading?: boolean,
   isDirty: boolean,
   placeholder?: string,
   setRef?: Function,
   initialValues?: Object,
-  cacheOptions: any
+  cacheOptions?: any,
+  multiSelect?: boolean,
+  onChange?: Function,
 }
 
 type State = {
@@ -27,7 +30,7 @@ type State = {
 class AsyncSelect extends Component<Props, State> {
   select: any
 
-  setSelectRef = (el: any) => {
+  setSelectRef: ((el: any) => void) = (el) => {
     const {setRef} = this.props;
 
     this.select = el;
@@ -36,31 +39,34 @@ class AsyncSelect extends Component<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: { disabled: boolean, value: string, ... } = {
     disabled: false,
     value: '',
   };
 
-  state = {
+  state: State = {
     inputValue: '',
     menuOpened: false,
   }
 
-  handleBlur = () => {
+  handleBlur: (() => void) = () => {
     const {input: {onBlur, value}} = this.props;
 
-    if(onBlur) {
+    if (onBlur) {
       onBlur(value);
     }
   };
 
-  handleChange = (value: Object) => {
-    const {input: {onChange}} = this.props;
+  handleChange: ((value: Object) => void) = (value) => {
+    const {input: {onChange: inputOnChange}, onChange} = this.props;
 
-    onChange(value);
+    inputOnChange(value);
+    if (onChange) {
+      onChange(value);
+    }
   }
 
-  handleInputChange = (value: string, meta: Object) => {
+  handleInputChange: ((value: string, meta: any) => void) = (value, meta) => {
     const {action} = meta;
     switch (action) {
       case 'input-change':
@@ -69,7 +75,7 @@ class AsyncSelect extends Component<Props, State> {
     }
   }
 
-  handleMenuOpen = () => {
+  handleMenuOpen: (() => void) = () => {
     const {inputValue, menuOpened} = this.state;
 
     if(!menuOpened) {
@@ -90,7 +96,7 @@ class AsyncSelect extends Component<Props, State> {
     }
   }
 
-  loadOptions = (inputValue: string, callback: Function) => {
+  loadOptions: ((inputValue: string, callback: Function) => void) = (inputValue, callback) => {
     const {getOptions} = this.props;
     const {menuOpened} = this.state;
 
@@ -101,15 +107,17 @@ class AsyncSelect extends Component<Props, State> {
     }
   };
 
-  render() {
+  render(): React$Node {
     const {
       disabled,
       displayError,
       input: {name, value},
       isDirty,
+      isLoading,
       placeholder,
       initialValues,
-      cacheOptions = true
+      cacheOptions = true,
+      multiSelect,
     } = this.props;
 
     return(
@@ -129,8 +137,10 @@ class AsyncSelect extends Component<Props, State> {
             LoadingIndicator,
           }}
           defaultOptions
-          isDisabled={disabled}
           id={name}
+          isDisabled={disabled}
+          isLoading={isLoading}
+          isMulti={multiSelect}
           loadingMessage={() => 'Ladataan...'}
           loadOptions={this.loadOptions}
           noOptionsMessage={() => 'Ei tuloksia'}
@@ -141,7 +151,7 @@ class AsyncSelect extends Component<Props, State> {
           options={[]}
           placeholder={placeholder || 'Valitse...'}
           value={value}
-          defaultInputValue={initialValues ? initialValues.estate_id : ''}
+          defaultInputValue={initialValues ? initialValues : ''}
         />
       </div>
     );

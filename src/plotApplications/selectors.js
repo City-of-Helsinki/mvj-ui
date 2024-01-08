@@ -1,28 +1,29 @@
 // @flow
 import get from 'lodash/get';
-import type {Attributes, Selector, Methods} from '../types';
-import type {RootState} from '$src/root/types';
 import isEmpty from 'lodash/isEmpty';
 
-import type {
-  PlotApplicationsList,
-  PlotApplication,
-} from './types';
+import type {Selector} from '$src/types';
+import type {RootState} from '$src/root/types';
+import type {InfoCheckBatchEditErrorsItem, PlotApplication, PlotApplicationsList} from '$src/plotApplications/types';
+import type {PlotSearch} from '$src/plotSearch/types';
 
-export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
-  state.plotApplications.attributes;
+export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
+  state.plotApplications.listByBBox;
 
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.plotApplications.isFetching;
 
-export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
-  state.plotApplications.isFetchingAttributes;
+export const getIsFetchingByBBox: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isFetchingByBBox;
+
+export const getIsSingleAllowed: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isSingleAllowed;
 
 export const getPlotApplicationsList: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
   state.plotApplications.list;
 
-export const getPlotApplicationsMethods: Selector<Methods, void> = (state: RootState): Methods =>
-  state.plotApplications.methods;
+export const getPlotApplicationsListByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList =>
+  state.plotApplications.listByBBox;
 
 export const getCurrentPlotApplication: Selector<PlotApplication, void> = (state: RootState): PlotApplication =>
   state.plotApplications.current;
@@ -50,3 +51,59 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: RootState,
   }
   return null;
 };
+
+export const getPlotSearchSubTypes: Selector<Object, void> = (state: RootState): Object =>
+  state.plotApplications.subTypes;
+
+export const getIsFetchingApplicationRelatedForm: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingForm;
+
+export const getApplicationRelatedForm: Selector<Object | null, void> = (state: RootState): Object | null => state.plotApplications.form;
+
+export const getIsFetchingApplicationRelatedPlotSearch: Selector<boolean, void> = (state: RootState): boolean => state.plotApplications.isFetchingPlotSearch;
+
+export const getApplicationRelatedPlotSearch: Selector<PlotSearch | null, void> = (state: RootState): PlotSearch | null => state.plotApplications.plotSearch;
+
+export const getIsPerformingFileOperation: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isPerformingFileOperation || state.application.isPerformingFileOperation;
+
+export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean =>
+  state.plotApplications.isSaving;
+
+export const getCurrentEditorTargets: Selector<Array<Object>, void> = (state: RootState): Array<Object> =>
+  state.plotApplications.currentEditorTargets;
+
+export const getApplicationApplicantInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
+  state.plotApplications.current?.information_checks;
+
+export const getApplicationTargetInfoCheckData: Selector<Object, void> = (state: RootState): ?Object =>
+  state.plotApplications.current?.target_statuses;
+
+export const getInfoCheckSubmissionErrors = (errors: Array<InfoCheckBatchEditErrorsItem>, id: ?number): ?InfoCheckBatchEditErrorsItem => {
+  return errors.find((item) => item.id === id);
+};
+export const getTargetInfoCheckSubmissionErrors = (state: RootState, id: ?number): ?Object => {
+  return getInfoCheckSubmissionErrors(state.plotApplications.infoCheckBatchEditErrors.target, id)?.error;
+};
+export const getApplicantInfoCheckSubmissionErrors = (state: RootState, checkDataIds: Array<number>): Array<{
+  id: number,
+  kind: ?Object,
+  error: ?Object | ?Array<Object>,
+}> => {
+  return checkDataIds
+    ?.map((id) => {
+      const errors = getInfoCheckSubmissionErrors(state.plotApplications.infoCheckBatchEditErrors.applicant, id);
+      return ({
+        id,
+        kind: errors?.kind,
+        error: errors?.error,
+      });
+    })
+    .filter((item) => item.error !== undefined);
+};
+
+export const getTargetInfoChecksForCurrentPlotSearch = (state: RootState): Array<Object> =>
+  state.plotApplications.targetInfoChecksForCurrentPlotSearch;
+
+export const getIsFetchingTargetInfoChecksForCurrentPlotSearch = (state: RootState): boolean =>
+  state.plotApplications.isFetchingTargetInfoChecksForCurrentPlotSearch;
+

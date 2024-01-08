@@ -1,6 +1,8 @@
+// @flow
+
 import React from 'react';
 
-const Context = React.createContext();
+const Context: React$Context<$Shape<AppContextState>> = React.createContext({});
 
 export const ActionTypes = {
   HIDE_CONFIRMATION_MODAL: 'HIDE_CONFIRMATION_MODAL',
@@ -43,10 +45,11 @@ type AppContextState = {
   confirmationModalLabel: ?string,
   confirmationModalTitle: ?string,
   isConfirmationModalOpen: boolean,
+  dispatch: Function,
 }
 
 export class AppProvider extends React.Component<Props, AppContextState> {
-  state = {
+  state: AppContextState = {
     confirmationFunction: null,
     confirmationModalButtonClassName: null,
     confirmationModalButtonText: null,
@@ -54,11 +57,11 @@ export class AppProvider extends React.Component<Props, AppContextState> {
     confirmationModalTitle: null,
     isConfirmationModalOpen: false,
 
-    dispatch: action => {
-      this.setState(state => reducer(state, action));
+    dispatch: (action) => {
+      this.setState((state) => reducer(state, action));
     },
   };
-  render() {
+  render(): React$Node {
     const {state, props: {children}} = this;
 
     return <Context.Provider value={state}>{children}</Context.Provider>;

@@ -26,14 +26,14 @@ type State = {
 }
 
 class SortableTableRow extends PureComponent<Props, State> {
-  _isMounted = false;
+  _isMounted: boolean = false;
 
   component: any
   buttonPressTimer: any;
-  isClicked = false;
-  isLongPress = false;
+  isClicked: boolean = false;
+  isLongPress: boolean = false;
 
-  state = {
+  state: $Shape<State> = {
     collapse: false,
   }
 
@@ -45,11 +45,11 @@ class SortableTableRow extends PureComponent<Props, State> {
     this._isMounted = false;
   }
 
-  setRef = (el: any) => {
+  setRef: (any) => void = (el: any) => {
     this.component = el;
   }
 
-  handleRowClick = () => {
+  handleRowClick: () => void = () => {
     const {onRowClick, row} = this.props;
 
     if(onRowClick) {
@@ -57,7 +57,7 @@ class SortableTableRow extends PureComponent<Props, State> {
     }
   };
 
-  handleButtonPress = () => {
+  handleButtonPress: () => void = () => {
     this.isClicked = true;
     this.isLongPress = false;
 
@@ -66,7 +66,7 @@ class SortableTableRow extends PureComponent<Props, State> {
     }, 1000);
   };
 
-  handleButtonRelease = () => {
+  handleButtonRelease: () => void = () => {
     if(!this.isLongPress && this.isClicked) {
       this.handleRowClick();
     }
@@ -75,27 +75,27 @@ class SortableTableRow extends PureComponent<Props, State> {
     clearTimeout(this.buttonPressTimer);
   };
 
-  handleKeyDown = (e: any) => {
+  handleKeyDown: (KeyboardEvent) => void = (e: any) => {
     if(e.target === this.component && e.keyCode === 13) {
       e.preventDefault();
       this.handleRowClick();
     }
   };
 
-  handleCollapseArrowIconClick = () => {
+  handleCollapseArrowIconClick: () => void = () => {
     this.setState({
       collapse: !this.state.collapse,
     });
   }
 
-  handleCollapseArrowIconKeyDown = (e: any) => {
+  handleCollapseArrowIconKeyDown: (KeyboardEvent) => void = (e: any) => {
     if(e.keyCode === 13) {
       e.preventDefault();
       this.handleCollapseArrowIconClick();
     }
   };
 
-  shouldShowCollapseArrowIcon = () => {
+  shouldShowCollapseArrowIcon: () => boolean = () => {
     const {columns, row} = this.props;
     let showIcon = false;
 
@@ -109,11 +109,11 @@ class SortableTableRow extends PureComponent<Props, State> {
     return showIcon;
   }
 
-  forceUpdateHandler = () => {
+  forceUpdateHandler: () => void = () => {
     this.forceUpdate();
   }
 
-  render() {
+  render(): React$Node {
     const {
       className,
       columns,

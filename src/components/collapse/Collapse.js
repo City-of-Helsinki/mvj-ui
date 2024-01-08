@@ -1,7 +1,6 @@
 // @flow
 import React, {PureComponent} from 'react';
 import ReactDOM from 'react-dom';
-import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import ReactResizeDetector from 'react-resize-detector';
@@ -23,6 +22,7 @@ type Props = {
   hasErrors: boolean,
   headerSubtitles?: any,
   headerTitle: any,
+  headerExtras?: any,
   onArchive?: Function,
   onAttach?: Function,
   onCopyToClipboard?: Function,
@@ -32,6 +32,7 @@ type Props = {
   showTitleOnOpen?: boolean,
   tooltipStyle?: Object,
   uiDataKey?: ?string,
+  isOpen?: boolean,
 }
 
 type State = {
@@ -46,24 +47,27 @@ class Collapse extends PureComponent<Props, State> {
   content: any
   tooltip: any
 
-  static defaultProps = {
+  static defaultProps: $Shape<Props> = {
     defaultOpen: false,
     hasErrors: false,
     showTitleOnOpen: false,
   };
 
-  state = {
-    contentHeight: this.props.defaultOpen ? null : 0,
+  state: State = {
+    contentHeight: (this.props.isOpen !== undefined
+      ? this.props.isOpen
+      : this.props.defaultOpen
+    ) ? null : 0,
     isCollapsing: false,
     isExpanding: false,
-    isOpen: this.props.defaultOpen,
+    isOpen: this.props.isOpen !== undefined ? this.props.isOpen : this.props.defaultOpen,
   };
 
-  setComponentRef = (el: ?Object) => {
+  setComponentRef: (any) => void = (el) => {
     this.component = el;
   }
 
-  setContentRef = (el: ?Object) => {
+  setContentRef: (any) => void = (el) => {
     this.content = el;
   }
 
@@ -75,67 +79,79 @@ class Collapse extends PureComponent<Props, State> {
     this.component.removeEventListener('transitionend', this.transitionEnds);
   }
 
-  componentDidUpdate = (prevProps: Object, prevState: Object) => {
-    if((this.state.isOpen && !this.state.contentHeight) ||
+  componentDidUpdate(prevProps: Object, prevState: Object) {
+    if (this.props.isOpen !== undefined && this.props.isOpen !== this.state.isOpen) {
+      this.handleToggleStateChange(this.props.isOpen);
+    }
+
+    if ((this.state.isOpen && !this.state.contentHeight) ||
       (this.state.isOpen !== prevState.isOpen)) {
       this.calculateHeight();
     }
   }
 
-  onResize = () => {
+  onResize: () => void = () => {
     this.calculateHeight();
   }
 
-  calculateHeight = () => {
+  calculateHeight: () => void = () => {
     const {clientHeight} = this.content;
     const {isOpen} = this.state;
 
     this.setState({contentHeight: isOpen ? (clientHeight || null) : 0});
   }
 
-  transitionEnds = () => {
+  transitionEnds: () => void = () => {
     this.setState({
       isCollapsing: false,
       isExpanding: false,
     });
   }
 
-  handleToggle = (e: any) => {
-    const {onToggle} = this.props;
+  handleToggle: (SyntheticEvent<HTMLAnchorElement>) => void = (e) => {
+    const {onToggle, isOpen: externalIsOpen} = this.props;
     const {isOpen} = this.state;
-    const target = e.target;
+    const target = e.currentTarget;
     const tooltipEl = ReactDOM.findDOMNode(this.tooltip);
+
+    const isExternallyControlled = externalIsOpen !== undefined;
 
     if (!tooltipEl ||
       (tooltipEl && target !== tooltipEl && !tooltipEl.contains(target))) {
-      if(isOpen) {
-        this.setState({
-          isCollapsing: true,
-          isExpanding: false,
-          isOpen: false,
-        });
-      } else {
-        this.setState({
-          isCollapsing: false,
-          isExpanding: true,
-          isOpen: true,
-        });
+      if (!isExternallyControlled) {
+        this.handleToggleStateChange(!isOpen);
       }
 
-      if(onToggle) {
+      if (onToggle) {
         onToggle(!isOpen);
       }
     }
   };
 
-  handleKeyDown = (e: any) => {
-    if(e.keyCode === 13) {
+  handleToggleStateChange: (boolean) => void = (newIsOpen) => {
+    if (newIsOpen) {
+      this.setState({
+        isCollapsing: false,
+        isExpanding: true,
+        isOpen: true,
+      });
+    } else {
+      this.setState({
+        isCollapsing: true,
+        isExpanding: false,
+        isOpen: false,
+      });
+    }
+  }
+
+  handleKeyDown: (SyntheticKeyboardEvent<HTMLAnchorElement>) => void = (e) => {
+    if (e.keyCode === 13) {
       e.preventDefault();
       this.handleToggle(e);
     }
   };
 
-  render() {
+  render(): React$Node {
     const {contentHeight, isOpen, isCollapsing, isExpanding} = this.state;
     const {
       archived,
@@ -145,6 +161,7 @@ class Collapse extends PureComponent<Props, State> {
       hasErrors,
       headerSubtitles,
       headerTitle,
+      headerExtras,
       onArchive,
       onAttach,
       onCopyToClipboard,
@@ -188,6 +205,7 @@ class Collapse extends PureComponent<Props, State> {
                       {headerTitle}
                     </CollapseHeaderTitle>
                   </a>
+                  {headerExtras}
                 </Column>
               }
               {(showTitleOnOpen || !isOpen) && headerSubtitles}
@@ -223,6 +241,4 @@ class Collapse extends PureComponent<Props, State> {
   }
 }
 
-export default flowRight(
-
-)(Collapse);
+export default Collapse;
