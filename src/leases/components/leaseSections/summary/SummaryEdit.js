@@ -34,6 +34,7 @@ import {
   getReferenceNumberLink,
   hasPermissions,
   isFieldAllowedToRead,
+  isFieldAllowedToEdit
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
@@ -44,7 +45,7 @@ import {
   getIsSaveClicked,
 } from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
-import {referenceNumber} from '$components/form/validations';
+import {internalOrder, referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
@@ -500,10 +501,28 @@ class SummaryEdit extends PureComponent<Props, State> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTERNAL_ORDER)}>
-                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTERNAL_ORDER)}>
-                      {LeaseFieldTitles.INTERNAL_ORDER}
-                    </FormTextTitle>
-                    <FormText>{summary.internal_order || '-'}</FormText>
+                    {isFieldAllowedToEdit(attributes, LeaseFieldPaths.INTERNAL_ORDER) ? 
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.INTERNAL_ORDER)}
+                          name='internal_order'
+                          validate={internalOrder}
+                          readOnlyValueRenderer={this.referenceNumberReadOnlyRenderer}
+                          overrideValues={{
+                            label: LeaseFieldTitles.INTERNAL_ORDER,
+                            fieldType: FieldTypes.STRING,
+                          }}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTERNAL_ORDER)}
+                        />
+                      :
+                        <>
+                          <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTERNAL_ORDER)}>
+                            {LeaseFieldTitles.INTERNAL_ORDER}
+                          </FormTextTitle>
+                          <FormText>{summary.internal_order || '-'}</FormText>
+                        </>
+                    }
                   </Authorization>
                 </Column>
               </Row>
