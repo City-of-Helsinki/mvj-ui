@@ -81,7 +81,7 @@ export const internalOrder = (value: any, error?: string): ?string => {
   if (isEmptyValue(value)) {
     return undefined;
   }
-  return value.length === 12 ? undefined : (error ? error : 'Sisäisen tilauksen numero on 12-merkkinen numerosarja.');
+  return value.length <= 12 ? undefined : (error ? error : 'Sisäisen tilauksen numero on korkeintaan 12-merkkinen numerosarja.');
 };
 
 export const referenceNumber = (value: any, error?: string): ?string => {
