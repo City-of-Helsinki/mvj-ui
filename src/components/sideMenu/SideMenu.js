@@ -204,8 +204,8 @@ class SideMenu extends Component<Props, State> {
                   </Authorization>
 
                   <li><Link style={{color: '#b7b7b7'}} onClick={handleClick} to={getRouteById(Routes.LAND_USE_CONTRACTS)}>Maankäyttösopimukset</Link></li>
-                  
-                  { process.env.NODE_ENV !== 'production' && <SubMenu
+
+                  <SubMenu
                     header='Tonttihaut ja kilpailut'
                     isOpen={subMenuKey === 'plot'}
                     items={[
@@ -224,10 +224,11 @@ class SideMenu extends Component<Props, State> {
                     ]}
                     menuKey='plot'
                     onHeaderClick={this.handleHeaderClick}
-                  />}
-                  { process.env.NODE_ENV !== 'production' && <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_AREASEARCH)}>
+                  />
+
+                  <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_AREASEARCH)}>
                     <li><Link onClick={handleClick} to={getRouteById(Routes.AREA_SEARCH)}>Aluehaut</Link></li>
-                  </Authorization>}
+                  </Authorization>
 
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT) ||
                     hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX) ||
