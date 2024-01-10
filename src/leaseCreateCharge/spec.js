@@ -12,6 +12,7 @@ import {
 import leaseCreateChargeReducer from './reducer';
 
 import type {LeaseCreateChargeState} from './types';
+import { receivableTypesFromAttributes } from "./helpers";
 
 const defaultState: LeaseCreateChargeState = {
   attributes: null,
@@ -79,4 +80,121 @@ describe('Lease create charge', () => {
       });
     });
   });
+
+  // $FlowFixMe
+  describe('Helpers', () => {
+  
+    // $FlowFixMe
+    describe('receivableTypesFromAttributes', () => {
+
+      // $FlowFixMe
+      it('should filter only active receivableTypes as choices', () => {
+
+        const dummyFieldAttributes = {
+          type: "field",
+          required: true,
+          read_only: false,
+          label: "Receivable type",
+          choices: [
+            {
+              value: 1,
+              display_name: "Maanvuokraus"
+            },
+            {
+              value: 3,
+              display_name: "Yhteismarkkinointi (sis. ALV)"
+            },
+            {
+              value: 4,
+              display_name: "Kiinteistötoimitukset (tonttijaot, lohkomiset, rekisteröimiskustannukset, rasitteet)"
+            },
+            {
+              value: 5,
+              display_name: "Haastemiestiedoksianto"
+            },
+            {
+              value: 6,
+              display_name: "Rasite ja muut vastaavat korvaukset"
+            },
+            {
+              value: 7,
+              display_name: "Esirakentamistoimenpiteet"
+            },
+            {
+              value: 9,
+              display_name: "Väestösuojakorvaus"
+            },
+            {
+              value: 2,
+              display_name: "Korko"
+            },
+            {
+              value: 8,
+              display_name: "Rahavakuus"
+            },
+            {
+              value: 10,
+              display_name: "Maanvuokraus"
+            },
+            {
+              value: 11,
+              display_name: "Rahavakuus"
+            },
+            {
+              value: 12,
+              display_name: "Maanvuokraus"
+            },
+            {
+              value: 13,
+              display_name: "Rahavakuus"
+            },
+            {
+              value: 14,
+              display_name: "Maanvuokraus"
+            },
+            {
+              value: 15,
+              display_name: "Rahavakuus"
+            },
+            {
+              value: 16,
+              display_name: "Maanvuokraus"
+            },
+            {
+              value: 17,
+              display_name: "Rahavakuus"
+            }
+          ]
+        }
+
+        const dummyReceivableTypes = [
+          {
+            id: 1,
+            name: "Maanvuokraus",
+            sap_material_code: null,
+            sap_order_item_number: null,
+            is_active: true,
+            service_unit: 1
+          },
+          {
+            id: 2,
+            name: "Korko",
+            sap_material_code: null,
+            sap_order_item_number: null,
+            is_active: false,
+            service_unit: 1
+          },
+        ];
+
+        const {choices} = receivableTypesFromAttributes(dummyFieldAttributes, dummyReceivableTypes);
+
+        expect(choices).to.deep.equal([
+          {
+            value: 1,
+            display_name: "Maanvuokraus"
+          }
+        ]);
+      });
+    })
+  })
 });
