@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+// const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
@@ -170,7 +170,7 @@ module.exports = {
     // Generate a manifest file which contains a mapping of all asset filenames
     // to their corresponding output file so that tools can pick it up without
     // having to parse `index.html`.
-    new ManifestPlugin({
+    new ManifestPlugin.WebpackManifestPlugin({
       fileName: 'asset-manifest.json',
     }),
     // Generate a service worker script that will precache, and keep up to date,
@@ -178,9 +178,8 @@ module.exports = {
     new WorkboxWebpackPlugin.GenerateSW({
       clientsClaim: true,
       exclude: [/\.map$/, /asset-manifest\.json$/],
-      importWorkboxFrom: 'cdn',
       navigateFallback: publicUrl + '/index.html',
-      navigateFallbackBlacklist: [
+      navigateFallbackDenylist: [
         // Exclude URLs starting with /_, as they're likely an API call
         new RegExp('^/_'),
         // Exclude URLs containing a dot, as they're likely a resource in
@@ -190,16 +189,18 @@ module.exports = {
     }),
     // This is a practical solution that requires the user to opt into importing specific locales.
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-
-    new FaviconsWebpackPlugin({
-      logo: path.resolve(__dirname, '../assets/images/favicon.png'),
-      persistentCache: true,
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/,
     }),
+
+    // new FaviconsWebpackPlugin({
+    //   logo: path.resolve(__dirname, '../assets/images/favicon.png'),
+    //   persistentCache: true,
+    // }),
   ],
   optimization: {
     minimizer: [new TerserPlugin({
-      sourceMap: shouldUseSourceMap,
       terserOptions: {
         warnings: false,
         output: {
@@ -211,10 +212,12 @@ module.exports = {
   },
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
-  node: {
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
+  resolve: {
+    fallback: {
+      dgram: 'empty',
+      fs: 'empty',
+      net: 'empty',
+      tls: 'empty',
+    }
   },
 };

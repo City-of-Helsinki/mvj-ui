@@ -14,7 +14,7 @@
     "Generator": true,
     "__DEV__": true
   },
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "rules": {
     "comma-dangle": [2, "always-multiline"],
     "comma-spacing": 2,
