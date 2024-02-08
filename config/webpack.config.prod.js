@@ -6,7 +6,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
@@ -193,11 +192,6 @@ module.exports = {
       resourceRegExp: /^\.\/locale$/,
       contextRegExp: /moment$/,
     }),
-
-    // new FaviconsWebpackPlugin({
-    //   logo: path.resolve(__dirname, '../assets/images/favicon.png'),
-    //   persistentCache: true,
-    // }),
   ],
   optimization: {
     minimizer: [new TerserPlugin({
