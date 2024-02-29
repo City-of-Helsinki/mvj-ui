@@ -13,6 +13,7 @@ import {getApplicantInfoCheckFormName} from '$src/application/helpers';
 type OwnProps = {
   infoCheckIds: Array<number>,
   answer: Object,
+  showMarkAll: boolean,
   submissionErrors: Array<{
     id: number,
     kind: ?Object,
@@ -133,6 +134,7 @@ class ApplicantInfoCheckEdit extends Component<Props, State> {
       infoCheckIds,
       answer,
       submissionErrors,
+      showMarkAll = true,
     } = this.props;
 
     const applicantType = answer?.metadata?.applicantType;
@@ -152,6 +154,7 @@ class ApplicantInfoCheckEdit extends Component<Props, State> {
           infoCheck={modalCheckItem}
           businessId={applicantType === ApplicantTypes.COMPANY ? answer.metadata.identifier : undefined}
           personId={applicantType === ApplicantTypes.PERSON ? answer.metadata.identifier : undefined}
+          showMarkAll={showMarkAll}
         />
         {submissionErrors && this.renderErrors()}
       </div>

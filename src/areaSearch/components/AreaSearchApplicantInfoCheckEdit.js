@@ -39,6 +39,7 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props> {
       answer={answer}
       infoCheckIds={infoCheckIds}
       submissionErrors={submissionErrors}
+      showMarkAll={false}
     />;
   }
 }
