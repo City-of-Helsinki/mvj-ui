@@ -296,7 +296,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
         <Button
           className={ButtonColors.LINK}
           onClick={() => this.openAreaSearchEditModal(row.id)}
-          text={val} />
+          text={val || 'Avoin'} />
       </span>,
     });
 
@@ -345,7 +345,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 
     editAreaSearch({
       id: data.id,
-      preparer: data.preparer?.id,
+      preparer: data.preparer?.id || null,
       lessor: data.lessor,
       area_search_status: {
         status_notes: data.status_notes ? [

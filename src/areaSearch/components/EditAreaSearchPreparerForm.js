@@ -84,7 +84,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
               overrideValues={{
                 fieldType: FieldTypes.USER,
                 label: AreaSearchFieldTitles.PREPARER,
-                required: true,
+                required: false,
               }}
             />
           </Column>
@@ -102,7 +102,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
             />
           </Column>
         </Row>
-        <Row>
+        <Row className='statusNotes'>
           <Column small={12} medium={12} large={12}>
             {(areaSearchData?.area_search_status?.status_notes && areaSearchData.area_search_status.status_notes.length > 0) &&
               <AreaSearchStatusNoteHistory statusNotes={areaSearchData.area_search_status.status_notes} />}
@@ -112,8 +112,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
           <Button onClick={onClose} className={ButtonColors.SECONDARY} text="Peruuta" />
           <Button
             onClick={() => onSubmit(formValues)}
-            text={areaSearchData?.preparer ? 'Vaihda käsittelijä' : 'Ota työn alle'}
-            disabled={!formValues?.preparer?.value}
+            text={'Tallenna'}
           />
         </ModalButtonWrapper>
       </form>
