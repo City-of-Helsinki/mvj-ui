@@ -16,8 +16,10 @@ import type {AuditLogState} from './types';
 const defaultState: AuditLogState = {
   byContact: {},
   byLease: {},
+  byAreaSearch: {},
   isFetchingByContact: {},
   isFetchingByLease: {},
+  isFetchingByAreaSearch: {},
 };
 
 // $FlowFixMe

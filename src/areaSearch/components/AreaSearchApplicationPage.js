@@ -56,6 +56,7 @@ import ConfirmationModal from '$components/modal/ConfirmationModal';
 import AreaSearchApplication from '$src/areaSearch/components/AreaSearchApplication';
 import {withAreaSearchAttributes} from '$components/attributes/AreaSearchAttributes';
 import AreaSearchApplicationEdit from '$src/areaSearch/components/AreaSearchApplicationEdit';
+import AreaSearchApplicationAuditLog from '$src/areaSearch/components/AreaSearchApplicationAuditLog';
 import {fetchApplicantInfoCheckAttributes, fetchFormAttributes} from '$src/application/actions';
 import {
   getFormAttributes,
@@ -503,7 +504,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
 
             <TabPane>
               <ContentContainer>
-                {'Muutoshistoria'}
+                <AreaSearchApplicationAuditLog areaSearchId={currentAreaSearch.id}/>
               </ContentContainer>
             </TabPane>
 

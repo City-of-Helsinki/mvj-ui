@@ -3,6 +3,7 @@
 export const AreaSearchFieldPaths = {
   INTENDED_USE: 'intended_use',
   LESSOR: 'lessor',
+  AUDIT_LOG: 'audit_log',
 };
 
 export const AreaSearchFieldTitles = {
@@ -19,4 +20,5 @@ export const AreaSearchFieldTitles = {
   DECLINE_REASON: 'Hylkäämisen syy',
   PREPARER_NOTE: 'Käsittelytietojen huomautus',
   STATUS_NOTES: 'Käsittelijän muistiinpanot',
+  AUDIT_LOG: 'Muutoshistoria',
 };

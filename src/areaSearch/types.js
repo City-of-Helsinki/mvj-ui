@@ -28,6 +28,7 @@ export type AreaSearchState = {
 };
 
 export type AreaSearch = Object;
+export type AreaSearchId = number;
 
 export type FetchListAttributesAction = Action<'mvj/areaSearch/FETCH_LIST_ATTRIBUTES', void>;
 export type ReceiveListAttributesAction = Action<'mvj/areaSearch/RECEIVE_LIST_ATTRIBUTES', Attributes>;

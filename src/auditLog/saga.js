@@ -7,6 +7,8 @@ import {
   notFoundByContact,
   receiveAuditLogByLease,
   notFoundByLease,
+  receiveAuditLogByAreaSearch,
+  notFoundByAreaSearch,
 } from './actions';
 import {fetchAuditLog} from './requests';
 
@@ -56,11 +58,35 @@ function* fetchAuditLogByLeaseSaga({payload}): Generator<any, any, any> {
   }
 }
 
+function* fetchAuditLogByAreaSearchSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAuditLog, {
+      ...payload,
+      type: 'areasearch',
+    });
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveAuditLogByAreaSearch({[payload.id.toString()]: bodyAsJson}));
+        break;
+      default:
+        console.error('Failed to fetch areasearch audit log');
+        yield put(notFoundByAreaSearch(payload.id));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch areasearch audit log with error "%s"', error);
+    yield put(notFoundByAreaSearch(payload.id));
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/auditLog/FETCH_BY_CONTACT', fetchAuditLogByContactSaga);
       yield takeLatest('mvj/auditLog/FETCH_BY_LEASE', fetchAuditLogByLeaseSaga);
+      yield takeLatest('mvj/auditLog/FETCH_BY_AREASEARCH', fetchAuditLogByAreaSearchSaga);
     }),
   ]);
 }
