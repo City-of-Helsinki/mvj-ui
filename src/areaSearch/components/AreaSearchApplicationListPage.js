@@ -69,6 +69,8 @@ import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ApiResponse} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import AreaSearchExportModal from '$src/areaSearch/components/AreaSearchExportModal';
+import { getUserActiveServiceUnit } from "../../usersPermissions/selectors";
+import type { UserServiceUnit } from "../../usersPermissions/types";
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -106,6 +108,7 @@ type Props = {
   lastEditError: any,
   change: Function,
   selectedSearches: Object,
+  userActiveServiceUnit: UserServiceUnit
 }
 
 type State = {
@@ -125,6 +128,7 @@ type State = {
 
 class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   _isMounted: boolean
+  _hasFetchedAreaSearches: boolean;
 
   state: State = {
     properties: [],
@@ -139,6 +143,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     isEditModalOpen: false,
     isExportModalOpen: false,
     editModalTargetAreaSearch: null,
+    userActiveServiceUnit: undefined,
   }
 
   static contextTypes = {
@@ -356,7 +361,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   };
 
   search = () => {
-    const {fetchAreaSearchList, location: {search}} = this.props;
+    const {fetchAreaSearchList, location: {search}, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
@@ -365,6 +370,11 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     }
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
+
+    if (searchQuery.service_unit === undefined && userActiveServiceUnit) {
+      searchQuery.service_unit = userActiveServiceUnit.id;
+    }
+
     delete searchQuery.page;
     delete searchQuery.in_bbox;
     delete searchQuery.visualization;
@@ -374,7 +384,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   searchByBBox = () => {
-    const {fetchAreaSearchListByBBox, location: {search}} = this.props;
+    const {fetchAreaSearchListByBBox, location: {search}, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const leaseStates = this.getSearchStates(searchQuery);
 
@@ -386,6 +396,10 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 
     if (leaseStates.length) {
       searchQuery.lease_state = leaseStates;
+    }
+
+    if (searchQuery.service_unit === undefined && userActiveServiceUnit) {
+      searchQuery.service_unit = userActiveServiceUnit.id;
     }
 
     searchQuery.limit = 10000;
@@ -480,10 +494,28 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}, isEditingAreaSearch, lastEditError} = this.props;
-    const {location: {search: prevSearch}} = prevProps;
+    const {location: {search: currentSearch}, isEditingAreaSearch, lastEditError, userActiveServiceUnit} = this.props;
+    const {location: {search: prevSearch}, userActiveServiceUnit: prevUserActiveServiceUnit} = prevProps;
     const {visualizationType} = this.state;
     const searchQuery = getUrlParams(currentSearch);
+
+    const handleSearch = () => {
+      this.setSearchFormValues();
+      this.search();
+    };
+
+    if(userActiveServiceUnit) {
+      
+      if(!this._hasFetchedAreaSearches) { // No search has been done yet
+        handleSearch();
+        this._hasFetchedAreaSearches = true;
+
+      } else if(userActiveServiceUnit !== prevUserActiveServiceUnit 
+          && !currentSearch.includes('service_unit')) {
+        // Search again after changing user active service unit only if not explicitly setting the service unit filter
+        handleSearch();
+      }
+    }
 
     if ((currentSearch !== prevSearch) ||
       (!isEditingAreaSearch && !lastEditError && prevProps.isEditingAreaSearch)) {
@@ -514,6 +546,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
     this._isMounted = false;
+    this._hasFetchedAreaSearches = false;
   }
 
   handlePopState = () => {
@@ -546,7 +579,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   setSearchFormValues = () => {
-    const {location: {search}, initializeForm} = this.props;
+    const {location: {search}, initializeForm, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     const states = this.getSearchStates(searchQuery);
@@ -564,6 +597,10 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       delete initialValues.in_bbox;
       delete initialValues.visualization;
       delete initialValues.zoom;
+
+      if(initialValues.service_unit === undefined && userActiveServiceUnit) {
+        initialValues.service_unit = userActiveServiceUnit.id;
+      }
 
       await initializeForm(FormNames.AREA_SEARCH_SEARCH, initialValues);
     };
@@ -799,6 +836,7 @@ export default (flowRight(
         isEditingAreaSearch: getIsEditingAreaSearch(state),
         lastEditError: getLastAreaSearchEditError(state),
         selectedSearches: selector(state, 'selectedSearches'),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     },
     {
