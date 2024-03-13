@@ -12,6 +12,9 @@ import type {
   FetchAuditLogByLeaseAction,
   ReceiveAuditLogByLeaseAction,
   NotFoundByLeaseAction,
+  FetchAuditLogByAreaSearchAction,
+  NotFoundByAreaSearchAction,
+  ReceiveAuditLogByAreaSearchAction,
 } from '$src/auditLog/types';
 
 const isFetchingByContactReducer: Reducer<AuditLogIsFetchingMap> = handleActions({
@@ -58,9 +61,33 @@ const auditLogByLeaseReducer: Reducer<AuditLogListMap> = handleActions({
   }),
 }, {});
 
+const isFetchingByAreaSearchReducer: Reducer<AuditLogIsFetchingMap> = handleActions({
+  ['mvj/auditLog/FETCH_BY_AREASEARCH']: (state: AuditLogIsFetchingMap, {payload}: FetchAuditLogByAreaSearchAction) => ({
+    ...state,
+    [payload.id]: true,
+  }),
+  ['mvj/auditLog/RECEIVE_BY_AREASEARCH']: (state: AuditLogIsFetchingMap, {payload}: ReceiveAuditLogByAreaSearchAction) => ({
+    ...state,
+    ...Object.keys(payload).reduce((obj, key) => ({...obj, [key]: false}), {}),
+  }),
+  ['mvj/auditLog/NOT_FOUND_BY_AREASEARCH']: (state: AuditLogIsFetchingMap, {payload: areaSearchId}: NotFoundByAreaSearchAction) => ({
+    ...state,
+    [areaSearchId]: false,
+  }),
+}, {});
+
+const auditLogByAreaSearchReducer: Reducer<AuditLogListMap> = handleActions({
+  ['mvj/auditLog/RECEIVE_BY_AREASEARCH']: (state: AuditLogListMap, {payload}: ReceiveAuditLogByAreaSearchAction) => ({
+    ...state,
+    ...payload,
+  }),
+}, {});
+
 export default combineReducers<Object, any>({
   byContact: auditLogByContactReducer,
   byLease: auditLogByLeaseReducer,
+  byAreaSearch: auditLogByAreaSearchReducer,
   isFetchingByContact: isFetchingByContactReducer,
   isFetchingByLease: isFetchingByLeaseReducer,
+  isFetchingByAreaSearch: isFetchingByAreaSearchReducer,
 });
