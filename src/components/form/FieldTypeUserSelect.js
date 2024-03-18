@@ -7,6 +7,8 @@ import {getContentUser} from '$src/users/helpers';
 import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchSingleUser, fetchUsers} from '$src/users/requestsAsync';
 
+import type {UserServiceUnit} from '$src/usersPermissions/types';
+
 type Props = {
   disabled?: boolean,
   displayError: boolean,
@@ -16,6 +18,7 @@ type Props = {
   placeholder?: string,
   multiSelect?: boolean,
   valueSelectedCallback: Function,
+  serviceUnit: UserServiceUnit,
 }
 
 const FieldTypeUserSelect = ({
@@ -26,6 +29,7 @@ const FieldTypeUserSelect = ({
   onChange,
   placeholder,
   multiSelect,
+  serviceUnit,
 }: Props): React$Node => {
   // If a plain ID value has already been set when the component mounts,
   // retrieve the corresponding single user object and set the state up accordingly
@@ -65,6 +69,7 @@ const FieldTypeUserSelect = ({
   const getUsers = debounce(async(inputValue: string, callback: Function) => {
     const contacts = await fetchUsers({
       search: inputValue,
+      service_unit: serviceUnit?.id || "",
     });
 
     callback(addEmptyOption(contacts.map((lessor) => getContentUser(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));

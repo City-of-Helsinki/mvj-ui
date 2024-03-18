@@ -32,9 +32,9 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import { restructureLease, sortRelatedHistoryItems } from "$src/leases/helpers";
 import PlotApplication from "$src/plotApplications/components/PlotApplication";
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 
 type Props = {
   createLease: Function,
@@ -49,6 +49,7 @@ type Props = {
   isCreateModalOpen: boolean,
   leaseAttributes: Attributes,
   leaseMethods: MethodsType,
+  serviceUnit: UserServiceUnit,
   showCreateModal: Function,
   usersPermissions: UsersPermissionsType,
 }
@@ -174,6 +175,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
       hasAnyDirtyForms,
       isCreateModalOpen,
       leaseMethods,
+      serviceUnit,
       usersPermissions,
     } = this.props;
     const {
@@ -342,6 +344,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
                         name='related-lease'
                         onChange={this.handleCreate}
                         leaseHistoryItems={leaseHistoryItemsAll}
+                        serviceUnit={serviceUnit}
                         value={newLease}
                       />
                     </Column>

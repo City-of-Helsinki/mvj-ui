@@ -361,6 +361,7 @@ export const getContentLeaseSummary = (lease: Object): Object => {
     infill_development_compensations: getContentLeaseInfillDevelopmentCompensations(lease),
     intended_use: lease.intended_use,
     intended_use_note: lease.intended_use_note,
+    internal_order: lease.internal_order,
     is_subject_to_vat: lease.is_subject_to_vat,
     lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
     lessor: getContentLessor(lease.lessor),
@@ -375,6 +376,7 @@ export const getContentLeaseSummary = (lease: Object): Object => {
     regulated: lease.regulated,
     regulation: lease.regulation,
     reservation_procedure: lease.reservation_procedure,
+    service_unit: lease.service_unit,
     special_project: lease.special_project,
     state: lease.state,
     start_date: lease.start_date,
@@ -2158,6 +2160,7 @@ export const getPayloadCreateLease = (lease: Object): Object => {
     note: lease.note,
     relate_to: relateTo,
     relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
+    service_unit: lease.service_unit,
   };
 };
 
@@ -2178,6 +2181,7 @@ export const addSummaryFormValuesToPayload = (payload: Object, formValues: Objec
     hitas: formValues.hitas,
     intended_use: formValues.intended_use,
     intended_use_note: formValues.intended_use_note,
+    internal_order: formValues.internal_order,
     is_subject_to_vat: formValues.is_subject_to_vat,
     lessor: get(formValues, 'lessor.value'),
     notice_note: formValues.notice_note,

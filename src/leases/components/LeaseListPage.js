@@ -28,6 +28,7 @@ import TableFilterWrapper from '$components/table/TableFilterWrapper';
 import TableWrapper from '$components/table/TableWrapper';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
+import {fetchServiceUnits} from '$src/serviceUnits/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLease, fetchLeases, fetchLeasesByBBox} from '$src/leases/actions';
 import {fetchLessors} from '$src/lessor/actions';
@@ -70,15 +71,17 @@ import {
   getLeasesList,
 } from '$src/leases/selectors';
 import {getLessorList} from '$src/lessor/selectors';
-import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {getUsersPermissions, getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 import {withLeaseAttributes} from '$components/attributes/LeaseAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
+import {getServiceUnits, getIsFetching as getIsFetchingServiceUnits} from '$src/serviceUnits/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {LeaseList} from '$src/leases/types';
 import type {LessorList} from '$src/lessor/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {ServiceUnits} from '$src/serviceUnits/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -97,17 +100,21 @@ type Props = {
   fetchLeases: Function,
   fetchLeasesByBBox: Function,
   fetchLessors: Function,
+  fetchServiceUnits: Function,
   history: Object,
   initialize: Function,
   isFetching: boolean,
   isFetchingByBBox: boolean,
   isFetchingLeaseAttributes: boolean,
+  isFetchingServiceUnits: boolean,
   leaseAttributes: Attributes,
   leaseMethods: MethodsType,
   leases: LeaseList,
   lessors: LessorList,
   location: Object,
   receiveTopNavigationSettings: Function,
+  serviceUnits: ServiceUnits,
+  userActiveServiceUnit: UserServiceUnit,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -123,6 +130,7 @@ type State = {
 
 class LeaseListPage extends PureComponent<Props, State> {
   _isMounted: boolean
+  _hasFetchedLeases: boolean // Check if search has been done yet
 
   firstLeaseModalField: any
 
@@ -144,11 +152,12 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {
       fetchAreaNoteList,
       fetchLessors,
+      fetchServiceUnits,
+      isFetchingServiceUnits,
       lessors,
-      location: {search},
       receiveTopNavigationSettings,
+      serviceUnits,
     } = this.props;
-    const searchQuery = getUrlParams(search);
 
     setPageTitle('Vuokraukset');
 
@@ -158,11 +167,8 @@ class LeaseListPage extends PureComponent<Props, State> {
       showSearch: false,
     });
 
-    if(searchQuery.visualization === VisualizationTypes.MAP) {
-      this.setState({visualizationType: VisualizationTypes.MAP});
-      this.searchByBBox();
-    } else {
-      this.search();
+    if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
+      fetchServiceUnits();
     }
 
     fetchAreaNoteList({limit: 10000});
@@ -171,19 +177,32 @@ class LeaseListPage extends PureComponent<Props, State> {
       fetchLessors({limit: 10000});
     }
 
-    this.setSearchFormValues();
-
     window.addEventListener('popstate', this.handlePopState);
     this._isMounted = true;
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}} = this.props;
+    const {location: {search: currentSearch}, userActiveServiceUnit} = this.props;
     const {visualizationType} = this.state;
-    const {location: {search: prevSearch}} = prevProps;
+    const {location: {search: prevSearch}, userActiveServiceUnit: prevUserActiveServiceUnit} = prevProps;
 
-    if(currentSearch !== prevSearch) {
-      switch(visualizationType) {
+    const initializeSearch = () => {
+      const searchQuery = getUrlParams(currentSearch);
+
+      this.setSearchFormValues();
+
+      if (searchQuery.visualization === VisualizationTypes.MAP) {
+        this.setState({visualizationType: VisualizationTypes.MAP});
+        this.searchByBBox();
+      } else {
+        this.search();
+      }
+    };
+
+    const searchByType = () => {
+      this.setSearchFormValues();
+
+      switch (visualizationType) {
         case VisualizationTypes.MAP:
           this.searchByBBox();
           break;
@@ -191,8 +210,23 @@ class LeaseListPage extends PureComponent<Props, State> {
           this.search();
           break;
       }
+    };
 
-      this.setSearchFormValues();
+    if(userActiveServiceUnit) {
+      
+      if(!this._hasFetchedLeases) { // No search has been done yet
+        initializeSearch();
+        this._hasFetchedLeases = true;
+
+      } else if(userActiveServiceUnit !== prevUserActiveServiceUnit 
+          && !currentSearch.includes('service_unit')) {
+        // Search again after changing user active service unit only if not explicitly setting the service unit filter
+        searchByType();
+      }
+    }
+
+    if (currentSearch !== prevSearch) {
+      searchByType();
     }
   }
 
@@ -200,6 +234,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     window.removeEventListener('popstate', this.handlePopState);
 
     this._isMounted = false;
+    this._hasFetchedLeases = false;
   }
 
   handlePopState = () => {
@@ -221,7 +256,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   setSearchFormValues = () => {
-    const {location: {search}, initialize} = this.props;
+    const {location: {search}, initialize, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     const states = this.getLeaseStates(searchQuery);
@@ -236,6 +271,10 @@ class LeaseListPage extends PureComponent<Props, State> {
       const tenantContactTypes = isArray(searchQuery.tenantcontact_type)
         ? searchQuery.tenantcontact_type
         : searchQuery.tenantcontact_type ? [searchQuery.tenantcontact_type] : [];
+
+      if(initialValues.service_unit === undefined && userActiveServiceUnit) {
+        initialValues.service_unit = userActiveServiceUnit.id;
+      }
 
       if(onlyActiveLeases != undefined) {
         initialValues.only_active_leases = onlyActiveLeases;
@@ -280,7 +319,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   search = () => {
-    const {fetchLeases, location: {search}} = this.props;
+    const {fetchLeases, location: {search}, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     const leaseStates = this.getLeaseStates(searchQuery);
@@ -301,6 +340,10 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
     searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
+    if(searchQuery.service_unit === undefined && userActiveServiceUnit) {
+      searchQuery.service_unit = userActiveServiceUnit.id;
+    }
+
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
     delete searchQuery.in_bbox;
@@ -311,7 +354,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   searchByBBox = () => {
-    const {fetchLeasesByBBox, location: {search}} = this.props;
+    const {fetchLeasesByBBox, location: {search}, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const leaseStates = this.getLeaseStates(searchQuery);
     const onlyActiveLeases = this.getOnlyActiveLeasesValue(searchQuery);
@@ -326,6 +369,10 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     if(leaseStates.length) {
       searchQuery.lease_state = leaseStates;
+    }
+
+    if(searchQuery.service_unit === undefined && userActiveServiceUnit) {
+      searchQuery.service_unit = userActiveServiceUnit.id;
     }
 
     searchQuery.limit = 10000;
@@ -651,8 +698,11 @@ export default flowRight(
         areaNotes: getAreaNoteList(state),
         isFetching: getIsFetching(state),
         isFetchingByBBox: getIsFetchingByBBox(state),
+        isFetchingServiceUnits: getIsFetchingServiceUnits(state),
         leases: getLeasesList(state),
         lessors: getLessorList(state),
+        serviceUnits: getServiceUnits(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
         usersPermissions: getUsersPermissions(state),
       };
     },
@@ -662,6 +712,7 @@ export default flowRight(
       fetchLeases,
       fetchLeasesByBBox,
       fetchLessors,
+      fetchServiceUnits,
       initialize,
       receiveTopNavigationSettings,
     },

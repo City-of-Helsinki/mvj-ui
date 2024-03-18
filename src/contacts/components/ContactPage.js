@@ -67,10 +67,11 @@ import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} 
 import {withContactAttributes} from '$components/attributes/ContactAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Methods as MethodsType} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 import type {Contact} from '../types';
 
 type Props = {
@@ -98,6 +99,7 @@ type Props = {
   receiveSingleContact: Function,
   receiveTopNavigationSettings: Function,
   showEditMode: Function,
+  userActiveServiceUnit: UserServiceUnit,
   usersPermissions: UsersPermissionsType,
   businessId: ?string,
 }
@@ -370,12 +372,16 @@ class ContactPage extends Component<Props, State> {
       isSaveClicked,
       isSaving,
       match: {params: {contactId}},
+      userActiveServiceUnit,
       usersPermissions,
     } = this.props;
     const {activeTab, isRestoreModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
 
+    const isServiceUnitSameAsActiveServiceUnit = () => {
+      return userActiveServiceUnit?.id === contact?.service_unit?.id;
+    };
 
     if(isFetching || isFetchingContactAttributes) {
       return (
@@ -393,8 +399,8 @@ class ContactPage extends Component<Props, State> {
           <ControlButtonBar
             buttonComponent={
               <ControlButtons
-                allowCopy={isMethodAllowed(contactMethods, Methods.POST)}
-                allowEdit={isMethodAllowed(contactMethods, Methods.PATCH)}
+                allowCopy={isMethodAllowed(contactMethods, Methods.POST) && isServiceUnitSameAsActiveServiceUnit()}
+                allowEdit={isMethodAllowed(contactMethods, Methods.PATCH) && isServiceUnitSameAsActiveServiceUnit()}
                 isCopyDisabled={false}
                 isEditMode={isEditMode}
                 isSaveDisabled={isSaveClicked && !isContactFormValid}
@@ -542,6 +548,7 @@ const mapStateToProps = (state: RootState) => {
     isSaving: getIsSaving(state),
     usersPermissions: getUsersPermissions(state),
     businessId: selector(state, 'business_id'),
+    userActiveServiceUnit: getUserActiveServiceUnit(state),
   };
 };
 

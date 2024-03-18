@@ -1,6 +1,7 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
+import {initialize} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
@@ -12,6 +13,7 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
+import Search from './Search';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
@@ -19,7 +21,7 @@ import {fetchSapInvoices} from '$src/sapInvoice/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER} from '$src/sapInvoice/constants';
-import {Methods, PermissionMissingTexts} from '$src/enums';
+import {FormNames, Methods, PermissionMissingTexts} from '$src/enums';
 import {InvoiceFieldPaths, InvoiceRowsFieldPaths} from '$src/invoices/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatReceivableTypesString} from '$src/invoices/helpers';
@@ -44,9 +46,11 @@ import {
 import {getRouteById, Routes} from '$src/root/routes';
 import {getIsFetching, getSapInvoices as getSapInvoiceList} from '$src/sapInvoice/selectors';
 import {withSapInvoicesAttributes} from '$components/attributes/SapInvoicesAttributes';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {SapInvoiceList} from '$src/sapInvoice/types';
+import type {UserServiceUnit} from '$src/usersPermissions/types';
 
 const getColumns = (invoiceAttributes: Attributes) => {
   const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
@@ -112,6 +116,7 @@ const getColumns = (invoiceAttributes: Attributes) => {
 type Props = {
   fetchSapInvoices: Function,
   history: Object,
+  initialize: Function,
   invoiceAttributes: Attributes, // Via withSapInvoicesAttributes HOC
   invoiceMethods: MethodsType, // Via withSapInvoicesAttributes HOC
   isFetching: boolean,
@@ -119,6 +124,7 @@ type Props = {
   location: Object,
   receiveTopNavigationSettings: Function,
   sapInvoiceList: SapInvoiceList,
+  userActiveServiceUnit: UserServiceUnit,
 }
 
 type State = {
@@ -126,6 +132,7 @@ type State = {
   columns: Array<Object>,
   count: number,
   invoiceAttributes: Attributes,
+  isSearchInitialized: boolean,
   maxPage: number,
   sapInvoiceList: SapInvoiceList,
   sapInvoices: Array<Object>,
@@ -134,10 +141,14 @@ type State = {
 }
 
 class SapInvoicesListPage extends PureComponent<Props, State> {
+  _isMounted: boolean
+  _hasFetchedInvoices: boolean
+
   state = {
     activePage: 1,
     columns: [],
     count: 0,
+    isSearchInitialized: false,
     invoiceAttributes: null,
     maxPage: 0,
     sapInvoiceList: {},
@@ -157,9 +168,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       showSearch: false,
     });
 
-    this.search();
-
-    this.setSearchValues();
+    this._isMounted = true;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -180,18 +189,36 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}} = this.props;
-    const {location: {search: prevSearch}} = prevProps;
+    const {location: {search: currentSearch}, userActiveServiceUnit} = this.props;
+    const {location: {search: prevSearch}, userActiveServiceUnit: prevUserActiveServiceUnit} = prevProps;
+
+    const handleSearch = () => {
+      this.setSearchValues();
+      this.search();
+    };
+
+    if(userActiveServiceUnit) {
+      
+      if(!this._hasFetchedInvoices) { // No search has been done yet
+        handleSearch();
+        this._hasFetchedInvoices = true;
+
+      } else if(userActiveServiceUnit !== prevUserActiveServiceUnit 
+          && !currentSearch.includes('service_unit')) {
+        // Search again after changing user active service unit only if not explicitly setting the service unit filter
+        handleSearch();
+      }
+    }
 
     if(currentSearch !== prevSearch) {
-      this.search();
-
-      this.setSearchValues();
+      handleSearch();
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener('popstate', this.handlePopState);
+    this._isMounted = false;
+    this._hasFetchedInvoices = false;
   }
 
   handlePopState = () => {
@@ -199,19 +226,44 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
   }
 
   setSearchValues = () => {
-    const {location: {search}} = this.props;
+    const {location: {search}, initialize, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
+    const setSearchFormReady = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async () => {
+      const initialValues = {...searchQuery};
+
+      if (initialValues.service_unit === undefined && userActiveServiceUnit) {
+        initialValues.service_unit = userActiveServiceUnit.id;
+      }
+
+      delete initialValues.page;
+      delete initialValues.sort_key;
+      delete initialValues.sort_order;
+
+      initialize(FormNames.SAP_INVOICE_SEARCH, initialValues);
+    };
+
     this.setState({
+      isSearchInitialized: false,
       activePage: page,
       sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
       sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
+    }, async () => {
+      await initializeSearchForm();
+
+      if (this._isMounted) {
+        setSearchFormReady();
+      }
     });
   }
 
   search = () => {
-    const {fetchSapInvoices, location: {search}} = this.props;
+    const {fetchSapInvoices, location: {search}, userActiveServiceUnit} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
@@ -224,6 +276,10 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
 
     searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
     searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
+
+    if (searchQuery.service_unit === undefined && userActiveServiceUnit) {
+      searchQuery.service_unit = userActiveServiceUnit.id;
+    }
 
     fetchSapInvoices(mapSapInvoiceSearchFilters(searchQuery));
   }
@@ -272,11 +328,13 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       invoiceMethods,
       isFetching,
       isFetchingInvoiceAttributes,
+      userActiveServiceUnit,
     } = this.props;
     const {
       activePage,
       count,
       columns,
+      isSearchInitialized,
       maxPage,
       sapInvoices,
       sortKey,
@@ -291,6 +349,17 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
 
     return (
       <PageContainer>
+        <Row>
+          <Column small={12} large={8} />
+          <Column small={12} large={4}>
+            {userActiveServiceUnit && (
+              <Search
+                isSearchInitialized={isSearchInitialized}
+                onSearch={this.handleSearchChange}
+              />
+            )}
+          </Column>
+        </Row>
         <Row>
           <Column small={12} medium={6}></Column>
           <Column small={12} medium={6}>
@@ -335,10 +404,12 @@ export default flowRight(
       return {
         isFetching: getIsFetching(state),
         sapInvoiceList: getSapInvoiceList(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     },
     {
       fetchSapInvoices,
+      initialize,
       receiveTopNavigationSettings,
     }
   )

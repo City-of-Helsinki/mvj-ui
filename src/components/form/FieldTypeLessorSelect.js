@@ -7,6 +7,8 @@ import {getContentLessor} from '$src/lessor/helpers';
 import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchContacts} from '$src/contacts/requestsAsync';
 
+import type {UserServiceUnit} from '$src/usersPermissions/types';
+
 type Props = {
   disabled?: boolean,
   displayError: boolean,
@@ -14,6 +16,7 @@ type Props = {
   isDirty: boolean,
   onChange: Function,
   placeholder?: string,
+  serviceUnit: UserServiceUnit,
 }
 
 const FieldTypeLessorSelect = ({
@@ -23,11 +26,13 @@ const FieldTypeLessorSelect = ({
   isDirty,
   onChange,
   placeholder,
+  serviceUnit,
 }: Props): React$Node => {
   const getLessors = debounce(async(inputValue: string, callback: Function) => {
     const lessors = await fetchContacts({
       is_lessor: true,
       search: inputValue,
+      service_unit: serviceUnit?.id || "",
     });
 
     callback(addEmptyOption(lessors.map((lessor) => getContentLessor(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));

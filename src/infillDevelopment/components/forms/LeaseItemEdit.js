@@ -81,10 +81,11 @@ import {
 } from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import {referenceNumber} from '$components/form/validations';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease, LeaseId} from '$src/leases/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 
 type DecisionsProps = {
   fields: any,
@@ -428,6 +429,7 @@ type Props = {
   monetaryCompensation: ?number,
   onRemove: Function,
   receiveCollapseStates: Function,
+  userActiveServiceUnit: UserServiceUnit,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -557,6 +559,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
       leaseAttributes,
       leaseId,
       onRemove,
+      userActiveServiceUnit,
       usersPermissions,
     } = this.props;
 
@@ -590,6 +593,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                     fieldType: FieldTypes.LEASE,
                     label: InfillDevelopmentCompensationLeasesFieldTitles.LEASE,
                   }}
+                  serviceUnit={userActiveServiceUnit}
                   enableUiDataEdit
                   uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}
                 />
@@ -941,6 +945,7 @@ export default flowRight(
         leaseId: lease,
         leaseFieldValue: leaseFieldValue,
         monetaryCompensation: selector(state, `${field}.monetary_compensation_amount`),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
         usersPermissions: getUsersPermissions(state),
       };
     },

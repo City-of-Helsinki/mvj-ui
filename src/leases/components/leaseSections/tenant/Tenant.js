@@ -14,7 +14,7 @@ import {LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFi
 import {FormNames, ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
-  formatDateRange, 
+  formatDateRange,
   isActive,
   isArchived,
   isFieldAllowedToRead,

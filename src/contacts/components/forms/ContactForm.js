@@ -8,6 +8,8 @@ import isEmpty from 'lodash/isEmpty';
 
 import Authorization from '$components/authorization/Authorization';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
@@ -33,9 +35,11 @@ import {
   getIsContactFormValid,
   getIsSaveClicked,
 } from '$src/contacts/selectors';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
+import type {UserServiceUnit} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
@@ -47,6 +51,7 @@ type Props = {
   receiveContactFormValid: Function,
   type: ?string,
   businessId: ?string,
+  userActiveServiceUnit: UserServiceUnit,
   valid: boolean,
 }
 
@@ -69,9 +74,21 @@ class ContactForm extends Component<Props> {
   }
 
   componentDidUpdate() {
-    const {isContactFormValid, receiveContactFormValid, valid} = this.props;
+    const {
+      change,
+      initialValues,
+      userActiveServiceUnit,
+      isContactFormValid,
+      receiveContactFormValid,
+      valid,
+    } = this.props;
+
     if(isContactFormValid !== valid) {
       receiveContactFormValid(valid);
+    }
+
+    if(!initialValues.service_unit && userActiveServiceUnit) {
+      change('service_unit', userActiveServiceUnit.id);
     }
   }
 
@@ -90,10 +107,10 @@ class ContactForm extends Component<Props> {
   };
 
   render() {
-    const {attributes, isSaveClicked, type, businessId} = this.props;
+    const {attributes, isSaveClicked, type, businessId, initialValues, userActiveServiceUnit} = this.props;
     const businessIdError = getContactBusinessIdFieldError(businessId);
 
-    if (isEmpty(attributes)) return null;
+    if (isEmpty(attributes) || isEmpty(userActiveServiceUnit)) return null;
 
     return(
       <form>
@@ -368,6 +385,20 @@ class ContactForm extends Component<Props> {
                   />
                 </Authorization>
               </Column>
+              <Column small={12} medium={6} large={4}>
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.SERVICE_UNIT)}>
+                  <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.SERVICE_UNIT)}>
+                    {ContactFieldTitles.SERVICE_UNIT}
+                  </FormTextTitle>
+                  <FormText>
+                    {initialValues.service_unit ? (
+                      initialValues.service_unit.name || '-'
+                    ) : (
+                      (userActiveServiceUnit && userActiveServiceUnit.name) || '-'
+                    )}
+                  </FormText>
+                </Authorization>
+              </Column>
               {type === ContactTypes.PERSON &&
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS_PROTECTION)}>
@@ -418,6 +449,7 @@ const mapStateToProps = (state: RootState) => {
     isSaveClicked: getIsSaveClicked(state),
     type: selector(state, 'type'),
     businessId: selector(state, 'business_id'),
+    userActiveServiceUnit: getUserActiveServiceUnit(state),
   };
 };
 

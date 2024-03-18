@@ -7,6 +7,8 @@ import {getContentContact} from '$src/contacts/helpers';
 import {addEmptyOption, sortStringByKeyAsc} from '$util/helpers';
 import {fetchContacts} from '$src/contacts/requestsAsync';
 
+import type {UserServiceUnit} from '$src/usersPermissions/types';
+
 type Props = {
   disabled?: boolean,
   displayError: boolean,
@@ -14,6 +16,7 @@ type Props = {
   isDirty: boolean,
   onChange: Function,
   placeholder?: string,
+  serviceUnit: UserServiceUnit,
 }
 
 const FieldTypeContactSelect = ({
@@ -23,11 +26,13 @@ const FieldTypeContactSelect = ({
   isDirty,
   onChange,
   placeholder,
+  serviceUnit,
 }: Props): React$Node => {
   const getContacts = debounce(async(inputValue: string, callback: Function) => {
     const contacts = await fetchContacts({
       search: inputValue,
       limit: 20,
+      service_unit: serviceUnit?.id || "",
     });
 
     callback(addEmptyOption(contacts.map((lessor) => getContentContact(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
