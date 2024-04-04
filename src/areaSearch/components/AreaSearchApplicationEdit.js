@@ -1,5 +1,4 @@
 // @flow
-
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
@@ -17,10 +16,14 @@ import {
   getFieldAttributes,
   getFieldOptions,
   getLabelOfOption,
+  displayUIMessage,
 } from '$util/helpers';
 import type {Attributes} from '$src/types';
 import {reshapeSavedApplicationObject} from '$src/plotApplications/helpers';
-import {transformApplicantSectionTitle} from '$src/application/helpers';
+import {
+  transformApplicantSectionTitle,
+  getAreaSearchApplicationAttachmentDownloadLink,
+} from '$src/application/helpers';
 import Title from '$components/content/Title';
 import Divider from '$components/content/Divider';
 import Collapse from '$components/collapse/Collapse';
@@ -41,21 +44,24 @@ import {getInitialAreaSearchEditForm, transformApplicantInfoCheckTitle} from '$s
 import FormField from '$components/form/FormField';
 import TitleH3 from '$components/content/TitleH3';
 import AreaSearchStatusNoteHistory from '$src/areaSearch/components/AreaSearchStatusNoteHistory';
-import {getFormAttributes, getIsFetchingFormAttributes} from '$src/application/selectors';
+import {getFormAttributes, getIsFetchingFormAttributes, getIsPerformingFileOperation} from '$src/application/selectors';
 import {APPLICANT_SECTION_IDENTIFIER} from '$src/application/constants';
 import type {Form} from '$src/application/types';
+import type {AreaSearch, UploadedAreaSearchAttachmentMeta} from '$src/areaSearch/types';
+import AddFileButton from '$components/form/AddFileButton';
+import {uploadAttachment, setAreaSearchAttachments} from '$src/areaSearch/actions';
+import RemoveButton from '$components/form/RemoveButton';
 
-type OwnProps = {
-
-};
 
 type Props = {
-  ...OwnProps,
-  areaSearch: Object | null,
+  areaSearch: AreaSearch | null,
   isFetchingFormAttributes: boolean,
+  isPerformingFileOperation: boolean,
   formAttributes: Attributes,
   areaSearchAttributes: Attributes,
   initialize: Function,
+  uploadAttachment: Function,
+  setAreaSearchAttachments: Function,
 };
 
 type State = {
@@ -91,14 +97,39 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
 
     initialize(getInitialAreaSearchEditForm(areaSearch));
   }
+  
+  handleFileAdded = (e: Event) => {
+    const {uploadAttachment, areaSearch, setAreaSearchAttachments} = this.props;
+    const currentFiles = areaSearch?.area_search_attachments || [];
+    const file = e.target.files[0];
 
+    const fileExists = currentFiles.find((currentFile) => currentFile.name === file.name);
+    
+    if (fileExists) {
+      displayUIMessage({title: 'Virhe', body: `Tiedosto nimellä ${file.name} on jo listassa.`}, {type: 'error'});
+    } else {
+      uploadAttachment({
+        fileData: file,
+        areaSearch: areaSearch?.id,
+        callback: (newFile: UploadedAreaSearchAttachmentMeta) => {
+          setAreaSearchAttachments([...currentFiles, newFile])
+        },
+      });
+    }
+    
+  }
+  
   render(): React$Node {
     const {
       areaSearch,
       isFetchingFormAttributes,
+      isPerformingFileOperation,
       formAttributes,
       areaSearchAttributes,
+      attachments,
+      addAttachment,
     } = this.props;
+    
     const {
       selectedAreaSectionRefreshKey,
     } = this.state;
@@ -249,18 +280,25 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
             ]}
           />)}
         <Collapse headerTitle="Liitteet" defaultOpen>
-          {areaSearch.area_search_attachments.map((file, index) => <Row key={file.id}>
+          {areaSearch.area_search_attachments.map((file, index) => {
+          return (<Row key={file.name}>
             <Column small={3}>Liite {index + 1}</Column>
-            <Column small={9}>
+            <Column small={8}>
               <FileDownloadLink
-                fileUrl={file.file}
+                fileUrl={getAreaSearchApplicationAttachmentDownloadLink(file.id)}
                 label={file.name}
               />
             </Column>
-          </Row>)}
+          </Row>)})}
           {areaSearch.area_search_attachments.length === 0 && <p>
             Hakemuksella ei ole liitteitä.
           </p>}
+          <AddFileButton
+            label='Lisää tiedosto'
+            onChange={this.handleFileAdded}
+            name="AreaSearchApplicationEditAttachment"
+            disabled={isPerformingFileOperation}
+          />
         </Collapse>
 
         <Collapse headerTitle="Hakemuksen käsittely" defaultOpen>
@@ -352,13 +390,20 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
   }
 }
 
+
 export default (flowRight(
   connect((state) => ({
     areaSearch: getCurrentAreaSearch(state),
     areaSearchAttributes: getAttributes(state),
     formAttributes: getFormAttributes(state),
     isFetchingFormAttributes: getIsFetchingFormAttributes(state),
-  })),
+    isPerformingFileOperation: getIsPerformingFileOperation(state),
+  }),
+  {
+    uploadAttachment,
+    setAreaSearchAttachments,
+  },
+  ),
   reduxForm({
     form: FormNames.AREA_SEARCH,
   }),

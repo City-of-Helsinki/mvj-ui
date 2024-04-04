@@ -69,8 +69,8 @@ import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ApiResponse} from '$src/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
 import AreaSearchExportModal from '$src/areaSearch/components/AreaSearchExportModal';
-import { getUserActiveServiceUnit } from "../../usersPermissions/selectors";
-import type { UserServiceUnit } from "../../usersPermissions/types";
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
+import type {UserServiceUnit} from '$src/usersPermissions/types';
 
 const VisualizationTypes = {
   MAP: 'map',

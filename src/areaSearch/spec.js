@@ -25,6 +25,7 @@ import {
   receiveListMethods,
   receiveMethods,
   receiveSingleAreaSearch,
+  setAreaSearchAttachments,
   showEditMode,
   singleAreaSearchNotFound,
 } from '$src/areaSearch/actions';
@@ -273,6 +274,31 @@ describe('AreaSearch', () => {
         const state = areaSearchReducer({
           isEditingAreaSearch: true,
         }, receiveAreaSearchEditFailed('test error'));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update area search attachments', () => {
+        const dummyFile = {
+          id: 1,
+          attachment: "http://localhost:8001/media/area_search_attachments/2024-04-19/filename.pdf",
+          name: "filename.pdf",
+          field: 1,
+          created_at: "2024-04-19T10:54:21.269517+03:00",
+          user: {
+            id: 1,
+            first_name: "Matti",
+            last_name: "Meikäläinen",
+            is_staff: false,
+            username: "u-abcdefg1hij23klmnvwxyzabcd"
+          }
+        };
+        const newState = {...defaultState, currentAreaSearch: {area_search_attachments: [dummyFile]}};
+
+        const state = areaSearchReducer({
+          currentAreaSearch: {
+            area_search_attachments: [],
+          },
+        }, setAreaSearchAttachments([dummyFile]));
         expect(state).to.deep.equal(newState);
       });
     });
