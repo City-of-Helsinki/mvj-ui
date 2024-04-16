@@ -81,6 +81,13 @@ yarn start
 ```bash
 yarn run compile
 ```
+
+There is also a script for compiling a development version, which is needed for deploying mvj-ui for dev:
+
+```bash
+yarn run compile:dev
+```
+
 ## Test
 
 #### Run the test suite

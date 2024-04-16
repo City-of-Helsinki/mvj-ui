@@ -20,6 +20,7 @@
     "serve": "webpack serve",
     "start": "node scripts/start.js",
     "compile": "node scripts/compile.js",
+    "compile:dev": "node scripts/compile.js --dev",
     "precommit": "npm-run-all flow lint",
     "prepush": "npm-run-all test",
     "test": "mocha --require @babel/register --require src/test.js \"src/**/*spec.js\"",
