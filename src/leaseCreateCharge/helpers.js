@@ -39,8 +39,7 @@ export const getPayloadLeaseCreateCharge = (invoice: Object): Object => {
  * @returns {Object}
  */
 export const receivableTypesFromAttributes = (fieldAttributes: Object, receivableTypes: Object): Object => {
-  // Filter choices where choices receivable_type.is_active === true
-  const newChoices = fieldAttributes.choices.filter(choice => receivableTypes.find(type => type.id === choice.value).is_active);
+  const newChoices = fieldAttributes.choices.filter(choice => receivableTypes.find(type => type.is_active && type.id === choice.value));
   const newFieldAttributes = {...fieldAttributes, choices: newChoices};
   return newFieldAttributes;
 };

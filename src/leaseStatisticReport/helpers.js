@@ -9,6 +9,7 @@ import {
   LeaseStatisticReportFormatOptions,
 } from '$src/leaseStatisticReport/enums';
 import type {Reports} from '$src/types';
+import {FieldTypes} from '$src/enums';
 
 /**
  * Get report type options
@@ -148,5 +149,30 @@ export const getOutputFields = (options: Object): Array<Object> => {
  * @return {string}
  */
 export const formatType = (value: Object): string => {
-  return get(value, 'type').replace('Model', '').replace('Field', '').replace('Null', '').toLowerCase();
+  const formattedValue = get(value, 'type').replace('Model', '').replace('Field', '').replace('Null', '').toLowerCase()
+  switch (formattedValue) {
+    case "multiplechoice":
+      return FieldTypes.MULTISELECT
+    default:
+      return formattedValue
+  }
+};
+
+/**
+ * Parses the query params from service_unit=num1,num2 format
+ * into service_unit=num1&service_unit=num2 format
+ * @param {string} query
+ * @return {string}
+ */
+export const parseServiceUnitQuery = (query: string): string => {
+  const queryArray = query.split('&')
+  const serviceUnitIndex = queryArray.findIndex((item: string) => item.includes("service_unit"))
+  if (serviceUnitIndex !== -1) {
+    const serviceUnitQuery = queryArray.splice(serviceUnitIndex, 1)
+    const serviceUnitIds = serviceUnitQuery[0].split('=')[1].split(',')
+    serviceUnitIds.forEach(id => {if (id) queryArray.push(`service_unit=${id}`)})
+    return queryArray.join('&')
+  } else {
+    return query
+  }
 };

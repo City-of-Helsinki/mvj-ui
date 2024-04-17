@@ -36,10 +36,12 @@ import {
   getMethods as getCommentMethods,
 } from '$src/comments/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
+import {getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {CommentList} from '$src/comments/types';
 import type {Lease} from '$src/leases/types';
+import type {UserServiceUnit} from '$src/usersPermissions/types';
 
 type Props = {
   clearEditFlags: Function,
@@ -54,6 +56,7 @@ type Props = {
   isOpen: boolean,
   onClose: Function,
   receiveIsSaveClicked: Function,
+  userActiveServiceUnit: UserServiceUnit,
 }
 
 type State = {
@@ -195,11 +198,13 @@ class CommentPanel extends PureComponent<Props, State> {
   render () {
     const {
       commentMethods,
+      currentLease,
       editModeFlags,
       isNewCommentFormDirty,
       isOpen,
       onClose,
       receiveIsSaveClicked,
+      userActiveServiceUnit,
     } = this.props;
     const {
       allowEdit,
@@ -210,6 +215,10 @@ class CommentPanel extends PureComponent<Props, State> {
       topicOptions,
     } = this.state;
     const filteredComments = this.getFilteredComments();
+
+    const isServiceUnitSameAsActiveServiceUnit = () => {
+      return userActiveServiceUnit?.id === currentLease?.service_unit?.id;
+    };
 
     return (
       <div ref={this.setComponentRef} className={classNames('comment-panel', {'is-panel-open': isOpen})}>
@@ -259,7 +268,7 @@ class CommentPanel extends PureComponent<Props, State> {
               </AppConsumer>
             </div>
 
-            <Authorization allow={isMethodAllowed(commentMethods, Methods.POST)}>
+            <Authorization allow={isMethodAllowed(commentMethods, Methods.POST) && isServiceUnitSameAsActiveServiceUnit()}>
               <NewCommentForm onAddComment={this.createComment} />
             </Authorization>
 
@@ -325,6 +334,7 @@ export default flowRight(
         currentLease: currentLease,
         editModeFlags: getEditModeFlags(state),
         isNewCommentFormDirty: isDirty(FormNames.LEASE_NEW_COMMENT)(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     },
     {

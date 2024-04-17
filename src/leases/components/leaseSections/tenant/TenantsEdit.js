@@ -59,7 +59,7 @@ import {withContactAttributes} from '$components/attributes/ContactAttributes';
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {ContactModalSettings} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 
 type WarningsProps = {
   meta: Object,
@@ -88,6 +88,7 @@ type TenantsProps = {
   fields: any,
   isFetchingContactAttributes: boolean,
   leaseAttributes: Attributes,
+  serviceUnit: UserServiceUnit,
   tenants: Array<Object>,
   usersPermissions: UsersPermissionsType,
 }
@@ -97,6 +98,7 @@ const renderTenants = ({
   fields,
   isFetchingContactAttributes,
   leaseAttributes,
+  serviceUnit,
   tenants,
   usersPermissions,
 }: TenantsProps): Element<*> => {
@@ -140,6 +142,7 @@ const renderTenants = ({
                   index={index}
                   onRemove={handleRemove}
                   tenants={tenants}
+                  serviceUnit={serviceUnit}
                 />
               );
             })}
@@ -272,7 +275,7 @@ class TenantsEdit extends PureComponent<Props, State> {
       usersPermissions,
     } = this.props;
 
-    const {savedTenants, savedTenantsArchived} = this.state;
+    const {savedTenants, savedTenantsArchived, currentLease} = this.state;
 
     return (
       <AppConsumer>
@@ -352,6 +355,7 @@ class TenantsEdit extends PureComponent<Props, State> {
                   component={renderTenants}
                   leaseAttributes={leaseAttributes}
                   name='tenants'
+                  serviceUnit={currentLease.service_unit}
                   tenants={savedTenants}
                   usersPermissions={usersPermissions}
                 />
@@ -361,6 +365,7 @@ class TenantsEdit extends PureComponent<Props, State> {
                   leaseAttributes={leaseAttributes}
                   name='tenantsArchived'
                   archived
+                  serviceUnit={currentLease.service_unit}
                   tenants={savedTenantsArchived}
                   usersPermissions={usersPermissions}
                 />
