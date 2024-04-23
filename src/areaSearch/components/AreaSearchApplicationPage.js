@@ -302,16 +302,6 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       scrollToTopPage();
     }
 
-    /*
-    if (isEmpty(prevProps.currentAreaSearch) && !isEmpty(currentAreaSearch)) {
-      const storedAreaSearchId = getSessionStorageItem('areaSearchId');
-
-      if(Number(areaSearchId) === storedAreaSearchId) {
-        this.setState({isRestoreModalOpen: true});
-      }
-    }
-     */
-
     if (!isFetching && prevProps.isFetching) {
       setPageTitle(`Hakemus ${currentAreaSearch?.identifier || ''}`);
     }
