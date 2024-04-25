@@ -371,10 +371,6 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
 
-    if (searchQuery.service_unit === undefined && userActiveServiceUnit) {
-      searchQuery.service_unit = userActiveServiceUnit.id;
-    }
-
     delete searchQuery.page;
     delete searchQuery.in_bbox;
     delete searchQuery.visualization;
