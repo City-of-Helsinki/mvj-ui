@@ -1097,6 +1097,31 @@ export const getContentEqualizedRents = (rent: Object): Array<Object> =>
     });
 
 /**
+ * Check if subvention data has changed for rent adjustments.
+ * If current props are undefined, they are not considered changed.
+ * @param {Object} prevProps
+ * @param {Object} props
+ * @return {boolean}
+ */
+export const hasSubventionDataChanged = (prevProps: Object, props: Object): boolean => {
+  if (
+    typeof props.subventionType === "undefined" ||
+    typeof props.subventionBasePercent === "undefined" ||
+    typeof props.subventionGraduatedPercent === "undefined" ||
+    typeof props.managementSubventions === "undefined" ||
+    typeof props.temporarySubventions === "undefined"
+  ) {
+    return false
+  }
+  
+  return props.subventionType !== prevProps.subventionType ||
+      props.subventionBasePercent !== prevProps.subventionBasePercent ||
+      props.subventionGraduatedPercent !== prevProps.subventionGraduatedPercent ||
+      props.managementSubventions !== prevProps.managementSubventions ||
+      props.temporarySubventions !== prevProps.temporarySubventions
+};
+
+/**
  * Calculate re-lease discount percent for rent adjustment subvention
  * @param {string} subventionBasePercent
  * @param {string} subventionGraduatedPercent
@@ -1522,6 +1547,19 @@ export const calculateSubventionDiscountTotal = (initialYearRent: number, manage
   }
 
   return Number(initialYearRent);
+};
+
+/**
+ * Check if subventions have values for calculation
+ * @param {number} initialYearRent
+ * @param {Object[]} managementSubventions
+ * @param {number} currentAmountPerArea
+ * @return {number}
+ */
+export const hasSubventionValues = (managementSubventions: ?Array<Object>, temporarySubventions: ?Array<Object>, subventionBasePercent: ?string, subventionGraduatedPercent: ?string): boolean => {
+  let msWithValues = managementSubventions.filter((subvention) => !!subvention.subvention_amount)
+  let tsWithValues = temporarySubventions.filter((subvention) => !!subvention.subvention_percent)
+  return !!(msWithValues.length || tsWithValues.length || subventionBasePercent || subventionGraduatedPercent)
 };
 
 /**
