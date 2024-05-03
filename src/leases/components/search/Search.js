@@ -236,6 +236,27 @@ class Search extends PureComponent<Props, State> {
             />
           </Column>
         </Row>
+        <SearchRow>
+          <SearchLabelColumn>
+            <SearchLabel>Palvelukokonaisuus</SearchLabel>
+          </SearchLabelColumn>
+          <SearchInputColumn>
+            <FormField
+              autoBlur
+              disableDirty
+              fieldAttributes={{
+                label: 'Palvelukokonaisuus',
+                type: FieldTypes.CHOICE,
+                read_only: false,
+              }}
+              invisibleLabel
+              name='service_unit'
+              overrideValues={{
+                options: serviceUnitOptions,
+              }}
+            />
+          </SearchInputColumn>
+        </SearchRow>
         {!isBasicSearch &&
           <Fragment>
             <Row>
@@ -734,28 +755,6 @@ class Search extends PureComponent<Props, State> {
                       }}
                       invisibleLabel
                       name='invoice_number'
-                    />
-                  </SearchInputColumn>
-                </SearchRow>
-
-                <SearchRow>
-                  <SearchLabelColumn>
-                    <SearchLabel>Palvelukokonaisuus</SearchLabel>
-                  </SearchLabelColumn>
-                  <SearchInputColumn>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: 'Palvelukokonaisuus',
-                        type: FieldTypes.CHOICE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      name='service_unit'
-                      overrideValues={{
-                        options: serviceUnitOptions,
-                      }}
                     />
                   </SearchInputColumn>
                 </SearchRow>
