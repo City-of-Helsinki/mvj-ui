@@ -42,6 +42,7 @@ import {
   getDecisionById,
   hasSubventionDataChanged,
   hasSubventionValues,
+  isSubventionTypeSpecified,
 } from '$src/leases/helpers';
 import {getUiDataLeaseKey} from '$src/uiData/helpers';
 import {
@@ -270,6 +271,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
         change,
         field,
         fullAmount,
+        subventionType,
         managementSubventions,
         temporarySubventions,
         subventionBasePercent,
@@ -278,7 +280,15 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
 
       let newFullAmount = fullAmount
 
-      if (hasSubventionValues(managementSubventions, temporarySubventions, subventionBasePercent, subventionGraduatedPercent)) {
+      if (
+        isSubventionTypeSpecified(subventionType)
+        && hasSubventionValues(
+          managementSubventions,
+          temporarySubventions,
+          subventionBasePercent,
+          subventionGraduatedPercent
+        )
+      ) {
         newFullAmount = this.calculateTotalSubventionPercent()
       }
       
@@ -306,8 +316,8 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
   handleAddSubventions = () => {
     const {change, field} = this.props;
 
-    // To make the subvention form visible: null => ""
-    change(formName, `${field}.subvention_type`, "");
+    // To make the subvention form visible: null => "unspecified"
+    change(formName, `${field}.subvention_type`, "unspecified");
   }
 
   handleRemoveSubventions = () => {
