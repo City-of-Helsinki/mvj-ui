@@ -1550,11 +1550,22 @@ export const calculateSubventionDiscountTotal = (initialYearRent: number, manage
 };
 
 /**
+ * Check if subvention type is specified.
+ * The "unspecified" value is needed for rendering the subvention-related fields.
+ * @param {?string} subventionType
+ * @return {boolean}
+ */
+export const isSubventionTypeSpecified = (subventionType: ?string): boolean => {
+  return !!subventionType && subventionType !== "unspecified";
+};
+
+/**
  * Check if subventions have values for calculation
- * @param {number} initialYearRent
- * @param {Object[]} managementSubventions
- * @param {number} currentAmountPerArea
- * @return {number}
+ * @param {?Array<Object>} managementSubventions
+ * @param {?Array<Object>} temporarySubventions
+ * @param {?string} subventionBasePercent
+ * @param {?string} subventionGraduatedPercent
+ * @return {boolean}
  */
 export const hasSubventionValues = (managementSubventions: ?Array<Object>, temporarySubventions: ?Array<Object>, subventionBasePercent: ?string, subventionGraduatedPercent: ?string): boolean => {
   let msWithValues = managementSubventions.filter((subvention) => !!subvention.subvention_amount)
