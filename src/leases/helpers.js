@@ -1097,6 +1097,21 @@ export const getContentEqualizedRents = (rent: Object): Array<Object> =>
       };
     });
 
+
+
+/**
+ * Check if subvention data indicates that the rent adjustment is deleted.
+ * @param {Object} props
+ * @return {boolean}
+ */
+export const isRentDeleted = (props: Object): boolean => {
+  return typeof props.subventionType === "undefined" &&
+      typeof props.subventionBasePercent === "undefined" &&
+      typeof props.subventionGraduatedPercent === "undefined" &&
+      typeof props.managementSubventions === "undefined" &&
+      typeof props.temporarySubventions === "undefined";
+};
+
 /**
  * Check if subvention data has changed for rent adjustments to update the full amount.
  * @param {Object} prevProps
@@ -1104,17 +1119,9 @@ export const getContentEqualizedRents = (rent: Object): Array<Object> =>
  * @return {boolean}
  */
 export const hasSubventionDataChanged = (prevProps: Object, props: Object): boolean => {
-  // If the rent adjustment is deleted, skip updating the full amount.
-  if (
-      typeof props.subventionType === "undefined" &&
-      typeof props.subventionBasePercent === "undefined" &&
-      typeof props.subventionGraduatedPercent === "undefined" &&
-      typeof props.managementSubventions === "undefined" &&
-      typeof props.temporarySubventions === "undefined"
-    ) {
+  if (isRentDeleted(props)){
       return false
   }
-    
   return props?.subventionType !== prevProps?.subventionType ||
     props?.subventionBasePercent !== prevProps?.subventionBasePercent ||
     props?.subventionGraduatedPercent !== prevProps?.subventionGraduatedPercent ||
