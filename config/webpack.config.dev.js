@@ -143,6 +143,7 @@ module.exports = {
       fs: 'empty',
       net: 'empty',
       tls: 'empty',
+      "url": require.resolve("url/")
     }
   },
   // Turn off performance hints during development because we don't do any
