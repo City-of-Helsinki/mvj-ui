@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import isPast from 'date-fns/isPast';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 import {isDirty} from 'redux-form';
 
 import {
@@ -1096,29 +1097,36 @@ export const getContentEqualizedRents = (rent: Object): Array<Object> =>
       };
     });
 
+
+
 /**
- * Check if subvention data has changed for rent adjustments.
- * If current props are undefined, they are not considered changed.
+ * Check if subvention data indicates that the rent adjustment is deleted.
+ * @param {Object} props
+ * @return {boolean}
+ */
+export const isRentDeleted = (props: Object): boolean => {
+  return typeof props.subventionType === "undefined" &&
+      typeof props.subventionBasePercent === "undefined" &&
+      typeof props.subventionGraduatedPercent === "undefined" &&
+      typeof props.managementSubventions === "undefined" &&
+      typeof props.temporarySubventions === "undefined";
+};
+
+/**
+ * Check if subvention data has changed for rent adjustments to update the full amount.
  * @param {Object} prevProps
  * @param {Object} props
  * @return {boolean}
  */
 export const hasSubventionDataChanged = (prevProps: Object, props: Object): boolean => {
-  if (
-    typeof props.subventionType === "undefined" ||
-    typeof props.subventionBasePercent === "undefined" ||
-    typeof props.subventionGraduatedPercent === "undefined" ||
-    typeof props.managementSubventions === "undefined" ||
-    typeof props.temporarySubventions === "undefined"
-  ) {
-    return false
+  if (isRentDeleted(props)){
+      return false
   }
-  
-  return props.subventionType !== prevProps.subventionType ||
-      props.subventionBasePercent !== prevProps.subventionBasePercent ||
-      props.subventionGraduatedPercent !== prevProps.subventionGraduatedPercent ||
-      props.managementSubventions !== prevProps.managementSubventions ||
-      props.temporarySubventions !== prevProps.temporarySubventions
+  return props?.subventionType !== prevProps?.subventionType ||
+    props?.subventionBasePercent !== prevProps?.subventionBasePercent ||
+    props?.subventionGraduatedPercent !== prevProps?.subventionGraduatedPercent ||
+    !isEqual(props?.managementSubventions, prevProps?.managementSubventions) ||
+    !isEqual(props?.temporarySubventions, prevProps?.temporarySubventions);
 };
 
 /**
@@ -1568,9 +1576,9 @@ export const isSubventionTypeSpecified = (subventionType: ?string): boolean => {
  * @return {boolean}
  */
 export const hasSubventionValues = (managementSubventions: ?Array<Object>, temporarySubventions: ?Array<Object>, subventionBasePercent: ?string, subventionGraduatedPercent: ?string): boolean => {
-  let msWithValues = managementSubventions.filter((subvention) => !!subvention.subvention_amount)
-  let tsWithValues = temporarySubventions.filter((subvention) => !!subvention.subvention_percent)
-  return !!(msWithValues.length || tsWithValues.length || subventionBasePercent || subventionGraduatedPercent)
+  let msWithValues = managementSubventions?.filter((subvention) => !!subvention.subvention_amount) || [];
+  let tsWithValues = temporarySubventions?.filter((subvention) => !!subvention.subvention_percent) || [];
+  return !!(msWithValues.length || tsWithValues.length || subventionBasePercent || subventionGraduatedPercent);
 };
 
 /**
