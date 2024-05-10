@@ -105,7 +105,7 @@ class Search extends PureComponent<Props, State> {
       newState.municipalityOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.MUNICIPALITY);
       newState.tenantTypeOptions = getFieldOptions(props.leaseAttributes, LeaseTenantContactSetFieldPaths.TYPE, false);
       newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.TYPE);
-      newState.serviceUnitOptions = getFieldOptions(props.leaseAttributes, 'service_unit', true);
+      //newState.serviceUnitOptions = getFieldOptions(props.leaseAttributes, 'service_unit', true);
     }
 
     if(props.lessors !== state.lessors) {
@@ -236,27 +236,6 @@ class Search extends PureComponent<Props, State> {
             />
           </Column>
         </Row>
-        <SearchRow>
-          <SearchLabelColumn>
-            <SearchLabel>Palvelukokonaisuus</SearchLabel>
-          </SearchLabelColumn>
-          <SearchInputColumn>
-            <FormField
-              autoBlur
-              disableDirty
-              fieldAttributes={{
-                label: 'Palvelukokonaisuus',
-                type: FieldTypes.CHOICE,
-                read_only: false,
-              }}
-              invisibleLabel
-              name='service_unit'
-              overrideValues={{
-                options: serviceUnitOptions,
-              }}
-            />
-          </SearchInputColumn>
-        </SearchRow>
         {!isBasicSearch &&
           <Fragment>
             <Row>

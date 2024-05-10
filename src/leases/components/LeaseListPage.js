@@ -9,6 +9,13 @@ import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
+import {FieldTypes} from '$src/enums';
+import SearchContainer from '$components/search/SearchContainer';
+import FormField from '$components/form/FormField';
+import SearchInputColumn from '$components/search/SearchInputColumn';
+import SearchLabel from '$components/search/SearchLabel';
+import SearchLabelColumn from '$components/search/SearchLabelColumn';
+import SearchRow from '$components/search/SearchRow';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -126,6 +133,7 @@ type State = {
   sortKey: string,
   sortOrder: string,
   visualizationType: string,
+  serviceUnitOptions: Array<Object>,
 }
 
 class LeaseListPage extends PureComponent<Props, State> {
@@ -142,6 +150,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     sortKey: DEFAULT_SORT_KEY,
     sortOrder: DEFAULT_SORT_ORDER,
     visualizationType: VisualizationTypes.TABLE,
+    serviceUnitOptions: [],
   }
 
   static contextTypes = {
@@ -157,6 +166,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       lessors,
       receiveTopNavigationSettings,
       serviceUnits,
+      leaseAttributes
     } = this.props;
 
     setPageTitle('Vuokraukset');
@@ -179,12 +189,14 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     window.addEventListener('popstate', this.handlePopState);
     this._isMounted = true;
+
+    this.setState({serviceUnitOptions: getFieldOptions(leaseAttributes, 'service_unit', true)});
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}, userActiveServiceUnit} = this.props;
+    const {location: {search: currentSearch}, userActiveServiceUnit, leaseAttributes} = this.props;
     const {visualizationType} = this.state;
-    const {location: {search: prevSearch}, userActiveServiceUnit: prevUserActiveServiceUnit} = prevProps;
+    const {location: {search: prevSearch}} = prevProps;
 
     const initializeSearch = () => {
       const searchQuery = getUrlParams(currentSearch);
@@ -218,15 +230,18 @@ class LeaseListPage extends PureComponent<Props, State> {
         initializeSearch();
         this._hasFetchedLeases = true;
 
-      } else if(userActiveServiceUnit !== prevUserActiveServiceUnit 
-          && !currentSearch.includes('service_unit')) {
-        // Search again after changing user active service unit only if not explicitly setting the service unit filter
-        searchByType();
       }
     }
 
     if (currentSearch !== prevSearch) {
       searchByType();
+    }
+
+    if (
+      this.props.leaseAttributes?.service_unit &&
+      leaseAttributes?.service_unit?.choices.length !== prevProps.leaseAttributes?.service_unit?.choices.length
+    ) {
+      this.setState({serviceUnitOptions: getFieldOptions(leaseAttributes, 'service_unit', true)});
     }
   }
 
@@ -256,7 +271,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   setSearchFormValues = () => {
-    const {location: {search}, initialize, userActiveServiceUnit} = this.props;
+    const {location: {search}, initialize} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     const states = this.getLeaseStates(searchQuery);
@@ -272,8 +287,8 @@ class LeaseListPage extends PureComponent<Props, State> {
         ? searchQuery.tenantcontact_type
         : searchQuery.tenantcontact_type ? [searchQuery.tenantcontact_type] : [];
 
-      if(initialValues.service_unit === undefined && userActiveServiceUnit) {
-        initialValues.service_unit = userActiveServiceUnit.id;
+      if (initialValues.service_unit === undefined) {
+        initialValues.service_unit = "";
       }
 
       if(onlyActiveLeases != undefined) {
@@ -319,7 +334,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   search = () => {
-    const {fetchLeases, location: {search}, userActiveServiceUnit} = this.props;
+    const {fetchLeases, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     const leaseStates = this.getLeaseStates(searchQuery);
@@ -340,8 +355,8 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
     searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
-    if(searchQuery.service_unit === undefined && userActiveServiceUnit) {
-      searchQuery.service_unit = userActiveServiceUnit.id;
+    if(searchQuery.service_unit === undefined) {
+      searchQuery.service_unit = "";
     }
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
@@ -354,7 +369,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   searchByBBox = () => {
-    const {fetchLeasesByBBox, location: {search}, userActiveServiceUnit} = this.props;
+    const {fetchLeasesByBBox, location: {search}} = this.props;
     const searchQuery = getUrlParams(search);
     const leaseStates = this.getLeaseStates(searchQuery);
     const onlyActiveLeases = this.getOnlyActiveLeasesValue(searchQuery);
@@ -371,8 +386,8 @@ class LeaseListPage extends PureComponent<Props, State> {
       searchQuery.lease_state = leaseStates;
     }
 
-    if(searchQuery.service_unit === undefined && userActiveServiceUnit) {
-      searchQuery.service_unit = userActiveServiceUnit.id;
+    if(searchQuery.service_unit === undefined) {
+      searchQuery.service_unit = "";
     }
 
     searchQuery.limit = 10000;
@@ -428,6 +443,10 @@ class LeaseListPage extends PureComponent<Props, State> {
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(searchQuery),
     });
+  }
+
+  handleServiceUnitChange = (e : Object) => {
+    this.handleSearchChange({service_unit: e.target.value}, true);
   }
 
   handleRowClick = (id) => {
@@ -578,6 +597,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       sortKey,
       sortOrder,
       visualizationType,
+      serviceUnitOptions
     } = this.state;
     const {
       createLease,
@@ -599,6 +619,13 @@ class LeaseListPage extends PureComponent<Props, State> {
     if(!leaseMethods) return null;
 
     if(!isMethodAllowed(leaseMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
+
+    const serviceUnitFilter = <div>
+      <span>Palvelukokonaisuus</span>
+      <select name="service_unit" onChange={this.handleServiceUnitChange}>
+        {serviceUnitOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+      </select>
+    </div>
 
     return (
       <PageContainer>
@@ -635,6 +662,7 @@ class LeaseListPage extends PureComponent<Props, State> {
               filterOptions={leaseStateFilterOptions}
               filterValue={leaseStates}
               onFilterChange={this.handleLeaseStatesChange}
+              componentToRenderNextToLabel={serviceUnitFilter}
             />
           }
           visualizationComponent={
