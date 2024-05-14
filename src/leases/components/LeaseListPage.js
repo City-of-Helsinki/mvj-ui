@@ -452,7 +452,12 @@ class LeaseListPage extends PureComponent<Props, State> {
   }
 
   handleServiceUnitChange = (value : mixed) => {
-    this.handleSearchChange({service_unit: value}, false);
+    const {location: {search}} = this.props;
+
+    // get other form values from query params
+    const query = getUrlParams(search);
+
+    this.handleSearchChange(Object.assign(query, {service_unit: value}));
     this.setState({selectedServiceUnitOptionValue: value});
   }
 
