@@ -630,7 +630,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     const serviceUnitFilter = <SearchRow>
       <SearchLabelColumn>
-        <SearchLabel>Palvelukokonaisuus</SearchLabel>
+        <SearchLabel>{LeaseFieldTitles.SERVICE_UNIT}</SearchLabel>
       </SearchLabelColumn>
       <SearchInputColumn>
         <FieldTypeSelect
