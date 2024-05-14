@@ -680,7 +680,7 @@ class LeaseListPage extends PureComponent<Props, State> {
               filterOptions={leaseStateFilterOptions}
               filterValue={leaseStates}
               onFilterChange={this.handleLeaseStatesChange}
-              componentToRenderNextToLabel={serviceUnitFilter}
+              componentToRenderUnderLabel={serviceUnitFilter}
             />
           }
           visualizationComponent={

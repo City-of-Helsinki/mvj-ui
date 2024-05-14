@@ -10,7 +10,7 @@ type Props = {
   filterOptions: Array<Object>,
   filterValue: Array<string>,
   onFilterChange?: Function,
-  componentToRenderNextToLabel?: React$Node,
+  componentToRenderUnderLabel?: React$Node,
 }
 const TableFilters = ({
   alignFiltersRight,
@@ -18,7 +18,7 @@ const TableFilters = ({
   filterOptions,
   filterValue,
   onFilterChange,
-  componentToRenderNextToLabel = null
+  componentToRenderUnderLabel = null
 }: Props): React$Node => {
   const handleFilterChange = (values: Array<Object>) => {
     if(onFilterChange) {
@@ -35,7 +35,7 @@ const TableFilters = ({
           {!!filterOptions.length &&
             <p className='table__filters_filter-wrapper_title'>Suodatus</p>
           }
-          {!!componentToRenderNextToLabel && componentToRenderNextToLabel}
+          {!!componentToRenderUnderLabel && componentToRenderUnderLabel}
           <CheckboxInput
             checkboxName='lease-type-checkbox'
             legend='Suodata'
