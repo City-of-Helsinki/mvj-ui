@@ -105,7 +105,6 @@ class Search extends PureComponent<Props, State> {
       newState.municipalityOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.MUNICIPALITY);
       newState.tenantTypeOptions = getFieldOptions(props.leaseAttributes, LeaseTenantContactSetFieldPaths.TYPE, false);
       newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.TYPE);
-      //newState.serviceUnitOptions = getFieldOptions(props.leaseAttributes, 'service_unit', true);
     }
 
     if(props.lessors !== state.lessors) {
@@ -156,6 +155,7 @@ class Search extends PureComponent<Props, State> {
     delete searchQuery.in_bbox;
     delete searchQuery.visualization;
     delete searchQuery.zoom;
+    delete searchQuery.service_unit;
 
     const keys = Object.keys(searchQuery);
 
