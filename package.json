@@ -69,7 +69,6 @@
     "redux-form": "^8.2.5",
     "redux-oidc": "^3.1.4",
     "redux-saga": "^1.0.5",
-    "url": "^0.11.3",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
