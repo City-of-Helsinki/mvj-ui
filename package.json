@@ -99,7 +99,6 @@
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-react": "^7.14.3",
     "favicons-webpack-plugin": "^6.0.1",
-    "file-loader": "^6.2.0",
     "flow-bin": "^0.227.0",
     "flow-typed": "^3.9.0",
     "fs-extra": "^11.2.0",

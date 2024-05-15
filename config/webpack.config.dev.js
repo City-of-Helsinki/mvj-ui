@@ -90,7 +90,10 @@ module.exports = {
       },
       {
         test: /\.(eot|svg|png|jpe?g)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: require.resolve('file-loader'),
+        type: 'asset/resource',
+        generator: {
+            filename: '[hash][ext]'
+        },
       },
       {
         test: [
