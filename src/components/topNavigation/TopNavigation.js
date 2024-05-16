@@ -198,7 +198,7 @@ class TopNavigation extends Component<Props, State> {
                       <UserServiceUnitSelectInput userServiceUnits={userServiceUnits} userActiveServiceUnit={userActiveServiceUnit} />
                     ) : (
                       <div className="user-service-unit-text">
-                        <div className="service-unit-label">Palvelukokonaisuus</div>
+                        <div className="service-unit-label">Oma palvelukokonaisuus</div>
                         <div className="service-unit-name">{userActiveServiceUnit.name}</div>
                       </div>
                     )}

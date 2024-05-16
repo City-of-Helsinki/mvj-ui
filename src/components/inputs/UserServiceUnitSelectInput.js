@@ -57,7 +57,7 @@ class UserServiceUnitSelectInput extends Component<Props, State> {
           <FormFieldLabel
             htmlFor={'userServiceUnitSelect'}
           >
-            Palvelukokonaisuus
+            Oma palvelukokonaisuus
           </FormFieldLabel>
           <div className={'form-field__component'}>
             <div className={'form-field__select'}>
