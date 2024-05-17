@@ -56,10 +56,13 @@ const Search = ({
 };
 
 const formName = FormNames.TRADE_REGISTER_SEARCH;
-export default flowRight(connect(state => {
+
+const decoratedComponent = reduxForm({
+  form: formName
+})(Search);
+
+export default connect(state => {
   return {
     formValues: getFormValues(formName)(state)
   };
-}), reduxForm({
-  form: formName
-}))(Search);
+})(decoratedComponent);

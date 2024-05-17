@@ -140,7 +140,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     isSearchInitialized: false,
     invoiceAttributes: null,
     maxPage: 0,
-    sapInvoiceList: {},
+    sapInvoiceList: null,
     sapInvoices: [],
     sortKey: DEFAULT_SORT_KEY,
     sortOrder: DEFAULT_SORT_ORDER
@@ -160,7 +160,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.invoiceAttributes !== state.invoiceAttributes) {
       newState.invoiceAttributes = props.invoiceAttributes;

@@ -4,7 +4,8 @@ import { receiveError } from "src/api/actions";
 import { fetchInvoices } from "src/invoices/requests";
 
 function* fetchSapInvoicesSaga({
-  payload: query
+  payload: query,
+  type: string
 }): Generator<any, any, any> {
   try {
     let {

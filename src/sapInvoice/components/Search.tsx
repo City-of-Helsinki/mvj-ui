@@ -119,7 +119,12 @@ class Search extends PureComponent<Props> {
 }
 
 const formName = FormNames.SAP_INVOICE_SEARCH;
-export default flowRight(connect(state => {
+
+const decoratedComponent = reduxForm({
+  form: formName
+})(Search);
+
+export default connect(state => {
   return {
     formValues: getFormValues(formName)(state),
     isFetchingServiceUnits: getIsFetchingServiceUnits(state),
@@ -127,6 +132,4 @@ export default flowRight(connect(state => {
   };
 }, {
   fetchServiceUnits
-}), reduxForm({
-  form: formName
-}))(Search);
+})(decoratedComponent);

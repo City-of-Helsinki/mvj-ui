@@ -4,7 +4,7 @@ import sapInvoicesReducer from "./reducer";
 import type { SapInvoicesState } from "./types";
 const defaultState: SapInvoicesState = {
   isFetching: false,
-  list: {}
+  list: null
 };
 describe('Sap invoices', () => {
   describe('Reducer', () => {
@@ -25,9 +25,7 @@ describe('Sap invoices', () => {
         expect(state).to.deep.equal(newState);
       });
       it('should update sap invoices', () => {
-        const dummyList = {
-          foo: 'bar'
-        };
+        const dummyList = { count: 1, next: null, previous: null, results: [{ 'foo': 'bar' }] };
         const newState = { ...defaultState,
           list: dummyList
         };

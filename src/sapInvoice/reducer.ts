@@ -13,7 +13,7 @@ const listReducer: Reducer<SapInvoiceList> = handleActions({
   }: ReceiveSapInvoicesAction) => {
     return sapInvoiceList;
   }
-}, {});
+}, null);
 export default combineReducers<Record<string, any>, any>({
   isFetching: isFetchingReducer,
   list: listReducer
