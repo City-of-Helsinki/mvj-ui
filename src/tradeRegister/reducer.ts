@@ -10,7 +10,7 @@ const isFetchingCompanyExtendedByIdReducer: Reducer<TradeRegisterIsFetchingMap> 
   }),
   ['mvj/tradeRegister/RECEIVE_COMPANY_EXTENDED_BY_ID']: (state: TradeRegisterIsFetchingMap, {
     payload
-  }: ReceiveTradeRegisterCompanyExtendedByIdAction) => ({ ...state,
+  }: ReceiveTradeRegisterCompanyExtendedByIdAction): any => ({ ...state,
     ...Object.keys(payload).reduce((obj, key) => ({ ...obj,
       [key]: false
     }), {})
@@ -34,9 +34,10 @@ const isFetchingCompanyNoticeByIdReducer: Reducer<TradeRegisterIsFetchingMap> = 
   }: FetchTradeRegisterCompanyNoticeByIdAction) => ({ ...state,
     [businessId]: true
   }),
-  ['mvj/tradeRegister/RECEIVE_COMPANY_NOTICE_BY_ID']: (state: TradeRegisterIsFetchingMap, {
-    payload
-  }: ReceiveTradeRegisterCompanyNoticeByIdAction) => ({ ...state,
+  ['mvj/tradeRegister/RECEIVE_COMPANY_NOTICE_BY_ID']: (
+    state: TradeRegisterIsFetchingMap,
+    { payload }: ReceiveTradeRegisterCompanyNoticeByIdAction
+  ): any => ({ ...state,
     ...Object.keys(payload).reduce((obj, key) => ({ ...obj,
       [key]: false
     }), {})
@@ -62,7 +63,7 @@ const isFetchingCompanyRepresentByIdReducer: Reducer<TradeRegisterIsFetchingMap>
   }),
   ['mvj/tradeRegister/RECEIVE_COMPANY_REPRESENT_BY_ID']: (state: TradeRegisterIsFetchingMap, {
     payload
-  }: ReceiveTradeRegisterCompanyRepresentByIdAction) => ({ ...state,
+  }: ReceiveTradeRegisterCompanyRepresentByIdAction): any => ({ ...state,
     ...Object.keys(payload).reduce((obj, key) => ({ ...obj,
       [key]: false
     }), {})

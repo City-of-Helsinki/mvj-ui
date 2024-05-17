@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Reducer } from "../types";
-import type { UserGroups, UsersPermissions, UserServiceUnits, ReceiveUserGroupsAction, ReceiveUsersPermissionsAction, ReceiveUserServiceUnitsAction, SetUserActiveServiceUnitAction } from "./types";
+import type { UserGroups, UsersPermissions, UserServiceUnits, UserServiceUnit, ReceiveUserGroupsAction, ReceiveUsersPermissionsAction, ReceiveUserServiceUnitsAction, SetUserActiveServiceUnitAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/usersPermissions/FETCH_ALL': () => true,
   'mvj/usersPermissions/NOT_FOUND': () => false,

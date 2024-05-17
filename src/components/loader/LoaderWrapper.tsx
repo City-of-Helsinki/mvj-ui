@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 type Props = {
-  children: any;
+  children?: any;
   className?: string;
 };
 

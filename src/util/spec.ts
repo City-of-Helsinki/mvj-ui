@@ -1159,9 +1159,9 @@ describe('utils', () => {
         count: 20,
         next: null,
         previous: null,
-        results: [1, 2, 3]
+        results: [{'a': 1}, {'b': 2}, {'c': 3}]
       };
-      expect(getApiResponseResults(apiResponse)).to.deep.equal([1, 2, 3]);
+      expect(getApiResponseResults(apiResponse)).to.deep.equal([{'a': 1}, {'b': 2}, {'c': 3}]);
     });
     it('item should be active', () => {
       const item1 = {

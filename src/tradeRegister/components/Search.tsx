@@ -12,8 +12,8 @@ import SearchRow from "src/components/search/SearchRow";
 import { FieldTypes, FormNames } from "src/enums";
 import { ButtonColors } from "src/components/enums";
 type Props = {
-  formValues: Record<string, any>;
-  handleSubmit: (...args: Array<any>) => any;
+  formValues?: Record<string, any>;
+  handleSubmit?: (...args: Array<any>) => any;
   onSearch: (...args: Array<any>) => any;
 };
 
@@ -21,7 +21,7 @@ const Search = ({
   formValues,
   handleSubmit,
   onSearch
-}: Props) => {
+}: Props): React.JSX.Element => {
   const handleSearch = () => {
     const newValues = { ...formValues
     };

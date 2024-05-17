@@ -6,13 +6,9 @@ const defaultState: SapInvoicesState = {
   isFetching: false,
   list: {}
 };
-// @ts-expect-error
 describe('Sap invoices', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('sapInvoicesReducer', () => {
-      // $FlowFixMe
       it('should set isFetching flag to true when fetching sap invoices', () => {
         const newState = { ...defaultState,
           isFetching: true

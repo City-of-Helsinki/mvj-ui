@@ -42,7 +42,7 @@ export const getCurrentYear = (): string => new Date().getFullYear().toString();
  * @param {string} endDatePath
  * @returns {number}
  */
-export const sortByStartAndEndDateAsc = (a: Record<string, any>, b: Record<string, any>, startDatePath: string = 'start_date', endDatePath: string = 'end_date'): Record<string, any> => {
+export const sortByStartAndEndDateAsc = (a: Record<string, any>, b: Record<string, any>, startDatePath: string = 'start_date', endDatePath: string = 'end_date'): number => {
   const startA = get(a, startDatePath) || '0000-01-01',
         endA = get(a, endDatePath) || '9999-12-31',
         startB = get(b, startDatePath) || '0000-01-01',
@@ -62,7 +62,7 @@ export const sortByStartAndEndDateAsc = (a: Record<string, any>, b: Record<strin
  * @param {string} endDatePath
  * @returns {number}
  */
-export const sortByStartAndEndDateDesc = (a: Record<string, any>, b: Record<string, any>, startDatePath: string = 'start_date', endDatePath: string = 'end_date'): Record<string, any> => {
+export const sortByStartAndEndDateDesc = (a: Record<string, any>, b: Record<string, any>, startDatePath: string = 'start_date', endDatePath: string = 'end_date'): number => {
   const startA = get(a, startDatePath) || '0000-01-01',
         endA = get(a, endDatePath) || '9999-12-31',
         startB = get(b, startDatePath) || '0000-01-01',

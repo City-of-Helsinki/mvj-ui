@@ -183,7 +183,7 @@ export const getUiDataCreditDecisionKey = (key: string): string => getKeyWithPre
  * @param {string} key
  * @return {string|null}
  */
-export const getUiDataByKey = (uiDataList: UiDataList, key: string): string | null | undefined => {
+export const getUiDataByKey = (uiDataList: UiDataList, key: string): Record<string, any> | string | null | undefined => {
   const uiData = uiDataList.find(item => {
     return item.key === key;
   });

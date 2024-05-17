@@ -4,7 +4,8 @@ import { receiveTradeRegisterCompanyExtendedById, companyExtendedNotFoundById, r
 import { fetchCompanyExtended, fetchCompanyNotice, fetchCompanyRepresent } from "./requests";
 
 function* fetchCompanyExtendedByIdSaga({
-  payload: businessId
+  payload: businessId,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
@@ -34,7 +35,8 @@ function* fetchCompanyExtendedByIdSaga({
 }
 
 function* fetchCompanyNoticeByIdSaga({
-  payload: businessId
+  payload: businessId,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
@@ -64,7 +66,8 @@ function* fetchCompanyNoticeByIdSaga({
 }
 
 function* fetchCompanyRepresentByIdSaga({
-  payload: businessId
+  payload: businessId,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {

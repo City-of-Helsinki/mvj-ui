@@ -11,13 +11,10 @@ const defaultState: TradeRegisterState = {
   isFetchingCompanyNoticeById: {},
   isFetchingCompanyRepresentById: {}
 };
-// @ts-expect-error
+
 describe('Trade register', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('tradeRegisterReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingCompanyExtendedById to true when fetching company extended info', () => {
         const dummyBusinessId = '123';
         const newState = { ...defaultState,

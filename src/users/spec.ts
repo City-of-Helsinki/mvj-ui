@@ -6,13 +6,10 @@ const defaultState: UserState = {
   isFetching: false,
   list: []
 };
-// @ts-expect-error
+
 describe('Users', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('userReducer', () => {
-      // $FlowFixMe
       it('should update user list', () => {
         const dummyUsers = [{
           id: 1,

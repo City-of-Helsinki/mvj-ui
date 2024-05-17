@@ -5,6 +5,6 @@ export type ServiceUnitState = {
   isFetching: boolean;
   serviceUnits: ServiceUnits;
 };
-export type FetchServiceUnitsAction = Action<"mvj/searviceUnits/FETCH_ALL", void>;
-export type ReceiveServiceUnitsAction = Action<"mvj/searviceUnits/RECEIVE_ALL", ServiceUnits>;
-export type ServiceUnitsNotFoundAction = Action<"mvj/searviceUnits/NOT_FOUND", void>;
+export type FetchServiceUnitsAction = Action<string, void>;
+export type ReceiveServiceUnitsAction = Action<string, ServiceUnits>;
+export type ServiceUnitsNotFoundAction = Action<string, void>;

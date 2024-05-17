@@ -9,13 +9,10 @@ const defaultState: UiDataState = {
   list: [],
   methods: null
 };
-// @ts-expect-error
+
 describe('Ui data', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('uiDataReducer', () => {
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'foo',
@@ -68,7 +65,7 @@ describe('Ui data', () => {
         const newState = { ...defaultState,
           isFetching: true
         };
-        const state = uiDataReducer({}, fetchUiDataList());
+        const state = uiDataReducer({}, fetchUiDataList({}));
         expect(state).to.deep.equal(newState);
       });
       it('should update isFetching flag to true when creating ui data', () => {
@@ -105,7 +102,7 @@ describe('Ui data', () => {
         const newState = { ...defaultState,
           isFetching: false
         };
-        let state = uiDataReducer({}, fetchUiDataList());
+        let state = uiDataReducer({}, fetchUiDataList({}));
         state = uiDataReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

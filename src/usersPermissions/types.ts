@@ -10,9 +10,9 @@ export type UsersPermissionsState = {
   permissions: UsersPermissions;
   serviceUnits: UserServiceUnits;
 };
-export type FetchUsersPermissionsAction = Action<"mvj/usersPermissions/FETCH_ALL", void>;
-export type ReceiveUserGroupsAction = Action<"mvj/usersPermissions/RECEIVE_GROUPS", UserGroups>;
-export type ReceiveUsersPermissionsAction = Action<"mvj/usersPermissions/RECEIVE_ALL", UsersPermissions>;
-export type ReceiveUserServiceUnitsAction = Action<"mvj/usersPermissions/RECEIVE_SERVICE_UNITS", UserServiceUnits>;
-export type SetUserActiveServiceUnitAction = Action<"mvj/usersPermissions/SET_ACTIVE_SERVICE_UNIT", UserServiceUnit>;
-export type NotFoundAction = Action<"mvj/usersPermissions/NOT_FOUND", void>;
+export type FetchUsersPermissionsAction = Action<string, void>;
+export type ReceiveUserGroupsAction = Action<string, UserGroups>;
+export type ReceiveUsersPermissionsAction = Action<string, UsersPermissions>;
+export type ReceiveUserServiceUnitsAction = Action<string, UserServiceUnits>;
+export type SetUserActiveServiceUnitAction = Action<string, UserServiceUnit>;
+export type NotFoundAction = Action<string, void>;

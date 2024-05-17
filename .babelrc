@@ -21,10 +21,7 @@
           "./src"
         ],
         "alias": {
-          "$src": "./src",
-          "$assets": "./assets",
-          "$components": "./src/components",
-          "$util": "./src/util"
+          "src": "./src"
         }
       }
     ]

@@ -9,7 +9,7 @@ const defaultState: UsersPermissionsState = {
   permissions: [],
   serviceUnits: []
 };
-// @ts-expect-error
+
 describe('Users permissions', () => {
   // $FlowFixMe
   describe('Reducer', () => {
