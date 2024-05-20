@@ -17,7 +17,7 @@ export type DeleteRelatedPlotApplicationPayload = {
   id: number;
   leaseId: number;
 };
-export type CreateRelatedLeaseAction = Action<"mvj/relatedLease/CREATE", CreateRelatedLeasePayload>;
-export type DeleteRelatedLeaseAction = Action<"mvj/relatedLease/DELETE", DeleteRelatedLeasePayload>;
-export type CreateRelatedPlotApplicationAction = Action<"mvj/relatedLease/CREATE_PLOT_APPLICATION", CreateRelatedPlotApplicationPayload>;
-export type DeleteRelatedPlotApplicationAction = Action<"mvj/relatedLease/DELETE_PLOT_APPLICATION", DeleteRelatedPlotApplicationPayload>;
+export type CreateRelatedLeaseAction = Action<string, CreateRelatedLeasePayload>;
+export type DeleteRelatedLeaseAction = Action<string, DeleteRelatedLeasePayload>;
+export type CreateRelatedPlotApplicationAction = Action<string, CreateRelatedPlotApplicationPayload>;
+export type DeleteRelatedPlotApplicationAction = Action<string, DeleteRelatedPlotApplicationPayload>;

@@ -7,13 +7,10 @@ const defaultState: RentForPeriodState = {
   isFetching: false,
   isSaveClicked: false
 };
-// @ts-expect-error
+
 describe('Rent for period', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('rentForPeriodReducer', () => {
-      // $FlowFixMe
       it('should update rent for period list', () => {
         const leaseId = 1;
         const dummyRentForPeriod1 = {

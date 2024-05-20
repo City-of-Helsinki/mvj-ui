@@ -6,7 +6,8 @@ import { displayUIMessage } from "src/util/helpers";
 import { createRelatedLease, createRelatedPlotApplication, deleteReleatedLease, deleteRelatedPlotApplication } from "./requests";
 
 function* createReleatedLeaseSaga({
-  payload
+  payload,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
@@ -39,7 +40,8 @@ function* createReleatedLeaseSaga({
 }
 
 function* deleteReleatedLeaseSaga({
-  payload
+  payload,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
@@ -72,7 +74,8 @@ function* deleteReleatedLeaseSaga({
 }
 
 function* createRelatedPlotApplicationSaga({
-  payload
+  payload,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
@@ -105,7 +108,8 @@ function* createRelatedPlotApplicationSaga({
 }
 
 function* deleteRelatedPlotApplicationSaga({
-  payload
+  payload,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
