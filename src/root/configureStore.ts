@@ -7,6 +7,14 @@ import createRootSaga from "./createRootSaga";
 import { loadUser } from "redux-oidc";
 import userManager from "../auth/util/user-manager";
 export const history = createBrowserHistory();
+
+// needed so Typescript doesn't complain about the window object not having the __REDUX_DEVTOOLS_EXTENSION__ property
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION__?: typeof Function;
+  }
+}
+
 export default (() => {
   const rootReducer = createRootReducer(history);
   const rootSaga = createRootSaga();

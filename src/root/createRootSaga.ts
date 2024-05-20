@@ -45,9 +45,9 @@ import usersPermissionsSaga from "src/usersPermissions/saga";
 import vatSaga from "src/vat/saga";
 import plotSearchSaga from "src/plotSearch/saga";
 import plotApplicationsSaga from "src/plotApplications/saga";
-import applicationSaga from "src/application/saga"; // @ts-expect-error
+import applicationSaga from "src/application/saga";
 
-export default (() => // $FlowFixMe
+export default (() =>
 function* rootSaga() {
   yield all([fork(areaNoteSaga), fork(areaSearchSaga), fork(auditLogSaga), fork(authSaga), fork(batchrunSaga), fork(billingPeriodsSaga), fork(collectionCourtDecisionSaga), fork(collectionLetterSaga), fork(collectionNoteSaga), fork(commentSaga), fork(contactSaga), fork(contractFileSaga), fork(createCollectionLetterSaga), fork(creditDecisionSaga), fork(districtSaga), fork(indexSaga), fork(infillDevelopmentSaga), fork(infillDevelopmentAttachmentSaga), fork(invoiceSaga), fork(landUseinvoiceSaga), fork(invoiceNoteSaga), fork(invoiceSetSaga), fork(landUseContractSaga), fork(landUseAgreementAttachmentSaga), fork(leaseSaga), fork(leaseAreaAttachmentSaga), fork(leaseCreateChargeSaga), fork(leaseholdTransferSaga), fork(leaseInspectionAttachmentSaga), fork(leaseStatisticReportSaga), fork(leaseTypeSaga), fork(lessorSaga), fork(penaltyInterestSaga), fork(previewInvoicesSaga), fork(relatedLeaseSaga), fork(rentBasisSaga), fork(rentForPeriodSaga), fork(sapInvoicesSaga), fork(serviceUnitsSaga), fork(tradeRegisterSaga), fork(uiDataSaga), fork(userSaga), fork(usersPermissionsSaga), fork(vatSaga), fork(plotSearchSaga), fork(plotApplicationsSaga), fork(applicationSaga)]);
 });

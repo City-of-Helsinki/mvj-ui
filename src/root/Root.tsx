@@ -13,7 +13,11 @@ const Root = ({
   history,
   store
 }: RootProps) => <Provider store={store}>
+    {/* 
+    // @ts-ignore: Children not included in type error */}
     <OidcProvider store={store} userManager={userManager}>
+      {/* 
+      // @ts-ignore: Children not included in type error */}
       <ConnectedRouter history={history}>
         {routes}
       </ConnectedRouter>

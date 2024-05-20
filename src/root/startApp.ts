@@ -9,9 +9,7 @@ export default (() => {
   };
   renderApp(Root, rootProps);
 
-  // $FlowFixMe
   if (module.hot) {
-    // $FlowFixMe
     module.hot.accept('./Root', () => {
       const nextRootComponent = require('./Root').default;
 
