@@ -22,11 +22,11 @@ export type LeafletFeatureGeometry = {
 export type LeafletFeature = {
   geometry: LeafletFeatureGeometry;
   properties: Record<string, any>;
-  type: "Feature";
+  type: string;
 };
 export type LeafletGeoJson = {
   features: Array<LeafletFeature>;
-  type: "FeatureCollection";
+  type: string;
 };
 export type User = {
   id: number;

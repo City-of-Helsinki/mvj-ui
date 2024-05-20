@@ -1,13 +1,13 @@
 import React from "react";
 import { createClassName, generalClassNames, GeneralPropTypes } from "src/foundation/utils";
 import TrashIcon from "src/components/icons/TrashIcon";
-type Props = typeof GeneralPropTypes & {
+type Props = {
   className?: string;
   disabled?: boolean;
   onClick: (...args: Array<any>) => any;
   style?: Record<string, any>;
   title?: string;
-  type?: string;
+  type?: "button" | "submit" | "reset";
 };
 
 const RemoveButton = (props: Props): React.ReactNode => {

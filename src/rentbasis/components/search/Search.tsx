@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import debounce from "lodash/debounce";
-import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import isEqual from "lodash/isEqual";
 import FormField from "src/components/form/FormField";
@@ -57,7 +56,7 @@ class Search extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.rentBasisAttributes !== state.rentBasisAttributes) {
       newState.rentBasisAttributes = props.rentBasisAttributes;
@@ -123,7 +122,7 @@ class Search extends PureComponent<Props, State> {
       sortKey,
       sortOrder
     } = this.props;
-    const query = {};
+    const query: any = {};
 
     if (sortKey || sortOrder) {
       query.sort_key = sortKey;
@@ -220,11 +219,14 @@ class Search extends PureComponent<Props, State> {
 }
 
 const formName = FormNames.RENT_BASIS_SEARCH;
-export default flowRight(withRouter, connect(state => {
+const decoratedComponent = reduxForm({
+  form: formName
+})(Search);
+const decoratedConnectComponent = connect(state => {
   return {
     formValues: getFormValues(formName)(state),
     rentBasisAttributes: getRentBasisAttributes(state)
   };
-}), reduxForm({
-  form: formName
-}))(Search);
+})(decoratedComponent);
+
+export default withRouter(decoratedConnectComponent);

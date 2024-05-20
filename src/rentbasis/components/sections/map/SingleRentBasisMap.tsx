@@ -67,7 +67,7 @@ class SingleRentBasisMap extends Component<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.rentBasis !== state.rentBasis) {
       const coordinates = getCoordinatesOfGeometry(props.rentBasis.geometry);

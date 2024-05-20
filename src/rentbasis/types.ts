@@ -14,7 +14,7 @@ export type RentBasisState = {
 };
 export type RentBasisId = number;
 export type RentBasis = Record<string, any>;
-export type RentBasisList = Record<string, any>;
+export type RentBasisList = any;
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;

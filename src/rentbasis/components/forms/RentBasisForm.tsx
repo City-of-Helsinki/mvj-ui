@@ -1,9 +1,7 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactNode } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import Authorization from "src/components/authorization/Authorization";
@@ -39,7 +37,7 @@ const renderPropertyIdentifiers = ({
   isSaveClicked,
   rentBasisAttributes,
   usersPermissions
-}: PropertyIdentifiersProps): Element<any> => {
+}: PropertyIdentifiersProps): ReactNode => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -107,7 +105,7 @@ const renderDecisions = ({
   isSaveClicked,
   rentBasisAttributes,
   usersPermissions
-}: DecisionsProps): Element<any> => {
+}: DecisionsProps): ReactNode => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -231,7 +229,7 @@ const renderRentRates = ({
   isSaveClicked,
   rentBasisAttributes,
   usersPermissions
-}: RentRatesProps): Element<any> => {
+}: RentRatesProps): ReactNode => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -366,7 +364,7 @@ class RentBasisForm extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.rentBasisAttributes !== state.rentBasisAttributes) {
       newState.rentBasisAttributes = props.rentBasisAttributes;
@@ -518,11 +516,13 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const formName = FormNames.RENT_BASIS;
-export default flowRight(connect(mapStateToProps, {
-  receiveFormValid
-}), reduxForm({
+const decoratedComponent = reduxForm({
   destroyOnUnmount: false,
   form: formName,
   enableReinitialize: true,
   validate: validateRentBasisForm
-}))(RentBasisForm);
+})(RentBasisForm)
+
+export default connect(mapStateToProps, {
+  receiveFormValid
+})(decoratedComponent);
