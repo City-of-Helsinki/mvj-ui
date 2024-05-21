@@ -37,7 +37,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchRentBasisListSaga({
   payload: query,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -66,7 +66,7 @@ function* fetchRentBasisListSaga({
 
 function* fetchSingleRentBasisSaga({
   payload: id,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -100,7 +100,7 @@ function* fetchSingleRentBasisSaga({
 
 function* createRentBasisSaga({
   payload: rentBasis,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -139,7 +139,7 @@ function* createRentBasisSaga({
 
 function* editRentBasisSaga({
   payload: rentBasis,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

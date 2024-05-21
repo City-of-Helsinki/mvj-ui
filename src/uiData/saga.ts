@@ -35,7 +35,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchUiDataListSaga({
   payload: query,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -63,7 +63,7 @@ function* fetchUiDataListSaga({
 
 function* createUiDataSaga({
   payload,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -98,7 +98,7 @@ function* createUiDataSaga({
 
 function* deleteUiDataSaga({
   payload: id,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -133,7 +133,7 @@ function* deleteUiDataSaga({
 
 function* editUiDataSaga({
   payload,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

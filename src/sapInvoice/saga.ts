@@ -5,7 +5,7 @@ import { fetchInvoices } from "src/invoices/requests";
 
 function* fetchSapInvoicesSaga({
   payload: query,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     let {

@@ -5,7 +5,7 @@ import { receiveError } from "../api/actions";
 
 function* fetchRentForPeriodSaga({
   payload,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

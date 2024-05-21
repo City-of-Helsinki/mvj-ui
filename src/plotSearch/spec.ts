@@ -47,13 +47,10 @@ const baseState: PlotSearchState = {
   isFetchingRelatedApplications: false,
   relatedApplications: []
 };
-// @ts-expect-error
+
 describe('PlotSearch', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('plotSearchReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true', () => {
         const newState = { ...baseState,
           isFetchingAttributes: true
@@ -293,7 +290,7 @@ describe('PlotSearch', () => {
         const newState = { ...baseState,
           isFetchingForm: true
         };
-        const state = plotSearchReducer({}, fetchForm(1));
+        const state = plotSearchReducer({}, fetchForm());
         expect(state).to.deep.equal(newState);
       });
       it('should update plotForm', () => {

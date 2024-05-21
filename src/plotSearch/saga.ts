@@ -41,7 +41,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchPlotSearchSaga({
-  payload: query
+  payload: query,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
@@ -72,7 +73,8 @@ function* fetchPlotSearchSaga({
 }
 
 function* fetchSinglePlotSearchSaga({
-  payload: id
+  payload: id,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
@@ -155,7 +157,8 @@ function* fetchTemplateFormsSaga(): Generator<any, any, any> {
 }
 
 function* createPlotSearchSaga({
-  payload: plotSearch
+  payload: plotSearch,
+  type: string
 }): Generator<any, any, any> {
   try {
     const {
@@ -198,7 +201,8 @@ function* editPlotSearchSaga({
     basicInfo,
     form,
     openingRecord
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -268,7 +272,8 @@ function* editPlotSearchSaga({
 }
 
 function* fetchSinglePlotSearchAfterEditSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const callbackFunctions = payload.callbackFunctions;
@@ -325,7 +330,8 @@ function* fetchSinglePlotSearchAfterEditSaga({
 }
 
 function* deletePlotSearchSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -393,7 +399,8 @@ function* fetchPlanUnitAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchPlanUnitSaga({
-  payload: value
+  payload: value,
+  type: any
 }): Generator<any, any, any> {
   const id = value?.value;
 
@@ -457,7 +464,8 @@ function* fetchCustomDetailedPlanAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchCustomDetailedPlanSaga({
-  payload: value
+  payload: value,
+  type: any
 }): Generator<any, any, any> {
   const id = value?.value;
 
@@ -527,7 +535,8 @@ function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
 }
 
 function* fetchFormSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -560,7 +569,8 @@ function* fetchFormSaga({
 }
 
 function* editFormSaga({
-  payload: form
+  payload: form,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -625,7 +635,8 @@ function* fetchStagesSaga(): Generator<any, any, any> {
 }
 
 function* batchCreateReservationIdentifiersSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   const errors: Array<any> = [];
   yield all(payload.data.map(row => call(function* (row) {
@@ -729,7 +740,8 @@ function* fetchReservationIdentifierUnitListsSaga(): Generator<any, any, any> {
 }
 
 function* createDirectReservationLinkSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -776,7 +788,8 @@ function* createDirectReservationLinkSaga({
 }
 
 function* fetchRelatedApplicationsSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

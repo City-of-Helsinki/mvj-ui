@@ -6,7 +6,7 @@ import { receiveError } from "../api/actions";
 
 function* fetchUsersSaga({
   payload: search,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     let results = [];

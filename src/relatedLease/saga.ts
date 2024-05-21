@@ -7,7 +7,7 @@ import { createRelatedLease, createRelatedPlotApplication, deleteReleatedLease, 
 
 function* createReleatedLeaseSaga({
   payload,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -41,7 +41,7 @@ function* createReleatedLeaseSaga({
 
 function* deleteReleatedLeaseSaga({
   payload,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -75,7 +75,7 @@ function* deleteReleatedLeaseSaga({
 
 function* createRelatedPlotApplicationSaga({
   payload,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

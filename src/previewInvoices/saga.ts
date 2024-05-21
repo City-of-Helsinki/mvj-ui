@@ -4,7 +4,8 @@ import { receiveError } from "src/api/actions";
 import { fetchPreviewInvoices } from "./requests";
 
 function* fetchPreviewInvoicesSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

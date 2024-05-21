@@ -1,7 +1,6 @@
 import merge from "lodash/merge";
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Action, CombinedReducer } from "redux";
 import { FormNames } from "src/enums";
 import { annotatePlanUnitDecision } from "src/plotSearch/helpers";
 import type { AddPlanUnitDecisionsAction, CustomDetailedPlan, PlanUnit, PlotSearch, PlotSearchList, PlotSearchState, ReceiveAttributesAction, ReceiveCollapseStatesAction, ReceiveFormAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceiveMethodsAction, ReceivePlotSearchListAction, ReceivePlotSearchStagesAction, ReceivePlotSearchSubtypesAction, ReceiveSingleCustomDetailedPlanAction, ReceiveSinglePlotSearchAction, ReceiveTemplateFormsAction, RemovePlanUnitDecisionsAction } from "src/plotSearch/types";
@@ -33,7 +32,7 @@ const isFetchingSubtypesReducer: Reducer<boolean> = handleActions({
   ['mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES']: () => false
 }, false);
 const pendingPlanUnitFetchesReducer: Reducer<Array<number>> = handleActions({
-  ['mvj/plotSearch/FETCH_PLAN_UNIT']: (state: Array<number>, {
+  ['mvj/plotSearch/FETCH_PLAN_UNIT']: (state: any, {
     payload: value
   }) => {
     const id = value.value;
@@ -87,7 +86,7 @@ const customDetailedPlanReducer: Reducer<CustomDetailedPlan> = handleActions({
   ['mvj/plotSearch/NULL_CUSTOM_DETAILED_PLANS']: () => null
 }, {});
 const pendingCustomDetailedPlanFetchesReducer: Reducer<Array<number>> = handleActions({
-  ['mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN']: (state: Array<number>, {
+  ['mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN']: (state: any, {
     payload: value
   }) => {
     const id = value.value;
@@ -268,7 +267,7 @@ const sectionEditorCollapseStatesReducer: Reducer<Record<string, boolean>> = han
   ['mvj/plotSearch/CLEAR_SECTION_EDITOR_COLLAPSE_STATES']: () => ({}),
   ['mvj/plotSearch/SET_SECTION_EDITOR_COLLAPSE_STATE']: (state: Record<string, boolean>, {
     payload
-  }) => ({ ...state,
+  }: any) => ({ ...state,
     [payload.key]: payload.state
   }),
   ['mvj/plotSearch/INITIALIZE_SECTION_EDITOR_COLLAPSE_STATES']: (state, {
@@ -325,4 +324,4 @@ export default (combineReducers<Record<string, any>, any>({
   sectionEditorCollapseStates: sectionEditorCollapseStatesReducer,
   relatedApplications: relatedApplicationsReducer,
   isFetchingRelatedApplications: isFetchingRelatedApplicationsReducer
-}) as CombinedReducer<PlotSearchState, Action<any>>);
+}) as any);

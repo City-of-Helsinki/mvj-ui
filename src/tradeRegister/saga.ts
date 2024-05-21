@@ -5,7 +5,7 @@ import { fetchCompanyExtended, fetchCompanyNotice, fetchCompanyRepresent } from 
 
 function* fetchCompanyExtendedByIdSaga({
   payload: businessId,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -36,7 +36,7 @@ function* fetchCompanyExtendedByIdSaga({
 
 function* fetchCompanyNoticeByIdSaga({
   payload: businessId,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -67,7 +67,7 @@ function* fetchCompanyNoticeByIdSaga({
 
 function* fetchCompanyRepresentByIdSaga({
   payload: businessId,
-  type: string
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

@@ -6,13 +6,10 @@ const defaultState: PreviewInvoicesState = {
   isFetching: false,
   list: null
 };
-// @ts-expect-error
+
 describe('Preview invoices', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('previewInvoicesReducer', () => {
-      // $FlowFixMe
       it('should clear preview invoices', () => {
         const dummyPreviewInvoices = [{
           id: 1,

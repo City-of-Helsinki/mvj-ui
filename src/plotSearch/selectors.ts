@@ -43,10 +43,8 @@ export const getIsFetchingTemplateForms: Selector<boolean, void> = (state: RootS
 export const getIsFetchingForm: Selector<boolean, void> = (state: RootState): boolean => state.plotSearch.isFetchingForm;
 export const getTemplateForms: Selector<Record<string, any>, void> = (state: RootState): Record<string, any> => state.plotSearch.templateForms;
 export const getForm: Selector<Record<string, any>, void> = (state: RootState): Record<string, any> => state.plotSearch.form;
-export const getDecisionCandidates: Selector<Array<Record<string, any>>, void> = (state: RootState): Array<Record<string, any>> => {
-  return Object.values(state.plotSearch.decisionCandidates).reduce((acc, next) => {
-    // https://github.com/facebook/flow/issues/2133
-    // $FlowFixMe
+export const getDecisionCandidates: Selector<Array<Record<string, any>>, void> = (state: RootState): any => {
+  return Object.values(state.plotSearch.decisionCandidates).reduce((acc: any, next: any) => {
     return [...acc, ...next];
   }, []);
 };

@@ -23,7 +23,7 @@ export const notFound = (): PlotSearchNotFoundAction => createAction('mvj/plotSe
 export const planUnitNotFound = (): PlanUnitNotFoundAction => createAction('mvj/plotSearch/PLAN_UNIT_NOT_FOUND')();
 export const fetchPlanUnit = (payload: Record<string, any>): FetchPlanUnitAction => createAction('mvj/plotSearch/FETCH_PLAN_UNIT')(payload);
 export const receiveSinglePlanUnit = (planUnit: PlanUnit): ReceiveSinglePlanUnitAction => createAction('mvj/plotSearch/RECEIVE_PLAN_UNIT')(planUnit);
-export const fetchPlanUnitAttributes = (payload: Record<string, any>): FetchPlanUnitAttributesAction => createAction('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES')(payload);
+export const fetchPlanUnitAttributes = (payload?: Record<string, any>): FetchPlanUnitAttributesAction => createAction('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES')(payload);
 export const planUnitAttributesNotFound = (): PlanUnitAttributesNotFoundAction => createAction('mvj/plotSearch/PLAN_UNIT_ATTRIBUTES_NOT_FOUND')();
 export const receivePlanUnitAttributes = (attributes: Attributes): ReceivePlanUnitAttributesAction => createAction('mvj/plotSearch/RECEIVE_PLAN_UNIT_ATTRIBUTES')(attributes);
 export const customDetailedPlanNotFound = (): CustomDetailedPlanNotFoundAction => createAction('mvj/plotSearch/CUSTOM_DETAILED_PLAN_NOT_FOUND')();
@@ -32,16 +32,16 @@ export const receiveSingleCustomDetailedPlan = (customDetailedPlan: CustomDetail
 export const fetchCustomDetailedPlanAttributes = (payload: Record<string, any>): FetchCustomDetailedPlanAttributesAction => createAction('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES')(payload);
 export const customDetailedPlanAttributesNotFound = (): CustomDetailedPlanAttributesNotFoundAction => createAction('mvj/plotSearch/CUSTOM_DETAILED_PLAN_ATTRIBUTES_NOT_FOUND')();
 export const receiveCustomDetailedPlanAttributes = (attributes: Attributes): ReceiveCustomDetailedPlanAttributesAction => createAction('mvj/plotSearch/RECEIVE_CUSTOM_DETAILED_PLAN_ATTRIBUTES')(attributes);
-export const fetchPlotSearchSubtypes = (payload: Record<string, any>): FetchPlotSearchSubtypesAction => createAction('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES')(payload);
+export const fetchPlotSearchSubtypes = (payload?: Record<string, any>): FetchPlotSearchSubtypesAction => createAction('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES')(payload);
 export const plotSearchSubtypesNotFound = (): PlotSearchSubtypesNotFoundAction => createAction('mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND')();
 export const receivePlotSearchSubtype = (subTypes: Record<string, any>): ReceivePlotSearchSubtypesAction => createAction('mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES')(subTypes);
 export const nullPlanUnits = (): NullPlanUnitsAction => createAction('mvj/plotSearch/NULL_PLAN_UNITS')();
-export const templateFormsNotFound = (payload: Record<string, any>): TemplateFormsNotFoundAction => createAction('mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND')(payload);
+export const templateFormsNotFound = (payload?: Record<string, any>): TemplateFormsNotFoundAction => createAction('mvj/plotSearch/TEMPLATE_FORMS_NOT_FOUND')(payload);
 export const fetchTemplateForms = (): FetchTemplateFormsAction => createAction('mvj/plotSearch/FETCH_TEMPLATE_FORMS')();
 export const receiveTemplateForms = (payload: Record<string, any>): ReceiveTemplateFormsAction => createAction('mvj/plotSearch/RECEIVE_TEMPLATE_FORMS')(payload);
-export const formNotFound = (payload: Record<string, any>): FormNotFoundAction => createAction('mvj/plotSearch/FORM_NOT_FOUND')(payload);
+export const formNotFound = (payload?: Record<string, any>): FormNotFoundAction => createAction('mvj/plotSearch/FORM_NOT_FOUND')(payload);
 export const editForm = (payload: Record<string, any>): EditFormAction => createAction('mvj/plotSearch/EDIT_FORM')(payload);
-export const fetchForm = (payload: Record<string, any>): FetchFormAction => createAction('mvj/plotSearch/FETCH_FORM')(payload);
+export const fetchForm = (payload?: Record<string, any>): FetchFormAction => createAction('mvj/plotSearch/FETCH_FORM')(payload);
 export const receiveForm = (payload: Record<string, any>): ReceiveFormAction => createAction('mvj/plotSearch/RECEIVE_FORM')(payload);
 export const addPlanUnitDecisions = (planUnit: Record<string, any>): AddPlanUnitDecisionsAction => createAction('mvj/plotSearch/ADD_PLAN_UNIT_DECISIONS')(planUnit);
 export const removePlanUnitDecisions = (planUnitId: number): RemovePlanUnitDecisionsAction => createAction('mvj/plotSearch/REMOVE_PLAN_UNIT_DECISIONS')(planUnitId);
@@ -60,7 +60,7 @@ export const createDirectReservationLink = (payload: {
   callBack: (...args: Array<any>) => any;
 }): CreateDirectReservationLinkAction => createAction('mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK')(payload);
 export const directReservationLinkCreated = (): DirectReservationLinkCreatedAction => createAction('mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATED')();
-export const directReservationLinkCreationFailed = (payload: any): DirectReservationLinkCreationFailedAction => createAction('mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED')(payload);
+export const directReservationLinkCreationFailed = (payload?: any): DirectReservationLinkCreationFailedAction => createAction('mvj/plotSearch/DIRECT_RESERVATION_LINK_CREATION_FAILED')(payload);
 export const clearSectionEditorCollapseStates = (): ClearSectionEditorCollapseStatesAction => createAction('mvj/plotSearch/CLEAR_SECTION_EDITOR_COLLAPSE_STATES')();
 export const setSectionEditorCollapseState = (key: string, isOpen: boolean): SetSectionEditorCollapseStateAction => createAction('mvj/plotSearch/SET_SECTION_EDITOR_COLLAPSE_STATE')({
   key,
@@ -69,4 +69,4 @@ export const setSectionEditorCollapseState = (key: string, isOpen: boolean): Set
 export const initializeSectionEditorCollapseStates = (states: Record<string, boolean>): InitializeSectionEditorCollapseStatesAction => createAction('mvj/plotSearch/INITIALIZE_SECTION_EDITOR_COLLAPSE_STATES')(states);
 export const fetchPlotSearchRelatedApplications = (id: number): FetchPlotSearchRelatedApplicationsAction => createAction('mvj/plotSearch/FETCH_RELATED_APPLICATIONS')(id);
 export const receivePlotSearchRelatedApplications = (applications: Array<Record<string, any>>): ReceivePlotSearchRelatedApplicationsAction => createAction('mvj/plotSearch/RECEIVE_RELATED_APPLICATIONS')(applications);
-export const plotSearchRelatedApplicationsNotFound = (error: any): PlotSearchRelatedApplicationsNotFoundAction => createAction('mvj/plotSearch/RELATED_APPLICATIONS_NOT_FOUND')(error);
+export const plotSearchRelatedApplicationsNotFound = (error?: any): PlotSearchRelatedApplicationsNotFoundAction => createAction('mvj/plotSearch/RELATED_APPLICATIONS_NOT_FOUND')(error);

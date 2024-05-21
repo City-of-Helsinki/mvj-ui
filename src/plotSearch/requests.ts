@@ -74,7 +74,7 @@ export const editFormRequest = (form: Record<string, any>): Generator<any, any, 
     body: JSON.stringify(form)
   }));
 };
-export const fetchStagesRequest = (params: Record<string, any> | null | undefined): Generator<any, any, any> => {
+export const fetchStagesRequest = (params?: Record<string, any> | null | undefined): Generator<any, any, any> => {
   return callApi(new Request(createUrl('plot_search_stage/', params)));
 };
 export const fetchPlotSearchApplicationsRequest = (id: number): Generator<any, any, any> => {
