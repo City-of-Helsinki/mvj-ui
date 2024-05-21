@@ -387,13 +387,14 @@ type OwnProps = {
   onSubmit: (...args: Array<any>) => any;
   sectionIndex: number;
   isOpen: boolean;
+  ref?: Function;
 };
 type Props = OwnProps & {
   attributes: Attributes;
   valid: boolean;
   name: string;
   section: Record<string, any>;
-  parentFormSection: Record<string, any>;
+  parentFormSection: any;
   initialize: (...args: Array<any>) => any;
   form: string;
   stagedSectionValues: Record<string, any>;

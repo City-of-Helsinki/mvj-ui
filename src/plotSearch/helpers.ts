@@ -97,7 +97,7 @@ export const getContentPlanUnitIdentifier = (plan_unit: Record<string, any>): st
  * @param {Object} content
  * @return {Object[]}
  */
-export const getContentPlotSearchListResults = (content: Record<string, any>): Array<Record<string, any>> => getApiResponseResults(content).map(plotSearch => getContentPlotSearchListItem(plotSearch));
+export const getContentPlotSearchListResults = (content: any): Array<Record<string, any>> => getApiResponseResults(content).map(plotSearch => getContentPlotSearchListItem(plotSearch));
 
 /**
  * Clear all unsaved changes from local storage
@@ -234,7 +234,7 @@ export const getInitialFormSectionEditorData = (fieldTypeMapping: Record<string,
   const collapseInitialState = {};
 
   const addUIPropertiesToField = (field: FormField, peerFieldIdentifiers: Array<string>, isProtected: boolean, protectedValues: Array<string>): Record<string, any> => {
-    let defaultValue = field.default_value;
+    let defaultValue: any = field.default_value;
     const fieldFeatures = FIELD_TYPE_FEATURES_BY_FIELD_TYPE_NAME[fieldTypeMapping[field.type]] || [];
     let temporaryId;
 
@@ -347,7 +347,7 @@ export const transformCommittedFormSectionEditorData = (section: Record<string, 
     };
   };
 
-  const transformSection = (section: Record<string, any>, index: number): Record<string, any> => {
+  const transformSection = (section: Record<string, any>, index: number): any => {
     const {
       // UI fields to be removed
       // eslint-disable-next-line no-unused-vars

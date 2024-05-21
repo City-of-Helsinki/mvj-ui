@@ -12,6 +12,7 @@ type Props = {
   title?: string;
   tooltipStyle?: Record<string, any>;
   uiDataKey?: string | null | undefined;
+  id?: string;
 };
 type State = {
   showAddButton: boolean;

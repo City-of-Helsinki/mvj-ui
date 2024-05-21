@@ -119,7 +119,7 @@ class ReservationIdentifiersModal extends Component<Props, State> {
       }))
     });
   };
-  selectEditorTarget = (index: number | null, row: Record<string, any>) => {
+  selectEditorTarget = (index: number | null, row?: Record<string, any>) => {
     const {
       initializeForm
     } = this.props;

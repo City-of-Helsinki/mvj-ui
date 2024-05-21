@@ -1,12 +1,10 @@
-import type { Element } from "react";
-import React, { Fragment, Component } from "react";
+import React, { Fragment, Component, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import flowRight from "lodash/flowRight";
-import type { Fields } from "redux-form/lib/FieldArrayProps.types";
 import Loader from "src/components/loader/Loader";
 import ExternalLink from "src/components/links/ExternalLink";
 import LoaderWrapper from "src/components/loader/LoaderWrapper";
@@ -37,7 +35,7 @@ import type { UsersPermissions as UsersPermissionsType } from "src/usersPermissi
 type SuggestedProps = {
   attributes: Attributes;
   disabled: boolean;
-  fields: Fields;
+  fields: any;
   formName: string;
   isSaveClicked: boolean;
 };
@@ -48,7 +46,7 @@ const renderSuggested = ({
   formName,
   attributes,
   isSaveClicked
-}: SuggestedProps): Element<any> => {
+}: SuggestedProps): ReactElement<any> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -112,7 +110,7 @@ const renderInfoLinks = ({
   fields,
   attributes,
   isSaveClicked
-}: InfoLinksProps): Element<any> => {
+}: InfoLinksProps): ReactElement<any> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -175,6 +173,8 @@ const renderInfoLinks = ({
                 }} disabled={disabled} disableTouched={isSaveClicked} />
                 </Column>
                 <Column role="cell" small={1} medium={1} large={1}>
+                  {/** 
+                  @ts-ignore: spread argument can't be of type any[]  */}
                   <RemoveButton className='third-level' onClick={(...rest) => handleRemove(index, ...rest)} style={{
                   height: 'unset'
                 }} title='Poista lisätietolinkki' disabled={disabled} />

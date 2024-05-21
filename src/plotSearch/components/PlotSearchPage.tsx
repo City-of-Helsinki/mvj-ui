@@ -50,7 +50,7 @@ type Props = OwnProps & {
   applicationFormValues: Record<string, any>;
   basicInformationFormValues: Record<string, any>;
   currentPlotSearch: PlotSearch;
-  plotSearchForm: Record<string, any>;
+  plotSearchForm: any;
   clearFormValidFlags: (...args: Array<any>) => any;
   change: (...args: Array<any>) => any;
   destroy: (...args: Array<any>) => any;
@@ -259,7 +259,7 @@ class PlotSearchPage extends Component<Props, State> {
       return confirmationMessage; // Gecko, WebKit, Chrome <34
     }
   };
-  setPageTitle = name => {
+  setPageTitle = (name?: string) => {
     setPageTitle(`${name ? `${name} | ` : ''}Tonttihaku`);
   };
   isAnyFormDirty = () => {
@@ -411,12 +411,14 @@ class PlotSearchPage extends Component<Props, State> {
   };
   hideModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+    //@ts-ignore: not assignable to State error
     this.setState({
       [modalVisibilityKey]: false
     });
   };
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+    //@ts-ignore: not assignable to State error
     this.setState({
       [modalVisibilityKey]: true
     });

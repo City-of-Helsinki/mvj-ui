@@ -40,7 +40,7 @@ export type CustomDetailedPlan = Record<string, any>;
 export type PlotSearchId = number;
 export type PlotSearch = Record<string, any>;
 export type PlanUnit = Record<string, any>;
-export type PlotSearchList = Record<string, any>;
+export type PlotSearchList = any;
 export type FetchSinglePlotSearchAfterEditPayload = {
   id: any;
   callbackFunctions?: Array<Record<string, any> | ((...args: Array<any>) => any)>;

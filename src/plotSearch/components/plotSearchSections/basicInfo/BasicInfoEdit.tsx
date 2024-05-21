@@ -1,5 +1,4 @@
-import type { Element } from "react";
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { formValueSelector, FieldArray, reduxForm, change } from "redux-form";
@@ -57,7 +56,7 @@ const renderDecisions = ({
   decisionCandidates,
   hasUnidentifiedDecisions // usersPermissions,
 
-}: DecisionsProps): Element<any> => {
+}: DecisionsProps): ReactElement<any> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -167,7 +166,7 @@ const renderPlotSearchSites = ({
   change,
   onRemove // usersPermissions,
 
-}: PlotSearchSitesProps): Element<any> => {
+}: PlotSearchSitesProps): ReactElement<any> => {
   const handleAdd = () => {
     fields.push({});
   };

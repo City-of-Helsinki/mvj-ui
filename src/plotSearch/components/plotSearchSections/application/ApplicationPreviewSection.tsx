@@ -57,7 +57,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
       attributes
     } = this.props;
     const fakeFieldId = `fakeField${field.id}`;
-    let fieldSpecificComponents = [];
+    let fieldSpecificComponents: any = [];
     let columnWidths = {
       small: 12,
       medium: 12,

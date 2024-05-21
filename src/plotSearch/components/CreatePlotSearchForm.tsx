@@ -15,6 +15,7 @@ import type { Attributes } from "src/types";
 type OwnProps = {
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
+  ref: any;
 };
 type Props = OwnProps & {
   attributes: Attributes;

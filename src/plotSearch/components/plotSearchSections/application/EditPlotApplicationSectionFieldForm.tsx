@@ -20,12 +20,11 @@ import EditIcon from "src/components/icons/EditIcon";
 import MoveUpIcon from "src/components/icons/MoveUpIcon";
 import MoveDownIcon from "src/components/icons/MoveDownIcon";
 import type { Attributes } from "src/types";
-import type { Fields } from "redux-form/lib/FieldArrayProps.types";
 type ChoiceProps = {
   attributes: Attributes;
   disabled: boolean;
   field: string;
-  fields: Fields;
+  fields: any;
   change: (...args: Array<any>) => any;
   onChoiceValuesChanged: (...args: Array<any>) => any;
   onChoiceDeleted: (...args: Array<any>) => any;
@@ -239,16 +238,17 @@ type OwnProps = {
   setSectionEditorCollapseState: (...args: Array<any>) => any;
 };
 type Props = OwnProps & {
-  attributes: Attributes;
-  fieldValues: Record<string, any>;
-  fieldTypeMapping: Record<number, string>;
-  change: (...args: Array<any>) => any;
+  attributes?: Attributes;
+  fieldValues?: Record<string, any>;
+  fieldTypeMapping?: Record<number, string>;
+  change?: (...args: Array<any>) => any;
   fieldIdentifiers: Array<string>;
-  index: number;
+  index?: number;
   onDelete: (...args: Array<any>) => any;
-  onMoveUp: ((...args: Array<any>) => any) | null;
-  onMoveDown: ((...args: Array<any>) => any) | null;
+  onMoveUp?: ((...args: Array<any>) => any) | null;
+  onMoveDown?: ((...args: Array<any>) => any) | null;
   fieldRefs: any;
+  form?: string;
 };
 
 const EditPlotApplicationSectionFieldForm = ({
@@ -527,4 +527,4 @@ export default (connect((state, props: OwnProps) => {
   };
 }, {
   change
-})(EditPlotApplicationSectionFieldForm) as React.ComponentType<OwnProps>);
+})(EditPlotApplicationSectionFieldForm) as React.ComponentType<Props>);
