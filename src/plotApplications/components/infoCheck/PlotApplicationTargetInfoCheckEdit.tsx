@@ -106,6 +106,8 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
               }} disabled={disabled} disableTouched={isSaveClicked} />
                 </Column>
                 <Column role="cell" small={1} medium={1} large={6}>
+                  {/**
+                  @ts-ignore: A spread argument must either have a tuple type or be passed to a rest parameter */}
                   <RemoveButton className='third-level' onClick={(...rest) => handleRemove(index, ...rest)} style={{
                 height: 'unset'
               }} title='Poista hallinta- ja rahoitusmuoto' disabled={disabled} />
@@ -170,6 +172,8 @@ class PlotApplicationTargetInfoCheckConditions extends PureComponent<TargetSubFi
               }} disabled={disabled} disableTouched={isSaveClicked} />
                 </Column>
                 <Column role="cell" large={1}>
+                  {/**
+                  @ts-ignore: A spread argument must either have a tuple type or be passed to a rest parameter */}
                   <RemoveButton className='third-level' onClick={(...rest) => handleRemove(index, ...rest)} style={{
                 height: 'unset'
               }} title='Poista ehto' disabled={disabled} />
@@ -300,13 +304,15 @@ const PlotApplicationTargetInfoCheckMeetingMemos = connect(null, {
 });
 type OwnProps = {
   targetId: number;
+  section?: any;
+  identifier?: any;
 };
 type Props = OwnProps & {
   attributes: Attributes;
   meetingMemoAttributes: Attributes;
   formValues: Record<string, any>;
   isPerformingFileOperation: boolean;
-  submissionErrors: (Record<string, any> | null | undefined) | (Array<Record<string, any>> | null | undefined);
+  submissionErrors: any;
   isSaving: boolean;
   isSaveClicked: boolean;
 };

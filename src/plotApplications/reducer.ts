@@ -1,5 +1,5 @@
 import merge from "lodash/merge";
-import type { Action, CombinedReducer } from "redux";
+import type { Action } from "redux";
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import { sortBy } from "lodash/collection";
@@ -203,4 +203,4 @@ export default (combineReducers<Record<string, any>, Action<any>>({
   infoCheckBatchEditErrors: infoCheckBatchEditErrorsReducer,
   targetInfoChecksForCurrentPlotSearch: targetInfoChecksForCurrentPlotSearchReducer,
   isFetchingTargetInfoChecksForCurrentPlotSearch: isFetchingTargetInfoChecksForCurrentPlotSearchReducer
-}) as CombinedReducer<PlotApplicationsState, Action<any>>);
+}) as any);

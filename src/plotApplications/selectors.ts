@@ -40,13 +40,13 @@ export const getApplicationTargetInfoCheckData: Selector<Record<string, any>, vo
 export const getInfoCheckSubmissionErrors = (errors: Array<InfoCheckBatchEditErrorsItem>, id: number | null | undefined): InfoCheckBatchEditErrorsItem | null | undefined => {
   return errors.find(item => item.id === id);
 };
-export const getTargetInfoCheckSubmissionErrors = (state: RootState, id: number | null | undefined): Record<string, any> | null | undefined => {
+export const getTargetInfoCheckSubmissionErrors = (state: RootState, id: number | null | undefined): any => {
   return getInfoCheckSubmissionErrors(state.plotApplications.infoCheckBatchEditErrors.target, id)?.error;
 };
 export const getApplicantInfoCheckSubmissionErrors = (state: RootState, checkDataIds: Array<number>): Array<{
   id: number;
   kind: Record<string, any> | null | undefined;
-  error: (Record<string, any> | null | undefined) | (Array<Record<string, any>> | null | undefined);
+  error: (any | null | undefined) | (Array<Record<string, any>> | null | undefined);
 }> => {
   return checkDataIds?.map(id => {
     const errors = getInfoCheckSubmissionErrors(state.plotApplications.infoCheckBatchEditErrors.applicant, id);

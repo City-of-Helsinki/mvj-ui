@@ -17,9 +17,9 @@ type Props = {
 };
 type InnerProps = Props & {
   data: Record<string, any> | null | undefined;
-  currentUser: Record<string, any>;
-  userPermissions: UsersPermissionsType;
-  createPlotApplicationOpeningRecord: (...args: Array<any>) => any;
+  currentUser?: Record<string, any>;
+  userPermissions?: UsersPermissionsType;
+  createPlotApplicationOpeningRecord?: (...args: Array<any>) => any;
 };
 
 class PlotApplicationsListOpeningModal extends Component<InnerProps> {
@@ -84,4 +84,4 @@ export default (connect((state: RootState) => ({
   userPermissions: getUsersPermissions(state)
 }), {
   createPlotApplicationOpeningRecord
-})(PlotApplicationsListOpeningModal) as React.ComponentType<Props>);
+})(PlotApplicationsListOpeningModal) as React.ComponentType<InnerProps>);

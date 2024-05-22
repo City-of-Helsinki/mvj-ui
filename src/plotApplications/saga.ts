@@ -13,7 +13,8 @@ import { createApplicationRequest, editApplicationRequest } from "src/applicatio
 import type { BatchEditPlotApplicationModelsAction, DeleteTargetInfoCheckMeetingMemoAction, InfoCheckBatchEditErrors, PlotApplication, UploadTargetInfoCheckMeetingMemoAction } from "src/plotApplications/types";
 
 function* fetchPlotApplicationsSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -38,7 +39,8 @@ function* fetchPlotApplicationsSaga({
 }
 
 function* fetchPlotApplicationsByBBoxSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -66,7 +68,8 @@ function* fetchPlotApplicationsByBBoxSaga({
 }
 
 function* fetchSinglePlotApplicationSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -100,7 +103,8 @@ function* fetchSinglePlotApplicationSaga({
 }
 
 function* createPlotApplicationSaga({
-  payload: plotApplication
+  payload: plotApplication,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -145,7 +149,8 @@ function* createPlotApplicationSaga({
 }
 
 function* editPlotApplicationSaga({
-  payload: plotApplication
+  payload: plotApplication,
+  type: any
 }): Generator<any, any, any> {
   const handleFail = function* () {
     yield put(receivePlotApplicationSaveFailed());
@@ -228,7 +233,8 @@ function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
 }
 
 function* fetchApplicationRelatedFormSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -265,7 +271,8 @@ function* fetchApplicationRelatedFormSaga({
 }
 
 function* fetchApplicationRelatedPlotSearchSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -298,7 +305,8 @@ function* fetchApplicationRelatedPlotSearchSaga({
 }
 
 function* fetchTargetInfoChecksForPlotSearchSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -334,7 +342,8 @@ function* fetchTargetInfoChecksForPlotSearchSaga({
 }
 
 function* uploadMeetingMemoSaga({
-  payload
+  payload,
+  type: any
 }: UploadTargetInfoCheckMeetingMemoAction): Generator<any, any, any> {
   try {
     const {
@@ -347,6 +356,7 @@ function* uploadMeetingMemoSaga({
         status: statusCode
       },
       bodyAsJson
+    // @ts-ignore: No overload matches this request
     } = yield call(createMeetingMemoRequest, {
       file: fileData,
       name: fileData.name,
@@ -390,7 +400,8 @@ function* uploadMeetingMemoSaga({
 }
 
 function* deleteMeetingMemoSaga({
-  payload
+  payload,
+  type: any
 }: DeleteTargetInfoCheckMeetingMemoAction): Generator<any, any, any> {
   try {
     const {
@@ -441,7 +452,8 @@ function* deleteMeetingMemoSaga({
 }
 
 function* batchEditPlotApplicationModelsSaga({
-  payload
+  payload,
+  type: any
 }: BatchEditPlotApplicationModelsAction): Generator<any, any, any> {
   const errors: InfoCheckBatchEditErrors = {
     target: [],
@@ -544,7 +556,7 @@ function* batchEditPlotApplicationModelsSaga({
             console.error(bodyAsJson);
             errors.openingRecord = bodyAsJson;
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
         errors.openingRecord = e;
       }
@@ -574,7 +586,8 @@ function* batchEditPlotApplicationModelsSaga({
 }
 
 function* createOpeningRecordSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

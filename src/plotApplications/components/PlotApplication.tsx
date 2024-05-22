@@ -39,7 +39,7 @@ type Props = {
   currentPlotApplication: PlotApplicationType;
   isFetchingFormAttributes: boolean;
   isFetchingForm: boolean;
-  form: Record<string, any>;
+  form: any;
   formAttributes: Attributes;
   isFetchingAttachments: boolean;
   attachments: Array<Record<string, any>>;
@@ -95,7 +95,7 @@ class PlotApplication extends PureComponent<Props> {
       answerData = reshapeSavedApplicationObject(plotApplication.entries_data, form, formAttributes, attachments);
     }
 
-    const fieldTypes = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
+    const fieldTypes: any = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
     return <div className="PlotApplication">
         <Title>
           Hakemus

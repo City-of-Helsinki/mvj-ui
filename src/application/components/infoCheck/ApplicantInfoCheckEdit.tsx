@@ -10,11 +10,11 @@ import { getApplicantInfoCheckFormName } from "src/application/helpers";
 type OwnProps = {
   infoCheckIds: Array<number>;
   answer: Record<string, any>;
-  showMarkAll: boolean;
+  showMarkAll?: boolean;
   submissionErrors: Array<{
     id: number;
     kind: Record<string, any> | null | undefined;
-    error: (Record<string, any> | null | undefined) | (Array<Record<string, any>> | null | undefined);
+    error: any;
   }>;
 };
 type Props = OwnProps & {

@@ -75,7 +75,7 @@ class ApplicationListMap extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (JSON.stringify(props.applicationsData) !== JSON.stringify(state.applicationsData)) {
       newState.applicationsData = props.applicationsData;

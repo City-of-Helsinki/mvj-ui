@@ -25,10 +25,10 @@ export const receivePlotApplicationSaved = (id: number): ReceivePlotApplicationS
 export const receivePlotApplicationSaveFailed = (): ReceivePlotApplicationSaveFailedAction => createAction('mvj/plotApplications/RECEIVE_SAVE_FAILED')();
 export const fetchApplicationRelatedForm = (payload: Record<string, any>): FetchApplicationRelatedFormAction => createAction('mvj/plotApplications/FETCH_FORM')(payload);
 export const receiveApplicationRelatedForm = (payload: Record<string, any>): ReceiveApplicationRelatedFormAction => createAction('mvj/plotApplications/RECEIVE_FORM')(payload);
-export const applicationRelatedFormNotFound = (payload: Record<string, any>): ApplicationRelatedFormNotFoundAction => createAction('mvj/plotApplications/FORM_NOT_FOUND')(payload);
+export const applicationRelatedFormNotFound = (payload?: Record<string, any>): ApplicationRelatedFormNotFoundAction => createAction('mvj/plotApplications/FORM_NOT_FOUND')(payload);
 export const fetchApplicationRelatedPlotSearch = (payload: Record<string, any>): FetchApplicationRelatedPlotSearchAction => createAction('mvj/plotApplications/FETCH_PLOT_SEARCH')(payload);
 export const receiveApplicationRelatedPlotSearch = (payload: Record<string, any>): ReceiveApplicationRelatedPlotSearchAction => createAction('mvj/plotApplications/RECEIVE_PLOT_SEARCH')(payload);
-export const applicationRelatedPlotSearchNotFound = (payload: Record<string, any>): ApplicationRelatedPlotSearchNotFoundAction => createAction('mvj/plotApplications/PLOT_SEARCH_NOT_FOUND')(payload);
+export const applicationRelatedPlotSearchNotFound = (payload?: Record<string, any>): ApplicationRelatedPlotSearchNotFoundAction => createAction('mvj/plotApplications/PLOT_SEARCH_NOT_FOUND')(payload);
 export const initializeFormEntriesForApplication = (payload: Record<string, any>): InitializeFormEntriesForApplicationAction => createAction('mvj/plotApplications/INITIALIZE_FORM_ENTRIES')(payload);
 export const receiveFileOperationFinished = (): ReceiveFileOperationFinishedAction => createAction('mvj/plotApplications/RECEIVE_FILE_OPERATION_FINISHED')();
 export const setCurrentEditorTargets = (payload: Array<Record<string, any>>): SetCurrentEditorTargetsAction => createAction('mvj/plotApplications/SET_CURRENT_EDITOR_TARGETS')(payload);

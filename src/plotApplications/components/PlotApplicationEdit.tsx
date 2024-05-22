@@ -27,10 +27,10 @@ type Props = OwnProps & {
   isFetchingForm: boolean;
   isFetchingAttachments: boolean;
   isFetchingPlotSearch: boolean;
-  form: Record<string, any>;
+  form: any;
   formAttributes: Attributes;
   attachments: Array<Record<string, any>>;
-  plotSearch: Record<string, any> | null | undefined;
+  plotSearch: any;
 };
 
 const PlotApplicationEditSectionExtras = ({
@@ -66,7 +66,7 @@ class PlotApplicationEdit extends PureComponent<Props> {
       answerData = reshapeSavedApplicationObject(plotApplication.entries_data, form, formAttributes, attachments);
     }
 
-    const fieldTypes = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
+    const fieldTypes: any = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
     return <div className="PlotApplication">
         <Title>
           Hakemus

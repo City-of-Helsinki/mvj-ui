@@ -165,6 +165,8 @@ const PlotApplicationTargetInfoCheckMeetingMemos = ({
 
 type OwnProps = {
   targetId: number;
+  section?: any;
+  identifier?: any;
 };
 type Props = OwnProps & {
   attributes: Attributes;
@@ -275,5 +277,6 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
 
 export default (flowRight(connect((state: RootState, props: Props) => ({
   attributes: getAttributes(state),
+  // @ts-ignore: getApplicationTargetInfoCheckData expects array, should fix
   values: getInitialTargetInfoCheckValues(getApplicationRelatedPlotSearch(state), getApplicationTargetInfoCheckData(state), props.targetId)
 })))(PlotApplicationTargetInfoCheck) as React.ComponentType<OwnProps>);

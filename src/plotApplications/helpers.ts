@@ -18,7 +18,7 @@ import type { Form } from "src/application/types";
  * @param {Object} content
  * @return {Object[]}
  */
-export const getContentPlotApplicationsListResults = (content: Record<string, any>): Array<Record<string, any>> => getApiResponseResults(content).map(plotApplication => getContentApplicationListItem(plotApplication));
+export const getContentPlotApplicationsListResults = (content: any): Array<Record<string, any>> => getApiResponseResults(content).map(plotApplication => getContentApplicationListItem(plotApplication));
 
 /**
  * Get plotApplication list item
@@ -150,7 +150,7 @@ export const reshapeSavedApplicationObject = (application: Record<string, any>, 
     if (section.add_new_allowed) {
       parentResultNode.sections[section.identifier] = [];
 
-      const sectionAnswers = _.transform(answersNode, (acc, item, key) => {
+      const sectionAnswers = _.transform(answersNode, (acc, item, key: string) => {
         const match = new RegExp(`^${_.escapeRegExp(section.identifier)}\\[(\\d+)]$`).exec(key);
 
         if (!match) {

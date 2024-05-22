@@ -13,7 +13,7 @@ import RemoveButton from "../form/RemoveButton";
 import UnarchiveButton from "../form/UnarchiveButton";
 type Props = {
   archived?: boolean;
-  children: Record<string, any>;
+  children: any;
   className?: string;
   defaultOpen: boolean;
   enableUiDataEdit?: boolean;

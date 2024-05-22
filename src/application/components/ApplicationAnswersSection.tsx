@@ -12,7 +12,9 @@ type Props = {
     display_name: string;
   }>;
   sectionExtraComponent?: React.ComponentType<SectionExtraComponentProps>;
-  sectionTitleTransformers?: Array<(arg0: string, arg1: FormSection, arg2: SavedApplicationFormSection) => string>;
+  sectionTitleTransformers?: Array<any>;
+  plotSearch?: any;
+  editMode?: boolean;
 };
 
 const ApplicationAnswersSection = ({

@@ -34,11 +34,9 @@ const baseState: PlotApplicationsState = {
   isFetchingTargetInfoChecksForCurrentPlotSearch: false,
   isSingleAllowed: true
 };
-// @ts-expect-error
+
 describe('PlotApplication', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('plotApplicationReducer', () => {
       it('should update isFetching flag to true when fetching plotApplication list', () => {
         const newState = { ...baseState

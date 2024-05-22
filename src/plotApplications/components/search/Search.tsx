@@ -27,6 +27,7 @@ type OwnProps = {
   isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;
   states: Array<Record<string, any>>;
+  context: string;
 };
 type Props = OwnProps & {
   formValues: Record<string, any>;
@@ -38,7 +39,6 @@ type Props = OwnProps & {
   plotSearchSubtypes: Record<string, any>;
   selectedMainType: (number | string) | null | undefined;
   change: (...args: Array<any>) => any;
-  context: string;
 };
 type State = {
   isBasicSearch: boolean;
@@ -166,7 +166,7 @@ class Search extends Component<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.plotSearchAttributes !== state.plotSearchAttributes) {
       newState.typeOptions = getFieldOptions(props.plotSearchAttributes, PlotSearchFieldPaths.TYPE);
