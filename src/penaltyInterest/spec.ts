@@ -6,13 +6,10 @@ const defaultState: PenaltyInterestState = {
   byInvoice: {},
   isFetchingByInvoice: {}
 };
-// @ts-expect-error
+
 describe('PenaltyInterest', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('penaltyInterestReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingPenaltyInterestByInvoice flag to true when fetching', () => {
         const invoice = 1;
         const newState = { ...defaultState,
