@@ -56,6 +56,7 @@ import ConfirmationModal from '$components/modal/ConfirmationModal';
 import AreaSearchApplication from '$src/areaSearch/components/AreaSearchApplication';
 import {withAreaSearchAttributes} from '$components/attributes/AreaSearchAttributes';
 import AreaSearchApplicationEdit from '$src/areaSearch/components/AreaSearchApplicationEdit';
+import AreaSearchApplicationAuditLog from '$src/areaSearch/components/AreaSearchApplicationAuditLog';
 import {fetchApplicantInfoCheckAttributes, fetchFormAttributes} from '$src/application/actions';
 import {
   getFormAttributes,
@@ -301,16 +302,6 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       scrollToTopPage();
     }
 
-    /*
-    if (isEmpty(prevProps.currentAreaSearch) && !isEmpty(currentAreaSearch)) {
-      const storedAreaSearchId = getSessionStorageItem('areaSearchId');
-
-      if(Number(areaSearchId) === storedAreaSearchId) {
-        this.setState({isRestoreModalOpen: true});
-      }
-    }
-     */
-
     if (!isFetching && prevProps.isFetching) {
       setPageTitle(`Hakemus ${currentAreaSearch?.identifier || ''}`);
     }
@@ -503,7 +494,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
 
             <TabPane>
               <ContentContainer>
-                {'Muutoshistoria'}
+                <AreaSearchApplicationAuditLog areaSearchId={currentAreaSearch.id}/>
               </ContentContainer>
             </TabPane>
 

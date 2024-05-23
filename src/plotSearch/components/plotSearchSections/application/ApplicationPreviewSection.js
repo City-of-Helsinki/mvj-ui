@@ -81,7 +81,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
     };
 
     const typeMapping = get(attributes, 'sections.child.children.fields.child.children.type.choices');
-    const matchingType = typeMapping.find((type) => type.value === field.type)?.display_name;
+    const matchingType = typeMapping.find((type) => type.value === field.type)?.value;
 
     if (matchingType === 'hidden') {
       return null;

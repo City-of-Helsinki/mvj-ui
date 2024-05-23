@@ -8,4 +8,9 @@
   .AreaSearchStatusNoteHistory {
     background-color: transparent;
   }
+  // Due to .modal__wrapper having overflow: visible, this makes long lists of status notes scrollable.
+  .row.statusNotes {
+    overflow: auto;
+    max-height: 50vh;
+  }
 }

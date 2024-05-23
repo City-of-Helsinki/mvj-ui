@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import isPast from 'date-fns/isPast';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 import {isDirty} from 'redux-form';
 
 import {
@@ -361,6 +362,7 @@ export const getContentLeaseSummary = (lease: Object): Object => {
     infill_development_compensations: getContentLeaseInfillDevelopmentCompensations(lease),
     intended_use: lease.intended_use,
     intended_use_note: lease.intended_use_note,
+    internal_order: lease.internal_order,
     is_subject_to_vat: lease.is_subject_to_vat,
     lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
     lessor: getContentLessor(lease.lessor),
@@ -375,6 +377,7 @@ export const getContentLeaseSummary = (lease: Object): Object => {
     regulated: lease.regulated,
     regulation: lease.regulation,
     reservation_procedure: lease.reservation_procedure,
+    service_unit: lease.service_unit,
     special_project: lease.special_project,
     state: lease.state,
     start_date: lease.start_date,
@@ -1094,6 +1097,38 @@ export const getContentEqualizedRents = (rent: Object): Array<Object> =>
       };
     });
 
+
+
+/**
+ * Check if subvention data indicates that the rent adjustment is deleted.
+ * @param {Object} props
+ * @return {boolean}
+ */
+export const isRentDeleted = (props: Object): boolean => {
+  return typeof props.subventionType === "undefined" &&
+      typeof props.subventionBasePercent === "undefined" &&
+      typeof props.subventionGraduatedPercent === "undefined" &&
+      typeof props.managementSubventions === "undefined" &&
+      typeof props.temporarySubventions === "undefined";
+};
+
+/**
+ * Check if subvention data has changed for rent adjustments to update the full amount.
+ * @param {Object} prevProps
+ * @param {Object} props
+ * @return {boolean}
+ */
+export const hasSubventionDataChanged = (prevProps: Object, props: Object): boolean => {
+  if (isRentDeleted(props)){
+      return false
+  }
+  return props?.subventionType !== prevProps?.subventionType ||
+    props?.subventionBasePercent !== prevProps?.subventionBasePercent ||
+    props?.subventionGraduatedPercent !== prevProps?.subventionGraduatedPercent ||
+    !isEqual(props?.managementSubventions, prevProps?.managementSubventions) ||
+    !isEqual(props?.temporarySubventions, prevProps?.temporarySubventions);
+};
+
 /**
  * Calculate re-lease discount percent for rent adjustment subvention
  * @param {string} subventionBasePercent
@@ -1520,6 +1555,30 @@ export const calculateSubventionDiscountTotal = (initialYearRent: number, manage
   }
 
   return Number(initialYearRent);
+};
+
+/**
+ * Check if subvention type is specified.
+ * The "unspecified" value is needed for rendering the subvention-related fields.
+ * @param {?string} subventionType
+ * @return {boolean}
+ */
+export const isSubventionTypeSpecified = (subventionType: ?string): boolean => {
+  return !!subventionType && subventionType !== "unspecified";
+};
+
+/**
+ * Check if subventions have values for calculation
+ * @param {?Array<Object>} managementSubventions
+ * @param {?Array<Object>} temporarySubventions
+ * @param {?string} subventionBasePercent
+ * @param {?string} subventionGraduatedPercent
+ * @return {boolean}
+ */
+export const hasSubventionValues = (managementSubventions: ?Array<Object>, temporarySubventions: ?Array<Object>, subventionBasePercent: ?string, subventionGraduatedPercent: ?string): boolean => {
+  let msWithValues = managementSubventions?.filter((subvention) => !!subvention.subvention_amount) || [];
+  let tsWithValues = temporarySubventions?.filter((subvention) => !!subvention.subvention_percent) || [];
+  return !!(msWithValues.length || tsWithValues.length || subventionBasePercent || subventionGraduatedPercent);
 };
 
 /**
@@ -2158,6 +2217,7 @@ export const getPayloadCreateLease = (lease: Object): Object => {
     note: lease.note,
     relate_to: relateTo,
     relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
+    service_unit: lease.service_unit,
   };
 };
 
@@ -2178,6 +2238,7 @@ export const addSummaryFormValuesToPayload = (payload: Object, formValues: Objec
     hitas: formValues.hitas,
     intended_use: formValues.intended_use,
     intended_use_note: formValues.intended_use_note,
+    internal_order: formValues.internal_order,
     is_subject_to_vat: formValues.is_subject_to_vat,
     lessor: get(formValues, 'lessor.value'),
     notice_note: formValues.notice_note,

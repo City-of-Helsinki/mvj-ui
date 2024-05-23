@@ -1,5 +1,5 @@
 // @flow
-import type {Action, ApiResponse, Attributes, Methods} from '$src/types';
+import type {Action, ApiResponse, Attributes, Methods, User} from '$src/types';
 import type {UploadedFileMeta} from '$src/application/types';
 
 export type AreaSearchState = {
@@ -27,7 +27,41 @@ export type AreaSearchState = {
   isPerformingFileOperation: boolean,
 };
 
-export type AreaSearch = Object;
+export type AreaSearch = {
+  id: number;
+  address?: string;
+  answer: Object; // TODO: specify
+  applicants: Array<string>;
+  area_search_attachments: Array<UploadedAreaSearchAttachmentMeta>;
+  area_search_status: Object; // TODO: specify
+  description_area?: string;
+  description_intended_use?: string;
+  district: string;
+  end_date?: string;
+  form: Object; // TODO: specify
+  geometry: Object; // TODO: specify
+  identifier: string;
+  intended_use: number;
+  lessor: string;
+  plot: Array<string>;
+  preparer?: User;
+  received_date?: string;
+  service_unit?: number;
+  start_date: string;
+  state: string;
+};
+
+export type AreaSearchId = number;
+
+export type UploadedAreaSearchAttachmentMeta = {
+  id: number;
+  attachment: string;
+  name: string;
+  field: number;
+  created_at: string;
+  user?: User;
+};
+
 
 export type FetchListAttributesAction = Action<'mvj/areaSearch/FETCH_LIST_ATTRIBUTES', void>;
 export type ReceiveListAttributesAction = Action<'mvj/areaSearch/RECEIVE_LIST_ATTRIBUTES', Attributes>;
@@ -73,6 +107,7 @@ export type ReceiveAreaSearchInfoCheckBatchEditFailureAction = Action<'mvj/areaS
 export type EditAreaSearchAction = Action<'mvj/areaSearch/EDIT', Object>;
 export type ReceiveAreaSearchEditedAction = Action<'mvj/areaSearch/RECEIVE_EDITED', void>;
 export type ReceiveAreaSearchEditFailedAction = Action<'mvj/areaSearch/RECEIVE_EDIT_FAILED', Object>;
+export type SetAreaSearchAttachmentsAction = Action<'mvj/areaSearch/SET_ATTACHMENTS', Array<UploadedAreaSearchAttachmentMeta>>;
 
 export type CreateAreaSearchSpecsAction = Action<'mvj/areaSearch/CREATE_SPECS', Object>;
 export type ReceiveAreaSearchSpecsCreatedAction = Action<'mvj/areaSearch/RECEIVE_SPECS_CREATED', Object>;
@@ -87,8 +122,8 @@ export type DeleteAreaSearchAttachmentAction = Action<'mvj/areaSearch/DELETE_ATT
   callback?: () => void,
 }>;
 export type UploadAreaSearchAttachmentAction = Action<'mvj/areaSearch/UPLOAD_ATTACHMENT', {
-  fileData: Object,
-  callback?: (fileData: UploadedFileMeta) => void,
+  fileData: File,
+  callback?: (fileData: UploadedAreaSearchAttachmentMeta) => void,
   areaSearch?: number,
 }>;
 export type ReceiveFileOperationFinishedAction = Action<'mvj/areaSearch/RECEIVE_FILE_OPERATION_FINISHED', void>;

@@ -41,6 +41,8 @@ import type {
   UploadAreaSearchAttachmentAction,
   ReceiveFileOperationFinishedAction,
   ReceiveFileOperationFailedAction,
+  SetAreaSearchAttachmentsAction,
+  UploadedAreaSearchAttachmentMeta,
 } from '$src/areaSearch/types';
 import type {Attributes, Methods} from '$src/types';
 
@@ -160,3 +162,6 @@ export const receiveFileOperationFinished = (): ReceiveFileOperationFinishedActi
 
 export const receiveFileOperationFailed = (error: any): ReceiveFileOperationFailedAction =>
   createAction('mvj/areaSearch/RECEIVE_FILE_OPERATION_FAILED')(error);
+
+export const setAreaSearchAttachments = (attachments: Array<UploadedAreaSearchAttachmentMeta>): SetAreaSearchAttachmentsAction =>
+  createAction('mvj/areaSearch/SET_ATTACHMENTS')(attachments);

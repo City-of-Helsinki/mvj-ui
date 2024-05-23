@@ -228,7 +228,6 @@ const ApplicationFormFileField = connect(
 
 const ApplicationFormSubsectionFields = connect(
   (state, props) => ({
-    fieldTypeMapping: getFieldTypeMapping(state),
     sectionApplicantType: getSectionApplicantType(state, props.formName, props.section, props.identifier),
   }), {
     change,
@@ -236,7 +235,6 @@ const ApplicationFormSubsectionFields = connect(
 )(
   ({
     section,
-    fieldTypeMapping,
     identifier,
     change,
     sectionApplicantType,
@@ -255,7 +253,7 @@ const ApplicationFormSubsectionFields = connect(
         ApplicationSectionKeys.Fields,
         field.identifier,
       ].join('.');
-      const fieldType = fieldTypeMapping[field.type];
+      const fieldType = field.type;
 
       // Special cases that use a different submission path and thus different props
       if (fieldType === 'uploadfiles') {

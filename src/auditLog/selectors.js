@@ -13,3 +13,9 @@ export const getIsFetchingByLease: Selector<boolean, string> = (state: RootState
 
 export const getAuditLogByLease: Selector<boolean, string> = (state: RootState, leaseId: string): boolean =>
   state.auditLog.byLease[leaseId];
+
+export const getIsFetchingByAreaSearch: Selector<boolean, string> = (state: RootState, areaSearchId: string): boolean =>
+  state.auditLog.isFetchingByAreaSearch[areaSearchId];
+
+export const getAuditLogByAreaSearch: Selector<boolean, string> = (state: RootState, areaSearchId: string): boolean =>
+  state.auditLog.byAreaSearch[areaSearchId];

@@ -51,6 +51,7 @@ type State = {
   areaSearches: ApiResponse,
   areaSearchAttributes: Attributes,
   attributes: Attributes,
+  serviceUnitOptions: Array<Object>,
 }
 
 class Search extends Component<Props, State> {
@@ -64,6 +65,7 @@ class Search extends Component<Props, State> {
     areaSearches: null,
     areaSearchAttributes: {},
     attributes: {},
+    serviceUnitOptions: []
   };
 
   componentDidMount() {
@@ -148,6 +150,7 @@ class Search extends Component<Props, State> {
     if (props.areaSearchAttributes !== state.areaSearchAttributes) {
       newState.intendedUseOptions = getFieldOptions(props.areaSearchAttributes, AreaSearchFieldPaths.INTENDED_USE);
       newState.lessorOptions = getFieldOptions(props.areaSearchAttributes, AreaSearchFieldPaths.LESSOR);
+      newState.serviceUnitOptions = getFieldOptions(props.areaSearchAttributes, 'service_unit', true);
     }
 
     return !isEmpty(newState) ? newState : null;
@@ -163,6 +166,7 @@ class Search extends Component<Props, State> {
       isBasicSearch,
       intendedUseOptions,
       lessorOptions,
+      serviceUnitOptions,
     } = this.state;
 
     return (
@@ -459,6 +463,28 @@ class Search extends Component<Props, State> {
                     />
                   </SearchInputColumn>
                 </SearchRow>
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Palvelukokonaisuus</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Palvelukokonaisuus',
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name='service_unit'
+                      overrideValues={{
+                        options: serviceUnitOptions,
+                      }}
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
+
               </Column>
             </Row>
           </Fragment>

@@ -41,3 +41,11 @@ export type LeafletGeoJson = {
   features: Array<LeafletFeature>,
   type: 'FeatureCollection',
 }
+
+export type User = {
+  id: number;
+  first_name?: string;
+  last_name?: string;
+  is_staff: boolean;
+  username: string;
+}

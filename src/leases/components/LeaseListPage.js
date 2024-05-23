@@ -9,6 +9,14 @@ import debounce from 'lodash/debounce';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
+import {FieldTypes} from '$src/enums';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import SearchContainer from '$components/search/SearchContainer';
+import FormField from '$components/form/FormField';
+import SearchInputColumn from '$components/search/SearchInputColumn';
+import SearchLabel from '$components/search/SearchLabel';
+import SearchLabelColumn from '$components/search/SearchLabelColumn';
+import SearchRow from '$components/search/SearchRow';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Authorization from '$components/authorization/Authorization';
 import AuthorizationError from '$components/authorization/AuthorizationError';
@@ -28,6 +36,7 @@ import TableFilterWrapper from '$components/table/TableFilterWrapper';
 import TableWrapper from '$components/table/TableWrapper';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
+import {fetchServiceUnits} from '$src/serviceUnits/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLease, fetchLeases, fetchLeasesByBBox} from '$src/leases/actions';
 import {fetchLessors} from '$src/lessor/actions';
@@ -70,15 +79,17 @@ import {
   getLeasesList,
 } from '$src/leases/selectors';
 import {getLessorList} from '$src/lessor/selectors';
-import {getUsersPermissions} from '$src/usersPermissions/selectors';
+import {getUsersPermissions, getUserActiveServiceUnit} from '$src/usersPermissions/selectors';
 import {withLeaseAttributes} from '$components/attributes/LeaseAttributes';
 import {withUiDataList} from '$components/uiData/UiDataListHOC';
+import {getServiceUnits, getIsFetching as getIsFetchingServiceUnits} from '$src/serviceUnits/selectors';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {LeaseList} from '$src/leases/types';
 import type {LessorList} from '$src/lessor/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {ServiceUnits} from '$src/serviceUnits/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -97,17 +108,21 @@ type Props = {
   fetchLeases: Function,
   fetchLeasesByBBox: Function,
   fetchLessors: Function,
+  fetchServiceUnits: Function,
   history: Object,
   initialize: Function,
   isFetching: boolean,
   isFetchingByBBox: boolean,
   isFetchingLeaseAttributes: boolean,
+  isFetchingServiceUnits: boolean,
   leaseAttributes: Attributes,
   leaseMethods: MethodsType,
   leases: LeaseList,
   lessors: LessorList,
   location: Object,
   receiveTopNavigationSettings: Function,
+  serviceUnits: ServiceUnits,
+  userActiveServiceUnit: UserServiceUnit,
   usersPermissions: UsersPermissionsType,
 }
 
@@ -119,10 +134,13 @@ type State = {
   sortKey: string,
   sortOrder: string,
   visualizationType: string,
+  serviceUnitOptions: Array<Object>,
+  selectedServiceUnitOptionValue: mixed // empty string if no value, otherwise number
 }
 
 class LeaseListPage extends PureComponent<Props, State> {
   _isMounted: boolean
+  _hasFetchedLeases: boolean // Check if search has been done yet
 
   firstLeaseModalField: any
 
@@ -134,6 +152,8 @@ class LeaseListPage extends PureComponent<Props, State> {
     sortKey: DEFAULT_SORT_KEY,
     sortOrder: DEFAULT_SORT_ORDER,
     visualizationType: VisualizationTypes.TABLE,
+    serviceUnitOptions: [],
+    selectedServiceUnitOptionValue: ''
   }
 
   static contextTypes = {
@@ -144,11 +164,13 @@ class LeaseListPage extends PureComponent<Props, State> {
     const {
       fetchAreaNoteList,
       fetchLessors,
+      fetchServiceUnits,
+      isFetchingServiceUnits,
       lessors,
-      location: {search},
       receiveTopNavigationSettings,
+      serviceUnits,
+      leaseAttributes
     } = this.props;
-    const searchQuery = getUrlParams(search);
 
     setPageTitle('Vuokraukset');
 
@@ -158,11 +180,8 @@ class LeaseListPage extends PureComponent<Props, State> {
       showSearch: false,
     });
 
-    if(searchQuery.visualization === VisualizationTypes.MAP) {
-      this.setState({visualizationType: VisualizationTypes.MAP});
-      this.searchByBBox();
-    } else {
-      this.search();
+    if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
+      fetchServiceUnits();
     }
 
     fetchAreaNoteList({limit: 10000});
@@ -171,19 +190,34 @@ class LeaseListPage extends PureComponent<Props, State> {
       fetchLessors({limit: 10000});
     }
 
-    this.setSearchFormValues();
-
     window.addEventListener('popstate', this.handlePopState);
     this._isMounted = true;
+
+    this.setState({serviceUnitOptions: getFieldOptions(leaseAttributes, 'service_unit', true)});
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {search: currentSearch}} = this.props;
+    const {location: {search: currentSearch}, userActiveServiceUnit, leaseAttributes} = this.props;
     const {visualizationType} = this.state;
     const {location: {search: prevSearch}} = prevProps;
 
-    if(currentSearch !== prevSearch) {
-      switch(visualizationType) {
+    const initializeSearch = () => {
+      const searchQuery = getUrlParams(currentSearch);
+
+      this.setSearchFormValues();
+
+      if (searchQuery.visualization === VisualizationTypes.MAP) {
+        this.setState({visualizationType: VisualizationTypes.MAP});
+        this.searchByBBox();
+      } else {
+        this.search();
+      }
+    };
+
+    const searchByType = () => {
+      this.setSearchFormValues();
+
+      switch (visualizationType) {
         case VisualizationTypes.MAP:
           this.searchByBBox();
           break;
@@ -191,8 +225,27 @@ class LeaseListPage extends PureComponent<Props, State> {
           this.search();
           break;
       }
+    };
 
-      this.setSearchFormValues();
+    if(userActiveServiceUnit) {
+      
+      if(!this._hasFetchedLeases) { // No search has been done yet
+        initializeSearch();
+        this._hasFetchedLeases = true;
+
+      }
+    }
+
+    if (currentSearch !== prevSearch) {
+      searchByType();
+    }
+
+    // Update service unit options if they have changed
+    if (
+      this.props.leaseAttributes?.service_unit &&
+      leaseAttributes?.service_unit?.choices.length !== prevProps.leaseAttributes?.service_unit?.choices.length
+    ) {
+      this.setState({serviceUnitOptions: getFieldOptions(leaseAttributes, 'service_unit', true)});
     }
   }
 
@@ -200,6 +253,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     window.removeEventListener('popstate', this.handlePopState);
 
     this._isMounted = false;
+    this._hasFetchedLeases = false;
   }
 
   handlePopState = () => {
@@ -236,6 +290,12 @@ class LeaseListPage extends PureComponent<Props, State> {
       const tenantContactTypes = isArray(searchQuery.tenantcontact_type)
         ? searchQuery.tenantcontact_type
         : searchQuery.tenantcontact_type ? [searchQuery.tenantcontact_type] : [];
+
+      if (initialValues.service_unit === undefined) {
+        initialValues.service_unit = "";
+      } else {
+        this.setState({selectedServiceUnitOptionValue: initialValues.service_unit});
+      }
 
       if(onlyActiveLeases != undefined) {
         initialValues.only_active_leases = onlyActiveLeases;
@@ -301,6 +361,10 @@ class LeaseListPage extends PureComponent<Props, State> {
     searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
     searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
+    if(searchQuery.service_unit === undefined) {
+      searchQuery.service_unit = "";
+    }
+
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
     delete searchQuery.in_bbox;
@@ -326,6 +390,10 @@ class LeaseListPage extends PureComponent<Props, State> {
 
     if(leaseStates.length) {
       searchQuery.lease_state = leaseStates;
+    }
+
+    if(searchQuery.service_unit === undefined) {
+      searchQuery.service_unit = "";
     }
 
     searchQuery.limit = 10000;
@@ -381,6 +449,16 @@ class LeaseListPage extends PureComponent<Props, State> {
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(searchQuery),
     });
+  }
+
+  handleServiceUnitChange = (value : mixed) => {
+    const {location: {search}} = this.props;
+
+    // get other form values from query params
+    const query = getUrlParams(search);
+
+    this.handleSearchChange(Object.assign(query, {service_unit: value}));
+    this.setState({selectedServiceUnitOptionValue: value});
   }
 
   handleRowClick = (id) => {
@@ -531,6 +609,8 @@ class LeaseListPage extends PureComponent<Props, State> {
       sortKey,
       sortOrder,
       visualizationType,
+      serviceUnitOptions,
+      selectedServiceUnitOptionValue
     } = this.state;
     const {
       createLease,
@@ -552,6 +632,23 @@ class LeaseListPage extends PureComponent<Props, State> {
     if(!leaseMethods) return null;
 
     if(!isMethodAllowed(leaseMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
+
+    const serviceUnitFilter = <SearchRow>
+      <SearchLabelColumn>
+        <SearchLabel>{LeaseFieldTitles.SERVICE_UNIT}</SearchLabel>
+      </SearchLabelColumn>
+      <SearchInputColumn>
+        <FieldTypeSelect
+          autoBlur={false}
+          disabled={false}
+          displayError={false}
+          input={{onChange: this.handleServiceUnitChange, onBlur: () => {}, value: selectedServiceUnitOptionValue}}
+          isDirty={false}
+          options={serviceUnitOptions}
+          placeholder=""
+          setRefForField={() => {}} />
+      </SearchInputColumn>
+    </SearchRow>
 
     return (
       <PageContainer>
@@ -588,6 +685,7 @@ class LeaseListPage extends PureComponent<Props, State> {
               filterOptions={leaseStateFilterOptions}
               filterValue={leaseStates}
               onFilterChange={this.handleLeaseStatesChange}
+              componentToRenderUnderTitle={serviceUnitFilter}
             />
           }
           visualizationComponent={
@@ -651,8 +749,11 @@ export default flowRight(
         areaNotes: getAreaNoteList(state),
         isFetching: getIsFetching(state),
         isFetchingByBBox: getIsFetchingByBBox(state),
+        isFetchingServiceUnits: getIsFetchingServiceUnits(state),
         leases: getLeasesList(state),
         lessors: getLessorList(state),
+        serviceUnits: getServiceUnits(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
         usersPermissions: getUsersPermissions(state),
       };
     },
@@ -662,6 +763,7 @@ export default flowRight(
       fetchLeases,
       fetchLeasesByBBox,
       fetchLessors,
+      fetchServiceUnits,
       initialize,
       receiveTopNavigationSettings,
     },

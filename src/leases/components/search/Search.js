@@ -63,6 +63,7 @@ type State = {
   municipalityOptions: Array<Object>,
   tenantTypeOptions: Array<Object>,
   typeOptions: Array<Object>,
+  serviceUnitOptions: Array<Object>,
 }
 
 class Search extends PureComponent<Props, State> {
@@ -77,6 +78,7 @@ class Search extends PureComponent<Props, State> {
     municipalityOptions: [],
     tenantTypeOptions: [],
     typeOptions: [],
+    serviceUnitOptions: [],
   }
 
   componentDidMount() {
@@ -153,6 +155,7 @@ class Search extends PureComponent<Props, State> {
     delete searchQuery.in_bbox;
     delete searchQuery.visualization;
     delete searchQuery.zoom;
+    delete searchQuery.service_unit;
 
     const keys = Object.keys(searchQuery);
 
@@ -211,6 +214,7 @@ class Search extends PureComponent<Props, State> {
       municipalityOptions,
       tenantTypeOptions,
       typeOptions,
+      serviceUnitOptions,
     } = this.state;
     const districtOptions = getDistrictOptions(districts);
     const radioButtonsDisabled = this.formHasNoName();

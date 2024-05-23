@@ -3,6 +3,7 @@ import {createAction} from 'redux-actions';
 
 import type {ContactId} from '$src/contacts/types';
 import type {LeaseId} from '$src/leases/types';
+import type {AreaSearchId} from '$src/areaSearch/types';
 import type {
   AuditLogListMap,
   FetchAuditLogByContactAction,
@@ -11,6 +12,9 @@ import type {
   FetchAuditLogByLeaseAction,
   ReceiveAuditLogByLeaseAction,
   NotFoundByLeaseAction,
+  FetchAuditLogByAreaSearchAction,
+  ReceiveAuditLogByAreaSearchAction,
+  NotFoundByAreaSearchAction
 } from '$src/auditLog/types';
 
 export const fetchAuditLogByContact = (contactId: ContactId): FetchAuditLogByContactAction =>
@@ -30,3 +34,12 @@ export const receiveAuditLogByLease = (payload: AuditLogListMap): ReceiveAuditLo
 
 export const notFoundByLease = (leaseId: LeaseId): NotFoundByLeaseAction =>
   createAction('mvj/auditLog/NOT_FOUND_BY_LEASE')(leaseId);
+
+export const fetchAuditLogByAreaSearch = (query: Object): FetchAuditLogByAreaSearchAction =>
+  createAction('mvj/auditLog/FETCH_BY_AREASEARCH')(query);
+
+export const receiveAuditLogByAreaSearch = (payload: AuditLogListMap): ReceiveAuditLogByAreaSearchAction =>
+  createAction('mvj/auditLog/RECEIVE_BY_AREASEARCH')(payload);
+
+export const notFoundByAreaSearch = (areaSearchId: AreaSearchId): NotFoundByAreaSearchAction =>
+  createAction('mvj/auditLog/NOT_FOUND_BY_AREASEARCH')(areaSearchId);

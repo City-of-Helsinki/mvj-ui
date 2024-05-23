@@ -32,6 +32,7 @@ type Props = {
   valid: boolean,
   formValues: Object,
   isPreparerDirty: boolean,
+  showMarkAll: boolean,
 };
 
 class ApplicantInfoCheckForm extends Component<Props> {
@@ -76,6 +77,7 @@ class ApplicantInfoCheckForm extends Component<Props> {
       attributes,
       valid,
       onClose,
+      showMarkAll,
     } = this.props;
 
     return (
@@ -101,16 +103,19 @@ class ApplicantInfoCheckForm extends Component<Props> {
               }}
             />
           </Column>
-          <Column small={4}>
-            <FormField
-              fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.MARK_ALL)}
-              name={ApplicantInfoCheckFieldPaths.MARK_ALL}
-              overrideValues={{
-                label: ApplicantInfoCheckFieldTitles.MARK_ALL,
-                required: false,
-              }}
-            />
-          </Column>
+          {showMarkAll === true &&
+            <Column small={4}>
+              <FormField
+                fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.MARK_ALL)}
+                name={ApplicantInfoCheckFieldPaths.MARK_ALL}
+                overrideValues={{
+                  label: ApplicantInfoCheckFieldTitles.MARK_ALL,
+                  required: false,
+                }}
+              />
+            </Column>
+          }
+          
         </Row>
         <Row>
           <Column small={12}>

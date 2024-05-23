@@ -49,6 +49,8 @@ import {getUsersPermissions} from '$src/usersPermissions/selectors';
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import Loader from '$components/loader/Loader';
+
 
 type InvoiceRowsProps = {
   fields: any,
@@ -139,16 +141,20 @@ const InvoiceRows = ({
                           ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE)
                           : isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
                         >
-                          <FormField
-                            disableTouched={isCreateClicked}
-                            fieldAttributes={useLeaseCreateChargeEndpoint
-                              ? receivableTypesFromAttributes(getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)
-                              : receivableTypesFromAttributes(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)
-                            }
-                            invisibleLabel
-                            name={`${row}.receivable_type`}
-                            overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
-                          />
+                          {receivableTypes ? 
+                            <FormField
+                              disableTouched={isCreateClicked}
+                              fieldAttributes={useLeaseCreateChargeEndpoint
+                                ? receivableTypesFromAttributes(getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)
+                                : receivableTypesFromAttributes(getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE), receivableTypes)
+                              }
+                              invisibleLabel
+                              name={`${row}.receivable_type`}
+                              overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
+                            />
+                          : <Loader isLoading={true} />
+                          }
+
                         </Authorization>
                       </Column>
                       <Column small={2} large={2}>

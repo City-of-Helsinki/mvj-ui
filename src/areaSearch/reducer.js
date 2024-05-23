@@ -10,7 +10,11 @@ import type {
   ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction,
   ReceiveSingleAreaSearchAction,
 } from '$src/areaSearch/types';
-import type {ReceiveAttributesAction, ReceiveMethodsAction} from '$src/areaSearch/types';
+import type {
+  ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  SetAreaSearchAttachmentsAction
+} from '$src/areaSearch/types';
 import type {ApiResponse} from '$src/types';
 import merge from 'lodash/merge';
 
@@ -82,6 +86,13 @@ const currentAreaSearchReducer: Reducer<Object | null> = handleActions({
   },
   ['mvj/areaSearch/CREATE_SPECS']: () => null,
   ['mvj/areaSearch/RECEIVE_SPECS_CREATED']: (state, {payload: result}) => result,
+  ['mvj/areaSearch/SET_ATTACHMENTS']: (state, {payload: attachments}) => {
+    const { area_search_attachments } = state;
+    return { 
+      ...state, 
+      area_search_attachments: attachments 
+    }
+  },
 }, null);
 
 const isFetchingCurrentAreaSearchReducer: Reducer<boolean> = handleActions({

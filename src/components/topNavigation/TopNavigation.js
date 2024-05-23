@@ -7,13 +7,14 @@ import {Link} from 'react-router-dom';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import MainMenuIcon from '../icons/MainMenuIcon';
 import SearchInput from '../inputs/SearchInput';
+import UserServiceUnitSelectInput from '../inputs/UserServiceUnitSelectInput';
 import {ConfirmationModalTexts} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$util/forms';
 import {getSearchQuery, getUrlParams} from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 
-import type {UserGroups} from '$src/usersPermissions/types';
+import type {UserGroups, UserServiceUnit, UserServiceUnits} from '$src/usersPermissions/types';
 
 type Props = {
   history: Object,
@@ -25,6 +26,8 @@ type Props = {
   showSearch: boolean,
   toggleSideMenu: Function,
   userGroups: UserGroups,
+  userActiveServiceUnit: UserServiceUnit,
+  userServiceUnits: UserServiceUnits;
   username: string,
 }
 
@@ -82,6 +85,8 @@ class TopNavigation extends Component<Props, State> {
       showSearch,
       toggleSideMenu,
       userGroups,
+      userActiveServiceUnit,
+      userServiceUnits,
       username,
     } = this.props;
     const {search} = this.state;
@@ -187,8 +192,23 @@ class TopNavigation extends Component<Props, State> {
                   </div>
                 }
 
+                {!!userServiceUnits.length && userActiveServiceUnit &&
+                  <div className="user-service-unit">
+                    {userServiceUnits.length > 1 ? (
+                      <UserServiceUnitSelectInput userServiceUnits={userServiceUnits} userActiveServiceUnit={userActiveServiceUnit} />
+                    ) : (
+                      <div className="user-service-unit-text">
+                        <div className="service-unit-label">Oma palvelukokonaisuus</div>
+                        <div className="service-unit-name">{userActiveServiceUnit.name}</div>
+                      </div>
+                    )}
+                  </div>
+                }
+
                 <div className="username-wrapper">
-                  <p className="username">{username}{!!userGroups && !!userGroups.length && ` (${userGroups.join(', ')})`}</p>
+                  <p className="username">
+                    {username}{!!userGroups && !!userGroups.length && ` (${userGroups.join(', ')})`}
+                  </p>
                   <button className='logout-link' onClick={handleLogout}>Kirjaudu ulos</button>
                 </div>
               </div>

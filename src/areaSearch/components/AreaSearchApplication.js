@@ -18,7 +18,10 @@ import {
 } from '$util/helpers';
 import type {Attributes} from '$src/types';
 import {reshapeSavedApplicationObject} from '$src/plotApplications/helpers';
-import {transformApplicantSectionTitle} from '$src/application/helpers';
+import {
+  transformApplicantSectionTitle,
+  getAreaSearchApplicationAttachmentDownloadLink,
+} from '$src/application/helpers';
 import Title from '$components/content/Title';
 import Divider from '$components/content/Divider';
 import Collapse from '$components/collapse/Collapse';
@@ -212,15 +215,16 @@ class AreaSearchApplication extends Component<Props, State> {
             ]}
           />)}
         <Collapse headerTitle="Liitteet" defaultOpen>
-          {areaSearch.area_search_attachments.map((file, index) => <Row key={file.id}>
-            <Column small={3}>Liite {index + 1}</Column>
-            <Column small={9}>
-              <FileDownloadLink
-                fileUrl={file.file}
-                label={file.name}
-              />
-            </Column>
-          </Row>)}
+          {areaSearch.area_search_attachments.map((file, index) => {
+            return (<Row key={file.id}>
+              <Column small={3}>Liite {index + 1}</Column>
+              <Column small={9}>
+                <FileDownloadLink
+                  fileUrl={getAreaSearchApplicationAttachmentDownloadLink(file.id)}
+                  label={file.name}
+                />
+              </Column>
+            </Row>)})}
           {areaSearch.area_search_attachments.length === 0 && <p>
             Hakemuksella ei ole liitteitä.
           </p>}

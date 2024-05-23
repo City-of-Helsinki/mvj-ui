@@ -18,7 +18,8 @@ type Props = {
   modalPage: number,
   setPage: Function,
   businessId?: string,
-  personId?: string
+  personId?: string,
+  showMarkAll?: boolean,
 }
 
 type State = {
@@ -52,6 +53,7 @@ class ApplicantInfoCheckModal extends Component<Props, State> {
       setPage,
       businessId,
       personId,
+      showMarkAll,
     } = this.props;
 
     let title = '';
@@ -92,6 +94,7 @@ class ApplicantInfoCheckModal extends Component<Props, State> {
               onSubmit={onSubmit}
               onClose={onClose}
               infoCheck={infoCheck}
+              showMarkAll={showMarkAll}
               ref={this.setRefForForm} />
           </div>
         }

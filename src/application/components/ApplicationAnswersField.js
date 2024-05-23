@@ -39,7 +39,7 @@ const ApplicationAnswersField = ({
     <Row>
       {section.fields.filter((field) => field.enabled).map((field) => {
         const fieldAnswer = answer.fields[field.identifier];
-        const fieldType = fieldTypes?.find((fieldType) => fieldType.value === field.type)?.display_name;
+        const fieldType = fieldTypes?.find((fieldType) => fieldType.value === field.type)?.value;
 
         if (fieldType === 'hidden') {
           return null;

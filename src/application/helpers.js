@@ -361,6 +361,8 @@ export const getInitialApplicationForm = (
 };
 export const getApplicationAttachmentDownloadLink = (id: number): string => createUrl(`attachment/${id}/download`);
 
+export const getAreaSearchApplicationAttachmentDownloadLink = (id: number): string => createUrl(`area_search_attachment/${id}/download`);
+
 export const getSectionTemplate = (formName: string, formPath: string, identifier: string): Object => {
   const state = store.getState();
   const templates = formValueSelector(formName)(

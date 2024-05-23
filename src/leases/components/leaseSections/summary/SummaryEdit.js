@@ -34,6 +34,7 @@ import {
   getReferenceNumberLink,
   hasPermissions,
   isFieldAllowedToRead,
+  isFieldAllowedToEdit
 } from '$util/helpers';
 import {getRouteById, Routes} from '$src/root/routes';
 import {
@@ -44,11 +45,11 @@ import {
   getIsSaveClicked,
 } from '$src/leases/selectors';
 import {getUsersPermissions} from '$src/usersPermissions/selectors';
-import {referenceNumber} from '$components/form/validations';
+import {internalOrder, referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Methods as MethodsType} from '$src/types';
 import type {Lease} from '$src/leases/types';
-import type {UsersPermissions as UsersPermissionsType} from '$src/usersPermissions/types';
+import type {UsersPermissions as UsersPermissionsType, UserServiceUnit} from '$src/usersPermissions/types';
 
 type Props = {
   attributes: Attributes,
@@ -62,6 +63,7 @@ type Props = {
   receiveCollapseStates: Function,
   receiveFormValidFlags: Function,
   startDate: ?string,
+  userActiveServiceUnit: UserServiceUnit,
   usersPermissions: UsersPermissionsType,
   valid: boolean,
 }
@@ -143,6 +145,7 @@ class SummaryEdit extends PureComponent<Props, State> {
       attributes,
       collapseStateBasic,
       collapseStateStatistical,
+      currentLease,
       errors,
       handleSubmit,
       isSaveClicked,
@@ -225,6 +228,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                         fieldType: FieldTypes.LESSOR,
                         label: LeaseFieldTitles.LESSOR,
                       }}
+                      serviceUnit={currentLease.service_unit}
                       enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.LESSOR)}
                     />
@@ -240,6 +244,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                         fieldType: FieldTypes.USER,
                         label: LeaseFieldTitles.PREPARER,
                       }}
+                      serviceUnit={currentLease.service_unit}
                       enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.PREPARER)}
                     />
@@ -255,6 +260,14 @@ class SummaryEdit extends PureComponent<Props, State> {
                       enableUiDataEdit
                       uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.CLASSIFICATION)}
                     />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SERVICE_UNIT)}>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SERVICE_UNIT)}>
+                      {LeaseFieldTitles.SERVICE_UNIT}
+                    </FormTextTitle>
+                    <FormText>{summary.service_unit ? summary.service_unit.name || summary.service_unit.id : '-'}</FormText>
                   </Authorization>
                 </Column>
               </Row>
@@ -485,6 +498,34 @@ class SummaryEdit extends PureComponent<Props, State> {
                   }
                 </Column>
               </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTERNAL_ORDER)}>
+                    {isFieldAllowedToEdit(attributes, LeaseFieldPaths.INTERNAL_ORDER) ? 
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.INTERNAL_ORDER)}
+                          name='internal_order'
+                          validate={internalOrder}
+                          readOnlyValueRenderer={this.referenceNumberReadOnlyRenderer}
+                          overrideValues={{
+                            label: LeaseFieldTitles.INTERNAL_ORDER,
+                            fieldType: FieldTypes.STRING,
+                          }}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTERNAL_ORDER)}
+                        />
+                      :
+                        <>
+                          <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTERNAL_ORDER)}>
+                            {LeaseFieldTitles.INTERNAL_ORDER}
+                          </FormTextTitle>
+                          <FormText>{summary.internal_order || '-'}</FormText>
+                        </>
+                    }
+                  </Authorization>
+                </Column>
+              </Row>
 
               <SummaryLeaseInfo />
             </Collapse>
@@ -604,7 +645,7 @@ class SummaryEdit extends PureComponent<Props, State> {
           </Column>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RELATED_LEASES)}>
             <Column small={12} medium={4} large={3}>
-              <LeaseHistoryEdit />
+              <LeaseHistoryEdit serviceUnit={currentLease.service_unit} />
             </Column>
           </Authorization>
         </Row>
