@@ -76,7 +76,7 @@ class LeaseListMap extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.leasesData !== state.leasesData) {
       newState.leasesData = props.leasesData;
@@ -164,4 +164,4 @@ export default flowRight(withRouter, connect(state => {
     leasesData: getLeasesByBBox(state),
     usersPermissions: getUsersPermissions(state)
   };
-}))(LeaseListMap);
+}))(LeaseListMap) as React.ComponentType<any>;

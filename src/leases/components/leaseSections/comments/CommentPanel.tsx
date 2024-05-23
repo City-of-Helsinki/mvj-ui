@@ -76,7 +76,7 @@ class CommentPanel extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.commentList !== state.commentList) {
       newState.commentList = props.commentList;
@@ -296,4 +296,4 @@ export default flowRight(withRouter, connect(state => {
   createComment,
   initialize,
   receiveIsSaveClicked
-}))(CommentPanel);
+}))(CommentPanel) as React.ComponentType<any>;

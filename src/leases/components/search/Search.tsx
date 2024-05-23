@@ -91,7 +91,7 @@ class Search extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
@@ -623,4 +623,4 @@ export default flowRight(withRouter, connect(state => {
   fetchDistrictsByMunicipality
 }), reduxForm({
   form: formName
-}))(Search);
+}))(Search) as React.ComponentType<any>;

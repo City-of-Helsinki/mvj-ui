@@ -1,10 +1,9 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, type ReactElement } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Field, FieldArray, formValueSelector, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButton from "src/components/form/AddButton";
 import Authorization from "src/components/authorization/Authorization";
@@ -43,7 +42,7 @@ const RentWarnings = ({
   meta: {
     warning
   }
-}: WarningsProps): Element<any> => {
+}: WarningsProps): ReactElement => {
   return <Fragment>
     {warning && !!warning.length && <WarningContainer style={{
       marginTop: isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE) ? 0 : null
@@ -67,7 +66,7 @@ const renderRents = ({
   fields,
   rents,
   usersPermissions
-}: RentsProps): Element<any> => {
+}: RentsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({
       contract_rents: [{}]
@@ -145,7 +144,7 @@ class RentsEdit extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.currentLease !== state.lease) {
       const rents = getContentRents(props.currentLease);
@@ -339,4 +338,4 @@ export default flowRight(withRouter, connect(state => {
   destroyOnUnmount: false,
   validate: validateRentForm,
   warn: warnRentForm
-}))(RentsEdit);
+}))(RentsEdit) as React.ComponentType<any>;

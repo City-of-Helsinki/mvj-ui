@@ -104,4 +104,4 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-export default flowRight(connect(mapStateToProps), withRouter)(Rents);
+export default flowRight(connect(mapStateToProps), withRouter)(Rents) as React.ComponentType<any>;

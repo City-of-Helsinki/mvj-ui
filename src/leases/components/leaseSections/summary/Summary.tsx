@@ -58,7 +58,7 @@ type State = {
 };
 
 class Summary extends PureComponent<Props, State> {
-  state = {
+  state: any = {
     attributes: null,
     classificationOptions: [],
     currentLease: {},

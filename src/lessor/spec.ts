@@ -5,13 +5,10 @@ import type { LessorState } from "./types";
 const defaultState: LessorState = {
   list: []
 };
-// @ts-expect-error
+
 describe('Lessors', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('lessorReducer', () => {
-      // $FlowFixMe
       it('fetchLessors should not change state', () => {
         const state = lessorReducer({}, fetchLessors());
         expect(state).to.deep.equal(defaultState);

@@ -31,6 +31,7 @@ type OwnProps = {
   allowToChangeRelateTo?: boolean;
   allowToChangeReferenceNumberAndNote?: boolean;
   confirmButtonLabel?: string;
+  ref?: Function;
 };
 type Props = OwnProps & {
   change: (...args: Array<any>) => any;

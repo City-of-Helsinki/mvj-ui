@@ -1,10 +1,9 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import type { Element } from "react";
 import Authorization from "src/components/authorization/Authorization";
 import Collapse from "src/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "src/components/collapse/CollapseHeaderSubtitle";
@@ -64,7 +63,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
   onUnarchive,
   receiveCollapseStates,
   usersPermissions
-}: Props): Element<any> => {
+}: Props): ReactElement => {
   const handleArchive = () => {
     onArchive(index, editedArea);
   };

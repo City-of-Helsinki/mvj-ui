@@ -1,8 +1,7 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import ConstructabilityItemEdit from "./ConstructabilityItemEdit";
 import Divider from "src/components/content/Divider";
 import FormText from "src/components/form/FormText";
@@ -37,7 +36,7 @@ const renderAreas = ({
   locationOptions,
   savedAreas,
   typeOptions
-}: AreaProps): Element<any> => {
+}: AreaProps): ReactElement => {
   return <Fragment>
       {!fields || !fields.length && <FormText className='no-margin'>Ei vuokra-alueita</FormText>}
       {savedAreas && !!savedAreas.length && fields && !!fields.length && fields.map((area, index) => {
@@ -87,7 +86,7 @@ class ConstructabilityEdit extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
@@ -142,4 +141,4 @@ export default flowRight(connect(state => {
 }), reduxForm({
   form: formName,
   destroyOnUnmount: false
-}))(ConstructabilityEdit);
+}))(ConstructabilityEdit) as React.ComponentType<any>;

@@ -7,10 +7,7 @@ import { Row, Column } from "react-foundation";
 import debounce from "lodash/debounce";
 import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
-import { FieldTypes } from "src/enums";
 import FieldTypeSelect from "src/components/form/FieldTypeSelect";
-import SearchContainer from "src/components/search/SearchContainer";
-import FormField from "src/components/form/FormField";
 import SearchInputColumn from "src/components/search/SearchInputColumn";
 import SearchLabel from "src/components/search/SearchLabel";
 import SearchLabelColumn from "src/components/search/SearchLabelColumn";
@@ -98,7 +95,7 @@ type Props = {
 type State = {
   activePage: number;
   isModalOpen: boolean;
-  leaseStates: Array<string>;
+  leaseStates: Array<any>;
   isSearchInitialized: boolean;
   sortKey: string;
   sortOrder: string;
@@ -113,7 +110,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   _hasFetchedLeases: boolean; // Check if search has been done yet
 
   firstLeaseModalField: any;
-  state = {
+  state: any = {
     activePage: 1,
     isModalOpen: false,
     leaseStates: DEFAULT_LEASE_STATES,

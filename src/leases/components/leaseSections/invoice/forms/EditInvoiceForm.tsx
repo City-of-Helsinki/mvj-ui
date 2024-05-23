@@ -1,9 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { Row, Column } from "react-foundation";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector, reduxForm } from "redux-form";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import AmountWithVat from "src/components/vat/AmountWithVat";
@@ -45,7 +44,7 @@ const renderPayments = ({
   fields,
   isEditClicked,
   relativeTo
-}: PaymentsProps): Element<any> => {
+}: PaymentsProps): ReactElement => {
   const handleAdd = () => fields.push({});
 
   return <AppConsumer>
@@ -549,7 +548,12 @@ const EditInvoiceForm = ({
 
 const formName = FormNames.LEASE_INVOICE_EDIT;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
+const decoratedEditInvoiceForm = reduxForm({
+  form: formName,
+  validate: validateInvoiceForm
+})(EditInvoiceForm);
+
+export default connect(state => {
   return {
     currentLease: getCurrentLease(state),
     invoiceAttributes: getInvoiceAttributes(state),
@@ -559,7 +563,4 @@ export default flowRight(connect(state => {
   };
 }, {
   exportInvoiceToLaskeAndUpdateList
-}), reduxForm({
-  form: formName,
-  validate: validateInvoiceForm
-}))(EditInvoiceForm);
+})(decoratedEditInvoiceForm);

@@ -252,8 +252,13 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
 
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
-export default flowRight( // $FlowFixMe
-withRouter, connect((state, props) => {
+const decoratedReduxFormPlanUnitItemEdit = reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+  change
+})(PlanUnitItemEdit);
+
+const decoratedConnectPlanUnitItemEdit = connect((state, props) => {
   return {
     attributes: getAttributes(state),
     geometry: selector(state, `${props.field}.geometry`),
@@ -273,8 +278,6 @@ withRouter, connect((state, props) => {
     plan_unit_intended_use: selector(state, `${props.field}.plan_unit_intended_use`),
     is_master: selector(state, `${props.field}.is_master`)
   };
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  change
-}))(PlanUnitItemEdit);
+})(decoratedReduxFormPlanUnitItemEdit);
+
+export default withRouter(decoratedConnectPlanUnitItemEdit);

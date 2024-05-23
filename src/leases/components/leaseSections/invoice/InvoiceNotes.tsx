@@ -1,5 +1,4 @@
-import type { Element } from "react";
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { Row, Column } from "react-foundation";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector, reduxForm } from "redux-form";
@@ -89,7 +88,7 @@ const InvoiceNotesEdit = ({
   fields,
   invoiceNoteAttributes,
   invoiceNoteMethods
-}: EditProps): Element<any> => {
+}: EditProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -261,7 +260,12 @@ class InvoiceNotes extends PureComponent<Props> {
 
 const formName = FormNames.LEASE_INVOICE_NOTES;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
+const decoratedInvoiceNotes = reduxForm({
+  form: formName,
+  enableReinitialize: true
+})(InvoiceNotes);
+
+export default connect(state => {
   return {
     currentLease: getCurrentLease(state),
     editedInvoiceNotes: selector(state, 'invoice_notes'),
@@ -270,7 +274,4 @@ export default flowRight(connect(state => {
   };
 }, {
   patchLeaseInvoiceNotes
-}), reduxForm({
-  form: formName,
-  enableReinitialize: true
-}))(InvoiceNotes);
+})(decoratedInvoiceNotes);

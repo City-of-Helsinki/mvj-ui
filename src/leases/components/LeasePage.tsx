@@ -191,7 +191,7 @@ class LeasePage extends Component<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.comments !== state.comments || props.currentLease !== state.currentLease || props.loggedUser !== state.loggedUser) {
       newState.currentLease = props.currentLease;
@@ -380,12 +380,14 @@ class LeasePage extends Component<Props, State> {
   };
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+    // @ts-ignore: missing properties from State
     this.setState({
       [modalVisibilityKey]: true
     });
   };
   hideModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+    // @ts-ignore: missing properties from State
     this.setState({
       [modalVisibilityKey]: false
     });
@@ -866,6 +868,7 @@ class LeasePage extends Component<Props, State> {
           hasError: isSaveClicked && !isTenantsFormValid
         }, {
           label: 'Vuokrat',
+          // @ts-ignore: Type 'boolean' is not assignable to type 'string'
           allow: isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS || isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)),
           isDirty: isRentsFormDirty,
           hasError: isSaveClicked && !isRentsFormValid

@@ -1,9 +1,8 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { Field, FieldArray, getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import Authorization from "src/components/authorization/Authorization";
 import AddButton from "src/components/form/AddButton";
@@ -46,7 +45,7 @@ const TenantWarnings = ({
   meta: {
     warning
   }
-}: WarningsProps): Element<any> => {
+}: WarningsProps): ReactElement => {
   return <Fragment>
     {warning && !!warning.length && <WarningContainer>
         {warning.map((item, index) => <WarningField key={index} meta={{
@@ -74,7 +73,7 @@ const renderTenants = ({
   serviceUnit,
   tenants,
   usersPermissions
-}: TenantsProps): Element<any> => {
+}: TenantsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -299,9 +298,11 @@ class TenantsEdit extends PureComponent<Props, State> {
                 </Title>
                 <Field name='tenantWarnings' component={TenantWarnings} showWarning={true} />
                 <Divider />
-
+                {/**
+                @ts-ignore: Property 'service_unit' does not exist on type '{}' */}
                 <FieldArray component={renderTenants} leaseAttributes={leaseAttributes} name='tenants' serviceUnit={currentLease.service_unit} tenants={savedTenants} usersPermissions={usersPermissions} />
-
+                {/**
+                @ts-ignore: Property 'service_unit' does not exist on type '{}' */}
                 <FieldArray component={renderTenants} leaseAttributes={leaseAttributes} name='tenantsArchived' archived serviceUnit={currentLease.service_unit} tenants={savedTenantsArchived} usersPermissions={usersPermissions} />
               </form>
             </Fragment>;
@@ -336,4 +337,4 @@ export default flowRight(withContactAttributes, connect(state => {
   destroyOnUnmount: false,
   validate: validateTenantForm,
   warn: warnTenantForm
-}))(TenantsEdit);
+}))(TenantsEdit) as React.ComponentType<any>;

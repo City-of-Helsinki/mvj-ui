@@ -1,5 +1,4 @@
-import type { Element } from "react";
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { change, FieldArray, formValueSelector, clearFields } from "redux-form";
 import { Row, Column } from "react-foundation";
@@ -54,7 +53,7 @@ const renderManagementSubventions = ({
   initialYearRent,
   leaseAttributes,
   usersPermissions
-}: ManagementSubventionsProps): Element<any> => {
+}: ManagementSubventionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -146,7 +145,7 @@ const renderTemporarySubventions = ({
   usersPermissions,
   managementSubventions,
   temporarySubventions
-}: TemporarySubventionsProps): Element<any> => {
+}: TemporarySubventionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -227,7 +226,7 @@ const renderMastChildren = ({
   fields,
   parentField,
   fieldsDisabled
-}: renderMastChildrenProps): Element<any> => {
+}: renderMastChildrenProps): ReactElement => {
   fields = [{}, {}];
   return <AppConsumer>
       {() => {

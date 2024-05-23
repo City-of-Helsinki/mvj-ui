@@ -100,7 +100,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.currentLease !== state.currentLease) {
       const coordinates = getLeaseCoordinates(props.currentLease);
@@ -229,4 +229,4 @@ export default flowRight(withRouter, connect(state => {
   };
 }, {
   fetchAreaNoteList
-}))(SingleLeaseMap);
+}))(SingleLeaseMap) as React.ComponentType<any>;

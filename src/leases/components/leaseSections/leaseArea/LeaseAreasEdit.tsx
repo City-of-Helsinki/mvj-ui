@@ -141,7 +141,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.currentLease !== state.currentLease) {
       const areas = getContentLeaseAreas(props.currentLease),
@@ -342,4 +342,4 @@ export default flowRight(reduxForm({
   copyAreasToContract,
   initialize,
   receiveFormValidFlags
-}))(LeaseAreasEdit);
+}))(LeaseAreasEdit) as React.ComponentType<any>;

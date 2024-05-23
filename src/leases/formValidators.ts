@@ -15,7 +15,7 @@ import { required } from "src/components/form/validations";
  * @returns {Object}
  */
 export const validateSummaryForm = (values: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const endDateError = dateGreaterOrEqual(values.end_date, values.start_date);
 
   if (endDateError) {
@@ -45,7 +45,7 @@ const getTenantError = (tenant: Record<string, any>): Record<string, any> | null
 const getTenantsErrors = (tenants: Array<Record<string, any>>): Array<Record<string, any>> => {
   const errorArray = [];
   tenants.forEach((tenant, tenantIndex) => {
-    const tenantErrors = {};
+    const tenantErrors: any = {};
     const tenantError = getTenantError(get(tenant, 'tenant', {}));
 
     if (tenantError) {
@@ -93,7 +93,7 @@ const getTenantsErrors = (tenants: Array<Record<string, any>>): Array<Record<str
  * @returns {Object}
  */
 export const validateTenantForm = (values: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const {
     tenants,
     tenantsArchived
@@ -119,7 +119,7 @@ export const validateTenantForm = (values: Record<string, any>): Record<string, 
  * @returns {Object}
  */
 export const warnTenantForm = (values: Record<string, any>): Record<string, any> => {
-  const warnings = {};
+  const warnings: any = {};
   const leaseAttributes = getLeaseAttributes(store.getState());
   const {
     tenants
@@ -212,7 +212,7 @@ const getRentAdjustmentsErrors = (rentAdjustments: Array<Record<string, any>>): 
  * @returns {Object}
  */
 const getRentErrors = (rent: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const endDateError = dateGreaterOrEqual(rent.end_date, rent.start_date);
 
   if (endDateError) {
@@ -279,7 +279,7 @@ const getRentsErrors = (rents: Array<Record<string, any>>): Array<Record<string,
  * @returns {Object}
  */
 export const validateRentForm = (values: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const {
     rents,
     rentsArchived
@@ -305,7 +305,7 @@ export const validateRentForm = (values: Record<string, any>): Record<string, an
  * @returns {Object}
  */
 export const warnRentForm = (values: Record<string, any>): Record<string, any> => {
-  const warnings = {};
+  const warnings: any = {};
   const {
     rents
   } = values;
@@ -343,7 +343,7 @@ const getContractCollateralErrors = (collaterals: Array<Record<string, any>>): A
  * @returns {Object}
  */
 const getContractErrors = (contract: Record<string, any>): Record<string, any> | null | undefined => {
-  const errors = {};
+  const errors: any = {};
   const collateralErrors = getContractCollateralErrors(get(contract, 'collaterals', []));
 
   if (collateralErrors.length) {
@@ -359,7 +359,7 @@ const getContractErrors = (contract: Record<string, any>): Record<string, any> |
  * @returns {Object}
  */
 export const validateContractForm = (values: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const contracts = get(values, 'contracts', []);
   const contractErrors = [];
   contracts.forEach((contract, contractIndex) => {
@@ -383,7 +383,7 @@ export const validateContractForm = (values: Record<string, any>): Record<string
  * @returns {Object}
  */
 export const validateInvoiceForm = (values: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const billingPeriodRequired = isInvoiceBillingPeriodRequired(values.rows);
   const startDateError = billingPeriodRequired ? required(values.billing_period_start_date) : undefined;
   const endDateError = (billingPeriodRequired ? required(values.billing_period_end_date) : undefined) || dateGreaterOrEqual(values.billing_period_end_date, values.billing_period_start_date);
@@ -398,7 +398,7 @@ export const validateInvoiceForm = (values: Record<string, any>): Record<string,
  * @returns {Object}
  */
 export const validateSteppedDiscountForm = (values: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const endDateError = dateGreaterOrEqual(values.end_date, values.start_date);
 
   if (endDateError) {

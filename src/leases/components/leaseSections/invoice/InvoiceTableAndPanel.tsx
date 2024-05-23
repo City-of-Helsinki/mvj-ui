@@ -67,7 +67,7 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.invoiceListData !== state.invoiceListData) {
       const invoices = getContentInvoices(props.invoiceListData || []);
@@ -478,12 +478,13 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
       invoices,
       openedInvoice
     } = this.state;
+    // @ts-ignore: No matching overloader (invoiceToCredit) 
     return <TableAndPanelWrapper ref={this.setTableAndPanelWrapperRef} hasData={!!invoices.length} isPanelOpen={isPanelOpen} onPanelClosed={this.handlePanelClosed} panelComponent={<InvoicePanel invoice={openedInvoice} onClose={this.handlePanelClose} onInvoiceLinkClick={this.handleInvoiceLinkClick} onSave={this.editInvoice} />} tableComponent={<SortableTable columns={columns} data={invoices} defaultSortKey='due_date' defaultSortOrder={TableSortOrder.DESCENDING} fixedHeader={true} invoiceToCredit={invoiceToCredit} onDataUpdate={this.handleDataUpdate} onRowClick={this.handleRowClick} onSelectNext={this.selectOpenedInvoice} onSelectPrevious={this.selectOpenedInvoice} onSelectRow={this.handleSelectRow} selectedRow={openedInvoice} sortable={true} />} />;
   }
 
 }
 
-export default flowRight(withRouter, connect(state => {
+const decoratedInvoiceTableAndPanel = connect(state => {
   const currentLease = getCurrentLease(state);
   return {
     invoiceAttributes: getInvoiceAttributes(state),
@@ -496,4 +497,6 @@ export default flowRight(withRouter, connect(state => {
   clearPatchedInvoice,
   initialize,
   patchInvoice
-}))(InvoiceTableAndPanel);
+})(InvoiceTableAndPanel);
+
+export default withRouter(decoratedInvoiceTableAndPanel);

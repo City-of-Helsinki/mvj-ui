@@ -40,7 +40,7 @@ class Constructability extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.attributes !== state.attributes) {
       newState.currentLease = props.currentLease;

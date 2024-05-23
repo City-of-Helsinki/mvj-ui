@@ -128,9 +128,10 @@ const PlotItem = ({
     </BoxItem>;
 };
 
-export default flowRight( // $FlowFixMe
-withRouter, connect(state => {
+const decoratedPlotItem = connect(state => {
   return {
     attributes: getAttributes(state)
   };
-}))(PlotItem);
+})(PlotItem);
+
+export default withRouter(decoratedPlotItem);

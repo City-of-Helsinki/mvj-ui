@@ -128,7 +128,7 @@ class Invoices extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
@@ -310,4 +310,4 @@ export default flowRight(withRouter, withLeaseInvoiceTabAttributes, connect(stat
   receiveIsCreditInvoicePanelOpen,
   startInvoicing,
   stopInvoicing
-}))(Invoices);
+}))(Invoices) as React.ComponentType<any>;

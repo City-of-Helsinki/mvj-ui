@@ -1,5 +1,4 @@
-import type { Element } from "react";
-import React, { PureComponent } from "react";
+import React, { PureComponent, ReactElement } from "react";
 import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
@@ -36,7 +35,7 @@ const renderInspections = ({
   leaseAttributes,
   username,
   usersPermissions
-}: InspectionsProps): Element<any> => {
+}: InspectionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({
       inspector: username
@@ -129,7 +128,12 @@ class InspectionsEdit extends PureComponent<Props> {
 }
 
 const formName = FormNames.LEASE_INSPECTIONS;
-export default flowRight(connect(state => {
+const decoratedInspectionEdit = reduxForm({
+  form: formName,
+  destroyOnUnmount: false
+})(InspectionsEdit);
+
+export default connect(state => {
   const user = getLoggedInUser(state);
 
   if (!user || user.expired) {
@@ -145,7 +149,4 @@ export default flowRight(connect(state => {
   };
 }, {
   receiveFormValidFlags
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false
-}))(InspectionsEdit);
+})(decoratedInspectionEdit);

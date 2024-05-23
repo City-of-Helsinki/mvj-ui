@@ -25,8 +25,8 @@ type Props = {
   onRemove: (...args: Array<any>) => any;
   subventionPercent: string;
   usersPermissions: UsersPermissionsType;
-  managementSubventions: Record<string, any>;
-  temporarySubventions: Record<string, any>;
+  managementSubventions: any;
+  temporarySubventions: any;
   index: number;
 };
 

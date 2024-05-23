@@ -32,13 +32,10 @@ const defaultState: LeaseState = {
   leasesForContractNumbers: null,
   isFetchingLeasesForContractNumbers: false
 };
-// @ts-expect-error
+
 describe('Leases', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('leasesReducer', () => {
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           foo: 'bar'
@@ -110,14 +107,14 @@ describe('Leases', () => {
         const newState = { ...defaultState,
           isFetching: true
         };
-        const state = leasesReducer({}, fetchLeases(''));
+        const state = leasesReducer({}, fetchLeases({ 'test': '' }));
         expect(state).to.deep.equal(newState);
       });
       it('should update isFetchingByBBox flag to true when fetching leases by bbox', () => {
         const newState = { ...defaultState,
           isFetchingByBBox: true
         };
-        const state = leasesReducer({}, fetchLeasesByBBox(''));
+        const state = leasesReducer({}, fetchLeasesByBBox({ 'test': '' }));
         expect(state).to.deep.equal(newState);
       });
       it('should update isSaving flag to true when sending email', () => {
@@ -137,7 +134,7 @@ describe('Leases', () => {
         const newState = { ...defaultState,
           isFetching: false
         };
-        let state = leasesReducer({}, fetchLeases(''));
+        let state = leasesReducer({}, fetchLeases({ 'test': '' }));
         state = leasesReducer({}, notFound());
         expect(state).to.deep.equal(newState);
       });
@@ -145,7 +142,7 @@ describe('Leases', () => {
         const newState = { ...defaultState,
           isFetching: false
         };
-        let state = leasesReducer({}, fetchLeasesByBBox(''));
+        let state = leasesReducer({}, fetchLeasesByBBox({ 'test': '' }));
         state = leasesReducer({}, notFoundByBBox());
         expect(state).to.deep.equal(newState);
       });
@@ -233,7 +230,7 @@ describe('Leases', () => {
         const newState = { ...defaultState,
           isSaving: true
         };
-        const state = leasesReducer({}, copyDecisionToLeases(1));
+        const state = leasesReducer({}, copyDecisionToLeases({'test': 1}));
         expect(state).to.deep.equal(newState);
       });
       it('should update isSaving flag to true when starting invoicing', () => {
@@ -402,7 +399,7 @@ describe('Leases', () => {
         const newState = { ...defaultState,
           isFetchingLeasesForContractNumbers: true
         };
-        const state = leasesReducer({}, fetchLeasesForContractNumber(''));
+        const state = leasesReducer({}, fetchLeasesForContractNumber({ 'test': ''}));
         expect(state).to.deep.equal(newState);
       });
       it('should update leasesForContractNumbers', () => {

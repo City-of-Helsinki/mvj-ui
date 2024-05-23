@@ -96,11 +96,14 @@ const SteppedDiscountForm = ({
     </div>;
 };
 
-export default flowRight(connect(state => {
+
+const decoratedSteppedDiscountForm = reduxForm({
+  form: FormNames.LEASE_STEPPED_DISCOUNT,
+  validate: validateSteppedDiscountForm
+})(SteppedDiscountForm);
+
+export default connect(state => {
   return {
     leaseAttributes: getLeaseAttributes(state)
   };
-}), reduxForm({
-  form: FormNames.LEASE_STEPPED_DISCOUNT,
-  validate: validateSteppedDiscountForm
-}))(SteppedDiscountForm);
+})(decoratedSteppedDiscountForm);

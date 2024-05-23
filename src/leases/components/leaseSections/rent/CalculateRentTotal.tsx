@@ -6,7 +6,7 @@ import FormText from "src/components/form/FormText";
 import { calculateBasisOfRentDiscountedInitialYearRentsTotal, calculateInitialYearRentsTotal } from "src/leases/helpers";
 import { formatNumber } from "src/util/helpers";
 type Props = {
-  basisOfRents: Record<string, any>;
+  basisOfRents: any;
   indexOptions: Array<Record<string, any>>;
 };
 

@@ -3,7 +3,8 @@ import { receiveLessors } from "./actions";
 import { fetchContacts } from "src/contacts/requests";
 
 function* fetchLessorsSaga({
-  payload: params
+  payload: params,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

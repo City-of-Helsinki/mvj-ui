@@ -1,9 +1,8 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButton from "src/components/form/AddButton";
 import Authorization from "src/components/authorization/Authorization";
@@ -38,7 +37,7 @@ const renderContracts = ({
   savedContracts,
   usersPermissions,
   contracts
-}: ContractsProps): Element<any> => {
+}: ContractsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -104,7 +103,7 @@ class ContractsEdit extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease, newState.decisionOptions = getDecisionOptions(props.currentLease);
@@ -160,15 +159,17 @@ class ContractsEdit extends PureComponent<Props, State> {
 }
 
 const formName = FormNames.LEASE_CONTRACTS;
-export default flowRight(connect(state => {
+const decoratedContractsEdit = reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+  validate: validateContractForm
+})(ContractsEdit);
+
+export default connect(state => {
   return {
     currentLease: getCurrentLease(state),
     usersPermissions: getUsersPermissions(state)
   };
 }, {
   receiveFormValidFlags
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  validate: validateContractForm
-}))(ContractsEdit);
+})(decoratedContractsEdit);

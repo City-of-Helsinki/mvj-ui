@@ -10,7 +10,7 @@ export type AuditLogState = {
   isFetchingByLease: AuditLogIsFetchingMap;
   isFetchingByAreaSearch: AuditLogIsFetchingMap;
 };
-export type AuditLogList = Record<string, any>;
+export type AuditLogList = any;
 export type AuditLogListMap = Record<string, AuditLogList>;
 export type AuditLogIsFetchingMap = Record<string, boolean>;
 export type FetchAuditLogByContactAction = Action<"mvj/auditLog/FETCH_BY_CONTACT", ContactId>;

@@ -1,10 +1,9 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import ActionButtonWrapper from "src/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "src/components/form/AddButtonSecondary";
@@ -63,7 +62,7 @@ const renderContractChanges = ({
   onCollapseToggle,
   title,
   usersPermissions
-}: ContractChangesProps): Element<any> => {
+}: ContractChangesProps): ReactElement => {
   const handleCollapseToggle = val => {
     onCollapseToggle(val);
   };
@@ -200,7 +199,7 @@ const renderCollaterals = ({
   onCollapseToggle,
   title,
   usersPermissions
-}: CollateralsProps): Element<any> => {
+}: CollateralsProps): ReactElement => {
   const handleCollapseToggle = val => {
     onCollapseToggle(val);
   };

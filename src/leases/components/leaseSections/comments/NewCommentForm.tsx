@@ -69,8 +69,10 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-export default flowRight(connect(mapStateToProps, {
-  receiveIsSaveClicked
-}), reduxForm({
+const decoratedNewCommentForm = reduxForm({
   form: formName
-}))(NewCommentForm);
+})(NewCommentForm);
+
+export default connect(mapStateToProps, {
+  receiveIsSaveClicked
+})(decoratedNewCommentForm);

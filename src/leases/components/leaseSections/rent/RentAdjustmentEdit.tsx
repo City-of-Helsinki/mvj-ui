@@ -1,5 +1,4 @@
-import type { Element } from "react";
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { change, FieldArray } from "redux-form";
 import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
@@ -43,7 +42,7 @@ const renderManagementSubventions = ({
   fields,
   leaseAttributes,
   usersPermissions
-}: ManagementSubventionsProps): Element<any> => {
+}: ManagementSubventionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -111,7 +110,7 @@ const renderTemporarySubventions = ({
   fields,
   leaseAttributes,
   usersPermissions
-}: TemporarySubventionsProps): Element<any> => {
+}: TemporarySubventionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

@@ -57,7 +57,7 @@ const StatusIndicator = ({
 type TenantsProps = {
   largeScreen: boolean;
   tenants: Array<Record<string, any>>;
-  tenantWarnings: Array<Record<string, any>>;
+  tenantWarnings: Array<any>;
 };
 
 const Tenants = ({

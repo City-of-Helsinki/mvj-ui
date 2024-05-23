@@ -1,10 +1,9 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { FieldArray, formValueSelector } from "redux-form";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import AddFileButton from "src/components/form/AddFileButton";
@@ -93,7 +92,7 @@ const renderComments = connect((state, props) => {
   fields,
   isSaveClicked,
   usersPermissions
-}: CommentProps): Element<any> => {
+}: CommentProps): ReactElement => {
   const handleAdd = () => {
     fields.push({
       is_static: false

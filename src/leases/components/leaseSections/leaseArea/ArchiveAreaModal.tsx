@@ -98,12 +98,15 @@ class ArchiveAreaModal extends Component<Props> {
 
 const formName = FormNames.LEASE_ARCHIVE_AREA;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
+
+const decoratedArchiveAreaModal = reduxForm({
+  form: formName
+})(ArchiveAreaModal);
+
+export default connect(state => {
   return {
     archivedDecision: selector(state, 'archived_decision'),
     archivedNote: selector(state, 'archived_note'),
     attributes: getAttributes(state)
   };
-}), reduxForm({
-  form: formName
-}))(ArchiveAreaModal);
+})(decoratedArchiveAreaModal);

@@ -1,9 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { change, Field, FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
-import type { Element } from "react";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import Authorization from "src/components/authorization/Authorization";
 import ErrorField from "src/components/form/ErrorField";
@@ -117,7 +116,7 @@ const renderDueDates = ({
   isSaveClicked,
   leaseAttributes,
   usersPermissions
-}: DueDatesProps): Element<any> => {
+}: DueDatesProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

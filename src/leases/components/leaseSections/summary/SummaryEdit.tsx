@@ -57,7 +57,7 @@ type State = {
 };
 
 class SummaryEdit extends PureComponent<Props, State> {
-  state = {
+  state: any = {
     attributes: null,
     classificationOptions: [],
     currentLease: {},
@@ -65,7 +65,7 @@ class SummaryEdit extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
@@ -459,4 +459,4 @@ export default flowRight(connect(state => {
   form: formName,
   destroyOnUnmount: false,
   validate: validateSummaryForm
-}))(SummaryEdit);
+}))(SummaryEdit) as React.ComponentType<any>;

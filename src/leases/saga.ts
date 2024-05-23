@@ -39,7 +39,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchLeasesSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -67,7 +68,8 @@ function* fetchLeasesSaga({
 }
 
 function* fetchLeasesByBBoxSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -95,7 +97,8 @@ function* fetchLeasesByBBoxSaga({
 }
 
 function* fetchSingleLeaseSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -128,7 +131,8 @@ function* fetchSingleLeaseSaga({
 }
 
 function* fetchSingleLeaseAfterEditSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const callbackFunctions = payload.callbackFunctions;
@@ -178,7 +182,8 @@ function* fetchSingleLeaseAfterEditSaga({
 }
 
 function* fetchLeaseByIdSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -207,7 +212,8 @@ function* fetchLeaseByIdSaga({
 }
 
 function* createLeaseSaga({
-  payload: lease
+  payload: lease,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -247,7 +253,8 @@ function* createLeaseSaga({
 }
 
 function* createLeaseAndUpdateCurrentLeaseSaga({
-  payload: lease
+  payload: lease,
+  type: any
 }): Generator<any, any, any> {
   try {
     const currentLease = lease.relate_to;
@@ -282,7 +289,8 @@ function* createLeaseAndUpdateCurrentLeaseSaga({
 }
 
 function* deleteLeaseSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -327,7 +335,8 @@ function* deleteLeaseSaga({
 }
 
 function* patchLeaseSaga({
-  payload: lease
+  payload: lease,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -369,7 +378,8 @@ function* patchLeaseSaga({
 }
 
 function* patchLeaseInvoiceNotesSaga({
-  payload: lease
+  payload: lease,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -411,7 +421,8 @@ function* patchLeaseInvoiceNotesSaga({
 }
 
 function* sendEmailSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -453,7 +464,8 @@ function* sendEmailSaga({
 }
 
 function* startInvoicingSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -491,7 +503,8 @@ function* startInvoicingSaga({
 }
 
 function* stopInvoicingSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -526,7 +539,8 @@ function* stopInvoicingSaga({
 }
 
 function* setRentInfoCompleteSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -561,7 +575,8 @@ function* setRentInfoCompleteSaga({
 }
 
 function* setRentInfoUncompleteSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -596,7 +611,8 @@ function* setRentInfoUncompleteSaga({
 }
 
 function* createChargeSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -632,7 +648,8 @@ function* createChargeSaga({
 }
 
 function* copyAreasToContractSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -665,7 +682,8 @@ function* copyAreasToContractSaga({
 }
 
 function* copyDecisionToLeasesSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -704,7 +722,8 @@ function* copyDecisionToLeasesSaga({
 }
 
 function* fetchLeasesForContractNumbersSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

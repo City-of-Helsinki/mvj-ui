@@ -173,7 +173,7 @@ export const getContentLeaseListLease = (lease: Record<string, any>, query: Reco
  * @param {Object} query
  * @returns {Object[]}
  */
-export const getContentLeaseListResults = (apiResponse: Record<string, any>, query: Record<string, any>): Array<Record<string, any>> => getApiResponseResults(apiResponse).map(item => getContentLeaseListLease(item, query));
+export const getContentLeaseListResults = (apiResponse: any, query: Record<string, any>): Array<Record<string, any>> => getApiResponseResults(apiResponse).map(item => getContentLeaseListLease(item, query));
 
 /**
  * Get content lease status
@@ -1009,7 +1009,7 @@ export const getBasisOfRentIndexValue = (basisOfRent: Record<string, any>, index
  * @param {string} indexValue
  * @return {number}
  */
-export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Record<string, any>, indexValue: string | null | undefined): number => {
+export const calculateBasisOfRentBasicAnnualRent = (basisOfRent: Record<string, any>, indexValue?: string | null | undefined): number => {
   if (basisOfRent.type === CalculatorTypes.LEASE2022) {
     const initialYearRent = calculateBasisOfRentInitialYearRent(basisOfRent, indexValue);
 
@@ -1070,7 +1070,7 @@ export const calculateAmountFromValue = (value: string, indexValue: string | nul
  * @param {number} basicAnnualRent
  * @return {number}
  */
-export const calculateBasisOfRentInitialYearRent = (basisOfRent: Record<string, any>, indexValue: string | null | undefined, basicAnnualRent: number | null | undefined): number => {
+export const calculateBasisOfRentInitialYearRent = (basisOfRent: Record<string, any>, indexValue: string | null | undefined, basicAnnualRent?: number | null | undefined): number => {
   if (basisOfRent.type === CalculatorTypes.LEASE2022) {
     const area = convertStrToDecimalNumber(basisOfRent.area);
     const amountPerArea = convertStrToDecimalNumber(basisOfRent.amount_per_area);
@@ -1150,7 +1150,7 @@ export const calculateBasisOfRentTotalDiscountedInitialYearRent = (basisOfRents:
  * @param {string} subventionPercent
  * @return {number}
  */
-export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, subventionPercent: string | number): number => {
+export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, subventionPercent: any): number => {
   if (!isDecimalNumberStr(subventionPercent)) return 0;
   const multiplier = Number(subventionPercent / 100);
   const result = multiplier * initialYearRent;
@@ -1167,9 +1167,9 @@ export const calculateBasisOfRentSubventionAmount = (initialYearRent: number, su
  * @param {string} view
  * @return {number}
  */
-export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: number, subventionPercent: string | number, managementSubventions: Array<Record<string, any>>, temporarySubventions: Array<Record<string, any>>, index: number, view: string, currentAmountPerArea: number | null | undefined): number => {
+export const calculateBasisOfRentSubventionAmountCumulative = (initialYearRent: number, subventionPercent: string | number, managementSubventions: Array<Record<string, any>>, temporarySubventions: Array<Record<string, any>>, index: number, view: string, currentAmountPerArea?: number | null | undefined): number => {
   if (!isDecimalNumberStr(subventionPercent)) return 0;
-  let discounted = initialYearRent;
+  let discounted: any = initialYearRent;
   let discount = 0;
   managementSubventions && managementSubventions.forEach(managementSubvention => {
     if (view === 'EDIT') {
@@ -1352,8 +1352,8 @@ export const calculateRentAdjustmentSubventionPercentCumulative = (subventionTyp
  */
 export const calculateSubventionDiscountTotal = (initialYearRent: number, managementSubventions: Array<Record<string, any>> | null | undefined, currentAmountPerArea: number): number => {
   if (managementSubventions && managementSubventions[0] && managementSubventions[0].subvention_amount !== null) {
-    const roundedInitialYear = initialYearRent.toFixed(2);
-    const roundedDiscountPercentage = Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercentage(managementSubventions[0].subvention_amount, currentAmountPerArea))).toFixed(2);
+    const roundedInitialYear: any = initialYearRent.toFixed(2);
+    const roundedDiscountPercentage: any = Number(convertStrToDecimalNumber(calculateBasisOfRentSubventionPercentage(managementSubventions[0].subvention_amount, currentAmountPerArea))).toFixed(2);
     const discountMultiplier = Number((100 - roundedDiscountPercentage) / 100 || 1);
     return Number(roundedInitialYear * discountMultiplier);
   }
@@ -2320,7 +2320,7 @@ export const getPayloadConstructabilityDescriptions = (area: Record<string, any>
  * @param {Object} values
  * @returns {Object[]}
  */
-export const getPayloadConstructabilityArea = (area: Record<string, any>, values: Record<string, any>): Array<Record<string, any>> => {
+export const getPayloadConstructabilityArea = (area: Record<string, any>, values: Record<string, any>): any => {
   return { ...area,
     preconstruction_state: values.preconstruction_state,
     preconstruction_estimated_construction_readiness_moment: values.preconstruction_estimated_construction_readiness_moment,
@@ -2381,7 +2381,7 @@ export const addConstructabilityFormValuesToPayload = (payload: Record<string, a
  * @param {string} contactType
  * @returns {Object}
  */
-export const getPayloadTenantContactDetails = (tenant: Record<string, any>, contactType: "tenant" | "billing" | "contact"): Record<string, any> => ({
+export const getPayloadTenantContactDetails = (tenant: Record<string, any>, contactType: string): Record<string, any> => ({
   id: tenant.id,
   type: contactType,
   contact: tenant.contact,
@@ -2906,7 +2906,7 @@ export const restructureLease = (lease: Record<string, any>): Record<string, any
  * @param {Object} lease
  * @returns {Object}
  */
-export const sortRelatedHistoryItems = (a: Record<string, any>, b: Record<string, any>): Record<string, any> => {
+export const sortRelatedHistoryItems = (a: Record<string, any>, b: Record<string, any>): number => {
   let aTime = a.startDate || a.receivedAt || null;
   let bTime = b.startDate || b.receivedAt || null;
 

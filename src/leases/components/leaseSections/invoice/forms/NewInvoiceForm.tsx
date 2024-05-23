@@ -1,9 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { FieldArray, formValueSelector, getFormValues, reduxForm } from "redux-form";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import Authorization from "src/components/authorization/Authorization";
@@ -52,7 +51,7 @@ const InvoiceRows = ({
   leaseCreateChargeAttributes,
   receivableTypes,
   useLeaseCreateChargeEndpoint
-}: InvoiceRowsProps): Element<any> => {
+}: InvoiceRowsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -253,7 +252,12 @@ const NewInvoiceForm = ({
 
 const formName = FormNames.LEASE_INVOICE_NEW;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
+const decoratedNewInvoiceForm = reduxForm({
+  form: formName,
+  validate: validateInvoiceForm
+})(NewInvoiceForm);
+
+export default connect(state => {
   return {
     formValues: getFormValues(formName)(state),
     invoiceAttributes: getInvoiceAttributes(state),
@@ -267,7 +271,4 @@ export default flowRight(connect(state => {
   };
 }, {
   receiveIsCreateClicked
-}), reduxForm({
-  form: formName,
-  validate: validateInvoiceForm
-}))(NewInvoiceForm);
+})(decoratedNewInvoiceForm);

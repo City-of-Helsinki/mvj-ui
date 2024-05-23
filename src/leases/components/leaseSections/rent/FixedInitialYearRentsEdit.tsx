@@ -139,7 +139,7 @@ const FixedInitialYearRentsEdit = ({
                         <BoxContentWrapper>
                           <ActionButtonWrapper>
                             <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_FIXEDINITIALYEARRENT)}>
-                              <RemoveButton hideFor={Breakpoints.LARGE} onClick={handleRemove} title="Poista kiinteä alkuvuosivuokra" />
+                              <RemoveButton onClick={handleRemove} title="Poista kiinteä alkuvuosivuokra" />
                             </Authorization>
                           </ActionButtonWrapper>
                           <Row>
@@ -154,7 +154,7 @@ const FixedInitialYearRentsEdit = ({
                               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)}>
                                 <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)} name={`${rent}.amount`} unit='€' overrideValues={{
                           label: LeaseRentFixedInitialYearRentsFieldTitles.AMOUNT
-                        }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)} S />
+                        }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT)} />
                               </Authorization>
                             </Column>
                             <Column small={6} medium={3}>

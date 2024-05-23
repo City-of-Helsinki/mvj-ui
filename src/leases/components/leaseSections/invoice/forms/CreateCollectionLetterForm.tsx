@@ -1,10 +1,9 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
-import type { Element } from "react";
 import createUrl from "src/api/createUrl";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import Authorization from "src/components/authorization/Authorization";
@@ -39,7 +38,7 @@ const renderInvoices = ({
   fields,
   selectedInvoices,
   invoiceOptions
-}: InvoicesProps): Element<any> => {
+}: InvoicesProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -126,7 +125,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.invoices && props.invoices !== state.invoices) {
       newState.invoices = props.invoices;

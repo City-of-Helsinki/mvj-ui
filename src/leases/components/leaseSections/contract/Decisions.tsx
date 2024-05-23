@@ -32,7 +32,7 @@ class Decisions extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.attributes !== state.attributes) {
       newState.attributes = props.attributes;

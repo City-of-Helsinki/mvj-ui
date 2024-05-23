@@ -4,7 +4,6 @@ import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
-import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import ActionButtonWrapper from "src/components/form/ActionButtonWrapper";
 import Authorization from "src/components/authorization/Authorization";
@@ -153,8 +152,7 @@ const PlotItemsEdit = ({
 
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
-export default flowRight( // $FlowFixMe
-withRouter, connect((state, props) => {
+const decoratedPlotItemsEdit = connect((state, props) => {
   const id = selector(state, `${props.field}.id`);
   return {
     attributes: getAttributes(state),
@@ -163,4 +161,6 @@ withRouter, connect((state, props) => {
     plotId: id,
     usersPermissions: getUsersPermissions(state)
   };
-}))(PlotItemsEdit);
+})(PlotItemsEdit);
+
+export default withRouter(decoratedPlotItemsEdit);

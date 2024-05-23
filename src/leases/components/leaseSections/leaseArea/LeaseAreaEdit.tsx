@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { change, FieldArray, formValueSelector } from "redux-form";
@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonSecondary from "src/components/form/AddButtonSecondary";
 import AddButtonThird from "src/components/form/AddButtonThird";
@@ -64,7 +63,7 @@ const renderPlanUnits = ({
   title,
   uiDataKey,
   usersPermissions
-}: PlanUnitsProps): Element<any> => {
+}: PlanUnitsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({
       addresses: [{}]
@@ -146,7 +145,7 @@ const renderPlots = ({
   title,
   uiDataKey,
   usersPermissions
-}: PlotsProps): Element<any> => {
+}: PlotsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({
       addresses: [{}]
@@ -268,7 +267,7 @@ const AddressItems = ({
   fields,
   isSaveClicked,
   usersPermissions
-}: AddressesProps): Element<any> => {
+}: AddressesProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

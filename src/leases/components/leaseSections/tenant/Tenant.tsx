@@ -82,4 +82,4 @@ export default connect((state, props) => {
   };
 }, {
   receiveCollapseStates
-})(Tenant);
+})(Tenant) as React.ComponentType<any>;

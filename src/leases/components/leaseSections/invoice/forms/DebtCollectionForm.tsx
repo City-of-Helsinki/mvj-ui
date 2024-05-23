@@ -1,10 +1,9 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import ActionButtonWrapper from "src/components/form/ActionButtonWrapper";
 import AddButtonThird from "src/components/form/AddButtonThird";
@@ -60,7 +59,7 @@ const renderNotes = ({
   onCreate,
   saveCallback,
   usersPermissions
-}: NotesProps): Element<any> => {
+}: NotesProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -81,6 +80,7 @@ const renderNotes = ({
       return <NewCollectionNote key={index} field={field} onCancel={handleCancel} onSave={handleSave} />;
     })}
       <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONNOTE)}>
+        {/** @ts-ignore: Operator '<' cannot be applied to types 'boolean' and 'number' */}
         {!!fields.length < 1 && <AddButtonThird label='Lisää huomautus' onClick={handleAdd} />}
       </Authorization>
     </Fragment>;
@@ -137,7 +137,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newStates = {};
+    const newStates: any = {};
 
     if (props.collectionCourtDecisions && props.collectionCourtDecisions !== state.collectionCourtDecisions) {
       newStates.collectionCourtDecisions = props.collectionCourtDecisions;

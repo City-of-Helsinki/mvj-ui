@@ -55,4 +55,4 @@ export default flowRight(withContactAttributes, connect(state => {
   return {
     currentLease: getCurrentLease(state)
   };
-}))(Tenants);
+}))(Tenants) as React.ComponentType<any>;

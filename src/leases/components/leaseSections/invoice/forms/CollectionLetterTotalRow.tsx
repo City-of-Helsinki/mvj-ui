@@ -9,9 +9,9 @@ import { convertStrToDecimalNumber, formatNumber } from "src/util/helpers";
 import { getPenaltyInterestByInvoice } from "src/penaltyInterest/selectors";
 type OwnProps = {
   selectedInvoices: Array<Record<string, any>>;
+  fields: any;
 };
 type Props = OwnProps & {
-  fields: any;
   penaltyInterestArray: Array<Record<string, any>>;
 };
 

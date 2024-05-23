@@ -279,8 +279,7 @@ const LeaseArea = ({
 };
 
 const formName = FormNames.LEASE_AREAS;
-export default (flowRight( // $FlowFixMe
-withRouter, connect((state, props) => {
+const decoratedLeaseArea = connect((state, props) => {
   const id = get(props, 'area.id');
   const isEditMode = getIsEditMode(state);
   return {
@@ -294,4 +293,6 @@ withRouter, connect((state, props) => {
   };
 }, {
   receiveCollapseStates
-}))(LeaseArea) as React.ComponentType<Props>);
+})(LeaseArea);
+
+export default withRouter(decoratedLeaseArea);

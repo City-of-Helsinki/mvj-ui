@@ -1,8 +1,7 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { formValueSelector } from "redux-form";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import ActionButtonWrapper from "src/components/form/ActionButtonWrapper";
 import AddButtonThird from "src/components/form/AddButtonThird";
@@ -28,7 +27,7 @@ type Props = {
   isEditClicked: boolean;
   relativeTo: any;
   receivableTypes: Record<string, any>;
-  rows: Record<string, any>;
+  rows: any;
   tenantOptions: Array<Record<string, any>>;
 };
 
@@ -40,7 +39,7 @@ const InvoiceRowsEdit = ({
   receivableTypes,
   tenantOptions,
   rows
-}: Props): Element<any> => {
+}: Props): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

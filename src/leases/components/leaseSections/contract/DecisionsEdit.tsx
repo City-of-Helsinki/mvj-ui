@@ -1,9 +1,8 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButton from "src/components/form/AddButton";
 import AttachDecisionModal from "./AttachDecisionModal";
@@ -29,7 +28,7 @@ const renderDecisions = ({
   fields,
   onAttach,
   usersPermissions
-}: DecisionsProps): Element<any> => {
+}: DecisionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -151,7 +150,12 @@ class DecisionsEdit extends PureComponent<Props, State> {
 }
 
 const formName = FormNames.LEASE_DECISIONS;
-export default flowRight(connect(state => {
+const decoratedDecisionsEdit = reduxForm({
+  form: formName,
+  destroyOnUnmount: false
+})(DecisionsEdit);
+
+export default connect(state => {
   return {
     currentLease: getCurrentLease(state),
     isAttachDecisionModalOpen: getIsAttachDecisionModalOpen(state),
@@ -162,7 +166,4 @@ export default flowRight(connect(state => {
   hideAttachDecisionModal,
   receiveFormValidFlags,
   showAttachDecisionModal
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false
-}))(DecisionsEdit);
+})(decoratedDecisionsEdit);
