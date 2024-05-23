@@ -163,4 +163,4 @@ export default flowRight(withLeaseStatisticReportAttributes, connect(state => {
   destroy
 }), reduxForm({
   form: formName
-}))(LeaseStatisticReportForm);
+}))(LeaseStatisticReportForm) as React.ComponentType<any>;

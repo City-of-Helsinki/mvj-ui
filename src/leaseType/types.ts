@@ -4,6 +4,6 @@ export type LeaseTypeState = {
   isFetching: boolean;
   list: LeaseTypeList;
 };
-export type FetchLeaseTypesAction = Action<"mvj/leaseType/FETCH_ALL", void>;
-export type ReceiveLeaseTypesAction = Action<"mvj/leaseType/RECEIVE_ALL", LeaseTypeList>;
-export type LeaseTypesNotFoundAction = Action<"mvj/leaseType/NOT_FOUND", void>;
+export type FetchLeaseTypesAction = Action<string, void>;
+export type ReceiveLeaseTypesAction = Action<string, LeaseTypeList>;
+export type LeaseTypesNotFoundAction = Action<string, void>;

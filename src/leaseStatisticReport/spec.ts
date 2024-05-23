@@ -19,13 +19,10 @@ const defaultState: LeaseStatisticReportState = {
   isFetchingOptions: false,
   payload: null
 };
-// @ts-expect-error
+
 describe('Lease statistic', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('leaseStatisticReport', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = { ...defaultState,
           isFetchingAttributes: true
@@ -134,14 +131,14 @@ describe('Lease statistic', () => {
         const newState = { ...defaultState,
           isFetchingReportData: true
         };
-        const state = leaseStatisticReport({}, fetchReportData());
+        const state = leaseStatisticReport({}, fetchReportData({'test': 'test' }));
         expect(state).to.deep.equal(newState);
       });
       it('should update isFetchingReportData flag to false by reportDataNotFound', () => {
         const newState = { ...defaultState,
           isFetchingReportData: false
         };
-        let state: Record<string, any> = leaseStatisticReport({}, fetchReportData());
+        let state: Record<string, any> = leaseStatisticReport({}, fetchReportData({'test': 'test' }));
         state = leaseStatisticReport(state, reportDataNotFound());
         expect(state).to.deep.equal(newState);
       });
@@ -179,14 +176,14 @@ describe('Lease statistic', () => {
         const newState = { ...defaultState,
           isSendingMail: true
         };
-        const state = leaseStatisticReport({}, sendReportToMail());
+        const state = leaseStatisticReport({}, sendReportToMail({'test': 'test' }));
         expect(state).to.deep.equal(newState);
       });
       it('should update isSendingMail flag to false by noMailSent', () => {
         const newState = { ...defaultState,
           isSendingMail: false
         };
-        let state: Record<string, any> = leaseStatisticReport({}, sendReportToMail());
+        let state: Record<string, any> = leaseStatisticReport({}, sendReportToMail({'test': 'test' }));
         state = leaseStatisticReport(state, noMailSent());
         expect(state).to.deep.equal(newState);
       });
@@ -194,21 +191,21 @@ describe('Lease statistic', () => {
         const newState = { ...defaultState,
           isSendingMail: false
         };
-        const state = leaseStatisticReport({}, mailSent());
+        const state = leaseStatisticReport({}, mailSent({'test': 'test' }));
         expect(state).to.deep.equal(newState);
       });
       it('should update isFetchingOptions flag to true by fetchOptions', () => {
         const newState = { ...defaultState,
           isFetchingOptions: true
         };
-        const state = leaseStatisticReport({}, fetchOptions());
+        const state = leaseStatisticReport({}, fetchOptions({'test': 'test' }));
         expect(state).to.deep.equal(newState);
       });
       it('should update isFetchingOptions flag to false by optionsNotFound', () => {
         const newState = { ...defaultState,
           isFetchingOptions: false
         };
-        let state: Record<string, any> = leaseStatisticReport({}, fetchOptions());
+        let state: Record<string, any> = leaseStatisticReport({}, fetchOptions({'test': 'test' }));
         state = leaseStatisticReport(state, optionsNotFound());
         expect(state).to.deep.equal(newState);
       });

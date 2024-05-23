@@ -63,6 +63,7 @@ const reportDataReducer: Reducer<Record<string, any>> = handleActions({
   }
 }, null);
 const setOptionsReducer: Reducer<Record<string, any>> = handleActions({
+  // @ts-ignore: no overload mathces this call
   ['mvj/leaseStatisticReport/SET_REPORT_OPTIONS']: (state: Record<string, any>, {
     payload: options
   }: SetOptionsAction) => {
@@ -70,6 +71,7 @@ const setOptionsReducer: Reducer<Record<string, any>> = handleActions({
   }
 }, null);
 const setPayloadReducer: Reducer<Record<string, any>> = handleActions({
+  // @ts-ignore: no overload mathces this call
   ['mvj/leaseStatisticReport/SET_PAYLOAD']: (state: Record<string, any>, {
     payload: payload
   }: SetPayloadAction) => {
@@ -87,6 +89,7 @@ const isFetchingOptionsReducer: Reducer<boolean> = handleActions({
   'mvj/leaseStatisticReport/OPTIONS_NOT_FOUND': () => false
 }, false);
 const optionsReducer: Reducer<Attributes> = handleActions({
+  // @ts-ignore: no overload mathces this call
   ['mvj/leaseStatisticReport/RECEIVE_OPTIONS']: (state: Record<string, any>, {
     payload: options
   }: ReceiveOptionsAction) => {

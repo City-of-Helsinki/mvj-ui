@@ -29,7 +29,7 @@ type Props = {
   leaseInvoicingConfirmationReportData: LeaseInvoicingConfirmationReportsType;
   usersPermissions: UsersPermissionsType;
   isFetchingReportData: boolean;
-  reportData: Record<string, any>;
+  reportData: any;
   reportOptions: Record<string, any>;
   payload: Record<string, any>;
   reports: Reports;
@@ -48,7 +48,7 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
   componentDidMount() {}
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.leaseInvoicingConfirmationReportData !== state.leaseInvoicingConfirmationReportData) {
       newState.leaseInvoicingConfirmationReportData = props.leaseInvoicingConfirmationReportData;
@@ -130,4 +130,4 @@ export default flowRight(withLeaseInvoicingConfirmationReportAttributes, connect
     usersPermissions: getUsersPermissions(state),
     payload: getPayload(state)
   };
-}))(LeaseInvoicingConfirmationReport);
+}))(LeaseInvoicingConfirmationReport) as React.ComponentType<any>;

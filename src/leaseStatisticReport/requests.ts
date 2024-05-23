@@ -1,7 +1,7 @@
 import callApi from "../api/callApi";
 import createUrl from "../api/createUrl";
 import { parseServiceUnitQuery } from "./helpers";
-import get from "lodash/get";
+
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`lease_create_collection_letter/`), {
     method: 'OPTIONS'
@@ -25,7 +25,7 @@ export const fetchReportData = (payload: Record<string, any>): Generator<any, an
 export const sendReportToMail = (payload: Record<string, any>): Generator<any, any, any> => {
   return callApi(new Request(`${payload.url}?${payload.query}`));
 };
-export const fetchOptions = (payload: Record<string, any>): Generator<any, any, any> => {
+export const fetchOptions = (payload: any): Generator<any, any, any> => {
   return callApi(new Request(payload, {
     method: 'OPTIONS'
   }));

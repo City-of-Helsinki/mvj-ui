@@ -65,7 +65,8 @@ function* fetchReportsSaga(): Generator<any, any, any> {
 }
 
 function* fetchReportDataSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -125,7 +126,8 @@ function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<any, 
 }
 
 function* fetchLeaseInvoicingConfrimationReportsSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -153,7 +155,8 @@ function* fetchLeaseInvoicingConfrimationReportsSaga({
 }
 
 function* sendReportToMailSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -205,7 +208,8 @@ function* sendReportToMailSaga({
 }
 
 function* fetchOptionsSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

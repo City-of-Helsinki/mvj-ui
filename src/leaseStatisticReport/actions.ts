@@ -20,7 +20,7 @@ export const setOptions = (options: Record<string, any>): SetOptionsAction => cr
 export const setPayload = (payload: Record<string, any>): SetPayloadAction => createAction('mvj/leaseStatisticReport/SET_PAYLOAD')(payload);
 export const sendReportToMail = (payload: Record<string, any>): SendReportToMailAction => createAction('mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL')(payload);
 export const noMailSent = (): NoMailSentAction => createAction('mvj/leaseStatisticReport/NO_MAIL_SENT')();
-export const mailSent = (payload: Record<string, any>): MailSentAction => createAction('mvj/leaseStatisticReport/MAIL_SENT')(payload);
+export const mailSent = (payload?: Record<string, any>): MailSentAction => createAction('mvj/leaseStatisticReport/MAIL_SENT')(payload);
 export const fetchOptions = (payload: Record<string, any>): FetchOptionsAction => createAction('mvj/leaseStatisticReport/FETCH_OPTIONS')(payload);
 export const receiveOptions = (payload: Record<string, any>): ReceiveOptionsAction => createAction('mvj/leaseStatisticReport/RECEIVE_OPTIONS')(payload);
 export const optionsNotFound = (): OptionsNotFoundAction => createAction('mvj/leaseStatisticReport/OPTIONS_NOT_FOUND')();

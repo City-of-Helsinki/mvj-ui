@@ -6,13 +6,10 @@ const defaultStates: LeaseTypeState = {
   isFetching: false,
   list: []
 };
-// @ts-expect-error
+
 describe('Lease types', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('leaseTypeReducer', () => {
-      // $FlowFixMe
       it('should update isFetching flag to true when fetching lease types', () => {
         const newState = { ...defaultStates
         };

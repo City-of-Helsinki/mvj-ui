@@ -97,7 +97,7 @@ export const getFormattedValue = (formatType: string, value: string): string => 
 * Get fields
 * @param {object} options
 */
-export const getFields = (options: Record<string, any>): Array => {
+export const getFields = (options: Record<string, any>): Array<any> => {
   return get(options, 'actions.GET');
 };
 
@@ -105,7 +105,7 @@ export const getFields = (options: Record<string, any>): Array => {
 * Get Query parameters
 * @param {object} formValues
 */
-export const getQueryParams = (formValues: Record<string, any>): Array => {
+export const getQueryParams = (formValues: Record<string, any>): any => {
   let query = '';
   if (formValues) Object.entries(formValues).map(([key, value]) => {
     if (key.includes('date')) {
@@ -124,9 +124,13 @@ export const getOutputFields = (options: Record<string, any>): Array<Record<stri
   if (options) return Object.entries(options.output_fields).map(([key, value]) => {
     return {
       key: key,
+      // @ts-ignore: Property 'choices' does not exist on type 'unknown'.
       label: value.label,
+      // @ts-ignore: Property 'choices' does not exist on type 'unknown'.
       choices: value.choices,
+      // @ts-ignore: Property 'choices' does not exist on type 'unknown'.
       format: value.format,
+      // @ts-ignore: Property 'choices' does not exist on type 'unknown'.
       isNumeric: value.is_numeric
     };
   });else return [];
