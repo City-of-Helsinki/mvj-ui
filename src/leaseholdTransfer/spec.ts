@@ -9,13 +9,10 @@ const defaultState: LeaseholdTransferState = {
   list: {},
   methods: null
 };
-// @ts-expect-error
+
 describe('Leasehold transfer', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('leaseholdTransferReducer', () => {
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'Foo',

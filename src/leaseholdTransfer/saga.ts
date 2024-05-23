@@ -33,7 +33,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchLeaseholdTransferListSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -64,7 +65,8 @@ function* deleteLeaseholdTransferAndupdateListSaga({
   payload: {
     id,
     searchQuery
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

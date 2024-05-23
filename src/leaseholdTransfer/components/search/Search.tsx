@@ -67,7 +67,7 @@ class Search extends PureComponent<Props> {
       sortKey,
       sortOrder
     } = this.props;
-    const query = {};
+    const query: any = {};
 
     if (sortKey || sortOrder) {
       query.sort_key = sortKey;
@@ -122,4 +122,4 @@ export default flowRight(connect(state => {
   };
 }), reduxForm({
   form: formName
-}))(Search);
+}))(Search) as React.ComponentType<any>;
