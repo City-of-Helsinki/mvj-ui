@@ -3,7 +3,8 @@ import { notFound, receiveIndexList } from "./actions";
 import { fetchIndexList } from "./requests";
 
 function* fetchIndexListSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

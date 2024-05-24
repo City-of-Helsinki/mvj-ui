@@ -26,7 +26,7 @@ type Props = {
   usersPermissions: UsersPermissionsType;
 };
 type State = {
-  indexList: [];
+  indexList: any[];
   yearlyIndexes: Array<Record<string, any>>;
 };
 
@@ -53,7 +53,7 @@ class IndexListPage extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.indexList !== state.indexList) {
       newState.indexList = props.indexList;

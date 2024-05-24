@@ -1,3 +1,4 @@
+// @ts-nocheck: missing static type checking
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import hoistsStatics from "hoist-non-react-statics";

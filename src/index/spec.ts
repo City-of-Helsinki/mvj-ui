@@ -6,13 +6,10 @@ const defaultState: IndexState = {
   isFetching: false,
   list: []
 };
-// @ts-expect-error
+
 describe('Index', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('indexReducer', () => {
-      // $FlowFixMe
       it('should set isFetching flag to true when fetching index list', () => {
         const newState = { ...defaultState,
           isFetching: true
