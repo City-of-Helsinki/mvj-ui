@@ -225,7 +225,6 @@ class CreateLeaseForm extends Component<Props> {
                     fieldType: FieldTypes.LEASE,
                     label: LeaseFieldTitles.RELATE_TO,
                   }}
-                  serviceUnit={userActiveServiceUnit}
                   enableUiDataEdit
                   uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)}
                 />
