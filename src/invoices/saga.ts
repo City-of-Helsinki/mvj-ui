@@ -34,7 +34,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchInvoicesByLeaseSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     let {
@@ -54,6 +55,7 @@ function* fetchInvoicesByLeaseSaga({
           status
         },
         bodyAsJson
+      // @ts-ignore: No overload matches this call
       } = yield call(fetchInvoices, `?${body.next.split('?').pop()}`);
       statusCode = status;
       body = bodyAsJson;
@@ -79,7 +81,8 @@ function* fetchInvoicesByLeaseSaga({
 }
 
 function* createInvoiceSaga({
-  payload: invoice
+  payload: invoice,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -122,7 +125,8 @@ function* creditInvoiceSaga({
     creditData,
     invoiceId,
     lease
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -158,7 +162,8 @@ function* creditInvoiceSaga({
 }
 
 function* patchInvoiceSaga({
-  payload: invoice
+  payload: invoice,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -203,7 +208,8 @@ function* exportInvoiceToLaskeAndUpdateListSaga({
   payload: {
     id,
     lease
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -232,7 +238,8 @@ function* exportInvoiceToLaskeAndUpdateListSaga({
 }
 
 function* deleteInvoiceSaga({
-  payload: invoice
+  payload: invoice,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

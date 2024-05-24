@@ -7,16 +7,16 @@ export type LandUseAgreementAttachmentState = {
 export type CreateLandUseAgreementAttachmentPayload = {
   id: number;
   data: Record<string, any>;
-  file: Record<string, any>;
+  file: any;
   type: string;
 };
 export type DeleteLandUseAgreementAttachmentPayload = {
   id: number;
   fileId: number;
 };
-export type FetchAttributesAction = Action<"mvj/landUseAgreementAttachment/FETCH_ATTRIBUTES", void>;
-export type ReceiveAttributesAction = Action<"mvj/landUseAgreementAttachment/RECEIVE_ATTRIBUTES", Attributes>;
-export type ReceiveMethodsAction = Action<"mvj/landUseAgreementAttachment/RECEIVE_METHODS", Methods>;
-export type AttributesNotFoundAction = Action<"mvj/landUseAgreementAttachment/ATTRIBUTES_NOT_FOUND", void>;
-export type CreateLandUseAgreementAttachmentAction = Action<"mvj/landUseAgreementAttachment/CREATE", CreateLandUseAgreementAttachmentPayload>;
-export type DeleteLandUseAgreementAttachmentAction = Action<"mvj/landUseAgreementAttachment/DELETE", DeleteLandUseAgreementAttachmentPayload>;
+export type FetchAttributesAction = Action<string, void>;
+export type ReceiveAttributesAction = Action<string, Attributes>;
+export type ReceiveMethodsAction = Action<string, Methods>;
+export type AttributesNotFoundAction = Action<string, void>;
+export type CreateLandUseAgreementAttachmentAction = Action<string, CreateLandUseAgreementAttachmentPayload>;
+export type DeleteLandUseAgreementAttachmentAction = Action<string, DeleteLandUseAgreementAttachmentPayload>;

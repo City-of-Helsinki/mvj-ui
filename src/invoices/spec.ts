@@ -17,13 +17,10 @@ const defaultState: InvoiceState = {
   methods: null,
   patchedInvoice: null
 };
-// @ts-expect-error
+
 describe('Invoices', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('invoiceReducer', () => {
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'Foo',

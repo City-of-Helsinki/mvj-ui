@@ -35,7 +35,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* createLandUseAgreementAttachmentSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -66,7 +67,8 @@ function* createLandUseAgreementAttachmentSaga({
 }
 
 function* deleteLandUseAgreementAttachmentSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

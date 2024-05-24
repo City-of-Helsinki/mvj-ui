@@ -7,13 +7,10 @@ const defaultState: LandUseAgreementAttachmentState = {
   isFetchingAttributes: false,
   methods: null
 };
-// @ts-expect-error
+
 describe('Land Use Agreement attachment', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('landUseAgreementAttachmentReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = { ...defaultState,
           isFetchingAttributes: true

@@ -1,11 +1,10 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { ButtonColors } from "src/components/enums";
-import type { Element } from "react";
 import FormText from "src/components/form/FormText";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import ActionButtonWrapper from "src/components/form/ActionButtonWrapper";
@@ -50,7 +49,7 @@ const renderContractChanges = ({
   title,
   decisionOptions,
   currentLandUseContract
-}: ContractChangesProps): Element<any> => {
+}: ContractChangesProps): ReactElement => {
   const handleCollapseToggle = val => {
     onCollapseToggle(val);
   };
@@ -156,7 +155,7 @@ const renderWarrants = ({
   },
   isSaveClicked,
   onCollapseToggle
-}: WarrantsProps): Element<any> => {
+}: WarrantsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
