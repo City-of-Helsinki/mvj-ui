@@ -6,13 +6,10 @@ const defaultState: CreateCollectionLetterState = {
   attributes: null,
   isFetchingAttributes: false
 };
-// @ts-expect-error
+
 describe('Create collection letter', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('createCollectionLetterReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = { ...defaultState,
           isFetchingAttributes: true

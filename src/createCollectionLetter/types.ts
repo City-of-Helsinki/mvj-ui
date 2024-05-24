@@ -3,6 +3,6 @@ export type CreateCollectionLetterState = {
   attributes: Attributes;
   isFetchingAttributes: boolean;
 };
-export type FetchAttributesAction = Action<"mvj/createCollectionLetter/FETCH_ATTRIBUTES", void>;
-export type ReceiveAttributesAction = Action<"mvj/createCollectionLetter/RECEIVE_ATTRIBUTES", Attributes>;
-export type AttributesNotFoundAction = Action<"mvj/createCollectionLetter/ATTRIBUTES_NOT_FOUND", void>;
+export type FetchAttributesAction = Action<string, void>;
+export type ReceiveAttributesAction = Action<string, Attributes>;
+export type AttributesNotFoundAction = Action<string, void>;

@@ -5,7 +5,8 @@ import { receiveContractFilesById, notFoundById } from "./actions";
 import { fetchContractFiles } from "./requests";
 
 function* fetchContractFilesByIdSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

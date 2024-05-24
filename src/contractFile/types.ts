@@ -8,6 +8,6 @@ export type ContractFileState = {
   byId: Record<string, any>;
   isFetchingById: Record<string, any>;
 };
-export type FetchContractFilesByIdAction = Action<"mvj/contractFile/FETCH_BY_ID", ContractId>;
-export type ReceiveContractFilesByIdAction = Action<"mvj/contractFile/RECEIVE_BY_ID", ReceiveContractFilePayload>;
-export type NotFoundByIdAction = Action<"mvj/contractFile/NOT_FOUND_BY_ID", ContractId>;
+export type FetchContractFilesByIdAction = Action<string, ContractId>;
+export type ReceiveContractFilesByIdAction = Action<string, ReceiveContractFilePayload>;
+export type NotFoundByIdAction = Action<string, ContractId>;

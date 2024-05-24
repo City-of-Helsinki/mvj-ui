@@ -6,13 +6,10 @@ const defaultState: ContractFileState = {
   byId: {},
   isFetchingById: {}
 };
-// @ts-expect-error
+
 describe('contractFile', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('contractFileReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingById flags when fetching contract files', () => {
         const dummyId = 1;
         const newState = { ...defaultState,
