@@ -49,6 +49,8 @@
       font-weight: 600;
       outline-offset: -2px !important;
       cursor: pointer;
+      display: flex;
+      align-items: center;
 
       span {
         color: $white;
