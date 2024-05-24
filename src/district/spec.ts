@@ -6,13 +6,10 @@ const defaultState: DistrictState = {
   byMunicipality: {},
   isFetching: false
 };
-// @ts-expect-error
+
 describe('Districts', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('districtReducer', () => {
-      // $FlowFixMe
       it('should update districts received by municipality', () => {
         const dummyMunicipality = 1;
         const dummyDistricts = [{

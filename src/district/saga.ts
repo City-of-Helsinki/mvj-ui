@@ -4,7 +4,8 @@ import { fetchDistricts } from "./requests";
 import { receiveError } from "../api/actions";
 
 function* fetchDistrictsByMunicipalitySaga({
-  payload: municipalityId
+  payload: municipalityId,
+  type: any
 }): Generator<any, any, any> {
   try {
     let {

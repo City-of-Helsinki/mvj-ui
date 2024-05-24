@@ -4,7 +4,8 @@ import { creditDecisionNotFoundByBusinessId, creditDecisionNotFoundByContactId, 
 import { fetchHistoryBusinessId, fetchHistoryContactId, fetchCreditDecisionContactId, fetchCreditDecisionBusinessId, fetchCreditDecisionNin } from "./requests";
 
 function* fetchHistoryByBusinessIdSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -34,7 +35,8 @@ function* fetchHistoryByBusinessIdSaga({
 }
 
 function* fetchHistoryByContactIdSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -64,7 +66,8 @@ function* fetchHistoryByContactIdSaga({
 }
 
 function* fetchCreditDecisionByBusinessIdSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -103,7 +106,8 @@ function* fetchCreditDecisionByBusinessIdSaga({
 }
 
 function* fetchCreditDecisionByContactIdSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -142,7 +146,8 @@ function* fetchCreditDecisionByContactIdSaga({
 }
 
 function* fetchCreditDecisionByNinSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

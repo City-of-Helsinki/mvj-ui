@@ -14,8 +14,8 @@ import { getHoursAndMinutes } from "src/util/date";
 import { fetchHistoryByBusinessId, fetchHistoryByContactId } from "src/creditDecision/actions";
 import { getHistoryByBusinessId, getIsFetchingHistoryByBusinessId, getHistoryByContactId, getIsFetchingHistoryByContactId } from "src/creditDecision/selectors";
 type Props = {
-  businessId?: String;
-  contactId?: String;
+  businessId?: string;
+  contactId?: string;
   history: Record<string, any> | null | undefined;
   isFetchingHistory: boolean;
   fetchHistoryByBusinessId: (...args: Array<any>) => any;

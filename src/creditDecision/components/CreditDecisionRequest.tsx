@@ -22,17 +22,17 @@ import { getHoursAndMinutes } from "src/util/date";
 import { fetchCreditDecisionByBusinessId, fetchCreditDecisionByContactId, fetchCreditDecisionByNin } from "src/creditDecision/actions";
 import { getCreditDecisionByBusinessId, getCreditDecisionByContactId, getCreditDecisionByNin, getIsFetchingCreditDecisionByBusinessId, getIsFetchingCreditDecisionByContactId, getIsFetchingCreditDecisionByNin } from "src/creditDecision/selectors";
 type Props = {
-  businessId: String;
-  contactId: String;
-  contactType: String;
+  businessId: string;
+  contactId: string;
+  contactType: string;
   fetchCreditDecisionByBusinessId: (...args: Array<any>) => any;
   fetchCreditDecisionByContactId: (...args: Array<any>) => any;
   fetchCreditDecisionByNin: (...args: Array<any>) => any;
   isFetchingResult: boolean;
   isFetchingUsersPermissions: boolean;
-  nin: String;
+  nin: string;
   result: Record<string, any> | null | undefined;
-  usersPermissions: UsersPermissionsType;
+  usersPermissions: any;
 };
 type State = {
   hasRequested: boolean;
