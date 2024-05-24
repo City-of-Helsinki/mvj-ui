@@ -20,6 +20,7 @@ type Props = {
   receivableTypeOptions: Array<Record<string, any>>;
   relativeTo?: any;
   rows: Array<Record<string, any>>;
+  invoiceDueDate?: any;
 };
 
 const InvoiceRows = ({

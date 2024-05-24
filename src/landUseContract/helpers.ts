@@ -67,7 +67,7 @@ export const getContentLandUseContractListItem = (contract: LandUseContract): Re
  * @param {Object} content
  * @return {Object[]}
  */
-export const getContentLandUseContractListResults = (content: Record<string, any>): Array<Record<string, any>> => getApiResponseResults(content).map(contract => getContentLandUseContractListItem(contract));
+export const getContentLandUseContractListResults = (content: any): Array<Record<string, any>> => getApiResponseResults(content).map(contract => getContentLandUseContractListItem(contract));
 
 /** 
  * Get land use contract estate ids

@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import FieldAndRemoveButtonWrapper from "src/components/form/FieldAndRemoveButtonWrapper";
@@ -28,7 +27,7 @@ const renderInvoices = ({
   attributes,
   fields,
   isSaveClicked
-}: InvoicesProps): Element<any> => {
+}: InvoicesProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

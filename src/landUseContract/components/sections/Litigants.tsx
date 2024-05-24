@@ -73,4 +73,4 @@ export default flowRight(withContactAttributes, connect(state => {
   return {
     currentLandUseContract: getCurrentLandUseContract(state)
   };
-}))(Litigants);
+}))(Litigants) as React.ComponentType<any>;

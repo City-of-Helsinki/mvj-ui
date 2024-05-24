@@ -93,4 +93,4 @@ export default flowRight(connect((state, props) => {
   form: formName,
   destroyOnUnmount: false,
   change
-}))(AddressItemEdit);
+}))(AddressItemEdit) as React.ComponentType<any>;

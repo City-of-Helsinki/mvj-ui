@@ -6,7 +6,7 @@ export const fetchAttributes = () => {
     method: 'OPTIONS'
   }));
 };
-export const fetchInvoices = (params: Record<string, any> | null | undefined): Generator<any, any, any> => {
+export const fetchInvoices = (params: any): Generator<any, any, any> => {
   console.log(params);
   return callApi(new Request(createUrl('land_use_agreement_invoice/', params)));
 };

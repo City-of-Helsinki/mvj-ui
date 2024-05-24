@@ -65,7 +65,7 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.invoiceListData !== state.invoiceListData) {
       const invoices = getContentInvoices(props.invoiceListData || []);
@@ -452,4 +452,4 @@ export default flowRight(withRouter, connect(state => {
   clearPatchedInvoice,
   initialize,
   patchInvoice
-}))(InvoiceTableAndPanelR);
+}))(InvoiceTableAndPanelR) as React.ComponentType<any>;

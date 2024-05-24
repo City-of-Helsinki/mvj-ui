@@ -18,13 +18,10 @@ const defaultState: LandUseInvoicesState = {
   patchedInvoice: null,
   collapseStates: {}
 };
-// @ts-expect-error
+
 describe('Land Use Invoices State', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('invoiceReducer', () => {
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'Foo',

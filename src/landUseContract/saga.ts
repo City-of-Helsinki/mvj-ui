@@ -38,7 +38,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchLandUseContractsSaga({
-  payload: search
+  payload: search,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -66,7 +67,8 @@ function* fetchLandUseContractsSaga({
 }
 
 function* fetchSingleLandUseContractSaga({
-  payload: contractId
+  payload: contractId,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -99,7 +101,8 @@ function* fetchSingleLandUseContractSaga({
 }
 
 function* createLandUseContractSaga({
-  payload: landUseContract
+  payload: landUseContract,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -138,7 +141,8 @@ function* createLandUseContractSaga({
 }
 
 function* editLandUseContractSaga({
-  payload: landUseContract
+  payload: landUseContract,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -180,7 +184,8 @@ function* editLandUseContractSaga({
 }
 
 function* fetchSingleLandUseContractAfterEditSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const callbackFunctions = payload.callbackFunctions;
@@ -230,7 +235,8 @@ function* fetchSingleLandUseContractAfterEditSaga({
 }
 
 function* deleteLandUseSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

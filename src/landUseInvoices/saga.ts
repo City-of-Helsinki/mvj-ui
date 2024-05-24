@@ -36,7 +36,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchInvoicesByLandUseContractSaga({
-  payload: search
+  payload: search,
+  type: any
 }): Generator<any, any, any> {
   try {
     let {
@@ -80,7 +81,8 @@ function* fetchInvoicesByLandUseContractSaga({
 }
 
 function* createInvoiceSaga({
-  payload: invoice
+  payload: invoice,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -119,7 +121,8 @@ function* createInvoiceSaga({
 }
 
 function* patchInvoiceSaga({
-  payload: invoice
+  payload: invoice,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -161,7 +164,8 @@ function* patchInvoiceSaga({
 }
 
 function* deleteInvoiceSaga({
-  payload: invoice
+  payload: invoice,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -190,7 +194,8 @@ function* deleteInvoiceSaga({
 }
 
 function* startInvoicingSaga({
-  payload: Id
+  payload: Id,
+  type: any
 }): Generator<any, any, any> {
   console.log(Id);
   const currentLandUseContract = yield select(getCurrentLandUseContract);
@@ -204,7 +209,8 @@ function* startInvoicingSaga({
 }
 
 function* stopInvoicingSaga({
-  payload: Id
+  payload: Id,
+  type: any
 }): Generator<any, any, any> {
   console.log(Id);
   const currentLandUseContract = yield select(getCurrentLandUseContract);
@@ -221,7 +227,8 @@ function* exportInvoiceToLaskeAndUpdateListSaga({
   payload: {
     id,
     landUseContract
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -254,7 +261,8 @@ function* creditInvoiceSaga({
     creditData,
     invoiceId,
     landUseContract
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

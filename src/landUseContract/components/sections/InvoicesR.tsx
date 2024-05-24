@@ -51,7 +51,7 @@ class InvoicesR extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.currentLandUseContract !== state.currentLandUseContract) {
       newState.currentLandUseContract = props.currentLandUseContract;
@@ -126,4 +126,4 @@ export default flowRight(withRouter, connect(state => {
 }, {
   receiveCollapseStates,
   receiveInvoiceToCredit
-}))(InvoicesR);
+}))(InvoicesR) as React.ComponentType<any>;

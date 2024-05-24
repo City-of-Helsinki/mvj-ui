@@ -45,7 +45,7 @@ class InvoicePanelR extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.invoice !== state.invoice) {
       const invoice = props.invoice;

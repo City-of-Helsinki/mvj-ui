@@ -23,7 +23,7 @@ const getLitigantError = (litigant: Record<string, any>): Record<string, any> | 
 const getLitigantsErrors = (litigants: Array<Record<string, any>>): Array<Record<string, any>> => {
   const errorArray = [];
   litigants.forEach((litigant, litigantIndex) => {
-    const litigantErrors = {};
+    const litigantErrors: any = {};
     const litigantError = getLitigantError(get(litigant, 'litigant', {}));
 
     if (litigantError) {
@@ -57,7 +57,7 @@ const getLitigantsErrors = (litigants: Array<Record<string, any>>): Array<Record
  * @return {Object} 
  */
 export const validateLitigantForm = (values: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const {
     activeLitigants,
     archivedLitigants
@@ -83,7 +83,7 @@ export const validateLitigantForm = (values: Record<string, any>): Record<string
  * @returns {Object}
  */
 export const validateLandUseInvoiceForm = (values: Record<string, any>): Record<string, any> => {
-  const errors = {};
+  const errors: any = {};
   const recipient = required(values.recipient);
   errors.recipient = recipient;
   return errors;

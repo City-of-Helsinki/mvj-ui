@@ -1,9 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButton from "src/components/form/AddButton";
 import DecisionItemEdit from "./DecisionItemEdit";
@@ -29,7 +28,7 @@ const renderDecisions = ({
   errors,
   fields,
   isSaveClicked
-}: DecisionsProps): Element<any> => {
+}: DecisionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -140,4 +139,4 @@ export default flowRight(connect(state => {
 }), reduxForm({
   form: formName,
   destroyOnUnmount: false
-}))(DecisionsEdit);
+}))(DecisionsEdit) as React.ComponentType<any>;

@@ -1,9 +1,8 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { FieldArray, getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButton from "src/components/form/AddButton";
 import ContactModal from "src/contacts/components/ContactModal";
@@ -36,7 +35,7 @@ const renderLitigants = ({
   archived,
   fields,
   litigants
-}: LitigantsProps): Element<any> => {
+}: LitigantsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -96,7 +95,6 @@ type Props = {
 type State = {
   litigants: Array<Record<string, any>>;
   currentLandUseContract: LandUseContract;
-  litigants: Array<Record<string, any>>;
 };
 
 class TenantsEdit extends PureComponent<Props, State> {
@@ -273,4 +271,4 @@ export default flowRight(withContactAttributes, connect(state => {
   form: formName,
   destroyOnUnmount: false,
   validate: validateLitigantForm
-}))(TenantsEdit);
+}))(TenantsEdit) as React.ComponentType<any>;

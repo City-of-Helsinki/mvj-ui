@@ -634,12 +634,14 @@ class LandUseContractPage extends Component<Props, State> {
   };
   hideModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+    // @ts-ignore: is missing the following properties from type 'Pick<State, keyof State>'
     this.setState({
       [modalVisibilityKey]: false
     });
   };
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
+    // @ts-ignore: is missing the following properties from type 'Pick<State, keyof State>'
     this.setState({
       [modalVisibilityKey]: true
     });

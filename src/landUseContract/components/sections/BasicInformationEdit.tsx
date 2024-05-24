@@ -1,5 +1,4 @@
-import type { Element } from "react";
-import React, { Fragment, Component } from "react";
+import React, { Fragment, Component, ReactElement } from "react";
 import { connect } from "react-redux";
 import { change, FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
@@ -45,7 +44,7 @@ const renderAddresses = ({
   formName,
   attributes,
   isSaveClicked
-}: AddressesProps): Element<any> => {
+}: AddressesProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -109,7 +108,7 @@ type AreasProps = {
   isSaveClicked: boolean;
   change: (...args: Array<any>) => any;
   estateIds: [];
-  plots: [];
+  plots: any[];
 };
 
 const renderAreas = ({
@@ -119,7 +118,7 @@ const renderAreas = ({
   change,
   estateIds,
   plots
-}: AreasProps): Element<any> => {
+}: AreasProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -470,4 +469,4 @@ export default flowRight(connect(state => {
   form: formName,
   destroyOnUnmount: false,
   change
-}))(BasicInformationEdit);
+}))(BasicInformationEdit) as React.ComponentType<any>;

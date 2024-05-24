@@ -1,8 +1,7 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { formValueSelector } from "redux-form";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import ActionButtonWrapper from "src/components/form/ActionButtonWrapper";
 import AddButtonThird from "src/components/form/AddButtonThird";
@@ -39,7 +38,7 @@ const InvoiceRowsEdit = ({
   litigantOptions
   /* , rows */
 
-}: Props): Element<any> => {
+}: Props): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

@@ -6,11 +6,11 @@ export type CreateLeaseAreaAttachmentPayload = {
     lease_area: number;
     type: string;
   };
-  file: Record<string, any>;
+  file: any;
 };
 export type DeleteLeaseAreaAttachmentPayload = {
   id: number;
   lease: LeaseId;
 };
-export type CreateLeaseAreaAttachmentAction = Action<"mvj/leaseAreaAttachment/CREATE", CreateLeaseAreaAttachmentPayload>;
-export type DeleteLeaseAreaAttachmentAction = Action<"mvj/leaseAreaAttachment/DELETE", DeleteLeaseAreaAttachmentPayload>;
+export type CreateLeaseAreaAttachmentAction = Action<string, CreateLeaseAreaAttachmentPayload>;
+export type DeleteLeaseAreaAttachmentAction = Action<string, DeleteLeaseAreaAttachmentPayload>;

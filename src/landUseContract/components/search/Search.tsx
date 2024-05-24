@@ -90,4 +90,4 @@ export default flowRight(connect(state => {
   };
 }), reduxForm({
   form: formName
-}))(Search);
+}))(Search) as React.ComponentType<any>;

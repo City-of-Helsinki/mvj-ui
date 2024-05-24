@@ -1,5 +1,4 @@
-import type { Element } from "react";
-import React, { Fragment, Component } from "react";
+import React, { Fragment, Component, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
@@ -27,7 +26,7 @@ const renderConditions = ({
   formName,
   attributes,
   isSaveClicked
-}: ConditionsProps): Element<any> => {
+}: ConditionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -166,4 +165,4 @@ export default flowRight(connect(state => {
 }), reduxForm({
   form: formName,
   destroyOnUnmount: false
-}))(BasicInformationEdit);
+}))(BasicInformationEdit) as React.ComponentType<any>;

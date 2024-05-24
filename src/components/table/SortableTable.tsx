@@ -53,6 +53,8 @@ type Props = {
   footer?: (arg0: {
     columnCount: number;
   }) => React.ReactNode;
+  invoiceToCredit?: any;
+  onSelectRow?: any;
 };
 type State = {
   columns: Array<Column>;

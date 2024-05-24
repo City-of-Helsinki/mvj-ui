@@ -239,7 +239,7 @@ export const getPayloadCreateInvoice = (invoice: Record<string, any>): Record<st
  */
 export const getPayloadCreditInvoice = (invoice: Record<string, any>): Record<string, any> => {
   if (!invoice) return undefined;
-  const payload = {};
+  const payload: any = {};
 
   if (invoice.type === CreditInvoiceOptions.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {
     payload.amount = convertStrToDecimalNumber(invoice.amount);

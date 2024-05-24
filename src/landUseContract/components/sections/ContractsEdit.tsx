@@ -1,9 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButton from "src/components/form/AddButton";
 import ContractItemEdit from "./ContractItemEdit";
@@ -34,7 +33,7 @@ const renderContracts = ({
   isSaveClicked,
   currentLandUseContract,
   decisionOptions
-}: ContractsProps): Element<any> => {
+}: ContractsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -146,4 +145,4 @@ export default flowRight(connect(state => {
 }), reduxForm({
   form: formName,
   destroyOnUnmount: false
-}))(ContractsEdit);
+}))(ContractsEdit) as React.ComponentType<any>;

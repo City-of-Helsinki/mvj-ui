@@ -6,7 +6,8 @@ import { displayUIMessage } from "src/util/helpers";
 import { createLeaseInspectionAttachment, deleteLeaseInspectionAttachment } from "./requests";
 
 function* createLeaseInspectionAttachmentSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -39,7 +40,8 @@ function* createLeaseInspectionAttachmentSaga({
 }
 
 function* deleteLeaseInspectionAttachmentSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

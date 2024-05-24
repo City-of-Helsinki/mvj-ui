@@ -1,11 +1,10 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { Row, Column } from "react-foundation";
 import { FieldArray, formValueSelector } from "redux-form";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import ActionButtonWrapper from "src/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "src/components/form/AddButtonSecondary";
@@ -46,7 +45,7 @@ const renderDecisionConditions = ({
   isSaveClicked,
   largeScreen,
   onCollapseToggle
-}: DecisionConditionsProps): Element<any> => {
+}: DecisionConditionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

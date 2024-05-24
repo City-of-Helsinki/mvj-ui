@@ -1,9 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { getFormValues, reduxForm, FieldArray } from "redux-form";
 import flowRight from "lodash/flowRight";
-import type { Element } from "react";
 import Authorization from "src/components/authorization/Authorization";
 import BoxContentWrapper from "src/components/content/BoxContentWrapper";
 import Button from "src/components/button/Button";
@@ -35,7 +34,7 @@ const InvoiceRows = ({
   fields,
   invoiceAttributes,
   isCreateClicked
-}: InvoiceRowsProps): Element<any> => {
+}: InvoiceRowsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -199,4 +198,4 @@ export default flowRight(connect(state => {
 }), reduxForm({
   form: formName,
   validate: validateLandUseInvoiceForm
-}))(NewInvoiceForm);
+}))(NewInvoiceForm) as React.ComponentType<any>;

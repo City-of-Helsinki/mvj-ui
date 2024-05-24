@@ -161,4 +161,4 @@ export default flowRight(connect(state => {
   initialValues: {
     type: CreditInvoiceOptionsEnum.FULL
   }
-}))(CreditInvoiceForm);
+}))(CreditInvoiceForm) as React.ComponentType<any>;

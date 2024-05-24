@@ -1,5 +1,4 @@
-import type { Element } from "react";
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { Row, Column } from "react-foundation";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector, reduxForm } from "redux-form";
@@ -89,7 +88,7 @@ const InvoiceNotesEdit = ({
   fields,
   invoiceNoteAttributes,
   invoiceNoteMethods
-}: EditProps): Element<any> => {
+}: EditProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

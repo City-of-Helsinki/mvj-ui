@@ -1,10 +1,9 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonSecondary from "src/components/form/AddButtonSecondary";
 import AddButtonThird from "src/components/form/AddButtonThird";
@@ -36,7 +35,7 @@ const renderBillingPersons = ({
   fields,
   savedLitigant,
   showAddButton
-}: BillingPersonsProps): Element<any> => {
+}: BillingPersonsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

@@ -133,4 +133,4 @@ export default flowRight(connect(state => {
   forwardRef: true
 }), reduxForm({
   form: formName
-}))(CreateLandUseContractForm);
+}))(CreateLandUseContractForm) as React.ComponentType<any>;

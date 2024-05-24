@@ -22,13 +22,10 @@ const baseState: LandUseContractState = {
   list: {},
   methods: null
 };
-// @ts-expect-error
+
 describe('Land use contract', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('landUseContractReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true', () => {
         const newState = { ...baseState,
           isFetchingAttributes: true

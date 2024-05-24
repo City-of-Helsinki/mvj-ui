@@ -1,10 +1,9 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { FieldArray, formValueSelector, reduxForm, change } from "redux-form";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
-import type { Element } from "react";
 import Authorization from "src/components/authorization/Authorization";
 import AddFileButton from "src/components/form/AddFileButton";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
@@ -46,7 +45,7 @@ const renderUnitPricesUsedInCalculation = ({
   attributes,
   fields,
   isSaveClicked
-}: InvoicesProps): Element<any> => {
+}: InvoicesProps): ReactElement => {
   const handleAdd = () => fields.push({});
 
   return <AppConsumer>
@@ -418,4 +417,4 @@ export default flowRight(connect(state => {
   form: formName,
   destroyOnUnmount: false,
   change
-}))(CompensationsEdit);
+}))(CompensationsEdit) as React.ComponentType<any>;
