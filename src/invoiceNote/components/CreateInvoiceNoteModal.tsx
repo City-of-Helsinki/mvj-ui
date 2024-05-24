@@ -104,4 +104,4 @@ export default flowRight(connect(state => {
   };
 }), reduxForm({
   form: formName
-}))(CreateInvoiceNoteModal);
+}))(CreateInvoiceNoteModal) as React.ComponentType<any>;

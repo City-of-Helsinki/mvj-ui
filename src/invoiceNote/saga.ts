@@ -34,7 +34,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchInvoiceNotesSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -64,7 +65,8 @@ function* createInvoiceNoteAndFetchListSaga({
   payload: {
     data,
     query
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

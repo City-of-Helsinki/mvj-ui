@@ -7,7 +7,8 @@ import { displayUIMessage } from "src/util/helpers";
 import { creditInvoiceSet, fetchInvoiceSetsByLease } from "./requests";
 
 function* fetchInvoiceSetsByLeaseSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -45,7 +46,8 @@ function* creditInvoiceSetSaga({
     creditData,
     invoiceSetId,
     lease
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

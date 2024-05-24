@@ -8,7 +8,7 @@ import { convertStrToDecimalNumber } from "src/util/helpers";
  */
 export const getCreditInvoiceSetPayload = (invoiceSet: Record<string, any>): Record<string, any> => {
   if (!invoiceSet) return undefined;
-  const payload = {};
+  const payload: any = {};
 
   if (invoiceSet.type === CreditInvoiceOptions.RECEIVABLE_TYPE_AMOUNT && invoiceSet.amount) {
     payload.amount = convertStrToDecimalNumber(invoiceSet.amount);

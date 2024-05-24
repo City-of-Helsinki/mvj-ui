@@ -6,7 +6,7 @@ export type InvoiceSetState = {
 };
 export type InvoiceSetList = Array<Record<string, any>>;
 export type InvoiceSetListMap = Record<number, InvoiceSetList>;
-export type FetchInvoiceSetsByLeaseAction = Action<"mvj/invoiceSets/FETCH_BY_LEASE", LeaseId>;
-export type ReceiveInvoiceSetsByLeaseAction = Action<"mvj/invoiceSets/RECEIVE_BY_LEASE", Record<string, any>>;
-export type CreditInvoiceSetAction = Action<"mvj/invoiceSets/CREDIT_INVOICESET", Record<string, any>>;
-export type InvoiceSetsNotFoundAction = Action<"mvj/invoiceSets/NOT_FOUND", void>;
+export type FetchInvoiceSetsByLeaseAction = Action<string, LeaseId>;
+export type ReceiveInvoiceSetsByLeaseAction = Action<string, Record<string, any>>;
+export type CreditInvoiceSetAction = Action<string, Record<string, any>>;
+export type InvoiceSetsNotFoundAction = Action<string, void>;

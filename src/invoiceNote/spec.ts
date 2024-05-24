@@ -10,13 +10,10 @@ const defaultState: InvoiceNoteState = {
   list: {},
   methods: null
 };
-// @ts-expect-error
+
 describe('Invoice Note', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('invoiceNoteReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true when fetching attributes', () => {
         const newState = { ...defaultState,
           isFetchingAttributes: true

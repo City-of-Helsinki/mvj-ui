@@ -119,4 +119,4 @@ export default flowRight(connect(state => {
   fetchServiceUnits
 }), reduxForm({
   form: formName
-}))(Search);
+}))(Search) as React.ComponentType<any>;

@@ -6,13 +6,10 @@ const defaultState: InvoiceSetState = {
   byLease: {},
   isFetching: false
 };
-// @ts-expect-error
+
 describe('Invoice sets', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('invoiceSetsReducer', () => {
-      // $FlowFixMe
       it('should update invoice sets', () => {
         const leaseId = 1;
         const dummyInvoiceSets = [{
