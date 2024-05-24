@@ -1,11 +1,10 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import isEmpty from "lodash/isEmpty";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import AddFileButton from "src/components/form/AddFileButton";
@@ -57,7 +56,7 @@ const renderDecisions = ({
   infillDevelopmentAttributes,
   isSaveClicked,
   usersPermissions
-}: DecisionsProps): Element<any> => {
+}: DecisionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -182,7 +181,7 @@ const renderIntendedUses = ({
   infillDevelopmentAttributes,
   isSaveClicked,
   usersPermissions
-}: IntendedUsesProps): Element<any> => {
+}: IntendedUsesProps): ReactElement => {
   const handleAdd = () => fields.push({});
 
   return <AppConsumer>
@@ -334,7 +333,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.lease !== state.lease) {
       const leaseAreas = getContentLeaseAreas(props.lease).filter(area => !area.archived_at);

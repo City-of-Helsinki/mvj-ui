@@ -74,7 +74,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.currentInfillDevelopment !== state.currentInfillDevelopment) {
       newState.currentInfillDevelopment = props.currentInfillDevelopment;
@@ -162,6 +162,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
       coordinates.push(...getLeaseCoordinates(leaseData));
     });
     this.setState({
+      // @ts-ignore: expected array but getBoundsFromCoordinates returns Record
       bounds: coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined,
       center: coordinates.length ? getCenterFromCoordinates(coordinates) : undefined
     });
@@ -237,4 +238,4 @@ export default flowRight(withRouter, connect(state => {
 }, {
   fetchAreaNoteList,
   fetchLeaseById
-}))(SingleInfillDevelopmentMap);
+}))(SingleInfillDevelopmentMap) as React.ComponentType<any>;

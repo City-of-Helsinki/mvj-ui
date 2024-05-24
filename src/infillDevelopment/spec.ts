@@ -18,13 +18,10 @@ const defaultState: InfillDevelopmentState = {
   list: {},
   methods: null
 };
-// @ts-expect-error
+
 describe('Infill development', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('infillDevelopmentReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
         const newState = { ...defaultState,
           isFetchingAttributes: true

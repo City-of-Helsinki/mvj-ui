@@ -35,7 +35,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* createInfillDevelopmentAttachmentSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -66,7 +67,8 @@ function* createInfillDevelopmentAttachmentSaga({
 }
 
 function* deleteInfillDevelopmentAttachmentSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

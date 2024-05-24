@@ -58,7 +58,7 @@ class Search extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.infillDevelopmentAttributes !== state.infillDevelopmentAttributes) {
       newState.infillDevelopmentAttributes = props.infillDevelopmentAttributes;
@@ -128,7 +128,7 @@ class Search extends PureComponent<Props, State> {
       sortKey,
       sortOrder
     } = this.props;
-    const query = {};
+    const query: any = {};
 
     if (sortKey || sortOrder) {
       query.sort_key = sortKey;
@@ -231,4 +231,4 @@ export default flowRight(withRouter, connect(state => {
   };
 }), reduxForm({
   form: formName
-}))(Search);
+}))(Search) as React.ComponentType<any>;

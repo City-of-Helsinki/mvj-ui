@@ -116,4 +116,4 @@ withRouter, connect(state => {
     infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
     leaseAttributes: getLeaseAttributes(state)
   };
-}))(LeaseInfo);
+}))(LeaseInfo) as React.ComponentType<any>;

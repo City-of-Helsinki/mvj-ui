@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import type { Element } from "react";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
 import AddButtonSecondary from "src/components/form/AddButtonSecondary";
 import Authorization from "src/components/authorization/Authorization";
@@ -26,7 +25,7 @@ const LeaseItemsEdit = ({
   infillDevelopment,
   isSaveClicked,
   usersPermissions
-}: Props): Element<any> => {
+}: Props): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };

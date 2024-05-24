@@ -16,7 +16,7 @@ import type { RootState } from "src/root/types";
  * @param {Object} query
  * @returns {Object[]}
  */
-export const getContentInfillDevelopmentListResults = (content: Record<string, any>) => {
+export const getContentInfillDevelopmentListResults = (content: any) => {
   return getApiResponseResults(content).map(item => {
     const leases = get(item, 'infill_development_compensation_leases', []);
     return {

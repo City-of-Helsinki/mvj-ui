@@ -8,15 +8,15 @@ export type InfillDevelopmentAttachmentState = {
 export type CreateInfillDevelopmentAttachmentPayload = {
   id: InfillDevelopmentId;
   data: Record<string, any>;
-  file: Record<string, any>;
+  file: any;
 };
 export type DeleteInfillDevelopmentAttachmentPayload = {
   id: InfillDevelopmentId;
   fileId: number;
 };
-export type FetchAttributesAction = Action<"mvj/infillDevelopmentAttachment/FETCH_ATTRIBUTES", void>;
-export type ReceiveAttributesAction = Action<"mvj/infillDevelopmentAttachment/RECEIVE_ATTRIBUTES", Attributes>;
-export type ReceiveMethodsAction = Action<"mvj/infillDevelopmentAttachment/RECEIVE_METHODS", Methods>;
-export type AttributesNotFoundAction = Action<"mvj/infillDevelopmentAttachment/ATTRIBUTES_NOT_FOUND", void>;
-export type CreateInfillDevelopmentAttachmentAction = Action<"mvj/infillDevelopmentAttachment/CREATE", CreateInfillDevelopmentAttachmentPayload>;
-export type DeleteInfillDevelopmentAttachmentAction = Action<"mvj/infillDevelopmentAttachment/DELETE", DeleteInfillDevelopmentAttachmentPayload>;
+export type FetchAttributesAction = Action<string, void>;
+export type ReceiveAttributesAction = Action<string, Attributes>;
+export type ReceiveMethodsAction = Action<string, Methods>;
+export type AttributesNotFoundAction = Action<string, void>;
+export type CreateInfillDevelopmentAttachmentAction = Action<string, CreateInfillDevelopmentAttachmentPayload>;
+export type DeleteInfillDevelopmentAttachmentAction = Action<string, DeleteInfillDevelopmentAttachmentPayload>;

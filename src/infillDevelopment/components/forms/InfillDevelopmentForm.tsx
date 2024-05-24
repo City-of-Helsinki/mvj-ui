@@ -147,4 +147,4 @@ export default flowRight(connect(state => {
   destroyOnUnmount: false,
   enableReinitialize: true,
   form: formName
-}))(InfillDevelopmentForm);
+}))(InfillDevelopmentForm) as React.ComponentType<any>;

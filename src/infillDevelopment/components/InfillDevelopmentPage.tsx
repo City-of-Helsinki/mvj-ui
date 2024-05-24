@@ -77,12 +77,12 @@ type Props = {
 type State = {
   activeTab: number;
   currentInfillDevelopment: InfillDevelopment;
-  formatedInfillDevelopment: Record<string, any>;
+  formatedInfillDevelopment: any;
   isRestoreModalOpen: boolean;
 };
 
 class InfillDevelopmentPage extends Component<Props, State> {
-  state = {
+  state: State = {
     activeTab: 0,
     formatedInfillDevelopment: {},
     currentInfillDevelopment: {},

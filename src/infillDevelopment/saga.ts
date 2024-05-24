@@ -36,7 +36,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchInfillDevelopmentsSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -65,7 +66,8 @@ function* fetchInfillDevelopmentsSaga({
 }
 
 function* fetchSingleInfillDevelopmentSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -98,7 +100,8 @@ function* fetchSingleInfillDevelopmentSaga({
 }
 
 function* createInfillDevelopmentSaga({
-  payload: infillDevelopment
+  payload: infillDevelopment,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -136,7 +139,8 @@ function* createInfillDevelopmentSaga({
 }
 
 function* editInfillDevelopmentSaga({
-  payload: infillDevelopment
+  payload: infillDevelopment,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
