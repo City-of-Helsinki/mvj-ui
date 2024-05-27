@@ -10,13 +10,10 @@ const defaultState: AuditLogState = {
   isFetchingByLease: {},
   isFetchingByAreaSearch: {}
 };
-// @ts-expect-error
+
 describe('AuditLog', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('auditLogReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingByContact to true when fetching contact auditlog', () => {
         const dummyContactId = 123;
         const newState = { ...defaultState,

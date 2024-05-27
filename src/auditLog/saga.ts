@@ -4,7 +4,8 @@ import { receiveAuditLogByContact, notFoundByContact, receiveAuditLogByLease, no
 import { fetchAuditLog } from "./requests";
 
 function* fetchAuditLogByContactSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -36,7 +37,8 @@ function* fetchAuditLogByContactSaga({
 }
 
 function* fetchAuditLogByLeaseSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -68,7 +70,8 @@ function* fetchAuditLogByLeaseSaga({
 }
 
 function* fetchAuditLogByAreaSearchSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
