@@ -35,7 +35,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchCommentsByLeaseSaga({
-  payload: leaseId
+  payload: leaseId,
+  type: any
 }): Generator<any, any, any> {
   try {
     let {
@@ -79,7 +80,8 @@ function* fetchCommentsByLeaseSaga({
 }
 
 function* createCommentSaga({
-  payload: comment
+  payload: comment,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -122,7 +124,8 @@ function* createCommentSaga({
 }
 
 function* editCommentSaga({
-  payload: comment
+  payload: comment,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

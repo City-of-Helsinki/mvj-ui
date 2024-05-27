@@ -10,13 +10,10 @@ const defaultState: CollectionCourtDecisionState = {
   isPanelOpen: false,
   methods: null
 };
-// @ts-expect-error
+
 describe('collectionCourtDecision', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('collectionCourtDecisionReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true when fetching attributes', () => {
         const newState = { ...defaultState,
           isFetchingAttributes: true

@@ -12,18 +12,18 @@ export type UploadCollectionLetterPayload = {
   data: {
     lease: LeaseId;
   };
-  file: Record<string, any>;
+  file: any;
 };
 export type DeleteCollectionLetterPayload = {
   id: CollectionLetterId;
   lease: LeaseId;
 };
-export type FetchAttributesAction = Action<"mvj/collectionLetter/FETCH_ATTRIBUTES", void>;
-export type ReceiveAttributesAction = Action<"mvj/collectionLetter/RECEIVE_ATTRIBUTES", Attributes>;
-export type ReceiveMethodsAction = Action<"mvj/collectionLetter/RECEIVE_METHODS", Methods>;
-export type CollectionLetterAttributesNotFoundAction = Action<"mvj/collectionLetter/ATTRIBUTES_NOT_FOUND", void>;
-export type FetchCollectionLettersByLeaseAction = Action<"mvj/collectionLetter/FETCH_BY_LEASE", LeaseId>;
-export type ReceiveCollectionLettersByLeaseAction = Action<"mvj/collectionLetter/RECEIVE_BY_LEASE", Record<string, any>>;
-export type CollectionLettersNotFoundByLeaseAction = Action<"mvj/collectionLetter/NOT_FOUND_BY_LEASE", LeaseId>;
-export type UploadCollectionLetterAction = Action<"mvj/collectionLetter/UPLOAD", UploadCollectionLetterPayload>;
-export type DeleteCollectionLetterAction = Action<"mvj/collectionLetter/DELETE", DeleteCollectionLetterPayload>;
+export type FetchAttributesAction = Action<string, void>;
+export type ReceiveAttributesAction = Action<string, Attributes>;
+export type ReceiveMethodsAction = Action<string, Methods>;
+export type CollectionLetterAttributesNotFoundAction = Action<string, void>;
+export type FetchCollectionLettersByLeaseAction = Action<string, LeaseId>;
+export type ReceiveCollectionLettersByLeaseAction = Action<string, Record<string, any>>;
+export type CollectionLettersNotFoundByLeaseAction = Action<string, LeaseId>;
+export type UploadCollectionLetterAction = Action<string, UploadCollectionLetterPayload>;
+export type DeleteCollectionLetterAction = Action<string, DeleteCollectionLetterPayload>;

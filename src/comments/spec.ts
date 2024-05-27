@@ -11,13 +11,10 @@ const defaultState: CommentState = {
   isSaveClicked: false,
   methods: null
 };
-// @ts-expect-error
+
 describe('Comments', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('commentReducer', () => {
-      // $FlowFixMe
       it('should update comment attributes', () => {
         const dummyAttributes = {
           val1: 1,

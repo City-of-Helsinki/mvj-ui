@@ -35,7 +35,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchCollectionNotesByLeaseSaga({
-  payload: lease
+  payload: lease,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -65,7 +66,8 @@ function* fetchCollectionNotesByLeaseSaga({
 }
 
 function* createCollectionNoteSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -96,7 +98,8 @@ function* createCollectionNoteSaga({
 }
 
 function* deleteCollectionNoteSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

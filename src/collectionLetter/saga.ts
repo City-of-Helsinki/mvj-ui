@@ -35,7 +35,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchCollectionLettersByLeaseSaga({
-  payload: lease
+  payload: lease,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -64,7 +65,8 @@ function* fetchCollectionLettersByLeaseSaga({
 }
 
 function* uploadCollectionLetterSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -95,7 +97,8 @@ function* uploadCollectionLetterSaga({
 }
 
 function* deleteCollectionLetterSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

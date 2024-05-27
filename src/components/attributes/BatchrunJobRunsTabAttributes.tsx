@@ -69,7 +69,6 @@ function BatchrunJobRunTabAttributes(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withBatchrunJobRunTabAttributes = flowRight(connect(state => {
   return {
     batchrunJobRunAttributes: getBatchrunJobRunAttributes(state),

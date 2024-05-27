@@ -9,13 +9,10 @@ const defaultState: CollectionLetterState = {
   isFetchingByLease: {},
   methods: null
 };
-// @ts-expect-error
+
 describe('collectionLetter', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('collectionLetterReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingAttributes flag to true when fetching attributes', () => {
         const newState = { ...defaultState,
           isFetchingAttributes: true
