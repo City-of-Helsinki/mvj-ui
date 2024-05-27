@@ -7,6 +7,7 @@ type Props = {
   onClick: (...args: Array<any>) => any;
   title?: string;
   type?: any;
+  style?: any;
 };
 
 const CopyToClipboardButton = (props: Props): React.ReactNode => {

@@ -65,7 +65,7 @@ class JobRuns extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.jobRunsData !== state.jobRunsData) {
       newState.jobRunsData = props.jobRunsData;
@@ -195,4 +195,4 @@ export default flowRight(withRouter, withBatchrunJobRunTabAttributes, connect(st
   };
 }, {
   fetchJobRuns
-}))(JobRuns);
+}))(JobRuns) as React.ComponentType<any>;

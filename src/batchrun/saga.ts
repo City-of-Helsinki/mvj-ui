@@ -32,7 +32,8 @@ function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchJobRunsSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -88,7 +89,8 @@ function* fetchJobRunLogEntryAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchJobRunLogEntriesByRunSaga({
-  payload: run
+  payload: run,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -150,7 +152,8 @@ function* fetchScheduledJobAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchScheduledJobsSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

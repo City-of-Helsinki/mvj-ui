@@ -6,13 +6,10 @@ const defaultState: BillingPeriodState = {
   byLease: {},
   isFetching: false
 };
-// @ts-expect-error
+
 describe('Billing periods', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('billingPeriodsReducer', () => {
-      // $FlowFixMe
       it('should update billing periods', () => {
         const leaseId = 1;
         const dummyBillingPeriods = {

@@ -49,7 +49,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.scheduledJobsData !== state.scheduledJobsData) {
       newState.scheduledJobsData = props.scheduledJobsData;
@@ -176,4 +176,4 @@ export default flowRight(withBatchrunScheduledJobTabAttributes, connect(state =>
   };
 }, {
   fetchScheduledJobs
-}))(ScheduledJobs);
+}))(ScheduledJobs) as React.ComponentType<any>;

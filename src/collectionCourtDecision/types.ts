@@ -15,7 +15,7 @@ export type UploadCollectionCourtDecisionPayload = {
     note: string | null | undefined;
     lease: LeaseId;
   };
-  file: Record<string, any>;
+  file: any;
 };
 export type DeleteCollectionCourtDecisionPayload = {
   id: CollectionCourtDecisionId;

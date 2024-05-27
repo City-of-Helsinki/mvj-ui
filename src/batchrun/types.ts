@@ -1,9 +1,9 @@
 import type { Action, ApiResponse, Attributes, Methods } from "src/types";
 export type BatchRunState = {
   isFetchingJobRunAttributes: boolean;
-  isFetcingJobRuns: boolean;
+  isFetchingJobRuns: boolean;
   isFetchingJobRunLogEntryAttributes: boolean;
-  isFetchingJobRunLogEntriesByRun: boolean;
+  isFetchingJobRunLogEntriesByRun: any;
   isFetchingScheduledJobAttributes: boolean;
   isFetchingScheduledJobs: boolean;
   jobRunAttributes: Attributes;

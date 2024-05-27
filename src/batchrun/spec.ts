@@ -19,13 +19,10 @@ const defaultState: BatchRunState = {
   scheduledJobMethods: null,
   scheduledJobs: null
 };
-// @ts-expect-error
+
 describe('Batchrun', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('batchrunReducer', () => {
-      // $FlowFixMe
       it('should update isFetchingJobRunAttributes flag to true by fetchJobRunAttributes', () => {
         const newState = { ...defaultState,
           isFetchingJobRunAttributes: true

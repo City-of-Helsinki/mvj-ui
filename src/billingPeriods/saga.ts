@@ -4,7 +4,8 @@ import { fetchBillingPeriods } from "./requests";
 import { receiveError } from "../api/actions";
 
 function* fetchBillingPeriodsSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
