@@ -329,4 +329,4 @@ export default flowRight(connect(mapStateToProps, {
   destroyOnUnmount: false,
   enableReinitialize: true,
   form: formName
-}))(ContactForm);
+}))(ContactForm) as React.ComponentType<any>;

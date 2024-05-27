@@ -24,7 +24,7 @@ type Props = {
   serviceUnits: ServiceUnits;
   sortKey: string | null | undefined;
   sortOrder: string | null | undefined;
-  initialValues: Array;
+  initialValues: Array<any>;
 };
 
 class Search extends PureComponent<Props> {
@@ -85,7 +85,7 @@ class Search extends PureComponent<Props> {
       sortKey,
       sortOrder
     } = this.props;
-    const query = {};
+    const query: any = {};
 
     if (sortKey || sortOrder) {
       query.sort_key = sortKey;
@@ -160,4 +160,4 @@ export default flowRight(connect(state => {
   fetchServiceUnits
 }), reduxForm({
   form: formName
-}))(Search);
+}))(Search) as React.ComponentType<any>;

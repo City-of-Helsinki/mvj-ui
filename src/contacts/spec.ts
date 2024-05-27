@@ -21,13 +21,10 @@ const defaultState: ContactState = {
   list: {},
   methods: null
 };
-// @ts-expect-error
+
 describe('Contacts', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('contactReducer', () => {
-      // $FlowFixMe
       it('should set isFetchingAttributes flag to true when fething attributes', () => {
         const newState = { ...defaultState,
           isFetchingAttributes: true

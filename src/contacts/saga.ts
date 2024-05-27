@@ -37,7 +37,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchContactsSaga({
-  payload: params
+  payload: params,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -66,7 +67,8 @@ function* fetchContactsSaga({
 }
 
 function* fetchSingleContactSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -99,7 +101,8 @@ function* fetchSingleContactSaga({
 }
 
 function* createContactSaga({
-  payload: contact
+  payload: contact,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -137,7 +140,8 @@ function* createContactSaga({
 }
 
 function* editContactSaga({
-  payload: contact
+  payload: contact,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -176,7 +180,8 @@ function* editContactSaga({
 }
 
 function* createContactOnModalSaga({
-  payload: contact
+  payload: contact,
+  type: any
 }): Generator<any, any, any> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);
@@ -218,7 +223,8 @@ function* createContactOnModalSaga({
 }
 
 function* editContactOnModalSaga({
-  payload: contact
+  payload: contact,
+  type: any
 }): Generator<any, any, any> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);

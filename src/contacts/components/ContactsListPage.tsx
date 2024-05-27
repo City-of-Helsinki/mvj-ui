@@ -78,7 +78,7 @@ class ContactListPage extends Component<Props, State> {
   search: any;
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.contactAttributes !== state.contactAttributes) {
       newState.contactAttributes = props.contactAttributes;
@@ -237,6 +237,8 @@ class ContactListPage extends Component<Props, State> {
       search: getSearchQuery(query)
     });
   };
+
+  //@ts-ignore: Duplicate identifier 'search'
   search = () => {
     const {
       fetchContacts,
