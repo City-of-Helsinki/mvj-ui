@@ -44,7 +44,7 @@ class FormTextTitle extends PureComponent<Props, State> {
   handleMouseEnter: () => void = () => {
     this.startTimer();
   };
-  handleMouseLeave: (arg0: React.FocusEvent<HTMLSpanElement>) => void = event => {
+  handleMouseLeave: (arg0: any) => void = event => {
     const target = event.currentTarget,
           el = ReactDOM.findDOMNode(this);
 

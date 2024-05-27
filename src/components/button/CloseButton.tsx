@@ -1,12 +1,13 @@
 import React from "react";
 import classNames from "classnames";
+// @ts-ignore: unable to find svg file. Handled by webpack?
 import closeIcon from "assets/icons/icon_close.svg";
 type Props = {
   className?: string;
   onClick: (...args: Array<any>) => any;
   setReference?: (...args: Array<any>) => any;
   title?: string;
-  type?: string;
+  type?: any;
 };
 
 const CloseButton = ({

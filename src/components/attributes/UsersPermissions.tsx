@@ -32,7 +32,6 @@ function UsersPermissionsWrapper(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withUsersPermissions = flowRight(connect(state => {
   return {
     isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),

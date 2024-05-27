@@ -26,7 +26,7 @@ class ShowMore extends PureComponent<Props, State> {
     this.checkOverflow();
   }
 
-  checkOverflow = (textOverFlow: string | null | undefined) => {
+  checkOverflow = (textOverFlow?: string | null | undefined) => {
     const {
       maxChars,
       text

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// @ts-expect-error[cannot-resolve-module]
 import Async from "react-select/async";
 import classNames from "classnames";
 import DropdownIndicator from "src/components/inputs/DropdownIndicator";
@@ -17,6 +16,7 @@ type Props = {
   cacheOptions?: any;
   multiSelect?: boolean;
   onChange?: (...args: Array<any>) => any;
+  defaultOptions?: any;
 };
 type State = {
   inputValue: string;

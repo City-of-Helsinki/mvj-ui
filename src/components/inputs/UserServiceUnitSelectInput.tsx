@@ -15,7 +15,7 @@ type Props = {
   setUserActiveServiceUnit: (...args: Array<any>) => any;
 };
 
-class UserServiceUnitSelectInput extends Component<Props, State> {
+class UserServiceUnitSelectInput extends Component<Props, any> {
   handleChange = (val: any) => {
     const {
       setUserActiveServiceUnit,
@@ -70,4 +70,4 @@ export default flowRight(connect(state => ({}), {
   setUserActiveServiceUnit
 }), reduxForm({
   form: formName
-}))(UserServiceUnitSelectInput);
+}))(UserServiceUnitSelectInput) as React.ComponentType<any>;

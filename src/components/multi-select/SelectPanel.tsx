@@ -64,7 +64,7 @@ class SelectPanel extends Component<Props, State> {
       searchText: ''
     });
   };
-  handleKeyDown = (e: KeyboardEvent) => {
+  handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     switch (e.which) {
       case 38:
         // Up Arrow
@@ -100,7 +100,7 @@ class SelectPanel extends Component<Props, State> {
     return options.length === selected.length;
   }
 
-  filteredOptions() {
+  filteredOptions(): any {
     const {
       searchText
     } = this.state;

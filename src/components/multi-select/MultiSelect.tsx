@@ -14,8 +14,8 @@ type Props = {
   isLoading?: boolean;
   disabled?: boolean;
   disableSearch?: boolean;
-  shouldToggleOnHover: boolean;
-  hasSelectAll: boolean;
+  shouldToggleOnHover?: boolean;
+  hasSelectAll?: boolean;
   filterOptions?: (options: Array<Option>, filter: string) => Array<Option>;
 };
 

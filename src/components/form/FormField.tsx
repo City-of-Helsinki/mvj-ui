@@ -68,10 +68,8 @@ const Types = {
   [FieldTypeOptions.TEXTAREA]: 'text'
 };
 
-// @ts-expect-error[method-unbinding] https://github.com/facebook/flow/issues/8689
-const resolveFieldType = (type: string): Record<string, any> => Object.prototype.hasOwnProperty.call(FieldTypes, type) ? FieldTypes[type] : FieldTypeBasic;
 
-// @ts-expect-error[method-unbinding] https://github.com/facebook/flow/issues/8689
+const resolveFieldType = (type: string): Record<string, any> => Object.prototype.hasOwnProperty.call(FieldTypes, type) ? FieldTypes[type] : FieldTypeBasic;
 const resolveType = (type: string): string | null | undefined => Object.prototype.hasOwnProperty.call(Types, type) ? Types[type] : null;
 
 type InputProps = {
@@ -84,7 +82,7 @@ type InputProps = {
   disableDirty: boolean;
   disableTouched: boolean;
   enableUiDataEdit?: boolean;
-  ErrorComponent: ((...args: Array<any>) => any) | Record<string, any>;
+  ErrorComponent: ((...args: Array<any>) => any) | any;
   fieldType: string;
   filterOption?: (...args: Array<any>) => any;
   input: Record<string, any>;
@@ -211,7 +209,8 @@ const FormFieldInput = ({
         <div className={classNames('form-field__component', {
         'has-unit': unit
       })}>
-          {createElement(fieldComponent, {
+        { // @ts-ignore: No overload matches this call
+          createElement(fieldComponent, {
           autoBlur,
           autoComplete,
           displayError,

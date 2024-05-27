@@ -55,4 +55,4 @@ export default flowRight(connect(state => {
   initialValues: {
     invoice_simulator_year: getCurrentYear()
   }
-}))(InvoiceSimulatorForm);
+}))(InvoiceSimulatorForm) as React.ComponentType<any>;

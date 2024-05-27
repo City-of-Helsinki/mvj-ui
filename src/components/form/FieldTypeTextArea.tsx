@@ -11,7 +11,7 @@ type Props = {
   placeholder: string;
   rows?: number;
   setRefForField: (...args: Array<any>) => any;
-  type?: string;
+  type?: any;
 };
 
 const FieldTypeTextArea = ({
@@ -48,7 +48,7 @@ const FieldTypeTextArea = ({
     'has-error': displayError
   }, {
     'is-dirty': isDirty
-  })} ref={handleSetRefForField} id={input.name} autoComplete={autoComplete} disabled={disabled} placeholder={placeholder} rows={rows} type={type} {...input} onChange={handleChange} />;
+  })} ref={handleSetRefForField} id={input.name} autoComplete={autoComplete} disabled={disabled} placeholder={placeholder} rows={rows} {...input} onChange={handleChange} />;
 };
 
 export default FieldTypeTextArea;

@@ -67,7 +67,7 @@ class FieldTypeDecimal extends PureComponent<Props, State> {
       });
     }
   };
-  handleSetRefForField: (arg0: React.Ref<any>) => void = element => {
+  handleSetRefForField: (arg0: any) => void = element => {
     const {
       setRefForField
     } = this.props;

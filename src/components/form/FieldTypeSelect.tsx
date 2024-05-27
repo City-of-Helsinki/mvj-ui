@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-// @ts-expect-error[cannot-resolve-module]
 import Select from "react-select";
 import classNames from "classnames";
 import DropdownIndicator from "src/components/inputs/DropdownIndicator";
@@ -34,7 +33,7 @@ class FieldTypeSelect extends PureComponent<Props, State> {
     } = this.props;
     onBlur(value);
   };
-  handleChange: () => void = (val: any) => {
+  handleChange: (val?: any) => void = (val: any) => {
     const {
       autoBlur,
       input: {

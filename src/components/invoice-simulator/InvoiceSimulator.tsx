@@ -53,7 +53,7 @@ class InvoiceSimulator extends Component<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.invoiceAttributes !== state.invoiceAttributes) {
       newState.invoiceAttributes = props.invoiceAttributes;

@@ -8,7 +8,7 @@ type Props = {
   style?: Record<string, any>;
   text: string;
   title?: string;
-  type?: string;
+  type?: any;
 };
 
 const Button = ({

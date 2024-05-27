@@ -46,7 +46,7 @@ class RentCalculatorForm extends Component<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.billingPeriods !== state.billingPeriods) {
       newState.billingPeriods = props.billingPeriods;
@@ -221,4 +221,4 @@ export default flowRight(connect(state => {
 }), reduxForm({
   form: formName,
   validate: validateRentCalculatorForm
-}))(RentCalculatorForm);
+}))(RentCalculatorForm) as React.ComponentType<any>;

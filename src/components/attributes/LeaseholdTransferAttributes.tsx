@@ -33,7 +33,6 @@ function LeaseholdTransferAttributes(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withLeaseholdTransferAttributes = flowRight(connect(state => {
   return {
     isFetchingLeaseholdTransferAttributes: getIsFetchingLeaseholdTransferAttributes(state),

@@ -6,7 +6,7 @@ type Props = {
   onClick: (...args: Array<any>) => any;
   text: string;
   title?: string;
-  type?: string;
+  type?: any;
 };
 
 const SendupButton = ({

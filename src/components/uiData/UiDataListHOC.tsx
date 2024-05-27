@@ -47,7 +47,6 @@ function UiDataListHOC(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withUiDataList = flowRight(connect(state => {
   return {
     isFetchingUiDataAttributes: getIsFetchingUiDataAttributes(state),

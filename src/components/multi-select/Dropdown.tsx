@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import classNames from "classnames";
 import LoadingIndicator from "./LoadingIndicator";
 type Props = {
-  children?: Record<string, any>;
-  contentComponent: Record<string, any>;
+  children?: any;
+  contentComponent: any;
   contentProps: Record<string, any>;
   isLoading?: boolean;
   disabled?: boolean;
@@ -53,7 +53,7 @@ class Dropdown extends Component<Props, State> {
       });
     }
   };
-  handleKeyDown = (e: KeyboardEvent) => {
+  handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     switch (e.which) {
       case 9:
         // Tab
@@ -122,7 +122,7 @@ class Dropdown extends Component<Props, State> {
       this.toggleExpanded(toggleExpanded);
     }
   };
-  toggleExpanded = (value: boolean | null | undefined) => {
+  toggleExpanded = (value: any) => {
     const {
       isLoading
     } = this.props;

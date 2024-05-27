@@ -33,7 +33,6 @@ function ContactAttributes(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withContactAttributes = flowRight(connect(state => {
   return {
     contactAttributes: getContactAttributes(state),

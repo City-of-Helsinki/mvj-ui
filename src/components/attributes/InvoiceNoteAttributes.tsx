@@ -33,7 +33,6 @@ function InvoiceNoteAttributes(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withInvoiceNoteAttributes = flowRight(connect(state => {
   return {
     invoiceNoteAttributes: getInvoiceNoteAttributes(state),

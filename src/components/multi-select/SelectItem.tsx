@@ -8,7 +8,7 @@ type DefaultItemRendererProps = {
   checked: boolean;
   option: Option;
   disabled?: boolean;
-  onClick: (event: MouseEvent) => void;
+  onClick: (event: any) => void;
 };
 
 const DefaultItemRenderer = ({
@@ -18,7 +18,7 @@ const DefaultItemRenderer = ({
   disabled
 }: DefaultItemRendererProps) => {
   return <span className="multi-select__select-item-renderer">
-    <input type="checkbox" onChange={onClick} checked={checked} tabIndex="-1" disabled={disabled} />
+    <input type="checkbox" onChange={onClick} checked={checked} tabIndex={-1} disabled={disabled} />
     <span className={classNames('multi-select__select-item-renderer-label', {
       'disabled': disabled
     })}>
@@ -95,7 +95,7 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
     }
   }
 
-  handleKeyDown = (e: KeyboardEvent) => {
+  handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     switch (e.which) {
       case 13: // Enter
 
@@ -124,7 +124,7 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
     } = this.state;
     return <label className={classNames('multi-select__select-item', {
       'is-focused': focused || hovered
-    })} role="option" aria-selected={checked} selected={checked} tabIndex="-1" ref={ref => this.itemRef = ref} onKeyDown={this.handleKeyDown} onMouseOver={() => this.setState({
+    })} role="option" aria-selected={checked} tabIndex={-1} ref={ref => this.itemRef = ref} onKeyDown={this.handleKeyDown} onMouseOver={() => this.setState({
       hovered: true
     })} onMouseOut={() => this.setState({
       hovered: false

@@ -9,6 +9,7 @@ type Props = {
   rows?: number;
   setRefForField?: (...args: Array<any>) => any;
   value: string;
+  name?: string;
 };
 
 const TextAreaInput = ({

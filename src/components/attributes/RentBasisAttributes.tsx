@@ -33,7 +33,6 @@ function RentBasisAttributes(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withRentBasisAttributes = flowRight(connect(state => {
   return {
     isFetchingRentBasisAttributes: getIsFetchingRentBasisAttributes(state),

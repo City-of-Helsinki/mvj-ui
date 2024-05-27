@@ -33,7 +33,6 @@ function InfillDevelopmentListPageAttributes(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withInfillDevelopmentListPageAttributes = flowRight(connect(state => {
   return {
     infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),

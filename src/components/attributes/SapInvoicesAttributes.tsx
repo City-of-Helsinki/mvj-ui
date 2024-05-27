@@ -33,7 +33,6 @@ function SapInvoicesAttributes(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withSapInvoicesAttributes = flowRight(connect(state => {
   return {
     invoiceAttributes: getInvoiceAttributes(state),

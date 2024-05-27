@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import MultiSelect from "src/components/multi-select/MultiSelect";
 type Props = {
-  disabled: Boolean;
+  disabled: boolean;
   displayError: boolean;
   input: Record<string, any>;
   isDirty: boolean;

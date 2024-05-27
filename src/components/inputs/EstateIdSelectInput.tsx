@@ -9,7 +9,7 @@ type Props = {
   placeholder?: string;
   onChange: (...args: Array<any>) => any;
   value?: Record<string, any>;
-  initialValues: [];
+  initialValues: any;
 };
 
 const EstateIdSelectInput = ({

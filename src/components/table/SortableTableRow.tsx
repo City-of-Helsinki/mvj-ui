@@ -28,7 +28,7 @@ class SortableTableRow extends PureComponent<Props, State> {
   buttonPressTimer: any;
   isClicked: boolean = false;
   isLongPress: boolean = false;
-  state: $Shape<State> = {
+  state: any = {
     collapse: false
   };
 
@@ -119,6 +119,8 @@ class SortableTableRow extends PureComponent<Props, State> {
       collapse
     } = this.state;
     const showCollapseArrowIcon = this.shouldShowCollapseArrowIcon();
+
+    // @ts-ignore: Type '(arg0: KeyboardEvent) => void' is not assignable to type 'KeyboardEventHandler<HTMLAnchorElement>'.
     return <tr ref={this.setRef} id={id} tabIndex={onRowClick ? 0 : undefined} onKeyDown={this.handleKeyDown} className={classNames(className, {
       'selected': isSelected
     }, {
@@ -127,7 +129,8 @@ class SortableTableRow extends PureComponent<Props, State> {
         {showCollapseArrowColumn && <td className={classNames('collapse-arrow-column', {
         'no-icon': !showCollapseArrowIcon
       })}>
-            {showCollapseArrowIcon && <a className='sortable-table-row-collapse-link' onClick={this.handleCollapseArrowIconClick} onKeyDown={this.handleCollapseArrowIconKeyDown} tabIndex={0}>
+            { // @ts-ignore: Type '(arg0: KeyboardEvent) => void' is not assignable to type 'KeyboardEventHandler<HTMLAnchorElement>'.
+            showCollapseArrowIcon && <a className='sortable-table-row-collapse-link' onClick={this.handleCollapseArrowIconClick} onKeyDown={this.handleCollapseArrowIconKeyDown} tabIndex={0}>
                 <AccordionIcon className='sortable-table-row-collapse-icon' />
               </a>}
           </td>}

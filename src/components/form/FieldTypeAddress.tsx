@@ -3,7 +3,7 @@ import classNames from "classnames";
 import AddressSearchInput from "src/components/address-search/AddressSearchInput";
 type Props = {
   autoComplete: string;
-  disabled: Boolean;
+  disabled: boolean;
   displayError: boolean;
   input: Record<string, any>;
   isDirty: boolean;

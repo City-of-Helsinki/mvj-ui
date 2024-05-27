@@ -7,7 +7,7 @@ type Props = {
   onClick: (...args: Array<any>) => any;
   style?: Record<string, any>;
   title?: string;
-  type?: string;
+  type?: any;
   id?: string;
 };
 const IconButton = (React.forwardRef<Props, any>(({
@@ -19,9 +19,9 @@ const IconButton = (React.forwardRef<Props, any>(({
   title,
   id,
   type = 'button'
-}: Props, ref) => {
+}: Props, ref: any) => {
   return <button className={classNames('icon-button-component', className)} onClick={onClick} disabled={disabled} style={style} title={title} type={type} id={id} ref={ref}>
         {children}
       </button>;
-}) as React$AbstractComponent<Props, "button">);
+}));
 export default IconButton;

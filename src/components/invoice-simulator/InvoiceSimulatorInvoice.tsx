@@ -19,6 +19,7 @@ type Props = {
   startDate: string;
   type: string;
   typeOptions: Array<Record<string, any>>;
+  explanations?: any;
 };
 
 const InvoiceSimulatorInvoice = ({

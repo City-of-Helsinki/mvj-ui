@@ -75,15 +75,10 @@ class Tooltip extends Component<Props, State> {
     const el = ReactDOM.findDOMNode(this)?.parentNode;
 
     if (el) {
-      // x and y are defined for DOMRect, but not recognised by Flow.
-      // $FlowFixMe
-      let {
-        x,
-        y
-      } = el.getBoundingClientRect();
+      // @ts-ignore: x and y are defined for DOMRect, but not recognised by Typescript.
+      let { x, y } = el.getBoundingClientRect();
 
       if (relativeTo) {
-        // $FlowFixMe
         const {
           x: x2,
           y: y2,

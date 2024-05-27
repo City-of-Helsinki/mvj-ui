@@ -42,7 +42,7 @@ const FieldTypeFractional = ({
     onChange(`${values[NUMERATOR] || ''}${SPLITTER}${values[DENOMINATOR] || ''}`);
   };
 
-  const handleBlur = (e: FocusEvent) => {
+  const handleBlur = (e: any) => {
     // Mark the redux-form field as touched by manually exiting it with onBlur() when focus moves from either
     // HTML element to outside this field component. This allows the possible error state to show up properly
     // only when the user has finished editing the field and not immediately after they have entered the first number.

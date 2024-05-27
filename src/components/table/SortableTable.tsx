@@ -30,7 +30,7 @@ export type Column = {
 };
 type Props = {
   columns: Array<Column>;
-  data: Array<Record<string, any>>;
+  data: Array<any>;
   defaultSortKey?: string;
   defaultSortOrder?: string;
   fixedHeader?: boolean;
@@ -57,6 +57,7 @@ type Props = {
   onSelectRow?: any;
 };
 type State = {
+  collapse?: boolean;
   columns: Array<Column>;
   data: Array<Record<string, any>>;
   scrollHeaderColumnStyles: Array<Record<string, any>>;
@@ -64,6 +65,7 @@ type State = {
   sortedData: Array<Record<string, any>>;
   sortKey: string | null | undefined;
   sortOrder: string | null | undefined;
+  theadStyle?: any;
 };
 
 const groupData = (data: Array<Record<string, any>>, column: Column) => {
@@ -102,7 +104,7 @@ const groupData = (data: Array<Record<string, any>>, column: Column) => {
   return [...groups, ...groupedData];
 };
 
-const sortData = (data: Array<Props>, columns: Array<Record<string, any>>, sortKey: string | null | undefined, sortOrder: string | null | undefined) => {
+const sortData = (data: Array<Props>, columns: Array<any>, sortKey: string | null | undefined, sortOrder: string | null | undefined) => {
   if (!data || !data.length) {
     return [];
   }
@@ -190,7 +192,7 @@ class SortableTable extends Component<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State): $Shape<State> | null {
-    const newState = {};
+    const newState: any = {};
 
     if (props.data !== state.data || props.columns !== state.columns) {
       newState.data = props.data;
@@ -272,6 +274,7 @@ class SortableTable extends Component<Props, State> {
 
     const ths = Array.from(this.thead.querySelectorAll('th'));
     const scrollHeaderColumnStyles = ths.map(th => {
+      // @ts-ignore
       const rect = th.getBoundingClientRect();
       return {
         width: rect.width || null

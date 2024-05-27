@@ -45,7 +45,7 @@ class SideMenu extends Component<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.isOpen !== state.isOpen) {
       newState.isOpen = props.isOpen;

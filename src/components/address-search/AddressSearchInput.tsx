@@ -48,6 +48,8 @@ type Props = {
   onBlur?: (...args: Array<any>) => any;
   onChange?: (...args: Array<any>) => any;
   selected?: string | null | undefined;
+  autoComplete?: any;
+  disabled?: boolean;
 };
 type State = {
   addresses: Array<Address>;

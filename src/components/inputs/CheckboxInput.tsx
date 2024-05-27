@@ -5,6 +5,7 @@ type Props = {
   onChange: (...args: Array<any>) => any;
   options: Array<Record<string, any>>;
   value: any;
+  selectAllButton?: boolean;
 };
 
 const CheckboxButtons = ({

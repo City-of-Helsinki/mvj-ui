@@ -6,7 +6,7 @@ type Props = {
   disabled?: boolean;
   onClick: (...args: Array<any>) => any;
   title?: string;
-  type?: string;
+  type?: any;
 };
 
 const CopyToClipboardButton = (props: Props): React.ReactNode => {

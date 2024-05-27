@@ -33,7 +33,6 @@ function AreaNoteAttributes(WrappedComponent: any) {
   };
 }
 
-// @ts-expect-error
 const withAreaNoteAttributes = flowRight(connect(state => {
   return {
     areaNoteAttributes: getAreaNoteAttributes(state),
