@@ -37,4 +37,4 @@ export default flowRight(connect(state => {
 }), reduxForm({
   form: formName,
   destroyOnUnmount: false
-}))(RentsEdit);
+}))(RentsEdit) as React.ComponentType<any>;

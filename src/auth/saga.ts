@@ -4,7 +4,8 @@ import { getEpochTime } from "src/util/helpers";
 import userManager from "../auth/util/user-manager";
 
 function* fetchApiTokenSaga({
-  payload: token
+  payload: token,
+  type: any
 }): Generator<any, any, any> {
   try {
     const request = new Request(process.env.OPENID_CONNECT_API_TOKEN_URL || 'https://api.hel.fi/sso/api-tokens/', {

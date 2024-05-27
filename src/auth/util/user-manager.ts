@@ -15,7 +15,7 @@ const userManagerConfig = {
 };
 
 class MvjUserManager extends UserManager {
-  _signinStart(args, navigator, navigatorParams = {}) {
+  _signinStart(args, navigator, navigatorParams: any = {}) {
     return navigator.prepare(navigatorParams).then(handle => {
       Log.debug('UserManager._signinStart: got navigator window handle');
       return this.createSigninRequest(args).then(signinRequest => {

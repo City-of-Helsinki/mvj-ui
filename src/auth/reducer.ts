@@ -7,9 +7,9 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/auth/TOKEN_NOT_FOUND': () => false,
   'mvj/auth/RECEIVE_API_TOKEN': () => false
 }, false);
-const apiTokenReducer: Reducer<Record<string, any>> = handleActions({
+const apiTokenReducer: Reducer<any> = handleActions({
   ['mvj/auth/CLEAR_API_TOKEN']: () => {},
-  ['mvj/auth/RECEIVE_API_TOKEN']: (state: Record<string, any>, {
+  ['mvj/auth/RECEIVE_API_TOKEN']: (state: any, {
     payload
   }: ReceiveApiTokenAction) => payload
 }, {});

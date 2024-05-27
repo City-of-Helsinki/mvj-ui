@@ -31,7 +31,7 @@ const jobRunMethodsReducer: Reducer<Methods> = handleActions({
     return methods;
   }
 }, null);
-const jobRunsReducer: Reducer<JobRuns> = handleActions({
+const jobRunsReducer: Reducer<any> = handleActions({
   ['mvj/batchrun/RECEIVE_JOB_RUNS']: (state: JobRuns, {
     payload: jobRuns
   }: ReceiveJobRunsAction) => {
@@ -108,7 +108,7 @@ const scheduledJobMethodsReducer: Reducer<Methods> = handleActions({
     return methods;
   }
 }, null);
-const scheduledJobsReducer: Reducer<ScheduledJobs> = handleActions({
+const scheduledJobsReducer: Reducer<any> = handleActions({
   ['mvj/batchrun/RECEIVE_SCHEDULED_JOBS']: (state: ScheduledJobs, {
     payload: scheduledJobs
   }: ReceiveScheduledJobsAction) => {

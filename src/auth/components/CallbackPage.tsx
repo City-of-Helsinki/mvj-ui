@@ -17,6 +17,7 @@ class CallbackPage extends PureComponent<Props> {
   };
 
   render() {
+    // @ts-ignore: No overload matches this call.
     return <CallbackComponent errorCallback={this.successCallback} successCallback={this.successCallback} userManager={userManager}>
         <div></div>
       </CallbackComponent>;
