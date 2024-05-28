@@ -22,7 +22,7 @@
     "compile": "node scripts/compile.js",
     "precommit": "npm-run-all flow lint",
     "prepush": "npm-run-all test",
-    "test": "mocha --require @babel/register --require src/test.js \"src/**/*spec.js\"",
+    "test": "mocha --require @babel/register --require ts-node/register --require tsconfig-paths/register --require src/test.ts \"src/**/*spec.ts\"",
     "test:coverage": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha \"src/**/*spec.js\" --exit",
     "test:watch": "npm run test -- --watch"
   },
@@ -127,6 +127,8 @@
     "sinon-chai": "^3.3.0",
     "style-loader": "^3.3.4",
     "terser-webpack-plugin": "^5.3.10",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5",
     "url-loader": "^4.1.1",
     "webpack": "^5.9.0",

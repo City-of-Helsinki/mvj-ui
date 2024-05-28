@@ -24,7 +24,8 @@ const defaultState: AreaSearchState = {
   lastAreaSearchEditError: null,
   isSubmittingAreaSearchSpecs: false,
   isSubmittingAreaSearchApplication: false,
-  isPerformingFileOperation: false
+  isPerformingFileOperation: false,
+  lastFileOperationError: null
 };
 describe('AreaSearch', () => {
   describe('Reducer', () => {

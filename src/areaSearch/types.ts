@@ -23,6 +23,7 @@ export type AreaSearchState = {
   isSubmittingAreaSearchSpecs: boolean;
   isSubmittingAreaSearchApplication: boolean;
   isPerformingFileOperation: boolean;
+  lastFileOperationError?: any;
 };
 export type AreaSearch = {
   id: number;
