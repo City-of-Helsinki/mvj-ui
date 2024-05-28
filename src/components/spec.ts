@@ -1,5 +1,3 @@
-// @ts-nocheck: Only a void function can be called with the 'new' keyword.
-
 import { expect } from "chai";
 import ErrorIcon from "src/components/icons/ErrorIcon";
 import SuccessIcon from "src/components/icons/SuccessIcon";
@@ -8,7 +6,7 @@ import ToastrIcons from "src/components/toastr/ToastrIcons";
 describe('components', () => {
   describe('ErrorIcon', () => {
     it('should return ErrorIcon', () => {
-      const errorIcon: any = new ErrorIcon({
+      const errorIcon: any = ErrorIcon({
         className: 'error'
       });
       expect(errorIcon.props.className).to.deep.equal('icons icons__error error');
@@ -16,7 +14,7 @@ describe('components', () => {
   });
   describe('SuccessIcon', () => {
     it('should return SuccessIcon', () => {
-      const successIcon: any = new SuccessIcon({
+      const successIcon: any = SuccessIcon({
         className: 'success'
       });
       expect(successIcon.props.className).to.deep.equal('icons icons__success success');
@@ -24,17 +22,17 @@ describe('components', () => {
   });
   describe('ToastrIcons', () => {
     it('should return ToasterIcon', () => {
-      const errorIcon: any = new ToastrIcons({
+      const errorIcon: any = ToastrIcons({
         name: 'error'
       });
-      const successIcon: any = new ToastrIcons({
+      const successIcon: any = ToastrIcons({
         name: 'success'
       });
       expect(errorIcon.props.className).to.deep.equal('toastr__icons');
       expect(successIcon.props.className).to.deep.equal('toastr__icons');
-      expect(new ToastrIcons({
+      expect(ToastrIcons({
         name: 'not_found'
-      })).to.deep.equal({});
+      })).to.deep.equal(null);
     });
   });
 });
