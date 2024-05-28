@@ -64,10 +64,18 @@ module.exports = {
   },
   resolve: {
     modules: [
-      path.join(__dirname, 'src'),
+      path.resolve(__dirname, '../'),
       'node_modules',
     ],
     extensions: ['.web.js', '.js', '.json', '.web.jsx', '.jsx', '.ts', '.tsx'],
+    // Some libraries import Node modules but don't use them in the browser.
+    // Tell Webpack to provide empty mocks for them so importing them works.
+    fallback: {
+      dgram: 'empty',
+      fs: 'empty',
+      net: 'empty',
+      tls: 'empty',
+    }
   },
   module: {
     strictExportPresence: true,
@@ -211,15 +219,5 @@ module.exports = {
       },
       extractComments: false,
     })],
-  },
-  // Some libraries import Node modules but don't use them in the browser.
-  // Tell Webpack to provide empty mocks for them so importing them works.
-  resolve: {
-    fallback: {
-      dgram: 'empty',
-      fs: 'empty',
-      net: 'empty',
-      tls: 'empty',
-    }
-  },
+  }
 };

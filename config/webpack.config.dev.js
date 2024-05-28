@@ -48,13 +48,21 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'react-dom': '@hot-loader/react-dom',
+      'react-dom': '@hot-loader/react-dom'
     },
     modules: [
-      path.join(__dirname, 'src'),
+      path.resolve(__dirname, '../'),
       'node_modules',
     ],
-    extensions: ['.web.js', '.js', '.json', '.web.jsx', '.jsx', '.ts', '.tsx'],
+    extensions: ['.ts', '.tsx', '.web.js', '.js', '.json', '.web.jsx', '.jsx'],
+    // Some libraries import Node modules but don't use them in the browser.
+    // Tell Webpack to provide empty mocks for them so importing them works.
+    fallback: {
+      dgram: 'empty',
+      fs: 'empty',
+      net: 'empty',
+      tls: 'empty',
+    }
   },
   module: {
     strictExportPresence: true,
@@ -143,16 +151,7 @@ module.exports = {
       contextRegExp: /moment$/,
     }),
   ],
-  // Some libraries import Node modules but don't use them in the browser.
-  // Tell Webpack to provide empty mocks for them so importing them works.
-  resolve: {
-    fallback: {
-      dgram: 'empty',
-      fs: 'empty',
-      net: 'empty',
-      tls: 'empty',
-    }
-  },
+
   // Turn off performance hints during development because we don't do any
   // splitting or minification in interest of speed. These warnings become
   // cumbersome.
