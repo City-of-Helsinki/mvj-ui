@@ -8,7 +8,7 @@
   "nyc": {
     "require": [
       "@babel/register",
-      "./src/test.js"
+      "./src/test.ts"
     ],
     "sourceMap": false,
     "instrument": false
@@ -23,7 +23,7 @@
     "precommit": "npm-run-all flow lint",
     "prepush": "npm-run-all test",
     "test": "mocha --require @babel/register --require ts-node/register --require tsconfig-paths/register --require src/test.ts \"src/**/*spec.ts\"",
-    "test:coverage": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha \"src/**/*spec.js\" --exit",
+    "test:coverage": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text --require ts-node/register --require tsconfig-paths/register mocha \"src/**/*spec.ts\" --exit",
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
