@@ -184,7 +184,7 @@ class CreateLeaseForm extends Component<Props> {
                 <FormField fieldAttributes={getFieldAttributes(leaseAttributes, LeaseFieldPaths.RELATE_TO)} name='relate_to' overrideValues={{
               fieldType: FieldTypes.LEASE,
               label: LeaseFieldTitles.RELATE_TO
-            }} serviceUnit={userActiveServiceUnit} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)} />
+            }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)} />
               </Authorization>
             </Column>
           </Row>}
