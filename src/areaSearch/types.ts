@@ -37,9 +37,9 @@ export type AreaSearch = {
   description_intended_use?: string;
   district: string;
   end_date?: string;
-  form: Record<string, any>;
+  form: any;
   // TODO: specify
-  geometry: Record<string, any>;
+  geometry: any;
   // TODO: specify
   identifier: string;
   intended_use: number;
@@ -60,29 +60,29 @@ export type UploadedAreaSearchAttachmentMeta = {
   created_at: string;
   user?: User;
 };
-export type FetchListAttributesAction = Action<"mvj/areaSearch/FETCH_LIST_ATTRIBUTES", void>;
-export type ReceiveListAttributesAction = Action<"mvj/areaSearch/RECEIVE_LIST_ATTRIBUTES", Attributes>;
-export type ReceiveListMethodsAction = Action<"mvj/areaSearch/RECEIVE_LIST_METHODS", Methods>;
-export type ListAttributesNotFoundAction = Action<"mvj/areaSearch/LIST_ATTRIBUTES_NOT_FOUND", void>;
-export type FetchAttributesAction = Action<"mvj/areaSearch/FETCH_ATTRIBUTES", void>;
-export type ReceiveAttributesAction = Action<"mvj/areaSearch/RECEIVE_ATTRIBUTES", Attributes>;
-export type ReceiveMethodsAction = Action<"mvj/areaSearch/RECEIVE_METHODS", Methods>;
-export type AttributesNotFoundAction = Action<"mvj/areaSearch/ATTRIBUTES_NOT_FOUND", void>;
-export type FetchAreaSearchListAction = Action<"mvj/areaSearch/FETCH_ALL", Record<string, any>>;
-export type FetchAreaSearchListByBBoxAction = Action<"mvj/areaSearch/FETCH_ALL_BY_BBOX", Record<string, any>>;
-export type ReceiveAreaSearchListAction = Action<"mvj/areaSearch/RECEIVE_ALL", Record<string, any>>;
-export type ReceiveAreaSearchListByBBoxAction = Action<"mvj/areaSearch/RECEIVE_ALL_BY_BBOX", Record<string, any>>;
-export type AreaSearchesNotFoundAction = Action<"mvj/areaSearch/NOT_FOUND", void>;
-export type AreaSearchesByBBoxNotFoundAction = Action<"mvj/areaSearch/NOT_FOUND_BY_BBOX", void>;
-export type FetchSingleAreaSearchAction = Action<"mvj/areaSearch/FETCH_SINGLE", number>;
-export type ReceiveSingleAreaSearchAction = Action<"mvj/areaSearch/RECEIVE_SINGLE", Record<string, any>>;
-export type SingleAreaSearchNotFoundAction = Action<"mvj/areaSearch/SINGLE_NOT_FOUND", void>;
-export type ReceiveIsSaveClickedAction = Action<"mvj/areaSearch/RECEIVE_SAVE_CLICKED", boolean>;
-export type ReceiveFormValidFlagsAction = Action<"mvj/areaSearch/RECEIVE_FORM_VALID_FLAGS", Record<string, any>>;
-export type ClearFormValidFlagsAction = Action<"mvj/areaSearch/CLEAR_FORM_VALID_FLAGS", void>;
-export type HideEditModeAction = Action<"mvj/areaSearch/HIDE_EDIT", void>;
-export type ShowEditModeAction = Action<"mvj/areaSearch/SHOW_EDIT", void>;
-export type ReceiveCollapseStatesAction = Action<"mvj/areaSearch/RECEIVE_COLLAPSE_STATES", Record<string, any>>;
+export type FetchListAttributesAction = Action<string, void>;
+export type ReceiveListAttributesAction = Action<string, Attributes>;
+export type ReceiveListMethodsAction = Action<string, Methods>;
+export type ListAttributesNotFoundAction = Action<string, void>;
+export type FetchAttributesAction = Action<string, void>;
+export type ReceiveAttributesAction = Action<string, Attributes>;
+export type ReceiveMethodsAction = Action<string, Methods>;
+export type AttributesNotFoundAction = Action<string, void>;
+export type FetchAreaSearchListAction = Action<string, Record<string, any>>;
+export type FetchAreaSearchListByBBoxAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchListAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchListByBBoxAction = Action<string, Record<string, any>>;
+export type AreaSearchesNotFoundAction = Action<string, void>;
+export type AreaSearchesByBBoxNotFoundAction = Action<string, void>;
+export type FetchSingleAreaSearchAction = Action<string, number>;
+export type ReceiveSingleAreaSearchAction = Action<string, Record<string, any>>;
+export type SingleAreaSearchNotFoundAction = Action<string, void>;
+export type ReceiveIsSaveClickedAction = Action<string, boolean>;
+export type ReceiveFormValidFlagsAction = Action<string, Record<string, any>>;
+export type ClearFormValidFlagsAction = Action<string, void>;
+export type HideEditModeAction = Action<string, void>;
+export type ShowEditModeAction = Action<string, void>;
+export type ReceiveCollapseStatesAction = Action<string, Record<string, any>>;
 export type InfoCheckBatchEditData = {
   areaSearch: Record<string, any>;
   applicant: Array<{
@@ -91,27 +91,27 @@ export type InfoCheckBatchEditData = {
     data: Record<string, any>;
   }>;
 };
-export type BatchEditAreaSearchInfoChecksAction = Action<"mvj/areaSearch/BATCH_EDIT_INFO_CHECKS", InfoCheckBatchEditData>;
-export type ReceiveAreaSearchInfoCheckBatchEditSuccessAction = Action<"mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_SUCCESS", void>;
-export type ReceiveAreaSearchInfoCheckBatchEditFailureAction = Action<"mvj/areaSearch/RECEIVE_INFO_CHECK_BATCH_EDIT_FAILURE", Record<string, any>>;
-export type EditAreaSearchAction = Action<"mvj/areaSearch/EDIT", Record<string, any>>;
-export type ReceiveAreaSearchEditedAction = Action<"mvj/areaSearch/RECEIVE_EDITED", void>;
-export type ReceiveAreaSearchEditFailedAction = Action<"mvj/areaSearch/RECEIVE_EDIT_FAILED", Record<string, any>>;
-export type SetAreaSearchAttachmentsAction = Action<"mvj/areaSearch/SET_ATTACHMENTS", Array<UploadedAreaSearchAttachmentMeta>>;
-export type CreateAreaSearchSpecsAction = Action<"mvj/areaSearch/CREATE_SPECS", Record<string, any>>;
-export type ReceiveAreaSearchSpecsCreatedAction = Action<"mvj/areaSearch/RECEIVE_SPECS_CREATED", Record<string, any>>;
-export type ReceiveAreaSearchSpecsCreateFailedAction = Action<"mvj/areaSearch/RECEIVE_SPECS_CREATE_FAILED", void>;
-export type CreateAreaSearchApplicationAction = Action<"mvj/areaSearch/CREATE_APPLICATION", Record<string, any>>;
-export type ReceiveAreaSearchApplicationCreatedAction = Action<"mvj/areaSearch/RECEIVE_APPLICATION_CREATED", Record<string, any>>;
-export type ReceiveAreaSearchApplicationCreateFailedAction = Action<"mvj/areaSearch/RECEIVE_APPLICATION_CREATE_FAILED", void>;
-export type DeleteAreaSearchAttachmentAction = Action<"mvj/areaSearch/DELETE_ATTACHMENT", {
+export type BatchEditAreaSearchInfoChecksAction = Action<string, InfoCheckBatchEditData>;
+export type ReceiveAreaSearchInfoCheckBatchEditSuccessAction = Action<string, void>;
+export type ReceiveAreaSearchInfoCheckBatchEditFailureAction = Action<string, Record<string, any>>;
+export type EditAreaSearchAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchEditedAction = Action<string, void>;
+export type ReceiveAreaSearchEditFailedAction = Action<string, Record<string, any>>;
+export type SetAreaSearchAttachmentsAction = Action<string, Array<UploadedAreaSearchAttachmentMeta>>;
+export type CreateAreaSearchSpecsAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchSpecsCreatedAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchSpecsCreateFailedAction = Action<string, void>;
+export type CreateAreaSearchApplicationAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchApplicationCreatedAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchApplicationCreateFailedAction = Action<string, void>;
+export type DeleteAreaSearchAttachmentAction = Action<string, {
   id: number;
   callback?: () => void;
 }>;
-export type UploadAreaSearchAttachmentAction = Action<"mvj/areaSearch/UPLOAD_ATTACHMENT", {
+export type UploadAreaSearchAttachmentAction = Action<string, {
   fileData: File;
   callback?: (fileData: UploadedAreaSearchAttachmentMeta) => void;
   areaSearch?: number;
 }>;
-export type ReceiveFileOperationFinishedAction = Action<"mvj/areaSearch/RECEIVE_FILE_OPERATION_FINISHED", void>;
-export type ReceiveFileOperationFailedAction = Action<"mvj/areaSearch/RECEIVE_FILE_OPERATION_FAILED", any>;
+export type ReceiveFileOperationFinishedAction = Action<string, void>;
+export type ReceiveFileOperationFailedAction = Action<string, any>;

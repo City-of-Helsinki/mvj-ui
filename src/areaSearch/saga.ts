@@ -67,7 +67,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchAreaSearchListSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -93,7 +94,8 @@ function* fetchAreaSearchListSaga({
 }
 
 function* fetchAreaSearchesByBBoxSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -121,7 +123,8 @@ function* fetchAreaSearchesByBBoxSaga({
 }
 
 function* fetchCurrentAreaSearchSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -147,7 +150,8 @@ function* fetchCurrentAreaSearchSaga({
 }
 
 function* batchEditAreaSearchInfoChecksSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   const errors = {
     areaSearch: [],
@@ -238,7 +242,8 @@ function* batchEditAreaSearchInfoChecksSaga({
 }
 
 function* editAreaSearchSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -280,7 +285,8 @@ function* editAreaSearchSaga({
 }
 
 function* createAreaSearchSpecsSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -322,7 +328,8 @@ function* createAreaSearchApplicationSaga({
   payload: {
     application,
     specs
-  }
+  },
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -374,7 +381,8 @@ function* createAreaSearchApplicationSaga({
 }
 
 function* uploadAttachmentSaga({
-  payload
+  payload,
+  type: any
 }: UploadAreaSearchAttachmentAction): Generator<any, any, any> {
   try {
     const {
@@ -399,7 +407,8 @@ function* uploadAttachmentSaga({
 }
 
 function* deleteAttachmentSaga({
-  payload
+  payload,
+  type: any
 }: DeleteAreaSearchAttachmentAction): Generator<any, any, any> {
   try {
     yield call(deleteAreaSearchAttachmentRequest, payload.id);

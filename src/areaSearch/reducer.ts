@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import type { Action, CombinedReducer } from "redux";
+import type { Action } from "redux";
 import { handleActions } from "redux-actions";
 import type { Attributes, Methods, Reducer } from "src/types";
 import type { AreaSearchState, ReceiveAreaSearchEditFailedAction, ReceiveAreaSearchListAction, ReceiveCollapseStatesAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceiveSingleAreaSearchAction } from "src/areaSearch/types";
@@ -46,7 +46,7 @@ const isFetchingListAttributesReducer: Reducer<boolean> = handleActions({
   ['mvj/areaSearch/LIST_ATTRIBUTES_NOT_FOUND']: () => false,
   ['mvj/areaSearch/RECEIVE_LIST_METHODS']: () => false
 }, false);
-const areaSearchListReducer: Reducer<ApiResponse> = handleActions({
+const areaSearchListReducer: Reducer<any> = handleActions({
   ['mvj/areaSearch/RECEIVE_ALL']: (state: ApiResponse, {
     payload: response
   }: ReceiveAreaSearchListAction) => {
@@ -58,7 +58,7 @@ const isFetchingAreaSearchListReducer: Reducer<boolean> = handleActions({
   ['mvj/areaSearch/RECEIVE_ALL']: () => false,
   ['mvj/areaSearch/NOT_FOUND']: () => false
 }, false);
-const areaSearchListByBBoxReducer: Reducer<ApiResponse> = handleActions({
+const areaSearchListByBBoxReducer: Reducer<any> = handleActions({
   ['mvj/areaSearch/RECEIVE_ALL_BY_BBOX']: (state: ApiResponse, {
     payload: response
   }: ReceiveAreaSearchListAction) => {
@@ -187,4 +187,4 @@ export default (combineReducers<Record<string, any>, Action<any>>({
   isSubmittingAreaSearchSpecs: isSubmittingAreaSearchSpecsReducer,
   isPerformingFileOperation: isPerformingFileOperationReducer,
   lastFileOperationError: lastFileOperationErrorReducer
-}) as CombinedReducer<AreaSearchState, Action<any>>);
+}));

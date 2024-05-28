@@ -24,8 +24,7 @@ const defaultState: AreaSearchState = {
   lastAreaSearchEditError: null,
   isSubmittingAreaSearchSpecs: false,
   isSubmittingAreaSearchApplication: false,
-  isPerformingFileOperation: false,
-  lastFileOperationError: null
+  isPerformingFileOperation: false
 };
 describe('AreaSearch', () => {
   describe('Reducer', () => {
@@ -122,7 +121,7 @@ describe('AreaSearch', () => {
         const newState = { ...defaultState,
           isFetchingAreaSearchList: true
         };
-        const state = areaSearchReducer({}, fetchAreaSearchList());
+        const state = areaSearchReducer({}, fetchAreaSearchList({'test': 'test'}));
         expect(state).to.deep.equal(newState);
       });
       it('should unset isFetching flag when area searches could not be fetched', () => {
@@ -154,7 +153,7 @@ describe('AreaSearch', () => {
         const newState = { ...defaultState,
           isFetchingAreaSearchListByBBox: true
         };
-        const state = areaSearchReducer({}, fetchAreaSearchListByBBox());
+        const state = areaSearchReducer({}, fetchAreaSearchListByBBox({ 'test': 'test' }));
         expect(state).to.deep.equal(newState);
       });
       it('should unset isFetching flag when area searches by bounding box could not be fetched', () => {
@@ -242,11 +241,11 @@ describe('AreaSearch', () => {
       it('should unset edit flag and store the error when an area search could not be updated', () => {
         const newState = { ...defaultState,
           isEditingAreaSearch: false,
-          lastAreaSearchEditError: 'test error'
+          lastAreaSearchEditError: {'test': 'test error'}
         };
         const state = areaSearchReducer({
           isEditingAreaSearch: true
-        }, receiveAreaSearchEditFailed('test error'));
+        }, receiveAreaSearchEditFailed({'test': 'test error'}));
         expect(state).to.deep.equal(newState);
       });
       it('should update area search attachments', () => {

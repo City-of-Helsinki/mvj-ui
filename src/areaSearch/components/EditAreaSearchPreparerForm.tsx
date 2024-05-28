@@ -19,6 +19,7 @@ type OwnProps = {
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
   areaSearchData: Record<string, any> | null | undefined;
+  ref?: any;
 };
 type Props = OwnProps & {
   editAreaSearch: (...args: Array<any>) => any;

@@ -72,7 +72,7 @@ class AreaSearchListMap extends PureComponent<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (JSON.stringify(props.searchData) !== JSON.stringify(state.searchData)) {
       newState.searchData = props.searchData;

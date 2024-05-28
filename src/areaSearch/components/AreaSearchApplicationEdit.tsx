@@ -58,7 +58,7 @@ type State = {
 };
 
 class AreaSearchApplicationEdit extends Component<Props, State> {
-  state: $Shape<State> = {
+  state: any = {
     selectedAreaSectionRefreshKey: 0
   };
 
@@ -91,7 +91,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       setAreaSearchAttachments
     } = this.props;
     const currentFiles = areaSearch?.area_search_attachments || [];
-    const file = e.target.files[0];
+    const file = (e.target as HTMLInputElement).files[0];
     const fileExists = currentFiles.find(currentFile => currentFile.name === file.name);
 
     if (fileExists) {
@@ -118,9 +118,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       isFetchingFormAttributes,
       isPerformingFileOperation,
       formAttributes,
-      areaSearchAttributes,
-      attachments,
-      addAttachment
+      areaSearchAttributes
     } = this.props;
     const {
       selectedAreaSectionRefreshKey
@@ -310,4 +308,4 @@ export default (flowRight(connect(state => ({
   setAreaSearchAttachments
 }), reduxForm({
   form: FormNames.AREA_SEARCH
-}))(AreaSearchApplicationEdit) as React.ComponentType<OwnProps>);
+}))(AreaSearchApplicationEdit) as React.ComponentType<any>);

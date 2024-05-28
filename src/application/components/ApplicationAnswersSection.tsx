@@ -7,10 +7,7 @@ type Props = {
   section: FormSection;
   answer: SavedApplicationFormSection | Array<SavedApplicationFormSection>;
   topLevel?: boolean;
-  fieldTypes: Array<{
-    value: string;
-    display_name: string;
-  }>;
+  fieldTypes: any;
   sectionExtraComponent?: React.ComponentType<SectionExtraComponentProps>;
   sectionTitleTransformers?: Array<any>;
   plotSearch?: any;

@@ -47,7 +47,7 @@ type State = {
 };
 
 class AreaSearchApplication extends Component<Props, State> {
-  state: $Shape<State> = {
+  state: any = {
     selectedAreaSectionRefreshKey: 0
   };
 

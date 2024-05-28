@@ -92,11 +92,12 @@ type State = {
   sortKey: string;
   sortOrder: string;
   maxPage: number;
-  selectedStates: Array<string>;
+  selectedStates: Array<any>;
   visualizationType: string;
   isEditModalOpen: boolean;
   isExportModalOpen: boolean;
   editModalTargetAreaSearch: number | null | undefined;
+  userActiveServiceUnit?: any;
 };
 
 class AreaSearchApplicationListPage extends PureComponent<Props, State> {

@@ -9,7 +9,7 @@ describe('Auth', () => {
           apiToken: {},
           isFetching: true
         };
-        const state = authReducer({}, fetchApiToken());
+        const state = authReducer({}, fetchApiToken('test'));
         expect(state).to.deep.equal(newState);
       });
       it('should update isFetching flag to false by notFound', () => {
@@ -17,7 +17,7 @@ describe('Auth', () => {
           apiToken: {},
           isFetching: false
         };
-        let state = authReducer({}, fetchApiToken());
+        let state = authReducer({}, fetchApiToken('test'));
         state = authReducer(state, tokenNotFound());
         expect(state).to.deep.equal(newState);
       });
@@ -29,7 +29,7 @@ describe('Auth', () => {
           apiToken: dummyApiToken,
           isFetching: false
         };
-        const state = authReducer(state, receiveApiToken(dummyApiToken));
+        const state = authReducer({}, receiveApiToken(dummyApiToken));
         expect(state).to.deep.equal(newState);
       });
       it('should clear apiToken', () => {
@@ -40,7 +40,7 @@ describe('Auth', () => {
           apiToken: {},
           isFetching: false
         };
-        let state = authReducer({}, fetchApiToken());
+        let state = authReducer({}, fetchApiToken('test'));
         state = authReducer(state, receiveApiToken(dummyApiToken));
         state = authReducer(state, clearApiToken());
         expect(state).to.deep.equal(newState);

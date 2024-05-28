@@ -203,7 +203,7 @@ export default (flowRight(connect(state => {
   destroyOnUnmount: false,
   change,
   validate: values => {
-    const errors = {};
+    const errors: any = {};
 
     if (values.start_date && values.end_date && values.start_date > values.end_date) {
       errors.start_date = 'Alkupäivämäärän on oltava ennen loppupäivämäärää';

@@ -14,7 +14,7 @@ type Props = {
 class SingleAreaSearchMap extends Component<Props> {
   featureGroup: any = null;
   mapInstance: any = null;
-  initialize: (arg0: any) => void = () => {
+  initialize: (arg0?: any) => void = () => {
     if (!this.mapInstance || !this.featureGroup) {
       return;
     }

@@ -9,7 +9,7 @@ import { FormNames } from "src/enums";
 import { receiveFormValidFlags } from "src/areaSearch/actions";
 import { validateApplicationForm } from "src/application/formValidation";
 type OwnProps = {
-  formData: Record<string, any>;
+  formData: any;
 };
 type Props = OwnProps & {
   fieldTypeMapping: Record<string, any>;

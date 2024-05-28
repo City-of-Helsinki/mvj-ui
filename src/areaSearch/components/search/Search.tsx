@@ -26,10 +26,10 @@ type OwnProps = {
   isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;
   states: Array<Record<string, any>>;
+  handleSubmit: (...args: Array<any>) => any;
 };
 type Props = OwnProps & {
   formValues: Record<string, any>;
-  handleSubmit: (...args: Array<any>) => any;
   location: Record<string, any>;
   areaSearchAttributes: Attributes;
   areaSearches: ApiResponse;
@@ -151,7 +151,7 @@ class Search extends Component<Props, State> {
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.areaSearchAttributes !== state.areaSearchAttributes) {
       newState.intendedUseOptions = getFieldOptions(props.areaSearchAttributes, AreaSearchFieldPaths.INTENDED_USE);

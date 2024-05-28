@@ -4,6 +4,7 @@ type Props = {
   label: string;
   name: string;
   onChange: (...args: Array<any>) => any;
+  disabled?: boolean;
 };
 
 const AddFileButton = ({
