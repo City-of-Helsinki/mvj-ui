@@ -57,12 +57,10 @@ const Search = ({
 
 const formName = FormNames.TRADE_REGISTER_SEARCH;
 
-const decoratedComponent = reduxForm({
-  form: formName
-})(Search);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     formValues: getFormValues(formName)(state)
   };
-})(decoratedComponent);
+}), reduxForm({
+  form: formName
+}))(Search) as React.ComponentType<any>;

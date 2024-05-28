@@ -279,7 +279,8 @@ const LeaseArea = ({
 };
 
 const formName = FormNames.LEASE_AREAS;
-const decoratedLeaseArea = connect((state, props) => {
+export default (flowRight(
+withRouter, connect((state, props) => {
   const id = get(props, 'area.id');
   const isEditMode = getIsEditMode(state);
   return {
@@ -293,6 +294,4 @@ const decoratedLeaseArea = connect((state, props) => {
   };
 }, {
   receiveCollapseStates
-})(LeaseArea);
-
-export default withRouter(decoratedLeaseArea);
+}))(LeaseArea) as React.ComponentType<any>);

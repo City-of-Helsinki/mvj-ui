@@ -260,12 +260,7 @@ class InvoiceNotes extends PureComponent<Props> {
 
 const formName = FormNames.LEASE_INVOICE_NOTES;
 const selector = formValueSelector(formName);
-const decoratedInvoiceNotes = reduxForm({
-  form: formName,
-  enableReinitialize: true
-})(InvoiceNotes);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     currentLease: getCurrentLease(state),
     editedInvoiceNotes: selector(state, 'invoice_notes'),
@@ -274,4 +269,7 @@ export default connect(state => {
   };
 }, {
   patchLeaseInvoiceNotes
-})(decoratedInvoiceNotes);
+}), reduxForm({
+  form: formName,
+  enableReinitialize: true
+}))(InvoiceNotes) as React.ComponentType<any>;

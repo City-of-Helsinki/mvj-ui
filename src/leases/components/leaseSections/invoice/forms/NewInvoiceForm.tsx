@@ -252,12 +252,7 @@ const NewInvoiceForm = ({
 
 const formName = FormNames.LEASE_INVOICE_NEW;
 const selector = formValueSelector(formName);
-const decoratedNewInvoiceForm = reduxForm({
-  form: formName,
-  validate: validateInvoiceForm
-})(NewInvoiceForm);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     formValues: getFormValues(formName)(state),
     invoiceAttributes: getInvoiceAttributes(state),
@@ -271,4 +266,7 @@ export default connect(state => {
   };
 }, {
   receiveIsCreateClicked
-})(decoratedNewInvoiceForm);
+}), reduxForm({
+  form: formName,
+  validate: validateInvoiceForm
+}))(NewInvoiceForm) as React.ComponentType<any>;

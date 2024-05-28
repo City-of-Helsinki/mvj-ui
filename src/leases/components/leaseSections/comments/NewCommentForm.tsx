@@ -69,10 +69,8 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-const decoratedNewCommentForm = reduxForm({
-  form: formName
-})(NewCommentForm);
-
-export default connect(mapStateToProps, {
+export default flowRight(connect(mapStateToProps, {
   receiveIsSaveClicked
-})(decoratedNewCommentForm);
+}), reduxForm({
+  form: formName
+}))(NewCommentForm) as React.ComponentType<any>;

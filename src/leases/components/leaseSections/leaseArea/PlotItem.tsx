@@ -128,10 +128,9 @@ const PlotItem = ({
     </BoxItem>;
 };
 
-const decoratedPlotItem = connect(state => {
+export default flowRight(
+withRouter, connect(state => {
   return {
     attributes: getAttributes(state)
   };
-})(PlotItem);
-
-export default withRouter(decoratedPlotItem);
+}))(PlotItem) as React.ComponentType<any>;

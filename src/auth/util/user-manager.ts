@@ -1,3 +1,4 @@
+// @ts-ignore: Module '"oidc-client"' has no exported member 'Global'
 import { Global, Log, UserManager, WebStorageStateStore } from "oidc-client";
 const userManagerConfig = {
   authority: process.env.OPENID_CONNECT_AUTHORITY_URL || 'https://api.hel.fi/sso/openid/',

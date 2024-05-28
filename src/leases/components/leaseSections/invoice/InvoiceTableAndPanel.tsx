@@ -484,7 +484,7 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
 
 }
 
-const decoratedInvoiceTableAndPanel = connect(state => {
+export default flowRight(withRouter, connect(state => {
   const currentLease = getCurrentLease(state);
   return {
     invoiceAttributes: getInvoiceAttributes(state),
@@ -497,6 +497,4 @@ const decoratedInvoiceTableAndPanel = connect(state => {
   clearPatchedInvoice,
   initialize,
   patchInvoice
-})(InvoiceTableAndPanel);
-
-export default withRouter(decoratedInvoiceTableAndPanel);
+}))(InvoiceTableAndPanel) as React.ComponentType<any>;

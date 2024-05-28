@@ -252,13 +252,8 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
 
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
-const decoratedReduxFormPlanUnitItemEdit = reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  change
-})(PlanUnitItemEdit);
-
-const decoratedConnectPlanUnitItemEdit = connect((state, props) => {
+export default flowRight(
+withRouter, connect((state, props) => {
   return {
     attributes: getAttributes(state),
     geometry: selector(state, `${props.field}.geometry`),
@@ -278,6 +273,8 @@ const decoratedConnectPlanUnitItemEdit = connect((state, props) => {
     plan_unit_intended_use: selector(state, `${props.field}.plan_unit_intended_use`),
     is_master: selector(state, `${props.field}.is_master`)
   };
-})(decoratedReduxFormPlanUnitItemEdit);
-
-export default withRouter(decoratedConnectPlanUnitItemEdit);
+}), reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+  change
+}))(PlanUnitItemEdit) as React.ComponentType<any>;

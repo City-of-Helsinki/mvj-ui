@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "src/app/AppContext";
+import flowRight from "lodash/flowRight";
 import AddButtonThird from "src/components/form/AddButtonThird";
 import Authorization from "src/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "src/components/form/FieldAndRemoveButtonWrapper";
@@ -516,13 +517,11 @@ const mapStateToProps = (state: RootState) => {
 };
 
 const formName = FormNames.RENT_BASIS;
-const decoratedComponent = reduxForm({
+export default flowRight(connect(mapStateToProps, {
+  receiveFormValid
+}), reduxForm({
   destroyOnUnmount: false,
   form: formName,
   enableReinitialize: true,
   validate: validateRentBasisForm
-})(RentBasisForm)
-
-export default connect(mapStateToProps, {
-  receiveFormValid
-})(decoratedComponent);
+}))(RentBasisForm) as React.ComponentType<any>;

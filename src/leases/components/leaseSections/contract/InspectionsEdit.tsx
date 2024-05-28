@@ -128,12 +128,7 @@ class InspectionsEdit extends PureComponent<Props> {
 }
 
 const formName = FormNames.LEASE_INSPECTIONS;
-const decoratedInspectionEdit = reduxForm({
-  form: formName,
-  destroyOnUnmount: false
-})(InspectionsEdit);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   const user = getLoggedInUser(state);
 
   if (!user || user.expired) {
@@ -149,4 +144,7 @@ export default connect(state => {
   };
 }, {
   receiveFormValidFlags
-})(decoratedInspectionEdit);
+}), reduxForm({
+  form: formName,
+  destroyOnUnmount: false
+}))(InspectionsEdit) as React.ComponentType<any>;

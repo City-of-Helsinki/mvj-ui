@@ -159,17 +159,15 @@ class ContractsEdit extends PureComponent<Props, State> {
 }
 
 const formName = FormNames.LEASE_CONTRACTS;
-const decoratedContractsEdit = reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  validate: validateContractForm
-})(ContractsEdit);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     currentLease: getCurrentLease(state),
     usersPermissions: getUsersPermissions(state)
   };
 }, {
   receiveFormValidFlags
-})(decoratedContractsEdit);
+}), reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+  validate: validateContractForm
+}))(ContractsEdit) as React.ComponentType<any>;

@@ -3,6 +3,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
+import flowRight from "lodash/flowRight";
 import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
 import isEqual from "lodash/isEqual";
@@ -219,14 +220,11 @@ class Search extends PureComponent<Props, State> {
 }
 
 const formName = FormNames.RENT_BASIS_SEARCH;
-const decoratedComponent = reduxForm({
-  form: formName
-})(Search);
-const decoratedConnectComponent = connect(state => {
+export default flowRight(withRouter, connect(state => {
   return {
     formValues: getFormValues(formName)(state),
     rentBasisAttributes: getRentBasisAttributes(state)
   };
-})(decoratedComponent);
-
-export default withRouter(decoratedConnectComponent);
+}), reduxForm({
+  form: formName
+}))(Search) as React.ComponentType<any>;

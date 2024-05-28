@@ -548,12 +548,7 @@ const EditInvoiceForm = ({
 
 const formName = FormNames.LEASE_INVOICE_EDIT;
 const selector = formValueSelector(formName);
-const decoratedEditInvoiceForm = reduxForm({
-  form: formName,
-  validate: validateInvoiceForm
-})(EditInvoiceForm);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     currentLease: getCurrentLease(state),
     invoiceAttributes: getInvoiceAttributes(state),
@@ -563,4 +558,7 @@ export default connect(state => {
   };
 }, {
   exportInvoiceToLaskeAndUpdateList
-})(decoratedEditInvoiceForm);
+}), reduxForm({
+  form: formName,
+  validate: validateInvoiceForm
+}))(EditInvoiceForm) as React.ComponentType<any>;

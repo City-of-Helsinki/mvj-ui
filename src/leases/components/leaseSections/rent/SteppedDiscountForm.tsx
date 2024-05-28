@@ -96,14 +96,11 @@ const SteppedDiscountForm = ({
     </div>;
 };
 
-
-const decoratedSteppedDiscountForm = reduxForm({
-  form: FormNames.LEASE_STEPPED_DISCOUNT,
-  validate: validateSteppedDiscountForm
-})(SteppedDiscountForm);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     leaseAttributes: getLeaseAttributes(state)
   };
-})(decoratedSteppedDiscountForm);
+}), reduxForm({
+  form: FormNames.LEASE_STEPPED_DISCOUNT,
+  validate: validateSteppedDiscountForm
+}))(SteppedDiscountForm) as React.ComponentType<any>;

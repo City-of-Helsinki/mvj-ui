@@ -150,12 +150,7 @@ class DecisionsEdit extends PureComponent<Props, State> {
 }
 
 const formName = FormNames.LEASE_DECISIONS;
-const decoratedDecisionsEdit = reduxForm({
-  form: formName,
-  destroyOnUnmount: false
-})(DecisionsEdit);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     currentLease: getCurrentLease(state),
     isAttachDecisionModalOpen: getIsAttachDecisionModalOpen(state),
@@ -166,4 +161,7 @@ export default connect(state => {
   hideAttachDecisionModal,
   receiveFormValidFlags,
   showAttachDecisionModal
-})(decoratedDecisionsEdit);
+}), reduxForm({
+  form: formName,
+  destroyOnUnmount: false
+}))(DecisionsEdit) as React.ComponentType<any>;

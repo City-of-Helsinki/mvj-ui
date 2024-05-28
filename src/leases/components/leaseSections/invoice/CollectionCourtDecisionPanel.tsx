@@ -127,14 +127,12 @@ class CollectionCourtDecisionPanel extends PureComponent<Props, State> {
 
 const formName = FormNames.LEASE_CREATE_COLLECTION_COURT_DECISION;
 const selector = formValueSelector(formName);
-const decoratedCollectionCourtDecisionPanel = reduxForm({
-  form: formName
-})(CollectionCourtDecisionPanel);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     collectionCourtDecisionAttributes: getCollectionCourtDecisionAttributes(state),
     decisionDate: selector(state, 'decision_date'),
     note: selector(state, 'note')
   };
-})(decoratedCollectionCourtDecisionPanel);
+}), reduxForm({
+  form: formName
+}))(CollectionCourtDecisionPanel) as React.ComponentType<any>;

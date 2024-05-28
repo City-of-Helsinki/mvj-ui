@@ -147,14 +147,7 @@ const CreditInvoiceForm = ({
 
 const formName = FormNames.LEASE_REFUND;
 const selector = formValueSelector(formName);
-const decoratedCreditInvoiceForm = reduxForm({
-  form: formName,
-  initialValues: {
-    type: CreditInvoiceOptionsEnum.FULL
-  }
-})(CreditInvoiceForm);
-
-export default connect(state => {
+export default flowRight(connect(state => {
   return {
     formValues: getFormValues(formName)(state),
     invoiceAttributes: getInvoiceAttributes(state),
@@ -163,4 +156,9 @@ export default connect(state => {
   };
 }, {
   receiveIsCreditClicked
-})(decoratedCreditInvoiceForm);
+}), reduxForm({
+  form: formName,
+  initialValues: {
+    type: CreditInvoiceOptionsEnum.FULL
+  }
+}))(CreditInvoiceForm) as React.ComponentType<any>;
