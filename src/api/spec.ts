@@ -5,13 +5,10 @@ import type { ApiState } from "./types";
 const defaultState: ApiState = {
   error: null
 };
-// @ts-expect-error
+
 describe('API', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('apiReducer', () => {
-      // $FlowFixMe
       it('should update error', () => {
         const dummyError = {
           'error': 'test'

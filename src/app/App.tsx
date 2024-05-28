@@ -183,6 +183,7 @@ class App extends Component<Props, State> {
       return <div className={appStyle}>
           <ReduxToastr newestOnTop={true} position="bottom-right" preventDuplicates={true} progressBar={false} timeOut={2000} transitionIn="fadeIn" transitionOut="fadeOut" closeOnToastrClick={true} />
 
+          {/** @ts-ignore: Property 'MEDIUM' does not exist on type */}
           <ApiErrorModal size={Sizes.MEDIUM} data={apiError} isOpen={Boolean(apiError)} handleDismiss={this.handleDismissErrorModal} />
 
           <LoginPage buttonDisabled={Boolean(isApiTokenFetching)} onLoginClick={this.handleLogin} />

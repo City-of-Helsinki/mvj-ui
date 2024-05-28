@@ -18,12 +18,13 @@ import { hasPermissions } from "src/util/helpers";
 import { getRouteById, Routes } from "src/root/routes";
 import { withUsersPermissions } from "src/components/attributes/UsersPermissions";
 import type { UsersPermissions as UsersPermissionsType } from "src/usersPermissions/types";
-type OwnProps = {};
+type OwnProps = {
+  isOpen: boolean;
+  onLinkClick: (...args: Array<any>) => any;
+};
 type Props = OwnProps & {
   history: Record<string, any>;
   isFetchingUsersPermissions: boolean;
-  isOpen: boolean;
-  onLinkClick: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
 };
 type State = {
