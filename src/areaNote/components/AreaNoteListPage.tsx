@@ -90,7 +90,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
-    const newState = {};
+    const newState: any = {};
 
     if (props.areaNotes !== state.areaNotes || props.areaNoteMethods !== state.areaNoteMethods) {
       const {

@@ -53,7 +53,7 @@ const ApplicationAnswersField = ({
           return name;
         };
 
-        let displayValue = fieldAnswer?.value;
+        let displayValue: any = fieldAnswer?.value;
 
         if (displayValue !== undefined && displayValue !== null) {
           switch (fieldType) {

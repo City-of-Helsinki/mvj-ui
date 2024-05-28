@@ -86,4 +86,4 @@ export default flowRight(connect(state => ({
   formValues: getFormValues(formName)(state)
 })), reduxForm({
   form: formName
-}))(Search);
+}))(Search) as React.ComponentType<any>;

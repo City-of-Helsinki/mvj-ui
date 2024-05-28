@@ -16,13 +16,10 @@ const defaultState: AreaNoteState = {
   list: [],
   methods: null
 };
-// @ts-expect-error
+
 describe('AreaNoteList', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('areaNotesReducer', () => {
-      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           foo: 'bar'

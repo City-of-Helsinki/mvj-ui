@@ -173,7 +173,7 @@ export const getInitialApplicationForm = (fieldTypes: Record<number, string>, fo
     attachments: []
   };
 
-  const buildSectionItem = (section, parent, sectionAnswer) => {
+  const buildSectionItem = (section, parent, sectionAnswer?: any) => {
     const workingItem: ApplicationFormSection = {
       sections: {},
       fields: {},

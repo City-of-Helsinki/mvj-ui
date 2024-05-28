@@ -48,13 +48,13 @@ const methodsReducer: Reducer<Methods> = handleActions({
     return methods;
   }
 }, null);
-const areaNoteListReducer: Reducer<AreaNoteList> = handleActions({
+const areaNoteListReducer: Reducer<any> = handleActions({
   ['mvj/areaNote/RECEIVE_ALL']: (state: AreaNoteList, {
     payload: list
   }: ReceiveAreaNoteListAction) => {
     return list;
   },
-  ['mvj/areaNote/RECEIVE_DELETED']: (state: AreaNoteList, {
+  ['mvj/areaNote/RECEIVE_DELETED']: (state: any, {
     payload: areaNoteId
   }: ReceiveDeletedAreaNoteAction) => {
     const newList = [...state];

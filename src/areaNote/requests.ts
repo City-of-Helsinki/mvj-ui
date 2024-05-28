@@ -6,7 +6,7 @@ export const fetchAttributes = (): Generator<any, any, any> => {
     method: 'OPTIONS'
   }));
 };
-export const fetchAreaNotes = (params: Record<string, any> | null | undefined): Generator<any, any, any> => {
+export const fetchAreaNotes = (params: any | null | undefined): Generator<any, any, any> => {
   return callApi(new Request(createUrl('area_note/', params)));
 };
 export const createAreaNote = (areaNote: AreaNote): Generator<any, any, any> => {

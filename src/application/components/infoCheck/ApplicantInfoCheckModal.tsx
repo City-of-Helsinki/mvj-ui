@@ -29,7 +29,7 @@ class ApplicantInfoCheckModal extends Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if (!prevProps.isOpen && this.props.isOpen || prevProps.modalPage !== this.props.modalPage) {
       if (this.form) {
-        // $FlowFixMe
+        // @ts-ignore
         this.form.wrappedInstance.setFocus();
       }
     }

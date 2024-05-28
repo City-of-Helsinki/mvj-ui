@@ -1,4 +1,4 @@
-import type { Action, CombinedReducer } from "redux";
+import type { Action } from "redux";
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Attributes, Methods, Reducer } from "src/types";
@@ -118,4 +118,4 @@ export default (combineReducers<Record<string, any>, Action<any>>({
   pendingUploads: pendingUploadsReducer,
   isFetchingPendingUploads: isFetchingPendingUploadsReducer,
   isPerformingFileOperation: isPerformingFileOperationReducer
-}) as CombinedReducer<ApplicationState, Action<any>>);
+}));

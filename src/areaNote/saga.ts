@@ -34,7 +34,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchAreaNoteListSaga({
-  payload: query
+  payload: query,
+  type: any
 }): Generator<any, any, any> {
   try {
     let {
@@ -77,7 +78,8 @@ function* fetchAreaNoteListSaga({
 }
 
 function* createAreaNoteSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -118,7 +120,8 @@ function* createAreaNoteSaga({
 }
 
 function* deleteAreaNoteSaga({
-  payload: id
+  payload: id,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {
@@ -159,7 +162,8 @@ function* deleteAreaNoteSaga({
 }
 
 function* editAreaNoteSaga({
-  payload
+  payload,
+  type: any
 }): Generator<any, any, any> {
   try {
     const {

@@ -4,7 +4,7 @@ import { getLabelOfOption } from "src/util/helpers";
 import { getUserFullName } from "src/users/helpers";
 type Props = {
   infoChecks: Record<string, any>;
-  infoCheckStateOptions: Record<string, any>;
+  infoCheckStateOptions: any;
 };
 
 class ApplicantInfoCheck extends Component<Props> {

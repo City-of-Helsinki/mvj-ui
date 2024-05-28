@@ -16,6 +16,8 @@ type OwnProps = {
   infoCheck: Record<string, any>;
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
+  showMarkAll: boolean;
+  ref?: Function;
 };
 type Props = OwnProps & {
   initialize: (...args: Array<any>) => any;
@@ -23,7 +25,6 @@ type Props = OwnProps & {
   valid: boolean;
   formValues: Record<string, any>;
   isPreparerDirty: boolean;
-  showMarkAll: boolean;
 };
 
 class ApplicantInfoCheckForm extends Component<Props> {

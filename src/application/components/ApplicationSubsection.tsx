@@ -1,7 +1,6 @@
 import React, { Fragment, useCallback } from "react";
 import { change, FieldArray, formValueSelector } from "redux-form";
 import { connect } from "react-redux";
-import type { Fields } from "redux-form/lib/FieldArrayProps.types";
 import { Column, Row } from "react-foundation";
 import AddButton from "src/components/form/AddButton";
 import RemoveButton from "src/components/form/RemoveButton";
@@ -311,13 +310,14 @@ const ApplicationFormSubsectionFields = connect((state, props) => ({
     }
 
     return <Column {...columnWidths} className="ApplicationFormField__container">
+          {/** @ts-ignore: No overload matches this call. */}
           <FormField name={`${fieldName}.value`} field={field} fieldAttributes={{
-        read_only: false,
-        type: fieldType,
-        label: field.label,
-        required: field.required,
-        ...extraAttributes
-      }} overrideValues={fieldOverrides} onChange={newValue => checkSpecialValues(field, newValue)} validate={validator} />
+            read_only: false,
+            type: fieldType,
+            label: field.label,
+            required: field.required,
+            ...extraAttributes
+          }} overrideValues={fieldOverrides} onChange={newValue => checkSpecialValues(field, newValue)} validate={validator} />
         </Column>;
   }, []);
   const checkSpecialValues = useCallback((field: Record<string, any>, newValue: PlotApplicationFormValue): void => {
@@ -342,8 +342,8 @@ const ApplicationFormSubsectionFieldArray = ({
   sectionTitleTransformers,
   answerId
 }: {
-  fields: Fields;
-  section: Record<string, any>;
+  fields: any;
+  section: any;
   headerTag: string | React.ComponentType<{
     children?: React.ReactNode;
   }>;
@@ -382,7 +382,7 @@ const ApplicationSubsection = ({
   answerId
 }: {
   path: Array<string>;
-  section: Record<string, any>;
+  section: any;
   headerTag?: string | React.ComponentType<{
     children?: React.ReactNode;
   }>;
