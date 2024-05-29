@@ -97,8 +97,8 @@
           margin-left: rem-calc(5px);
           background-color: #0078c0;
         }
-      }
 
+      }
       .logout-link {
         color: $blue;
         font-weight: $semibold;
@@ -113,58 +113,63 @@
         }
       }
     }
-  }
 
-  .menuIcon, .userIcon, .flagIcon {
-    width: 27px;
-    height: 27px;
-    fill: $black;
-    cursor: pointer;
-  }
-
-  .menuIcon:hover, .userIcon:hover {
-    fill: $blue;
-  }
-
-  .menuIcon {
-    width: rem-calc(25px);
-    height: rem-calc(25px);
-    baseline-shift: rem-calc(10px);
-  }
-
-  .search {
-    margin: 0 rem-calc(40px) 0 0;
-  }
-
-  .flag {
-    position: relative;
-    margin: 0 rem-calc(60px) 0 0;
-  }
-
-  .user-service-unit {
-    border-right: 1px solid #ddd;
-    padding-right: 20px;
-
-    form {
-      min-width: 200px;
+    .menuIcon,
+    .userIcon,
+    .flagIcon {
+      width: 27px;
+      height: 27px;
+      fill: $black;
+      cursor: pointer;
     }
 
-    .user-service-unit-text {
-      line-height: 1.25;
-      text-align: right;
+    .menuIcon:hover,
+    .userIcon:hover {
+      fill: $blue;
     }
 
-    .service-unit-label {
-      font-size: 0.8rem;
-      color: #666666;
-      font-weight: 400;
+    .menuIcon {
+      width: rem-calc(25px);
+      height: rem-calc(25px);
+      baseline-shift: rem-calc(10px);
     }
 
-    .service-unit-name {
-      font-size: 0.85rem;
-      font-weight: 500;
+    .search {
+      margin: 0 rem-calc(40px) 0 0;
+    }
+
+    .flag {
+      position: relative;
+      margin: 0 rem-calc(60px) 0 0;
+    }
+
+    .user-service-unit {
+      border-right: 1px solid #ddd;
+      padding-right: 20px;
+
+      form {
+        min-width: 200px;
+        label {
+          display: inline;
+
+        }
+      }
+
+      .user-service-unit-text {
+        line-height: 1.25;
+        text-align: right;
+      }
+
+      .service-unit-label {
+        font-size: 0.8rem;
+        color: #666666;
+        font-weight: 400;
+      }
+
+      .service-unit-name {
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
     }
   }
-
-
 }
