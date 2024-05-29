@@ -2,12 +2,12 @@ import React from "react";
 import { getFormValues, isValid } from "redux-form";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import Button from "src/components/button/Button";
-import Modal from "src/components/modal/Modal";
-import ModalButtonWrapper from "src/components/modal/ModalButtonWrapper";
+import Button from "components/button/Button";
+import Modal from "components/modal/Modal";
+import ModalButtonWrapper from "components/modal/ModalButtonWrapper";
 import SteppedDiscountForm from "./SteppedDiscountForm";
-import { FormNames } from "src/enums";
-import { ButtonColors } from "src/components/enums";
+import { FormNames } from "enums";
+import { ButtonColors } from "components/enums";
 type Props = {
   decisionOptions: Array<Record<string, any>>;
   formValues: Record<string, any>;

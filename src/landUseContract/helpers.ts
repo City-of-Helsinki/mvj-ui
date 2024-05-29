@@ -1,15 +1,15 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { isDirty } from "redux-form";
-import { FormNames } from "src/enums";
+import { FormNames } from "enums";
 import { LitigantContactType } from "./enums";
-import { getContentUser } from "src/users/helpers";
-import { fixedLengthNumber, getApiResponseResults, isArchived, sortStringByKeyDesc, addEmptyOption, formatDate, convertStrToDecimalNumber } from "src/util/helpers";
-import { getIsEditMode } from "src/landUseContract/selectors";
-import { removeSessionStorageItem } from "src/util/storage";
-import { getContactFullName, getContentContact } from "src/contacts/helpers";
+import { getContentUser } from "users/helpers";
+import { fixedLengthNumber, getApiResponseResults, isArchived, sortStringByKeyDesc, addEmptyOption, formatDate, convertStrToDecimalNumber } from "util/helpers";
+import { getIsEditMode } from "landUseContract/selectors";
+import { removeSessionStorageItem } from "util/storage";
+import { getContactFullName, getContentContact } from "contacts/helpers";
 import type { LandUseContract } from "./types";
-import type { RootState } from "src/root/types";
+import type { RootState } from "root/types";
 
 /** 
  * Get land use contract identifier

@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import ExternalLinkIcon from "src/components/icons/ExternalLinkIcon";
+import ExternalLinkIcon from "components/icons/ExternalLinkIcon";
 type Props = {
   className?: string;
   href: string | null | undefined;

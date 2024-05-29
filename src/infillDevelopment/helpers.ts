@@ -1,14 +1,14 @@
 import get from "lodash/get";
 import { isDirty } from "redux-form";
-import { FormNames, TableSortOrder } from "src/enums";
-import { getContentLeaseIdentifier, getContentLeaseOption } from "src/leases/helpers";
-import { getContentUser } from "src/users/helpers";
-import { convertStrToDecimalNumber, getApiResponseResults } from "src/util/helpers";
-import { getIsEditMode } from "src/infillDevelopment/selectors";
-import { removeSessionStorageItem } from "src/util/storage";
-import { getContentLeaseAreasFeatures, getContentPlanUnitFeatures, getContentLeasePlotsFeatures } from "src/leases/helpers";
-import type { LeafletGeoJson } from "src/types";
-import type { RootState } from "src/root/types";
+import { FormNames, TableSortOrder } from "enums";
+import { getContentLeaseIdentifier, getContentLeaseOption } from "leases/helpers";
+import { getContentUser } from "users/helpers";
+import { convertStrToDecimalNumber, getApiResponseResults } from "util/helpers";
+import { getIsEditMode } from "infillDevelopment/selectors";
+import { removeSessionStorageItem } from "util/storage";
+import { getContentLeaseAreasFeatures, getContentPlanUnitFeatures, getContentLeasePlotsFeatures } from "leases/helpers";
+import type { LeafletGeoJson } from "types";
+import type { RootState } from "root/types";
 
 /**
  * Get infill development compensation list results

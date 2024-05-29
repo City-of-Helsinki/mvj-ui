@@ -1,14 +1,14 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveError } from "src/api/actions";
-import { receiveAttributes, receiveMethods, attributesNotFound, receiveAreaSearchList, areaSearchesNotFound, areaSearchesByBBoxNotFound, receiveAreaSearchByBBoxList, receiveSingleAreaSearch, singleAreaSearchNotFound, listAttributesNotFound, receiveListAttributes, receiveListMethods, receiveAreaSearchInfoChecksBatchEditFailure, receiveAreaSearchInfoChecksBatchEditSuccess, hideEditMode, fetchSingleAreaSearch, receiveAreaSearchEdited, receiveAreaSearchEditFailed, receiveAreaSearchSpecsCreated, receiveAreaSearchSpecsCreateFailed, receiveAreaSearchApplicationCreated, receiveAreaSearchApplicationCreateFailed, receiveFileOperationFailed, receiveFileOperationFinished } from "src/areaSearch/actions";
-import { editSingleAreaSearchRequest, fetchAreaSearchAttributesRequest, fetchAreaSearchesRequest, fetchAreaSearchListAttributesRequest, fetchSingleAreaSearchRequest, createAreaSearchSpecsRequest, deleteAreaSearchAttachmentRequest, uploadAreaSearchAttachmentRequest } from "src/areaSearch/requests";
-import { editApplicantInfoCheckItemRequest } from "src/plotApplications/requests";
-import { receiveUpdatedApplicantInfoCheckItem } from "src/application/actions";
-import { displayUIMessage } from "src/util/helpers";
+import { receiveError } from "api/actions";
+import { receiveAttributes, receiveMethods, attributesNotFound, receiveAreaSearchList, areaSearchesNotFound, areaSearchesByBBoxNotFound, receiveAreaSearchByBBoxList, receiveSingleAreaSearch, singleAreaSearchNotFound, listAttributesNotFound, receiveListAttributes, receiveListMethods, receiveAreaSearchInfoChecksBatchEditFailure, receiveAreaSearchInfoChecksBatchEditSuccess, hideEditMode, fetchSingleAreaSearch, receiveAreaSearchEdited, receiveAreaSearchEditFailed, receiveAreaSearchSpecsCreated, receiveAreaSearchSpecsCreateFailed, receiveAreaSearchApplicationCreated, receiveAreaSearchApplicationCreateFailed, receiveFileOperationFailed, receiveFileOperationFinished } from "areaSearch/actions";
+import { editSingleAreaSearchRequest, fetchAreaSearchAttributesRequest, fetchAreaSearchesRequest, fetchAreaSearchListAttributesRequest, fetchSingleAreaSearchRequest, createAreaSearchSpecsRequest, deleteAreaSearchAttachmentRequest, uploadAreaSearchAttachmentRequest } from "areaSearch/requests";
+import { editApplicantInfoCheckItemRequest } from "plotApplications/requests";
+import { receiveUpdatedApplicantInfoCheckItem } from "application/actions";
+import { displayUIMessage } from "util/helpers";
 import { push } from "react-router-redux";
-import { getRouteById, Routes } from "src/root/routes";
-import { createApplicationRequest } from "src/application/requests";
-import type { DeleteAreaSearchAttachmentAction, UploadAreaSearchAttachmentAction } from "src/areaSearch/types";
+import { getRouteById, Routes } from "root/routes";
+import { createApplicationRequest } from "application/requests";
+import type { DeleteAreaSearchAttachmentAction, UploadAreaSearchAttachmentAction } from "areaSearch/types";
 
 function* fetchListAttributesSaga(): Generator<any, any, any> {
   try {

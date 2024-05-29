@@ -1,5 +1,5 @@
-import type { Action, Attributes, Methods } from "src/types";
-import type { LeaseId } from "src/leases/types";
+import type { Action, Attributes, Methods } from "types";
+import type { LeaseId } from "leases/types";
 export type CommentState = {
   attributes: Attributes;
   byLease: Record<string, any>;

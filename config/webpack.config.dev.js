@@ -51,7 +51,7 @@ module.exports = {
       'react-dom': '@hot-loader/react-dom'
     },
     modules: [
-      path.resolve(__dirname, '../'),
+      path.resolve(__dirname, '../src'),
       'node_modules',
     ],
     extensions: ['.ts', '.tsx', '.web.js', '.js', '.json', '.web.jsx', '.jsx'],

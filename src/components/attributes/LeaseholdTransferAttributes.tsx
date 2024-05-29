@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchLeaseholdTransferAttributes } from "src/leaseholdTransfer/actions";
-import { getAttributes as getLeaseholdTransferAttributes, getIsFetchingAttributes as getIsFetchingLeaseholdTransferAttributes, getMethods as getLeaseholdTransferMethods } from "src/leaseholdTransfer/selectors";
-import type { Attributes, Methods } from "src/types";
+import { fetchAttributes as fetchLeaseholdTransferAttributes } from "leaseholdTransfer/actions";
+import { getAttributes as getLeaseholdTransferAttributes, getIsFetchingAttributes as getIsFetchingLeaseholdTransferAttributes, getMethods as getLeaseholdTransferMethods } from "leaseholdTransfer/selectors";
+import type { Attributes, Methods } from "types";
 
 function LeaseholdTransferAttributes(WrappedComponent: any) {
   type Props = {

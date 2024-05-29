@@ -1,17 +1,17 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Collapse from "src/components/collapse/Collapse";
-import Divider from "src/components/content/Divider";
-import FormText from "src/components/form/FormText";
-import FormTextTitle from "src/components/form/FormTextTitle";
-import { receiveCollapseStates } from "src/landUseContract/actions";
-import { FormNames, ViewModes } from "src/enums";
-import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from "src/landUseContract/selectors";
-import type { Attributes } from "src/types";
-import type { LandUseContract } from "src/landUseContract/types";
-import { getContentConditions } from "src/landUseContract/helpers";
-import { getFieldOptions, getLabelOfOption, formatDate } from "src/util/helpers";
+import Collapse from "components/collapse/Collapse";
+import Divider from "components/content/Divider";
+import FormText from "components/form/FormText";
+import FormTextTitle from "components/form/FormTextTitle";
+import { receiveCollapseStates } from "landUseContract/actions";
+import { FormNames, ViewModes } from "enums";
+import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from "landUseContract/selectors";
+import type { Attributes } from "types";
+import type { LandUseContract } from "landUseContract/types";
+import { getContentConditions } from "landUseContract/helpers";
+import { getFieldOptions, getLabelOfOption, formatDate } from "util/helpers";
 type Props = {
   attributes: Attributes;
   ConditionsCollapseState: boolean;

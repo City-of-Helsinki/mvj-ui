@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import Button from "src/components/button/Button";
-import Modal from "src/components/modal/Modal";
-import { ButtonColors } from "src/components/enums";
+import Button from "components/button/Button";
+import Modal from "components/modal/Modal";
+import { ButtonColors } from "components/enums";
 type Props = {
   confirmButtonClassName?: string | null | undefined;
   confirmButtonLabel?: string | null | undefined;

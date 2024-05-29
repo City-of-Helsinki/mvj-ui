@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
-import Button from "src/components/button/Button";
-import { ButtonColors } from "src/components/enums";
+import Button from "components/button/Button";
+import { ButtonColors } from "components/enums";
 type Props = {
   ids: Array<string> | null | undefined;
 };

@@ -1,6 +1,6 @@
 import React from "react";
-import FormText from "src/components/form/FormText";
-import FormTextTitle from "src/components/form/FormTextTitle";
+import FormText from "components/form/FormText";
+import FormTextTitle from "components/form/FormTextTitle";
 type Props = {
   text: any;
   textClassName?: string;

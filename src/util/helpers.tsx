@@ -8,11 +8,11 @@ import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
 import isNumber from "lodash/isNumber";
 import { toastr } from "react-redux-toastr";
-import ToastrIcons from "src/components/toastr/ToastrIcons";
-import { PAIKKATIETOVIPUNEN_URL } from "src/constants";
-import { Breakpoints } from "src/foundation/enums";
-import type { ApiResponse, Attributes, Methods } from "src/types";
-import type { UsersPermissions } from "src/usersPermissions/types";
+import ToastrIcons from "components/toastr/ToastrIcons";
+import { PAIKKATIETOVIPUNEN_URL } from "util/constants";
+import { Breakpoints } from "foundation/enums";
+import type { ApiResponse, Attributes, Methods } from "types";
+import type { UsersPermissions } from "usersPermissions/types";
 
 /**
  * Compose page title

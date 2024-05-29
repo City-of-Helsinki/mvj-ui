@@ -3,20 +3,20 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
-import AreaNotesEditMap from "src/areaNote/components/AreaNotesEditMap";
-import TargetListLayer from "src/plotApplications/components/map/TargetListLayer";
-import { DEFAULT_ZOOM, MAP_COLORS } from "src/constants";
-import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "src/leases/constants";
-import { getApplicationTargetGeoJson } from "src/plotApplications/helpers";
-import { getApiResponseResults, getUrlParams } from "src/util/helpers";
-import { getBoundsFromBBox, getBoundsFromFeatures } from "src/util/map";
-import { getAreaNoteList } from "src/areaNote/selectors";
-import { getApplicationsByBBox } from "src/plotApplications/selectors";
-import { getUsersPermissions } from "src/usersPermissions/selectors";
-import type { LeafletGeoJson } from "src/types";
-import type { AreaNoteList } from "src/areaNote/types";
-import type { PlotApplicationsList } from "src/plotApplications/types";
-import type { UsersPermissions as UsersPermissionsType } from "src/usersPermissions/types";
+import AreaNotesEditMap from "areaNote/components/AreaNotesEditMap";
+import TargetListLayer from "plotApplications/components/map/TargetListLayer";
+import { DEFAULT_ZOOM, MAP_COLORS } from "util/constants";
+import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "leases/constants";
+import { getApplicationTargetGeoJson } from "plotApplications/helpers";
+import { getApiResponseResults, getUrlParams } from "util/helpers";
+import { getBoundsFromBBox, getBoundsFromFeatures } from "util/map";
+import { getAreaNoteList } from "areaNote/selectors";
+import { getApplicationsByBBox } from "plotApplications/selectors";
+import { getUsersPermissions } from "usersPermissions/selectors";
+import type { LeafletGeoJson } from "types";
+import type { AreaNoteList } from "areaNote/types";
+import type { PlotApplicationsList } from "plotApplications/types";
+import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 
 const getMapBounds = () => {
   const {

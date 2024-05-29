@@ -1,11 +1,11 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import type { Attributes, Methods, Selector } from "src/types";
-import type { RootState } from "src/root/types";
-import type { CustomDetailedPlan, PlanUnit, PlotSearch, PlotSearchList } from "src/plotSearch/types";
+import type { Attributes, Methods, Selector } from "types";
+import type { RootState } from "root/types";
+import type { CustomDetailedPlan, PlanUnit, PlotSearch, PlotSearchList } from "plotSearch/types";
 import { formValueSelector } from "redux-form";
-import { FormNames } from "src/enums";
-import { PlotSearchStageTypes } from "src/plotSearch/enums";
+import { FormNames } from "enums";
+import { PlotSearchStageTypes } from "plotSearch/enums";
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.plotSearch.attributes;
 export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolean => state.plotSearch.isEditMode;
 export const getCollapseStateByKey: Selector<Record<string, any> | null | undefined, string> = (state: RootState, key: string): Record<string, any> | null | undefined => {

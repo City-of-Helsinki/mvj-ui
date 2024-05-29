@@ -1,15 +1,15 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import BoxItem from "src/components/content/BoxItem";
-import BoxItemContainer from "src/components/content/BoxItemContainer";
-import FormText from "src/components/form/FormText";
-import GreenBox from "src/components/content/GreenBox";
+import BoxItem from "components/content/BoxItem";
+import BoxItemContainer from "components/content/BoxItemContainer";
+import FormText from "components/form/FormText";
+import GreenBox from "components/content/GreenBox";
 import InspectionItem from "./InspectionItem";
-import { getContentInspections } from "src/leases/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "src/leases/selectors";
-import type { Attributes } from "src/types";
-import type { Lease } from "src/leases/types";
+import { getContentInspections } from "leases/helpers";
+import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";
+import type { Attributes } from "types";
+import type { Lease } from "leases/types";
 type Props = {
   currentLease: Lease;
   leaseAttributes: Attributes;

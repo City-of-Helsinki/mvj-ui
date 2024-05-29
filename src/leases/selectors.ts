@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import type { RootState } from "src/root/types";
-import type { Attributes, Methods, Selector } from "src/types";
+import type { RootState } from "root/types";
+import type { Attributes, Methods, Selector } from "types";
 import type { LeaseId, Lease, LeaseList } from "./types";
 export const getIsAttachDecisionModalOpen: Selector<boolean, void> = (state: RootState): boolean => state.lease.isAttachDecisionModalOpen;
 export const getIsCreateModalOpen: Selector<boolean, void> = (state: RootState): boolean => state.lease.isCreateModalOpen;

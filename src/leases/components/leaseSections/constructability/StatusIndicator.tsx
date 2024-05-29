@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import classnames from "classnames";
-import { ConstructabilityStatus } from "src/leases/enums";
-import { getLabelOfOption } from "src/util/helpers";
+import { ConstructabilityStatus } from "leases/enums";
+import { getLabelOfOption } from "util/helpers";
 type StatusIndicatorProps = {
   researchState: string;
   stateOptions: Array<Record<string, any>>;

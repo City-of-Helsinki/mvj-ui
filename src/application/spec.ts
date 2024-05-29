@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import applicationReducer from "src/application/reducer";
-import type { ApplicationState } from "src/application/types";
-import { attributesNotFound, fetchAttachmentAttributes, fetchAttributes, receiveAttachmentAttributes, receiveAttributes, receiveFormAttributes, receiveMethods } from "src/application/actions";
-import mockFormAttributes from "src/application/form-attributes-mock-data.json";
-import { companyIdentifierValidator, emailValidator, personalIdentifierValidator, validateApplicationForm } from "src/application/formValidation";
+import applicationReducer from "application/reducer";
+import type { ApplicationState } from "application/types";
+import { attributesNotFound, fetchAttachmentAttributes, fetchAttributes, receiveAttachmentAttributes, receiveAttributes, receiveFormAttributes, receiveMethods } from "application/actions";
+import mockFormAttributes from "application/form-attributes-mock-data.json";
+import { companyIdentifierValidator, emailValidator, personalIdentifierValidator, validateApplicationForm } from "application/formValidation";
 import { get } from "lodash/object";
 const baseState: ApplicationState = {
   attributes: null,

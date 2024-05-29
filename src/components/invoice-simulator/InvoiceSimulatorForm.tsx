@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import { change, formValueSelector, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
-import FormField from "src/components/form/FormField";
-import { FormNames } from "src/enums";
-import { getCurrentYear } from "src/util/date";
-import { getCurrentLease } from "src/leases/selectors";
-import { getBillingPeriodsByLease } from "src/billingPeriods/selectors";
+import FormField from "components/form/FormField";
+import { FormNames } from "enums";
+import { getCurrentYear } from "util/date";
+import { getCurrentLease } from "leases/selectors";
+import { getBillingPeriodsByLease } from "billingPeriods/selectors";
 type Props = {
   onSubmit: (...args: Array<any>) => any;
 };

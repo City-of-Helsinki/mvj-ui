@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
+import type { Attributes, Methods } from "types";
 import type { CreateInvoiceNoteAndFetchListPayload, InvoiceNoteList, FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, AttributesNotFoundAction, FetchInvoiceNoteListAction, ReceiveInvoiceNoteListAction, CreateInvoiceNoteAndFetchListAction, NotFoundAction, HideCreateInvoiceNoteModalAction, ShowCreateInvoiceNoteModalAction } from "./types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/invoiceNote/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/invoiceNote/RECEIVE_ATTRIBUTES')(attributes);

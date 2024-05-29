@@ -3,15 +3,15 @@ import isEmpty from "lodash/isEmpty";
 import { kebabCase } from "lodash/string";
 import { cloneDeep } from "lodash/lang";
 import { formValueSelector } from "redux-form";
-import { getContentUser } from "src/users/helpers";
-import { removeSessionStorageItem } from "src/util/storage";
-import { FormNames } from "src/enums";
-import { formatDate, getApiResponseResults } from "src/util/helpers";
-import { PlotSearchTargetType } from "src/plotSearch/enums";
-import { FIELD_TYPE_FEATURES_BY_FIELD_TYPE_NAME, FieldTypeFeatures, PROTECTED_FORM_PATHS } from "src/plotSearch/constants";
-import type { PlotSearch, PlotSearchState, ProtectedFormPathsSectionNode } from "src/plotSearch/types";
-import type { Attributes } from "src/types";
-import type { Form, FormField, FormSection } from "src/application/types";
+import { getContentUser } from "users/helpers";
+import { removeSessionStorageItem } from "util/storage";
+import { FormNames } from "enums";
+import { formatDate, getApiResponseResults } from "util/helpers";
+import { PlotSearchTargetType } from "plotSearch/enums";
+import { FIELD_TYPE_FEATURES_BY_FIELD_TYPE_NAME, FieldTypeFeatures, PROTECTED_FORM_PATHS } from "plotSearch/constants";
+import type { PlotSearch, PlotSearchState, ProtectedFormPathsSectionNode } from "plotSearch/types";
+import type { Attributes } from "types";
+import type { Form, FormField, FormSection } from "application/types";
 
 /**
  * Get plotSearch basic information content

@@ -1,12 +1,12 @@
 import { all, call, fork, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 import { getFormValues, initialize } from "redux-form";
-import { applicantInfoCheckAttributesNotFound, applicationRelatedAttachmentsNotFound, attachmentAttributesNotFound, attributesNotFound, fetchApplicationRelatedAttachments, fetchPendingUploads, formAttributesNotFound, pendingUploadsNotFound, receiveApplicantInfoCheckAttributes, receiveApplicationRelatedAttachments, receiveAttachmentAttributes, receiveAttachmentMethods, receiveAttributes, receiveFileOperationFinished, receiveFormAttributes, receiveMethods, receivePendingUploads } from "src/application/actions";
-import { receiveError } from "src/api/actions";
-import { deleteUploadRequest, fetchApplicantInfoCheckAttributesRequest, fetchAttachmentAttributesRequest, fetchAttributesRequest, fetchFormAttributesRequest, fetchPendingUploadsRequest, fetchSingleApplicationAttachments, uploadFileRequest } from "src/application/requests";
-import { getApplicantInfoCheckFormName } from "src/application/helpers";
-import { getContentUser } from "src/users/helpers";
-import { displayUIMessage } from "src/util/helpers";
-import type { DeleteUploadAction, ReceiveUpdatedTargetInfoCheckItemAction, UploadFileAction } from "src/application/types";
+import { applicantInfoCheckAttributesNotFound, applicationRelatedAttachmentsNotFound, attachmentAttributesNotFound, attributesNotFound, fetchApplicationRelatedAttachments, fetchPendingUploads, formAttributesNotFound, pendingUploadsNotFound, receiveApplicantInfoCheckAttributes, receiveApplicationRelatedAttachments, receiveAttachmentAttributes, receiveAttachmentMethods, receiveAttributes, receiveFileOperationFinished, receiveFormAttributes, receiveMethods, receivePendingUploads } from "application/actions";
+import { receiveError } from "api/actions";
+import { deleteUploadRequest, fetchApplicantInfoCheckAttributesRequest, fetchAttachmentAttributesRequest, fetchAttributesRequest, fetchFormAttributesRequest, fetchPendingUploadsRequest, fetchSingleApplicationAttachments, uploadFileRequest } from "application/requests";
+import { getApplicantInfoCheckFormName } from "application/helpers";
+import { getContentUser } from "users/helpers";
+import { displayUIMessage } from "util/helpers";
+import type { DeleteUploadAction, ReceiveUpdatedTargetInfoCheckItemAction, UploadFileAction } from "application/types";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {

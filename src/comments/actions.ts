@@ -1,6 +1,6 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
-import type { LeaseId } from "src/leases/types";
+import type { Attributes, Methods } from "types";
+import type { LeaseId } from "leases/types";
 import type { Comment, CommentId, FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, FetchCommentsByLeaseAction, CreateCommentAction, EditCommentAction, ReceiveCommentsByLeaseAction, CommentAttributesNotFoundAction, CommentNotFoundAction, ClearEditFlagsAction, HideEditModeByIdAction, ShowEditModeByIdAction, ReceiveIsSaveClickedAction } from "./types";
 export const attributesNotFound = (): CommentAttributesNotFoundAction => createAction('mvj/comments/ATTRIBUTES_NOT_FOUND')();
 export const notFound = (): CommentNotFoundAction => createAction('mvj/comments/NOT_FOUND')();

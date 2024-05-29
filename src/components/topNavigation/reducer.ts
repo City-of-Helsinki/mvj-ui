@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "src/types";
+import type { Reducer } from "types";
 import type { ReceiveTopNavigationSettingsAction, TopNavigationSettings, TopNavigationState } from "./types";
 
 // @ts-ignore: Type 'ReduxCompatibleReducer<TopNavigationState, TopNavigationSettings>' is not assignable to type 'Reducer<TopNavigationSettings>'.

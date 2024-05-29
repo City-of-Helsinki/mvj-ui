@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 import type { Action } from "redux";
 import { handleActions } from "redux-actions";
-import type { Attributes, Methods, Reducer } from "src/types";
-import type { AreaSearchState, ReceiveAreaSearchEditFailedAction, ReceiveAreaSearchListAction, ReceiveCollapseStatesAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceiveSingleAreaSearchAction } from "src/areaSearch/types";
-import type { ReceiveAttributesAction, ReceiveMethodsAction, SetAreaSearchAttachmentsAction } from "src/areaSearch/types";
-import type { ApiResponse } from "src/types";
+import type { Attributes, Methods, Reducer } from "types";
+import type { AreaSearchState, ReceiveAreaSearchEditFailedAction, ReceiveAreaSearchListAction, ReceiveCollapseStatesAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceiveSingleAreaSearchAction } from "areaSearch/types";
+import type { ReceiveAttributesAction, ReceiveMethodsAction, SetAreaSearchAttachmentsAction } from "areaSearch/types";
+import type { ApiResponse } from "types";
 import merge from "lodash/merge";
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/areaSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
-import CreditDecisionRequest from "src/creditDecision/components/CreditDecisionRequest";
-import CreditDecisionHistory from "src/creditDecision/components/CreditDecisionHistory";
-import { ContactTypes } from "src/contacts/enums";
+import CreditDecisionRequest from "creditDecision/components/CreditDecisionRequest";
+import CreditDecisionHistory from "creditDecision/components/CreditDecisionHistory";
+import { ContactTypes } from "contacts/enums";
 type Props = {
   businessId?: string;
   contactId?: string;

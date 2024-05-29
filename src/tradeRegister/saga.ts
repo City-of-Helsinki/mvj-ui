@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveError } from "src/api/actions";
+import { receiveError } from "api/actions";
 import { receiveTradeRegisterCompanyExtendedById, companyExtendedNotFoundById, receiveTradeRegisterCompanyNoticeById, companyNoticeNotFoundById, receiveTradeRegisterCompanyRepresentById, companyRepresentNotFoundById } from "./actions";
 import { fetchCompanyExtended, fetchCompanyNotice, fetchCompanyRepresent } from "./requests";
 

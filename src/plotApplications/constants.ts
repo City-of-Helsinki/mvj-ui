@@ -1,4 +1,4 @@
-import { TableSortOrder } from "src/enums";
+import { TableSortOrder } from "enums";
 
 /**
  * Default plotApplications states value for plotSearch list search

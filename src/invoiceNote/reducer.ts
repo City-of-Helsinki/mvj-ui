@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Attributes, Methods, Reducer } from "src/types";
+import type { Attributes, Methods, Reducer } from "types";
 import type { InvoiceNoteList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveInvoiceNoteListAction } from "./types";
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/invoiceNote/FETCH_ATTRIBUTES': () => true,

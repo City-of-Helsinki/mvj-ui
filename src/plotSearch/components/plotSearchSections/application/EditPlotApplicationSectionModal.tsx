@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Modal from "src/components/modal/Modal";
-import EditPlotApplicationSectionForm from "src/plotSearch/components/plotSearchSections/application/EditPlotApplicationSectionForm";
+import Modal from "components/modal/Modal";
+import EditPlotApplicationSectionForm from "plotSearch/components/plotSearchSections/application/EditPlotApplicationSectionForm";
 type Props = {
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;

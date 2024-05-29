@@ -1,15 +1,15 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import LeaseHistoryItem from "./LeaseHistoryItem";
-import TitleH3 from "src/components/content/TitleH3";
-import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, LeaseHistoryItemTypes } from "src/leases/enums";
-import { getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom } from "src/leases/helpers";
-import { getFieldOptions } from "src/util/helpers";
-import { getUiDataLeaseKey } from "src/uiData/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "src/leases/selectors";
-import type { Attributes } from "src/types";
-import type { Lease } from "src/leases/types";
-import { restructureLease, sortRelatedHistoryItems } from "src/leases/helpers";
+import TitleH3 from "components/content/TitleH3";
+import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, LeaseHistoryItemTypes } from "leases/enums";
+import { getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom } from "leases/helpers";
+import { getFieldOptions } from "util/helpers";
+import { getUiDataLeaseKey } from "uiData/helpers";
+import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";
+import type { Attributes } from "types";
+import type { Lease } from "leases/types";
+import { restructureLease, sortRelatedHistoryItems } from "leases/helpers";
 type Props = {
   currentLease: Lease;
   leaseAttributes: Attributes;

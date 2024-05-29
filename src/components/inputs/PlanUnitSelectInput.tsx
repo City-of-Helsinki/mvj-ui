@@ -1,8 +1,8 @@
 import React from "react";
 import debounce from "lodash/debounce";
-import AsyncSelect from "src/components/form/AsyncSelect";
-import { getContentPlanUnitIdentifier } from "src/plotSearch/helpers";
-import { fetchPlanUnitListWithIdentifiersList, fetchCustomDetailedPlanListWithIdentifiersList } from "src/plotSearch/requestsAsync";
+import AsyncSelect from "components/form/AsyncSelect";
+import { getContentPlanUnitIdentifier } from "plotSearch/helpers";
+import { fetchPlanUnitListWithIdentifiersList, fetchCustomDetailedPlanListWithIdentifiersList } from "plotSearch/requestsAsync";
 type Props = {
   disabled?: boolean;
   name: string;

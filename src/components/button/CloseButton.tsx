@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 // @ts-ignore: unable to find svg file. Handled by webpack?
-import closeIcon from "assets/icons/icon_close.svg";
+import closeIcon from "../../../assets/icons/icon_close.svg";
 type Props = {
   className?: string;
   onClick: (...args: Array<any>) => any;

@@ -1,16 +1,16 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import Authorization from "src/components/authorization/Authorization";
+import Authorization from "components/authorization/Authorization";
 import ContractsEdit from "./ContractsEdit";
 import DecisionsEdit from "./DecisionsEdit";
-import Divider from "src/components/content/Divider";
+import Divider from "components/content/Divider";
 import InspectionsEdit from "./InspectionsEdit";
-import Title from "src/components/content/Title";
-import { LeaseContractsFieldPaths, LeaseContractsFieldTitles, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "src/leases/enums";
-import { getUiDataLeaseKey } from "src/uiData/helpers";
-import { isFieldAllowedToRead } from "src/util/helpers";
-import { getAttributes } from "src/leases/selectors";
-import type { Attributes } from "src/types";
+import Title from "components/content/Title";
+import { LeaseContractsFieldPaths, LeaseContractsFieldTitles, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "leases/enums";
+import { getUiDataLeaseKey } from "uiData/helpers";
+import { isFieldAllowedToRead } from "util/helpers";
+import { getAttributes } from "leases/selectors";
+import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;
 };

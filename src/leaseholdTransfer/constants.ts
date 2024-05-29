@@ -1,4 +1,4 @@
-import { TableSortOrder } from "src/enums";
+import { TableSortOrder } from "enums";
 
 /**
  * Default sort key of leasehold transfer list page

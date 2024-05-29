@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "src/types";
-import type { IndexList, ReceiveIndexListAction } from "src/index/types";
+import type { Reducer } from "types";
+import type { IndexList, ReceiveIndexListAction } from "index/types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/index/FETCH_ALL': () => true,
   'mvj/index/RECEIVE_ALL': () => false,

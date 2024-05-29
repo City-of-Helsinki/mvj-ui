@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { LeaseBasisOfRentsFieldTitles } from "src/leases/enums";
-import FormText from "src/components/form/FormText";
-import { calculateBasisOfRentDiscountedInitialYearRentsTotal, calculateInitialYearRentsTotal } from "src/leases/helpers";
-import { formatNumber } from "src/util/helpers";
+import { LeaseBasisOfRentsFieldTitles } from "leases/enums";
+import FormText from "components/form/FormText";
+import { calculateBasisOfRentDiscountedInitialYearRentsTotal, calculateInitialYearRentsTotal } from "leases/helpers";
+import { formatNumber } from "util/helpers";
 type Props = {
   basisOfRents: any;
   indexOptions: Array<Record<string, any>>;

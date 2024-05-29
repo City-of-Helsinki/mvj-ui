@@ -3,12 +3,12 @@ import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import { reduxForm } from "redux-form";
 import Select from "react-select";
-import FormFieldLabel from "src/components/form/FormFieldLabel";
-import DropdownIndicator from "src/components/inputs/DropdownIndicator";
-import LoadingIndicator from "src/components/inputs/SelectLoadingIndicator";
-import { FormNames } from "src/enums";
-import { setUserActiveServiceUnit } from "src/usersPermissions/actions";
-import type { UserServiceUnit, UserServiceUnits } from "src/usersPermissions/types";
+import FormFieldLabel from "components/form/FormFieldLabel";
+import DropdownIndicator from "components/inputs/DropdownIndicator";
+import LoadingIndicator from "components/inputs/SelectLoadingIndicator";
+import { FormNames } from "enums";
+import { setUserActiveServiceUnit } from "usersPermissions/actions";
+import type { UserServiceUnit, UserServiceUnits } from "usersPermissions/types";
 type Props = {
   userServiceUnits: UserServiceUnits;
   userActiveServiceUnit: UserServiceUnit;

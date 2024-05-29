@@ -3,9 +3,9 @@ import type { Action } from "redux";
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import { sortBy } from "lodash/collection";
-import { FormNames } from "src/enums";
-import type { Attributes, Reducer } from "src/types";
-import type { InfoCheckBatchEditErrors, PlotApplication, PlotApplicationsList, PlotApplicationsState, ReceiveApplicationRelatedFormAction, ReceiveApplicationRelatedPlotSearchAction, ReceiveCollapseStatesAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceivePlotApplicationInfoCheckBatchEditFailureAction, ReceivePlotApplicationsByBBoxAction, ReceivePlotApplicationsListAction, ReceivePlotSearchSubtypesAction, ReceiveSinglePlotApplicationAction, ReceiveTargetInfoCheckAttributesAction, ReceiveTargetInfoChecksForPlotSearchAction } from "src/plotApplications/types";
+import { FormNames } from "enums";
+import type { Attributes, Reducer } from "types";
+import type { InfoCheckBatchEditErrors, PlotApplication, PlotApplicationsList, PlotApplicationsState, ReceiveApplicationRelatedFormAction, ReceiveApplicationRelatedPlotSearchAction, ReceiveCollapseStatesAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceivePlotApplicationInfoCheckBatchEditFailureAction, ReceivePlotApplicationsByBBoxAction, ReceivePlotApplicationsListAction, ReceivePlotSearchSubtypesAction, ReceiveSinglePlotApplicationAction, ReceiveTargetInfoCheckAttributesAction, ReceiveTargetInfoChecksForPlotSearchAction } from "plotApplications/types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/plotApplications/FETCH_ALL']: () => true,
   ['mvj/plotApplications/RECEIVE_ALL']: () => false,

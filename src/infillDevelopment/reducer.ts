@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import merge from "lodash/merge";
-import { FormNames } from "src/enums";
+import { FormNames } from "enums";
 import type { Attributes, Methods, Reducer } from "../types";
 import type { InfillDevelopment, InfillDevelopmentList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveFormInitialValuesAction, ReceiveFormValidFlagsAction, ReceiveInfillDevelopmentListAction, ReceiveIsSaveClickedAction, ReceiveSingleInfillDevelopmentAction, ReceiveCollapseStatesAction } from "./types";
 const isEditModeReducer: Reducer<boolean> = handleActions({

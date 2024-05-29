@@ -1,15 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Collapse from "src/components/collapse/Collapse";
-import FormTitleAndText from "src/components/form/FormTitleAndText";
-import { receiveCollapseStates } from "src/landUseContract/actions";
-import { FormNames, ViewModes } from "src/enums";
-import { formatDate, getLabelOfOption } from "src/util/helpers";
-import { getCollapseStateByKey } from "src/landUseContract/selectors";
+import Collapse from "components/collapse/Collapse";
+import FormTitleAndText from "components/form/FormTitleAndText";
+import { receiveCollapseStates } from "landUseContract/actions";
+import { FormNames, ViewModes } from "enums";
+import { formatDate, getLabelOfOption } from "util/helpers";
+import { getCollapseStateByKey } from "landUseContract/selectors";
 import Warrants from "./Warrants";
 import Changes from "./Changes";
-import type { LandUseContract } from "src/landUseContract/types";
+import type { LandUseContract } from "landUseContract/types";
 type Props = {
   attributes: Record<string, any>;
   collapseState: boolean;

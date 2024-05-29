@@ -1,4 +1,4 @@
-import type { Action, Attributes } from "src/types";
+import type { Action, Attributes } from "types";
 export type LeaseCreateChargeState = {
   attributes: Attributes;
   isFetchingAttributes: boolean;

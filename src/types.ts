@@ -1,4 +1,4 @@
-import type { RootState } from "src/root/types";
+import type { RootState } from "root/types";
 export type Action<Type extends string, Payload> = {
   type: Type;
   payload: Payload;

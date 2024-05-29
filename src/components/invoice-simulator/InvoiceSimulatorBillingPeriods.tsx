@@ -1,13 +1,13 @@
 import React, { Fragment } from "react";
 import { Row, Column } from "react-foundation";
-import AmountWithVat from "src/components/vat/AmountWithVat";
-import Collapse from "src/components/collapse/Collapse";
-import CollapseHeaderSubtitle from "src/components/collapse/CollapseHeaderSubtitle";
-import RentCalculatorExplanation from "src/components/rent-calculator/RentCalculatorExplanation";
-import FormTitleAndText from "src/components/form/FormTitleAndText";
+import AmountWithVat from "components/vat/AmountWithVat";
+import Collapse from "components/collapse/Collapse";
+import CollapseHeaderSubtitle from "components/collapse/CollapseHeaderSubtitle";
+import RentCalculatorExplanation from "components/rent-calculator/RentCalculatorExplanation";
+import FormTitleAndText from "components/form/FormTitleAndText";
 import InvoiceSimulatorInvoice from "./InvoiceSimulatorInvoice";
-import SubTitle from "src/components/content/SubTitle";
-import { formatDate, formatDateRange } from "src/util/helpers";
+import SubTitle from "components/content/SubTitle";
+import { formatDate, formatDateRange } from "util/helpers";
 type Props = {
   dueDate: string;
   endDate: string;

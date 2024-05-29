@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
+import type { Attributes, Methods } from "types";
 import type { FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, RentBasisAttributesNotFoundAction, RentBasisList, FetchRentBasisListAction, ReceiveRentBasisListAction, RentBasisId, RentBasis, FetchSingleRentBasisAction, ReceiveSingleRentBasisAction, CreateRentBasisAction, EditRentBasisAction, ReceiveIsSaveClickedAction, HideEditModeAction, ShowEditModeAction, ReceiveRentBasisInitialValuesAction, ReceiveFormValidAction, RentBasisNotFoundAction } from "./types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/rentbasis/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/rentbasis/RECEIVE_ATTRIBUTES')(attributes);

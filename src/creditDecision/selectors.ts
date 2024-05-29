@@ -1,5 +1,5 @@
-import type { RootState } from "src/root/types";
-import type { Selector } from "src/types";
+import type { RootState } from "root/types";
+import type { Selector } from "types";
 export const getIsFetchingHistoryByBusinessId: Selector<boolean, string> = (state: RootState, id: string): boolean => state.creditDecision.isFetchingHistoryByBusinessId[id];
 export const getIsFetchingHistoryByContactId: Selector<boolean, string> = (state: RootState, id: string): boolean => state.creditDecision.isFetchingHistoryByContactId[id];
 export const getHistoryByBusinessId: Selector<Record<string, any> | null | undefined, string> = (state: RootState, id: string): Record<string, any> | null | undefined => state.creditDecision.historyByBusinessId[id];

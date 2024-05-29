@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
+import type { Attributes, Methods } from "types";
 import type { FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, AttributesNotFoundAction, CreateLandUseAgreementAttachmentAction, CreateLandUseAgreementAttachmentPayload, DeleteLandUseAgreementAttachmentAction, DeleteLandUseAgreementAttachmentPayload } from "./types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/landUseAgreementAttachment/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/landUseAgreementAttachment/RECEIVE_ATTRIBUTES')(attributes);

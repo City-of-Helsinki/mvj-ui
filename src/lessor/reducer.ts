@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "src/types";
-import type { LessorList, ReceiveLessorsAction } from "src/lessor/types";
+import type { Reducer } from "types";
+import type { LessorList, ReceiveLessorsAction } from "lessor/types";
 const listReducer: Reducer<Record<string, any>> = handleActions({
   ['mvj/lessors/RECEIVE_ALL']: (state: LessorList, {
     payload

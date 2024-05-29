@@ -2,9 +2,9 @@ import React from "react";
 import { Row, Column } from "react-foundation";
 import isAfter from "date-fns/isAfter";
 import get from "lodash/get";
-import AmountWithVat from "src/components/vat/AmountWithVat";
-import Divider from "src/components/content/Divider";
-import FormText from "src/components/form/FormText";
+import AmountWithVat from "components/vat/AmountWithVat";
+import Divider from "components/content/Divider";
+import FormText from "components/form/FormText";
 import { getRentsTotalAmount } from "../helpers";
 type Props = {
   rents: Array<Record<string, any>>;

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import classNames from "classnames";
-import { KeyCodes } from "src/enums";
+import { KeyCodes } from "enums";
 type Props = {
   checked: boolean;
   disabled?: boolean;

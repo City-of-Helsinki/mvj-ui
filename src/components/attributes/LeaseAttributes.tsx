@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchLeaseAttributes } from "src/leases/actions";
-import { getAttributes as getLeaseAttributes, getIsFetchingAttributes as getIsFetchingLeaseAttributes, getMethods as getLeaseMethods } from "src/leases/selectors";
-import type { Attributes, Methods } from "src/types";
+import { fetchAttributes as fetchLeaseAttributes } from "leases/actions";
+import { getAttributes as getLeaseAttributes, getIsFetchingAttributes as getIsFetchingLeaseAttributes, getMethods as getLeaseMethods } from "leases/selectors";
+import type { Attributes, Methods } from "types";
 
 function LeaseAttributes(WrappedComponent: any) {
   type Props = {

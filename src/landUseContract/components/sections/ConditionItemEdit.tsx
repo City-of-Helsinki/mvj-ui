@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
-import FormField from "src/components/form/FormField";
-import RemoveButton from "src/components/form/RemoveButton";
-import { getUsersPermissions } from "src/usersPermissions/selectors";
-import type { Attributes } from "src/types";
-import type { UsersPermissions as UsersPermissionsType } from "src/usersPermissions/types";
+import FormField from "components/form/FormField";
+import RemoveButton from "components/form/RemoveButton";
+import { getUsersPermissions } from "usersPermissions/selectors";
+import type { Attributes } from "types";
+import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {
   attributes: Attributes;
   disabled: boolean;

@@ -1,9 +1,9 @@
 import React from "react";
 import classNames from "classnames";
-import QuestionIcon from "src/components/icons/QuestionIcon";
-import SuccessIcon from "src/components/icons/SuccessIcon";
-import CancelIcon from "src/components/icons/CancelIcon";
-import { CreditDecisionStatus, CreditDecisionStatusLabels } from "src/creditDecision/enums";
+import QuestionIcon from "components/icons/QuestionIcon";
+import SuccessIcon from "components/icons/SuccessIcon";
+import CancelIcon from "components/icons/CancelIcon";
+import { CreditDecisionStatus, CreditDecisionStatusLabels } from "creditDecision/enums";
 type Props = {
   status: String;
   className?: String;

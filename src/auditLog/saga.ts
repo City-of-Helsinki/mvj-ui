@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveError } from "src/api/actions";
+import { receiveError } from "api/actions";
 import { receiveAuditLogByContact, notFoundByContact, receiveAuditLogByLease, notFoundByLease, receiveAuditLogByAreaSearch, notFoundByAreaSearch } from "./actions";
 import { fetchAuditLog } from "./requests";
 

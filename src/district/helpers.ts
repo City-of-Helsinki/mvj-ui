@@ -1,4 +1,4 @@
-import { addEmptyOption } from "src/util/helpers";
+import { addEmptyOption } from "util/helpers";
 
 /**
  * Get district options

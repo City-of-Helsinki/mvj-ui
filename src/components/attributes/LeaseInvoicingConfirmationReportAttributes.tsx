@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchLeaseInvoicingConfirmationReportAttributes } from "src/leaseStatisticReport/actions";
-import { getReportData, getIsFetchingReportData, getReportOptions, getReports } from "src/leaseStatisticReport/selectors";
+import { fetchLeaseInvoicingConfirmationReportAttributes } from "leaseStatisticReport/actions";
+import { getReportData, getIsFetchingReportData, getReportOptions, getReports } from "leaseStatisticReport/selectors";
 
 function LeaseInvoicingConfirmationReportAttributes(WrappedComponent: any) {
   type Props = {};

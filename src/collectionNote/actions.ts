@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
+import type { Attributes, Methods } from "types";
 import type { FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, CollectionNoteAttributesNotFoundAction, CreateCollectionNotePayload, DeleteCollectionNotePayload, FetchCollectionNotesByLeaseAction, ReceiveCollectionNotesByLeaseAction, CollectionNotesNotFoundByLeaseAction, CreateCollectionNoteAction, DeleteCollectionNoteAction } from "./types";
 import type { LeaseId } from "../leases/types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/collectionNote/FETCH_ATTRIBUTES')();

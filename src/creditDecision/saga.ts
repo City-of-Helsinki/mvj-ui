@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveError } from "src/api/actions";
+import { receiveError } from "api/actions";
 import { creditDecisionNotFoundByBusinessId, creditDecisionNotFoundByContactId, creditDecisionNotFoundByNin, fetchHistoryByBusinessId, fetchHistoryByContactId, historyNotFoundByBusinessId, historyNotFoundByContactId, receiveCreditDecisionByBusinessId, receiveCreditDecisionByContactId, receiveCreditDecisionByNin, receiveHistoryByBusinessId, receiveHistoryByContactId } from "./actions";
 import { fetchHistoryBusinessId, fetchHistoryContactId, fetchCreditDecisionContactId, fetchCreditDecisionBusinessId, fetchCreditDecisionNin } from "./requests";
 

@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import classNames from "classnames";
-import Authorization from "src/components/authorization/Authorization";
+import Authorization from "components/authorization/Authorization";
 type Props = {
   active: number | null | undefined;
   className?: string;

@@ -1,4 +1,4 @@
-import { TableSortOrder } from "src/enums";
+import { TableSortOrder } from "enums";
 export const DEFAULT_AREA_SEARCH_STATES: Array<string> = [];
 export const DEFAULT_SORT_KEY = 'identifier';
 export const DEFAULT_SORT_ORDER = TableSortOrder.ASCENDING;

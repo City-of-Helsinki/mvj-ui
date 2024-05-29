@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "src/types";
-import type { FetchContractFilesByIdAction, ReceiveContractFilesByIdAction, NotFoundByIdAction } from "src/contractFile/types";
+import type { Reducer } from "types";
+import type { FetchContractFilesByIdAction, ReceiveContractFilesByIdAction, NotFoundByIdAction } from "contractFile/types";
 const isFetchingByIdReducer: Reducer<Record<string, any>> = handleActions({
   ['mvj/contractFile/FETCH_BY_ID']: (state: Record<string, any>, {
     payload: contractId

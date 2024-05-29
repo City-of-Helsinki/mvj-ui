@@ -1,14 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import FormTextTitle from "src/components/form/FormTextTitle";
-import GreenBox from "src/components/content/GreenBox";
-import ListItem from "src/components/content/ListItem";
-import ListItems from "src/components/content/ListItems";
-import { getContentInvoices } from "src/landUseContract/helpers";
-import { formatDate, formatNumber } from "src/util/helpers";
-import { getCurrentLandUseContract } from "src/landUseContract/selectors";
-import type { LandUseContract } from "src/landUseContract/types";
+import FormTextTitle from "components/form/FormTextTitle";
+import GreenBox from "components/content/GreenBox";
+import ListItem from "components/content/ListItem";
+import ListItems from "components/content/ListItems";
+import { getContentInvoices } from "landUseContract/helpers";
+import { formatDate, formatNumber } from "util/helpers";
+import { getCurrentLandUseContract } from "landUseContract/selectors";
+import type { LandUseContract } from "landUseContract/types";
 type Props = {
   currentLandUseContract: LandUseContract;
 };

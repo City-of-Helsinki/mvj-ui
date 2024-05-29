@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveError } from "src/api/actions";
-import { notFoundJobRuns, notFoundJobRunAttributes, notFoundJobRunLogEntryAttributes, notFoundJobRunLogEntriesByRun, notFoundScheduledJobAttributes, notFoundScheduledJobs, receiveJobRunAttributes, receiveJobRunMethods, receiveJobRuns, receiveJobRunLogEntryAttributes, receiveJobRunLogEntryMethods, receiveJobRunLogEntriesByRun, receiveScheduledJobAttributes, receiveScheduledJobMethods, receiveScheduledJobs } from "src/batchrun/actions";
-import { fetchJobRunAttributes, fetchJobRuns, fetchJobRunLogEntryAttributes, fetchJobRunLogEntries, fetchScheduledJobAttributes, fetchScheduledJobs } from "src/batchrun/requests";
+import { receiveError } from "api/actions";
+import { notFoundJobRuns, notFoundJobRunAttributes, notFoundJobRunLogEntryAttributes, notFoundJobRunLogEntriesByRun, notFoundScheduledJobAttributes, notFoundScheduledJobs, receiveJobRunAttributes, receiveJobRunMethods, receiveJobRuns, receiveJobRunLogEntryAttributes, receiveJobRunLogEntryMethods, receiveJobRunLogEntriesByRun, receiveScheduledJobAttributes, receiveScheduledJobMethods, receiveScheduledJobs } from "batchrun/actions";
+import { fetchJobRunAttributes, fetchJobRuns, fetchJobRunLogEntryAttributes, fetchJobRunLogEntries, fetchScheduledJobAttributes, fetchScheduledJobs } from "batchrun/requests";
 
 function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
   try {

@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import AddIcon from "src/components/icons/AddIcon";
+import AddIcon from "components/icons/AddIcon";
 type Props = {
   className?: string;
   disabled?: boolean;

@@ -1,4 +1,4 @@
-import { sortNumberByKeyDesc } from "src/util/helpers";
+import { sortNumberByKeyDesc } from "util/helpers";
 
 /** 
  * Get content yearly indexes to display on index table

@@ -1,13 +1,13 @@
 import format from "date-fns/format";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import { store } from "src/root/startApp";
+import { store } from "root/startApp";
 import { RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes } from "./enums";
-import { getRentWarnings, getTenantRentShareWarnings, getTenantShareWarnings } from "src/leases/helpers";
-import { getAttributes as getLeaseAttributes } from "src/leases/selectors";
-import { dateGreaterOrEqual } from "src/components/form/validations";
-import { isInvoiceBillingPeriodRequired } from "src/invoices/helpers";
-import { required } from "src/components/form/validations";
+import { getRentWarnings, getTenantRentShareWarnings, getTenantShareWarnings } from "leases/helpers";
+import { getAttributes as getLeaseAttributes } from "leases/selectors";
+import { dateGreaterOrEqual } from "components/form/validations";
+import { isInvoiceBillingPeriodRequired } from "invoices/helpers";
+import { required } from "components/form/validations";
 
 /** 
  * Validate summary form

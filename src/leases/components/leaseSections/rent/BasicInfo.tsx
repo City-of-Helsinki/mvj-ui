@@ -1,15 +1,15 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Authorization from "src/components/authorization/Authorization";
-import FormText from "src/components/form/FormText";
-import FormTextTitle from "src/components/form/FormTextTitle";
-import { LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes } from "src/leases/enums";
-import { formatDueDates, formatSeasonalDate } from "src/leases/helpers";
-import { getUiDataLeaseKey } from "src/uiData/helpers";
-import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "src/util/helpers";
-import { getAttributes as getLeaseAttributes } from "src/leases/selectors";
-import type { Attributes } from "src/types";
+import Authorization from "components/authorization/Authorization";
+import FormText from "components/form/FormText";
+import FormTextTitle from "components/form/FormTextTitle";
+import { LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes } from "leases/enums";
+import { formatDueDates, formatSeasonalDate } from "leases/helpers";
+import { getUiDataLeaseKey } from "uiData/helpers";
+import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
+import { getAttributes as getLeaseAttributes } from "leases/selectors";
+import type { Attributes } from "types";
 type SeasonalDatesProps = {
   leaseAttributes: Attributes;
   rent: Record<string, any>;

@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
+import type { Attributes, Methods } from "types";
 import type { FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, ContactAttributesNotFoundAction, Contact, ContactId, ContactList, ContactModalSettings, ContactNotFoundAction, CreateContactAction, EditContactAction, CreateContactOnModalAction, EditContactOnModalAction, InitializeContactFormValuesAction, FetchContactsAction, ReceiveContactsAction, FetchSingleContactAction, ReceiveSingleContactAction, ReceiveIsSaveClickedAction, ReceiveContactFormValidAction, HideEditModeAction, ShowEditModeAction, HideContactModalAction, ShowContactModalAction, ReceiveContactModalSettingsAction } from "./types";
 export const notFound = (): ContactNotFoundAction => createAction('mvj/contacts/NOT_FOUND')();
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/contacts/FETCH_ATTRIBUTES')();

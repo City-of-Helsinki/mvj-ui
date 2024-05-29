@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { getFieldOptions } from "src/util/helpers";
-import type { Attributes } from "src/types";
-import ApplicantInfoCheck from "src/application/components/infoCheck/ApplicantInfoCheck";
-import { getApplicantInfoCheckAttributes } from "src/application/selectors";
-import { getApplicantInfoCheckItems } from "src/application/helpers";
+import { getFieldOptions } from "util/helpers";
+import type { Attributes } from "types";
+import ApplicantInfoCheck from "application/components/infoCheck/ApplicantInfoCheck";
+import { getApplicantInfoCheckAttributes } from "application/selectors";
+import { getApplicantInfoCheckItems } from "application/helpers";
 type OwnProps = {
   infoCheckData: Array<Record<string, any>>;
 };

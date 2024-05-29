@@ -1,15 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Collapse from "src/components/collapse/Collapse";
+import Collapse from "components/collapse/Collapse";
 import DecisionConditions from "./DecisionConditions";
-import ExternalLink from "src/components/links/ExternalLink";
-import FormTitleAndText from "src/components/form/FormTitleAndText";
-import { receiveCollapseStates } from "src/landUseContract/actions";
-import { FormNames, ViewModes } from "src/enums";
-import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink } from "src/util/helpers";
-import { getCollapseStateByKey } from "src/landUseContract/selectors";
-import type { Attributes } from "src/types";
+import ExternalLink from "components/links/ExternalLink";
+import FormTitleAndText from "components/form/FormTitleAndText";
+import { receiveCollapseStates } from "landUseContract/actions";
+import { FormNames, ViewModes } from "enums";
+import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink } from "util/helpers";
+import { getCollapseStateByKey } from "landUseContract/selectors";
+import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;
   collapseState: boolean;

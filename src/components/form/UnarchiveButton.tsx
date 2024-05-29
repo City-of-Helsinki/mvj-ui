@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import UnarchiveIcon from "src/components/icons/UnarchiveIcon";
+import UnarchiveIcon from "components/icons/UnarchiveIcon";
 type Props = {
   className?: string;
   disabled?: boolean;

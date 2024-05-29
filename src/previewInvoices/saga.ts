@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { notFound, receivePreviewInvoices } from "./actions";
-import { receiveError } from "src/api/actions";
+import { receiveError } from "api/actions";
 import { fetchPreviewInvoices } from "./requests";
 
 function* fetchPreviewInvoicesSaga({

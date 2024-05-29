@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
+import type { Attributes, Methods } from "types";
 import type { FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, InfillDevelopmentAttributesNotFoundAction, FetchInfillDevelopmentListAction, FetchSingleInfillDevelopmentAction, InfillDevelopment, InfillDevelopmentId, InfillDevelopmentList, ReceiveInfillDevelopmentListAction, ReceiveSingleInfillDevelopmentAction, CreateInfillDevelopmentAction, EditInfillDevelopmentAction, InfillDevelopmentNotFoundAction, HideEditModeAction, ShowEditModeAction, ReceiveIsSaveClickedAction, ReceiveFormValidFlagsAction, ClearFormValidFlagsAction, ReceiveFormInitialValuesAction, ReceiveCollapseStatesAction } from "./types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/infillDevelopment/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/infillDevelopment/RECEIVE_ATTRIBUTES')(attributes);

@@ -1,5 +1,5 @@
 import React from "react";
-import { DELETE_MODAL_BUTTON_TEXT } from "src/constants";
+import { DELETE_MODAL_BUTTON_TEXT } from "util/constants";
 
 /**
  * Table sort order enumerable.

@@ -3,7 +3,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import parse from "date-fns/parse";
 import fi from "date-fns/locale/fi";
 import classNames from "classnames";
-import { isValidDate } from "src/util/date";
+import { isValidDate } from "util/date";
 registerLocale('fi', fi);
 type Props = {
   disabled: boolean;

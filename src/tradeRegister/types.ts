@@ -1,4 +1,4 @@
-import type { Action } from "src/types";
+import type { Action } from "types";
 export type TradeRegisterState = {
   collapseStates: Record<string, any>;
   companyExtendedById: TradeRegisterDataMap;

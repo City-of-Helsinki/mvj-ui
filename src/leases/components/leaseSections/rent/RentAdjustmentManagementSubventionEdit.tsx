@@ -1,17 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Authorization from "src/components/authorization/Authorization";
-import FormField from "src/components/form/FormField";
-import RemoveButton from "src/components/form/RemoveButton";
-import { RentAdjustmentManagementSubventionsFieldPaths, RentAdjustmentManagementSubventionsFieldTitles } from "src/leases/enums";
-import { UsersPermissions } from "src/usersPermissions/enums";
-import { getUiDataLeaseKey } from "src/uiData/helpers";
-import { hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "src/util/helpers";
-import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "src/leases/selectors";
-import { getUsersPermissions } from "src/usersPermissions/selectors";
-import type { Attributes } from "src/types";
-import type { UsersPermissions as UsersPermissionsType } from "src/usersPermissions/types";
+import Authorization from "components/authorization/Authorization";
+import FormField from "components/form/FormField";
+import RemoveButton from "components/form/RemoveButton";
+import { RentAdjustmentManagementSubventionsFieldPaths, RentAdjustmentManagementSubventionsFieldTitles } from "leases/enums";
+import { UsersPermissions } from "usersPermissions/enums";
+import { getUiDataLeaseKey } from "uiData/helpers";
+import { hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "util/helpers";
+import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "leases/selectors";
+import { getUsersPermissions } from "usersPermissions/selectors";
+import type { Attributes } from "types";
+import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {
   field: any;
   isSaveClicked: boolean;

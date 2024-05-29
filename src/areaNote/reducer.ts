@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import findIndex from "lodash/findIndex";
-import type { Attributes, Methods, Reducer } from "src/types";
+import type { Attributes, Methods, Reducer } from "types";
 import type { AreaNoteList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveAreaNoteListAction, ReceiveDeletedAreaNoteAction, ReceiveEditedAreaNoteAction, InitializeAction } from "./types";
 const initialValuesReducer: Reducer<Record<string, any>> = handleActions({
   ['mvj/areaNote/INITIALIZE']: (state: Record<string, any>, {

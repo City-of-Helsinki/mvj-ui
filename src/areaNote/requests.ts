@@ -1,6 +1,6 @@
 import callApi from "../api/callApi";
 import createUrl from "../api/createUrl";
-import type { AreaNote, AreaNoteId } from "src/areaNote/types";
+import type { AreaNote, AreaNoteId } from "areaNote/types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`area_note/`), {
     method: 'OPTIONS'

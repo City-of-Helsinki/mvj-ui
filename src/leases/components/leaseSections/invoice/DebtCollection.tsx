@@ -1,6 +1,6 @@
 import React from "react";
 import DebtCollectionForm from "./forms/DebtCollectionForm";
-import GreenBox from "src/components/content/GreenBox";
+import GreenBox from "components/content/GreenBox";
 
 const DebtCollection = () => <GreenBox>
     <DebtCollectionForm />

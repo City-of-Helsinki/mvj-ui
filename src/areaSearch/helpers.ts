@@ -1,14 +1,14 @@
 import isArray from "lodash/isArray";
 import get from "lodash/get";
 import { formValueSelector, getFormValues } from "redux-form";
-import { FormNames, TableSortOrder } from "src/enums";
-import { APPLICANT_MAIN_IDENTIFIERS } from "src/application/constants";
-import { getUserFullName } from "src/users/helpers";
-import { store } from "src/root/startApp";
-import { getCurrentAreaSearch } from "src/areaSearch/selectors";
-import { prepareApplicationForSubmission } from "src/application/helpers";
-import type { LeafletFeature, LeafletGeoJson } from "src/types";
-import type { SavedApplicationFormSection } from "src/application/types";
+import { FormNames, TableSortOrder } from "enums";
+import { APPLICANT_MAIN_IDENTIFIERS } from "application/constants";
+import { getUserFullName } from "users/helpers";
+import { store } from "root/startApp";
+import { getCurrentAreaSearch } from "areaSearch/selectors";
+import { prepareApplicationForSubmission } from "application/helpers";
+import type { LeafletFeature, LeafletGeoJson } from "types";
+import type { SavedApplicationFormSection } from "application/types";
 export const areaSearchSearchFilters = (query: Record<string, any>): Record<string, any> => {
   const searchQuery = { ...query
   };

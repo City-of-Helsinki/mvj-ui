@@ -1,8 +1,8 @@
 import { isDirty } from "redux-form";
-import { FormNames, TableSortOrder } from "src/enums";
+import { FormNames, TableSortOrder } from "enums";
 import { ContactTypes } from "./enums";
-import { getIsEditMode } from "src/contacts/selectors";
-import { removeSessionStorageItem } from "src/util/storage";
+import { getIsEditMode } from "contacts/selectors";
+import { removeSessionStorageItem } from "util/storage";
 
 /**
  * Get full name of contact

@@ -1,4 +1,4 @@
-import type { Action, Attributes, Methods } from "src/types";
+import type { Action, Attributes, Methods } from "types";
 export type RentBasisState = {
   attributes: Attributes;
   initialValues: RentBasis;

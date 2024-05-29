@@ -5,10 +5,10 @@ import { Row, Column } from "react-foundation";
 import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
-import FormField from "src/components/form/FormField";
-import SearchClearLink from "src/components/search/SearchClearLink";
-import SearchContainer from "src/components/search/SearchContainer";
-import { FieldTypes, FormNames } from "src/enums";
+import FormField from "components/form/FormField";
+import SearchClearLink from "components/search/SearchClearLink";
+import SearchContainer from "components/search/SearchContainer";
+import { FieldTypes, FormNames } from "enums";
 type Props = {
   formValues: Record<string, any>;
   handleSubmit: (...args: Array<any>) => any;

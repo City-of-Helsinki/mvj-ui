@@ -1,13 +1,13 @@
 import get from "lodash/get";
 import { isDirty } from "redux-form";
 import isEmpty from "lodash/isEmpty";
-import { FormNames, TableSortOrder } from "src/enums";
-import { convertStrToDecimalNumber } from "src/util/helpers";
-import { getIsEditMode } from "src/rentbasis/selectors";
-import { removeSessionStorageItem } from "src/util/storage";
-import type { LeafletGeoJson } from "src/types";
+import { FormNames, TableSortOrder } from "enums";
+import { convertStrToDecimalNumber } from "util/helpers";
+import { getIsEditMode } from "rentbasis/selectors";
+import { removeSessionStorageItem } from "util/storage";
+import type { LeafletGeoJson } from "types";
 import type { RentBasis } from "./types";
-import type { RootState } from "src/root/types";
+import type { RootState } from "root/types";
 
 /**
  * Get basis of rent rent rates

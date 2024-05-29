@@ -1,6 +1,6 @@
 import callApi from "../api/callApi";
 import createUrl from "../api/createUrl";
-import { getSearchQuery } from "src/util/helpers";
+import { getSearchQuery } from "util/helpers";
 import type { FetchPreviewInvoicesPayload } from "./types";
 export const fetchPreviewInvoices = ({
   lease,

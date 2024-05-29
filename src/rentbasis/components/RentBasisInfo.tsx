@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import Authorization from "src/components/authorization/Authorization";
-import FormTextTitle from "src/components/form/FormTextTitle";
-import { RentBasisFieldPaths, RentBasisFieldTitles } from "src/rentbasis/enums";
-import { isFieldAllowedToRead } from "src/util/helpers";
-import { getAttributes as getRentBasisAttributes } from "src/rentbasis/selectors";
-import type { Attributes } from "src/types";
+import Authorization from "components/authorization/Authorization";
+import FormTextTitle from "components/form/FormTextTitle";
+import { RentBasisFieldPaths, RentBasisFieldTitles } from "rentbasis/enums";
+import { isFieldAllowedToRead } from "util/helpers";
+import { getAttributes as getRentBasisAttributes } from "rentbasis/selectors";
+import type { Attributes } from "types";
 type Props = {
   identifier: string | null | undefined;
   rentBasisAttributes: Attributes;

@@ -1,15 +1,15 @@
 import React, { PureComponent } from "react";
 import debounce from "lodash/debounce";
-import Button from "src/components/button/Button";
-import CheckboxInput from "src/components/inputs/CheckboxInput";
+import Button from "components/button/Button";
+import CheckboxInput from "components/inputs/CheckboxInput";
 import DualListBox from "react-dual-listbox";
-import FormText from "src/components/form/FormText";
-import Modal from "src/components/modal/Modal";
-import ModalButtonWrapper from "src/components/modal/ModalButtonWrapper";
-import { fetchLeases } from "src/leases/requestsAsync";
-import { ButtonColors } from "src/components/enums";
-import { getContentLeaseOption } from "src/leases/helpers";
-import { sortStringByKeyAsc } from "src/util/helpers";
+import FormText from "components/form/FormText";
+import Modal from "components/modal/Modal";
+import ModalButtonWrapper from "components/modal/ModalButtonWrapper";
+import { fetchLeases } from "leases/requestsAsync";
+import { ButtonColors } from "components/enums";
+import { getContentLeaseOption } from "leases/helpers";
+import { sortStringByKeyAsc } from "util/helpers";
 type FilterProps = {
   available: string;
   selected: string;

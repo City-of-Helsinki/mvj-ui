@@ -1,4 +1,4 @@
-import { getContactFullName } from "src/contacts/helpers";
+import { getContactFullName } from "contacts/helpers";
 
 /**
  * Get content lessor

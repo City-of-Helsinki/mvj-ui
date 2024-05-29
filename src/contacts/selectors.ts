@@ -1,5 +1,5 @@
-import type { Attributes, Methods, Selector } from "src/types";
-import type { RootState } from "src/root/types";
+import type { Attributes, Methods, Selector } from "types";
+import type { RootState } from "root/types";
 import type { Contact, ContactList, ContactModalSettings } from "./types";
 export const getInitialContactFormValues: Selector<Contact, void> = (state: RootState): Contact => state.contact.initialContactFormValues;
 export const getIsContactFormValid: Selector<boolean, void> = (state: RootState): boolean => state.contact.isContactFormValid;

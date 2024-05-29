@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import areaSearchReducer from "src/areaSearch/reducer";
-import { areaSearchesByBBoxNotFound, areaSearchesNotFound, attributesNotFound, batchEditAreaSearchInfoChecks, editAreaSearch, fetchAreaSearchList, fetchAreaSearchListByBBox, fetchAttributes, fetchListAttributes, fetchSingleAreaSearch, hideEditMode, listAttributesNotFound, receiveAreaSearchByBBoxList, receiveAreaSearchEdited, receiveAreaSearchEditFailed, receiveAreaSearchList, receiveAttributes, receiveListAttributes, receiveListMethods, receiveMethods, receiveSingleAreaSearch, setAreaSearchAttachments, showEditMode, singleAreaSearchNotFound } from "src/areaSearch/actions";
-import type { AreaSearchState } from "src/areaSearch/types";
+import areaSearchReducer from "areaSearch/reducer";
+import { areaSearchesByBBoxNotFound, areaSearchesNotFound, attributesNotFound, batchEditAreaSearchInfoChecks, editAreaSearch, fetchAreaSearchList, fetchAreaSearchListByBBox, fetchAttributes, fetchListAttributes, fetchSingleAreaSearch, hideEditMode, listAttributesNotFound, receiveAreaSearchByBBoxList, receiveAreaSearchEdited, receiveAreaSearchEditFailed, receiveAreaSearchList, receiveAttributes, receiveListAttributes, receiveListMethods, receiveMethods, receiveSingleAreaSearch, setAreaSearchAttachments, showEditMode, singleAreaSearchNotFound } from "areaSearch/actions";
+import type { AreaSearchState } from "areaSearch/types";
 const defaultState: AreaSearchState = {
   attributes: null,
   methods: null,

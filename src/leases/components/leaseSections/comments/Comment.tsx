@@ -1,15 +1,15 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Button from "src/components/button/Button";
-import EditButton from "src/components/button/EditButton";
-import ShowMore from "src/components/showMore/ShowMore";
-import TextAreaInput from "src/components/inputs/TextAreaInput";
-import { editComment, hideEditModeById, showEditModeById } from "src/comments/actions";
-import { ButtonColors } from "src/components/enums";
-import { getPayloadComment } from "src/comments/helpers";
-import { formatDate } from "src/util/helpers";
-import { getIsEditModeById } from "src/comments/selectors";
+import Button from "components/button/Button";
+import EditButton from "components/button/EditButton";
+import ShowMore from "components/showMore/ShowMore";
+import TextAreaInput from "components/inputs/TextAreaInput";
+import { editComment, hideEditModeById, showEditModeById } from "comments/actions";
+import { ButtonColors } from "components/enums";
+import { getPayloadComment } from "comments/helpers";
+import { formatDate } from "util/helpers";
+import { getIsEditModeById } from "comments/selectors";
 type Props = {
   allowEdit: boolean;
   comment: Record<string, any>;

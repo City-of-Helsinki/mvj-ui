@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
+import type { Attributes, Methods } from "types";
 import type { FetchAttributesAction, ReceiveAttributesAction, LandUseContractId, LandUseContract, LandUseContractList, FetchLandUseContractListAction, ReceiveLandUseContractListAction, FetchSingleLandUseContractAction, ReceiveSingleLandUseContractAction, CreateLandUseContractAction, EditLandUseContractAction, LandUseContractNotFoundAction, ReceiveIsSaveClickedAction, HideEditModeAction, ShowEditModeAction, ReceiveFormValidFlagsAction, ClearFormValidFlagsAction, ReceiveCollapseStatesAction, AttributesNotFoundAction, ReceiveMethodsAction, FetchSingleLandUseContractAfterEditPayload, FetchSingleLandUseContractAfterEditAction, DeleteLandUseContractAction } from "./types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/landUseContract/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/landUseContract/RECEIVE_ATTRIBUTES')(attributes);

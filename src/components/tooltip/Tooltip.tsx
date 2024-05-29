@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import classNames from "classnames";
-import CloseButton from "src/components/button/CloseButton";
-import type { TooltipPosition } from "src/components/tooltip/types";
+import CloseButton from "components/button/CloseButton";
+import type { TooltipPosition } from "components/tooltip/types";
 import ReactDOM from "react-dom";
 type Props = {
   isOpen: boolean;

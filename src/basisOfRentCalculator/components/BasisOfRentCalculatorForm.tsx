@@ -2,12 +2,12 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector, reduxForm } from "redux-form";
 import flowRight from "lodash/flowRight";
-import BasisOfRentsEdit from "src/leases/components/leaseSections/rent/BasisOfRentsEdit";
-import Divider from "src/components/content/Divider";
-import Title from "src/components/content/Title";
-import { FormNames } from "src/enums";
-import { LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles } from "src/leases/enums";
-import { getUiDataLeaseKey } from "src/uiData/helpers";
+import BasisOfRentsEdit from "leases/components/leaseSections/rent/BasisOfRentsEdit";
+import Divider from "components/content/Divider";
+import Title from "components/content/Title";
+import { FormNames } from "enums";
+import { LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles } from "leases/enums";
+import { getUiDataLeaseKey } from "uiData/helpers";
 type Props = {
   basisOfRents: Array<Record<string, any>>;
 };

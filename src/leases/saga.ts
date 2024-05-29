@@ -1,12 +1,12 @@
 import { all, call, fork, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
-import { getRouteById, Routes } from "src/root/routes";
+import { getRouteById, Routes } from "root/routes";
 import { fetchSingleLeaseAfterEdit, hideAttachDecisionModal, hideCreateModal, hideEditMode, attributesNotFound, notFound, notFoundByBBox, notFoundById, receiveAttributes, receiveMethods, receiveIsSaveClicked, receiveLeases, receiveLeasesByBBox, receiveSingleLease, receiveLeaseById, receiveLeasesForContractNumbers } from "./actions";
-import { receiveError } from "src/api/actions";
-import { fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen } from "src/invoices/actions";
-import { fetchInvoiceSetsByLease } from "src/invoiceSets/actions";
-import { displayUIMessage, getSearchQuery, getUrlParams } from "src/util/helpers";
+import { receiveError } from "api/actions";
+import { fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen } from "invoices/actions";
+import { fetchInvoiceSetsByLease } from "invoiceSets/actions";
+import { displayUIMessage, getSearchQuery, getUrlParams } from "util/helpers";
 import { copyAreasToContract, copyDecisionToLeases, createCharge, createLease, deleteLease, fetchAttributes, fetchLeases, fetchSingleLease, patchLease, sendEmail, startInvoicing, stopInvoicing, setRentInfoComplete, setRentInfoUncomplete } from "./requests";
 import { getCurrentLease } from "./selectors";
 

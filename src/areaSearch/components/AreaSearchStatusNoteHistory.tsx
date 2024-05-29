@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import Collapse from "src/components/collapse/Collapse";
-import { formatDate } from "src/util/helpers";
-import { getUserFullName } from "src/users/helpers";
+import Collapse from "components/collapse/Collapse";
+import { formatDate } from "util/helpers";
+import { getUserFullName } from "users/helpers";
 type Props = {
   statusNotes: Array<Record<string, any>> | null | undefined;
 };

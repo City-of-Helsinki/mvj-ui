@@ -1,5 +1,5 @@
 import type { Action, Attributes, Methods } from "../types";
-import type { InfillDevelopmentId } from "src/infillDevelopment/types";
+import type { InfillDevelopmentId } from "infillDevelopment/types";
 export type InfillDevelopmentAttachmentState = {
   attributes: Attributes;
   isFetchingAttributes: boolean;

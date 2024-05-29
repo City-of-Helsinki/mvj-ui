@@ -1,6 +1,6 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
-import type { LeaseId } from "src/leases/types";
+import type { Attributes, Methods } from "types";
+import type { LeaseId } from "leases/types";
 import type { FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, CollectionCourtDecisionAttributesNotFoundAction, UploadCollectionCourtDecisionPayload, DeleteCollectionCourtDecisionPayload, FetchCollectionCourtDecisionsByLeaseAction, ReceiveCollectionCourtDecisionsByLeaseAction, CollectionCourtDecisionsNotFoundByLeaseAction, UploadCollectionCourtDecisionAction, DeleteCollectionCourtDecisionAction, HideCollectionCourtDecisionPanelAction, ShowCollectionCourtDecisionPanelAction } from "./types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/collectionCourtDecision/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/collectionCourtDecision/RECEIVE_ATTRIBUTES')(attributes);

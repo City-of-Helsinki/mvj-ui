@@ -1,14 +1,14 @@
 import React, { PureComponent } from "react";
 import { Column, Row } from "react-foundation";
 import { connect } from "react-redux";
-import { getFieldOptions, getLabelOfOption } from "src/util/helpers";
-import { getUserFullName } from "src/users/helpers";
-import type { Attributes } from "src/types";
-import PlotApplicationInfoCheckCollapse from "src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
-import { getApplicationApplicantInfoCheckData } from "src/plotApplications/selectors";
-import ApplicantInfoCheck from "src/application/components/infoCheck/ApplicantInfoCheck";
-import { getApplicantInfoCheckAttributes } from "src/application/selectors";
-import { getApplicantInfoCheckItems } from "src/application/helpers";
+import { getFieldOptions, getLabelOfOption } from "util/helpers";
+import { getUserFullName } from "users/helpers";
+import type { Attributes } from "types";
+import PlotApplicationInfoCheckCollapse from "plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
+import { getApplicationApplicantInfoCheckData } from "plotApplications/selectors";
+import ApplicantInfoCheck from "application/components/infoCheck/ApplicantInfoCheck";
+import { getApplicantInfoCheckAttributes } from "application/selectors";
+import { getApplicantInfoCheckItems } from "application/helpers";
 type OwnProps = {
   section: Record<string, any>;
   identifier: string;

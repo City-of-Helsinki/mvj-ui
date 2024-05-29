@@ -3,8 +3,8 @@ import { withRouter } from "react-router";
 import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
 import flowRight from "lodash/flowRight";
 import { Link } from "react-router-dom";
-import { getRouteById, Routes } from "src/root/routes";
-import type { LeafletGeoJson } from "src/types";
+import { getRouteById, Routes } from "root/routes";
+import type { LeafletGeoJson } from "types";
 type OwnProps = {
   color: string;
   targetsGeoJson: LeafletGeoJson;

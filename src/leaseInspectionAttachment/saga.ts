@@ -1,8 +1,8 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { fetchSingleLeaseAfterEdit } from "src/leases/actions";
-import { receiveError } from "src/api/actions";
-import { displayUIMessage } from "src/util/helpers";
+import { fetchSingleLeaseAfterEdit } from "leases/actions";
+import { receiveError } from "api/actions";
+import { displayUIMessage } from "util/helpers";
 import { createLeaseInspectionAttachment, deleteLeaseInspectionAttachment } from "./requests";
 
 function* createLeaseInspectionAttachmentSaga({

@@ -64,7 +64,7 @@ module.exports = {
   },
   resolve: {
     modules: [
-      path.resolve(__dirname, '../'),
+      path.resolve(__dirname, '../src'),
       'node_modules',
     ],
     extensions: ['.web.js', '.js', '.json', '.web.jsx', '.jsx', '.ts', '.tsx'],

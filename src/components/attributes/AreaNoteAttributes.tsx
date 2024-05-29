@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchAreaNoteAttributes } from "src/areaNote/actions";
-import { getAttributes as getAreaNoteAttributes, getIsFetchingAttributes as getIsFetchingAreaNoteAttributes, getMethods as getAreaNoteMethods } from "src/areaNote/selectors";
-import type { Attributes, Methods } from "src/types";
+import { fetchAttributes as fetchAreaNoteAttributes } from "areaNote/actions";
+import { getAttributes as getAreaNoteAttributes, getIsFetchingAttributes as getIsFetchingAreaNoteAttributes, getMethods as getAreaNoteMethods } from "areaNote/selectors";
+import type { Attributes, Methods } from "types";
 
 function AreaNoteAttributes(WrappedComponent: any) {
   type Props = {

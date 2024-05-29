@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import isEmpty from "lodash/isEmpty";
-import FormText from "src/components/form/FormText";
-import { FormNames } from "src/enums";
-import { convertStrToDecimalNumber, formatNumber } from "src/util/helpers";
-import { getPenaltyInterestByInvoice } from "src/penaltyInterest/selectors";
+import FormText from "components/form/FormText";
+import { FormNames } from "enums";
+import { convertStrToDecimalNumber, formatNumber } from "util/helpers";
+import { getPenaltyInterestByInvoice } from "penaltyInterest/selectors";
 type OwnProps = {
   selectedInvoices: Array<Record<string, any>>;
   fields: any;

@@ -1,6 +1,6 @@
-import callApi from "src/api/callApi";
-import createUrl from "src/api/createUrl";
-import callUploadRequest from "src/api/callUploadRequest";
+import callApi from "api/callApi";
+import createUrl from "api/createUrl";
+import callUploadRequest from "api/callUploadRequest";
 export const fetchAreaSearchListAttributesRequest = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('area_search/'), {
     method: 'OPTIONS'

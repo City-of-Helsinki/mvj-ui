@@ -1,5 +1,5 @@
-import type { Action } from "src/types";
-import type { LeaseId } from "src/leases/types";
+import type { Action } from "types";
+import type { LeaseId } from "leases/types";
 export type CreateRelatedLeasePayload = {
   from_lease: LeaseId;
   to_lease: LeaseId;

@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { change } from "redux-form";
-import PlotApplicationInfoCheckCollapse from "src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
-import { getApplicantInfoCheckSubmissionErrors, getApplicationApplicantInfoCheckData } from "src/areaSearch/selectors";
-import ApplicantInfoCheckEdit from "src/application/components/infoCheck/ApplicantInfoCheckEdit";
-import { getApplicantInfoCheckFormName } from "src/application/helpers";
+import PlotApplicationInfoCheckCollapse from "plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
+import { getApplicantInfoCheckSubmissionErrors, getApplicationApplicantInfoCheckData } from "areaSearch/selectors";
+import ApplicantInfoCheckEdit from "application/components/infoCheck/ApplicantInfoCheckEdit";
+import { getApplicantInfoCheckFormName } from "application/helpers";
 type OwnProps = {
   section: Record<string, any>;
   identifier: string;

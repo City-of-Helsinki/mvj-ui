@@ -1,6 +1,6 @@
 import get from "lodash/get";
-import type { Attributes, Methods, Selector } from "src/types";
-import type { RootState } from "src/root/types";
+import type { Attributes, Methods, Selector } from "types";
+import type { RootState } from "root/types";
 import type { Invoice, InvoiceList } from "./types";
 export type LandUseContractId = number;
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean => state.landUseInvoice.isFetching;

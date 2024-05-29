@@ -84,6 +84,7 @@
     "@babel/preset-react": "^7.23.3",
     "@babel/register": "^7.23.7",
     "@hot-loader/react-dom": "17.0.2",
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/chai": "^4.3.16",
     "@types/history": "^5.0.0",
     "@types/lodash": "^4.17.1",

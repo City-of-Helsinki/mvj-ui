@@ -2,10 +2,10 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { saveAs } from "file-saver";
 import classNames from "classnames";
-import Loader from "src/components/loader/Loader";
-import LoaderWrapper from "src/components/loader/LoaderWrapper";
-import { displayUIMessage, getFileNameFromResponse } from "src/util/helpers";
-import { getApiToken } from "src/auth/selectors";
+import Loader from "components/loader/Loader";
+import LoaderWrapper from "components/loader/LoaderWrapper";
+import { displayUIMessage, getFileNameFromResponse } from "util/helpers";
+import { getApiToken } from "auth/selectors";
 type Props = {
   apiToken: string;
   className?: string;

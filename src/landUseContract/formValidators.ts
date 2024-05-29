@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import { dateGreaterOrEqual } from "src/components/form/validations";
-import { required } from "src/components/form/validations";
+import { dateGreaterOrEqual } from "components/form/validations";
+import { required } from "components/form/validations";
 
 /** 
  * Get litigant errors

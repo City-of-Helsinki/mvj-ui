@@ -1,8 +1,8 @@
-import callApi from "src/api/callApi";
-import callUploadRequest from "src/api/callUploadRequest";
-import createUrl from "src/api/createUrl";
+import callApi from "api/callApi";
+import callUploadRequest from "api/callUploadRequest";
+import createUrl from "api/createUrl";
 import type { CollectionCourtDecisionId, UploadCollectionCourtDecisionPayload } from "./types";
-import type { LeaseId } from "src/leases/types";
+import type { LeaseId } from "leases/types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('collection_court_decision/'), {
     method: 'OPTIONS'

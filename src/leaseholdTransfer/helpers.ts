@@ -1,8 +1,8 @@
 import get from "lodash/get";
-import { LeaseholdTransferPartyTypes } from "src/leaseholdTransfer/enums";
-import { TableSortOrder } from "src/enums";
-import { getApiResponseResults } from "src/util/helpers";
-import type { LeaseholdTransferList } from "src/leaseholdTransfer/types";
+import { LeaseholdTransferPartyTypes } from "leaseholdTransfer/enums";
+import { TableSortOrder } from "enums";
+import { getApiResponseResults } from "util/helpers";
+import type { LeaseholdTransferList } from "leaseholdTransfer/types";
 
 /**
 * Map leasehold transfer search filters for API

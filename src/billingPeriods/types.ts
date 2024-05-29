@@ -1,5 +1,5 @@
 import type { Action } from "../types";
-import type { LeaseId } from "src/leases/types";
+import type { LeaseId } from "leases/types";
 export type BillingPeriodState = {
   byLease: Record<string, any>;
   isFetching: boolean;

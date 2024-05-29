@@ -1,6 +1,6 @@
-import { store } from "src/root/startApp";
-import { getApiToken } from "src/auth/selectors";
-import { UI_ACCEPT_LANGUAGE_VALUE } from "src/api/constants";
+import { store } from "root/startApp";
+import { getApiToken } from "auth/selectors";
+import { UI_ACCEPT_LANGUAGE_VALUE } from "api/constants";
 
 const callApiAsync = async (request: Request): Promise<Record<string, any>> => {
   const apiToken = await getApiToken(store.getState());

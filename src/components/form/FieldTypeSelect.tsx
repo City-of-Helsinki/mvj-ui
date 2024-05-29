@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import Select from "react-select";
 import classNames from "classnames";
-import DropdownIndicator from "src/components/inputs/DropdownIndicator";
-import LoadingIndicator from "src/components/inputs/SelectLoadingIndicator";
+import DropdownIndicator from "components/inputs/DropdownIndicator";
+import LoadingIndicator from "components/inputs/SelectLoadingIndicator";
 type Props = {
   autoBlur: boolean;
   disabled: boolean;

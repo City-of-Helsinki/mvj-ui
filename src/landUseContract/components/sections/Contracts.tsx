@@ -1,12 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import ContractItem from "./ContractItem";
-import FormText from "src/components/form/FormText";
-import { getContentContracts } from "src/landUseContract/helpers";
-import { getFieldOptions } from "src/util/helpers";
-import { getAttributes, getCurrentLandUseContract } from "src/landUseContract/selectors";
-import type { Attributes } from "src/types";
-import type { LandUseContract } from "src/landUseContract/types";
+import FormText from "components/form/FormText";
+import { getContentContracts } from "landUseContract/helpers";
+import { getFieldOptions } from "util/helpers";
+import { getAttributes, getCurrentLandUseContract } from "landUseContract/selectors";
+import type { Attributes } from "types";
+import type { LandUseContract } from "landUseContract/types";
 type Props = {
   attributes: Attributes;
   currentLandUseContract: LandUseContract;

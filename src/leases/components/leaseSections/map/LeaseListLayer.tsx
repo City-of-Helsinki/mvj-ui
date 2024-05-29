@@ -2,10 +2,10 @@ import React from "react";
 import { withRouter } from "react-router";
 import { GeoJSON } from "react-leaflet";
 import flowRight from "lodash/flowRight";
-import { LeaseFieldTitles } from "src/leases/enums";
-import { formatDate, getLabelOfOption } from "src/util/helpers";
-import { getRouteById, Routes } from "src/root/routes";
-import type { LeafletGeoJson } from "src/types";
+import { LeaseFieldTitles } from "leases/enums";
+import { formatDate, getLabelOfOption } from "util/helpers";
+import { getRouteById, Routes } from "root/routes";
+import type { LeafletGeoJson } from "types";
 type Props = {
   color: string;
   defaultPlot?: number;

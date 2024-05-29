@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import ShowMore from "src/components/showMore/ShowMore";
-import { getAuditLogContentLabel } from "src/auditLog/helpers";
-import { getAttributes as getCommentAttributes } from "src/comments/selectors";
-import { getAttributes as getContactAttributes } from "src/contacts/selectors";
-import { getAttributes as getInfillDevelopmentCompensationAttributes } from "src/infillDevelopment/selectors";
-import { getAttributes as getInvoiceAttributes } from "src/invoices/selectors";
-import { getAttributes as getLeaseAttributes } from "src/leases/selectors";
-import type { Attributes } from "src/types";
+import ShowMore from "components/showMore/ShowMore";
+import { getAuditLogContentLabel } from "auditLog/helpers";
+import { getAttributes as getCommentAttributes } from "comments/selectors";
+import { getAttributes as getContactAttributes } from "contacts/selectors";
+import { getAttributes as getInfillDevelopmentCompensationAttributes } from "infillDevelopment/selectors";
+import { getAttributes as getInvoiceAttributes } from "invoices/selectors";
+import { getAttributes as getLeaseAttributes } from "leases/selectors";
+import type { Attributes } from "types";
 type Props = {
   change: {
     key: string;

@@ -5,12 +5,12 @@ import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
-import FormField from "src/components/form/FormField";
-import SearchContainer from "src/components/search/SearchContainer";
-import { FieldTypes, FormNames } from "src/enums";
-import { fetchServiceUnits } from "src/serviceUnits/actions";
-import { getServiceUnits, getIsFetching as getIsFetchingServiceUnits } from "src/serviceUnits/selectors";
-import type { ServiceUnits } from "src/serviceUnits/types";
+import FormField from "components/form/FormField";
+import SearchContainer from "components/search/SearchContainer";
+import { FieldTypes, FormNames } from "enums";
+import { fetchServiceUnits } from "serviceUnits/actions";
+import { getServiceUnits, getIsFetching as getIsFetchingServiceUnits } from "serviceUnits/selectors";
+import type { ServiceUnits } from "serviceUnits/types";
 type Props = {
   formValues: Record<string, any>;
   fetchServiceUnits: (...args: Array<any>) => any;

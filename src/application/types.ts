@@ -1,4 +1,4 @@
-import type { Action, Attributes, Methods } from "src/types";
+import type { Action, Attributes, Methods } from "types";
 export type ApplicationState = {
   attributes: Attributes;
   methods: Record<string, any>;

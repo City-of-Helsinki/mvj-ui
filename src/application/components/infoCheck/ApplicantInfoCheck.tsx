@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Column, Row } from "react-foundation";
-import { getLabelOfOption } from "src/util/helpers";
-import { getUserFullName } from "src/users/helpers";
+import { getLabelOfOption } from "util/helpers";
+import { getUserFullName } from "users/helpers";
 type Props = {
   infoChecks: Record<string, any>;
   infoCheckStateOptions: any;

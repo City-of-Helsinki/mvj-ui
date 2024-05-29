@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Methods } from "src/types";
+import type { Attributes, Methods } from "types";
 import type { AreaNote, AreaNoteId, AreaNoteList, FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, AttributesNotFoundAction, FetchAreaNoteListAction, ReceiveAreaNoteListAction, CreateAreaNoteAction, DeleteAreaNoteAction, EditAreaNoteAction, ReceiveDeletedAreaNoteAction, ReceiveEditedAreaNoteAction, AreaNoteNotFoundAction, ShowEditModeAction, HideEditModeAction, InitializeAction } from "./types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/areaNote/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/areaNote/RECEIVE_ATTRIBUTES')(attributes);

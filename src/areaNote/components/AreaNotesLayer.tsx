@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { GeoJSON } from "react-leaflet";
-import { initializeAreaNote, showEditMode } from "src/areaNote/actions";
-import { Methods } from "src/enums";
-import { convertAreaNoteListToGeoJson, convertFeatureToFeatureCollection } from "src/areaNote/helpers";
-import { getUserFullName } from "src/users/helpers";
-import { formatDate, isMethodAllowed } from "src/util/helpers";
-import { getIsEditMode, getMethods as getAreaNoteMethods } from "src/areaNote/selectors";
-import type { Methods as MethodsType } from "src/types";
-import type { AreaNoteList } from "src/areaNote/types";
+import { initializeAreaNote, showEditMode } from "areaNote/actions";
+import { Methods } from "enums";
+import { convertAreaNoteListToGeoJson, convertFeatureToFeatureCollection } from "areaNote/helpers";
+import { getUserFullName } from "users/helpers";
+import { formatDate, isMethodAllowed } from "util/helpers";
+import { getIsEditMode, getMethods as getAreaNoteMethods } from "areaNote/selectors";
+import type { Methods as MethodsType } from "types";
+import type { AreaNoteList } from "areaNote/types";
 type Props = {
   allowToEdit?: boolean;
   areaNoteMethods: MethodsType;

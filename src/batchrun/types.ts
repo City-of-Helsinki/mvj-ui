@@ -1,4 +1,4 @@
-import type { Action, ApiResponse, Attributes, Methods } from "src/types";
+import type { Action, ApiResponse, Attributes, Methods } from "types";
 export type BatchRunState = {
   isFetchingJobRunAttributes: boolean;
   isFetchingJobRuns: boolean;

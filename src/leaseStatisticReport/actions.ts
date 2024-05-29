@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { Attributes, Reports } from "src/types";
+import type { Attributes, Reports } from "types";
 import type { FetchAttributesAction, ReceiveAttributesAction, AttributesNotFoundAction, FetchLeaseInvoicingConfirmationReportAttributesAction, ReceiveLeaseInvoicingConfirmationReportAttributesAction, LeaseInvoicingConfirmationReportAttributesNotFoundAction, FetchLeaseInvoicingConfrimationReportsAction, NotFoundLeaseInvoicingConfrimationReportsAction, ReceiveLeaseInvoicingConfrimationReportsAction, FetchReportsAction, ReceiveReportsAction, ReportsNotFoundAction, FetchReportDataAction, ReceiveReportDataAction, ReportDataNotFoundAction, SetOptionsAction, SendReportToMailAction, NoMailSentAction, MailSentAction, FetchOptionsAction, ReceiveOptionsAction, OptionsNotFoundAction, SetPayloadAction } from "./types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/leaseStatisticReport/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/leaseStatisticReport/RECEIVE_ATTRIBUTES')(attributes);
