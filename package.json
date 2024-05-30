@@ -35,6 +35,7 @@
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "foundation-sites": "6.5.3",
+    "hds-react": "^3.8.0",
     "history": "^4.9.0",
     "leaflet": "^1.5.1",
     "leaflet-draw": "^1.0.4",
