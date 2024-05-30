@@ -55,12 +55,14 @@ type Props = OwnProps & {
 type State = {
   displaySideMenu: boolean;
   loggedIn: boolean;
+  displayUserGroups: boolean,
 };
 
 class App extends Component<Props, State> {
   state = {
     displaySideMenu: false,
-    loggedIn: false
+    loggedIn: false,
+    displayUserGroups: false
   };
   timerID: any;
 
@@ -154,6 +156,13 @@ class App extends Component<Props, State> {
       displaySideMenu: !this.state.displaySideMenu
     });
   };
+
+  toggleDisplayUserGroups = () => {
+    this.setState({
+      displayUserGroups: !this.state.displayUserGroups,
+    });
+  };
+  
   handleDismissErrorModal = () => {
     this.props.closeReveal('apiError');
     this.props.clearError();
@@ -175,7 +184,8 @@ class App extends Component<Props, State> {
       userServiceUnits
     } = this.props;
     const {
-      displaySideMenu
+      displaySideMenu,
+      displayUserGroups
     } = this.state;
     const appStyle = IS_DEVELOPMENT_URL ? 'app-dev' : 'app';
 
@@ -216,13 +226,61 @@ class App extends Component<Props, State> {
           };
 
           return <div className={appStyle}>
-                <ApiErrorModal size={Sizes.LARGE} data={apiError} isOpen={Boolean(apiError)} handleDismiss={this.handleDismissErrorModal} />
+                <ApiErrorModal 
+                  size={Sizes.LARGE} 
+                  data={apiError} 
+                  isOpen={Boolean(apiError)} 
+                  handleDismiss={this.handleDismissErrorModal} 
+                />
 
-                <ConfirmationModal confirmButtonClassName={confirmationModalButtonClassName} confirmButtonLabel={confirmationModalButtonText} isOpen={isConfirmationModalOpen} label={confirmationModalLabel} onCancel={handleHideConfirmationModal} onClose={handleHideConfirmationModal} onSave={handleConfirmation} title={confirmationModalTitle || ''} />
+                <ConfirmationModal 
+                  confirmButtonClassName={confirmationModalButtonClassName} 
+                  confirmButtonLabel={confirmationModalButtonText} 
+                  isOpen={isConfirmationModalOpen} 
+                  label={confirmationModalLabel} 
+                  onCancel={handleHideConfirmationModal} 
+                  onClose={handleHideConfirmationModal} 
+                  onSave={handleConfirmation} 
+                  title={confirmationModalTitle || ''} 
+                />
 
-                <ReduxToastr newestOnTop={true} position="bottom-right" preventDuplicates={true} progressBar={false} timeOut={2000} transitionIn="fadeIn" transitionOut="fadeOut" closeOnToastrClick={true} />
+                <ReduxToastr 
+                  newestOnTop={true}
+                  position="bottom-right"
+                  preventDuplicates={true}
+                  progressBar={false}
+                  timeOut={2000}
+                  transitionIn="fadeIn"
+                  transitionOut="fadeOut"
+                  closeOnToastrClick={true}
+                />
 
-                <TopNavigation isMenuOpen={displaySideMenu} linkUrl={linkUrl} onLogout={this.logOut} pageTitle={pageTitle} showSearch={showSearch} toggleSideMenu={this.toggleSideMenu} userGroups={userGroups} username={get(user, 'profile.name')} userServiceUnits={userServiceUnits} userActiveServiceUnit={userActiveServiceUnit} />
+                <TopNavigation
+                  isMenuOpen={displaySideMenu}
+                  linkUrl={linkUrl}
+                  onLogout={this.logOut}
+                  pageTitle={pageTitle}
+                  showSearch={showSearch}
+                  toggleSideMenu={this.toggleSideMenu}
+                  toggleDisplayUserGroups={this.toggleDisplayUserGroups}
+                  username={get(user, 'profile.name')}
+                  userServiceUnits={userServiceUnits}
+                  userActiveServiceUnit={userActiveServiceUnit}
+                />
+
+                {displayUserGroups &&
+                  <section className="app__usergroup-list">
+                    <strong>Käyttäjäryhmät ja palvelukokonaisuudet</strong>
+                    {userGroups && userGroups.length > 1 &&
+                      userGroups.map((group, index) => {
+                        return (
+                          <p className="usergroup-list-item" key={group}>
+                            {group}
+                          </p>
+                        );
+                      })}
+                  </section>
+                }
 
                 <section className="app__content">
                   <SideMenu isOpen={displaySideMenu} onLinkClick={this.toggleSideMenu} />

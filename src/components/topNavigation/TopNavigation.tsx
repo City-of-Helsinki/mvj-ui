@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import classNames from "classnames";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
+import { IconMenuDots } from "hds-react";
 import { ActionTypes, AppConsumer } from "app/AppContext";
 import MainMenuIcon from "../icons/MainMenuIcon";
 import SearchInput from "../inputs/SearchInput";
@@ -11,7 +12,9 @@ import { ButtonColors } from "components/enums";
 import { hasAnyPageDirtyForms } from "util/forms";
 import { getSearchQuery, getUrlParams } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
+
 import type { UserGroups, UserServiceUnit, UserServiceUnits } from "usersPermissions/types";
+
 type Props = {
   history: Record<string, any>;
   isMenuOpen: boolean;
@@ -21,7 +24,7 @@ type Props = {
   pageTitle: string;
   showSearch: boolean;
   toggleSideMenu: (...args: Array<any>) => any;
-  userGroups: UserGroups;
+  toggleDisplayUserGroups: () => void,
   userActiveServiceUnit: UserServiceUnit;
   userServiceUnits: UserServiceUnits;
   username: string;
@@ -93,10 +96,10 @@ class TopNavigation extends Component<Props, State> {
       pageTitle,
       showSearch,
       toggleSideMenu,
-      userGroups,
+      toggleDisplayUserGroups,
       userActiveServiceUnit,
       userServiceUnits,
-      username
+      username,
     } = this.props;
     const {
       search
@@ -203,8 +206,7 @@ class TopNavigation extends Component<Props, State> {
 
                 <div className="username-wrapper">
                   <p className="username">
-                    {username}{!!userGroups && !!userGroups.length && ` (${userGroups.join(', ')})`}
-                  </p>
+                    {username} <button className={"user-group-button"} onClick={toggleDisplayUserGroups}><IconMenuDots color="white" size="xs" /></button>                  </p>
                   <button className='logout-link' onClick={handleLogout}>Kirjaudu ulos</button>
                 </div>
               </div>

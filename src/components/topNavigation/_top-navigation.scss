@@ -73,52 +73,38 @@
 
   &__right-wrapper {
     display: flex;
-    align-items: center;
-
-    .user-icon-wrapper {
-      position: relative;
-      line-height: 1;
-
-      .userIcon {
-        margin: 0;
-        width: 30px;
-        height: 30px;
-      }
-
-      .badge {
-        position: absolute;
-        font-family: $font-family-source;
-        font-size: rem-calc(12px);
-        min-width: rem-calc(20px);
-        padding: rem-calc(4px);
-        color: $white;
-        font-weight: 600;
-        text-align: center;
-        border-radius: 50%;
-        background-color: $red;
-        top: rem-calc(-3px);
-        right: rem-calc(-10px);
-      }
-    }
-
+    
     .username-wrapper {
       line-height: 1;
       margin-left: 20px;
       text-align: right;
 
       .username {
-        line-height: 1;
-        margin: 0;
+        display: flex;
+        justify-content: flex-end;
         font-weight: 500;
         font-size: rem-calc(16px);
-      }
+        margin-bottom: 0;
 
+        .user-group-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: rem-calc(24px);
+          width: rem-calc(24px);
+          padding: rem-calc(2px);
+          border-radius: 50%;
+          margin-left: rem-calc(5px);
+          background-color: #0078c0;
+        }
+
+      }
       .logout-link {
-        line-height: 1;
         color: $blue;
         font-weight: $semibold;
         font-size: rem-calc(16px);
         font-family: $font-family-helsinki-grotesk;
+        margin: 0;
         cursor: pointer;
 
         &:hover {
@@ -127,56 +113,63 @@
         }
       }
     }
-  }
 
-  .menuIcon, .userIcon, .flagIcon {
-    width: 27px;
-    height: 27px;
-    fill: $black;
-    cursor: pointer;
-  }
-
-  .menuIcon:hover, .userIcon:hover {
-    fill: $blue;
-  }
-
-  .menuIcon {
-    width: rem-calc(25px);
-    height: rem-calc(25px);
-    baseline-shift: rem-calc(10px);
-  }
-
-  .search {
-    margin: 0 rem-calc(40px) 0 0;
-  }
-
-  .flag {
-    position: relative;
-    margin: 0 rem-calc(60px) 0 0;
-  }
-
-  .user-service-unit {
-    border-right: 1px solid #ddd;
-    padding-right: 20px;
-
-    form {
-      min-width: 200px;
+    .menuIcon,
+    .userIcon,
+    .flagIcon {
+      width: 27px;
+      height: 27px;
+      fill: $black;
+      cursor: pointer;
     }
 
-    .user-service-unit-text {
-      line-height: 1.25;
-      text-align: right;
+    .menuIcon:hover,
+    .userIcon:hover {
+      fill: $blue;
     }
 
-    .service-unit-label {
-      font-size: 0.8rem;
-      color: #666666;
-      font-weight: 400;
+    .menuIcon {
+      width: rem-calc(25px);
+      height: rem-calc(25px);
+      baseline-shift: rem-calc(10px);
     }
 
-    .service-unit-name {
-      font-size: 0.85rem;
-      font-weight: 500;
+    .search {
+      margin: 0 rem-calc(40px) 0 0;
+    }
+
+    .flag {
+      position: relative;
+      margin: 0 rem-calc(60px) 0 0;
+    }
+
+    .user-service-unit {
+      border-right: 1px solid #ddd;
+      padding-right: 20px;
+
+      form {
+        min-width: 200px;
+        label {
+          display: inline;
+
+        }
+      }
+
+      .user-service-unit-text {
+        line-height: 1.25;
+        text-align: right;
+      }
+
+      .service-unit-label {
+        font-size: 0.8rem;
+        color: #666666;
+        font-weight: 400;
+      }
+
+      .service-unit-name {
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
     }
   }
 }
