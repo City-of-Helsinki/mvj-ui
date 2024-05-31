@@ -564,8 +564,8 @@ describe('utils', () => {
       expect(formatNumberWithThousandSeparator('10000000,1234', '.')).to.deep.equal('10.000.000,1234');
     });
     it('should format decimal number', () => {
-      expect(formatDecimalNumber(10000000.1234)).to.deep.equal('10000000,12');
-      expect(formatDecimalNumber(10000000)).to.deep.equal('10000000,00');
+      expect(formatDecimalNumber('10000000.1234')).to.deep.equal('10000000,12');
+      expect(formatDecimalNumber('10000000')).to.deep.equal('10000000,00');
       expect(formatDecimalNumber(null)).to.deep.equal(null);
     });
     it('should format number', () => {
