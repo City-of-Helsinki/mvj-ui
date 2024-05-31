@@ -237,11 +237,11 @@ export const formatNumberWithThousandSeparator = (x: any, separator: string = ' 
 
 /**
  * Format decimal number
- * @param {number} x
+ * @param {string} x
  * @param {number} decimals
  * @returns {string}
  */
-export const formatDecimalNumber = (x: number | null | undefined, decimals: number | null | undefined = 2): string | null | undefined => !isEmptyValue(x) ? x.toFixed(decimals || undefined).toString().replace('.', ',') : null;
+export const formatDecimalNumber = (x: string | null | undefined, decimals: number | null | undefined = 2): string | null | undefined => !isEmptyValue(x) ? parseFloat(x).toFixed(decimals || undefined).toString().replace('.', ',') : null;
 
 /**
  * Format number to show on UI
