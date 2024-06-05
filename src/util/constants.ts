@@ -41,7 +41,7 @@ export const MAP_COLORS = ['#0078C0', '#FF9800', '#1976D2', '#D32F2F', '#E040FB'
  * @readonly
  * @const {string}
  */
-export const PTP_URL = 'https://ptp.hel.fi/';
+export const PTP_URL = 'https://ptp.hel.fi';
 
 /**
  * Delete modal button text
