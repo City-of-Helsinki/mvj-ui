@@ -10,7 +10,7 @@ import LoaderWrapper from "components/loader/LoaderWrapper";
 import ExternalLink from "components/links/ExternalLink";
 import Loader from "components/loader/Loader";
 import PlanUnitSelectInput from "components/inputs/PlanUnitSelectInput";
-import { createPaikkatietovipunenUrl } from "util/helpers";
+import { createPTPPlanReportUrl } from "util/helpers";
 import { PlotSearchFieldTitles } from "plotSearch/enums";
 import { formatDate, getFieldOptions, getLabelOfOption } from "util/helpers";
 import { getInfoLinkLanguageDisplayText } from "plotSearch/helpers";
@@ -105,7 +105,7 @@ class PlotSearchSiteEditCustomDetailedPlan extends Component<Props, State> {
                 <FormTextTitle>
                   {PlotSearchFieldTitles.DETAILED_PLAN}
                 </FormTextTitle>
-                {get(currentCustomDetailedPlan, 'detailed_plan') ? <ExternalLink href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(currentCustomDetailedPlan, 'detailed_plan')}`)} text={get(currentCustomDetailedPlan, 'detailed_plan')} /> : <FormText>-</FormText>}
+                {get(currentCustomDetailedPlan, 'detailed_plan') ? <ExternalLink href={createPTPPlanReportUrl(get(currentCustomDetailedPlan, 'detailed_plan'))} text={get(currentCustomDetailedPlan, 'detailed_plan')} /> : <FormText>-</FormText>}
               </Column>
               <Column small={6} medium={4} large={3}>
                 <FormTextTitle>

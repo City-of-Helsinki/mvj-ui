@@ -12,7 +12,7 @@ import FormTextTitle from "components/form/FormTextTitle";
 import ExternalLink from "components/links/ExternalLink";
 import WarningContainer from "components/content/WarningContainer";
 import WarningField from "components/form/WarningField";
-import { createPaikkatietovipunenUrl } from "util/helpers";
+import { createPTPPlanReportUrl } from "util/helpers";
 import { Routes, getRouteById } from "root/routes";
 import { formatDate, getFieldOptions, getLabelOfOption } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getIsFetchingPlanUnitAttributes, getRelatedApplications } from "plotSearch/selectors";
@@ -214,7 +214,7 @@ class PlotSearchSitePlanUnit extends PureComponent<Props, State> {
                     <FormTextTitle>
                       {PlotSearchFieldTitles.DETAILED_PLAN}
                     </FormTextTitle>
-                    {get(currentPlanUnit, 'detailed_plan_identifier') ? <ExternalLink href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(currentPlanUnit, 'detailed_plan_identifier')}`)} text={get(currentPlanUnit, 'detailed_plan_identifier')} /> : <FormText>-</FormText>}
+                    {get(currentPlanUnit, 'detailed_plan_identifier') ? <ExternalLink href={createPTPPlanReportUrl(get(currentPlanUnit, 'detailed_plan_identifier'))} text={get(currentPlanUnit, 'detailed_plan_identifier')} /> : <FormText>-</FormText>}
                   </Column>
                   <Column small={6} medium={4} large={3}>
                     <FormTextTitle>

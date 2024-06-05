@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { isValidDate, getDayMonth, getCurrentYear, sortByStartAndEndDateAsc, sortByStartAndEndDateDesc, isDateRangesCollapsing, splitDateRanges, getSplittedDateRanges, getSplittedDateRangesWithItems } from "./date";
-import { composePageTitle, getSearchQuery, getUrlParams, fixedLengthNumber, getEpochTime, isEmptyValue, formatNumberWithThousandSeparator, formatDecimalNumber, formatNumber, isDecimalNumberStr, convertStrToDecimalNumber, formatDate, formatDateRange, getReferenceNumberLink, findItemById, getLabelOfOption, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc, sortStringByKeyAsc, sortStringByKeyDesc, sortByOptionsAsc, sortByOptionsDesc, addEmptyOption, isFieldRequired, isFieldAllowedToEdit, isFieldAllowedToRead, isMethodAllowed, hasPermissions, getFieldAttributeOptions, getFieldOptions, humanReadableByteCount, hasNumber, findFromOcdString, createPaikkatietovipunenUrl, getApiResponseCount, getApiResponseMaxPage, getApiResponseResults, isActive, isActiveOrFuture, isArchived } from "./helpers";
+import { composePageTitle, getSearchQuery, getUrlParams, fixedLengthNumber, getEpochTime, isEmptyValue, formatNumberWithThousandSeparator, formatDecimalNumber, formatNumber, isDecimalNumberStr, convertStrToDecimalNumber, formatDate, formatDateRange, getReferenceNumberLink, findItemById, getLabelOfOption, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc, sortStringByKeyAsc, sortStringByKeyDesc, sortByOptionsAsc, sortByOptionsDesc, addEmptyOption, isFieldRequired, isFieldAllowedToEdit, isFieldAllowedToRead, isMethodAllowed, hasPermissions, getFieldAttributeOptions, getFieldOptions, humanReadableByteCount, hasNumber, findFromOcdString, createPTPPlanReportUrl, createPTPPlotDivisionUrl, getApiResponseCount, getApiResponseMaxPage, getApiResponseResults, isActive, isActiveOrFuture, isArchived } from "./helpers";
 import { getCoordinatesOfGeometry, getCenterFromCoordinates } from "./map";
 
 describe('utils', () => {
@@ -1133,8 +1133,11 @@ describe('utils', () => {
     it('should not find property from ocd string', () => {
       expect(findFromOcdString('property1:test/property2:test2', 'property3')).to.deep.equal(null);
     });
-    it('should return paikkatietovipunen url', () => {
-      expect(createPaikkatietovipunenUrl('123')).to.deep.equal('http://paikkatietovipunen.hel.fi:10058/123');
+    it('should return PTP plan report url', () => {
+      expect(createPTPPlanReportUrl('123')).to.deep.equal('https://ptp.hel.fi/DataForms/planreport/?id=123');
+    });
+    it('should return PTP plot division url', () => {
+      expect(createPTPPlotDivisionUrl('123')).to.deep.equal('https://ptp.hel.fi/DataHandlers/Tonttijaot/?q=123');
     });
     it('should return api response count', () => {
       const apiResponse = {

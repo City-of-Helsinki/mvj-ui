@@ -21,7 +21,7 @@ import FormTextTitle from "components/form/FormTextTitle";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import WarningContainer from "components/content/WarningContainer";
 import WarningField from "components/form/WarningField";
-import { createPaikkatietovipunenUrl } from "util/helpers";
+import { createPTPPlanReportUrl } from "util/helpers";
 import { receiveCollapseStates, receiveIsSaveClicked, fetchPlanUnit, fetchCustomDetailedPlan } from "plotSearch/actions";
 import { PlotSearchFieldTitles } from "plotSearch/enums";
 import { formatDate, getFieldOptions, getLabelOfOption } from "util/helpers";
@@ -571,7 +571,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                   <FormTextTitle>
                     {PlotSearchFieldTitles.DETAILED_PLAN}
                   </FormTextTitle>
-                  {planUnitByValue ? <ExternalLink href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(planUnitByValue, 'detailed_plan_identifier')}`)} text={get(planUnitByValue, 'detailed_plan_identifier')} /> : <FormText>-</FormText>}
+                  {planUnitByValue ? <ExternalLink href={createPTPPlanReportUrl(get(planUnitByValue, 'detailed_plan_identifier'))} text={get(planUnitByValue, 'detailed_plan_identifier')} /> : <FormText>-</FormText>}
                 </Column>
                 <Column small={6} medium={4} large={3}>
                   <FormTextTitle>

@@ -15,7 +15,7 @@ import { LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles, LeaseAreaUsageDist
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes } from "leases/selectors";
-import { createPaikkatietovipunenUrl } from "util/helpers";
+import { createPTPPlanReportUrl, createPTPPlotDivisionUrl } from "util/helpers";
 import type { Attributes } from "types";
 import SubTitle from "components/content/SubTitle";
 type OwnProps = {
@@ -99,7 +99,7 @@ const PlanUnitItem = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
               {LeasePlanUnitsFieldTitles.DETAILED_PLAN_IDENTIFIER}
             </FormTextTitle>
-            {planUnit.detailed_plan_identifier ? <ExternalLink href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${planUnit.detailed_plan_identifier}`)} text={planUnit.detailed_plan_identifier} /> : <FormText>-</FormText>}
+            {planUnit.detailed_plan_identifier ? <ExternalLink href={createPTPPlanReportUrl(planUnit.detailed_plan_identifier)} text={planUnit.detailed_plan_identifier} /> : <FormText>-</FormText>}
           </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
@@ -127,7 +127,7 @@ const PlanUnitItem = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER)}>
               {LeasePlanUnitsFieldTitles.PLOT_DIVISION_IDENTIFIER}
             </FormTextTitle>
-            {planUnit.plot_division_identifier ? <ExternalLink href={createPaikkatietovipunenUrl(`helreport/plotdivision/?id=${planUnit.plot_division_identifier}`)} text={planUnit.plot_division_identifier} /> : <FormText>-</FormText>}
+            {planUnit.plot_division_identifier ? <ExternalLink href={createPTPPlotDivisionUrl(planUnit.plot_division_identifier)} text={planUnit.plot_division_identifier} /> : <FormText>-</FormText>}
           </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>

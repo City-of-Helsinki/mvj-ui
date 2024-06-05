@@ -9,7 +9,7 @@ import isEmpty from "lodash/isEmpty";
 import isNumber from "lodash/isNumber";
 import { toastr } from "react-redux-toastr";
 import ToastrIcons from "components/toastr/ToastrIcons";
-import { PAIKKATIETOVIPUNEN_URL } from "util/constants";
+import { PTP_URL } from "util/constants";
 import { Breakpoints } from "foundation/enums";
 import type { ApiResponse, Attributes, Methods } from "types";
 import type { UsersPermissions } from "usersPermissions/types";
@@ -633,11 +633,18 @@ export const findFromOcdString = (ocd: string, key: string): string | null | und
 };
 
 /**
- * Create url to paikkatietovipunen
- * @param {string} url
+ * Create url to ptp.hel.fi
+ * @param {string} reportId
  * @returns {string}
  */
-export const createPaikkatietovipunenUrl = (url: string): string => `${PAIKKATIETOVIPUNEN_URL}/${url}`;
+export const createPTPPlanReportUrl = (reportId: string): string => `${PTP_URL}/DataForms/planreport/?id=${reportId}`;
+
+/**
+ * Create url to ptp.hel.fi
+ * @param {string} plotDivisionId
+ * @returns {string}
+ */
+export const createPTPPlotDivisionUrl = (plotDivisionId: string): string => `${PTP_URL}/DataHandlers/Tonttijaot/?q=${plotDivisionId}`;
 
 /**
  * Get count of results from api response
