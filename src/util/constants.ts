@@ -37,11 +37,11 @@ export const MAX_ZOOM = 12;
 export const MAP_COLORS = ['#0078C0', '#FF9800', '#1976D2', '#D32F2F', '#E040FB', '#FF4081', '#512DA8', '#536DFE', '#F57C00', '#E64A19', '#8BC34A', '#689F38', '#FFC107', '#CDDC39'];
 
 /**
- * Url of the paikkatietovipunen
+ * Url of the ptp.hel.fi API
  * @readonly
  * @const {string}
  */
-export const PAIKKATIETOVIPUNEN_URL = 'http://paikkatietovipunen.hel.fi:10058';
+export const PAIKKATIETOPALVELU_URL = 'https://ptp.hel.fi';
 
 /**
  * Delete modal button text

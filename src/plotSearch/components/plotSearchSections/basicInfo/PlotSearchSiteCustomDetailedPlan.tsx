@@ -11,7 +11,7 @@ import Collapse from "components/collapse/Collapse";
 import FormText from "components/form/FormText";
 import FormTextTitle from "components/form/FormTextTitle";
 import ExternalLink from "components/links/ExternalLink";
-import { createPaikkatietovipunenUrl } from "util/helpers";
+import { createPTPPlanReportUrl } from "util/helpers";
 import { formatDate, getFieldOptions, getLabelOfOption } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getIsFetchingCustomDetailedPlanAttributes, getRelatedApplications } from "plotSearch/selectors";
 import type { Attributes } from "types";
@@ -125,7 +125,7 @@ class PlotSearchSiteCustomDetailedPlan extends PureComponent<Props, State> {
                     <FormTextTitle>
                       {PlotSearchFieldTitles.DETAILED_PLAN}
                     </FormTextTitle>
-                    {get(currentCustomDetailedPlan, 'detailed_plan') ? <ExternalLink href={createPaikkatietovipunenUrl(`helreport/planpdfloader/?id=${get(currentCustomDetailedPlan, 'detailed_plan')}`)} text={get(currentCustomDetailedPlan, 'detailed_plan')} /> : <FormText>-</FormText>}
+                    {get(currentCustomDetailedPlan, 'detailed_plan') ? <ExternalLink href={createPTPPlanReportUrl(get(currentCustomDetailedPlan, 'detailed_plan'))} text={get(currentCustomDetailedPlan, 'detailed_plan')} /> : <FormText>-</FormText>}
                   </Column>
                   <Column small={6} medium={4} large={3}>
                     <FormTextTitle>
