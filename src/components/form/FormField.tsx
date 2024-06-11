@@ -13,6 +13,7 @@ import FieldTypeCheckboxDateTime from "components/form/FieldTypeCheckboxDateTime
 import FieldTypeContactSelect from "components/form/FieldTypeContactSelect";
 import FieldTypeDatePicker from "components/form/FieldTypeDatePicker";
 import FieldTypeDecimal from "components/form/FieldTypeDecimal";
+import FieldTypeIntendedUseSelect from "components/form/FieldTypeIntendedUseSelect";
 import FieldTypeLeaseSelect from "components/form/FieldTypeLeaseSelect";
 import FieldTypeLessorSelect from "components/form/FieldTypeLessorSelect";
 import FieldTypeMultiSelect from "components/form/FieldTypeMultiSelect";
@@ -47,6 +48,7 @@ const FieldTypes = {
   [FieldTypeOptions.DECIMAL]: FieldTypeDecimal,
   [FieldTypeOptions.FIELD]: FieldTypeSelect,
   [FieldTypeOptions.INTEGER]: FieldTypeBasic,
+  [FieldTypeOptions.INTENDED_USE]: FieldTypeIntendedUseSelect,
   [FieldTypeOptions.LEASE]: FieldTypeLeaseSelect,
   [FieldTypeOptions.LESSOR]: FieldTypeLessorSelect,
   [FieldTypeOptions.MULTISELECT]: FieldTypeMultiSelect,
@@ -186,6 +188,9 @@ const FormFieldInput = ({
 
       case FieldTypeOptions.USER:
         return getUserFullName(value);
+
+      case FieldTypeOptions.INTENDED_USE:
+        return value ? value.label : '-';
 
       default:
         console.error(`Field type ${type} is not implemented`);

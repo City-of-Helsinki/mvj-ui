@@ -208,8 +208,9 @@ class SummaryEdit extends PureComponent<Props, State> {
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTENDED_USE)}>
                     <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseFieldPaths.INTENDED_USE)} name='intended_use' overrideValues={{
+                    fieldType: FieldTypes.INTENDED_USE,
                     label: LeaseFieldTitles.INTENDED_USE
-                  }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTENDED_USE)} />
+                  }} serviceUnit={currentLease.service_unit} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTENDED_USE)} />
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>

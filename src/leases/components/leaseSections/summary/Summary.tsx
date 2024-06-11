@@ -44,7 +44,6 @@ type State = {
   currentLease: Lease;
   financingOptions: Array<Record<string, any>>;
   hitasOptions: Array<Record<string, any>>;
-  intendedUseOptions: Array<Record<string, any>>;
   managementOptions: Array<Record<string, any>>;
   noticePeriodOptions: Array<Record<string, any>>;
   regulationOptions: Array<Record<string, any>>;
@@ -64,7 +63,6 @@ class Summary extends PureComponent<Props, State> {
     currentLease: {},
     financingOptions: [],
     hitasOptions: [],
-    intendedUseOptions: [],
     lessorOptions: [],
     managementOptions: [],
     noticePeriodOptions: [],
@@ -86,7 +84,6 @@ class Summary extends PureComponent<Props, State> {
       newState.classificationOptions = getFieldOptions(props.attributes, LeaseFieldPaths.CLASSIFICATION);
       newState.financingOptions = getFieldOptions(props.attributes, LeaseFieldPaths.FINANCING);
       newState.hitasOptions = getFieldOptions(props.attributes, LeaseFieldPaths.HITAS);
-      newState.intendedUseOptions = getFieldOptions(props.attributes, LeaseFieldPaths.INTENDED_USE);
       newState.managementOptions = getFieldOptions(props.attributes, LeaseFieldPaths.MANAGEMENT);
       newState.noticePeriodOptions = getFieldOptions(props.attributes, LeaseFieldPaths.NOTICE_PERIOD);
       newState.regulationOptions = getFieldOptions(props.attributes, LeaseFieldPaths.REGULATION);
@@ -140,7 +137,6 @@ class Summary extends PureComponent<Props, State> {
       classificationOptions,
       financingOptions,
       hitasOptions,
-      intendedUseOptions,
       managementOptions,
       noticePeriodOptions,
       regulationOptions,
@@ -239,7 +235,7 @@ class Summary extends PureComponent<Props, State> {
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTENDED_USE)}>
                       {LeaseFieldTitles.INTENDED_USE}
                     </FormTextTitle>
-                    <FormText>{getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}</FormText>
+                    <FormText>{(summary.intended_use && summary.intended_use.name) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>

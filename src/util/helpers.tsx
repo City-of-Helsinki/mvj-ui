@@ -651,7 +651,7 @@ export const createPTPPlotDivisionUrl = (plotDivisionId: string): string => `${P
  * @param {Object} response
  * @returns {number}
  */
-export const getApiResponseCount = (response: ApiResponse): number => get(response, 'count', 0);
+export const getApiResponseCount = <T,>(response: ApiResponse<T>): number => get(response, 'count', 0);
 
 /**
  * Get maximum number of pages from api response
@@ -659,7 +659,7 @@ export const getApiResponseCount = (response: ApiResponse): number => get(respon
  * @param {number} size
  * @returns {number}
  */
-export const getApiResponseMaxPage = (response: ApiResponse, size: number): number => {
+export const getApiResponseMaxPage = <T,>(response: ApiResponse<T>, size: number): number => {
   const count = getApiResponseCount(response);
   return Math.ceil(count / size);
 };
@@ -669,7 +669,7 @@ export const getApiResponseMaxPage = (response: ApiResponse, size: number): numb
  * @param {Object} response
  * @returns {Object[]}
  */
-export const getApiResponseResults = (response: ApiResponse): Array<Record<string, any>> => get(response, 'results', []);
+export const getApiResponseResults = <T,>(response: ApiResponse<T>): Array<Record<string, any>> => get(response, 'results', []);
 
 /**
  * Get React component by dom id

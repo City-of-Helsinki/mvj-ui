@@ -8,11 +8,11 @@ export type Selector<Value, Props> = (state: RootState, props: Props) => Value;
 export type Attributes = Record<string, any> | null | undefined;
 export type Reports = Record<string, any> | null | undefined;
 export type Methods = Record<string, any> | null | undefined;
-export type ApiResponse = ({
+export type ApiResponse<T = any> = ({
   count: number;
   next: string | null | undefined;
   previous: string | null | undefined;
-  results: Array<Record<string, any>>;
+  results: Array<T>;
 } | null | undefined) | null;
 type Coordinate = Array<number>;
 export type LeafletFeatureGeometry = {

@@ -1,5 +1,6 @@
 import createUrl from "api/createUrl";
 import callApiAsync from "api/callApiAsync";
+import { ContactExistsResponse } from "./types";
 export const fetchContacts = async (query?: Record<string, any>) => {
   const {
     response: {
@@ -17,13 +18,13 @@ export const fetchContacts = async (query?: Record<string, any>) => {
       return [];
   }
 };
-export const contactExists = async (identifier: string) => {
+export const contactExists = async (identifier: string): Promise<boolean | Array<any>> => {
   const {
     response: {
       status
     },
     bodyAsJson
-  } = await callApiAsync(new Request(createUrl(`contact_exists/?identifier=${identifier}`)));
+  } = await callApiAsync<ContactExistsResponse>(new Request(createUrl(`contact_exists/?identifier=${identifier}`)));
 
   switch (status) {
     case 200:

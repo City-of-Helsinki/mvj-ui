@@ -1,9 +1,11 @@
 import { store } from "root/startApp";
 import { getApiToken } from "auth/selectors";
 import { UI_ACCEPT_LANGUAGE_VALUE } from "api/constants";
+import type { ApiSyncResponse } from "./types";
+import type { ApiResponse } from "types";
 
-const callApiAsync = async (request: Request): Promise<Record<string, any>> => {
-  const apiToken = await getApiToken(store.getState());
+const callApiAsync = async <T = ApiResponse>(request: Request): Promise<ApiSyncResponse<T>> => {
+  const apiToken = getApiToken(store.getState());
 
   if (apiToken) {
     request.headers.set('Authorization', `Bearer ${apiToken}`);
