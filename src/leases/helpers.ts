@@ -2783,13 +2783,13 @@ export const mapLeaseSearchFilters = (query: Record<string, any>): Record<string
 
   if (searchQuery.sort_key) {
     if (searchQuery.sort_key === 'identifier') {
-      searchQuery.ordering = ['identifier__type__identifier', 'identifier__municipality__identifier', 'identifier__district__identifier', 'identifier__sequence'];
+      searchQuery.ordering = ['type__identifier', 'municipality__identifier', 'district__identifier', 'identifier__sequence'];
     } else {
       searchQuery.ordering = [searchQuery.sort_key];
     }
 
     if (searchQuery.sort_order === TableSortOrder.DESCENDING) {
-      searchQuery.ordering = searchQuery.ordering.map(key => `-${key}`);
+      searchQuery.ordering = searchQuery.ordering.map((key: string) => `-${key}`);
     }
 
     delete searchQuery.sort_key;
