@@ -10,7 +10,7 @@ export const getIsFetchingJobRunLogEntryAttributes: Selector<boolean, void> = (s
 export const getJobRunLogEntryAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.batchrun.jobRunLogEntryAttributes;
 export const getJobRunLogEntryMethods: Selector<Methods, void> = (state: RootState): Methods => state.batchrun.jobRunLogEntryMethods;
 export const getIsFetchingJobRunLogEntriesByRun: Selector<boolean, number> = (state: RootState, run: number): boolean => state.batchrun.isFetchingJobRunLogEntriesByRun[run];
-export const getJobRunLogEntriesByRun: Selector<ApiResponse, number> = (state: RootState, run: number): ApiResponse => state.batchrun.jobRunLogEntriesByRun[run];
+export const getJobRunLogEntriesByRun: Selector<ApiResponse, number> = <T>(state: RootState, run: number): ApiResponse<T> => state.batchrun.jobRunLogEntriesByRun[run];
 export const getIsFetchingScheduledJobAttributes: Selector<boolean, void> = (state: RootState): boolean => state.batchrun.isFetchingScheduledJobAttributes;
 export const getScheduledJobAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.batchrun.scheduledJobAttributes;
 export const getScheduledJobMethods: Selector<Methods, void> = (state: RootState): Methods => state.batchrun.scheduledJobMethods;

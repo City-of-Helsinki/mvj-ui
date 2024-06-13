@@ -14,6 +14,9 @@ export type ContactState = {
   list: ContactList;
   methods: Methods;
 };
+export type ContactExistsResponse = {
+  exists: boolean;
+}
 export type Contact = Record<string, any>;
 export type ContactId = number;
 export type ContactList = any;

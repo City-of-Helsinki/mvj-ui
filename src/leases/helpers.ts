@@ -18,7 +18,7 @@ import { addEmptyOption, convertStrToDecimalNumber, fixedLengthNumber, formatDat
 import { getCoordinatesOfGeometry } from "util/map";
 import { getIsEditMode } from "./selectors";
 import { removeSessionStorageItem } from "util/storage";
-import type { Lease } from "./types";
+import type { Lease, IntendedUse } from "./types";
 import type { CommentList } from "comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "root/types";
@@ -213,6 +213,23 @@ export const getContentLeaseInfo = (lease: Record<string, any>): Record<string, 
 };
 
 /**
+ * Get contenr for intended use
+ * @param {Object} intendedUse
+ * @returns {Object}
+ */
+export const getContentIntendedUse = (intendedUse: IntendedUse): Record<string, any> | null => {
+  if (!intendedUse) return null;
+  return {
+    id: intendedUse.id,
+    value: intendedUse.id,
+    label: intendedUse.name,
+    name: intendedUse.name,
+    service_unit: intendedUse.service_unit,
+  };
+}
+
+
+/**
  * Get content lease address
  * @param {Object} lease
  * @returns {string}
@@ -269,7 +286,7 @@ export const getContentLeaseSummary = (lease: Record<string, any>): Record<strin
     financing: lease.financing,
     hitas: lease.hitas,
     infill_development_compensations: getContentLeaseInfillDevelopmentCompensations(lease),
-    intended_use: lease.intended_use,
+    intended_use: getContentIntendedUse(lease.intended_use),
     intended_use_note: lease.intended_use_note,
     internal_order: lease.internal_order,
     is_subject_to_vat: lease.is_subject_to_vat,
@@ -1974,7 +1991,7 @@ export const addSummaryFormValuesToPayload = (payload: Record<string, any>, form
     end_date: formValues.end_date,
     financing: formValues.financing,
     hitas: formValues.hitas,
-    intended_use: formValues.intended_use,
+    intended_use: get(formValues, 'intended_use.value'),
     intended_use_note: formValues.intended_use_note,
     internal_order: formValues.internal_order,
     is_subject_to_vat: formValues.is_subject_to_vat,

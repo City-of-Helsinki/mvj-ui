@@ -1,5 +1,6 @@
 import createUrl from "api/createUrl";
 import callApiAsync from "api/callApiAsync";
+import type { IntendedUse } from "./types";
 export const fetchLeases = async (query?: Record<string, any>) => {
   const {
     response: {
@@ -82,6 +83,23 @@ export const fetchDecisions = async (query?: Record<string, any>) => {
 
     default:
       console.error('Failed to fetch decisions');
+      return [];
+  }
+};
+export const fetchIntendedUses = async (query?: Record<string, any>): Promise<Array<IntendedUse>> => {
+  const {
+    response: {
+      status
+    },
+    bodyAsJson
+  } = await callApiAsync(new Request(createUrl('intended_use/', query)));
+
+  switch (status) {
+    case 200:
+      return bodyAsJson.results;
+
+    default:
+      console.error('Failed to fetch intended uses');
       return [];
   }
 };

@@ -7,8 +7,8 @@ export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootStat
 export const getListAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.areaSearch.listAttributes;
 export const getListMethods: Selector<Methods, void> = (state: RootState): Methods => state.areaSearch.listMethods;
 export const getIsFetchingListAttributes: Selector<boolean, void> = (state: RootState): boolean => state.areaSearch.isFetchingListAttributes;
-export const getAreaSearchList: Selector<ApiResponse, void> = (state: RootState): ApiResponse => state.areaSearch.areaSearchList;
-export const getAreaSearchListByBBox: Selector<ApiResponse, void> = (state: RootState): ApiResponse => state.areaSearch.areaSearchListByBBox;
+export const getAreaSearchList: Selector<ApiResponse, void> = <T>(state: RootState): ApiResponse<T> => state.areaSearch.areaSearchList;
+export const getAreaSearchListByBBox: Selector<ApiResponse, void> = <T>(state: RootState): ApiResponse<T> => state.areaSearch.areaSearchListByBBox;
 export const getIsFetchingAreaSearchList: Selector<boolean, void> = (state: RootState): boolean => state.areaSearch.isFetchingAreaSearchList;
 export const getIsFetchingAreaSearchListByBBox: Selector<boolean, void> = (state: RootState): boolean => state.areaSearch.isFetchingAreaSearchListByBBox;
 export const getCurrentAreaSearch: Selector<Record<string, any>, void> = (state: RootState): Record<string, any> => state.areaSearch.currentAreaSearch;

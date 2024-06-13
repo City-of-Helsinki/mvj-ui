@@ -1,4 +1,5 @@
 import type { Action, ApiResponse, Attributes, Methods } from "../types";
+import type { ServiceUnit } from "serviceUnits/types";
 export type LeaseState = {
   attributes: Attributes;
   byId: Record<string, any>;
@@ -36,6 +37,11 @@ export type SendEmailPayload = {
   lease: LeaseId;
   recipients: Array<number>;
   text: string;
+};
+export type IntendedUse = {
+  id: number;
+  name: string;
+  service_unit: ServiceUnit["id"];
 };
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;

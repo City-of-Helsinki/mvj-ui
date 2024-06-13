@@ -5,3 +5,7 @@ export type ClearErrorAction = Action<string, void>;
 export type ApiState = {
   error: ApiError;
 };
+export type ApiSyncResponse<T> = {
+  response: Response,
+  bodyAsJson: T
+};

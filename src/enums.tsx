@@ -423,6 +423,7 @@ export const FieldTypes = {
   DECIMAL: 'decimal',
   FIELD: 'field',
   INTEGER: 'integer',
+  INTENDED_USE: 'intended_use',
   LEASE: 'lease',
   LESSOR: 'lessor',
   MULTISELECT: 'multiselect',
