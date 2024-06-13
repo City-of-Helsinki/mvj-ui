@@ -47,6 +47,7 @@ type Props = {
 };
 type State = {
   decisionMakerOptions: Array<Record<string, any>>;
+  intendedUseOptions: Array<Record<string, any>>;
   isBasicSearch: boolean;
   leaseAttributes: Attributes;
   lessors: LessorList;
@@ -61,6 +62,7 @@ class Search extends PureComponent<Props, State> {
   _isMounted: boolean;
   state = {
     decisionMakerOptions: [],
+    intendedUseOptions: [],
     isBasicSearch: true,
     leaseAttributes: null,
     lessors: [],
@@ -96,6 +98,7 @@ class Search extends PureComponent<Props, State> {
     if (props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
       newState.decisionMakerOptions = getFieldOptions(props.leaseAttributes, LeaseDecisionsFieldPaths.DECISION_MAKER);
+      newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.INTENDED_USE);
       newState.municipalityOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.MUNICIPALITY);
       newState.tenantTypeOptions = getFieldOptions(props.leaseAttributes, LeaseTenantContactSetFieldPaths.TYPE, false);
       newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.TYPE);
@@ -161,6 +164,7 @@ class Search extends PureComponent<Props, State> {
     delete searchQuery.in_bbox;
     delete searchQuery.visualization;
     delete searchQuery.zoom;
+    delete searchQuery.intended_use;
     delete searchQuery.service_unit;
     const keys = Object.keys(searchQuery);
 
@@ -215,6 +219,7 @@ class Search extends PureComponent<Props, State> {
     } = this.props;
     const {
       decisionMakerOptions,
+      intendedUseOptions,
       isBasicSearch,
       lessorOptions,
       municipalityOptions,
@@ -587,6 +592,21 @@ class Search extends PureComponent<Props, State> {
                   type: FieldTypes.STRING,
                   read_only: false
                 }} invisibleLabel name='invoice_number' />
+                  </SearchInputColumn>
+                </SearchRow>
+
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Vuokrauksen käyttötarkoitus</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField autoBlur disableDirty fieldAttributes={{
+                  label: 'Vuokrauksen käyttötarkoitus',
+                  type: FieldTypes.CHOICE,
+                  read_only: false
+                }} invisibleLabel name='intended_use' overrideValues={{
+                  options: intendedUseOptions
+                }} />
                   </SearchInputColumn>
                 </SearchRow>
               </Column>
