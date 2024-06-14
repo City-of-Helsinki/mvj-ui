@@ -172,6 +172,7 @@ const FormFieldInput = ({
       case FieldTypeOptions.STRING:
       case FieldTypeOptions.HIDDEN:
       case FieldTypeOptions.FRACTIONAL:
+      case FieldTypeOptions.INTENDED_USE:
         return value;
 
       case FieldTypeOptions.REFERENCE_NUMBER:
@@ -188,9 +189,6 @@ const FormFieldInput = ({
 
       case FieldTypeOptions.USER:
         return getUserFullName(value);
-
-      case FieldTypeOptions.INTENDED_USE:
-        return value ? value.label : '-';
 
       default:
         console.error(`Field type ${type} is not implemented`);
