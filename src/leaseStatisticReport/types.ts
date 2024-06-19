@@ -40,3 +40,17 @@ export type MailSentAction = Action<string, void>;
 export type FetchOptionsAction = Action<string, void>;
 export type ReceiveOptionsAction = Action<string, void>;
 export type OptionsNotFoundAction = Action<string, void>;
+export interface ReportOutputFieldInput {
+  label: string;
+  choices: Array<any>;
+  format: string;
+  is_numeric: boolean;
+}
+export interface ReportOutputField extends Omit<ReportOutputFieldInput, 'is_numeric'> {
+  key: string;
+  isNumeric: boolean;
+}
+export type ReportOptions = {
+  output_fields: Record<string, ReportOutputFieldInput>;
+  is_already_sorted: boolean;
+}
