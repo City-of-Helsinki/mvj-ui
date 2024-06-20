@@ -80,8 +80,7 @@ const renderNotes = ({
       return <NewCollectionNote key={index} field={field} onCancel={handleCancel} onSave={handleSave} />;
     })}
       <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONNOTE)}>
-        {/** @ts-ignore: Operator '<' cannot be applied to types 'boolean' and 'number' */}
-        {!!fields.length < 1 && <AddButtonThird label='Lisää huomautus' onClick={handleAdd} />}
+        {fields.length === 0 && <AddButtonThird label='Lisää huomautus' onClick={handleAdd} />}
       </Authorization>
     </Fragment>;
 };

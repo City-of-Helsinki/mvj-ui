@@ -868,8 +868,7 @@ class LeasePage extends Component<Props, State> {
           hasError: isSaveClicked && !isTenantsFormValid
         }, {
           label: 'Vuokrat',
-          // @ts-ignore: Type 'boolean' is not assignable to type 'string'
-          allow: isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS || isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)),
+          allow: isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS) || isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS),
           isDirty: isRentsFormDirty,
           hasError: isSaveClicked && !isRentsFormValid
         }, {

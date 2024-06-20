@@ -4,6 +4,7 @@ import { formatDate, formatNumber } from "util/helpers";
 import { LeaseStatisticReportFormatOptions } from "leaseStatisticReport/enums";
 import type { Reports } from "types";
 import { FieldTypes } from "enums";
+import type { ReportOptions, ReportOutputField } from "./types";
 
 /**
  * Get report type options
@@ -120,20 +121,17 @@ export const getQueryParams = (formValues: Record<string, any>): any => {
  * @param {Object} options
  * @return {Array[]}
  */
-export const getOutputFields = (options: Record<string, any>): Array<Record<string, any>> => {
+export const getOutputFields = (options: ReportOptions): Array<ReportOutputField> => {
   if (options) return Object.entries(options.output_fields).map(([key, value]) => {
     return {
       key: key,
-      // @ts-ignore: Property 'choices' does not exist on type 'unknown'.
       label: value.label,
-      // @ts-ignore: Property 'choices' does not exist on type 'unknown'.
       choices: value.choices,
-      // @ts-ignore: Property 'choices' does not exist on type 'unknown'.
       format: value.format,
-      // @ts-ignore: Property 'choices' does not exist on type 'unknown'.
       isNumeric: value.is_numeric
     };
-  });else return [];
+  });
+  else return [];
 };
 
 /**

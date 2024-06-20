@@ -21,6 +21,7 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { PermissionMissingTexts } from "enums";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 import { withLeaseInvoicingConfirmationReportAttributes } from "components/attributes/LeaseInvoicingConfirmationReportAttributes";
+import type { ReportOptions } from "leaseStatisticReport/types";
 type Props = {
   isFetchingLeaseInvoicingConfirmationReportAttributes: boolean;
   leaseInvoicingConfirmationReportAttributes: Attributes;
@@ -30,7 +31,7 @@ type Props = {
   usersPermissions: UsersPermissionsType;
   isFetchingReportData: boolean;
   reportData: any;
-  reportOptions: Record<string, any>;
+  reportOptions: ReportOptions;
   payload: Record<string, any>;
   reports: Reports;
 };
