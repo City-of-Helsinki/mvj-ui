@@ -16,8 +16,10 @@
   "scripts": {
     "lint": "eslint src",
     "serve": "webpack serve",
-    "start": "node scripts/start.js",
+    "start": "vite",
+    "build": "tsc && vite build",
     "compile": "node scripts/compile.js",
+    "preview": "vite preview",
     "precommit": "npm-run-all lint",
     "prepush": "npm-run-all test",
     "test": "mocha --require @babel/register --require ts-node/register --require tsconfig-paths/register --require src/test.ts \"src/**/*spec.ts\"",
@@ -25,6 +27,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.5.2",
     "copy-to-clipboard": "^3.2.0",
@@ -47,7 +50,7 @@
     "proj4": "^2.5.0",
     "proj4leaflet": "^1.0.2",
     "prop-types": "^15.7.2",
-    "react": "16.8.6",
+    "react": "18",
     "react-datepicker": "2.8.0",
     "react-dom": "16.8.6",
     "react-dual-listbox": "^2.0.0",
@@ -69,6 +72,9 @@
     "redux-oidc": "^3.1.4",
     "redux-saga": "^1.0.5",
     "utility-types": "^3.11.0",
+    "vite": "^5.3.1",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.3.2",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
