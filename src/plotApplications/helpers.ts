@@ -207,7 +207,7 @@ export const getSectionTargetFromMeta = (field: string): string => {
     return '';
   }
 };
-export const getInitialTargetInfoCheckValues = (plotSearch: PlotSearch, infoCheckData: Array<Record<string, any>>, id: number): Record<string, any> | null => {
+export const getInitialTargetInfoCheckValues = (plotSearch: PlotSearch, infoCheckData: Record<string, any>, id: number): Record<string, any> | null => {
   const target = plotSearch?.plot_search_targets.find(target => target.id === id);
 
   if (!target) {
