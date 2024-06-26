@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "City of Helsinki ground rent system UI",
   "main": "src/index.ts",
+  "type": "module",
   "author": "Jori Lindell <jori.lindell@digia.com>",
   "license": "MIT",
   "nyc": {
@@ -135,6 +136,7 @@
     "typescript": "^5.4.5",
     "url": "^0.11.3",
     "url-loader": "^4.1.1",
+    "vite-plugin-babel": "^1.2.0",
     "webpack": "^5.9.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-hot-middleware": "^2.26.0",
