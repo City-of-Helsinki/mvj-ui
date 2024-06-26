@@ -4,9 +4,11 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   // depending on your application, base can also be "/"
-  base: "/src",
+  
+  root: "./",
+  base: "./src",
   plugins: [
-    react({ include: /\.(js|jsx|ts|tsx)$/, jsxRuntime: "classic" }),
+    react({ include: /\.(js|jsx|ts|tsx)$/, jsxRuntime: "automatic" }),
     viteTsconfigPaths()
   ],
   server: {
