@@ -1,4 +1,4 @@
-import { ApplicantTypes } from "application/enums";
+import { ApplicantTypes } from "/src/application/enums";
 export const APPLICANT_SECTION_IDENTIFIER = 'hakijan-tiedot';
 export const TARGET_SECTION_IDENTIFIER = 'haettava-kohde';
 export const APPLICANT_TYPE_FIELD_IDENTIFIER = 'hakija';

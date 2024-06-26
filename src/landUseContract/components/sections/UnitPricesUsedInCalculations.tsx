@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import { formValueSelector, change } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
-import FormField from "components/form/FormField";
-import RemoveButton from "components/form/RemoveButton";
+import FormField from "/src/components/form/FormField";
+import RemoveButton from "/src/components/form/RemoveButton";
 import type { Attributes } from "types";
 import { getUsedPrice, getSum } from "landUseContract/helpers";
-import FormText from "components/form/FormText";
+import FormText from "/src/components/form/FormText";
 import { formatNumber } from "util/helpers";
 type Props = {
   attributes: Attributes;

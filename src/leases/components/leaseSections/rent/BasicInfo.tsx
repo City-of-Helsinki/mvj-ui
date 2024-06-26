@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Authorization from "components/authorization/Authorization";
-import FormText from "components/form/FormText";
-import FormTextTitle from "components/form/FormTextTitle";
+import Authorization from "/src/components/authorization/Authorization";
+import FormText from "/src/components/form/FormText";
+import FormTextTitle from "/src/components/form/FormTextTitle";
 import { LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes } from "leases/enums";
 import { formatDueDates, formatSeasonalDate } from "leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";

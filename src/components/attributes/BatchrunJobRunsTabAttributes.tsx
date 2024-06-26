@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchJobRunAttributes as fetchBatchrunJobRunAttributes, fetchJobRunLogEntryAttributes as fetchBatchrunJobRunLogEntryAttributes } from "batchrun/actions";
-import { getIsFetchingJobRunAttributes as getIsFetchingBatchrunJobRunAttributes, getIsFetchingJobRunLogEntryAttributes as getIsFetchingBatchrunJobRunLogEntryAttributes, getJobRunAttributes as getBatchrunJobRunAttributes, getJobRunMethods as getBatchrunJobRunMethods, getJobRunLogEntryAttributes as getBatchrunJobRunLogEntryAttributes, getJobRunLogEntryMethods as getBatchrunJobRunLogEntryMethods } from "batchrun/selectors";
+import { fetchJobRunAttributes as fetchBatchrunJobRunAttributes, fetchJobRunLogEntryAttributes as fetchBatchrunJobRunLogEntryAttributes } from "/src/batchrun/actions";
+import { getIsFetchingJobRunAttributes as getIsFetchingBatchrunJobRunAttributes, getIsFetchingJobRunLogEntryAttributes as getIsFetchingBatchrunJobRunLogEntryAttributes, getJobRunAttributes as getBatchrunJobRunAttributes, getJobRunMethods as getBatchrunJobRunMethods, getJobRunLogEntryAttributes as getBatchrunJobRunLogEntryAttributes, getJobRunLogEntryMethods as getBatchrunJobRunLogEntryMethods } from "/src/batchrun/selectors";
 import type { Attributes, Methods } from "types";
 
 function BatchrunJobRunTabAttributes(WrappedComponent: any) {

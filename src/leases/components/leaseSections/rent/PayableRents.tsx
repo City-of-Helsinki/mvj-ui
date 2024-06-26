@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import AmountWithVat from "components/vat/AmountWithVat";
-import SortableTable from "components/table/SortableTable";
+import AmountWithVat from "/src/components/vat/AmountWithVat";
+import SortableTable from "/src/components/table/SortableTable";
 import { LeasePayableRentsFieldPaths, LeasePayableRentsFieldTitles } from "leases/enums";
 import { TableSortOrder } from "enums";
 import { formatDate, formatNumber, isFieldAllowedToRead, sortNumberByKeyAsc, sortNumberByKeyDesc } from "util/helpers";

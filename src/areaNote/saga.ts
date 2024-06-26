@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { receiveAttributes, receiveMethods, attributesNotFound, hideEditMode, notFound, receiveAreaNoteList, receiveDeletedAreaNote, receiveEditedAreaNote } from "./actions";
 import { displayUIMessage } from "util/helpers";
 import { createAreaNote, deleteAreaNote, editAreaNote, fetchAreaNotes, fetchAttributes } from "./requests";

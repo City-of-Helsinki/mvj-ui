@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Collapse from "components/collapse/Collapse";
-import Divider from "components/content/Divider";
-import FormText from "components/form/FormText";
-import FormTextTitle from "components/form/FormTextTitle";
+import Collapse from "/src/components/collapse/Collapse";
+import Divider from "/src/components/content/Divider";
+import FormText from "/src/components/form/FormText";
+import FormTextTitle from "/src/components/form/FormTextTitle";
 import { receiveCollapseStates } from "landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
 import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from "landUseContract/selectors";

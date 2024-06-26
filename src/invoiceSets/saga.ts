@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { fetchInvoicesByLease, receiveInvoiceToCredit, receiveIsCreditInvoicePanelOpen } from "invoices/actions";
 import { fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction, notFound, receiveInvoiceSetsByLease } from "./actions";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { displayUIMessage } from "util/helpers";
 import { creditInvoiceSet, fetchInvoiceSetsByLease } from "./requests";
 

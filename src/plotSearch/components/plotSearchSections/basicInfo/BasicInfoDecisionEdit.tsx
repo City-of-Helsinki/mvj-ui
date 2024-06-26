@@ -2,13 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
-import Authorization from "components/authorization/Authorization";
-import RemoveButton from "components/form/RemoveButton";
+import Authorization from "/src/components/authorization/Authorization";
+import RemoveButton from "/src/components/form/RemoveButton";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import { getAttributes, getIsSaveClicked } from "plotSearch/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
-import DecisionSelectInput from "components/form/DecisionSelectInput";
+import DecisionSelectInput from "/src/components/form/DecisionSelectInput";
 import { formatDecisionName } from "plotSearch/helpers";
 type OwnProps = {
   disabled: boolean;

@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import { Row, Column } from "react-foundation";
-import Authorization from "components/authorization/Authorization";
-import FileDownloadLink from "components/file/FileDownloadLink";
-import FormText from "components/form/FormText";
-import FormTextTitle from "components/form/FormTextTitle";
-import ShowMore from "components/showMore/ShowMore";
-import SubTitle from "components/content/SubTitle";
+import Authorization from "/src/components/authorization/Authorization";
+import FileDownloadLink from "/src/components/file/FileDownloadLink";
+import FormText from "/src/components/form/FormText";
+import FormTextTitle from "/src/components/form/FormTextTitle";
+import ShowMore from "/src/components/showMore/ShowMore";
+import SubTitle from "/src/components/content/SubTitle";
 import { LeaseInspectionAttachmentsFieldPaths, LeaseInspectionAttachmentsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, isFieldAllowedToRead } from "util/helpers";

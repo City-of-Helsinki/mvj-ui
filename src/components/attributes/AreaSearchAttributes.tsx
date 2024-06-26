@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { getAttributes, getIsFetchingAttributes, getIsFetchingListAttributes, getListAttributes, getListMethods, getMethods } from "areaSearch/selectors";
+import { getAttributes, getIsFetchingAttributes, getIsFetchingListAttributes, getListAttributes, getListMethods, getMethods } from "/src/areaSearch/selectors";
 import type { Attributes, Methods } from "types";
-import { fetchAttributes, fetchListAttributes } from "areaSearch/actions";
+import { fetchAttributes, fetchListAttributes } from "/src/areaSearch/actions";
 import type { RootState } from "root/types";
 
 function AreaSearchAttributes(WrappedComponent: React.ComponentType<any>) {

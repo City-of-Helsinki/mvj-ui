@@ -2,7 +2,7 @@ import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
 import { hideContactModal, hideEditMode, receiveAttributes, receiveMethods, attributesNotFound, receiveContacts, receiveContactModalSettings, receiveSingleContact, notFound } from "./actions";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { displayUIMessage } from "util/helpers";
 import { createContact, editContact, fetchAttributes, fetchContacts, fetchSingleContact } from "./requests";
 import { getRouteById, Routes } from "../root/routes";

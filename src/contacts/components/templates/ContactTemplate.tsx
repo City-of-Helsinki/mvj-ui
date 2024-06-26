@@ -1,12 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Authorization from "components/authorization/Authorization";
-import FormText from "components/form/FormText";
-import FormTextTitle from "components/form/FormTextTitle";
-import FormWrapper from "components/form/FormWrapper";
-import FormWrapperLeft from "components/form/FormWrapperLeft";
-import FormWrapperRight from "components/form/FormWrapperRight";
+import Authorization from "/src/components/authorization/Authorization";
+import FormText from "/src/components/form/FormText";
+import FormTextTitle from "/src/components/form/FormTextTitle";
+import FormWrapper from "/src/components/form/FormWrapper";
+import FormWrapperLeft from "/src/components/form/FormWrapperLeft";
+import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import { ContactFieldPaths, ContactFieldTitles } from "contacts/enums";
 import { getUiDataContactKey } from "uiData/helpers";
 import { getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";

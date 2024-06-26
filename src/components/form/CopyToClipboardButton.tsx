@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import CopyToClipboardIcon from "components/icons/CopyToClipboardIcon";
+import CopyToClipboardIcon from "/src/components/icons/CopyToClipboardIcon";
 type Props = {
   className?: string;
   disabled?: boolean;

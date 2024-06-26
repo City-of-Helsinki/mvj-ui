@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import Authorization from "components/authorization/Authorization";
-import Divider from "components/content/Divider";
-import FormText from "components/form/FormText";
+import Authorization from "/src/components/authorization/Authorization";
+import Divider from "/src/components/content/Divider";
+import FormText from "/src/components/form/FormText";
 import LeaseAreaWithArchiceInfo from "./LeaseAreaWithArchiceInfo";
-import Title from "components/content/Title";
-import WarningContainer from "components/content/WarningContainer";
+import Title from "/src/components/content/Title";
+import WarningContainer from "/src/components/content/WarningContainer";
 import { LeaseAreasFieldPaths } from "leases/enums";
 import { calculateAreasSum, getContentLeaseAreas, getDecisionOptions } from "leases/helpers";
 import { formatNumber, isFieldAllowedToRead } from "util/helpers";

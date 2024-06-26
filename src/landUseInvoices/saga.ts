@@ -2,7 +2,7 @@ import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveSingleLandUseContract } from "landUseContract/actions";
 import { fetchInvoicesByLandUseContract, receiveAttributes, receiveMethods, attributesNotFound, receiveInvoicesByLandUseContract, receiveIsCreateInvoicePanelOpen, receiveIsEditClicked, receivePatchedInvoice, notFound, receiveIsCreditInvoicePanelOpen, receiveInvoiceToCredit } from "./actions";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { displayUIMessage } from "util/helpers";
 import { fetchAttributes, createInvoice, patchInvoice, deleteInvoice, fetchInvoices, exportInvoiceToLaske, creditInvoice } from "./requests";
 import { getCurrentLandUseContract } from "landUseContract/selectors";

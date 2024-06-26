@@ -1,4 +1,4 @@
-import { dateGreaterOrEqual } from "components/form/validations";
+import { dateGreaterOrEqual } from "/src/components/form/validations";
 
 /** 
  * Validate basis of rent form

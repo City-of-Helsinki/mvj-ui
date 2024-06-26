@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import EditIcon from "components/icons/EditIcon";
+import EditIcon from "/src/components/icons/EditIcon";
 type Props = {
   className?: string;
   disabled?: boolean;

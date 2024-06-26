@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Authorization from "components/authorization/Authorization";
-import FormField from "components/form/FormField";
-import RemoveButton from "components/form/RemoveButton";
+import Authorization from "/src/components/authorization/Authorization";
+import FormField from "/src/components/form/FormField";
+import RemoveButton from "/src/components/form/RemoveButton";
 import { RentAdjustmentTemporarySubventionsFieldPaths, RentAdjustmentTemporarySubventionsFieldTitles } from "leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";

@@ -1,6 +1,6 @@
 import React from "react";
 import { getLabelOfOption, getReferenceNumberLink } from "../../util/helpers";
-import FormText from "components/form/FormText";
+import FormText from "/src/components/form/FormText";
 type Props = {
   decision: Record<string, any> | null | undefined;
   decisionOptions: Array<Record<string, any>>;

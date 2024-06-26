@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import DecisionItem from "./DecisionItem";
-import FormText from "components/form/FormText";
+import FormText from "/src/components/form/FormText";
 import { LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths } from "leases/enums";
 import { getContentDecisions } from "leases/helpers";
 import { getFieldOptions } from "util/helpers";

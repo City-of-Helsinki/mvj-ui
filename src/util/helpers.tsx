@@ -8,7 +8,7 @@ import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
 import isNumber from "lodash/isNumber";
 import { toastr } from "react-redux-toastr";
-import ToastrIcons from "components/toastr/ToastrIcons";
+import ToastrIcons from "/src/components/toastr/ToastrIcons";
 import { PAIKKATIETOPALVELU_URL } from "util/constants";
 import { Breakpoints } from "foundation/enums";
 import type { ApiResponse, Attributes, Methods } from "types";

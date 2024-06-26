@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchCommentAttributes } from "comments/actions";
+import { fetchAttributes as fetchCommentAttributes } from "/src/comments/actions";
 import { fetchAttributes as fetchInvoiceAttributes } from "invoices/actions";
 import { fetchAttributes as fetchLeaseAttributes } from "leases/actions";
-import { getAttributes as getCommentAttributes, getIsFetchingAttributes as getIsFetchingCommentAttributes, getMethods as getCommentMethods } from "comments/selectors";
+import { getAttributes as getCommentAttributes, getIsFetchingAttributes as getIsFetchingCommentAttributes, getMethods as getCommentMethods } from "/src/comments/selectors";
 import { getAttributes as getInvoiceAttributes, getIsFetchingAttributes as getIsFetchingInvoiceAttributes, getMethods as getInvoiceMethods } from "invoices/selectors";
 import { getAttributes as getLeaseAttributes, getIsFetchingAttributes as getIsFetchingLeaseAttributes, getMethods as getLeaseMethods } from "leases/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";

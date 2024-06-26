@@ -3,18 +3,18 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
-import AreaNotesEditMap from "areaNote/components/AreaNotesEditMap";
+import AreaNotesEditMap from "/src/areaNote/components/AreaNotesEditMap";
 import { DEFAULT_ZOOM, MAP_COLORS } from "util/constants";
 import { getApiResponseResults, getUrlParams } from "util/helpers";
 import { getBoundsFromBBox, getBoundsFromFeatures } from "util/map";
-import { getAreaNoteList } from "areaNote/selectors";
+import { getAreaNoteList } from "/src/areaNote/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import AreaSearchLayer from "areaSearch/components/map/AreaSearchLayer";
-import { getAreaSearchListByBBox } from "areaSearch/selectors";
-import { getAreaSearchGeoJson } from "areaSearch/helpers";
-import { MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES } from "areaSearch/constants";
+import AreaSearchLayer from "/src/areaSearch/components/map/AreaSearchLayer";
+import { getAreaSearchListByBBox } from "/src/areaSearch/selectors";
+import { getAreaSearchGeoJson } from "/src/areaSearch/helpers";
+import { MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES } from "/src/areaSearch/constants";
 import type { ApiResponse, LeafletGeoJson } from "types";
-import type { AreaNoteList } from "areaNote/types";
+import type { AreaNoteList } from "/src/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 
 const getMapBounds = () => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { createClassName, generalClassNames, GeneralPropTypes } from "foundation/utils";
-import TrashIcon from "components/icons/TrashIcon";
+import TrashIcon from "/src/components/icons/TrashIcon";
 type Props = {
   className?: string;
   disabled?: boolean;

@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import BoxItem from "components/content/BoxItem";
-import BoxItemContainer from "components/content/BoxItemContainer";
-import FormText from "components/form/FormText";
-import GreenBox from "components/content/GreenBox";
+import BoxItem from "/src/components/content/BoxItem";
+import BoxItemContainer from "/src/components/content/BoxItemContainer";
+import FormText from "/src/components/form/FormText";
+import GreenBox from "/src/components/content/GreenBox";
 import InspectionItem from "./InspectionItem";
 import { getContentInspections } from "leases/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";

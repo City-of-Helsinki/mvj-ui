@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import CreatePlotSearchForm from "plotSearch/components/CreatePlotSearchForm";
-import Modal from "components/modal/Modal";
+import Modal from "/src/components/modal/Modal";
 type Props = {
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;

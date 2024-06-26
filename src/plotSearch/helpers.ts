@@ -11,7 +11,7 @@ import { PlotSearchTargetType } from "plotSearch/enums";
 import { FIELD_TYPE_FEATURES_BY_FIELD_TYPE_NAME, FieldTypeFeatures, PROTECTED_FORM_PATHS } from "plotSearch/constants";
 import type { PlotSearch, PlotSearchState, ProtectedFormPathsSectionNode } from "plotSearch/types";
 import type { Attributes } from "types";
-import type { Form, FormField, FormSection } from "application/types";
+import type { Form, FormField, FormSection } from "/src/application/types";
 
 /**
  * Get plotSearch basic information content

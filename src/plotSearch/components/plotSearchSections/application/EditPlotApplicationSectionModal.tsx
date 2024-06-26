@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Modal from "components/modal/Modal";
+import Modal from "/src/components/modal/Modal";
 import EditPlotApplicationSectionForm from "plotSearch/components/plotSearchSections/application/EditPlotApplicationSectionForm";
 type Props = {
   isOpen: boolean;

@@ -1,7 +1,7 @@
 import type { Action } from "../types";
 import type { ContactId } from "contacts/types";
 import type { LeaseId } from "leases/types";
-import type { AreaSearchId } from "areaSearch/types";
+import type { AreaSearchId } from "/src/areaSearch/types";
 export type AuditLogState = {
   byContact: AuditLogListMap;
   byLease: AuditLogListMap;

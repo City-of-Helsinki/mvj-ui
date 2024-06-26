@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import ShowMore from "components/showMore/ShowMore";
-import { getAuditLogContentLabel } from "auditLog/helpers";
-import { getAttributes as getCommentAttributes } from "comments/selectors";
+import ShowMore from "/src/components/showMore/ShowMore";
+import { getAuditLogContentLabel } from "/src/auditLog/helpers";
+import { getAttributes as getCommentAttributes } from "/src/comments/selectors";
 import { getAttributes as getContactAttributes } from "contacts/selectors";
 import { getAttributes as getInfillDevelopmentCompensationAttributes } from "infillDevelopment/selectors";
 import { getAttributes as getInvoiceAttributes } from "invoices/selectors";

@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import AttachIcon from "components/icons/AttachIcon";
+import AttachIcon from "/src/components/icons/AttachIcon";
 type Props = {
   className?: string;
   disabled?: boolean;

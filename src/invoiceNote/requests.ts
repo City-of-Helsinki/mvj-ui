@@ -1,5 +1,5 @@
-import callApi from "api/callApi";
-import createUrl from "api/createUrl";
+import callApi from "/src/api/callApi";
+import createUrl from "/src/api/createUrl";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('invoice_note/'), {
     method: 'OPTIONS'

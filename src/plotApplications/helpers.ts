@@ -2,16 +2,16 @@ import get from "lodash/get";
 import _ from "lodash";
 import { formValueSelector } from "redux-form";
 import { getApiResponseResults, getFieldAttributes } from "util/helpers";
-import createUrl from "api/createUrl";
+import createUrl from "/src/api/createUrl";
 import { store } from "root/startApp";
 import { FormNames } from "enums";
 import { getCurrentEditorTargets } from "plotApplications/selectors";
-import { getTargetTitle, getTargetType, prepareApplicationForSubmission } from "application/helpers";
-import { TargetIdentifierTypes } from "application/enums";
+import { getTargetTitle, getTargetType, prepareApplicationForSubmission } from "/src/application/helpers";
+import { TargetIdentifierTypes } from "/src/application/enums";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { ApplicationFormState } from "plotApplications/types";
 import type { PlotSearch } from "plotSearch/types";
-import type { Form } from "application/types";
+import type { Form } from "/src/application/types";
 
 /**
  * Get plotApplication list results

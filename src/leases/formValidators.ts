@@ -5,9 +5,9 @@ import { store } from "root/startApp";
 import { RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes } from "./enums";
 import { getRentWarnings, getTenantRentShareWarnings, getTenantShareWarnings } from "leases/helpers";
 import { getAttributes as getLeaseAttributes } from "leases/selectors";
-import { dateGreaterOrEqual } from "components/form/validations";
+import { dateGreaterOrEqual } from "/src/components/form/validations";
 import { isInvoiceBillingPeriodRequired } from "invoices/helpers";
-import { required } from "components/form/validations";
+import { required } from "/src/components/form/validations";
 
 /** 
  * Validate summary form

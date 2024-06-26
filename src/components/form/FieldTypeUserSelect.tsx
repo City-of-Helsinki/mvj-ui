@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import debounce from "lodash/debounce";
-import AsyncSelect from "components/form/AsyncSelect";
+import AsyncSelect from "/src/components/form/AsyncSelect";
 import { getContentUser } from "users/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
 import { fetchSingleUser, fetchUsers } from "users/requestsAsync";

@@ -9,10 +9,10 @@ const {
 import FullscreenControl from "react-leaflet-fullscreen";
 import proj4 from "proj4";
 import "proj4leaflet";
-import GeoSearch from "components/map/GeoSearch";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import ZoomBox from "components/map/ZoomBox";
+import GeoSearch from "/src/components/map/GeoSearch";
+import Loader from "/src/components/loader/Loader";
+import LoaderWrapper from "/src/components/loader/LoaderWrapper";
+import ZoomBox from "/src/components/map/ZoomBox";
 import { MIN_ZOOM, MAX_ZOOM } from "util/constants";
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 const CRS = new L.Proj.CRS('EPSG:3879', '+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs', {

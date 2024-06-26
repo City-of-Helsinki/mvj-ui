@@ -1,5 +1,5 @@
-import callApi from "api/callApi";
-import createUrl from "api/createUrl";
+import callApi from "/src/api/callApi";
+import createUrl from "/src/api/createUrl";
 import type { CollectionNoteId } from "./types";
 import type { LeaseId } from "leases/types";
 export const fetchAttributes = (): Generator<any, any, any> => {

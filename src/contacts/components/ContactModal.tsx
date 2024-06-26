@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import Button from "components/button/Button";
+import Button from "/src/components/button/Button";
 import ContactForm from "./forms/ContactForm";
-import GreenBox from "components/content/GreenBox";
-import Modal from "components/modal/Modal";
-import { ButtonColors } from "components/enums";
+import GreenBox from "/src/components/content/GreenBox";
+import Modal from "/src/components/modal/Modal";
+import { ButtonColors } from "/src/components/enums";
 import { Methods } from "enums";
 import { isMethodAllowed } from "util/helpers";
 import { getIsContactFormValid, getIsSaveClicked, getMethods as getContactMethods } from "contacts/selectors";

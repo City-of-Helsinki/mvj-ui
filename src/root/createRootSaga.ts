@@ -1,14 +1,14 @@
 import { all, fork } from "redux-saga/effects";
-import areaNoteSaga from "areaNote/saga";
-import auditLogSaga from "auditLog/saga";
-import authSaga from "auth/saga";
-import areaSearchSaga from "areaSearch/saga";
-import batchrunSaga from "batchrun/saga";
-import billingPeriodsSaga from "billingPeriods/saga";
-import collectionCourtDecisionSaga from "collectionCourtDecision/saga";
-import collectionLetterSaga from "collectionLetter/saga";
-import collectionNoteSaga from "collectionNote/saga";
-import commentSaga from "comments/saga";
+import areaNoteSaga from "/src/areaNote/saga";
+import auditLogSaga from "/src/auditLog/saga";
+import authSaga from "/src/auth/saga";
+import areaSearchSaga from "/src/areaSearch/saga";
+import batchrunSaga from "/src/batchrun/saga";
+import billingPeriodsSaga from "/src/billingPeriods/saga";
+import collectionCourtDecisionSaga from "/src/collectionCourtDecision/saga";
+import collectionLetterSaga from "/src/collectionLetter/saga";
+import collectionNoteSaga from "/src/collectionNote/saga";
+import commentSaga from "/src/comments/saga";
 import contactSaga from "contacts/saga";
 import contractFileSaga from "contractFile/saga";
 import createCollectionLetterSaga from "createCollectionLetter/saga";
@@ -45,7 +45,7 @@ import usersPermissionsSaga from "usersPermissions/saga";
 import vatSaga from "vat/saga";
 import plotSearchSaga from "plotSearch/saga";
 import plotApplicationsSaga from "plotApplications/saga";
-import applicationSaga from "application/saga";
+import applicationSaga from "/src/application/saga";
 
 export default (() =>
 function* rootSaga() {

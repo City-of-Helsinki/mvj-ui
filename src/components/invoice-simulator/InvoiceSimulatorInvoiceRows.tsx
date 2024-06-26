@@ -1,9 +1,9 @@
 import React from "react";
 import { Row, Column } from "react-foundation";
-import AmountWithVat from "components/vat/AmountWithVat";
-import Divider from "components/content/Divider";
-import FormText from "components/form/FormText";
-import FormTextTitle from "components/form/FormTextTitle";
+import AmountWithVat from "/src/components/vat/AmountWithVat";
+import Divider from "/src/components/content/Divider";
+import FormText from "/src/components/form/FormText";
+import FormTextTitle from "/src/components/form/FormTextTitle";
 import { getContactFullName } from "contacts/helpers";
 import { getLabelOfOption } from "util/helpers";
 type Props = {

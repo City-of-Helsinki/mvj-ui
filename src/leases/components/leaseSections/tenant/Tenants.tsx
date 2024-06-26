@@ -1,20 +1,20 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import Divider from "components/content/Divider";
-import FormText from "components/form/FormText";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
+import Divider from "/src/components/content/Divider";
+import FormText from "/src/components/form/FormText";
+import Loader from "/src/components/loader/Loader";
+import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import Tenant from "./Tenant";
-import Title from "components/content/Title";
-import WarningContainer from "components/content/WarningContainer";
-import WarningField from "components/form/WarningField";
+import Title from "/src/components/content/Title";
+import WarningContainer from "/src/components/content/WarningContainer";
+import WarningField from "/src/components/form/WarningField";
 import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles } from "leases/enums";
 import { getContentTenants, getTenantShareWarnings } from "leases/helpers";
 import { isArchived } from "util/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { getCurrentLease } from "leases/selectors";
-import { withContactAttributes } from "components/attributes/ContactAttributes";
+import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
 import type { Lease } from "leases/types";
 type Props = {
   currentLease: Lease;

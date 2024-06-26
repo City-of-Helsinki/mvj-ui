@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { attributesNotFound, receiveAttributes, receiveMethods } from "./actions";
 import { fetchSingleLandUseContract } from "landUseContract/actions";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { displayUIMessage } from "util/helpers";
 import { fetchAttributes, createLandUseAgreementAttachment, deleteLandUseAgreementAttachment } from "./requests";
 

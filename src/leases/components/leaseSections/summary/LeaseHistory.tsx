@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import LeaseHistoryItem from "./LeaseHistoryItem";
-import TitleH3 from "components/content/TitleH3";
+import TitleH3 from "/src/components/content/TitleH3";
 import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, LeaseHistoryItemTypes } from "leases/enums";
 import { getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom } from "leases/helpers";
 import { getFieldOptions } from "util/helpers";

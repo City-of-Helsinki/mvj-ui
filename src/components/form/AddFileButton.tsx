@@ -1,5 +1,5 @@
 import React from "react";
-import AddIcon from "components/icons/AddIcon";
+import AddIcon from "/src/components/icons/AddIcon";
 type Props = {
   label: string;
   name: string;

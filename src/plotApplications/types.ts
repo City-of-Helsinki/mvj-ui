@@ -1,6 +1,6 @@
 import type { Action, Attributes } from "types";
 import type { PlotSearch } from "plotSearch/types";
-import type { ApplicationFormSection } from "application/types";
+import type { ApplicationFormSection } from "/src/application/types";
 export type PlotApplicationsState = {
   isFetching: boolean;
   list: PlotApplicationsList;

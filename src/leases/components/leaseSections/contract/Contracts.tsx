@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import ContractFileModal from "./ContractFileModal";
 import ContractItem from "./ContractItem";
-import FormText from "components/form/FormText";
+import FormText from "/src/components/form/FormText";
 import { LeaseContractsFieldPaths } from "leases/enums";
 import { getContentContracts } from "leases/helpers";
 import { getFieldOptions } from "util/helpers";

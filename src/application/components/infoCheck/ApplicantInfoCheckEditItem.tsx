@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { getFormValues, reduxForm } from "redux-form";
 import { Column, Row } from "react-foundation";
 import classNames from "classnames";
-import { getApplicantInfoCheckAttributes } from "application/selectors";
+import { getApplicantInfoCheckAttributes } from "/src/application/selectors";
 import { getFieldOptions, getLabelOfOption } from "util/helpers";
 import { getUserFullName } from "users/helpers";
 import type { Attributes } from "types";

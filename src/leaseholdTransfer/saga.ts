@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveAttributes, receiveMethods, attributesNotFound, fetchLeaseholdTransferList as fetchLeaseholdTransferListAction, receiveLeaseholdTransferList, notFound } from "./actions";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { displayUIMessage } from "util/helpers";
 import { deleteLeaseholdTransfer, fetchAttributes, fetchLeaseholdTransferList } from "./requests";
 

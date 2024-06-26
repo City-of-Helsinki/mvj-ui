@@ -19,7 +19,7 @@ import { getCoordinatesOfGeometry } from "util/map";
 import { getIsEditMode } from "./selectors";
 import { removeSessionStorageItem } from "util/storage";
 import type { Lease, IntendedUse } from "./types";
-import type { CommentList } from "comments/types";
+import type { CommentList } from "/src/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "root/types";
 import type { LeaseList } from "leases/types";

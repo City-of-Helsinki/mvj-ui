@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import Modal from "components/modal/Modal";
-import ModalButtonWrapper from "components/modal/ModalButtonWrapper";
-import Button from "components/button/Button";
+import Modal from "/src/components/modal/Modal";
+import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
+import Button from "/src/components/button/Button";
 import { createPlotApplicationOpeningRecord } from "plotApplications/actions";
-import { getLoggedInUser } from "auth/selectors";
+import { getLoggedInUser } from "/src/auth/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getHoursAndMinutes } from "util/date";

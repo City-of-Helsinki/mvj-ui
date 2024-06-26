@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import Modal from "components/modal/Modal";
-import ModalButtonWrapper from "components/modal/ModalButtonWrapper";
-import Button from "components/button/Button";
-import ApplicantInfoCheckForm from "application/components/infoCheck/ApplicantInfoCheckForm";
+import Modal from "/src/components/modal/Modal";
+import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
+import Button from "/src/components/button/Button";
+import ApplicantInfoCheckForm from "/src/application/components/infoCheck/ApplicantInfoCheckForm";
 import TradeRegisterTemplate from "tradeRegister/components/TradeRegisterTemplate";
 import CreditDecisionTemplate from "creditDecision/components/CreditDecisionTemplate";
 import { ContactTypes } from "contacts/enums";
-import { ApplicantInfoCheckExternalTypes } from "application/enums";
+import { ApplicantInfoCheckExternalTypes } from "/src/application/enums";
 type Props = {
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;

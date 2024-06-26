@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { saveAs } from "file-saver";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import { getApiToken } from "auth/selectors";
+import Loader from "/src/components/loader/Loader";
+import LoaderWrapper from "/src/components/loader/LoaderWrapper";
+import { getApiToken } from "/src/auth/selectors";
 import { displayUIMessage, getApiUrlWithOutVersionSuffix } from "util/helpers";
 type Props = {
   apiToken: string;

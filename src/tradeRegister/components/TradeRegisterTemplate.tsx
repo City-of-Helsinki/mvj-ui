@@ -5,8 +5,8 @@ import CompanyExtended from "tradeRegister/components/CompanyExtended";
 import CompanyNotice from "tradeRegister/components/CompanyNotice";
 import CompanyRepresent from "tradeRegister/components/CompanyRepresent";
 import DownloadableFiles from "tradeRegister/components/DownloadableFiles";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
+import Loader from "/src/components/loader/Loader";
+import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import { fetchTradeRegisterCompanyExtendedById, fetchTradeRegisterCompanyNoticeById, fetchTradeRegisterCompanyRepresentById } from "tradeRegister/actions";
 import { getCompanyExtendedById, getCompanyNoticeById, getCompanyRepresentById, getIsFetchingCompanyExtendedById, getIsFetchingCompanyNoticeById, getIsFetchingCompanyRepresentById } from "tradeRegister/selectors";
 type Props = {

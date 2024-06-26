@@ -1,6 +1,6 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { receiveAttributes, receiveMethods, attributesNotFound, fetchCollectionCourtDecisionsByLease as fetchCollectionCourtDecisionsByLeaseAction, hideCollectionCourtDecisionPanel, receiveCollectionCourtDecisionsByLease, notFoundByLease } from "./actions";
 import { displayUIMessage } from "../util/helpers";
 import { fetchAttributes, fetchCollectionCourtDecisionsByLease, uploadCollectionCourtDecision, deleteCollectionCourtDecision } from "./requests";

@@ -1,6 +1,6 @@
 import { store } from "root/startApp";
-import { getApiToken } from "auth/selectors";
-import { UI_ACCEPT_LANGUAGE_VALUE } from "api/constants";
+import { getApiToken } from "/src/auth/selectors";
+import { UI_ACCEPT_LANGUAGE_VALUE } from "/src/api/constants";
 import type { ApiSyncResponse } from "./types";
 import type { ApiResponse } from "types";
 

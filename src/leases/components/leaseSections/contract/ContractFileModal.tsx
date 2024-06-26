@@ -1,17 +1,17 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Button from "components/button/Button";
-import FileDownloadLink from "components/file/FileDownloadLink";
-import FormText from "components/form/FormText";
-import FormTextTitle from "components/form/FormTextTitle";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import Modal from "components/modal/Modal";
-import ModalButtonWrapper from "components/modal/ModalButtonWrapper";
-import { ButtonColors } from "components/enums";
+import Button from "/src/components/button/Button";
+import FileDownloadLink from "/src/components/file/FileDownloadLink";
+import FormText from "/src/components/form/FormText";
+import FormTextTitle from "/src/components/form/FormTextTitle";
+import Loader from "/src/components/loader/Loader";
+import LoaderWrapper from "/src/components/loader/LoaderWrapper";
+import Modal from "/src/components/modal/Modal";
+import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
+import { ButtonColors } from "/src/components/enums";
 import { fetchContractFilesById } from "contractFile/actions";
-import createUrlWithoutVersionSuffix from "api/createUrlWithoutVersionSuffix";
+import createUrlWithoutVersionSuffix from "/src/api/createUrlWithoutVersionSuffix";
 import { humanReadableByteCount } from "util/helpers";
 import { getContractFilesById, getIsFetchingById } from "contractFile/selectors";
 type Props = {

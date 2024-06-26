@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import SendupIcon from "components/icons/SendupIcon";
+import SendupIcon from "/src/components/icons/SendupIcon";
 type Props = {
   className?: string;
   onClick: (...args: Array<any>) => any;

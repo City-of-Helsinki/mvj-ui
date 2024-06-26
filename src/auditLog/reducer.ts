@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Reducer } from "types";
-import type { AuditLogListMap, AuditLogIsFetchingMap, FetchAuditLogByContactAction, ReceiveAuditLogByContactAction, NotFoundByContactAction, FetchAuditLogByLeaseAction, ReceiveAuditLogByLeaseAction, NotFoundByLeaseAction, FetchAuditLogByAreaSearchAction, NotFoundByAreaSearchAction, ReceiveAuditLogByAreaSearchAction } from "auditLog/types";
+import type { AuditLogListMap, AuditLogIsFetchingMap, FetchAuditLogByContactAction, ReceiveAuditLogByContactAction, NotFoundByContactAction, FetchAuditLogByLeaseAction, ReceiveAuditLogByLeaseAction, NotFoundByLeaseAction, FetchAuditLogByAreaSearchAction, NotFoundByAreaSearchAction, ReceiveAuditLogByAreaSearchAction } from "/src/auditLog/types";
 const isFetchingByContactReducer: Reducer<AuditLogIsFetchingMap> = handleActions({
   ['mvj/auditLog/FETCH_BY_CONTACT']: (state: AuditLogIsFetchingMap, {
     payload: contactId

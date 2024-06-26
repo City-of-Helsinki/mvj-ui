@@ -1,6 +1,6 @@
 import React from "react";
 import debounce from "lodash/debounce";
-import AsyncSelect from "components/form/AsyncSelect";
+import AsyncSelect from "/src/components/form/AsyncSelect";
 import { getContentLeaseOption } from "leases/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
 import { fetchLeases } from "leases/requestsAsync";

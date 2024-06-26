@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Modal from "components/modal/Modal";
-import EditAreaSearchPreparerForm from "areaSearch/components/EditAreaSearchPreparerForm";
-import { getAreaSearchList } from "areaSearch/selectors";
+import Modal from "/src/components/modal/Modal";
+import EditAreaSearchPreparerForm from "/src/areaSearch/components/EditAreaSearchPreparerForm";
+import { getAreaSearchList } from "/src/areaSearch/selectors";
 import { connect } from "react-redux";
 import { formatDate } from "util/helpers";
-import FormText from "components/form/FormText";
+import FormText from "/src/components/form/FormText";
 type OwnProps = {
   allowToChangeRelateTo?: boolean;
   isOpen: boolean;

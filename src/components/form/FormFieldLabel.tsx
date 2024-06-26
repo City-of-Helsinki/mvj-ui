@@ -2,7 +2,7 @@ import { $Shape } from "utility-types";
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 import classNames from "classnames";
-import UIDataTooltip from "components/tooltip/UIDataTooltip";
+import UIDataTooltip from "/src/components/tooltip/UIDataTooltip";
 type Props = {
   children?: any;
   className?: string;

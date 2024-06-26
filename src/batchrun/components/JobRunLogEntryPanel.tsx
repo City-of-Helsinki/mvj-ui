@@ -1,16 +1,16 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import isEmpty from "lodash/isEmpty";
-import CopyToClipboardButton from "components/form/CopyToClipboardButton";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import SortableTable from "components/table/SortableTable";
-import TablePanel from "components/table/TablePanel";
-import { fetchJobRunLogEntriesByRun } from "batchrun/actions";
-import { JobRunLogEntryFieldPaths, JobRunLogEntryFieldTitles } from "batchrun/enums";
+import CopyToClipboardButton from "/src/components/form/CopyToClipboardButton";
+import Loader from "/src/components/loader/Loader";
+import LoaderWrapper from "/src/components/loader/LoaderWrapper";
+import SortableTable from "/src/components/table/SortableTable";
+import TablePanel from "/src/components/table/TablePanel";
+import { fetchJobRunLogEntriesByRun } from "/src/batchrun/actions";
+import { JobRunLogEntryFieldPaths, JobRunLogEntryFieldTitles } from "/src/batchrun/enums";
 import { copyElementContentsToClipboard, displayUIMessage, formatDate, getApiResponseResults, isFieldAllowedToRead } from "util/helpers";
 import { TableSortOrder } from "enums";
-import { getIsFetchingJobRunLogEntriesByRun, getJobRunLogEntryAttributes, getJobRunLogEntriesByRun } from "batchrun/selectors";
+import { getIsFetchingJobRunLogEntriesByRun, getJobRunLogEntryAttributes, getJobRunLogEntriesByRun } from "/src/batchrun/selectors";
 import type { ApiResponse, Attributes } from "types";
 type Props = {
   fetchJobRunLogEntriesByRun: (...args: Array<any>) => any;

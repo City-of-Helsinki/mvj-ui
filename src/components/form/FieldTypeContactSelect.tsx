@@ -1,6 +1,6 @@
 import React from "react";
 import debounce from "lodash/debounce";
-import AsyncSelect from "components/form/AsyncSelect";
+import AsyncSelect from "/src/components/form/AsyncSelect";
 import { getContentContact } from "contacts/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
 import { fetchContacts } from "contacts/requestsAsync";

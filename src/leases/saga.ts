@@ -3,7 +3,7 @@ import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
 import { getRouteById, Routes } from "root/routes";
 import { fetchSingleLeaseAfterEdit, hideAttachDecisionModal, hideCreateModal, hideEditMode, attributesNotFound, notFound, notFoundByBBox, notFoundById, receiveAttributes, receiveMethods, receiveIsSaveClicked, receiveLeases, receiveLeasesByBBox, receiveSingleLease, receiveLeaseById, receiveLeasesForContractNumbers } from "./actions";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen } from "invoices/actions";
 import { fetchInvoiceSetsByLease } from "invoiceSets/actions";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "util/helpers";

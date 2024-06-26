@@ -1,12 +1,12 @@
 import React from "react";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
-import FormText from "components/form/FormText";
-import RemoveButton from "components/form/RemoveButton";
+import FormText from "/src/components/form/FormText";
+import RemoveButton from "/src/components/form/RemoveButton";
 import RentCalculatorRent from "./RentCalculatorRent";
 import RentCalculatorTotalRow from "./RentCalculatorTotalRow";
-import { RentCalculatorTypeOptions } from "components/constants";
-import { RentCalculatorTypes } from "components/enums";
+import { RentCalculatorTypeOptions } from "/src/components/constants";
+import { RentCalculatorTypes } from "/src/components/enums";
 import { formatDateRange, getLabelOfOption } from "util/helpers";
 type Props = {
   onRemove: (...args: Array<any>) => any;

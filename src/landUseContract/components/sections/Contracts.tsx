@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import ContractItem from "./ContractItem";
-import FormText from "components/form/FormText";
+import FormText from "/src/components/form/FormText";
 import { getContentContracts } from "landUseContract/helpers";
 import { getFieldOptions } from "util/helpers";
 import { getAttributes, getCurrentLandUseContract } from "landUseContract/selectors";

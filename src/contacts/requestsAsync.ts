@@ -1,5 +1,5 @@
-import createUrl from "api/createUrl";
-import callApiAsync from "api/callApiAsync";
+import createUrl from "/src/api/createUrl";
+import callApiAsync from "/src/api/callApiAsync";
 import { ContactExistsResponse } from "./types";
 export const fetchContacts = async (query?: Record<string, any>) => {
   const {

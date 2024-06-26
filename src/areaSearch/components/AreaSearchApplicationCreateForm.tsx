@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
 import { getFormValues, reduxForm } from "redux-form";
-import ApplicationSubsection from "application/components/ApplicationSubsection";
-import { getInitialApplicationForm } from "application/helpers";
-import { getFieldTypeMapping } from "application/selectors";
+import ApplicationSubsection from "/src/application/components/ApplicationSubsection";
+import { getInitialApplicationForm } from "/src/application/helpers";
+import { getFieldTypeMapping } from "/src/application/selectors";
 import { FormNames } from "enums";
-import { receiveFormValidFlags } from "areaSearch/actions";
-import { validateApplicationForm } from "application/formValidation";
+import { receiveFormValidFlags } from "/src/areaSearch/actions";
+import { validateApplicationForm } from "/src/application/formValidation";
 type OwnProps = {
   formData: any;
 };

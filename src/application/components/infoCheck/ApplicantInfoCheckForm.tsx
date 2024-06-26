@@ -5,12 +5,12 @@ import get from "lodash/get";
 import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import { FieldTypes, FormNames } from "enums";
-import { ButtonColors } from "components/enums";
-import FormField from "components/form/FormField";
-import ModalButtonWrapper from "components/modal/ModalButtonWrapper";
-import Button from "components/button/Button";
-import { ApplicantInfoCheckFieldPaths, ApplicantInfoCheckFieldTitles } from "application/enums";
-import { getApplicantInfoCheckAttributes } from "application/selectors";
+import { ButtonColors } from "/src/components/enums";
+import FormField from "/src/components/form/FormField";
+import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
+import Button from "/src/components/button/Button";
+import { ApplicantInfoCheckFieldPaths, ApplicantInfoCheckFieldTitles } from "/src/application/enums";
+import { getApplicantInfoCheckAttributes } from "/src/application/selectors";
 import type { Attributes } from "types";
 type OwnProps = {
   infoCheck: Record<string, any>;

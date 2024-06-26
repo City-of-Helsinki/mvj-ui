@@ -1,11 +1,11 @@
 import React from "react";
 import Button from "../button/Button";
-import Authorization from "components/authorization/Authorization";
+import Authorization from "/src/components/authorization/Authorization";
 import CommentButton from "./CommentButton";
-import { ActionTypes, AppConsumer } from "app/AppContext";
+import { ActionTypes, AppConsumer } from "/src/app/AppContext";
 import { ConfirmationModalTexts } from "enums";
 import { hasAnyPageDirtyForms } from "util/forms";
-import { ButtonColors } from "components/enums";
+import { ButtonColors } from "/src/components/enums";
 type Props = {
   allowComments?: boolean;
   allowCopy?: boolean;

@@ -1,8 +1,8 @@
 import { createAction } from "redux-actions";
 import type { ContactId } from "contacts/types";
 import type { LeaseId } from "leases/types";
-import type { AreaSearchId } from "areaSearch/types";
-import type { AuditLogListMap, FetchAuditLogByContactAction, ReceiveAuditLogByContactAction, NotFoundByContactAction, FetchAuditLogByLeaseAction, ReceiveAuditLogByLeaseAction, NotFoundByLeaseAction, FetchAuditLogByAreaSearchAction, ReceiveAuditLogByAreaSearchAction, NotFoundByAreaSearchAction } from "auditLog/types";
+import type { AreaSearchId } from "/src/areaSearch/types";
+import type { AuditLogListMap, FetchAuditLogByContactAction, ReceiveAuditLogByContactAction, NotFoundByContactAction, FetchAuditLogByLeaseAction, ReceiveAuditLogByLeaseAction, NotFoundByLeaseAction, FetchAuditLogByAreaSearchAction, ReceiveAuditLogByAreaSearchAction, NotFoundByAreaSearchAction } from "/src/auditLog/types";
 export const fetchAuditLogByContact = (contactId: ContactId): FetchAuditLogByContactAction => createAction('mvj/auditLog/FETCH_BY_CONTACT')(contactId);
 export const receiveAuditLogByContact = (payload: AuditLogListMap): ReceiveAuditLogByContactAction => createAction('mvj/auditLog/RECEIVE_BY_CONTACT')(payload);
 export const notFoundByContact = (contactId: ContactId): NotFoundByContactAction => createAction('mvj/auditLog/NOT_FOUND_BY_CONTACT')(contactId);

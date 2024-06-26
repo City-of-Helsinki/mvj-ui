@@ -1,7 +1,7 @@
 import React from "react";
 import CreateCollectionLetterForm from "./forms/CreateCollectionLetterForm";
-import GreenBox from "components/content/GreenBox";
-import SubTitle from "components/content/SubTitle";
+import GreenBox from "/src/components/content/GreenBox";
+import SubTitle from "/src/components/content/SubTitle";
 import { CreateCollectionLetterFieldPaths, CreateCollectionLetterFieldTitles } from "createCollectionLetter/enums";
 import { getUiDataCreateCollectionLetterKey } from "uiData/helpers";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import DocIcon from "components/icons/DocIcon";
+import DocIcon from "/src/components/icons/DocIcon";
 type Props = {
   className?: string;
   disabled?: boolean;

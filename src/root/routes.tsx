@@ -1,11 +1,11 @@
 import React from "react";
 import { Redirect, Route, Switch } from "react-router";
-import ErrorPage from "errorPage/ErrorPage";
-import App from "app/App";
-import AreaNoteListPage from "areaNote/components/AreaNoteListPage";
-import BasisOfRentCalculatorPage from "basisOfRentCalculator/components/BasisOfRentCalculatorPage";
-import BatchRunPage from "batchrun/components/BatchRunPage";
-import CallbackPage from "auth/components/CallbackPage";
+import ErrorPage from "/src/errorPage/ErrorPage";
+import App from "/src/app/App";
+import AreaNoteListPage from "/src/areaNote/components/AreaNoteListPage";
+import BasisOfRentCalculatorPage from "/src/basisOfRentCalculator/components/BasisOfRentCalculatorPage";
+import BatchRunPage from "/src/batchrun/components/BatchRunPage";
+import CallbackPage from "/src/auth/components/CallbackPage";
 import ContactListPage from "contacts/components/ContactsListPage";
 import ContactPage from "contacts/components/ContactPage";
 import CreditDecisionSearchPage from "creditDecision/components/CreditDecisionSearchPage";
@@ -31,9 +31,9 @@ import SapInvoicesListPage from "sapInvoice/components/SapInvoicesListPage";
 import LeaseStatisticReport from "leaseStatisticReport/components/LeaseStatisticReportPage";
 import TradeRegisterSearchPage from "tradeRegister/components/TradeRegisterSearchPage";
 import PlotApplicationCreatePage from "plotApplications/components/PlotApplicationCreatePage";
-import AreaSearchApplicationListPage from "areaSearch/components/AreaSearchApplicationListPage";
-import AreaSearchApplicationPage from "areaSearch/components/AreaSearchApplicationPage";
-import AreaSearchApplicationCreatePage from "areaSearch/components/AreaSearchApplicationCreatePage";
+import AreaSearchApplicationListPage from "/src/areaSearch/components/AreaSearchApplicationListPage";
+import AreaSearchApplicationPage from "/src/areaSearch/components/AreaSearchApplicationPage";
+import AreaSearchApplicationCreatePage from "/src/areaSearch/components/AreaSearchApplicationCreatePage";
 
 /**
  * Routes enumerate

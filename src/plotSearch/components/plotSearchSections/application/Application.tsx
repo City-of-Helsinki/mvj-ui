@@ -1,16 +1,16 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import Loader from "components/loader/Loader";
+import Loader from "/src/components/loader/Loader";
 import { FormNames, ViewModes } from "enums";
-import Divider from "components/content/Divider";
-import Title from "components/content/Title";
+import Divider from "/src/components/content/Divider";
+import Title from "/src/components/content/Title";
 import { getCollapseStateByKey, getIsFetchingForm, getForm, getIsFetchingTemplateForms } from "plotSearch/selectors";
 import { receiveCollapseStates } from "plotSearch/actions";
 import { ApplicationFieldTitles } from "plotSearch/enums";
 import ApplicationPreviewSection from "plotSearch/components/plotSearchSections/application/ApplicationPreviewSection";
-import FormText from "components/form/FormText";
-import { getIsFetchingFormAttributes } from "application/selectors";
+import FormText from "/src/components/form/FormText";
+import { getIsFetchingFormAttributes } from "/src/application/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type OwnProps = {};
 type Props = OwnProps & {

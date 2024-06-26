@@ -1,5 +1,5 @@
 import type { Action, ApiResponse, Attributes, Methods, User } from "types";
-import type { UploadedFileMeta } from "application/types";
+import type { UploadedFileMeta } from "/src/application/types";
 export type AreaSearchState = {
   attributes: Attributes;
   methods: Methods;

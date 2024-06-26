@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { LeaseBasisOfRentsFieldTitles } from "leases/enums";
-import FormText from "components/form/FormText";
+import FormText from "/src/components/form/FormText";
 import { calculateBasisOfRentDiscountedInitialYearRentsTotal, calculateInitialYearRentsTotal } from "leases/helpers";
 import { formatNumber } from "util/helpers";
 type Props = {

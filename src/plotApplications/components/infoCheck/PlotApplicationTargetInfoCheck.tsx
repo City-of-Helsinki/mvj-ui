@@ -4,10 +4,10 @@ import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import get from "lodash/get";
 import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
-import Authorization from "components/authorization/Authorization";
-import FormTextTitle from "components/form/FormTextTitle";
-import FormText from "components/form/FormText";
-import FileDownloadLink from "components/file/FileDownloadLink";
+import Authorization from "/src/components/authorization/Authorization";
+import FormTextTitle from "/src/components/form/FormTextTitle";
+import FormText from "/src/components/form/FormText";
+import FileDownloadLink from "/src/components/file/FileDownloadLink";
 import type { RootState } from "root/types";
 import type { Attributes } from "types";
 import { getUserFullName } from "users/helpers";
@@ -15,7 +15,7 @@ import PlotApplicationInfoCheckCollapse from "plotApplications/components/infoCh
 import { getApplicationRelatedPlotSearch, getApplicationTargetInfoCheckData } from "plotApplications/selectors";
 import { PlotApplicationTargetInfoCheckFieldPaths, PlotApplicationTargetInfoCheckFieldTitles } from "plotApplications/enums";
 import { getInitialTargetInfoCheckValues, getMeetingMemoDownloadLink } from "plotApplications/helpers";
-import { getAttributes } from "application/selectors";
+import { getAttributes } from "/src/application/selectors";
 type TargetSubFieldSetProps = {
   values: any;
   attributes: Attributes;

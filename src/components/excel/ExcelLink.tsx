@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { saveAs } from "file-saver";
-import ExcelIcon from "components/icons/ExcelIcon";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import { getApiToken } from "auth/selectors";
+import ExcelIcon from "/src/components/icons/ExcelIcon";
+import Loader from "/src/components/loader/Loader";
+import LoaderWrapper from "/src/components/loader/LoaderWrapper";
+import { getApiToken } from "/src/auth/selectors";
 import { displayUIMessage } from "util/helpers";
 type Props = {
   label: string;

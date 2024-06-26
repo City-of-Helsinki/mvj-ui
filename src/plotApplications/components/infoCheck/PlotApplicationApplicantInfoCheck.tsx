@@ -6,9 +6,9 @@ import { getUserFullName } from "users/helpers";
 import type { Attributes } from "types";
 import PlotApplicationInfoCheckCollapse from "plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
 import { getApplicationApplicantInfoCheckData } from "plotApplications/selectors";
-import ApplicantInfoCheck from "application/components/infoCheck/ApplicantInfoCheck";
-import { getApplicantInfoCheckAttributes } from "application/selectors";
-import { getApplicantInfoCheckItems } from "application/helpers";
+import ApplicantInfoCheck from "/src/application/components/infoCheck/ApplicantInfoCheck";
+import { getApplicantInfoCheckAttributes } from "/src/application/selectors";
+import { getApplicantInfoCheckItems } from "/src/application/helpers";
 type OwnProps = {
   section: Record<string, any>;
   identifier: string;

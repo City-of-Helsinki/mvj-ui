@@ -1,5 +1,5 @@
-import callApi from "api/callApi";
-import createUrl from "api/createUrl";
+import callApi from "/src/api/callApi";
+import createUrl from "/src/api/createUrl";
 import type { PlotSearch } from "plotSearch/types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('plot_search/'), {

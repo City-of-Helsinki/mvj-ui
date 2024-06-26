@@ -1,13 +1,13 @@
 import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { ActionTypes, AppConsumer } from "app/AppContext";
-import AddButtonSecondary from "components/form/AddButtonSecondary";
-import Authorization from "components/authorization/Authorization";
-import FormText from "components/form/FormText";
+import { ActionTypes, AppConsumer } from "/src/app/AppContext";
+import AddButtonSecondary from "/src/components/form/AddButtonSecondary";
+import Authorization from "/src/components/authorization/Authorization";
+import FormText from "/src/components/form/FormText";
 import LeaseItemEdit from "./LeaseItemEdit";
 import { ConfirmationModalTexts } from "enums";
-import { ButtonColors } from "components/enums";
+import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { hasPermissions } from "util/helpers";
 import { getUsersPermissions } from "usersPermissions/selectors";

@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
-import BoxItemContainer from "components/content/BoxItemContainer";
+import BoxItemContainer from "/src/components/content/BoxItemContainer";
 import Comment from "./Comment";
-import FormText from "components/form/FormText";
-import SubTitle from "components/content/SubTitle";
+import FormText from "/src/components/form/FormText";
+import SubTitle from "/src/components/content/SubTitle";
 import { LeaseConstructabilityDescriptionsFieldPaths, LeaseConstructabilityDescriptionsFieldTitles } from "leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 type Props = {

@@ -1,10 +1,10 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import ConstructabilityItem from "./ConstructabilityItem";
-import Divider from "components/content/Divider";
-import FormText from "components/form/FormText";
+import Divider from "/src/components/content/Divider";
+import FormText from "/src/components/form/FormText";
 import SendEmail from "./SendEmail";
-import Title from "components/content/Title";
+import Title from "/src/components/content/Title";
 import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "leases/enums";
 import { getContentConstructabilityAreas } from "leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";

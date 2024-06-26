@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Collapse from "components/collapse/Collapse";
+import Collapse from "/src/components/collapse/Collapse";
 import { formatDate } from "util/helpers";
 import { getUserFullName } from "users/helpers";
 type Props = {
