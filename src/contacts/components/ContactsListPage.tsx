@@ -75,7 +75,6 @@ class ContactListPage extends Component<Props, State> {
     typeOptions: [],
     userActiveServiceUnit: undefined
   };
-  search: any;
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState: any = {};
@@ -238,7 +237,6 @@ class ContactListPage extends Component<Props, State> {
     });
   };
 
-  //@ts-ignore: Duplicate identifier 'search'
   search = () => {
     const {
       fetchContacts,
