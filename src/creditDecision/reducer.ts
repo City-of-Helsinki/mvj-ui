@@ -8,7 +8,7 @@ const isFetchingHistoryByBusinessIdReducer: Reducer<IsFetchingHistoryMap> = hand
   }: FetchHistoryByBusinessIdAction) => ({ ...state,
     [id]: true
   }),
-  // @ts-ignore: No overload matches this call 
+  
   ['mvj/creditDecision/RECEIVE_HISTORY_BY_BUSINESS_ID']: (state: IsFetchingHistoryMap, {
     payload
   }: ReceiveHistoryByBusinessIdAction) => ({ ...state,
@@ -35,7 +35,6 @@ const isFetchingHistoryByContactIdReducer: Reducer<IsFetchingHistoryMap> = handl
   }: FetchHistoryByContactIdAction) => ({ ...state,
     [id]: true
   }),
-  // @ts-ignore: No overload matches this call 
   ['mvj/creditDecision/RECEIVE_HISTORY_BY_CONTACT_ID']: (state: IsFetchingHistoryMap, {
     payload
   }: ReceiveHistoryByContactIdAction) => ({ ...state,
@@ -62,7 +61,6 @@ const isFetchingCreditDecisionByBusinessIdReducer: Reducer<IsFetchingCreditDecis
   }: FetchCreditDecisionByBusinessIdAction) => ({ ...state,
     [id]: true
   }),
-  // @ts-ignore: No overload matches this call 
   ['mvj/creditDecision/RECEIVE_CREDIT_DECISION_BY_BUSINESS_ID']: (state: IsFetchingCreditDecisionMap, {
     payload
   }: ReceiveCreditDecisionByBusinessIdAction) => ({ ...state,
@@ -89,7 +87,6 @@ const isFetchingCreditDecisionByContactIdReducer: Reducer<IsFetchingCreditDecisi
   }: FetchCreditDecisionByContactIdAction) => ({ ...state,
     [id]: true
   }),
-  // @ts-ignore: No overload matches this call 
   ['mvj/creditDecision/RECEIVE_CREDIT_DECISION_BY_CONTACT_ID']: (state: IsFetchingCreditDecisionMap, {
     payload
   }: ReceiveCreditDecisionByContactIdAction) => ({ ...state,
@@ -116,7 +113,6 @@ const isFetchingCreditDecisionByNinReducer: Reducer<IsFetchingCreditDecisionMap>
   }: FetchCreditDecisionByNinAction) => ({ ...state,
     [id]: true
   }),
-  // @ts-ignore: No overload matches this call 
   ['mvj/creditDecision/RECEIVE_CREDIT_DECISION_BY_NIN']: (state: IsFetchingCreditDecisionMap, {
     payload
   }: ReceiveCreditDecisionByNinAction) => ({ ...state,

@@ -11,9 +11,9 @@ export type CreditDecisionState = {
   isFetchingHistoryByBusinessId: IsFetchingHistoryMap;
   isFetchingHistoryByContactId: IsFetchingHistoryMap;
 };
-export type HistoryDataMap = Record<string, Record<string, any>>;
+export type HistoryDataMap = any;
 export type IsFetchingHistoryMap = Record<string, boolean>;
-export type CreditDecisionDataMap = Record<string, Record<string, any>>;
+export type CreditDecisionDataMap = any;
 export type IsFetchingCreditDecisionMap = Record<string, boolean>;
 export type FetchHistoryByBusinessIdAction = Action<string, string>;
 export type FetchHistoryByContactIdAction = Action<string, string>;
