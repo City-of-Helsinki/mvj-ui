@@ -21,7 +21,7 @@ import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentInspections } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getUserFullName } from "/src/users/helpers";
-import { findItemById, formatDate, getFieldAttributes, hasPermissions, isFieldAllowedToRead } from "util/helpers";
+import { findItemById, formatDate, getFieldAttributes, hasPermissions, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

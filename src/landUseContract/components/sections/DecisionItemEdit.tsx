@@ -19,7 +19,7 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { ConfirmationModalTexts, FieldTypes, FormNames, ViewModes } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldRequired } from "util/helpers";
+import { getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldRequired } from "/src/util/helpers";
 import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 import { referenceNumber } from "/src/components/form/validations";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";

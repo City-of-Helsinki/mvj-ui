@@ -13,7 +13,7 @@ import { createUiData, deleteUiData, editUiData } from "/src/uiData/actions";
 import { ConfirmationModalTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { getFieldAttributes, hasPermissions } from "util/helpers";
+import { getFieldAttributes, hasPermissions } from "/src/util/helpers";
 import { getUiDataByKey } from "/src/uiData/helpers";
 import { getAttributes as getUiDataAttributes, getUiDataList } from "/src/uiData/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

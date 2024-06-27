@@ -25,7 +25,7 @@ import { getContactFullName } from "/src/contacts/helpers";
 import { getContentOverdueInvoices } from "/src/invoices/helpers";
 import { getContentLeaseSummary, getFullAddress, getTenantShareWarnings } from "/src/leases/helpers";
 import { getUserFullName } from "/src/users/helpers";
-import { formatDate, formatDateRange, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
+import { formatDate, formatDateRange, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead, isMethodAllowed } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getAttributes as getInvoiceAttributes, getInvoicesByLease, getMethods as getInvoiceMethods } from "/src/invoices/selectors";
 import { getAttributes, getCurrentLease } from "/src/leases/selectors";

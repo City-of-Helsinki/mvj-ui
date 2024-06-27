@@ -7,7 +7,7 @@ import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import { stringifyQuery } from "/src/api/createUrl";
 import { KeyCodes } from "enums";
-import { findFromOcdString } from "util/helpers";
+import { findFromOcdString } from "/src/util/helpers";
 const SERVICE_MAP_URL = 'https://api.hel.fi/servicemap/v2';
 type Language = "fi" | "sv";
 const MINIMUM_SEARCH_STRING = 3;

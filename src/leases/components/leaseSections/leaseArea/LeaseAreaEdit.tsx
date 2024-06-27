@@ -28,7 +28,7 @@ import { ButtonColors } from "/src/components/enums";
 import { LeaseAreaAddressesFieldPaths, LeaseAreaAddressesFieldTitles, LeaseAreasFieldPaths, LeaseAreasFieldTitles, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths, LeaseAreaCustomDetailedPlanFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { getFieldAttributes, getSearchQuery, getUrlParams, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
+import { getFieldAttributes, getSearchQuery, getUrlParams, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

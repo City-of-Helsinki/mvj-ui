@@ -17,7 +17,7 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import Divider from "/src/components/content/Divider";
 import { getUiDataPlotSearchKey } from "/src/uiData/helpers";
 import { FieldTypes as FieldTypeOptions } from "enums";
-import { isFieldAllowedToRead } from "util/helpers";
+import { isFieldAllowedToRead } from "/src/util/helpers";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { PlotSearchFieldTitles, PlotSearchFieldPaths } from "/src/plotSearch/enums";
 import WhiteBox from "/src/components/content/WhiteBox";

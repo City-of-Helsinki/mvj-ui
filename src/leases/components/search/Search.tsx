@@ -20,7 +20,7 @@ import { FieldTypes, FormNames } from "enums";
 import { LeaseDecisionsFieldPaths, LeaseFieldPaths, LeaseTenantContactSetFieldPaths } from "/src/leases/enums";
 import { getContactOptions } from "/src/contacts/helpers";
 import { getDistrictOptions } from "/src/district/helpers";
-import { addEmptyOption, getFieldOptions, getUrlParams } from "util/helpers";
+import { addEmptyOption, getFieldOptions, getUrlParams } from "/src/util/helpers";
 import { getDistrictsByMunicipality } from "/src/district/selectors";
 import { getAttributes as getLeaseAttributes, getIsFetchingAttributes } from "/src/leases/selectors";
 import { getLessorList } from "/src/lessor/selectors";

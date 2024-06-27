@@ -14,7 +14,7 @@ import ShowMore from "/src/components/showMore/ShowMore";
 import SubTitle from "/src/components/content/SubTitle";
 import { receiveCollapseStates } from "/src/tradeRegister/actions";
 import { CollapseStatePaths, CompanyRepresentFieldPaths, CompanyRepresentFieldTitles } from "/src/tradeRegister/enums";
-import { formatDate } from "util/helpers";
+import { formatDate } from "/src/util/helpers";
 import { getUiDataTradeRegisterCompanyRepresentKey } from "/src/uiData/helpers";
 import { getCollapseStateByKey, getCompanyRepresentById, getIsFetchingCompanyRepresentById } from "/src/tradeRegister/selectors";
 type JusristicPersonProps = {

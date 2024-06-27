@@ -1,7 +1,7 @@
 import React from "react";
 import { GeoJSON } from "react-leaflet";
 import { LeasePlanUnitsFieldTitles } from "/src/leases/enums";
-import { formatDate, formatNumber, getLabelOfOption } from "util/helpers";
+import { formatDate, formatNumber, getLabelOfOption } from "/src/util/helpers";
 import type { LeafletGeoJson } from "types";
 type Props = {
   color: string;

@@ -20,7 +20,7 @@ import { InvoiceType } from "/src/invoices/enums";
 import { PenaltyInterestFieldPaths, PenaltyInterestFieldTitles } from "/src/penaltyInterest/enums";
 import { getInvoiceTenantOptions } from "/src/leases/helpers";
 import { getUiDataCreateCollectionLetterKey, getUiDataPenaltyInterestKey } from "/src/uiData/helpers";
-import { convertStrToDecimalNumber, formatDate, formatDateRange, getFieldAttributes, isFieldAllowedToEdit, sortStringByKeyDesc } from "util/helpers";
+import { convertStrToDecimalNumber, formatDate, formatDateRange, getFieldAttributes, isFieldAllowedToEdit, sortStringByKeyDesc } from "/src/util/helpers";
 import { getAttributes as getCreateCollectionLetterAttributes } from "/src/createCollectionLetter/selectors";
 import { getInvoicesByLease } from "/src/invoices/selectors";
 import { getCurrentLease } from "/src/leases/selectors";

@@ -4,7 +4,7 @@ import Authorization from "/src/components/authorization/Authorization";
 import CommentButton from "./CommentButton";
 import { ActionTypes, AppConsumer } from "/src/app/AppContext";
 import { ConfirmationModalTexts } from "enums";
-import { hasAnyPageDirtyForms } from "util/forms";
+import { hasAnyPageDirtyForms } from "/src/util/forms";
 import { ButtonColors } from "/src/components/enums";
 type Props = {
   allowComments?: boolean;

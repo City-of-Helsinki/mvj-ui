@@ -11,7 +11,7 @@ import { receiveCollapseStates } from "/src/leases/actions";
 import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths } from "/src/leases/enums";
 import { FormNames, ViewModes } from "enums";
 import { getContactFullName } from "/src/contacts/helpers";
-import { formatDateRange, isActive, isArchived, isFieldAllowedToRead } from "util/helpers";
+import { formatDateRange, isActive, isArchived, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {

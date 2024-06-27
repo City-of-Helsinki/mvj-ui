@@ -18,7 +18,7 @@ import { createRentBasis, hideEditMode, receiveIsSaveClicked, showEditMode } fro
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { getPayloadRentBasis } from "/src/rentbasis/helpers";
-import { isMethodAllowed, setPageTitle } from "util/helpers";
+import { isMethodAllowed, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFormValid, getIsSaveClicked, getIsSaving } from "/src/rentbasis/selectors";
 import { withRentBasisAttributes } from "/src/components/attributes/RentBasisAttributes";

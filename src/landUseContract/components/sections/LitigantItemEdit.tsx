@@ -22,7 +22,7 @@ import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { ConfirmationModalTexts, FieldTypes, FormNames, ViewModes } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { getContactFullName } from "/src/contacts/helpers";
-import { findItemById, isActive, isArchived } from "util/helpers";
+import { findItemById, isActive, isArchived } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
 type BillingPersonsProps = {

@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { fetchInvoicesByLease, receiveAttributes, receiveMethods, attributesNotFound, receiveInvoicesByLease, receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen, receiveIsEditClicked, receivePatchedInvoice, notFound } from "./actions";
 import { receiveError } from "/src/api/actions";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import { exportInvoiceToLaske, fetchAttributes, fetchInvoices, createInvoice, creditInvoice, patchInvoice, deleteInvoice } from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

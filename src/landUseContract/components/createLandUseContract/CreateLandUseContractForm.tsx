@@ -13,7 +13,7 @@ import { FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { getAttributes } from "/src/landUseContract/selectors";
 import { getDistrictOptions } from "/src/district/helpers";
-import { getFieldOptions } from "util/helpers";
+import { getFieldOptions } from "/src/util/helpers";
 import type { Attributes } from "types";
 import type { DistrictList } from "/src/district/types";
 type Props = {

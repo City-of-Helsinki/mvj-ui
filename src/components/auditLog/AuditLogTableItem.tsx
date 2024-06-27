@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from "react";
 import classNames from "classnames";
 import AccordionIcon from "/src/components/icons/AccordionIcon";
 import AuditLogTableItemChange from "./AuditLogTableItemChange";
-import { formatDate } from "util/helpers";
+import { formatDate } from "/src/util/helpers";
 import { getAuditLogActionTypeInFinnish } from "/src/auditLog/helpers";
 import { getUserFullName } from "/src/users/helpers";
 type Props = {

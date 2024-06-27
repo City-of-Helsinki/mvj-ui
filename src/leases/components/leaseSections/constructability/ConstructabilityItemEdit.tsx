@@ -29,7 +29,7 @@ import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getFullAddress } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getUserFullName } from "/src/users/helpers";
-import { formatDate, formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
+import { formatDate, formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { referenceNumber } from "/src/components/form/validations";

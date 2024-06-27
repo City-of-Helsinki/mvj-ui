@@ -13,7 +13,7 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import { fetchPenaltyInterestByInvoice } from "/src/penaltyInterest/actions";
 import { FormNames } from "enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { convertStrToDecimalNumber, formatNumber, hasPermissions } from "util/helpers";
+import { convertStrToDecimalNumber, formatNumber, hasPermissions } from "/src/util/helpers";
 import { getIsFetchingByInvoice, getPenaltyInterestByInvoice } from "/src/penaltyInterest/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";

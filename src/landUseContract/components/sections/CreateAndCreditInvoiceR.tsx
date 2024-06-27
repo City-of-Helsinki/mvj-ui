@@ -16,7 +16,7 @@ import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getPayloadCreditInvoice } from "/src/invoices/helpers";
 import { getCreditInvoiceSetPayload } from "/src/invoiceSets/helpers";
 import { getPayloadCreateInvoice } from "/src/landUseContract/helpers";
-import { hasPermissions } from "util/helpers";
+import { hasPermissions } from "/src/util/helpers";
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import { getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen, getInvoicesByLandUseContractId } from "/src/landUseInvoices/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

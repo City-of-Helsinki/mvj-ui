@@ -13,7 +13,7 @@ import GeoSearch from "/src/components/map/GeoSearch";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import ZoomBox from "/src/components/map/ZoomBox";
-import { MIN_ZOOM, MAX_ZOOM } from "util/constants";
+import { MIN_ZOOM, MAX_ZOOM } from "/src/util/constants";
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 const CRS = new L.Proj.CRS('EPSG:3879', '+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs', {
   resolutions: [256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125],

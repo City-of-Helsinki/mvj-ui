@@ -42,7 +42,7 @@ import tradeRegisterSaga from "/src/tradeRegister/saga";
 import uiDataSaga from "/src/uiData/saga";
 import userSaga from "/src/users/saga";
 import usersPermissionsSaga from "/src/usersPermissions/saga";
-import vatSaga from "vat/saga";
+import vatSaga from "/src/vat/saga";
 import plotSearchSaga from "/src/plotSearch/saga";
 import plotApplicationsSaga from "/src/plotApplications/saga";
 import applicationSaga from "/src/application/saga";

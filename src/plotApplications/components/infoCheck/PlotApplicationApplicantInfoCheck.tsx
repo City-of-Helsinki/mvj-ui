@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Column, Row } from "react-foundation";
 import { connect } from "react-redux";
-import { getFieldOptions, getLabelOfOption } from "util/helpers";
+import { getFieldOptions, getLabelOfOption } from "/src/util/helpers";
 import { getUserFullName } from "/src/users/helpers";
 import type { Attributes } from "types";
 import PlotApplicationInfoCheckCollapse from "/src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";

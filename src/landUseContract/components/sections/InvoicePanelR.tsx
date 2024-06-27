@@ -10,7 +10,7 @@ import TablePanelContainer from "/src/components/table/TablePanelContainer";
 import { receiveIsEditClicked } from "/src/invoices/actions";
 import { FormNames, Methods } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { isMethodAllowed } from "util/helpers";
+import { isMethodAllowed } from "/src/util/helpers";
 import { getInvoicesByLandUseContractId, getIsEditClicked, getMethods as getInvoiceMethods } from "/src/landUseInvoices/selectors";
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import type { Methods as MethodsType } from "types";

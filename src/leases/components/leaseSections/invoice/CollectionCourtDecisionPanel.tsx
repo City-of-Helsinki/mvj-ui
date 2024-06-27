@@ -13,7 +13,7 @@ import ButtonWrapper from "/src/components/content/ButtonWrapper";
 import { FormNames } from "enums";
 import { CollectionCourtDecisionFieldPaths, CollectionCourtDecisionFieldTitles } from "/src/collectionCourtDecision/enums";
 import { ButtonColors } from "/src/components/enums";
-import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
+import { getFieldAttributes, isFieldAllowedToEdit } from "/src/util/helpers";
 import { getAttributes as getCollectionCourtDecisionAttributes } from "/src/collectionCourtDecision/selectors";
 import type { Attributes } from "types";
 type Props = {

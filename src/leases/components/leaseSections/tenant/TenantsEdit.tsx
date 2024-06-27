@@ -24,7 +24,7 @@ import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles } from "/src/leases/enu
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { Methods } from "enums";
 import { validateTenantForm, warnTenantForm } from "/src/leases/formValidators";
-import { hasPermissions, isArchived, isEmptyValue, isFieldAllowedToEdit, isMethodAllowed } from "util/helpers";
+import { hasPermissions, isArchived, isEmptyValue, isFieldAllowedToEdit, isMethodAllowed } from "/src/util/helpers";
 import { getContentContact } from "/src/contacts/helpers";
 import { getContentTenants } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";

@@ -9,8 +9,8 @@ import SearchInput from "../inputs/SearchInput";
 import UserServiceUnitSelectInput from "../inputs/UserServiceUnitSelectInput";
 import { ConfirmationModalTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { hasAnyPageDirtyForms } from "util/forms";
-import { getSearchQuery, getUrlParams } from "util/helpers";
+import { hasAnyPageDirtyForms } from "/src/util/forms";
+import { getSearchQuery, getUrlParams } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 
 import type { UserGroups, UserServiceUnit, UserServiceUnits } from "/src/usersPermissions/types";

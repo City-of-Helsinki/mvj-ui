@@ -14,7 +14,7 @@ import { LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, Re
 import { Breakpoints } from "/src/foundation/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { hasPermissions, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
+import { hasPermissions, isFieldAllowedToRead, isFieldRequired } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

@@ -7,7 +7,7 @@ import ExternalLink from "/src/components/links/ExternalLink";
 import FormTitleAndText from "/src/components/form/FormTitleAndText";
 import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
-import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink } from "util/helpers";
+import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink } from "/src/util/helpers";
 import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
 type Props = {

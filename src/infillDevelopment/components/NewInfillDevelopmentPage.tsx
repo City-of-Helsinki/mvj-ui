@@ -17,7 +17,7 @@ import { clearFormValidFlags, createInfillDevelopment, hideEditMode, receiveIsSa
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { getPayloadInfillDevelopment } from "/src/infillDevelopment/helpers";
-import { isMethodAllowed, setPageTitle } from "util/helpers";
+import { isMethodAllowed, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFormValidById, getIsSaveClicked, getIsSaving } from "/src/infillDevelopment/selectors";
 import { withInfillDevelopmentPageAttributes } from "/src/components/attributes/InfillDevelopmentPageAttributes";

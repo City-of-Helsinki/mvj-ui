@@ -17,7 +17,7 @@ import { ButtonColors } from "/src/components/enums";
 import { BasisOfRentManagementSubventionsFieldPaths, LeaseBasisOfRentsFieldPaths, calculatorTypeOptions } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { calculateBasisOfRentTotalDiscountedInitialYearRent } from "/src/leases/helpers";
-import { getFieldOptions, hasPermissions, isEmptyValue } from "util/helpers";
+import { getFieldOptions, hasPermissions, isEmptyValue } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

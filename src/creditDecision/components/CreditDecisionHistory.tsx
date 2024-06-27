@@ -9,8 +9,8 @@ import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import StatusText from "/src/creditDecision/components/StatusText";
 import WhiteBox from "/src/components/content/WhiteBox";
 import { CreditDecisionText } from "/src/creditDecision/enums";
-import { formatDate } from "util/helpers";
-import { getHoursAndMinutes } from "util/date";
+import { formatDate } from "/src/util/helpers";
+import { getHoursAndMinutes } from "/src/util/date";
 import { fetchHistoryByBusinessId, fetchHistoryByContactId } from "/src/creditDecision/actions";
 import { getHistoryByBusinessId, getIsFetchingHistoryByBusinessId, getHistoryByContactId, getIsFetchingHistoryByContactId } from "/src/creditDecision/selectors";
 type Props = {

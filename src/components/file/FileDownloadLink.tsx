@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import classNames from "classnames";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
-import { displayUIMessage, getFileNameFromResponse } from "util/helpers";
+import { displayUIMessage, getFileNameFromResponse } from "/src/util/helpers";
 import { getApiToken } from "/src/auth/selectors";
 type Props = {
   apiToken: string;

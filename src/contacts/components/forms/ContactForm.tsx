@@ -18,7 +18,7 @@ import WarningField from "/src/components/form/WarningField";
 import { getContactBusinessIdFieldError } from "/src/contacts/helpers";
 import { ContactFieldPaths, ContactFieldTitles, ContactTypes } from "/src/contacts/enums";
 import { getUiDataContactKey } from "/src/uiData/helpers";
-import { getFieldAttributes, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
+import { getFieldAttributes, isEmptyValue, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes, getInitialContactFormValues, getIsContactFormValid, getIsSaveClicked } from "/src/contacts/selectors";
 import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

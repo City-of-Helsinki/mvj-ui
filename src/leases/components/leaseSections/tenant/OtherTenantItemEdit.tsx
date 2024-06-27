@@ -23,7 +23,7 @@ import { FieldTypes, FormNames, Methods, ViewModes } from "enums";
 import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, TenantContactType } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDateRange, hasPermissions, isActive, isArchived, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
+import { formatDateRange, hasPermissions, isActive, isArchived, isFieldAllowedToRead, isMethodAllowed } from "/src/util/helpers";
 import { getMethods as getContactMethods } from "/src/contacts/selectors";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

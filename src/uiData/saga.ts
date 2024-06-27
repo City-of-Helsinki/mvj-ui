@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "/src/api/actions";
 import { attributesNotFound, fetchUiDataList as fetchUiDataListAction, receiveAttributes, receiveMethods, receiveUiDataList, notFound } from "./actions";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import { createUiData, deleteUiData, editUiData, fetchAttributes, fetchUiDataList } from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

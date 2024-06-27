@@ -14,7 +14,7 @@ import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import { receiveCollapseStates } from "/src/tradeRegister/actions";
 import { CollapseStatePaths, CompanyNoticeFieldPaths, CompanyNoticeFieldTitles } from "/src/tradeRegister/enums";
-import { formatDate } from "util/helpers";
+import { formatDate } from "/src/util/helpers";
 import { getUiDataTradeRegisterCompanyNoticeKey } from "/src/uiData/helpers";
 import { getCollapseStateByKey, getCompanyNoticeById, getIsFetchingCompanyNoticeById } from "/src/tradeRegister/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";

@@ -19,7 +19,7 @@ import { AreaLocation, LeaseAreasFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { calculateAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatNumber, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
+import { formatNumber, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { store } from "/src/root/startApp";

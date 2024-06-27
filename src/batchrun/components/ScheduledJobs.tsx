@@ -13,7 +13,7 @@ import { fetchScheduledJobs } from "/src/batchrun/actions";
 import { PermissionMissingTexts } from "enums";
 import { ScheduledJobFieldPaths, ScheduledJobFieldTitles, ScheduledJobJobFieldPaths, ScheduledJobJobFieldTitles } from "/src/batchrun/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { getApiResponseResults, hasPermissions, isFieldAllowedToRead } from "util/helpers";
+import { getApiResponseResults, hasPermissions, isFieldAllowedToRead } from "/src/util/helpers";
 import { getIsFetchingScheduledJobs, getScheduledJobs } from "/src/batchrun/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { withBatchrunScheduledJobTabAttributes } from "/src/components/attributes/BatchrunScheduledJobsTabAttributes";

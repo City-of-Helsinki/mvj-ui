@@ -11,7 +11,7 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
-import { isFieldAllowedToRead, isEmptyValue } from "util/helpers";
+import { isFieldAllowedToRead, isEmptyValue } from "/src/util/helpers";
 type Props = {
   attributes: Attributes;
   disabled: boolean;

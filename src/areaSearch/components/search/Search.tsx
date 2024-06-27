@@ -7,7 +7,7 @@ import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
-import { getFieldOptions, getUrlParams } from "util/helpers";
+import { getFieldOptions, getUrlParams } from "/src/util/helpers";
 import FormField from "/src/components/form/FormField";
 import SearchClearLink from "/src/components/search/SearchClearLink";
 import SearchChangeTypeLink from "/src/components/search/SearchChangeTypeLink";

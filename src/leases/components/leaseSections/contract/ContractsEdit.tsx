@@ -15,7 +15,7 @@ import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { validateContractForm } from "/src/leases/formValidators";
 import { getContentContracts, getDecisionOptions } from "/src/leases/helpers";
-import { hasPermissions } from "util/helpers";
+import { hasPermissions } from "/src/util/helpers";
 import { getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

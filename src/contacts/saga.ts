@@ -3,7 +3,7 @@ import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
 import { hideContactModal, hideEditMode, receiveAttributes, receiveMethods, attributesNotFound, receiveContacts, receiveContactModalSettings, receiveSingleContact, notFound } from "./actions";
 import { receiveError } from "/src/api/actions";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import { createContact, editContact, fetchAttributes, fetchContacts, fetchSingleContact } from "./requests";
 import { getRouteById, Routes } from "../root/routes";
 import { getContactModalSettings } from "./selectors";

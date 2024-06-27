@@ -3,7 +3,7 @@ import Modal from "/src/components/modal/Modal";
 import EditAreaSearchPreparerForm from "/src/areaSearch/components/EditAreaSearchPreparerForm";
 import { getAreaSearchList } from "/src/areaSearch/selectors";
 import { connect } from "react-redux";
-import { formatDate } from "util/helpers";
+import { formatDate } from "/src/util/helpers";
 import FormText from "/src/components/form/FormText";
 type OwnProps = {
   allowToChangeRelateTo?: boolean;

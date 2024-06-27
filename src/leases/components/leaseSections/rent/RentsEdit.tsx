@@ -26,7 +26,7 @@ import { UsersPermissions } from "/src/usersPermissions/enums";
 import { validateRentForm, warnRentForm } from "/src/leases/formValidators";
 import { getContentRents } from "/src/leases/helpers";
 import { getUiDataLeaseKey, getUiDataRentCalculatorKey } from "/src/uiData/helpers";
-import { hasPermissions, isArchived, isFieldAllowedToRead } from "util/helpers";
+import { hasPermissions, isArchived, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

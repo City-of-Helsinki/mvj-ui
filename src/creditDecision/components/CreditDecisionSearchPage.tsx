@@ -16,7 +16,7 @@ import { CreditDecisionText } from "/src/creditDecision/enums";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { FormNames, PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { hasPermissions, getSearchQuery, getUrlParams, setPageTitle } from "util/helpers";
+import { hasPermissions, getSearchQuery, getUrlParams, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";

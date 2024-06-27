@@ -7,7 +7,7 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import { RentAdjustmentTemporarySubventionsFieldPaths, RentAdjustmentTemporarySubventionsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "util/helpers";
+import { hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

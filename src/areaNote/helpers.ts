@@ -1,5 +1,5 @@
 import get from "lodash/get";
-import { getCoordinatesOfGeometry } from "util/map";
+import { getCoordinatesOfGeometry } from "/src/util/map";
 import type { AreaNote } from "./types";
 
 /**

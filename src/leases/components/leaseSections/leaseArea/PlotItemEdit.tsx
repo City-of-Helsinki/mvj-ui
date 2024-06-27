@@ -18,7 +18,7 @@ import { FormNames } from "enums";
 import { LeasePlotsFieldPaths, LeasePlotsFieldTitles, PlotType } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { getFieldAttributes, getSearchQuery, getUrlParams, hasPermissions, isFieldAllowedToRead } from "util/helpers";
+import { getFieldAttributes, getSearchQuery, getUrlParams, hasPermissions, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

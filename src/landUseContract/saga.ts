@@ -1,7 +1,7 @@
 import { all, fork, put, takeLatest, call } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
-import { displayUIMessage, getSearchQuery, getUrlParams } from "util/helpers";
+import { displayUIMessage, getSearchQuery, getUrlParams } from "/src/util/helpers";
 import { hideEditMode, receiveAttributes, receiveLandUseContractList, receiveSingleLandUseContract, notFound, receiveIsSaveClicked, attributesNotFound, receiveMethods, fetchSingleLandUseContractAfterEdit } from "./actions";
 import { receiveError } from "/src/api/actions";
 import { getRouteById, Routes } from "/src/root/routes";

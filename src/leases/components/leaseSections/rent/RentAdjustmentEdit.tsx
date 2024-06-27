@@ -26,7 +26,7 @@ import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, RentAd
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { calculateReLeaseDiscountPercent, calculateRentAdjustmentSubventionPercentCumulative, getDecisionById, hasSubventionDataChanged, hasSubventionValues, isSubventionTypeSpecified } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
+import { formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

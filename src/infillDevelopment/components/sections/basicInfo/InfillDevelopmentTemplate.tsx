@@ -11,7 +11,7 @@ import LeaseItem from "./LeaseItem";
 import SubTitle from "/src/components/content/SubTitle";
 import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationFieldTitles, InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeasesFieldTitles } from "/src/infillDevelopment/enums";
 import { getUiDataInfillDevelopmentKey } from "/src/uiData/helpers";
-import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "/src/util/helpers";
 import { getUserFullName } from "/src/users/helpers";
 import { getAttributes as getInfillDevelopmentAttributes } from "/src/infillDevelopment/selectors";
 import type { Attributes } from "types";

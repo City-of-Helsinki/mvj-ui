@@ -2,7 +2,7 @@ import React from "react";
 import debounce from "lodash/debounce";
 import AsyncSelect from "/src/components/form/AsyncSelect";
 import { getContentLeaseOption } from "/src/leases/helpers";
-import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
+import { addEmptyOption, sortStringByKeyAsc } from "/src/util/helpers";
 import { fetchLeases } from "/src/leases/requestsAsync";
 import type { UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {

@@ -32,10 +32,10 @@ import { ContactFieldPaths, ContactFieldTitles, ContactTypes } from "/src/contac
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { clearUnsavedChanges, getContactFullName } from "/src/contacts/helpers";
 import { getUiDataContactKey } from "/src/uiData/helpers";
-import { hasPermissions, getSearchQuery, getUrlParams, isMethodAllowed, scrollToTopPage, setPageTitle } from "util/helpers";
+import { hasPermissions, getSearchQuery, getUrlParams, isMethodAllowed, scrollToTopPage, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getCurrentContact, getIsContactFormValid, getIsEditMode, getIsFetching, getIsSaveClicked, getIsSaving } from "/src/contacts/selectors";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
+import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "/src/util/storage";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

@@ -6,7 +6,7 @@ import { getContentUser } from "/src/users/helpers";
 import createUrl from "/src/api/createUrl";
 import { APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER } from "/src/application/constants";
 import { store } from "/src/root/startApp";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import type { PlotSearch } from "/src/plotSearch/types";
 import type { RootState } from "/src/root/types";
 import type { ApplicationFormSection, Form, FormSection, PlotApplicationFormValue, SavedApplicationFormSection, UploadedFileMeta } from "/src/application/types";

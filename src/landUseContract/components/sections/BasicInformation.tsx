@@ -16,7 +16,7 @@ import { FormNames, ViewModes } from "enums";
 import { LandUseAgreementAttachmentFieldPaths } from "/src/landUseAgreementAttachment/enums";
 import { getContentBasicInformation } from "/src/landUseContract/helpers";
 import { getUserFullName } from "/src/users/helpers";
-import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import { getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey } from "/src/uiData/helpers";
 import { getAttributes as getLandUseAgreementAttachmentAttributes } from "/src/landUseAgreementAttachment/selectors";

@@ -5,7 +5,7 @@ import ExcelIcon from "/src/components/icons/ExcelIcon";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import { getApiToken } from "/src/auth/selectors";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 type Props = {
   label: string;
   apiToken: string;

@@ -9,7 +9,7 @@ import FormFieldLabel from "/src/components/form/FormFieldLabel";
 import TextAreaInput from "/src/components/inputs/TextAreaInput";
 import { ConfirmationModalTexts, Methods } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { isMethodAllowed } from "util/helpers";
+import { isMethodAllowed } from "/src/util/helpers";
 import { getMethods as getAreaNoteMethods } from "/src/areaNote/selectors";
 import type { Methods as MethodsType } from "types";
 type Props = {

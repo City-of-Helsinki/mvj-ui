@@ -3,7 +3,7 @@ import { Column, Row } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import get from "lodash/get";
-import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "/src/util/helpers";
 import Authorization from "/src/components/authorization/Authorization";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import FormText from "/src/components/form/FormText";

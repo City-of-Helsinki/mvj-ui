@@ -26,7 +26,7 @@ import { validateInvoiceForm } from "/src/leases/formValidators";
 import { isInvoiceBillingPeriodRequired } from "/src/invoices/helpers";
 import { getInvoiceRecipientOptions } from "/src/leases/helpers";
 import { getUiDataCreateChargeKey } from "/src/uiData/helpers";
-import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldRequired } from "util/helpers";
+import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldRequired } from "/src/util/helpers";
 import { getAttributes as getInvoiceAttributes, getIsCreateClicked } from "/src/invoices/selectors";
 import { getCurrentLease } from "/src/leases/selectors";
 import { getAttributes as getLeaseCreateCrargeAttributes, getReceivableTypes } from "/src/leaseCreateCharge/selectors";

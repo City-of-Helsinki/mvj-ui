@@ -10,7 +10,7 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import ExternalLink from "/src/components/links/ExternalLink";
 import { LeaseAreaCustomDetailedPlanFieldPaths, LeaseAreaCustomDetailedPlanFieldTitles, LeaseAreaUsageDistributionFieldTitles, LeaseAreaUsageDistributionFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 import SubTitle from "/src/components/content/SubTitle";

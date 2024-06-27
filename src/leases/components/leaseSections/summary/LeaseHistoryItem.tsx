@@ -12,7 +12,7 @@ import { LeaseHistoryItemTypes } from "/src/leases/enums";
 import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentLeaseIdentifier, getTitleText } from "/src/leases/helpers";
-import { formatDate, getLabelOfOption, hasPermissions } from "util/helpers";
+import { formatDate, getLabelOfOption, hasPermissions } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Lease } from "/src/leases/types";

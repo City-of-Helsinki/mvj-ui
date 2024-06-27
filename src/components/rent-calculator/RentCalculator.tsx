@@ -16,8 +16,8 @@ import { ButtonColors, RentCalculatorFieldPaths, RentCalculatorFieldTitles, Rent
 import { RentCycles } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentRents } from "/src/leases/helpers";
-import { hasPermissions } from "util/helpers";
-import { getCurrentYear } from "util/date";
+import { hasPermissions } from "/src/util/helpers";
+import { getCurrentYear } from "/src/util/date";
 import { getUiDataRentCalculatorKey } from "/src/uiData/helpers";
 import { getBillingPeriodsByLease } from "/src/billingPeriods/selectors";
 import { getCurrentLease, getIsEditMode } from "/src/leases/selectors";

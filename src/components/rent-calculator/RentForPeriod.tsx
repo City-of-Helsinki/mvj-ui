@@ -7,7 +7,7 @@ import RentCalculatorRent from "./RentCalculatorRent";
 import RentCalculatorTotalRow from "./RentCalculatorTotalRow";
 import { RentCalculatorTypeOptions } from "/src/components/constants";
 import { RentCalculatorTypes } from "/src/components/enums";
-import { formatDateRange, getLabelOfOption } from "util/helpers";
+import { formatDateRange, getLabelOfOption } from "/src/util/helpers";
 type Props = {
   onRemove: (...args: Array<any>) => any;
   rentForPeriod: Record<string, any>;

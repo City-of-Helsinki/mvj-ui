@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { GeoJSON } from "react-leaflet";
-import { MAP_COLORS } from "util/constants";
+import { MAP_COLORS } from "/src/util/constants";
 import { LeaseAreasFieldTitles, LeasePlanUnitsFieldTitles, LeasePlotsFieldTitles } from "/src/leases/enums";
-import { formatDate, formatNumber, getLabelOfOption, isEmptyValue } from "util/helpers";
+import { formatDate, formatNumber, getLabelOfOption, isEmptyValue } from "/src/util/helpers";
 type Props = {
   areaLocationOptions: Array<Record<string, any>>;
   areaTypeOptions: Array<Record<string, any>>;

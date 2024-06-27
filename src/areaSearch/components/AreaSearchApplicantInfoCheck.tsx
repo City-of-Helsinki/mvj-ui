@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { getFieldOptions } from "util/helpers";
+import { getFieldOptions } from "/src/util/helpers";
 import type { Attributes } from "types";
 import ApplicantInfoCheck from "/src/application/components/infoCheck/ApplicantInfoCheck";
 import { getApplicantInfoCheckAttributes } from "/src/application/selectors";

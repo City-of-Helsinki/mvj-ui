@@ -11,7 +11,7 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentYearlyIndexes } from "/src/index/helpers";
-import { hasPermissions, setPageTitle } from "util/helpers";
+import { hasPermissions, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIndexList, getIsFetching } from "/src/index/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";

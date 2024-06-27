@@ -31,7 +31,7 @@ import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, Leas
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDateRange, getFieldAttributes, hasPermissions, isActive, isArchived, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired, isMethodAllowed } from "util/helpers";
+import { formatDateRange, getFieldAttributes, hasPermissions, isActive, isArchived, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired, isMethodAllowed } from "/src/util/helpers";
 import { getMethods as getContactMethods } from "/src/contacts/selectors";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

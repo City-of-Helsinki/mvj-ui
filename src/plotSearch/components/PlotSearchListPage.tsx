@@ -18,7 +18,7 @@ import PageContainer from "/src/components/content/PageContainer";
 import Pagination from "/src/components/table/Pagination";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import Search from "/src/plotSearch/components/search/Search";
-import { LIST_TABLE_PAGE_SIZE } from "util/constants";
+import { LIST_TABLE_PAGE_SIZE } from "/src/util/constants";
 import SortableTable from "/src/components/table/SortableTable";
 import TableFilters from "/src/components/table/TableFilters";
 import TableFilterWrapper from "/src/components/table/TableFilterWrapper";
@@ -29,7 +29,7 @@ import VisualisationTypeWrapper from "/src/components/table/VisualisationTypeWra
 import { createPlotSearch, fetchPlotSearchList } from "/src/plotSearch/actions";
 import { getIsFetching, getPlotSearchList } from "/src/plotSearch/selectors";
 import { getRouteById, Routes } from "/src/root/routes";
-import { formatDate, getLabelOfOption, setPageTitle, getFieldOptions, getSearchQuery, getApiResponseCount, getApiResponseMaxPage, getUrlParams, isMethodAllowed } from "util/helpers";
+import { formatDate, getLabelOfOption, setPageTitle, getFieldOptions, getSearchQuery, getApiResponseCount, getApiResponseMaxPage, getUrlParams, isMethodAllowed } from "/src/util/helpers";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER, DEFAULT_PLOT_SEARCH_STATES } from "/src/plotSearch/constants";
 import { getContentPlotSearchListResults } from "/src/plotSearch/helpers";
 import type { PlotSearch, PlotSearchList } from "/src/plotSearch/types";

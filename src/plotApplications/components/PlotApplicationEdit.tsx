@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { orderBy } from "lodash";
 import { getApplicationRelatedForm, getApplicationRelatedPlotSearch, getCurrentPlotApplication, getIsFetchingApplicationRelatedPlotSearch } from "/src/plotApplications/selectors";
 import { reshapeSavedApplicationObject } from "/src/plotApplications/helpers";
-import { getFieldAttributes } from "util/helpers";
+import { getFieldAttributes } from "/src/util/helpers";
 import { getIsFetchingForm } from "/src/plotSearch/selectors";
 import ApplicationAnswersSection from "/src/application/components/ApplicationAnswersSection";
 import Loader from "/src/components/loader/Loader";

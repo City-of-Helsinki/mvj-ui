@@ -4,7 +4,7 @@ import AmountWithVat from "/src/components/vat/AmountWithVat";
 import SortableTable from "/src/components/table/SortableTable";
 import { LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles } from "/src/leases/enums";
 import { TableSortOrder } from "enums";
-import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc } from "util/helpers";
+import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc } from "/src/util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {

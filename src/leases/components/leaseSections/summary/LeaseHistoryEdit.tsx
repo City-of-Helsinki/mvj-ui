@@ -19,7 +19,7 @@ import { RelatedLeasePaths } from "/src/relatedLease/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentRelatedLeasesFrom, getContentRelatedLeasesTo, isAnyLeaseFormDirty, sortRelatedLeasesFrom } from "/src/leases/helpers";
 import { getUiDataLeaseKey, getUiDataRelatedLeaseKey } from "/src/uiData/helpers";
-import { getFieldOptions, hasPermissions, isMethodAllowed } from "util/helpers";
+import { getFieldOptions, hasPermissions, isMethodAllowed } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getMethods as getLeaseMethods, getCurrentLease, getIsCreateModalOpen } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";

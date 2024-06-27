@@ -8,7 +8,7 @@ import TextAreaInput from "/src/components/inputs/TextAreaInput";
 import { editComment, hideEditModeById, showEditModeById } from "/src/comments/actions";
 import { ButtonColors } from "/src/components/enums";
 import { getPayloadComment } from "/src/comments/helpers";
-import { formatDate } from "util/helpers";
+import { formatDate } from "/src/util/helpers";
 import { getIsEditModeById } from "/src/comments/selectors";
 type Props = {
   allowEdit: boolean;

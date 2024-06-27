@@ -19,7 +19,7 @@ import { ButtonColors } from "/src/components/enums";
 import { LeaseRentAdjustmentsFieldPaths, RentAdjustmentAmountTypes, RentAdjustmentTypes } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getDecisionById, getDecisionOptions } from "/src/leases/helpers";
-import { convertStrToDecimalNumber, formatNumber, getFieldOptions, hasPermissions } from "util/helpers";
+import { convertStrToDecimalNumber, formatNumber, getFieldOptions, hasPermissions } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

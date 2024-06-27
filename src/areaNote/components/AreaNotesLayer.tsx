@@ -5,7 +5,7 @@ import { initializeAreaNote, showEditMode } from "/src/areaNote/actions";
 import { Methods } from "enums";
 import { convertAreaNoteListToGeoJson, convertFeatureToFeatureCollection } from "/src/areaNote/helpers";
 import { getUserFullName } from "/src/users/helpers";
-import { formatDate, isMethodAllowed } from "util/helpers";
+import { formatDate, isMethodAllowed } from "/src/util/helpers";
 import { getIsEditMode, getMethods as getAreaNoteMethods } from "/src/areaNote/selectors";
 import type { Methods as MethodsType } from "types";
 import type { AreaNoteList } from "/src/areaNote/types";

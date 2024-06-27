@@ -15,7 +15,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import { receiveCollapseStates } from "/src/tradeRegister/actions";
 import { CollapseStatePaths, CompanyStates, CompanyExtendedFieldPaths, CompanyExtendedFieldTitles } from "/src/tradeRegister/enums";
 import { getUiDataTradeRegisterCompanyExtendedKey } from "/src/uiData/helpers";
-import { formatDate, formatNumber, formatNumberWithThousandSeparator } from "util/helpers";
+import { formatDate, formatNumber, formatNumberWithThousandSeparator } from "/src/util/helpers";
 import { getCollapseStateByKey, getCompanyExtendedById, getIsFetchingCompanyExtendedById } from "/src/tradeRegister/selectors";
 type Props = {
   businessId: string;

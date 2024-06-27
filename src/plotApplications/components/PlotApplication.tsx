@@ -12,10 +12,10 @@ import Divider from "/src/components/content/Divider";
 import Title from "/src/components/content/Title";
 import { getCollapseStateByKey, getCurrentPlotApplication, getIsFetchingApplicationRelatedForm, getApplicationRelatedForm } from "/src/plotApplications/selectors";
 import { receiveCollapseStates } from "/src/plotApplications/actions";
-import { formatDate, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, isFieldAllowedToRead } from "/src/util/helpers";
 import Loader from "/src/components/loader/Loader";
 import { reshapeSavedApplicationObject } from "/src/plotApplications/helpers";
-import { getFieldAttributes } from "util/helpers";
+import { getFieldAttributes } from "/src/util/helpers";
 import { getApplicationRelatedPlotSearch, getIsFetchingApplicationRelatedPlotSearch } from "/src/plotApplications/selectors";
 import ApplicationAnswersSection from "/src/application/components/ApplicationAnswersSection";
 import PlotApplicationTargetInfoCheck from "/src/plotApplications/components/infoCheck/PlotApplicationTargetInfoCheck";
@@ -28,7 +28,7 @@ import type { PlotApplication as PlotApplicationType } from "/src/plotApplicatio
 import type { SectionExtraComponentProps } from "/src/application/types";
 import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import { PlotApplicationOpeningRecordLabels, PlotApplicationOpeningRecordPaths } from "/src/plotApplications/enums";
-import { getHoursAndMinutes } from "util/date";
+import { getHoursAndMinutes } from "/src/util/date";
 import { getContentUser } from "/src/users/helpers";
 type OwnProps = {};
 type Props = {

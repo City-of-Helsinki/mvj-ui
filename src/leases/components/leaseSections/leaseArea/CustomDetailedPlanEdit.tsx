@@ -24,7 +24,7 @@ import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermiss
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
-import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
+import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "/src/util/helpers";
 type UsageDistributionsProps = {
   attributes: Attributes;
   buttonTitle: string;

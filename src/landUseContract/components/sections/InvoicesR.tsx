@@ -14,7 +14,7 @@ import Title from "/src/components/content/Title";
 import { receiveCollapseStates, receiveInvoiceToCredit } from "/src/landUseInvoices/actions";
 import { PermissionMissingTexts, ViewModes } from "enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { hasPermissions } from "util/helpers";
+import { hasPermissions } from "/src/util/helpers";
 import { LeaseInvoicingFieldTitles } from "/src/leases/enums";
 // TODO
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";

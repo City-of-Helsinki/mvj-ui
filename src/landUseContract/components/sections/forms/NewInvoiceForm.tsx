@@ -16,7 +16,7 @@ import { ButtonColors } from "/src/components/enums";
 import SubTitle from "/src/components/content/SubTitle";
 // import {InvoiceFieldPaths, InvoiceFieldTitles} from 'src/invoices/enums'; // TODO MAKE OWN ENUMS
 import { validateLandUseInvoiceForm } from "/src/landUseContract/formValidators";
-import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
+import { getFieldAttributes, isFieldAllowedToEdit } from "/src/util/helpers";
 import { getAttributes as getInvoiceAttributes, getIsCreateClicked } from "/src/landUseInvoices/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { getRecipientOptionsFromLitigants } from "/src/landUseContract/helpers";

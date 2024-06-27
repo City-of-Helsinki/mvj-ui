@@ -13,7 +13,7 @@ import { SendEmailTypes } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentConstructabilityEmail, getContentEmailLogs } from "/src/leases/helpers";
 import { getUserFullName } from "/src/users/helpers";
-import { formatDate, hasPermissions } from "util/helpers";
+import { formatDate, hasPermissions } from "/src/util/helpers";
 import { getLoggedInUser } from "/src/auth/selectors";
 import { getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

@@ -15,7 +15,7 @@ import ContentContainer from "/src/components/content/ContentContainer";
 import AreaSearchApplicationCreateSpecs from "/src/areaSearch/components/AreaSearchApplicationCreateSpecs";
 import { createAreaSearchApplication, createAreaSearchSpecs, deleteUploadedAttachment, fetchAttributes, hideEditMode, receiveIsSaveClicked, receiveSingleAreaSearch, showEditMode, uploadAttachment } from "/src/areaSearch/actions";
 import { getAttributes, getCurrentAreaSearch, getIsFetchingAttributes, getIsFormValidById, getIsSaveClicked, getIsPerformingFileOperation, getIsSubmittingAreaSearchSpecs, getIsSubmittingAreaSearchApplication } from "/src/areaSearch/selectors";
-import { setPageTitle } from "util/helpers";
+import { setPageTitle } from "/src/util/helpers";
 import Loader from "/src/components/loader/Loader";
 import AreaSearchApplicationCreateForm from "/src/areaSearch/components/AreaSearchApplicationCreateForm";
 import { FormNames } from "enums";

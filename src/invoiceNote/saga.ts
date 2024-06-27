@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "/src/api/actions";
 import { attributesNotFound, fetchInvoiceNoteList, hideCreateInvoiceNoteModal, notFound, receiveAttributes, receiveInvoiceNoteList, receiveMethods } from "./actions";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import { createInvoiceNote, fetchAttributes, fetchInvoiceNotes } from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

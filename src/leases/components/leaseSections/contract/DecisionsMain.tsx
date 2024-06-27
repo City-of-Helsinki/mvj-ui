@@ -8,7 +8,7 @@ import Inspections from "./Inspections";
 import Title from "/src/components/content/Title";
 import { LeaseContractsFieldPaths, LeaseContractsFieldTitles, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { isFieldAllowedToRead } from "util/helpers";
+import { isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {

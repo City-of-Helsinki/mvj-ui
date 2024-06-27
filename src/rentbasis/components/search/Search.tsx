@@ -17,7 +17,7 @@ import SearchLabelColumn from "/src/components/search/SearchLabelColumn";
 import SearchRow from "/src/components/search/SearchRow";
 import { FieldTypes, FormNames } from "enums";
 import { RentBasisDecisionsFieldPaths } from "/src/rentbasis/enums";
-import { getFieldOptions, getUrlParams } from "util/helpers";
+import { getFieldOptions, getUrlParams } from "/src/util/helpers";
 import { getAttributes as getRentBasisAttributes } from "/src/rentbasis/selectors";
 import type { Attributes } from "types";
 type Props = {

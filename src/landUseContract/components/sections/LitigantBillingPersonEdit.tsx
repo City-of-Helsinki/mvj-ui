@@ -18,7 +18,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import { initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal } from "/src/contacts/actions";
 import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FieldTypes, FormNames, ViewModes } from "enums";
-import { findItemById, formatDateRange, getFieldAttributes, isActive, isArchived } from "util/helpers";
+import { findItemById, formatDateRange, getFieldAttributes, isActive, isArchived } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
 type Props = {

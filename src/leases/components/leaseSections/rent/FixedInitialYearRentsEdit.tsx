@@ -19,7 +19,7 @@ import { Breakpoints } from "/src/foundation/enums";
 import { LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { getFieldAttributes, hasPermissions, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
+import { getFieldAttributes, hasPermissions, isFieldAllowedToRead, isFieldRequired } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";

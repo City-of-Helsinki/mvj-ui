@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import ContractItem from "./ContractItem";
 import FormText from "/src/components/form/FormText";
 import { getContentContracts } from "/src/landUseContract/helpers";
-import { getFieldOptions } from "util/helpers";
+import { getFieldOptions } from "/src/util/helpers";
 import { getAttributes, getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
 import type { LandUseContract } from "/src/landUseContract/types";

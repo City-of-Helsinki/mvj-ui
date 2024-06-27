@@ -8,7 +8,7 @@ import FormField from "/src/components/form/FormField";
 import { FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { CollectionNoteFieldPaths, CollectionNoteFieldTitles } from "/src/collectionNote/enums";
-import { getFieldAttributes, isFieldAllowedToRead } from "util/helpers";
+import { getFieldAttributes, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes as getCollectionNoteAttributes } from "/src/collectionNote/selectors";
 import type { Attributes } from "types";
 type Props = {

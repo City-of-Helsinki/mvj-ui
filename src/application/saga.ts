@@ -5,7 +5,7 @@ import { receiveError } from "/src/api/actions";
 import { deleteUploadRequest, fetchApplicantInfoCheckAttributesRequest, fetchAttachmentAttributesRequest, fetchAttributesRequest, fetchFormAttributesRequest, fetchPendingUploadsRequest, fetchSingleApplicationAttachments, uploadFileRequest } from "/src/application/requests";
 import { getApplicantInfoCheckFormName } from "/src/application/helpers";
 import { getContentUser } from "/src/users/helpers";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import type { DeleteUploadAction, ReceiveUpdatedTargetInfoCheckItemAction, UploadFileAction } from "/src/application/types";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

@@ -1,7 +1,7 @@
 import React from "react";
 import debounce from "lodash/debounce";
 import AsyncSelect from "/src/components/form/AsyncSelect";
-import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
+import { addEmptyOption, sortStringByKeyAsc } from "/src/util/helpers";
 import { getContentIntendedUse } from "/src/leases/helpers";
 import { fetchIntendedUses } from "/src/leases/requestsAsync";
 import type { ServiceUnit } from "/src/serviceUnits/types";

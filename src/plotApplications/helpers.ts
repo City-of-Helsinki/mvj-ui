@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import _ from "lodash";
 import { formValueSelector } from "redux-form";
-import { getApiResponseResults, getFieldAttributes } from "util/helpers";
+import { getApiResponseResults, getFieldAttributes } from "/src/util/helpers";
 import createUrl from "/src/api/createUrl";
 import { store } from "/src/root/startApp";
 import { FormNames } from "enums";

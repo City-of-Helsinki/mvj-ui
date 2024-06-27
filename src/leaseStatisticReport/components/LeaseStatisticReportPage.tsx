@@ -11,7 +11,7 @@ import PageContainer from "/src/components/content/PageContainer";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { hasPermissions, setPageTitle } from "util/helpers";
+import { hasPermissions, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getReportTypeOptions } from "/src/leaseStatisticReport/helpers";
 import LeaseStatisticReportForm from "./LeaseStatisticReportForm";
@@ -23,7 +23,7 @@ import GreenBox from "/src/components/content/GreenBox";
 import SubTitle from "/src/components/content/SubTitle";
 import { getIsFetchingReportData, getPayload, getReports } from "/src/leaseStatisticReport/selectors";
 import { getReportData } from "/src/leaseStatisticReport/selectors";
-import { getLabelOfOption } from "util/helpers";
+import { getLabelOfOption } from "/src/util/helpers";
 type Props = {
   isFetchingUsersPermissions: boolean;
   isFetchingReportData: boolean;

@@ -16,7 +16,7 @@ import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRo
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { formatReceivableTypesString, getContentIncoive, getContentInvoices, getPayloadEditInvoice, isInvoiceOverdue } from "/src/invoices/helpers";
-import { findReactById, formatDate, formatDateRange, formatNumber, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc } from "util/helpers";
+import { findReactById, formatDate, formatDateRange, formatNumber, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc } from "/src/util/helpers";
 import { getAttributes as getInvoiceAttributes, getInvoicesByLease, getPatchedInvoice } from "/src/invoices/selectors";
 import { getInvoiceSetsByLease } from "/src/invoiceSets/selectors";
 import { getCurrentLease } from "/src/leases/selectors";

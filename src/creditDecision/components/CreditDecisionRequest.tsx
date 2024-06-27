@@ -15,10 +15,10 @@ import WhiteBox from "/src/components/content/WhiteBox";
 import { ContactTypes } from "/src/contacts/enums";
 import { CreditDecisionText } from "/src/creditDecision/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { hasPermissions } from "util/helpers";
+import { hasPermissions } from "/src/util/helpers";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
-import { formatDate } from "util/helpers";
-import { getHoursAndMinutes } from "util/date";
+import { formatDate } from "/src/util/helpers";
+import { getHoursAndMinutes } from "/src/util/date";
 import { fetchCreditDecisionByBusinessId, fetchCreditDecisionByContactId, fetchCreditDecisionByNin } from "/src/creditDecision/actions";
 import { getCreditDecisionByBusinessId, getCreditDecisionByContactId, getCreditDecisionByNin, getIsFetchingCreditDecisionByBusinessId, getIsFetchingCreditDecisionByContactId, getIsFetchingCreditDecisionByNin } from "/src/creditDecision/selectors";
 type Props = {

@@ -10,7 +10,7 @@ import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import SortableTable from "/src/components/table/SortableTable";
 import FormText from "/src/components/form/FormText";
 import ExcelLink from "/src/components/excel/ExcelLink";
-import { getApiResponseResults, hasPermissions, getLabelOfOption, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringByKeyAsc, sortStringByKeyDesc } from "util/helpers";
+import { getApiResponseResults, hasPermissions, getLabelOfOption, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringByKeyAsc, sortStringByKeyDesc } from "/src/util/helpers";
 import { LeaseStatisticReportFormatOptions } from "/src/leaseStatisticReport/enums";
 import { getDisplayName, getFormattedValue, getOutputFields, getReportTypeOptions } from "/src/leaseStatisticReport/helpers";
 import { getIsFetchingLeaseInvoicingConfirmationReport, getLeaseInvoicingConfirmationReport, getPayload } from "/src/leaseStatisticReport/selectors";

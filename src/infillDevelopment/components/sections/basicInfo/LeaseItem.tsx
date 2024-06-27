@@ -25,7 +25,7 @@ import { LeaseFieldPaths } from "/src/leases/enums";
 import { getContentLeaseAreas, getContentLeaseIdentifier, getContentTenants } from "/src/leases/helpers";
 import { getUiDataInfillDevelopmentKey, getUiDataInfillDevelopmentAttachmentKey } from "/src/uiData/helpers";
 import { getUserFullName } from "/src/users/helpers";
-import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isActive, isEmptyValue, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
+import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isActive, isEmptyValue, isFieldAllowedToRead, isMethodAllowed } from "/src/util/helpers";
 import { getAttributes as getInfillDevelopmentAttributes, getCollapseStateByKey } from "/src/infillDevelopment/selectors";
 import { getAttributes as getInfillDevelopmentAttachmentAttributes, getMethods as getInfillDevelopmentAttachmentMethods } from "/src/infillDevelopmentAttachment/selectors";
 import { getAttributes as getLeaseAttributes, getIsFetchingById, getLeaseById } from "/src/leases/selectors";

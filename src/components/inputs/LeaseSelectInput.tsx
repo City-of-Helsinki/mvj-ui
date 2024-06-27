@@ -4,7 +4,7 @@ import AsyncSelect from "/src/components/form/AsyncSelect";
 import { getContentLeaseIdentifier } from "/src/leases/helpers";
 import { fetchLeases } from "/src/leases/requestsAsync";
 import { fetchAreaSearches, fetchTargetStatuses, fetchPlotSearches } from "/src/leases/requestsAsync";
-import { getLabelOfOption, getFieldOptions } from "util/helpers";
+import { getLabelOfOption, getFieldOptions } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { store } from "/src/root/startApp";
 import { LeaseFieldPaths, LeaseHistoryItemTypes, LeaseHistoryContentTypes } from "/src/leases/enums";

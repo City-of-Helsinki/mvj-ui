@@ -11,7 +11,7 @@ import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from 
 import type { Attributes } from "types";
 import type { LandUseContract } from "/src/landUseContract/types";
 import { getContentConditions } from "/src/landUseContract/helpers";
-import { getFieldOptions, getLabelOfOption, formatDate } from "util/helpers";
+import { getFieldOptions, getLabelOfOption, formatDate } from "/src/util/helpers";
 type Props = {
   attributes: Attributes;
   ConditionsCollapseState: boolean;

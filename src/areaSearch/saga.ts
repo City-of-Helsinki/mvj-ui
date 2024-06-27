@@ -4,7 +4,7 @@ import { receiveAttributes, receiveMethods, attributesNotFound, receiveAreaSearc
 import { editSingleAreaSearchRequest, fetchAreaSearchAttributesRequest, fetchAreaSearchesRequest, fetchAreaSearchListAttributesRequest, fetchSingleAreaSearchRequest, createAreaSearchSpecsRequest, deleteAreaSearchAttachmentRequest, uploadAreaSearchAttachmentRequest } from "/src/areaSearch/requests";
 import { editApplicantInfoCheckItemRequest } from "/src/plotApplications/requests";
 import { receiveUpdatedApplicantInfoCheckItem } from "/src/application/actions";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import { push } from "react-router-redux";
 import { getRouteById, Routes } from "/src/root/routes";
 import { createApplicationRequest } from "/src/application/requests";

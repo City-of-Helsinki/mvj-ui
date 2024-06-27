@@ -7,8 +7,8 @@ import { createPlotApplicationOpeningRecord } from "/src/plotApplications/action
 import { getLoggedInUser } from "/src/auth/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { getHoursAndMinutes } from "util/date";
-import { formatDate, hasPermissions } from "util/helpers";
+import { getHoursAndMinutes } from "/src/util/date";
+import { formatDate, hasPermissions } from "/src/util/helpers";
 import type { RootState } from "/src/root/types";
 import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {

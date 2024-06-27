@@ -4,7 +4,7 @@ import { EditControl } from "react-leaflet-draw";
 import throttle from "lodash/throttle";
 import classNames from "classnames";
 import MapContainer from "/src/areaNote/components/MapContainer";
-import { DEFAULT_CENTER, DEFAULT_ZOOM } from "util/constants";
+import { DEFAULT_CENTER, DEFAULT_ZOOM } from "/src/util/constants";
 import { convertFeatureCollectionToFeature } from "/src/areaNote/helpers";
 const SHAPE_COLOR = '#9c27b0';
 const SHAPE_FILL_OPACITY = 0.5;

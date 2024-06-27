@@ -30,7 +30,7 @@ import { InfillDevelopmentCompensationAttachmentFieldPaths, InfillDevelopmentCom
 import { LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths, LeaseTenantsFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataInfillDevelopmentKey, getUiDataInfillDevelopmentAttachmentKey } from "/src/uiData/helpers";
-import { convertStrToDecimalNumber, formatDate, formatNumber, getFieldAttributes, hasPermissions, isActive, isFieldAllowedToRead, isFieldRequired, isMethodAllowed } from "util/helpers";
+import { convertStrToDecimalNumber, formatDate, formatNumber, getFieldAttributes, hasPermissions, isActive, isFieldAllowedToRead, isFieldRequired, isMethodAllowed } from "/src/util/helpers";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getContentLeaseAreas, getContentLeaseIdentifier, getContentTenants } from "/src/leases/helpers";
 import { getUserFullName } from "/src/users/helpers";

@@ -6,7 +6,7 @@ import { fetchSingleLeaseAfterEdit, hideAttachDecisionModal, hideCreateModal, hi
 import { receiveError } from "/src/api/actions";
 import { fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen } from "/src/invoices/actions";
 import { fetchInvoiceSetsByLease } from "/src/invoiceSets/actions";
-import { displayUIMessage, getSearchQuery, getUrlParams } from "util/helpers";
+import { displayUIMessage, getSearchQuery, getUrlParams } from "/src/util/helpers";
 import { copyAreasToContract, copyDecisionToLeases, createCharge, createLease, deleteLease, fetchAttributes, fetchLeases, fetchSingleLease, patchLease, sendEmail, startInvoicing, stopInvoicing, setRentInfoComplete, setRentInfoUncomplete } from "./requests";
 import { getCurrentLease } from "./selectors";
 

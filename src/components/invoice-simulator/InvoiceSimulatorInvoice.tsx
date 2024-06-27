@@ -8,7 +8,7 @@ import FormTitleAndText from "/src/components/form/FormTitleAndText";
 import InvoiceSimulatorInvoiceRows from "./InvoiceSimulatorInvoiceRows";
 import SubTitle from "/src/components/content/SubTitle";
 import { getContactFullName } from "/src/contacts/helpers";
-import { formatDate, formatDateRange, getLabelOfOption } from "util/helpers";
+import { formatDate, formatDateRange, getLabelOfOption } from "/src/util/helpers";
 type Props = {
   billedAmount: number;
   dueDate: string;

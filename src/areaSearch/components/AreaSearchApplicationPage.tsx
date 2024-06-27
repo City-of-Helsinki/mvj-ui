@@ -25,7 +25,7 @@ import { getRouteById, Routes } from "/src/root/routes";
 import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } from "enums";
 import { getIsEditMode, getIsSaveClicked, getIsFormValidFlags, getCurrentAreaSearch, getIsFetchingCurrentAreaSearch } from "/src/areaSearch/selectors";
 import { showEditMode, receiveIsSaveClicked, hideEditMode, clearFormValidFlags, receiveFormValidFlags, fetchSingleAreaSearch, batchEditAreaSearchInfoChecks } from "/src/areaSearch/actions";
-import { getUrlParams, setPageTitle, isMethodAllowed, getSearchQuery, scrollToTopPage } from "util/helpers";
+import { getUrlParams, setPageTitle, isMethodAllowed, getSearchQuery, scrollToTopPage } from "/src/util/helpers";
 import { clearUnsavedChanges } from "/src/contacts/helpers";
 import ConfirmationModal from "/src/components/modal/ConfirmationModal";
 import AreaSearchApplication from "/src/areaSearch/components/AreaSearchApplication";

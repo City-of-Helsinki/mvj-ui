@@ -14,7 +14,7 @@ import { FormNames, ViewModes } from "enums";
 import { LeaseAreaAddressesFieldPaths, LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "/src/leases/enums";
 import { getFullAddress } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {

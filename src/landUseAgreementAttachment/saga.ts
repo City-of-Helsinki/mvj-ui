@@ -3,7 +3,7 @@ import { SubmissionError } from "redux-form";
 import { attributesNotFound, receiveAttributes, receiveMethods } from "./actions";
 import { fetchSingleLandUseContract } from "/src/landUseContract/actions";
 import { receiveError } from "/src/api/actions";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import { fetchAttributes, createLandUseAgreementAttachment, deleteLandUseAgreementAttachment } from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

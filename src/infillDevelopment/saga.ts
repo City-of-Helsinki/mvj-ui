@@ -3,7 +3,7 @@ import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
 import { fetchSingleInfillDevelopment as fetchSingleInfillDevelopmentAction, hideEditMode, attributesNotFound, notFound, receiveIsSaveClicked, receiveAttributes, receiveMethods, receiveInfillDevelopments, receiveSingleInfillDevelopment } from "./actions";
 import { receiveError } from "/src/api/actions";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import { createInfillDevelopment, editInfillDevelopment, fetchAttributes, fetchInfillDevelopments, fetchSingleInfillDevelopment } from "./requests";
 import { getRouteById, Routes } from "/src/root/routes";
 

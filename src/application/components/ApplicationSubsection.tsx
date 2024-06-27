@@ -13,7 +13,7 @@ import FileDownloadLink from "/src/components/file/FileDownloadLink";
 import LoadingIndicator from "/src/components/multi-select/LoadingIndicator";
 import { ButtonColors } from "/src/components/enums";
 import FormHintText from "/src/components/form/FormHintText";
-import { formatDate, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, isFieldAllowedToRead } from "/src/util/helpers";
 import { ConfirmationModalTexts } from "enums";
 import { ActionTypes, AppConsumer } from "/src/app/AppContext";
 import { ApplicantTypes } from "/src/application/enums";

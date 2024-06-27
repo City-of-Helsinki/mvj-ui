@@ -19,7 +19,7 @@ import { patchLeaseInvoiceNotes } from "/src/leases/actions";
 import { ConfirmationModalTexts, FieldTypes, FormNames, Methods } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "/src/invoiceNote/enums";
-import { formatDate, getFieldAttributes, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
+import { formatDate, getFieldAttributes, isFieldAllowedToRead, isMethodAllowed } from "/src/util/helpers";
 import { getAttributes as getInvoiceNoteAttributes, getMethods as getInvoiceNoteMethods } from "/src/invoiceNote/selectors";
 import { getCurrentLease } from "/src/leases/selectors";
 import type { Attributes, Methods as MethodsType } from "types";

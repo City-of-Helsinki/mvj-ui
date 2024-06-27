@@ -16,7 +16,7 @@ import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { LeaseInspectionsFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { hasPermissions, isFieldAllowedToEdit } from "util/helpers";
+import { hasPermissions, isFieldAllowedToEdit } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import get from "lodash/get";

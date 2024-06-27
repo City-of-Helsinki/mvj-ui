@@ -10,7 +10,7 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import { BasisOfRentManagementSubventionsFieldPaths, BasisOfRentManagementSubventionsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { calculateBasisOfRentSubventionAmount, calculateBasisOfRentSubventionPercentage, calculateSubventionAmountFromPercantage } from "/src/leases/helpers";
-import { formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "util/helpers";
+import { formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

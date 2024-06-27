@@ -11,13 +11,13 @@ import { get } from "lodash/object";
 import { getAttributes } from "/src/application/selectors";
 import type { Attributes } from "types";
 import Authorization from "/src/components/authorization/Authorization";
-import { formatDate, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, isFieldAllowedToRead } from "/src/util/helpers";
 import { getCurrentPlotSearch } from "/src/plotSearch/selectors";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import FormText from "/src/components/form/FormText";
 import type { PlotSearch } from "/src/plotSearch/types";
 import Collapse from "/src/components/collapse/Collapse";
-import { getHoursAndMinutes } from "util/date";
+import { getHoursAndMinutes } from "/src/util/date";
 type Props = {};
 type InnerProps = Props & {
   enabled: boolean;

@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import { getApiToken } from "/src/auth/selectors";
-import { displayUIMessage, getApiUrlWithOutVersionSuffix } from "util/helpers";
+import { displayUIMessage, getApiUrlWithOutVersionSuffix } from "/src/util/helpers";
 type Props = {
   apiToken: string;
   fileKey: string;

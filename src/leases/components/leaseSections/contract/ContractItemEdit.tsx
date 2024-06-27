@@ -27,7 +27,7 @@ import { LeaseContractChangesFieldPaths, LeaseContractChangesFieldTitles, LeaseC
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getDecisionById, getLeasesWithContractNumber } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLease, getErrorsByFormName, getIsSaveClicked, getIsFetchingLeasesForContractNumbers, getLeasesForContractNumbers } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import WarningContainer from "/src/components/content/WarningContainer";

@@ -8,7 +8,7 @@ import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import { CollateralTypes, LeaseContractCollateralsFieldPaths, LeaseContractCollateralsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, formatNumber, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, formatNumber, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type EmptyProps = {

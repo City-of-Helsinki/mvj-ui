@@ -8,7 +8,7 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import type { Attributes } from "types";
 import { getUsedPrice, getSum } from "/src/landUseContract/helpers";
 import FormText from "/src/components/form/FormText";
-import { formatNumber } from "util/helpers";
+import { formatNumber } from "/src/util/helpers";
 type Props = {
   attributes: Attributes;
   field: any;

@@ -7,7 +7,7 @@ import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
-import { getUrlParams, getFieldOptions } from "util/helpers";
+import { getUrlParams, getFieldOptions } from "/src/util/helpers";
 import { getAttributes as getPlotSearchAttributes, getPlotSearchList } from "/src/plotSearch/selectors";
 import FormField from "/src/components/form/FormField";
 import SearchClearLink from "/src/components/search/SearchClearLink";

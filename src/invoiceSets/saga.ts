@@ -3,7 +3,7 @@ import { SubmissionError } from "redux-form";
 import { fetchInvoicesByLease, receiveInvoiceToCredit, receiveIsCreditInvoicePanelOpen } from "/src/invoices/actions";
 import { fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction, notFound, receiveInvoiceSetsByLease } from "./actions";
 import { receiveError } from "/src/api/actions";
-import { displayUIMessage } from "util/helpers";
+import { displayUIMessage } from "/src/util/helpers";
 import { creditInvoiceSet, fetchInvoiceSetsByLease } from "./requests";
 
 function* fetchInvoiceSetsByLeaseSaga({

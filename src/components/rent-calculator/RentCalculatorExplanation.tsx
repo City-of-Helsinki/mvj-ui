@@ -7,7 +7,7 @@ import AmountWithVat from "/src/components/vat/AmountWithVat";
 import FormText from "/src/components/form/FormText";
 import RentCalculatorSubItem from "./RentCalculatorSubItem";
 import { RentExplanationSubjectType } from "../enums";
-import { formatDateRange, formatNumber } from "util/helpers";
+import { formatDateRange, formatNumber } from "/src/util/helpers";
 import { getRentExplanationAmount, getRentExplanationDescription } from "../helpers";
 import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";

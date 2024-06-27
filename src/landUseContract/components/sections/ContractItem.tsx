@@ -5,7 +5,7 @@ import Collapse from "/src/components/collapse/Collapse";
 import FormTitleAndText from "/src/components/form/FormTitleAndText";
 import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
-import { formatDate, getLabelOfOption } from "util/helpers";
+import { formatDate, getLabelOfOption } from "/src/util/helpers";
 import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 import Warrants from "./Warrants";
 import Changes from "./Changes";

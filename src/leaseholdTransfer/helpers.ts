@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import { LeaseholdTransferPartyTypes } from "/src/leaseholdTransfer/enums";
 import { TableSortOrder } from "enums";
-import { getApiResponseResults } from "util/helpers";
+import { getApiResponseResults } from "/src/util/helpers";
 import type { LeaseholdTransferList } from "/src/leaseholdTransfer/types";
 
 /**

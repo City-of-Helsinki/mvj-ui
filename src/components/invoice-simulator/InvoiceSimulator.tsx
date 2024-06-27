@@ -16,7 +16,7 @@ import { ButtonColors } from "/src/components/enums";
 import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "/src/invoices/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentPreviewInvoiceBillingPeriods } from "/src/components/helpers";
-import { getFieldOptions, hasPermissions } from "util/helpers";
+import { getFieldOptions, hasPermissions } from "/src/util/helpers";
 import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";
 import { getCurrentLease } from "/src/leases/selectors";
 import { getIsFetching, getPreviewInvoices } from "/src/previewInvoices/selectors";

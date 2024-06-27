@@ -8,7 +8,7 @@ import ExternalLink from "/src/components/links/ExternalLink";
 import FormText from "/src/components/form/FormText";
 import ListItem from "/src/components/content/ListItem";
 import { LeaseConstructabilityDescriptionsFieldPaths } from "/src/leases/enums";
-import { formatDate, getReferenceNumberLink, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, getReferenceNumberLink, isFieldAllowedToRead } from "/src/util/helpers";
 import { getUserFullName } from "/src/users/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";

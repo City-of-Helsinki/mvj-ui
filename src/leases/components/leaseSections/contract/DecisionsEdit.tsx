@@ -13,7 +13,7 @@ import { copyDecisionToLeases, hideAttachDecisionModal, receiveFormValidFlags, s
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { hasPermissions } from "util/helpers";
+import { hasPermissions } from "/src/util/helpers";
 import { getCurrentLease, getIsAttachDecisionModalOpen } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Lease } from "/src/leases/types";

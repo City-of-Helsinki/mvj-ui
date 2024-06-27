@@ -10,7 +10,7 @@ import { receiveFormValidFlags } from "/src/landUseContract/actions";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { getContentContracts } from "/src/landUseContract/helpers";
-import { getFieldOptions } from "util/helpers";
+import { getFieldOptions } from "/src/util/helpers";
 import { getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked } from "/src/landUseContract/selectors";
 import { getDecisionOptions } from "/src/landUseContract/helpers";
 import type { Attributes } from "types";

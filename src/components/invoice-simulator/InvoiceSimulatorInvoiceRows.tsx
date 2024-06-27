@@ -5,7 +5,7 @@ import Divider from "/src/components/content/Divider";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import { getContactFullName } from "/src/contacts/helpers";
-import { getLabelOfOption } from "util/helpers";
+import { getLabelOfOption } from "/src/util/helpers";
 type Props = {
   dueDate: string;
   receivableTypeOptions: Array<Record<string, any>>;

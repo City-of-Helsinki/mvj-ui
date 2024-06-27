@@ -19,7 +19,7 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { ContactTypes } from "/src/contacts/enums";
-import { isEmptyValue, isMethodAllowed, setPageTitle } from "util/helpers";
+import { isEmptyValue, isMethodAllowed, setPageTitle } from "/src/util/helpers";
 import { contactExists } from "/src/contacts/requestsAsync";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIsContactFormValid, getIsSaveClicked } from "/src/contacts/selectors";

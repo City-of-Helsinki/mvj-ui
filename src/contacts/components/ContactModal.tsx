@@ -6,7 +6,7 @@ import GreenBox from "/src/components/content/GreenBox";
 import Modal from "/src/components/modal/Modal";
 import { ButtonColors } from "/src/components/enums";
 import { Methods } from "enums";
-import { isMethodAllowed } from "util/helpers";
+import { isMethodAllowed } from "/src/util/helpers";
 import { getIsContactFormValid, getIsSaveClicked, getMethods as getContactMethods } from "/src/contacts/selectors";
 import type { Methods as MethodsType } from "types";
 import type { RootState } from "/src/root/types";

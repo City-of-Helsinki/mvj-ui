@@ -13,7 +13,7 @@ import { FormNames } from "enums";
 import { CollateralTypes, LeaseContractCollateralsFieldPaths, LeaseContractCollateralsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { getFieldAttributes, hasPermissions, isFieldAllowedToRead } from "util/helpers";
+import { getFieldAttributes, hasPermissions, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

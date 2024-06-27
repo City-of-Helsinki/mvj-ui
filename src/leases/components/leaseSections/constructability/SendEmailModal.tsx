@@ -9,7 +9,7 @@ import TextAreaInput from "/src/components/inputs/TextAreaInput";
 import { fetchUsers } from "/src/users/requestsAsync";
 import { ButtonColors } from "/src/components/enums";
 import { getUserOptions } from "/src/users/helpers";
-import { sortStringByKeyAsc } from "util/helpers";
+import { sortStringByKeyAsc } from "/src/util/helpers";
 type FilterProps = {
   available: string;
   selected: string;

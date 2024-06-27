@@ -8,7 +8,7 @@ import ShowMore from "/src/components/showMore/ShowMore";
 import SubTitle from "/src/components/content/SubTitle";
 import { LeaseInspectionAttachmentsFieldPaths, LeaseInspectionAttachmentsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, isFieldAllowedToRead } from "/src/util/helpers";
 import { getUserFullName } from "/src/users/helpers";
 import type { Attributes } from "types";
 type Props = {

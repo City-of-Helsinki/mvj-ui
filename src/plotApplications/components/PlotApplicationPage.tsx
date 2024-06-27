@@ -26,11 +26,11 @@ import { withPlotApplicationsAttributes } from "/src/components/attributes/PlotA
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { getRouteById, Routes } from "/src/root/routes";
 import { ConfirmationModalTexts, Methods, PermissionMissingTexts } from "enums";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
+import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "/src/util/storage";
 import { getIsFetching, getCurrentPlotApplication, getIsEditMode, getIsSaveClicked, getIsFormValidFlags, getIsPerformingFileOperation, getIsSaving, getIsSingleAllowed, getApplicationRelatedPlotSearch, getApplicationApplicantInfoCheckData, getApplicationTargetInfoCheckData } from "/src/plotApplications/selectors";
 import { fetchSinglePlotApplication, showEditMode, receiveIsSaveClicked, hideEditMode, clearFormValidFlags, receiveFormValidFlags, batchEditApplicationModels } from "/src/plotApplications/actions";
 import type { PlotApplication as PlotApplicationType } from "/src/plotApplications/types";
-import { getUrlParams, setPageTitle, isMethodAllowed, getSearchQuery, scrollToTopPage } from "util/helpers";
+import { getUrlParams, setPageTitle, isMethodAllowed, getSearchQuery, scrollToTopPage } from "/src/util/helpers";
 import type { Attributes, Methods as MethodsType } from "types";
 import PlotApplicationInfo from "/src/plotApplications/components/PlotApplicationInfo";
 import PlotApplication from "/src/plotApplications/components/PlotApplication";

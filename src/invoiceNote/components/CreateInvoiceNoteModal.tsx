@@ -10,7 +10,7 @@ import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import { FieldTypes, FormNames } from "enums";
 import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "/src/invoiceNote/enums";
 import { ButtonColors } from "/src/components/enums";
-import { getFieldAttributes } from "util/helpers";
+import { getFieldAttributes } from "/src/util/helpers";
 import { getAttributes } from "/src/invoiceNote/selectors";
 import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

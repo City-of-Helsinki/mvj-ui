@@ -8,7 +8,7 @@ import Collapse from "/src/components/collapse/Collapse";
 import FormText from "/src/components/form/FormText";
 import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
-import { formatDate, formatNumber, isEmptyValue, getFieldOptions, getLabelOfOption } from "util/helpers";
+import { formatDate, formatNumber, isEmptyValue, getFieldOptions, getLabelOfOption } from "/src/util/helpers";
 import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";

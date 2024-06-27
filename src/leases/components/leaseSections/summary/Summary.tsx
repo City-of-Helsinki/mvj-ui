@@ -22,7 +22,7 @@ import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getContentLeaseSummary } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, hasPermissions, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, hasPermissions, isEmptyValue, isFieldAllowedToRead } from "/src/util/helpers";
 import { getUserFullName } from "/src/users/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getAttributes, getCollapseStateByKey, getCurrentLease } from "/src/leases/selectors";

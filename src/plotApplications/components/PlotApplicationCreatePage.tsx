@@ -23,10 +23,10 @@ import { withPlotApplicationsAttributes } from "/src/components/attributes/PlotA
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { getRouteById, Routes } from "/src/root/routes";
 import { Methods, PermissionMissingTexts } from "enums";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
+import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "/src/util/storage";
 import { getIsFetching, getCurrentPlotApplication, getIsSaveClicked, getIsFormValidById, getIsFormValidFlags, getIsPerformingFileOperation, getIsSaving } from "/src/plotApplications/selectors";
 import { fetchSinglePlotApplication, showEditMode, receiveIsSaveClicked, hideEditMode, clearFormValidFlags, receiveFormValidFlags, editPlotApplication, createPlotApplication } from "/src/plotApplications/actions";
-import { getUrlParams, setPageTitle, isMethodAllowed, getSearchQuery, scrollToTopPage } from "util/helpers";
+import { getUrlParams, setPageTitle, isMethodAllowed, getSearchQuery, scrollToTopPage } from "/src/util/helpers";
 import PlotApplicationInfo from "/src/plotApplications/components/PlotApplicationInfo";
 import { fetchPlotSearchList } from "/src/plotSearch/actions";
 import { getPlotSearchList, getIsFetching as getIsFetchingPlotSearchList } from "/src/plotSearch/selectors";

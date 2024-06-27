@@ -8,7 +8,7 @@ import GrayBox from "/src/components/content/GrayBox";
 import GreenBox from "/src/components/content/GreenBox";
 import { BasisOfRentManagementSubventionsFieldPaths, LeaseBasisOfRentsFieldPaths } from "/src/leases/enums";
 import { calculateBasisOfRentTotalDiscountedInitialYearRent, getContentBasisOfRents } from "/src/leases/helpers";
-import { getFieldOptions, isEmptyValue } from "util/helpers";
+import { getFieldOptions, isEmptyValue } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";

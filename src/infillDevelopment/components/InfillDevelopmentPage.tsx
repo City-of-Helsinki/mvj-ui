@@ -30,11 +30,11 @@ import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } fr
 import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationFieldTitles, InfillDevelopmentCompensationLeasesFieldPaths } from "/src/infillDevelopment/enums";
 import { clearUnsavedChanges, getContentInfillDevelopment, getCopyOfInfillDevelopment, getPayloadInfillDevelopment } from "/src/infillDevelopment/helpers";
 import { getUiDataInfillDevelopmentKey } from "/src/uiData/helpers";
-import { getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, scrollToTopPage, setPageTitle } from "util/helpers";
+import { getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, scrollToTopPage, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getCurrentInfillDevelopment, getIsEditMode, getIsFetching, getIsFormValidById, getIsSaveClicked, getIsSaving } from "/src/infillDevelopment/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
+import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "/src/util/storage";
 import { withInfillDevelopmentPageAttributes } from "/src/components/attributes/InfillDevelopmentPageAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
 import type { Attributes, Methods as MethodsType } from "types";

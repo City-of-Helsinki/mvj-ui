@@ -18,7 +18,7 @@ import { FormNames, ViewModes } from "enums";
 import { LeaseAreasFieldPaths, LeaseAreasFieldTitles, LeaseAreaAddressesFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getFullAddress, getLeaseAreaById } from "/src/leases/helpers";
-import { formatDate, formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "/src/util/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

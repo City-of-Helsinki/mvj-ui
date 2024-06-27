@@ -9,7 +9,7 @@ import isEmpty from "lodash/isEmpty";
 import isNumber from "lodash/isNumber";
 import { toastr } from "react-redux-toastr";
 import ToastrIcons from "/src/components/toastr/ToastrIcons";
-import { PAIKKATIETOPALVELU_URL } from "util/constants";
+import { PAIKKATIETOPALVELU_URL } from "/src/util/constants";
 import { Breakpoints } from "/src/foundation/enums";
 import type { ApiResponse, Attributes, Methods } from "types";
 import type { UsersPermissions } from "/src/usersPermissions/types";

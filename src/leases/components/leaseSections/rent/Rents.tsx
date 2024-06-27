@@ -17,7 +17,7 @@ import { RentCalculatorFieldPaths, RentCalculatorFieldTitles } from "/src/compon
 import { LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentRents, getRentWarnings } from "/src/leases/helpers";
-import { hasPermissions, isArchived, isFieldAllowedToRead } from "util/helpers";
+import { hasPermissions, isArchived, isFieldAllowedToRead } from "/src/util/helpers";
 import { getUiDataLeaseKey, getUiDataRentCalculatorKey } from "/src/uiData/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { GeoJSON } from "react-leaflet";
 import flowRight from "lodash/flowRight";
 import { LeaseFieldTitles } from "/src/leases/enums";
-import { formatDate, getLabelOfOption } from "util/helpers";
+import { formatDate, getLabelOfOption } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import type { LeafletGeoJson } from "types";
 type Props = {

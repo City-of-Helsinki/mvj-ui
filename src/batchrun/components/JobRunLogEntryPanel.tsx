@@ -8,7 +8,7 @@ import SortableTable from "/src/components/table/SortableTable";
 import TablePanel from "/src/components/table/TablePanel";
 import { fetchJobRunLogEntriesByRun } from "/src/batchrun/actions";
 import { JobRunLogEntryFieldPaths, JobRunLogEntryFieldTitles } from "/src/batchrun/enums";
-import { copyElementContentsToClipboard, displayUIMessage, formatDate, getApiResponseResults, isFieldAllowedToRead } from "util/helpers";
+import { copyElementContentsToClipboard, displayUIMessage, formatDate, getApiResponseResults, isFieldAllowedToRead } from "/src/util/helpers";
 import { TableSortOrder } from "enums";
 import { getIsFetchingJobRunLogEntriesByRun, getJobRunLogEntryAttributes, getJobRunLogEntriesByRun } from "/src/batchrun/selectors";
 import type { ApiResponse, Attributes } from "types";

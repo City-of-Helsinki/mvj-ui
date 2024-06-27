@@ -17,7 +17,7 @@ import { ButtonColors } from "/src/components/enums";
 import { validateLitigantForm } from "/src/landUseContract/formValidators";
 import { getContentContact } from "/src/contacts/helpers";
 import { getContentLitigants } from "/src/landUseContract/helpers";
-import { isEmptyValue } from "util/helpers";
+import { isEmptyValue } from "/src/util/helpers";
 import { contactExists } from "/src/contacts/requestsAsync";
 import { getContactModalSettings, getIsContactFormValid, getIsContactModalOpen, getIsFetching as getIsFetchingContact } from "/src/contacts/selectors";
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";

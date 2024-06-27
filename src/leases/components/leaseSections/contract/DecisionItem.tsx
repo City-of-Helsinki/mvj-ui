@@ -14,7 +14,7 @@ import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
 import { LeaseDecisionConditionsFieldPaths, LeaseDecisionConditionsFieldTitles, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";

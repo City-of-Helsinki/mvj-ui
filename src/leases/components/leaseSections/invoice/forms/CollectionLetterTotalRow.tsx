@@ -5,7 +5,7 @@ import { Row, Column } from "react-foundation";
 import isEmpty from "lodash/isEmpty";
 import FormText from "/src/components/form/FormText";
 import { FormNames } from "enums";
-import { convertStrToDecimalNumber, formatNumber } from "util/helpers";
+import { convertStrToDecimalNumber, formatNumber } from "/src/util/helpers";
 import { getPenaltyInterestByInvoice } from "/src/penaltyInterest/selectors";
 type OwnProps = {
   selectedInvoices: Array<Record<string, any>>;

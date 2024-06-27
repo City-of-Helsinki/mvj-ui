@@ -12,7 +12,7 @@ import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import { ButtonColors } from "/src/components/enums";
 import { fetchContractFilesById } from "/src/contractFile/actions";
 import createUrlWithoutVersionSuffix from "/src/api/createUrlWithoutVersionSuffix";
-import { humanReadableByteCount } from "util/helpers";
+import { humanReadableByteCount } from "/src/util/helpers";
 import { getContractFilesById, getIsFetchingById } from "/src/contractFile/selectors";
 type Props = {
   contractId: number;

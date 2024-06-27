@@ -5,7 +5,7 @@ import { Row, Column } from "react-foundation";
 import Authorization from "/src/components/authorization/Authorization";
 import FormField from "/src/components/form/FormField";
 import FormText from "/src/components/form/FormText";
-import { isFieldAllowedToRead, getFieldAttributes, formatNumber, isEmptyValue } from "util/helpers";
+import { isFieldAllowedToRead, getFieldAttributes, formatNumber, isEmptyValue } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "/src/leases/selectors";
 import { LeaseBasisOfRentsFieldPaths } from "/src/leases/enums";
 import type { Attributes } from "types";

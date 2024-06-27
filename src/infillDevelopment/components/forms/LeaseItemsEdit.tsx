@@ -9,7 +9,7 @@ import LeaseItemEdit from "./LeaseItemEdit";
 import { ConfirmationModalTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { hasPermissions } from "util/helpers";
+import { hasPermissions } from "/src/util/helpers";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import type { InfillDevelopment } from "/src/infillDevelopment/types";

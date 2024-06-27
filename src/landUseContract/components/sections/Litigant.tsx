@@ -9,7 +9,7 @@ import LitigantItem from "./LitigantItem";
 import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
 import { getContactFullName } from "/src/contacts/helpers";
-import { formatDateRange, isActive, isArchived } from "util/helpers";
+import { formatDateRange, isActive, isArchived } from "/src/util/helpers";
 import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 type Props = {
   collapseState: boolean;

@@ -28,7 +28,7 @@ import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getBasisOfRentAmountPerArea, calculateAmountFromValue, calculateBasisOfRentBasicAnnualRent, calculateBasisOfRentDiscountedInitialYearRent, calculateBasisOfRentInitialYearRent, calculateBasisOfRentSubventionAmount, calculateReLeaseDiscountPercent, calculateBasicAnnualRentIndexed, calculateBasisOfRentSubventionPercent, calculateSubventionDiscountTotal, calculateSubventionDiscountTotalFromReLease, calculateTemporarySubventionDiscountPercentage, calculateExtraRent, calculateFieldsRent, calculateRackAndHeightPrice, calculateTemporaryRent, getBasisOfRentIndexValue, getBasisOfRentById, getZonePriceFromValue } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getUserFullName } from "/src/users/helpers";
-import { copyElementContentsToClipboard, displayUIMessage, formatDate, formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
+import { copyElementContentsToClipboard, displayUIMessage, formatDate, formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";

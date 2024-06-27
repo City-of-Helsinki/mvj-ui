@@ -4,7 +4,7 @@ import { Row, Column } from "react-foundation";
 import { LeaseBasisOfRentsFieldTitles } from "/src/leases/enums";
 import FormText from "/src/components/form/FormText";
 import { calculateBasisOfRentDiscountedInitialYearRentsTotal, calculateInitialYearRentsTotal } from "/src/leases/helpers";
-import { formatNumber } from "util/helpers";
+import { formatNumber } from "/src/util/helpers";
 type Props = {
   basisOfRents: any;
   indexOptions: Array<Record<string, any>>;

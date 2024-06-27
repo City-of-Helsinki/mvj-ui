@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import { RentExplanationSubjectType, RentSubItemSubjectType, RentSubItemType } from "./enums";
 import { LeaseRentsFieldPaths, LeaseRentAdjustmentsFieldPaths, LeaseRentContractRentsFieldPaths, TenantContactType } from "/src/leases/enums";
-import { formatNumber, getFieldOptions, getLabelOfOption } from "util/helpers";
+import { formatNumber, getFieldOptions, getLabelOfOption } from "/src/util/helpers";
 import type { Attributes } from "types";
 import type { BillingPeriod, BillingPeriodInvoice, PreviewInvoices } from "/src/previewInvoices/types";
 export const getRentsTotalAmount = (rents: Array<Record<string, any>>) => {

@@ -5,7 +5,7 @@ import mockAttributes from "/src/plotSearch/attributes-mock-data.json";
 import plotSearchReducer from "/src/plotSearch/reducer";
 import type { PlotSearchState } from "/src/plotSearch/types";
 import { isLockedForModifications } from "/src/plotSearch/selectors";
-import { getTestRootState } from "util/testUtil";
+import { getTestRootState } from "/src/util/testUtil";
 const mockForm = mockData[0].form;
 const baseState: PlotSearchState = {
   attributes: null,

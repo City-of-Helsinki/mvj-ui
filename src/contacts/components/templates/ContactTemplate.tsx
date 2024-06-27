@@ -9,7 +9,7 @@ import FormWrapperLeft from "/src/components/form/FormWrapperLeft";
 import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import { ContactFieldPaths, ContactFieldTitles } from "/src/contacts/enums";
 import { getUiDataContactKey } from "/src/uiData/helpers";
-import { getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
+import { getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes } from "/src/contacts/selectors";
 import { ContactTypes } from "/src/contacts/enums";
 import type { Attributes } from "types";

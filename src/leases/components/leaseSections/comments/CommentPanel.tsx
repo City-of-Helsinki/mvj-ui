@@ -16,7 +16,7 @@ import { clearEditFlags, createComment, receiveIsSaveClicked } from "/src/commen
 import { ConfirmationModalTexts, FormNames, Methods } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { CommentFieldPaths } from "/src/comments/enums";
-import { getFieldOptions, isFieldAllowedToEdit, isMethodAllowed, sortStringByKeyDesc } from "util/helpers";
+import { getFieldOptions, isFieldAllowedToEdit, isMethodAllowed, sortStringByKeyDesc } from "/src/util/helpers";
 import { getContentComments } from "/src/comments/helpers";
 import { getAttributes as getCommentAttributes, getCommentsByLease, getEditModeFlags, getMethods as getCommentMethods } from "/src/comments/selectors";
 import { getCurrentLease } from "/src/leases/selectors";

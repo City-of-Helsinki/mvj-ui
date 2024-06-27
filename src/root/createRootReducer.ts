@@ -48,7 +48,7 @@ import tradeRegisterReducer from "/src/tradeRegister/reducer";
 import uiDataReducer from "/src/uiData/reducer";
 import usersReducer from "/src/users/reducer";
 import usersPermissionsReducer from "/src/usersPermissions/reducer";
-import vatReducer from "vat/reducer";
+import vatReducer from "/src/vat/reducer";
 import type { Reducer } from "types";
 import type { RootState } from "/src/root/types";
 export default ((history: Record<string, any>): Reducer<RootState> => combineReducers<Record<string, any>, any>({

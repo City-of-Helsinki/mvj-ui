@@ -11,7 +11,7 @@ import { withLeaseStatisticReportAttributes } from "/src/components/attributes/L
 import Authorization from "/src/components/authorization/Authorization";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
-import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
+import { getFieldAttributes, isFieldAllowedToEdit } from "/src/util/helpers";
 import { LeaseStatisticReportPaths, LeaseStatisticReportTitles } from "/src/leaseStatisticReport/enums";
 import { getReportTypeOptions, getReportUrl, getPayload, getFields, getQueryParams, formatType } from "/src/leaseStatisticReport/helpers";
 import { fetchReportData, setOptions, sendReportToMail, fetchOptions, setPayload } from "/src/leaseStatisticReport/actions";

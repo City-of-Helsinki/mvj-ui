@@ -13,7 +13,7 @@ import KtjLink from "/src/components/ktj/KtjLink";
 import SubTitle from "/src/components/content/SubTitle";
 import { LeasePlotsFieldPaths, LeasePlotsFieldTitles, PlotType } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead } from "/src/util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {

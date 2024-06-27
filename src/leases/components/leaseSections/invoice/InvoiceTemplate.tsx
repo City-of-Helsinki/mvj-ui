@@ -12,7 +12,7 @@ import ListItems from "/src/components/content/ListItems";
 import SubTitle from "/src/components/content/SubTitle";
 import { InvoiceCreditInvoicesFieldPaths, InvoiceCreditInvoicesFieldTitles, InvoiceFieldPaths, InvoiceFieldTitles, InvoiceInterestInvoicesFieldPaths, InvoiceInterestInvoicesFieldTitles, InvoicePaymentsFieldPaths, InvoicePaymentsFieldTitles, InvoiceRowsFieldPaths, InvoiceType } from "/src/invoices/enums";
 import { getUiDataInvoiceKey } from "/src/uiData/helpers";
-import { formatDate, formatDateRange, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, formatDateRange, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "/src/util/helpers";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";
 import type { Attributes } from "types";

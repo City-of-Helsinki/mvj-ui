@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { withRouter } from "react-router";
 import { CallbackComponent } from "redux-oidc";
-import { getRedirectUrlFromSessionStorage } from "util/storage";
+import { getRedirectUrlFromSessionStorage } from "/src/util/storage";
 import userManager from "/src/auth/util/user-manager";
 import { getRouteById, Routes } from "/src/root/routes";
 type Props = {

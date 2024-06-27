@@ -12,7 +12,7 @@ import { FieldTypes, FormNames } from "enums";
 import { getCurrentPlotApplication, getIsSaveClicked } from "/src/plotApplications/selectors";
 import { getContentUser } from "/src/users/helpers";
 import { PlotApplicationOpeningRecordLabels, PlotApplicationOpeningRecordPaths } from "/src/plotApplications/enums";
-import { isFieldAllowedToRead } from "util/helpers";
+import { isFieldAllowedToRead } from "/src/util/helpers";
 import Authorization from "/src/components/authorization/Authorization";
 type Props = {};
 type InnerProps = Props & {

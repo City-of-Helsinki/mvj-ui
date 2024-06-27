@@ -8,7 +8,7 @@ import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 import type { ContextRouter } from "react-router";
-import { getFieldOptions, getUrlParams } from "util/helpers";
+import { getFieldOptions, getUrlParams } from "/src/util/helpers";
 import { getAttributes, getPlotSearchSubTypes } from "/src/plotSearch/selectors";
 import FormField from "/src/components/form/FormField";
 import SearchChangeTypeLink from "/src/components/search/SearchChangeTypeLink";

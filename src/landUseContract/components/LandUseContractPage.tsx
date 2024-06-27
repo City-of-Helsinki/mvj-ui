@@ -41,11 +41,11 @@ import { getInvoicesByLandUseContractId, getIsFetchingAttributes as getIsFetchin
 import { clearFormValidFlags, editLandUseContract, fetchSingleLandUseContract, hideEditMode, receiveFormValidFlags, receiveIsSaveClicked, receiveSingleLandUseContract, showEditMode, deleteLandUseContract } from "/src/landUseContract/actions";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { addLitigantsFormValuesToPayload, clearUnsavedChanges, getContentLandUseContractIdentifier, getContentBasicInformation, getContentCompensations, getContentContracts, getContentDecisions, getContentInvoices, getContentLitigants, getContentConditions, convertCompensationValuesToDecimalNumber } from "/src/landUseContract/helpers";
-import { getSearchQuery, getUrlParams, isArchived, scrollToTopPage, setPageTitle } from "util/helpers";
+import { getSearchQuery, getUrlParams, isArchived, scrollToTopPage, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getCurrentLandUseContract, getIsEditMode, getIsFormValidById, getIsFormValidFlags, getIsSaveClicked, getIsFetching } from "/src/landUseContract/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
+import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "/src/util/storage";
 import { withLandUseContractAttributes } from "/src/components/attributes/LandUseContractAttributes";
 import type { Attributes } from "types";
 import type { LandUseContract } from "/src/landUseContract/types";

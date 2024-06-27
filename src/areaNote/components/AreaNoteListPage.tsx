@@ -18,8 +18,8 @@ import { fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode } fro
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { getAreaNoteById, getAreaNoteCoordinates } from "/src/areaNote/helpers";
-import { getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle } from "util/helpers";
-import { getBoundsFromCoordinates, getCenterFromCoordinates } from "util/map";
+import { getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle } from "/src/util/helpers";
+import { getBoundsFromCoordinates, getCenterFromCoordinates } from "/src/util/map";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getAreaNoteList, getIsEditMode, getIsFetching } from "/src/areaNote/selectors";
 import { withAreaNoteAttributes } from "/src/components/attributes/AreaNoteAttributes";

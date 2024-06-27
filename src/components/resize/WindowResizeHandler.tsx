@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import throttle from "lodash/throttle";
-import { isLargeScreen } from "util/helpers";
+import { isLargeScreen } from "/src/util/helpers";
 export function withWindowResize(WrappedComponent: any) {
   type Props = Record<string, any>;
   type State = {

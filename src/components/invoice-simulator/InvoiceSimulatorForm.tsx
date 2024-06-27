@@ -5,7 +5,7 @@ import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import FormField from "/src/components/form/FormField";
 import { FormNames } from "enums";
-import { getCurrentYear } from "util/date";
+import { getCurrentYear } from "/src/util/date";
 import { getCurrentLease } from "/src/leases/selectors";
 import { getBillingPeriodsByLease } from "/src/billingPeriods/selectors";
 type Props = {

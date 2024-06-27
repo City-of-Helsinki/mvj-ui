@@ -7,8 +7,8 @@ import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import Pagination from "/src/components/table/Pagination";
 import TableWrapper from "/src/components/table/TableWrapper";
 import { fetchAuditLogByContact } from "/src/auditLog/actions";
-import { LIST_TABLE_PAGE_SIZE } from "util/constants";
-import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "util/helpers";
+import { LIST_TABLE_PAGE_SIZE } from "/src/util/constants";
+import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "/src/util/helpers";
 import { getAuditLogByContact, getIsFetchingByContact } from "/src/auditLog/selectors";
 import type { AuditLogList } from "/src/auditLog/types";
 type Props = {

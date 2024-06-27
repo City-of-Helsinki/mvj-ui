@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import get from "lodash/get";
 import { FieldArray, getFormValues, reduxForm } from "redux-form";
 import FormField from "/src/components/form/FormField";
-import { formatDate, getFieldAttributes, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, getFieldAttributes, isFieldAllowedToRead } from "/src/util/helpers";
 import Authorization from "/src/components/authorization/Authorization";
 import RemoveButton from "/src/components/form/RemoveButton";
 import FormTextTitle from "/src/components/form/FormTextTitle";

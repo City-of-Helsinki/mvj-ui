@@ -12,7 +12,7 @@ import { InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "/src/invoices/enu
 import { getContactFullName } from "/src/contacts/helpers";
 import { getContentTenant } from "/src/leases/helpers";
 import { getUiDataInvoiceKey } from "/src/uiData/helpers";
-import { formatDate, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
+import { formatDate, getLabelOfOption, isFieldAllowedToRead } from "/src/util/helpers";
 import type { Attributes } from "types";
 type Props = {
   invoiceAttributes: Attributes;

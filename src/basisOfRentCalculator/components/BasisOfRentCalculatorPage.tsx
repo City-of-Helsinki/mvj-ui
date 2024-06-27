@@ -9,7 +9,7 @@ import PageContainer from "/src/components/content/PageContainer";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "/src/usersPermissions/enums";
-import { hasPermissions, setPageTitle } from "util/helpers";
+import { hasPermissions, setPageTitle } from "/src/util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import { withLeaseAttributes } from "/src/components/attributes/LeaseAttributes";

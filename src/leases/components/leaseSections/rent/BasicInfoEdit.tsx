@@ -17,7 +17,7 @@ import { DueDatesPositions, FixedDueDates, LeaseRentDueDatesFieldPaths, LeaseRen
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { formatDueDates, formatSeasonalDate } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
+import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "/src/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getLeaseTypeList } from "/src/leaseType/selectors";
 import { getUsersPermissions } from "/src/usersPermissions/selectors";

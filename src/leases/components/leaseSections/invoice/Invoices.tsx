@@ -33,7 +33,7 @@ import { LeaseInvoiceNotesFieldPaths, LeaseInvoiceNotesFieldTitles, LeaseInvoici
 import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentInvoiceNotes } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { hasPermissions, isFieldAllowedToRead } from "util/helpers";
+import { hasPermissions, isFieldAllowedToRead } from "/src/util/helpers";
 import { getCollectionCourtDecisionsByLease } from "/src/collectionCourtDecision/selectors";
 import { getCollectionLettersByLease } from "/src/collectionLetter/selectors";
 import { getCollectionNotesByLease } from "/src/collectionNote/selectors";

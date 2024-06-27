@@ -16,7 +16,7 @@ import { ButtonColors } from "/src/components/enums";
 import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "/src/landUseInvoices/enums";
 import { CreditInvoiceOptions as CreditInvoiceOptionsEnum } from "/src/landUseContract/enums";
 import { getUiDataCreditInvoiceKey } from "/src/uiData/helpers";
-import { addEmptyOption, getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToEdit, sortStringByKeyAsc } from "util/helpers";
+import { addEmptyOption, getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToEdit, sortStringByKeyAsc } from "/src/util/helpers";
 import { getAttributes as getInvoiceAttributes, getIsCreditClicked } from "/src/landUseInvoices/selectors";
 import type { Attributes } from "types";
 type Props = {

@@ -9,7 +9,7 @@ import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import { fetchLeases } from "/src/leases/requestsAsync";
 import { ButtonColors } from "/src/components/enums";
 import { getContentLeaseOption } from "/src/leases/helpers";
-import { sortStringByKeyAsc } from "util/helpers";
+import { sortStringByKeyAsc } from "/src/util/helpers";
 type FilterProps = {
   available: string;
   selected: string;

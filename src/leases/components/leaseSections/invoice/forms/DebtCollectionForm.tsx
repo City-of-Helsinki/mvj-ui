@@ -34,7 +34,7 @@ import { LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles } from "/src/leases
 import { getUserFullName } from "/src/users/helpers";
 import { getContentDebtCollectionDecisions, getDecisionOptions } from "/src/leases/helpers";
 import { getUiDataCollectionCourtDecisionKey, getUiDataCollectionLetterKey, getUiDataCollectionNoteKey, getUiDataLeaseKey } from "/src/uiData/helpers";
-import { formatDate, hasPermissions, isFieldAllowedToRead, isFieldRequired, sortStringByKeyAsc } from "util/helpers";
+import { formatDate, hasPermissions, isFieldAllowedToRead, isFieldRequired, sortStringByKeyAsc } from "/src/util/helpers";
 import { getAttributes as getCollectionCourtDecisionAttributes, getCollectionCourtDecisionsByLease, getIsCollectionCourtDecisionPanelOpen } from "/src/collectionCourtDecision/selectors";
 import { getAttributes as getCollectionLetterAttributes, getCollectionLettersByLease } from "/src/collectionLetter/selectors";
 import { getAttributes as getCollectionNoteAttributes } from "/src/collectionNote/selectors";
