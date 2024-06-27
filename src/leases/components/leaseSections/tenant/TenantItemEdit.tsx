@@ -30,7 +30,7 @@ import { ConfirmationModalTexts, FieldTypes, FormNames, Methods, ViewModes } fro
 import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, LeaseTenantRentSharesFieldPaths, LeaseTenantRentSharesFieldTitles, LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, TenantContactType } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContactFullName } from "/src/contacts/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDateRange, getFieldAttributes, hasPermissions, isActive, isArchived, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired, isMethodAllowed } from "util/helpers";
 import { getMethods as getContactMethods } from "/src/contacts/selectors";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";

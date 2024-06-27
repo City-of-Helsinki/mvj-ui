@@ -18,7 +18,7 @@ import { getContentBasicInformation } from "/src/landUseContract/helpers";
 import { getUserFullName } from "users/helpers";
 import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from "/src/landUseContract/selectors";
-import { getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey } from "uiData/helpers";
+import { getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey } from "/src/uiData/helpers";
 import { getAttributes as getLandUseAgreementAttachmentAttributes } from "/src/landUseAgreementAttachment/selectors";
 import type { Attributes } from "types";
 import type { LandUseContract } from "/src/landUseContract/types";

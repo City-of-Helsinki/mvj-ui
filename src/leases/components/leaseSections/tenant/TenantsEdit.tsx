@@ -27,7 +27,7 @@ import { validateTenantForm, warnTenantForm } from "/src/leases/formValidators";
 import { hasPermissions, isArchived, isEmptyValue, isFieldAllowedToEdit, isMethodAllowed } from "util/helpers";
 import { getContentContact } from "/src/contacts/helpers";
 import { getContentTenants } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { contactExists } from "/src/contacts/requestsAsync";
 import { getMethods as getContactMethods, getContactModalSettings, getIsContactFormValid, getIsContactModalOpen, getIsFetching as getIsFetchingContact } from "/src/contacts/selectors";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";

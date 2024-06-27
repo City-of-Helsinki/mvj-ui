@@ -18,7 +18,7 @@ import { ButtonColors } from "/src/components/enums";
 import { Breakpoints } from "/src/foundation/enums";
 import { LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

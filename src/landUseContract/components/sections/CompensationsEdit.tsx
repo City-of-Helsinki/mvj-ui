@@ -29,7 +29,7 @@ import { getUserFullName } from "users/helpers";
 import { ConfirmationModalTexts, Methods } from "enums";
 import { formatDate, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
 import FileDownloadLink from "/src/components/file/FileDownloadLink";
-import { getUiDataLandUseAgreementAttachmentKey } from "uiData/helpers";
+import { getUiDataLandUseAgreementAttachmentKey } from "/src/uiData/helpers";
 import { getMethods as getLandUseAgreementAttachmentMethods, getAttributes as getLandUseAgreementAttachmentAttributes } from "/src/landUseAgreementAttachment/selectors";
 import { LandUseAgreementAttachmentFieldPaths } from "/src/landUseAgreementAttachment/enums";
 import { createLandUseAgreementAttachment, deleteLandUseAgreementAttachment } from "/src/landUseAgreementAttachment/actions";

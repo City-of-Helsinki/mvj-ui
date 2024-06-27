@@ -3,7 +3,7 @@ import Modal from "/src/components/modal/Modal";
 import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import Button from "/src/components/button/Button";
 import ApplicantInfoCheckForm from "/src/application/components/infoCheck/ApplicantInfoCheckForm";
-import TradeRegisterTemplate from "tradeRegister/components/TradeRegisterTemplate";
+import TradeRegisterTemplate from "/src/tradeRegister/components/TradeRegisterTemplate";
 import CreditDecisionTemplate from "/src/creditDecision/components/CreditDecisionTemplate";
 import { ContactTypes } from "/src/contacts/enums";
 import { ApplicantInfoCheckExternalTypes } from "/src/application/enums";

@@ -6,9 +6,9 @@ import FormText from "/src/components/form/FormText";
 import FileDownloadLink from "/src/components/file/FileDownloadLink";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
-import { receiveCollapseStates } from "tradeRegister/actions";
-import { CollapseStatePaths } from "tradeRegister/enums";
-import { getCollapseStateByKey, getCompanyExtendedById, getIsFetchingCompanyExtendedById } from "tradeRegister/selectors";
+import { receiveCollapseStates } from "/src/tradeRegister/actions";
+import { CollapseStatePaths } from "/src/tradeRegister/enums";
+import { getCollapseStateByKey, getCompanyExtendedById, getIsFetchingCompanyExtendedById } from "/src/tradeRegister/selectors";
 import createUrlWithoutVersionSuffix from "/src/api/createUrlWithoutVersionSuffix";
 type Props = {
   businessId: string;

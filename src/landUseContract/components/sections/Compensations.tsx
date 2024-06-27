@@ -15,7 +15,7 @@ import { getUserFullName } from "users/helpers";
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import { LandUseAgreementAttachmentFieldPaths } from "/src/landUseAgreementAttachment/enums";
 import type { LandUseContract } from "/src/landUseContract/types";
-import { getUiDataLandUseAgreementAttachmentKey } from "uiData/helpers";
+import { getUiDataLandUseAgreementAttachmentKey } from "/src/uiData/helpers";
 import { getAttributes as getLandUseAgreementAttachmentAttributes } from "/src/landUseAgreementAttachment/selectors";
 import { formatDate, isFieldAllowedToRead } from "util/helpers";
 import type { Attributes } from "types";

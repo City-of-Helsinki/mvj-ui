@@ -12,7 +12,7 @@ import WarningField from "/src/components/form/WarningField";
 import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles } from "/src/leases/enums";
 import { getContentTenants, getTenantShareWarnings } from "/src/leases/helpers";
 import { isArchived } from "util/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getCurrentLease } from "/src/leases/selectors";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
 import type { Lease } from "/src/leases/types";

@@ -11,7 +11,7 @@ import Modal from "/src/components/modal/Modal";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "/src/leases/enums";
 import { ButtonColors } from "/src/components/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";

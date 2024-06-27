@@ -25,7 +25,7 @@ import { ButtonColors } from "/src/components/enums";
 import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, RentAdjustmentManagementSubventionsFieldPaths, RentAdjustmentManagementSubventionsFieldTitles, RentAdjustmentTemporarySubventionsFieldPaths, RentAdjustmentTemporarySubventionsFieldTitles, RentAdjustmentAmountTypes, RentAdjustmentTypes, SubventionTypes } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { calculateReLeaseDiscountPercent, calculateRentAdjustmentSubventionPercentCumulative, getDecisionById, hasSubventionDataChanged, hasSubventionValues, isSubventionTypeSpecified } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

@@ -10,7 +10,7 @@ import GreenBox from "/src/components/content/GreenBox";
 import LeaseItem from "./LeaseItem";
 import SubTitle from "/src/components/content/SubTitle";
 import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationFieldTitles, InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeasesFieldTitles } from "/src/infillDevelopment/enums";
-import { getUiDataInfillDevelopmentKey } from "uiData/helpers";
+import { getUiDataInfillDevelopmentKey } from "/src/uiData/helpers";
 import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "util/helpers";
 import { getUserFullName } from "users/helpers";
 import { getAttributes as getInfillDevelopmentAttributes } from "/src/infillDevelopment/selectors";

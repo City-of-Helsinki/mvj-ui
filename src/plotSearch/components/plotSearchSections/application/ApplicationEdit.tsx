@@ -9,7 +9,7 @@ import TitleH3 from "/src/components/content/TitleH3";
 import WhiteBox from "/src/components/content/WhiteBox";
 import Collapse from "/src/components/collapse/Collapse";
 import Divider from "/src/components/content/Divider";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import { ApplicationFieldPaths, ApplicationFieldTitles } from "/src/plotSearch/enums";
 import Title from "/src/components/content/Title";

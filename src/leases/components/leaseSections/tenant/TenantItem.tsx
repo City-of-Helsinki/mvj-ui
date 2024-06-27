@@ -13,7 +13,7 @@ import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import SubTitle from "/src/components/content/SubTitle";
 import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, LeaseTenantRentSharesFieldPaths, LeaseTenantRentSharesFieldTitles } from "/src/leases/enums";
 import { getContactFullName } from "/src/contacts/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getAttributes } from "/src/leases/selectors";

@@ -15,7 +15,7 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import { FormNames } from "enums";
 import { LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, getSearchQuery, getUrlParams, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

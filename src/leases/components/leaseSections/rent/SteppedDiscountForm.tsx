@@ -8,7 +8,7 @@ import FormField from "/src/components/form/FormField";
 import { FormNames } from "enums";
 import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles } from "/src/leases/enums";
 import { validateSteppedDiscountForm } from "/src/leases/formValidators";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";

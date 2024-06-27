@@ -24,7 +24,7 @@ import { LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths } from "/sr
 import { UsersPermissions } from "usersPermissions/enums";
 import { validateSummaryForm } from "/src/leases/formValidators";
 import { getContentLeaseSummary } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, getFieldOptions, getLabelOfOption, getReferenceNumberLink, hasPermissions, isFieldAllowedToRead, isFieldAllowedToEdit } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getAttributes, getCollapseStateByKey, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";

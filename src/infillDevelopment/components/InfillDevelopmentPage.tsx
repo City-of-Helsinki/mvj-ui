@@ -29,7 +29,7 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } from "enums";
 import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationFieldTitles, InfillDevelopmentCompensationLeasesFieldPaths } from "/src/infillDevelopment/enums";
 import { clearUnsavedChanges, getContentInfillDevelopment, getCopyOfInfillDevelopment, getPayloadInfillDevelopment } from "/src/infillDevelopment/helpers";
-import { getUiDataInfillDevelopmentKey } from "uiData/helpers";
+import { getUiDataInfillDevelopmentKey } from "/src/uiData/helpers";
 import { getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, scrollToTopPage, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getCurrentInfillDevelopment, getIsEditMode, getIsFetching, getIsFormValidById, getIsSaveClicked, getIsSaving } from "/src/infillDevelopment/selectors";

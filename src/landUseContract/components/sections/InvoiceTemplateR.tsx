@@ -11,7 +11,7 @@ import ListItem from "/src/components/content/ListItem";
 import ListItems from "/src/components/content/ListItems";
 import SubTitle from "/src/components/content/SubTitle";
 import { InvoiceCreditInvoicesFieldPaths, InvoiceCreditInvoicesFieldTitles, InvoiceFieldPaths, InvoiceFieldTitles, InvoiceInterestInvoicesFieldPaths, InvoiceInterestInvoicesFieldTitles, InvoicePaymentsFieldPaths, InvoicePaymentsFieldTitles, InvoiceRowsFieldPaths, InvoiceType } from "/src/invoices/enums";
-import { getUiDataInvoiceKey } from "uiData/helpers";
+import { getUiDataInvoiceKey } from "/src/uiData/helpers";
 import { formatDate, formatDateRange, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";

@@ -16,7 +16,7 @@ import { getAttributes, getCollapseStateByKey, getCurrentPlotSearch, getPlanUnit
 import { receiveCollapseStates } from "/src/plotSearch/actions";
 import { PlotSearchFieldTitles, PlotSearchStageTypes } from "/src/plotSearch/enums";
 import { getContentBasicInformation, formatDecisionName } from "/src/plotSearch/helpers";
-import { getUiDataPlotSearchKey } from "uiData/helpers";
+import { getUiDataPlotSearchKey } from "/src/uiData/helpers";
 import { getFieldOptions, getLabelOfOption, formatDate, isFieldAllowedToRead } from "util/helpers";
 import { getHoursAndMinutes } from "util/date";
 import { PlotSearchFieldPaths } from "/src/plotSearch/enums";

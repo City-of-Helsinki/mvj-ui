@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Reducer } from "types";
-import type { TradeRegisterDataMap, TradeRegisterIsFetchingMap, FetchTradeRegisterCompanyExtendedByIdAction, ReceiveTradeRegisterCompanyExtendedByIdAction, CompanyExtendedNotFoundByIdAction, FetchTradeRegisterCompanyNoticeByIdAction, ReceiveTradeRegisterCompanyNoticeByIdAction, CompanyNoticeNotFoundByIdAction, FetchTradeRegisterCompanyRepresentByIdAction, ReceiveTradeRegisterCompanyRepresentByIdAction, CompanyRepresentNotFoundByIdAction, ReceiveCollapseStatesAction } from "tradeRegister/types";
+import type { TradeRegisterDataMap, TradeRegisterIsFetchingMap, FetchTradeRegisterCompanyExtendedByIdAction, ReceiveTradeRegisterCompanyExtendedByIdAction, CompanyExtendedNotFoundByIdAction, FetchTradeRegisterCompanyNoticeByIdAction, ReceiveTradeRegisterCompanyNoticeByIdAction, CompanyNoticeNotFoundByIdAction, FetchTradeRegisterCompanyRepresentByIdAction, ReceiveTradeRegisterCompanyRepresentByIdAction, CompanyRepresentNotFoundByIdAction, ReceiveCollapseStatesAction } from "/src/tradeRegister/types";
 const isFetchingCompanyExtendedByIdReducer: Reducer<TradeRegisterIsFetchingMap> = handleActions({
   ['mvj/tradeRegister/FETCH_COMPANY_EXTENDED_BY_ID']: (state: TradeRegisterIsFetchingMap, {
     payload: businessId

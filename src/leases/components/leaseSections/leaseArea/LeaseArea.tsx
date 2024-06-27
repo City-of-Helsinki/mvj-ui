@@ -19,7 +19,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
 import { LeaseAreaAddressesFieldPaths, LeaseAreaAddressesFieldTitles, LeaseAreasFieldPaths, LeaseAreasFieldTitles, LeaseAreaCustomDetailedPlanFieldPaths, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths } from "/src/leases/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatNumber, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getIsEditMode } from "/src/leases/selectors";
 import type { Attributes } from "types";

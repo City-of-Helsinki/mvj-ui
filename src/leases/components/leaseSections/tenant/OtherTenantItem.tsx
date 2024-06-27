@@ -17,7 +17,7 @@ import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
 import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles } from "/src/leases/enums";
 import { getContactFullName } from "/src/contacts/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchived, isFieldAllowedToRead } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";

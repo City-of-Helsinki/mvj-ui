@@ -18,7 +18,7 @@ import { LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles, LeaseRentsFi
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContentRents, getRentWarnings } from "/src/leases/helpers";
 import { hasPermissions, isArchived, isFieldAllowedToRead } from "util/helpers";
-import { getUiDataLeaseKey, getUiDataRentCalculatorKey } from "uiData/helpers";
+import { getUiDataLeaseKey, getUiDataRentCalculatorKey } from "/src/uiData/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";

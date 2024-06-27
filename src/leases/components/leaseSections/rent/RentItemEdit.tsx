@@ -19,7 +19,7 @@ import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
 import { ContractRentPeriods, LeaseRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles, LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles, LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, LeasePayableRentsFieldPaths, LeasePayableRentsFieldTitles, LeaseEqualizedRentsFieldPaths, LeaseEqualizedRentsFieldTitles, RentDueDateTypes, RentTypes } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDateRange, getFieldOptions, getLabelOfOption, hasPermissions, isActive, isArchived, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

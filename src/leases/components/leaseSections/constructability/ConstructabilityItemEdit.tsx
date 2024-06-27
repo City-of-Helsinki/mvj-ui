@@ -27,7 +27,7 @@ import { LeaseAreaAddressesFieldPaths, LeaseAreaAttachmentsFieldPaths, LeaseArea
 import { LeaseAreaAttachmentTypes } from "/src/leaseAreaAttachment/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getFullAddress } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getUserFullName } from "users/helpers";
 import { formatDate, formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLease } from "/src/leases/selectors";

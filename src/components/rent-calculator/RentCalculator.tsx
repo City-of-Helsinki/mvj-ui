@@ -18,7 +18,7 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { getContentRents } from "/src/leases/helpers";
 import { hasPermissions } from "util/helpers";
 import { getCurrentYear } from "util/date";
-import { getUiDataRentCalculatorKey } from "uiData/helpers";
+import { getUiDataRentCalculatorKey } from "/src/uiData/helpers";
 import { getBillingPeriodsByLease } from "/src/billingPeriods/selectors";
 import { getCurrentLease, getIsEditMode } from "/src/leases/selectors";
 import { getIsFetching, getIsSaveClicked, getRentForPeriodArrayByLease } from "/src/rentForPeriod/selectors";

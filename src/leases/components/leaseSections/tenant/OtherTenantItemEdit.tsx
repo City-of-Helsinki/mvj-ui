@@ -22,7 +22,7 @@ import { receiveCollapseStates } from "/src/leases/actions";
 import { FieldTypes, FormNames, Methods, ViewModes } from "enums";
 import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, TenantContactType } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDateRange, hasPermissions, isActive, isArchived, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
 import { getMethods as getContactMethods } from "/src/contacts/selectors";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";

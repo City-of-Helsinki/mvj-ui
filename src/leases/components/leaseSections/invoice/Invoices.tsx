@@ -32,7 +32,7 @@ import { ButtonColors } from "/src/components/enums";
 import { LeaseInvoiceNotesFieldPaths, LeaseInvoiceNotesFieldTitles, LeaseInvoicingFieldPaths, LeaseInvoicingFieldTitles, LeaseRentsFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContentInvoiceNotes } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getCollectionCourtDecisionsByLease } from "/src/collectionCourtDecision/selectors";
 import { getCollectionLettersByLease } from "/src/collectionLetter/selectors";

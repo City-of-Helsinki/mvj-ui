@@ -12,7 +12,7 @@ import ExternalLink from "/src/components/links/ExternalLink";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import { LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles, LeaseAreaUsageDistributionFieldPaths, LeaseAreaUsageDistributionFieldTitles } from "/src/leases/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import { createPTPPlanReportUrl, createPTPPlotDivisionUrl } from "util/helpers";

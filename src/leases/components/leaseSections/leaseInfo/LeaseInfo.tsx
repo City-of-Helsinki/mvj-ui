@@ -5,7 +5,7 @@ import Authorization from "/src/components/authorization/Authorization";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import { LeaseFieldPaths, LeaseFieldTitles } from "/src/leases/enums";
 import { getContentLeaseInfo } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";

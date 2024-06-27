@@ -31,7 +31,7 @@ import TableFilterWrapper from "/src/components/table/TableFilterWrapper";
 import TableWrapper from "/src/components/table/TableWrapper";
 import VisualisationTypeWrapper from "/src/components/table/VisualisationTypeWrapper";
 import { fetchAreaNoteList } from "/src/areaNote/actions";
-import { fetchServiceUnits } from "serviceUnits/actions";
+import { fetchServiceUnits } from "/src/serviceUnits/actions";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { createLease, fetchLeases, fetchLeasesByBBox } from "/src/leases/actions";
 import { fetchLessors } from "/src/lessor/actions";
@@ -48,12 +48,12 @@ import { getLessorList } from "/src/lessor/selectors";
 import { getUsersPermissions, getUserActiveServiceUnit } from "usersPermissions/selectors";
 import { withLeaseAttributes } from "/src/components/attributes/LeaseAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
-import { getServiceUnits, getIsFetching as getIsFetchingServiceUnits } from "serviceUnits/selectors";
+import { getServiceUnits, getIsFetching as getIsFetchingServiceUnits } from "/src/serviceUnits/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { AreaNoteList } from "/src/areaNote/types";
 import type { LeaseList } from "/src/leases/types";
 import type { LessorList } from "/src/lessor/types";
-import type { ServiceUnits } from "serviceUnits/types";
+import type { ServiceUnits } from "/src/serviceUnits/types";
 import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "usersPermissions/types";
 const VisualizationTypes = {
   MAP: 'map',

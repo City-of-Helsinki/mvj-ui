@@ -15,7 +15,7 @@ import { MAP_COLORS } from "util/constants";
 import { LeaseAreasFieldPaths, LeaseFieldPaths, LeaseFieldTitles, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContentAreasGeoJson, getContentPlanUnitsGeoJson, getContentPlotsGeoJson, getLeaseCoordinates } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldOptions, getUrlParams, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getBoundsFromCoordinates, getCenterFromCoordinates } from "util/map";
 import { getAreaNoteList } from "/src/areaNote/selectors";

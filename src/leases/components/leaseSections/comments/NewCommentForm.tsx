@@ -9,7 +9,7 @@ import { receiveIsSaveClicked } from "/src/comments/actions";
 import { FieldTypes, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { CommentFieldPaths, CommentFieldTitles } from "/src/comments/enums";
-import { getUiDataCommentKey } from "uiData/helpers";
+import { getUiDataCommentKey } from "/src/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
 import { getAttributes as getCommentAttributes, getIsSaveClicked } from "/src/comments/selectors";
 import type { Attributes } from "types";

@@ -15,7 +15,7 @@ import { getRouteById, Routes } from "/src/root/routes";
 import { InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeasesFieldTitles } from "/src/infillDevelopment/enums";
 import { LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths, LeaseTenantsFieldPaths } from "/src/leases/enums";
 import { getContactFullName } from "/src/contacts/helpers";
-import { getUiDataInfillDevelopmentKey } from "uiData/helpers";
+import { getUiDataInfillDevelopmentKey } from "/src/uiData/helpers";
 import { getSearchQuery, getUrlParams, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getInfillDevelopmentAttributes } from "/src/infillDevelopment/selectors";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";

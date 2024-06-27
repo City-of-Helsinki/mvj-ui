@@ -3,7 +3,7 @@ import CreateCollectionLetterForm from "./forms/CreateCollectionLetterForm";
 import GreenBox from "/src/components/content/GreenBox";
 import SubTitle from "/src/components/content/SubTitle";
 import { CreateCollectionLetterFieldPaths, CreateCollectionLetterFieldTitles } from "/src/createCollectionLetter/enums";
-import { getUiDataCreateCollectionLetterKey } from "uiData/helpers";
+import { getUiDataCreateCollectionLetterKey } from "/src/uiData/helpers";
 
 const CreateCollectionLetter = () => {
   return <GreenBox className='with-top-margin'>

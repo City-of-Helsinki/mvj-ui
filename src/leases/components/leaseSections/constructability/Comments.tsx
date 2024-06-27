@@ -4,7 +4,7 @@ import Comment from "./Comment";
 import FormText from "/src/components/form/FormText";
 import SubTitle from "/src/components/content/SubTitle";
 import { LeaseConstructabilityDescriptionsFieldPaths, LeaseConstructabilityDescriptionsFieldTitles } from "/src/leases/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 type Props = {
   commentClassName?: string;
   comments: Array<Record<string, any>>;

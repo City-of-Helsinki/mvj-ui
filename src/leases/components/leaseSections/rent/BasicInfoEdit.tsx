@@ -16,7 +16,7 @@ import { FieldTypes, FormNames } from "enums";
 import { DueDatesPositions, FixedDueDates, LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { formatDueDates, formatSeasonalDate } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getLeaseTypeList } from "/src/leaseType/selectors";

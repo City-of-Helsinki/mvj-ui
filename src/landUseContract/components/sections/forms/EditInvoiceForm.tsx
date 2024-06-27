@@ -24,7 +24,7 @@ import { InvoiceCreditInvoicesFieldPaths, InvoiceCreditInvoicesFieldTitles, Invo
 import { validateInvoiceForm } from "/src/leases/formValidators";
 import { getContactFullName } from "/src/contacts/helpers";
 import { isInvoiceBillingPeriodRequired } from "/src/landUseInvoices/helpers";
-import { getUiDataInvoiceKey } from "uiData/helpers";
+import { getUiDataInvoiceKey } from "/src/uiData/helpers";
 import { formatDate, formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired, hasPermissions } from "util/helpers";
 import { getAttributes as getInvoiceAttributes, getIsEditClicked } from "/src/landUseInvoices/selectors";
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";

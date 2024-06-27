@@ -21,7 +21,7 @@ import { LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths } from "/sr
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getContentLeaseSummary } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, hasPermissions, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getUserFullName } from "users/helpers";
 import { getRouteById, Routes } from "/src/root/routes";

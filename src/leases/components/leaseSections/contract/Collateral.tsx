@@ -7,7 +7,7 @@ import BoxItem from "/src/components/content/BoxItem";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import { CollateralTypes, LeaseContractCollateralsFieldPaths, LeaseContractCollateralsFieldTitles } from "/src/leases/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, formatNumber, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";

@@ -15,23 +15,23 @@ import Search from "./Search";
 import SortableTable from "/src/components/table/SortableTable";
 import TableFilters from "/src/components/table/TableFilters";
 import TableWrapper from "/src/components/table/TableWrapper";
-import { fetchSapInvoices } from "sapInvoice/actions";
+import { fetchSapInvoices } from "/src/sapInvoice/actions";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
-import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "sapInvoice/constants";
+import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "/src/sapInvoice/constants";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "/src/invoices/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { formatReceivableTypesString } from "/src/invoices/helpers";
 import { getContentLeaseIdentifier } from "/src/leases/helpers";
-import { getSapInvoices, mapSapInvoiceSearchFilters } from "sapInvoice/helpers";
+import { getSapInvoices, mapSapInvoiceSearchFilters } from "/src/sapInvoice/helpers";
 import { formatDate, formatNumber, getApiResponseCount, getApiResponseMaxPage, getFieldOptions, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
-import { getIsFetching, getSapInvoices as getSapInvoiceList } from "sapInvoice/selectors";
+import { getIsFetching, getSapInvoices as getSapInvoiceList } from "/src/sapInvoice/selectors";
 import { withSapInvoicesAttributes } from "/src/components/attributes/SapInvoicesAttributes";
 import { getUserActiveServiceUnit } from "usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { SapInvoiceList } from "sapInvoice/types";
+import type { SapInvoiceList } from "/src/sapInvoice/types";
 import type { UserServiceUnit } from "usersPermissions/types";
 
 const getColumns = (invoiceAttributes: Attributes) => {

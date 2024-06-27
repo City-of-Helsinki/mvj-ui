@@ -6,7 +6,7 @@ import FormField from "/src/components/form/FormField";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { RentAdjustmentTemporarySubventionsFieldPaths, RentAdjustmentTemporarySubventionsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

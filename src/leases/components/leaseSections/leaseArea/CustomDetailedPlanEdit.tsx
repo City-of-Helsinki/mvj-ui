@@ -21,7 +21,7 @@ import { LeaseAreaCustomDetailedPlanFieldPaths, LeaseAreaCustomDetailedPlanField
 import type { Attributes } from "types";
 import { UsersPermissions } from "usersPermissions/enums";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";

@@ -25,7 +25,7 @@ import { LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles, LeaseRentsFi
 import { UsersPermissions } from "usersPermissions/enums";
 import { validateRentForm, warnRentForm } from "/src/leases/formValidators";
 import { getContentRents } from "/src/leases/helpers";
-import { getUiDataLeaseKey, getUiDataRentCalculatorKey } from "uiData/helpers";
+import { getUiDataLeaseKey, getUiDataRentCalculatorKey } from "/src/uiData/helpers";
 import { hasPermissions, isArchived, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

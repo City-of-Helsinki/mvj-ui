@@ -23,7 +23,7 @@ import { InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompens
 import { InfillDevelopmentCompensationAttachmentFieldPaths, InfillDevelopmentCompensationAttachmentFieldTitles } from "/src/infillDevelopmentAttachment/enums";
 import { LeaseFieldPaths } from "/src/leases/enums";
 import { getContentLeaseAreas, getContentLeaseIdentifier, getContentTenants } from "/src/leases/helpers";
-import { getUiDataInfillDevelopmentKey, getUiDataInfillDevelopmentAttachmentKey } from "uiData/helpers";
+import { getUiDataInfillDevelopmentKey, getUiDataInfillDevelopmentAttachmentKey } from "/src/uiData/helpers";
 import { getUserFullName } from "users/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isActive, isEmptyValue, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
 import { getAttributes as getInfillDevelopmentAttributes, getCollapseStateByKey } from "/src/infillDevelopment/selectors";

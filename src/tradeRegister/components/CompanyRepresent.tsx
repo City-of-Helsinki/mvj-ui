@@ -12,11 +12,11 @@ import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import ShowMore from "/src/components/showMore/ShowMore";
 import SubTitle from "/src/components/content/SubTitle";
-import { receiveCollapseStates } from "tradeRegister/actions";
-import { CollapseStatePaths, CompanyRepresentFieldPaths, CompanyRepresentFieldTitles } from "tradeRegister/enums";
+import { receiveCollapseStates } from "/src/tradeRegister/actions";
+import { CollapseStatePaths, CompanyRepresentFieldPaths, CompanyRepresentFieldTitles } from "/src/tradeRegister/enums";
 import { formatDate } from "util/helpers";
-import { getUiDataTradeRegisterCompanyRepresentKey } from "uiData/helpers";
-import { getCollapseStateByKey, getCompanyRepresentById, getIsFetchingCompanyRepresentById } from "tradeRegister/selectors";
+import { getUiDataTradeRegisterCompanyRepresentKey } from "/src/uiData/helpers";
+import { getCollapseStateByKey, getCompanyRepresentById, getIsFetchingCompanyRepresentById } from "/src/tradeRegister/selectors";
 type JusristicPersonProps = {
   person: Record<string, any>;
 };

@@ -17,7 +17,7 @@ import { ConfirmationModalTexts, FieldTypes, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { RentBasisFieldPaths, RentBasisFieldTitles, RentBasisDecisionsFieldPaths, RentBasisDecisionsFieldTitles, RentBasisPropertyIdentifiersFieldPaths, RentBasisPropertyIdentifiersFieldTitles, RentBasisRentRatesFieldPaths, RentBasisRentRatesFieldTitles } from "/src/rentbasis/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getUiDataRentBasisKey } from "uiData/helpers";
+import { getUiDataRentBasisKey } from "/src/uiData/helpers";
 import { getFieldAttributes, getFieldOptions, hasPermissions, isEmptyValue, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { validateRentBasisForm } from "/src/rentbasis/formValidators";
 import { getAttributes as getRentBasisAttributes, getIsFormValid, getIsSaveClicked, getRentBasisInitialValues } from "/src/rentbasis/selectors";

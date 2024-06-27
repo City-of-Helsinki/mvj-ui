@@ -11,7 +11,7 @@ import { receiveFormValidFlags } from "/src/leases/actions";
 import { FormNames } from "enums";
 import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "/src/leases/enums";
 import { getContentConstructabilityAreas } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldOptions } from "util/helpers";
 import { getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import type { Attributes } from "types";

@@ -33,7 +33,7 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles } from "/src/leases/enums";
 import { getUserFullName } from "users/helpers";
 import { getContentDebtCollectionDecisions, getDecisionOptions } from "/src/leases/helpers";
-import { getUiDataCollectionCourtDecisionKey, getUiDataCollectionLetterKey, getUiDataCollectionNoteKey, getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataCollectionCourtDecisionKey, getUiDataCollectionLetterKey, getUiDataCollectionNoteKey, getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, hasPermissions, isFieldAllowedToRead, isFieldRequired, sortStringByKeyAsc } from "util/helpers";
 import { getAttributes as getCollectionCourtDecisionAttributes, getCollectionCourtDecisionsByLease, getIsCollectionCourtDecisionPanelOpen } from "/src/collectionCourtDecision/selectors";
 import { getAttributes as getCollectionLetterAttributes, getCollectionLettersByLease } from "/src/collectionLetter/selectors";

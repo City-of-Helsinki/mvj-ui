@@ -16,7 +16,7 @@ import { LeaseFieldPaths, LeaseFieldTitles } from "/src/leases/enums";
 import { filterOptionsByLabel } from "/src/components/form/filter";
 import { getDistrictOptions } from "/src/district/helpers";
 import { getPayloadCreateLease } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
 import { getDistrictsByMunicipality, getIsFetching as getIsFetchingDistricts } from "/src/district/selectors";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";

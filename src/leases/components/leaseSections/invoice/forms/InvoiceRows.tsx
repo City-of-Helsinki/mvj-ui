@@ -11,7 +11,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import { InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "/src/invoices/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getContentTenant } from "/src/leases/helpers";
-import { getUiDataInvoiceKey } from "uiData/helpers";
+import { getUiDataInvoiceKey } from "/src/uiData/helpers";
 import { formatDate, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
 import type { Attributes } from "types";
 type Props = {

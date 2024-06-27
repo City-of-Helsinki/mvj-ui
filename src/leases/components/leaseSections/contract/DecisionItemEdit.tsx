@@ -14,7 +14,7 @@ import { FieldTypes, FormNames, ViewModes } from "enums";
 import { LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getDecisionById } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

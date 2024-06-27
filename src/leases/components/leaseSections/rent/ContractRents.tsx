@@ -9,7 +9,7 @@ import BoxItemContainer from "/src/components/content/BoxItemContainer";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import { LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, RentTypes } from "/src/leases/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";

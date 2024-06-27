@@ -12,11 +12,11 @@ import ListItem from "/src/components/content/ListItem";
 import ListItems from "/src/components/content/ListItems";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
-import { receiveCollapseStates } from "tradeRegister/actions";
-import { CollapseStatePaths, CompanyNoticeFieldPaths, CompanyNoticeFieldTitles } from "tradeRegister/enums";
+import { receiveCollapseStates } from "/src/tradeRegister/actions";
+import { CollapseStatePaths, CompanyNoticeFieldPaths, CompanyNoticeFieldTitles } from "/src/tradeRegister/enums";
 import { formatDate } from "util/helpers";
-import { getUiDataTradeRegisterCompanyNoticeKey } from "uiData/helpers";
-import { getCollapseStateByKey, getCompanyNoticeById, getIsFetchingCompanyNoticeById } from "tradeRegister/selectors";
+import { getUiDataTradeRegisterCompanyNoticeKey } from "/src/uiData/helpers";
+import { getCollapseStateByKey, getCompanyNoticeById, getIsFetchingCompanyNoticeById } from "/src/tradeRegister/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 type Props = {
   businessId: string;

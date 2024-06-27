@@ -12,7 +12,7 @@ import { fetchAuditLogByLease } from "/src/auditLog/actions";
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
 import { LeaseFieldPaths, LeaseFieldTitles } from "/src/leases/enums";
 import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "util/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAuditLogByLease, getIsFetchingByLease } from "/src/auditLog/selectors";
 import { getIsEditMode } from "/src/leases/selectors";
 import type { AuditLogList } from "/src/auditLog/types";

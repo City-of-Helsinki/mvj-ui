@@ -26,7 +26,7 @@ import { ButtonColors } from "/src/components/enums";
 import { LeaseContractChangesFieldPaths, LeaseContractChangesFieldTitles, LeaseContractCollateralsFieldPaths, LeaseContractCollateralsFieldTitles, LeaseContractsFieldPaths, LeaseContractsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getDecisionById, getLeasesWithContractNumber } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLease, getErrorsByFormName, getIsSaveClicked, getIsFetchingLeasesForContractNumbers, getLeasesForContractNumbers } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

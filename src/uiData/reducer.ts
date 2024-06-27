@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Attributes, Methods, Reducer } from "types";
-import type { UiDataList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveUiDataListAction } from "uiData/types";
+import type { UiDataList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveUiDataListAction } from "/src/uiData/types";
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/uiData/FETCH_ATTRIBUTES': () => true,
   'mvj/uiData/RECEIVE_METHODS': () => false,

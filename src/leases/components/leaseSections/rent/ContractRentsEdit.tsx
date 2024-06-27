@@ -13,7 +13,7 @@ import { ButtonColors } from "/src/components/enums";
 import { LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, RentTypes } from "/src/leases/enums";
 import { Breakpoints } from "/src/foundation/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { hasPermissions, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

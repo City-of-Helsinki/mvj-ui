@@ -26,7 +26,7 @@ import { ButtonColors } from "/src/components/enums";
 import { BasisOfRentManagementSubventionsFieldPaths, BasisOfRentManagementSubventionsFieldTitles, BasisOfRentTemporarySubventionsFieldPaths, BasisOfRentTemporarySubventionsFieldTitles, CalculatorTypes, LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles, SubventionTypes } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getBasisOfRentAmountPerArea, calculateAmountFromValue, calculateBasisOfRentBasicAnnualRent, calculateBasisOfRentDiscountedInitialYearRent, calculateBasisOfRentInitialYearRent, calculateBasisOfRentSubventionAmount, calculateReLeaseDiscountPercent, calculateBasicAnnualRentIndexed, calculateBasisOfRentSubventionPercent, calculateSubventionDiscountTotal, calculateSubventionDiscountTotalFromReLease, calculateTemporarySubventionDiscountPercentage, calculateExtraRent, calculateFieldsRent, calculateRackAndHeightPrice, calculateTemporaryRent, getBasisOfRentIndexValue, getBasisOfRentById, getZonePriceFromValue } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getUserFullName } from "users/helpers";
 import { copyElementContentsToClipboard, displayUIMessage, formatDate, formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";

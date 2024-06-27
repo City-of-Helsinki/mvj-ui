@@ -32,7 +32,7 @@ import { getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, sc
 import { FormNames } from "enums";
 import { RentBasisFieldPaths, RentBasisFieldTitles } from "/src/rentbasis/enums";
 import { clearUnsavedChanges, getPayloadRentBasis, getCopyOfRentBasis, getContentRentBasis } from "/src/rentbasis/helpers";
-import { getUiDataRentBasisKey } from "uiData/helpers";
+import { getUiDataRentBasisKey } from "/src/uiData/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIsEditMode, getIsFetching, getIsFormValid, getIsSaveClicked, getIsSaving, getRentBasis } from "/src/rentbasis/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";

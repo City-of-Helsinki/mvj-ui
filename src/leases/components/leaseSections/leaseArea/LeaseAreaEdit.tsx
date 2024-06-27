@@ -27,7 +27,7 @@ import { ConfirmationModalTexts, FieldTypes, FormNames, ViewModes } from "enums"
 import { ButtonColors } from "/src/components/enums";
 import { LeaseAreaAddressesFieldPaths, LeaseAreaAddressesFieldTitles, LeaseAreasFieldPaths, LeaseAreasFieldTitles, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths, LeaseAreaCustomDetailedPlanFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, getSearchQuery, getUrlParams, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

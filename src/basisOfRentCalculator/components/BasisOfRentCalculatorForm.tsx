@@ -7,7 +7,7 @@ import Divider from "/src/components/content/Divider";
 import Title from "/src/components/content/Title";
 import { FormNames } from "enums";
 import { LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles } from "/src/leases/enums";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 type Props = {
   basisOfRents: Array<Record<string, any>>;
 };

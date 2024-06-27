@@ -5,7 +5,7 @@ import TitleH3 from "/src/components/content/TitleH3";
 import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, LeaseHistoryItemTypes } from "/src/leases/enums";
 import { getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom } from "/src/leases/helpers";
 import { getFieldOptions } from "util/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";

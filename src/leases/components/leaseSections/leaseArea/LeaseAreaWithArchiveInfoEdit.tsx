@@ -19,7 +19,7 @@ import { LeaseAreasFieldPaths, LeaseAreasFieldTitles, LeaseAreaAddressesFieldPat
 import { UsersPermissions } from "usersPermissions/enums";
 import { getFullAddress, getLeaseAreaById } from "/src/leases/helpers";
 import { formatDate, formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";

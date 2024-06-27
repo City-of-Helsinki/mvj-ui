@@ -26,7 +26,7 @@ import { getAttributes, getCollapseStateByKey, getIsSaveClicked, getCurrentLandU
 import { referenceNumber } from "/src/components/form/validations";
 import AddressItemEdit from "./AddressItemEdit";
 import type { Attributes, Methods as MethodsType } from "types";
-import { getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey } from "uiData/helpers";
+import { getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey } from "/src/uiData/helpers";
 import { LandUseAgreementAttachmentFieldPaths } from "/src/landUseAgreementAttachment/enums";
 import { getUserFullName } from "users/helpers";
 import { isFieldAllowedToRead, isMethodAllowed, formatDate } from "util/helpers";

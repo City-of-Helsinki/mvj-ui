@@ -11,7 +11,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import { receiveFormValidFlags } from "/src/infillDevelopment/actions";
 import { FieldTypes, FormNames } from "enums";
 import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationFieldTitles, InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeasesFieldTitles } from "/src/infillDevelopment/enums";
-import { getUiDataInfillDevelopmentKey } from "uiData/helpers";
+import { getUiDataInfillDevelopmentKey } from "/src/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getInfillDevelopmentAttributes, getFormInitialValues, getIsSaveClicked } from "/src/infillDevelopment/selectors";
 import { referenceNumber } from "/src/components/form/validations";

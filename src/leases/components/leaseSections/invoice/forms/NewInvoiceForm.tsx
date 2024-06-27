@@ -25,7 +25,7 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { validateInvoiceForm } from "/src/leases/formValidators";
 import { isInvoiceBillingPeriodRequired } from "/src/invoices/helpers";
 import { getInvoiceRecipientOptions } from "/src/leases/helpers";
-import { getUiDataCreateChargeKey } from "uiData/helpers";
+import { getUiDataCreateChargeKey } from "/src/uiData/helpers";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldRequired } from "util/helpers";
 import { getAttributes as getInvoiceAttributes, getIsCreateClicked } from "/src/invoices/selectors";
 import { getCurrentLease } from "/src/leases/selectors";

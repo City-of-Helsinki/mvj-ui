@@ -3,7 +3,7 @@ import subMonths from "date-fns/subMonths";
 import { TableSortOrder } from "enums";
 import { getContentInvoiceReceivableTypes } from "/src/invoices/helpers";
 import { getApiResponseResults } from "util/helpers";
-import type { SapInvoiceList } from "sapInvoice/types";
+import type { SapInvoiceList } from "/src/sapInvoice/types";
 
 /**
  * Get sap invoices from API response

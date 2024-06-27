@@ -6,7 +6,7 @@ import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import { LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes } from "/src/leases/enums";
 import { formatDueDates, formatSeasonalDate } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";

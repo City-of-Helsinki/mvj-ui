@@ -14,7 +14,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "/src/invoices/enums";
-import { getUiDataInvoiceKey } from "uiData/helpers";
+import { getUiDataInvoiceKey } from "/src/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";
 import { getReceivableTypes } from "/src/leaseCreateCharge/selectors";

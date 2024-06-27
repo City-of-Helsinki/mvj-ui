@@ -19,7 +19,7 @@ import { ButtonColors } from "/src/components/enums";
 import { LeaseInspectionAttachmentsFieldPaths, LeaseInspectionAttachmentsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContentInspections } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getUserFullName } from "users/helpers";
 import { findItemById, formatDate, getFieldAttributes, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease, getIsSaveClicked } from "/src/leases/selectors";

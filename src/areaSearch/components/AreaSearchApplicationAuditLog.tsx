@@ -12,7 +12,7 @@ import { fetchAuditLogByAreaSearch } from "/src/auditLog/actions";
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
 import { AreaSearchFieldPaths, AreaSearchFieldTitles } from "/src/areaSearch/enums";
 import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "util/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAuditLogByAreaSearch, getIsFetchingByAreaSearch } from "/src/auditLog/selectors";
 import { getIsEditMode } from "/src/leases/selectors";
 import type { AuditLogList } from "/src/auditLog/types";

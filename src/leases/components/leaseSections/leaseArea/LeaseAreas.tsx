@@ -9,7 +9,7 @@ import WarningContainer from "/src/components/content/WarningContainer";
 import { LeaseAreasFieldPaths } from "/src/leases/enums";
 import { calculateAreasSum, getContentLeaseAreas, getDecisionOptions } from "/src/leases/helpers";
 import { formatNumber, isFieldAllowedToRead } from "util/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";

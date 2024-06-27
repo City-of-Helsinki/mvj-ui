@@ -18,7 +18,7 @@ import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, LeaseHisto
 import { RelatedLeasePaths } from "/src/relatedLease/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContentRelatedLeasesFrom, getContentRelatedLeasesTo, isAnyLeaseFormDirty, sortRelatedLeasesFrom } from "/src/leases/helpers";
-import { getUiDataLeaseKey, getUiDataRelatedLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey, getUiDataRelatedLeaseKey } from "/src/uiData/helpers";
 import { getFieldOptions, hasPermissions, isMethodAllowed } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getMethods as getLeaseMethods, getCurrentLease, getIsCreateModalOpen } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

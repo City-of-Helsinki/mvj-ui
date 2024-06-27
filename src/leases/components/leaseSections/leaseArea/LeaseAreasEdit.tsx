@@ -18,7 +18,7 @@ import { ButtonColors } from "/src/components/enums";
 import { AreaLocation, LeaseAreasFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { calculateAreasSum, getContentLeaseAreas, getDecisionOptions, getLeaseAreaById } from "/src/leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
+import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatNumber, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";

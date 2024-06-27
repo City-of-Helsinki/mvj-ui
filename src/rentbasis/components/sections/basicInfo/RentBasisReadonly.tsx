@@ -11,7 +11,7 @@ import ListItem from "/src/components/content/ListItem";
 import ListItems from "/src/components/content/ListItems";
 import SubTitle from "/src/components/content/SubTitle";
 import { RentBasisFieldPaths, RentBasisFieldTitles, RentBasisDecisionsFieldPaths, RentBasisDecisionsFieldTitles, RentBasisPropertyIdentifiersFieldPaths, RentBasisPropertyIdentifiersFieldTitles, RentBasisRentRatesFieldPaths, RentBasisRentRatesFieldTitles } from "/src/rentbasis/enums";
-import { getUiDataRentBasisKey } from "uiData/helpers";
+import { getUiDataRentBasisKey } from "/src/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getRentBasisAttributes } from "/src/rentbasis/selectors";
 import type { Attributes } from "types";
