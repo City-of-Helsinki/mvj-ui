@@ -1,11 +1,11 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchLandUseContractAttributes } from "landUseContract/actions";
-import { getAttributes as getLandUseContractAttributes, getIsFetchingAttributes as getIsFetchingLandUseContractAttributes, getMethods as getLandUseContractMethods } from "landUseContract/selectors";
+import { fetchAttributes as fetchLandUseContractAttributes } from "/src/landUseContract/actions";
+import { getAttributes as getLandUseContractAttributes, getIsFetchingAttributes as getIsFetchingLandUseContractAttributes, getMethods as getLandUseContractMethods } from "/src/landUseContract/selectors";
 import type { Attributes, Methods } from "types";
-import { fetchAttributes as fetchLandUseAgreementAttachmentAttributes } from "landUseAgreementAttachment/actions";
-import { getAttributes as getLandUseAgreementAttachmentAttributes, getIsFetchingAttributes as getIsFetchingLandUseAgreementAttachmentAttributes, getMethods as getLandUseAgreementAttachmentMethods } from "landUseAgreementAttachment/selectors";
+import { fetchAttributes as fetchLandUseAgreementAttachmentAttributes } from "/src/landUseAgreementAttachment/actions";
+import { getAttributes as getLandUseAgreementAttachmentAttributes, getIsFetchingAttributes as getIsFetchingLandUseAgreementAttachmentAttributes, getMethods as getLandUseAgreementAttachmentMethods } from "/src/landUseAgreementAttachment/selectors";
 
 function LandUseContractAttributes(WrappedComponent: any) {
   type Props = {

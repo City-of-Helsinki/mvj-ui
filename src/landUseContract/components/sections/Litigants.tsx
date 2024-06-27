@@ -6,10 +6,10 @@ import Litigant from "./Litigant";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import { isArchived } from "util/helpers";
-import { getContentLitigants } from "landUseContract/helpers";
-import { getCurrentLandUseContract } from "landUseContract/selectors";
+import { getContentLitigants } from "/src/landUseContract/helpers";
+import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
-import type { LandUseContract } from "landUseContract/types";
+import type { LandUseContract } from "/src/landUseContract/types";
 type Props = {
   currentLandUseContract: LandUseContract;
   isFetchingContactAttributes: boolean;

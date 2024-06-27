@@ -10,12 +10,12 @@ import FormWrapper from "/src/components/form/FormWrapper";
 import FormWrapperLeft from "/src/components/form/FormWrapperLeft";
 import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import SubTitle from "/src/components/content/SubTitle";
-import { receiveCollapseStates } from "landUseContract/actions";
+import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { formatDate, formatDateRange, isActive, isArchived } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
-import { getCollapseStateByKey } from "landUseContract/selectors";
+import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 type Props = {
   billingPerson: Record<string, any>;
   collapseState: boolean;

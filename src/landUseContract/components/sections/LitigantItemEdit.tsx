@@ -18,12 +18,12 @@ import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import LitigantBillingPersonEdit from "./LitigantBillingPersonEdit";
 import SubTitle from "/src/components/content/SubTitle";
 import { initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal } from "/src/contacts/actions";
-import { receiveCollapseStates } from "landUseContract/actions";
+import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { ConfirmationModalTexts, FieldTypes, FormNames, ViewModes } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { findItemById, isActive, isArchived } from "util/helpers";
-import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "landUseContract/selectors";
+import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
 type BillingPersonsProps = {
   fields: any;

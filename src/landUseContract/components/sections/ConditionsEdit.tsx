@@ -9,9 +9,9 @@ import AddButtonThird from "/src/components/form/AddButtonThird";
 import { ActionTypes, AppConsumer } from "/src/app/AppContext";
 import Collapse from "/src/components/collapse/Collapse";
 import Divider from "/src/components/content/Divider";
-import { receiveCollapseStates, receiveFormValidFlags } from "landUseContract/actions";
+import { receiveCollapseStates, receiveFormValidFlags } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
-import { getAttributes, getCollapseStateByKey, getIsSaveClicked } from "landUseContract/selectors";
+import { getAttributes, getCollapseStateByKey, getIsSaveClicked } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
 import ConditionItemEdit from "./ConditionItemEdit";
 type ConditionsProps = {

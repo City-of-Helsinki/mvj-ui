@@ -6,13 +6,13 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import BoxItemContainer from "/src/components/content/BoxItemContainer";
 import Collapse from "/src/components/collapse/Collapse";
 import FormText from "/src/components/form/FormText";
-import { receiveCollapseStates } from "landUseContract/actions";
+import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
 import { formatDate } from "util/helpers";
-import { getCollapseStateByKey } from "landUseContract/selectors";
+import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
-import { getDecisionById, getDecisionOptions } from "landUseContract/helpers";
-import type { LandUseContract } from "landUseContract/types";
+import { getDecisionById, getDecisionOptions } from "/src/landUseContract/helpers";
+import type { LandUseContract } from "/src/landUseContract/types";
 import DecisionLink from "/src/components/links/DecisionLink";
 import type { Attributes } from "types";
 type Props = {

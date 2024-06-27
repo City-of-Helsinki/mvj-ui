@@ -17,9 +17,9 @@ import { InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "/src/invoices/enu
 import { getUiDataInvoiceKey } from "uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";
-import { getReceivableTypes } from "leaseCreateCharge/selectors";
+import { getReceivableTypes } from "/src/leaseCreateCharge/selectors";
 import type { Attributes } from "types";
-import { receivableTypesFromAttributes, receivableTypeFromRows } from "leaseCreateCharge/helpers";
+import { receivableTypesFromAttributes, receivableTypeFromRows } from "/src/leaseCreateCharge/helpers";
 import Loader from "/src/components/loader/Loader";
 type Props = {
   fields: any;

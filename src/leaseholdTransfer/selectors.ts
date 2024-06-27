@@ -1,5 +1,5 @@
 import type { Attributes, Methods, Selector } from "types";
-import type { LeaseholdTransferList } from "leaseholdTransfer/types";
+import type { LeaseholdTransferList } from "/src/leaseholdTransfer/types";
 import type { RootState } from "root/types";
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean => state.leaseholdTransfer.isFetchingAttributes;
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.leaseholdTransfer.attributes;

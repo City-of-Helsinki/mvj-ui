@@ -5,7 +5,7 @@ import { FormNames } from "enums";
 import { LitigantContactType } from "./enums";
 import { getContentUser } from "users/helpers";
 import { fixedLengthNumber, getApiResponseResults, isArchived, sortStringByKeyDesc, addEmptyOption, formatDate, convertStrToDecimalNumber } from "util/helpers";
-import { getIsEditMode } from "landUseContract/selectors";
+import { getIsEditMode } from "/src/landUseContract/selectors";
 import { removeSessionStorageItem } from "util/storage";
 import { getContactFullName, getContentContact } from "/src/contacts/helpers";
 import type { LandUseContract } from "./types";

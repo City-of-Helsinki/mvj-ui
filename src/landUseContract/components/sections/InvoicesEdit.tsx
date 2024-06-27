@@ -11,10 +11,10 @@ import FormField from "/src/components/form/FormField";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import GreenBox from "/src/components/content/GreenBox";
 import RemoveButton from "../../../components/form/RemoveButton";
-import { receiveFormValidFlags } from "landUseContract/actions";
+import { receiveFormValidFlags } from "/src/landUseContract/actions";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { getAttributes, getIsSaveClicked } from "landUseContract/selectors";
+import { getAttributes, getIsSaveClicked } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
 type InvoicesProps = {
   attributes: Attributes;

@@ -10,14 +10,14 @@ import CloseButton from "/src/components/button/CloseButton";
 import FormField from "/src/components/form/FormField";
 import WhiteBox from "/src/components/content/WhiteBox";
 import { receiveIsCreditClicked } from "/src/invoices/actions";
-import { CreditInvoiceOptions, CreditInvoiceSetOptions } from "landUseContract/constants";
+import { CreditInvoiceOptions, CreditInvoiceSetOptions } from "/src/landUseContract/constants";
 import { FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "landUseInvoices/enums";
-import { CreditInvoiceOptions as CreditInvoiceOptionsEnum } from "landUseContract/enums";
+import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "/src/landUseInvoices/enums";
+import { CreditInvoiceOptions as CreditInvoiceOptionsEnum } from "/src/landUseContract/enums";
 import { getUiDataCreditInvoiceKey } from "uiData/helpers";
 import { addEmptyOption, getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToEdit, sortStringByKeyAsc } from "util/helpers";
-import { getAttributes as getInvoiceAttributes, getIsCreditClicked } from "landUseInvoices/selectors";
+import { getAttributes as getInvoiceAttributes, getIsCreditClicked } from "/src/landUseInvoices/selectors";
 import type { Attributes } from "types";
 type Props = {
   formValues: Record<string, any>;

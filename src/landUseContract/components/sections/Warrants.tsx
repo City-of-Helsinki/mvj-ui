@@ -6,10 +6,10 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import BoxItemContainer from "/src/components/content/BoxItemContainer";
 import Collapse from "/src/components/collapse/Collapse";
 import FormText from "/src/components/form/FormText";
-import { receiveCollapseStates } from "landUseContract/actions";
+import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
 import { formatDate, formatNumber, isEmptyValue, getFieldOptions, getLabelOfOption } from "util/helpers";
-import { getCollapseStateByKey } from "landUseContract/selectors";
+import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 type Props = {

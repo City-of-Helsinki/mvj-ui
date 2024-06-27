@@ -1,6 +1,6 @@
 import { isContactFormDirty } from "/src/contacts/helpers";
 import { isInfillDevelopmentFormDirty } from "/src/infillDevelopment/helpers";
-import { isAnyLandUseContractFormDirty } from "landUseContract/helpers";
+import { isAnyLandUseContractFormDirty } from "/src/landUseContract/helpers";
 import { isAnyLeaseFormDirty } from "leases/helpers";
 import { isRentBasisFormDirty } from "rentbasis/helpers";
 import { store } from "root/startApp";

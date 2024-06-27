@@ -16,11 +16,11 @@ import FieldAndRemoveButtonWrapper from "/src/components/form/FieldAndRemoveButt
 import FormField from "/src/components/form/FormField";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import RemoveButton from "/src/components/form/RemoveButton";
-import { receiveCollapseStates } from "landUseContract/actions";
+import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { ConfirmationModalTexts, FieldTypes, FormNames, ViewModes } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldRequired } from "util/helpers";
-import { getCollapseStateByKey } from "landUseContract/selectors";
+import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 import { referenceNumber } from "/src/components/form/validations";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";

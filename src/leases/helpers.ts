@@ -9,7 +9,7 @@ import { getSplittedDateRangesWithItems, sortByStartAndEndDateDesc } from "util/
 import { FormNames, TableSortOrder } from "enums";
 import { CollateralTypes, ConstructabilityType, DecisionTypeKinds, LeaseState, LeaseTenantRentSharesFieldPaths, LeaseStatus, RecipientOptions, RelationTypes, RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes, SubventionTypes, TenantContactType } from "./enums";
 import { CalculatorTypes } from "leases/enums";
-import { LeaseAreaAttachmentTypes } from "leaseAreaAttachment/enums";
+import { LeaseAreaAttachmentTypes } from "/src/leaseAreaAttachment/enums";
 import { getContactFullName, getContentContact } from "/src/contacts/helpers";
 import { getContentLessor } from "lessor/helpers";
 import { getContentPropertyIdentifiers } from "rentbasis/helpers";

@@ -11,8 +11,8 @@ import { receiveIsEditClicked } from "/src/invoices/actions";
 import { FormNames, Methods } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { isMethodAllowed } from "util/helpers";
-import { getInvoicesByLandUseContractId, getIsEditClicked, getMethods as getInvoiceMethods } from "landUseInvoices/selectors";
-import { getCurrentLandUseContract } from "landUseContract/selectors";
+import { getInvoicesByLandUseContractId, getIsEditClicked, getMethods as getInvoiceMethods } from "/src/landUseInvoices/selectors";
+import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import type { Methods as MethodsType } from "types";
 import type { Invoice, InvoiceList } from "/src/invoices/types";
 type Props = {

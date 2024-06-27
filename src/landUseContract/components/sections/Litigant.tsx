@@ -6,11 +6,11 @@ import Collapse from "/src/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "/src/components/collapse/CollapseHeaderSubtitle";
 import LitigantBillingPerson from "./LitigantBillingPerson";
 import LitigantItem from "./LitigantItem";
-import { receiveCollapseStates } from "landUseContract/actions";
+import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { formatDateRange, isActive, isArchived } from "util/helpers";
-import { getCollapseStateByKey } from "landUseContract/selectors";
+import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 type Props = {
   collapseState: boolean;
   litigant: Record<string, any>;

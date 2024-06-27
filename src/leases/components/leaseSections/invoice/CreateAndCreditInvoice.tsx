@@ -16,7 +16,7 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { RecipientOptions } from "leases/enums";
 import { getPayloadCreateInvoice, getPayloadCreditInvoice } from "/src/invoices/helpers";
 import { getCreditInvoiceSetPayload } from "/src/invoiceSets/helpers";
-import { getPayloadLeaseCreateCharge } from "leaseCreateCharge/helpers";
+import { getPayloadLeaseCreateCharge } from "/src/leaseCreateCharge/helpers";
 import { hasPermissions } from "util/helpers";
 import { getCurrentLease } from "leases/selectors";
 import { getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen } from "/src/invoices/selectors";

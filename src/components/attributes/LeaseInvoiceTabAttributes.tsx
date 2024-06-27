@@ -6,15 +6,15 @@ import { fetchAttributes as fetchCollectionLetterAttributes } from "/src/collect
 import { fetchAttributes as fetchCollectionNoteAttributes } from "/src/collectionNote/actions";
 import { fetchAttributes as fetchCreateCollectionLetterAttributes } from "/src/createCollectionLetter/actions";
 import { fetchAttributes as fetchInvoiceNoteAttributes } from "/src/invoiceNote/actions";
-import { fetchAttributes as fetchLeaseCreateChargeAttributes } from "leaseCreateCharge/actions";
-import { fetchReceivableTypes } from "leaseCreateCharge/actions";
+import { fetchAttributes as fetchLeaseCreateChargeAttributes } from "/src/leaseCreateCharge/actions";
+import { fetchReceivableTypes } from "/src/leaseCreateCharge/actions";
 import { getAttributes as getCollectionCourtDecisionAttributes, getIsFetchingAttributes as getIsFetchingCollectionCourtDecisionAttributes, getMethods as getCollectionCourtDecisionMethods } from "/src/collectionCourtDecision/selectors";
 import { getAttributes as getCollectionLetterAttributes, getIsFetchingAttributes as getIsFetchignCollectionLetterAttributes, getMethods as getCollectionLetterMethods } from "/src/collectionLetter/selectors";
 import { getAttributes as getCollectionNoteAttributes, getIsFetchingAttributes as getIsFetchingCollectionNoteAttributes, getMethods as getCollectionNoteMethods } from "/src/collectionNote/selectors";
 import { getAttributes as getCreateCollectionLetterAttributes, getIsFetchingAttributes as getIsFetchignCreateCollectionLetterAttributes } from "/src/createCollectionLetter/selectors";
 import { getAttributes as getInvoiceNoteAttributes, getIsFetchingAttributes as getIsFetchingInvoiceNoteAttributes, getMethods as getInvoiceNoteMethods } from "/src/invoiceNote/selectors";
-import { getAttributes as getLeaseCreateChargeAttributes, getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes } from "leaseCreateCharge/selectors";
-import { getIsFetchingReceivableTypes, getReceivableTypes } from "leaseCreateCharge/selectors";
+import { getAttributes as getLeaseCreateChargeAttributes, getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes } from "/src/leaseCreateCharge/selectors";
+import { getIsFetchingReceivableTypes, getReceivableTypes } from "/src/leaseCreateCharge/selectors";
 import type { Attributes, Methods } from "types";
 
 function LeaseInvoiceTabAttributes(WrappedComponent: any) {

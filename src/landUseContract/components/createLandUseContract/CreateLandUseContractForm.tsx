@@ -11,7 +11,7 @@ import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import { fetchDistrictsByMunicipality } from "/src/district/actions";
 import { FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { getAttributes } from "landUseContract/selectors";
+import { getAttributes } from "/src/landUseContract/selectors";
 import { getDistrictOptions } from "/src/district/helpers";
 import { getFieldOptions } from "util/helpers";
 import type { Attributes } from "types";

@@ -5,10 +5,10 @@ import Collapse from "/src/components/collapse/Collapse";
 import DecisionConditions from "./DecisionConditions";
 import ExternalLink from "/src/components/links/ExternalLink";
 import FormTitleAndText from "/src/components/form/FormTitleAndText";
-import { receiveCollapseStates } from "landUseContract/actions";
+import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
 import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink } from "util/helpers";
-import { getCollapseStateByKey } from "landUseContract/selectors";
+import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

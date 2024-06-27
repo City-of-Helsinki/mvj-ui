@@ -6,13 +6,13 @@ import flowRight from "lodash/flowRight";
 import { ActionTypes, AppConsumer } from "/src/app/AppContext";
 import AddButton from "/src/components/form/AddButton";
 import DecisionItemEdit from "./DecisionItemEdit";
-import { receiveFormValidFlags } from "landUseContract/actions";
+import { receiveFormValidFlags } from "/src/landUseContract/actions";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { getContentDecisions } from "landUseContract/helpers";
-import { getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked } from "landUseContract/selectors";
+import { getContentDecisions } from "/src/landUseContract/helpers";
+import { getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
-import type { LandUseContract } from "landUseContract/types";
+import type { LandUseContract } from "/src/landUseContract/types";
 type DecisionsProps = {
   attributes: Attributes;
   decisionsData: Array<Record<string, any>>;

@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Attributes, Methods, Reducer } from "types";
-import type { LeaseholdTransferList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveLeaseholdTransferListAction } from "leaseholdTransfer/types";
+import type { LeaseholdTransferList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveLeaseholdTransferListAction } from "/src/leaseholdTransfer/types";
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/leaseholdTransfer/FETCH_ATTRIBUTES': () => true,
   'mvj/leaseholdTransfer/RECEIVE_METHODS': () => false,

@@ -5,12 +5,12 @@ import Collapse from "/src/components/collapse/Collapse";
 import Divider from "/src/components/content/Divider";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
-import { receiveCollapseStates } from "landUseContract/actions";
+import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
-import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from "landUseContract/selectors";
+import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import type { Attributes } from "types";
-import type { LandUseContract } from "landUseContract/types";
-import { getContentConditions } from "landUseContract/helpers";
+import type { LandUseContract } from "/src/landUseContract/types";
+import { getContentConditions } from "/src/landUseContract/helpers";
 import { getFieldOptions, getLabelOfOption, formatDate } from "util/helpers";
 type Props = {
   attributes: Attributes;

@@ -11,17 +11,17 @@ import CreateAndCreditInvoiceR from "./CreateAndCreditInvoiceR";
 import Divider from "/src/components/content/Divider";
 import InvoiceTableAndPanelR from "./InvoiceTableAndPanelR";
 import Title from "/src/components/content/Title";
-import { receiveCollapseStates, receiveInvoiceToCredit } from "landUseInvoices/actions";
+import { receiveCollapseStates, receiveInvoiceToCredit } from "/src/landUseInvoices/actions";
 import { PermissionMissingTexts, ViewModes } from "enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { hasPermissions } from "util/helpers";
 import { LeaseInvoicingFieldTitles } from "leases/enums";
 // TODO
-import { getCurrentLandUseContract } from "landUseContract/selectors";
+import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import type { LandUseContract } from "landUseContract/types";
+import type { LandUseContract } from "/src/landUseContract/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
-import { getInvoiceToCredit } from "landUseInvoices/selectors";
+import { getInvoiceToCredit } from "/src/landUseInvoices/selectors";
 type Props = {
   currentLandUseContract: LandUseContract;
   invoicesCollapseState: boolean;

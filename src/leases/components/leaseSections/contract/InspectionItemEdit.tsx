@@ -13,7 +13,7 @@ import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import RemoveButton from "/src/components/form/RemoveButton";
 import SubTitle from "/src/components/content/SubTitle";
-import { createLeaseInspectionAttachment, deleteLeaseInspectionAttachment } from "leaseInspectionAttachment/actions";
+import { createLeaseInspectionAttachment, deleteLeaseInspectionAttachment } from "/src/leaseInspectionAttachment/actions";
 import { ConfirmationModalTexts, FieldTypes, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { LeaseInspectionAttachmentsFieldPaths, LeaseInspectionAttachmentsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "leases/enums";
