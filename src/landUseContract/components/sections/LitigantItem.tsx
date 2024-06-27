@@ -1,14 +1,14 @@
 import React, { Fragment } from "react";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
-import ContactTemplate from "contacts/components/templates/ContactTemplate";
+import ContactTemplate from "/src/contacts/components/templates/ContactTemplate";
 import ExternalLink from "/src/components/links/ExternalLink";
 import FormTitleAndText from "/src/components/form/FormTitleAndText";
 import FormWrapper from "/src/components/form/FormWrapper";
 import FormWrapperLeft from "/src/components/form/FormWrapperLeft";
 import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import SubTitle from "/src/components/content/SubTitle";
-import { getContactFullName } from "contacts/helpers";
+import { getContactFullName } from "/src/contacts/helpers";
 import { formatDate } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
 type Props = {

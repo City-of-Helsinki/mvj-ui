@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import type { ContactId } from "contacts/types";
+import type { ContactId } from "/src/contacts/types";
 import type { LeaseId } from "leases/types";
 import type { AreaSearchId } from "/src/areaSearch/types";
 import type { AuditLogListMap, FetchAuditLogByContactAction, ReceiveAuditLogByContactAction, NotFoundByContactAction, FetchAuditLogByLeaseAction, ReceiveAuditLogByLeaseAction, NotFoundByLeaseAction, FetchAuditLogByAreaSearchAction, ReceiveAuditLogByAreaSearchAction, NotFoundByAreaSearchAction } from "/src/auditLog/types";

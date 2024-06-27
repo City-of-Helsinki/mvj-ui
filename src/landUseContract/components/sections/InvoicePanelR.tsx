@@ -7,14 +7,14 @@ import Button from "/src/components/button/Button";
 import EditInvoiceForm from "./forms/EditInvoiceForm";
 import InvoiceTemplateR from "./InvoiceTemplateR";
 import TablePanelContainer from "/src/components/table/TablePanelContainer";
-import { receiveIsEditClicked } from "invoices/actions";
+import { receiveIsEditClicked } from "/src/invoices/actions";
 import { FormNames, Methods } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { isMethodAllowed } from "util/helpers";
 import { getInvoicesByLandUseContractId, getIsEditClicked, getMethods as getInvoiceMethods } from "landUseInvoices/selectors";
 import { getCurrentLandUseContract } from "landUseContract/selectors";
 import type { Methods as MethodsType } from "types";
-import type { Invoice, InvoiceList } from "invoices/types";
+import type { Invoice, InvoiceList } from "/src/invoices/types";
 type Props = {
   formValues: Record<string, any>;
   invoice: Invoice | null | undefined;

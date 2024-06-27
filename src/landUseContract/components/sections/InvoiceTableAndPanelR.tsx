@@ -15,13 +15,13 @@ import { FormNames, KeyCodes, TableSortOrder } from "enums";
 import { getCurrentLandUseContract } from "landUseContract/selectors";
 import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles, InvoiceType } from "landUseInvoices/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getContactFullName } from "contacts/helpers";
+import { getContactFullName } from "/src/contacts/helpers";
 import { formatReceivableTypesString, getContentIncoive, getContentInvoices, getPayloadEditInvoice, isInvoiceOverdue } from "landUseInvoices/helpers";
 import { findReactById, formatDate, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc } from "util/helpers";
 import { getAttributes as getInvoiceAttributes, getPatchedInvoice } from "landUseInvoices/selectors";
 import { getInvoicesByLandUseContractId } from "landUseInvoices/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import type { Invoice, InvoiceList } from "invoices/types";
+import type { Invoice, InvoiceList } from "/src/invoices/types";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {

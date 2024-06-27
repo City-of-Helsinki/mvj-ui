@@ -10,9 +10,9 @@ import SearchLabel from "/src/components/search/SearchLabel";
 import SearchLabelColumn from "/src/components/search/SearchLabelColumn";
 import SearchRow from "/src/components/search/SearchRow";
 import { ButtonColors } from "/src/components/enums";
-import { ContactTypes } from "contacts/enums";
+import { ContactTypes } from "/src/contacts/enums";
 import { FieldTypes, FormNames } from "enums";
-import { CreditDecisionText, SearchLabels } from "creditDecision/enums";
+import { CreditDecisionText, SearchLabels } from "/src/creditDecision/enums";
 type Props = {
   formSelectedType: String;
   formValues: Record<string, any>;

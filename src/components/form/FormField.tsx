@@ -29,7 +29,7 @@ import FieldTypeFractional from "/src/components/form/FieldTypeFractional";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import { FieldTypes as FieldTypeOptions } from "enums";
-import { getContactFullName } from "contacts/helpers";
+import { getContactFullName } from "/src/contacts/helpers";
 import { formatDate, formatNumber, getFieldAttributeOptions, getLabelOfOption, isEmptyValue, getReferenceNumberLink } from "util/helpers";
 import { getUserFullName } from "users/helpers";
 import { genericNormalizer } from "/src/components/form/normalizers";

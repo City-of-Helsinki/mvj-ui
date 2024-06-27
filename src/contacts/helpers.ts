@@ -1,7 +1,7 @@
 import { isDirty } from "redux-form";
 import { FormNames, TableSortOrder } from "enums";
 import { ContactTypes } from "./enums";
-import { getIsEditMode } from "contacts/selectors";
+import { getIsEditMode } from "/src/contacts/selectors";
 import { removeSessionStorageItem } from "util/storage";
 
 /**

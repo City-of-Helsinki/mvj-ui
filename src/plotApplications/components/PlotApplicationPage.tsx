@@ -39,7 +39,7 @@ import { getPlotSearchList } from "plotSearch/selectors";
 import { getInitialTargetInfoCheckValues, getTargetInfoCheckFormName } from "plotApplications/helpers";
 import type { PlotSearch } from "plotSearch/types";
 import type { InfoCheckBatchEditData } from "plotApplications/types";
-import { clearUnsavedChanges } from "contacts/helpers";
+import { clearUnsavedChanges } from "/src/contacts/helpers";
 import ConfirmationModal from "/src/components/modal/ConfirmationModal";
 import { getApplicantInfoCheckFormName, getApplicantInfoCheckItems, prepareApplicantInfoCheckForSubmission } from "/src/application/helpers";
 type OwnProps = {};

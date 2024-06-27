@@ -10,7 +10,7 @@ import isNumber from "lodash/isNumber";
 import { toastr } from "react-redux-toastr";
 import ToastrIcons from "/src/components/toastr/ToastrIcons";
 import { PAIKKATIETOPALVELU_URL } from "util/constants";
-import { Breakpoints } from "foundation/enums";
+import { Breakpoints } from "/src/foundation/enums";
 import type { ApiResponse, Attributes, Methods } from "types";
 import type { UsersPermissions } from "usersPermissions/types";
 

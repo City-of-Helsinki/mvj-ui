@@ -8,7 +8,7 @@ import LitigantBillingPerson from "./LitigantBillingPerson";
 import LitigantItem from "./LitigantItem";
 import { receiveCollapseStates } from "landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
-import { getContactFullName } from "contacts/helpers";
+import { getContactFullName } from "/src/contacts/helpers";
 import { formatDateRange, isActive, isArchived } from "util/helpers";
 import { getCollapseStateByKey } from "landUseContract/selectors";
 type Props = {

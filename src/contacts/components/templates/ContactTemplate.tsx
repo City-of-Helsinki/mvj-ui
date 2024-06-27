@@ -7,11 +7,11 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import FormWrapper from "/src/components/form/FormWrapper";
 import FormWrapperLeft from "/src/components/form/FormWrapperLeft";
 import FormWrapperRight from "/src/components/form/FormWrapperRight";
-import { ContactFieldPaths, ContactFieldTitles } from "contacts/enums";
+import { ContactFieldPaths, ContactFieldTitles } from "/src/contacts/enums";
 import { getUiDataContactKey } from "uiData/helpers";
 import { getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes } from "contacts/selectors";
-import { ContactTypes } from "contacts/enums";
+import { getAttributes } from "/src/contacts/selectors";
+import { ContactTypes } from "/src/contacts/enums";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

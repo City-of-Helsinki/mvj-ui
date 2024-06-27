@@ -16,9 +16,9 @@ import SearchLabelColumn from "/src/components/search/SearchLabelColumn";
 import SearchInputColumn from "/src/components/search/SearchInputColumn";
 import SearchRow from "/src/components/search/SearchRow";
 import { FieldTypes, FormNames } from "enums";
-import { InfillDevelopmentCompensationLeaseDecisionsFieldPaths } from "infillDevelopment/enums";
+import { InfillDevelopmentCompensationLeaseDecisionsFieldPaths } from "/src/infillDevelopment/enums";
 import { getFieldOptions, getUrlParams } from "util/helpers";
-import { getAttributes as getInfillDevelopmentAttributes } from "infillDevelopment/selectors";
+import { getAttributes as getInfillDevelopmentAttributes } from "/src/infillDevelopment/selectors";
 import type { Attributes } from "types";
 type Props = {
   formValues: Record<string, any>;

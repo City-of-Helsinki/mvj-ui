@@ -15,7 +15,7 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { ConfirmationModalTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { Breakpoints } from "foundation/enums";
+import { Breakpoints } from "/src/foundation/enums";
 import { LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles } from "leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";

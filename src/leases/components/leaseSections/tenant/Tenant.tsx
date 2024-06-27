@@ -10,7 +10,7 @@ import TenantItem from "./TenantItem";
 import { receiveCollapseStates } from "leases/actions";
 import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths } from "leases/enums";
 import { FormNames, ViewModes } from "enums";
-import { getContactFullName } from "contacts/helpers";
+import { getContactFullName } from "/src/contacts/helpers";
 import { formatDateRange, isActive, isArchived, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes, getCollapseStateByKey } from "leases/selectors";
 import type { Attributes } from "types";

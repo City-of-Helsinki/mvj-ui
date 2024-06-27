@@ -1,6 +1,6 @@
 import get from "lodash/get";
-import { InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeaseDecisionsFieldPaths, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths } from "infillDevelopment/enums";
-import { InvoicePaymentsFieldPaths, InvoiceRowsFieldPaths } from "invoices/enums";
+import { InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeaseDecisionsFieldPaths, InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths } from "/src/infillDevelopment/enums";
+import { InvoicePaymentsFieldPaths, InvoiceRowsFieldPaths } from "/src/invoices/enums";
 import { LeaseAreasFieldPaths, LeaseAreaAddressesFieldPaths, LeaseBasisOfRentsFieldPaths, LeaseContractsFieldPaths, LeaseContractChangesFieldPaths, LeaseContractCollateralsFieldPaths, LeaseConstructabilityDescriptionsFieldPaths, LeaseDecisionsFieldPaths, LeaseDecisionConditionsFieldPaths, LeaseInspectionsFieldPaths, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths, LeaseRentsFieldPaths, LeaseRentContractRentsFieldPaths, LeaseRentDueDatesFieldPaths, LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentAdjustmentsFieldPaths, LeaseTenantsFieldPaths, LeaseTenantContactSetFieldPaths } from "leases/enums";
 import { getFieldAttributes } from "util/helpers";
 import type { Attributes } from "types";

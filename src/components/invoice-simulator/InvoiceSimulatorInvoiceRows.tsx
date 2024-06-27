@@ -4,7 +4,7 @@ import AmountWithVat from "/src/components/vat/AmountWithVat";
 import Divider from "/src/components/content/Divider";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
-import { getContactFullName } from "contacts/helpers";
+import { getContactFullName } from "/src/contacts/helpers";
 import { getLabelOfOption } from "util/helpers";
 type Props = {
   dueDate: string;

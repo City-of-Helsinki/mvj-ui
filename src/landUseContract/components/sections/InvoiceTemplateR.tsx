@@ -10,11 +10,11 @@ import InvoiceRows from "./forms/InvoiceRows";
 import ListItem from "/src/components/content/ListItem";
 import ListItems from "/src/components/content/ListItems";
 import SubTitle from "/src/components/content/SubTitle";
-import { InvoiceCreditInvoicesFieldPaths, InvoiceCreditInvoicesFieldTitles, InvoiceFieldPaths, InvoiceFieldTitles, InvoiceInterestInvoicesFieldPaths, InvoiceInterestInvoicesFieldTitles, InvoicePaymentsFieldPaths, InvoicePaymentsFieldTitles, InvoiceRowsFieldPaths, InvoiceType } from "invoices/enums";
+import { InvoiceCreditInvoicesFieldPaths, InvoiceCreditInvoicesFieldTitles, InvoiceFieldPaths, InvoiceFieldTitles, InvoiceInterestInvoicesFieldPaths, InvoiceInterestInvoicesFieldTitles, InvoicePaymentsFieldPaths, InvoicePaymentsFieldTitles, InvoiceRowsFieldPaths, InvoiceType } from "/src/invoices/enums";
 import { getUiDataInvoiceKey } from "uiData/helpers";
 import { formatDate, formatDateRange, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
-import { getContactFullName } from "contacts/helpers";
-import { getAttributes as getInvoiceAttributes } from "invoices/selectors";
+import { getContactFullName } from "/src/contacts/helpers";
+import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";
 import type { Attributes } from "types";
 type Props = {
   creditedInvoice: Record<string, any> | null | undefined;

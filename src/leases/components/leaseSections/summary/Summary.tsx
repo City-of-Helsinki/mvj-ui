@@ -19,7 +19,7 @@ import { receiveCollapseStates } from "leases/actions";
 import { FormNames, ViewModes } from "enums";
 import { LeaseContractsFieldPaths, LeaseFieldTitles, LeaseFieldPaths } from "leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getContactFullName } from "contacts/helpers";
+import { getContactFullName } from "/src/contacts/helpers";
 import { getContentLeaseSummary } from "leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, hasPermissions, isEmptyValue, isFieldAllowedToRead } from "util/helpers";

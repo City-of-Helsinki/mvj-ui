@@ -1,5 +1,5 @@
-import { isContactFormDirty } from "contacts/helpers";
-import { isInfillDevelopmentFormDirty } from "infillDevelopment/helpers";
+import { isContactFormDirty } from "/src/contacts/helpers";
+import { isInfillDevelopmentFormDirty } from "/src/infillDevelopment/helpers";
 import { isAnyLandUseContractFormDirty } from "landUseContract/helpers";
 import { isAnyLeaseFormDirty } from "leases/helpers";
 import { isRentBasisFormDirty } from "rentbasis/helpers";

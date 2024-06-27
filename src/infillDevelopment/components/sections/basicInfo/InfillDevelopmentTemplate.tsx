@@ -9,13 +9,13 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import GreenBox from "/src/components/content/GreenBox";
 import LeaseItem from "./LeaseItem";
 import SubTitle from "/src/components/content/SubTitle";
-import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationFieldTitles, InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeasesFieldTitles } from "infillDevelopment/enums";
+import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationFieldTitles, InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeasesFieldTitles } from "/src/infillDevelopment/enums";
 import { getUiDataInfillDevelopmentKey } from "uiData/helpers";
 import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "util/helpers";
 import { getUserFullName } from "users/helpers";
-import { getAttributes as getInfillDevelopmentAttributes } from "infillDevelopment/selectors";
+import { getAttributes as getInfillDevelopmentAttributes } from "/src/infillDevelopment/selectors";
 import type { Attributes } from "types";
-import type { InfillDevelopment } from "infillDevelopment/types";
+import type { InfillDevelopment } from "/src/infillDevelopment/types";
 type Props = {
   infillDevelopment: InfillDevelopment;
   infillDevelopmentAttributes: Attributes;

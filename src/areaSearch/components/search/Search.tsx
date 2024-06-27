@@ -21,7 +21,7 @@ import type { ApiResponse, Attributes } from "types";
 import { getAreaSearchList, getAttributes } from "/src/areaSearch/selectors";
 import SearchSubtitleLabel from "/src/components/search/SearchSubtitleLabel";
 import { AreaSearchFieldPaths } from "/src/areaSearch/enums";
-import { getIsFetching as getIsFetchingDistricts } from "district/selectors";
+import { getIsFetching as getIsFetchingDistricts } from "/src/district/selectors";
 type OwnProps = {
   isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;

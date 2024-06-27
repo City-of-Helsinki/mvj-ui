@@ -20,9 +20,9 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "sapInvoice/constants";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
-import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "invoices/enums";
-import { getContactFullName } from "contacts/helpers";
-import { formatReceivableTypesString } from "invoices/helpers";
+import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "/src/invoices/enums";
+import { getContactFullName } from "/src/contacts/helpers";
+import { formatReceivableTypesString } from "/src/invoices/helpers";
 import { getContentLeaseIdentifier } from "leases/helpers";
 import { getSapInvoices, mapSapInvoiceSearchFilters } from "sapInvoice/helpers";
 import { formatDate, formatNumber, getApiResponseCount, getApiResponseMaxPage, getFieldOptions, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "util/helpers";

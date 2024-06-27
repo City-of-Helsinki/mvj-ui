@@ -6,16 +6,16 @@ import AuthorizationError from "/src/components/authorization/AuthorizationError
 import IndexTable from "./IndexTable";
 import Loader from "/src/components/loader/Loader";
 import PageContainer from "/src/components/content/PageContainer";
-import { fetchIndexList } from "index/actions";
+import { fetchIndexList } from "/src/index/actions";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getContentYearlyIndexes } from "index/helpers";
+import { getContentYearlyIndexes } from "/src/index/helpers";
 import { hasPermissions, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
-import { getIndexList, getIsFetching } from "index/selectors";
+import { getIndexList, getIsFetching } from "/src/index/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
-import type { IndexList } from "index/types";
+import type { IndexList } from "/src/index/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {
   fetchIndexList: (...args: Array<any>) => any;

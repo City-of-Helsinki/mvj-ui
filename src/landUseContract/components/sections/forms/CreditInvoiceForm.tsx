@@ -9,7 +9,7 @@ import Button from "/src/components/button/Button";
 import CloseButton from "/src/components/button/CloseButton";
 import FormField from "/src/components/form/FormField";
 import WhiteBox from "/src/components/content/WhiteBox";
-import { receiveIsCreditClicked } from "invoices/actions";
+import { receiveIsCreditClicked } from "/src/invoices/actions";
 import { CreditInvoiceOptions, CreditInvoiceSetOptions } from "landUseContract/constants";
 import { FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";

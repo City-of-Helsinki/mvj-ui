@@ -9,15 +9,15 @@ import Button from "/src/components/button/Button";
 import CloseButton from "/src/components/button/CloseButton";
 import FormField from "/src/components/form/FormField";
 import WhiteBox from "/src/components/content/WhiteBox";
-import { receiveIsCreditClicked } from "invoices/actions";
+import { receiveIsCreditClicked } from "/src/invoices/actions";
 import { CreditInvoiceOptions, CreditInvoiceSetOptions } from "leases/constants";
 import { FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "invoices/enums";
+import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "/src/invoices/enums";
 import { CreditInvoiceOptions as CreditInvoiceOptionsEnum } from "leases/enums";
 import { getUiDataCreditInvoiceKey } from "uiData/helpers";
 import { addEmptyOption, getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToEdit, sortStringByKeyAsc } from "util/helpers";
-import { getAttributes as getInvoiceAttributes, getIsCreditClicked } from "invoices/selectors";
+import { getAttributes as getInvoiceAttributes, getIsCreditClicked } from "/src/invoices/selectors";
 import type { Attributes } from "types";
 type Props = {
   formValues: Record<string, any>;

@@ -6,7 +6,7 @@ import { RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes } fr
 import { getRentWarnings, getTenantRentShareWarnings, getTenantShareWarnings } from "leases/helpers";
 import { getAttributes as getLeaseAttributes } from "leases/selectors";
 import { dateGreaterOrEqual } from "/src/components/form/validations";
-import { isInvoiceBillingPeriodRequired } from "invoices/helpers";
+import { isInvoiceBillingPeriodRequired } from "/src/invoices/helpers";
 import { required } from "/src/components/form/validations";
 
 /** 

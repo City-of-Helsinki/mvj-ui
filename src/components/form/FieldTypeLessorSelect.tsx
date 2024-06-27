@@ -3,7 +3,7 @@ import debounce from "lodash/debounce";
 import AsyncSelect from "/src/components/form/AsyncSelect";
 import { getContentLessor } from "lessor/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
-import { fetchContacts } from "contacts/requestsAsync";
+import { fetchContacts } from "/src/contacts/requestsAsync";
 import type { UserServiceUnit } from "usersPermissions/types";
 type Props = {
   disabled?: boolean;

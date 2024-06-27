@@ -10,10 +10,10 @@ import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import Modal from "/src/components/modal/Modal";
 import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import { ButtonColors } from "/src/components/enums";
-import { fetchContractFilesById } from "contractFile/actions";
+import { fetchContractFilesById } from "/src/contractFile/actions";
 import createUrlWithoutVersionSuffix from "/src/api/createUrlWithoutVersionSuffix";
 import { humanReadableByteCount } from "util/helpers";
-import { getContractFilesById, getIsFetchingById } from "contractFile/selectors";
+import { getContractFilesById, getIsFetchingById } from "/src/contractFile/selectors";
 type Props = {
   contractId: number;
   fetchContractFilesById: (...args: Array<any>) => any;

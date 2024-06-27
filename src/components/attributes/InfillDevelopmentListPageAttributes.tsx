@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchInfillDevelopmentAttributes } from "infillDevelopment/actions";
-import { getAttributes as getInfillDevelopmentAttributes, getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttributes, getMethods as getInfillDevelopmentMethods } from "infillDevelopment/selectors";
+import { fetchAttributes as fetchInfillDevelopmentAttributes } from "/src/infillDevelopment/actions";
+import { getAttributes as getInfillDevelopmentAttributes, getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttributes, getMethods as getInfillDevelopmentMethods } from "/src/infillDevelopment/selectors";
 import type { Attributes, Methods } from "types";
 
 function InfillDevelopmentListPageAttributes(WrappedComponent: any) {

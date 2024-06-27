@@ -26,7 +26,7 @@ import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } fr
 import { getIsEditMode, getIsSaveClicked, getIsFormValidFlags, getCurrentAreaSearch, getIsFetchingCurrentAreaSearch } from "/src/areaSearch/selectors";
 import { showEditMode, receiveIsSaveClicked, hideEditMode, clearFormValidFlags, receiveFormValidFlags, fetchSingleAreaSearch, batchEditAreaSearchInfoChecks } from "/src/areaSearch/actions";
 import { getUrlParams, setPageTitle, isMethodAllowed, getSearchQuery, scrollToTopPage } from "util/helpers";
-import { clearUnsavedChanges } from "contacts/helpers";
+import { clearUnsavedChanges } from "/src/contacts/helpers";
 import ConfirmationModal from "/src/components/modal/ConfirmationModal";
 import AreaSearchApplication from "/src/areaSearch/components/AreaSearchApplication";
 import { withAreaSearchAttributes } from "/src/components/attributes/AreaSearchAttributes";

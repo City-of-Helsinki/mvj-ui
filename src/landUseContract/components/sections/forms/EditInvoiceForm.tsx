@@ -22,7 +22,7 @@ import { getRecipientOptionsFromLitigants } from "landUseContract/helpers";
 import { exportInvoiceToLaskeAndUpdateList } from "landUseInvoices/actions";
 import { InvoiceCreditInvoicesFieldPaths, InvoiceCreditInvoicesFieldTitles, InvoiceFieldPaths, InvoiceFieldTitles, InvoiceInterestInvoicesFieldPaths, InvoiceInterestInvoicesFieldTitles, InvoicePaymentsFieldPaths, InvoicePaymentsFieldTitles, InvoiceRowsFieldPaths, InvoiceType } from "landUseInvoices/enums";
 import { validateInvoiceForm } from "leases/formValidators";
-import { getContactFullName } from "contacts/helpers";
+import { getContactFullName } from "/src/contacts/helpers";
 import { isInvoiceBillingPeriodRequired } from "landUseInvoices/helpers";
 import { getUiDataInvoiceKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired, hasPermissions } from "util/helpers";

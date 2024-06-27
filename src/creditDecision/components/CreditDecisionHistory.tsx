@@ -6,13 +6,13 @@ import InfoIcon from "/src/components/icons/InfoIcon";
 import GreenBox from "/src/components/content/GreenBox";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
-import StatusText from "creditDecision/components/StatusText";
+import StatusText from "/src/creditDecision/components/StatusText";
 import WhiteBox from "/src/components/content/WhiteBox";
-import { CreditDecisionText } from "creditDecision/enums";
+import { CreditDecisionText } from "/src/creditDecision/enums";
 import { formatDate } from "util/helpers";
 import { getHoursAndMinutes } from "util/date";
-import { fetchHistoryByBusinessId, fetchHistoryByContactId } from "creditDecision/actions";
-import { getHistoryByBusinessId, getIsFetchingHistoryByBusinessId, getHistoryByContactId, getIsFetchingHistoryByContactId } from "creditDecision/selectors";
+import { fetchHistoryByBusinessId, fetchHistoryByContactId } from "/src/creditDecision/actions";
+import { getHistoryByBusinessId, getIsFetchingHistoryByBusinessId, getHistoryByContactId, getIsFetchingHistoryByContactId } from "/src/creditDecision/selectors";
 type Props = {
   businessId?: string;
   contactId?: string;

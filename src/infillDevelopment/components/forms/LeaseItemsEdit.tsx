@@ -12,7 +12,7 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { hasPermissions } from "util/helpers";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
-import type { InfillDevelopment } from "infillDevelopment/types";
+import type { InfillDevelopment } from "/src/infillDevelopment/types";
 type Props = {
   fields: any;
   infillDevelopment: InfillDevelopment;

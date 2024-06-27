@@ -19,19 +19,19 @@ import ShowMore from "/src/components/showMore/ShowMore";
 import SortableTable from "/src/components/table/SortableTable";
 import TableFilters from "/src/components/table/TableFilters";
 import TableWrapper from "/src/components/table/TableWrapper";
-import { createInvoiceNoteAndFetchList, fetchInvoiceNoteList, hideCreateInvoiceNoteModal, receiveInvoiceNoteList, showCreateInvoiceNoteModal } from "invoiceNote/actions";
+import { createInvoiceNoteAndFetchList, fetchInvoiceNoteList, hideCreateInvoiceNoteModal, receiveInvoiceNoteList, showCreateInvoiceNoteModal } from "/src/invoiceNote/actions";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
-import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "invoiceNote/enums";
+import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "/src/invoiceNote/enums";
 import { getContentLeaseIdentifier } from "leases/helpers";
 import { formatDate, getApiResponseCount, getApiResponseResults, getApiResponseMaxPage, getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
-import { getInvoiceNoteList, getIsCreateModalOpen, getIsFetching } from "invoiceNote/selectors";
+import { getInvoiceNoteList, getIsCreateModalOpen, getIsFetching } from "/src/invoiceNote/selectors";
 import { withInvoiceNoteAttributes } from "/src/components/attributes/InvoiceNoteAttributes";
 import { getUserActiveServiceUnit } from "usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { InvoiceNoteList } from "invoiceNote/types";
+import type { InvoiceNoteList } from "/src/invoiceNote/types";
 import type { UserServiceUnit } from "usersPermissions/types";
 
 const getColumns = (invoiceNoteAttributes: Attributes) => {
