@@ -4,7 +4,7 @@ import AccordionIcon from "/src/components/icons/AccordionIcon";
 import AuditLogTableItemChange from "./AuditLogTableItemChange";
 import { formatDate } from "util/helpers";
 import { getAuditLogActionTypeInFinnish } from "/src/auditLog/helpers";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 type Props = {
   item: Record<string, any>;
 };

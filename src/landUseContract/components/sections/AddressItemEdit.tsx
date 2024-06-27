@@ -8,9 +8,9 @@ import Authorization from "/src/components/authorization/Authorization";
 import FormField from "/src/components/form/FormField";
 import { FieldTypes, FormNames } from "enums";
 import RemoveButton from "/src/components/form/RemoveButton";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import { isFieldAllowedToRead, isEmptyValue } from "util/helpers";
 type Props = {
   attributes: Attributes;

@@ -14,13 +14,13 @@ import FormField from "/src/components/form/FormField";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { FormNames } from "enums";
 import { LeasePlanUnitsFieldPaths, LeasePlanUnitsFieldTitles } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, getSearchQuery, getUrlParams, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   attributes: Attributes;
   field: string;

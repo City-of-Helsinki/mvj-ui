@@ -17,7 +17,7 @@ import Loader from "/src/components/loader/Loader";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import FormText from "/src/components/form/FormText";
 import { AreaSearchFieldTitles } from "/src/areaSearch/enums";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import SubTitle from "/src/components/content/SubTitle";
 import FileDownloadLink from "/src/components/file/FileDownloadLink";
 import { getAreaFromGeoJSON } from "util/map";

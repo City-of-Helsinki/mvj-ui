@@ -12,15 +12,15 @@ import FormText from "/src/components/form/FormText";
 import { receiveFormValidFlags } from "/src/leases/actions";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { validateContractForm } from "/src/leases/formValidators";
 import { getContentContracts, getDecisionOptions } from "/src/leases/helpers";
 import { hasPermissions } from "util/helpers";
 import { getCurrentLease } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type ContractsProps = {
   decisionOptions: Array<Record<string, any>>;
   fields: any;

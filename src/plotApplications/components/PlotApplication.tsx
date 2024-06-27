@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { orderBy } from "lodash";
 import Authorization from "/src/components/authorization/Authorization";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { FormNames, ViewModes } from "enums";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
@@ -26,10 +26,10 @@ import { APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER } from "/src/ap
 import type { Attributes } from "types";
 import type { PlotApplication as PlotApplicationType } from "/src/plotApplications/types";
 import type { SectionExtraComponentProps } from "/src/application/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import { PlotApplicationOpeningRecordLabels, PlotApplicationOpeningRecordPaths } from "/src/plotApplications/enums";
 import { getHoursAndMinutes } from "util/date";
-import { getContentUser } from "users/helpers";
+import { getContentUser } from "/src/users/helpers";
 type OwnProps = {};
 type Props = {
   usersPermissions: UsersPermissionsType;

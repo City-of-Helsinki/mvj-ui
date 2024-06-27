@@ -12,11 +12,11 @@ import { getApiResponseResults, getUrlParams } from "util/helpers";
 import { getBoundsFromBBox, getBoundsFromFeatures } from "util/map";
 import { getAreaNoteList } from "/src/areaNote/selectors";
 import { getApplicationsByBBox } from "/src/plotApplications/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { LeafletGeoJson } from "types";
 import type { AreaNoteList } from "/src/areaNote/types";
 import type { PlotApplicationsList } from "/src/plotApplications/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 
 const getMapBounds = () => {
   const {

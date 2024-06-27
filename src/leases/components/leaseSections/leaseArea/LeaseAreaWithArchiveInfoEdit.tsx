@@ -16,15 +16,15 @@ import LeaseAreaEdit from "./LeaseAreaEdit";
 import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
 import { LeaseAreasFieldPaths, LeaseAreasFieldTitles, LeaseAreaAddressesFieldPaths } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getFullAddress, getLeaseAreaById } from "/src/leases/helpers";
 import { formatDate, formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAttributes, getCollapseStateByKey, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   archivedAt: string | null | undefined;
   areaCollapseState: boolean;

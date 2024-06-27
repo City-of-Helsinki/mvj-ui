@@ -20,10 +20,10 @@ import { ContactFieldPaths, ContactFieldTitles, ContactTypes } from "/src/contac
 import { getUiDataContactKey } from "/src/uiData/helpers";
 import { getFieldAttributes, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes, getInitialContactFormValues, getIsContactFormValid, getIsSaveClicked } from "/src/contacts/selectors";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { RootState } from "/src/root/types";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {
   attributes: Attributes;
   change: (...args: Array<any>) => any;

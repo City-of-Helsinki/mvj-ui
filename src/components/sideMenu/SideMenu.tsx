@@ -12,12 +12,12 @@ import SubMenu from "./SubMenu";
 import { ActionTypes, AppConsumer } from "/src/app/AppContext";
 import { ConfirmationModalTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { hasAnyPageDirtyForms } from "util/forms";
 import { hasPermissions } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { withUsersPermissions } from "/src/components/attributes/UsersPermissions";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type OwnProps = {
   isOpen: boolean;
   onLinkClick: (...args: Array<any>) => any;

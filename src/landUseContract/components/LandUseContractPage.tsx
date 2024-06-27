@@ -44,12 +44,12 @@ import { addLitigantsFormValuesToPayload, clearUnsavedChanges, getContentLandUse
 import { getSearchQuery, getUrlParams, isArchived, scrollToTopPage, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getCurrentLandUseContract, getIsEditMode, getIsFormValidById, getIsFormValidFlags, getIsSaveClicked, getIsFetching } from "/src/landUseContract/selectors";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
 import { withLandUseContractAttributes } from "/src/components/attributes/LandUseContractAttributes";
 import type { Attributes } from "types";
 import type { LandUseContract } from "/src/landUseContract/types";
-import type { UsersPermissions } from "usersPermissions/types";
+import type { UsersPermissions } from "/src/usersPermissions/types";
 import type { InvoiceList } from "/src/landUseInvoices/types";
 type Props = {
   basicInformationFormValues: Record<string, any>;

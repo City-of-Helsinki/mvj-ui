@@ -5,12 +5,12 @@ import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import Button from "/src/components/button/Button";
 import { createPlotApplicationOpeningRecord } from "/src/plotApplications/actions";
 import { getLoggedInUser } from "/src/auth/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
-import { UsersPermissions } from "usersPermissions/enums";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getHoursAndMinutes } from "util/date";
 import { formatDate, hasPermissions } from "util/helpers";
 import type { RootState } from "/src/root/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;

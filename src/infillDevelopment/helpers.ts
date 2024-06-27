@@ -2,7 +2,7 @@ import get from "lodash/get";
 import { isDirty } from "redux-form";
 import { FormNames, TableSortOrder } from "enums";
 import { getContentLeaseIdentifier, getContentLeaseOption } from "/src/leases/helpers";
-import { getContentUser } from "users/helpers";
+import { getContentUser } from "/src/users/helpers";
 import { convertStrToDecimalNumber, getApiResponseResults } from "util/helpers";
 import { getIsEditMode } from "/src/infillDevelopment/selectors";
 import { removeSessionStorageItem } from "util/storage";

@@ -3,7 +3,7 @@ import isEmpty from "lodash/isEmpty";
 import { isDirty } from "redux-form";
 import { FormNames } from "enums";
 import { LitigantContactType } from "./enums";
-import { getContentUser } from "users/helpers";
+import { getContentUser } from "/src/users/helpers";
 import { fixedLengthNumber, getApiResponseResults, isArchived, sortStringByKeyDesc, addEmptyOption, formatDate, convertStrToDecimalNumber } from "util/helpers";
 import { getIsEditMode } from "/src/landUseContract/selectors";
 import { removeSessionStorageItem } from "util/storage";

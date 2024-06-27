@@ -15,13 +15,13 @@ import GreenBox from "/src/components/content/GreenBox";
 import { ConfirmationModalTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { BasisOfRentManagementSubventionsFieldPaths, LeaseBasisOfRentsFieldPaths, calculatorTypeOptions } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { calculateBasisOfRentTotalDiscountedInitialYearRent } from "/src/leases/helpers";
 import { getFieldOptions, hasPermissions, isEmptyValue } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   addButtonClass?: string;
   archived: boolean;

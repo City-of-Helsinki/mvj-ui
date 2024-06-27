@@ -19,7 +19,7 @@ import TabContent from "/src/components/tabs/TabContent";
 import TabPane from "/src/components/tabs/TabPane";
 import Tabs from "/src/components/tabs/Tabs";
 import { getRouteById, Routes } from "/src/root/routes";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { getIsEditMode, getCurrentPlotSearch, getIsSaveClicked, getIsFormValidById, getIsFormValidFlags, getIsFetching, getForm, getIsFetchingAnyPlanUnits, getIsFetchingPlanUnitAttributes, areTargetsAllowedToHaveType, isLockedForModifications, isFetchingStages, getIsFetchingSubtypes, getIsFetchingRelatedApplications } from "/src/plotSearch/selectors";
@@ -41,7 +41,7 @@ import ReservationIdentifiersModal from "/src/plotSearch/components/reservationI
 import DirectReservationLinkModal from "/src/plotSearch/components/directReservationLinkModal/DirectReservationLinkModal";
 import { fetchAttributes as fetchApplicationAttributes } from "/src/application/actions";
 import { getIsFetchingAttributes as getIsFetchingApplicationAttributes } from "/src/application/selectors";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import type { Attributes, Methods as MethodType } from "types";
 import type { PlotSearch } from "/src/plotSearch/types";
 import type { Form } from "/src/application/types";

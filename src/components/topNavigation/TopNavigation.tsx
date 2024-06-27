@@ -13,7 +13,7 @@ import { hasAnyPageDirtyForms } from "util/forms";
 import { getSearchQuery, getUrlParams } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 
-import type { UserGroups, UserServiceUnit, UserServiceUnits } from "usersPermissions/types";
+import type { UserGroups, UserServiceUnit, UserServiceUnits } from "/src/usersPermissions/types";
 
 type Props = {
   history: Record<string, any>;

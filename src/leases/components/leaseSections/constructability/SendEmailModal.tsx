@@ -6,9 +6,9 @@ import FormText from "/src/components/form/FormText";
 import Modal from "/src/components/modal/Modal";
 import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import TextAreaInput from "/src/components/inputs/TextAreaInput";
-import { fetchUsers } from "users/requestsAsync";
+import { fetchUsers } from "/src/users/requestsAsync";
 import { ButtonColors } from "/src/components/enums";
-import { getUserOptions } from "users/helpers";
+import { getUserOptions } from "/src/users/helpers";
 import { sortStringByKeyAsc } from "util/helpers";
 type FilterProps = {
   available: string;

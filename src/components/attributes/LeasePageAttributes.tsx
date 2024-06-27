@@ -7,9 +7,9 @@ import { fetchAttributes as fetchLeaseAttributes } from "/src/leases/actions";
 import { getAttributes as getCommentAttributes, getIsFetchingAttributes as getIsFetchingCommentAttributes, getMethods as getCommentMethods } from "/src/comments/selectors";
 import { getAttributes as getInvoiceAttributes, getIsFetchingAttributes as getIsFetchingInvoiceAttributes, getMethods as getInvoiceMethods } from "/src/invoices/selectors";
 import { getAttributes as getLeaseAttributes, getIsFetchingAttributes as getIsFetchingLeaseAttributes, getMethods as getLeaseMethods } from "/src/leases/selectors";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes, Methods } from "types";
-import type { UsersPermissions } from "usersPermissions/types";
+import type { UsersPermissions } from "/src/usersPermissions/types";
 
 function LeasePageAttributes(WrappedComponent: any) {
   type Props = {

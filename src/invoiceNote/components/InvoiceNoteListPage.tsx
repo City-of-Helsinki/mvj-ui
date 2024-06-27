@@ -29,10 +29,10 @@ import { formatDate, getApiResponseCount, getApiResponseResults, getApiResponseM
 import { getRouteById, Routes } from "/src/root/routes";
 import { getInvoiceNoteList, getIsCreateModalOpen, getIsFetching } from "/src/invoiceNote/selectors";
 import { withInvoiceNoteAttributes } from "/src/components/attributes/InvoiceNoteAttributes";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { InvoiceNoteList } from "/src/invoiceNote/types";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 
 const getColumns = (invoiceNoteAttributes: Attributes) => {
   const columns = [];

@@ -14,11 +14,11 @@ import Search from "/src/tradeRegister/components/Search";
 import TradeRegisterTemplate from "/src/tradeRegister/components/TradeRegisterTemplate";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { FormNames, PermissionMissingTexts } from "enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { hasPermissions, getSearchQuery, getUrlParams, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   history: Record<string, any>;
   initialize: (...args: Array<any>) => any;

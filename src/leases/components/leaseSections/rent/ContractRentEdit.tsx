@@ -13,14 +13,14 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { FormNames } from "enums";
 import { ContractRentPeriods, LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, RentTypes } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   amount: string;
   period: string;

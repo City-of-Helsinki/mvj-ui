@@ -21,14 +21,14 @@ import { initializeContactForm, receiveContactModalSettings, receiveIsSaveClicke
 import { receiveCollapseStates } from "/src/leases/actions";
 import { FieldTypes, FormNames, Methods, ViewModes } from "enums";
 import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, TenantContactType } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDateRange, hasPermissions, isActive, isArchived, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
 import { getMethods as getContactMethods } from "/src/contacts/selectors";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {
   attributes: Attributes;
   collapseState: boolean;

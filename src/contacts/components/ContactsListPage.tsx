@@ -26,11 +26,11 @@ import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults, getF
 import { getRouteById, Routes } from "/src/root/routes";
 import { getContactList, getIsFetching } from "../selectors";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { ContactList } from "../types";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { RootState } from "/src/root/types";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {
   contactAttributes: Attributes;
   contactList: ContactList;

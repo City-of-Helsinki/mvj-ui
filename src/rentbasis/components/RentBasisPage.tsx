@@ -35,14 +35,14 @@ import { clearUnsavedChanges, getPayloadRentBasis, getCopyOfRentBasis, getConten
 import { getUiDataRentBasisKey } from "/src/uiData/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIsEditMode, getIsFetching, getIsFormValid, getIsSaveClicked, getIsSaving, getRentBasis } from "/src/rentbasis/selectors";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
 import { withRentBasisAttributes } from "/src/components/attributes/RentBasisAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { RentBasis } from "/src/rentbasis/types";
 import type { RootState } from "/src/root/types";
-import type { UsersPermissions } from "usersPermissions/types";
+import type { UsersPermissions } from "/src/usersPermissions/types";
 type Props = {
   change: (...args: Array<any>) => any;
   editedRentBasis: Record<string, any>;

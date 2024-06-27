@@ -21,10 +21,10 @@ import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
 import { getDistrictsByMunicipality, getIsFetching as getIsFetchingDistricts } from "/src/district/selectors";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { referenceNumber } from "/src/components/form/validations";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { DistrictList } from "/src/district/types";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 type OwnProps = {
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;

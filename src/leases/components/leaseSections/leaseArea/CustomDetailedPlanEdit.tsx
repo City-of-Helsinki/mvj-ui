@@ -19,11 +19,11 @@ import { ConfirmationModalTexts } from "enums";
 import { FormNames } from "enums";
 import { LeaseAreaCustomDetailedPlanFieldPaths, LeaseAreaCustomDetailedPlanFieldTitles, LeaseAreaUsageDistributionFieldPaths, LeaseAreaUsageDistributionFieldTitles, LeaseAreaCustomDetailedPlanInfoLinksFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldTitles } from "/src/leases/enums";
 import type { Attributes } from "types";
-import { UsersPermissions } from "usersPermissions/enums";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import { UsersPermissions } from "/src/usersPermissions/enums";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getAttributes } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
 type UsageDistributionsProps = {
   attributes: Attributes;

@@ -9,7 +9,7 @@ import FormText from "/src/components/form/FormText";
 import ListItem from "/src/components/content/ListItem";
 import { LeaseConstructabilityDescriptionsFieldPaths } from "/src/leases/enums";
 import { formatDate, getReferenceNumberLink, isFieldAllowedToRead } from "util/helpers";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {

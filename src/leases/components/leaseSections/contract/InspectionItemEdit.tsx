@@ -17,16 +17,16 @@ import { createLeaseInspectionAttachment, deleteLeaseInspectionAttachment } from
 import { ConfirmationModalTexts, FieldTypes, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { LeaseInspectionAttachmentsFieldPaths, LeaseInspectionAttachmentsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentInspections } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { findItemById, formatDate, getFieldAttributes, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease, getIsSaveClicked } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   createLeaseInspectionAttachment: (...args: Array<any>) => any;
   currentLease: Lease;

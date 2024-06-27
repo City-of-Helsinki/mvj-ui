@@ -21,7 +21,7 @@ import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRo
 import { LeaseCreateChargeFieldPaths, LeaseCreateChargeRowsFieldPaths } from "/src/leaseCreateCharge/enums";
 import { RecipientOptions } from "/src/leases/enums";
 import { receivableTypesFromAttributes } from "/src/leaseCreateCharge/helpers";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { validateInvoiceForm } from "/src/leases/formValidators";
 import { isInvoiceBillingPeriodRequired } from "/src/invoices/helpers";
 import { getInvoiceRecipientOptions } from "/src/leases/helpers";
@@ -30,10 +30,10 @@ import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldRequir
 import { getAttributes as getInvoiceAttributes, getIsCreateClicked } from "/src/invoices/selectors";
 import { getCurrentLease } from "/src/leases/selectors";
 import { getAttributes as getLeaseCreateCrargeAttributes, getReceivableTypes } from "/src/leaseCreateCharge/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import Loader from "/src/components/loader/Loader";
 type InvoiceRowsProps = {
   fields: any;

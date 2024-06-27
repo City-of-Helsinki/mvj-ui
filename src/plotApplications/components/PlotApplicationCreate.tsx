@@ -9,7 +9,7 @@ import Authorization from "/src/components/authorization/Authorization";
 import { FormNames, ViewModes } from "enums";
 import Collapse from "/src/components/collapse/Collapse";
 import Divider from "/src/components/content/Divider";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import Title from "/src/components/content/Title";
 import FormField from "/src/components/form/FormField";
 import { receiveCollapseStates, receiveIsSaveClicked } from "/src/plotApplications/actions";
@@ -27,7 +27,7 @@ import { TARGET_SECTION_IDENTIFIER } from "/src/application/constants";
 import type { Attributes } from "types";
 import type { PlotSearchList } from "/src/plotSearch/types";
 import type { PlotApplication } from "/src/plotApplications/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import { validateApplicationForm } from "/src/application/formValidation";
 type OwnProps = {};
 type Props = OwnProps & {

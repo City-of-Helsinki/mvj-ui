@@ -17,7 +17,7 @@ import FormText from "/src/components/form/FormText";
 import FileDownloadLink from "/src/components/file/FileDownloadLink";
 import type { RootState } from "/src/root/types";
 import type { Attributes } from "types";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { ConfirmationModalTexts, FieldTypes } from "enums";
 import { ActionTypes, AppConsumer } from "/src/app/AppContext";
 import PlotApplicationInfoCheckCollapse from "/src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";

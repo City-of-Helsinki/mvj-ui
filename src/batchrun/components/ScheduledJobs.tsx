@@ -12,14 +12,14 @@ import SortableTable from "/src/components/table/SortableTable";
 import { fetchScheduledJobs } from "/src/batchrun/actions";
 import { PermissionMissingTexts } from "enums";
 import { ScheduledJobFieldPaths, ScheduledJobFieldTitles, ScheduledJobJobFieldPaths, ScheduledJobJobFieldTitles } from "/src/batchrun/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getApiResponseResults, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getIsFetchingScheduledJobs, getScheduledJobs } from "/src/batchrun/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { withBatchrunScheduledJobTabAttributes } from "/src/components/attributes/BatchrunScheduledJobsTabAttributes";
 import type { Attributes } from "types";
 import type { ScheduledJobs as ScheduledJobsType } from "/src/batchrun/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   batchrunScheduledJobAttributes: Attributes;
   fetchScheduledJobs: (...args: Array<any>) => any;

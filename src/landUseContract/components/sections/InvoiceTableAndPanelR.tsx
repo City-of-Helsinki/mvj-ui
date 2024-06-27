@@ -14,16 +14,16 @@ import { clearPatchedInvoice, patchInvoice } from "/src/landUseInvoices/actions"
 import { FormNames, KeyCodes, TableSortOrder } from "enums";
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles, InvoiceType } from "/src/landUseInvoices/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { formatReceivableTypesString, getContentIncoive, getContentInvoices, getPayloadEditInvoice, isInvoiceOverdue } from "/src/landUseInvoices/helpers";
 import { findReactById, formatDate, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc } from "util/helpers";
 import { getAttributes as getInvoiceAttributes, getPatchedInvoice } from "/src/landUseInvoices/selectors";
 import { getInvoicesByLandUseContractId } from "/src/landUseInvoices/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Invoice, InvoiceList } from "/src/invoices/types";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   clearPatchedInvoice: (...args: Array<any>) => any;
   initialize: (...args: Array<any>) => any;

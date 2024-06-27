@@ -17,14 +17,14 @@ import { ConfirmationModalTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { Breakpoints } from "/src/foundation/enums";
 import { LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   fields: any;
   isSaveClicked: boolean;

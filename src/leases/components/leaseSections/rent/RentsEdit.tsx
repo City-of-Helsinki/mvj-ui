@@ -22,16 +22,16 @@ import { receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete } fro
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors, RentCalculatorFieldPaths, RentCalculatorFieldTitles } from "/src/components/enums";
 import { LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { validateRentForm, warnRentForm } from "/src/leases/formValidators";
 import { getContentRents } from "/src/leases/helpers";
 import { getUiDataLeaseKey, getUiDataRentCalculatorKey } from "/src/uiData/helpers";
 import { hasPermissions, isArchived, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type WarningsProps = {
   leaseAttributes: Attributes;
   meta: Record<string, any>;

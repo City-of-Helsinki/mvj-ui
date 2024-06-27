@@ -8,12 +8,12 @@ import Loader from "/src/components/loader/Loader";
 import PageContainer from "/src/components/content/PageContainer";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { PermissionMissingTexts } from "enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { hasPermissions, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import { withLeaseAttributes } from "/src/components/attributes/LeaseAttributes";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   isFetchingLeaseAttributes: boolean;
   isFetchingUsersPermissions: boolean;

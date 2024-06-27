@@ -5,9 +5,9 @@ import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import FormField from "/src/components/form/FormField";
 import RemoveButton from "/src/components/form/RemoveButton";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   attributes: Attributes;
   disabled: boolean;

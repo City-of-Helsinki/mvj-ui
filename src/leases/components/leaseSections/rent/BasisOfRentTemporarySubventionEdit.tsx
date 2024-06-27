@@ -8,13 +8,13 @@ import FormField from "/src/components/form/FormField";
 import FormText from "/src/components/form/FormText";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { BasisOfRentTemporarySubventionsFieldPaths, BasisOfRentTemporarySubventionsFieldTitles } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { calculateBasisOfRentSubventionAmountCumulative } from "/src/leases/helpers";
 import { formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   disabled: boolean;
   field: any;

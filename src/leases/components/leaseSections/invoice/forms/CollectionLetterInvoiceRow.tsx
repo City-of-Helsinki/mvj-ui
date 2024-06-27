@@ -12,11 +12,11 @@ import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { fetchPenaltyInterestByInvoice } from "/src/penaltyInterest/actions";
 import { FormNames } from "enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { convertStrToDecimalNumber, formatNumber, hasPermissions } from "util/helpers";
 import { getIsFetchingByInvoice, getPenaltyInterestByInvoice } from "/src/penaltyInterest/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   field: any;
   collectionCharge: string;

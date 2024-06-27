@@ -16,7 +16,7 @@ import TabContent from "/src/components/tabs/TabContent";
 import TabPane from "/src/components/tabs/TabPane";
 import Tabs from "/src/components/tabs/Tabs";
 import ContentContainer from "/src/components/content/ContentContainer";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import PageNavigationWrapper from "/src/components/content/PageNavigationWrapper";
 import ControlButtonBar from "/src/components/controlButtons/ControlButtonBar";
 import ControlButtons from "/src/components/controlButtons/ControlButtons";
@@ -39,7 +39,7 @@ import { getApplicantInfoCheckFormName, getApplicantInfoCheckItems, prepareAppli
 import { prepareAreaSearchForSubmission } from "/src/areaSearch/helpers";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { InfoCheckBatchEditData } from "/src/areaSearch/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import SingleAreaSearchMap from "/src/areaSearch/components/map/SingleAreaSearchMap";
 type OwnProps = {};
 type Props = ContextRouter & OwnProps & {

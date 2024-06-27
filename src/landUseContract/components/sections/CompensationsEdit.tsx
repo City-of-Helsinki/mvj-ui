@@ -25,7 +25,7 @@ import { convertStrToDecimalNumber, formatNumber } from "util/helpers";
 import { getAttributes, getIsSaveClicked } from "/src/landUseContract/selectors";
 import UnitPricesUsedInCalculations from "./UnitPricesUsedInCalculations";
 import type { Attributes, Methods as MethodsType } from "types";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { ConfirmationModalTexts, Methods } from "enums";
 import { formatDate, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
 import FileDownloadLink from "/src/components/file/FileDownloadLink";

@@ -3,7 +3,7 @@ import isEmpty from "lodash/isEmpty";
 import { kebabCase } from "lodash/string";
 import { cloneDeep } from "lodash/lang";
 import { formValueSelector } from "redux-form";
-import { getContentUser } from "users/helpers";
+import { getContentUser } from "/src/users/helpers";
 import { removeSessionStorageItem } from "util/storage";
 import { FormNames } from "enums";
 import { formatDate, getApiResponseResults } from "util/helpers";

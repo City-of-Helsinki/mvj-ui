@@ -20,11 +20,11 @@ import { getFieldOptions, isFieldAllowedToEdit, isMethodAllowed, sortStringByKey
 import { getContentComments } from "/src/comments/helpers";
 import { getAttributes as getCommentAttributes, getCommentsByLease, getEditModeFlags, getMethods as getCommentMethods } from "/src/comments/selectors";
 import { getCurrentLease } from "/src/leases/selectors";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { CommentList } from "/src/comments/types";
 import type { Lease } from "/src/leases/types";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {
   clearEditFlags: (...args: Array<any>) => any;
   commentAttributes: Attributes;

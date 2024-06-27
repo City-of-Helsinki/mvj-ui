@@ -45,7 +45,7 @@ import { getRouteById, Routes } from "/src/root/routes";
 import { getAreaNoteList, getMethods as getAreaNoteMethods } from "/src/areaNote/selectors";
 import { getIsFetching, getIsFetchingByBBox, getLeasesList } from "/src/leases/selectors";
 import { getLessorList } from "/src/lessor/selectors";
-import { getUsersPermissions, getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUsersPermissions, getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import { withLeaseAttributes } from "/src/components/attributes/LeaseAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
 import { getServiceUnits, getIsFetching as getIsFetchingServiceUnits } from "/src/serviceUnits/selectors";
@@ -54,7 +54,7 @@ import type { AreaNoteList } from "/src/areaNote/types";
 import type { LeaseList } from "/src/leases/types";
 import type { LessorList } from "/src/lessor/types";
 import type { ServiceUnits } from "/src/serviceUnits/types";
-import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "/src/usersPermissions/types";
 const VisualizationTypes = {
   MAP: 'map',
   TABLE: 'table'

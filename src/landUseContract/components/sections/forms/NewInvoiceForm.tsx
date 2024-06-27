@@ -18,10 +18,10 @@ import SubTitle from "/src/components/content/SubTitle";
 import { validateLandUseInvoiceForm } from "/src/landUseContract/formValidators";
 import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
 import { getAttributes as getInvoiceAttributes, getIsCreateClicked } from "/src/landUseInvoices/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { getRecipientOptionsFromLitigants } from "/src/landUseContract/helpers";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import { ActionTypes, AppConsumer } from "/src/app/AppContext";
 import AddButtonThird from "/src/components/form/AddButtonThird";
 type InvoiceRowsProps = {

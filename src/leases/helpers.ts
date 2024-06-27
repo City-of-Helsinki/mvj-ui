@@ -13,7 +13,7 @@ import { LeaseAreaAttachmentTypes } from "/src/leaseAreaAttachment/enums";
 import { getContactFullName, getContentContact } from "/src/contacts/helpers";
 import { getContentLessor } from "/src/lessor/helpers";
 import { getContentPropertyIdentifiers } from "/src/rentbasis/helpers";
-import { getContentUser } from "users/helpers";
+import { getContentUser } from "/src/users/helpers";
 import { addEmptyOption, convertStrToDecimalNumber, fixedLengthNumber, formatDate, formatDateRange, getApiResponseResults, getFieldOptions, getLabelOfOption, isDecimalNumberStr, isEmptyValue, isActive, isActiveOrFuture, isArchived, sortStringAsc, sortStringByKeyAsc, sortStringByKeyDesc } from "util/helpers";
 import { getCoordinatesOfGeometry } from "util/map";
 import { getIsEditMode } from "./selectors";

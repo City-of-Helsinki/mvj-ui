@@ -17,7 +17,7 @@ import { LeaseAreaAddressesFieldPaths, LeaseAreaAttachmentsFieldPaths, LeaseArea
 import { getFullAddress } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, formatNumber, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import type { Attributes } from "types";
 const formName = FormNames.LEASE_CONSTRUCTABILITY;

@@ -4,7 +4,7 @@ import AsyncSelect from "/src/components/form/AsyncSelect";
 import { getContentLeaseOption } from "/src/leases/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
 import { fetchLeases } from "/src/leases/requestsAsync";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {
   disabled?: boolean;
   displayError: boolean;

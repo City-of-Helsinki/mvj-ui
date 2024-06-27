@@ -11,7 +11,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import WhiteBox from "/src/components/content/WhiteBox";
 import { getContentCompensations } from "/src/landUseContract/helpers";
 import { formatNumber } from "util/helpers";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
 import { LandUseAgreementAttachmentFieldPaths } from "/src/landUseAgreementAttachment/enums";
 import type { LandUseContract } from "/src/landUseContract/types";

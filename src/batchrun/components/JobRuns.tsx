@@ -17,14 +17,14 @@ import { fetchJobRuns } from "/src/batchrun/actions";
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
 import { PermissionMissingTexts } from "enums";
 import { JobRunFieldPaths, JobRunFieldTitles, JobRunJobFieldPaths, JobRunJobFieldTitles } from "/src/batchrun/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { formatDate, getApiResponseCount, getApiResponseMaxPage, getApiResponseResults, hasPermissions, isFieldAllowedToRead } from "util/helpers";
 import { getIsFetchingJobRuns, getJobRunAttributes, getJobRuns } from "/src/batchrun/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { withBatchrunJobRunTabAttributes } from "/src/components/attributes/BatchrunJobRunsTabAttributes";
 import type { Attributes } from "types";
 import type { JobRuns as JobRunsType } from "/src/batchrun/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   fetchJobRuns: (...args: Array<any>) => any;
   isFetchingBatchrunJobRunsTabAttributes: boolean;

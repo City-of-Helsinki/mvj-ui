@@ -29,7 +29,7 @@ import { editContact, fetchSingleContact, hideEditMode, initializeContactForm, r
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } from "enums";
 import { ContactFieldPaths, ContactFieldTitles, ContactTypes } from "/src/contacts/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { clearUnsavedChanges, getContactFullName } from "/src/contacts/helpers";
 import { getUiDataContactKey } from "/src/uiData/helpers";
 import { hasPermissions, getSearchQuery, getUrlParams, isMethodAllowed, scrollToTopPage, setPageTitle } from "util/helpers";
@@ -38,11 +38,11 @@ import { getCurrentContact, getIsContactFormValid, getIsEditMode, getIsFetching,
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
-import { getUsersPermissions } from "usersPermissions/selectors";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Methods as MethodsType } from "types";
 import type { RootState } from "/src/root/types";
-import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "/src/usersPermissions/types";
 import type { Contact } from "../types";
 type Props = {
   change: (...args: Array<any>) => any;

@@ -9,14 +9,14 @@ import PageContainer from "/src/components/content/PageContainer";
 import { fetchIndexList } from "/src/index/actions";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { PermissionMissingTexts } from "enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContentYearlyIndexes } from "/src/index/helpers";
 import { hasPermissions, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIndexList, getIsFetching } from "/src/index/selectors";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { IndexList } from "/src/index/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   fetchIndexList: (...args: Array<any>) => any;
   indexList: IndexList;

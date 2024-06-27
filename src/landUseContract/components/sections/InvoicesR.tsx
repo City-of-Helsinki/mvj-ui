@@ -13,14 +13,14 @@ import InvoiceTableAndPanelR from "./InvoiceTableAndPanelR";
 import Title from "/src/components/content/Title";
 import { receiveCollapseStates, receiveInvoiceToCredit } from "/src/landUseInvoices/actions";
 import { PermissionMissingTexts, ViewModes } from "enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { hasPermissions } from "util/helpers";
 import { LeaseInvoicingFieldTitles } from "/src/leases/enums";
 // TODO
 import { getCurrentLandUseContract } from "/src/landUseContract/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { LandUseContract } from "/src/landUseContract/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import { getInvoiceToCredit } from "/src/landUseInvoices/selectors";
 type Props = {
   currentLandUseContract: LandUseContract;

@@ -6,7 +6,7 @@ import { Column, Row } from "react-foundation";
 import classNames from "classnames";
 import { getApplicantInfoCheckAttributes } from "/src/application/selectors";
 import { getFieldOptions, getLabelOfOption } from "util/helpers";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import type { Attributes } from "types";
 type OwnProps = {
   openModal: (...args: Array<any>) => any;

@@ -16,10 +16,10 @@ import { getDisplayName, getFormattedValue, getOutputFields, getReportTypeOption
 import { getIsFetchingLeaseInvoicingConfirmationReport, getLeaseInvoicingConfirmationReport, getPayload } from "/src/leaseStatisticReport/selectors";
 import type { Attributes, Reports } from "types";
 import type { LeaseInvoicingConfirmationReport as LeaseInvoicingConfirmationReportsType } from "/src/leaseStatisticReport/types";
-import { getUsersPermissions } from "usersPermissions/selectors";
-import { UsersPermissions } from "usersPermissions/enums";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { PermissionMissingTexts } from "enums";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import { withLeaseInvoicingConfirmationReportAttributes } from "/src/components/attributes/LeaseInvoicingConfirmationReportAttributes";
 import type { ReportOptions } from "/src/leaseStatisticReport/types";
 type Props = {

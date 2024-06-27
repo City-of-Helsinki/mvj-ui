@@ -7,8 +7,8 @@ import FormFieldLabel from "/src/components/form/FormFieldLabel";
 import DropdownIndicator from "/src/components/inputs/DropdownIndicator";
 import LoadingIndicator from "/src/components/inputs/SelectLoadingIndicator";
 import { FormNames } from "enums";
-import { setUserActiveServiceUnit } from "usersPermissions/actions";
-import type { UserServiceUnit, UserServiceUnits } from "usersPermissions/types";
+import { setUserActiveServiceUnit } from "/src/usersPermissions/actions";
+import type { UserServiceUnit, UserServiceUnits } from "/src/usersPermissions/types";
 type Props = {
   userServiceUnits: UserServiceUnits;
   userActiveServiceUnit: UserServiceUnit;

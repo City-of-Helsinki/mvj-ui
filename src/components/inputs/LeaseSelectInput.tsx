@@ -8,7 +8,7 @@ import { getLabelOfOption, getFieldOptions } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { store } from "/src/root/startApp";
 import { LeaseFieldPaths, LeaseHistoryItemTypes, LeaseHistoryContentTypes } from "/src/leases/enums";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {
   disabled?: boolean;
   name: string;

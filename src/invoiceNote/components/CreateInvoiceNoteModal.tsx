@@ -12,9 +12,9 @@ import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "/src/invoiceNote/
 import { ButtonColors } from "/src/components/enums";
 import { getFieldAttributes } from "util/helpers";
 import { getAttributes } from "/src/invoiceNote/selectors";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {
   handleSubmit: (...args: Array<any>) => any;
   initialize: (...args: Array<any>) => any;

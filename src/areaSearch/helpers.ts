@@ -3,7 +3,7 @@ import get from "lodash/get";
 import { formValueSelector, getFormValues } from "redux-form";
 import { FormNames, TableSortOrder } from "enums";
 import { APPLICANT_MAIN_IDENTIFIERS } from "/src/application/constants";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { store } from "/src/root/startApp";
 import { getCurrentAreaSearch } from "/src/areaSearch/selectors";
 import { prepareApplicationForSubmission } from "/src/application/helpers";

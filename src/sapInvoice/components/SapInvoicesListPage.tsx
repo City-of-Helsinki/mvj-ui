@@ -29,10 +29,10 @@ import { formatDate, formatNumber, getApiResponseCount, getApiResponseMaxPage, g
 import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching, getSapInvoices as getSapInvoiceList } from "/src/sapInvoice/selectors";
 import { withSapInvoicesAttributes } from "/src/components/attributes/SapInvoicesAttributes";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { SapInvoiceList } from "/src/sapInvoice/types";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 
 const getColumns = (invoiceAttributes: Attributes) => {
   const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);

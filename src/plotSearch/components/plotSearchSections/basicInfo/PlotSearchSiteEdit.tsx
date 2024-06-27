@@ -18,7 +18,7 @@ import FormField from "/src/components/form/FormField";
 import { FormNames, ViewModes } from "enums";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import WarningContainer from "/src/components/content/WarningContainer";
 import WarningField from "/src/components/form/WarningField";
 import { createPTPPlanReportUrl } from "util/helpers";
@@ -31,7 +31,7 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import PlotSearchSiteEditCustomDetailedPlan from "/src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSiteEditCustomDetailedPlan";
 import { TargetIdentifierTypes } from "/src/application/enums";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type SuggestedProps = {
   attributes: Attributes;
   disabled: boolean;

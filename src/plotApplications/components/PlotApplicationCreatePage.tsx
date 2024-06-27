@@ -15,7 +15,7 @@ import TabContent from "/src/components/tabs/TabContent";
 import TabPane from "/src/components/tabs/TabPane";
 import Tabs from "/src/components/tabs/Tabs";
 import ContentContainer from "/src/components/content/ContentContainer";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
 import PageNavigationWrapper from "/src/components/content/PageNavigationWrapper";
 import ControlButtonBar from "/src/components/controlButtons/ControlButtonBar";
 import ControlButtons from "/src/components/controlButtons/ControlButtons";
@@ -34,7 +34,7 @@ import { preparePlotApplicationForSubmission } from "/src/plotApplications/helpe
 import PlotApplicationCreate from "/src/plotApplications/components/PlotApplicationCreate";
 import type { PlotApplication as PlotApplicationType } from "/src/plotApplications/types";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type OwnProps = ContextRouter;
 type Props = OwnProps & {
   clearFormValidFlags: (...args: Array<any>) => any;

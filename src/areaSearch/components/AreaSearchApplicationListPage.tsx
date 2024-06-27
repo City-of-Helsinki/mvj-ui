@@ -9,7 +9,7 @@ import { withRouter } from "react-router";
 import debounce from "lodash/debounce";
 import AuthorizationError from "/src/components/authorization/AuthorizationError";
 import { FieldTypes, FormNames, Methods, PermissionMissingTexts } from "enums";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import PageContainer from "/src/components/content/PageContainer";
@@ -30,7 +30,7 @@ import { withAreaSearchAttributes } from "/src/components/attributes/AreaSearchA
 import { getAreaSearchList, getAreaSearchListByBBox, getIsEditingAreaSearch, getIsFetchingAreaSearchList, getIsFetchingAreaSearchListByBBox, getLastAreaSearchEditError } from "/src/areaSearch/selectors";
 import { DEFAULT_AREA_SEARCH_STATES, DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "/src/areaSearch/constants";
 import { editAreaSearch, fetchAreaSearchList, fetchAreaSearchListByBBox } from "/src/areaSearch/actions";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { areaSearchSearchFilters } from "/src/areaSearch/helpers";
 import { BOUNDING_BOX_FOR_SEARCH_QUERY, MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES } from "/src/areaSearch/constants";
 import AreaSearchListMap from "/src/areaSearch/components/map/AreaSearchListMap";
@@ -43,10 +43,10 @@ import AddButtonSecondary from "/src/components/form/AddButtonSecondary";
 import FormField from "/src/components/form/FormField";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { ApiResponse } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 import AreaSearchExportModal from "/src/areaSearch/components/AreaSearchExportModal";
-import { getUserActiveServiceUnit } from "usersPermissions/selectors";
-import type { UserServiceUnit } from "usersPermissions/types";
+import { getUserActiveServiceUnit } from "/src/usersPermissions/selectors";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 const VisualizationTypes = {
   MAP: 'map',
   TABLE: 'table'

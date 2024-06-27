@@ -7,10 +7,10 @@ import Authorization from "/src/components/authorization/Authorization";
 import FormField from "/src/components/form/FormField";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { getFieldOptions } from "util/helpers";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import { getAttributes, getIsSaveClicked } from "/src/plotSearch/selectors";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type OwnProps = {
   disabled: boolean;
   field: any;

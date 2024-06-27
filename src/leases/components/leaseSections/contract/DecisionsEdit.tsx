@@ -12,12 +12,12 @@ import FormText from "/src/components/form/FormText";
 import { copyDecisionToLeases, hideAttachDecisionModal, receiveFormValidFlags, showAttachDecisionModal } from "/src/leases/actions";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { hasPermissions } from "util/helpers";
 import { getCurrentLease, getIsAttachDecisionModalOpen } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Lease } from "/src/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type DecisionsProps = {
   fields: any;
   onAttach: (...args: Array<any>) => any;

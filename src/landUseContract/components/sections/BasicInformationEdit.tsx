@@ -28,7 +28,7 @@ import AddressItemEdit from "./AddressItemEdit";
 import type { Attributes, Methods as MethodsType } from "types";
 import { getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey } from "/src/uiData/helpers";
 import { LandUseAgreementAttachmentFieldPaths } from "/src/landUseAgreementAttachment/enums";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import { isFieldAllowedToRead, isMethodAllowed, formatDate } from "util/helpers";
 import { getMethods as getLandUseAgreementAttachmentMethods, getAttributes as getLandUseAgreementAttachmentAttributes } from "/src/landUseAgreementAttachment/selectors";
 import type { LandUseContract } from "/src/landUseContract/types";

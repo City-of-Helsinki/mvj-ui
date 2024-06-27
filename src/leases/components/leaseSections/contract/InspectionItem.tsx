@@ -9,7 +9,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import { LeaseInspectionAttachmentsFieldPaths, LeaseInspectionAttachmentsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDate, isFieldAllowedToRead } from "util/helpers";
-import { getUserFullName } from "users/helpers";
+import { getUserFullName } from "/src/users/helpers";
 import type { Attributes } from "types";
 type Props = {
   inspection: Record<string, any>;

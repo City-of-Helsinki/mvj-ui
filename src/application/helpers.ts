@@ -2,7 +2,7 @@ import { formValueSelector } from "redux-form";
 import _ from "lodash";
 import { FormNames } from "enums";
 import { ApplicantInfoCheckExternalTypes, ApplicantInfoCheckTypes, ApplicantTypes, TargetIdentifierTypes } from "/src/application/enums";
-import { getContentUser } from "users/helpers";
+import { getContentUser } from "/src/users/helpers";
 import createUrl from "/src/api/createUrl";
 import { APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER } from "/src/application/constants";
 import { store } from "/src/root/startApp";

@@ -18,11 +18,11 @@ import TabPane from "/src/components/tabs/TabPane";
 import Title from "/src/components/content/Title";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { PermissionMissingTexts } from "enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getSearchQuery, getUrlParams, hasPermissions, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   history: Record<string, any>;
   isFetchingUsersPermissions: boolean;

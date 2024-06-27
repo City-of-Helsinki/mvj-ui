@@ -28,15 +28,15 @@ import { receiveCollapseStates } from "/src/leases/actions";
 import { ButtonColors } from "/src/components/enums";
 import { ConfirmationModalTexts, FieldTypes, FormNames, Methods, ViewModes } from "enums";
 import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, LeaseTenantRentSharesFieldPaths, LeaseTenantRentSharesFieldTitles, LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, TenantContactType } from "/src/leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getUiDataLeaseKey } from "/src/uiData/helpers";
 import { formatDateRange, getFieldAttributes, hasPermissions, isActive, isArchived, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired, isMethodAllowed } from "util/helpers";
 import { getMethods as getContactMethods } from "/src/contacts/selectors";
 import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "/src/leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "/src/usersPermissions/types";
 type RentSharesProps = {
   archived: boolean;
   attributes: Attributes;

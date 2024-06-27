@@ -1,6 +1,6 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { getUsersPermissions } from "/src/usersPermissions/selectors";
 import Loader from "/src/components/loader/Loader";
 import { FormNames, ViewModes } from "enums";
 import Divider from "/src/components/content/Divider";
@@ -11,7 +11,7 @@ import { ApplicationFieldTitles } from "/src/plotSearch/enums";
 import ApplicationPreviewSection from "/src/plotSearch/components/plotSearchSections/application/ApplicationPreviewSection";
 import FormText from "/src/components/form/FormText";
 import { getIsFetchingFormAttributes } from "/src/application/selectors";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type OwnProps = {};
 type Props = OwnProps & {
   usersPermissions: UsersPermissionsType;

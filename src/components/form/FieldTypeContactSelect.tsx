@@ -4,7 +4,7 @@ import AsyncSelect from "/src/components/form/AsyncSelect";
 import { getContentContact } from "/src/contacts/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
 import { fetchContacts } from "/src/contacts/requestsAsync";
-import type { UserServiceUnit } from "usersPermissions/types";
+import type { UserServiceUnit } from "/src/usersPermissions/types";
 type Props = {
   disabled?: boolean;
   displayError: boolean;

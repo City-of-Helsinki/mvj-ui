@@ -15,11 +15,11 @@ import { ContactTypes } from "/src/contacts/enums";
 import { CreditDecisionText } from "/src/creditDecision/enums";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { FormNames, PermissionMissingTexts } from "enums";
-import { UsersPermissions } from "usersPermissions/enums";
+import { UsersPermissions } from "/src/usersPermissions/enums";
 import { hasPermissions, getSearchQuery, getUrlParams, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "/src/root/routes";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "/src/usersPermissions/selectors";
+import type { UsersPermissions as UsersPermissionsType } from "/src/usersPermissions/types";
 type Props = {
   history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
