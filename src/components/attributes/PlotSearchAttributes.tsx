@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchPlotSearchAttributes, fetchPlotSearchSubtypes } from "plotSearch/actions";
-import { getAttributes as getPlotSearchAttributes, getIsFetchingAttributes as getIsFetchingPlotSearchAttributes, getPlotSearchMethods, getPlotSearchSubTypes, getIsFetching } from "plotSearch/selectors";
+import { fetchAttributes as fetchPlotSearchAttributes, fetchPlotSearchSubtypes } from "/src/plotSearch/actions";
+import { getAttributes as getPlotSearchAttributes, getIsFetchingAttributes as getIsFetchingPlotSearchAttributes, getPlotSearchMethods, getPlotSearchSubTypes, getIsFetching } from "/src/plotSearch/selectors";
 import { getFormAttributes, getIsFetchingFormAttributes } from "/src/application/selectors";
 import { fetchFormAttributes } from "/src/application/actions";
 import type { Attributes, Methods } from "types";

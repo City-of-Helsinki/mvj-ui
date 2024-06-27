@@ -13,8 +13,8 @@ import { FieldTypes } from "enums";
 import FormFieldLabel from "/src/components/form/FormFieldLabel";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import Loader from "/src/components/loader/Loader";
-import { getIsCreatingDirectReservationLink } from "plotSearch/selectors";
-import { createDirectReservationLink } from "plotSearch/actions";
+import { getIsCreatingDirectReservationLink } from "/src/plotSearch/selectors";
+import { createDirectReservationLink } from "/src/plotSearch/actions";
 type OwnProps = {
   isOpen: boolean;
   onClose: () => void;

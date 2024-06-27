@@ -7,9 +7,9 @@ import { withRouter } from "react-router";
 import type { ContextRouter } from "react-router";
 import { Row, Column } from "react-foundation";
 import { initialize } from "redux-form";
-import Search from "plotApplications/components/search/Search";
+import Search from "/src/plotApplications/components/search/Search";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
-import { fetchPlotApplicationsList, fetchPlotApplicationsByBBox } from "plotApplications/actions";
+import { fetchPlotApplicationsList, fetchPlotApplicationsByBBox } from "/src/plotApplications/actions";
 import Authorization from "/src/components/authorization/Authorization";
 import AuthorizationError from "/src/components/authorization/AuthorizationError";
 import IconRadioButtons from "/src/components/button/IconRadioButtons";
@@ -30,15 +30,15 @@ import { withPlotApplicationsAttributes } from "/src/components/attributes/PlotA
 import Pagination from "/src/components/table/Pagination";
 import VisualisationTypeWrapper from "/src/components/table/VisualisationTypeWrapper";
 import MapIcon from "/src/components/icons/MapIcon";
-import { getContentPlotApplicationsListResults } from "plotApplications/helpers";
+import { getContentPlotApplicationsListResults } from "/src/plotApplications/helpers";
 import { isMethodAllowed, getUrlParams, setPageTitle, getApiResponseCount, getApiResponseMaxPage, getSearchQuery } from "util/helpers";
-import { getIsFetching, getPlotApplicationsList, getIsFetchingByBBox } from "plotApplications/selectors";
-import { DEFAULT_PLOT_APPLICATIONS_STATES, BOUNDING_BOX_FOR_SEARCH_QUERY, MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "plotApplications/constants";
+import { getIsFetching, getPlotApplicationsList, getIsFetchingByBBox } from "/src/plotApplications/selectors";
+import { DEFAULT_PLOT_APPLICATIONS_STATES, BOUNDING_BOX_FOR_SEARCH_QUERY, MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "/src/plotApplications/constants";
 import type { Attributes, Methods as MethodsType } from "types";
-import { fetchPlotSearchList, fetchAttributes as fetchPlotSearchAttributes } from "plotSearch/actions";
-import ApplicationListMap from "plotApplications/components/map/ApplicationListMap";
-import { getPlotApplicationsListByBBox } from "plotApplications/selectors";
-import PlotApplicationsListOpeningModal from "plotApplications/components/PlotApplicationsListOpeningModal";
+import { fetchPlotSearchList, fetchAttributes as fetchPlotSearchAttributes } from "/src/plotSearch/actions";
+import ApplicationListMap from "/src/plotApplications/components/map/ApplicationListMap";
+import { getPlotApplicationsListByBBox } from "/src/plotApplications/selectors";
+import PlotApplicationsListOpeningModal from "/src/plotApplications/components/PlotApplicationsListOpeningModal";
 const VisualizationTypes = {
   MAP: 'map',
   TABLE: 'table'

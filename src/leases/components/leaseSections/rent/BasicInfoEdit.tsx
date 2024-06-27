@@ -21,7 +21,7 @@ import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowe
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getLeaseTypeList } from "/src/leaseType/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import { PlotSearchFieldPaths } from "plotSearch/enums";
+import { PlotSearchFieldPaths } from "/src/plotSearch/enums";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";
 import type { LeaseTypeList } from "/src/leaseType/types";

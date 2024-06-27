@@ -5,11 +5,11 @@ import { Row, Column } from "react-foundation";
 import Authorization from "/src/components/authorization/Authorization";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import { getAttributes, getIsSaveClicked } from "plotSearch/selectors";
+import { getAttributes, getIsSaveClicked } from "/src/plotSearch/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 import DecisionSelectInput from "/src/components/form/DecisionSelectInput";
-import { formatDecisionName } from "plotSearch/helpers";
+import { formatDecisionName } from "/src/plotSearch/helpers";
 type OwnProps = {
   disabled: boolean;
   field: any;

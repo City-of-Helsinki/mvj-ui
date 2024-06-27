@@ -9,7 +9,7 @@ import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 import type { ContextRouter } from "react-router";
 import { getFieldOptions, getUrlParams } from "util/helpers";
-import { getAttributes, getPlotSearchSubTypes } from "plotSearch/selectors";
+import { getAttributes, getPlotSearchSubTypes } from "/src/plotSearch/selectors";
 import FormField from "/src/components/form/FormField";
 import SearchChangeTypeLink from "/src/components/search/SearchChangeTypeLink";
 import SearchClearLink from "/src/components/search/SearchClearLink";
@@ -19,7 +19,7 @@ import SearchLabel from "/src/components/search/SearchLabel";
 import SearchLabelColumn from "/src/components/search/SearchLabelColumn";
 import SearchRow from "/src/components/search/SearchRow";
 import { FieldTypes, FormNames } from "enums";
-import { PlotSearchFieldPaths } from "plotSearch/enums";
+import { PlotSearchFieldPaths } from "/src/plotSearch/enums";
 import type { Attributes } from "types";
 type OwnProps = {
   handleSubmit: (...args: Array<any>) => any;

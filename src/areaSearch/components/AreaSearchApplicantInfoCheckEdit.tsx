@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { change } from "redux-form";
-import PlotApplicationInfoCheckCollapse from "plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
+import PlotApplicationInfoCheckCollapse from "/src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
 import { getApplicantInfoCheckSubmissionErrors, getApplicationApplicantInfoCheckData } from "/src/areaSearch/selectors";
 import ApplicantInfoCheckEdit from "/src/application/components/infoCheck/ApplicantInfoCheckEdit";
 import { getApplicantInfoCheckFormName } from "/src/application/helpers";

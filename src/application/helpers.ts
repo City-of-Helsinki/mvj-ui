@@ -7,7 +7,7 @@ import createUrl from "/src/api/createUrl";
 import { APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER } from "/src/application/constants";
 import { store } from "root/startApp";
 import { displayUIMessage } from "util/helpers";
-import type { PlotSearch } from "plotSearch/types";
+import type { PlotSearch } from "/src/plotSearch/types";
 import type { RootState } from "root/types";
 import type { ApplicationFormSection, Form, FormSection, PlotApplicationFormValue, SavedApplicationFormSection, UploadedFileMeta } from "/src/application/types";
 export const transformTargetSectionTitle = (plotSearch: PlotSearch): (...args: Array<any>) => any => (title: string, section: FormSection, answer: SavedApplicationFormSection): string => {

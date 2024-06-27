@@ -9,8 +9,8 @@ import FormField from "/src/components/form/FormField";
 import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
 import { FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { getAttributes } from "plotSearch/selectors";
-import { PlotSearchFieldTitles } from "plotSearch/enums";
+import { getAttributes } from "/src/plotSearch/selectors";
+import { PlotSearchFieldTitles } from "/src/plotSearch/enums";
 import type { Attributes } from "types";
 type OwnProps = {
   onClose: (...args: Array<any>) => any;

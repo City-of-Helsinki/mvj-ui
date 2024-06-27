@@ -8,7 +8,7 @@ import FormField from "/src/components/form/FormField";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { getFieldOptions } from "util/helpers";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import { getAttributes, getIsSaveClicked } from "plotSearch/selectors";
+import { getAttributes, getIsSaveClicked } from "/src/plotSearch/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type OwnProps = {

@@ -25,7 +25,7 @@ import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { Lease } from "/src/leases/types";
 import { restructureLease, sortRelatedHistoryItems } from "/src/leases/helpers";
-import PlotApplication from "plotApplications/components/PlotApplication";
+import PlotApplication from "/src/plotApplications/components/PlotApplication";
 import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "usersPermissions/types";
 type Props = {
   createLease: (...args: Array<any>) => any;

@@ -11,9 +11,9 @@ import ExternalLink from "/src/components/links/ExternalLink";
 import Loader from "/src/components/loader/Loader";
 import PlanUnitSelectInput from "/src/components/inputs/PlanUnitSelectInput";
 import { createPTPPlanReportUrl } from "util/helpers";
-import { PlotSearchFieldTitles } from "plotSearch/enums";
+import { PlotSearchFieldTitles } from "/src/plotSearch/enums";
 import { formatDate, getFieldOptions, getLabelOfOption } from "util/helpers";
-import { getInfoLinkLanguageDisplayText } from "plotSearch/helpers";
+import { getInfoLinkLanguageDisplayText } from "/src/plotSearch/helpers";
 import type { Attributes } from "types";
 type Props = {
   handleNew: (...args: Array<any>) => any;

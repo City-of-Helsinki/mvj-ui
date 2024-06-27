@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveError } from "/src/api/actions";
 import { receiveAttributes, receiveMethods, attributesNotFound, receiveAreaSearchList, areaSearchesNotFound, areaSearchesByBBoxNotFound, receiveAreaSearchByBBoxList, receiveSingleAreaSearch, singleAreaSearchNotFound, listAttributesNotFound, receiveListAttributes, receiveListMethods, receiveAreaSearchInfoChecksBatchEditFailure, receiveAreaSearchInfoChecksBatchEditSuccess, hideEditMode, fetchSingleAreaSearch, receiveAreaSearchEdited, receiveAreaSearchEditFailed, receiveAreaSearchSpecsCreated, receiveAreaSearchSpecsCreateFailed, receiveAreaSearchApplicationCreated, receiveAreaSearchApplicationCreateFailed, receiveFileOperationFailed, receiveFileOperationFinished } from "/src/areaSearch/actions";
 import { editSingleAreaSearchRequest, fetchAreaSearchAttributesRequest, fetchAreaSearchesRequest, fetchAreaSearchListAttributesRequest, fetchSingleAreaSearchRequest, createAreaSearchSpecsRequest, deleteAreaSearchAttachmentRequest, uploadAreaSearchAttachmentRequest } from "/src/areaSearch/requests";
-import { editApplicantInfoCheckItemRequest } from "plotApplications/requests";
+import { editApplicantInfoCheckItemRequest } from "/src/plotApplications/requests";
 import { receiveUpdatedApplicantInfoCheckItem } from "/src/application/actions";
 import { displayUIMessage } from "util/helpers";
 import { push } from "react-router-redux";

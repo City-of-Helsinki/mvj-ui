@@ -43,8 +43,8 @@ import uiDataSaga from "uiData/saga";
 import userSaga from "users/saga";
 import usersPermissionsSaga from "usersPermissions/saga";
 import vatSaga from "vat/saga";
-import plotSearchSaga from "plotSearch/saga";
-import plotApplicationsSaga from "plotApplications/saga";
+import plotSearchSaga from "/src/plotSearch/saga";
+import plotApplicationsSaga from "/src/plotApplications/saga";
 import applicationSaga from "/src/application/saga";
 
 export default (() =>

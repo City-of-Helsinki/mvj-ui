@@ -11,10 +11,10 @@ import FileDownloadLink from "/src/components/file/FileDownloadLink";
 import type { RootState } from "root/types";
 import type { Attributes } from "types";
 import { getUserFullName } from "users/helpers";
-import PlotApplicationInfoCheckCollapse from "plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
-import { getApplicationRelatedPlotSearch, getApplicationTargetInfoCheckData } from "plotApplications/selectors";
-import { PlotApplicationTargetInfoCheckFieldPaths, PlotApplicationTargetInfoCheckFieldTitles } from "plotApplications/enums";
-import { getInitialTargetInfoCheckValues, getMeetingMemoDownloadLink } from "plotApplications/helpers";
+import PlotApplicationInfoCheckCollapse from "/src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
+import { getApplicationRelatedPlotSearch, getApplicationTargetInfoCheckData } from "/src/plotApplications/selectors";
+import { PlotApplicationTargetInfoCheckFieldPaths, PlotApplicationTargetInfoCheckFieldTitles } from "/src/plotApplications/enums";
+import { getInitialTargetInfoCheckValues, getMeetingMemoDownloadLink } from "/src/plotApplications/helpers";
 import { getAttributes } from "/src/application/selectors";
 type TargetSubFieldSetProps = {
   values: any;

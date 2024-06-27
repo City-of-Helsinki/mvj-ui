@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CreatePlotSearchForm from "plotSearch/components/CreatePlotSearchForm";
+import CreatePlotSearchForm from "/src/plotSearch/components/CreatePlotSearchForm";
 import Modal from "/src/components/modal/Modal";
 type Props = {
   isOpen: boolean;

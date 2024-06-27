@@ -8,7 +8,7 @@ import { getAttributes, getCurrentAreaSearch } from "/src/areaSearch/selectors";
 import ApplicationAnswersSection from "/src/application/components/ApplicationAnswersSection";
 import { formatDate, formatDateRange, formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption } from "util/helpers";
 import type { Attributes } from "types";
-import { reshapeSavedApplicationObject } from "plotApplications/helpers";
+import { reshapeSavedApplicationObject } from "/src/plotApplications/helpers";
 import { transformApplicantSectionTitle, getAreaSearchApplicationAttachmentDownloadLink } from "/src/application/helpers";
 import Title from "/src/components/content/Title";
 import Divider from "/src/components/content/Divider";

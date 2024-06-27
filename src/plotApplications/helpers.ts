@@ -5,12 +5,12 @@ import { getApiResponseResults, getFieldAttributes } from "util/helpers";
 import createUrl from "/src/api/createUrl";
 import { store } from "root/startApp";
 import { FormNames } from "enums";
-import { getCurrentEditorTargets } from "plotApplications/selectors";
+import { getCurrentEditorTargets } from "/src/plotApplications/selectors";
 import { getTargetTitle, getTargetType, prepareApplicationForSubmission } from "/src/application/helpers";
 import { TargetIdentifierTypes } from "/src/application/enums";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
-import type { ApplicationFormState } from "plotApplications/types";
-import type { PlotSearch } from "plotSearch/types";
+import type { ApplicationFormState } from "/src/plotApplications/types";
+import type { PlotSearch } from "/src/plotSearch/types";
 import type { Form } from "/src/application/types";
 
 /**
