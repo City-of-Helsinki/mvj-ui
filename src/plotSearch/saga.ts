@@ -8,7 +8,7 @@ import { getRouteById, Routes } from "root/routes";
 import { fetchAttributes, createPlotSearch, fetchPlotSearches, fetchSinglePlotSearch, editPlotSearch as editPlotSearchRequest, deletePlotSearch, fetchPlanUnitAttributes, fetchPlanUnit, fetchCustomDetailedPlanAttributes, fetchCustomDetailedPlan, fetchPlotSearchSubtypesRequest, fetchFormRequest, fetchTemplateFormsRequest, editFormRequest, fetchStagesRequest, editTargetPlotSearchRelationRequest, fetchAllMunicipalitiesRequest, fetchAllDistrictsRequest, createDirectReservationLinkRequest, fetchPlotSearchApplicationsRequest, createPlotSearchApplicationsOpeningRecords } from "plotSearch/requests";
 import { createLease } from "/src/leases/requests";
 import { RelationTypes } from "/src/leases/enums";
-import { fetchLeaseTypes } from "leaseType/requests";
+import { fetchLeaseTypes } from "/src/leaseType/requests";
 import { fetchFormAttributes } from "/src/application/actions";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

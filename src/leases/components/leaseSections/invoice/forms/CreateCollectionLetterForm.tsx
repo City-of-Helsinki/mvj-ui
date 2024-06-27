@@ -17,7 +17,7 @@ import SubTitle from "/src/components/content/SubTitle";
 import { FieldTypes, FormNames } from "enums";
 import { CreateCollectionLetterFieldPaths, CreateCollectionLetterFieldTitles } from "/src/createCollectionLetter/enums";
 import { InvoiceType } from "/src/invoices/enums";
-import { PenaltyInterestFieldPaths, PenaltyInterestFieldTitles } from "penaltyInterest/enums";
+import { PenaltyInterestFieldPaths, PenaltyInterestFieldTitles } from "/src/penaltyInterest/enums";
 import { getInvoiceTenantOptions } from "/src/leases/helpers";
 import { getUiDataCreateCollectionLetterKey, getUiDataPenaltyInterestKey } from "uiData/helpers";
 import { convertStrToDecimalNumber, formatDate, formatDateRange, getFieldAttributes, isFieldAllowedToEdit, sortStringByKeyDesc } from "util/helpers";

@@ -13,7 +13,7 @@ import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { hasPermissions, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
-import { getReportTypeOptions } from "leaseStatisticReport/helpers";
+import { getReportTypeOptions } from "/src/leaseStatisticReport/helpers";
 import LeaseStatisticReportForm from "./LeaseStatisticReportForm";
 import LeaseInvoicingConfirmationReport from "./LeaseInvoicingConfirmationReport";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
@@ -21,8 +21,8 @@ import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/
 import type { Reports } from "types";
 import GreenBox from "/src/components/content/GreenBox";
 import SubTitle from "/src/components/content/SubTitle";
-import { getIsFetchingReportData, getPayload, getReports } from "leaseStatisticReport/selectors";
-import { getReportData } from "leaseStatisticReport/selectors";
+import { getIsFetchingReportData, getPayload, getReports } from "/src/leaseStatisticReport/selectors";
+import { getReportData } from "/src/leaseStatisticReport/selectors";
 import { getLabelOfOption } from "util/helpers";
 type Props = {
   isFetchingUsersPermissions: boolean;

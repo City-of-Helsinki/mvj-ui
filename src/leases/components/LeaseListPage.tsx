@@ -34,7 +34,7 @@ import { fetchAreaNoteList } from "/src/areaNote/actions";
 import { fetchServiceUnits } from "serviceUnits/actions";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
 import { createLease, fetchLeases, fetchLeasesByBBox } from "/src/leases/actions";
-import { fetchLessors } from "lessor/actions";
+import { fetchLessors } from "/src/lessor/actions";
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
 import { DEFAULT_LEASE_STATES, DEFAULT_ONLY_ACTIVE_LEASES, DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER, MAX_ZOOM_LEVEL_TO_FETCH_LEASES, BOUNDING_BOX_FOR_SEARCH_QUERY, leaseStateFilterOptions } from "/src/leases/constants";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
@@ -44,7 +44,7 @@ import { formatDate, getApiResponseCount, getApiResponseMaxPage, getFieldOptions
 import { getRouteById, Routes } from "root/routes";
 import { getAreaNoteList, getMethods as getAreaNoteMethods } from "/src/areaNote/selectors";
 import { getIsFetching, getIsFetchingByBBox, getLeasesList } from "/src/leases/selectors";
-import { getLessorList } from "lessor/selectors";
+import { getLessorList } from "/src/lessor/selectors";
 import { getUsersPermissions, getUserActiveServiceUnit } from "usersPermissions/selectors";
 import { withLeaseAttributes } from "/src/components/attributes/LeaseAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
@@ -52,7 +52,7 @@ import { getServiceUnits, getIsFetching as getIsFetchingServiceUnits } from "ser
 import type { Attributes, Methods as MethodsType } from "types";
 import type { AreaNoteList } from "/src/areaNote/types";
 import type { LeaseList } from "/src/leases/types";
-import type { LessorList } from "lessor/types";
+import type { LessorList } from "/src/lessor/types";
 import type { ServiceUnits } from "serviceUnits/types";
 import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "usersPermissions/types";
 const VisualizationTypes = {

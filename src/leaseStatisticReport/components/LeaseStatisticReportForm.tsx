@@ -12,10 +12,10 @@ import Authorization from "/src/components/authorization/Authorization";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
-import { LeaseStatisticReportPaths, LeaseStatisticReportTitles } from "leaseStatisticReport/enums";
-import { getReportTypeOptions, getReportUrl, getPayload, getFields, getQueryParams, formatType } from "leaseStatisticReport/helpers";
-import { fetchReportData, setOptions, sendReportToMail, fetchOptions, setPayload } from "leaseStatisticReport/actions";
-import { getAttributes as getLeaseStatisticReportAttributes, getOptions, getIsFetchingOptions } from "leaseStatisticReport/selectors";
+import { LeaseStatisticReportPaths, LeaseStatisticReportTitles } from "/src/leaseStatisticReport/enums";
+import { getReportTypeOptions, getReportUrl, getPayload, getFields, getQueryParams, formatType } from "/src/leaseStatisticReport/helpers";
+import { fetchReportData, setOptions, sendReportToMail, fetchOptions, setPayload } from "/src/leaseStatisticReport/actions";
+import { getAttributes as getLeaseStatisticReportAttributes, getOptions, getIsFetchingOptions } from "/src/leaseStatisticReport/selectors";
 import type { Attributes, Reports } from "types";
 type Props = {
   leaseStatisticReportAttributes: Attributes;

@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchLeaseStatisticReportAttributes } from "leaseStatisticReport/actions";
-import { fetchReports } from "leaseStatisticReport/actions";
-import { getAttributes as getLeaseStatisticReportAttributes, getIsFetchingAttributes as getIsFetchingLeaseStatisticReportAttributes, getReports, getIsFetchingReports, getIsFetchingReportData, getIsSendingMail } from "leaseStatisticReport/selectors";
+import { fetchAttributes as fetchLeaseStatisticReportAttributes } from "/src/leaseStatisticReport/actions";
+import { fetchReports } from "/src/leaseStatisticReport/actions";
+import { getAttributes as getLeaseStatisticReportAttributes, getIsFetchingAttributes as getIsFetchingLeaseStatisticReportAttributes, getReports, getIsFetchingReports, getIsFetchingReportData, getIsSendingMail } from "/src/leaseStatisticReport/selectors";
 import type { Attributes, Methods, Reports } from "types";
 
 function LeaseStatisticReportTabAttributes(WrappedComponent: any) {

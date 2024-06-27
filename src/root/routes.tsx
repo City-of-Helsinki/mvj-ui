@@ -28,7 +28,7 @@ import PlotApplicationsPage from "plotApplications/components/PlotApplicationPag
 import RentBasisListPage from "rentbasis/components/RentBasisListPage";
 import RentBasisPage from "rentbasis/components/RentBasisPage";
 import SapInvoicesListPage from "sapInvoice/components/SapInvoicesListPage";
-import LeaseStatisticReport from "leaseStatisticReport/components/LeaseStatisticReportPage";
+import LeaseStatisticReport from "/src/leaseStatisticReport/components/LeaseStatisticReportPage";
 import TradeRegisterSearchPage from "tradeRegister/components/TradeRegisterSearchPage";
 import PlotApplicationCreatePage from "plotApplications/components/PlotApplicationCreatePage";
 import AreaSearchApplicationListPage from "/src/areaSearch/components/AreaSearchApplicationListPage";

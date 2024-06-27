@@ -10,11 +10,11 @@ import FormText from "/src/components/form/FormText";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import RemoveButton from "/src/components/form/RemoveButton";
-import { fetchPenaltyInterestByInvoice } from "penaltyInterest/actions";
+import { fetchPenaltyInterestByInvoice } from "/src/penaltyInterest/actions";
 import { FormNames } from "enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { convertStrToDecimalNumber, formatNumber, hasPermissions } from "util/helpers";
-import { getIsFetchingByInvoice, getPenaltyInterestByInvoice } from "penaltyInterest/selectors";
+import { getIsFetchingByInvoice, getPenaltyInterestByInvoice } from "/src/penaltyInterest/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {

@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Reducer } from "types";
-import type { LeaseTypeList, ReceiveLeaseTypesAction } from "leaseType/types";
+import type { LeaseTypeList, ReceiveLeaseTypesAction } from "/src/leaseType/types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leaseType/FETCH_ALL': () => true,
   'mvj/leaseType/NOT_FOUND': () => false,

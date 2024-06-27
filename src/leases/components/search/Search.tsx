@@ -23,9 +23,9 @@ import { getDistrictOptions } from "/src/district/helpers";
 import { addEmptyOption, getFieldOptions, getUrlParams } from "util/helpers";
 import { getDistrictsByMunicipality } from "/src/district/selectors";
 import { getAttributes as getLeaseAttributes, getIsFetchingAttributes } from "/src/leases/selectors";
-import { getLessorList } from "lessor/selectors";
+import { getLessorList } from "/src/lessor/selectors";
 import type { Attributes } from "types";
-import type { LessorList } from "lessor/types";
+import type { LessorList } from "/src/lessor/types";
 type Props = {
   anyTouched: boolean;
   change: (...args: Array<any>) => any;
